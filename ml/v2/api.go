@@ -35,12 +35,12 @@ type ExperimentsInterface interface {
 	// Marks an experiment and associated metadata, runs, metrics, params, and tags
 	// for deletion. If the experiment uses FileStore, artifacts associated with the
 	// experiment are also deleted.
-	DeleteExperiment(ctx context.Context, request DeleteExperiment) error
+	DeleteExperiment(ctx context.Context, request DeleteExperiment) (*DeleteExperimentResponse, error)
 
 	// Delete a run.
 	//
 	// Marks a run for deletion.
-	DeleteRun(ctx context.Context, request DeleteRun) error
+	DeleteRun(ctx context.Context, request DeleteRun) (*DeleteRunResponse, error)
 
 	// Delete runs by creation time.
 	//
@@ -53,7 +53,7 @@ type ExperimentsInterface interface {
 	//
 	// Deletes a tag on a run. Tags are run metadata that can be updated during a
 	// run and after a run completes.
-	DeleteTag(ctx context.Context, request DeleteTag) error
+	DeleteTag(ctx context.Context, request DeleteTag) (*DeleteTagResponse, error)
 
 	// Get an experiment by name.
 	//
@@ -202,7 +202,7 @@ type ExperimentsInterface interface {
 	// * Metric keys, param keys, and tag keys can be up to 250 characters in length
 	//
 	// * Parameter and tag values can be up to 250 characters in length
-	LogBatch(ctx context.Context, request LogBatch) error
+	LogBatch(ctx context.Context, request LogBatch) (*LogBatchResponse, error)
 
 	// Log inputs to a run.
 	//
@@ -210,20 +210,20 @@ type ExperimentsInterface interface {
 	// without warning.
 	//
 	// Logs inputs, such as datasets and models, to an MLflow Run.
-	LogInputs(ctx context.Context, request LogInputs) error
+	LogInputs(ctx context.Context, request LogInputs) (*LogInputsResponse, error)
 
 	// Log a metric for a run.
 	//
 	// Log a metric for a run. A metric is a key-value pair (string key, float
 	// value) with an associated timestamp. Examples include the various metrics
 	// that represent ML model accuracy. A metric can be logged multiple times.
-	LogMetric(ctx context.Context, request LogMetric) error
+	LogMetric(ctx context.Context, request LogMetric) (*LogMetricResponse, error)
 
 	// Log a model.
 	//
 	// **NOTE:** Experimental: This API may change or be removed in a future release
 	// without warning.
-	LogModel(ctx context.Context, request LogModel) error
+	LogModel(ctx context.Context, request LogModel) (*LogModelResponse, error)
 
 	// Log a param for a run.
 	//
@@ -231,7 +231,7 @@ type ExperimentsInterface interface {
 	// value). Examples include hyperparameters used for ML model training and
 	// constant dates and values used in an ETL pipeline. A param can be logged only
 	// once for a run.
-	LogParam(ctx context.Context, request LogParam) error
+	LogParam(ctx context.Context, request LogParam) (*LogParamResponse, error)
 
 	// Restore an experiment.
 	//
@@ -241,7 +241,7 @@ type ExperimentsInterface interface {
 	//
 	// Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was
 	// permanently deleted.
-	RestoreExperiment(ctx context.Context, request RestoreExperiment) error
+	RestoreExperiment(ctx context.Context, request RestoreExperiment) (*RestoreExperimentResponse, error)
 
 	// Restore a run.
 	//
@@ -250,7 +250,7 @@ type ExperimentsInterface interface {
 	//
 	// Throws `RESOURCE_DOES_NOT_EXIST` if the run was never created or was
 	// permanently deleted.
-	RestoreRun(ctx context.Context, request RestoreRun) error
+	RestoreRun(ctx context.Context, request RestoreRun) (*RestoreRunResponse, error)
 
 	// Restore runs by deletion time.
 	//
@@ -295,7 +295,7 @@ type ExperimentsInterface interface {
 	//
 	// Sets a tag on an experiment. Experiment tags are metadata that can be
 	// updated.
-	SetExperimentTag(ctx context.Context, request SetExperimentTag) error
+	SetExperimentTag(ctx context.Context, request SetExperimentTag) (*SetExperimentTagResponse, error)
 
 	// Set experiment permissions.
 	//
@@ -308,12 +308,12 @@ type ExperimentsInterface interface {
 	//
 	// Sets a tag on a run. Tags are run metadata that can be updated during a run
 	// and after a run completes.
-	SetTag(ctx context.Context, request SetTag) error
+	SetTag(ctx context.Context, request SetTag) (*SetTagResponse, error)
 
 	// Update an experiment.
 	//
 	// Updates experiment metadata.
-	UpdateExperiment(ctx context.Context, request UpdateExperiment) error
+	UpdateExperiment(ctx context.Context, request UpdateExperiment) (*UpdateExperimentResponse, error)
 
 	// Update experiment permissions.
 	//
@@ -450,39 +450,39 @@ type ModelRegistryInterface interface {
 	// Delete a comment.
 	//
 	// Deletes a comment on a model version.
-	DeleteComment(ctx context.Context, request DeleteCommentRequest) error
+	DeleteComment(ctx context.Context, request DeleteCommentRequest) (*DeleteCommentResponse, error)
 
 	// Delete a model.
 	//
 	// Deletes a registered model.
-	DeleteModel(ctx context.Context, request DeleteModelRequest) error
+	DeleteModel(ctx context.Context, request DeleteModelRequest) (*DeleteModelResponse, error)
 
 	// Delete a model tag.
 	//
 	// Deletes the tag for a registered model.
-	DeleteModelTag(ctx context.Context, request DeleteModelTagRequest) error
+	DeleteModelTag(ctx context.Context, request DeleteModelTagRequest) (*DeleteModelTagResponse, error)
 
 	// Delete a model version.
 	//
 	// Deletes a model version.
-	DeleteModelVersion(ctx context.Context, request DeleteModelVersionRequest) error
+	DeleteModelVersion(ctx context.Context, request DeleteModelVersionRequest) (*DeleteModelVersionResponse, error)
 
 	// Delete a model version tag.
 	//
 	// Deletes a model version tag.
-	DeleteModelVersionTag(ctx context.Context, request DeleteModelVersionTagRequest) error
+	DeleteModelVersionTag(ctx context.Context, request DeleteModelVersionTagRequest) (*DeleteModelVersionTagResponse, error)
 
 	// Delete a transition request.
 	//
 	// Cancels a model version stage transition request.
-	DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) error
+	DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) (*DeleteTransitionRequestResponse, error)
 
 	// Delete a webhook.
 	//
 	// **NOTE:** This endpoint is in Public Preview.
 	//
 	// Deletes a registry webhook.
-	DeleteWebhook(ctx context.Context, request DeleteWebhookRequest) error
+	DeleteWebhook(ctx context.Context, request DeleteWebhookRequest) (*DeleteWebhookResponse, error)
 
 	// Get the latest version.
 	//
@@ -628,12 +628,12 @@ type ModelRegistryInterface interface {
 	// Set a tag.
 	//
 	// Sets a tag on a registered model.
-	SetModelTag(ctx context.Context, request SetModelTagRequest) error
+	SetModelTag(ctx context.Context, request SetModelTagRequest) (*SetModelTagResponse, error)
 
 	// Set a version tag.
 	//
 	// Sets a model version tag.
-	SetModelVersionTag(ctx context.Context, request SetModelVersionTagRequest) error
+	SetModelVersionTag(ctx context.Context, request SetModelVersionTagRequest) (*SetModelVersionTagResponse, error)
 
 	// Set registered model permissions.
 	//
@@ -666,12 +666,12 @@ type ModelRegistryInterface interface {
 	// Update model.
 	//
 	// Updates a registered model.
-	UpdateModel(ctx context.Context, request UpdateModelRequest) error
+	UpdateModel(ctx context.Context, request UpdateModelRequest) (*UpdateModelResponse, error)
 
 	// Update model version.
 	//
 	// Updates the model version.
-	UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) error
+	UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) (*UpdateModelVersionResponse, error)
 
 	// Update registered model permissions.
 	//
@@ -684,7 +684,7 @@ type ModelRegistryInterface interface {
 	// **NOTE:** This endpoint is in Public Preview.
 	//
 	// Updates a registry webhook.
-	UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) error
+	UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) (*UpdateWebhookResponse, error)
 }
 
 func NewModelRegistry(client *httpclient.ApiClient) *ModelRegistryAPI {

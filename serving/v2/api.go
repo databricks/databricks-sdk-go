@@ -26,10 +26,10 @@ type ServingEndpointsInterface interface {
 	Create(ctx context.Context, request CreateServingEndpoint) (*ServingEndpointDetailed, error)
 
 	// Delete a serving endpoint.
-	Delete(ctx context.Context, request DeleteServingEndpointRequest) error
+	Delete(ctx context.Context, request DeleteServingEndpointRequest) (*DeleteResponse, error)
 
 	// Delete a serving endpoint.
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// Get metrics of a serving endpoint.
 	//
@@ -192,7 +192,7 @@ func (a *ServingEndpointsAPI) BuildLogsByNameAndServedModelName(ctx context.Cont
 }
 
 // Delete a serving endpoint.
-func (a *ServingEndpointsAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *ServingEndpointsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.servingEndpointsImpl.Delete(ctx, DeleteServingEndpointRequest{
 		Name: name,
 	})

@@ -24,12 +24,12 @@ type CleanRoomAssetsInterface interface {
 	// Delete an asset.
 	//
 	// Delete a clean room asset - unshare/remove the asset from the clean room
-	Delete(ctx context.Context, request DeleteCleanRoomAssetRequest) error
+	Delete(ctx context.Context, request DeleteCleanRoomAssetRequest) (*DeleteCleanRoomAssetResponse, error)
 
 	// Delete an asset.
 	//
 	// Delete a clean room asset - unshare/remove the asset from the clean room
-	DeleteByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) error
+	DeleteByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) (*DeleteCleanRoomAssetResponse, error)
 
 	// Get an asset.
 	//
@@ -78,7 +78,7 @@ type CleanRoomAssetsAPI struct {
 // Delete an asset.
 //
 // Delete a clean room asset - unshare/remove the asset from the clean room
-func (a *CleanRoomAssetsAPI) DeleteByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) error {
+func (a *CleanRoomAssetsAPI) DeleteByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) (*DeleteCleanRoomAssetResponse, error) {
 	return a.cleanRoomAssetsImpl.Delete(ctx, DeleteCleanRoomAssetRequest{
 		CleanRoomName: cleanRoomName,
 		AssetType:     assetType,
@@ -174,7 +174,7 @@ type CleanRoomsInterface interface {
 	// metastore. If the other collaborators have not deleted the clean room, they
 	// will still have the clean room in their metastore, but it will be in a
 	// DELETED state and no operations other than deletion can be performed on it.
-	Delete(ctx context.Context, request DeleteCleanRoomRequest) error
+	Delete(ctx context.Context, request DeleteCleanRoomRequest) (*DeleteResponse, error)
 
 	// Delete a clean room.
 	//
@@ -182,7 +182,7 @@ type CleanRoomsInterface interface {
 	// metastore. If the other collaborators have not deleted the clean room, they
 	// will still have the clean room in their metastore, but it will be in a
 	// DELETED state and no operations other than deletion can be performed on it.
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// Get a clean room.
 	//
@@ -241,7 +241,7 @@ type CleanRoomsAPI struct {
 // metastore. If the other collaborators have not deleted the clean room, they
 // will still have the clean room in their metastore, but it will be in a
 // DELETED state and no operations other than deletion can be performed on it.
-func (a *CleanRoomsAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *CleanRoomsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.cleanRoomsImpl.Delete(ctx, DeleteCleanRoomRequest{
 		Name: name,
 	})

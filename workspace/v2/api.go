@@ -25,12 +25,12 @@ type GitCredentialsInterface interface {
 	// Delete a credential.
 	//
 	// Deletes the specified Git credential.
-	Delete(ctx context.Context, request DeleteCredentialsRequest) error
+	Delete(ctx context.Context, request DeleteCredentialsRequest) (*DeleteCredentialsResponse, error)
 
 	// Delete a credential.
 	//
 	// Deletes the specified Git credential.
-	DeleteByCredentialId(ctx context.Context, credentialId int64) error
+	DeleteByCredentialId(ctx context.Context, credentialId int64) (*DeleteCredentialsResponse, error)
 
 	// Get a credential entry.
 	//
@@ -79,7 +79,7 @@ type GitCredentialsInterface interface {
 	// Update a credential.
 	//
 	// Updates the specified Git credential.
-	Update(ctx context.Context, request UpdateCredentialsRequest) error
+	Update(ctx context.Context, request UpdateCredentialsRequest) (*UpdateCredentialsResponse, error)
 }
 
 func NewGitCredentials(client *httpclient.ApiClient) *GitCredentialsAPI {
@@ -103,7 +103,7 @@ type GitCredentialsAPI struct {
 // Delete a credential.
 //
 // Deletes the specified Git credential.
-func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credentialId int64) error {
+func (a *GitCredentialsAPI) DeleteByCredentialId(ctx context.Context, credentialId int64) (*DeleteCredentialsResponse, error) {
 	return a.gitCredentialsImpl.Delete(ctx, DeleteCredentialsRequest{
 		CredentialId: credentialId,
 	})
@@ -183,12 +183,12 @@ type ReposInterface interface {
 	// Delete a repo.
 	//
 	// Deletes the specified repo.
-	Delete(ctx context.Context, request DeleteRepoRequest) error
+	Delete(ctx context.Context, request DeleteRepoRequest) (*DeleteRepoResponse, error)
 
 	// Delete a repo.
 	//
 	// Deletes the specified repo.
-	DeleteByRepoId(ctx context.Context, repoId int64) error
+	DeleteByRepoId(ctx context.Context, repoId int64) (*DeleteRepoResponse, error)
 
 	// Get a repo.
 	//
@@ -267,7 +267,7 @@ type ReposInterface interface {
 	//
 	// Updates the repo to a different branch or tag, or updates the repo to the
 	// latest commit on the same branch.
-	Update(ctx context.Context, request UpdateRepoRequest) error
+	Update(ctx context.Context, request UpdateRepoRequest) (*UpdateRepoResponse, error)
 
 	// Update repo permissions.
 	//
@@ -301,7 +301,7 @@ type ReposAPI struct {
 // Delete a repo.
 //
 // Deletes the specified repo.
-func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) error {
+func (a *ReposAPI) DeleteByRepoId(ctx context.Context, repoId int64) (*DeleteRepoResponse, error) {
 	return a.reposImpl.Delete(ctx, DeleteRepoRequest{
 		RepoId: repoId,
 	})
@@ -394,7 +394,7 @@ type SecretsInterface interface {
 	//
 	// The scope name must consist of alphanumeric characters, dashes, underscores,
 	// and periods, and may not exceed 128 characters.
-	CreateScope(ctx context.Context, request CreateScope) error
+	CreateScope(ctx context.Context, request CreateScope) (*CreateScopeResponse, error)
 
 	// Delete an ACL.
 	//
@@ -404,7 +404,7 @@ type SecretsInterface interface {
 	// `RESOURCE_DOES_NOT_EXIST` if no such secret scope, principal, or ACL exists.
 	// Throws `PERMISSION_DENIED` if the user does not have permission to make this
 	// API call.
-	DeleteAcl(ctx context.Context, request DeleteAcl) error
+	DeleteAcl(ctx context.Context, request DeleteAcl) (*DeleteAclResponse, error)
 
 	// Delete a secret scope.
 	//
@@ -413,7 +413,7 @@ type SecretsInterface interface {
 	// Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws
 	// `PERMISSION_DENIED` if the user does not have permission to make this API
 	// call.
-	DeleteScope(ctx context.Context, request DeleteScope) error
+	DeleteScope(ctx context.Context, request DeleteScope) (*DeleteScopeResponse, error)
 
 	// Delete a secret scope.
 	//
@@ -422,7 +422,7 @@ type SecretsInterface interface {
 	// Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws
 	// `PERMISSION_DENIED` if the user does not have permission to make this API
 	// call.
-	DeleteScopeByScope(ctx context.Context, scope string) error
+	DeleteScopeByScope(ctx context.Context, scope string) (*DeleteScopeResponse, error)
 
 	// Delete a secret.
 	//
@@ -432,7 +432,7 @@ type SecretsInterface interface {
 	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret exists.
 	// Throws `PERMISSION_DENIED` if the user does not have permission to make this
 	// API call.
-	DeleteSecret(ctx context.Context, request DeleteSecret) error
+	DeleteSecret(ctx context.Context, request DeleteSecret) (*DeleteSecretResponse, error)
 
 	// Get secret ACL details.
 	//
@@ -582,7 +582,7 @@ type SecretsInterface interface {
 	// Throws `INVALID_PARAMETER_VALUE` if the permission or principal is invalid.
 	// Throws `PERMISSION_DENIED` if the user does not have permission to make this
 	// API call.
-	PutAcl(ctx context.Context, request PutAcl) error
+	PutAcl(ctx context.Context, request PutAcl) (*PutAclResponse, error)
 
 	// Add a secret.
 	//
@@ -605,7 +605,7 @@ type SecretsInterface interface {
 	// Throws `INVALID_PARAMETER_VALUE` if the key name or value length is invalid.
 	// Throws `PERMISSION_DENIED` if the user does not have permission to make this
 	// API call.
-	PutSecret(ctx context.Context, request PutSecret) error
+	PutSecret(ctx context.Context, request PutSecret) (*PutSecretResponse, error)
 }
 
 func NewSecrets(client *httpclient.ApiClient) *SecretsAPI {
@@ -639,7 +639,7 @@ type SecretsAPI struct {
 // Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws
 // `PERMISSION_DENIED` if the user does not have permission to make this API
 // call.
-func (a *SecretsAPI) DeleteScopeByScope(ctx context.Context, scope string) error {
+func (a *SecretsAPI) DeleteScopeByScope(ctx context.Context, scope string) (*DeleteScopeResponse, error) {
 	return a.secretsImpl.DeleteScope(ctx, DeleteScope{
 		Scope: scope,
 	})
@@ -688,7 +688,7 @@ type WorkspaceInterface interface {
 	//
 	// Object deletion cannot be undone and deleting a directory recursively is not
 	// atomic.
-	Delete(ctx context.Context, request Delete) error
+	Delete(ctx context.Context, request Delete) (*DeleteResponse, error)
 
 	// Export a workspace object.
 	//
@@ -744,7 +744,7 @@ type WorkspaceInterface interface {
 	// directory, you can use either the `DBC` format or the `SOURCE` format with
 	// the `language` field unset. To import a single file as `SOURCE`, you must set
 	// the `language` field.
-	Import(ctx context.Context, request Import) error
+	Import(ctx context.Context, request Import) (*ImportResponse, error)
 
 	// List contents.
 	//
@@ -790,7 +790,7 @@ type WorkspaceInterface interface {
 	//
 	// Note that if this operation fails it may have succeeded in creating some of
 	// the necessary parent directories.
-	Mkdirs(ctx context.Context, request Mkdirs) error
+	Mkdirs(ctx context.Context, request Mkdirs) (*MkdirsResponse, error)
 
 	// Create a directory.
 	//
@@ -800,7 +800,7 @@ type WorkspaceInterface interface {
 	//
 	// Note that if this operation fails it may have succeeded in creating some of
 	// the necessary parent directories.
-	MkdirsByPath(ctx context.Context, path string) error
+	MkdirsByPath(ctx context.Context, path string) (*MkdirsResponse, error)
 
 	// Set workspace object permissions.
 	//
@@ -925,7 +925,7 @@ func (a *WorkspaceAPI) GetByPath(ctx context.Context, name string) (*ObjectInfo,
 //
 // Note that if this operation fails it may have succeeded in creating some of
 // the necessary parent directories.
-func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) error {
+func (a *WorkspaceAPI) MkdirsByPath(ctx context.Context, path string) (*MkdirsResponse, error) {
 	return a.workspaceImpl.Mkdirs(ctx, Mkdirs{
 		Path: path,
 	})

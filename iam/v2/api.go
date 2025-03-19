@@ -121,12 +121,12 @@ type AccountGroupsInterface interface {
 	// Delete a group.
 	//
 	// Deletes a group from the Databricks account.
-	Delete(ctx context.Context, request DeleteAccountGroupRequest) error
+	Delete(ctx context.Context, request DeleteAccountGroupRequest) (*DeleteResponse, error)
 
 	// Delete a group.
 	//
 	// Deletes a group from the Databricks account.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteResponse, error)
 
 	// Get group details.
 	//
@@ -173,12 +173,12 @@ type AccountGroupsInterface interface {
 	// Update group details.
 	//
 	// Partially updates the details of a group.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Replace a group.
 	//
 	// Updates the details of a group by replacing the entire group entity.
-	Update(ctx context.Context, request Group) error
+	Update(ctx context.Context, request Group) (*UpdateResponse, error)
 }
 
 func NewAccountGroups(client *httpclient.ApiClient) *AccountGroupsAPI {
@@ -203,7 +203,7 @@ type AccountGroupsAPI struct {
 // Delete a group.
 //
 // Deletes a group from the Databricks account.
-func (a *AccountGroupsAPI) DeleteById(ctx context.Context, id string) error {
+func (a *AccountGroupsAPI) DeleteById(ctx context.Context, id string) (*DeleteResponse, error) {
 	return a.accountGroupsImpl.Delete(ctx, DeleteAccountGroupRequest{
 		Id: id,
 	})
@@ -281,12 +281,12 @@ type AccountServicePrincipalsInterface interface {
 	// Delete a service principal.
 	//
 	// Delete a single service principal in the Databricks account.
-	Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error
+	Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) (*DeleteResponse, error)
 
 	// Delete a service principal.
 	//
 	// Delete a single service principal in the Databricks account.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteResponse, error)
 
 	// Get service principal details.
 	//
@@ -336,14 +336,14 @@ type AccountServicePrincipalsInterface interface {
 	//
 	// Partially updates the details of a single service principal in the Databricks
 	// account.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Replace service principal.
 	//
 	// Updates the details of a single service principal.
 	//
 	// This action replaces the existing service principal with the same name.
-	Update(ctx context.Context, request ServicePrincipal) error
+	Update(ctx context.Context, request ServicePrincipal) (*UpdateResponse, error)
 }
 
 func NewAccountServicePrincipals(client *httpclient.ApiClient) *AccountServicePrincipalsAPI {
@@ -367,7 +367,7 @@ type AccountServicePrincipalsAPI struct {
 // Delete a service principal.
 //
 // Delete a single service principal in the Databricks account.
-func (a *AccountServicePrincipalsAPI) DeleteById(ctx context.Context, id string) error {
+func (a *AccountServicePrincipalsAPI) DeleteById(ctx context.Context, id string) (*DeleteResponse, error) {
 	return a.accountServicePrincipalsImpl.Delete(ctx, DeleteAccountServicePrincipalRequest{
 		Id: id,
 	})
@@ -448,13 +448,13 @@ type AccountUsersInterface interface {
 	//
 	// Deletes a user. Deleting a user from a Databricks account also removes
 	// objects associated with the user.
-	Delete(ctx context.Context, request DeleteAccountUserRequest) error
+	Delete(ctx context.Context, request DeleteAccountUserRequest) (*DeleteResponse, error)
 
 	// Delete a user.
 	//
 	// Deletes a user. Deleting a user from a Databricks account also removes
 	// objects associated with the user.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteResponse, error)
 
 	// Get user details.
 	//
@@ -502,12 +502,12 @@ type AccountUsersInterface interface {
 	//
 	// Partially updates a user resource by applying the supplied operations on
 	// specific user attributes.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Replace a user.
 	//
 	// Replaces a user's information with the data supplied in request.
-	Update(ctx context.Context, request User) error
+	Update(ctx context.Context, request User) (*UpdateResponse, error)
 }
 
 func NewAccountUsers(client *httpclient.ApiClient) *AccountUsersAPI {
@@ -537,7 +537,7 @@ type AccountUsersAPI struct {
 //
 // Deletes a user. Deleting a user from a Databricks account also removes
 // objects associated with the user.
-func (a *AccountUsersAPI) DeleteById(ctx context.Context, id string) error {
+func (a *AccountUsersAPI) DeleteById(ctx context.Context, id string) (*DeleteResponse, error) {
 	return a.accountUsersImpl.Delete(ctx, DeleteAccountUserRequest{
 		Id: id,
 	})
@@ -638,12 +638,12 @@ type GroupsInterface interface {
 	// Delete a group.
 	//
 	// Deletes a group from the Databricks workspace.
-	Delete(ctx context.Context, request DeleteGroupRequest) error
+	Delete(ctx context.Context, request DeleteGroupRequest) (*DeleteResponse, error)
 
 	// Delete a group.
 	//
 	// Deletes a group from the Databricks workspace.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteResponse, error)
 
 	// Get group details.
 	//
@@ -690,12 +690,12 @@ type GroupsInterface interface {
 	// Update group details.
 	//
 	// Partially updates the details of a group.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Replace a group.
 	//
 	// Updates the details of a group by replacing the entire group entity.
-	Update(ctx context.Context, request Group) error
+	Update(ctx context.Context, request Group) (*UpdateResponse, error)
 }
 
 func NewGroups(client *httpclient.ApiClient) *GroupsAPI {
@@ -720,7 +720,7 @@ type GroupsAPI struct {
 // Delete a group.
 //
 // Deletes a group from the Databricks workspace.
-func (a *GroupsAPI) DeleteById(ctx context.Context, id string) error {
+func (a *GroupsAPI) DeleteById(ctx context.Context, id string) (*DeleteResponse, error) {
 	return a.groupsImpl.Delete(ctx, DeleteGroupRequest{
 		Id: id,
 	})
@@ -943,12 +943,12 @@ type ServicePrincipalsInterface interface {
 	// Delete a service principal.
 	//
 	// Delete a single service principal in the Databricks workspace.
-	Delete(ctx context.Context, request DeleteServicePrincipalRequest) error
+	Delete(ctx context.Context, request DeleteServicePrincipalRequest) (*DeleteResponse, error)
 
 	// Delete a service principal.
 	//
 	// Delete a single service principal in the Databricks workspace.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteResponse, error)
 
 	// Get service principal details.
 	//
@@ -998,14 +998,14 @@ type ServicePrincipalsInterface interface {
 	//
 	// Partially updates the details of a single service principal in the Databricks
 	// workspace.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Replace service principal.
 	//
 	// Updates the details of a single service principal.
 	//
 	// This action replaces the existing service principal with the same name.
-	Update(ctx context.Context, request ServicePrincipal) error
+	Update(ctx context.Context, request ServicePrincipal) (*UpdateResponse, error)
 }
 
 func NewServicePrincipals(client *httpclient.ApiClient) *ServicePrincipalsAPI {
@@ -1029,7 +1029,7 @@ type ServicePrincipalsAPI struct {
 // Delete a service principal.
 //
 // Delete a single service principal in the Databricks workspace.
-func (a *ServicePrincipalsAPI) DeleteById(ctx context.Context, id string) error {
+func (a *ServicePrincipalsAPI) DeleteById(ctx context.Context, id string) (*DeleteResponse, error) {
 	return a.servicePrincipalsImpl.Delete(ctx, DeleteServicePrincipalRequest{
 		Id: id,
 	})
@@ -1110,13 +1110,13 @@ type UsersInterface interface {
 	//
 	// Deletes a user. Deleting a user from a Databricks workspace also removes
 	// objects associated with the user.
-	Delete(ctx context.Context, request DeleteUserRequest) error
+	Delete(ctx context.Context, request DeleteUserRequest) (*DeleteResponse, error)
 
 	// Delete a user.
 	//
 	// Deletes a user. Deleting a user from a Databricks workspace also removes
 	// objects associated with the user.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteResponse, error)
 
 	// Get user details.
 	//
@@ -1175,7 +1175,7 @@ type UsersInterface interface {
 	//
 	// Partially updates a user resource by applying the supplied operations on
 	// specific user attributes.
-	Patch(ctx context.Context, request PartialUpdate) error
+	Patch(ctx context.Context, request PartialUpdate) (*PatchResponse, error)
 
 	// Set password permissions.
 	//
@@ -1187,7 +1187,7 @@ type UsersInterface interface {
 	// Replace a user.
 	//
 	// Replaces a user's information with the data supplied in request.
-	Update(ctx context.Context, request User) error
+	Update(ctx context.Context, request User) (*UpdateResponse, error)
 
 	// Update password permissions.
 	//
@@ -1223,7 +1223,7 @@ type UsersAPI struct {
 //
 // Deletes a user. Deleting a user from a Databricks workspace also removes
 // objects associated with the user.
-func (a *UsersAPI) DeleteById(ctx context.Context, id string) error {
+func (a *UsersAPI) DeleteById(ctx context.Context, id string) (*DeleteResponse, error) {
 	return a.usersImpl.Delete(ctx, DeleteUserRequest{
 		Id: id,
 	})
@@ -1297,13 +1297,13 @@ type WorkspaceAssignmentInterface interface {
 	//
 	// Deletes the workspace permissions assignment in a given account and workspace
 	// for the specified principal.
-	Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error
+	Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) (*DeleteWorkspacePermissionAssignmentResponse, error)
 
 	// Delete permissions assignment.
 	//
 	// Deletes the workspace permissions assignment in a given account and workspace
 	// for the specified principal.
-	DeleteByWorkspaceIdAndPrincipalId(ctx context.Context, workspaceId int64, principalId int64) error
+	DeleteByWorkspaceIdAndPrincipalId(ctx context.Context, workspaceId int64, principalId int64) (*DeleteWorkspacePermissionAssignmentResponse, error)
 
 	// List workspace permissions.
 	//
@@ -1364,7 +1364,7 @@ type WorkspaceAssignmentAPI struct {
 //
 // Deletes the workspace permissions assignment in a given account and workspace
 // for the specified principal.
-func (a *WorkspaceAssignmentAPI) DeleteByWorkspaceIdAndPrincipalId(ctx context.Context, workspaceId int64, principalId int64) error {
+func (a *WorkspaceAssignmentAPI) DeleteByWorkspaceIdAndPrincipalId(ctx context.Context, workspaceId int64, principalId int64) (*DeleteWorkspacePermissionAssignmentResponse, error) {
 	return a.workspaceAssignmentImpl.Delete(ctx, DeleteWorkspaceAssignmentRequest{
 		WorkspaceId: workspaceId,
 		PrincipalId: principalId,

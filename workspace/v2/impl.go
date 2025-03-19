@@ -29,14 +29,14 @@ func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentia
 	return &createCredentialsResponse, err
 }
 
-func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteCredentialsRequest) error {
+func (a *gitCredentialsImpl) Delete(ctx context.Context, request DeleteCredentialsRequest) (*DeleteCredentialsResponse, error) {
 	var deleteCredentialsResponse DeleteCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCredentialsResponse)
-	return err
+	return &deleteCredentialsResponse, err
 }
 
 func (a *gitCredentialsImpl) Get(ctx context.Context, request GetCredentialsRequest) (*GetCredentialsResponse, error) {
@@ -90,7 +90,7 @@ func (a *gitCredentialsImpl) internalList(ctx context.Context) (*ListCredentials
 	return &listCredentialsResponse, err
 }
 
-func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentialsRequest) error {
+func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentialsRequest) (*UpdateCredentialsResponse, error) {
 	var updateCredentialsResponse UpdateCredentialsResponse
 	path := fmt.Sprintf("/api/2.0/git-credentials/%v", request.CredentialId)
 	queryParams := make(map[string]any)
@@ -98,7 +98,7 @@ func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentia
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updateCredentialsResponse)
-	return err
+	return &updateCredentialsResponse, err
 }
 
 // unexported type that holds implementations of just Repos API methods
@@ -117,14 +117,14 @@ func (a *reposImpl) Create(ctx context.Context, request CreateRepoRequest) (*Cre
 	return &createRepoResponse, err
 }
 
-func (a *reposImpl) Delete(ctx context.Context, request DeleteRepoRequest) error {
+func (a *reposImpl) Delete(ctx context.Context, request DeleteRepoRequest) (*DeleteRepoResponse, error) {
 	var deleteRepoResponse DeleteRepoResponse
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteRepoResponse)
-	return err
+	return &deleteRepoResponse, err
 }
 
 func (a *reposImpl) Get(ctx context.Context, request GetRepoRequest) (*GetRepoResponse, error) {
@@ -214,7 +214,7 @@ func (a *reposImpl) SetPermissions(ctx context.Context, request RepoPermissionsR
 	return &repoPermissions, err
 }
 
-func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) error {
+func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) (*UpdateRepoResponse, error) {
 	var updateRepoResponse UpdateRepoResponse
 	path := fmt.Sprintf("/api/2.0/repos/%v", request.RepoId)
 	queryParams := make(map[string]any)
@@ -222,7 +222,7 @@ func (a *reposImpl) Update(ctx context.Context, request UpdateRepoRequest) error
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updateRepoResponse)
-	return err
+	return &updateRepoResponse, err
 }
 
 func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error) {
@@ -241,7 +241,7 @@ type secretsImpl struct {
 	client *httpclient.ApiClient
 }
 
-func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) error {
+func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) (*CreateScopeResponse, error) {
 	var createScopeResponse CreateScopeResponse
 	path := "/api/2.0/secrets/scopes/create"
 	queryParams := make(map[string]any)
@@ -249,10 +249,10 @@ func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) erro
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createScopeResponse)
-	return err
+	return &createScopeResponse, err
 }
 
-func (a *secretsImpl) DeleteAcl(ctx context.Context, request DeleteAcl) error {
+func (a *secretsImpl) DeleteAcl(ctx context.Context, request DeleteAcl) (*DeleteAclResponse, error) {
 	var deleteAclResponse DeleteAclResponse
 	path := "/api/2.0/secrets/acls/delete"
 	queryParams := make(map[string]any)
@@ -260,10 +260,10 @@ func (a *secretsImpl) DeleteAcl(ctx context.Context, request DeleteAcl) error {
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteAclResponse)
-	return err
+	return &deleteAclResponse, err
 }
 
-func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) error {
+func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) (*DeleteScopeResponse, error) {
 	var deleteScopeResponse DeleteScopeResponse
 	path := "/api/2.0/secrets/scopes/delete"
 	queryParams := make(map[string]any)
@@ -271,10 +271,10 @@ func (a *secretsImpl) DeleteScope(ctx context.Context, request DeleteScope) erro
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteScopeResponse)
-	return err
+	return &deleteScopeResponse, err
 }
 
-func (a *secretsImpl) DeleteSecret(ctx context.Context, request DeleteSecret) error {
+func (a *secretsImpl) DeleteSecret(ctx context.Context, request DeleteSecret) (*DeleteSecretResponse, error) {
 	var deleteSecretResponse DeleteSecretResponse
 	path := "/api/2.0/secrets/delete"
 	queryParams := make(map[string]any)
@@ -282,7 +282,7 @@ func (a *secretsImpl) DeleteSecret(ctx context.Context, request DeleteSecret) er
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteSecretResponse)
-	return err
+	return &deleteSecretResponse, err
 }
 
 func (a *secretsImpl) GetAcl(ctx context.Context, request GetAclRequest) (*AclItem, error) {
@@ -450,7 +450,7 @@ func (a *secretsImpl) internalListSecrets(ctx context.Context, request ListSecre
 	return &listSecretsResponse, err
 }
 
-func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) error {
+func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) (*PutAclResponse, error) {
 	var putAclResponse PutAclResponse
 	path := "/api/2.0/secrets/acls/put"
 	queryParams := make(map[string]any)
@@ -458,10 +458,10 @@ func (a *secretsImpl) PutAcl(ctx context.Context, request PutAcl) error {
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &putAclResponse)
-	return err
+	return &putAclResponse, err
 }
 
-func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) error {
+func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) (*PutSecretResponse, error) {
 	var putSecretResponse PutSecretResponse
 	path := "/api/2.0/secrets/put"
 	queryParams := make(map[string]any)
@@ -469,7 +469,7 @@ func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) error {
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &putSecretResponse)
-	return err
+	return &putSecretResponse, err
 }
 
 // unexported type that holds implementations of just Workspace API methods
@@ -477,7 +477,7 @@ type workspaceImpl struct {
 	client *httpclient.ApiClient
 }
 
-func (a *workspaceImpl) Delete(ctx context.Context, request Delete) error {
+func (a *workspaceImpl) Delete(ctx context.Context, request Delete) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := "/api/2.0/workspace/delete"
 	queryParams := make(map[string]any)
@@ -485,7 +485,7 @@ func (a *workspaceImpl) Delete(ctx context.Context, request Delete) error {
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *workspaceImpl) Export(ctx context.Context, request ExportRequest) (*ExportResponse, error) {
@@ -528,7 +528,7 @@ func (a *workspaceImpl) GetStatus(ctx context.Context, request GetStatusRequest)
 	return &objectInfo, err
 }
 
-func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
+func (a *workspaceImpl) Import(ctx context.Context, request Import) (*ImportResponse, error) {
 	var importResponse ImportResponse
 	path := "/api/2.0/workspace/import"
 	queryParams := make(map[string]any)
@@ -536,7 +536,7 @@ func (a *workspaceImpl) Import(ctx context.Context, request Import) error {
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &importResponse)
-	return err
+	return &importResponse, err
 }
 
 // List contents.
@@ -581,7 +581,7 @@ func (a *workspaceImpl) internalList(ctx context.Context, request ListWorkspaceR
 	return &listResponse, err
 }
 
-func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
+func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) (*MkdirsResponse, error) {
 	var mkdirsResponse MkdirsResponse
 	path := "/api/2.0/workspace/mkdirs"
 	queryParams := make(map[string]any)
@@ -589,7 +589,7 @@ func (a *workspaceImpl) Mkdirs(ctx context.Context, request Mkdirs) error {
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &mkdirsResponse)
-	return err
+	return &mkdirsResponse, err
 }
 
 func (a *workspaceImpl) SetPermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error) {

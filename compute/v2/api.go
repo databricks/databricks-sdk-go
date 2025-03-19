@@ -23,19 +23,19 @@ type ClusterPoliciesInterface interface {
 	//
 	// Delete a policy for a cluster. Clusters governed by this policy can still
 	// run, but cannot be edited.
-	Delete(ctx context.Context, request DeletePolicy) error
+	Delete(ctx context.Context, request DeletePolicy) (*DeletePolicyResponse, error)
 
 	// Delete a cluster policy.
 	//
 	// Delete a policy for a cluster. Clusters governed by this policy can still
 	// run, but cannot be edited.
-	DeleteByPolicyId(ctx context.Context, policyId string) error
+	DeleteByPolicyId(ctx context.Context, policyId string) (*DeletePolicyResponse, error)
 
 	// Update a cluster policy.
 	//
 	// Update an existing policy for cluster. This operation may make some clusters
 	// governed by the previous policy invalid.
-	Edit(ctx context.Context, request EditPolicy) error
+	Edit(ctx context.Context, request EditPolicy) (*EditPolicyResponse, error)
 
 	// Get a cluster policy.
 	//
@@ -156,7 +156,7 @@ type ClusterPoliciesAPI struct {
 //
 // Delete a policy for a cluster. Clusters governed by this policy can still
 // run, but cannot be edited.
-func (a *ClusterPoliciesAPI) DeleteByPolicyId(ctx context.Context, policyId string) error {
+func (a *ClusterPoliciesAPI) DeleteByPolicyId(ctx context.Context, policyId string) (*DeletePolicyResponse, error) {
 	return a.clusterPoliciesImpl.Delete(ctx, DeletePolicy{
 		PolicyId: policyId,
 	})
@@ -252,7 +252,7 @@ type ClustersInterface interface {
 	// Change the owner of the cluster. You must be an admin and the cluster must be
 	// terminated to perform this operation. The service principal application ID
 	// can be supplied as an argument to `owner_username`.
-	ChangeOwner(ctx context.Context, request ChangeClusterOwner) error
+	ChangeOwner(ctx context.Context, request ChangeClusterOwner) (*ChangeClusterOwnerResponse, error)
 
 	// Create new cluster.
 	//
@@ -278,7 +278,7 @@ type ClustersInterface interface {
 	// asynchronously. Once the termination has completed, the cluster will be in a
 	// `TERMINATED` state. If the cluster is already in a `TERMINATING` or
 	// `TERMINATED` state, nothing will happen.
-	Delete(ctx context.Context, request DeleteCluster) error
+	Delete(ctx context.Context, request DeleteCluster) (*DeleteClusterResponse, error)
 
 	// Terminate cluster.
 	//
@@ -286,7 +286,7 @@ type ClustersInterface interface {
 	// asynchronously. Once the termination has completed, the cluster will be in a
 	// `TERMINATED` state. If the cluster is already in a `TERMINATING` or
 	// `TERMINATED` state, nothing will happen.
-	DeleteByClusterId(ctx context.Context, clusterId string) error
+	DeleteByClusterId(ctx context.Context, clusterId string) (*DeleteClusterResponse, error)
 
 	// Update cluster configuration.
 	//
@@ -302,7 +302,7 @@ type ClustersInterface interface {
 	// state will be rejected with an `INVALID_STATE` error code.
 	//
 	// Clusters created by the Databricks Jobs service cannot be edited.
-	Edit(ctx context.Context, request EditCluster) error
+	Edit(ctx context.Context, request EditCluster) (*EditClusterResponse, error)
 
 	// List cluster activity events.
 	//
@@ -412,7 +412,7 @@ type ClustersInterface interface {
 	// In addition, users will no longer see permanently deleted clusters in the
 	// cluster list, and API users can no longer perform any action on permanently
 	// deleted clusters.
-	PermanentDelete(ctx context.Context, request PermanentDeleteCluster) error
+	PermanentDelete(ctx context.Context, request PermanentDeleteCluster) (*PermanentDeleteClusterResponse, error)
 
 	// Permanently delete cluster.
 	//
@@ -422,33 +422,33 @@ type ClustersInterface interface {
 	// In addition, users will no longer see permanently deleted clusters in the
 	// cluster list, and API users can no longer perform any action on permanently
 	// deleted clusters.
-	PermanentDeleteByClusterId(ctx context.Context, clusterId string) error
+	PermanentDeleteByClusterId(ctx context.Context, clusterId string) (*PermanentDeleteClusterResponse, error)
 
 	// Pin cluster.
 	//
 	// Pinning a cluster ensures that the cluster will always be returned by the
 	// ListClusters API. Pinning a cluster that is already pinned will have no
 	// effect. This API can only be called by workspace admins.
-	Pin(ctx context.Context, request PinCluster) error
+	Pin(ctx context.Context, request PinCluster) (*PinClusterResponse, error)
 
 	// Pin cluster.
 	//
 	// Pinning a cluster ensures that the cluster will always be returned by the
 	// ListClusters API. Pinning a cluster that is already pinned will have no
 	// effect. This API can only be called by workspace admins.
-	PinByClusterId(ctx context.Context, clusterId string) error
+	PinByClusterId(ctx context.Context, clusterId string) (*PinClusterResponse, error)
 
 	// Resize cluster.
 	//
 	// Resizes a cluster to have a desired number of workers. This will fail unless
 	// the cluster is in a `RUNNING` state.
-	Resize(ctx context.Context, request ResizeCluster) error
+	Resize(ctx context.Context, request ResizeCluster) (*ResizeClusterResponse, error)
 
 	// Restart cluster.
 	//
 	// Restarts a Spark cluster with the supplied ID. If the cluster is not
 	// currently in a `RUNNING` state, nothing will happen.
-	Restart(ctx context.Context, request RestartCluster) error
+	Restart(ctx context.Context, request RestartCluster) (*RestartClusterResponse, error)
 
 	// Set cluster permissions.
 	//
@@ -473,7 +473,7 @@ type ClustersInterface interface {
 	// autoscaling cluster, the current cluster starts with the minimum number of
 	// nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 	// will happen. * Clusters launched to run a job cannot be started.
-	Start(ctx context.Context, request StartCluster) error
+	Start(ctx context.Context, request StartCluster) (*StartClusterResponse, error)
 
 	// Start terminated cluster.
 	//
@@ -485,21 +485,21 @@ type ClustersInterface interface {
 	// autoscaling cluster, the current cluster starts with the minimum number of
 	// nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 	// will happen. * Clusters launched to run a job cannot be started.
-	StartByClusterId(ctx context.Context, clusterId string) error
+	StartByClusterId(ctx context.Context, clusterId string) (*StartClusterResponse, error)
 
 	// Unpin cluster.
 	//
 	// Unpinning a cluster will allow the cluster to eventually be removed from the
 	// ListClusters API. Unpinning a cluster that is not pinned will have no effect.
 	// This API can only be called by workspace admins.
-	Unpin(ctx context.Context, request UnpinCluster) error
+	Unpin(ctx context.Context, request UnpinCluster) (*UnpinClusterResponse, error)
 
 	// Unpin cluster.
 	//
 	// Unpinning a cluster will allow the cluster to eventually be removed from the
 	// ListClusters API. Unpinning a cluster that is not pinned will have no effect.
 	// This API can only be called by workspace admins.
-	UnpinByClusterId(ctx context.Context, clusterId string) error
+	UnpinByClusterId(ctx context.Context, clusterId string) (*UnpinClusterResponse, error)
 
 	// Update cluster configuration (partial).
 	//
@@ -513,7 +513,7 @@ type ClustersInterface interface {
 	// using the `clusters/start` API. Attempts to update a cluster in any other
 	// state will be rejected with an `INVALID_STATE` error code. Clusters created
 	// by the Databricks Jobs service cannot be updated.
-	Update(ctx context.Context, request UpdateCluster) error
+	Update(ctx context.Context, request UpdateCluster) (*UpdateClusterResponse, error)
 
 	// Update cluster permissions.
 	//
@@ -566,7 +566,7 @@ type ClustersAPI struct {
 // asynchronously. Once the termination has completed, the cluster will be in a
 // `TERMINATED` state. If the cluster is already in a `TERMINATING` or
 // `TERMINATED` state, nothing will happen.
-func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) error {
+func (a *ClustersAPI) DeleteByClusterId(ctx context.Context, clusterId string) (*DeleteClusterResponse, error) {
 	return a.clustersImpl.Delete(ctx, DeleteCluster{
 		ClusterId: clusterId,
 	})
@@ -662,7 +662,7 @@ func (a *ClustersAPI) GetByClusterName(ctx context.Context, name string) (*Clust
 // In addition, users will no longer see permanently deleted clusters in the
 // cluster list, and API users can no longer perform any action on permanently
 // deleted clusters.
-func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId string) error {
+func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId string) (*PermanentDeleteClusterResponse, error) {
 	return a.clustersImpl.PermanentDelete(ctx, PermanentDeleteCluster{
 		ClusterId: clusterId,
 	})
@@ -673,7 +673,7 @@ func (a *ClustersAPI) PermanentDeleteByClusterId(ctx context.Context, clusterId 
 // Pinning a cluster ensures that the cluster will always be returned by the
 // ListClusters API. Pinning a cluster that is already pinned will have no
 // effect. This API can only be called by workspace admins.
-func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) error {
+func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) (*PinClusterResponse, error) {
 	return a.clustersImpl.Pin(ctx, PinCluster{
 		ClusterId: clusterId,
 	})
@@ -689,7 +689,7 @@ func (a *ClustersAPI) PinByClusterId(ctx context.Context, clusterId string) erro
 // autoscaling cluster, the current cluster starts with the minimum number of
 // nodes. * If the cluster is not currently in a `TERMINATED` state, nothing
 // will happen. * Clusters launched to run a job cannot be started.
-func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) error {
+func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) (*StartClusterResponse, error) {
 	return a.clustersImpl.Start(ctx, StartCluster{
 		ClusterId: clusterId,
 	})
@@ -700,7 +700,7 @@ func (a *ClustersAPI) StartByClusterId(ctx context.Context, clusterId string) er
 // Unpinning a cluster will allow the cluster to eventually be removed from the
 // ListClusters API. Unpinning a cluster that is not pinned will have no effect.
 // This API can only be called by workspace admins.
-func (a *ClustersAPI) UnpinByClusterId(ctx context.Context, clusterId string) error {
+func (a *ClustersAPI) UnpinByClusterId(ctx context.Context, clusterId string) (*UnpinClusterResponse, error) {
 	return a.clustersImpl.Unpin(ctx, UnpinCluster{
 		ClusterId: clusterId,
 	})
@@ -714,7 +714,7 @@ type CommandExecutionInterface interface {
 	// Cancels a currently running command within an execution context.
 	//
 	// The command ID is obtained from a prior successful call to __execute__.
-	Cancel(ctx context.Context, request CancelCommand) error
+	Cancel(ctx context.Context, request CancelCommand) (*CancelResponse, error)
 
 	// Get command info.
 	//
@@ -739,7 +739,7 @@ type CommandExecutionInterface interface {
 	// Delete an execution context.
 	//
 	// Deletes an execution context.
-	Destroy(ctx context.Context, request DestroyContext) error
+	Destroy(ctx context.Context, request DestroyContext) (*DestroyResponse, error)
 
 	// Run a command.
 	//
@@ -776,12 +776,12 @@ type GlobalInitScriptsInterface interface {
 	// Delete init script.
 	//
 	// Deletes a global init script.
-	Delete(ctx context.Context, request DeleteGlobalInitScriptRequest) error
+	Delete(ctx context.Context, request DeleteGlobalInitScriptRequest) (*DeleteResponse, error)
 
 	// Delete init script.
 	//
 	// Deletes a global init script.
-	DeleteByScriptId(ctx context.Context, scriptId string) error
+	DeleteByScriptId(ctx context.Context, scriptId string) (*DeleteResponse, error)
 
 	// Get an init script.
 	//
@@ -835,7 +835,7 @@ type GlobalInitScriptsInterface interface {
 	//
 	// Updates a global init script, specifying only the fields to change. All
 	// fields are optional. Unspecified fields retain their current value.
-	Update(ctx context.Context, request GlobalInitScriptUpdateRequest) error
+	Update(ctx context.Context, request GlobalInitScriptUpdateRequest) (*UpdateResponse, error)
 }
 
 func NewGlobalInitScripts(client *httpclient.ApiClient) *GlobalInitScriptsAPI {
@@ -863,7 +863,7 @@ type GlobalInitScriptsAPI struct {
 // Delete init script.
 //
 // Deletes a global init script.
-func (a *GlobalInitScriptsAPI) DeleteByScriptId(ctx context.Context, scriptId string) error {
+func (a *GlobalInitScriptsAPI) DeleteByScriptId(ctx context.Context, scriptId string) (*DeleteResponse, error) {
 	return a.globalInitScriptsImpl.Delete(ctx, DeleteGlobalInitScriptRequest{
 		ScriptId: scriptId,
 	})
@@ -942,18 +942,18 @@ type InstancePoolsInterface interface {
 	//
 	// Deletes the instance pool permanently. The idle instances in the pool are
 	// terminated asynchronously.
-	Delete(ctx context.Context, request DeleteInstancePool) error
+	Delete(ctx context.Context, request DeleteInstancePool) (*DeleteInstancePoolResponse, error)
 
 	// Delete an instance pool.
 	//
 	// Deletes the instance pool permanently. The idle instances in the pool are
 	// terminated asynchronously.
-	DeleteByInstancePoolId(ctx context.Context, instancePoolId string) error
+	DeleteByInstancePoolId(ctx context.Context, instancePoolId string) (*DeleteInstancePoolResponse, error)
 
 	// Edit an existing instance pool.
 	//
 	// Modifies the configuration of an existing instance pool.
-	Edit(ctx context.Context, request EditInstancePool) error
+	Edit(ctx context.Context, request EditInstancePool) (*EditInstancePoolResponse, error)
 
 	// Get instance pool information.
 	//
@@ -1067,7 +1067,7 @@ type InstancePoolsAPI struct {
 //
 // Deletes the instance pool permanently. The idle instances in the pool are
 // terminated asynchronously.
-func (a *InstancePoolsAPI) DeleteByInstancePoolId(ctx context.Context, instancePoolId string) error {
+func (a *InstancePoolsAPI) DeleteByInstancePoolId(ctx context.Context, instancePoolId string) (*DeleteInstancePoolResponse, error) {
 	return a.instancePoolsImpl.Delete(ctx, DeleteInstancePool{
 		InstancePoolId: instancePoolId,
 	})
@@ -1160,7 +1160,7 @@ type InstanceProfilesInterface interface {
 	//
 	// In the UI, you can select the instance profile when launching clusters. This
 	// API is only available to admin users.
-	Add(ctx context.Context, request AddInstanceProfile) error
+	Add(ctx context.Context, request AddInstanceProfile) (*AddResponse, error)
 
 	// Edit an instance profile.
 	//
@@ -1179,7 +1179,7 @@ type InstanceProfilesInterface interface {
 	//
 	// [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
 	// [Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html
-	Edit(ctx context.Context, request InstanceProfile) error
+	Edit(ctx context.Context, request InstanceProfile) (*EditResponse, error)
 
 	// List available instance profiles.
 	//
@@ -1205,7 +1205,7 @@ type InstanceProfilesInterface interface {
 	// this instance profile will continue to function.
 	//
 	// This API is only accessible to admin users.
-	Remove(ctx context.Context, request RemoveInstanceProfile) error
+	Remove(ctx context.Context, request RemoveInstanceProfile) (*RemoveResponse, error)
 
 	// Remove the instance profile.
 	//
@@ -1213,7 +1213,7 @@ type InstanceProfilesInterface interface {
 	// this instance profile will continue to function.
 	//
 	// This API is only accessible to admin users.
-	RemoveByInstanceProfileArn(ctx context.Context, instanceProfileArn string) error
+	RemoveByInstanceProfileArn(ctx context.Context, instanceProfileArn string) (*RemoveResponse, error)
 }
 
 func NewInstanceProfiles(client *httpclient.ApiClient) *InstanceProfilesAPI {
@@ -1240,7 +1240,7 @@ type InstanceProfilesAPI struct {
 // this instance profile will continue to function.
 //
 // This API is only accessible to admin users.
-func (a *InstanceProfilesAPI) RemoveByInstanceProfileArn(ctx context.Context, instanceProfileArn string) error {
+func (a *InstanceProfilesAPI) RemoveByInstanceProfileArn(ctx context.Context, instanceProfileArn string) (*RemoveResponse, error) {
 	return a.instanceProfilesImpl.Remove(ctx, RemoveInstanceProfile{
 		InstanceProfileArn: instanceProfileArn,
 	})
@@ -1306,14 +1306,14 @@ type LibrariesInterface interface {
 	//
 	// Add libraries to install on a cluster. The installation is asynchronous; it
 	// happens in the background after the completion of this request.
-	Install(ctx context.Context, request InstallLibraries) error
+	Install(ctx context.Context, request InstallLibraries) (*InstallLibrariesResponse, error)
 
 	// Uninstall libraries.
 	//
 	// Set libraries to uninstall from a cluster. The libraries won't be uninstalled
 	// until the cluster is restarted. A request to uninstall a library that is not
 	// currently installed is ignored.
-	Uninstall(ctx context.Context, request UninstallLibraries) error
+	Uninstall(ctx context.Context, request UninstallLibraries) (*UninstallLibrariesResponse, error)
 }
 
 func NewLibraries(client *httpclient.ApiClient) *LibrariesAPI {

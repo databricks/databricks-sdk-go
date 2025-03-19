@@ -130,14 +130,14 @@ func (a *consumerInstallationsImpl) Create(ctx context.Context, request CreateIn
 	return &installation, err
 }
 
-func (a *consumerInstallationsImpl) Delete(ctx context.Context, request DeleteInstallationRequest) error {
+func (a *consumerInstallationsImpl) Delete(ctx context.Context, request DeleteInstallationRequest) (*DeleteInstallationResponse, error) {
 	var deleteInstallationResponse DeleteInstallationResponse
 	path := fmt.Sprintf("/api/2.1/marketplace-consumer/listings/%v/installations/%v", request.ListingId, request.InstallationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteInstallationResponse)
-	return err
+	return &deleteInstallationResponse, err
 }
 
 // List all installations.
@@ -515,14 +515,14 @@ func (a *providerExchangeFiltersImpl) Create(ctx context.Context, request Create
 	return &createExchangeFilterResponse, err
 }
 
-func (a *providerExchangeFiltersImpl) Delete(ctx context.Context, request DeleteExchangeFilterRequest) error {
+func (a *providerExchangeFiltersImpl) Delete(ctx context.Context, request DeleteExchangeFilterRequest) (*DeleteExchangeFilterResponse, error) {
 	var deleteExchangeFilterResponse DeleteExchangeFilterResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/filters/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteExchangeFilterResponse)
-	return err
+	return &deleteExchangeFilterResponse, err
 }
 
 // List exchange filters.
@@ -607,24 +607,24 @@ func (a *providerExchangesImpl) Create(ctx context.Context, request CreateExchan
 	return &createExchangeResponse, err
 }
 
-func (a *providerExchangesImpl) Delete(ctx context.Context, request DeleteExchangeRequest) error {
+func (a *providerExchangesImpl) Delete(ctx context.Context, request DeleteExchangeRequest) (*DeleteExchangeResponse, error) {
 	var deleteExchangeResponse DeleteExchangeResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteExchangeResponse)
-	return err
+	return &deleteExchangeResponse, err
 }
 
-func (a *providerExchangesImpl) DeleteListingFromExchange(ctx context.Context, request RemoveExchangeForListingRequest) error {
+func (a *providerExchangesImpl) DeleteListingFromExchange(ctx context.Context, request RemoveExchangeForListingRequest) (*RemoveExchangeForListingResponse, error) {
 	var removeExchangeForListingResponse RemoveExchangeForListingResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-exchange/exchanges-for-listing/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &removeExchangeForListingResponse)
-	return err
+	return &removeExchangeForListingResponse, err
 }
 
 func (a *providerExchangesImpl) Get(ctx context.Context, request GetExchangeRequest) (*GetExchangeResponse, error) {
@@ -796,14 +796,14 @@ func (a *providerFilesImpl) Create(ctx context.Context, request CreateFileReques
 	return &createFileResponse, err
 }
 
-func (a *providerFilesImpl) Delete(ctx context.Context, request DeleteFileRequest) error {
+func (a *providerFilesImpl) Delete(ctx context.Context, request DeleteFileRequest) (*DeleteFileResponse, error) {
 	var deleteFileResponse DeleteFileResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/files/%v", request.FileId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteFileResponse)
-	return err
+	return &deleteFileResponse, err
 }
 
 func (a *providerFilesImpl) Get(ctx context.Context, request GetFileRequest) (*GetFileResponse, error) {
@@ -876,14 +876,14 @@ func (a *providerListingsImpl) Create(ctx context.Context, request CreateListing
 	return &createListingResponse, err
 }
 
-func (a *providerListingsImpl) Delete(ctx context.Context, request DeleteListingRequest) error {
+func (a *providerListingsImpl) Delete(ctx context.Context, request DeleteListingRequest) (*DeleteListingResponse, error) {
 	var deleteListingResponse DeleteListingResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/listings/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteListingResponse)
-	return err
+	return &deleteListingResponse, err
 }
 
 func (a *providerListingsImpl) Get(ctx context.Context, request GetListingRequest) (*GetListingResponse, error) {
@@ -1075,14 +1075,14 @@ func (a *providerProvidersImpl) Create(ctx context.Context, request CreateProvid
 	return &createProviderResponse, err
 }
 
-func (a *providerProvidersImpl) Delete(ctx context.Context, request DeleteProviderRequest) error {
+func (a *providerProvidersImpl) Delete(ctx context.Context, request DeleteProviderRequest) (*DeleteProviderResponse, error) {
 	var deleteProviderResponse DeleteProviderResponse
 	path := fmt.Sprintf("/api/2.0/marketplace-provider/providers/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteProviderResponse)
-	return err
+	return &deleteProviderResponse, err
 }
 
 func (a *providerProvidersImpl) Get(ctx context.Context, request GetProviderRequest) (*GetProviderResponse, error) {

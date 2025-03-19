@@ -44,14 +44,14 @@ func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolic
 	return &budgetPolicy, err
 }
 
-func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolicyRequest) error {
+func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolicyRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.AccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyRequest) (*BudgetPolicy, error) {
@@ -140,14 +140,14 @@ func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurat
 	return &createBudgetConfigurationResponse, err
 }
 
-func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error {
+func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) (*DeleteBudgetConfigurationResponse, error) {
 	var deleteBudgetConfigurationResponse DeleteBudgetConfigurationResponse
 	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.AccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteBudgetConfigurationResponse)
-	return err
+	return &deleteBudgetConfigurationResponse, err
 }
 
 func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error) {
@@ -281,7 +281,7 @@ func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliv
 	return &wrappedLogDeliveryConfigurations, err
 }
 
-func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error {
+func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) (*PatchStatusResponse, error) {
 	var patchStatusResponse PatchStatusResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.AccountID(), request.LogDeliveryConfigurationId)
 	queryParams := make(map[string]any)
@@ -289,7 +289,7 @@ func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeli
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &patchStatusResponse)
-	return err
+	return &patchStatusResponse, err
 }
 
 // unexported type that holds implementations of just UsageDashboards API methods

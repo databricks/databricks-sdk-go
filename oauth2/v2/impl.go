@@ -33,14 +33,14 @@ func (a *accountFederationPolicyImpl) Create(ctx context.Context, request Create
 	return &federationPolicy, err
 }
 
-func (a *accountFederationPolicyImpl) Delete(ctx context.Context, request DeleteAccountFederationPolicyRequest) error {
+func (a *accountFederationPolicyImpl) Delete(ctx context.Context, request DeleteAccountFederationPolicyRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.AccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *accountFederationPolicyImpl) Get(ctx context.Context, request GetAccountFederationPolicyRequest) (*FederationPolicy, error) {
@@ -123,14 +123,14 @@ func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCus
 	return &createCustomAppIntegrationOutput, err
 }
 
-func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error {
+func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) (*DeleteCustomAppIntegrationOutput, error) {
 	var deleteCustomAppIntegrationOutput DeleteCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.AccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCustomAppIntegrationOutput)
-	return err
+	return &deleteCustomAppIntegrationOutput, err
 }
 
 func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomAppIntegrationRequest) (*GetCustomAppIntegrationOutput, error) {
@@ -189,7 +189,7 @@ func (a *customAppIntegrationImpl) internalList(ctx context.Context, request Lis
 	return &getCustomAppIntegrationsOutput, err
 }
 
-func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCustomAppIntegration) error {
+func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCustomAppIntegration) (*UpdateCustomAppIntegrationOutput, error) {
 	var updateCustomAppIntegrationOutput UpdateCustomAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.AccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
@@ -197,7 +197,7 @@ func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCus
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updateCustomAppIntegrationOutput)
-	return err
+	return &updateCustomAppIntegrationOutput, err
 }
 
 // unexported type that holds implementations of just OAuthPublishedApps API methods
@@ -265,14 +265,14 @@ func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request Create
 	return &createPublishedAppIntegrationOutput, err
 }
 
-func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error {
+func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) (*DeletePublishedAppIntegrationOutput, error) {
 	var deletePublishedAppIntegrationOutput DeletePublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.AccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deletePublishedAppIntegrationOutput)
-	return err
+	return &deletePublishedAppIntegrationOutput, err
 }
 
 func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublishedAppIntegrationRequest) (*GetPublishedAppIntegrationOutput, error) {
@@ -331,7 +331,7 @@ func (a *publishedAppIntegrationImpl) internalList(ctx context.Context, request 
 	return &getPublishedAppIntegrationsOutput, err
 }
 
-func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request UpdatePublishedAppIntegration) error {
+func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request UpdatePublishedAppIntegration) (*UpdatePublishedAppIntegrationOutput, error) {
 	var updatePublishedAppIntegrationOutput UpdatePublishedAppIntegrationOutput
 	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.AccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
@@ -339,7 +339,7 @@ func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request Update
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updatePublishedAppIntegrationOutput)
-	return err
+	return &updatePublishedAppIntegrationOutput, err
 }
 
 // unexported type that holds implementations of just ServicePrincipalFederationPolicy API methods
@@ -361,14 +361,14 @@ func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, reque
 	return &federationPolicy, err
 }
 
-func (a *servicePrincipalFederationPolicyImpl) Delete(ctx context.Context, request DeleteServicePrincipalFederationPolicyRequest) error {
+func (a *servicePrincipalFederationPolicyImpl) Delete(ctx context.Context, request DeleteServicePrincipalFederationPolicyRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.AccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *servicePrincipalFederationPolicyImpl) Get(ctx context.Context, request GetServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
@@ -451,13 +451,13 @@ func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request Create
 	return &createServicePrincipalSecretResponse, err
 }
 
-func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error {
+func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v", a.client.AccountID(), request.ServicePrincipalId, request.SecretId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 // List service principal secrets.

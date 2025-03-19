@@ -21,19 +21,19 @@ type DbfsInterface interface {
 	//
 	// If the block of data exceeds 1 MB, this call will throw an exception with
 	// ``MAX_BLOCK_SIZE_EXCEEDED``.
-	AddBlock(ctx context.Context, request AddBlock) error
+	AddBlock(ctx context.Context, request AddBlock) (*AddBlockResponse, error)
 
 	// Close the stream.
 	//
 	// Closes the stream specified by the input handle. If the handle does not
 	// exist, this call throws an exception with ``RESOURCE_DOES_NOT_EXIST``.
-	Close(ctx context.Context, request Close) error
+	Close(ctx context.Context, request Close) (*CloseResponse, error)
 
 	// Close the stream.
 	//
 	// Closes the stream specified by the input handle. If the handle does not
 	// exist, this call throws an exception with ``RESOURCE_DOES_NOT_EXIST``.
-	CloseByHandle(ctx context.Context, handle int64) error
+	CloseByHandle(ctx context.Context, handle int64) (*CloseResponse, error)
 
 	// Open a stream.
 	//
@@ -69,7 +69,7 @@ type DbfsInterface interface {
 	// such operations using notebooks provides better control and manageability,
 	// such as selective deletes, and the possibility to automate periodic delete
 	// jobs.
-	Delete(ctx context.Context, request Delete) error
+	Delete(ctx context.Context, request Delete) (*DeleteResponse, error)
 
 	// Get the information of a file or directory.
 	//
@@ -139,7 +139,7 @@ type DbfsInterface interface {
 	// this call throws an exception with `RESOURCE_ALREADY_EXISTS`. **Note**: If
 	// this operation fails, it might have succeeded in creating some of the
 	// necessary parent directories.
-	Mkdirs(ctx context.Context, request MkDirs) error
+	Mkdirs(ctx context.Context, request MkDirs) (*MkDirsResponse, error)
 
 	// Create a directory.
 	//
@@ -148,7 +148,7 @@ type DbfsInterface interface {
 	// this call throws an exception with `RESOURCE_ALREADY_EXISTS`. **Note**: If
 	// this operation fails, it might have succeeded in creating some of the
 	// necessary parent directories.
-	MkdirsByPath(ctx context.Context, path string) error
+	MkdirsByPath(ctx context.Context, path string) (*MkDirsResponse, error)
 
 	// Move a file.
 	//
@@ -157,7 +157,7 @@ type DbfsInterface interface {
 	// `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the destination path,
 	// this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given
 	// source path is a directory, this call always recursively moves all files.
-	Move(ctx context.Context, request Move) error
+	Move(ctx context.Context, request Move) (*MoveResponse, error)
 
 	// Upload a file.
 	//
@@ -173,7 +173,7 @@ type DbfsInterface interface {
 	//
 	// If you want to upload large files, use the streaming upload. For details, see
 	// :method:dbfs/create, :method:dbfs/addBlock, :method:dbfs/close.
-	Put(ctx context.Context, request Put) error
+	Put(ctx context.Context, request Put) (*PutResponse, error)
 
 	// Get the contents of a file.
 	//
@@ -206,7 +206,7 @@ type DbfsAPI struct {
 //
 // Closes the stream specified by the input handle. If the handle does not
 // exist, this call throws an exception with “RESOURCE_DOES_NOT_EXIST“.
-func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) error {
+func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) (*CloseResponse, error) {
 	return a.dbfsImpl.Close(ctx, Close{
 		Handle: handle,
 	})
@@ -248,7 +248,7 @@ func (a *DbfsAPI) ListByPath(ctx context.Context, path string) (*ListStatusRespo
 // this call throws an exception with `RESOURCE_ALREADY_EXISTS`. **Note**: If
 // this operation fails, it might have succeeded in creating some of the
 // necessary parent directories.
-func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) error {
+func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) (*MkDirsResponse, error) {
 	return a.dbfsImpl.Mkdirs(ctx, MkDirs{
 		Path: path,
 	})
@@ -262,17 +262,17 @@ type FilesInterface interface {
 	// of the new, empty directory (like the shell command `mkdir -p`). If called on
 	// an existing directory, returns a success response; this method is idempotent
 	// (it will succeed if the directory already exists).
-	CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error
+	CreateDirectory(ctx context.Context, request CreateDirectoryRequest) (*CreateDirectoryResponse, error)
 
 	// Delete a file.
 	//
 	// Deletes a file. If the request is successful, there is no response body.
-	Delete(ctx context.Context, request DeleteFileRequest) error
+	Delete(ctx context.Context, request DeleteFileRequest) (*DeleteResponse, error)
 
 	// Delete a file.
 	//
 	// Deletes a file. If the request is successful, there is no response body.
-	DeleteByFilePath(ctx context.Context, filePath string) error
+	DeleteByFilePath(ctx context.Context, filePath string) (*DeleteResponse, error)
 
 	// Delete a directory.
 	//
@@ -281,7 +281,7 @@ type FilesInterface interface {
 	// To delete a non-empty directory, first delete all of its contents. This can
 	// be done by listing the directory contents and deleting each file and
 	// subdirectory recursively.
-	DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error
+	DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) (*DeleteDirectoryResponse, error)
 
 	// Delete a directory.
 	//
@@ -290,7 +290,7 @@ type FilesInterface interface {
 	// To delete a non-empty directory, first delete all of its contents. This can
 	// be done by listing the directory contents and deleting each file and
 	// subdirectory recursively.
-	DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) error
+	DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) (*DeleteDirectoryResponse, error)
 
 	// Download a file.
 	//
@@ -317,7 +317,7 @@ type FilesInterface interface {
 	// If you wish to ensure the directory exists, you can instead use `PUT`, which
 	// will create the directory if it does not exist, and is idempotent (it will
 	// succeed if the directory already exists).
-	GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error
+	GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) (*GetDirectoryMetadataResponse, error)
 
 	// Get directory metadata.
 	//
@@ -330,7 +330,7 @@ type FilesInterface interface {
 	// If you wish to ensure the directory exists, you can instead use `PUT`, which
 	// will create the directory if it does not exist, and is idempotent (it will
 	// succeed if the directory already exists).
-	GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) error
+	GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) (*GetDirectoryMetadataResponse, error)
 
 	// Get file metadata.
 	//
@@ -373,7 +373,7 @@ type FilesInterface interface {
 	// modify the bytes before sending. The contents of the resulting file will be
 	// exactly the bytes sent in the request body. If the request is successful,
 	// there is no response body.
-	Upload(ctx context.Context, request UploadRequest) error
+	Upload(ctx context.Context, request UploadRequest) (*UploadResponse, error)
 }
 
 func NewFiles(client *httpclient.ApiClient) *FilesAPI {
@@ -412,7 +412,7 @@ type FilesAPI struct {
 // Delete a file.
 //
 // Deletes a file. If the request is successful, there is no response body.
-func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) error {
+func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) (*DeleteResponse, error) {
 	return a.filesImpl.Delete(ctx, DeleteFileRequest{
 		FilePath: filePath,
 	})
@@ -425,7 +425,7 @@ func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) error 
 // To delete a non-empty directory, first delete all of its contents. This can
 // be done by listing the directory contents and deleting each file and
 // subdirectory recursively.
-func (a *FilesAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) error {
+func (a *FilesAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) (*DeleteDirectoryResponse, error) {
 	return a.filesImpl.DeleteDirectory(ctx, DeleteDirectoryRequest{
 		DirectoryPath: directoryPath,
 	})
@@ -453,7 +453,7 @@ func (a *FilesAPI) DownloadByFilePath(ctx context.Context, filePath string) (*Do
 // If you wish to ensure the directory exists, you can instead use `PUT`, which
 // will create the directory if it does not exist, and is idempotent (it will
 // succeed if the directory already exists).
-func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) error {
+func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) (*GetDirectoryMetadataResponse, error) {
 	return a.filesImpl.GetDirectoryMetadata(ctx, GetDirectoryMetadataRequest{
 		DirectoryPath: directoryPath,
 	})

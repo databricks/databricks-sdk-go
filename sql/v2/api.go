@@ -24,14 +24,14 @@ type AlertsInterface interface {
 	// Moves an alert to the trash. Trashed alerts immediately disappear from
 	// searches and list views, and can no longer trigger. You can restore a trashed
 	// alert through the UI. A trashed alert is permanently deleted after 30 days.
-	Delete(ctx context.Context, request TrashAlertRequest) error
+	Delete(ctx context.Context, request TrashAlertRequest) (*Empty, error)
 
 	// Delete an alert.
 	//
 	// Moves an alert to the trash. Trashed alerts immediately disappear from
 	// searches and list views, and can no longer trigger. You can restore a trashed
 	// alert through the UI. A trashed alert is permanently deleted after 30 days.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*Empty, error)
 
 	// Get an alert.
 	//
@@ -107,7 +107,7 @@ type AlertsAPI struct {
 // Moves an alert to the trash. Trashed alerts immediately disappear from
 // searches and list views, and can no longer trigger. You can restore a trashed
 // alert through the UI. A trashed alert is permanently deleted after 30 days.
-func (a *AlertsAPI) DeleteById(ctx context.Context, id string) error {
+func (a *AlertsAPI) DeleteById(ctx context.Context, id string) (*Empty, error) {
 	return a.alertsImpl.Delete(ctx, TrashAlertRequest{
 		Id: id,
 	})
@@ -199,7 +199,7 @@ type AlertsLegacyInterface interface {
 	// use :method:alerts/delete instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-	Delete(ctx context.Context, request DeleteAlertsLegacyRequest) error
+	Delete(ctx context.Context, request DeleteAlertsLegacyRequest) (*DeleteResponse, error)
 
 	// Delete an alert.
 	//
@@ -211,7 +211,7 @@ type AlertsLegacyInterface interface {
 	// use :method:alerts/delete instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-	DeleteByAlertId(ctx context.Context, alertId string) error
+	DeleteByAlertId(ctx context.Context, alertId string) (*DeleteResponse, error)
 
 	// Get an alert.
 	//
@@ -269,7 +269,7 @@ type AlertsLegacyInterface interface {
 	// use :method:alerts/update instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-	Update(ctx context.Context, request EditAlert) error
+	Update(ctx context.Context, request EditAlert) (*UpdateResponse, error)
 }
 
 func NewAlertsLegacy(client *httpclient.ApiClient) *AlertsLegacyAPI {
@@ -304,7 +304,7 @@ type AlertsLegacyAPI struct {
 // use :method:alerts/delete instead. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-func (a *AlertsLegacyAPI) DeleteByAlertId(ctx context.Context, alertId string) error {
+func (a *AlertsLegacyAPI) DeleteByAlertId(ctx context.Context, alertId string) (*DeleteResponse, error) {
 	return a.alertsLegacyImpl.Delete(ctx, DeleteAlertsLegacyRequest{
 		AlertId: alertId,
 	})
@@ -383,10 +383,10 @@ type DashboardWidgetsInterface interface {
 	Create(ctx context.Context, request CreateWidget) (*Widget, error)
 
 	// Remove widget.
-	Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error
+	Delete(ctx context.Context, request DeleteDashboardWidgetRequest) (*DeleteResponse, error)
 
 	// Remove widget.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteResponse, error)
 
 	// Update existing widget.
 	Update(ctx context.Context, request CreateWidget) (*Widget, error)
@@ -408,7 +408,7 @@ type DashboardWidgetsAPI struct {
 }
 
 // Remove widget.
-func (a *DashboardWidgetsAPI) DeleteById(ctx context.Context, id string) error {
+func (a *DashboardWidgetsAPI) DeleteById(ctx context.Context, id string) (*DeleteResponse, error) {
 	return a.dashboardWidgetsImpl.Delete(ctx, DeleteDashboardWidgetRequest{
 		Id: id,
 	})
@@ -423,13 +423,13 @@ type DashboardsInterface interface {
 	//
 	// Moves a dashboard to the trash. Trashed dashboards do not appear in list
 	// views or searches, and cannot be shared.
-	Delete(ctx context.Context, request DeleteDashboardRequest) error
+	Delete(ctx context.Context, request DeleteDashboardRequest) (*DeleteResponse, error)
 
 	// Remove a dashboard.
 	//
 	// Moves a dashboard to the trash. Trashed dashboards do not appear in list
 	// views or searches, and cannot be shared.
-	DeleteByDashboardId(ctx context.Context, dashboardId string) error
+	DeleteByDashboardId(ctx context.Context, dashboardId string) (*DeleteResponse, error)
 
 	// Retrieve a definition.
 	//
@@ -484,7 +484,7 @@ type DashboardsInterface interface {
 	// Restore a dashboard.
 	//
 	// A restored dashboard appears in list views and searches and can be shared.
-	Restore(ctx context.Context, request RestoreDashboardRequest) error
+	Restore(ctx context.Context, request RestoreDashboardRequest) (*RestoreResponse, error)
 
 	// Change a dashboard definition.
 	//
@@ -517,7 +517,7 @@ type DashboardsAPI struct {
 //
 // Moves a dashboard to the trash. Trashed dashboards do not appear in list
 // views or searches, and cannot be shared.
-func (a *DashboardsAPI) DeleteByDashboardId(ctx context.Context, dashboardId string) error {
+func (a *DashboardsAPI) DeleteByDashboardId(ctx context.Context, dashboardId string) (*DeleteResponse, error) {
 	return a.dashboardsImpl.Delete(ctx, DeleteDashboardRequest{
 		DashboardId: dashboardId,
 	})
@@ -806,7 +806,7 @@ type QueriesInterface interface {
 	// searches and list views, and cannot be used for alerts. You can restore a
 	// trashed query through the UI. A trashed query is permanently deleted after 30
 	// days.
-	Delete(ctx context.Context, request TrashQueryRequest) error
+	Delete(ctx context.Context, request TrashQueryRequest) (*Empty, error)
 
 	// Delete a query.
 	//
@@ -814,7 +814,7 @@ type QueriesInterface interface {
 	// searches and list views, and cannot be used for alerts. You can restore a
 	// trashed query through the UI. A trashed query is permanently deleted after 30
 	// days.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*Empty, error)
 
 	// Get a query.
 	//
@@ -909,7 +909,7 @@ type QueriesAPI struct {
 // searches and list views, and cannot be used for alerts. You can restore a
 // trashed query through the UI. A trashed query is permanently deleted after 30
 // days.
-func (a *QueriesAPI) DeleteById(ctx context.Context, id string) error {
+func (a *QueriesAPI) DeleteById(ctx context.Context, id string) (*Empty, error) {
 	return a.queriesImpl.Delete(ctx, TrashQueryRequest{
 		Id: id,
 	})
@@ -1016,7 +1016,7 @@ type QueriesLegacyInterface interface {
 	// use :method:queries/delete instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-	Delete(ctx context.Context, request DeleteQueriesLegacyRequest) error
+	Delete(ctx context.Context, request DeleteQueriesLegacyRequest) (*DeleteResponse, error)
 
 	// Delete a query.
 	//
@@ -1028,7 +1028,7 @@ type QueriesLegacyInterface interface {
 	// use :method:queries/delete instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-	DeleteByQueryId(ctx context.Context, queryId string) error
+	DeleteByQueryId(ctx context.Context, queryId string) (*DeleteResponse, error)
 
 	// Get a query definition.
 	//
@@ -1111,7 +1111,7 @@ type QueriesLegacyInterface interface {
 	// see the latest version. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-	Restore(ctx context.Context, request RestoreQueriesLegacyRequest) error
+	Restore(ctx context.Context, request RestoreQueriesLegacyRequest) (*RestoreResponse, error)
 
 	// Change a query definition.
 	//
@@ -1157,7 +1157,7 @@ type QueriesLegacyAPI struct {
 // use :method:queries/delete instead. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-func (a *QueriesLegacyAPI) DeleteByQueryId(ctx context.Context, queryId string) error {
+func (a *QueriesLegacyAPI) DeleteByQueryId(ctx context.Context, queryId string) (*DeleteResponse, error) {
 	return a.queriesLegacyImpl.Delete(ctx, DeleteQueriesLegacyRequest{
 		QueryId: queryId,
 	})
@@ -1268,12 +1268,12 @@ type QueryVisualizationsInterface interface {
 	// Remove a visualization.
 	//
 	// Removes a visualization.
-	Delete(ctx context.Context, request DeleteVisualizationRequest) error
+	Delete(ctx context.Context, request DeleteVisualizationRequest) (*Empty, error)
 
 	// Remove a visualization.
 	//
 	// Removes a visualization.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*Empty, error)
 
 	// Update a visualization.
 	//
@@ -1299,7 +1299,7 @@ type QueryVisualizationsAPI struct {
 // Remove a visualization.
 //
 // Removes a visualization.
-func (a *QueryVisualizationsAPI) DeleteById(ctx context.Context, id string) error {
+func (a *QueryVisualizationsAPI) DeleteById(ctx context.Context, id string) (*Empty, error) {
 	return a.queryVisualizationsImpl.Delete(ctx, DeleteVisualizationRequest{
 		Id: id,
 	})
@@ -1325,7 +1325,7 @@ type QueryVisualizationsLegacyInterface interface {
 	// use :method:queryvisualizations/delete instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-	Delete(ctx context.Context, request DeleteQueryVisualizationsLegacyRequest) error
+	Delete(ctx context.Context, request DeleteQueryVisualizationsLegacyRequest) (*DeleteResponse, error)
 
 	// Remove visualization.
 	//
@@ -1335,7 +1335,7 @@ type QueryVisualizationsLegacyInterface interface {
 	// use :method:queryvisualizations/delete instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteResponse, error)
 
 	// Edit existing visualization.
 	//
@@ -1376,7 +1376,7 @@ type QueryVisualizationsLegacyAPI struct {
 // use :method:queryvisualizations/delete instead. [Learn more]
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-func (a *QueryVisualizationsLegacyAPI) DeleteById(ctx context.Context, id string) error {
+func (a *QueryVisualizationsLegacyAPI) DeleteById(ctx context.Context, id string) (*DeleteResponse, error) {
 	return a.queryVisualizationsLegacyImpl.Delete(ctx, DeleteQueryVisualizationsLegacyRequest{
 		Id: id,
 	})
@@ -1408,7 +1408,7 @@ type StatementExecutionInterface interface {
 	//
 	// Requests that an executing statement be canceled. Callers must poll for
 	// status to see the terminal state.
-	CancelExecution(ctx context.Context, request CancelExecutionRequest) error
+	CancelExecution(ctx context.Context, request CancelExecutionRequest) (*CancelExecutionResponse, error)
 
 	// Execute a SQL statement.
 	ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error)
@@ -1625,17 +1625,17 @@ type WarehousesInterface interface {
 	// Delete a warehouse.
 	//
 	// Deletes a SQL warehouse.
-	Delete(ctx context.Context, request DeleteWarehouseRequest) error
+	Delete(ctx context.Context, request DeleteWarehouseRequest) (*DeleteWarehouseResponse, error)
 
 	// Delete a warehouse.
 	//
 	// Deletes a SQL warehouse.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteWarehouseResponse, error)
 
 	// Update a warehouse.
 	//
 	// Updates the configuration for a SQL warehouse.
-	Edit(ctx context.Context, request EditWarehouseRequest) error
+	Edit(ctx context.Context, request EditWarehouseRequest) (*EditWarehouseResponse, error)
 
 	// Get warehouse info.
 	//
@@ -1718,17 +1718,17 @@ type WarehousesInterface interface {
 	//
 	// Sets the workspace level configuration that is shared by all SQL warehouses
 	// in a workspace.
-	SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error
+	SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) (*SetWorkspaceWarehouseConfigResponse, error)
 
 	// Start a warehouse.
 	//
 	// Starts a SQL warehouse.
-	Start(ctx context.Context, request StartRequest) error
+	Start(ctx context.Context, request StartRequest) (*StartWarehouseResponse, error)
 
 	// Stop a warehouse.
 	//
 	// Stops a SQL warehouse.
-	Stop(ctx context.Context, request StopRequest) error
+	Stop(ctx context.Context, request StopRequest) (*StopWarehouseResponse, error)
 
 	// Update SQL warehouse permissions.
 	//
@@ -1755,7 +1755,7 @@ type WarehousesAPI struct {
 // Delete a warehouse.
 //
 // Deletes a SQL warehouse.
-func (a *WarehousesAPI) DeleteById(ctx context.Context, id string) error {
+func (a *WarehousesAPI) DeleteById(ctx context.Context, id string) (*DeleteWarehouseResponse, error) {
 	return a.warehousesImpl.Delete(ctx, DeleteWarehouseRequest{
 		Id: id,
 	})

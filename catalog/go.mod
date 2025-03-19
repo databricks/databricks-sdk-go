@@ -1,6 +1,8 @@
 module github.com/databricks/databricks-sdk-go/catalog
 
-go 1.18
+go 1.23.0
+
+toolchain go1.23.2
 
 replace github.com/databricks/databricks-sdk-go/databricks => ../databricks
 
@@ -8,8 +10,8 @@ replace github.com/databricks/databricks-sdk-go/auth => ../auth
 
 require (
 	github.com/databricks/databricks-sdk-go/databricks v0.0.0-00010101000000-000000000000
-	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225
-	golang.org/x/oauth2 v0.24.0
+	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394
+	golang.org/x/oauth2 v0.28.0
 )
 
 require (
@@ -31,7 +33,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.24.0 // indirect
 	go.opentelemetry.io/otel/trace v1.24.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/mod v0.17.0 // indirect
+	golang.org/x/mod v0.24.0 // indirect
 	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect

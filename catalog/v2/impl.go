@@ -18,7 +18,7 @@ type accountMetastoreAssignmentsImpl struct {
 	client *httpclient.ApiClient
 }
 
-func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error {
+func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*CreateResponse, error) {
 	var createResponse CreateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.AccountID(), request.WorkspaceId, request.MetastoreId)
 	queryParams := make(map[string]any)
@@ -26,17 +26,17 @@ func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request Ac
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createResponse)
-	return err
+	return &createResponse, err
 }
 
-func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error {
+func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.AccountID(), request.WorkspaceId, request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*AccountsMetastoreAssignment, error) {
@@ -89,7 +89,7 @@ func (a *accountMetastoreAssignmentsImpl) internalList(ctx context.Context, requ
 	return &listAccountMetastoreAssignmentsResponse, err
 }
 
-func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error {
+func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*UpdateResponse, error) {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.AccountID(), request.WorkspaceId, request.MetastoreId)
 	queryParams := make(map[string]any)
@@ -97,7 +97,7 @@ func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request Ac
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &updateResponse)
-	return err
+	return &updateResponse, err
 }
 
 // unexported type that holds implementations of just AccountMetastores API methods
@@ -116,14 +116,14 @@ func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCrea
 	return &accountsMetastoreInfo, err
 }
 
-func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error {
+func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.AccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsMetastoreInfo, error) {
@@ -202,14 +202,14 @@ func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request Acco
 	return &accountsStorageCredentialInfo, err
 }
 
-func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error {
+func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.AccountID(), request.MetastoreId, request.StorageCredentialName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*AccountsStorageCredentialInfo, error) {
@@ -315,14 +315,14 @@ func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*Cata
 	return &catalogInfo, err
 }
 
-func (a *catalogsImpl) Delete(ctx context.Context, request DeleteCatalogRequest) error {
+func (a *catalogsImpl) Delete(ctx context.Context, request DeleteCatalogRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/catalogs/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*CatalogInfo, error) {
@@ -414,14 +414,14 @@ func (a *connectionsImpl) Create(ctx context.Context, request CreateConnection) 
 	return &connectionInfo, err
 }
 
-func (a *connectionsImpl) Delete(ctx context.Context, request DeleteConnectionRequest) error {
+func (a *connectionsImpl) Delete(ctx context.Context, request DeleteConnectionRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/connections/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest) (*ConnectionInfo, error) {
@@ -505,14 +505,14 @@ func (a *credentialsImpl) CreateCredential(ctx context.Context, request CreateCr
 	return &credentialInfo, err
 }
 
-func (a *credentialsImpl) DeleteCredential(ctx context.Context, request DeleteCredentialRequest) error {
+func (a *credentialsImpl) DeleteCredential(ctx context.Context, request DeleteCredentialRequest) (*DeleteCredentialResponse, error) {
 	var deleteCredentialResponse DeleteCredentialResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/credentials/%v", request.NameArg)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteCredentialResponse)
-	return err
+	return &deleteCredentialResponse, err
 }
 
 func (a *credentialsImpl) GenerateTemporaryServiceCredential(ctx context.Context, request GenerateTemporaryServiceCredentialRequest) (*TemporaryCredentials, error) {
@@ -628,14 +628,14 @@ func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExtern
 	return &externalLocationInfo, err
 }
 
-func (a *externalLocationsImpl) Delete(ctx context.Context, request DeleteExternalLocationRequest) error {
+func (a *externalLocationsImpl) Delete(ctx context.Context, request DeleteExternalLocationRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/external-locations/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLocationRequest) (*ExternalLocationInfo, error) {
@@ -727,14 +727,14 @@ func (a *functionsImpl) Create(ctx context.Context, request CreateFunctionReques
 	return &functionInfo, err
 }
 
-func (a *functionsImpl) Delete(ctx context.Context, request DeleteFunctionRequest) error {
+func (a *functionsImpl) Delete(ctx context.Context, request DeleteFunctionRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/functions/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *functionsImpl) Get(ctx context.Context, request GetFunctionRequest) (*FunctionInfo, error) {
@@ -855,7 +855,7 @@ type metastoresImpl struct {
 	client *httpclient.ApiClient
 }
 
-func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssignment) error {
+func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssignment) (*AssignResponse, error) {
 	var assignResponse AssignResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
 	queryParams := make(map[string]any)
@@ -863,7 +863,7 @@ func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssi
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &assignResponse)
-	return err
+	return &assignResponse, err
 }
 
 func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error) {
@@ -887,14 +887,14 @@ func (a *metastoresImpl) Current(ctx context.Context) (*MetastoreAssignment, err
 	return &metastoreAssignment, err
 }
 
-func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequest) error {
+func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (*MetastoreInfo, error) {
@@ -960,14 +960,14 @@ func (a *metastoresImpl) Summary(ctx context.Context) (*GetMetastoreSummaryRespo
 	return &getMetastoreSummaryResponse, err
 }
 
-func (a *metastoresImpl) Unassign(ctx context.Context, request UnassignRequest) error {
+func (a *metastoresImpl) Unassign(ctx context.Context, request UnassignRequest) (*UnassignResponse, error) {
 	var unassignResponse UnassignResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &unassignResponse)
-	return err
+	return &unassignResponse, err
 }
 
 func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error) {
@@ -981,7 +981,7 @@ func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*
 	return &metastoreInfo, err
 }
 
-func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error {
+func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) (*UpdateAssignmentResponse, error) {
 	var updateAssignmentResponse UpdateAssignmentResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspaces/%v/metastore", request.WorkspaceId)
 	queryParams := make(map[string]any)
@@ -989,7 +989,7 @@ func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMet
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updateAssignmentResponse)
-	return err
+	return &updateAssignmentResponse, err
 }
 
 // unexported type that holds implementations of just ModelVersions API methods
@@ -997,13 +997,13 @@ type modelVersionsImpl struct {
 	client *httpclient.ApiClient
 }
 
-func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersionRequest) error {
+func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersionRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", request.FullName, request.Version)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequest) (*ModelVersionInfo, error) {
@@ -1121,14 +1121,14 @@ func (a *onlineTablesImpl) Create(ctx context.Context, request CreateOnlineTable
 	return &onlineTable, err
 }
 
-func (a *onlineTablesImpl) Delete(ctx context.Context, request DeleteOnlineTableRequest) error {
+func (a *onlineTablesImpl) Delete(ctx context.Context, request DeleteOnlineTableRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/online-tables/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *onlineTablesImpl) Get(ctx context.Context, request GetOnlineTableRequest) (*OnlineTable, error) {
@@ -1146,13 +1146,13 @@ type qualityMonitorsImpl struct {
 	client *httpclient.ApiClient
 }
 
-func (a *qualityMonitorsImpl) CancelRefresh(ctx context.Context, request CancelRefreshRequest) error {
+func (a *qualityMonitorsImpl) CancelRefresh(ctx context.Context, request CancelRefreshRequest) (*CancelRefreshResponse, error) {
 	var cancelRefreshResponse CancelRefreshResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v/cancel", request.TableName, request.RefreshId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, nil, &cancelRefreshResponse)
-	return err
+	return &cancelRefreshResponse, err
 }
 
 func (a *qualityMonitorsImpl) Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error) {
@@ -1166,13 +1166,13 @@ func (a *qualityMonitorsImpl) Create(ctx context.Context, request CreateMonitor)
 	return &monitorInfo, err
 }
 
-func (a *qualityMonitorsImpl) Delete(ctx context.Context, request DeleteQualityMonitorRequest) error {
+func (a *qualityMonitorsImpl) Delete(ctx context.Context, request DeleteQualityMonitorRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", request.TableName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *qualityMonitorsImpl) Get(ctx context.Context, request GetQualityMonitorRequest) (*MonitorInfo, error) {
@@ -1253,22 +1253,22 @@ func (a *registeredModelsImpl) Create(ctx context.Context, request CreateRegiste
 	return &registeredModelInfo, err
 }
 
-func (a *registeredModelsImpl) Delete(ctx context.Context, request DeleteRegisteredModelRequest) error {
+func (a *registeredModelsImpl) Delete(ctx context.Context, request DeleteRegisteredModelRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", request.FullName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
-func (a *registeredModelsImpl) DeleteAlias(ctx context.Context, request DeleteAliasRequest) error {
+func (a *registeredModelsImpl) DeleteAlias(ctx context.Context, request DeleteAliasRequest) (*DeleteAliasResponse, error) {
 	var deleteAliasResponse DeleteAliasResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", request.FullName, request.Alias)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteAliasResponse)
-	return err
+	return &deleteAliasResponse, err
 }
 
 func (a *registeredModelsImpl) Get(ctx context.Context, request GetRegisteredModelRequest) (*RegisteredModelInfo, error) {
@@ -1448,14 +1448,14 @@ func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*Schema
 	return &schemaInfo, err
 }
 
-func (a *schemasImpl) Delete(ctx context.Context, request DeleteSchemaRequest) error {
+func (a *schemasImpl) Delete(ctx context.Context, request DeleteSchemaRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/schemas/%v", request.FullName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*SchemaInfo, error) {
@@ -1547,14 +1547,14 @@ func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStora
 	return &storageCredentialInfo, err
 }
 
-func (a *storageCredentialsImpl) Delete(ctx context.Context, request DeleteStorageCredentialRequest) error {
+func (a *storageCredentialsImpl) Delete(ctx context.Context, request DeleteStorageCredentialRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/storage-credentials/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCredentialRequest) (*StorageCredentialInfo, error) {
@@ -1646,24 +1646,24 @@ type systemSchemasImpl struct {
 	client *httpclient.ApiClient
 }
 
-func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest) error {
+func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest) (*DisableResponse, error) {
 	var disableResponse DisableResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", request.MetastoreId, request.SchemaName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &disableResponse)
-	return err
+	return &disableResponse, err
 }
 
-func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) error {
+func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) (*EnableResponse, error) {
 	var enableResponse EnableResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/metastores/%v/systemschemas/%v", request.MetastoreId, request.SchemaName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, nil, &enableResponse)
-	return err
+	return &enableResponse, err
 }
 
 // List system schemas.
@@ -1728,14 +1728,14 @@ func (a *tableConstraintsImpl) Create(ctx context.Context, request CreateTableCo
 	return &tableConstraint, err
 }
 
-func (a *tableConstraintsImpl) Delete(ctx context.Context, request DeleteTableConstraintRequest) error {
+func (a *tableConstraintsImpl) Delete(ctx context.Context, request DeleteTableConstraintRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/constraints/%v", request.FullName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 // unexported type that holds implementations of just Tables API methods
@@ -1743,14 +1743,14 @@ type tablesImpl struct {
 	client *httpclient.ApiClient
 }
 
-func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) error {
+func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *tablesImpl) Exists(ctx context.Context, request ExistsRequest) (*TableExistsResponse, error) {
@@ -1891,7 +1891,7 @@ func (a *tablesImpl) internalListSummaries(ctx context.Context, request ListSumm
 	return &listTableSummariesResponse, err
 }
 
-func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) error {
+func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) (*UpdateResponse, error) {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v", request.FullName)
 	queryParams := make(map[string]any)
@@ -1899,7 +1899,7 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) err
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &updateResponse)
-	return err
+	return &updateResponse, err
 }
 
 // unexported type that holds implementations of just TemporaryTableCredentials API methods
@@ -1934,13 +1934,13 @@ func (a *volumesImpl) Create(ctx context.Context, request CreateVolumeRequestCon
 	return &volumeInfo, err
 }
 
-func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) error {
+func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 // List Volumes.
