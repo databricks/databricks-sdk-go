@@ -110,12 +110,12 @@ type ConsumerInstallationsInterface interface {
 	// Uninstall from a listing.
 	//
 	// Uninstall an installation associated with a Databricks Marketplace listing.
-	Delete(ctx context.Context, request DeleteInstallationRequest) error
+	Delete(ctx context.Context, request DeleteInstallationRequest) (*DeleteInstallationResponse, error)
 
 	// Uninstall from a listing.
 	//
 	// Uninstall an installation associated with a Databricks Marketplace listing.
-	DeleteByListingIdAndInstallationId(ctx context.Context, listingId string, installationId string) error
+	DeleteByListingIdAndInstallationId(ctx context.Context, listingId string, installationId string) (*DeleteInstallationResponse, error)
 
 	// List all installations.
 	//
@@ -177,7 +177,7 @@ type ConsumerInstallationsAPI struct {
 // Uninstall from a listing.
 //
 // Uninstall an installation associated with a Databricks Marketplace listing.
-func (a *ConsumerInstallationsAPI) DeleteByListingIdAndInstallationId(ctx context.Context, listingId string, installationId string) error {
+func (a *ConsumerInstallationsAPI) DeleteByListingIdAndInstallationId(ctx context.Context, listingId string, installationId string) (*DeleteInstallationResponse, error) {
 	return a.consumerInstallationsImpl.Delete(ctx, DeleteInstallationRequest{
 		ListingId:      listingId,
 		InstallationId: installationId,
@@ -542,12 +542,12 @@ type ProviderExchangeFiltersInterface interface {
 	// Delete an exchange filter.
 	//
 	// Delete an exchange filter
-	Delete(ctx context.Context, request DeleteExchangeFilterRequest) error
+	Delete(ctx context.Context, request DeleteExchangeFilterRequest) (*DeleteExchangeFilterResponse, error)
 
 	// Delete an exchange filter.
 	//
 	// Delete an exchange filter
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteExchangeFilterResponse, error)
 
 	// List exchange filters.
 	//
@@ -603,7 +603,7 @@ type ProviderExchangeFiltersAPI struct {
 // Delete an exchange filter.
 //
 // Delete an exchange filter
-func (a *ProviderExchangeFiltersAPI) DeleteById(ctx context.Context, id string) error {
+func (a *ProviderExchangeFiltersAPI) DeleteById(ctx context.Context, id string) (*DeleteExchangeFilterResponse, error) {
 	return a.providerExchangeFiltersImpl.Delete(ctx, DeleteExchangeFilterRequest{
 		Id: id,
 	})
@@ -677,22 +677,22 @@ type ProviderExchangesInterface interface {
 	// Delete an exchange.
 	//
 	// This removes a listing from marketplace.
-	Delete(ctx context.Context, request DeleteExchangeRequest) error
+	Delete(ctx context.Context, request DeleteExchangeRequest) (*DeleteExchangeResponse, error)
 
 	// Delete an exchange.
 	//
 	// This removes a listing from marketplace.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteExchangeResponse, error)
 
 	// Remove an exchange for listing.
 	//
 	// Disassociate an exchange with a listing
-	DeleteListingFromExchange(ctx context.Context, request RemoveExchangeForListingRequest) error
+	DeleteListingFromExchange(ctx context.Context, request RemoveExchangeForListingRequest) (*RemoveExchangeForListingResponse, error)
 
 	// Remove an exchange for listing.
 	//
 	// Disassociate an exchange with a listing
-	DeleteListingFromExchangeById(ctx context.Context, id string) error
+	DeleteListingFromExchangeById(ctx context.Context, id string) (*RemoveExchangeForListingResponse, error)
 
 	// Get an exchange.
 	//
@@ -823,7 +823,7 @@ type ProviderExchangesAPI struct {
 // Delete an exchange.
 //
 // This removes a listing from marketplace.
-func (a *ProviderExchangesAPI) DeleteById(ctx context.Context, id string) error {
+func (a *ProviderExchangesAPI) DeleteById(ctx context.Context, id string) (*DeleteExchangeResponse, error) {
 	return a.providerExchangesImpl.Delete(ctx, DeleteExchangeRequest{
 		Id: id,
 	})
@@ -832,7 +832,7 @@ func (a *ProviderExchangesAPI) DeleteById(ctx context.Context, id string) error 
 // Remove an exchange for listing.
 //
 // Disassociate an exchange with a listing
-func (a *ProviderExchangesAPI) DeleteListingFromExchangeById(ctx context.Context, id string) error {
+func (a *ProviderExchangesAPI) DeleteListingFromExchangeById(ctx context.Context, id string) (*RemoveExchangeForListingResponse, error) {
 	return a.providerExchangesImpl.DeleteListingFromExchange(ctx, RemoveExchangeForListingRequest{
 		Id: id,
 	})
@@ -1017,12 +1017,12 @@ type ProviderFilesInterface interface {
 	// Delete a file.
 	//
 	// Delete a file
-	Delete(ctx context.Context, request DeleteFileRequest) error
+	Delete(ctx context.Context, request DeleteFileRequest) (*DeleteFileResponse, error)
 
 	// Delete a file.
 	//
 	// Delete a file
-	DeleteByFileId(ctx context.Context, fileId string) error
+	DeleteByFileId(ctx context.Context, fileId string) (*DeleteFileResponse, error)
 
 	// Get a file.
 	//
@@ -1084,7 +1084,7 @@ type ProviderFilesAPI struct {
 // Delete a file.
 //
 // Delete a file
-func (a *ProviderFilesAPI) DeleteByFileId(ctx context.Context, fileId string) error {
+func (a *ProviderFilesAPI) DeleteByFileId(ctx context.Context, fileId string) (*DeleteFileResponse, error) {
 	return a.providerFilesImpl.Delete(ctx, DeleteFileRequest{
 		FileId: fileId,
 	})
@@ -1162,12 +1162,12 @@ type ProviderListingsInterface interface {
 	// Delete a listing.
 	//
 	// Delete a listing
-	Delete(ctx context.Context, request DeleteListingRequest) error
+	Delete(ctx context.Context, request DeleteListingRequest) (*DeleteListingResponse, error)
 
 	// Delete a listing.
 	//
 	// Delete a listing
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteListingResponse, error)
 
 	// Get a listing.
 	//
@@ -1234,7 +1234,7 @@ type ProviderListingsAPI struct {
 // Delete a listing.
 //
 // Delete a listing
-func (a *ProviderListingsAPI) DeleteById(ctx context.Context, id string) error {
+func (a *ProviderListingsAPI) DeleteById(ctx context.Context, id string) (*DeleteListingResponse, error) {
 	return a.providerListingsImpl.Delete(ctx, DeleteListingRequest{
 		Id: id,
 	})
@@ -1388,12 +1388,12 @@ type ProviderProvidersInterface interface {
 	// Delete provider.
 	//
 	// Delete provider
-	Delete(ctx context.Context, request DeleteProviderRequest) error
+	Delete(ctx context.Context, request DeleteProviderRequest) (*DeleteProviderResponse, error)
 
 	// Delete provider.
 	//
 	// Delete provider
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteProviderResponse, error)
 
 	// Get provider.
 	//
@@ -1459,7 +1459,7 @@ type ProviderProvidersAPI struct {
 // Delete provider.
 //
 // Delete provider
-func (a *ProviderProvidersAPI) DeleteById(ctx context.Context, id string) error {
+func (a *ProviderProvidersAPI) DeleteById(ctx context.Context, id string) (*DeleteProviderResponse, error) {
 	return a.providerProvidersImpl.Delete(ctx, DeleteProviderRequest{
 		Id: id,
 	})

@@ -19,10 +19,11 @@ type commandExecutionAPIUtilities interface {
 
 // Start the command execution context on a cluster and ensure it transitions to a running state
 func (c *CommandExecutorV2) Destroy(ctx context.Context) error {
-	return c.executionAPI.Destroy(ctx, DestroyContext{
+	_, err := c.executionAPI.Destroy(ctx, DestroyContext{
 		ClusterId: c.clusterID,
 		ContextId: c.contextID,
 	})
+	return err
 }
 
 // CommandExecutor creates a spark context and executes a command and then closes context

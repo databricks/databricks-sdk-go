@@ -18,19 +18,19 @@ type JobsInterface interface {
 	//
 	// Cancels all active runs of a job. The runs are canceled asynchronously, so it
 	// doesn't prevent new runs from being started.
-	CancelAllRuns(ctx context.Context, request CancelAllRuns) error
+	CancelAllRuns(ctx context.Context, request CancelAllRuns) (*CancelAllRunsResponse, error)
 
 	// Cancel a run.
 	//
 	// Cancels a job run or a task run. The run is canceled asynchronously, so it
 	// may still be running when this request completes.
-	CancelRun(ctx context.Context, request CancelRun) error
+	CancelRun(ctx context.Context, request CancelRun) (*CancelRunResponse, error)
 
 	// Cancel a run.
 	//
 	// Cancels a job run or a task run. The run is canceled asynchronously, so it
 	// may still be running when this request completes.
-	CancelRunByRunId(ctx context.Context, runId int64) error
+	CancelRunByRunId(ctx context.Context, runId int64) (*CancelRunResponse, error)
 
 	// Create a new job.
 	//
@@ -40,22 +40,22 @@ type JobsInterface interface {
 	// Delete a job.
 	//
 	// Deletes a job.
-	Delete(ctx context.Context, request DeleteJob) error
+	Delete(ctx context.Context, request DeleteJob) (*DeleteResponse, error)
 
 	// Delete a job.
 	//
 	// Deletes a job.
-	DeleteByJobId(ctx context.Context, jobId int64) error
+	DeleteByJobId(ctx context.Context, jobId int64) (*DeleteResponse, error)
 
 	// Delete a job run.
 	//
 	// Deletes a non-active run. Returns an error if the run is active.
-	DeleteRun(ctx context.Context, request DeleteRun) error
+	DeleteRun(ctx context.Context, request DeleteRun) (*DeleteRunResponse, error)
 
 	// Delete a job run.
 	//
 	// Deletes a non-active run. Returns an error if the run is active.
-	DeleteRunByRunId(ctx context.Context, runId int64) error
+	DeleteRunByRunId(ctx context.Context, runId int64) (*DeleteRunResponse, error)
 
 	// Export and retrieve a job run.
 	//
@@ -202,7 +202,7 @@ type JobsInterface interface {
 	//
 	// Overwrite all settings for the given job. Use the [_Update_
 	// endpoint](:method:jobs/update) to update job settings partially.
-	Reset(ctx context.Context, request ResetJob) error
+	Reset(ctx context.Context, request ResetJob) (*ResetResponse, error)
 
 	// Trigger a new job run.
 	//
@@ -228,7 +228,7 @@ type JobsInterface interface {
 	//
 	// Add, update, or remove specific settings of an existing job. Use the [_Reset_
 	// endpoint](:method:jobs/reset) to overwrite all job settings.
-	Update(ctx context.Context, request UpdateJob) error
+	Update(ctx context.Context, request UpdateJob) (*UpdateResponse, error)
 
 	// Update job permissions.
 	//
@@ -271,7 +271,7 @@ type JobsAPI struct {
 //
 // Cancels a job run or a task run. The run is canceled asynchronously, so it
 // may still be running when this request completes.
-func (a *JobsAPI) CancelRunByRunId(ctx context.Context, runId int64) error {
+func (a *JobsAPI) CancelRunByRunId(ctx context.Context, runId int64) (*CancelRunResponse, error) {
 	return a.jobsImpl.CancelRun(ctx, CancelRun{
 		RunId: runId,
 	})
@@ -280,7 +280,7 @@ func (a *JobsAPI) CancelRunByRunId(ctx context.Context, runId int64) error {
 // Delete a job.
 //
 // Deletes a job.
-func (a *JobsAPI) DeleteByJobId(ctx context.Context, jobId int64) error {
+func (a *JobsAPI) DeleteByJobId(ctx context.Context, jobId int64) (*DeleteResponse, error) {
 	return a.jobsImpl.Delete(ctx, DeleteJob{
 		JobId: jobId,
 	})
@@ -289,7 +289,7 @@ func (a *JobsAPI) DeleteByJobId(ctx context.Context, jobId int64) error {
 // Delete a job run.
 //
 // Deletes a non-active run. Returns an error if the run is active.
-func (a *JobsAPI) DeleteRunByRunId(ctx context.Context, runId int64) error {
+func (a *JobsAPI) DeleteRunByRunId(ctx context.Context, runId int64) (*DeleteRunResponse, error) {
 	return a.jobsImpl.DeleteRun(ctx, DeleteRun{
 		RunId: runId,
 	})

@@ -21,13 +21,13 @@ func TestAccExperiments(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := ExperimentsAPI.DeleteExperiment(ctx, ml.DeleteExperiment{
+		_, err := ExperimentsAPI.DeleteExperiment(ctx, ml.DeleteExperiment{
 			ExperimentId: experiment.ExperimentId,
 		})
 		require.NoError(t, err)
 	})
 
-	err = ExperimentsAPI.UpdateExperiment(ctx, ml.UpdateExperiment{
+	_, err = ExperimentsAPI.UpdateExperiment(ctx, ml.UpdateExperiment{
 		NewName:      RandomName("/tmp/go-sdk-"),
 		ExperimentId: experiment.ExperimentId,
 	})
@@ -53,7 +53,7 @@ func TestAccMLflowRuns(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := ExperimentsAPI.DeleteExperiment(ctx, ml.DeleteExperiment{
+		_, err := ExperimentsAPI.DeleteExperiment(ctx, ml.DeleteExperiment{
 			ExperimentId: experiment.ExperimentId,
 		})
 		require.NoError(t, err)
@@ -71,7 +71,7 @@ func TestAccMLflowRuns(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		// TODO: OpenAPI: fix mapping
-		err := ExperimentsAPI.DeleteRun(ctx, ml.DeleteRun{
+		_, err := ExperimentsAPI.DeleteRun(ctx, ml.DeleteRun{
 			RunId: created.Run.Info.RunId,
 		})
 		require.NoError(t, err)
@@ -102,7 +102,7 @@ func TestAccModels(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = ModelRegistryAPI.UpdateModel(ctx, ml.UpdateModelRequest{
+	_, err = ModelRegistryAPI.UpdateModel(ctx, ml.UpdateModelRequest{
 		Name:        model.RegisteredModelDatabricks.Name,
 		Description: RandomName("comment "),
 	})
@@ -114,7 +114,7 @@ func TestAccModels(t *testing.T) {
 }
 
 func deleteModel(t *testing.T, ModelRegistryAPI *ml.ModelRegistryClient, ctx context.Context, created *ml.CreateModelResponse) {
-	err := ModelRegistryAPI.DeleteModel(ctx, ml.DeleteModelRequest{
+	_, err := ModelRegistryAPI.DeleteModel(ctx, ml.DeleteModelRequest{
 		Name: created.RegisteredModel.Name,
 	})
 	require.NoError(t, err)
@@ -135,12 +135,12 @@ func TestAccRegistryWebhooks(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := ModelRegistryAPI.DeleteWebhook(ctx, ml.DeleteWebhookRequest{
+		_, err := ModelRegistryAPI.DeleteWebhook(ctx, ml.DeleteWebhookRequest{
 			Id: created.Webhook.Id,
 		})
 		require.NoError(t, err)
 	})
-	err = ModelRegistryAPI.UpdateWebhook(ctx, ml.UpdateRegistryWebhook{
+	_, err = ModelRegistryAPI.UpdateWebhook(ctx, ml.UpdateRegistryWebhook{
 		Id:          created.Webhook.Id,
 		Description: RandomName("updated "),
 	})
@@ -173,7 +173,7 @@ func deleteModelVersion(t *testing.T, ModelRegistryAPI *ml.ModelRegistryClient, 
 		time.Sleep(2 * time.Second)
 	}
 
-	err := ModelRegistryAPI.DeleteModelVersion(ctx, ml.DeleteModelVersionRequest{
+	_, err := ModelRegistryAPI.DeleteModelVersion(ctx, ml.DeleteModelVersionRequest{
 		// TODO: OpenAPI: x-databricks-sdk-inline
 		Name:    created.ModelVersion.Name,
 		Version: created.ModelVersion.Version,
@@ -204,7 +204,7 @@ func TestAccModelVersions(t *testing.T) {
 		deleteModelVersion(t, ModelRegistryAPI, ctx, created)
 	})
 
-	err = ModelRegistryAPI.UpdateModelVersion(ctx, ml.UpdateModelVersionRequest{
+	_, err = ModelRegistryAPI.UpdateModelVersion(ctx, ml.UpdateModelVersionRequest{
 		Description: RandomName("description "),
 		Name:        created.ModelVersion.Name,
 		Version:     created.ModelVersion.Version,
@@ -244,7 +244,7 @@ func TestAccModelVersionComments(t *testing.T) {
 
 	t.Cleanup(func() {
 		// TODO: OpenAPI: x-databricks-sdk-inline
-		err := ModelRegistryAPI.DeleteComment(ctx, ml.DeleteCommentRequest{
+		_, err := ModelRegistryAPI.DeleteComment(ctx, ml.DeleteCommentRequest{
 			Id: created.Comment.Id,
 		})
 		require.NoError(t, err)

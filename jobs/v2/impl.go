@@ -19,24 +19,24 @@ type jobsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) error {
+func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) (*CancelAllRunsResponse, error) {
 	var cancelAllRunsResponse CancelAllRunsResponse
 	path := "/api/2.2/jobs/runs/cancel-all"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &cancelAllRunsResponse)
-	return err
+	return &cancelAllRunsResponse, err
 }
 
-func (a *jobsImpl) CancelRun(ctx context.Context, request CancelRun) error {
+func (a *jobsImpl) CancelRun(ctx context.Context, request CancelRun) (*CancelRunResponse, error) {
 	var cancelRunResponse CancelRunResponse
 	path := "/api/2.2/jobs/runs/cancel"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &cancelRunResponse)
-	return err
+	return &cancelRunResponse, err
 }
 
 func (a *jobsImpl) Create(ctx context.Context, request CreateJob) (*CreateResponse, error) {
@@ -50,24 +50,24 @@ func (a *jobsImpl) Create(ctx context.Context, request CreateJob) (*CreateRespon
 	return &createResponse, err
 }
 
-func (a *jobsImpl) Delete(ctx context.Context, request DeleteJob) error {
+func (a *jobsImpl) Delete(ctx context.Context, request DeleteJob) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := "/api/2.2/jobs/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
-func (a *jobsImpl) DeleteRun(ctx context.Context, request DeleteRun) error {
+func (a *jobsImpl) DeleteRun(ctx context.Context, request DeleteRun) (*DeleteRunResponse, error) {
 	var deleteRunResponse DeleteRunResponse
 	path := "/api/2.2/jobs/runs/delete"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &deleteRunResponse)
-	return err
+	return &deleteRunResponse, err
 }
 
 func (a *jobsImpl) ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error) {
@@ -229,14 +229,14 @@ func (a *jobsImpl) RepairRun(ctx context.Context, request RepairRun) (*RepairRun
 	return &repairRunResponse, err
 }
 
-func (a *jobsImpl) Reset(ctx context.Context, request ResetJob) error {
+func (a *jobsImpl) Reset(ctx context.Context, request ResetJob) (*ResetResponse, error) {
 	var resetResponse ResetResponse
 	path := "/api/2.2/jobs/reset"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &resetResponse)
-	return err
+	return &resetResponse, err
 }
 
 func (a *jobsImpl) RunNow(ctx context.Context, request RunNow) (*RunNowResponse, error) {
@@ -272,14 +272,14 @@ func (a *jobsImpl) Submit(ctx context.Context, request SubmitRun) (*SubmitRunRes
 	return &submitRunResponse, err
 }
 
-func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) error {
+func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) (*UpdateResponse, error) {
 	var updateResponse UpdateResponse
 	path := "/api/2.2/jobs/update"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &updateResponse)
-	return err
+	return &updateResponse, err
 }
 
 func (a *jobsImpl) UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error) {

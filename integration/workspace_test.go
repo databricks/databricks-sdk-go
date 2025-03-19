@@ -21,10 +21,10 @@ func myNotebookPath(t *testing.T, cfg *config.Config) string {
 	testDir := filepath.Join("/Users", me(t, cfg).UserName, ".sdk", "notebooks", RandomName("t-"))
 	notebook := filepath.Join(testDir, RandomName("n-"))
 
-	err = workspaceAPI.MkdirsByPath(ctx, testDir)
+	_, err = workspaceAPI.MkdirsByPath(ctx, testDir)
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = workspaceAPI.Delete(ctx, workspace.Delete{
+		_, err = workspaceAPI.Delete(ctx, workspace.Delete{
 			Path:      testDir,
 			Recursive: true,
 		})
@@ -58,7 +58,7 @@ func TestGetOAuthToken(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = ModelRegistryApi.UpdateModel(ctx, ml.UpdateModelRequest{
+	_, err = ModelRegistryApi.UpdateModel(ctx, ml.UpdateModelRequest{
 		Name:        model.RegisteredModelDatabricks.Name,
 		Description: RandomName("comment "),
 	})
@@ -106,7 +106,7 @@ func TestAccWorkspaceIntegration(t *testing.T) {
 	notebook := myNotebookPath(t, cfg)
 
 	// Import the test notebook
-	err = WorkspaceAPI.Import(ctx, workspace.Import{
+	_, err = WorkspaceAPI.Import(ctx, workspace.Import{
 		Path:      notebook,
 		Format:    workspace.ImportFormatSource,
 		Language:  workspace.LanguagePython,
@@ -155,7 +155,7 @@ func TestAccWorkspaceUploadNotebookWithFileExtensionNoTranspile(t *testing.T) {
 	err = WorkspaceAPI.Upload(ctx, notebookPath, strings.NewReader("print(1)"))
 	assert.NoError(t, err)
 	t.Cleanup(func() {
-		err = WorkspaceAPI.Delete(ctx, workspace.Delete{
+		_, err = WorkspaceAPI.Delete(ctx, workspace.Delete{
 			Path: notebookPath,
 		})
 		require.NoError(t, err)
@@ -184,7 +184,7 @@ func TestAccWorkspaceUploadNotebookWithFileNoExtensionNoTranspile(t *testing.T) 
 		workspace.UploadLanguage(workspace.LanguagePython))
 	assert.NoError(t, err)
 	t.Cleanup(func() {
-		err = WorkspaceAPI.Delete(ctx, workspace.Delete{
+		_, err = WorkspaceAPI.Delete(ctx, workspace.Delete{
 			Path: notebookPath,
 		})
 		require.NoError(t, err)
@@ -213,7 +213,7 @@ func TestAccWorkspaceUploadFileNoTranspile(t *testing.T) {
 		workspace.UploadFormat(workspace.ImportFormatAuto))
 	assert.NoError(t, err)
 	t.Cleanup(func() {
-		err = WorkspaceAPI.Delete(ctx, workspace.Delete{
+		_, err = WorkspaceAPI.Delete(ctx, workspace.Delete{
 			Path: txtPath,
 		})
 		require.NoError(t, err)

@@ -18,10 +18,10 @@ type VectorSearchEndpointsInterface interface {
 	CreateEndpoint(ctx context.Context, request CreateEndpoint) (*EndpointInfo, error)
 
 	// Delete an endpoint.
-	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error
+	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) (*DeleteEndpointResponse, error)
 
 	// Delete an endpoint.
-	DeleteEndpointByEndpointName(ctx context.Context, endpointName string) error
+	DeleteEndpointByEndpointName(ctx context.Context, endpointName string) (*DeleteEndpointResponse, error)
 
 	// Get an endpoint.
 	GetEndpoint(ctx context.Context, request GetEndpointRequest) (*EndpointInfo, error)
@@ -54,7 +54,7 @@ type VectorSearchEndpointsAPI struct {
 }
 
 // Delete an endpoint.
-func (a *VectorSearchEndpointsAPI) DeleteEndpointByEndpointName(ctx context.Context, endpointName string) error {
+func (a *VectorSearchEndpointsAPI) DeleteEndpointByEndpointName(ctx context.Context, endpointName string) (*DeleteEndpointResponse, error) {
 	return a.vectorSearchEndpointsImpl.DeleteEndpoint(ctx, DeleteEndpointRequest{
 		EndpointName: endpointName,
 	})
@@ -82,12 +82,12 @@ type VectorSearchIndexesInterface interface {
 	// Delete an index.
 	//
 	// Delete an index.
-	DeleteIndex(ctx context.Context, request DeleteIndexRequest) error
+	DeleteIndex(ctx context.Context, request DeleteIndexRequest) (*DeleteIndexResponse, error)
 
 	// Delete an index.
 	//
 	// Delete an index.
-	DeleteIndexByIndexName(ctx context.Context, indexName string) error
+	DeleteIndexByIndexName(ctx context.Context, indexName string) (*DeleteIndexResponse, error)
 
 	// Get an index.
 	//
@@ -133,7 +133,7 @@ type VectorSearchIndexesInterface interface {
 	// Synchronize an index.
 	//
 	// Triggers a synchronization process for a specified vector index.
-	SyncIndex(ctx context.Context, request SyncIndexRequest) error
+	SyncIndex(ctx context.Context, request SyncIndexRequest) (*SyncIndexResponse, error)
 
 	// Upsert data into an index.
 	//
@@ -166,7 +166,7 @@ type VectorSearchIndexesAPI struct {
 // Delete an index.
 //
 // Delete an index.
-func (a *VectorSearchIndexesAPI) DeleteIndexByIndexName(ctx context.Context, indexName string) error {
+func (a *VectorSearchIndexesAPI) DeleteIndexByIndexName(ctx context.Context, indexName string) (*DeleteIndexResponse, error) {
 	return a.vectorSearchIndexesImpl.DeleteIndex(ctx, DeleteIndexRequest{
 		IndexName: indexName,
 	})

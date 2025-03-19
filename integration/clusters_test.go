@@ -78,7 +78,7 @@ func TestAccAwsInstanceProfiles(t *testing.T) {
 	}
 
 	arn := "arn:aws:iam::000000000000:instance-profile/abc"
-	err = InstanceProfilesAPI.Add(ctx, compute.AddInstanceProfile{
+	_, err = InstanceProfilesAPI.Add(ctx, compute.AddInstanceProfile{
 		InstanceProfileArn: arn,
 		SkipValidation:     true,
 		IamRoleArn:         "arn:aws:iam::000000000000:role/bcd",
@@ -87,7 +87,7 @@ func TestAccAwsInstanceProfiles(t *testing.T) {
 
 	defer InstanceProfilesAPI.RemoveByInstanceProfileArn(ctx, arn)
 
-	err = InstanceProfilesAPI.Edit(ctx, compute.InstanceProfile{
+	_, err = InstanceProfilesAPI.Edit(ctx, compute.InstanceProfile{
 		InstanceProfileArn: arn,
 		IamRoleArn:         "arn:aws:iam::000000000000:role/bcdf",
 	})

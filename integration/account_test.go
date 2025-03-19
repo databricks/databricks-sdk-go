@@ -20,7 +20,7 @@ func TestAccAccountServicePrincipal(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := ServicePrincipalsAPI.Delete(ctx, iam.DeleteAccountServicePrincipalRequest{Id: spCreate.Id})
+		_, err := ServicePrincipalsAPI.Delete(ctx, iam.DeleteAccountServicePrincipalRequest{Id: spCreate.Id})
 		require.True(t, err == nil || apierr.IsMissing(err))
 	})
 
@@ -42,7 +42,7 @@ func TestAccAccountServicePrincipal(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, spList[0].Id, sp.Id)
 
-	err = ServicePrincipalsAPI.Patch(ctx, iam.PartialUpdate{
+	_, err = ServicePrincipalsAPI.Patch(ctx, iam.PartialUpdate{
 		Id: sp.Id,
 		Operations: []iam.Patch{
 			{
@@ -57,7 +57,7 @@ func TestAccAccountServicePrincipal(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = ServicePrincipalsAPI.Update(ctx, iam.ServicePrincipal{
+	_, err = ServicePrincipalsAPI.Update(ctx, iam.ServicePrincipal{
 		Active:      true,
 		DisplayName: sp.DisplayName,
 		Id:          sp.Id,

@@ -23,12 +23,12 @@ type PipelinesInterface interface {
 	// Delete a pipeline.
 	//
 	// Deletes a pipeline.
-	Delete(ctx context.Context, request DeletePipelineRequest) error
+	Delete(ctx context.Context, request DeletePipelineRequest) (*DeletePipelineResponse, error)
 
 	// Delete a pipeline.
 	//
 	// Deletes a pipeline.
-	DeleteByPipelineId(ctx context.Context, pipelineId string) error
+	DeleteByPipelineId(ctx context.Context, pipelineId string) (*DeletePipelineResponse, error)
 
 	// Get a pipeline.
 	Get(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error)
@@ -147,12 +147,12 @@ type PipelinesInterface interface {
 	//
 	// Stops the pipeline by canceling the active update. If there is no active
 	// update for the pipeline, this request is a no-op.
-	Stop(ctx context.Context, request StopRequest) error
+	Stop(ctx context.Context, request StopRequest) (*StopPipelineResponse, error)
 
 	// Edit a pipeline.
 	//
 	// Updates a pipeline with the supplied configuration.
-	Update(ctx context.Context, request EditPipeline) error
+	Update(ctx context.Context, request EditPipeline) (*EditPipelineResponse, error)
 
 	// Update pipeline permissions.
 	//
@@ -190,7 +190,7 @@ type PipelinesAPI struct {
 // Delete a pipeline.
 //
 // Deletes a pipeline.
-func (a *PipelinesAPI) DeleteByPipelineId(ctx context.Context, pipelineId string) error {
+func (a *PipelinesAPI) DeleteByPipelineId(ctx context.Context, pipelineId string) (*DeletePipelineResponse, error) {
 	return a.pipelinesImpl.Delete(ctx, DeletePipelineRequest{
 		PipelineId: pipelineId,
 	})
