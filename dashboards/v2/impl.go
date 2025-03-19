@@ -149,24 +149,24 @@ func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSub
 	return &subscription, err
 }
 
-func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
+func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) (*DeleteScheduleResponse, error) {
 	var deleteScheduleResponse DeleteScheduleResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteScheduleResponse)
-	return err
+	return &deleteScheduleResponse, err
 }
 
-func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error {
+func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) (*DeleteSubscriptionResponse, error) {
 	var deleteSubscriptionResponse DeleteSubscriptionResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", request.DashboardId, request.ScheduleId, request.SubscriptionId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteSubscriptionResponse)
-	return err
+	return &deleteSubscriptionResponse, err
 }
 
 func (a *lakeviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
@@ -351,24 +351,24 @@ func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*Pu
 	return &publishedDashboard, err
 }
 
-func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) error {
+func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) (*TrashDashboardResponse, error) {
 	var trashDashboardResponse TrashDashboardResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &trashDashboardResponse)
-	return err
+	return &trashDashboardResponse, err
 }
 
-func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboardRequest) error {
+func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboardRequest) (*UnpublishDashboardResponse, error) {
 	var unpublishDashboardResponse UnpublishDashboardResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &unpublishDashboardResponse)
-	return err
+	return &unpublishDashboardResponse, err
 }
 
 func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error) {
@@ -398,14 +398,14 @@ type lakeviewEmbeddedImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error {
+func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) (*GetPublishedDashboardEmbeddedResponse, error) {
 	var getPublishedDashboardEmbeddedResponse GetPublishedDashboardEmbeddedResponse
 	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/embedded", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardEmbeddedResponse)
-	return err
+	return &getPublishedDashboardEmbeddedResponse, err
 }
 
 // unexported type that holds implementations of just QueryExecution API methods
@@ -423,7 +423,7 @@ func (a *queryExecutionImpl) CancelPublishedQueryExecution(ctx context.Context, 
 	return &cancelQueryExecutionResponse, err
 }
 
-func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error {
+func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) (*ExecuteQueryResponse, error) {
 	var executeQueryResponse ExecuteQueryResponse
 	path := "/api/2.0/lakeview-query/query/published"
 	queryParams := make(map[string]any)
@@ -431,7 +431,7 @@ func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context,
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &executeQueryResponse)
-	return err
+	return &executeQueryResponse, err
 }
 
 func (a *queryExecutionImpl) PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error) {

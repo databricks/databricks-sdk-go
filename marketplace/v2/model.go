@@ -658,6 +658,8 @@ type FileParentType string
 
 const FileParentTypeListing FileParentType = `LISTING`
 
+const FileParentTypeListingResource FileParentType = `LISTING_RESOURCE`
+
 const FileParentTypeProvider FileParentType = `PROVIDER`
 
 // String representation for [fmt.Print]
@@ -668,11 +670,11 @@ func (f *FileParentType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *FileParentType) Set(v string) error {
 	switch v {
-	case `LISTING`, `PROVIDER`:
+	case `LISTING`, `LISTING_RESOURCE`, `PROVIDER`:
 		*f = FileParentType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "LISTING", "PROVIDER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "LISTING", "LISTING_RESOURCE", "PROVIDER"`, v)
 	}
 }
 

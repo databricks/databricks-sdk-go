@@ -24,13 +24,13 @@ type ProvidersInterface interface {
 	//
 	// Deletes an authentication provider, if the caller is a metastore admin or is
 	// the owner of the provider.
-	Delete(ctx context.Context, request DeleteProviderRequest) error
+	Delete(ctx context.Context, request DeleteProviderRequest) (*DeleteResponse, error)
 
 	// Delete a provider.
 	//
 	// Deletes an authentication provider, if the caller is a metastore admin or is
 	// the owner of the provider.
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// Get a provider.
 	//
@@ -140,7 +140,7 @@ type ProvidersAPI struct {
 //
 // Deletes an authentication provider, if the caller is a metastore admin or is
 // the owner of the provider.
-func (a *ProvidersAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *ProvidersAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.providersImpl.Delete(ctx, DeleteProviderRequest{
 		Name: name,
 	})
@@ -209,12 +209,12 @@ type RecipientActivationInterface interface {
 	// Get a share activation URL.
 	//
 	// Gets an activation URL for a share.
-	GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) error
+	GetActivationUrlInfo(ctx context.Context, request GetActivationUrlInfoRequest) (*GetActivationUrlInfoResponse, error)
 
 	// Get a share activation URL.
 	//
 	// Gets an activation URL for a share.
-	GetActivationUrlInfoByActivationUrl(ctx context.Context, activationUrl string) error
+	GetActivationUrlInfoByActivationUrl(ctx context.Context, activationUrl string) (*GetActivationUrlInfoResponse, error)
 
 	// Get an access token.
 	//
@@ -254,7 +254,7 @@ type RecipientActivationAPI struct {
 // Get a share activation URL.
 //
 // Gets an activation URL for a share.
-func (a *RecipientActivationAPI) GetActivationUrlInfoByActivationUrl(ctx context.Context, activationUrl string) error {
+func (a *RecipientActivationAPI) GetActivationUrlInfoByActivationUrl(ctx context.Context, activationUrl string) (*GetActivationUrlInfoResponse, error) {
 	return a.recipientActivationImpl.GetActivationUrlInfo(ctx, GetActivationUrlInfoRequest{
 		ActivationUrl: activationUrl,
 	})
@@ -283,13 +283,13 @@ type RecipientsInterface interface {
 	//
 	// Deletes the specified recipient from the metastore. The caller must be the
 	// owner of the recipient.
-	Delete(ctx context.Context, request DeleteRecipientRequest) error
+	Delete(ctx context.Context, request DeleteRecipientRequest) (*DeleteResponse, error)
 
 	// Delete a share recipient.
 	//
 	// Deletes the specified recipient from the metastore. The caller must be the
 	// owner of the recipient.
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// Get a share recipient.
 	//
@@ -385,7 +385,7 @@ type RecipientsAPI struct {
 //
 // Deletes the specified recipient from the metastore. The caller must be the
 // owner of the recipient.
-func (a *RecipientsAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *RecipientsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.recipientsImpl.Delete(ctx, DeleteRecipientRequest{
 		Name: name,
 	})
@@ -425,13 +425,13 @@ type SharesInterface interface {
 	//
 	// Deletes a data object share from the metastore. The caller must be an owner
 	// of the share.
-	Delete(ctx context.Context, request DeleteShareRequest) error
+	Delete(ctx context.Context, request DeleteShareRequest) (*DeleteResponse, error)
 
 	// Delete a share.
 	//
 	// Deletes a data object share from the metastore. The caller must be an owner
 	// of the share.
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// Get a share.
 	//
@@ -528,7 +528,7 @@ type SharesAPI struct {
 //
 // Deletes a data object share from the metastore. The caller must be an owner
 // of the share.
-func (a *SharesAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *SharesAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.sharesImpl.Delete(ctx, DeleteShareRequest{
 		Name: name,
 	})

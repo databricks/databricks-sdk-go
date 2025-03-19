@@ -34,7 +34,7 @@ func TestUcAccFilesUploadAndDownload(t *testing.T) {
 	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/files-with-?-and-#-")
 	FilesAPI, err := files.NewFilesClient(cfg)
 	require.NoError(t, err)
-	err = FilesAPI.Upload(ctx, files.UploadRequest{
+	_, err = FilesAPI.Upload(ctx, files.UploadRequest{
 		FilePath: filePath,
 		Contents: io.NopCloser(strings.NewReader("abcd")),
 	})
@@ -46,7 +46,7 @@ func TestUcAccFilesUploadAndDownload(t *testing.T) {
 	require.Equal(t, fileHead.ContentType, "application/octet-stream")
 	require.Equal(t, fileHead.ContentLength, int64(4))
 	t.Cleanup(func() {
-		err = FilesAPI.DeleteByFilePath(ctx, filePath)
+		_, err = FilesAPI.DeleteByFilePath(ctx, filePath)
 		assert.NoError(t, err)
 	})
 	raw, err := FilesAPI.DownloadByFilePath(ctx, filePath)
@@ -66,7 +66,7 @@ func TestUcAccFilesDelete(t *testing.T) {
 	filePath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/file-")
 	require.NoError(t, createFile(t, ctx, FilesAPI, filePath, "Hello, world!"))
 
-	err = FilesAPI.DeleteByFilePath(ctx, filePath)
+	_, err = FilesAPI.DeleteByFilePath(ctx, filePath)
 	require.NoError(t, err)
 }
 
@@ -119,7 +119,7 @@ func TestUcAccFilesDeleteDirectory(t *testing.T) {
 	directoryPath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/directory-")
 	require.NoError(t, createDirectory(t, ctx, FilesAPI, directoryPath))
 
-	err = FilesAPI.DeleteDirectoryByDirectoryPath(ctx, directoryPath)
+	_, err = FilesAPI.DeleteDirectoryByDirectoryPath(ctx, directoryPath)
 	assert.NoError(t, err)
 }
 
@@ -131,7 +131,7 @@ func TestUcAccFilesGetDirectoryMetadata(t *testing.T) {
 	directoryPath := RandomName("/Volumes/" + volume.CatalogName + "/" + volume.SchemaName + "/" + volume.Name + "/directory-")
 	require.NoError(t, createDirectory(t, ctx, FilesAPI, directoryPath))
 
-	err = FilesAPI.GetDirectoryMetadataByDirectoryPath(ctx, directoryPath)
+	_, err = FilesAPI.GetDirectoryMetadataByDirectoryPath(ctx, directoryPath)
 	require.NoError(t, err)
 }
 
@@ -232,7 +232,7 @@ func TestAccDbfsOpenDirectory(t *testing.T) {
 	})
 
 	// Create directory.
-	err = DbfsAPI.MkdirsByPath(ctx, path)
+	_, err = DbfsAPI.MkdirsByPath(ctx, path)
 	require.NoError(t, err)
 
 	// Try to open the directory for reading.
@@ -303,13 +303,13 @@ func TestAccListDbfsIntegration(t *testing.T) {
 
 	t.Cleanup(func() {
 		// recursively delete the test dir1 and any test files inside it
-		err := DbfsAPI.Delete(ctx, files.Delete{
+		_, err := DbfsAPI.Delete(ctx, files.Delete{
 			Path:      testPath1,
 			Recursive: true,
 		})
 		require.NoError(t, err)
 		// recursively delete the test dir2 and any test files inside it
-		err = DbfsAPI.Delete(ctx, files.Delete{
+		_, err = DbfsAPI.Delete(ctx, files.Delete{
 			Path:      testPath2,
 			Recursive: true,
 		})
@@ -317,7 +317,7 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	})
 
 	// make test dir2 in workspace root
-	err = DbfsAPI.MkdirsByPath(ctx, testPath2)
+	_, err = DbfsAPI.MkdirsByPath(ctx, testPath2)
 	require.NoError(t, err)
 
 	// create testFile1 in test dir2
@@ -328,14 +328,14 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// write 'Hello, World!' to testFile1
-	err = DbfsAPI.AddBlock(ctx, files.AddBlock{
+	_, err = DbfsAPI.AddBlock(ctx, files.AddBlock{
 		Data:   base64.StdEncoding.EncodeToString([]byte("Hello, World!")),
 		Handle: createdFile.Handle,
 	})
 	require.NoError(t, err)
 
 	// Close testFile1 handle
-	err = DbfsAPI.CloseByHandle(ctx, createdFile.Handle)
+	_, err = DbfsAPI.CloseByHandle(ctx, createdFile.Handle)
 	require.NoError(t, err)
 
 	// Get testFile1 status
@@ -356,18 +356,18 @@ func TestAccListDbfsIntegration(t *testing.T) {
 	assert.True(t, foundTestFile)
 
 	// make test dir1 in workspace root
-	err = DbfsAPI.MkdirsByPath(ctx, testPath1)
+	_, err = DbfsAPI.MkdirsByPath(ctx, testPath1)
 	require.NoError(t, err)
 
 	// move testFile1 to test dir1
-	err = DbfsAPI.Move(ctx, files.Move{
+	_, err = DbfsAPI.Move(ctx, files.Move{
 		SourcePath:      filepath.Join(testPath2, testFile1),
 		DestinationPath: filepath.Join(testPath1, testFile1),
 	})
 	require.NoError(t, err)
 
 	// put a new file testFile2 in test dir1
-	err = DbfsAPI.Put(ctx, files.Put{
+	_, err = DbfsAPI.Put(ctx, files.Put{
 		Path:      filepath.Join(testPath1, testFile2),
 		Contents:  base64.StdEncoding.EncodeToString([]byte("Bye Bye, World!")),
 		Overwrite: true,
@@ -431,7 +431,7 @@ func setupUCVolume(t *testing.T) (context.Context, *config.Config, *catalog.Volu
 func createDirectory(t *testing.T, ctx context.Context, FilesAPI *files.FilesClient, directory string) error {
 	t.Helper()
 
-	err := FilesAPI.CreateDirectory(ctx, files.CreateDirectoryRequest{
+	_, err := FilesAPI.CreateDirectory(ctx, files.CreateDirectoryRequest{
 		DirectoryPath: directory,
 	})
 	if err != nil {
@@ -439,7 +439,7 @@ func createDirectory(t *testing.T, ctx context.Context, FilesAPI *files.FilesCli
 	}
 
 	t.Cleanup(func() {
-		if err := FilesAPI.DeleteDirectoryByDirectoryPath(ctx, directory); err != nil {
+		if _, err := FilesAPI.DeleteDirectoryByDirectoryPath(ctx, directory); err != nil {
 			t.Log("failed to clean up directory:", err)
 		}
 	})
@@ -450,7 +450,7 @@ func createDirectory(t *testing.T, ctx context.Context, FilesAPI *files.FilesCli
 func createFile(t *testing.T, ctx context.Context, FilesAPI *files.FilesClient, filePath, contents string) error {
 	t.Helper()
 
-	err := FilesAPI.Upload(ctx, files.UploadRequest{
+	_, err := FilesAPI.Upload(ctx, files.UploadRequest{
 		FilePath: filePath,
 		Contents: io.NopCloser(strings.NewReader(contents)),
 	})
@@ -459,7 +459,7 @@ func createFile(t *testing.T, ctx context.Context, FilesAPI *files.FilesClient, 
 	}
 
 	t.Cleanup(func() {
-		if err := FilesAPI.DeleteByFilePath(ctx, filePath); err != nil {
+		if _, err := FilesAPI.DeleteByFilePath(ctx, filePath); err != nil {
 			t.Log("failed to clean up file:", err)
 		}
 	})

@@ -17,19 +17,19 @@ type AccountMetastoreAssignmentsInterface interface {
 	// Assigns a workspace to a metastore.
 	//
 	// Creates an assignment to a metastore for a workspace
-	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error
+	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) (*CreateResponse, error)
 
 	// Delete a metastore assignment.
 	//
 	// Deletes a metastore assignment to a workspace, leaving the workspace with no
 	// metastore.
-	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error
+	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) (*DeleteResponse, error)
 
 	// Delete a metastore assignment.
 	//
 	// Deletes a metastore assignment to a workspace, leaving the workspace with no
 	// metastore.
-	DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) error
+	DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) (*DeleteResponse, error)
 
 	// Gets the metastore assignment for a workspace.
 	//
@@ -73,7 +73,7 @@ type AccountMetastoreAssignmentsInterface interface {
 	//
 	// Updates an assignment to a metastore for a workspace. Currently, only the
 	// default catalog may be updated.
-	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error
+	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) (*UpdateResponse, error)
 }
 
 func NewAccountMetastoreAssignments(client *client.DatabricksClient) *AccountMetastoreAssignmentsAPI {
@@ -93,7 +93,7 @@ type AccountMetastoreAssignmentsAPI struct {
 //
 // Deletes a metastore assignment to a workspace, leaving the workspace with no
 // metastore.
-func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) error {
+func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) (*DeleteResponse, error) {
 	return a.accountMetastoreAssignmentsImpl.Delete(ctx, DeleteAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
 		MetastoreId: metastoreId,
@@ -132,12 +132,12 @@ type AccountMetastoresInterface interface {
 	// Delete a metastore.
 	//
 	// Deletes a Unity Catalog metastore for an account, both specified by ID.
-	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error
+	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) (*DeleteResponse, error)
 
 	// Delete a metastore.
 	//
 	// Deletes a Unity Catalog metastore for an account, both specified by ID.
-	DeleteByMetastoreId(ctx context.Context, metastoreId string) error
+	DeleteByMetastoreId(ctx context.Context, metastoreId string) (*DeleteResponse, error)
 
 	// Get a metastore.
 	//
@@ -186,7 +186,7 @@ type AccountMetastoresAPI struct {
 // Delete a metastore.
 //
 // Deletes a Unity Catalog metastore for an account, both specified by ID.
-func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) error {
+func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) (*DeleteResponse, error) {
 	return a.accountMetastoresImpl.Delete(ctx, DeleteAccountMetastoreRequest{
 		MetastoreId: metastoreId,
 	})
@@ -219,13 +219,13 @@ type AccountStorageCredentialsInterface interface {
 	//
 	// Deletes a storage credential from the metastore. The caller must be an owner
 	// of the storage credential.
-	Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error
+	Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) (*DeleteResponse, error)
 
 	// Delete a storage credential.
 	//
 	// Deletes a storage credential from the metastore. The caller must be an owner
 	// of the storage credential.
-	DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) error
+	DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*DeleteResponse, error)
 
 	// Gets the named storage credential.
 	//
@@ -288,7 +288,7 @@ type AccountStorageCredentialsAPI struct {
 //
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
-func (a *AccountStorageCredentialsAPI) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) error {
+func (a *AccountStorageCredentialsAPI) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*DeleteResponse, error) {
 	return a.accountStorageCredentialsImpl.Delete(ctx, DeleteAccountStorageCredentialRequest{
 		MetastoreId:           metastoreId,
 		StorageCredentialName: storageCredentialName,
@@ -376,13 +376,13 @@ type CatalogsInterface interface {
 	//
 	// Deletes the catalog that matches the supplied name. The caller must be a
 	// metastore admin or the owner of the catalog.
-	Delete(ctx context.Context, request DeleteCatalogRequest) error
+	Delete(ctx context.Context, request DeleteCatalogRequest) (*DeleteResponse, error)
 
 	// Delete a catalog.
 	//
 	// Deletes the catalog that matches the supplied name. The caller must be a
 	// metastore admin or the owner of the catalog.
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// Get a catalog.
 	//
@@ -452,7 +452,7 @@ type CatalogsAPI struct {
 //
 // Deletes the catalog that matches the supplied name. The caller must be a
 // metastore admin or the owner of the catalog.
-func (a *CatalogsAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *CatalogsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.catalogsImpl.Delete(ctx, DeleteCatalogRequest{
 		Name: name,
 	})
@@ -483,12 +483,12 @@ type ConnectionsInterface interface {
 	// Delete a connection.
 	//
 	// Deletes the connection that matches the supplied name.
-	Delete(ctx context.Context, request DeleteConnectionRequest) error
+	Delete(ctx context.Context, request DeleteConnectionRequest) (*DeleteResponse, error)
 
 	// Delete a connection.
 	//
 	// Deletes the connection that matches the supplied name.
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// Get a connection.
 	//
@@ -555,7 +555,7 @@ type ConnectionsAPI struct {
 // Delete a connection.
 //
 // Deletes the connection that matches the supplied name.
-func (a *ConnectionsAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *ConnectionsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.connectionsImpl.Delete(ctx, DeleteConnectionRequest{
 		Name: name,
 	})
@@ -611,13 +611,13 @@ type CredentialsInterface interface {
 	//
 	// Deletes a service or storage credential from the metastore. The caller must
 	// be an owner of the credential.
-	DeleteCredential(ctx context.Context, request DeleteCredentialRequest) error
+	DeleteCredential(ctx context.Context, request DeleteCredentialRequest) (*DeleteCredentialResponse, error)
 
 	// Delete a credential.
 	//
 	// Deletes a service or storage credential from the metastore. The caller must
 	// be an owner of the credential.
-	DeleteCredentialByNameArg(ctx context.Context, nameArg string) error
+	DeleteCredentialByNameArg(ctx context.Context, nameArg string) (*DeleteCredentialResponse, error)
 
 	// Generate a temporary service credential.
 	//
@@ -717,7 +717,7 @@ type CredentialsAPI struct {
 //
 // Deletes a service or storage credential from the metastore. The caller must
 // be an owner of the credential.
-func (a *CredentialsAPI) DeleteCredentialByNameArg(ctx context.Context, nameArg string) error {
+func (a *CredentialsAPI) DeleteCredentialByNameArg(ctx context.Context, nameArg string) (*DeleteCredentialResponse, error) {
 	return a.credentialsImpl.DeleteCredential(ctx, DeleteCredentialRequest{
 		NameArg: nameArg,
 	})
@@ -747,13 +747,13 @@ type ExternalLocationsInterface interface {
 	//
 	// Deletes the specified external location from the metastore. The caller must
 	// be the owner of the external location.
-	Delete(ctx context.Context, request DeleteExternalLocationRequest) error
+	Delete(ctx context.Context, request DeleteExternalLocationRequest) (*DeleteResponse, error)
 
 	// Delete an external location.
 	//
 	// Deletes the specified external location from the metastore. The caller must
 	// be the owner of the external location.
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// Get an external location.
 	//
@@ -828,7 +828,7 @@ type ExternalLocationsAPI struct {
 //
 // Deletes the specified external location from the metastore. The caller must
 // be the owner of the external location.
-func (a *ExternalLocationsAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *ExternalLocationsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.externalLocationsImpl.Delete(ctx, DeleteExternalLocationRequest{
 		Name: name,
 	})
@@ -867,7 +867,7 @@ type FunctionsInterface interface {
 	// Is the owner of the function itself and have both the **USE_CATALOG**
 	// privilege on its parent catalog and the **USE_SCHEMA** privilege on its
 	// parent schema
-	Delete(ctx context.Context, request DeleteFunctionRequest) error
+	Delete(ctx context.Context, request DeleteFunctionRequest) (*DeleteResponse, error)
 
 	// Delete a function.
 	//
@@ -878,7 +878,7 @@ type FunctionsInterface interface {
 	// Is the owner of the function itself and have both the **USE_CATALOG**
 	// privilege on its parent catalog and the **USE_SCHEMA** privilege on its
 	// parent schema
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// Get a function.
 	//
@@ -977,7 +977,7 @@ type FunctionsAPI struct {
 // Is the owner of the function itself and have both the **USE_CATALOG**
 // privilege on its parent catalog and the **USE_SCHEMA** privilege on its
 // parent schema
-func (a *FunctionsAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *FunctionsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.functionsImpl.Delete(ctx, DeleteFunctionRequest{
 		Name: name,
 	})
@@ -1101,7 +1101,7 @@ type MetastoresInterface interface {
 	// Creates a new metastore assignment. If an assignment for the same
 	// __workspace_id__ exists, it will be overwritten by the new __metastore_id__
 	// and __default_catalog_name__. The caller must be an account admin.
-	Assign(ctx context.Context, request CreateMetastoreAssignment) error
+	Assign(ctx context.Context, request CreateMetastoreAssignment) (*AssignResponse, error)
 
 	// Create a metastore.
 	//
@@ -1120,12 +1120,12 @@ type MetastoresInterface interface {
 	// Delete a metastore.
 	//
 	// Deletes a metastore. The caller must be a metastore admin.
-	Delete(ctx context.Context, request DeleteMetastoreRequest) error
+	Delete(ctx context.Context, request DeleteMetastoreRequest) (*DeleteResponse, error)
 
 	// Delete a metastore.
 	//
 	// Deletes a metastore. The caller must be a metastore admin.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*DeleteResponse, error)
 
 	// Get a metastore.
 	//
@@ -1184,12 +1184,12 @@ type MetastoresInterface interface {
 	// Delete an assignment.
 	//
 	// Deletes a metastore assignment. The caller must be an account administrator.
-	Unassign(ctx context.Context, request UnassignRequest) error
+	Unassign(ctx context.Context, request UnassignRequest) (*UnassignResponse, error)
 
 	// Delete an assignment.
 	//
 	// Deletes a metastore assignment. The caller must be an account administrator.
-	UnassignByWorkspaceId(ctx context.Context, workspaceId int64) error
+	UnassignByWorkspaceId(ctx context.Context, workspaceId int64) (*UnassignResponse, error)
 
 	// Update a metastore.
 	//
@@ -1205,7 +1205,7 @@ type MetastoresInterface interface {
 	// the Workspace is already assigned a metastore. The caller must be an account
 	// admin to update __metastore_id__; otherwise, the caller can be a Workspace
 	// admin.
-	UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) error
+	UpdateAssignment(ctx context.Context, request UpdateMetastoreAssignment) (*UpdateAssignmentResponse, error)
 }
 
 func NewMetastores(client *client.DatabricksClient) *MetastoresAPI {
@@ -1237,7 +1237,7 @@ type MetastoresAPI struct {
 // Delete a metastore.
 //
 // Deletes a metastore. The caller must be a metastore admin.
-func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) error {
+func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) (*DeleteResponse, error) {
 	return a.metastoresImpl.Delete(ctx, DeleteMetastoreRequest{
 		Id: id,
 	})
@@ -1309,7 +1309,7 @@ func (a *MetastoresAPI) GetByName(ctx context.Context, name string) (*MetastoreI
 // Delete an assignment.
 //
 // Deletes a metastore assignment. The caller must be an account administrator.
-func (a *MetastoresAPI) UnassignByWorkspaceId(ctx context.Context, workspaceId int64) error {
+func (a *MetastoresAPI) UnassignByWorkspaceId(ctx context.Context, workspaceId int64) (*UnassignResponse, error) {
 	return a.metastoresImpl.Unassign(ctx, UnassignRequest{
 		WorkspaceId: workspaceId,
 	})
@@ -1326,7 +1326,7 @@ type ModelVersionsInterface interface {
 	// model. For the latter case, the caller must also be the owner or have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	Delete(ctx context.Context, request DeleteModelVersionRequest) error
+	Delete(ctx context.Context, request DeleteModelVersionRequest) (*DeleteResponse, error)
 
 	// Delete a Model Version.
 	//
@@ -1337,7 +1337,7 @@ type ModelVersionsInterface interface {
 	// model. For the latter case, the caller must also be the owner or have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	DeleteByFullNameAndVersion(ctx context.Context, fullName string, version int) error
+	DeleteByFullNameAndVersion(ctx context.Context, fullName string, version int) (*DeleteResponse, error)
 
 	// Get a Model Version.
 	//
@@ -1475,7 +1475,7 @@ type ModelVersionsAPI struct {
 // model. For the latter case, the caller must also be the owner or have the
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
-func (a *ModelVersionsAPI) DeleteByFullNameAndVersion(ctx context.Context, fullName string, version int) error {
+func (a *ModelVersionsAPI) DeleteByFullNameAndVersion(ctx context.Context, fullName string, version int) (*DeleteResponse, error) {
 	return a.modelVersionsImpl.Delete(ctx, DeleteModelVersionRequest{
 		FullName: fullName,
 		Version:  version,
@@ -1545,14 +1545,14 @@ type OnlineTablesInterface interface {
 	// Delete an online table. Warning: This will delete all the data in the online
 	// table. If the source Delta table was deleted or modified since this Online
 	// Table was created, this will lose the data forever!
-	Delete(ctx context.Context, request DeleteOnlineTableRequest) error
+	Delete(ctx context.Context, request DeleteOnlineTableRequest) (*DeleteResponse, error)
 
 	// Delete an Online Table.
 	//
 	// Delete an online table. Warning: This will delete all the data in the online
 	// table. If the source Delta table was deleted or modified since this Online
 	// Table was created, this will lose the data forever!
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// Get an Online Table.
 	//
@@ -1584,7 +1584,7 @@ type OnlineTablesAPI struct {
 // Delete an online table. Warning: This will delete all the data in the online
 // table. If the source Delta table was deleted or modified since this Online
 // Table was created, this will lose the data forever!
-func (a *OnlineTablesAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *OnlineTablesAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.onlineTablesImpl.Delete(ctx, DeleteOnlineTableRequest{
 		Name: name,
 	})
@@ -1613,7 +1613,7 @@ type QualityMonitorsInterface interface {
 	//
 	// Additionally, the call must be made from the workspace where the monitor was
 	// created.
-	CancelRefresh(ctx context.Context, request CancelRefreshRequest) error
+	CancelRefresh(ctx context.Context, request CancelRefreshRequest) (*CancelRefreshResponse, error)
 
 	// Create a table monitor.
 	//
@@ -1646,7 +1646,7 @@ type QualityMonitorsInterface interface {
 	//
 	// Note that the metric tables and dashboard will not be deleted as part of this
 	// call; those assets must be manually cleaned up (if desired).
-	Delete(ctx context.Context, request DeleteQualityMonitorRequest) error
+	Delete(ctx context.Context, request DeleteQualityMonitorRequest) (*DeleteResponse, error)
 
 	// Delete a table monitor.
 	//
@@ -1663,7 +1663,7 @@ type QualityMonitorsInterface interface {
 	//
 	// Note that the metric tables and dashboard will not be deleted as part of this
 	// call; those assets must be manually cleaned up (if desired).
-	DeleteByTableName(ctx context.Context, tableName string) error
+	DeleteByTableName(ctx context.Context, tableName string) (*DeleteResponse, error)
 
 	// Get a table monitor.
 	//
@@ -1838,7 +1838,7 @@ type QualityMonitorsAPI struct {
 //
 // Note that the metric tables and dashboard will not be deleted as part of this
 // call; those assets must be manually cleaned up (if desired).
-func (a *QualityMonitorsAPI) DeleteByTableName(ctx context.Context, tableName string) error {
+func (a *QualityMonitorsAPI) DeleteByTableName(ctx context.Context, tableName string) (*DeleteResponse, error) {
 	return a.qualityMonitorsImpl.Delete(ctx, DeleteQualityMonitorRequest{
 		TableName: tableName,
 	})
@@ -1929,7 +1929,7 @@ type RegisteredModelsInterface interface {
 	// the latter case, the caller must also be the owner or have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	Delete(ctx context.Context, request DeleteRegisteredModelRequest) error
+	Delete(ctx context.Context, request DeleteRegisteredModelRequest) (*DeleteResponse, error)
 
 	// Delete a Registered Model.
 	//
@@ -1940,7 +1940,7 @@ type RegisteredModelsInterface interface {
 	// the latter case, the caller must also be the owner or have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	DeleteByFullName(ctx context.Context, fullName string) error
+	DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error)
 
 	// Delete a Registered Model Alias.
 	//
@@ -1950,7 +1950,7 @@ type RegisteredModelsInterface interface {
 	// the latter case, the caller must also be the owner or have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	DeleteAlias(ctx context.Context, request DeleteAliasRequest) error
+	DeleteAlias(ctx context.Context, request DeleteAliasRequest) (*DeleteAliasResponse, error)
 
 	// Delete a Registered Model Alias.
 	//
@@ -1960,7 +1960,7 @@ type RegisteredModelsInterface interface {
 	// the latter case, the caller must also be the owner or have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	DeleteAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) error
+	DeleteAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) (*DeleteAliasResponse, error)
 
 	// Get a Registered Model.
 	//
@@ -2110,7 +2110,7 @@ type RegisteredModelsAPI struct {
 // the latter case, the caller must also be the owner or have the
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
-func (a *RegisteredModelsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
+func (a *RegisteredModelsAPI) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
 	return a.registeredModelsImpl.Delete(ctx, DeleteRegisteredModelRequest{
 		FullName: fullName,
 	})
@@ -2124,7 +2124,7 @@ func (a *RegisteredModelsAPI) DeleteByFullName(ctx context.Context, fullName str
 // the latter case, the caller must also be the owner or have the
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
-func (a *RegisteredModelsAPI) DeleteAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) error {
+func (a *RegisteredModelsAPI) DeleteAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) (*DeleteAliasResponse, error) {
 	return a.registeredModelsImpl.DeleteAlias(ctx, DeleteAliasRequest{
 		FullName: fullName,
 		Alias:    alias,
@@ -2282,13 +2282,13 @@ type SchemasInterface interface {
 	//
 	// Deletes the specified schema from the parent catalog. The caller must be the
 	// owner of the schema or an owner of the parent catalog.
-	Delete(ctx context.Context, request DeleteSchemaRequest) error
+	Delete(ctx context.Context, request DeleteSchemaRequest) (*DeleteResponse, error)
 
 	// Delete a schema.
 	//
 	// Deletes the specified schema from the parent catalog. The caller must be the
 	// owner of the schema or an owner of the parent catalog.
-	DeleteByFullName(ctx context.Context, fullName string) error
+	DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error)
 
 	// Get a schema.
 	//
@@ -2375,7 +2375,7 @@ type SchemasAPI struct {
 //
 // Deletes the specified schema from the parent catalog. The caller must be the
 // owner of the schema or an owner of the parent catalog.
-func (a *SchemasAPI) DeleteByFullName(ctx context.Context, fullName string) error {
+func (a *SchemasAPI) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
 	return a.schemasImpl.Delete(ctx, DeleteSchemaRequest{
 		FullName: fullName,
 	})
@@ -2456,13 +2456,13 @@ type StorageCredentialsInterface interface {
 	//
 	// Deletes a storage credential from the metastore. The caller must be an owner
 	// of the storage credential.
-	Delete(ctx context.Context, request DeleteStorageCredentialRequest) error
+	Delete(ctx context.Context, request DeleteStorageCredentialRequest) (*DeleteResponse, error)
 
 	// Delete a credential.
 	//
 	// Deletes a storage credential from the metastore. The caller must be an owner
 	// of the storage credential.
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// Get a credential.
 	//
@@ -2560,7 +2560,7 @@ type StorageCredentialsAPI struct {
 //
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
-func (a *StorageCredentialsAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *StorageCredentialsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.storageCredentialsImpl.Delete(ctx, DeleteStorageCredentialRequest{
 		Name: name,
 	})
@@ -2608,19 +2608,19 @@ type SystemSchemasInterface interface {
 	//
 	// Disables the system schema and removes it from the system catalog. The caller
 	// must be an account admin or a metastore admin.
-	Disable(ctx context.Context, request DisableRequest) error
+	Disable(ctx context.Context, request DisableRequest) (*DisableResponse, error)
 
 	// Disable a system schema.
 	//
 	// Disables the system schema and removes it from the system catalog. The caller
 	// must be an account admin or a metastore admin.
-	DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName string) error
+	DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName string) (*DisableResponse, error)
 
 	// Enable a system schema.
 	//
 	// Enables the system schema and adds it to the system catalog. The caller must
 	// be an account admin or a metastore admin.
-	Enable(ctx context.Context, request EnableRequest) error
+	Enable(ctx context.Context, request EnableRequest) (*EnableResponse, error)
 
 	// List system schemas.
 	//
@@ -2664,7 +2664,7 @@ type SystemSchemasAPI struct {
 //
 // Disables the system schema and removes it from the system catalog. The caller
 // must be an account admin or a metastore admin.
-func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName string) error {
+func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName string) (*DisableResponse, error) {
 	return a.systemSchemasImpl.Disable(ctx, DisableRequest{
 		MetastoreId: metastoreId,
 		SchemaName:  schemaName,
@@ -2708,7 +2708,7 @@ type TableConstraintsInterface interface {
 	// the user must have the following permissions on all of the child tables: the
 	// **USE_CATALOG** privilege on the table's catalog, the **USE_SCHEMA**
 	// privilege on the table's schema, and be the owner of the table.
-	Delete(ctx context.Context, request DeleteTableConstraintRequest) error
+	Delete(ctx context.Context, request DeleteTableConstraintRequest) (*DeleteResponse, error)
 
 	// Delete a table constraint.
 	//
@@ -2721,7 +2721,7 @@ type TableConstraintsInterface interface {
 	// the user must have the following permissions on all of the child tables: the
 	// **USE_CATALOG** privilege on the table's catalog, the **USE_SCHEMA**
 	// privilege on the table's schema, and be the owner of the table.
-	DeleteByFullName(ctx context.Context, fullName string) error
+	DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error)
 }
 
 func NewTableConstraints(client *client.DatabricksClient) *TableConstraintsAPI {
@@ -2760,7 +2760,7 @@ type TableConstraintsAPI struct {
 // the user must have the following permissions on all of the child tables: the
 // **USE_CATALOG** privilege on the table's catalog, the **USE_SCHEMA**
 // privilege on the table's schema, and be the owner of the table.
-func (a *TableConstraintsAPI) DeleteByFullName(ctx context.Context, fullName string) error {
+func (a *TableConstraintsAPI) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
 	return a.tableConstraintsImpl.Delete(ctx, DeleteTableConstraintRequest{
 		FullName: fullName,
 	})
@@ -2775,7 +2775,7 @@ type TablesInterface interface {
 	// parent catalog and be the owner of the parent schema, or be the owner of the
 	// table and have the **USE_CATALOG** privilege on the parent catalog and the
 	// **USE_SCHEMA** privilege on the parent schema.
-	Delete(ctx context.Context, request DeleteTableRequest) error
+	Delete(ctx context.Context, request DeleteTableRequest) (*DeleteResponse, error)
 
 	// Delete a table.
 	//
@@ -2784,7 +2784,7 @@ type TablesInterface interface {
 	// parent catalog and be the owner of the parent schema, or be the owner of the
 	// table and have the **USE_CATALOG** privilege on the parent catalog and the
 	// **USE_SCHEMA** privilege on the parent schema.
-	DeleteByFullName(ctx context.Context, fullName string) error
+	DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error)
 
 	// Get boolean reflecting if table exists.
 	//
@@ -2915,7 +2915,7 @@ type TablesInterface interface {
 	// owner of the parent schema, or be the owner of the table and have the
 	// **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 	// privilege on the parent schema.
-	Update(ctx context.Context, request UpdateTableRequest) error
+	Update(ctx context.Context, request UpdateTableRequest) (*UpdateResponse, error)
 }
 
 func NewTables(client *client.DatabricksClient) *TablesAPI {
@@ -2947,7 +2947,7 @@ type TablesAPI struct {
 // parent catalog and be the owner of the parent schema, or be the owner of the
 // table and have the **USE_CATALOG** privilege on the parent catalog and the
 // **USE_SCHEMA** privilege on the parent schema.
-func (a *TablesAPI) DeleteByFullName(ctx context.Context, fullName string) error {
+func (a *TablesAPI) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
 	return a.tablesImpl.Delete(ctx, DeleteTableRequest{
 		FullName: fullName,
 	})
@@ -3108,7 +3108,7 @@ type VolumesInterface interface {
 	// latter case, the caller must also be the owner or have the **USE_CATALOG**
 	// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 	// parent schema.
-	Delete(ctx context.Context, request DeleteVolumeRequest) error
+	Delete(ctx context.Context, request DeleteVolumeRequest) (*DeleteResponse, error)
 
 	// Delete a Volume.
 	//
@@ -3118,7 +3118,7 @@ type VolumesInterface interface {
 	// latter case, the caller must also be the owner or have the **USE_CATALOG**
 	// privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 	// parent schema.
-	DeleteByName(ctx context.Context, name string) error
+	DeleteByName(ctx context.Context, name string) (*DeleteResponse, error)
 
 	// List Volumes.
 	//
@@ -3234,7 +3234,7 @@ type VolumesAPI struct {
 // latter case, the caller must also be the owner or have the **USE_CATALOG**
 // privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 // parent schema.
-func (a *VolumesAPI) DeleteByName(ctx context.Context, name string) error {
+func (a *VolumesAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.volumesImpl.Delete(ctx, DeleteVolumeRequest{
 		Name: name,
 	})

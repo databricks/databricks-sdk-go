@@ -40,13 +40,13 @@ func (a *servingEndpointsImpl) Create(ctx context.Context, request CreateServing
 	return &servingEndpointDetailed, err
 }
 
-func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServingEndpointRequest) error {
+func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServingEndpointRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	return &deleteResponse, err
 }
 
 func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error) {

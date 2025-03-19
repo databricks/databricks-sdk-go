@@ -18,7 +18,7 @@ func TestAccWorkspaceConf(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, 3, len(*conf))
 
-	err = w.SetStatus(ctx, settings.WorkspaceConf{
+	_, err = w.SetStatus(ctx, settings.WorkspaceConf{
 		"enableWebTerminal": "true",
 	})
 	require.NoError(t, err)

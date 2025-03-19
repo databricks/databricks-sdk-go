@@ -148,7 +148,7 @@ func (h *fileHandle) Write(p []byte) (int, error) {
 			chunk = chunk[:maxDbfsBlockSize]
 		}
 
-		err := h.api.AddBlock(h.ctx, AddBlock{
+		_, err := h.api.AddBlock(h.ctx, AddBlock{
 			Data:   base64.StdEncoding.EncodeToString(chunk),
 			Handle: w.handle,
 		})
@@ -168,8 +168,8 @@ func (h *fileHandle) Close() error {
 	if err != nil {
 		return err
 	}
-
-	return w.error(h.api.CloseByHandle(h.ctx, w.handle))
+	_, err = h.api.CloseByHandle(h.ctx, w.handle)
+	return w.error(err)
 }
 
 // Implement the [io.WriterTo] interface.
