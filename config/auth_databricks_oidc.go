@@ -73,30 +73,23 @@ func print(ctx context.Context, token string) {
 
 // Configure implements CredentialsStrategy.
 func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	if cfg.Host == "" || cfg.ClientID == "" {
+	if cfg.Host == "" || cfg.ClientID == "" || cfg.TokenAudience == "" {
 		return nil, nil
 	}
 
 	// Get the OIDC token from the environment.
-	audience := cfg.CanonicalHostName()
-	if cfg.IsAccountClient() {
-		audience = cfg.AccountID
-	}
-
-	audience = "https://github.com/databricks-eng"
-
 	supplier := GithubOIDCTokenSupplier{
 		cfg: cfg,
 	}
-	token, err := supplier.GetOIDCToken(ctx, audience)
+	token, err := supplier.GetOIDCToken(ctx, cfg.TokenAudience)
 	if err != nil {
 		return nil, err
 	}
 	if token == "" {
-		// 	logger.Debugf(ctx, "No OIDC token found")
-		// 	return nil, nil
-		token = "MyToken"
+		logger.Debugf(ctx, "No OIDC token found")
+		return nil, nil
 	}
+
 	print(ctx, token)
 
 	endpoints, err := oidcEndpoints(ctx, cfg)
@@ -112,8 +105,6 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 		TokenURL:     endpoints.TokenEndpoint,
 		Scopes:       []string{"all-apis"},
 		EndpointParams: url.Values{
-			//"grant_type": {httpclient.JWTGrantType},
-			//"assertion":  {idToken},
 			"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
 			"subject_token":      {token},
 			"grant_type":         {"urn:ietf:params:oauth:grant-type:token-exchange"},
@@ -134,5 +125,5 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 
 // Name implements CredentialsStrategy.
 func (d DatabricksOIDCCredentials) Name() string {
-	return "databricks-wif"
+	return "databricks-oidc"
 }

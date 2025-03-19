@@ -135,6 +135,9 @@ type Config struct {
 	// Environment override to return when resolving the current environment.
 	DatabricksEnvironment *environment.DatabricksEnvironment
 
+	// OIDC and WIF audience for the token
+	TokenAudience string `name:"audience" auth:"-"`
+
 	Loaders []Loader
 
 	// marker for configuration resolving

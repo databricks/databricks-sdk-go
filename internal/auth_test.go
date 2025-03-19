@@ -13,13 +13,20 @@ import (
 
 func TestAccWifAuth(t *testing.T) {
 	ctx, a := ucacctTest(t)
-	//testWorkspaceId := int64(470576644108500)
-	//testWorkspaceUrl := "https://dbc-1232e87d-9384.cloud.databricks.com"
 
-	// Create SP
+	workspaceIdEnvVar := GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID")
+	workspaceId, err := strconv.ParseInt(workspaceIdEnvVar, 10, 64)
+	require.NoError(t, err)
+
+	workspaceUrl := GetEnvOrSkipTest(t, "TEST_WORKSPACE_URL")
+
+	// Create SP with access to the workspace
 	sp, err := a.ServicePrincipals.Create(ctx, iam.ServicePrincipal{
 		Active:      true,
 		DisplayName: RandomName("go-sdk-sp-"),
+		Roles: []iam.ComplexValue{
+			{Value: "account_admin"}, // Assigning account-level admin role
+		},
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
@@ -27,9 +34,25 @@ func TestAccWifAuth(t *testing.T) {
 		require.True(t, err == nil || apierr.IsMissing(err))
 	})
 
-	applicationId, err := strconv.ParseInt(sp.Id, 10, 64)
+	spId, err := strconv.ParseInt(sp.Id, 10, 64)
 	require.NoError(t, err)
 
+	_, err = a.WorkspaceAssignment.Update(ctx, iam.UpdateWorkspaceAssignments{
+		WorkspaceId: workspaceId,
+		PrincipalId: spId,
+		Permissions: []iam.WorkspacePermission{iam.WorkspacePermissionAdmin},
+	})
+
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := a.WorkspaceAssignment.Delete(ctx, iam.DeleteWorkspaceAssignmentRequest{
+			PrincipalId: spId,
+			WorkspaceId: workspaceId,
+		})
+		require.True(t, err == nil || apierr.IsMissing(err))
+	})
+
+	// Setup Federation Policy
 	p, err := a.ServicePrincipalFederationPolicy.Create(ctx, oauth2.CreateServicePrincipalFederationPolicyRequest{
 		Policy: &oauth2.FederationPolicy{
 			OidcPolicy: &oauth2.OidcFederationPolicy{
@@ -40,48 +63,48 @@ func TestAccWifAuth(t *testing.T) {
 				Subject: "repo:databricks-eng/eng-dev-ecosystem:environment:integration-tests",
 			},
 		},
-		ServicePrincipalId: applicationId,
+		ServicePrincipalId: spId,
 	})
 
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		err := a.ServicePrincipalFederationPolicy.Delete(ctx, oauth2.DeleteServicePrincipalFederationPolicyRequest{
-			ServicePrincipalId: applicationId,
+			ServicePrincipalId: spId,
 			PolicyId:           p.Uid,
 		})
 		require.True(t, err == nil || apierr.IsMissing(err))
 	})
 
-	// _, err = a.WorkspaceAssignment.Update(ctx, iam.UpdateWorkspaceAssignments{
-	// 	WorkspaceId: testWorkspaceId,
-	// 	PrincipalId: applicationId,
-	// 	Permissions: []iam.WorkspacePermission{iam.WorkspacePermissionAdmin},
-	// })
+	// Test Workspace Identity Federation at Workspace Level
 
-	// require.NoError(t, err)
-	// t.Cleanup(func() {
-	// 	err := a.WorkspaceAssignment.Delete(ctx, iam.DeleteWorkspaceAssignmentRequest{
-	// 		PrincipalId: applicationId,
-	// 		WorkspaceId: testWorkspaceId,
-	// 	})
-	// 	require.True(t, err == nil || apierr.IsMissing(err))
-	// })
-
-	cfg := &databricks.Config{
-		//Host:     testWorkspaceUrl,
-		Host:     a.Config.Host,
-		ClientID: sp.Id,
-		AuthType: "databricks-wif",
-		//Host:      testWorkspaceUrl,
+	wsCfg := &databricks.Config{
+		Host:          workspaceUrl,
+		ClientID:      sp.ApplicationId,
+		AuthType:      "databricks-oidc",
+		TokenAudience: "https://github.com/databricks-eng",
 	}
 
-	ws, err := databricks.NewAccountClient(cfg)
+	wifWsClient, err := databricks.NewWorkspaceClient(wsCfg)
 
 	require.NoError(t, err)
-	users := ws.Users.List(ctx, iam.ListAccountUsersRequest{})
-	_, err = users.Next(ctx)
+	_, err = wifWsClient.CurrentUser.Me(ctx)
 	require.NoError(t, err)
-	// 	testWorkspaceId := GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID")
-	// testWorkspaceUrl := GetEnvOrSkipTest(t, "TEST_WORKSPACE_HOST")
+
+	// Test Workspace Identity Federation at Account Level
+
+	accCfg := &databricks.Config{
+		Host:          a.Config.Host,
+		AccountID:     a.Config.AccountID,
+		ClientID:      sp.ApplicationId,
+		AuthType:      "databricks-oidc",
+		TokenAudience: "https://github.com/databricks-eng",
+	}
+
+	wifAccClient, err := databricks.NewAccountClient(accCfg)
+
+	require.NoError(t, err)
+	it := wifAccClient.Groups.List(ctx, iam.ListAccountGroupsRequest{})
+	_, err = it.Next(ctx)
+	require.NoError(t, err)
 
 }
