@@ -32,6 +32,6 @@ func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
 	}
 
 	return &AppsClient{
-		AppsInterface: NewApps(apiClient),
+		AppsInterface: NewApps(apiClient.ApiClient()),
 	}, nil
 }

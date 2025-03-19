@@ -6,7 +6,7 @@ package cleanrooms
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
@@ -61,7 +61,7 @@ type CleanRoomAssetsInterface interface {
 	Update(ctx context.Context, request UpdateCleanRoomAssetRequest) (*CleanRoomAsset, error)
 }
 
-func NewCleanRoomAssets(client *client.DatabricksClient) *CleanRoomAssetsAPI {
+func NewCleanRoomAssets(client *httpclient.ApiClient) *CleanRoomAssetsAPI {
 	return &CleanRoomAssetsAPI{
 		cleanRoomAssetsImpl: cleanRoomAssetsImpl{
 			client: client,
@@ -126,7 +126,7 @@ type CleanRoomTaskRunsInterface interface {
 	ListByCleanRoomName(ctx context.Context, cleanRoomName string) (*ListCleanRoomNotebookTaskRunsResponse, error)
 }
 
-func NewCleanRoomTaskRuns(client *client.DatabricksClient) *CleanRoomTaskRunsAPI {
+func NewCleanRoomTaskRuns(client *httpclient.ApiClient) *CleanRoomTaskRunsAPI {
 	return &CleanRoomTaskRunsAPI{
 		cleanRoomTaskRunsImpl: cleanRoomTaskRunsImpl{
 			client: client,
@@ -220,7 +220,7 @@ type CleanRoomsInterface interface {
 	Update(ctx context.Context, request UpdateCleanRoomRequest) (*CleanRoom, error)
 }
 
-func NewCleanRooms(client *client.DatabricksClient) *CleanRoomsAPI {
+func NewCleanRooms(client *httpclient.ApiClient) *CleanRoomsAPI {
 	return &CleanRoomsAPI{
 		cleanRoomsImpl: cleanRoomsImpl{
 			client: client,

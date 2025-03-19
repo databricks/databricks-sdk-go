@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -16,7 +15,7 @@ import (
 
 // unexported type that holds implementations of just Pipelines API methods
 type pipelinesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*CreatePipelineResponse, error) {
@@ -235,7 +234,7 @@ func (a *pipelinesImpl) UpdatePermissions(ctx context.Context, request PipelineP
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -260,5 +259,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

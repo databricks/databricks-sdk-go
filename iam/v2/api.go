@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -18,7 +18,7 @@ type AccessControlInterface interface {
 	CheckPolicy(ctx context.Context, request CheckPolicyRequest) (*CheckPolicyResponse, error)
 }
 
-func NewAccessControl(client *client.DatabricksClient) *AccessControlAPI {
+func NewAccessControl(client *httpclient.ApiClient) *AccessControlAPI {
 	return &AccessControlAPI{
 		accessControlImpl: accessControlImpl{
 			client: client,
@@ -55,7 +55,7 @@ type AccountAccessControlInterface interface {
 	UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error)
 }
 
-func NewAccountAccessControl(client *client.DatabricksClient) *AccountAccessControlAPI {
+func NewAccountAccessControl(client *httpclient.ApiClient) *AccountAccessControlAPI {
 	return &AccountAccessControlAPI{
 		accountAccessControlImpl: accountAccessControlImpl{
 			client: client,
@@ -94,7 +94,7 @@ type AccountAccessControlProxyInterface interface {
 	UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error)
 }
 
-func NewAccountAccessControlProxy(client *client.DatabricksClient) *AccountAccessControlProxyAPI {
+func NewAccountAccessControlProxy(client *httpclient.ApiClient) *AccountAccessControlProxyAPI {
 	return &AccountAccessControlProxyAPI{
 		accountAccessControlProxyImpl: accountAccessControlProxyImpl{
 			client: client,
@@ -181,7 +181,7 @@ type AccountGroupsInterface interface {
 	Update(ctx context.Context, request Group) error
 }
 
-func NewAccountGroups(client *client.DatabricksClient) *AccountGroupsAPI {
+func NewAccountGroups(client *httpclient.ApiClient) *AccountGroupsAPI {
 	return &AccountGroupsAPI{
 		accountGroupsImpl: accountGroupsImpl{
 			client: client,
@@ -346,7 +346,7 @@ type AccountServicePrincipalsInterface interface {
 	Update(ctx context.Context, request ServicePrincipal) error
 }
 
-func NewAccountServicePrincipals(client *client.DatabricksClient) *AccountServicePrincipalsAPI {
+func NewAccountServicePrincipals(client *httpclient.ApiClient) *AccountServicePrincipalsAPI {
 	return &AccountServicePrincipalsAPI{
 		accountServicePrincipalsImpl: accountServicePrincipalsImpl{
 			client: client,
@@ -510,7 +510,7 @@ type AccountUsersInterface interface {
 	Update(ctx context.Context, request User) error
 }
 
-func NewAccountUsers(client *client.DatabricksClient) *AccountUsersAPI {
+func NewAccountUsers(client *httpclient.ApiClient) *AccountUsersAPI {
 	return &AccountUsersAPI{
 		accountUsersImpl: accountUsersImpl{
 			client: client,
@@ -613,7 +613,7 @@ type CurrentUserInterface interface {
 	Me(ctx context.Context) (*User, error)
 }
 
-func NewCurrentUser(client *client.DatabricksClient) *CurrentUserAPI {
+func NewCurrentUser(client *httpclient.ApiClient) *CurrentUserAPI {
 	return &CurrentUserAPI{
 		currentUserImpl: currentUserImpl{
 			client: client,
@@ -698,7 +698,7 @@ type GroupsInterface interface {
 	Update(ctx context.Context, request Group) error
 }
 
-func NewGroups(client *client.DatabricksClient) *GroupsAPI {
+func NewGroups(client *httpclient.ApiClient) *GroupsAPI {
 	return &GroupsAPI{
 		groupsImpl: groupsImpl{
 			client: client,
@@ -794,7 +794,7 @@ type PermissionMigrationInterface interface {
 	MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error)
 }
 
-func NewPermissionMigration(client *client.DatabricksClient) *PermissionMigrationAPI {
+func NewPermissionMigration(client *httpclient.ApiClient) *PermissionMigrationAPI {
 	return &PermissionMigrationAPI{
 		permissionMigrationImpl: permissionMigrationImpl{
 			client: client,
@@ -846,7 +846,7 @@ type PermissionsInterface interface {
 	Update(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error)
 }
 
-func NewPermissions(client *client.DatabricksClient) *PermissionsAPI {
+func NewPermissions(client *httpclient.ApiClient) *PermissionsAPI {
 	return &PermissionsAPI{
 		permissionsImpl: permissionsImpl{
 			client: client,
@@ -1008,7 +1008,7 @@ type ServicePrincipalsInterface interface {
 	Update(ctx context.Context, request ServicePrincipal) error
 }
 
-func NewServicePrincipals(client *client.DatabricksClient) *ServicePrincipalsAPI {
+func NewServicePrincipals(client *httpclient.ApiClient) *ServicePrincipalsAPI {
 	return &ServicePrincipalsAPI{
 		servicePrincipalsImpl: servicePrincipalsImpl{
 			client: client,
@@ -1196,7 +1196,7 @@ type UsersInterface interface {
 	UpdatePermissions(ctx context.Context, request PasswordPermissionsRequest) (*PasswordPermissions, error)
 }
 
-func NewUsers(client *client.DatabricksClient) *UsersAPI {
+func NewUsers(client *httpclient.ApiClient) *UsersAPI {
 	return &UsersAPI{
 		usersImpl: usersImpl{
 			client: client,
@@ -1346,7 +1346,7 @@ type WorkspaceAssignmentInterface interface {
 	Update(ctx context.Context, request UpdateWorkspaceAssignments) (*PermissionAssignment, error)
 }
 
-func NewWorkspaceAssignment(client *client.DatabricksClient) *WorkspaceAssignmentAPI {
+func NewWorkspaceAssignment(client *httpclient.ApiClient) *WorkspaceAssignmentAPI {
 	return &WorkspaceAssignmentAPI{
 		workspaceAssignmentImpl: workspaceAssignmentImpl{
 			client: client,

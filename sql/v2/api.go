@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -85,7 +85,7 @@ type AlertsInterface interface {
 	Update(ctx context.Context, request UpdateAlertRequest) (*Alert, error)
 }
 
-func NewAlerts(client *client.DatabricksClient) *AlertsAPI {
+func NewAlerts(client *httpclient.ApiClient) *AlertsAPI {
 	return &AlertsAPI{
 		alertsImpl: alertsImpl{
 			client: client,
@@ -272,7 +272,7 @@ type AlertsLegacyInterface interface {
 	Update(ctx context.Context, request EditAlert) error
 }
 
-func NewAlertsLegacy(client *client.DatabricksClient) *AlertsLegacyAPI {
+func NewAlertsLegacy(client *httpclient.ApiClient) *AlertsLegacyAPI {
 	return &AlertsLegacyAPI{
 		alertsLegacyImpl: alertsLegacyImpl{
 			client: client,
@@ -392,7 +392,7 @@ type DashboardWidgetsInterface interface {
 	Update(ctx context.Context, request CreateWidget) (*Widget, error)
 }
 
-func NewDashboardWidgets(client *client.DatabricksClient) *DashboardWidgetsAPI {
+func NewDashboardWidgets(client *httpclient.ApiClient) *DashboardWidgetsAPI {
 	return &DashboardWidgetsAPI{
 		dashboardWidgetsImpl: dashboardWidgetsImpl{
 			client: client,
@@ -495,7 +495,7 @@ type DashboardsInterface interface {
 	Update(ctx context.Context, request DashboardEditContent) (*Dashboard, error)
 }
 
-func NewDashboards(client *client.DatabricksClient) *DashboardsAPI {
+func NewDashboards(client *httpclient.ApiClient) *DashboardsAPI {
 	return &DashboardsAPI{
 		dashboardsImpl: dashboardsImpl{
 			client: client,
@@ -619,7 +619,7 @@ type DataSourcesInterface interface {
 	GetByName(ctx context.Context, name string) (*DataSource, error)
 }
 
-func NewDataSources(client *client.DatabricksClient) *DataSourcesAPI {
+func NewDataSources(client *httpclient.ApiClient) *DataSourcesAPI {
 	return &DataSourcesAPI{
 		dataSourcesImpl: dataSourcesImpl{
 			client: client,
@@ -747,7 +747,7 @@ type DbsqlPermissionsInterface interface {
 	TransferOwnership(ctx context.Context, request TransferOwnershipRequest) (*Success, error)
 }
 
-func NewDbsqlPermissions(client *client.DatabricksClient) *DbsqlPermissionsAPI {
+func NewDbsqlPermissions(client *httpclient.ApiClient) *DbsqlPermissionsAPI {
 	return &DbsqlPermissionsAPI{
 		dbsqlPermissionsImpl: dbsqlPermissionsImpl{
 			client: client,
@@ -887,7 +887,7 @@ type QueriesInterface interface {
 	Update(ctx context.Context, request UpdateQueryRequest) (*Query, error)
 }
 
-func NewQueries(client *client.DatabricksClient) *QueriesAPI {
+func NewQueries(client *httpclient.ApiClient) *QueriesAPI {
 	return &QueriesAPI{
 		queriesImpl: queriesImpl{
 			client: client,
@@ -1126,7 +1126,7 @@ type QueriesLegacyInterface interface {
 	Update(ctx context.Context, request QueryEditContent) (*LegacyQuery, error)
 }
 
-func NewQueriesLegacy(client *client.DatabricksClient) *QueriesLegacyAPI {
+func NewQueriesLegacy(client *httpclient.ApiClient) *QueriesLegacyAPI {
 	return &QueriesLegacyAPI{
 		queriesLegacyImpl: queriesLegacyImpl{
 			client: client,
@@ -1244,7 +1244,7 @@ type QueryHistoryInterface interface {
 	List(ctx context.Context, request ListQueryHistoryRequest) (*ListQueriesResponse, error)
 }
 
-func NewQueryHistory(client *client.DatabricksClient) *QueryHistoryAPI {
+func NewQueryHistory(client *httpclient.ApiClient) *QueryHistoryAPI {
 	return &QueryHistoryAPI{
 		queryHistoryImpl: queryHistoryImpl{
 			client: client,
@@ -1281,7 +1281,7 @@ type QueryVisualizationsInterface interface {
 	Update(ctx context.Context, request UpdateVisualizationRequest) (*Visualization, error)
 }
 
-func NewQueryVisualizations(client *client.DatabricksClient) *QueryVisualizationsAPI {
+func NewQueryVisualizations(client *httpclient.ApiClient) *QueryVisualizationsAPI {
 	return &QueryVisualizationsAPI{
 		queryVisualizationsImpl: queryVisualizationsImpl{
 			client: client,
@@ -1348,7 +1348,7 @@ type QueryVisualizationsLegacyInterface interface {
 	Update(ctx context.Context, request LegacyVisualization) (*LegacyVisualization, error)
 }
 
-func NewQueryVisualizationsLegacy(client *client.DatabricksClient) *QueryVisualizationsLegacyAPI {
+func NewQueryVisualizationsLegacy(client *httpclient.ApiClient) *QueryVisualizationsLegacyAPI {
 	return &QueryVisualizationsLegacyAPI{
 		queryVisualizationsLegacyImpl: queryVisualizationsLegacyImpl{
 			client: client,
@@ -1388,7 +1388,7 @@ type RedashConfigInterface interface {
 	GetConfig(ctx context.Context) (*ClientConfig, error)
 }
 
-func NewRedashConfig(client *client.DatabricksClient) *RedashConfigAPI {
+func NewRedashConfig(client *httpclient.ApiClient) *RedashConfigAPI {
 	return &RedashConfigAPI{
 		redashConfigImpl: redashConfigImpl{
 			client: client,
@@ -1464,7 +1464,7 @@ type StatementExecutionInterface interface {
 	GetStatementResultChunkNByStatementIdAndChunkIndex(ctx context.Context, statementId string, chunkIndex int) (*ResultData, error)
 }
 
-func NewStatementExecution(client *client.DatabricksClient) *StatementExecutionAPI {
+func NewStatementExecution(client *httpclient.ApiClient) *StatementExecutionAPI {
 	return &StatementExecutionAPI{
 		statementExecutionImpl: statementExecutionImpl{
 			client: client,
@@ -1737,7 +1737,7 @@ type WarehousesInterface interface {
 	UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error)
 }
 
-func NewWarehouses(client *client.DatabricksClient) *WarehousesAPI {
+func NewWarehouses(client *httpclient.ApiClient) *WarehousesAPI {
 	return &WarehousesAPI{
 		warehousesImpl: warehousesImpl{
 			client: client,

@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -16,7 +15,7 @@ import (
 
 // unexported type that holds implementations of just Genie API methods
 type genieImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error) {
@@ -113,7 +112,7 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 
 // unexported type that holds implementations of just Lakeview API methods
 type lakeviewImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error) {
@@ -395,7 +394,7 @@ func (a *lakeviewImpl) UpdateSchedule(ctx context.Context, request UpdateSchedul
 
 // unexported type that holds implementations of just LakeviewEmbedded API methods
 type lakeviewEmbeddedImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error {
@@ -410,7 +409,7 @@ func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context
 
 // unexported type that holds implementations of just QueryExecution API methods
 type queryExecutionImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *queryExecutionImpl) CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error) {
@@ -445,7 +444,7 @@ func (a *queryExecutionImpl) PollPublishedQueryStatus(ctx context.Context, reque
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -470,5 +469,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

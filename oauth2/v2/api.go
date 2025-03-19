@@ -6,7 +6,7 @@ package oauth2
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
@@ -41,7 +41,7 @@ type AccountFederationPolicyInterface interface {
 	Update(ctx context.Context, request UpdateAccountFederationPolicyRequest) (*FederationPolicy, error)
 }
 
-func NewAccountFederationPolicy(client *client.DatabricksClient) *AccountFederationPolicyAPI {
+func NewAccountFederationPolicy(client *httpclient.ApiClient) *AccountFederationPolicyAPI {
 	return &AccountFederationPolicyAPI{
 		accountFederationPolicyImpl: accountFederationPolicyImpl{
 			client: client,
@@ -172,7 +172,7 @@ type CustomAppIntegrationInterface interface {
 	Update(ctx context.Context, request UpdateCustomAppIntegration) error
 }
 
-func NewCustomAppIntegration(client *client.DatabricksClient) *CustomAppIntegrationAPI {
+func NewCustomAppIntegration(client *httpclient.ApiClient) *CustomAppIntegrationAPI {
 	return &CustomAppIntegrationAPI{
 		customAppIntegrationImpl: customAppIntegrationImpl{
 			client: client,
@@ -223,7 +223,7 @@ type OAuthPublishedAppsInterface interface {
 	ListAll(ctx context.Context, request ListOAuthPublishedAppsRequest) ([]PublishedAppOutput, error)
 }
 
-func NewOAuthPublishedApps(client *client.DatabricksClient) *OAuthPublishedAppsAPI {
+func NewOAuthPublishedApps(client *httpclient.ApiClient) *OAuthPublishedAppsAPI {
 	return &OAuthPublishedAppsAPI{
 		oAuthPublishedAppsImpl: oAuthPublishedAppsImpl{
 			client: client,
@@ -294,7 +294,7 @@ type PublishedAppIntegrationInterface interface {
 	Update(ctx context.Context, request UpdatePublishedAppIntegration) error
 }
 
-func NewPublishedAppIntegration(client *client.DatabricksClient) *PublishedAppIntegrationAPI {
+func NewPublishedAppIntegration(client *httpclient.ApiClient) *PublishedAppIntegrationAPI {
 	return &PublishedAppIntegrationAPI{
 		publishedAppIntegrationImpl: publishedAppIntegrationImpl{
 			client: client,
@@ -362,7 +362,7 @@ type ServicePrincipalFederationPolicyInterface interface {
 	Update(ctx context.Context, request UpdateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error)
 }
 
-func NewServicePrincipalFederationPolicy(client *client.DatabricksClient) *ServicePrincipalFederationPolicyAPI {
+func NewServicePrincipalFederationPolicy(client *httpclient.ApiClient) *ServicePrincipalFederationPolicyAPI {
 	return &ServicePrincipalFederationPolicyAPI{
 		servicePrincipalFederationPolicyImpl: servicePrincipalFederationPolicyImpl{
 			client: client,
@@ -494,7 +494,7 @@ type ServicePrincipalSecretsInterface interface {
 	ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*ListServicePrincipalSecretsResponse, error)
 }
 
-func NewServicePrincipalSecrets(client *client.DatabricksClient) *ServicePrincipalSecretsAPI {
+func NewServicePrincipalSecrets(client *httpclient.ApiClient) *ServicePrincipalSecretsAPI {
 	return &ServicePrincipalSecretsAPI{
 		servicePrincipalSecretsImpl: servicePrincipalSecretsImpl{
 			client: client,

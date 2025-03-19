@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -16,7 +15,7 @@ import (
 
 // unexported type that holds implementations of just CleanRoomAssets API methods
 type cleanRoomAssetsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoomAssetRequest) (*CleanRoomAsset, error) {
@@ -103,7 +102,7 @@ func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoo
 
 // unexported type that holds implementations of just CleanRoomTaskRuns API methods
 type cleanRoomTaskRunsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 // List notebook task runs.
@@ -152,7 +151,7 @@ func (a *cleanRoomTaskRunsImpl) internalList(ctx context.Context, request ListCl
 
 // unexported type that holds implementations of just CleanRooms API methods
 type cleanRoomsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoomRequest) (*CleanRoom, error) {
@@ -255,7 +254,7 @@ func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoomRequ
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -280,5 +279,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

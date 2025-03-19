@@ -32,7 +32,7 @@ func NewAccountMetastoreAssignmentsClient(cfg *config.Config) (*AccountMetastore
 	}
 
 	return &AccountMetastoreAssignmentsClient{
-		AccountMetastoreAssignmentsInterface: NewAccountMetastoreAssignments(apiClient),
+		AccountMetastoreAssignmentsInterface: NewAccountMetastoreAssignments(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewAccountMetastoresClient(cfg *config.Config) (*AccountMetastoresClient, e
 	}
 
 	return &AccountMetastoresClient{
-		AccountMetastoresInterface: NewAccountMetastores(apiClient),
+		AccountMetastoresInterface: NewAccountMetastores(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewAccountStorageCredentialsClient(cfg *config.Config) (*AccountStorageCred
 	}
 
 	return &AccountStorageCredentialsClient{
-		AccountStorageCredentialsInterface: NewAccountStorageCredentials(apiClient),
+		AccountStorageCredentialsInterface: NewAccountStorageCredentials(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,7 +113,7 @@ func NewArtifactAllowlistsClient(cfg *config.Config) (*ArtifactAllowlistsClient,
 	}
 
 	return &ArtifactAllowlistsClient{
-		ArtifactAllowlistsInterface: NewArtifactAllowlists(apiClient),
+		ArtifactAllowlistsInterface: NewArtifactAllowlists(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -140,7 +140,7 @@ func NewCatalogsClient(cfg *config.Config) (*CatalogsClient, error) {
 	}
 
 	return &CatalogsClient{
-		CatalogsInterface: NewCatalogs(apiClient),
+		CatalogsInterface: NewCatalogs(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -167,7 +167,7 @@ func NewConnectionsClient(cfg *config.Config) (*ConnectionsClient, error) {
 	}
 
 	return &ConnectionsClient{
-		ConnectionsInterface: NewConnections(apiClient),
+		ConnectionsInterface: NewConnections(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -194,7 +194,7 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 	}
 
 	return &CredentialsClient{
-		CredentialsInterface: NewCredentials(apiClient),
+		CredentialsInterface: NewCredentials(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -221,7 +221,7 @@ func NewExternalLocationsClient(cfg *config.Config) (*ExternalLocationsClient, e
 	}
 
 	return &ExternalLocationsClient{
-		ExternalLocationsInterface: NewExternalLocations(apiClient),
+		ExternalLocationsInterface: NewExternalLocations(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -248,7 +248,7 @@ func NewFunctionsClient(cfg *config.Config) (*FunctionsClient, error) {
 	}
 
 	return &FunctionsClient{
-		FunctionsInterface: NewFunctions(apiClient),
+		FunctionsInterface: NewFunctions(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -275,7 +275,7 @@ func NewGrantsClient(cfg *config.Config) (*GrantsClient, error) {
 	}
 
 	return &GrantsClient{
-		GrantsInterface: NewGrants(apiClient),
+		GrantsInterface: NewGrants(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -302,7 +302,7 @@ func NewMetastoresClient(cfg *config.Config) (*MetastoresClient, error) {
 	}
 
 	return &MetastoresClient{
-		MetastoresInterface: NewMetastores(apiClient),
+		MetastoresInterface: NewMetastores(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -329,7 +329,7 @@ func NewModelVersionsClient(cfg *config.Config) (*ModelVersionsClient, error) {
 	}
 
 	return &ModelVersionsClient{
-		ModelVersionsInterface: NewModelVersions(apiClient),
+		ModelVersionsInterface: NewModelVersions(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -356,7 +356,7 @@ func NewOnlineTablesClient(cfg *config.Config) (*OnlineTablesClient, error) {
 	}
 
 	return &OnlineTablesClient{
-		OnlineTablesInterface: NewOnlineTables(apiClient),
+		OnlineTablesInterface: NewOnlineTables(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -383,7 +383,7 @@ func NewQualityMonitorsClient(cfg *config.Config) (*QualityMonitorsClient, error
 	}
 
 	return &QualityMonitorsClient{
-		QualityMonitorsInterface: NewQualityMonitors(apiClient),
+		QualityMonitorsInterface: NewQualityMonitors(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -410,7 +410,7 @@ func NewRegisteredModelsClient(cfg *config.Config) (*RegisteredModelsClient, err
 	}
 
 	return &RegisteredModelsClient{
-		RegisteredModelsInterface: NewRegisteredModels(apiClient),
+		RegisteredModelsInterface: NewRegisteredModels(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -437,7 +437,7 @@ func NewResourceQuotasClient(cfg *config.Config) (*ResourceQuotasClient, error) 
 	}
 
 	return &ResourceQuotasClient{
-		ResourceQuotasInterface: NewResourceQuotas(apiClient),
+		ResourceQuotasInterface: NewResourceQuotas(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -464,7 +464,7 @@ func NewSchemasClient(cfg *config.Config) (*SchemasClient, error) {
 	}
 
 	return &SchemasClient{
-		SchemasInterface: NewSchemas(apiClient),
+		SchemasInterface: NewSchemas(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -491,7 +491,7 @@ func NewStorageCredentialsClient(cfg *config.Config) (*StorageCredentialsClient,
 	}
 
 	return &StorageCredentialsClient{
-		StorageCredentialsInterface: NewStorageCredentials(apiClient),
+		StorageCredentialsInterface: NewStorageCredentials(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -518,7 +518,7 @@ func NewSystemSchemasClient(cfg *config.Config) (*SystemSchemasClient, error) {
 	}
 
 	return &SystemSchemasClient{
-		SystemSchemasInterface: NewSystemSchemas(apiClient),
+		SystemSchemasInterface: NewSystemSchemas(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -545,7 +545,7 @@ func NewTableConstraintsClient(cfg *config.Config) (*TableConstraintsClient, err
 	}
 
 	return &TableConstraintsClient{
-		TableConstraintsInterface: NewTableConstraints(apiClient),
+		TableConstraintsInterface: NewTableConstraints(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -572,7 +572,7 @@ func NewTablesClient(cfg *config.Config) (*TablesClient, error) {
 	}
 
 	return &TablesClient{
-		TablesInterface: NewTables(apiClient),
+		TablesInterface: NewTables(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -599,7 +599,7 @@ func NewTemporaryTableCredentialsClient(cfg *config.Config) (*TemporaryTableCred
 	}
 
 	return &TemporaryTableCredentialsClient{
-		TemporaryTableCredentialsInterface: NewTemporaryTableCredentials(apiClient),
+		TemporaryTableCredentialsInterface: NewTemporaryTableCredentials(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -626,7 +626,7 @@ func NewVolumesClient(cfg *config.Config) (*VolumesClient, error) {
 	}
 
 	return &VolumesClient{
-		VolumesInterface: NewVolumes(apiClient),
+		VolumesInterface: NewVolumes(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -653,6 +653,6 @@ func NewWorkspaceBindingsClient(cfg *config.Config) (*WorkspaceBindingsClient, e
 	}
 
 	return &WorkspaceBindingsClient{
-		WorkspaceBindingsInterface: NewWorkspaceBindings(apiClient),
+		WorkspaceBindingsInterface: NewWorkspaceBindings(apiClient.ApiClient()),
 	}, nil
 }

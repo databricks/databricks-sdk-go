@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -161,7 +161,7 @@ type PipelinesInterface interface {
 	UpdatePermissions(ctx context.Context, request PipelinePermissionsRequest) (*PipelinePermissions, error)
 }
 
-func NewPipelines(client *client.DatabricksClient) *PipelinesAPI {
+func NewPipelines(client *httpclient.ApiClient) *PipelinesAPI {
 	return &PipelinesAPI{
 		pipelinesImpl: pipelinesImpl{
 			client: client,

@@ -6,7 +6,7 @@ package serving
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
@@ -156,7 +156,7 @@ type ServingEndpointsInterface interface {
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 }
 
-func NewServingEndpoints(client *client.DatabricksClient) *ServingEndpointsAPI {
+func NewServingEndpoints(client *httpclient.ApiClient) *ServingEndpointsAPI {
 	return &ServingEndpointsAPI{
 		servingEndpointsImpl: servingEndpointsImpl{
 			client: client,
@@ -263,7 +263,7 @@ type ServingEndpointsDataPlaneInterface interface {
 	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 }
 
-func NewServingEndpointsDataPlane(client *client.DatabricksClient) *ServingEndpointsDataPlaneAPI {
+func NewServingEndpointsDataPlane(client *httpclient.ApiClient) *ServingEndpointsDataPlaneAPI {
 	return &ServingEndpointsDataPlaneAPI{
 		servingEndpointsDataPlaneImpl: servingEndpointsDataPlaneImpl{
 			client: client,

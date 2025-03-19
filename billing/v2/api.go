@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -29,7 +29,7 @@ type BillableUsageInterface interface {
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 }
 
-func NewBillableUsage(client *client.DatabricksClient) *BillableUsageAPI {
+func NewBillableUsage(client *httpclient.ApiClient) *BillableUsageAPI {
 	return &BillableUsageAPI{
 		billableUsageImpl: billableUsageImpl{
 			client: client,
@@ -92,7 +92,7 @@ type BudgetPolicyInterface interface {
 	Update(ctx context.Context, request UpdateBudgetPolicyRequest) (*BudgetPolicy, error)
 }
 
-func NewBudgetPolicy(client *client.DatabricksClient) *BudgetPolicyAPI {
+func NewBudgetPolicy(client *httpclient.ApiClient) *BudgetPolicyAPI {
 	return &BudgetPolicyAPI{
 		budgetPolicyImpl: budgetPolicyImpl{
 			client: client,
@@ -176,7 +176,7 @@ type BudgetsInterface interface {
 	Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error)
 }
 
-func NewBudgets(client *client.DatabricksClient) *BudgetsAPI {
+func NewBudgets(client *httpclient.ApiClient) *BudgetsAPI {
 	return &BudgetsAPI{
 		budgetsImpl: budgetsImpl{
 			client: client,
@@ -299,7 +299,7 @@ type LogDeliveryInterface interface {
 	PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error
 }
 
-func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {
+func NewLogDelivery(client *httpclient.ApiClient) *LogDeliveryAPI {
 	return &LogDeliveryAPI{
 		logDeliveryImpl: logDeliveryImpl{
 			client: client,
@@ -450,7 +450,7 @@ type UsageDashboardsInterface interface {
 	Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error)
 }
 
-func NewUsageDashboards(client *client.DatabricksClient) *UsageDashboardsAPI {
+func NewUsageDashboards(client *httpclient.ApiClient) *UsageDashboardsAPI {
 	return &UsageDashboardsAPI{
 		usageDashboardsImpl: usageDashboardsImpl{
 			client: client,

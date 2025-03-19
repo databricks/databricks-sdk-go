@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -16,7 +15,7 @@ import (
 
 // unexported type that holds implementations of just AccessControl API methods
 type accessControlImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *accessControlImpl) CheckPolicy(ctx context.Context, request CheckPolicyRequest) (*CheckPolicyResponse, error) {
@@ -31,12 +30,12 @@ func (a *accessControlImpl) CheckPolicy(ctx context.Context, request CheckPolicy
 
 // unexported type that holds implementations of just AccountAccessControl API methods
 type accountAccessControlImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *accountAccessControlImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
 	var getAssignableRolesForResourceResponse GetAssignableRolesForResourceResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/assignable-roles", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/assignable-roles", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -46,7 +45,7 @@ func (a *accountAccessControlImpl) GetAssignableRolesForResource(ctx context.Con
 
 func (a *accountAccessControlImpl) GetRuleSet(ctx context.Context, request GetRuleSetRequest) (*RuleSetResponse, error) {
 	var ruleSetResponse RuleSetResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/rule-sets", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -56,7 +55,7 @@ func (a *accountAccessControlImpl) GetRuleSet(ctx context.Context, request GetRu
 
 func (a *accountAccessControlImpl) UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error) {
 	var ruleSetResponse RuleSetResponse
-	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/rule-sets", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/preview/accounts/%v/access-control/rule-sets", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -67,7 +66,7 @@ func (a *accountAccessControlImpl) UpdateRuleSet(ctx context.Context, request Up
 
 // unexported type that holds implementations of just AccountAccessControlProxy API methods
 type accountAccessControlProxyImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *accountAccessControlProxyImpl) GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error) {
@@ -103,12 +102,12 @@ func (a *accountAccessControlProxyImpl) UpdateRuleSet(ctx context.Context, reque
 
 // unexported type that holds implementations of just AccountGroups API methods
 type accountGroupsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -119,7 +118,7 @@ func (a *accountGroupsImpl) Create(ctx context.Context, request Group) (*Group, 
 
 func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteAccountGroupRequest) error {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
@@ -128,7 +127,7 @@ func (a *accountGroupsImpl) Delete(ctx context.Context, request DeleteAccountGro
 
 func (a *accountGroupsImpl) Get(ctx context.Context, request GetAccountGroupRequest) (*Group, error) {
 	var group Group
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -182,7 +181,7 @@ func (a *accountGroupsImpl) ListAll(ctx context.Context, request ListAccountGrou
 }
 func (a *accountGroupsImpl) internalList(ctx context.Context, request ListAccountGroupsRequest) (*ListGroupsResponse, error) {
 	var listGroupsResponse ListGroupsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -192,7 +191,7 @@ func (a *accountGroupsImpl) internalList(ctx context.Context, request ListAccoun
 
 func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
@@ -202,7 +201,7 @@ func (a *accountGroupsImpl) Patch(ctx context.Context, request PartialUpdate) er
 
 func (a *accountGroupsImpl) Update(ctx context.Context, request Group) error {
 	var updateResponse UpdateResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Groups/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
@@ -212,12 +211,12 @@ func (a *accountGroupsImpl) Update(ctx context.Context, request Group) error {
 
 // unexported type that holds implementations of just AccountServicePrincipals API methods
 type accountServicePrincipalsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *accountServicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -228,7 +227,7 @@ func (a *accountServicePrincipalsImpl) Create(ctx context.Context, request Servi
 
 func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request DeleteAccountServicePrincipalRequest) error {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
@@ -237,7 +236,7 @@ func (a *accountServicePrincipalsImpl) Delete(ctx context.Context, request Delet
 
 func (a *accountServicePrincipalsImpl) Get(ctx context.Context, request GetAccountServicePrincipalRequest) (*ServicePrincipal, error) {
 	var servicePrincipal ServicePrincipal
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -291,7 +290,7 @@ func (a *accountServicePrincipalsImpl) ListAll(ctx context.Context, request List
 }
 func (a *accountServicePrincipalsImpl) internalList(ctx context.Context, request ListAccountServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 	var listServicePrincipalResponse ListServicePrincipalResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -301,7 +300,7 @@ func (a *accountServicePrincipalsImpl) internalList(ctx context.Context, request
 
 func (a *accountServicePrincipalsImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
@@ -311,7 +310,7 @@ func (a *accountServicePrincipalsImpl) Patch(ctx context.Context, request Partia
 
 func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request ServicePrincipal) error {
 	var updateResponse UpdateResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/ServicePrincipals/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
@@ -321,12 +320,12 @@ func (a *accountServicePrincipalsImpl) Update(ctx context.Context, request Servi
 
 // unexported type that holds implementations of just AccountUsers API methods
 type accountUsersImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -337,7 +336,7 @@ func (a *accountUsersImpl) Create(ctx context.Context, request User) (*User, err
 
 func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteAccountUserRequest) error {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
@@ -346,7 +345,7 @@ func (a *accountUsersImpl) Delete(ctx context.Context, request DeleteAccountUser
 
 func (a *accountUsersImpl) Get(ctx context.Context, request GetAccountUserRequest) (*User, error) {
 	var user User
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -400,7 +399,7 @@ func (a *accountUsersImpl) ListAll(ctx context.Context, request ListAccountUsers
 }
 func (a *accountUsersImpl) internalList(ctx context.Context, request ListAccountUsersRequest) (*ListUsersResponse, error) {
 	var listUsersResponse ListUsersResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -410,7 +409,7 @@ func (a *accountUsersImpl) internalList(ctx context.Context, request ListAccount
 
 func (a *accountUsersImpl) Patch(ctx context.Context, request PartialUpdate) error {
 	var patchResponse PatchResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
@@ -420,7 +419,7 @@ func (a *accountUsersImpl) Patch(ctx context.Context, request PartialUpdate) err
 
 func (a *accountUsersImpl) Update(ctx context.Context, request User) error {
 	var updateResponse UpdateResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.ConfiguredAccountID(), request.Id)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/scim/v2/Users/%v", a.client.AccountID(), request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
@@ -430,7 +429,7 @@ func (a *accountUsersImpl) Update(ctx context.Context, request User) error {
 
 // unexported type that holds implementations of just CurrentUser API methods
 type currentUserImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
@@ -445,7 +444,7 @@ func (a *currentUserImpl) Me(ctx context.Context) (*User, error) {
 
 // unexported type that holds implementations of just Groups API methods
 type groupsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *groupsImpl) Create(ctx context.Context, request Group) (*Group, error) {
@@ -554,7 +553,7 @@ func (a *groupsImpl) Update(ctx context.Context, request Group) error {
 
 // unexported type that holds implementations of just PermissionMigration API methods
 type permissionMigrationImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *permissionMigrationImpl) MigratePermissions(ctx context.Context, request MigratePermissionsRequest) (*MigratePermissionsResponse, error) {
@@ -570,7 +569,7 @@ func (a *permissionMigrationImpl) MigratePermissions(ctx context.Context, reques
 
 // unexported type that holds implementations of just Permissions API methods
 type permissionsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *permissionsImpl) Get(ctx context.Context, request GetPermissionRequest) (*ObjectPermissions, error) {
@@ -617,7 +616,7 @@ func (a *permissionsImpl) Update(ctx context.Context, request PermissionsRequest
 
 // unexported type that holds implementations of just ServicePrincipals API methods
 type servicePrincipalsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *servicePrincipalsImpl) Create(ctx context.Context, request ServicePrincipal) (*ServicePrincipal, error) {
@@ -726,7 +725,7 @@ func (a *servicePrincipalsImpl) Update(ctx context.Context, request ServicePrinc
 
 // unexported type that holds implementations of just Users API methods
 type usersImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *usersImpl) Create(ctx context.Context, request User) (*User, error) {
@@ -877,12 +876,12 @@ func (a *usersImpl) UpdatePermissions(ctx context.Context, request PasswordPermi
 
 // unexported type that holds implementations of just WorkspaceAssignment API methods
 type workspaceAssignmentImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWorkspaceAssignmentRequest) error {
 	var deleteWorkspacePermissionAssignmentResponse DeleteWorkspacePermissionAssignmentResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.AccountID(), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -892,7 +891,7 @@ func (a *workspaceAssignmentImpl) Delete(ctx context.Context, request DeleteWork
 
 func (a *workspaceAssignmentImpl) Get(ctx context.Context, request GetWorkspaceAssignmentRequest) (*WorkspacePermissions, error) {
 	var workspacePermissions WorkspacePermissions
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/permissions", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/permissions", a.client.AccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -932,7 +931,7 @@ func (a *workspaceAssignmentImpl) ListAll(ctx context.Context, request ListWorks
 }
 func (a *workspaceAssignmentImpl) internalList(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error) {
 	var permissionAssignments PermissionAssignments
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments", a.client.AccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -942,7 +941,7 @@ func (a *workspaceAssignmentImpl) internalList(ctx context.Context, request List
 
 func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWorkspaceAssignments) (*PermissionAssignment, error) {
 	var permissionAssignment PermissionAssignment
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.PrincipalId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/permissionassignments/principals/%v", a.client.AccountID(), request.WorkspaceId, request.PrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -952,7 +951,7 @@ func (a *workspaceAssignmentImpl) Update(ctx context.Context, request UpdateWork
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -977,5 +976,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

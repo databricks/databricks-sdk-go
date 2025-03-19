@@ -32,7 +32,7 @@ func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
 	}
 
 	return &BillableUsageClient{
-		BillableUsageInterface: NewBillableUsage(apiClient),
+		BillableUsageInterface: NewBillableUsage(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewBudgetPolicyClient(cfg *config.Config) (*BudgetPolicyClient, error) {
 	}
 
 	return &BudgetPolicyClient{
-		BudgetPolicyInterface: NewBudgetPolicy(apiClient),
+		BudgetPolicyInterface: NewBudgetPolicy(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
 	}
 
 	return &BudgetsClient{
-		BudgetsInterface: NewBudgets(apiClient),
+		BudgetsInterface: NewBudgets(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,7 +113,7 @@ func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
 	}
 
 	return &LogDeliveryClient{
-		LogDeliveryInterface: NewLogDelivery(apiClient),
+		LogDeliveryInterface: NewLogDelivery(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -140,6 +140,6 @@ func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error
 	}
 
 	return &UsageDashboardsClient{
-		UsageDashboardsInterface: NewUsageDashboards(apiClient),
+		UsageDashboardsInterface: NewUsageDashboards(apiClient.ApiClient()),
 	}, nil
 }

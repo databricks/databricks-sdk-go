@@ -32,7 +32,7 @@ func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
 	}
 
 	return &ExperimentsClient{
-		ExperimentsInterface: NewExperiments(apiClient),
+		ExperimentsInterface: NewExperiments(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
 	}
 
 	return &ForecastingClient{
-		ForecastingInterface: NewForecasting(apiClient),
+		ForecastingInterface: NewForecasting(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,6 +86,6 @@ func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
 	}
 
 	return &ModelRegistryClient{
-		ModelRegistryInterface: NewModelRegistry(apiClient),
+		ModelRegistryInterface: NewModelRegistry(apiClient.ApiClient()),
 	}, nil
 }

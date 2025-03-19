@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -16,7 +15,7 @@ import (
 
 // unexported type that holds implementations of just ClusterPolicies API methods
 type clusterPoliciesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *clusterPoliciesImpl) Create(ctx context.Context, request CreatePolicy) (*CreatePolicyResponse, error) {
@@ -144,7 +143,7 @@ func (a *clusterPoliciesImpl) UpdatePermissions(ctx context.Context, request Clu
 
 // unexported type that holds implementations of just Clusters API methods
 type clustersImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *clustersImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwner) error {
@@ -452,7 +451,7 @@ func (a *clustersImpl) UpdatePermissions(ctx context.Context, request ClusterPer
 
 // unexported type that holds implementations of just CommandExecution API methods
 type commandExecutionImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *commandExecutionImpl) Cancel(ctx context.Context, request CancelCommand) error {
@@ -521,7 +520,7 @@ func (a *commandExecutionImpl) Execute(ctx context.Context, request Command) (*C
 
 // unexported type that holds implementations of just GlobalInitScripts API methods
 type globalInitScriptsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *globalInitScriptsImpl) Create(ctx context.Context, request GlobalInitScriptCreateRequest) (*CreateResponse, error) {
@@ -613,7 +612,7 @@ func (a *globalInitScriptsImpl) Update(ctx context.Context, request GlobalInitSc
 
 // unexported type that holds implementations of just InstancePools API methods
 type instancePoolsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *instancePoolsImpl) Create(ctx context.Context, request CreateInstancePool) (*CreateInstancePoolResponse, error) {
@@ -742,7 +741,7 @@ func (a *instancePoolsImpl) UpdatePermissions(ctx context.Context, request Insta
 
 // unexported type that holds implementations of just InstanceProfiles API methods
 type instanceProfilesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *instanceProfilesImpl) Add(ctx context.Context, request AddInstanceProfile) error {
@@ -823,7 +822,7 @@ func (a *instanceProfilesImpl) Remove(ctx context.Context, request RemoveInstanc
 
 // unexported type that holds implementations of just Libraries API methods
 type librariesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 // Get all statuses.
@@ -941,7 +940,7 @@ func (a *librariesImpl) Uninstall(ctx context.Context, request UninstallLibrarie
 
 // unexported type that holds implementations of just PolicyComplianceForClusters API methods
 type policyComplianceForClustersImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *policyComplianceForClustersImpl) EnforceCompliance(ctx context.Context, request EnforceClusterComplianceRequest) (*EnforceClusterComplianceResponse, error) {
@@ -1015,7 +1014,7 @@ func (a *policyComplianceForClustersImpl) internalListCompliance(ctx context.Con
 
 // unexported type that holds implementations of just PolicyFamilies API methods
 type policyFamiliesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyRequest) (*PolicyFamily, error) {
@@ -1075,7 +1074,7 @@ func (a *policyFamiliesImpl) internalList(ctx context.Context, request ListPolic
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -1100,5 +1099,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

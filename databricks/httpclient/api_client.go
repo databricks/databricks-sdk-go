@@ -25,6 +25,8 @@ type ClientConfig struct {
 	AuthVisitor RequestVisitor
 	Visitors    []RequestVisitor
 
+	AccountID string
+
 	RetryTimeout       time.Duration
 	HTTPTimeout        time.Duration
 	InsecureSkipVerify bool
@@ -52,6 +54,10 @@ type ApiClient struct {
 	config      ClientConfig
 	rateLimiter *rate.Limiter
 	httpClient  *http.Client
+}
+
+func (apic *ApiClient) AccountID() string {
+	return apic.config.AccountID
 }
 
 const (
@@ -98,11 +104,9 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 		}
 	}
 
-	rateLimit := rate.Limit(cfg.RateLimitPerSecond)
-
 	return &ApiClient{
 		config:      cfg,
-		rateLimiter: rate.NewLimiter(rateLimit, 1),
+		rateLimiter: rate.NewLimiter(rate.Limit(cfg.RateLimitPerSecond), 1),
 		httpClient:  httpClient,
 	}
 }

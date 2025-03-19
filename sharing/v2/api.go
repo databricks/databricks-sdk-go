@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -121,7 +121,7 @@ type ProvidersInterface interface {
 	Update(ctx context.Context, request UpdateProvider) (*ProviderInfo, error)
 }
 
-func NewProviders(client *client.DatabricksClient) *ProvidersAPI {
+func NewProviders(client *httpclient.ApiClient) *ProvidersAPI {
 	return &ProvidersAPI{
 		providersImpl: providersImpl{
 			client: client,
@@ -229,7 +229,7 @@ type RecipientActivationInterface interface {
 	RetrieveTokenByActivationUrl(ctx context.Context, activationUrl string) (*RetrieveTokenResponse, error)
 }
 
-func NewRecipientActivation(client *client.DatabricksClient) *RecipientActivationAPI {
+func NewRecipientActivation(client *httpclient.ApiClient) *RecipientActivationAPI {
 	return &RecipientActivationAPI{
 		recipientActivationImpl: recipientActivationImpl{
 			client: client,
@@ -352,7 +352,7 @@ type RecipientsInterface interface {
 	Update(ctx context.Context, request UpdateRecipient) (*RecipientInfo, error)
 }
 
-func NewRecipients(client *client.DatabricksClient) *RecipientsAPI {
+func NewRecipients(client *httpclient.ApiClient) *RecipientsAPI {
 	return &RecipientsAPI{
 		recipientsImpl: recipientsImpl{
 			client: client,
@@ -507,7 +507,7 @@ type SharesInterface interface {
 	UpdatePermissions(ctx context.Context, request UpdateSharePermissions) (*UpdateSharePermissionsResponse, error)
 }
 
-func NewShares(client *client.DatabricksClient) *SharesAPI {
+func NewShares(client *httpclient.ApiClient) *SharesAPI {
 	return &SharesAPI{
 		sharesImpl: sharesImpl{
 			client: client,

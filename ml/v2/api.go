@@ -6,7 +6,7 @@ package ml
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
@@ -327,7 +327,7 @@ type ExperimentsInterface interface {
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
 }
 
-func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {
+func NewExperiments(client *httpclient.ApiClient) *ExperimentsAPI {
 	return &ExperimentsAPI{
 		experimentsImpl: experimentsImpl{
 			client: client,
@@ -385,7 +385,7 @@ type ForecastingInterface interface {
 	GetExperimentByExperimentId(ctx context.Context, experimentId string) (*ForecastingExperiment, error)
 }
 
-func NewForecasting(client *client.DatabricksClient) *ForecastingAPI {
+func NewForecasting(client *httpclient.ApiClient) *ForecastingAPI {
 	return &ForecastingAPI{
 		forecastingImpl: forecastingImpl{
 			client: client,
@@ -687,7 +687,7 @@ type ModelRegistryInterface interface {
 	UpdateWebhook(ctx context.Context, request UpdateRegistryWebhook) error
 }
 
-func NewModelRegistry(client *client.DatabricksClient) *ModelRegistryAPI {
+func NewModelRegistry(client *httpclient.ApiClient) *ModelRegistryAPI {
 	return &ModelRegistryAPI{
 		modelRegistryImpl: modelRegistryImpl{
 			client: client,

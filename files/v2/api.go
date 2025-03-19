@@ -6,7 +6,7 @@ package files
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
@@ -188,7 +188,7 @@ type DbfsInterface interface {
 	Read(ctx context.Context, request ReadDbfsRequest) (*ReadResponse, error)
 }
 
-func NewDbfs(client *client.DatabricksClient) *DbfsAPI {
+func NewDbfs(client *httpclient.ApiClient) *DbfsAPI {
 	return &DbfsAPI{
 		dbfsImpl: dbfsImpl{
 			client: client,
@@ -376,7 +376,7 @@ type FilesInterface interface {
 	Upload(ctx context.Context, request UploadRequest) error
 }
 
-func NewFiles(client *client.DatabricksClient) *FilesAPI {
+func NewFiles(client *httpclient.ApiClient) *FilesAPI {
 	return &FilesAPI{
 		filesImpl: filesImpl{
 			client: client,

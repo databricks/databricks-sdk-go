@@ -32,7 +32,7 @@ func NewGitCredentialsClient(cfg *config.Config) (*GitCredentialsClient, error) 
 	}
 
 	return &GitCredentialsClient{
-		GitCredentialsInterface: NewGitCredentials(apiClient),
+		GitCredentialsInterface: NewGitCredentials(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewReposClient(cfg *config.Config) (*ReposClient, error) {
 	}
 
 	return &ReposClient{
-		ReposInterface: NewRepos(apiClient),
+		ReposInterface: NewRepos(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewSecretsClient(cfg *config.Config) (*SecretsClient, error) {
 	}
 
 	return &SecretsClient{
-		SecretsInterface: NewSecrets(apiClient),
+		SecretsInterface: NewSecrets(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,6 +113,6 @@ func NewWorkspaceClient(cfg *config.Config) (*WorkspaceClient, error) {
 	}
 
 	return &WorkspaceClient{
-		WorkspaceInterface: NewWorkspace(apiClient),
+		WorkspaceInterface: NewWorkspace(apiClient.ApiClient()),
 	}, nil
 }

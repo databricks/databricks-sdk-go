@@ -6,7 +6,7 @@ package dashboards
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
@@ -98,7 +98,7 @@ type GenieInterface interface {
 	StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error)
 }
 
-func NewGenie(client *client.DatabricksClient) *GenieAPI {
+func NewGenie(client *httpclient.ApiClient) *GenieAPI {
 	return &GenieAPI{
 		genieImpl: genieImpl{
 			client: client,
@@ -308,7 +308,7 @@ type LakeviewInterface interface {
 	UpdateSchedule(ctx context.Context, request UpdateScheduleRequest) (*Schedule, error)
 }
 
-func NewLakeview(client *client.DatabricksClient) *LakeviewAPI {
+func NewLakeview(client *httpclient.ApiClient) *LakeviewAPI {
 	return &LakeviewAPI{
 		lakeviewImpl: lakeviewImpl{
 			client: client,
@@ -421,7 +421,7 @@ type LakeviewEmbeddedInterface interface {
 	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error
 }
 
-func NewLakeviewEmbedded(client *client.DatabricksClient) *LakeviewEmbeddedAPI {
+func NewLakeviewEmbedded(client *httpclient.ApiClient) *LakeviewEmbeddedAPI {
 	return &LakeviewEmbeddedAPI{
 		lakeviewEmbeddedImpl: lakeviewEmbeddedImpl{
 			client: client,
@@ -455,7 +455,7 @@ type QueryExecutionInterface interface {
 	PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error)
 }
 
-func NewQueryExecution(client *client.DatabricksClient) *QueryExecutionAPI {
+func NewQueryExecution(client *httpclient.ApiClient) *QueryExecutionAPI {
 	return &QueryExecutionAPI{
 		queryExecutionImpl: queryExecutionImpl{
 			client: client,

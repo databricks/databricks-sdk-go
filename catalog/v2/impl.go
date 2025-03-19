@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -16,12 +15,12 @@ import (
 
 // unexported type that holds implementations of just AccountMetastoreAssignments API methods
 type accountMetastoreAssignmentsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error {
 	var createResponse CreateResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.AccountID(), request.WorkspaceId, request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -32,7 +31,7 @@ func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request Ac
 
 func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.AccountID(), request.WorkspaceId, request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -42,7 +41,7 @@ func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request De
 
 func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*AccountsMetastoreAssignment, error) {
 	var accountsMetastoreAssignment AccountsMetastoreAssignment
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastore", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastore", a.client.AccountID(), request.WorkspaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -82,7 +81,7 @@ func (a *accountMetastoreAssignmentsImpl) ListAll(ctx context.Context, request L
 }
 func (a *accountMetastoreAssignmentsImpl) internalList(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) (*ListAccountMetastoreAssignmentsResponse, error) {
 	var listAccountMetastoreAssignmentsResponse ListAccountMetastoreAssignmentsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/workspaces", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/workspaces", a.client.AccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -92,7 +91,7 @@ func (a *accountMetastoreAssignmentsImpl) internalList(ctx context.Context, requ
 
 func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error {
 	var updateResponse UpdateResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.ConfiguredAccountID(), request.WorkspaceId, request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/metastores/%v", a.client.AccountID(), request.WorkspaceId, request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -103,12 +102,12 @@ func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request Ac
 
 // unexported type that holds implementations of just AccountMetastores API methods
 type accountMetastoresImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsMetastoreInfo, error) {
 	var accountsMetastoreInfo AccountsMetastoreInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -119,7 +118,7 @@ func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCrea
 
 func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.AccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -129,7 +128,7 @@ func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccoun
 
 func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsMetastoreInfo, error) {
 	var accountsMetastoreInfo AccountsMetastoreInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.AccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -168,7 +167,7 @@ func (a *accountMetastoresImpl) ListAll(ctx context.Context) ([]MetastoreInfo, e
 }
 func (a *accountMetastoresImpl) internalList(ctx context.Context) (*ListMetastoresResponse, error) {
 	var listMetastoresResponse ListMetastoresResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores", a.client.AccountID())
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -178,7 +177,7 @@ func (a *accountMetastoresImpl) internalList(ctx context.Context) (*ListMetastor
 
 func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error) {
 	var accountsMetastoreInfo AccountsMetastoreInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v", a.client.AccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -189,12 +188,12 @@ func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpda
 
 // unexported type that holds implementations of just AccountStorageCredentials API methods
 type accountStorageCredentialsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsStorageCredentialInfo, error) {
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.AccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -205,7 +204,7 @@ func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request Acco
 
 func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.AccountID(), request.MetastoreId, request.StorageCredentialName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -215,7 +214,7 @@ func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request Dele
 
 func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*AccountsStorageCredentialInfo, error) {
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.AccountID(), request.MetastoreId, request.StorageCredentialName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -255,7 +254,7 @@ func (a *accountStorageCredentialsImpl) ListAll(ctx context.Context, request Lis
 }
 func (a *accountStorageCredentialsImpl) internalList(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListAccountStorageCredentialsResponse, error) {
 	var listAccountStorageCredentialsResponse ListAccountStorageCredentialsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.ConfiguredAccountID(), request.MetastoreId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials", a.client.AccountID(), request.MetastoreId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -265,7 +264,7 @@ func (a *accountStorageCredentialsImpl) internalList(ctx context.Context, reques
 
 func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request AccountsUpdateStorageCredential) (*AccountsStorageCredentialInfo, error) {
 	var accountsStorageCredentialInfo AccountsStorageCredentialInfo
-	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.ConfiguredAccountID(), request.MetastoreId, request.StorageCredentialName)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/metastores/%v/storage-credentials/%v", a.client.AccountID(), request.MetastoreId, request.StorageCredentialName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -276,7 +275,7 @@ func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request Acco
 
 // unexported type that holds implementations of just ArtifactAllowlists API methods
 type artifactAllowlistsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *artifactAllowlistsImpl) Get(ctx context.Context, request GetArtifactAllowlistRequest) (*ArtifactAllowlistInfo, error) {
@@ -302,7 +301,7 @@ func (a *artifactAllowlistsImpl) Update(ctx context.Context, request SetArtifact
 
 // unexported type that holds implementations of just Catalogs API methods
 type catalogsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*CatalogInfo, error) {
@@ -401,7 +400,7 @@ func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) (*Cata
 
 // unexported type that holds implementations of just Connections API methods
 type connectionsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *connectionsImpl) Create(ctx context.Context, request CreateConnection) (*ConnectionInfo, error) {
@@ -492,7 +491,7 @@ func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) 
 
 // unexported type that holds implementations of just Credentials API methods
 type credentialsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *credentialsImpl) CreateCredential(ctx context.Context, request CreateCredentialRequest) (*CredentialInfo, error) {
@@ -615,7 +614,7 @@ func (a *credentialsImpl) ValidateCredential(ctx context.Context, request Valida
 
 // unexported type that holds implementations of just ExternalLocations API methods
 type externalLocationsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExternalLocation) (*ExternalLocationInfo, error) {
@@ -714,7 +713,7 @@ func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExtern
 
 // unexported type that holds implementations of just Functions API methods
 type functionsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *functionsImpl) Create(ctx context.Context, request CreateFunctionRequest) (*FunctionInfo, error) {
@@ -817,7 +816,7 @@ func (a *functionsImpl) Update(ctx context.Context, request UpdateFunction) (*Fu
 
 // unexported type that holds implementations of just Grants API methods
 type grantsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *grantsImpl) Get(ctx context.Context, request GetGrantRequest) (*PermissionsList, error) {
@@ -853,7 +852,7 @@ func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*Pe
 
 // unexported type that holds implementations of just Metastores API methods
 type metastoresImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssignment) error {
@@ -995,7 +994,7 @@ func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMet
 
 // unexported type that holds implementations of just ModelVersions API methods
 type modelVersionsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersionRequest) error {
@@ -1108,7 +1107,7 @@ func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersi
 
 // unexported type that holds implementations of just OnlineTables API methods
 type onlineTablesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *onlineTablesImpl) Create(ctx context.Context, request CreateOnlineTableRequest) (*OnlineTable, error) {
@@ -1144,7 +1143,7 @@ func (a *onlineTablesImpl) Get(ctx context.Context, request GetOnlineTableReques
 
 // unexported type that holds implementations of just QualityMonitors API methods
 type qualityMonitorsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *qualityMonitorsImpl) CancelRefresh(ctx context.Context, request CancelRefreshRequest) error {
@@ -1240,7 +1239,7 @@ func (a *qualityMonitorsImpl) Update(ctx context.Context, request UpdateMonitor)
 
 // unexported type that holds implementations of just RegisteredModels API methods
 type registeredModelsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *registeredModelsImpl) Create(ctx context.Context, request CreateRegisteredModelRequest) (*RegisteredModelInfo, error) {
@@ -1372,7 +1371,7 @@ func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegiste
 
 // unexported type that holds implementations of just ResourceQuotas API methods
 type resourceQuotasImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *resourceQuotasImpl) GetQuota(ctx context.Context, request GetQuotaRequest) (*GetQuotaResponse, error) {
@@ -1435,7 +1434,7 @@ func (a *resourceQuotasImpl) internalListQuotas(ctx context.Context, request Lis
 
 // unexported type that holds implementations of just Schemas API methods
 type schemasImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*SchemaInfo, error) {
@@ -1534,7 +1533,7 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*Schema
 
 // unexported type that holds implementations of just StorageCredentials API methods
 type storageCredentialsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error) {
@@ -1644,7 +1643,7 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 
 // unexported type that holds implementations of just SystemSchemas API methods
 type systemSchemasImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest) error {
@@ -1715,7 +1714,7 @@ func (a *systemSchemasImpl) internalList(ctx context.Context, request ListSystem
 
 // unexported type that holds implementations of just TableConstraints API methods
 type tableConstraintsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *tableConstraintsImpl) Create(ctx context.Context, request CreateTableConstraint) (*TableConstraint, error) {
@@ -1741,7 +1740,7 @@ func (a *tableConstraintsImpl) Delete(ctx context.Context, request DeleteTableCo
 
 // unexported type that holds implementations of just Tables API methods
 type tablesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) error {
@@ -1905,7 +1904,7 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) err
 
 // unexported type that holds implementations of just TemporaryTableCredentials API methods
 type temporaryTableCredentialsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx context.Context, request GenerateTemporaryTableCredentialRequest) (*GenerateTemporaryTableCredentialResponse, error) {
@@ -1921,7 +1920,7 @@ func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx co
 
 // unexported type that holds implementations of just Volumes API methods
 type volumesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *volumesImpl) Create(ctx context.Context, request CreateVolumeRequestContent) (*VolumeInfo, error) {
@@ -2031,7 +2030,7 @@ func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestCon
 
 // unexported type that holds implementations of just WorkspaceBindings API methods
 type workspaceBindingsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error) {
@@ -2113,7 +2112,7 @@ func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request Upda
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -2138,5 +2137,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

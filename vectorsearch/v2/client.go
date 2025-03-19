@@ -32,7 +32,7 @@ func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsC
 	}
 
 	return &VectorSearchEndpointsClient{
-		VectorSearchEndpointsInterface: NewVectorSearchEndpoints(apiClient),
+		VectorSearchEndpointsInterface: NewVectorSearchEndpoints(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,6 +59,6 @@ func NewVectorSearchIndexesClient(cfg *config.Config) (*VectorSearchIndexesClien
 	}
 
 	return &VectorSearchIndexesClient{
-		VectorSearchIndexesInterface: NewVectorSearchIndexes(apiClient),
+		VectorSearchIndexesInterface: NewVectorSearchIndexes(apiClient.ApiClient()),
 	}, nil
 }

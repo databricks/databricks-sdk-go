@@ -32,7 +32,7 @@ func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
 	}
 
 	return &GenieClient{
-		GenieInterface: NewGenie(apiClient),
+		GenieInterface: NewGenie(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
 	}
 
 	return &LakeviewClient{
-		LakeviewInterface: NewLakeview(apiClient),
+		LakeviewInterface: NewLakeview(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, err
 	}
 
 	return &LakeviewEmbeddedClient{
-		LakeviewEmbeddedInterface: NewLakeviewEmbedded(apiClient),
+		LakeviewEmbeddedInterface: NewLakeviewEmbedded(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,6 +113,6 @@ func NewQueryExecutionClient(cfg *config.Config) (*QueryExecutionClient, error) 
 	}
 
 	return &QueryExecutionClient{
-		QueryExecutionInterface: NewQueryExecution(apiClient),
+		QueryExecutionInterface: NewQueryExecution(apiClient.ApiClient()),
 	}, nil
 }
