@@ -57,7 +57,7 @@ type ApiClient struct {
 	httpClient  *http.Client
 }
 
-// IsAccountClient returns true if client is configured for Accounts API
+// IsAccountClient returns true if the client is configured for Accounts API.
 func (apic *ApiClient) IsAccountClient() bool {
 	if apic.config.AccountID == "" {
 		return false
