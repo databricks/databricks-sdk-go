@@ -15,6 +15,7 @@ var authProviders = []CredentialsStrategy{
 	M2mCredentials{},
 	DatabricksCliCredentials{},
 	MetadataServiceCredentials{},
+	DatabricksWIFCredentials{},
 
 	// Attempt to configure auth from most specific to most generic (the Azure CLI).
 	AzureGithubOIDCCredentials{},
@@ -25,8 +26,6 @@ var authProviders = []CredentialsStrategy{
 	// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
 	GoogleCredentials{},
 	GoogleDefaultCredentials{},
-
-	DatabricksOIDCCredentials{},
 }
 
 type DefaultCredentials struct {

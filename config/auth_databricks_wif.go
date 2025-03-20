@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"net/url"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
@@ -10,25 +11,39 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 )
 
-type DatabricksOIDCCredentials struct{}
+type DatabricksWIFCredentials struct{}
 
 // Configure implements CredentialsStrategy.
-func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+func (d DatabricksWIFCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.Host == "" || cfg.ClientID == "" || cfg.TokenAudience == "" {
 		return nil, nil
 	}
 
-	// Get the OIDC token from the environment.
 	supplier := GithubOIDCTokenSupplier{
 		cfg: cfg,
 	}
 
-	ts := &databricksOIDCTokenSource{
+	// If no supplier can get an IdToken, skip this CredentialsStrategy
+	idToken, err := supplier.GetOIDCToken(ctx, cfg.TokenAudience)
+	if err != nil {
+		return nil, err
+	}
+	if idToken == "" {
+		return nil, nil
+	}
+
+	endpoints, err := oidcEndpoints(ctx, cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	ts := &databricksWIFTokenSource{
 		ctx:               ctx,
 		jwtTokenSupplicer: &supplier,
 		audience:          cfg.TokenAudience,
 		clientId:          cfg.ClientID,
 		cfg:               cfg,
+		tokenEndpoint:     endpoints.TokenEndpoint,
 	}
 
 	visitor := refreshableVisitor(ts)
@@ -36,38 +51,34 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 }
 
 // Name implements CredentialsStrategy.
-func (d DatabricksOIDCCredentials) Name() string {
-	return "databricks-oidc"
+func (d DatabricksWIFCredentials) Name() string {
+	return "databricks-wif"
 }
 
-type databricksOIDCTokenSource struct {
+type databricksWIFTokenSource struct {
 	ctx               context.Context
 	jwtTokenSupplicer *GithubOIDCTokenSupplier
+	tokenEndpoint     string
 	audience          string
 	clientId          string
 	cfg               *Config
 }
 
-func (d *databricksOIDCTokenSource) Token() (*oauth2.Token, error) {
+func (d *databricksWIFTokenSource) Token() (*oauth2.Token, error) {
 	token, err := d.jwtTokenSupplicer.GetOIDCToken(d.ctx, d.audience)
 	if err != nil {
 		return nil, err
 	}
 	if token == "" {
+		// It should not happen, since we check before constructing the token source.
 		logger.Debugf(d.ctx, "No OIDC token found")
-		return nil, nil
+		return nil, errors.New("cannot get OIDC token")
 	}
-
-	endpoints, err := oidcEndpoints(d.ctx, d.cfg)
-	if err != nil {
-		return nil, err
-	}
-	logger.Debugf(d.ctx, "Getting tokken for client %s", d.clientId)
 
 	tsConfig := clientcredentials.Config{
 		ClientID:  d.clientId,
 		AuthStyle: oauth2.AuthStyleInParams,
-		TokenURL:  endpoints.TokenEndpoint,
+		TokenURL:  d.tokenEndpoint,
 		Scopes:    []string{"all-apis"},
 		EndpointParams: url.Values{
 			"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
@@ -76,6 +87,7 @@ func (d *databricksOIDCTokenSource) Token() (*oauth2.Token, error) {
 		},
 	}
 
-	// Request the token
+	logger.Debugf(d.ctx, "Getting tokken for client %s", d.clientId)
+
 	return tsConfig.Token(d.ctx)
 }

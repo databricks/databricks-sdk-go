@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAccWifAuth(t *testing.T) {
+func TestUcAccWifAuth(t *testing.T) {
 	ctx, a := ucacctTest(t)
 
 	// Create SP with access to the workspace
@@ -60,7 +60,7 @@ func TestAccWifAuth(t *testing.T) {
 		Host:          a.Config.Host,
 		AccountID:     a.Config.AccountID,
 		ClientID:      sp.ApplicationId,
-		AuthType:      "databricks-oidc",
+		AuthType:      "databricks-wif",
 		TokenAudience: "https://github.com/databricks-eng",
 	}
 
@@ -73,7 +73,7 @@ func TestAccWifAuth(t *testing.T) {
 
 }
 
-func TestAccWifAuthWorkspace(t *testing.T) {
+func TestUcAccWifAuthWorkspace(t *testing.T) {
 	ctx, a := ucacctTest(t)
 
 	workspaceIdEnvVar := GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID")
@@ -137,7 +137,7 @@ func TestAccWifAuthWorkspace(t *testing.T) {
 	wsCfg := &databricks.Config{
 		Host:          workspaceUrl,
 		ClientID:      sp.ApplicationId,
-		AuthType:      "databricks-oidc",
+		AuthType:      "databricks-wif",
 		TokenAudience: "https://github.com/databricks-eng",
 	}
 

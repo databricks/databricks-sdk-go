@@ -14,19 +14,35 @@ The Databricks SDK for Go includes functionality to accelerate development with 
 
 ## Contents
 
-- [Getting started](#getting-started)
-- [Authentication](#authentication)
-- [Code examples](#code-examples)
-- [Long running operations](#long-running-operations)
-- [Paginated responses](#paginated-responses)
-- [GetByName utility methods](#getbyname-utility-methods)
-- [Node type and Databricks Runtime selectors](#node-type-and-databricks-runtime-selectors)
-- [Integration with `io` interfaces for DBFS](#integration-with-io-interfaces-for-dbfs)
-- [User Agent Request Attribution](#user-agent-request-attribution)
-- [Error Handling](#error-handling)
-- [Logging](#logging)
+- [Databricks SDK for Go](#databricks-sdk-for-go)
+  - [Contents](#contents)
+  - [Getting started](#getting-started)
+  - [Authentication](#authentication)
+    - [In this section](#in-this-section)
+    - [Default authentication flow](#default-authentication-flow)
+    - [Databricks native authentication](#databricks-native-authentication)
+    - [Azure native authentication](#azure-native-authentication)
+    - [Google Cloud Platform native authentication](#google-cloud-platform-native-authentication)
+    - [Overriding `.databrickscfg`](#overriding-databrickscfg)
+    - [Additional authentication configuration options](#additional-authentication-configuration-options)
+    - [Custom credentials provider](#custom-credentials-provider)
+  - [Code examples](#code-examples)
+  - [Long-running operations](#long-running-operations)
+    - [In this section](#in-this-section-1)
+    - [Command execution on clusters](#command-execution-on-clusters)
+    - [Cluster library management](#cluster-library-management)
+    - [Advanced usage](#advanced-usage)
+  - [Paginated responses](#paginated-responses)
+  - [`GetByName` utility methods](#getbyname-utility-methods)
+  - [Node type and Databricks Runtime selectors](#node-type-and-databricks-runtime-selectors)
+  - [Integration with `io` interfaces for DBFS](#integration-with-io-interfaces-for-dbfs)
+    - [Reading into and writing from buffers](#reading-into-and-writing-from-buffers)
+  - [`pflag.Value` for enums](#pflagvalue-for-enums)
+  - [User Agent Request Attribution](#user-agent-request-attribution)
+  - [Error handling](#error-handling)
+  - [Logging](#logging)
 - [Testing](#testing)
-- [Interface stability](#interface-stability)
+  - [Interface stability](#interface-stability)
 
 ## Getting started
 
@@ -158,10 +174,11 @@ Depending on the Databricks authentication method, the SDK uses the following in
 
 ### Databricks native authentication
 
-By default, the Databricks SDK for Go initially tries Databricks token authentication (`AuthType: "pat"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Databricks basic (username/password) authentication (`AuthType: "basic"` in `*databricks.Config`).
+By default, the Databricks SDK for Go initially tries Databricks token authentication (`AuthType: "pat"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Databricks basic (username/password) authentication (`AuthType: "basic"` in `*databricks.Config`). If unsucesful, it then tries Workload Identity Federation (WIF) based authentication(`AuthType: "databricks-wif"` in `*databricks.Config`). Currently, only GitHub provided JWT Tokens is supported.
 
 - For Databricks token authentication, you must provide `Host` and `Token`; or their environment variable or `.databrickscfg` file field equivalents.
 - For Databricks basic authentication, you must provide `Host`, `Username`, and `Password` _(for AWS workspace-level operations)_; or `Host`, `AccountID`, `Username`, and `Password` _(for AWS, Azure, or GCP account-level operations)_; or their environment variable or `.databrickscfg` file field equivalents.
+- For Databricks wif authentication, you must provide `Host`, `ClientID` and `TokenAudience`; or their environment variable or `.databrickscfg` file field equivalents.
 
 | `*databricks.Config` argument | Description                                                                                                                                                                                                                                                              | Environment variable / `.databrickscfg` file field |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------- |
@@ -170,6 +187,7 @@ By default, the Databricks SDK for Go initially tries Databricks token authentic
 | `Token`                       | _(String)_ The Databricks personal access token (PAT) _(AWS, Azure, and GCP)_ or Azure Active Directory (Azure AD) token _(Azure)_.                                                                                                                                      | `DATABRICKS_TOKEN` / `token`                       |
 | `Username`                    | _(String)_ The Databricks username part of basic authentication. Only possible when `Host` is `*.cloud.databricks.com` _(AWS)_.                                                                                                                                          | `DATABRICKS_USERNAME` / `username`                 |
 | `Password`                    | _(String)_ The Databricks password part of basic authentication. Only possible when `Host` is `*.cloud.databricks.com` _(AWS)_.                                                                                                                                          | `DATABRICKS_PASSWORD` / `password`                 |
+| `TokenAudience`               | _(String)_ The Audience for the JWT Token.                                                                                                                                                                                                                               | `TOKEN_AUDIENCE` / `token_audience`                |
 
 For example, to use Databricks token authentication:
 
