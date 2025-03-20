@@ -71,6 +71,17 @@ func print(ctx context.Context, token string) {
 	logger.Debugf(ctx, string(prettyJSON))
 }
 
+type databricksOIDCTokenSource struct {
+	ctx                 context.Context
+	jwtTokenSupplicer   *GithubOIDCTokenSupplier
+	workspaceResourceId string
+	azureTenantId       string
+}
+
+func (d *databricksOIDCTokenSource) Token() *oauth2.Token {
+	return nil
+}
+
 // Configure implements CredentialsStrategy.
 func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	if cfg.Host == "" || cfg.ClientID == "" || cfg.TokenAudience == "" {
@@ -90,8 +101,6 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 		return nil, nil
 	}
 
-	print(ctx, token)
-
 	endpoints, err := oidcEndpoints(ctx, cfg)
 	if err != nil {
 		return nil, err
@@ -99,11 +108,10 @@ func (d DatabricksOIDCCredentials) Configure(ctx context.Context, cfg *Config) (
 	logger.Debugf(ctx, "Getting tokken for client %s", cfg.ClientID)
 
 	tsConfig := clientcredentials.Config{
-		ClientID:     cfg.ClientID,
-		ClientSecret: "",
-		AuthStyle:    oauth2.AuthStyleInParams,
-		TokenURL:     endpoints.TokenEndpoint,
-		Scopes:       []string{"all-apis"},
+		ClientID:  cfg.ClientID,
+		AuthStyle: oauth2.AuthStyleInParams,
+		TokenURL:  endpoints.TokenEndpoint,
+		Scopes:    []string{"all-apis"},
 		EndpointParams: url.Values{
 			"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
 			"subject_token":      {token},
