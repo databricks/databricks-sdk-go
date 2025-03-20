@@ -305,8 +305,6 @@ func (c *ApiClient) attempt(
 			return &responseWrapper, nil
 		}
 
-		// proactively release the connections in HTTP connection pool
-		c.httpClient.CloseIdleConnections()
 		return c.handleError(ctx, err, requestBody)
 	}
 }
