@@ -29,7 +29,6 @@ type ClientConfig struct {
 
 	RetryTimeout       time.Duration
 	HTTPTimeout        time.Duration
-	InsecureSkipVerify bool
 	DebugHeaders       bool
 	DebugTruncateBytes int
 	RateLimitPerSecond int
@@ -39,6 +38,9 @@ type ClientConfig struct {
 	TransientErrors []string
 
 	Transport http.RoundTripper
+
+	// Deprecated: Use your own Transport implementation instead.
+	InsecureSkipVerify bool
 }
 
 var defaultTransport = &http.Transport{
