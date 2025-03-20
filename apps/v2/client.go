@@ -10,7 +10,7 @@ import (
 )
 
 type AppsClient struct {
-	AppsInterface
+	AppsAPI
 }
 
 func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
@@ -32,6 +32,10 @@ func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
 	}
 
 	return &AppsClient{
-		AppsInterface: NewApps(apiClient.ApiClient()),
+		AppsAPI: AppsAPI{
+			appsImpl: appsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }

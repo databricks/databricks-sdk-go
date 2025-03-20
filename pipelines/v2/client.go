@@ -10,7 +10,7 @@ import (
 )
 
 type PipelinesClient struct {
-	PipelinesInterface
+	PipelinesAPI
 }
 
 func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
@@ -32,6 +32,10 @@ func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
 	}
 
 	return &PipelinesClient{
-		PipelinesInterface: NewPipelines(apiClient.ApiClient()),
+		PipelinesAPI: PipelinesAPI{
+			pipelinesImpl: pipelinesImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }

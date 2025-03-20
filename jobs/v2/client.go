@@ -10,7 +10,7 @@ import (
 )
 
 type JobsClient struct {
-	JobsInterface
+	JobsAPI
 }
 
 func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
@@ -32,12 +32,16 @@ func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
 	}
 
 	return &JobsClient{
-		JobsInterface: NewJobs(apiClient.ApiClient()),
+		JobsAPI: JobsAPI{
+			jobsImpl: jobsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type PolicyComplianceForJobsClient struct {
-	PolicyComplianceForJobsInterface
+	PolicyComplianceForJobsAPI
 }
 
 func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJobsClient, error) {
@@ -59,6 +63,10 @@ func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJ
 	}
 
 	return &PolicyComplianceForJobsClient{
-		PolicyComplianceForJobsInterface: NewPolicyComplianceForJobs(apiClient.ApiClient()),
+		PolicyComplianceForJobsAPI: PolicyComplianceForJobsAPI{
+			policyComplianceForJobsImpl: policyComplianceForJobsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }

@@ -10,7 +10,7 @@ import (
 )
 
 type AccountMetastoreAssignmentsClient struct {
-	AccountMetastoreAssignmentsInterface
+	AccountMetastoreAssignmentsAPI
 }
 
 func NewAccountMetastoreAssignmentsClient(cfg *config.Config) (*AccountMetastoreAssignmentsClient, error) {
@@ -32,12 +32,16 @@ func NewAccountMetastoreAssignmentsClient(cfg *config.Config) (*AccountMetastore
 	}
 
 	return &AccountMetastoreAssignmentsClient{
-		AccountMetastoreAssignmentsInterface: NewAccountMetastoreAssignments(apiClient.ApiClient()),
+		AccountMetastoreAssignmentsAPI: AccountMetastoreAssignmentsAPI{
+			accountMetastoreAssignmentsImpl: accountMetastoreAssignmentsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type AccountMetastoresClient struct {
-	AccountMetastoresInterface
+	AccountMetastoresAPI
 }
 
 func NewAccountMetastoresClient(cfg *config.Config) (*AccountMetastoresClient, error) {
@@ -59,12 +63,16 @@ func NewAccountMetastoresClient(cfg *config.Config) (*AccountMetastoresClient, e
 	}
 
 	return &AccountMetastoresClient{
-		AccountMetastoresInterface: NewAccountMetastores(apiClient.ApiClient()),
+		AccountMetastoresAPI: AccountMetastoresAPI{
+			accountMetastoresImpl: accountMetastoresImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type AccountStorageCredentialsClient struct {
-	AccountStorageCredentialsInterface
+	AccountStorageCredentialsAPI
 }
 
 func NewAccountStorageCredentialsClient(cfg *config.Config) (*AccountStorageCredentialsClient, error) {
@@ -86,12 +94,16 @@ func NewAccountStorageCredentialsClient(cfg *config.Config) (*AccountStorageCred
 	}
 
 	return &AccountStorageCredentialsClient{
-		AccountStorageCredentialsInterface: NewAccountStorageCredentials(apiClient.ApiClient()),
+		AccountStorageCredentialsAPI: AccountStorageCredentialsAPI{
+			accountStorageCredentialsImpl: accountStorageCredentialsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type ArtifactAllowlistsClient struct {
-	ArtifactAllowlistsInterface
+	ArtifactAllowlistsAPI
 }
 
 func NewArtifactAllowlistsClient(cfg *config.Config) (*ArtifactAllowlistsClient, error) {
@@ -113,12 +125,16 @@ func NewArtifactAllowlistsClient(cfg *config.Config) (*ArtifactAllowlistsClient,
 	}
 
 	return &ArtifactAllowlistsClient{
-		ArtifactAllowlistsInterface: NewArtifactAllowlists(apiClient.ApiClient()),
+		ArtifactAllowlistsAPI: ArtifactAllowlistsAPI{
+			artifactAllowlistsImpl: artifactAllowlistsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type CatalogsClient struct {
-	CatalogsInterface
+	CatalogsAPI
 }
 
 func NewCatalogsClient(cfg *config.Config) (*CatalogsClient, error) {
@@ -140,12 +156,16 @@ func NewCatalogsClient(cfg *config.Config) (*CatalogsClient, error) {
 	}
 
 	return &CatalogsClient{
-		CatalogsInterface: NewCatalogs(apiClient.ApiClient()),
+		CatalogsAPI: CatalogsAPI{
+			catalogsImpl: catalogsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type ConnectionsClient struct {
-	ConnectionsInterface
+	ConnectionsAPI
 }
 
 func NewConnectionsClient(cfg *config.Config) (*ConnectionsClient, error) {
@@ -167,12 +187,16 @@ func NewConnectionsClient(cfg *config.Config) (*ConnectionsClient, error) {
 	}
 
 	return &ConnectionsClient{
-		ConnectionsInterface: NewConnections(apiClient.ApiClient()),
+		ConnectionsAPI: ConnectionsAPI{
+			connectionsImpl: connectionsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type CredentialsClient struct {
-	CredentialsInterface
+	CredentialsAPI
 }
 
 func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
@@ -194,12 +218,16 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 	}
 
 	return &CredentialsClient{
-		CredentialsInterface: NewCredentials(apiClient.ApiClient()),
+		CredentialsAPI: CredentialsAPI{
+			credentialsImpl: credentialsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type ExternalLocationsClient struct {
-	ExternalLocationsInterface
+	ExternalLocationsAPI
 }
 
 func NewExternalLocationsClient(cfg *config.Config) (*ExternalLocationsClient, error) {
@@ -221,12 +249,16 @@ func NewExternalLocationsClient(cfg *config.Config) (*ExternalLocationsClient, e
 	}
 
 	return &ExternalLocationsClient{
-		ExternalLocationsInterface: NewExternalLocations(apiClient.ApiClient()),
+		ExternalLocationsAPI: ExternalLocationsAPI{
+			externalLocationsImpl: externalLocationsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type FunctionsClient struct {
-	FunctionsInterface
+	FunctionsAPI
 }
 
 func NewFunctionsClient(cfg *config.Config) (*FunctionsClient, error) {
@@ -248,12 +280,16 @@ func NewFunctionsClient(cfg *config.Config) (*FunctionsClient, error) {
 	}
 
 	return &FunctionsClient{
-		FunctionsInterface: NewFunctions(apiClient.ApiClient()),
+		FunctionsAPI: FunctionsAPI{
+			functionsImpl: functionsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type GrantsClient struct {
-	GrantsInterface
+	GrantsAPI
 }
 
 func NewGrantsClient(cfg *config.Config) (*GrantsClient, error) {
@@ -275,12 +311,16 @@ func NewGrantsClient(cfg *config.Config) (*GrantsClient, error) {
 	}
 
 	return &GrantsClient{
-		GrantsInterface: NewGrants(apiClient.ApiClient()),
+		GrantsAPI: GrantsAPI{
+			grantsImpl: grantsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type MetastoresClient struct {
-	MetastoresInterface
+	MetastoresAPI
 }
 
 func NewMetastoresClient(cfg *config.Config) (*MetastoresClient, error) {
@@ -302,12 +342,16 @@ func NewMetastoresClient(cfg *config.Config) (*MetastoresClient, error) {
 	}
 
 	return &MetastoresClient{
-		MetastoresInterface: NewMetastores(apiClient.ApiClient()),
+		MetastoresAPI: MetastoresAPI{
+			metastoresImpl: metastoresImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type ModelVersionsClient struct {
-	ModelVersionsInterface
+	ModelVersionsAPI
 }
 
 func NewModelVersionsClient(cfg *config.Config) (*ModelVersionsClient, error) {
@@ -329,12 +373,16 @@ func NewModelVersionsClient(cfg *config.Config) (*ModelVersionsClient, error) {
 	}
 
 	return &ModelVersionsClient{
-		ModelVersionsInterface: NewModelVersions(apiClient.ApiClient()),
+		ModelVersionsAPI: ModelVersionsAPI{
+			modelVersionsImpl: modelVersionsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type OnlineTablesClient struct {
-	OnlineTablesInterface
+	OnlineTablesAPI
 }
 
 func NewOnlineTablesClient(cfg *config.Config) (*OnlineTablesClient, error) {
@@ -356,12 +404,16 @@ func NewOnlineTablesClient(cfg *config.Config) (*OnlineTablesClient, error) {
 	}
 
 	return &OnlineTablesClient{
-		OnlineTablesInterface: NewOnlineTables(apiClient.ApiClient()),
+		OnlineTablesAPI: OnlineTablesAPI{
+			onlineTablesImpl: onlineTablesImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type QualityMonitorsClient struct {
-	QualityMonitorsInterface
+	QualityMonitorsAPI
 }
 
 func NewQualityMonitorsClient(cfg *config.Config) (*QualityMonitorsClient, error) {
@@ -383,12 +435,16 @@ func NewQualityMonitorsClient(cfg *config.Config) (*QualityMonitorsClient, error
 	}
 
 	return &QualityMonitorsClient{
-		QualityMonitorsInterface: NewQualityMonitors(apiClient.ApiClient()),
+		QualityMonitorsAPI: QualityMonitorsAPI{
+			qualityMonitorsImpl: qualityMonitorsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type RegisteredModelsClient struct {
-	RegisteredModelsInterface
+	RegisteredModelsAPI
 }
 
 func NewRegisteredModelsClient(cfg *config.Config) (*RegisteredModelsClient, error) {
@@ -410,12 +466,16 @@ func NewRegisteredModelsClient(cfg *config.Config) (*RegisteredModelsClient, err
 	}
 
 	return &RegisteredModelsClient{
-		RegisteredModelsInterface: NewRegisteredModels(apiClient.ApiClient()),
+		RegisteredModelsAPI: RegisteredModelsAPI{
+			registeredModelsImpl: registeredModelsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type ResourceQuotasClient struct {
-	ResourceQuotasInterface
+	ResourceQuotasAPI
 }
 
 func NewResourceQuotasClient(cfg *config.Config) (*ResourceQuotasClient, error) {
@@ -437,12 +497,16 @@ func NewResourceQuotasClient(cfg *config.Config) (*ResourceQuotasClient, error) 
 	}
 
 	return &ResourceQuotasClient{
-		ResourceQuotasInterface: NewResourceQuotas(apiClient.ApiClient()),
+		ResourceQuotasAPI: ResourceQuotasAPI{
+			resourceQuotasImpl: resourceQuotasImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type SchemasClient struct {
-	SchemasInterface
+	SchemasAPI
 }
 
 func NewSchemasClient(cfg *config.Config) (*SchemasClient, error) {
@@ -464,12 +528,16 @@ func NewSchemasClient(cfg *config.Config) (*SchemasClient, error) {
 	}
 
 	return &SchemasClient{
-		SchemasInterface: NewSchemas(apiClient.ApiClient()),
+		SchemasAPI: SchemasAPI{
+			schemasImpl: schemasImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type StorageCredentialsClient struct {
-	StorageCredentialsInterface
+	StorageCredentialsAPI
 }
 
 func NewStorageCredentialsClient(cfg *config.Config) (*StorageCredentialsClient, error) {
@@ -491,12 +559,16 @@ func NewStorageCredentialsClient(cfg *config.Config) (*StorageCredentialsClient,
 	}
 
 	return &StorageCredentialsClient{
-		StorageCredentialsInterface: NewStorageCredentials(apiClient.ApiClient()),
+		StorageCredentialsAPI: StorageCredentialsAPI{
+			storageCredentialsImpl: storageCredentialsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type SystemSchemasClient struct {
-	SystemSchemasInterface
+	SystemSchemasAPI
 }
 
 func NewSystemSchemasClient(cfg *config.Config) (*SystemSchemasClient, error) {
@@ -518,12 +590,16 @@ func NewSystemSchemasClient(cfg *config.Config) (*SystemSchemasClient, error) {
 	}
 
 	return &SystemSchemasClient{
-		SystemSchemasInterface: NewSystemSchemas(apiClient.ApiClient()),
+		SystemSchemasAPI: SystemSchemasAPI{
+			systemSchemasImpl: systemSchemasImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type TableConstraintsClient struct {
-	TableConstraintsInterface
+	TableConstraintsAPI
 }
 
 func NewTableConstraintsClient(cfg *config.Config) (*TableConstraintsClient, error) {
@@ -545,12 +621,16 @@ func NewTableConstraintsClient(cfg *config.Config) (*TableConstraintsClient, err
 	}
 
 	return &TableConstraintsClient{
-		TableConstraintsInterface: NewTableConstraints(apiClient.ApiClient()),
+		TableConstraintsAPI: TableConstraintsAPI{
+			tableConstraintsImpl: tableConstraintsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type TablesClient struct {
-	TablesInterface
+	TablesAPI
 }
 
 func NewTablesClient(cfg *config.Config) (*TablesClient, error) {
@@ -572,12 +652,16 @@ func NewTablesClient(cfg *config.Config) (*TablesClient, error) {
 	}
 
 	return &TablesClient{
-		TablesInterface: NewTables(apiClient.ApiClient()),
+		TablesAPI: TablesAPI{
+			tablesImpl: tablesImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type TemporaryTableCredentialsClient struct {
-	TemporaryTableCredentialsInterface
+	TemporaryTableCredentialsAPI
 }
 
 func NewTemporaryTableCredentialsClient(cfg *config.Config) (*TemporaryTableCredentialsClient, error) {
@@ -599,12 +683,16 @@ func NewTemporaryTableCredentialsClient(cfg *config.Config) (*TemporaryTableCred
 	}
 
 	return &TemporaryTableCredentialsClient{
-		TemporaryTableCredentialsInterface: NewTemporaryTableCredentials(apiClient.ApiClient()),
+		TemporaryTableCredentialsAPI: TemporaryTableCredentialsAPI{
+			temporaryTableCredentialsImpl: temporaryTableCredentialsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type VolumesClient struct {
-	VolumesInterface
+	VolumesAPI
 }
 
 func NewVolumesClient(cfg *config.Config) (*VolumesClient, error) {
@@ -626,12 +714,16 @@ func NewVolumesClient(cfg *config.Config) (*VolumesClient, error) {
 	}
 
 	return &VolumesClient{
-		VolumesInterface: NewVolumes(apiClient.ApiClient()),
+		VolumesAPI: VolumesAPI{
+			volumesImpl: volumesImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type WorkspaceBindingsClient struct {
-	WorkspaceBindingsInterface
+	WorkspaceBindingsAPI
 }
 
 func NewWorkspaceBindingsClient(cfg *config.Config) (*WorkspaceBindingsClient, error) {
@@ -653,6 +745,10 @@ func NewWorkspaceBindingsClient(cfg *config.Config) (*WorkspaceBindingsClient, e
 	}
 
 	return &WorkspaceBindingsClient{
-		WorkspaceBindingsInterface: NewWorkspaceBindings(apiClient.ApiClient()),
+		WorkspaceBindingsAPI: WorkspaceBindingsAPI{
+			workspaceBindingsImpl: workspaceBindingsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }

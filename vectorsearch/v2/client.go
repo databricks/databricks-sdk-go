@@ -10,7 +10,7 @@ import (
 )
 
 type VectorSearchEndpointsClient struct {
-	VectorSearchEndpointsInterface
+	VectorSearchEndpointsAPI
 }
 
 func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsClient, error) {
@@ -32,12 +32,16 @@ func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsC
 	}
 
 	return &VectorSearchEndpointsClient{
-		VectorSearchEndpointsInterface: NewVectorSearchEndpoints(apiClient.ApiClient()),
+		VectorSearchEndpointsAPI: VectorSearchEndpointsAPI{
+			vectorSearchEndpointsImpl: vectorSearchEndpointsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type VectorSearchIndexesClient struct {
-	VectorSearchIndexesInterface
+	VectorSearchIndexesAPI
 }
 
 func NewVectorSearchIndexesClient(cfg *config.Config) (*VectorSearchIndexesClient, error) {
@@ -59,6 +63,10 @@ func NewVectorSearchIndexesClient(cfg *config.Config) (*VectorSearchIndexesClien
 	}
 
 	return &VectorSearchIndexesClient{
-		VectorSearchIndexesInterface: NewVectorSearchIndexes(apiClient.ApiClient()),
+		VectorSearchIndexesAPI: VectorSearchIndexesAPI{
+			vectorSearchIndexesImpl: vectorSearchIndexesImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }

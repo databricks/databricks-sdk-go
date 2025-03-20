@@ -10,7 +10,7 @@ import (
 )
 
 type CleanRoomAssetsClient struct {
-	CleanRoomAssetsInterface
+	CleanRoomAssetsAPI
 }
 
 func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error) {
@@ -32,12 +32,16 @@ func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error
 	}
 
 	return &CleanRoomAssetsClient{
-		CleanRoomAssetsInterface: NewCleanRoomAssets(apiClient.ApiClient()),
+		CleanRoomAssetsAPI: CleanRoomAssetsAPI{
+			cleanRoomAssetsImpl: cleanRoomAssetsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type CleanRoomTaskRunsClient struct {
-	CleanRoomTaskRunsInterface
+	CleanRoomTaskRunsAPI
 }
 
 func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, error) {
@@ -59,12 +63,16 @@ func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, e
 	}
 
 	return &CleanRoomTaskRunsClient{
-		CleanRoomTaskRunsInterface: NewCleanRoomTaskRuns(apiClient.ApiClient()),
+		CleanRoomTaskRunsAPI: CleanRoomTaskRunsAPI{
+			cleanRoomTaskRunsImpl: cleanRoomTaskRunsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
 type CleanRoomsClient struct {
-	CleanRoomsInterface
+	CleanRoomsAPI
 }
 
 func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
@@ -86,6 +94,10 @@ func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
 	}
 
 	return &CleanRoomsClient{
-		CleanRoomsInterface: NewCleanRooms(apiClient.ApiClient()),
+		CleanRoomsAPI: CleanRoomsAPI{
+			cleanRoomsImpl: cleanRoomsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
