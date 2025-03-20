@@ -2,6 +2,7 @@ package httpclient
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"net"
@@ -29,6 +30,7 @@ type ClientConfig struct {
 
 	RetryTimeout       time.Duration
 	HTTPTimeout        time.Duration
+	InsecureSkipVerify bool
 	DebugHeaders       bool
 	DebugTruncateBytes int
 	RateLimitPerSecond int
@@ -38,28 +40,38 @@ type ClientConfig struct {
 	TransientErrors []string
 
 	Transport http.RoundTripper
-
-	// Deprecated: Use your own Transport implementation instead.
-	InsecureSkipVerify bool
 }
 
-var defaultTransport = &http.Transport{
-	Proxy: http.ProxyFromEnvironment,
-	DialContext: (&net.Dialer{
-		Timeout:   30 * time.Second,
-		KeepAlive: 30 * time.Second,
-	}).DialContext,
-	ForceAttemptHTTP2:     true,
-	MaxIdleConns:          100,
-	MaxIdleConnsPerHost:   runtime.GOMAXPROCS(0) + 1,
-	IdleConnTimeout:       180 * time.Second,
-	TLSHandshakeTimeout:   30 * time.Second,
-	ExpectContinueTimeout: 1 * time.Second,
+var defaultTransport = transport(false)
+
+func transport(skipVerify bool) http.RoundTripper {
+	t := &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: (&net.Dialer{
+			Timeout:   30 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
+		ForceAttemptHTTP2:     true,
+		MaxIdleConns:          100,
+		MaxIdleConnsPerHost:   runtime.GOMAXPROCS(0) + 1,
+		IdleConnTimeout:       180 * time.Second,
+		TLSHandshakeTimeout:   30 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	}
+
+	if skipVerify {
+		t.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	}
+
+	return t
 }
 
 func (cfg ClientConfig) httpTransport() http.RoundTripper {
 	if cfg.Transport != nil {
 		return cfg.Transport
+	}
+	if cfg.InsecureSkipVerify {
+		return transport(true)
 	}
 	return defaultTransport
 }
