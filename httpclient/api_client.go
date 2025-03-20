@@ -2,13 +2,10 @@ package httpclient
 
 import (
 	"context"
-	"crypto/tls"
 	"errors"
 	"fmt"
-	"net"
 	"net/http"
 	"net/url"
-	"runtime"
 	"strings"
 	"time"
 
@@ -46,22 +43,7 @@ func (cfg ClientConfig) httpTransport() http.RoundTripper {
 	if cfg.Transport != nil {
 		return cfg.Transport
 	}
-	return &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-		DialContext: (&net.Dialer{
-			Timeout:   30 * time.Second,
-			KeepAlive: 30 * time.Second,
-		}).DialContext,
-		ForceAttemptHTTP2:     true,
-		MaxIdleConns:          100,
-		MaxIdleConnsPerHost:   runtime.GOMAXPROCS(0) + 1,
-		IdleConnTimeout:       180 * time.Second,
-		TLSHandshakeTimeout:   30 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: cfg.InsecureSkipVerify,
-		},
-	}
+	return http.DefaultTransport
 }
 
 func NewApiClient(cfg ClientConfig) *ApiClient {
