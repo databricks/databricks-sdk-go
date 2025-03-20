@@ -9,8 +9,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/config"
 )
 
+// Fulfillments are entities that allow consumers to preview installations.
 type ConsumerFulfillmentsClient struct {
-	ConsumerFulfillmentsInterface
+	ConsumerFulfillmentsAPI
 }
 
 func NewConsumerFulfillmentsClient(cfg *config.Config) (*ConsumerFulfillmentsClient, error) {
@@ -32,12 +33,18 @@ func NewConsumerFulfillmentsClient(cfg *config.Config) (*ConsumerFulfillmentsCli
 	}
 
 	return &ConsumerFulfillmentsClient{
-		ConsumerFulfillmentsInterface: NewConsumerFulfillments(apiClient.ApiClient()),
+		ConsumerFulfillmentsAPI: ConsumerFulfillmentsAPI{
+			consumerFulfillmentsImpl: consumerFulfillmentsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Installations are entities that allow consumers to interact with Databricks
+// Marketplace listings.
 type ConsumerInstallationsClient struct {
-	ConsumerInstallationsInterface
+	ConsumerInstallationsAPI
 }
 
 func NewConsumerInstallationsClient(cfg *config.Config) (*ConsumerInstallationsClient, error) {
@@ -59,12 +66,18 @@ func NewConsumerInstallationsClient(cfg *config.Config) (*ConsumerInstallationsC
 	}
 
 	return &ConsumerInstallationsClient{
-		ConsumerInstallationsInterface: NewConsumerInstallations(apiClient.ApiClient()),
+		ConsumerInstallationsAPI: ConsumerInstallationsAPI{
+			consumerInstallationsImpl: consumerInstallationsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Listings are the core entities in the Marketplace. They represent the
+// products that are available for consumption.
 type ConsumerListingsClient struct {
-	ConsumerListingsInterface
+	ConsumerListingsAPI
 }
 
 func NewConsumerListingsClient(cfg *config.Config) (*ConsumerListingsClient, error) {
@@ -86,12 +99,18 @@ func NewConsumerListingsClient(cfg *config.Config) (*ConsumerListingsClient, err
 	}
 
 	return &ConsumerListingsClient{
-		ConsumerListingsInterface: NewConsumerListings(apiClient.ApiClient()),
+		ConsumerListingsAPI: ConsumerListingsAPI{
+			consumerListingsImpl: consumerListingsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Personalization Requests allow customers to interact with the individualized
+// Marketplace listing flow.
 type ConsumerPersonalizationRequestsClient struct {
-	ConsumerPersonalizationRequestsInterface
+	ConsumerPersonalizationRequestsAPI
 }
 
 func NewConsumerPersonalizationRequestsClient(cfg *config.Config) (*ConsumerPersonalizationRequestsClient, error) {
@@ -113,12 +132,17 @@ func NewConsumerPersonalizationRequestsClient(cfg *config.Config) (*ConsumerPers
 	}
 
 	return &ConsumerPersonalizationRequestsClient{
-		ConsumerPersonalizationRequestsInterface: NewConsumerPersonalizationRequests(apiClient.ApiClient()),
+		ConsumerPersonalizationRequestsAPI: ConsumerPersonalizationRequestsAPI{
+			consumerPersonalizationRequestsImpl: consumerPersonalizationRequestsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Providers are the entities that publish listings to the Marketplace.
 type ConsumerProvidersClient struct {
-	ConsumerProvidersInterface
+	ConsumerProvidersAPI
 }
 
 func NewConsumerProvidersClient(cfg *config.Config) (*ConsumerProvidersClient, error) {
@@ -140,12 +164,17 @@ func NewConsumerProvidersClient(cfg *config.Config) (*ConsumerProvidersClient, e
 	}
 
 	return &ConsumerProvidersClient{
-		ConsumerProvidersInterface: NewConsumerProviders(apiClient.ApiClient()),
+		ConsumerProvidersAPI: ConsumerProvidersAPI{
+			consumerProvidersImpl: consumerProvidersImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Marketplace exchanges filters curate which groups can access an exchange.
 type ProviderExchangeFiltersClient struct {
-	ProviderExchangeFiltersInterface
+	ProviderExchangeFiltersAPI
 }
 
 func NewProviderExchangeFiltersClient(cfg *config.Config) (*ProviderExchangeFiltersClient, error) {
@@ -167,12 +196,18 @@ func NewProviderExchangeFiltersClient(cfg *config.Config) (*ProviderExchangeFilt
 	}
 
 	return &ProviderExchangeFiltersClient{
-		ProviderExchangeFiltersInterface: NewProviderExchangeFilters(apiClient.ApiClient()),
+		ProviderExchangeFiltersAPI: ProviderExchangeFiltersAPI{
+			providerExchangeFiltersImpl: providerExchangeFiltersImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Marketplace exchanges allow providers to share their listings with a curated
+// set of customers.
 type ProviderExchangesClient struct {
-	ProviderExchangesInterface
+	ProviderExchangesAPI
 }
 
 func NewProviderExchangesClient(cfg *config.Config) (*ProviderExchangesClient, error) {
@@ -194,12 +229,18 @@ func NewProviderExchangesClient(cfg *config.Config) (*ProviderExchangesClient, e
 	}
 
 	return &ProviderExchangesClient{
-		ProviderExchangesInterface: NewProviderExchanges(apiClient.ApiClient()),
+		ProviderExchangesAPI: ProviderExchangesAPI{
+			providerExchangesImpl: providerExchangesImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Marketplace offers a set of file APIs for various purposes such as preview
+// notebooks and provider icons.
 type ProviderFilesClient struct {
-	ProviderFilesInterface
+	ProviderFilesAPI
 }
 
 func NewProviderFilesClient(cfg *config.Config) (*ProviderFilesClient, error) {
@@ -221,12 +262,18 @@ func NewProviderFilesClient(cfg *config.Config) (*ProviderFilesClient, error) {
 	}
 
 	return &ProviderFilesClient{
-		ProviderFilesInterface: NewProviderFiles(apiClient.ApiClient()),
+		ProviderFilesAPI: ProviderFilesAPI{
+			providerFilesImpl: providerFilesImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Listings are the core entities in the Marketplace. They represent the
+// products that are available for consumption.
 type ProviderListingsClient struct {
-	ProviderListingsInterface
+	ProviderListingsAPI
 }
 
 func NewProviderListingsClient(cfg *config.Config) (*ProviderListingsClient, error) {
@@ -248,12 +295,18 @@ func NewProviderListingsClient(cfg *config.Config) (*ProviderListingsClient, err
 	}
 
 	return &ProviderListingsClient{
-		ProviderListingsInterface: NewProviderListings(apiClient.ApiClient()),
+		ProviderListingsAPI: ProviderListingsAPI{
+			providerListingsImpl: providerListingsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Personalization requests are an alternate to instantly available listings.
+// Control the lifecycle of personalized solutions.
 type ProviderPersonalizationRequestsClient struct {
-	ProviderPersonalizationRequestsInterface
+	ProviderPersonalizationRequestsAPI
 }
 
 func NewProviderPersonalizationRequestsClient(cfg *config.Config) (*ProviderPersonalizationRequestsClient, error) {
@@ -275,12 +328,17 @@ func NewProviderPersonalizationRequestsClient(cfg *config.Config) (*ProviderPers
 	}
 
 	return &ProviderPersonalizationRequestsClient{
-		ProviderPersonalizationRequestsInterface: NewProviderPersonalizationRequests(apiClient.ApiClient()),
+		ProviderPersonalizationRequestsAPI: ProviderPersonalizationRequestsAPI{
+			providerPersonalizationRequestsImpl: providerPersonalizationRequestsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Manage templated analytics solution for providers.
 type ProviderProviderAnalyticsDashboardsClient struct {
-	ProviderProviderAnalyticsDashboardsInterface
+	ProviderProviderAnalyticsDashboardsAPI
 }
 
 func NewProviderProviderAnalyticsDashboardsClient(cfg *config.Config) (*ProviderProviderAnalyticsDashboardsClient, error) {
@@ -302,12 +360,17 @@ func NewProviderProviderAnalyticsDashboardsClient(cfg *config.Config) (*Provider
 	}
 
 	return &ProviderProviderAnalyticsDashboardsClient{
-		ProviderProviderAnalyticsDashboardsInterface: NewProviderProviderAnalyticsDashboards(apiClient.ApiClient()),
+		ProviderProviderAnalyticsDashboardsAPI: ProviderProviderAnalyticsDashboardsAPI{
+			providerProviderAnalyticsDashboardsImpl: providerProviderAnalyticsDashboardsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Providers are entities that manage assets in Marketplace.
 type ProviderProvidersClient struct {
-	ProviderProvidersInterface
+	ProviderProvidersAPI
 }
 
 func NewProviderProvidersClient(cfg *config.Config) (*ProviderProvidersClient, error) {
@@ -329,6 +392,10 @@ func NewProviderProvidersClient(cfg *config.Config) (*ProviderProvidersClient, e
 	}
 
 	return &ProviderProvidersClient{
-		ProviderProvidersInterface: NewProviderProviders(apiClient.ApiClient()),
+		ProviderProvidersAPI: ProviderProvidersAPI{
+			providerProvidersImpl: providerProvidersImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }

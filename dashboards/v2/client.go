@@ -9,8 +9,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/config"
 )
 
+// Genie provides a no-code experience for business users, powered by AI/BI.
+// Analysts set up spaces that business users can use to ask questions using
+// natural language. Genie uses data registered to Unity Catalog and requires at
+// least CAN USE permission on a Pro or Serverless SQL warehouse. Also,
+// Databricks Assistant must be enabled.
 type GenieClient struct {
-	GenieInterface
+	GenieAPI
 }
 
 func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
@@ -32,12 +37,19 @@ func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
 	}
 
 	return &GenieClient{
-		GenieInterface: NewGenie(apiClient.ApiClient()),
+		GenieAPI: GenieAPI{
+			genieImpl: genieImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// These APIs provide specific management operations for Lakeview dashboards.
+// Generic resource management can be done with Workspace API (import, export,
+// get-status, list, delete).
 type LakeviewClient struct {
-	LakeviewInterface
+	LakeviewAPI
 }
 
 func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
@@ -59,12 +71,17 @@ func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
 	}
 
 	return &LakeviewClient{
-		LakeviewInterface: NewLakeview(apiClient.ApiClient()),
+		LakeviewAPI: LakeviewAPI{
+			lakeviewImpl: lakeviewImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Token-based Lakeview APIs for embedding dashboards in external applications.
 type LakeviewEmbeddedClient struct {
-	LakeviewEmbeddedInterface
+	LakeviewEmbeddedAPI
 }
 
 func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, error) {
@@ -86,12 +103,17 @@ func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, err
 	}
 
 	return &LakeviewEmbeddedClient{
-		LakeviewEmbeddedInterface: NewLakeviewEmbedded(apiClient.ApiClient()),
+		LakeviewEmbeddedAPI: LakeviewEmbeddedAPI{
+			lakeviewEmbeddedImpl: lakeviewEmbeddedImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Query execution APIs for AI / BI Dashboards
 type QueryExecutionClient struct {
-	QueryExecutionInterface
+	QueryExecutionAPI
 }
 
 func NewQueryExecutionClient(cfg *config.Config) (*QueryExecutionClient, error) {
@@ -113,6 +135,10 @@ func NewQueryExecutionClient(cfg *config.Config) (*QueryExecutionClient, error) 
 	}
 
 	return &QueryExecutionClient{
-		QueryExecutionInterface: NewQueryExecution(apiClient.ApiClient()),
+		QueryExecutionAPI: QueryExecutionAPI{
+			queryExecutionImpl: queryExecutionImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
