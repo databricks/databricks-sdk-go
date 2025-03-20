@@ -233,29 +233,6 @@ func (h *fileHandle) openForWrite(mode FileMode) error {
 	return nil
 }
 
-type dbfsAPIUtilities interface {
-	// Open opens a remote DBFS file for reading or writing.
-	// The returned object implements relevant [io] interfaces for convenient
-	// integration with other code that reads or writes bytes.
-	//
-	// The [io.WriterTo] interface is provided and maximizes throughput for
-	// bulk reads by reading data with the DBFS maximum read chunk size of 1MB.
-	// Similarly, the [io.ReaderFrom] interface is provided for bulk writing.
-	//
-	// A file opened for writing must always be closed.
-	Open(ctx context.Context, path string, mode FileMode) (Handle, error)
-
-	// ReadFile is identical to [os.ReadFile] but for DBFS.
-	ReadFile(ctx context.Context, name string) ([]byte, error)
-
-	// WriteFile is identical to [os.WriteFile] but for DBFS.
-	WriteFile(ctx context.Context, name string, data []byte) error
-
-	// RecursiveList traverses the DBFS tree and returns all non-directory
-	// objects under the path
-	RecursiveList(ctx context.Context, path string) ([]FileInfo, error)
-}
-
 // Open opens a remote DBFS file for reading or writing.
 // The returned object implements relevant [io] interfaces for convenient
 // integration with other code that reads or writes bytes.
