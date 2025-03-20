@@ -111,17 +111,23 @@ func (apiError *APIError) IsRetriable(ctx context.Context) bool {
 // an error, it returns nil.
 func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 	// Responses in the 2xx and 3xx ranges are not standard Databricks errors.
-	if resp.Response.StatusCode < 400 {
-		// Return an error if the response indicates that the request tried to
-		// access a private link workspace without proper access.
-		requestUrl := resp.Response.Request.URL
-		if isPrivateLinkRedirect(requestUrl) {
-			return privateLinkValidationError(requestUrl)
-		}
-
-		return nil // not an error
+	if resp.Response.StatusCode >= 400 {
+		apiError := parseErrorFromResponse(ctx, resp)
+		applyOverrides(ctx, apiError, resp.Response)
+		return apiError
 	}
 
+	// Return an error if the response indicates that the request tried to
+	// access a private link workspace without proper access.
+	requestUrl := resp.Response.Request.URL
+	if isPrivateLinkRedirect(requestUrl) {
+		return privateLinkValidationError(requestUrl)
+	}
+
+	return nil // not an error
+}
+
+func parseErrorFromResponse(ctx context.Context, resp common.ResponseWrapper) *APIError {
 	errorBody, err := io.ReadAll(resp.ReadCloser)
 	if err != nil {
 		return &APIError{
@@ -131,27 +137,20 @@ func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
 		}
 	}
 
-	apiError := parseErrorFromResponse(ctx, resp.Response, errorBody)
-	applyOverrides(ctx, apiError, resp.Response)
-
-	return apiError
-}
-
-func parseErrorFromResponse(ctx context.Context, resp *http.Response, responseBody []byte) *APIError {
-	if len(responseBody) == 0 {
+	if len(errorBody) == 0 {
 		return &APIError{
-			Message:    http.StatusText(resp.StatusCode),
-			StatusCode: resp.StatusCode,
+			Message:    http.StatusText(resp.Response.StatusCode),
+			StatusCode: resp.Response.StatusCode,
 		}
 	}
 
-	if err := standardErrorParser(ctx, resp, responseBody); err != nil {
+	if err := standardErrorParser(ctx, resp.Response, errorBody); err != nil {
 		return err
 	}
-	if err := stringErrorParser(ctx, resp, responseBody); err != nil {
+	if err := stringErrorParser(ctx, resp.Response, errorBody); err != nil {
 		return err
 	}
-	if err := htmlErrorParser(ctx, resp, responseBody); err != nil {
+	if err := htmlErrorParser(ctx, resp.Response, errorBody); err != nil {
 		return err
 	}
 
@@ -160,8 +159,8 @@ func parseErrorFromResponse(ctx context.Context, resp *http.Response, responseBo
 	// Databricks API errors.
 	return &APIError{
 		ErrorCode:  "UNKNOWN",
-		StatusCode: resp.StatusCode,
-		Message:    string(responseBody),
+		StatusCode: resp.Response.StatusCode,
+		Message:    string(errorBody),
 	}
 }
 
