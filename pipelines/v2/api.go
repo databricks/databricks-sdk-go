@@ -316,6 +316,7 @@ func (a *PipelinesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*Pipe
 	return &PipelinesStopWaiter{
 		Response:   stopPipelineResponse,
 		pipelineId: stopRequest.PipelineId,
+		service:    a,
 	}, nil
 }
 
@@ -326,10 +327,16 @@ type PipelinesStopWaiter struct {
 	pipelineId string
 }
 
-func (w *PipelinesStopWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*GetPipelineResponse, error) {
+func (w *PipelinesStopWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[GetPipelineResponse](ctx, timeout, func() (*GetPipelineResponse, *retries.Err) {
+	return retries.Poll[GetPipelineResponse](ctx, opts.Timeout, func() (*GetPipelineResponse, *retries.Err) {
 		getPipelineResponse, err := w.service.Get(ctx, GetPipelineRequest{
 			PipelineId: w.pipelineId,
 		})

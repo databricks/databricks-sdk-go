@@ -203,6 +203,7 @@ func (a *ServingEndpointsAPI) Create(ctx context.Context, createServingEndpoint 
 	return &ServingEndpointsCreateWaiter{
 		Response: servingEndpointDetailed,
 		name:     servingEndpointDetailed.Name,
+		service:  a,
 	}, nil
 }
 
@@ -213,10 +214,16 @@ type ServingEndpointsCreateWaiter struct {
 	name string
 }
 
-func (w *ServingEndpointsCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ServingEndpointDetailed, error) {
+func (w *ServingEndpointsCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ServingEndpointDetailed, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[ServingEndpointDetailed](ctx, timeout, func() (*ServingEndpointDetailed, *retries.Err) {
+	return retries.Poll[ServingEndpointDetailed](ctx, opts.Timeout, func() (*ServingEndpointDetailed, *retries.Err) {
 		servingEndpointDetailed, err := w.service.Get(ctx, GetServingEndpointRequest{
 			Name: w.name,
 		})
@@ -319,6 +326,7 @@ func (a *ServingEndpointsAPI) UpdateConfig(ctx context.Context, endpointCoreConf
 	return &ServingEndpointsUpdateConfigWaiter{
 		Response: servingEndpointDetailed,
 		name:     servingEndpointDetailed.Name,
+		service:  a,
 	}, nil
 }
 
@@ -329,10 +337,16 @@ type ServingEndpointsUpdateConfigWaiter struct {
 	name string
 }
 
-func (w *ServingEndpointsUpdateConfigWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ServingEndpointDetailed, error) {
+func (w *ServingEndpointsUpdateConfigWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ServingEndpointDetailed, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[ServingEndpointDetailed](ctx, timeout, func() (*ServingEndpointDetailed, *retries.Err) {
+	return retries.Poll[ServingEndpointDetailed](ctx, opts.Timeout, func() (*ServingEndpointDetailed, *retries.Err) {
 		servingEndpointDetailed, err := w.service.Get(ctx, GetServingEndpointRequest{
 			Name: w.name,
 		})

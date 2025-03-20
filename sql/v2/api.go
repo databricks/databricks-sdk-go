@@ -1751,6 +1751,7 @@ func (a *WarehousesAPI) Create(ctx context.Context, createWarehouseRequest Creat
 	return &WarehousesCreateWaiter{
 		Response: createWarehouseResponse,
 		id:       createWarehouseResponse.Id,
+		service:  a,
 	}, nil
 }
 
@@ -1761,10 +1762,16 @@ type WarehousesCreateWaiter struct {
 	id string
 }
 
-func (w *WarehousesCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*GetWarehouseResponse, error) {
+func (w *WarehousesCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[GetWarehouseResponse](ctx, timeout, func() (*GetWarehouseResponse, *retries.Err) {
+	return retries.Poll[GetWarehouseResponse](ctx, opts.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := w.service.Get(ctx, GetWarehouseRequest{
 			Id: w.id,
 		})
@@ -1810,6 +1817,7 @@ func (a *WarehousesAPI) Edit(ctx context.Context, editWarehouseRequest EditWareh
 	return &WarehousesEditWaiter{
 		Response: editWarehouseResponse,
 		id:       editWarehouseRequest.Id,
+		service:  a,
 	}, nil
 }
 
@@ -1820,10 +1828,16 @@ type WarehousesEditWaiter struct {
 	id string
 }
 
-func (w *WarehousesEditWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*GetWarehouseResponse, error) {
+func (w *WarehousesEditWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[GetWarehouseResponse](ctx, timeout, func() (*GetWarehouseResponse, *retries.Err) {
+	return retries.Poll[GetWarehouseResponse](ctx, opts.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := w.service.Get(ctx, GetWarehouseRequest{
 			Id: w.id,
 		})
@@ -1941,6 +1955,7 @@ func (a *WarehousesAPI) Start(ctx context.Context, startRequest StartRequest) (*
 	return &WarehousesStartWaiter{
 		Response: startWarehouseResponse,
 		id:       startRequest.Id,
+		service:  a,
 	}, nil
 }
 
@@ -1951,10 +1966,16 @@ type WarehousesStartWaiter struct {
 	id string
 }
 
-func (w *WarehousesStartWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*GetWarehouseResponse, error) {
+func (w *WarehousesStartWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[GetWarehouseResponse](ctx, timeout, func() (*GetWarehouseResponse, *retries.Err) {
+	return retries.Poll[GetWarehouseResponse](ctx, opts.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := w.service.Get(ctx, GetWarehouseRequest{
 			Id: w.id,
 		})
@@ -1991,6 +2012,7 @@ func (a *WarehousesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*War
 	return &WarehousesStopWaiter{
 		Response: stopWarehouseResponse,
 		id:       stopRequest.Id,
+		service:  a,
 	}, nil
 }
 
@@ -2001,10 +2023,16 @@ type WarehousesStopWaiter struct {
 	id string
 }
 
-func (w *WarehousesStopWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*GetWarehouseResponse, error) {
+func (w *WarehousesStopWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[GetWarehouseResponse](ctx, timeout, func() (*GetWarehouseResponse, *retries.Err) {
+	return retries.Poll[GetWarehouseResponse](ctx, opts.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
 		getWarehouseResponse, err := w.service.Get(ctx, GetWarehouseRequest{
 			Id: w.id,
 		})

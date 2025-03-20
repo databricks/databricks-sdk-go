@@ -1579,6 +1579,7 @@ func (a *OnlineTablesAPI) Create(ctx context.Context, createOnlineTableRequest C
 	return &OnlineTablesCreateWaiter{
 		Response: onlineTable,
 		name:     onlineTable.Name,
+		service:  a,
 	}, nil
 }
 
@@ -1589,10 +1590,16 @@ type OnlineTablesCreateWaiter struct {
 	name string
 }
 
-func (w *OnlineTablesCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*OnlineTable, error) {
+func (w *OnlineTablesCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*OnlineTable, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[OnlineTable](ctx, timeout, func() (*OnlineTable, *retries.Err) {
+	return retries.Poll[OnlineTable](ctx, opts.Timeout, func() (*OnlineTable, *retries.Err) {
 		onlineTable, err := w.service.Get(ctx, GetOnlineTableRequest{
 			Name: w.name,
 		})

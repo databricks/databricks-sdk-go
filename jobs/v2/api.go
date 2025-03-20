@@ -280,6 +280,7 @@ func (a *JobsAPI) CancelRun(ctx context.Context, cancelRun CancelRun) (*JobsCanc
 	return &JobsCancelRunWaiter{
 		Response: cancelRunResponse,
 		runId:    cancelRun.RunId,
+		service:  a,
 	}, nil
 }
 
@@ -290,10 +291,16 @@ type JobsCancelRunWaiter struct {
 	runId int64
 }
 
-func (w *JobsCancelRunWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Run, error) {
+func (w *JobsCancelRunWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[Run](ctx, timeout, func() (*Run, *retries.Err) {
+	return retries.Poll[Run](ctx, opts.Timeout, func() (*Run, *retries.Err) {
 		run, err := w.service.GetRun(ctx, GetRunRequest{
 			RunId: w.runId,
 		})
@@ -465,6 +472,7 @@ func (a *JobsAPI) RepairRun(ctx context.Context, repairRun RepairRun) (*JobsRepa
 	return &JobsRepairRunWaiter{
 		Response: repairRunResponse,
 		runId:    repairRun.RunId,
+		service:  a,
 	}, nil
 }
 
@@ -475,10 +483,16 @@ type JobsRepairRunWaiter struct {
 	runId int64
 }
 
-func (w *JobsRepairRunWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Run, error) {
+func (w *JobsRepairRunWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[Run](ctx, timeout, func() (*Run, *retries.Err) {
+	return retries.Poll[Run](ctx, opts.Timeout, func() (*Run, *retries.Err) {
 		run, err := w.service.GetRun(ctx, GetRunRequest{
 			RunId: w.runId,
 		})
@@ -515,6 +529,7 @@ func (a *JobsAPI) RunNow(ctx context.Context, runNow RunNow) (*JobsRunNowWaiter,
 	return &JobsRunNowWaiter{
 		Response: runNowResponse,
 		runId:    runNowResponse.RunId,
+		service:  a,
 	}, nil
 }
 
@@ -525,10 +540,16 @@ type JobsRunNowWaiter struct {
 	runId int64
 }
 
-func (w *JobsRunNowWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Run, error) {
+func (w *JobsRunNowWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[Run](ctx, timeout, func() (*Run, *retries.Err) {
+	return retries.Poll[Run](ctx, opts.Timeout, func() (*Run, *retries.Err) {
 		run, err := w.service.GetRun(ctx, GetRunRequest{
 			RunId: w.runId,
 		})
@@ -568,6 +589,7 @@ func (a *JobsAPI) Submit(ctx context.Context, submitRun SubmitRun) (*JobsSubmitW
 	return &JobsSubmitWaiter{
 		Response: submitRunResponse,
 		runId:    submitRunResponse.RunId,
+		service:  a,
 	}, nil
 }
 
@@ -578,10 +600,16 @@ type JobsSubmitWaiter struct {
 	runId int64
 }
 
-func (w *JobsSubmitWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Run, error) {
+func (w *JobsSubmitWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[Run](ctx, timeout, func() (*Run, *retries.Err) {
+	return retries.Poll[Run](ctx, opts.Timeout, func() (*Run, *retries.Err) {
 		run, err := w.service.GetRun(ctx, GetRunRequest{
 			RunId: w.runId,
 		})

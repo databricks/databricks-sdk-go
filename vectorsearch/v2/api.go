@@ -67,6 +67,7 @@ func (a *VectorSearchEndpointsAPI) CreateEndpoint(ctx context.Context, createEnd
 	return &VectorSearchEndpointsCreateEndpointWaiter{
 		Response:     endpointInfo,
 		endpointName: endpointInfo.Name,
+		service:      a,
 	}, nil
 }
 
@@ -77,10 +78,16 @@ type VectorSearchEndpointsCreateEndpointWaiter struct {
 	endpointName string
 }
 
-func (w *VectorSearchEndpointsCreateEndpointWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*EndpointInfo, error) {
+func (w *VectorSearchEndpointsCreateEndpointWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*EndpointInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[EndpointInfo](ctx, timeout, func() (*EndpointInfo, *retries.Err) {
+	return retries.Poll[EndpointInfo](ctx, opts.Timeout, func() (*EndpointInfo, *retries.Err) {
 		endpointInfo, err := w.service.GetEndpoint(ctx, GetEndpointRequest{
 			EndpointName: w.endpointName,
 		})

@@ -584,6 +584,7 @@ func (a *ClustersAPI) Create(ctx context.Context, createCluster CreateCluster) (
 	return &ClustersCreateWaiter{
 		Response:  createClusterResponse,
 		clusterId: createClusterResponse.ClusterId,
+		service:   a,
 	}, nil
 }
 
@@ -594,10 +595,16 @@ type ClustersCreateWaiter struct {
 	clusterId string
 }
 
-func (w *ClustersCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+func (w *ClustersCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+	return retries.Poll[ClusterDetails](ctx, opts.Timeout, func() (*ClusterDetails, *retries.Err) {
 		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
 			ClusterId: w.clusterId,
 		})
@@ -634,6 +641,7 @@ func (a *ClustersAPI) Delete(ctx context.Context, deleteCluster DeleteCluster) (
 	return &ClustersDeleteWaiter{
 		Response:  deleteClusterResponse,
 		clusterId: deleteCluster.ClusterId,
+		service:   a,
 	}, nil
 }
 
@@ -644,10 +652,16 @@ type ClustersDeleteWaiter struct {
 	clusterId string
 }
 
-func (w *ClustersDeleteWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+func (w *ClustersDeleteWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+	return retries.Poll[ClusterDetails](ctx, opts.Timeout, func() (*ClusterDetails, *retries.Err) {
 		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
 			ClusterId: w.clusterId,
 		})
@@ -704,6 +718,7 @@ func (a *ClustersAPI) Edit(ctx context.Context, editCluster EditCluster) (*Clust
 	return &ClustersEditWaiter{
 		Response:  editClusterResponse,
 		clusterId: editCluster.ClusterId,
+		service:   a,
 	}, nil
 }
 
@@ -714,10 +729,16 @@ type ClustersEditWaiter struct {
 	clusterId string
 }
 
-func (w *ClustersEditWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+func (w *ClustersEditWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+	return retries.Poll[ClusterDetails](ctx, opts.Timeout, func() (*ClusterDetails, *retries.Err) {
 		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
 			ClusterId: w.clusterId,
 		})
@@ -859,6 +880,7 @@ func (a *ClustersAPI) Resize(ctx context.Context, resizeCluster ResizeCluster) (
 	return &ClustersResizeWaiter{
 		Response:  resizeClusterResponse,
 		clusterId: resizeCluster.ClusterId,
+		service:   a,
 	}, nil
 }
 
@@ -869,10 +891,16 @@ type ClustersResizeWaiter struct {
 	clusterId string
 }
 
-func (w *ClustersResizeWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+func (w *ClustersResizeWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+	return retries.Poll[ClusterDetails](ctx, opts.Timeout, func() (*ClusterDetails, *retries.Err) {
 		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
 			ClusterId: w.clusterId,
 		})
@@ -907,6 +935,7 @@ func (a *ClustersAPI) Restart(ctx context.Context, restartCluster RestartCluster
 	return &ClustersRestartWaiter{
 		Response:  restartClusterResponse,
 		clusterId: restartCluster.ClusterId,
+		service:   a,
 	}, nil
 }
 
@@ -917,10 +946,16 @@ type ClustersRestartWaiter struct {
 	clusterId string
 }
 
-func (w *ClustersRestartWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+func (w *ClustersRestartWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+	return retries.Poll[ClusterDetails](ctx, opts.Timeout, func() (*ClusterDetails, *retries.Err) {
 		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
 			ClusterId: w.clusterId,
 		})
@@ -961,6 +996,7 @@ func (a *ClustersAPI) Start(ctx context.Context, startCluster StartCluster) (*Cl
 	return &ClustersStartWaiter{
 		Response:  startClusterResponse,
 		clusterId: startCluster.ClusterId,
+		service:   a,
 	}, nil
 }
 
@@ -971,10 +1007,16 @@ type ClustersStartWaiter struct {
 	clusterId string
 }
 
-func (w *ClustersStartWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+func (w *ClustersStartWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+	return retries.Poll[ClusterDetails](ctx, opts.Timeout, func() (*ClusterDetails, *retries.Err) {
 		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
 			ClusterId: w.clusterId,
 		})
@@ -1044,6 +1086,7 @@ func (a *ClustersAPI) Update(ctx context.Context, updateCluster UpdateCluster) (
 	return &ClustersUpdateWaiter{
 		Response:  updateClusterResponse,
 		clusterId: updateCluster.ClusterId,
+		service:   a,
 	}, nil
 }
 
@@ -1054,10 +1097,16 @@ type ClustersUpdateWaiter struct {
 	clusterId string
 }
 
-func (w *ClustersUpdateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ClusterDetails, error) {
+func (w *ClustersUpdateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[ClusterDetails](ctx, timeout, func() (*ClusterDetails, *retries.Err) {
+	return retries.Poll[ClusterDetails](ctx, opts.Timeout, func() (*ClusterDetails, *retries.Err) {
 		clusterDetails, err := w.service.Get(ctx, GetClusterRequest{
 			ClusterId: w.clusterId,
 		})
@@ -1154,6 +1203,7 @@ func (a *CommandExecutionAPI) Cancel(ctx context.Context, cancelCommand CancelCo
 		clusterId: cancelCommand.ClusterId,
 		commandId: cancelCommand.CommandId,
 		contextId: cancelCommand.ContextId,
+		service:   a,
 	}, nil
 }
 
@@ -1166,10 +1216,16 @@ type CommandExecutionCancelWaiter struct {
 	contextId string
 }
 
-func (w *CommandExecutionCancelWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*CommandStatusResponse, error) {
+func (w *CommandExecutionCancelWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*CommandStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[CommandStatusResponse](ctx, timeout, func() (*CommandStatusResponse, *retries.Err) {
+	return retries.Poll[CommandStatusResponse](ctx, opts.Timeout, func() (*CommandStatusResponse, *retries.Err) {
 		commandStatusResponse, err := w.service.CommandStatus(ctx, CommandStatusRequest{
 			ClusterId: w.clusterId,
 			CommandId: w.commandId,
@@ -1211,6 +1267,7 @@ func (a *CommandExecutionAPI) Create(ctx context.Context, createContext CreateCo
 		Response:  created,
 		clusterId: createContext.ClusterId,
 		contextId: created.Id,
+		service:   a,
 	}, nil
 }
 
@@ -1222,10 +1279,16 @@ type CommandExecutionCreateWaiter struct {
 	contextId string
 }
 
-func (w *CommandExecutionCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ContextStatusResponse, error) {
+func (w *CommandExecutionCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ContextStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[ContextStatusResponse](ctx, timeout, func() (*ContextStatusResponse, *retries.Err) {
+	return retries.Poll[ContextStatusResponse](ctx, opts.Timeout, func() (*ContextStatusResponse, *retries.Err) {
 		contextStatusResponse, err := w.service.ContextStatus(ctx, ContextStatusRequest{
 			ClusterId: w.clusterId,
 			ContextId: w.contextId,
@@ -1266,6 +1329,7 @@ func (a *CommandExecutionAPI) Execute(ctx context.Context, command Command) (*Co
 		clusterId: command.ClusterId,
 		commandId: created.Id,
 		contextId: command.ContextId,
+		service:   a,
 	}, nil
 }
 
@@ -1278,10 +1342,16 @@ type CommandExecutionExecuteWaiter struct {
 	contextId string
 }
 
-func (w *CommandExecutionExecuteWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*CommandStatusResponse, error) {
+func (w *CommandExecutionExecuteWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*CommandStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[CommandStatusResponse](ctx, timeout, func() (*CommandStatusResponse, *retries.Err) {
+	return retries.Poll[CommandStatusResponse](ctx, opts.Timeout, func() (*CommandStatusResponse, *retries.Err) {
 		commandStatusResponse, err := w.service.CommandStatus(ctx, CommandStatusRequest{
 			ClusterId: w.clusterId,
 			CommandId: w.commandId,

@@ -1307,6 +1307,7 @@ func (a *WorkspacesAPI) Create(ctx context.Context, createWorkspaceRequest Creat
 	return &WorkspacesCreateWaiter{
 		Response:    workspace,
 		workspaceId: workspace.WorkspaceId,
+		service:     a,
 	}, nil
 }
 
@@ -1317,10 +1318,16 @@ type WorkspacesCreateWaiter struct {
 	workspaceId int64
 }
 
-func (w *WorkspacesCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Workspace, error) {
+func (w *WorkspacesCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Workspace, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[Workspace](ctx, timeout, func() (*Workspace, *retries.Err) {
+	return retries.Poll[Workspace](ctx, opts.Timeout, func() (*Workspace, *retries.Err) {
 		workspace, err := w.service.Get(ctx, GetWorkspaceRequest{
 			WorkspaceId: w.workspaceId,
 		})
@@ -1564,6 +1571,7 @@ func (a *WorkspacesAPI) Update(ctx context.Context, updateWorkspaceRequest Updat
 	return &WorkspacesUpdateWaiter{
 		Response:    updateResponse,
 		workspaceId: updateWorkspaceRequest.WorkspaceId,
+		service:     a,
 	}, nil
 }
 
@@ -1574,10 +1582,16 @@ type WorkspacesUpdateWaiter struct {
 	workspaceId int64
 }
 
-func (w *WorkspacesUpdateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*Workspace, error) {
+func (w *WorkspacesUpdateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Workspace, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[Workspace](ctx, timeout, func() (*Workspace, *retries.Err) {
+	return retries.Poll[Workspace](ctx, opts.Timeout, func() (*Workspace, *retries.Err) {
 		workspace, err := w.service.Get(ctx, GetWorkspaceRequest{
 			WorkspaceId: w.workspaceId,
 		})

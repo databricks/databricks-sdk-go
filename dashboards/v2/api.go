@@ -133,6 +133,7 @@ func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMes
 		conversationId: genieCreateConversationMessageRequest.ConversationId,
 		messageId:      genieMessage.Id,
 		spaceId:        genieCreateConversationMessageRequest.SpaceId,
+		service:        a,
 	}, nil
 }
 
@@ -145,10 +146,16 @@ type GenieCreateMessageWaiter struct {
 	spaceId        string
 }
 
-func (w *GenieCreateMessageWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*GenieMessage, error) {
+func (w *GenieCreateMessageWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GenieMessage, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[GenieMessage](ctx, timeout, func() (*GenieMessage, *retries.Err) {
+	return retries.Poll[GenieMessage](ctx, opts.Timeout, func() (*GenieMessage, *retries.Err) {
 		genieMessage, err := w.service.GetMessage(ctx, GenieGetConversationMessageRequest{
 			ConversationId: w.conversationId,
 			MessageId:      w.messageId,
@@ -247,6 +254,7 @@ func (a *GenieAPI) StartConversation(ctx context.Context, genieStartConversation
 		conversationId: genieStartConversationResponse.ConversationId,
 		messageId:      genieStartConversationResponse.MessageId,
 		spaceId:        genieStartConversationMessageRequest.SpaceId,
+		service:        a,
 	}, nil
 }
 
@@ -259,10 +267,16 @@ type GenieStartConversationWaiter struct {
 	spaceId        string
 }
 
-func (w *GenieStartConversationWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*GenieMessage, error) {
+func (w *GenieStartConversationWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GenieMessage, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[GenieMessage](ctx, timeout, func() (*GenieMessage, *retries.Err) {
+	return retries.Poll[GenieMessage](ctx, opts.Timeout, func() (*GenieMessage, *retries.Err) {
 		genieMessage, err := w.service.GetMessage(ctx, GenieGetConversationMessageRequest{
 			ConversationId: w.conversationId,
 			MessageId:      w.messageId,

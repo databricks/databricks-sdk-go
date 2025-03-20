@@ -167,6 +167,7 @@ func (a *AppsAPI) Create(ctx context.Context, createAppRequest CreateAppRequest)
 	return &AppsCreateWaiter{
 		Response: app,
 		name:     app.Name,
+		service:  a,
 	}, nil
 }
 
@@ -177,10 +178,16 @@ type AppsCreateWaiter struct {
 	name string
 }
 
-func (w *AppsCreateWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*App, error) {
+func (w *AppsCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*App, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[App](ctx, timeout, func() (*App, *retries.Err) {
+	return retries.Poll[App](ctx, opts.Timeout, func() (*App, *retries.Err) {
 		app, err := w.service.Get(ctx, GetAppRequest{
 			Name: w.name,
 		})
@@ -227,6 +234,7 @@ func (a *AppsAPI) Deploy(ctx context.Context, createAppDeploymentRequest CreateA
 		Response:     appDeployment,
 		appName:      createAppDeploymentRequest.AppName,
 		deploymentId: appDeployment.DeploymentId,
+		service:      a,
 	}, nil
 }
 
@@ -238,10 +246,16 @@ type AppsDeployWaiter struct {
 	deploymentId string
 }
 
-func (w *AppsDeployWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*AppDeployment, error) {
+func (w *AppsDeployWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*AppDeployment, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[AppDeployment](ctx, timeout, func() (*AppDeployment, *retries.Err) {
+	return retries.Poll[AppDeployment](ctx, opts.Timeout, func() (*AppDeployment, *retries.Err) {
 		appDeployment, err := w.service.GetDeployment(ctx, GetAppDeploymentRequest{
 			AppName:      w.appName,
 			DeploymentId: w.deploymentId,
@@ -327,6 +341,7 @@ func (a *AppsAPI) Start(ctx context.Context, startAppRequest StartAppRequest) (*
 	return &AppsStartWaiter{
 		Response: app,
 		name:     app.Name,
+		service:  a,
 	}, nil
 }
 
@@ -337,10 +352,16 @@ type AppsStartWaiter struct {
 	name string
 }
 
-func (w *AppsStartWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*App, error) {
+func (w *AppsStartWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*App, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[App](ctx, timeout, func() (*App, *retries.Err) {
+	return retries.Poll[App](ctx, opts.Timeout, func() (*App, *retries.Err) {
 		app, err := w.service.Get(ctx, GetAppRequest{
 			Name: w.name,
 		})
@@ -377,6 +398,7 @@ func (a *AppsAPI) Stop(ctx context.Context, stopAppRequest StopAppRequest) (*App
 	return &AppsStopWaiter{
 		Response: app,
 		name:     app.Name,
+		service:  a,
 	}, nil
 }
 
@@ -387,10 +409,16 @@ type AppsStopWaiter struct {
 	name string
 }
 
-func (w *AppsStopWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*App, error) {
+func (w *AppsStopWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*App, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[App](ctx, timeout, func() (*App, *retries.Err) {
+	return retries.Poll[App](ctx, opts.Timeout, func() (*App, *retries.Err) {
 		app, err := w.service.Get(ctx, GetAppRequest{
 			Name: w.name,
 		})

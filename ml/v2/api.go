@@ -412,6 +412,7 @@ func (a *ForecastingAPI) CreateExperiment(ctx context.Context, createForecasting
 	return &ForecastingCreateExperimentWaiter{
 		Response:     createForecastingExperimentResponse,
 		experimentId: createForecastingExperimentResponse.ExperimentId,
+		service:      a,
 	}, nil
 }
 
@@ -422,10 +423,16 @@ type ForecastingCreateExperimentWaiter struct {
 	experimentId string
 }
 
-func (w *ForecastingCreateExperimentWaiter) WaitUntilDone(ctx context.Context, timeout time.Duration) (*ForecastingExperiment, error) {
+func (w *ForecastingCreateExperimentWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ForecastingExperiment, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
 
-	return retries.Poll[ForecastingExperiment](ctx, timeout, func() (*ForecastingExperiment, *retries.Err) {
+	return retries.Poll[ForecastingExperiment](ctx, opts.Timeout, func() (*ForecastingExperiment, *retries.Err) {
 		forecastingExperiment, err := w.service.GetExperiment(ctx, GetForecastingExperimentRequest{
 			ExperimentId: w.experimentId,
 		})
