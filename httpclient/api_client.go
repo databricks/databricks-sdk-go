@@ -42,10 +42,9 @@ type ClientConfig struct {
 	Transport http.RoundTripper
 }
 
-func (cfg ClientConfig) httpTransport() http.RoundTripper {
-	if cfg.Transport != nil {
-		return cfg.Transport
-	}
+var defaultTransport = makeDefaultTransport()
+
+func makeDefaultTransport() *http.Transport {
 	return &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
@@ -58,10 +57,19 @@ func (cfg ClientConfig) httpTransport() http.RoundTripper {
 		IdleConnTimeout:       180 * time.Second,
 		TLSHandshakeTimeout:   30 * time.Second,
 		ExpectContinueTimeout: 1 * time.Second,
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: cfg.InsecureSkipVerify,
-		},
 	}
+}
+
+func (cfg ClientConfig) httpTransport() http.RoundTripper {
+	if cfg.Transport != nil {
+		return cfg.Transport
+	}
+	if cfg.InsecureSkipVerify {
+		t := makeDefaultTransport()
+		t.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		return t
+	}
+	return defaultTransport
 }
 
 func NewApiClient(cfg ClientConfig) *ApiClient {
