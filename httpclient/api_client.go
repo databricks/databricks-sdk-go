@@ -42,10 +42,10 @@ type ClientConfig struct {
 	Transport http.RoundTripper
 }
 
-var defaultTransport = transport(false)
+var defaultTransport = makeDefaultTransport()
 
-func transport(skipVerify bool) http.RoundTripper {
-	t := &http.Transport{
+func makeDefaultTransport() *http.Transport {
+	return &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
 			Timeout:   30 * time.Second,
@@ -58,12 +58,6 @@ func transport(skipVerify bool) http.RoundTripper {
 		TLSHandshakeTimeout:   30 * time.Second,
 		ExpectContinueTimeout: 1 * time.Second,
 	}
-
-	if skipVerify {
-		t.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	}
-
-	return t
 }
 
 func (cfg ClientConfig) httpTransport() http.RoundTripper {
@@ -71,7 +65,9 @@ func (cfg ClientConfig) httpTransport() http.RoundTripper {
 		return cfg.Transport
 	}
 	if cfg.InsecureSkipVerify {
-		return transport(true)
+		t := makeDefaultTransport()
+		t.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		return t
 	}
 	return defaultTransport
 }
