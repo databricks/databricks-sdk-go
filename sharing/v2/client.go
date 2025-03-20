@@ -10,7 +10,7 @@ import (
 )
 
 type ProvidersClient struct {
-	ProvidersAPI
+	ProvidersInterface
 }
 
 func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
@@ -32,16 +32,12 @@ func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
 	}
 
 	return &ProvidersClient{
-		ProvidersAPI: ProvidersAPI{
-			providersImpl: providersImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ProvidersInterface: NewProviders(apiClient.ApiClient()),
 	}, nil
 }
 
 type RecipientActivationClient struct {
-	RecipientActivationAPI
+	RecipientActivationInterface
 }
 
 func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClient, error) {
@@ -63,16 +59,12 @@ func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClien
 	}
 
 	return &RecipientActivationClient{
-		RecipientActivationAPI: RecipientActivationAPI{
-			recipientActivationImpl: recipientActivationImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		RecipientActivationInterface: NewRecipientActivation(apiClient.ApiClient()),
 	}, nil
 }
 
 type RecipientsClient struct {
-	RecipientsAPI
+	RecipientsInterface
 }
 
 func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
@@ -94,16 +86,12 @@ func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
 	}
 
 	return &RecipientsClient{
-		RecipientsAPI: RecipientsAPI{
-			recipientsImpl: recipientsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		RecipientsInterface: NewRecipients(apiClient.ApiClient()),
 	}, nil
 }
 
 type SharesClient struct {
-	SharesAPI
+	SharesInterface
 }
 
 func NewSharesClient(cfg *config.Config) (*SharesClient, error) {
@@ -125,10 +113,6 @@ func NewSharesClient(cfg *config.Config) (*SharesClient, error) {
 	}
 
 	return &SharesClient{
-		SharesAPI: SharesAPI{
-			sharesImpl: sharesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		SharesInterface: NewShares(apiClient.ApiClient()),
 	}, nil
 }

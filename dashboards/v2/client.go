@@ -10,7 +10,7 @@ import (
 )
 
 type GenieClient struct {
-	GenieAPI
+	GenieInterface
 }
 
 func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
@@ -32,16 +32,12 @@ func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
 	}
 
 	return &GenieClient{
-		GenieAPI: GenieAPI{
-			genieImpl: genieImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		GenieInterface: NewGenie(apiClient.ApiClient()),
 	}, nil
 }
 
 type LakeviewClient struct {
-	LakeviewAPI
+	LakeviewInterface
 }
 
 func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
@@ -63,16 +59,12 @@ func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
 	}
 
 	return &LakeviewClient{
-		LakeviewAPI: LakeviewAPI{
-			lakeviewImpl: lakeviewImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		LakeviewInterface: NewLakeview(apiClient.ApiClient()),
 	}, nil
 }
 
 type LakeviewEmbeddedClient struct {
-	LakeviewEmbeddedAPI
+	LakeviewEmbeddedInterface
 }
 
 func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, error) {
@@ -94,16 +86,12 @@ func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, err
 	}
 
 	return &LakeviewEmbeddedClient{
-		LakeviewEmbeddedAPI: LakeviewEmbeddedAPI{
-			lakeviewEmbeddedImpl: lakeviewEmbeddedImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		LakeviewEmbeddedInterface: NewLakeviewEmbedded(apiClient.ApiClient()),
 	}, nil
 }
 
 type QueryExecutionClient struct {
-	QueryExecutionAPI
+	QueryExecutionInterface
 }
 
 func NewQueryExecutionClient(cfg *config.Config) (*QueryExecutionClient, error) {
@@ -125,10 +113,6 @@ func NewQueryExecutionClient(cfg *config.Config) (*QueryExecutionClient, error) 
 	}
 
 	return &QueryExecutionClient{
-		QueryExecutionAPI: QueryExecutionAPI{
-			queryExecutionImpl: queryExecutionImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		QueryExecutionInterface: NewQueryExecution(apiClient.ApiClient()),
 	}, nil
 }

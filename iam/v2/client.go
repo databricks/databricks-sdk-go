@@ -10,7 +10,7 @@ import (
 )
 
 type AccessControlClient struct {
-	AccessControlAPI
+	AccessControlInterface
 }
 
 func NewAccessControlClient(cfg *config.Config) (*AccessControlClient, error) {
@@ -32,16 +32,12 @@ func NewAccessControlClient(cfg *config.Config) (*AccessControlClient, error) {
 	}
 
 	return &AccessControlClient{
-		AccessControlAPI: AccessControlAPI{
-			accessControlImpl: accessControlImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AccessControlInterface: NewAccessControl(apiClient.ApiClient()),
 	}, nil
 }
 
 type AccountAccessControlClient struct {
-	AccountAccessControlAPI
+	AccountAccessControlInterface
 }
 
 func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlClient, error) {
@@ -63,16 +59,12 @@ func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlCli
 	}
 
 	return &AccountAccessControlClient{
-		AccountAccessControlAPI: AccountAccessControlAPI{
-			accountAccessControlImpl: accountAccessControlImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AccountAccessControlInterface: NewAccountAccessControl(apiClient.ApiClient()),
 	}, nil
 }
 
 type AccountAccessControlProxyClient struct {
-	AccountAccessControlProxyAPI
+	AccountAccessControlProxyInterface
 }
 
 func NewAccountAccessControlProxyClient(cfg *config.Config) (*AccountAccessControlProxyClient, error) {
@@ -94,16 +86,12 @@ func NewAccountAccessControlProxyClient(cfg *config.Config) (*AccountAccessContr
 	}
 
 	return &AccountAccessControlProxyClient{
-		AccountAccessControlProxyAPI: AccountAccessControlProxyAPI{
-			accountAccessControlProxyImpl: accountAccessControlProxyImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AccountAccessControlProxyInterface: NewAccountAccessControlProxy(apiClient.ApiClient()),
 	}, nil
 }
 
 type AccountGroupsClient struct {
-	AccountGroupsAPI
+	AccountGroupsInterface
 }
 
 func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
@@ -125,16 +113,12 @@ func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
 	}
 
 	return &AccountGroupsClient{
-		AccountGroupsAPI: AccountGroupsAPI{
-			accountGroupsImpl: accountGroupsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AccountGroupsInterface: NewAccountGroups(apiClient.ApiClient()),
 	}, nil
 }
 
 type AccountServicePrincipalsClient struct {
-	AccountServicePrincipalsAPI
+	AccountServicePrincipalsInterface
 }
 
 func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrincipalsClient, error) {
@@ -156,16 +140,12 @@ func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrinc
 	}
 
 	return &AccountServicePrincipalsClient{
-		AccountServicePrincipalsAPI: AccountServicePrincipalsAPI{
-			accountServicePrincipalsImpl: accountServicePrincipalsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AccountServicePrincipalsInterface: NewAccountServicePrincipals(apiClient.ApiClient()),
 	}, nil
 }
 
 type AccountUsersClient struct {
-	AccountUsersAPI
+	AccountUsersInterface
 }
 
 func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
@@ -187,16 +167,12 @@ func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
 	}
 
 	return &AccountUsersClient{
-		AccountUsersAPI: AccountUsersAPI{
-			accountUsersImpl: accountUsersImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AccountUsersInterface: NewAccountUsers(apiClient.ApiClient()),
 	}, nil
 }
 
 type CurrentUserClient struct {
-	CurrentUserAPI
+	CurrentUserInterface
 }
 
 func NewCurrentUserClient(cfg *config.Config) (*CurrentUserClient, error) {
@@ -218,16 +194,12 @@ func NewCurrentUserClient(cfg *config.Config) (*CurrentUserClient, error) {
 	}
 
 	return &CurrentUserClient{
-		CurrentUserAPI: CurrentUserAPI{
-			currentUserImpl: currentUserImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		CurrentUserInterface: NewCurrentUser(apiClient.ApiClient()),
 	}, nil
 }
 
 type GroupsClient struct {
-	GroupsAPI
+	GroupsInterface
 }
 
 func NewGroupsClient(cfg *config.Config) (*GroupsClient, error) {
@@ -249,16 +221,12 @@ func NewGroupsClient(cfg *config.Config) (*GroupsClient, error) {
 	}
 
 	return &GroupsClient{
-		GroupsAPI: GroupsAPI{
-			groupsImpl: groupsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		GroupsInterface: NewGroups(apiClient.ApiClient()),
 	}, nil
 }
 
 type PermissionMigrationClient struct {
-	PermissionMigrationAPI
+	PermissionMigrationInterface
 }
 
 func NewPermissionMigrationClient(cfg *config.Config) (*PermissionMigrationClient, error) {
@@ -280,16 +248,12 @@ func NewPermissionMigrationClient(cfg *config.Config) (*PermissionMigrationClien
 	}
 
 	return &PermissionMigrationClient{
-		PermissionMigrationAPI: PermissionMigrationAPI{
-			permissionMigrationImpl: permissionMigrationImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		PermissionMigrationInterface: NewPermissionMigration(apiClient.ApiClient()),
 	}, nil
 }
 
 type PermissionsClient struct {
-	PermissionsAPI
+	PermissionsInterface
 }
 
 func NewPermissionsClient(cfg *config.Config) (*PermissionsClient, error) {
@@ -311,16 +275,12 @@ func NewPermissionsClient(cfg *config.Config) (*PermissionsClient, error) {
 	}
 
 	return &PermissionsClient{
-		PermissionsAPI: PermissionsAPI{
-			permissionsImpl: permissionsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		PermissionsInterface: NewPermissions(apiClient.ApiClient()),
 	}, nil
 }
 
 type ServicePrincipalsClient struct {
-	ServicePrincipalsAPI
+	ServicePrincipalsInterface
 }
 
 func NewServicePrincipalsClient(cfg *config.Config) (*ServicePrincipalsClient, error) {
@@ -342,16 +302,12 @@ func NewServicePrincipalsClient(cfg *config.Config) (*ServicePrincipalsClient, e
 	}
 
 	return &ServicePrincipalsClient{
-		ServicePrincipalsAPI: ServicePrincipalsAPI{
-			servicePrincipalsImpl: servicePrincipalsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ServicePrincipalsInterface: NewServicePrincipals(apiClient.ApiClient()),
 	}, nil
 }
 
 type UsersClient struct {
-	UsersAPI
+	UsersInterface
 }
 
 func NewUsersClient(cfg *config.Config) (*UsersClient, error) {
@@ -373,16 +329,12 @@ func NewUsersClient(cfg *config.Config) (*UsersClient, error) {
 	}
 
 	return &UsersClient{
-		UsersAPI: UsersAPI{
-			usersImpl: usersImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		UsersInterface: NewUsers(apiClient.ApiClient()),
 	}, nil
 }
 
 type WorkspaceAssignmentClient struct {
-	WorkspaceAssignmentAPI
+	WorkspaceAssignmentInterface
 }
 
 func NewWorkspaceAssignmentClient(cfg *config.Config) (*WorkspaceAssignmentClient, error) {
@@ -404,10 +356,6 @@ func NewWorkspaceAssignmentClient(cfg *config.Config) (*WorkspaceAssignmentClien
 	}
 
 	return &WorkspaceAssignmentClient{
-		WorkspaceAssignmentAPI: WorkspaceAssignmentAPI{
-			workspaceAssignmentImpl: workspaceAssignmentImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		WorkspaceAssignmentInterface: NewWorkspaceAssignment(apiClient.ApiClient()),
 	}, nil
 }

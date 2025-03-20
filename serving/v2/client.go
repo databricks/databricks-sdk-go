@@ -10,7 +10,7 @@ import (
 )
 
 type ServingEndpointsClient struct {
-	ServingEndpointsAPI
+	ServingEndpointsInterface
 }
 
 func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, error) {
@@ -32,16 +32,12 @@ func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, err
 	}
 
 	return &ServingEndpointsClient{
-		ServingEndpointsAPI: ServingEndpointsAPI{
-			servingEndpointsImpl: servingEndpointsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ServingEndpointsInterface: NewServingEndpoints(apiClient.ApiClient()),
 	}, nil
 }
 
 type ServingEndpointsDataPlaneClient struct {
-	ServingEndpointsDataPlaneAPI
+	ServingEndpointsDataPlaneInterface
 }
 
 func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDataPlaneClient, error) {
@@ -63,10 +59,6 @@ func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDa
 	}
 
 	return &ServingEndpointsDataPlaneClient{
-		ServingEndpointsDataPlaneAPI: ServingEndpointsDataPlaneAPI{
-			servingEndpointsDataPlaneImpl: servingEndpointsDataPlaneImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ServingEndpointsDataPlaneInterface: NewServingEndpointsDataPlane(apiClient.ApiClient()),
 	}, nil
 }

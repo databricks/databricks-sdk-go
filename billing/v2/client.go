@@ -10,7 +10,7 @@ import (
 )
 
 type BillableUsageClient struct {
-	BillableUsageAPI
+	BillableUsageInterface
 }
 
 func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
@@ -32,16 +32,12 @@ func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
 	}
 
 	return &BillableUsageClient{
-		BillableUsageAPI: BillableUsageAPI{
-			billableUsageImpl: billableUsageImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		BillableUsageInterface: NewBillableUsage(apiClient.ApiClient()),
 	}, nil
 }
 
 type BudgetPolicyClient struct {
-	BudgetPolicyAPI
+	BudgetPolicyInterface
 }
 
 func NewBudgetPolicyClient(cfg *config.Config) (*BudgetPolicyClient, error) {
@@ -63,16 +59,12 @@ func NewBudgetPolicyClient(cfg *config.Config) (*BudgetPolicyClient, error) {
 	}
 
 	return &BudgetPolicyClient{
-		BudgetPolicyAPI: BudgetPolicyAPI{
-			budgetPolicyImpl: budgetPolicyImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		BudgetPolicyInterface: NewBudgetPolicy(apiClient.ApiClient()),
 	}, nil
 }
 
 type BudgetsClient struct {
-	BudgetsAPI
+	BudgetsInterface
 }
 
 func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
@@ -94,16 +86,12 @@ func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
 	}
 
 	return &BudgetsClient{
-		BudgetsAPI: BudgetsAPI{
-			budgetsImpl: budgetsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		BudgetsInterface: NewBudgets(apiClient.ApiClient()),
 	}, nil
 }
 
 type LogDeliveryClient struct {
-	LogDeliveryAPI
+	LogDeliveryInterface
 }
 
 func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
@@ -125,16 +113,12 @@ func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
 	}
 
 	return &LogDeliveryClient{
-		LogDeliveryAPI: LogDeliveryAPI{
-			logDeliveryImpl: logDeliveryImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		LogDeliveryInterface: NewLogDelivery(apiClient.ApiClient()),
 	}, nil
 }
 
 type UsageDashboardsClient struct {
-	UsageDashboardsAPI
+	UsageDashboardsInterface
 }
 
 func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error) {
@@ -156,10 +140,6 @@ func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error
 	}
 
 	return &UsageDashboardsClient{
-		UsageDashboardsAPI: UsageDashboardsAPI{
-			usageDashboardsImpl: usageDashboardsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		UsageDashboardsInterface: NewUsageDashboards(apiClient.ApiClient()),
 	}, nil
 }

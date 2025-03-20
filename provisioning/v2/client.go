@@ -10,7 +10,7 @@ import (
 )
 
 type CredentialsClient struct {
-	CredentialsAPI
+	CredentialsInterface
 }
 
 func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
@@ -32,16 +32,12 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 	}
 
 	return &CredentialsClient{
-		CredentialsAPI: CredentialsAPI{
-			credentialsImpl: credentialsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		CredentialsInterface: NewCredentials(apiClient.ApiClient()),
 	}, nil
 }
 
 type EncryptionKeysClient struct {
-	EncryptionKeysAPI
+	EncryptionKeysInterface
 }
 
 func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) {
@@ -63,16 +59,12 @@ func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) 
 	}
 
 	return &EncryptionKeysClient{
-		EncryptionKeysAPI: EncryptionKeysAPI{
-			encryptionKeysImpl: encryptionKeysImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		EncryptionKeysInterface: NewEncryptionKeys(apiClient.ApiClient()),
 	}, nil
 }
 
 type NetworksClient struct {
-	NetworksAPI
+	NetworksInterface
 }
 
 func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
@@ -94,16 +86,12 @@ func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
 	}
 
 	return &NetworksClient{
-		NetworksAPI: NetworksAPI{
-			networksImpl: networksImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		NetworksInterface: NewNetworks(apiClient.ApiClient()),
 	}, nil
 }
 
 type PrivateAccessClient struct {
-	PrivateAccessAPI
+	PrivateAccessInterface
 }
 
 func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
@@ -125,16 +113,12 @@ func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
 	}
 
 	return &PrivateAccessClient{
-		PrivateAccessAPI: PrivateAccessAPI{
-			privateAccessImpl: privateAccessImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		PrivateAccessInterface: NewPrivateAccess(apiClient.ApiClient()),
 	}, nil
 }
 
 type StorageClient struct {
-	StorageAPI
+	StorageInterface
 }
 
 func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
@@ -156,16 +140,12 @@ func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
 	}
 
 	return &StorageClient{
-		StorageAPI: StorageAPI{
-			storageImpl: storageImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		StorageInterface: NewStorage(apiClient.ApiClient()),
 	}, nil
 }
 
 type VpcEndpointsClient struct {
-	VpcEndpointsAPI
+	VpcEndpointsInterface
 }
 
 func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
@@ -187,16 +167,12 @@ func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
 	}
 
 	return &VpcEndpointsClient{
-		VpcEndpointsAPI: VpcEndpointsAPI{
-			vpcEndpointsImpl: vpcEndpointsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		VpcEndpointsInterface: NewVpcEndpoints(apiClient.ApiClient()),
 	}, nil
 }
 
 type WorkspacesClient struct {
-	WorkspacesAPI
+	WorkspacesInterface
 }
 
 func NewWorkspacesClient(cfg *config.Config) (*WorkspacesClient, error) {
@@ -218,10 +194,6 @@ func NewWorkspacesClient(cfg *config.Config) (*WorkspacesClient, error) {
 	}
 
 	return &WorkspacesClient{
-		WorkspacesAPI: WorkspacesAPI{
-			workspacesImpl: workspacesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		WorkspacesInterface: NewWorkspaces(apiClient.ApiClient()),
 	}, nil
 }

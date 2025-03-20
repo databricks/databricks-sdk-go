@@ -10,7 +10,7 @@ import (
 )
 
 type GitCredentialsClient struct {
-	GitCredentialsAPI
+	GitCredentialsInterface
 }
 
 func NewGitCredentialsClient(cfg *config.Config) (*GitCredentialsClient, error) {
@@ -32,16 +32,12 @@ func NewGitCredentialsClient(cfg *config.Config) (*GitCredentialsClient, error) 
 	}
 
 	return &GitCredentialsClient{
-		GitCredentialsAPI: GitCredentialsAPI{
-			gitCredentialsImpl: gitCredentialsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		GitCredentialsInterface: NewGitCredentials(apiClient.ApiClient()),
 	}, nil
 }
 
 type ReposClient struct {
-	ReposAPI
+	ReposInterface
 }
 
 func NewReposClient(cfg *config.Config) (*ReposClient, error) {
@@ -63,16 +59,12 @@ func NewReposClient(cfg *config.Config) (*ReposClient, error) {
 	}
 
 	return &ReposClient{
-		ReposAPI: ReposAPI{
-			reposImpl: reposImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ReposInterface: NewRepos(apiClient.ApiClient()),
 	}, nil
 }
 
 type SecretsClient struct {
-	SecretsAPI
+	SecretsInterface
 }
 
 func NewSecretsClient(cfg *config.Config) (*SecretsClient, error) {
@@ -94,16 +86,12 @@ func NewSecretsClient(cfg *config.Config) (*SecretsClient, error) {
 	}
 
 	return &SecretsClient{
-		SecretsAPI: SecretsAPI{
-			secretsImpl: secretsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		SecretsInterface: NewSecrets(apiClient.ApiClient()),
 	}, nil
 }
 
 type WorkspaceClient struct {
-	WorkspaceAPI
+	WorkspaceInterface
 }
 
 func NewWorkspaceClient(cfg *config.Config) (*WorkspaceClient, error) {
@@ -125,10 +113,6 @@ func NewWorkspaceClient(cfg *config.Config) (*WorkspaceClient, error) {
 	}
 
 	return &WorkspaceClient{
-		WorkspaceAPI: WorkspaceAPI{
-			workspaceImpl: workspaceImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		WorkspaceInterface: NewWorkspace(apiClient.ApiClient()),
 	}, nil
 }

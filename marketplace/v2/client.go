@@ -10,7 +10,7 @@ import (
 )
 
 type ConsumerFulfillmentsClient struct {
-	ConsumerFulfillmentsAPI
+	ConsumerFulfillmentsInterface
 }
 
 func NewConsumerFulfillmentsClient(cfg *config.Config) (*ConsumerFulfillmentsClient, error) {
@@ -32,16 +32,12 @@ func NewConsumerFulfillmentsClient(cfg *config.Config) (*ConsumerFulfillmentsCli
 	}
 
 	return &ConsumerFulfillmentsClient{
-		ConsumerFulfillmentsAPI: ConsumerFulfillmentsAPI{
-			consumerFulfillmentsImpl: consumerFulfillmentsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ConsumerFulfillmentsInterface: NewConsumerFulfillments(apiClient.ApiClient()),
 	}, nil
 }
 
 type ConsumerInstallationsClient struct {
-	ConsumerInstallationsAPI
+	ConsumerInstallationsInterface
 }
 
 func NewConsumerInstallationsClient(cfg *config.Config) (*ConsumerInstallationsClient, error) {
@@ -63,16 +59,12 @@ func NewConsumerInstallationsClient(cfg *config.Config) (*ConsumerInstallationsC
 	}
 
 	return &ConsumerInstallationsClient{
-		ConsumerInstallationsAPI: ConsumerInstallationsAPI{
-			consumerInstallationsImpl: consumerInstallationsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ConsumerInstallationsInterface: NewConsumerInstallations(apiClient.ApiClient()),
 	}, nil
 }
 
 type ConsumerListingsClient struct {
-	ConsumerListingsAPI
+	ConsumerListingsInterface
 }
 
 func NewConsumerListingsClient(cfg *config.Config) (*ConsumerListingsClient, error) {
@@ -94,16 +86,12 @@ func NewConsumerListingsClient(cfg *config.Config) (*ConsumerListingsClient, err
 	}
 
 	return &ConsumerListingsClient{
-		ConsumerListingsAPI: ConsumerListingsAPI{
-			consumerListingsImpl: consumerListingsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ConsumerListingsInterface: NewConsumerListings(apiClient.ApiClient()),
 	}, nil
 }
 
 type ConsumerPersonalizationRequestsClient struct {
-	ConsumerPersonalizationRequestsAPI
+	ConsumerPersonalizationRequestsInterface
 }
 
 func NewConsumerPersonalizationRequestsClient(cfg *config.Config) (*ConsumerPersonalizationRequestsClient, error) {
@@ -125,16 +113,12 @@ func NewConsumerPersonalizationRequestsClient(cfg *config.Config) (*ConsumerPers
 	}
 
 	return &ConsumerPersonalizationRequestsClient{
-		ConsumerPersonalizationRequestsAPI: ConsumerPersonalizationRequestsAPI{
-			consumerPersonalizationRequestsImpl: consumerPersonalizationRequestsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ConsumerPersonalizationRequestsInterface: NewConsumerPersonalizationRequests(apiClient.ApiClient()),
 	}, nil
 }
 
 type ConsumerProvidersClient struct {
-	ConsumerProvidersAPI
+	ConsumerProvidersInterface
 }
 
 func NewConsumerProvidersClient(cfg *config.Config) (*ConsumerProvidersClient, error) {
@@ -156,16 +140,12 @@ func NewConsumerProvidersClient(cfg *config.Config) (*ConsumerProvidersClient, e
 	}
 
 	return &ConsumerProvidersClient{
-		ConsumerProvidersAPI: ConsumerProvidersAPI{
-			consumerProvidersImpl: consumerProvidersImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ConsumerProvidersInterface: NewConsumerProviders(apiClient.ApiClient()),
 	}, nil
 }
 
 type ProviderExchangeFiltersClient struct {
-	ProviderExchangeFiltersAPI
+	ProviderExchangeFiltersInterface
 }
 
 func NewProviderExchangeFiltersClient(cfg *config.Config) (*ProviderExchangeFiltersClient, error) {
@@ -187,16 +167,12 @@ func NewProviderExchangeFiltersClient(cfg *config.Config) (*ProviderExchangeFilt
 	}
 
 	return &ProviderExchangeFiltersClient{
-		ProviderExchangeFiltersAPI: ProviderExchangeFiltersAPI{
-			providerExchangeFiltersImpl: providerExchangeFiltersImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ProviderExchangeFiltersInterface: NewProviderExchangeFilters(apiClient.ApiClient()),
 	}, nil
 }
 
 type ProviderExchangesClient struct {
-	ProviderExchangesAPI
+	ProviderExchangesInterface
 }
 
 func NewProviderExchangesClient(cfg *config.Config) (*ProviderExchangesClient, error) {
@@ -218,16 +194,12 @@ func NewProviderExchangesClient(cfg *config.Config) (*ProviderExchangesClient, e
 	}
 
 	return &ProviderExchangesClient{
-		ProviderExchangesAPI: ProviderExchangesAPI{
-			providerExchangesImpl: providerExchangesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ProviderExchangesInterface: NewProviderExchanges(apiClient.ApiClient()),
 	}, nil
 }
 
 type ProviderFilesClient struct {
-	ProviderFilesAPI
+	ProviderFilesInterface
 }
 
 func NewProviderFilesClient(cfg *config.Config) (*ProviderFilesClient, error) {
@@ -249,16 +221,12 @@ func NewProviderFilesClient(cfg *config.Config) (*ProviderFilesClient, error) {
 	}
 
 	return &ProviderFilesClient{
-		ProviderFilesAPI: ProviderFilesAPI{
-			providerFilesImpl: providerFilesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ProviderFilesInterface: NewProviderFiles(apiClient.ApiClient()),
 	}, nil
 }
 
 type ProviderListingsClient struct {
-	ProviderListingsAPI
+	ProviderListingsInterface
 }
 
 func NewProviderListingsClient(cfg *config.Config) (*ProviderListingsClient, error) {
@@ -280,16 +248,12 @@ func NewProviderListingsClient(cfg *config.Config) (*ProviderListingsClient, err
 	}
 
 	return &ProviderListingsClient{
-		ProviderListingsAPI: ProviderListingsAPI{
-			providerListingsImpl: providerListingsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ProviderListingsInterface: NewProviderListings(apiClient.ApiClient()),
 	}, nil
 }
 
 type ProviderPersonalizationRequestsClient struct {
-	ProviderPersonalizationRequestsAPI
+	ProviderPersonalizationRequestsInterface
 }
 
 func NewProviderPersonalizationRequestsClient(cfg *config.Config) (*ProviderPersonalizationRequestsClient, error) {
@@ -311,16 +275,12 @@ func NewProviderPersonalizationRequestsClient(cfg *config.Config) (*ProviderPers
 	}
 
 	return &ProviderPersonalizationRequestsClient{
-		ProviderPersonalizationRequestsAPI: ProviderPersonalizationRequestsAPI{
-			providerPersonalizationRequestsImpl: providerPersonalizationRequestsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ProviderPersonalizationRequestsInterface: NewProviderPersonalizationRequests(apiClient.ApiClient()),
 	}, nil
 }
 
 type ProviderProviderAnalyticsDashboardsClient struct {
-	ProviderProviderAnalyticsDashboardsAPI
+	ProviderProviderAnalyticsDashboardsInterface
 }
 
 func NewProviderProviderAnalyticsDashboardsClient(cfg *config.Config) (*ProviderProviderAnalyticsDashboardsClient, error) {
@@ -342,16 +302,12 @@ func NewProviderProviderAnalyticsDashboardsClient(cfg *config.Config) (*Provider
 	}
 
 	return &ProviderProviderAnalyticsDashboardsClient{
-		ProviderProviderAnalyticsDashboardsAPI: ProviderProviderAnalyticsDashboardsAPI{
-			providerProviderAnalyticsDashboardsImpl: providerProviderAnalyticsDashboardsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ProviderProviderAnalyticsDashboardsInterface: NewProviderProviderAnalyticsDashboards(apiClient.ApiClient()),
 	}, nil
 }
 
 type ProviderProvidersClient struct {
-	ProviderProvidersAPI
+	ProviderProvidersInterface
 }
 
 func NewProviderProvidersClient(cfg *config.Config) (*ProviderProvidersClient, error) {
@@ -373,10 +329,6 @@ func NewProviderProvidersClient(cfg *config.Config) (*ProviderProvidersClient, e
 	}
 
 	return &ProviderProvidersClient{
-		ProviderProvidersAPI: ProviderProvidersAPI{
-			providerProvidersImpl: providerProvidersImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ProviderProvidersInterface: NewProviderProviders(apiClient.ApiClient()),
 	}, nil
 }

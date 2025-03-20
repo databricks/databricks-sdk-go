@@ -10,7 +10,7 @@ import (
 )
 
 type ExperimentsClient struct {
-	ExperimentsAPI
+	ExperimentsInterface
 }
 
 func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
@@ -32,16 +32,12 @@ func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
 	}
 
 	return &ExperimentsClient{
-		ExperimentsAPI: ExperimentsAPI{
-			experimentsImpl: experimentsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ExperimentsInterface: NewExperiments(apiClient.ApiClient()),
 	}, nil
 }
 
 type ForecastingClient struct {
-	ForecastingAPI
+	ForecastingInterface
 }
 
 func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
@@ -63,16 +59,12 @@ func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
 	}
 
 	return &ForecastingClient{
-		ForecastingAPI: ForecastingAPI{
-			forecastingImpl: forecastingImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ForecastingInterface: NewForecasting(apiClient.ApiClient()),
 	}, nil
 }
 
 type ModelRegistryClient struct {
-	ModelRegistryAPI
+	ModelRegistryInterface
 }
 
 func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
@@ -94,10 +86,6 @@ func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
 	}
 
 	return &ModelRegistryClient{
-		ModelRegistryAPI: ModelRegistryAPI{
-			modelRegistryImpl: modelRegistryImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ModelRegistryInterface: NewModelRegistry(apiClient.ApiClient()),
 	}, nil
 }

@@ -10,7 +10,7 @@ import (
 )
 
 type AlertsClient struct {
-	AlertsAPI
+	AlertsInterface
 }
 
 func NewAlertsClient(cfg *config.Config) (*AlertsClient, error) {
@@ -32,16 +32,12 @@ func NewAlertsClient(cfg *config.Config) (*AlertsClient, error) {
 	}
 
 	return &AlertsClient{
-		AlertsAPI: AlertsAPI{
-			alertsImpl: alertsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AlertsInterface: NewAlerts(apiClient.ApiClient()),
 	}, nil
 }
 
 type AlertsLegacyClient struct {
-	AlertsLegacyAPI
+	AlertsLegacyInterface
 }
 
 func NewAlertsLegacyClient(cfg *config.Config) (*AlertsLegacyClient, error) {
@@ -63,16 +59,12 @@ func NewAlertsLegacyClient(cfg *config.Config) (*AlertsLegacyClient, error) {
 	}
 
 	return &AlertsLegacyClient{
-		AlertsLegacyAPI: AlertsLegacyAPI{
-			alertsLegacyImpl: alertsLegacyImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AlertsLegacyInterface: NewAlertsLegacy(apiClient.ApiClient()),
 	}, nil
 }
 
 type DashboardWidgetsClient struct {
-	DashboardWidgetsAPI
+	DashboardWidgetsInterface
 }
 
 func NewDashboardWidgetsClient(cfg *config.Config) (*DashboardWidgetsClient, error) {
@@ -94,16 +86,12 @@ func NewDashboardWidgetsClient(cfg *config.Config) (*DashboardWidgetsClient, err
 	}
 
 	return &DashboardWidgetsClient{
-		DashboardWidgetsAPI: DashboardWidgetsAPI{
-			dashboardWidgetsImpl: dashboardWidgetsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		DashboardWidgetsInterface: NewDashboardWidgets(apiClient.ApiClient()),
 	}, nil
 }
 
 type DashboardsClient struct {
-	DashboardsAPI
+	DashboardsInterface
 }
 
 func NewDashboardsClient(cfg *config.Config) (*DashboardsClient, error) {
@@ -125,16 +113,12 @@ func NewDashboardsClient(cfg *config.Config) (*DashboardsClient, error) {
 	}
 
 	return &DashboardsClient{
-		DashboardsAPI: DashboardsAPI{
-			dashboardsImpl: dashboardsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		DashboardsInterface: NewDashboards(apiClient.ApiClient()),
 	}, nil
 }
 
 type DataSourcesClient struct {
-	DataSourcesAPI
+	DataSourcesInterface
 }
 
 func NewDataSourcesClient(cfg *config.Config) (*DataSourcesClient, error) {
@@ -156,16 +140,12 @@ func NewDataSourcesClient(cfg *config.Config) (*DataSourcesClient, error) {
 	}
 
 	return &DataSourcesClient{
-		DataSourcesAPI: DataSourcesAPI{
-			dataSourcesImpl: dataSourcesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		DataSourcesInterface: NewDataSources(apiClient.ApiClient()),
 	}, nil
 }
 
 type DbsqlPermissionsClient struct {
-	DbsqlPermissionsAPI
+	DbsqlPermissionsInterface
 }
 
 func NewDbsqlPermissionsClient(cfg *config.Config) (*DbsqlPermissionsClient, error) {
@@ -187,16 +167,12 @@ func NewDbsqlPermissionsClient(cfg *config.Config) (*DbsqlPermissionsClient, err
 	}
 
 	return &DbsqlPermissionsClient{
-		DbsqlPermissionsAPI: DbsqlPermissionsAPI{
-			dbsqlPermissionsImpl: dbsqlPermissionsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		DbsqlPermissionsInterface: NewDbsqlPermissions(apiClient.ApiClient()),
 	}, nil
 }
 
 type QueriesClient struct {
-	QueriesAPI
+	QueriesInterface
 }
 
 func NewQueriesClient(cfg *config.Config) (*QueriesClient, error) {
@@ -218,16 +194,12 @@ func NewQueriesClient(cfg *config.Config) (*QueriesClient, error) {
 	}
 
 	return &QueriesClient{
-		QueriesAPI: QueriesAPI{
-			queriesImpl: queriesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		QueriesInterface: NewQueries(apiClient.ApiClient()),
 	}, nil
 }
 
 type QueriesLegacyClient struct {
-	QueriesLegacyAPI
+	QueriesLegacyInterface
 }
 
 func NewQueriesLegacyClient(cfg *config.Config) (*QueriesLegacyClient, error) {
@@ -249,16 +221,12 @@ func NewQueriesLegacyClient(cfg *config.Config) (*QueriesLegacyClient, error) {
 	}
 
 	return &QueriesLegacyClient{
-		QueriesLegacyAPI: QueriesLegacyAPI{
-			queriesLegacyImpl: queriesLegacyImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		QueriesLegacyInterface: NewQueriesLegacy(apiClient.ApiClient()),
 	}, nil
 }
 
 type QueryHistoryClient struct {
-	QueryHistoryAPI
+	QueryHistoryInterface
 }
 
 func NewQueryHistoryClient(cfg *config.Config) (*QueryHistoryClient, error) {
@@ -280,16 +248,12 @@ func NewQueryHistoryClient(cfg *config.Config) (*QueryHistoryClient, error) {
 	}
 
 	return &QueryHistoryClient{
-		QueryHistoryAPI: QueryHistoryAPI{
-			queryHistoryImpl: queryHistoryImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		QueryHistoryInterface: NewQueryHistory(apiClient.ApiClient()),
 	}, nil
 }
 
 type QueryVisualizationsClient struct {
-	QueryVisualizationsAPI
+	QueryVisualizationsInterface
 }
 
 func NewQueryVisualizationsClient(cfg *config.Config) (*QueryVisualizationsClient, error) {
@@ -311,16 +275,12 @@ func NewQueryVisualizationsClient(cfg *config.Config) (*QueryVisualizationsClien
 	}
 
 	return &QueryVisualizationsClient{
-		QueryVisualizationsAPI: QueryVisualizationsAPI{
-			queryVisualizationsImpl: queryVisualizationsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		QueryVisualizationsInterface: NewQueryVisualizations(apiClient.ApiClient()),
 	}, nil
 }
 
 type QueryVisualizationsLegacyClient struct {
-	QueryVisualizationsLegacyAPI
+	QueryVisualizationsLegacyInterface
 }
 
 func NewQueryVisualizationsLegacyClient(cfg *config.Config) (*QueryVisualizationsLegacyClient, error) {
@@ -342,16 +302,12 @@ func NewQueryVisualizationsLegacyClient(cfg *config.Config) (*QueryVisualization
 	}
 
 	return &QueryVisualizationsLegacyClient{
-		QueryVisualizationsLegacyAPI: QueryVisualizationsLegacyAPI{
-			queryVisualizationsLegacyImpl: queryVisualizationsLegacyImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		QueryVisualizationsLegacyInterface: NewQueryVisualizationsLegacy(apiClient.ApiClient()),
 	}, nil
 }
 
 type RedashConfigClient struct {
-	RedashConfigAPI
+	RedashConfigInterface
 }
 
 func NewRedashConfigClient(cfg *config.Config) (*RedashConfigClient, error) {
@@ -373,16 +329,12 @@ func NewRedashConfigClient(cfg *config.Config) (*RedashConfigClient, error) {
 	}
 
 	return &RedashConfigClient{
-		RedashConfigAPI: RedashConfigAPI{
-			redashConfigImpl: redashConfigImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		RedashConfigInterface: NewRedashConfig(apiClient.ApiClient()),
 	}, nil
 }
 
 type StatementExecutionClient struct {
-	StatementExecutionAPI
+	StatementExecutionInterface
 }
 
 func NewStatementExecutionClient(cfg *config.Config) (*StatementExecutionClient, error) {
@@ -404,16 +356,12 @@ func NewStatementExecutionClient(cfg *config.Config) (*StatementExecutionClient,
 	}
 
 	return &StatementExecutionClient{
-		StatementExecutionAPI: StatementExecutionAPI{
-			statementExecutionImpl: statementExecutionImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		StatementExecutionInterface: NewStatementExecution(apiClient.ApiClient()),
 	}, nil
 }
 
 type WarehousesClient struct {
-	WarehousesAPI
+	WarehousesInterface
 }
 
 func NewWarehousesClient(cfg *config.Config) (*WarehousesClient, error) {
@@ -435,10 +383,6 @@ func NewWarehousesClient(cfg *config.Config) (*WarehousesClient, error) {
 	}
 
 	return &WarehousesClient{
-		WarehousesAPI: WarehousesAPI{
-			warehousesImpl: warehousesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		WarehousesInterface: NewWarehouses(apiClient.ApiClient()),
 	}, nil
 }

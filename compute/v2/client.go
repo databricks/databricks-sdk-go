@@ -10,7 +10,7 @@ import (
 )
 
 type ClusterPoliciesClient struct {
-	ClusterPoliciesAPI
+	ClusterPoliciesInterface
 }
 
 func NewClusterPoliciesClient(cfg *config.Config) (*ClusterPoliciesClient, error) {
@@ -32,16 +32,12 @@ func NewClusterPoliciesClient(cfg *config.Config) (*ClusterPoliciesClient, error
 	}
 
 	return &ClusterPoliciesClient{
-		ClusterPoliciesAPI: ClusterPoliciesAPI{
-			clusterPoliciesImpl: clusterPoliciesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ClusterPoliciesInterface: NewClusterPolicies(apiClient.ApiClient()),
 	}, nil
 }
 
 type ClustersClient struct {
-	ClustersAPI
+	ClustersInterface
 }
 
 func NewClustersClient(cfg *config.Config) (*ClustersClient, error) {
@@ -63,16 +59,12 @@ func NewClustersClient(cfg *config.Config) (*ClustersClient, error) {
 	}
 
 	return &ClustersClient{
-		ClustersAPI: ClustersAPI{
-			clustersImpl: clustersImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ClustersInterface: NewClusters(apiClient.ApiClient()),
 	}, nil
 }
 
 type CommandExecutionClient struct {
-	CommandExecutionAPI
+	CommandExecutionInterface
 }
 
 func NewCommandExecutionClient(cfg *config.Config) (*CommandExecutionClient, error) {
@@ -94,16 +86,12 @@ func NewCommandExecutionClient(cfg *config.Config) (*CommandExecutionClient, err
 	}
 
 	return &CommandExecutionClient{
-		CommandExecutionAPI: CommandExecutionAPI{
-			commandExecutionImpl: commandExecutionImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		CommandExecutionInterface: NewCommandExecution(apiClient.ApiClient()),
 	}, nil
 }
 
 type GlobalInitScriptsClient struct {
-	GlobalInitScriptsAPI
+	GlobalInitScriptsInterface
 }
 
 func NewGlobalInitScriptsClient(cfg *config.Config) (*GlobalInitScriptsClient, error) {
@@ -125,16 +113,12 @@ func NewGlobalInitScriptsClient(cfg *config.Config) (*GlobalInitScriptsClient, e
 	}
 
 	return &GlobalInitScriptsClient{
-		GlobalInitScriptsAPI: GlobalInitScriptsAPI{
-			globalInitScriptsImpl: globalInitScriptsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		GlobalInitScriptsInterface: NewGlobalInitScripts(apiClient.ApiClient()),
 	}, nil
 }
 
 type InstancePoolsClient struct {
-	InstancePoolsAPI
+	InstancePoolsInterface
 }
 
 func NewInstancePoolsClient(cfg *config.Config) (*InstancePoolsClient, error) {
@@ -156,16 +140,12 @@ func NewInstancePoolsClient(cfg *config.Config) (*InstancePoolsClient, error) {
 	}
 
 	return &InstancePoolsClient{
-		InstancePoolsAPI: InstancePoolsAPI{
-			instancePoolsImpl: instancePoolsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		InstancePoolsInterface: NewInstancePools(apiClient.ApiClient()),
 	}, nil
 }
 
 type InstanceProfilesClient struct {
-	InstanceProfilesAPI
+	InstanceProfilesInterface
 }
 
 func NewInstanceProfilesClient(cfg *config.Config) (*InstanceProfilesClient, error) {
@@ -187,16 +167,12 @@ func NewInstanceProfilesClient(cfg *config.Config) (*InstanceProfilesClient, err
 	}
 
 	return &InstanceProfilesClient{
-		InstanceProfilesAPI: InstanceProfilesAPI{
-			instanceProfilesImpl: instanceProfilesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		InstanceProfilesInterface: NewInstanceProfiles(apiClient.ApiClient()),
 	}, nil
 }
 
 type LibrariesClient struct {
-	LibrariesAPI
+	LibrariesInterface
 }
 
 func NewLibrariesClient(cfg *config.Config) (*LibrariesClient, error) {
@@ -218,16 +194,12 @@ func NewLibrariesClient(cfg *config.Config) (*LibrariesClient, error) {
 	}
 
 	return &LibrariesClient{
-		LibrariesAPI: LibrariesAPI{
-			librariesImpl: librariesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		LibrariesInterface: NewLibraries(apiClient.ApiClient()),
 	}, nil
 }
 
 type PolicyComplianceForClustersClient struct {
-	PolicyComplianceForClustersAPI
+	PolicyComplianceForClustersInterface
 }
 
 func NewPolicyComplianceForClustersClient(cfg *config.Config) (*PolicyComplianceForClustersClient, error) {
@@ -249,16 +221,12 @@ func NewPolicyComplianceForClustersClient(cfg *config.Config) (*PolicyCompliance
 	}
 
 	return &PolicyComplianceForClustersClient{
-		PolicyComplianceForClustersAPI: PolicyComplianceForClustersAPI{
-			policyComplianceForClustersImpl: policyComplianceForClustersImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		PolicyComplianceForClustersInterface: NewPolicyComplianceForClusters(apiClient.ApiClient()),
 	}, nil
 }
 
 type PolicyFamiliesClient struct {
-	PolicyFamiliesAPI
+	PolicyFamiliesInterface
 }
 
 func NewPolicyFamiliesClient(cfg *config.Config) (*PolicyFamiliesClient, error) {
@@ -280,10 +248,6 @@ func NewPolicyFamiliesClient(cfg *config.Config) (*PolicyFamiliesClient, error) 
 	}
 
 	return &PolicyFamiliesClient{
-		PolicyFamiliesAPI: PolicyFamiliesAPI{
-			policyFamiliesImpl: policyFamiliesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		PolicyFamiliesInterface: NewPolicyFamilies(apiClient.ApiClient()),
 	}, nil
 }

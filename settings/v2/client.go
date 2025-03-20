@@ -10,7 +10,7 @@ import (
 )
 
 type AccountIpAccessListsClient struct {
-	AccountIpAccessListsAPI
+	AccountIpAccessListsInterface
 }
 
 func NewAccountIpAccessListsClient(cfg *config.Config) (*AccountIpAccessListsClient, error) {
@@ -32,16 +32,12 @@ func NewAccountIpAccessListsClient(cfg *config.Config) (*AccountIpAccessListsCli
 	}
 
 	return &AccountIpAccessListsClient{
-		AccountIpAccessListsAPI: AccountIpAccessListsAPI{
-			accountIpAccessListsImpl: accountIpAccessListsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AccountIpAccessListsInterface: NewAccountIpAccessLists(apiClient.ApiClient()),
 	}, nil
 }
 
 type AccountSettingsClient struct {
-	AccountSettingsAPI
+	AccountSettingsInterface
 }
 
 func NewAccountSettingsClient(cfg *config.Config) (*AccountSettingsClient, error) {
@@ -63,16 +59,12 @@ func NewAccountSettingsClient(cfg *config.Config) (*AccountSettingsClient, error
 	}
 
 	return &AccountSettingsClient{
-		AccountSettingsAPI: AccountSettingsAPI{
-			accountSettingsImpl: accountSettingsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AccountSettingsInterface: NewAccountSettings(apiClient.ApiClient()),
 	}, nil
 }
 
 type AibiDashboardEmbeddingAccessPolicyClient struct {
-	AibiDashboardEmbeddingAccessPolicyAPI
+	AibiDashboardEmbeddingAccessPolicyInterface
 }
 
 func NewAibiDashboardEmbeddingAccessPolicyClient(cfg *config.Config) (*AibiDashboardEmbeddingAccessPolicyClient, error) {
@@ -94,16 +86,12 @@ func NewAibiDashboardEmbeddingAccessPolicyClient(cfg *config.Config) (*AibiDashb
 	}
 
 	return &AibiDashboardEmbeddingAccessPolicyClient{
-		AibiDashboardEmbeddingAccessPolicyAPI: AibiDashboardEmbeddingAccessPolicyAPI{
-			aibiDashboardEmbeddingAccessPolicyImpl: aibiDashboardEmbeddingAccessPolicyImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AibiDashboardEmbeddingAccessPolicyInterface: NewAibiDashboardEmbeddingAccessPolicy(apiClient.ApiClient()),
 	}, nil
 }
 
 type AibiDashboardEmbeddingApprovedDomainsClient struct {
-	AibiDashboardEmbeddingApprovedDomainsAPI
+	AibiDashboardEmbeddingApprovedDomainsInterface
 }
 
 func NewAibiDashboardEmbeddingApprovedDomainsClient(cfg *config.Config) (*AibiDashboardEmbeddingApprovedDomainsClient, error) {
@@ -125,16 +113,12 @@ func NewAibiDashboardEmbeddingApprovedDomainsClient(cfg *config.Config) (*AibiDa
 	}
 
 	return &AibiDashboardEmbeddingApprovedDomainsClient{
-		AibiDashboardEmbeddingApprovedDomainsAPI: AibiDashboardEmbeddingApprovedDomainsAPI{
-			aibiDashboardEmbeddingApprovedDomainsImpl: aibiDashboardEmbeddingApprovedDomainsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AibiDashboardEmbeddingApprovedDomainsInterface: NewAibiDashboardEmbeddingApprovedDomains(apiClient.ApiClient()),
 	}, nil
 }
 
 type AutomaticClusterUpdateClient struct {
-	AutomaticClusterUpdateAPI
+	AutomaticClusterUpdateInterface
 }
 
 func NewAutomaticClusterUpdateClient(cfg *config.Config) (*AutomaticClusterUpdateClient, error) {
@@ -156,16 +140,12 @@ func NewAutomaticClusterUpdateClient(cfg *config.Config) (*AutomaticClusterUpdat
 	}
 
 	return &AutomaticClusterUpdateClient{
-		AutomaticClusterUpdateAPI: AutomaticClusterUpdateAPI{
-			automaticClusterUpdateImpl: automaticClusterUpdateImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		AutomaticClusterUpdateInterface: NewAutomaticClusterUpdate(apiClient.ApiClient()),
 	}, nil
 }
 
 type ComplianceSecurityProfileClient struct {
-	ComplianceSecurityProfileAPI
+	ComplianceSecurityProfileInterface
 }
 
 func NewComplianceSecurityProfileClient(cfg *config.Config) (*ComplianceSecurityProfileClient, error) {
@@ -187,16 +167,12 @@ func NewComplianceSecurityProfileClient(cfg *config.Config) (*ComplianceSecurity
 	}
 
 	return &ComplianceSecurityProfileClient{
-		ComplianceSecurityProfileAPI: ComplianceSecurityProfileAPI{
-			complianceSecurityProfileImpl: complianceSecurityProfileImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		ComplianceSecurityProfileInterface: NewComplianceSecurityProfile(apiClient.ApiClient()),
 	}, nil
 }
 
 type CredentialsManagerClient struct {
-	CredentialsManagerAPI
+	CredentialsManagerInterface
 }
 
 func NewCredentialsManagerClient(cfg *config.Config) (*CredentialsManagerClient, error) {
@@ -218,16 +194,12 @@ func NewCredentialsManagerClient(cfg *config.Config) (*CredentialsManagerClient,
 	}
 
 	return &CredentialsManagerClient{
-		CredentialsManagerAPI: CredentialsManagerAPI{
-			credentialsManagerImpl: credentialsManagerImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		CredentialsManagerInterface: NewCredentialsManager(apiClient.ApiClient()),
 	}, nil
 }
 
 type CspEnablementAccountClient struct {
-	CspEnablementAccountAPI
+	CspEnablementAccountInterface
 }
 
 func NewCspEnablementAccountClient(cfg *config.Config) (*CspEnablementAccountClient, error) {
@@ -249,16 +221,12 @@ func NewCspEnablementAccountClient(cfg *config.Config) (*CspEnablementAccountCli
 	}
 
 	return &CspEnablementAccountClient{
-		CspEnablementAccountAPI: CspEnablementAccountAPI{
-			cspEnablementAccountImpl: cspEnablementAccountImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		CspEnablementAccountInterface: NewCspEnablementAccount(apiClient.ApiClient()),
 	}, nil
 }
 
 type DefaultNamespaceClient struct {
-	DefaultNamespaceAPI
+	DefaultNamespaceInterface
 }
 
 func NewDefaultNamespaceClient(cfg *config.Config) (*DefaultNamespaceClient, error) {
@@ -280,16 +248,12 @@ func NewDefaultNamespaceClient(cfg *config.Config) (*DefaultNamespaceClient, err
 	}
 
 	return &DefaultNamespaceClient{
-		DefaultNamespaceAPI: DefaultNamespaceAPI{
-			defaultNamespaceImpl: defaultNamespaceImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		DefaultNamespaceInterface: NewDefaultNamespace(apiClient.ApiClient()),
 	}, nil
 }
 
 type DisableLegacyAccessClient struct {
-	DisableLegacyAccessAPI
+	DisableLegacyAccessInterface
 }
 
 func NewDisableLegacyAccessClient(cfg *config.Config) (*DisableLegacyAccessClient, error) {
@@ -311,16 +275,12 @@ func NewDisableLegacyAccessClient(cfg *config.Config) (*DisableLegacyAccessClien
 	}
 
 	return &DisableLegacyAccessClient{
-		DisableLegacyAccessAPI: DisableLegacyAccessAPI{
-			disableLegacyAccessImpl: disableLegacyAccessImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		DisableLegacyAccessInterface: NewDisableLegacyAccess(apiClient.ApiClient()),
 	}, nil
 }
 
 type DisableLegacyDbfsClient struct {
-	DisableLegacyDbfsAPI
+	DisableLegacyDbfsInterface
 }
 
 func NewDisableLegacyDbfsClient(cfg *config.Config) (*DisableLegacyDbfsClient, error) {
@@ -342,16 +302,12 @@ func NewDisableLegacyDbfsClient(cfg *config.Config) (*DisableLegacyDbfsClient, e
 	}
 
 	return &DisableLegacyDbfsClient{
-		DisableLegacyDbfsAPI: DisableLegacyDbfsAPI{
-			disableLegacyDbfsImpl: disableLegacyDbfsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		DisableLegacyDbfsInterface: NewDisableLegacyDbfs(apiClient.ApiClient()),
 	}, nil
 }
 
 type DisableLegacyFeaturesClient struct {
-	DisableLegacyFeaturesAPI
+	DisableLegacyFeaturesInterface
 }
 
 func NewDisableLegacyFeaturesClient(cfg *config.Config) (*DisableLegacyFeaturesClient, error) {
@@ -373,16 +329,12 @@ func NewDisableLegacyFeaturesClient(cfg *config.Config) (*DisableLegacyFeaturesC
 	}
 
 	return &DisableLegacyFeaturesClient{
-		DisableLegacyFeaturesAPI: DisableLegacyFeaturesAPI{
-			disableLegacyFeaturesImpl: disableLegacyFeaturesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		DisableLegacyFeaturesInterface: NewDisableLegacyFeatures(apiClient.ApiClient()),
 	}, nil
 }
 
 type EnableIpAccessListsClient struct {
-	EnableIpAccessListsAPI
+	EnableIpAccessListsInterface
 }
 
 func NewEnableIpAccessListsClient(cfg *config.Config) (*EnableIpAccessListsClient, error) {
@@ -404,16 +356,12 @@ func NewEnableIpAccessListsClient(cfg *config.Config) (*EnableIpAccessListsClien
 	}
 
 	return &EnableIpAccessListsClient{
-		EnableIpAccessListsAPI: EnableIpAccessListsAPI{
-			enableIpAccessListsImpl: enableIpAccessListsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		EnableIpAccessListsInterface: NewEnableIpAccessLists(apiClient.ApiClient()),
 	}, nil
 }
 
 type EnhancedSecurityMonitoringClient struct {
-	EnhancedSecurityMonitoringAPI
+	EnhancedSecurityMonitoringInterface
 }
 
 func NewEnhancedSecurityMonitoringClient(cfg *config.Config) (*EnhancedSecurityMonitoringClient, error) {
@@ -435,16 +383,12 @@ func NewEnhancedSecurityMonitoringClient(cfg *config.Config) (*EnhancedSecurityM
 	}
 
 	return &EnhancedSecurityMonitoringClient{
-		EnhancedSecurityMonitoringAPI: EnhancedSecurityMonitoringAPI{
-			enhancedSecurityMonitoringImpl: enhancedSecurityMonitoringImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		EnhancedSecurityMonitoringInterface: NewEnhancedSecurityMonitoring(apiClient.ApiClient()),
 	}, nil
 }
 
 type EsmEnablementAccountClient struct {
-	EsmEnablementAccountAPI
+	EsmEnablementAccountInterface
 }
 
 func NewEsmEnablementAccountClient(cfg *config.Config) (*EsmEnablementAccountClient, error) {
@@ -466,16 +410,12 @@ func NewEsmEnablementAccountClient(cfg *config.Config) (*EsmEnablementAccountCli
 	}
 
 	return &EsmEnablementAccountClient{
-		EsmEnablementAccountAPI: EsmEnablementAccountAPI{
-			esmEnablementAccountImpl: esmEnablementAccountImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		EsmEnablementAccountInterface: NewEsmEnablementAccount(apiClient.ApiClient()),
 	}, nil
 }
 
 type IpAccessListsClient struct {
-	IpAccessListsAPI
+	IpAccessListsInterface
 }
 
 func NewIpAccessListsClient(cfg *config.Config) (*IpAccessListsClient, error) {
@@ -497,16 +437,12 @@ func NewIpAccessListsClient(cfg *config.Config) (*IpAccessListsClient, error) {
 	}
 
 	return &IpAccessListsClient{
-		IpAccessListsAPI: IpAccessListsAPI{
-			ipAccessListsImpl: ipAccessListsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		IpAccessListsInterface: NewIpAccessLists(apiClient.ApiClient()),
 	}, nil
 }
 
 type NetworkConnectivityClient struct {
-	NetworkConnectivityAPI
+	NetworkConnectivityInterface
 }
 
 func NewNetworkConnectivityClient(cfg *config.Config) (*NetworkConnectivityClient, error) {
@@ -528,16 +464,12 @@ func NewNetworkConnectivityClient(cfg *config.Config) (*NetworkConnectivityClien
 	}
 
 	return &NetworkConnectivityClient{
-		NetworkConnectivityAPI: NetworkConnectivityAPI{
-			networkConnectivityImpl: networkConnectivityImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		NetworkConnectivityInterface: NewNetworkConnectivity(apiClient.ApiClient()),
 	}, nil
 }
 
 type NotificationDestinationsClient struct {
-	NotificationDestinationsAPI
+	NotificationDestinationsInterface
 }
 
 func NewNotificationDestinationsClient(cfg *config.Config) (*NotificationDestinationsClient, error) {
@@ -559,16 +491,12 @@ func NewNotificationDestinationsClient(cfg *config.Config) (*NotificationDestina
 	}
 
 	return &NotificationDestinationsClient{
-		NotificationDestinationsAPI: NotificationDestinationsAPI{
-			notificationDestinationsImpl: notificationDestinationsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		NotificationDestinationsInterface: NewNotificationDestinations(apiClient.ApiClient()),
 	}, nil
 }
 
 type PersonalComputeClient struct {
-	PersonalComputeAPI
+	PersonalComputeInterface
 }
 
 func NewPersonalComputeClient(cfg *config.Config) (*PersonalComputeClient, error) {
@@ -590,16 +518,12 @@ func NewPersonalComputeClient(cfg *config.Config) (*PersonalComputeClient, error
 	}
 
 	return &PersonalComputeClient{
-		PersonalComputeAPI: PersonalComputeAPI{
-			personalComputeImpl: personalComputeImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		PersonalComputeInterface: NewPersonalCompute(apiClient.ApiClient()),
 	}, nil
 }
 
 type RestrictWorkspaceAdminsClient struct {
-	RestrictWorkspaceAdminsAPI
+	RestrictWorkspaceAdminsInterface
 }
 
 func NewRestrictWorkspaceAdminsClient(cfg *config.Config) (*RestrictWorkspaceAdminsClient, error) {
@@ -621,16 +545,12 @@ func NewRestrictWorkspaceAdminsClient(cfg *config.Config) (*RestrictWorkspaceAdm
 	}
 
 	return &RestrictWorkspaceAdminsClient{
-		RestrictWorkspaceAdminsAPI: RestrictWorkspaceAdminsAPI{
-			restrictWorkspaceAdminsImpl: restrictWorkspaceAdminsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		RestrictWorkspaceAdminsInterface: NewRestrictWorkspaceAdmins(apiClient.ApiClient()),
 	}, nil
 }
 
 type SettingsClient struct {
-	SettingsAPI
+	SettingsInterface
 }
 
 func NewSettingsClient(cfg *config.Config) (*SettingsClient, error) {
@@ -652,16 +572,12 @@ func NewSettingsClient(cfg *config.Config) (*SettingsClient, error) {
 	}
 
 	return &SettingsClient{
-		SettingsAPI: SettingsAPI{
-			settingsImpl: settingsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		SettingsInterface: NewSettings(apiClient.ApiClient()),
 	}, nil
 }
 
 type TokenManagementClient struct {
-	TokenManagementAPI
+	TokenManagementInterface
 }
 
 func NewTokenManagementClient(cfg *config.Config) (*TokenManagementClient, error) {
@@ -683,16 +599,12 @@ func NewTokenManagementClient(cfg *config.Config) (*TokenManagementClient, error
 	}
 
 	return &TokenManagementClient{
-		TokenManagementAPI: TokenManagementAPI{
-			tokenManagementImpl: tokenManagementImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		TokenManagementInterface: NewTokenManagement(apiClient.ApiClient()),
 	}, nil
 }
 
 type TokensClient struct {
-	TokensAPI
+	TokensInterface
 }
 
 func NewTokensClient(cfg *config.Config) (*TokensClient, error) {
@@ -714,16 +626,12 @@ func NewTokensClient(cfg *config.Config) (*TokensClient, error) {
 	}
 
 	return &TokensClient{
-		TokensAPI: TokensAPI{
-			tokensImpl: tokensImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		TokensInterface: NewTokens(apiClient.ApiClient()),
 	}, nil
 }
 
 type WorkspaceConfClient struct {
-	WorkspaceConfAPI
+	WorkspaceConfInterface
 }
 
 func NewWorkspaceConfClient(cfg *config.Config) (*WorkspaceConfClient, error) {
@@ -745,10 +653,6 @@ func NewWorkspaceConfClient(cfg *config.Config) (*WorkspaceConfClient, error) {
 	}
 
 	return &WorkspaceConfClient{
-		WorkspaceConfAPI: WorkspaceConfAPI{
-			workspaceConfImpl: workspaceConfImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		WorkspaceConfInterface: NewWorkspaceConf(apiClient.ApiClient()),
 	}, nil
 }

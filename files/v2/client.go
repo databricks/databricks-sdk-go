@@ -10,7 +10,7 @@ import (
 )
 
 type DbfsClient struct {
-	DbfsAPI
+	DbfsInterface
 }
 
 func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
@@ -32,16 +32,12 @@ func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
 	}
 
 	return &DbfsClient{
-		DbfsAPI: DbfsAPI{
-			dbfsImpl: dbfsImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		DbfsInterface: NewDbfs(apiClient.ApiClient()),
 	}, nil
 }
 
 type FilesClient struct {
-	FilesAPI
+	FilesInterface
 }
 
 func NewFilesClient(cfg *config.Config) (*FilesClient, error) {
@@ -63,10 +59,6 @@ func NewFilesClient(cfg *config.Config) (*FilesClient, error) {
 	}
 
 	return &FilesClient{
-		FilesAPI: FilesAPI{
-			filesImpl: filesImpl{
-				client: apiClient.ApiClient(),
-			},
-		},
+		FilesInterface: NewFiles(apiClient.ApiClient()),
 	}, nil
 }
