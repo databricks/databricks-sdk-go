@@ -9,8 +9,10 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/config"
 )
 
+// Clean room assets are data and code objects — Tables, volumes, and
+// notebooks that are shared with the clean room.
 type CleanRoomAssetsClient struct {
-	CleanRoomAssetsInterface
+	cleanRoomAssetsBaseClient
 }
 
 func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error) {
@@ -32,12 +34,17 @@ func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error
 	}
 
 	return &CleanRoomAssetsClient{
-		CleanRoomAssetsInterface: NewCleanRoomAssets(apiClient.ApiClient()),
+		cleanRoomAssetsBaseClient: cleanRoomAssetsBaseClient{
+			cleanRoomAssetsImpl: cleanRoomAssetsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Clean room task runs are the executions of notebooks in a clean room.
 type CleanRoomTaskRunsClient struct {
-	CleanRoomTaskRunsInterface
+	cleanRoomTaskRunsBaseClient
 }
 
 func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, error) {
@@ -59,12 +66,19 @@ func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, e
 	}
 
 	return &CleanRoomTaskRunsClient{
-		CleanRoomTaskRunsInterface: NewCleanRoomTaskRuns(apiClient.ApiClient()),
+		cleanRoomTaskRunsBaseClient: cleanRoomTaskRunsBaseClient{
+			cleanRoomTaskRunsImpl: cleanRoomTaskRunsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// A clean room uses Delta Sharing and serverless compute to provide a secure
+// and privacy-protecting environment where multiple parties can work together
+// on sensitive enterprise data without direct access to each other’s data.
 type CleanRoomsClient struct {
-	CleanRoomsInterface
+	cleanRoomsBaseClient
 }
 
 func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
@@ -86,6 +100,10 @@ func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
 	}
 
 	return &CleanRoomsClient{
-		CleanRoomsInterface: NewCleanRooms(apiClient.ApiClient()),
+		cleanRoomsBaseClient: cleanRoomsBaseClient{
+			cleanRoomsImpl: cleanRoomsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }

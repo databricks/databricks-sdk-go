@@ -5,120 +5,16 @@ package dashboards
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
-	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
-type GenieInterface interface {
-
-	// Create conversation message.
-	//
-	// Create new message in a [conversation](:method:genie/startconversation). The
-	// AI response uses all previously created messages in the conversation to
-	// respond.
-	CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error)
-
-	// Execute message attachment SQL query.
-	//
-	// Execute the SQL for a message query attachment. Use this API when the query
-	// attachment has expired and needs to be re-executed.
-	ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error)
-
-	// [Deprecated] Execute SQL query in a conversation message.
-	//
-	// Execute the SQL query in the message.
-	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
-
-	// Get conversation message.
-	//
-	// Get message from conversation.
-	GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error)
-
-	// Get conversation message.
-	//
-	// Get message from conversation.
-	GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error)
-
-	// Get message attachment SQL query result.
-	//
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY` OR `COMPLETED`.
-	GetMessageAttachmentQueryResult(ctx context.Context, request GenieGetMessageAttachmentQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
-
-	// Get message attachment SQL query result.
-	//
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY` OR `COMPLETED`.
-	GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
-
-	// [Deprecated] Get conversation message SQL query result.
-	//
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY`.
-	GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
-
-	// [Deprecated] Get conversation message SQL query result.
-	//
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY`.
-	GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error)
-
-	// [Deprecated] Get conversation message SQL query result.
-	//
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY` OR `COMPLETED`.
-	GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error)
-
-	// [Deprecated] Get conversation message SQL query result.
-	//
-	// Get the result of SQL query if the message has a query attachment. This is
-	// only available if a message has a query attachment and the message status is
-	// `EXECUTING_QUERY` OR `COMPLETED`.
-	GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
-
-	// Get Genie Space.
-	//
-	// Get details of a Genie Space.
-	GetSpace(ctx context.Context, request GenieGetSpaceRequest) (*GenieSpace, error)
-
-	// Get Genie Space.
-	//
-	// Get details of a Genie Space.
-	GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error)
-
-	// Start conversation.
-	//
-	// Start a new conversation.
-	StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error)
-}
-
-func NewGenie(client *httpclient.ApiClient) *GenieAPI {
-	return &GenieAPI{
-		genieImpl: genieImpl{
-			client: client,
-		},
-	}
-}
-
-// Genie provides a no-code experience for business users, powered by AI/BI.
-// Analysts set up spaces that business users can use to ask questions using
-// natural language. Genie uses data registered to Unity Catalog and requires at
-// least CAN USE permission on a Pro or Serverless SQL warehouse. Also,
-// Databricks Assistant must be enabled.
-type GenieAPI struct {
+type genieBaseClient struct {
 	genieImpl
 }
 
 // Get conversation message.
 //
 // Get message from conversation.
-func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error) {
+func (a *genieBaseClient) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error) {
 	return a.genieImpl.GetMessage(ctx, GenieGetConversationMessageRequest{
 		SpaceId:        spaceId,
 		ConversationId: conversationId,
@@ -131,7 +27,7 @@ func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.
 // Get the result of SQL query if the message has a query attachment. This is
 // only available if a message has a query attachment and the message status is
 // `EXECUTING_QUERY` OR `COMPLETED`.
-func (a *GenieAPI) GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
+func (a *genieBaseClient) GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
 	return a.genieImpl.GetMessageAttachmentQueryResult(ctx, GenieGetMessageAttachmentQueryResultRequest{
 		SpaceId:        spaceId,
 		ConversationId: conversationId,
@@ -145,7 +41,7 @@ func (a *GenieAPI) GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndM
 // Get the result of SQL query if the message has a query attachment. This is
 // only available if a message has a query attachment and the message status is
 // `EXECUTING_QUERY`.
-func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error) {
+func (a *genieBaseClient) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error) {
 	return a.genieImpl.GetMessageQueryResult(ctx, GenieGetMessageQueryResultRequest{
 		SpaceId:        spaceId,
 		ConversationId: conversationId,
@@ -158,7 +54,7 @@ func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(c
 // Get the result of SQL query if the message has a query attachment. This is
 // only available if a message has a query attachment and the message status is
 // `EXECUTING_QUERY` OR `COMPLETED`.
-func (a *GenieAPI) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
+func (a *genieBaseClient) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error) {
 	return a.genieImpl.GetMessageQueryResultByAttachment(ctx, GenieGetQueryResultByAttachmentRequest{
 		SpaceId:        spaceId,
 		ConversationId: conversationId,
@@ -170,161 +66,18 @@ func (a *GenieAPI) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAn
 // Get Genie Space.
 //
 // Get details of a Genie Space.
-func (a *GenieAPI) GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error) {
+func (a *genieBaseClient) GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error) {
 	return a.genieImpl.GetSpace(ctx, GenieGetSpaceRequest{
 		SpaceId: spaceId,
 	})
 }
 
-type LakeviewInterface interface {
-
-	// Create dashboard.
-	//
-	// Create a draft dashboard.
-	Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error)
-
-	// Create dashboard schedule.
-	CreateSchedule(ctx context.Context, request CreateScheduleRequest) (*Schedule, error)
-
-	// Create schedule subscription.
-	CreateSubscription(ctx context.Context, request CreateSubscriptionRequest) (*Subscription, error)
-
-	// Delete dashboard schedule.
-	DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) (*DeleteScheduleResponse, error)
-
-	// Delete dashboard schedule.
-	DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*DeleteScheduleResponse, error)
-
-	// Delete schedule subscription.
-	DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) (*DeleteSubscriptionResponse, error)
-
-	// Delete schedule subscription.
-	DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*DeleteSubscriptionResponse, error)
-
-	// Get dashboard.
-	//
-	// Get a draft dashboard.
-	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
-
-	// Get dashboard.
-	//
-	// Get a draft dashboard.
-	GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error)
-
-	// Get published dashboard.
-	//
-	// Get the current published dashboard.
-	GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error)
-
-	// Get published dashboard.
-	//
-	// Get the current published dashboard.
-	GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error)
-
-	// Get dashboard schedule.
-	GetSchedule(ctx context.Context, request GetScheduleRequest) (*Schedule, error)
-
-	// Get dashboard schedule.
-	GetScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*Schedule, error)
-
-	// Get schedule subscription.
-	GetSubscription(ctx context.Context, request GetSubscriptionRequest) (*Subscription, error)
-
-	// Get schedule subscription.
-	GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*Subscription, error)
-
-	// List dashboards.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	List(ctx context.Context, request ListDashboardsRequest) listing.Iterator[Dashboard]
-
-	// List dashboards.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	ListAll(ctx context.Context, request ListDashboardsRequest) ([]Dashboard, error)
-
-	// List dashboard schedules.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	ListSchedules(ctx context.Context, request ListSchedulesRequest) listing.Iterator[Schedule]
-
-	// List dashboard schedules.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	ListSchedulesAll(ctx context.Context, request ListSchedulesRequest) ([]Schedule, error)
-
-	// List dashboard schedules.
-	ListSchedulesByDashboardId(ctx context.Context, dashboardId string) (*ListSchedulesResponse, error)
-
-	// List schedule subscriptions.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	ListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) listing.Iterator[Subscription]
-
-	// List schedule subscriptions.
-	//
-	// This method is generated by Databricks SDK Code Generator.
-	ListSubscriptionsAll(ctx context.Context, request ListSubscriptionsRequest) ([]Subscription, error)
-
-	// List schedule subscriptions.
-	ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*ListSubscriptionsResponse, error)
-
-	// Migrate dashboard.
-	//
-	// Migrates a classic SQL dashboard to Lakeview.
-	Migrate(ctx context.Context, request MigrateDashboardRequest) (*Dashboard, error)
-
-	// Publish dashboard.
-	//
-	// Publish the current draft dashboard.
-	Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error)
-
-	// Trash dashboard.
-	//
-	// Trash a dashboard.
-	Trash(ctx context.Context, request TrashDashboardRequest) (*TrashDashboardResponse, error)
-
-	// Trash dashboard.
-	//
-	// Trash a dashboard.
-	TrashByDashboardId(ctx context.Context, dashboardId string) (*TrashDashboardResponse, error)
-
-	// Unpublish dashboard.
-	//
-	// Unpublish the dashboard.
-	Unpublish(ctx context.Context, request UnpublishDashboardRequest) (*UnpublishDashboardResponse, error)
-
-	// Unpublish dashboard.
-	//
-	// Unpublish the dashboard.
-	UnpublishByDashboardId(ctx context.Context, dashboardId string) (*UnpublishDashboardResponse, error)
-
-	// Update dashboard.
-	//
-	// Update a draft dashboard.
-	Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error)
-
-	// Update dashboard schedule.
-	UpdateSchedule(ctx context.Context, request UpdateScheduleRequest) (*Schedule, error)
-}
-
-func NewLakeview(client *httpclient.ApiClient) *LakeviewAPI {
-	return &LakeviewAPI{
-		lakeviewImpl: lakeviewImpl{
-			client: client,
-		},
-	}
-}
-
-// These APIs provide specific management operations for Lakeview dashboards.
-// Generic resource management can be done with Workspace API (import, export,
-// get-status, list, delete).
-type LakeviewAPI struct {
+type lakeviewBaseClient struct {
 	lakeviewImpl
 }
 
 // Delete dashboard schedule.
-func (a *LakeviewAPI) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*DeleteScheduleResponse, error) {
+func (a *lakeviewBaseClient) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*DeleteScheduleResponse, error) {
 	return a.lakeviewImpl.DeleteSchedule(ctx, DeleteScheduleRequest{
 		DashboardId: dashboardId,
 		ScheduleId:  scheduleId,
@@ -332,7 +85,7 @@ func (a *LakeviewAPI) DeleteScheduleByDashboardIdAndScheduleId(ctx context.Conte
 }
 
 // Delete schedule subscription.
-func (a *LakeviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*DeleteSubscriptionResponse, error) {
+func (a *lakeviewBaseClient) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*DeleteSubscriptionResponse, error) {
 	return a.lakeviewImpl.DeleteSubscription(ctx, DeleteSubscriptionRequest{
 		DashboardId:    dashboardId,
 		ScheduleId:     scheduleId,
@@ -343,7 +96,7 @@ func (a *LakeviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptio
 // Get dashboard.
 //
 // Get a draft dashboard.
-func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error) {
+func (a *lakeviewBaseClient) GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error) {
 	return a.lakeviewImpl.Get(ctx, GetDashboardRequest{
 		DashboardId: dashboardId,
 	})
@@ -352,14 +105,14 @@ func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) 
 // Get published dashboard.
 //
 // Get the current published dashboard.
-func (a *LakeviewAPI) GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error) {
+func (a *lakeviewBaseClient) GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error) {
 	return a.lakeviewImpl.GetPublished(ctx, GetPublishedDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
 
 // Get dashboard schedule.
-func (a *LakeviewAPI) GetScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*Schedule, error) {
+func (a *lakeviewBaseClient) GetScheduleByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*Schedule, error) {
 	return a.lakeviewImpl.GetSchedule(ctx, GetScheduleRequest{
 		DashboardId: dashboardId,
 		ScheduleId:  scheduleId,
@@ -367,7 +120,7 @@ func (a *LakeviewAPI) GetScheduleByDashboardIdAndScheduleId(ctx context.Context,
 }
 
 // Get schedule subscription.
-func (a *LakeviewAPI) GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*Subscription, error) {
+func (a *lakeviewBaseClient) GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) (*Subscription, error) {
 	return a.lakeviewImpl.GetSubscription(ctx, GetSubscriptionRequest{
 		DashboardId:    dashboardId,
 		ScheduleId:     scheduleId,
@@ -376,14 +129,14 @@ func (a *LakeviewAPI) GetSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId
 }
 
 // List dashboard schedules.
-func (a *LakeviewAPI) ListSchedulesByDashboardId(ctx context.Context, dashboardId string) (*ListSchedulesResponse, error) {
+func (a *lakeviewBaseClient) ListSchedulesByDashboardId(ctx context.Context, dashboardId string) (*ListSchedulesResponse, error) {
 	return a.lakeviewImpl.internalListSchedules(ctx, ListSchedulesRequest{
 		DashboardId: dashboardId,
 	})
 }
 
 // List schedule subscriptions.
-func (a *LakeviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*ListSubscriptionsResponse, error) {
+func (a *lakeviewBaseClient) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*ListSubscriptionsResponse, error) {
 	return a.lakeviewImpl.internalListSubscriptions(ctx, ListSubscriptionsRequest{
 		DashboardId: dashboardId,
 		ScheduleId:  scheduleId,
@@ -393,7 +146,7 @@ func (a *LakeviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Co
 // Trash dashboard.
 //
 // Trash a dashboard.
-func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) (*TrashDashboardResponse, error) {
+func (a *lakeviewBaseClient) TrashByDashboardId(ctx context.Context, dashboardId string) (*TrashDashboardResponse, error) {
 	return a.lakeviewImpl.Trash(ctx, TrashDashboardRequest{
 		DashboardId: dashboardId,
 	})
@@ -402,68 +155,25 @@ func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string
 // Unpublish dashboard.
 //
 // Unpublish the dashboard.
-func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId string) (*UnpublishDashboardResponse, error) {
+func (a *lakeviewBaseClient) UnpublishByDashboardId(ctx context.Context, dashboardId string) (*UnpublishDashboardResponse, error) {
 	return a.lakeviewImpl.Unpublish(ctx, UnpublishDashboardRequest{
 		DashboardId: dashboardId,
 	})
 }
 
-type LakeviewEmbeddedInterface interface {
-
-	// Read a published dashboard in an embedded ui.
-	//
-	// Get the current published dashboard within an embedded context.
-	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) (*GetPublishedDashboardEmbeddedResponse, error)
-
-	// Read a published dashboard in an embedded ui.
-	//
-	// Get the current published dashboard within an embedded context.
-	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) (*GetPublishedDashboardEmbeddedResponse, error)
-}
-
-func NewLakeviewEmbedded(client *httpclient.ApiClient) *LakeviewEmbeddedAPI {
-	return &LakeviewEmbeddedAPI{
-		lakeviewEmbeddedImpl: lakeviewEmbeddedImpl{
-			client: client,
-		},
-	}
-}
-
-// Token-based Lakeview APIs for embedding dashboards in external applications.
-type LakeviewEmbeddedAPI struct {
+type lakeviewEmbeddedBaseClient struct {
 	lakeviewEmbeddedImpl
 }
 
 // Read a published dashboard in an embedded ui.
 //
 // Get the current published dashboard within an embedded context.
-func (a *LakeviewEmbeddedAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) (*GetPublishedDashboardEmbeddedResponse, error) {
+func (a *lakeviewEmbeddedBaseClient) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) (*GetPublishedDashboardEmbeddedResponse, error) {
 	return a.lakeviewEmbeddedImpl.GetPublishedDashboardEmbedded(ctx, GetPublishedDashboardEmbeddedRequest{
 		DashboardId: dashboardId,
 	})
 }
 
-type QueryExecutionInterface interface {
-
-	// Cancel the results for the a query for a published, embedded dashboard.
-	CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error)
-
-	// Execute a query for a published dashboard.
-	ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) (*ExecuteQueryResponse, error)
-
-	// Poll the results for the a query for a published, embedded dashboard.
-	PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error)
-}
-
-func NewQueryExecution(client *httpclient.ApiClient) *QueryExecutionAPI {
-	return &QueryExecutionAPI{
-		queryExecutionImpl: queryExecutionImpl{
-			client: client,
-		},
-	}
-}
-
-// Query execution APIs for AI / BI Dashboards
-type QueryExecutionAPI struct {
+type queryExecutionBaseClient struct {
 	queryExecutionImpl
 }

@@ -9,8 +9,17 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/config"
 )
 
+// Experiments are the primary unit of organization in MLflow; all MLflow runs
+// belong to an experiment. Each experiment lets you visualize, search, and
+// compare runs, as well as download run artifacts or metadata for analysis in
+// other tools. Experiments are maintained in a Databricks hosted MLflow
+// tracking server.
+//
+// Experiments are located in the workspace file tree. You manage experiments
+// using the same tools you use to manage other workspace objects such as
+// folders, notebooks, and libraries.
 type ExperimentsClient struct {
-	ExperimentsInterface
+	experimentsBaseClient
 }
 
 func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
@@ -32,12 +41,18 @@ func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
 	}
 
 	return &ExperimentsClient{
-		ExperimentsInterface: NewExperiments(apiClient.ApiClient()),
+		experimentsBaseClient: experimentsBaseClient{
+			experimentsImpl: experimentsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// The Forecasting API allows you to create and get serverless forecasting
+// experiments
 type ForecastingClient struct {
-	ForecastingInterface
+	forecastingBaseClient
 }
 
 func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
@@ -59,12 +74,24 @@ func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
 	}
 
 	return &ForecastingClient{
-		ForecastingInterface: NewForecasting(apiClient.ApiClient()),
+		forecastingBaseClient: forecastingBaseClient{
+			forecastingImpl: forecastingImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }
 
+// Note: This API reference documents APIs for the Workspace Model Registry.
+// Databricks recommends using [Models in Unity
+// Catalog](/api/workspace/registeredmodels) instead. Models in Unity Catalog
+// provides centralized model governance, cross-workspace access, lineage, and
+// deployment. Workspace Model Registry will be deprecated in the future.
+//
+// The Workspace Model Registry is a centralized model repository and a UI and
+// set of APIs that enable you to manage the full lifecycle of MLflow Models.
 type ModelRegistryClient struct {
-	ModelRegistryInterface
+	modelRegistryBaseClient
 }
 
 func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
@@ -86,6 +113,10 @@ func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
 	}
 
 	return &ModelRegistryClient{
-		ModelRegistryInterface: NewModelRegistry(apiClient.ApiClient()),
+		modelRegistryBaseClient: modelRegistryBaseClient{
+			modelRegistryImpl: modelRegistryImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }

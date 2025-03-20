@@ -5,10 +5,12 @@ build: vendor
 	@go build -mod vendor -v
 
 fmt:
+	@echo "✓ Installing goimports ..."
+	@go install golang.org/x/tools/cmd/goimports@latest
 	@echo "✓ Formatting source code with goimports ..."
-	@go run golang.org/x/tools/cmd/goimports@latest -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+	@find . -type f -name '*.go' -not -path "./vendor/*" -exec goimports -w {} +
 	@echo "✓ Formatting source code with gofmt ..."
-	@gofmt -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+	@find . -type f -name '*.go' -not -path "./vendor/*" -exec gofmt -w {} +
 
 lint: vendor
 	@echo "✓ Linting source code with https://staticcheck.io/ ..."
