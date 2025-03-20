@@ -172,12 +172,14 @@ func (a *AppsAPI) Create(ctx context.Context, createAppRequest CreateAppRequest)
 }
 
 type AppsCreateWaiter struct {
+	// RawResponse is the raw response of the Create call.
 	Response *App
 	service  *AppsAPI
-
-	name string
+	name     string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *AppsCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*App, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -239,13 +241,15 @@ func (a *AppsAPI) Deploy(ctx context.Context, createAppDeploymentRequest CreateA
 }
 
 type AppsDeployWaiter struct {
-	Response *AppDeployment
-	service  *AppsAPI
-
+	// RawResponse is the raw response of the Deploy call.
+	Response     *AppDeployment
+	service      *AppsAPI
 	appName      string
 	deploymentId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *AppsDeployWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*AppDeployment, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -346,12 +350,14 @@ func (a *AppsAPI) Start(ctx context.Context, startAppRequest StartAppRequest) (*
 }
 
 type AppsStartWaiter struct {
+	// RawResponse is the raw response of the Start call.
 	Response *App
 	service  *AppsAPI
-
-	name string
+	name     string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *AppsStartWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*App, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -403,12 +409,14 @@ func (a *AppsAPI) Stop(ctx context.Context, stopAppRequest StopAppRequest) (*App
 }
 
 type AppsStopWaiter struct {
+	// RawResponse is the raw response of the Stop call.
 	Response *App
 	service  *AppsAPI
-
-	name string
+	name     string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *AppsStopWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*App, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {

@@ -208,12 +208,14 @@ func (a *ServingEndpointsAPI) Create(ctx context.Context, createServingEndpoint 
 }
 
 type ServingEndpointsCreateWaiter struct {
+	// RawResponse is the raw response of the Create call.
 	Response *ServingEndpointDetailed
 	service  *ServingEndpointsAPI
-
-	name string
+	name     string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *ServingEndpointsCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ServingEndpointDetailed, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -331,12 +333,14 @@ func (a *ServingEndpointsAPI) UpdateConfig(ctx context.Context, endpointCoreConf
 }
 
 type ServingEndpointsUpdateConfigWaiter struct {
+	// RawResponse is the raw response of the UpdateConfig call.
 	Response *ServingEndpointDetailed
 	service  *ServingEndpointsAPI
-
-	name string
+	name     string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *ServingEndpointsUpdateConfigWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ServingEndpointDetailed, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {

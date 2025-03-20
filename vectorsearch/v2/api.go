@@ -72,12 +72,14 @@ func (a *VectorSearchEndpointsAPI) CreateEndpoint(ctx context.Context, createEnd
 }
 
 type VectorSearchEndpointsCreateEndpointWaiter struct {
-	Response *EndpointInfo
-	service  *VectorSearchEndpointsAPI
-
+	// RawResponse is the raw response of the CreateEndpoint call.
+	Response     *EndpointInfo
+	service      *VectorSearchEndpointsAPI
 	endpointName string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *VectorSearchEndpointsCreateEndpointWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*EndpointInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {

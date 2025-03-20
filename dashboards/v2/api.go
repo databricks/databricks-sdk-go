@@ -138,14 +138,16 @@ func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMes
 }
 
 type GenieCreateMessageWaiter struct {
-	Response *GenieMessage
-	service  *GenieAPI
-
+	// RawResponse is the raw response of the CreateMessage call.
+	Response       *GenieMessage
+	service        *GenieAPI
 	conversationId string
 	messageId      string
 	spaceId        string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *GenieCreateMessageWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GenieMessage, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -259,14 +261,16 @@ func (a *GenieAPI) StartConversation(ctx context.Context, genieStartConversation
 }
 
 type GenieStartConversationWaiter struct {
-	Response *GenieStartConversationResponse
-	service  *GenieAPI
-
+	// RawResponse is the raw response of the StartConversation call.
+	Response       *GenieStartConversationResponse
+	service        *GenieAPI
 	conversationId string
 	messageId      string
 	spaceId        string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *GenieStartConversationWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GenieMessage, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {

@@ -1756,12 +1756,14 @@ func (a *WarehousesAPI) Create(ctx context.Context, createWarehouseRequest Creat
 }
 
 type WarehousesCreateWaiter struct {
+	// RawResponse is the raw response of the Create call.
 	Response *CreateWarehouseResponse
 	service  *WarehousesAPI
-
-	id string
+	id       string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *WarehousesCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -1822,12 +1824,14 @@ func (a *WarehousesAPI) Edit(ctx context.Context, editWarehouseRequest EditWareh
 }
 
 type WarehousesEditWaiter struct {
+	// RawResponse is the raw response of the Edit call.
 	Response *EditWarehouseResponse
 	service  *WarehousesAPI
-
-	id string
+	id       string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *WarehousesEditWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -1960,12 +1964,14 @@ func (a *WarehousesAPI) Start(ctx context.Context, startRequest StartRequest) (*
 }
 
 type WarehousesStartWaiter struct {
+	// RawResponse is the raw response of the Start call.
 	Response *StartWarehouseResponse
 	service  *WarehousesAPI
-
-	id string
+	id       string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *WarehousesStartWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -2017,12 +2023,14 @@ func (a *WarehousesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*War
 }
 
 type WarehousesStopWaiter struct {
+	// RawResponse is the raw response of the Stop call.
 	Response *StopWarehouseResponse
 	service  *WarehousesAPI
-
-	id string
+	id       string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *WarehousesStopWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {

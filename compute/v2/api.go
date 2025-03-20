@@ -589,12 +589,14 @@ func (a *ClustersAPI) Create(ctx context.Context, createCluster CreateCluster) (
 }
 
 type ClustersCreateWaiter struct {
-	Response *CreateClusterResponse
-	service  *ClustersAPI
-
+	// RawResponse is the raw response of the Create call.
+	Response  *CreateClusterResponse
+	service   *ClustersAPI
 	clusterId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *ClustersCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -646,12 +648,14 @@ func (a *ClustersAPI) Delete(ctx context.Context, deleteCluster DeleteCluster) (
 }
 
 type ClustersDeleteWaiter struct {
-	Response *DeleteClusterResponse
-	service  *ClustersAPI
-
+	// RawResponse is the raw response of the Delete call.
+	Response  *DeleteClusterResponse
+	service   *ClustersAPI
 	clusterId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *ClustersDeleteWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -723,12 +727,14 @@ func (a *ClustersAPI) Edit(ctx context.Context, editCluster EditCluster) (*Clust
 }
 
 type ClustersEditWaiter struct {
-	Response *EditClusterResponse
-	service  *ClustersAPI
-
+	// RawResponse is the raw response of the Edit call.
+	Response  *EditClusterResponse
+	service   *ClustersAPI
 	clusterId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *ClustersEditWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -885,12 +891,14 @@ func (a *ClustersAPI) Resize(ctx context.Context, resizeCluster ResizeCluster) (
 }
 
 type ClustersResizeWaiter struct {
-	Response *ResizeClusterResponse
-	service  *ClustersAPI
-
+	// RawResponse is the raw response of the Resize call.
+	Response  *ResizeClusterResponse
+	service   *ClustersAPI
 	clusterId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *ClustersResizeWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -940,12 +948,14 @@ func (a *ClustersAPI) Restart(ctx context.Context, restartCluster RestartCluster
 }
 
 type ClustersRestartWaiter struct {
-	Response *RestartClusterResponse
-	service  *ClustersAPI
-
+	// RawResponse is the raw response of the Restart call.
+	Response  *RestartClusterResponse
+	service   *ClustersAPI
 	clusterId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *ClustersRestartWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -1001,12 +1011,14 @@ func (a *ClustersAPI) Start(ctx context.Context, startCluster StartCluster) (*Cl
 }
 
 type ClustersStartWaiter struct {
-	Response *StartClusterResponse
-	service  *ClustersAPI
-
+	// RawResponse is the raw response of the Start call.
+	Response  *StartClusterResponse
+	service   *ClustersAPI
 	clusterId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *ClustersStartWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -1091,12 +1103,14 @@ func (a *ClustersAPI) Update(ctx context.Context, updateCluster UpdateCluster) (
 }
 
 type ClustersUpdateWaiter struct {
-	Response *UpdateClusterResponse
-	service  *ClustersAPI
-
+	// RawResponse is the raw response of the Update call.
+	Response  *UpdateClusterResponse
+	service   *ClustersAPI
 	clusterId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *ClustersUpdateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ClusterDetails, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -1208,14 +1222,16 @@ func (a *CommandExecutionAPI) Cancel(ctx context.Context, cancelCommand CancelCo
 }
 
 type CommandExecutionCancelWaiter struct {
-	Response *CancelResponse
-	service  *CommandExecutionAPI
-
+	// RawResponse is the raw response of the Cancel call.
+	Response  *CancelResponse
+	service   *CommandExecutionAPI
 	clusterId string
 	commandId string
 	contextId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *CommandExecutionCancelWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*CommandStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -1272,13 +1288,15 @@ func (a *CommandExecutionAPI) Create(ctx context.Context, createContext CreateCo
 }
 
 type CommandExecutionCreateWaiter struct {
-	Response *Created
-	service  *CommandExecutionAPI
-
+	// RawResponse is the raw response of the Create call.
+	Response  *Created
+	service   *CommandExecutionAPI
 	clusterId string
 	contextId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *CommandExecutionCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ContextStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -1334,14 +1352,16 @@ func (a *CommandExecutionAPI) Execute(ctx context.Context, command Command) (*Co
 }
 
 type CommandExecutionExecuteWaiter struct {
-	Response *Created
-	service  *CommandExecutionAPI
-
+	// RawResponse is the raw response of the Execute call.
+	Response  *Created
+	service   *CommandExecutionAPI
 	clusterId string
 	commandId string
 	contextId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *CommandExecutionExecuteWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*CommandStatusResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {

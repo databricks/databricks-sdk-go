@@ -321,12 +321,14 @@ func (a *PipelinesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*Pipe
 }
 
 type PipelinesStopWaiter struct {
-	Response *StopPipelineResponse
-	service  *PipelinesAPI
-
+	// RawResponse is the raw response of the Stop call.
+	Response   *StopPipelineResponse
+	service    *PipelinesAPI
 	pipelineId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *PipelinesStopWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetPipelineResponse, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {

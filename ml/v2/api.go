@@ -417,12 +417,14 @@ func (a *ForecastingAPI) CreateExperiment(ctx context.Context, createForecasting
 }
 
 type ForecastingCreateExperimentWaiter struct {
-	Response *CreateForecastingExperimentResponse
-	service  *ForecastingAPI
-
+	// RawResponse is the raw response of the CreateExperiment call.
+	Response     *CreateForecastingExperimentResponse
+	service      *ForecastingAPI
 	experimentId string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *ForecastingCreateExperimentWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ForecastingExperiment, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {

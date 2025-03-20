@@ -1312,12 +1312,14 @@ func (a *WorkspacesAPI) Create(ctx context.Context, createWorkspaceRequest Creat
 }
 
 type WorkspacesCreateWaiter struct {
-	Response *Workspace
-	service  *WorkspacesAPI
-
+	// RawResponse is the raw response of the Create call.
+	Response    *Workspace
+	service     *WorkspacesAPI
 	workspaceId int64
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *WorkspacesCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Workspace, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -1576,12 +1578,14 @@ func (a *WorkspacesAPI) Update(ctx context.Context, updateWorkspaceRequest Updat
 }
 
 type WorkspacesUpdateWaiter struct {
-	Response *UpdateResponse
-	service  *WorkspacesAPI
-
+	// RawResponse is the raw response of the Update call.
+	Response    *UpdateResponse
+	service     *WorkspacesAPI
 	workspaceId int64
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *WorkspacesUpdateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Workspace, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {

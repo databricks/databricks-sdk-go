@@ -1584,12 +1584,14 @@ func (a *OnlineTablesAPI) Create(ctx context.Context, createOnlineTableRequest C
 }
 
 type OnlineTablesCreateWaiter struct {
+	// RawResponse is the raw response of the Create call.
 	Response *OnlineTable
 	service  *OnlineTablesAPI
-
-	name string
+	name     string
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *OnlineTablesCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*OnlineTable, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {

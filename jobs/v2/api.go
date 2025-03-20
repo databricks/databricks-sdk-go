@@ -285,12 +285,14 @@ func (a *JobsAPI) CancelRun(ctx context.Context, cancelRun CancelRun) (*JobsCanc
 }
 
 type JobsCancelRunWaiter struct {
+	// RawResponse is the raw response of the CancelRun call.
 	Response *CancelRunResponse
 	service  *JobsAPI
-
-	runId int64
+	runId    int64
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *JobsCancelRunWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -477,12 +479,14 @@ func (a *JobsAPI) RepairRun(ctx context.Context, repairRun RepairRun) (*JobsRepa
 }
 
 type JobsRepairRunWaiter struct {
+	// RawResponse is the raw response of the RepairRun call.
 	Response *RepairRunResponse
 	service  *JobsAPI
-
-	runId int64
+	runId    int64
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *JobsRepairRunWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -534,12 +538,14 @@ func (a *JobsAPI) RunNow(ctx context.Context, runNow RunNow) (*JobsRunNowWaiter,
 }
 
 type JobsRunNowWaiter struct {
+	// RawResponse is the raw response of the RunNow call.
 	Response *RunNowResponse
 	service  *JobsAPI
-
-	runId int64
+	runId    int64
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *JobsRunNowWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {
@@ -594,12 +600,14 @@ func (a *JobsAPI) Submit(ctx context.Context, submitRun SubmitRun) (*JobsSubmitW
 }
 
 type JobsSubmitWaiter struct {
+	// RawResponse is the raw response of the Submit call.
 	Response *SubmitRunResponse
 	service  *JobsAPI
-
-	runId int64
+	runId    int64
 }
 
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
 func (w *JobsSubmitWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
 	if opts == nil {

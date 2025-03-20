@@ -5336,7 +5336,7 @@ type SubmitTask struct {
 	Libraries []Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
-	NewCluster *ClusterSpec `json:"new_cluster,omitempty"`
+	NewCluster *JobsClusterSpec `json:"new_cluster,omitempty"`
 	// The task runs a notebook when the `notebook_task` field is present.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
