@@ -17,21 +17,22 @@ func NewAlertsClient(cfg *config.Config) (*AlertsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &AlertsClient{
-		AlertsInterface: NewAlerts(databricksClient),
+		AlertsInterface: NewAlerts(apiClient),
 	}, nil
 }
 
@@ -43,21 +44,22 @@ func NewAlertsLegacyClient(cfg *config.Config) (*AlertsLegacyClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &AlertsLegacyClient{
-		AlertsLegacyInterface: NewAlertsLegacy(databricksClient),
+		AlertsLegacyInterface: NewAlertsLegacy(apiClient),
 	}, nil
 }
 
@@ -69,21 +71,22 @@ func NewDashboardWidgetsClient(cfg *config.Config) (*DashboardWidgetsClient, err
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &DashboardWidgetsClient{
-		DashboardWidgetsInterface: NewDashboardWidgets(databricksClient),
+		DashboardWidgetsInterface: NewDashboardWidgets(apiClient),
 	}, nil
 }
 
@@ -95,21 +98,22 @@ func NewDashboardsClient(cfg *config.Config) (*DashboardsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &DashboardsClient{
-		DashboardsInterface: NewDashboards(databricksClient),
+		DashboardsInterface: NewDashboards(apiClient),
 	}, nil
 }
 
@@ -121,21 +125,22 @@ func NewDataSourcesClient(cfg *config.Config) (*DataSourcesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &DataSourcesClient{
-		DataSourcesInterface: NewDataSources(databricksClient),
+		DataSourcesInterface: NewDataSources(apiClient),
 	}, nil
 }
 
@@ -147,21 +152,22 @@ func NewDbsqlPermissionsClient(cfg *config.Config) (*DbsqlPermissionsClient, err
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &DbsqlPermissionsClient{
-		DbsqlPermissionsInterface: NewDbsqlPermissions(databricksClient),
+		DbsqlPermissionsInterface: NewDbsqlPermissions(apiClient),
 	}, nil
 }
 
@@ -173,21 +179,22 @@ func NewQueriesClient(cfg *config.Config) (*QueriesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &QueriesClient{
-		QueriesInterface: NewQueries(databricksClient),
+		QueriesInterface: NewQueries(apiClient),
 	}, nil
 }
 
@@ -199,21 +206,22 @@ func NewQueriesLegacyClient(cfg *config.Config) (*QueriesLegacyClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &QueriesLegacyClient{
-		QueriesLegacyInterface: NewQueriesLegacy(databricksClient),
+		QueriesLegacyInterface: NewQueriesLegacy(apiClient),
 	}, nil
 }
 
@@ -225,21 +233,22 @@ func NewQueryHistoryClient(cfg *config.Config) (*QueryHistoryClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &QueryHistoryClient{
-		QueryHistoryInterface: NewQueryHistory(databricksClient),
+		QueryHistoryInterface: NewQueryHistory(apiClient),
 	}, nil
 }
 
@@ -251,21 +260,22 @@ func NewQueryVisualizationsClient(cfg *config.Config) (*QueryVisualizationsClien
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &QueryVisualizationsClient{
-		QueryVisualizationsInterface: NewQueryVisualizations(databricksClient),
+		QueryVisualizationsInterface: NewQueryVisualizations(apiClient),
 	}, nil
 }
 
@@ -277,21 +287,22 @@ func NewQueryVisualizationsLegacyClient(cfg *config.Config) (*QueryVisualization
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &QueryVisualizationsLegacyClient{
-		QueryVisualizationsLegacyInterface: NewQueryVisualizationsLegacy(databricksClient),
+		QueryVisualizationsLegacyInterface: NewQueryVisualizationsLegacy(apiClient),
 	}, nil
 }
 
@@ -303,21 +314,22 @@ func NewRedashConfigClient(cfg *config.Config) (*RedashConfigClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &RedashConfigClient{
-		RedashConfigInterface: NewRedashConfig(databricksClient),
+		RedashConfigInterface: NewRedashConfig(apiClient),
 	}, nil
 }
 
@@ -329,21 +341,22 @@ func NewStatementExecutionClient(cfg *config.Config) (*StatementExecutionClient,
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &StatementExecutionClient{
-		StatementExecutionInterface: NewStatementExecution(databricksClient),
+		StatementExecutionInterface: NewStatementExecution(apiClient),
 	}, nil
 }
 
@@ -355,20 +368,21 @@ func NewWarehousesClient(cfg *config.Config) (*WarehousesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &WarehousesClient{
-		WarehousesInterface: NewWarehouses(databricksClient),
+		WarehousesInterface: NewWarehouses(apiClient),
 	}, nil
 }

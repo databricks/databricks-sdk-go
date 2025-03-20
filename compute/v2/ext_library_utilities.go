@@ -143,7 +143,7 @@ func (a *LibrariesAPI) UpdateAndWait(ctx context.Context, update Update,
 	options ...retries.Option[ClusterLibraryStatuses]) error {
 	ctx = useragent.InContext(ctx, "sdk-feature", "update-libraries")
 	if len(update.Uninstall) > 0 {
-		err := a.Uninstall(ctx, UninstallLibraries{
+		_, err := a.Uninstall(ctx, UninstallLibraries{
 			ClusterId: update.ClusterId,
 			Libraries: update.Uninstall,
 		})
@@ -152,7 +152,7 @@ func (a *LibrariesAPI) UpdateAndWait(ctx context.Context, update Update,
 		}
 	}
 	if len(update.Install) > 0 {
-		err := a.Install(ctx, InstallLibraries{
+		_, err := a.Install(ctx, InstallLibraries{
 			ClusterId: update.ClusterId,
 			Libraries: update.Install,
 		})
@@ -233,7 +233,7 @@ func (a *LibrariesAPI) Wait(ctx context.Context, wait Wait,
 		// and result contains only the libraries that were successfully installed
 		result.LibraryStatuses = installed
 		if len(cleanup.Libraries) > 0 {
-			err = a.Uninstall(ctx, cleanup)
+			_, err = a.Uninstall(ctx, cleanup)
 			if err != nil {
 				return nil, fmt.Errorf("cannot cleanup libraries: %w", err)
 			}

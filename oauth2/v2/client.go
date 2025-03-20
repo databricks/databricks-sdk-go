@@ -17,7 +17,6 @@ func NewAccountFederationPolicyClient(cfg *config.Config) (*AccountFederationPol
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -26,6 +25,7 @@ func NewAccountFederationPolicyClient(cfg *config.Config) (*AccountFederationPol
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,6 @@ func NewCustomAppIntegrationClient(cfg *config.Config) (*CustomAppIntegrationCli
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -53,6 +52,7 @@ func NewCustomAppIntegrationClient(cfg *config.Config) (*CustomAppIntegrationCli
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -71,7 +71,6 @@ func NewOAuthPublishedAppsClient(cfg *config.Config) (*OAuthPublishedAppsClient,
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -80,6 +79,7 @@ func NewOAuthPublishedAppsClient(cfg *config.Config) (*OAuthPublishedAppsClient,
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,6 @@ func NewPublishedAppIntegrationClient(cfg *config.Config) (*PublishedAppIntegrat
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -107,6 +106,7 @@ func NewPublishedAppIntegrationClient(cfg *config.Config) (*PublishedAppIntegrat
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -125,7 +125,6 @@ func NewServicePrincipalFederationPolicyClient(cfg *config.Config) (*ServicePrin
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -134,6 +133,7 @@ func NewServicePrincipalFederationPolicyClient(cfg *config.Config) (*ServicePrin
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -152,7 +152,6 @@ func NewServicePrincipalSecretsClient(cfg *config.Config) (*ServicePrincipalSecr
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -161,6 +160,7 @@ func NewServicePrincipalSecretsClient(cfg *config.Config) (*ServicePrincipalSecr
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err

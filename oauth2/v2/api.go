@@ -16,10 +16,10 @@ type AccountFederationPolicyInterface interface {
 	Create(ctx context.Context, request CreateAccountFederationPolicyRequest) (*FederationPolicy, error)
 
 	// Delete account federation policy.
-	Delete(ctx context.Context, request DeleteAccountFederationPolicyRequest) error
+	Delete(ctx context.Context, request DeleteAccountFederationPolicyRequest) (*DeleteResponse, error)
 
 	// Delete account federation policy.
-	DeleteByPolicyId(ctx context.Context, policyId string) error
+	DeleteByPolicyId(ctx context.Context, policyId string) (*DeleteResponse, error)
 
 	// Get account federation policy.
 	Get(ctx context.Context, request GetAccountFederationPolicyRequest) (*FederationPolicy, error)
@@ -104,7 +104,7 @@ type AccountFederationPolicyAPI struct {
 }
 
 // Delete account federation policy.
-func (a *AccountFederationPolicyAPI) DeleteByPolicyId(ctx context.Context, policyId string) error {
+func (a *AccountFederationPolicyAPI) DeleteByPolicyId(ctx context.Context, policyId string) (*DeleteResponse, error) {
 	return a.accountFederationPolicyImpl.Delete(ctx, DeleteAccountFederationPolicyRequest{
 		PolicyId: policyId,
 	})
@@ -131,13 +131,13 @@ type CustomAppIntegrationInterface interface {
 	//
 	// Delete an existing Custom OAuth App Integration. You can retrieve the custom
 	// OAuth app integration via :method:CustomAppIntegration/get.
-	Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) error
+	Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) (*DeleteCustomAppIntegrationOutput, error)
 
 	// Delete Custom OAuth App Integration.
 	//
 	// Delete an existing Custom OAuth App Integration. You can retrieve the custom
 	// OAuth app integration via :method:CustomAppIntegration/get.
-	DeleteByIntegrationId(ctx context.Context, integrationId string) error
+	DeleteByIntegrationId(ctx context.Context, integrationId string) (*DeleteCustomAppIntegrationOutput, error)
 
 	// Get OAuth Custom App Integration.
 	//
@@ -169,7 +169,7 @@ type CustomAppIntegrationInterface interface {
 	//
 	// Updates an existing custom OAuth App Integration. You can retrieve the custom
 	// OAuth app integration via :method:CustomAppIntegration/get.
-	Update(ctx context.Context, request UpdateCustomAppIntegration) error
+	Update(ctx context.Context, request UpdateCustomAppIntegration) (*UpdateCustomAppIntegrationOutput, error)
 }
 
 func NewCustomAppIntegration(client *client.DatabricksClient) *CustomAppIntegrationAPI {
@@ -191,7 +191,7 @@ type CustomAppIntegrationAPI struct {
 //
 // Delete an existing Custom OAuth App Integration. You can retrieve the custom
 // OAuth app integration via :method:CustomAppIntegration/get.
-func (a *CustomAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
+func (a *CustomAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) (*DeleteCustomAppIntegrationOutput, error) {
 	return a.customAppIntegrationImpl.Delete(ctx, DeleteCustomAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
@@ -253,13 +253,13 @@ type PublishedAppIntegrationInterface interface {
 	//
 	// Delete an existing Published OAuth App Integration. You can retrieve the
 	// published OAuth app integration via :method:PublishedAppIntegration/get.
-	Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) error
+	Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) (*DeletePublishedAppIntegrationOutput, error)
 
 	// Delete Published OAuth App Integration.
 	//
 	// Delete an existing Published OAuth App Integration. You can retrieve the
 	// published OAuth app integration via :method:PublishedAppIntegration/get.
-	DeleteByIntegrationId(ctx context.Context, integrationId string) error
+	DeleteByIntegrationId(ctx context.Context, integrationId string) (*DeletePublishedAppIntegrationOutput, error)
 
 	// Get OAuth Published App Integration.
 	//
@@ -291,7 +291,7 @@ type PublishedAppIntegrationInterface interface {
 	//
 	// Updates an existing published OAuth App Integration. You can retrieve the
 	// published OAuth app integration via :method:PublishedAppIntegration/get.
-	Update(ctx context.Context, request UpdatePublishedAppIntegration) error
+	Update(ctx context.Context, request UpdatePublishedAppIntegration) (*UpdatePublishedAppIntegrationOutput, error)
 }
 
 func NewPublishedAppIntegration(client *client.DatabricksClient) *PublishedAppIntegrationAPI {
@@ -313,7 +313,7 @@ type PublishedAppIntegrationAPI struct {
 //
 // Delete an existing Published OAuth App Integration. You can retrieve the
 // published OAuth app integration via :method:PublishedAppIntegration/get.
-func (a *PublishedAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) error {
+func (a *PublishedAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) (*DeletePublishedAppIntegrationOutput, error) {
 	return a.publishedAppIntegrationImpl.Delete(ctx, DeletePublishedAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
@@ -334,10 +334,10 @@ type ServicePrincipalFederationPolicyInterface interface {
 	Create(ctx context.Context, request CreateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error)
 
 	// Delete service principal federation policy.
-	Delete(ctx context.Context, request DeleteServicePrincipalFederationPolicyRequest) error
+	Delete(ctx context.Context, request DeleteServicePrincipalFederationPolicyRequest) (*DeleteResponse, error)
 
 	// Delete service principal federation policy.
-	DeleteByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) error
+	DeleteByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) (*DeleteResponse, error)
 
 	// Get service principal federation policy.
 	Get(ctx context.Context, request GetServicePrincipalFederationPolicyRequest) (*FederationPolicy, error)
@@ -429,7 +429,7 @@ type ServicePrincipalFederationPolicyAPI struct {
 }
 
 // Delete service principal federation policy.
-func (a *ServicePrincipalFederationPolicyAPI) DeleteByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) error {
+func (a *ServicePrincipalFederationPolicyAPI) DeleteByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) (*DeleteResponse, error) {
 	return a.servicePrincipalFederationPolicyImpl.Delete(ctx, DeleteServicePrincipalFederationPolicyRequest{
 		ServicePrincipalId: servicePrincipalId,
 		PolicyId:           policyId,
@@ -461,12 +461,12 @@ type ServicePrincipalSecretsInterface interface {
 	// Delete service principal secret.
 	//
 	// Delete a secret from the given service principal.
-	Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) error
+	Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) (*DeleteResponse, error)
 
 	// Delete service principal secret.
 	//
 	// Delete a secret from the given service principal.
-	DeleteByServicePrincipalIdAndSecretId(ctx context.Context, servicePrincipalId int64, secretId string) error
+	DeleteByServicePrincipalIdAndSecretId(ctx context.Context, servicePrincipalId int64, secretId string) (*DeleteResponse, error)
 
 	// List service principal secrets.
 	//
@@ -522,7 +522,7 @@ type ServicePrincipalSecretsAPI struct {
 // Delete service principal secret.
 //
 // Delete a secret from the given service principal.
-func (a *ServicePrincipalSecretsAPI) DeleteByServicePrincipalIdAndSecretId(ctx context.Context, servicePrincipalId int64, secretId string) error {
+func (a *ServicePrincipalSecretsAPI) DeleteByServicePrincipalIdAndSecretId(ctx context.Context, servicePrincipalId int64, secretId string) (*DeleteResponse, error) {
 	return a.servicePrincipalSecretsImpl.Delete(ctx, DeleteServicePrincipalSecretRequest{
 		ServicePrincipalId: servicePrincipalId,
 		SecretId:           secretId,

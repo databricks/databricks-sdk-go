@@ -32,7 +32,7 @@ func TestUcAccProviders(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := ProvidersAPI.DeleteByName(ctx, created.Name)
+		_, err := ProvidersAPI.DeleteByName(ctx, created.Name)
 		require.NoError(t, err)
 	})
 	_, err = ProvidersAPI.Update(ctx, sharing.UpdateProvider{
@@ -71,7 +71,7 @@ func TestUcAccRecipientActivationNoTranspile(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := RecipientsAPI.DeleteByName(ctx, created.Name)
+		_, err := RecipientsAPI.DeleteByName(ctx, created.Name)
 		require.NoError(t, err)
 	})
 
@@ -92,7 +92,7 @@ func TestUcAccRecipientActivationNoTranspile(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := ProvidersAPI.DeleteByName(ctx, newProvider.Name)
+		_, err := ProvidersAPI.DeleteByName(ctx, newProvider.Name)
 		require.NoError(t, err)
 	})
 
@@ -113,7 +113,7 @@ func TestUcAccRecipients(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := RecipientsAPI.DeleteByName(ctx, created.Name)
+		_, err := RecipientsAPI.DeleteByName(ctx, created.Name)
 		require.NoError(t, err)
 	})
 	_, err = RecipientsAPI.Update(ctx, sharing.UpdateRecipient{
@@ -155,7 +155,7 @@ func TestUcAccShares(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
+		_, err := CatalogsAPI.Delete(ctx, catalog.DeleteCatalogRequest{
 			Name:  createdCatalog.Name,
 			Force: true,
 		})
@@ -170,7 +170,7 @@ func TestUcAccShares(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := SchemasAPI.DeleteByFullName(ctx, createdSchema.FullName)
+		_, err := SchemasAPI.DeleteByFullName(ctx, createdSchema.FullName)
 		require.NoError(t, err)
 	})
 
@@ -190,7 +190,7 @@ func TestUcAccShares(t *testing.T) {
 	t.Cleanup(func() {
 		TablesAPI, err := catalog.NewTablesClient(nil)
 		require.NoError(t, err)
-		err = TablesAPI.DeleteByFullName(ctx, tableFullName)
+		_, err = TablesAPI.DeleteByFullName(ctx, tableFullName)
 		require.NoError(t, err)
 	})
 
@@ -201,7 +201,7 @@ func TestUcAccShares(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := SharesAPI.DeleteByName(ctx, createdShare.Name)
+		_, err := SharesAPI.DeleteByName(ctx, createdShare.Name)
 		require.NoError(t, err)
 	})
 

@@ -35,12 +35,12 @@ type AccountIpAccessListsInterface interface {
 	// Delete access list.
 	//
 	// Deletes an IP access list, specified by its list ID.
-	Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) error
+	Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) (*DeleteResponse, error)
 
 	// Delete access list.
 	//
 	// Deletes an IP access list, specified by its list ID.
-	DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) error
+	DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) (*DeleteResponse, error)
 
 	// Get IP access list.
 	//
@@ -96,7 +96,7 @@ type AccountIpAccessListsInterface interface {
 	// with `error_code` value `QUOTA_EXCEEDED`. * If the resulting list would block
 	// the calling user's current IP, error 400 is returned with `error_code` value
 	// `INVALID_STATE`. It can take a few minutes for the changes to take effect.
-	Replace(ctx context.Context, request ReplaceIpAccessList) error
+	Replace(ctx context.Context, request ReplaceIpAccessList) (*ReplaceResponse, error)
 
 	// Update access list.
 	//
@@ -115,7 +115,7 @@ type AccountIpAccessListsInterface interface {
 	// returned with `error_code` value `INVALID_STATE`.
 	//
 	// It can take a few minutes for the changes to take effect.
-	Update(ctx context.Context, request UpdateIpAccessList) error
+	Update(ctx context.Context, request UpdateIpAccessList) (*UpdateResponse, error)
 }
 
 func NewAccountIpAccessLists(client *client.DatabricksClient) *AccountIpAccessListsAPI {
@@ -155,7 +155,7 @@ type AccountIpAccessListsAPI struct {
 // Delete access list.
 //
 // Deletes an IP access list, specified by its list ID.
-func (a *AccountIpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) error {
+func (a *AccountIpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) (*DeleteResponse, error) {
 	return a.accountIpAccessListsImpl.Delete(ctx, DeleteAccountIpAccessListRequest{
 		IpAccessListId: ipAccessListId,
 	})
@@ -716,12 +716,12 @@ type IpAccessListsInterface interface {
 	// Delete access list.
 	//
 	// Deletes an IP access list, specified by its list ID.
-	Delete(ctx context.Context, request DeleteIpAccessListRequest) error
+	Delete(ctx context.Context, request DeleteIpAccessListRequest) (*DeleteResponse, error)
 
 	// Delete access list.
 	//
 	// Deletes an IP access list, specified by its list ID.
-	DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) error
+	DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) (*DeleteResponse, error)
 
 	// Get access list.
 	//
@@ -779,7 +779,7 @@ type IpAccessListsInterface interface {
 	// `INVALID_STATE`. It can take a few minutes for the changes to take effect.
 	// Note that your resulting IP access list has no effect until you enable the
 	// feature. See :method:workspaceconf/setStatus.
-	Replace(ctx context.Context, request ReplaceIpAccessList) error
+	Replace(ctx context.Context, request ReplaceIpAccessList) (*ReplaceResponse, error)
 
 	// Update access list.
 	//
@@ -800,7 +800,7 @@ type IpAccessListsInterface interface {
 	// It can take a few minutes for the changes to take effect. Note that your
 	// resulting IP access list has no effect until you enable the feature. See
 	// :method:workspaceconf/setStatus.
-	Update(ctx context.Context, request UpdateIpAccessList) error
+	Update(ctx context.Context, request UpdateIpAccessList) (*UpdateResponse, error)
 }
 
 func NewIpAccessLists(client *client.DatabricksClient) *IpAccessListsAPI {
@@ -839,7 +839,7 @@ type IpAccessListsAPI struct {
 // Delete access list.
 //
 // Deletes an IP access list, specified by its list ID.
-func (a *IpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) error {
+func (a *IpAccessListsAPI) DeleteByIpAccessListId(ctx context.Context, ipAccessListId string) (*DeleteResponse, error) {
 	return a.ipAccessListsImpl.Delete(ctx, DeleteIpAccessListRequest{
 		IpAccessListId: ipAccessListId,
 	})
@@ -929,12 +929,12 @@ type NetworkConnectivityInterface interface {
 	// Delete a network connectivity configuration.
 	//
 	// Deletes a network connectivity configuration.
-	DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error
+	DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) (*DeleteNetworkConnectivityConfigurationResponse, error)
 
 	// Delete a network connectivity configuration.
 	//
 	// Deletes a network connectivity configuration.
-	DeleteNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) error
+	DeleteNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*DeleteNetworkConnectivityConfigurationResponse, error)
 
 	// Delete a private endpoint rule.
 	//
@@ -1027,7 +1027,7 @@ type NetworkConnectivityAPI struct {
 // Delete a network connectivity configuration.
 //
 // Deletes a network connectivity configuration.
-func (a *NetworkConnectivityAPI) DeleteNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) error {
+func (a *NetworkConnectivityAPI) DeleteNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*DeleteNetworkConnectivityConfigurationResponse, error) {
 	return a.networkConnectivityImpl.DeleteNetworkConnectivityConfiguration(ctx, DeleteNetworkConnectivityConfigurationRequest{
 		NetworkConnectivityConfigId: networkConnectivityConfigId,
 	})
@@ -1086,12 +1086,12 @@ type NotificationDestinationsInterface interface {
 	// Delete a notification destination.
 	//
 	// Deletes a notification destination. Requires workspace admin permissions.
-	Delete(ctx context.Context, request DeleteNotificationDestinationRequest) error
+	Delete(ctx context.Context, request DeleteNotificationDestinationRequest) (*Empty, error)
 
 	// Delete a notification destination.
 	//
 	// Deletes a notification destination. Requires workspace admin permissions.
-	DeleteById(ctx context.Context, id string) error
+	DeleteById(ctx context.Context, id string) (*Empty, error)
 
 	// Get a notification destination.
 	//
@@ -1144,7 +1144,7 @@ type NotificationDestinationsAPI struct {
 // Delete a notification destination.
 //
 // Deletes a notification destination. Requires workspace admin permissions.
-func (a *NotificationDestinationsAPI) DeleteById(ctx context.Context, id string) error {
+func (a *NotificationDestinationsAPI) DeleteById(ctx context.Context, id string) (*Empty, error) {
 	return a.notificationDestinationsImpl.Delete(ctx, DeleteNotificationDestinationRequest{
 		Id: id,
 	})
@@ -1276,12 +1276,12 @@ type TokenManagementInterface interface {
 	// Delete a token.
 	//
 	// Deletes a token, specified by its ID.
-	Delete(ctx context.Context, request DeleteTokenManagementRequest) error
+	Delete(ctx context.Context, request DeleteTokenManagementRequest) (*DeleteResponse, error)
 
 	// Delete a token.
 	//
 	// Deletes a token, specified by its ID.
-	DeleteByTokenId(ctx context.Context, tokenId string) error
+	DeleteByTokenId(ctx context.Context, tokenId string) (*DeleteResponse, error)
 
 	// Get token info.
 	//
@@ -1368,7 +1368,7 @@ type TokenManagementAPI struct {
 // Delete a token.
 //
 // Deletes a token, specified by its ID.
-func (a *TokenManagementAPI) DeleteByTokenId(ctx context.Context, tokenId string) error {
+func (a *TokenManagementAPI) DeleteByTokenId(ctx context.Context, tokenId string) (*DeleteResponse, error) {
 	return a.tokenManagementImpl.Delete(ctx, DeleteTokenManagementRequest{
 		TokenId: tokenId,
 	})
@@ -1452,7 +1452,7 @@ type TokensInterface interface {
 	//
 	// If a token with the specified ID is not valid, this call returns an error
 	// **RESOURCE_DOES_NOT_EXIST**.
-	Delete(ctx context.Context, request RevokeTokenRequest) error
+	Delete(ctx context.Context, request RevokeTokenRequest) (*RevokeTokenResponse, error)
 
 	// Revoke token.
 	//
@@ -1460,7 +1460,7 @@ type TokensInterface interface {
 	//
 	// If a token with the specified ID is not valid, this call returns an error
 	// **RESOURCE_DOES_NOT_EXIST**.
-	DeleteByTokenId(ctx context.Context, tokenId string) error
+	DeleteByTokenId(ctx context.Context, tokenId string) (*RevokeTokenResponse, error)
 
 	// List tokens.
 	//
@@ -1515,7 +1515,7 @@ type TokensAPI struct {
 //
 // If a token with the specified ID is not valid, this call returns an error
 // **RESOURCE_DOES_NOT_EXIST**.
-func (a *TokensAPI) DeleteByTokenId(ctx context.Context, tokenId string) error {
+func (a *TokensAPI) DeleteByTokenId(ctx context.Context, tokenId string) (*RevokeTokenResponse, error) {
 	return a.tokensImpl.Delete(ctx, RevokeTokenRequest{
 		TokenId: tokenId,
 	})
@@ -1585,7 +1585,7 @@ type WorkspaceConfInterface interface {
 	//
 	// Sets the configuration status for a workspace, including enabling or
 	// disabling it.
-	SetStatus(ctx context.Context, request WorkspaceConf) error
+	SetStatus(ctx context.Context, request WorkspaceConf) (*SetStatusResponse, error)
 }
 
 func NewWorkspaceConf(client *client.DatabricksClient) *WorkspaceConfAPI {

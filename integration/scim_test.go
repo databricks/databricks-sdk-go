@@ -48,7 +48,7 @@ func TestAccWorkspaceUsers(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, user.DisplayName, fetch.DisplayName)
 
-	err = UsersAPI.Patch(ctx, iam.PartialUpdate{
+	_, err = UsersAPI.Patch(ctx, iam.PartialUpdate{
 		Id: user.Id,
 		Operations: []iam.Patch{
 			{
@@ -63,7 +63,7 @@ func TestAccWorkspaceUsers(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	err = UsersAPI.Update(ctx, iam.User{
+	_, err = UsersAPI.Update(ctx, iam.User{
 		Id:       user.Id,
 		UserName: user.UserName,
 		Active:   true,
@@ -91,7 +91,7 @@ func TestAccWorkspaceUsers(t *testing.T) {
 	assert.Equal(t, user.Id, namesToIds[user.UserName])
 
 	// remove user by ID
-	err = UsersAPI.DeleteById(ctx, user.Id)
+	_, err = UsersAPI.DeleteById(ctx, user.Id)
 	require.NoError(t, err)
 
 	// and verify that user is missing
@@ -110,12 +110,12 @@ func TestAccAccountUsers(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := UsersAPI.DeleteById(ctx, user.Id)
+		_, err := UsersAPI.DeleteById(ctx, user.Id)
 		require.True(t, err == nil || apierr.IsMissing(err))
 	})
 
 	assert.Equal(t, 0, len(user.Roles))
-	err = UsersAPI.Patch(ctx, iam.PartialUpdate{
+	_, err = UsersAPI.Patch(ctx, iam.PartialUpdate{
 		Id:      user.Id,
 		Schemas: []iam.PatchSchema{iam.PatchSchemaUrnIetfParamsScimApiMessages20PatchOp},
 		Operations: []iam.Patch{
@@ -145,7 +145,7 @@ func TestAccGroups(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err := GroupsAPI.DeleteById(ctx, group.Id)
+		_, err := GroupsAPI.DeleteById(ctx, group.Id)
 		require.True(t, err == nil || apierr.IsMissing(err))
 	})
 
@@ -168,7 +168,7 @@ func TestAccGroups(t *testing.T) {
 	assert.Equal(t, group.Id, namesToIds[group.DisplayName])
 
 	// remove group by ID
-	err = GroupsAPI.DeleteById(ctx, group.Id)
+	_, err = GroupsAPI.DeleteById(ctx, group.Id)
 	require.NoError(t, err)
 
 	// and verify the group is missing
@@ -191,10 +191,10 @@ func TestAccServicePrincipalsOnAWS(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		err := ServicePrincipalsAPI.DeleteById(ctx, created.Id)
+		_, err := ServicePrincipalsAPI.DeleteById(ctx, created.Id)
 		require.NoError(t, err)
 	})
-	err = ServicePrincipalsAPI.Update(ctx, iam.ServicePrincipal{
+	_, err = ServicePrincipalsAPI.Update(ctx, iam.ServicePrincipal{
 		Id:          created.Id,
 		DisplayName: RandomName("go-sdk-updated-"),
 		Roles: []iam.ComplexValue{
@@ -212,7 +212,7 @@ func TestAccServicePrincipalsOnAWS(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, byId.Id, byName.Id)
 
-	err = ServicePrincipalsAPI.Patch(ctx, iam.PartialUpdate{
+	_, err = ServicePrincipalsAPI.Patch(ctx, iam.PartialUpdate{
 		Id: byId.Id,
 		Operations: []iam.Patch{
 			{

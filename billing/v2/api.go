@@ -53,12 +53,12 @@ type BudgetPolicyInterface interface {
 	// Delete a budget policy.
 	//
 	// Deletes a policy
-	Delete(ctx context.Context, request DeleteBudgetPolicyRequest) error
+	Delete(ctx context.Context, request DeleteBudgetPolicyRequest) (*DeleteResponse, error)
 
 	// Delete a budget policy.
 	//
 	// Deletes a policy
-	DeleteByPolicyId(ctx context.Context, policyId string) error
+	DeleteByPolicyId(ctx context.Context, policyId string) (*DeleteResponse, error)
 
 	// Get a budget policy.
 	//
@@ -108,7 +108,7 @@ type BudgetPolicyAPI struct {
 // Delete a budget policy.
 //
 // Deletes a policy
-func (a *BudgetPolicyAPI) DeleteByPolicyId(ctx context.Context, policyId string) error {
+func (a *BudgetPolicyAPI) DeleteByPolicyId(ctx context.Context, policyId string) (*DeleteResponse, error) {
 	return a.budgetPolicyImpl.Delete(ctx, DeleteBudgetPolicyRequest{
 		PolicyId: policyId,
 	})
@@ -135,13 +135,13 @@ type BudgetsInterface interface {
 	//
 	// Deletes a budget configuration for an account. Both account and budget
 	// configuration are specified by ID. This cannot be undone.
-	Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error
+	Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) (*DeleteBudgetConfigurationResponse, error)
 
 	// Delete budget.
 	//
 	// Deletes a budget configuration for an account. Both account and budget
 	// configuration are specified by ID. This cannot be undone.
-	DeleteByBudgetId(ctx context.Context, budgetId string) error
+	DeleteByBudgetId(ctx context.Context, budgetId string) (*DeleteBudgetConfigurationResponse, error)
 
 	// Get budget.
 	//
@@ -196,7 +196,7 @@ type BudgetsAPI struct {
 //
 // Deletes a budget configuration for an account. Both account and budget
 // configuration are specified by ID. This cannot be undone.
-func (a *BudgetsAPI) DeleteByBudgetId(ctx context.Context, budgetId string) error {
+func (a *BudgetsAPI) DeleteByBudgetId(ctx context.Context, budgetId string) (*DeleteBudgetConfigurationResponse, error) {
 	return a.budgetsImpl.Delete(ctx, DeleteBudgetConfigurationRequest{
 		BudgetId: budgetId,
 	})
@@ -296,7 +296,7 @@ type LogDeliveryInterface interface {
 	// are no longer needed. Note that you can't re-enable a delivery configuration
 	// if this would violate the delivery configuration limits described under
 	// [Create log delivery](:method:LogDelivery/Create).
-	PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) error
+	PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) (*PatchStatusResponse, error)
 }
 
 func NewLogDelivery(client *client.DatabricksClient) *LogDeliveryAPI {

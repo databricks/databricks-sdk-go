@@ -17,21 +17,22 @@ func NewAccessControlClient(cfg *config.Config) (*AccessControlClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &AccessControlClient{
-		AccessControlInterface: NewAccessControl(databricksClient),
+		AccessControlInterface: NewAccessControl(apiClient),
 	}, nil
 }
 
@@ -43,7 +44,6 @@ func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlCli
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -52,6 +52,7 @@ func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlCli
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -70,21 +71,22 @@ func NewAccountAccessControlProxyClient(cfg *config.Config) (*AccountAccessContr
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &AccountAccessControlProxyClient{
-		AccountAccessControlProxyInterface: NewAccountAccessControlProxy(databricksClient),
+		AccountAccessControlProxyInterface: NewAccountAccessControlProxy(apiClient),
 	}, nil
 }
 
@@ -96,7 +98,6 @@ func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -105,6 +106,7 @@ func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -123,7 +125,6 @@ func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrinc
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -132,6 +133,7 @@ func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrinc
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -150,7 +152,6 @@ func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -159,6 +160,7 @@ func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
@@ -177,21 +179,22 @@ func NewCurrentUserClient(cfg *config.Config) (*CurrentUserClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &CurrentUserClient{
-		CurrentUserInterface: NewCurrentUser(databricksClient),
+		CurrentUserInterface: NewCurrentUser(apiClient),
 	}, nil
 }
 
@@ -203,21 +206,22 @@ func NewGroupsClient(cfg *config.Config) (*GroupsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &GroupsClient{
-		GroupsInterface: NewGroups(databricksClient),
+		GroupsInterface: NewGroups(apiClient),
 	}, nil
 }
 
@@ -229,21 +233,22 @@ func NewPermissionMigrationClient(cfg *config.Config) (*PermissionMigrationClien
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &PermissionMigrationClient{
-		PermissionMigrationInterface: NewPermissionMigration(databricksClient),
+		PermissionMigrationInterface: NewPermissionMigration(apiClient),
 	}, nil
 }
 
@@ -255,21 +260,22 @@ func NewPermissionsClient(cfg *config.Config) (*PermissionsClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &PermissionsClient{
-		PermissionsInterface: NewPermissions(databricksClient),
+		PermissionsInterface: NewPermissions(apiClient),
 	}, nil
 }
 
@@ -281,21 +287,22 @@ func NewServicePrincipalsClient(cfg *config.Config) (*ServicePrincipalsClient, e
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ServicePrincipalsClient{
-		ServicePrincipalsInterface: NewServicePrincipals(databricksClient),
+		ServicePrincipalsInterface: NewServicePrincipals(apiClient),
 	}, nil
 }
 
@@ -307,21 +314,22 @@ func NewUsersClient(cfg *config.Config) (*UsersClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &UsersClient{
-		UsersInterface: NewUsers(databricksClient),
+		UsersInterface: NewUsers(apiClient),
 	}, nil
 }
 
@@ -333,7 +341,6 @@ func NewWorkspaceAssignmentClient(cfg *config.Config) (*WorkspaceAssignmentClien
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
@@ -342,6 +349,7 @@ func NewWorkspaceAssignmentClient(cfg *config.Config) (*WorkspaceAssignmentClien
 	if cfg.AccountID == "" || !cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid account config for the requested account service client")
 	}
+
 	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err

@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -24,18 +26,18 @@ func (a *alertsImpl) Create(ctx context.Context, request CreateAlertRequest) (*A
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &alert)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &alert)
 	return &alert, err
 }
 
-func (a *alertsImpl) Delete(ctx context.Context, request TrashAlertRequest) error {
+func (a *alertsImpl) Delete(ctx context.Context, request TrashAlertRequest) (*Empty, error) {
 	var empty Empty
 	path := fmt.Sprintf("/api/2.0/sql/alerts/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &empty)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &empty)
+	return &empty, err
 }
 
 func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, error) {
@@ -44,7 +46,7 @@ func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &alert)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &alert)
 	return &alert, err
 }
 
@@ -92,7 +94,7 @@ func (a *alertsImpl) internalList(ctx context.Context, request ListAlertsRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAlertsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listAlertsResponse)
 	return &listAlertsResponse, err
 }
 
@@ -103,7 +105,7 @@ func (a *alertsImpl) Update(ctx context.Context, request UpdateAlertRequest) (*A
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &alert)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &alert)
 	return &alert, err
 }
 
@@ -119,18 +121,18 @@ func (a *alertsLegacyImpl) Create(ctx context.Context, request CreateAlert) (*Le
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &legacyAlert)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &legacyAlert)
 	return &legacyAlert, err
 }
 
-func (a *alertsLegacyImpl) Delete(ctx context.Context, request DeleteAlertsLegacyRequest) error {
+func (a *alertsLegacyImpl) Delete(ctx context.Context, request DeleteAlertsLegacyRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *alertsLegacyImpl) Get(ctx context.Context, request GetAlertsLegacyRequest) (*LegacyAlert, error) {
@@ -139,7 +141,7 @@ func (a *alertsLegacyImpl) Get(ctx context.Context, request GetAlertsLegacyReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &legacyAlert)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &legacyAlert)
 	return &legacyAlert, err
 }
 
@@ -149,19 +151,19 @@ func (a *alertsLegacyImpl) List(ctx context.Context) ([]LegacyAlert, error) {
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &legacyAlertList)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &legacyAlertList)
 	return legacyAlertList, err
 }
 
-func (a *alertsLegacyImpl) Update(ctx context.Context, request EditAlert) error {
+func (a *alertsLegacyImpl) Update(ctx context.Context, request EditAlert) (*UpdateResponse, error) {
 	var updateResponse UpdateResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/alerts/%v", request.AlertId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &updateResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &updateResponse)
+	return &updateResponse, err
 }
 
 // unexported type that holds implementations of just DashboardWidgets API methods
@@ -176,18 +178,18 @@ func (a *dashboardWidgetsImpl) Create(ctx context.Context, request CreateWidget)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &widget)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &widget)
 	return &widget, err
 }
 
-func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboardWidgetRequest) error {
+func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboardWidgetRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/widgets/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *dashboardWidgetsImpl) Update(ctx context.Context, request CreateWidget) (*Widget, error) {
@@ -197,7 +199,7 @@ func (a *dashboardWidgetsImpl) Update(ctx context.Context, request CreateWidget)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &widget)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &widget)
 	return &widget, err
 }
 
@@ -213,18 +215,18 @@ func (a *dashboardsImpl) Create(ctx context.Context, request DashboardPostConten
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &dashboard)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &dashboard)
 	return &dashboard, err
 }
 
-func (a *dashboardsImpl) Delete(ctx context.Context, request DeleteDashboardRequest) error {
+func (a *dashboardsImpl) Delete(ctx context.Context, request DeleteDashboardRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/%v", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *dashboardsImpl) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
@@ -233,7 +235,7 @@ func (a *dashboardsImpl) Get(ctx context.Context, request GetDashboardRequest) (
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &dashboard)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &dashboard)
 	return &dashboard, err
 }
 
@@ -291,18 +293,18 @@ func (a *dashboardsImpl) internalList(ctx context.Context, request ListDashboard
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listResponse)
 	return &listResponse, err
 }
 
-func (a *dashboardsImpl) Restore(ctx context.Context, request RestoreDashboardRequest) error {
+func (a *dashboardsImpl) Restore(ctx context.Context, request RestoreDashboardRequest) (*RestoreResponse, error) {
 	var restoreResponse RestoreResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/dashboards/trash/%v", request.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &restoreResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, nil, &restoreResponse)
+	return &restoreResponse, err
 }
 
 func (a *dashboardsImpl) Update(ctx context.Context, request DashboardEditContent) (*Dashboard, error) {
@@ -312,7 +314,7 @@ func (a *dashboardsImpl) Update(ctx context.Context, request DashboardEditConten
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &dashboard)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &dashboard)
 	return &dashboard, err
 }
 
@@ -327,7 +329,7 @@ func (a *dataSourcesImpl) List(ctx context.Context) ([]DataSource, error) {
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &dataSourceList)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &dataSourceList)
 	return dataSourceList, err
 }
 
@@ -342,7 +344,7 @@ func (a *dbsqlPermissionsImpl) Get(ctx context.Context, request GetDbsqlPermissi
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getResponse)
 	return &getResponse, err
 }
 
@@ -353,7 +355,7 @@ func (a *dbsqlPermissionsImpl) Set(ctx context.Context, request SetRequest) (*Se
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &setResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &setResponse)
 	return &setResponse, err
 }
 
@@ -364,7 +366,7 @@ func (a *dbsqlPermissionsImpl) TransferOwnership(ctx context.Context, request Tr
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &success)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &success)
 	return &success, err
 }
 
@@ -380,18 +382,18 @@ func (a *queriesImpl) Create(ctx context.Context, request CreateQueryRequest) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &query)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &query)
 	return &query, err
 }
 
-func (a *queriesImpl) Delete(ctx context.Context, request TrashQueryRequest) error {
+func (a *queriesImpl) Delete(ctx context.Context, request TrashQueryRequest) (*Empty, error) {
 	var empty Empty
 	path := fmt.Sprintf("/api/2.0/sql/queries/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &empty)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &empty)
+	return &empty, err
 }
 
 func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query, error) {
@@ -400,7 +402,7 @@ func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query,
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &query)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &query)
 	return &query, err
 }
 
@@ -448,7 +450,7 @@ func (a *queriesImpl) internalList(ctx context.Context, request ListQueriesReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listQueryObjectsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listQueryObjectsResponse)
 	return &listQueryObjectsResponse, err
 }
 
@@ -492,7 +494,7 @@ func (a *queriesImpl) internalListVisualizations(ctx context.Context, request Li
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listVisualizationsForQueryResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listVisualizationsForQueryResponse)
 	return &listVisualizationsForQueryResponse, err
 }
 
@@ -503,7 +505,7 @@ func (a *queriesImpl) Update(ctx context.Context, request UpdateQueryRequest) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &query)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &query)
 	return &query, err
 }
 
@@ -519,18 +521,18 @@ func (a *queriesLegacyImpl) Create(ctx context.Context, request QueryPostContent
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &legacyQuery)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &legacyQuery)
 	return &legacyQuery, err
 }
 
-func (a *queriesLegacyImpl) Delete(ctx context.Context, request DeleteQueriesLegacyRequest) error {
+func (a *queriesLegacyImpl) Delete(ctx context.Context, request DeleteQueriesLegacyRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/%v", request.QueryId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *queriesLegacyImpl) Get(ctx context.Context, request GetQueriesLegacyRequest) (*LegacyQuery, error) {
@@ -539,7 +541,7 @@ func (a *queriesLegacyImpl) Get(ctx context.Context, request GetQueriesLegacyReq
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &legacyQuery)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &legacyQuery)
 	return &legacyQuery, err
 }
 
@@ -609,18 +611,18 @@ func (a *queriesLegacyImpl) internalList(ctx context.Context, request ListQuerie
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &queryList)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &queryList)
 	return &queryList, err
 }
 
-func (a *queriesLegacyImpl) Restore(ctx context.Context, request RestoreQueriesLegacyRequest) error {
+func (a *queriesLegacyImpl) Restore(ctx context.Context, request RestoreQueriesLegacyRequest) (*RestoreResponse, error) {
 	var restoreResponse RestoreResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/queries/trash/%v", request.QueryId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &restoreResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, nil, &restoreResponse)
+	return &restoreResponse, err
 }
 
 func (a *queriesLegacyImpl) Update(ctx context.Context, request QueryEditContent) (*LegacyQuery, error) {
@@ -630,7 +632,7 @@ func (a *queriesLegacyImpl) Update(ctx context.Context, request QueryEditContent
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &legacyQuery)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &legacyQuery)
 	return &legacyQuery, err
 }
 
@@ -645,7 +647,7 @@ func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryReq
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listQueriesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listQueriesResponse)
 	return &listQueriesResponse, err
 }
 
@@ -661,18 +663,18 @@ func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateVisu
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &visualization)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &visualization)
 	return &visualization, err
 }
 
-func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteVisualizationRequest) error {
+func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteVisualizationRequest) (*Empty, error) {
 	var empty Empty
 	path := fmt.Sprintf("/api/2.0/sql/visualizations/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &empty)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &empty)
+	return &empty, err
 }
 
 func (a *queryVisualizationsImpl) Update(ctx context.Context, request UpdateVisualizationRequest) (*Visualization, error) {
@@ -682,7 +684,7 @@ func (a *queryVisualizationsImpl) Update(ctx context.Context, request UpdateVisu
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &visualization)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &visualization)
 	return &visualization, err
 }
 
@@ -698,18 +700,18 @@ func (a *queryVisualizationsLegacyImpl) Create(ctx context.Context, request Crea
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &legacyVisualization)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &legacyVisualization)
 	return &legacyVisualization, err
 }
 
-func (a *queryVisualizationsLegacyImpl) Delete(ctx context.Context, request DeleteQueryVisualizationsLegacyRequest) error {
+func (a *queryVisualizationsLegacyImpl) Delete(ctx context.Context, request DeleteQueryVisualizationsLegacyRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/preview/sql/visualizations/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return &deleteResponse, err
 }
 
 func (a *queryVisualizationsLegacyImpl) Update(ctx context.Context, request LegacyVisualization) (*LegacyVisualization, error) {
@@ -719,7 +721,7 @@ func (a *queryVisualizationsLegacyImpl) Update(ctx context.Context, request Lega
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &legacyVisualization)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &legacyVisualization)
 	return &legacyVisualization, err
 }
 
@@ -734,7 +736,7 @@ func (a *redashConfigImpl) GetConfig(ctx context.Context) (*ClientConfig, error)
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &clientConfig)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &clientConfig)
 	return &clientConfig, err
 }
 
@@ -743,13 +745,13 @@ type statementExecutionImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request CancelExecutionRequest) error {
+func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request CancelExecutionRequest) (*CancelExecutionResponse, error) {
 	var cancelExecutionResponse CancelExecutionResponse
 	path := fmt.Sprintf("/api/2.0/sql/statements/%v/cancel", request.StatementId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &cancelExecutionResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, nil, &cancelExecutionResponse)
+	return &cancelExecutionResponse, err
 }
 
 func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error) {
@@ -759,7 +761,7 @@ func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request E
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &statementResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &statementResponse)
 	return &statementResponse, err
 }
 
@@ -769,7 +771,7 @@ func (a *statementExecutionImpl) GetStatement(ctx context.Context, request GetSt
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &statementResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &statementResponse)
 	return &statementResponse, err
 }
 
@@ -779,7 +781,7 @@ func (a *statementExecutionImpl) GetStatementResultChunkN(ctx context.Context, r
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &resultData)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &resultData)
 	return &resultData, err
 }
 
@@ -795,29 +797,29 @@ func (a *warehousesImpl) Create(ctx context.Context, request CreateWarehouseRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createWarehouseResponse)
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &createWarehouseResponse)
 	return &createWarehouseResponse, err
 }
 
-func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequest) error {
+func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequest) (*DeleteWarehouseResponse, error) {
 	var deleteWarehouseResponse DeleteWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteWarehouseResponse)
-	return err
+	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteWarehouseResponse)
+	return &deleteWarehouseResponse, err
 }
 
-func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest) error {
+func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest) (*EditWarehouseResponse, error) {
 	var editWarehouseResponse EditWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/edit", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &editWarehouseResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, request, &editWarehouseResponse)
+	return &editWarehouseResponse, err
 }
 
 func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error) {
@@ -826,7 +828,7 @@ func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getWarehouseResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getWarehouseResponse)
 	return &getWarehouseResponse, err
 }
 
@@ -836,7 +838,7 @@ func (a *warehousesImpl) GetPermissionLevels(ctx context.Context, request GetWar
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getWarehousePermissionLevelsResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &getWarehousePermissionLevelsResponse)
 	return &getWarehousePermissionLevelsResponse, err
 }
 
@@ -846,7 +848,7 @@ func (a *warehousesImpl) GetPermissions(ctx context.Context, request GetWarehous
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &warehousePermissions)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &warehousePermissions)
 	return &warehousePermissions, err
 }
 
@@ -856,7 +858,7 @@ func (a *warehousesImpl) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetW
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getWorkspaceWarehouseConfigResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, nil, nil, &getWorkspaceWarehouseConfigResponse)
 	return &getWorkspaceWarehouseConfigResponse, err
 }
 
@@ -894,7 +896,7 @@ func (a *warehousesImpl) internalList(ctx context.Context, request ListWarehouse
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listWarehousesResponse)
+	err := do(a.client, ctx, http.MethodGet, path, headers, queryParams, request, &listWarehousesResponse)
 	return &listWarehousesResponse, err
 }
 
@@ -905,39 +907,39 @@ func (a *warehousesImpl) SetPermissions(ctx context.Context, request WarehousePe
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &warehousePermissions)
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &warehousePermissions)
 	return &warehousePermissions, err
 }
 
-func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) error {
+func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, request SetWorkspaceWarehouseConfigRequest) (*SetWorkspaceWarehouseConfigResponse, error) {
 	var setWorkspaceWarehouseConfigResponse SetWorkspaceWarehouseConfigResponse
 	path := "/api/2.0/sql/config/warehouses"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &setWorkspaceWarehouseConfigResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPut, path, headers, queryParams, request, &setWorkspaceWarehouseConfigResponse)
+	return &setWorkspaceWarehouseConfigResponse, err
 }
 
-func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) error {
+func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) (*StartWarehouseResponse, error) {
 	var startWarehouseResponse StartWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/start", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &startWarehouseResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, nil, &startWarehouseResponse)
+	return &startWarehouseResponse, err
 }
 
-func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
+func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) (*StopWarehouseResponse, error) {
 	var stopWarehouseResponse StopWarehouseResponse
 	path := fmt.Sprintf("/api/2.0/sql/warehouses/%v/stop", request.Id)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &stopWarehouseResponse)
-	return err
+	err := do(a.client, ctx, http.MethodPost, path, headers, queryParams, nil, &stopWarehouseResponse)
+	return &stopWarehouseResponse, err
 }
 
 func (a *warehousesImpl) UpdatePermissions(ctx context.Context, request WarehousePermissionsRequest) (*WarehousePermissions, error) {
@@ -947,6 +949,35 @@ func (a *warehousesImpl) UpdatePermissions(ctx context.Context, request Warehous
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &warehousePermissions)
+	err := do(a.client, ctx, http.MethodPatch, path, headers, queryParams, request, &warehousePermissions)
 	return &warehousePermissions, err
+}
+
+func do(
+	client *client.DatabricksClient,
+	ctx context.Context,
+	method string,
+	path string,
+	headers map[string]string,
+	queryParams map[string]any,
+	request any,
+	response any,
+	visitors ...func(*http.Request) error,
+) error {
+	opts := []httpclient.DoOption{}
+	for _, v := range visitors {
+		opts = append(opts, httpclient.WithRequestVisitor(v))
+	}
+	opts = append(opts, httpclient.WithQueryParameters(queryParams))
+	opts = append(opts, httpclient.WithRequestHeaders(headers))
+	opts = append(opts, httpclient.WithRequestData(request))
+	opts = append(opts, httpclient.WithResponseUnmarshal(response))
+
+	// Remove extra `/` from path for files API. Once the OpenAPI spec doesn't
+	// include the extra slash, we can remove this
+	if strings.HasPrefix(path, "/api/2.0/fs/files//") {
+		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
+	}
+
+	return client.ApiClient().Do(ctx, method, path, opts...)
 }

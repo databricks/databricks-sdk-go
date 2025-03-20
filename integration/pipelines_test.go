@@ -18,7 +18,7 @@ func TestAccPipelines(t *testing.T) {
 	require.NoError(t, err)
 	notebookPath := myNotebookPath(t, cfg)
 
-	err = WorkspaceAPI.Import(ctx, workspace.Import{
+	_, err = WorkspaceAPI.Import(ctx, workspace.Import{
 		Content:   base64.StdEncoding.EncodeToString([]byte(dltNotebook())),
 		Format:    workspace.ImportFormatSource,
 		Language:  workspace.LanguageSql,
@@ -61,7 +61,7 @@ func TestAccPipelines(t *testing.T) {
 
 	defer PilelinesAPI.DeleteByPipelineId(ctx, created.PipelineId)
 
-	err = PilelinesAPI.Update(ctx, pipelines.EditPipeline{
+	_, err = PilelinesAPI.Update(ctx, pipelines.EditPipeline{
 		PipelineId: created.PipelineId,
 		Name:       RandomName("go-sdk-updated-"),
 		Libraries: []pipelines.PipelineLibrary{

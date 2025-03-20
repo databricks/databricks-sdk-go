@@ -17,21 +17,22 @@ func NewConsumerFulfillmentsClient(cfg *config.Config) (*ConsumerFulfillmentsCli
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ConsumerFulfillmentsClient{
-		ConsumerFulfillmentsInterface: NewConsumerFulfillments(databricksClient),
+		ConsumerFulfillmentsInterface: NewConsumerFulfillments(apiClient),
 	}, nil
 }
 
@@ -43,21 +44,22 @@ func NewConsumerInstallationsClient(cfg *config.Config) (*ConsumerInstallationsC
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ConsumerInstallationsClient{
-		ConsumerInstallationsInterface: NewConsumerInstallations(databricksClient),
+		ConsumerInstallationsInterface: NewConsumerInstallations(apiClient),
 	}, nil
 }
 
@@ -69,21 +71,22 @@ func NewConsumerListingsClient(cfg *config.Config) (*ConsumerListingsClient, err
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ConsumerListingsClient{
-		ConsumerListingsInterface: NewConsumerListings(databricksClient),
+		ConsumerListingsInterface: NewConsumerListings(apiClient),
 	}, nil
 }
 
@@ -95,21 +98,22 @@ func NewConsumerPersonalizationRequestsClient(cfg *config.Config) (*ConsumerPers
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ConsumerPersonalizationRequestsClient{
-		ConsumerPersonalizationRequestsInterface: NewConsumerPersonalizationRequests(databricksClient),
+		ConsumerPersonalizationRequestsInterface: NewConsumerPersonalizationRequests(apiClient),
 	}, nil
 }
 
@@ -121,21 +125,22 @@ func NewConsumerProvidersClient(cfg *config.Config) (*ConsumerProvidersClient, e
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ConsumerProvidersClient{
-		ConsumerProvidersInterface: NewConsumerProviders(databricksClient),
+		ConsumerProvidersInterface: NewConsumerProviders(apiClient),
 	}, nil
 }
 
@@ -147,21 +152,22 @@ func NewProviderExchangeFiltersClient(cfg *config.Config) (*ProviderExchangeFilt
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ProviderExchangeFiltersClient{
-		ProviderExchangeFiltersInterface: NewProviderExchangeFilters(databricksClient),
+		ProviderExchangeFiltersInterface: NewProviderExchangeFilters(apiClient),
 	}, nil
 }
 
@@ -173,21 +179,22 @@ func NewProviderExchangesClient(cfg *config.Config) (*ProviderExchangesClient, e
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ProviderExchangesClient{
-		ProviderExchangesInterface: NewProviderExchanges(databricksClient),
+		ProviderExchangesInterface: NewProviderExchanges(apiClient),
 	}, nil
 }
 
@@ -199,21 +206,22 @@ func NewProviderFilesClient(cfg *config.Config) (*ProviderFilesClient, error) {
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ProviderFilesClient{
-		ProviderFilesInterface: NewProviderFiles(databricksClient),
+		ProviderFilesInterface: NewProviderFiles(apiClient),
 	}, nil
 }
 
@@ -225,21 +233,22 @@ func NewProviderListingsClient(cfg *config.Config) (*ProviderListingsClient, err
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ProviderListingsClient{
-		ProviderListingsInterface: NewProviderListings(databricksClient),
+		ProviderListingsInterface: NewProviderListings(apiClient),
 	}, nil
 }
 
@@ -251,21 +260,22 @@ func NewProviderPersonalizationRequestsClient(cfg *config.Config) (*ProviderPers
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ProviderPersonalizationRequestsClient{
-		ProviderPersonalizationRequestsInterface: NewProviderPersonalizationRequests(databricksClient),
+		ProviderPersonalizationRequestsInterface: NewProviderPersonalizationRequests(apiClient),
 	}, nil
 }
 
@@ -277,21 +287,22 @@ func NewProviderProviderAnalyticsDashboardsClient(cfg *config.Config) (*Provider
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ProviderProviderAnalyticsDashboardsClient{
-		ProviderProviderAnalyticsDashboardsInterface: NewProviderProviderAnalyticsDashboards(databricksClient),
+		ProviderProviderAnalyticsDashboardsInterface: NewProviderProviderAnalyticsDashboards(apiClient),
 	}, nil
 }
 
@@ -303,20 +314,21 @@ func NewProviderProvidersClient(cfg *config.Config) (*ProviderProvidersClient, e
 	if cfg == nil {
 		cfg = &config.Config{}
 	}
-
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
+
 	if cfg.IsAccountClient() {
 		return nil, errors.New("invalid configuration: please provide a valid workspace config for the requested workspace service client")
 	}
-	databricksClient, err := client.New(cfg)
+
+	apiClient, err := client.New(cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ProviderProvidersClient{
-		ProviderProvidersInterface: NewProviderProviders(databricksClient),
+		ProviderProvidersInterface: NewProviderProviders(apiClient),
 	}, nil
 }

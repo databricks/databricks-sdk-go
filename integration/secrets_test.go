@@ -18,12 +18,12 @@ func TestAccSecrets(t *testing.T) {
 	// creates scopeName
 	SecretsAPI, err := workspace.NewSecretsClient(nil)
 	require.NoError(t, err)
-	err = SecretsAPI.CreateScope(ctx, workspace.CreateScope{
+	_, err = SecretsAPI.CreateScope(ctx, workspace.CreateScope{
 		Scope: scopeName,
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = SecretsAPI.DeleteScopeByScope(ctx, scopeName)
+		_, err = SecretsAPI.DeleteScopeByScope(ctx, scopeName)
 		require.NoError(t, err)
 	})
 
@@ -32,14 +32,14 @@ func TestAccSecrets(t *testing.T) {
 	assert.True(t, len(scopes) >= 1)
 
 	// creates keyName
-	err = SecretsAPI.PutSecret(ctx, workspace.PutSecret{
+	_, err = SecretsAPI.PutSecret(ctx, workspace.PutSecret{
 		Scope:       scopeName,
 		Key:         keyName,
 		StringValue: RandomName("dummy"),
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = SecretsAPI.DeleteSecret(ctx, workspace.DeleteSecret{
+		_, err = SecretsAPI.DeleteSecret(ctx, workspace.DeleteSecret{
 			Scope: scopeName,
 			Key:   keyName,
 		})
@@ -57,11 +57,11 @@ func TestAccSecrets(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		err = GroupsAPI.DeleteById(ctx, group.Id)
+		_, err = GroupsAPI.DeleteById(ctx, group.Id)
 		require.NoError(t, err)
 	})
 
-	err = SecretsAPI.PutAcl(ctx, workspace.PutAcl{
+	_, err = SecretsAPI.PutAcl(ctx, workspace.PutAcl{
 		Scope:      scopeName,
 		Permission: workspace.AclPermissionManage,
 		Principal:  group.DisplayName,
