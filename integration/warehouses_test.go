@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TODO: Enable this test when LRO is implemented
 func TestAccSqlWarehouses(t *testing.T) {
 	ctx := workspaceTest(t)
 
