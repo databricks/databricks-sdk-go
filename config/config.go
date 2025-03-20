@@ -100,8 +100,6 @@ type Config struct {
 	ClientID     string `name:"client_id" env:"DATABRICKS_CLIENT_ID" auth:"oauth" auth_types:"oauth-m2m"`
 	ClientSecret string `name:"client_secret" env:"DATABRICKS_CLIENT_SECRET" auth:"oauth,sensitive" auth_types:"oauth-m2m"`
 
-	ApplicationID string `name:"client_id" env:"DATABRICKS_APPLICATION_ID" auth:"oauth" auth_types:"oauth-m2m"`
-
 	// Path to the Databricks CLI (version >= 0.100.0).
 	DatabricksCliPath string `name:"databricks_cli_path" env:"DATABRICKS_CLI_PATH" auth_types:"databricks-cli"`
 
