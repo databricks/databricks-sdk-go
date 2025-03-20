@@ -32,7 +32,7 @@ import (
 // After changes to the account-level IP access lists, it can take a few minutes
 // for changes to take effect.
 type AccountIpAccessListsClient struct {
-	AccountIpAccessListsAPI
+	accountIpAccessListsBaseClient
 }
 
 func NewAccountIpAccessListsClient(cfg *config.Config) (*AccountIpAccessListsClient, error) {
@@ -54,7 +54,7 @@ func NewAccountIpAccessListsClient(cfg *config.Config) (*AccountIpAccessListsCli
 	}
 
 	return &AccountIpAccessListsClient{
-		AccountIpAccessListsAPI: AccountIpAccessListsAPI{
+		accountIpAccessListsBaseClient: accountIpAccessListsBaseClient{
 			accountIpAccessListsImpl: accountIpAccessListsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -64,7 +64,7 @@ func NewAccountIpAccessListsClient(cfg *config.Config) (*AccountIpAccessListsCli
 
 // Accounts Settings API allows users to manage settings at the account level.
 type AccountSettingsClient struct {
-	AccountSettingsAPI
+	accountSettingsBaseClient
 }
 
 func NewAccountSettingsClient(cfg *config.Config) (*AccountSettingsClient, error) {
@@ -86,7 +86,7 @@ func NewAccountSettingsClient(cfg *config.Config) (*AccountSettingsClient, error
 	}
 
 	return &AccountSettingsClient{
-		AccountSettingsAPI: AccountSettingsAPI{
+		accountSettingsBaseClient: accountSettingsBaseClient{
 			accountSettingsImpl: accountSettingsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -98,7 +98,7 @@ func NewAccountSettingsClient(cfg *config.Config) (*AccountSettingsClient, error
 // conditionally enabled, or disabled at the workspace level. By default, this
 // setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
 type AibiDashboardEmbeddingAccessPolicyClient struct {
-	AibiDashboardEmbeddingAccessPolicyAPI
+	aibiDashboardEmbeddingAccessPolicyBaseClient
 }
 
 func NewAibiDashboardEmbeddingAccessPolicyClient(cfg *config.Config) (*AibiDashboardEmbeddingAccessPolicyClient, error) {
@@ -120,7 +120,7 @@ func NewAibiDashboardEmbeddingAccessPolicyClient(cfg *config.Config) (*AibiDashb
 	}
 
 	return &AibiDashboardEmbeddingAccessPolicyClient{
-		AibiDashboardEmbeddingAccessPolicyAPI: AibiDashboardEmbeddingAccessPolicyAPI{
+		aibiDashboardEmbeddingAccessPolicyBaseClient: aibiDashboardEmbeddingAccessPolicyBaseClient{
 			aibiDashboardEmbeddingAccessPolicyImpl: aibiDashboardEmbeddingAccessPolicyImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -132,7 +132,7 @@ func NewAibiDashboardEmbeddingAccessPolicyClient(cfg *config.Config) (*AibiDashb
 // The approved domains list can't be mutated when the current access policy is
 // not set to ALLOW_APPROVED_DOMAINS.
 type AibiDashboardEmbeddingApprovedDomainsClient struct {
-	AibiDashboardEmbeddingApprovedDomainsAPI
+	aibiDashboardEmbeddingApprovedDomainsBaseClient
 }
 
 func NewAibiDashboardEmbeddingApprovedDomainsClient(cfg *config.Config) (*AibiDashboardEmbeddingApprovedDomainsClient, error) {
@@ -154,7 +154,7 @@ func NewAibiDashboardEmbeddingApprovedDomainsClient(cfg *config.Config) (*AibiDa
 	}
 
 	return &AibiDashboardEmbeddingApprovedDomainsClient{
-		AibiDashboardEmbeddingApprovedDomainsAPI: AibiDashboardEmbeddingApprovedDomainsAPI{
+		aibiDashboardEmbeddingApprovedDomainsBaseClient: aibiDashboardEmbeddingApprovedDomainsBaseClient{
 			aibiDashboardEmbeddingApprovedDomainsImpl: aibiDashboardEmbeddingApprovedDomainsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -165,7 +165,7 @@ func NewAibiDashboardEmbeddingApprovedDomainsClient(cfg *config.Config) (*AibiDa
 // Controls whether automatic cluster update is enabled for the current
 // workspace. By default, it is turned off.
 type AutomaticClusterUpdateClient struct {
-	AutomaticClusterUpdateAPI
+	automaticClusterUpdateBaseClient
 }
 
 func NewAutomaticClusterUpdateClient(cfg *config.Config) (*AutomaticClusterUpdateClient, error) {
@@ -187,7 +187,7 @@ func NewAutomaticClusterUpdateClient(cfg *config.Config) (*AutomaticClusterUpdat
 	}
 
 	return &AutomaticClusterUpdateClient{
-		AutomaticClusterUpdateAPI: AutomaticClusterUpdateAPI{
+		automaticClusterUpdateBaseClient: automaticClusterUpdateBaseClient{
 			automaticClusterUpdateImpl: automaticClusterUpdateImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -201,7 +201,7 @@ func NewAutomaticClusterUpdateClient(cfg *config.Config) (*AutomaticClusterUpdat
 //
 // This settings can NOT be disabled once it is enabled.
 type ComplianceSecurityProfileClient struct {
-	ComplianceSecurityProfileAPI
+	complianceSecurityProfileBaseClient
 }
 
 func NewComplianceSecurityProfileClient(cfg *config.Config) (*ComplianceSecurityProfileClient, error) {
@@ -223,7 +223,7 @@ func NewComplianceSecurityProfileClient(cfg *config.Config) (*ComplianceSecurity
 	}
 
 	return &ComplianceSecurityProfileClient{
-		ComplianceSecurityProfileAPI: ComplianceSecurityProfileAPI{
+		complianceSecurityProfileBaseClient: complianceSecurityProfileBaseClient{
 			complianceSecurityProfileImpl: complianceSecurityProfileImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -234,7 +234,7 @@ func NewComplianceSecurityProfileClient(cfg *config.Config) (*ComplianceSecurity
 // Credentials manager interacts with with Identity Providers to to perform
 // token exchanges using stored credentials and refresh tokens.
 type CredentialsManagerClient struct {
-	CredentialsManagerAPI
+	credentialsManagerBaseClient
 }
 
 func NewCredentialsManagerClient(cfg *config.Config) (*CredentialsManagerClient, error) {
@@ -256,7 +256,7 @@ func NewCredentialsManagerClient(cfg *config.Config) (*CredentialsManagerClient,
 	}
 
 	return &CredentialsManagerClient{
-		CredentialsManagerAPI: CredentialsManagerAPI{
+		credentialsManagerBaseClient: credentialsManagerBaseClient{
 			credentialsManagerImpl: credentialsManagerImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -272,7 +272,7 @@ func NewCredentialsManagerClient(cfg *config.Config) (*CredentialsManagerClient,
 // This settings can be disabled so that new workspaces do not have compliance
 // security profile enabled by default.
 type CspEnablementAccountClient struct {
-	CspEnablementAccountAPI
+	cspEnablementAccountBaseClient
 }
 
 func NewCspEnablementAccountClient(cfg *config.Config) (*CspEnablementAccountClient, error) {
@@ -294,7 +294,7 @@ func NewCspEnablementAccountClient(cfg *config.Config) (*CspEnablementAccountCli
 	}
 
 	return &CspEnablementAccountClient{
-		CspEnablementAccountAPI: CspEnablementAccountAPI{
+		cspEnablementAccountBaseClient: cspEnablementAccountBaseClient{
 			cspEnablementAccountImpl: cspEnablementAccountImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -315,7 +315,7 @@ func NewCspEnablementAccountClient(cfg *config.Config) (*CspEnablementAccountCli
 // effect. Additionally, the default namespace only applies when using Unity
 // Catalog-enabled compute.
 type DefaultNamespaceClient struct {
-	DefaultNamespaceAPI
+	defaultNamespaceBaseClient
 }
 
 func NewDefaultNamespaceClient(cfg *config.Config) (*DefaultNamespaceClient, error) {
@@ -337,7 +337,7 @@ func NewDefaultNamespaceClient(cfg *config.Config) (*DefaultNamespaceClient, err
 	}
 
 	return &DefaultNamespaceClient{
-		DefaultNamespaceAPI: DefaultNamespaceAPI{
+		defaultNamespaceBaseClient: defaultNamespaceBaseClient{
 			defaultNamespaceImpl: defaultNamespaceImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -353,7 +353,7 @@ func NewDefaultNamespaceClient(cfg *config.Config) (*DefaultNamespaceClient, err
 // access to use External Location permissions in place of legacy credentials.
 // 4. Enforces Unity Catalog access on all path based access.
 type DisableLegacyAccessClient struct {
-	DisableLegacyAccessAPI
+	disableLegacyAccessBaseClient
 }
 
 func NewDisableLegacyAccessClient(cfg *config.Config) (*DisableLegacyAccessClient, error) {
@@ -375,7 +375,7 @@ func NewDisableLegacyAccessClient(cfg *config.Config) (*DisableLegacyAccessClien
 	}
 
 	return &DisableLegacyAccessClient{
-		DisableLegacyAccessAPI: DisableLegacyAccessAPI{
+		disableLegacyAccessBaseClient: disableLegacyAccessBaseClient{
 			disableLegacyAccessImpl: disableLegacyAccessImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -387,7 +387,7 @@ func NewDisableLegacyAccessClient(cfg *config.Config) (*DisableLegacyAccessClien
 // (as well as creation of new mounts). When the setting is off, all DBFS
 // functionality is enabled
 type DisableLegacyDbfsClient struct {
-	DisableLegacyDbfsAPI
+	disableLegacyDbfsBaseClient
 }
 
 func NewDisableLegacyDbfsClient(cfg *config.Config) (*DisableLegacyDbfsClient, error) {
@@ -409,7 +409,7 @@ func NewDisableLegacyDbfsClient(cfg *config.Config) (*DisableLegacyDbfsClient, e
 	}
 
 	return &DisableLegacyDbfsClient{
-		DisableLegacyDbfsAPI: DisableLegacyDbfsAPI{
+		disableLegacyDbfsBaseClient: disableLegacyDbfsBaseClient{
 			disableLegacyDbfsImpl: disableLegacyDbfsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -424,7 +424,7 @@ func NewDisableLegacyDbfsClient(cfg *config.Config) (*DisableLegacyDbfsClient, e
 // ‘No-isolation clusters’. 4. Disables Databricks Runtime versions prior to
 // 13.3LTS.
 type DisableLegacyFeaturesClient struct {
-	DisableLegacyFeaturesAPI
+	disableLegacyFeaturesBaseClient
 }
 
 func NewDisableLegacyFeaturesClient(cfg *config.Config) (*DisableLegacyFeaturesClient, error) {
@@ -446,7 +446,7 @@ func NewDisableLegacyFeaturesClient(cfg *config.Config) (*DisableLegacyFeaturesC
 	}
 
 	return &DisableLegacyFeaturesClient{
-		DisableLegacyFeaturesAPI: DisableLegacyFeaturesAPI{
+		disableLegacyFeaturesBaseClient: disableLegacyFeaturesBaseClient{
 			disableLegacyFeaturesImpl: disableLegacyFeaturesImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -458,7 +458,7 @@ func NewDisableLegacyFeaturesClient(cfg *config.Config) (*DisableLegacyFeaturesC
 // console. Allowing you to enable or disable restricted access based on IP
 // addresses.
 type EnableIpAccessListsClient struct {
-	EnableIpAccessListsAPI
+	enableIpAccessListsBaseClient
 }
 
 func NewEnableIpAccessListsClient(cfg *config.Config) (*EnableIpAccessListsClient, error) {
@@ -480,7 +480,7 @@ func NewEnableIpAccessListsClient(cfg *config.Config) (*EnableIpAccessListsClien
 	}
 
 	return &EnableIpAccessListsClient{
-		EnableIpAccessListsAPI: EnableIpAccessListsAPI{
+		enableIpAccessListsBaseClient: enableIpAccessListsBaseClient{
 			enableIpAccessListsImpl: enableIpAccessListsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -496,7 +496,7 @@ func NewEnableIpAccessListsClient(cfg *config.Config) (*EnableIpAccessListsClien
 // If the compliance security profile is disabled, you can enable or disable
 // this setting and it is not permanent.
 type EnhancedSecurityMonitoringClient struct {
-	EnhancedSecurityMonitoringAPI
+	enhancedSecurityMonitoringBaseClient
 }
 
 func NewEnhancedSecurityMonitoringClient(cfg *config.Config) (*EnhancedSecurityMonitoringClient, error) {
@@ -518,7 +518,7 @@ func NewEnhancedSecurityMonitoringClient(cfg *config.Config) (*EnhancedSecurityM
 	}
 
 	return &EnhancedSecurityMonitoringClient{
-		EnhancedSecurityMonitoringAPI: EnhancedSecurityMonitoringAPI{
+		enhancedSecurityMonitoringBaseClient: enhancedSecurityMonitoringBaseClient{
 			enhancedSecurityMonitoringImpl: enhancedSecurityMonitoringImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -532,7 +532,7 @@ func NewEnhancedSecurityMonitoringClient(cfg *config.Config) (*EnhancedSecurityM
 // creation, account admins can enable enhanced security monitoring individually
 // for each workspace.
 type EsmEnablementAccountClient struct {
-	EsmEnablementAccountAPI
+	esmEnablementAccountBaseClient
 }
 
 func NewEsmEnablementAccountClient(cfg *config.Config) (*EsmEnablementAccountClient, error) {
@@ -554,7 +554,7 @@ func NewEsmEnablementAccountClient(cfg *config.Config) (*EsmEnablementAccountCli
 	}
 
 	return &EsmEnablementAccountClient{
-		EsmEnablementAccountAPI: EsmEnablementAccountAPI{
+		esmEnablementAccountBaseClient: esmEnablementAccountBaseClient{
 			esmEnablementAccountImpl: esmEnablementAccountImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -584,7 +584,7 @@ func NewEsmEnablementAccountClient(cfg *config.Config) (*EsmEnablementAccountCli
 // After changes to the IP access list feature, it can take a few minutes for
 // changes to take effect.
 type IpAccessListsClient struct {
-	IpAccessListsAPI
+	ipAccessListsBaseClient
 }
 
 func NewIpAccessListsClient(cfg *config.Config) (*IpAccessListsClient, error) {
@@ -606,7 +606,7 @@ func NewIpAccessListsClient(cfg *config.Config) (*IpAccessListsClient, error) {
 	}
 
 	return &IpAccessListsClient{
-		IpAccessListsAPI: IpAccessListsAPI{
+		ipAccessListsBaseClient: ipAccessListsBaseClient{
 			ipAccessListsImpl: ipAccessListsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -617,7 +617,7 @@ func NewIpAccessListsClient(cfg *config.Config) (*IpAccessListsClient, error) {
 // These APIs provide configurations for the network connectivity of your
 // workspaces for serverless compute resources.
 type NetworkConnectivityClient struct {
-	NetworkConnectivityAPI
+	networkConnectivityBaseClient
 }
 
 func NewNetworkConnectivityClient(cfg *config.Config) (*NetworkConnectivityClient, error) {
@@ -639,7 +639,7 @@ func NewNetworkConnectivityClient(cfg *config.Config) (*NetworkConnectivityClien
 	}
 
 	return &NetworkConnectivityClient{
-		NetworkConnectivityAPI: NetworkConnectivityAPI{
+		networkConnectivityBaseClient: networkConnectivityBaseClient{
 			networkConnectivityImpl: networkConnectivityImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -653,7 +653,7 @@ func NewNetworkConnectivityClient(cfg *config.Config) (*NetworkConnectivityClien
 // Databricks. Only workspace admins can create, update, and delete notification
 // destinations.
 type NotificationDestinationsClient struct {
-	NotificationDestinationsAPI
+	notificationDestinationsBaseClient
 }
 
 func NewNotificationDestinationsClient(cfg *config.Config) (*NotificationDestinationsClient, error) {
@@ -675,7 +675,7 @@ func NewNotificationDestinationsClient(cfg *config.Config) (*NotificationDestina
 	}
 
 	return &NotificationDestinationsClient{
-		NotificationDestinationsAPI: NotificationDestinationsAPI{
+		notificationDestinationsBaseClient: notificationDestinationsBaseClient{
 			notificationDestinationsImpl: notificationDestinationsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -693,7 +693,7 @@ func NewNotificationDestinationsClient(cfg *config.Config) (*NotificationDestina
 // never set on a given account. Deletion reverts the value of the setting back
 // to the default value.
 type PersonalComputeClient struct {
-	PersonalComputeAPI
+	personalComputeBaseClient
 }
 
 func NewPersonalComputeClient(cfg *config.Config) (*PersonalComputeClient, error) {
@@ -715,7 +715,7 @@ func NewPersonalComputeClient(cfg *config.Config) (*PersonalComputeClient, error
 	}
 
 	return &PersonalComputeClient{
-		PersonalComputeAPI: PersonalComputeAPI{
+		personalComputeBaseClient: personalComputeBaseClient{
 			personalComputeImpl: personalComputeImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -736,7 +736,7 @@ func NewPersonalComputeClient(cfg *config.Config) (*PersonalComputeClient, error
 // can change the job run_as setting to themselves or to a service principal on
 // which they have the Service Principal User role.
 type RestrictWorkspaceAdminsClient struct {
-	RestrictWorkspaceAdminsAPI
+	restrictWorkspaceAdminsBaseClient
 }
 
 func NewRestrictWorkspaceAdminsClient(cfg *config.Config) (*RestrictWorkspaceAdminsClient, error) {
@@ -758,7 +758,7 @@ func NewRestrictWorkspaceAdminsClient(cfg *config.Config) (*RestrictWorkspaceAdm
 	}
 
 	return &RestrictWorkspaceAdminsClient{
-		RestrictWorkspaceAdminsAPI: RestrictWorkspaceAdminsAPI{
+		restrictWorkspaceAdminsBaseClient: restrictWorkspaceAdminsBaseClient{
 			restrictWorkspaceAdminsImpl: restrictWorkspaceAdminsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -769,7 +769,7 @@ func NewRestrictWorkspaceAdminsClient(cfg *config.Config) (*RestrictWorkspaceAdm
 // Workspace Settings API allows users to manage settings at the workspace
 // level.
 type SettingsClient struct {
-	SettingsAPI
+	settingsBaseClient
 }
 
 func NewSettingsClient(cfg *config.Config) (*SettingsClient, error) {
@@ -791,7 +791,7 @@ func NewSettingsClient(cfg *config.Config) (*SettingsClient, error) {
 	}
 
 	return &SettingsClient{
-		SettingsAPI: SettingsAPI{
+		settingsBaseClient: settingsBaseClient{
 			settingsImpl: settingsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -803,7 +803,7 @@ func NewSettingsClient(cfg *config.Config) (*SettingsClient, error) {
 // Admins can either get every token, get a specific token by ID, or get all
 // tokens for a particular user.
 type TokenManagementClient struct {
-	TokenManagementAPI
+	tokenManagementBaseClient
 }
 
 func NewTokenManagementClient(cfg *config.Config) (*TokenManagementClient, error) {
@@ -825,7 +825,7 @@ func NewTokenManagementClient(cfg *config.Config) (*TokenManagementClient, error
 	}
 
 	return &TokenManagementClient{
-		TokenManagementAPI: TokenManagementAPI{
+		tokenManagementBaseClient: tokenManagementBaseClient{
 			tokenManagementImpl: tokenManagementImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -836,7 +836,7 @@ func NewTokenManagementClient(cfg *config.Config) (*TokenManagementClient, error
 // The Token API allows you to create, list, and revoke tokens that can be used
 // to authenticate and access Databricks REST APIs.
 type TokensClient struct {
-	TokensAPI
+	tokensBaseClient
 }
 
 func NewTokensClient(cfg *config.Config) (*TokensClient, error) {
@@ -858,7 +858,7 @@ func NewTokensClient(cfg *config.Config) (*TokensClient, error) {
 	}
 
 	return &TokensClient{
-		TokensAPI: TokensAPI{
+		tokensBaseClient: tokensBaseClient{
 			tokensImpl: tokensImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -868,7 +868,7 @@ func NewTokensClient(cfg *config.Config) (*TokensClient, error) {
 
 // This API allows updating known workspace settings for advanced users.
 type WorkspaceConfClient struct {
-	WorkspaceConfAPI
+	workspaceConfBaseClient
 }
 
 func NewWorkspaceConfClient(cfg *config.Config) (*WorkspaceConfClient, error) {
@@ -890,7 +890,7 @@ func NewWorkspaceConfClient(cfg *config.Config) (*WorkspaceConfClient, error) {
 	}
 
 	return &WorkspaceConfClient{
-		WorkspaceConfAPI: WorkspaceConfAPI{
+		workspaceConfBaseClient: workspaceConfBaseClient{
 			workspaceConfImpl: workspaceConfImpl{
 				client: apiClient.ApiClient(),
 			},

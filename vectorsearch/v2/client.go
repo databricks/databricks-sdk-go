@@ -11,7 +11,7 @@ import (
 
 // **Endpoint**: Represents the compute resources to host vector search indexes.
 type VectorSearchEndpointsClient struct {
-	VectorSearchEndpointsAPI
+	vectorSearchEndpointsBaseClient
 }
 
 func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsClient, error) {
@@ -33,7 +33,7 @@ func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsC
 	}
 
 	return &VectorSearchEndpointsClient{
-		VectorSearchEndpointsAPI: VectorSearchEndpointsAPI{
+		vectorSearchEndpointsBaseClient: vectorSearchEndpointsBaseClient{
 			vectorSearchEndpointsImpl: vectorSearchEndpointsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -52,7 +52,7 @@ func NewVectorSearchEndpointsClient(cfg *config.Config) (*VectorSearchEndpointsC
 // and write of vectors and metadata through our REST and SDK APIs. With this
 // model, the user manages index updates.
 type VectorSearchIndexesClient struct {
-	VectorSearchIndexesAPI
+	vectorSearchIndexesBaseClient
 }
 
 func NewVectorSearchIndexesClient(cfg *config.Config) (*VectorSearchIndexesClient, error) {
@@ -74,7 +74,7 @@ func NewVectorSearchIndexesClient(cfg *config.Config) (*VectorSearchIndexesClien
 	}
 
 	return &VectorSearchIndexesClient{
-		VectorSearchIndexesAPI: VectorSearchIndexesAPI{
+		vectorSearchIndexesBaseClient: vectorSearchIndexesBaseClient{
 			vectorSearchIndexesImpl: vectorSearchIndexesImpl{
 				client: apiClient.ApiClient(),
 			},

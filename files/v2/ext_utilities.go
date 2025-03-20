@@ -60,7 +60,7 @@ func (f *fileHandleWriter) error(err error) error {
 // Internal only state for a DBFS file handle.
 type fileHandle struct {
 	ctx  context.Context
-	api  *DbfsAPI
+	api  *DbfsClient
 	path string
 
 	reader *fileHandleReader
@@ -265,7 +265,7 @@ type dbfsAPIUtilities interface {
 // Similarly, the [io.ReaderFrom] interface is provided for bulk writing.
 //
 // A file opened for writing must always be closed.
-func (a *DbfsAPI) Open(ctx context.Context, path string, mode FileMode) (Handle, error) {
+func (a *DbfsClient) Open(ctx context.Context, path string, mode FileMode) (Handle, error) {
 	h := &fileHandle{
 		ctx:  useragent.InContext(ctx, "sdk-feature", "dbfs-handle"),
 		api:  a,
@@ -293,7 +293,7 @@ func (a *DbfsAPI) Open(ctx context.Context, path string, mode FileMode) (Handle,
 }
 
 // ReadFile is identical to [os.ReadFile] but for DBFS.
-func (a *DbfsAPI) ReadFile(ctx context.Context, name string) ([]byte, error) {
+func (a *DbfsClient) ReadFile(ctx context.Context, name string) ([]byte, error) {
 	h, err := a.Open(ctx, name, FileModeRead)
 	if err != nil {
 		return nil, err
@@ -309,7 +309,7 @@ func (a *DbfsAPI) ReadFile(ctx context.Context, name string) ([]byte, error) {
 }
 
 // WriteFile is identical to [os.WriteFile] but for DBFS.
-func (a *DbfsAPI) WriteFile(ctx context.Context, name string, data []byte) error {
+func (a *DbfsClient) WriteFile(ctx context.Context, name string, data []byte) error {
 	h, err := a.Open(ctx, name, FileModeWrite|FileModeOverwrite)
 	if err != nil {
 		return err
@@ -325,7 +325,7 @@ func (a *DbfsAPI) WriteFile(ctx context.Context, name string, data []byte) error
 
 // RecursiveList traverses the DBFS tree and returns all non-directory
 // objects under the path
-func (a DbfsAPI) RecursiveList(ctx context.Context, path string) ([]FileInfo, error) {
+func (a *DbfsClient) RecursiveList(ctx context.Context, path string) ([]FileInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "recursive-list")
 	var results []FileInfo
 	queue := []string{path}

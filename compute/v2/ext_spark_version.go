@@ -95,7 +95,7 @@ func (sv GetSparkVersionsResponse) Select(req SparkVersionRequest) (string, erro
 // - SparkVersion: Apache Spark version
 // - Photon: Photon versions only (deprecated)
 // - Graviton: Graviton versions only (deprecated)
-func (a *ClustersAPI) SelectSparkVersion(ctx context.Context, r SparkVersionRequest) (string, error) {
+func (a *ClustersClient) SelectSparkVersion(ctx context.Context, r SparkVersionRequest) (string, error) {
 	sv, err := a.SparkVersions(ctx)
 	if err != nil {
 		return "", err

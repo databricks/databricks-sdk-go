@@ -60,7 +60,7 @@ import (
 //
 // [SCIM]: https://docs.databricks.com/admin/users-groups/scim/index.html
 type AccountFederationPolicyClient struct {
-	AccountFederationPolicyAPI
+	accountFederationPolicyBaseClient
 }
 
 func NewAccountFederationPolicyClient(cfg *config.Config) (*AccountFederationPolicyClient, error) {
@@ -82,7 +82,7 @@ func NewAccountFederationPolicyClient(cfg *config.Config) (*AccountFederationPol
 	}
 
 	return &AccountFederationPolicyClient{
-		AccountFederationPolicyAPI: AccountFederationPolicyAPI{
+		accountFederationPolicyBaseClient: accountFederationPolicyBaseClient{
 			accountFederationPolicyImpl: accountFederationPolicyImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -94,7 +94,7 @@ func NewAccountFederationPolicyClient(cfg *config.Config) (*AccountFederationPol
 // which is required for adding/using Custom OAuth App Integration like Tableau
 // Cloud for Databricks in AWS cloud.
 type CustomAppIntegrationClient struct {
-	CustomAppIntegrationAPI
+	customAppIntegrationBaseClient
 }
 
 func NewCustomAppIntegrationClient(cfg *config.Config) (*CustomAppIntegrationClient, error) {
@@ -116,7 +116,7 @@ func NewCustomAppIntegrationClient(cfg *config.Config) (*CustomAppIntegrationCli
 	}
 
 	return &CustomAppIntegrationClient{
-		CustomAppIntegrationAPI: CustomAppIntegrationAPI{
+		customAppIntegrationBaseClient: customAppIntegrationBaseClient{
 			customAppIntegrationImpl: customAppIntegrationImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -129,7 +129,7 @@ func NewCustomAppIntegrationClient(cfg *config.Config) (*CustomAppIntegrationCli
 // applications to their account through the OAuth Published App Integration
 // APIs.
 type OAuthPublishedAppsClient struct {
-	OAuthPublishedAppsAPI
+	oAuthPublishedAppsBaseClient
 }
 
 func NewOAuthPublishedAppsClient(cfg *config.Config) (*OAuthPublishedAppsClient, error) {
@@ -151,7 +151,7 @@ func NewOAuthPublishedAppsClient(cfg *config.Config) (*OAuthPublishedAppsClient,
 	}
 
 	return &OAuthPublishedAppsClient{
-		OAuthPublishedAppsAPI: OAuthPublishedAppsAPI{
+		oAuthPublishedAppsBaseClient: oAuthPublishedAppsBaseClient{
 			oAuthPublishedAppsImpl: oAuthPublishedAppsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -163,7 +163,7 @@ func NewOAuthPublishedAppsClient(cfg *config.Config) (*OAuthPublishedAppsClient,
 // which is required for adding/using Published OAuth App Integration like
 // Tableau Desktop for Databricks in AWS cloud.
 type PublishedAppIntegrationClient struct {
-	PublishedAppIntegrationAPI
+	publishedAppIntegrationBaseClient
 }
 
 func NewPublishedAppIntegrationClient(cfg *config.Config) (*PublishedAppIntegrationClient, error) {
@@ -185,7 +185,7 @@ func NewPublishedAppIntegrationClient(cfg *config.Config) (*PublishedAppIntegrat
 	}
 
 	return &PublishedAppIntegrationClient{
-		PublishedAppIntegrationAPI: PublishedAppIntegrationAPI{
+		publishedAppIntegrationBaseClient: publishedAppIntegrationBaseClient{
 			publishedAppIntegrationImpl: publishedAppIntegrationImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -248,7 +248,7 @@ func NewPublishedAppIntegrationClient(cfg *config.Config) (*PublishedAppIntegrat
 // You do not need to configure an OAuth application in Databricks to use token
 // federation.
 type ServicePrincipalFederationPolicyClient struct {
-	ServicePrincipalFederationPolicyAPI
+	servicePrincipalFederationPolicyBaseClient
 }
 
 func NewServicePrincipalFederationPolicyClient(cfg *config.Config) (*ServicePrincipalFederationPolicyClient, error) {
@@ -270,7 +270,7 @@ func NewServicePrincipalFederationPolicyClient(cfg *config.Config) (*ServicePrin
 	}
 
 	return &ServicePrincipalFederationPolicyClient{
-		ServicePrincipalFederationPolicyAPI: ServicePrincipalFederationPolicyAPI{
+		servicePrincipalFederationPolicyBaseClient: servicePrincipalFederationPolicyBaseClient{
 			servicePrincipalFederationPolicyImpl: servicePrincipalFederationPolicyImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -292,7 +292,7 @@ func NewServicePrincipalFederationPolicyClient(cfg *config.Config) (*ServicePrin
 // [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
 // [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
 type ServicePrincipalSecretsClient struct {
-	ServicePrincipalSecretsAPI
+	servicePrincipalSecretsBaseClient
 }
 
 func NewServicePrincipalSecretsClient(cfg *config.Config) (*ServicePrincipalSecretsClient, error) {
@@ -314,7 +314,7 @@ func NewServicePrincipalSecretsClient(cfg *config.Config) (*ServicePrincipalSecr
 	}
 
 	return &ServicePrincipalSecretsClient{
-		ServicePrincipalSecretsAPI: ServicePrincipalSecretsAPI{
+		servicePrincipalSecretsBaseClient: servicePrincipalSecretsBaseClient{
 			servicePrincipalSecretsImpl: servicePrincipalSecretsImpl{
 				client: apiClient.ApiClient(),
 			},

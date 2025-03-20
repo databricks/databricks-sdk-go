@@ -28,7 +28,7 @@ import (
 // [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
 // [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 type JobsClient struct {
-	JobsAPI
+	jobsBaseClient
 }
 
 func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
@@ -50,7 +50,7 @@ func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
 	}
 
 	return &JobsClient{
-		JobsAPI: JobsAPI{
+		jobsBaseClient: jobsBaseClient{
 			jobsImpl: jobsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -72,7 +72,7 @@ func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
 // status of a job. The enforce compliance API allows you to update a job so
 // that it becomes compliant with all of its policies.
 type PolicyComplianceForJobsClient struct {
-	PolicyComplianceForJobsAPI
+	policyComplianceForJobsBaseClient
 }
 
 func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJobsClient, error) {
@@ -94,7 +94,7 @@ func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJ
 	}
 
 	return &PolicyComplianceForJobsClient{
-		PolicyComplianceForJobsAPI: PolicyComplianceForJobsAPI{
+		policyComplianceForJobsBaseClient: policyComplianceForJobsBaseClient{
 			policyComplianceForJobsImpl: policyComplianceForJobsImpl{
 				client: apiClient.ApiClient(),
 			},

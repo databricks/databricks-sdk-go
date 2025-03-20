@@ -33,7 +33,7 @@ import (
 // Only admin users can create, edit, and delete policies. Admin users also have
 // access to all policies.
 type ClusterPoliciesClient struct {
-	ClusterPoliciesAPI
+	clusterPoliciesBaseClient
 }
 
 func NewClusterPoliciesClient(cfg *config.Config) (*ClusterPoliciesClient, error) {
@@ -55,7 +55,7 @@ func NewClusterPoliciesClient(cfg *config.Config) (*ClusterPoliciesClient, error
 	}
 
 	return &ClusterPoliciesClient{
-		ClusterPoliciesAPI: ClusterPoliciesAPI{
+		clusterPoliciesBaseClient: clusterPoliciesBaseClient{
 			clusterPoliciesImpl: clusterPoliciesImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -90,7 +90,7 @@ func NewClusterPoliciesClient(cfg *config.Config) (*ClusterPoliciesClient, error
 // even after it has been terminated for more than 30 days, an administrator can
 // pin a cluster to the cluster list.
 type ClustersClient struct {
-	ClustersAPI
+	clustersBaseClient
 }
 
 func NewClustersClient(cfg *config.Config) (*ClustersClient, error) {
@@ -112,7 +112,7 @@ func NewClustersClient(cfg *config.Config) (*ClustersClient, error) {
 	}
 
 	return &ClustersClient{
-		ClustersAPI: ClustersAPI{
+		clustersBaseClient: clustersBaseClient{
 			clustersImpl: clustersImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -124,7 +124,7 @@ func NewClustersClient(cfg *config.Config) (*ClustersClient, error) {
 // Databricks Clusters. This API only supports (classic) all-purpose clusters.
 // Serverless compute is not supported.
 type CommandExecutionClient struct {
-	CommandExecutionAPI
+	commandExecutionBaseClient
 }
 
 func NewCommandExecutionClient(cfg *config.Config) (*CommandExecutionClient, error) {
@@ -146,7 +146,7 @@ func NewCommandExecutionClient(cfg *config.Config) (*CommandExecutionClient, err
 	}
 
 	return &CommandExecutionClient{
-		CommandExecutionAPI: CommandExecutionAPI{
+		commandExecutionBaseClient: commandExecutionBaseClient{
 			commandExecutionImpl: commandExecutionImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -165,7 +165,7 @@ func NewCommandExecutionClient(cfg *config.Config) (*CommandExecutionClient, err
 // fail, the entire cluster fails with a `GLOBAL_INIT_SCRIPT_FAILURE` error
 // code.
 type GlobalInitScriptsClient struct {
-	GlobalInitScriptsAPI
+	globalInitScriptsBaseClient
 }
 
 func NewGlobalInitScriptsClient(cfg *config.Config) (*GlobalInitScriptsClient, error) {
@@ -187,7 +187,7 @@ func NewGlobalInitScriptsClient(cfg *config.Config) (*GlobalInitScriptsClient, e
 	}
 
 	return &GlobalInitScriptsClient{
-		GlobalInitScriptsAPI: GlobalInitScriptsAPI{
+		globalInitScriptsBaseClient: globalInitScriptsBaseClient{
 			globalInitScriptsImpl: globalInitScriptsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -214,7 +214,7 @@ func NewGlobalInitScriptsClient(cfg *config.Config) (*GlobalInitScriptsClient, e
 // Databricks does not charge DBUs while instances are idle in the pool.
 // Instance provider billing does apply. See pricing.
 type InstancePoolsClient struct {
-	InstancePoolsAPI
+	instancePoolsBaseClient
 }
 
 func NewInstancePoolsClient(cfg *config.Config) (*InstancePoolsClient, error) {
@@ -236,7 +236,7 @@ func NewInstancePoolsClient(cfg *config.Config) (*InstancePoolsClient, error) {
 	}
 
 	return &InstancePoolsClient{
-		InstancePoolsAPI: InstancePoolsAPI{
+		instancePoolsBaseClient: instancePoolsBaseClient{
 			instancePoolsImpl: instancePoolsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -251,7 +251,7 @@ func NewInstancePoolsClient(cfg *config.Config) (*InstancePoolsClient, error) {
 //
 // [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html
 type InstanceProfilesClient struct {
-	InstanceProfilesAPI
+	instanceProfilesBaseClient
 }
 
 func NewInstanceProfilesClient(cfg *config.Config) (*InstanceProfilesClient, error) {
@@ -273,7 +273,7 @@ func NewInstanceProfilesClient(cfg *config.Config) (*InstanceProfilesClient, err
 	}
 
 	return &InstanceProfilesClient{
-		InstanceProfilesAPI: InstanceProfilesAPI{
+		instanceProfilesBaseClient: instanceProfilesBaseClient{
 			instanceProfilesImpl: instanceProfilesImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -298,7 +298,7 @@ func NewInstanceProfilesClient(cfg *config.Config) (*InstanceProfilesClient, err
 // you restart the cluster. Until you restart the cluster, the status of the
 // uninstalled library appears as Uninstall pending restart.
 type LibrariesClient struct {
-	LibrariesAPI
+	librariesBaseClient
 }
 
 func NewLibrariesClient(cfg *config.Config) (*LibrariesClient, error) {
@@ -320,7 +320,7 @@ func NewLibrariesClient(cfg *config.Config) (*LibrariesClient, error) {
 	}
 
 	return &LibrariesClient{
-		LibrariesAPI: LibrariesAPI{
+		librariesBaseClient: librariesBaseClient{
 			librariesImpl: librariesImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -339,7 +339,7 @@ func NewLibrariesClient(cfg *config.Config) (*LibrariesClient, error) {
 // status of a cluster. The enforce compliance API allows you to update a
 // cluster to be compliant with the current version of its policy.
 type PolicyComplianceForClustersClient struct {
-	PolicyComplianceForClustersAPI
+	policyComplianceForClustersBaseClient
 }
 
 func NewPolicyComplianceForClustersClient(cfg *config.Config) (*PolicyComplianceForClustersClient, error) {
@@ -361,7 +361,7 @@ func NewPolicyComplianceForClustersClient(cfg *config.Config) (*PolicyCompliance
 	}
 
 	return &PolicyComplianceForClustersClient{
-		PolicyComplianceForClustersAPI: PolicyComplianceForClustersAPI{
+		policyComplianceForClustersBaseClient: policyComplianceForClustersBaseClient{
 			policyComplianceForClustersImpl: policyComplianceForClustersImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -379,7 +379,7 @@ func NewPolicyComplianceForClustersClient(cfg *config.Config) (*PolicyCompliance
 // create cluster policies using a policy family. Cluster policies created using
 // a policy family inherit the policy family's policy definition.
 type PolicyFamiliesClient struct {
-	PolicyFamiliesAPI
+	policyFamiliesBaseClient
 }
 
 func NewPolicyFamiliesClient(cfg *config.Config) (*PolicyFamiliesClient, error) {
@@ -401,7 +401,7 @@ func NewPolicyFamiliesClient(cfg *config.Config) (*PolicyFamiliesClient, error) 
 	}
 
 	return &PolicyFamiliesClient{
-		PolicyFamiliesAPI: PolicyFamiliesAPI{
+		policyFamiliesBaseClient: policyFamiliesBaseClient{
 			policyFamiliesImpl: policyFamiliesImpl{
 				client: apiClient.ApiClient(),
 			},

@@ -12,7 +12,7 @@ import (
 // Clean room assets are data and code objects — Tables, volumes, and
 // notebooks that are shared with the clean room.
 type CleanRoomAssetsClient struct {
-	CleanRoomAssetsAPI
+	cleanRoomAssetsBaseClient
 }
 
 func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error) {
@@ -34,7 +34,7 @@ func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error
 	}
 
 	return &CleanRoomAssetsClient{
-		CleanRoomAssetsAPI: CleanRoomAssetsAPI{
+		cleanRoomAssetsBaseClient: cleanRoomAssetsBaseClient{
 			cleanRoomAssetsImpl: cleanRoomAssetsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -44,7 +44,7 @@ func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error
 
 // Clean room task runs are the executions of notebooks in a clean room.
 type CleanRoomTaskRunsClient struct {
-	CleanRoomTaskRunsAPI
+	cleanRoomTaskRunsBaseClient
 }
 
 func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, error) {
@@ -66,7 +66,7 @@ func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, e
 	}
 
 	return &CleanRoomTaskRunsClient{
-		CleanRoomTaskRunsAPI: CleanRoomTaskRunsAPI{
+		cleanRoomTaskRunsBaseClient: cleanRoomTaskRunsBaseClient{
 			cleanRoomTaskRunsImpl: cleanRoomTaskRunsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -78,7 +78,7 @@ func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, e
 // and privacy-protecting environment where multiple parties can work together
 // on sensitive enterprise data without direct access to each other’s data.
 type CleanRoomsClient struct {
-	CleanRoomsAPI
+	cleanRoomsBaseClient
 }
 
 func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
@@ -100,7 +100,7 @@ func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
 	}
 
 	return &CleanRoomsClient{
-		CleanRoomsAPI: CleanRoomsAPI{
+		cleanRoomsBaseClient: cleanRoomsBaseClient{
 			cleanRoomsImpl: cleanRoomsImpl{
 				client: apiClient.ApiClient(),
 			},

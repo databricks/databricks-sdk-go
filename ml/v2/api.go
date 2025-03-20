@@ -7,14 +7,14 @@ import (
 	"context"
 )
 
-type ExperimentsAPI struct {
+type experimentsBaseClient struct {
 	experimentsImpl
 }
 
 // Get experiment permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ExperimentsAPI) GetPermissionLevelsByExperimentId(ctx context.Context, experimentId string) (*GetExperimentPermissionLevelsResponse, error) {
+func (a *experimentsBaseClient) GetPermissionLevelsByExperimentId(ctx context.Context, experimentId string) (*GetExperimentPermissionLevelsResponse, error) {
 	return a.experimentsImpl.GetPermissionLevels(ctx, GetExperimentPermissionLevelsRequest{
 		ExperimentId: experimentId,
 	})
@@ -24,33 +24,33 @@ func (a *ExperimentsAPI) GetPermissionLevelsByExperimentId(ctx context.Context, 
 //
 // Gets the permissions of an experiment. Experiments can inherit permissions
 // from their root object.
-func (a *ExperimentsAPI) GetPermissionsByExperimentId(ctx context.Context, experimentId string) (*ExperimentPermissions, error) {
+func (a *experimentsBaseClient) GetPermissionsByExperimentId(ctx context.Context, experimentId string) (*ExperimentPermissions, error) {
 	return a.experimentsImpl.GetPermissions(ctx, GetExperimentPermissionsRequest{
 		ExperimentId: experimentId,
 	})
 }
 
-type ForecastingAPI struct {
+type forecastingBaseClient struct {
 	forecastingImpl
 }
 
 // Get a forecasting experiment.
 //
 // Public RPC to get forecasting experiment
-func (a *ForecastingAPI) GetExperimentByExperimentId(ctx context.Context, experimentId string) (*ForecastingExperiment, error) {
+func (a *forecastingBaseClient) GetExperimentByExperimentId(ctx context.Context, experimentId string) (*ForecastingExperiment, error) {
 	return a.forecastingImpl.GetExperiment(ctx, GetForecastingExperimentRequest{
 		ExperimentId: experimentId,
 	})
 }
 
-type ModelRegistryAPI struct {
+type modelRegistryBaseClient struct {
 	modelRegistryImpl
 }
 
 // Get registered model permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ModelRegistryAPI) GetPermissionLevelsByRegisteredModelId(ctx context.Context, registeredModelId string) (*GetRegisteredModelPermissionLevelsResponse, error) {
+func (a *modelRegistryBaseClient) GetPermissionLevelsByRegisteredModelId(ctx context.Context, registeredModelId string) (*GetRegisteredModelPermissionLevelsResponse, error) {
 	return a.modelRegistryImpl.GetPermissionLevels(ctx, GetRegisteredModelPermissionLevelsRequest{
 		RegisteredModelId: registeredModelId,
 	})
@@ -60,7 +60,7 @@ func (a *ModelRegistryAPI) GetPermissionLevelsByRegisteredModelId(ctx context.Co
 //
 // Gets the permissions of a registered model. Registered models can inherit
 // permissions from their root object.
-func (a *ModelRegistryAPI) GetPermissionsByRegisteredModelId(ctx context.Context, registeredModelId string) (*RegisteredModelPermissions, error) {
+func (a *modelRegistryBaseClient) GetPermissionsByRegisteredModelId(ctx context.Context, registeredModelId string) (*RegisteredModelPermissions, error) {
 	return a.modelRegistryImpl.GetPermissions(ctx, GetRegisteredModelPermissionsRequest{
 		RegisteredModelId: registeredModelId,
 	})

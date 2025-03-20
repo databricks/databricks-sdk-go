@@ -15,7 +15,7 @@ import (
 // destinations if the condition was met. Alerts can be scheduled using the
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 type AlertsClient struct {
-	AlertsAPI
+	alertsBaseClient
 }
 
 func NewAlertsClient(cfg *config.Config) (*AlertsClient, error) {
@@ -37,7 +37,7 @@ func NewAlertsClient(cfg *config.Config) (*AlertsClient, error) {
 	}
 
 	return &AlertsClient{
-		AlertsAPI: AlertsAPI{
+		alertsBaseClient: alertsBaseClient{
 			alertsImpl: alertsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -56,7 +56,7 @@ func NewAlertsClient(cfg *config.Config) (*AlertsClient, error) {
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type AlertsLegacyClient struct {
-	AlertsLegacyAPI
+	alertsLegacyBaseClient
 }
 
 func NewAlertsLegacyClient(cfg *config.Config) (*AlertsLegacyClient, error) {
@@ -78,7 +78,7 @@ func NewAlertsLegacyClient(cfg *config.Config) (*AlertsLegacyClient, error) {
 	}
 
 	return &AlertsLegacyClient{
-		AlertsLegacyAPI: AlertsLegacyAPI{
+		alertsLegacyBaseClient: alertsLegacyBaseClient{
 			alertsLegacyImpl: alertsLegacyImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -90,7 +90,7 @@ func NewAlertsLegacyClient(cfg *config.Config) (*AlertsLegacyClient, error) {
 // from existing dashboards within the Databricks Workspace. Data structures may
 // change over time.
 type DashboardWidgetsClient struct {
-	DashboardWidgetsAPI
+	dashboardWidgetsBaseClient
 }
 
 func NewDashboardWidgetsClient(cfg *config.Config) (*DashboardWidgetsClient, error) {
@@ -112,7 +112,7 @@ func NewDashboardWidgetsClient(cfg *config.Config) (*DashboardWidgetsClient, err
 	}
 
 	return &DashboardWidgetsClient{
-		DashboardWidgetsAPI: DashboardWidgetsAPI{
+		dashboardWidgetsBaseClient: dashboardWidgetsBaseClient{
 			dashboardWidgetsImpl: dashboardWidgetsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -127,7 +127,7 @@ func NewDashboardWidgetsClient(cfg *config.Config) (*DashboardWidgetsClient, err
 // to create a new one. Dashboards can be scheduled using the `sql_task` type of
 // the Jobs API, e.g. :method:jobs/create.
 type DashboardsClient struct {
-	DashboardsAPI
+	dashboardsBaseClient
 }
 
 func NewDashboardsClient(cfg *config.Config) (*DashboardsClient, error) {
@@ -149,7 +149,7 @@ func NewDashboardsClient(cfg *config.Config) (*DashboardsClient, error) {
 	}
 
 	return &DashboardsClient{
-		DashboardsAPI: DashboardsAPI{
+		dashboardsBaseClient: dashboardsBaseClient{
 			dashboardsImpl: dashboardsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -173,7 +173,7 @@ func NewDashboardsClient(cfg *config.Config) (*DashboardsClient, error) {
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type DataSourcesClient struct {
-	DataSourcesAPI
+	dataSourcesBaseClient
 }
 
 func NewDataSourcesClient(cfg *config.Config) (*DataSourcesClient, error) {
@@ -195,7 +195,7 @@ func NewDataSourcesClient(cfg *config.Config) (*DataSourcesClient, error) {
 	}
 
 	return &DataSourcesClient{
-		DataSourcesAPI: DataSourcesAPI{
+		dataSourcesBaseClient: dataSourcesBaseClient{
 			dataSourcesImpl: dataSourcesImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -222,7 +222,7 @@ func NewDataSourcesClient(cfg *config.Config) (*DataSourcesClient, error) {
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type DbsqlPermissionsClient struct {
-	DbsqlPermissionsAPI
+	dbsqlPermissionsBaseClient
 }
 
 func NewDbsqlPermissionsClient(cfg *config.Config) (*DbsqlPermissionsClient, error) {
@@ -244,7 +244,7 @@ func NewDbsqlPermissionsClient(cfg *config.Config) (*DbsqlPermissionsClient, err
 	}
 
 	return &DbsqlPermissionsClient{
-		DbsqlPermissionsAPI: DbsqlPermissionsAPI{
+		dbsqlPermissionsBaseClient: dbsqlPermissionsBaseClient{
 			dbsqlPermissionsImpl: dbsqlPermissionsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -257,7 +257,7 @@ func NewDbsqlPermissionsClient(cfg *config.Config) (*DbsqlPermissionsClient, err
 // name, description, tags, and parameters. Queries can be scheduled using the
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 type QueriesClient struct {
-	QueriesAPI
+	queriesBaseClient
 }
 
 func NewQueriesClient(cfg *config.Config) (*QueriesClient, error) {
@@ -279,7 +279,7 @@ func NewQueriesClient(cfg *config.Config) (*QueriesClient, error) {
 	}
 
 	return &QueriesClient{
-		QueriesAPI: QueriesAPI{
+		queriesBaseClient: queriesBaseClient{
 			queriesImpl: queriesImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -297,7 +297,7 @@ func NewQueriesClient(cfg *config.Config) (*QueriesClient, error) {
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type QueriesLegacyClient struct {
-	QueriesLegacyAPI
+	queriesLegacyBaseClient
 }
 
 func NewQueriesLegacyClient(cfg *config.Config) (*QueriesLegacyClient, error) {
@@ -319,7 +319,7 @@ func NewQueriesLegacyClient(cfg *config.Config) (*QueriesLegacyClient, error) {
 	}
 
 	return &QueriesLegacyClient{
-		QueriesLegacyAPI: QueriesLegacyAPI{
+		queriesLegacyBaseClient: queriesLegacyBaseClient{
 			queriesLegacyImpl: queriesLegacyImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -330,7 +330,7 @@ func NewQueriesLegacyClient(cfg *config.Config) (*QueriesLegacyClient, error) {
 // A service responsible for storing and retrieving the list of queries run
 // against SQL endpoints and serverless compute.
 type QueryHistoryClient struct {
-	QueryHistoryAPI
+	queryHistoryBaseClient
 }
 
 func NewQueryHistoryClient(cfg *config.Config) (*QueryHistoryClient, error) {
@@ -352,7 +352,7 @@ func NewQueryHistoryClient(cfg *config.Config) (*QueryHistoryClient, error) {
 	}
 
 	return &QueryHistoryClient{
-		QueryHistoryAPI: QueryHistoryAPI{
+		queryHistoryBaseClient: queryHistoryBaseClient{
 			queryHistoryImpl: queryHistoryImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -364,7 +364,7 @@ func NewQueryHistoryClient(cfg *config.Config) (*QueryHistoryClient, error) {
 // visualizations from existing queries in the Databricks Workspace. Data
 // structures can change over time.
 type QueryVisualizationsClient struct {
-	QueryVisualizationsAPI
+	queryVisualizationsBaseClient
 }
 
 func NewQueryVisualizationsClient(cfg *config.Config) (*QueryVisualizationsClient, error) {
@@ -386,7 +386,7 @@ func NewQueryVisualizationsClient(cfg *config.Config) (*QueryVisualizationsClien
 	}
 
 	return &QueryVisualizationsClient{
-		QueryVisualizationsAPI: QueryVisualizationsAPI{
+		queryVisualizationsBaseClient: queryVisualizationsBaseClient{
 			queryVisualizationsImpl: queryVisualizationsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -403,7 +403,7 @@ func NewQueryVisualizationsClient(cfg *config.Config) (*QueryVisualizationsClien
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type QueryVisualizationsLegacyClient struct {
-	QueryVisualizationsLegacyAPI
+	queryVisualizationsLegacyBaseClient
 }
 
 func NewQueryVisualizationsLegacyClient(cfg *config.Config) (*QueryVisualizationsLegacyClient, error) {
@@ -425,7 +425,7 @@ func NewQueryVisualizationsLegacyClient(cfg *config.Config) (*QueryVisualization
 	}
 
 	return &QueryVisualizationsLegacyClient{
-		QueryVisualizationsLegacyAPI: QueryVisualizationsLegacyAPI{
+		queryVisualizationsLegacyBaseClient: queryVisualizationsLegacyBaseClient{
 			queryVisualizationsLegacyImpl: queryVisualizationsLegacyImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -435,7 +435,7 @@ func NewQueryVisualizationsLegacyClient(cfg *config.Config) (*QueryVisualization
 
 // Redash V2 service for workspace configurations (internal)
 type RedashConfigClient struct {
-	RedashConfigAPI
+	redashConfigBaseClient
 }
 
 func NewRedashConfigClient(cfg *config.Config) (*RedashConfigClient, error) {
@@ -457,7 +457,7 @@ func NewRedashConfigClient(cfg *config.Config) (*RedashConfigClient, error) {
 	}
 
 	return &RedashConfigClient{
-		RedashConfigAPI: RedashConfigAPI{
+		redashConfigBaseClient: redashConfigBaseClient{
 			redashConfigImpl: redashConfigImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -571,7 +571,7 @@ func NewRedashConfigClient(cfg *config.Config) (*RedashConfigClient, error) {
 // [Apache Arrow Columnar]: https://arrow.apache.org/overview/
 // [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
 type StatementExecutionClient struct {
-	StatementExecutionAPI
+	statementExecutionBaseClient
 }
 
 func NewStatementExecutionClient(cfg *config.Config) (*StatementExecutionClient, error) {
@@ -593,7 +593,7 @@ func NewStatementExecutionClient(cfg *config.Config) (*StatementExecutionClient,
 	}
 
 	return &StatementExecutionClient{
-		StatementExecutionAPI: StatementExecutionAPI{
+		statementExecutionBaseClient: statementExecutionBaseClient{
 			statementExecutionImpl: statementExecutionImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -605,7 +605,7 @@ func NewStatementExecutionClient(cfg *config.Config) (*StatementExecutionClient,
 // objects within Databricks SQL. Compute resources are infrastructure resources
 // that provide processing capabilities in the cloud.
 type WarehousesClient struct {
-	WarehousesAPI
+	warehousesBaseClient
 }
 
 func NewWarehousesClient(cfg *config.Config) (*WarehousesClient, error) {
@@ -627,7 +627,7 @@ func NewWarehousesClient(cfg *config.Config) (*WarehousesClient, error) {
 	}
 
 	return &WarehousesClient{
-		WarehousesAPI: WarehousesAPI{
+		warehousesBaseClient: warehousesBaseClient{
 			warehousesImpl: warehousesImpl{
 				client: apiClient.ApiClient(),
 			},

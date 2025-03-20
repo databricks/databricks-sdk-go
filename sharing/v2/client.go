@@ -13,7 +13,7 @@ import (
 // who shares the data. A provider contains shares which further contain the
 // shared data.
 type ProvidersClient struct {
-	ProvidersAPI
+	providersBaseClient
 }
 
 func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
@@ -35,7 +35,7 @@ func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
 	}
 
 	return &ProvidersClient{
-		ProvidersAPI: ProvidersAPI{
+		providersBaseClient: providersBaseClient{
 			providersImpl: providersImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -54,7 +54,7 @@ func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
 // treat the downloaded credential as a secret and must not share it outside of
 // their organization.
 type RecipientActivationClient struct {
-	RecipientActivationAPI
+	recipientActivationBaseClient
 }
 
 func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClient, error) {
@@ -76,7 +76,7 @@ func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClien
 	}
 
 	return &RecipientActivationClient{
-		RecipientActivationAPI: RecipientActivationAPI{
+		recipientActivationBaseClient: recipientActivationBaseClient{
 			recipientActivationImpl: recipientActivationImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -102,7 +102,7 @@ func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClien
 // file to establish a secure connection to receive the shared data. This
 // sharing mode is called **open sharing**.
 type RecipientsClient struct {
-	RecipientsAPI
+	recipientsBaseClient
 }
 
 func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
@@ -124,7 +124,7 @@ func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
 	}
 
 	return &RecipientsClient{
-		RecipientsAPI: RecipientsAPI{
+		recipientsBaseClient: recipientsBaseClient{
 			recipientsImpl: recipientsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -138,7 +138,7 @@ func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
 // assets under their original name, qualified by their original schema, or
 // provide alternate exposed names.
 type SharesClient struct {
-	SharesAPI
+	sharesBaseClient
 }
 
 func NewSharesClient(cfg *config.Config) (*SharesClient, error) {
@@ -160,7 +160,7 @@ func NewSharesClient(cfg *config.Config) (*SharesClient, error) {
 	}
 
 	return &SharesClient{
-		SharesAPI: SharesAPI{
+		sharesBaseClient: sharesBaseClient{
 			sharesImpl: sharesImpl{
 				client: apiClient.ApiClient(),
 			},

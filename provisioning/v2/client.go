@@ -15,7 +15,7 @@ import (
 // A credential configuration encapsulates this role information, and its ID is
 // used when creating a new workspace.
 type CredentialsClient struct {
-	CredentialsAPI
+	credentialsBaseClient
 }
 
 func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
@@ -37,7 +37,7 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 	}
 
 	return &CredentialsClient{
-		CredentialsAPI: CredentialsAPI{
+		credentialsBaseClient: credentialsBaseClient{
 			credentialsImpl: credentialsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -62,7 +62,7 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 // If you have an older workspace, it might not be on the E2 version of the
 // platform. If you are not sure, contact your Databricks representative.
 type EncryptionKeysClient struct {
-	EncryptionKeysAPI
+	encryptionKeysBaseClient
 }
 
 func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) {
@@ -84,7 +84,7 @@ func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) 
 	}
 
 	return &EncryptionKeysClient{
-		EncryptionKeysAPI: EncryptionKeysAPI{
+		encryptionKeysBaseClient: encryptionKeysBaseClient{
 			encryptionKeysImpl: encryptionKeysImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -96,7 +96,7 @@ func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) 
 // (optional). Its ID is used when creating a new workspace if you use
 // customer-managed VPCs.
 type NetworksClient struct {
-	NetworksAPI
+	networksBaseClient
 }
 
 func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
@@ -118,7 +118,7 @@ func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
 	}
 
 	return &NetworksClient{
-		NetworksAPI: NetworksAPI{
+		networksBaseClient: networksBaseClient{
 			networksImpl: networksImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -128,7 +128,7 @@ func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
 
 // These APIs manage private access settings for this account.
 type PrivateAccessClient struct {
-	PrivateAccessAPI
+	privateAccessBaseClient
 }
 
 func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
@@ -150,7 +150,7 @@ func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
 	}
 
 	return &PrivateAccessClient{
-		PrivateAccessAPI: PrivateAccessAPI{
+		privateAccessBaseClient: privateAccessBaseClient{
 			privateAccessImpl: privateAccessImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -165,7 +165,7 @@ func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
 // encapsulates this bucket information, and its ID is used when creating a new
 // workspace.
 type StorageClient struct {
-	StorageAPI
+	storageBaseClient
 }
 
 func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
@@ -187,7 +187,7 @@ func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
 	}
 
 	return &StorageClient{
-		StorageAPI: StorageAPI{
+		storageBaseClient: storageBaseClient{
 			storageImpl: storageImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -197,7 +197,7 @@ func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
 
 // These APIs manage VPC endpoint configurations for this account.
 type VpcEndpointsClient struct {
-	VpcEndpointsAPI
+	vpcEndpointsBaseClient
 }
 
 func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
@@ -219,7 +219,7 @@ func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
 	}
 
 	return &VpcEndpointsClient{
-		VpcEndpointsAPI: VpcEndpointsAPI{
+		vpcEndpointsBaseClient: vpcEndpointsBaseClient{
 			vpcEndpointsImpl: vpcEndpointsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -237,7 +237,7 @@ func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
 type WorkspacesClient struct {
-	WorkspacesAPI
+	workspacesBaseClient
 }
 
 func NewWorkspacesClient(cfg *config.Config) (*WorkspacesClient, error) {
@@ -259,7 +259,7 @@ func NewWorkspacesClient(cfg *config.Config) (*WorkspacesClient, error) {
 	}
 
 	return &WorkspacesClient{
-		WorkspacesAPI: WorkspacesAPI{
+		workspacesBaseClient: workspacesBaseClient{
 			workspacesImpl: workspacesImpl{
 				client: apiClient.ApiClient(),
 			},

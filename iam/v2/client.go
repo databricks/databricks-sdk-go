@@ -11,7 +11,7 @@ import (
 
 // Rule based Access Control for Databricks Resources.
 type AccessControlClient struct {
-	AccessControlAPI
+	accessControlBaseClient
 }
 
 func NewAccessControlClient(cfg *config.Config) (*AccessControlClient, error) {
@@ -33,7 +33,7 @@ func NewAccessControlClient(cfg *config.Config) (*AccessControlClient, error) {
 	}
 
 	return &AccessControlClient{
-		AccessControlAPI: AccessControlAPI{
+		accessControlBaseClient: accessControlBaseClient{
 			accessControlImpl: accessControlImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -45,7 +45,7 @@ func NewAccessControlClient(cfg *config.Config) (*AccessControlClient, error) {
 // grant rules are supported. A grant rule specifies a role assigned to a set of
 // principals. A list of rules attached to a resource is called a rule set.
 type AccountAccessControlClient struct {
-	AccountAccessControlAPI
+	accountAccessControlBaseClient
 }
 
 func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlClient, error) {
@@ -67,7 +67,7 @@ func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlCli
 	}
 
 	return &AccountAccessControlClient{
-		AccountAccessControlAPI: AccountAccessControlAPI{
+		accountAccessControlBaseClient: accountAccessControlBaseClient{
 			accountAccessControlImpl: accountAccessControlImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -80,7 +80,7 @@ func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlCli
 // principals. A list of rules attached to a resource is called a rule set. A
 // workspace must belong to an account for these APIs to work.
 type AccountAccessControlProxyClient struct {
-	AccountAccessControlProxyAPI
+	accountAccessControlProxyBaseClient
 }
 
 func NewAccountAccessControlProxyClient(cfg *config.Config) (*AccountAccessControlProxyClient, error) {
@@ -102,7 +102,7 @@ func NewAccountAccessControlProxyClient(cfg *config.Config) (*AccountAccessContr
 	}
 
 	return &AccountAccessControlProxyClient{
-		AccountAccessControlProxyAPI: AccountAccessControlProxyAPI{
+		accountAccessControlProxyBaseClient: accountAccessControlProxyBaseClient{
 			accountAccessControlProxyImpl: accountAccessControlProxyImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -118,7 +118,7 @@ func NewAccountAccessControlProxyClient(cfg *config.Config) (*AccountAccessContr
 // Databricks account identities can be assigned as members of groups, and
 // members inherit permissions that are assigned to their group.
 type AccountGroupsClient struct {
-	AccountGroupsAPI
+	accountGroupsBaseClient
 }
 
 func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
@@ -140,7 +140,7 @@ func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
 	}
 
 	return &AccountGroupsClient{
-		AccountGroupsAPI: AccountGroupsAPI{
+		accountGroupsBaseClient: accountGroupsBaseClient{
 			accountGroupsImpl: accountGroupsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -155,7 +155,7 @@ func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
 // any write, delete, or modify privileges in production. This eliminates the
 // risk of a user overwriting production data by accident.
 type AccountServicePrincipalsClient struct {
-	AccountServicePrincipalsAPI
+	accountServicePrincipalsBaseClient
 }
 
 func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrincipalsClient, error) {
@@ -177,7 +177,7 @@ func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrinc
 	}
 
 	return &AccountServicePrincipalsClient{
-		AccountServicePrincipalsAPI: AccountServicePrincipalsAPI{
+		accountServicePrincipalsBaseClient: accountServicePrincipalsBaseClient{
 			accountServicePrincipalsImpl: accountServicePrincipalsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -197,7 +197,7 @@ func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrinc
 // account. This ensures a consistent offboarding process and prevents
 // unauthorized users from accessing sensitive data.
 type AccountUsersClient struct {
-	AccountUsersAPI
+	accountUsersBaseClient
 }
 
 func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
@@ -219,7 +219,7 @@ func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
 	}
 
 	return &AccountUsersClient{
-		AccountUsersAPI: AccountUsersAPI{
+		accountUsersBaseClient: accountUsersBaseClient{
 			accountUsersImpl: accountUsersImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -230,7 +230,7 @@ func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
 // This API allows retrieving information about currently authenticated user or
 // service principal.
 type CurrentUserClient struct {
-	CurrentUserAPI
+	currentUserBaseClient
 }
 
 func NewCurrentUserClient(cfg *config.Config) (*CurrentUserClient, error) {
@@ -252,7 +252,7 @@ func NewCurrentUserClient(cfg *config.Config) (*CurrentUserClient, error) {
 	}
 
 	return &CurrentUserClient{
-		CurrentUserAPI: CurrentUserAPI{
+		currentUserBaseClient: currentUserBaseClient{
 			currentUserImpl: currentUserImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -268,7 +268,7 @@ func NewCurrentUserClient(cfg *config.Config) (*CurrentUserClient, error) {
 // Databricks workspace identities can be assigned as members of groups, and
 // members inherit permissions that are assigned to their group.
 type GroupsClient struct {
-	GroupsAPI
+	groupsBaseClient
 }
 
 func NewGroupsClient(cfg *config.Config) (*GroupsClient, error) {
@@ -290,7 +290,7 @@ func NewGroupsClient(cfg *config.Config) (*GroupsClient, error) {
 	}
 
 	return &GroupsClient{
-		GroupsAPI: GroupsAPI{
+		groupsBaseClient: groupsBaseClient{
 			groupsImpl: groupsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -301,7 +301,7 @@ func NewGroupsClient(cfg *config.Config) (*GroupsClient, error) {
 // APIs for migrating acl permissions, used only by the ucx tool:
 // https://github.com/databrickslabs/ucx
 type PermissionMigrationClient struct {
-	PermissionMigrationAPI
+	permissionMigrationBaseClient
 }
 
 func NewPermissionMigrationClient(cfg *config.Config) (*PermissionMigrationClient, error) {
@@ -323,7 +323,7 @@ func NewPermissionMigrationClient(cfg *config.Config) (*PermissionMigrationClien
 	}
 
 	return &PermissionMigrationClient{
-		PermissionMigrationAPI: PermissionMigrationAPI{
+		permissionMigrationBaseClient: permissionMigrationBaseClient{
 			permissionMigrationImpl: permissionMigrationImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -386,7 +386,7 @@ func NewPermissionMigrationClient(cfg *config.Config) (*PermissionMigrationClien
 //
 // [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 type PermissionsClient struct {
-	PermissionsAPI
+	permissionsBaseClient
 }
 
 func NewPermissionsClient(cfg *config.Config) (*PermissionsClient, error) {
@@ -408,7 +408,7 @@ func NewPermissionsClient(cfg *config.Config) (*PermissionsClient, error) {
 	}
 
 	return &PermissionsClient{
-		PermissionsAPI: PermissionsAPI{
+		permissionsBaseClient: permissionsBaseClient{
 			permissionsImpl: permissionsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -423,7 +423,7 @@ func NewPermissionsClient(cfg *config.Config) (*PermissionsClient, error) {
 // any write, delete, or modify privileges in production. This eliminates the
 // risk of a user overwriting production data by accident.
 type ServicePrincipalsClient struct {
-	ServicePrincipalsAPI
+	servicePrincipalsBaseClient
 }
 
 func NewServicePrincipalsClient(cfg *config.Config) (*ServicePrincipalsClient, error) {
@@ -445,7 +445,7 @@ func NewServicePrincipalsClient(cfg *config.Config) (*ServicePrincipalsClient, e
 	}
 
 	return &ServicePrincipalsClient{
-		ServicePrincipalsAPI: ServicePrincipalsAPI{
+		servicePrincipalsBaseClient: servicePrincipalsBaseClient{
 			servicePrincipalsImpl: servicePrincipalsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -465,7 +465,7 @@ func NewServicePrincipalsClient(cfg *config.Config) (*ServicePrincipalsClient, e
 // Databricks workspace. This ensures a consistent offboarding process and
 // prevents unauthorized users from accessing sensitive data.
 type UsersClient struct {
-	UsersAPI
+	usersBaseClient
 }
 
 func NewUsersClient(cfg *config.Config) (*UsersClient, error) {
@@ -487,7 +487,7 @@ func NewUsersClient(cfg *config.Config) (*UsersClient, error) {
 	}
 
 	return &UsersClient{
-		UsersAPI: UsersAPI{
+		usersBaseClient: usersBaseClient{
 			usersImpl: usersImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -498,7 +498,7 @@ func NewUsersClient(cfg *config.Config) (*UsersClient, error) {
 // The Workspace Permission Assignment API allows you to manage workspace
 // permissions for principals in your account.
 type WorkspaceAssignmentClient struct {
-	WorkspaceAssignmentAPI
+	workspaceAssignmentBaseClient
 }
 
 func NewWorkspaceAssignmentClient(cfg *config.Config) (*WorkspaceAssignmentClient, error) {
@@ -520,7 +520,7 @@ func NewWorkspaceAssignmentClient(cfg *config.Config) (*WorkspaceAssignmentClien
 	}
 
 	return &WorkspaceAssignmentClient{
-		WorkspaceAssignmentAPI: WorkspaceAssignmentAPI{
+		workspaceAssignmentBaseClient: workspaceAssignmentBaseClient{
 			workspaceAssignmentImpl: workspaceAssignmentImpl{
 				client: apiClient.ApiClient(),
 			},

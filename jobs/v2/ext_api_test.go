@@ -56,7 +56,9 @@ func TestGetRun(t *testing.T) {
 		mockJobsImpl := &jobsImpl{
 			client: client.ApiClient(),
 		}
-		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+		api := &JobsClient{
+			jobsBaseClient: jobsBaseClient{jobsImpl: *mockJobsImpl},
+		}
 
 		request := GetRunRequest{RunId: 514594995218126}
 		run, err := api.GetRun(ctx, request)
@@ -156,7 +158,9 @@ func TestGetRun(t *testing.T) {
 		mockJobsImpl := &jobsImpl{
 			client: client.ApiClient(),
 		}
-		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+		api := &JobsClient{
+			jobsBaseClient: jobsBaseClient{jobsImpl: *mockJobsImpl},
+		}
 
 		request := GetRunRequest{RunId: 111222333}
 		run, err := api.GetRun(ctx, request)
@@ -300,7 +304,9 @@ func TestGetRun(t *testing.T) {
 		mockJobsImpl := &jobsImpl{
 			client: client.ApiClient(),
 		}
-		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+		api := &JobsClient{
+			jobsBaseClient: jobsBaseClient{jobsImpl: *mockJobsImpl},
+		}
 
 		request := GetRunRequest{RunId: 111222333}
 		run, err := api.GetRun(ctx, request)
@@ -394,7 +400,9 @@ func TestGetRun(t *testing.T) {
 		mockJobsImpl := &jobsImpl{
 			client: client.ApiClient(),
 		}
-		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+		api := &JobsClient{
+			jobsBaseClient: jobsBaseClient{jobsImpl: *mockJobsImpl},
+		}
 
 		request := GetRunRequest{RunId: 4444}
 		run, err := api.GetRun(ctx, request)
@@ -471,7 +479,9 @@ func TestGetJob(t *testing.T) {
 		mockJobsImpl := &jobsImpl{
 			client: client.ApiClient(),
 		}
-		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+		api := &JobsClient{
+			jobsBaseClient: jobsBaseClient{jobsImpl: *mockJobsImpl},
+		}
 
 		request := GetJobRequest{JobId: 514594995218126}
 		job, err := api.Get(ctx, request)
@@ -650,7 +660,9 @@ func TestGetJob(t *testing.T) {
 		mockJobsImpl := &jobsImpl{
 			client: client.ApiClient(),
 		}
-		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+		api := &JobsClient{
+			jobsBaseClient: jobsBaseClient{jobsImpl: *mockJobsImpl},
+		}
 
 		request := GetJobRequest{JobId: 514594995218126}
 		job, err := api.Get(ctx, request)
@@ -765,7 +777,9 @@ func TestListJobs(t *testing.T) {
 		mockJobsImpl := &jobsImpl{
 			client: client.ApiClient(),
 		}
-		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+		api := &JobsClient{
+			jobsBaseClient: jobsBaseClient{jobsImpl: *mockJobsImpl},
+		}
 
 		jobsList := api.List(ctx, ListJobsRequest{})
 		var allJobs []BaseJob
@@ -1250,7 +1264,9 @@ func TestListJobs(t *testing.T) {
 		mockJobsImpl := &jobsImpl{
 			client: client.ApiClient(),
 		}
-		api := &JobsAPI{jobsImpl: *mockJobsImpl}
+		api := &JobsClient{
+			jobsBaseClient: jobsBaseClient{jobsImpl: *mockJobsImpl},
+		}
 
 		jobsList := api.List(ctx, ListJobsRequest{ExpandTasks: true})
 		var allJobs []BaseJob

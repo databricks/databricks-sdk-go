@@ -7,7 +7,7 @@ import (
 	"context"
 )
 
-type DbfsAPI struct {
+type dbfsBaseClient struct {
 	dbfsImpl
 }
 
@@ -15,7 +15,7 @@ type DbfsAPI struct {
 //
 // Closes the stream specified by the input handle. If the handle does not
 // exist, this call throws an exception with “RESOURCE_DOES_NOT_EXIST“.
-func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) (*CloseResponse, error) {
+func (a *dbfsBaseClient) CloseByHandle(ctx context.Context, handle int64) (*CloseResponse, error) {
 	return a.dbfsImpl.Close(ctx, Close{
 		Handle: handle,
 	})
@@ -25,7 +25,7 @@ func (a *DbfsAPI) CloseByHandle(ctx context.Context, handle int64) (*CloseRespon
 //
 // Gets the file information for a file or directory. If the file or directory
 // does not exist, this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
-func (a *DbfsAPI) GetStatusByPath(ctx context.Context, path string) (*FileInfo, error) {
+func (a *dbfsBaseClient) GetStatusByPath(ctx context.Context, path string) (*FileInfo, error) {
 	return a.dbfsImpl.GetStatus(ctx, GetStatusRequest{
 		Path: path,
 	})
@@ -44,7 +44,7 @@ func (a *DbfsAPI) GetStatusByPath(ctx context.Context, path string) (*FileInfo, 
 // you perform such operations in the context of a cluster, using the [File
 // system utility (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs),
 // which provides the same functionality without timing out.
-func (a *DbfsAPI) ListByPath(ctx context.Context, path string) (*ListStatusResponse, error) {
+func (a *dbfsBaseClient) ListByPath(ctx context.Context, path string) (*ListStatusResponse, error) {
 	return a.dbfsImpl.internalList(ctx, ListDbfsRequest{
 		Path: path,
 	})
@@ -57,20 +57,20 @@ func (a *DbfsAPI) ListByPath(ctx context.Context, path string) (*ListStatusRespo
 // this call throws an exception with `RESOURCE_ALREADY_EXISTS`. **Note**: If
 // this operation fails, it might have succeeded in creating some of the
 // necessary parent directories.
-func (a *DbfsAPI) MkdirsByPath(ctx context.Context, path string) (*MkDirsResponse, error) {
+func (a *dbfsBaseClient) MkdirsByPath(ctx context.Context, path string) (*MkDirsResponse, error) {
 	return a.dbfsImpl.Mkdirs(ctx, MkDirs{
 		Path: path,
 	})
 }
 
-type FilesAPI struct {
+type filesBaseClient struct {
 	filesImpl
 }
 
 // Delete a file.
 //
 // Deletes a file. If the request is successful, there is no response body.
-func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) (*DeleteResponse, error) {
+func (a *filesBaseClient) DeleteByFilePath(ctx context.Context, filePath string) (*DeleteResponse, error) {
 	return a.filesImpl.Delete(ctx, DeleteFileRequest{
 		FilePath: filePath,
 	})
@@ -83,7 +83,7 @@ func (a *FilesAPI) DeleteByFilePath(ctx context.Context, filePath string) (*Dele
 // To delete a non-empty directory, first delete all of its contents. This can
 // be done by listing the directory contents and deleting each file and
 // subdirectory recursively.
-func (a *FilesAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) (*DeleteDirectoryResponse, error) {
+func (a *filesBaseClient) DeleteDirectoryByDirectoryPath(ctx context.Context, directoryPath string) (*DeleteDirectoryResponse, error) {
 	return a.filesImpl.DeleteDirectory(ctx, DeleteDirectoryRequest{
 		DirectoryPath: directoryPath,
 	})
@@ -94,7 +94,7 @@ func (a *FilesAPI) DeleteDirectoryByDirectoryPath(ctx context.Context, directory
 // Downloads a file. The file contents are the response body. This is a standard
 // HTTP file download, not a JSON RPC. It supports the Range and
 // If-Unmodified-Since HTTP headers.
-func (a *FilesAPI) DownloadByFilePath(ctx context.Context, filePath string) (*DownloadResponse, error) {
+func (a *filesBaseClient) DownloadByFilePath(ctx context.Context, filePath string) (*DownloadResponse, error) {
 	return a.filesImpl.Download(ctx, DownloadRequest{
 		FilePath: filePath,
 	})
@@ -111,7 +111,7 @@ func (a *FilesAPI) DownloadByFilePath(ctx context.Context, filePath string) (*Do
 // If you wish to ensure the directory exists, you can instead use `PUT`, which
 // will create the directory if it does not exist, and is idempotent (it will
 // succeed if the directory already exists).
-func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) (*GetDirectoryMetadataResponse, error) {
+func (a *filesBaseClient) GetDirectoryMetadataByDirectoryPath(ctx context.Context, directoryPath string) (*GetDirectoryMetadataResponse, error) {
 	return a.filesImpl.GetDirectoryMetadata(ctx, GetDirectoryMetadataRequest{
 		DirectoryPath: directoryPath,
 	})
@@ -121,7 +121,7 @@ func (a *FilesAPI) GetDirectoryMetadataByDirectoryPath(ctx context.Context, dire
 //
 // Get the metadata of a file. The response HTTP headers contain the metadata.
 // There is no response body.
-func (a *FilesAPI) GetMetadataByFilePath(ctx context.Context, filePath string) (*GetMetadataResponse, error) {
+func (a *filesBaseClient) GetMetadataByFilePath(ctx context.Context, filePath string) (*GetMetadataResponse, error) {
 	return a.filesImpl.GetMetadata(ctx, GetMetadataRequest{
 		FilePath: filePath,
 	})
@@ -131,7 +131,7 @@ func (a *FilesAPI) GetMetadataByFilePath(ctx context.Context, filePath string) (
 //
 // Returns the contents of a directory. If there is no directory at the
 // specified path, the API returns a HTTP 404 error.
-func (a *FilesAPI) ListDirectoryContentsByDirectoryPath(ctx context.Context, directoryPath string) (*ListDirectoryResponse, error) {
+func (a *filesBaseClient) ListDirectoryContentsByDirectoryPath(ctx context.Context, directoryPath string) (*ListDirectoryResponse, error) {
 	return a.filesImpl.internalListDirectoryContents(ctx, ListDirectoryContentsRequest{
 		DirectoryPath: directoryPath,
 	})

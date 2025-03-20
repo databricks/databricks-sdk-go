@@ -11,7 +11,7 @@ import (
 
 // These APIs manage metastore assignments to a workspace.
 type AccountMetastoreAssignmentsClient struct {
-	AccountMetastoreAssignmentsAPI
+	accountMetastoreAssignmentsBaseClient
 }
 
 func NewAccountMetastoreAssignmentsClient(cfg *config.Config) (*AccountMetastoreAssignmentsClient, error) {
@@ -33,7 +33,7 @@ func NewAccountMetastoreAssignmentsClient(cfg *config.Config) (*AccountMetastore
 	}
 
 	return &AccountMetastoreAssignmentsClient{
-		AccountMetastoreAssignmentsAPI: AccountMetastoreAssignmentsAPI{
+		accountMetastoreAssignmentsBaseClient: accountMetastoreAssignmentsBaseClient{
 			accountMetastoreAssignmentsImpl: accountMetastoreAssignmentsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -44,7 +44,7 @@ func NewAccountMetastoreAssignmentsClient(cfg *config.Config) (*AccountMetastore
 // These APIs manage Unity Catalog metastores for an account. A metastore
 // contains catalogs that can be associated with workspaces
 type AccountMetastoresClient struct {
-	AccountMetastoresAPI
+	accountMetastoresBaseClient
 }
 
 func NewAccountMetastoresClient(cfg *config.Config) (*AccountMetastoresClient, error) {
@@ -66,7 +66,7 @@ func NewAccountMetastoresClient(cfg *config.Config) (*AccountMetastoresClient, e
 	}
 
 	return &AccountMetastoresClient{
-		AccountMetastoresAPI: AccountMetastoresAPI{
+		accountMetastoresBaseClient: accountMetastoresBaseClient{
 			accountMetastoresImpl: accountMetastoresImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -76,7 +76,7 @@ func NewAccountMetastoresClient(cfg *config.Config) (*AccountMetastoresClient, e
 
 // These APIs manage storage credentials for a particular metastore.
 type AccountStorageCredentialsClient struct {
-	AccountStorageCredentialsAPI
+	accountStorageCredentialsBaseClient
 }
 
 func NewAccountStorageCredentialsClient(cfg *config.Config) (*AccountStorageCredentialsClient, error) {
@@ -98,7 +98,7 @@ func NewAccountStorageCredentialsClient(cfg *config.Config) (*AccountStorageCred
 	}
 
 	return &AccountStorageCredentialsClient{
-		AccountStorageCredentialsAPI: AccountStorageCredentialsAPI{
+		accountStorageCredentialsBaseClient: accountStorageCredentialsBaseClient{
 			accountStorageCredentialsImpl: accountStorageCredentialsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -110,7 +110,7 @@ func NewAccountStorageCredentialsClient(cfg *config.Config) (*AccountStorageCred
 // to the `allowlist` in UC so that users can leverage these artifacts on
 // compute configured with shared access mode.
 type ArtifactAllowlistsClient struct {
-	ArtifactAllowlistsAPI
+	artifactAllowlistsBaseClient
 }
 
 func NewArtifactAllowlistsClient(cfg *config.Config) (*ArtifactAllowlistsClient, error) {
@@ -132,7 +132,7 @@ func NewArtifactAllowlistsClient(cfg *config.Config) (*ArtifactAllowlistsClient,
 	}
 
 	return &ArtifactAllowlistsClient{
-		ArtifactAllowlistsAPI: ArtifactAllowlistsAPI{
+		artifactAllowlistsBaseClient: artifactAllowlistsBaseClient{
 			artifactAllowlistsImpl: artifactAllowlistsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -149,7 +149,7 @@ func NewArtifactAllowlistsClient(cfg *config.Config) (*ArtifactAllowlistsClient,
 // different workspaces can share access to the same data, depending on
 // privileges granted centrally in Unity Catalog.
 type CatalogsClient struct {
-	CatalogsAPI
+	catalogsBaseClient
 }
 
 func NewCatalogsClient(cfg *config.Config) (*CatalogsClient, error) {
@@ -171,7 +171,7 @@ func NewCatalogsClient(cfg *config.Config) (*CatalogsClient, error) {
 	}
 
 	return &CatalogsClient{
-		CatalogsAPI: CatalogsAPI{
+		catalogsBaseClient: catalogsBaseClient{
 			catalogsImpl: catalogsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -191,7 +191,7 @@ func NewCatalogsClient(cfg *config.Config) (*CatalogsClient, error) {
 // unique set of configuration options to support credential management and
 // other settings.
 type ConnectionsClient struct {
-	ConnectionsAPI
+	connectionsBaseClient
 }
 
 func NewConnectionsClient(cfg *config.Config) (*ConnectionsClient, error) {
@@ -213,7 +213,7 @@ func NewConnectionsClient(cfg *config.Config) (*ConnectionsClient, error) {
 	}
 
 	return &ConnectionsClient{
-		ConnectionsAPI: ConnectionsAPI{
+		connectionsBaseClient: connectionsBaseClient{
 			connectionsImpl: connectionsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -230,7 +230,7 @@ func NewConnectionsClient(cfg *config.Config) (*ConnectionsClient, error) {
 // `CREATE SERVICE CREDENTIAL` privilege. The user who creates the credential
 // can delegate ownership to another user or group to manage permissions on it.
 type CredentialsClient struct {
-	CredentialsAPI
+	credentialsBaseClient
 }
 
 func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
@@ -252,7 +252,7 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 	}
 
 	return &CredentialsClient{
-		CredentialsAPI: CredentialsAPI{
+		credentialsBaseClient: credentialsBaseClient{
 			credentialsImpl: credentialsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -274,7 +274,7 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 // To create external locations, you must be a metastore admin or a user with
 // the **CREATE_EXTERNAL_LOCATION** privilege.
 type ExternalLocationsClient struct {
-	ExternalLocationsAPI
+	externalLocationsBaseClient
 }
 
 func NewExternalLocationsClient(cfg *config.Config) (*ExternalLocationsClient, error) {
@@ -296,7 +296,7 @@ func NewExternalLocationsClient(cfg *config.Config) (*ExternalLocationsClient, e
 	}
 
 	return &ExternalLocationsClient{
-		ExternalLocationsAPI: ExternalLocationsAPI{
+		externalLocationsBaseClient: externalLocationsBaseClient{
 			externalLocationsImpl: externalLocationsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -311,7 +311,7 @@ func NewExternalLocationsClient(cfg *config.Config) (*ExternalLocationsClient, e
 // function resides at the same level as a table, so it can be referenced with
 // the form __catalog_name__.__schema_name__.__function_name__.
 type FunctionsClient struct {
-	FunctionsAPI
+	functionsBaseClient
 }
 
 func NewFunctionsClient(cfg *config.Config) (*FunctionsClient, error) {
@@ -333,7 +333,7 @@ func NewFunctionsClient(cfg *config.Config) (*FunctionsClient, error) {
 	}
 
 	return &FunctionsClient{
-		FunctionsAPI: FunctionsAPI{
+		functionsBaseClient: functionsBaseClient{
 			functionsImpl: functionsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -353,7 +353,7 @@ func NewFunctionsClient(cfg *config.Config) (*FunctionsClient, error) {
 // the catalog. Similarly, privileges granted on a schema are inherited by all
 // current and future objects within that schema.
 type GrantsClient struct {
-	GrantsAPI
+	grantsBaseClient
 }
 
 func NewGrantsClient(cfg *config.Config) (*GrantsClient, error) {
@@ -375,7 +375,7 @@ func NewGrantsClient(cfg *config.Config) (*GrantsClient, error) {
 	}
 
 	return &GrantsClient{
-		GrantsAPI: GrantsAPI{
+		grantsBaseClient: grantsBaseClient{
 			grantsImpl: grantsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -398,7 +398,7 @@ func NewGrantsClient(cfg *config.Config) (*GrantsClient, error) {
 // includes a legacy Hive metastore, the data in that metastore is available in
 // a catalog named hive_metastore.
 type MetastoresClient struct {
-	MetastoresAPI
+	metastoresBaseClient
 }
 
 func NewMetastoresClient(cfg *config.Config) (*MetastoresClient, error) {
@@ -420,7 +420,7 @@ func NewMetastoresClient(cfg *config.Config) (*MetastoresClient, error) {
 	}
 
 	return &MetastoresClient{
-		MetastoresAPI: MetastoresAPI{
+		metastoresBaseClient: metastoresBaseClient{
 			metastoresImpl: metastoresImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -436,7 +436,7 @@ func NewMetastoresClient(cfg *config.Config) (*MetastoresClient, error) {
 // in Unity Catalog. For more details, see the [registered models API
 // docs](/api/workspace/registeredmodels).
 type ModelVersionsClient struct {
-	ModelVersionsAPI
+	modelVersionsBaseClient
 }
 
 func NewModelVersionsClient(cfg *config.Config) (*ModelVersionsClient, error) {
@@ -458,7 +458,7 @@ func NewModelVersionsClient(cfg *config.Config) (*ModelVersionsClient, error) {
 	}
 
 	return &ModelVersionsClient{
-		ModelVersionsAPI: ModelVersionsAPI{
+		modelVersionsBaseClient: modelVersionsBaseClient{
 			modelVersionsImpl: modelVersionsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -469,7 +469,7 @@ func NewModelVersionsClient(cfg *config.Config) (*ModelVersionsClient, error) {
 // Online tables provide lower latency and higher QPS access to data from Delta
 // tables.
 type OnlineTablesClient struct {
-	OnlineTablesAPI
+	onlineTablesBaseClient
 }
 
 func NewOnlineTablesClient(cfg *config.Config) (*OnlineTablesClient, error) {
@@ -491,7 +491,7 @@ func NewOnlineTablesClient(cfg *config.Config) (*OnlineTablesClient, error) {
 	}
 
 	return &OnlineTablesClient{
-		OnlineTablesAPI: OnlineTablesAPI{
+		onlineTablesBaseClient: onlineTablesBaseClient{
 			onlineTablesImpl: onlineTablesImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -508,7 +508,7 @@ func NewOnlineTablesClient(cfg *config.Config) (*OnlineTablesClient, error) {
 // monitor configuration only requires the user to have **SELECT** privileges on
 // the table (along with **USE_SCHEMA** and **USE_CATALOG**).
 type QualityMonitorsClient struct {
-	QualityMonitorsAPI
+	qualityMonitorsBaseClient
 }
 
 func NewQualityMonitorsClient(cfg *config.Config) (*QualityMonitorsClient, error) {
@@ -530,7 +530,7 @@ func NewQualityMonitorsClient(cfg *config.Config) (*QualityMonitorsClient, error
 	}
 
 	return &QualityMonitorsClient{
-		QualityMonitorsAPI: QualityMonitorsAPI{
+		qualityMonitorsBaseClient: qualityMonitorsBaseClient{
 			qualityMonitorsImpl: qualityMonitorsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -568,7 +568,7 @@ func NewQualityMonitorsClient(cfg *config.Config) (*QualityMonitorsClient, error
 // tagging, grants) that specify a securable type, use "FUNCTION" as the
 // securable type.
 type RegisteredModelsClient struct {
-	RegisteredModelsAPI
+	registeredModelsBaseClient
 }
 
 func NewRegisteredModelsClient(cfg *config.Config) (*RegisteredModelsClient, error) {
@@ -590,7 +590,7 @@ func NewRegisteredModelsClient(cfg *config.Config) (*RegisteredModelsClient, err
 	}
 
 	return &RegisteredModelsClient{
-		RegisteredModelsAPI: RegisteredModelsAPI{
+		registeredModelsBaseClient: registeredModelsBaseClient{
 			registeredModelsImpl: registeredModelsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -607,7 +607,7 @@ func NewRegisteredModelsClient(cfg *config.Config) (*RegisteredModelsClient, err
 //
 // [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
 type ResourceQuotasClient struct {
-	ResourceQuotasAPI
+	resourceQuotasBaseClient
 }
 
 func NewResourceQuotasClient(cfg *config.Config) (*ResourceQuotasClient, error) {
@@ -629,7 +629,7 @@ func NewResourceQuotasClient(cfg *config.Config) (*ResourceQuotasClient, error) 
 	}
 
 	return &ResourceQuotasClient{
-		ResourceQuotasAPI: ResourceQuotasAPI{
+		resourceQuotasBaseClient: resourceQuotasBaseClient{
 			resourceQuotasImpl: resourceQuotasImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -643,7 +643,7 @@ func NewResourceQuotasClient(cfg *config.Config) (*ResourceQuotasClient, error) 
 // data permission on the schema and its parent catalog, and they must have the
 // SELECT permission on the table or view.
 type SchemasClient struct {
-	SchemasAPI
+	schemasBaseClient
 }
 
 func NewSchemasClient(cfg *config.Config) (*SchemasClient, error) {
@@ -665,7 +665,7 @@ func NewSchemasClient(cfg *config.Config) (*SchemasClient, error) {
 	}
 
 	return &SchemasClient{
-		SchemasAPI: SchemasAPI{
+		schemasBaseClient: schemasBaseClient{
 			schemasImpl: schemasImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -687,7 +687,7 @@ func NewSchemasClient(cfg *config.Config) (*SchemasClient, error) {
 // account admin who creates the storage credential can delegate ownership to
 // another user or group to manage permissions on it.
 type StorageCredentialsClient struct {
-	StorageCredentialsAPI
+	storageCredentialsBaseClient
 }
 
 func NewStorageCredentialsClient(cfg *config.Config) (*StorageCredentialsClient, error) {
@@ -709,7 +709,7 @@ func NewStorageCredentialsClient(cfg *config.Config) (*StorageCredentialsClient,
 	}
 
 	return &StorageCredentialsClient{
-		StorageCredentialsAPI: StorageCredentialsAPI{
+		storageCredentialsBaseClient: storageCredentialsBaseClient{
 			storageCredentialsImpl: storageCredentialsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -721,7 +721,7 @@ func NewStorageCredentialsClient(cfg *config.Config) (*StorageCredentialsClient,
 // schema may contain information about customer usage of Unity Catalog such as
 // audit-logs, billing-logs, lineage information, etc.
 type SystemSchemasClient struct {
-	SystemSchemasAPI
+	systemSchemasBaseClient
 }
 
 func NewSystemSchemasClient(cfg *config.Config) (*SystemSchemasClient, error) {
@@ -743,7 +743,7 @@ func NewSystemSchemasClient(cfg *config.Config) (*SystemSchemasClient, error) {
 	}
 
 	return &SystemSchemasClient{
-		SystemSchemasAPI: SystemSchemasAPI{
+		systemSchemasBaseClient: systemSchemasBaseClient{
 			systemSchemasImpl: systemSchemasImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -765,7 +765,7 @@ func NewSystemSchemasClient(cfg *config.Config) (*SystemSchemasClient, error) {
 // specification during table creation. You can also add or drop constraints on
 // existing tables.
 type TableConstraintsClient struct {
-	TableConstraintsAPI
+	tableConstraintsBaseClient
 }
 
 func NewTableConstraintsClient(cfg *config.Config) (*TableConstraintsClient, error) {
@@ -787,7 +787,7 @@ func NewTableConstraintsClient(cfg *config.Config) (*TableConstraintsClient, err
 	}
 
 	return &TableConstraintsClient{
-		TableConstraintsAPI: TableConstraintsAPI{
+		tableConstraintsBaseClient: tableConstraintsBaseClient{
 			tableConstraintsImpl: tableConstraintsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -806,7 +806,7 @@ func NewTableConstraintsClient(cfg *config.Config) (*TableConstraintsClient, err
 // A table can be managed or external. From an API perspective, a __VIEW__ is a
 // particular kind of table (rather than a managed or external table).
 type TablesClient struct {
-	TablesAPI
+	tablesBaseClient
 }
 
 func NewTablesClient(cfg *config.Config) (*TablesClient, error) {
@@ -828,7 +828,7 @@ func NewTablesClient(cfg *config.Config) (*TablesClient, error) {
 	}
 
 	return &TablesClient{
-		TablesAPI: TablesAPI{
+		tablesBaseClient: tablesBaseClient{
 			tablesImpl: tablesImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -853,7 +853,7 @@ func NewTablesClient(cfg *config.Config) (*TablesClient, error) {
 // explicitly and is not included in schema ownership or ALL PRIVILEGES on the
 // schema for security reason.
 type TemporaryTableCredentialsClient struct {
-	TemporaryTableCredentialsAPI
+	temporaryTableCredentialsBaseClient
 }
 
 func NewTemporaryTableCredentialsClient(cfg *config.Config) (*TemporaryTableCredentialsClient, error) {
@@ -875,7 +875,7 @@ func NewTemporaryTableCredentialsClient(cfg *config.Config) (*TemporaryTableCred
 	}
 
 	return &TemporaryTableCredentialsClient{
-		TemporaryTableCredentialsAPI: TemporaryTableCredentialsAPI{
+		temporaryTableCredentialsBaseClient: temporaryTableCredentialsBaseClient{
 			temporaryTableCredentialsImpl: temporaryTableCredentialsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -892,7 +892,7 @@ func NewTemporaryTableCredentialsClient(cfg *config.Config) (*TemporaryTableCred
 // as .whl or .txt centrally and providing secure access across workspaces to
 // it, or transforming and querying non-tabular data files in ETL.
 type VolumesClient struct {
-	VolumesAPI
+	volumesBaseClient
 }
 
 func NewVolumesClient(cfg *config.Config) (*VolumesClient, error) {
@@ -914,7 +914,7 @@ func NewVolumesClient(cfg *config.Config) (*VolumesClient, error) {
 	}
 
 	return &VolumesClient{
-		VolumesAPI: VolumesAPI{
+		volumesBaseClient: volumesBaseClient{
 			volumesImpl: volumesImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -942,7 +942,7 @@ func NewVolumesClient(cfg *config.Config) (*VolumesClient, error) {
 // Securable types that support binding: - catalog - storage_credential -
 // external_location
 type WorkspaceBindingsClient struct {
-	WorkspaceBindingsAPI
+	workspaceBindingsBaseClient
 }
 
 func NewWorkspaceBindingsClient(cfg *config.Config) (*WorkspaceBindingsClient, error) {
@@ -964,7 +964,7 @@ func NewWorkspaceBindingsClient(cfg *config.Config) (*WorkspaceBindingsClient, e
 	}
 
 	return &WorkspaceBindingsClient{
-		WorkspaceBindingsAPI: WorkspaceBindingsAPI{
+		workspaceBindingsBaseClient: workspaceBindingsBaseClient{
 			workspaceBindingsImpl: workspaceBindingsImpl{
 				client: apiClient.ApiClient(),
 			},

@@ -23,7 +23,7 @@ import (
 // served entities behind an endpoint. Additionally, you can configure the scale
 // of resources that should be applied to each served entity.
 type ServingEndpointsClient struct {
-	ServingEndpointsAPI
+	servingEndpointsBaseClient
 }
 
 func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, error) {
@@ -45,7 +45,7 @@ func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, err
 	}
 
 	return &ServingEndpointsClient{
-		ServingEndpointsAPI: ServingEndpointsAPI{
+		servingEndpointsBaseClient: servingEndpointsBaseClient{
 			servingEndpointsImpl: servingEndpointsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -56,7 +56,7 @@ func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, err
 // Serving endpoints DataPlane provides a set of operations to interact with
 // data plane endpoints for Serving endpoints service.
 type ServingEndpointsDataPlaneClient struct {
-	ServingEndpointsDataPlaneAPI
+	servingEndpointsDataPlaneBaseClient
 }
 
 func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDataPlaneClient, error) {
@@ -78,7 +78,7 @@ func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDa
 	}
 
 	return &ServingEndpointsDataPlaneClient{
-		ServingEndpointsDataPlaneAPI: ServingEndpointsDataPlaneAPI{
+		servingEndpointsDataPlaneBaseClient: servingEndpointsDataPlaneBaseClient{
 			servingEndpointsDataPlaneImpl: servingEndpointsDataPlaneImpl{
 				client: apiClient.ApiClient(),
 			},

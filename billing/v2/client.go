@@ -12,7 +12,7 @@ import (
 // This API allows you to download billable usage logs for the specified account
 // and date range. This feature works with all account types.
 type BillableUsageClient struct {
-	BillableUsageAPI
+	billableUsageBaseClient
 }
 
 func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
@@ -34,7 +34,7 @@ func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
 	}
 
 	return &BillableUsageClient{
-		BillableUsageAPI: BillableUsageAPI{
+		billableUsageBaseClient: billableUsageBaseClient{
 			billableUsageImpl: billableUsageImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -44,7 +44,7 @@ func NewBillableUsageClient(cfg *config.Config) (*BillableUsageClient, error) {
 
 // A service serves REST API about Budget policies
 type BudgetPolicyClient struct {
-	BudgetPolicyAPI
+	budgetPolicyBaseClient
 }
 
 func NewBudgetPolicyClient(cfg *config.Config) (*BudgetPolicyClient, error) {
@@ -66,7 +66,7 @@ func NewBudgetPolicyClient(cfg *config.Config) (*BudgetPolicyClient, error) {
 	}
 
 	return &BudgetPolicyClient{
-		BudgetPolicyAPI: BudgetPolicyAPI{
+		budgetPolicyBaseClient: budgetPolicyBaseClient{
 			budgetPolicyImpl: budgetPolicyImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -79,7 +79,7 @@ func NewBudgetPolicyClient(cfg *config.Config) (*BudgetPolicyClient, error) {
 // account-wide spending, or apply filters to track the spending of specific
 // teams, projects, or workspaces.
 type BudgetsClient struct {
-	BudgetsAPI
+	budgetsBaseClient
 }
 
 func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
@@ -101,7 +101,7 @@ func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
 	}
 
 	return &BudgetsClient{
-		BudgetsAPI: BudgetsAPI{
+		budgetsBaseClient: budgetsBaseClient{
 			budgetsImpl: budgetsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -171,7 +171,7 @@ func NewBudgetsClient(cfg *config.Config) (*BudgetsClient, error) {
 // [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 // [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html
 type LogDeliveryClient struct {
-	LogDeliveryAPI
+	logDeliveryBaseClient
 }
 
 func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
@@ -193,7 +193,7 @@ func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
 	}
 
 	return &LogDeliveryClient{
-		LogDeliveryAPI: LogDeliveryAPI{
+		logDeliveryBaseClient: logDeliveryBaseClient{
 			logDeliveryImpl: logDeliveryImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -205,7 +205,7 @@ func NewLogDeliveryClient(cfg *config.Config) (*LogDeliveryClient, error) {
 // you to gain insights into your usage with pre-built dashboards: visualize
 // breakdowns, analyze tag attributions, and identify cost drivers.
 type UsageDashboardsClient struct {
-	UsageDashboardsAPI
+	usageDashboardsBaseClient
 }
 
 func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error) {
@@ -227,7 +227,7 @@ func NewUsageDashboardsClient(cfg *config.Config) (*UsageDashboardsClient, error
 	}
 
 	return &UsageDashboardsClient{
-		UsageDashboardsAPI: UsageDashboardsAPI{
+		usageDashboardsBaseClient: usageDashboardsBaseClient{
 			usageDashboardsImpl: usageDashboardsImpl{
 				client: apiClient.ApiClient(),
 			},

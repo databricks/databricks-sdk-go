@@ -24,7 +24,7 @@ import (
 // define expected data quality and specify how to handle records that fail
 // those expectations.
 type PipelinesClient struct {
-	PipelinesAPI
+	pipelinesBaseClient
 }
 
 func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
@@ -46,7 +46,7 @@ func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
 	}
 
 	return &PipelinesClient{
-		PipelinesAPI: PipelinesAPI{
+		pipelinesBaseClient: pipelinesBaseClient{
 			pipelinesImpl: pipelinesImpl{
 				client: apiClient.ApiClient(),
 			},

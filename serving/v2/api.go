@@ -7,14 +7,14 @@ import (
 	"context"
 )
 
-type ServingEndpointsAPI struct {
+type servingEndpointsBaseClient struct {
 	servingEndpointsImpl
 }
 
 // Get build logs for a served model.
 //
 // Retrieves the build logs associated with the provided served model.
-func (a *ServingEndpointsAPI) BuildLogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*BuildLogsResponse, error) {
+func (a *servingEndpointsBaseClient) BuildLogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*BuildLogsResponse, error) {
 	return a.servingEndpointsImpl.BuildLogs(ctx, BuildLogsRequest{
 		Name:            name,
 		ServedModelName: servedModelName,
@@ -22,7 +22,7 @@ func (a *ServingEndpointsAPI) BuildLogsByNameAndServedModelName(ctx context.Cont
 }
 
 // Delete a serving endpoint.
-func (a *ServingEndpointsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
+func (a *servingEndpointsBaseClient) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.servingEndpointsImpl.Delete(ctx, DeleteServingEndpointRequest{
 		Name: name,
 	})
@@ -32,7 +32,7 @@ func (a *ServingEndpointsAPI) DeleteByName(ctx context.Context, name string) (*D
 //
 // Retrieves the metrics associated with the provided serving endpoint in either
 // Prometheus or OpenMetrics exposition format.
-func (a *ServingEndpointsAPI) ExportMetricsByName(ctx context.Context, name string) (*ExportMetricsResponse, error) {
+func (a *servingEndpointsBaseClient) ExportMetricsByName(ctx context.Context, name string) (*ExportMetricsResponse, error) {
 	return a.servingEndpointsImpl.ExportMetrics(ctx, ExportMetricsRequest{
 		Name: name,
 	})
@@ -41,7 +41,7 @@ func (a *ServingEndpointsAPI) ExportMetricsByName(ctx context.Context, name stri
 // Get a single serving endpoint.
 //
 // Retrieves the details for a single serving endpoint.
-func (a *ServingEndpointsAPI) GetByName(ctx context.Context, name string) (*ServingEndpointDetailed, error) {
+func (a *servingEndpointsBaseClient) GetByName(ctx context.Context, name string) (*ServingEndpointDetailed, error) {
 	return a.servingEndpointsImpl.Get(ctx, GetServingEndpointRequest{
 		Name: name,
 	})
@@ -52,7 +52,7 @@ func (a *ServingEndpointsAPI) GetByName(ctx context.Context, name string) (*Serv
 // Get the query schema of the serving endpoint in OpenAPI format. The schema
 // contains information for the supported paths, input and output format and
 // datatypes.
-func (a *ServingEndpointsAPI) GetOpenApiByName(ctx context.Context, name string) (*GetOpenApiResponse, error) {
+func (a *servingEndpointsBaseClient) GetOpenApiByName(ctx context.Context, name string) (*GetOpenApiResponse, error) {
 	return a.servingEndpointsImpl.GetOpenApi(ctx, GetOpenApiRequest{
 		Name: name,
 	})
@@ -61,7 +61,7 @@ func (a *ServingEndpointsAPI) GetOpenApiByName(ctx context.Context, name string)
 // Get serving endpoint permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *ServingEndpointsAPI) GetPermissionLevelsByServingEndpointId(ctx context.Context, servingEndpointId string) (*GetServingEndpointPermissionLevelsResponse, error) {
+func (a *servingEndpointsBaseClient) GetPermissionLevelsByServingEndpointId(ctx context.Context, servingEndpointId string) (*GetServingEndpointPermissionLevelsResponse, error) {
 	return a.servingEndpointsImpl.GetPermissionLevels(ctx, GetServingEndpointPermissionLevelsRequest{
 		ServingEndpointId: servingEndpointId,
 	})
@@ -71,7 +71,7 @@ func (a *ServingEndpointsAPI) GetPermissionLevelsByServingEndpointId(ctx context
 //
 // Gets the permissions of a serving endpoint. Serving endpoints can inherit
 // permissions from their root object.
-func (a *ServingEndpointsAPI) GetPermissionsByServingEndpointId(ctx context.Context, servingEndpointId string) (*ServingEndpointPermissions, error) {
+func (a *servingEndpointsBaseClient) GetPermissionsByServingEndpointId(ctx context.Context, servingEndpointId string) (*ServingEndpointPermissions, error) {
 	return a.servingEndpointsImpl.GetPermissions(ctx, GetServingEndpointPermissionsRequest{
 		ServingEndpointId: servingEndpointId,
 	})
@@ -80,13 +80,13 @@ func (a *ServingEndpointsAPI) GetPermissionsByServingEndpointId(ctx context.Cont
 // Get the latest logs for a served model.
 //
 // Retrieves the service logs associated with the provided served model.
-func (a *ServingEndpointsAPI) LogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*ServerLogsResponse, error) {
+func (a *servingEndpointsBaseClient) LogsByNameAndServedModelName(ctx context.Context, name string, servedModelName string) (*ServerLogsResponse, error) {
 	return a.servingEndpointsImpl.Logs(ctx, LogsRequest{
 		Name:            name,
 		ServedModelName: servedModelName,
 	})
 }
 
-type ServingEndpointsDataPlaneAPI struct {
+type servingEndpointsDataPlaneBaseClient struct {
 	servingEndpointsDataPlaneImpl
 }

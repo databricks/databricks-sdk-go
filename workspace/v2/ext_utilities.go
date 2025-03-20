@@ -117,7 +117,7 @@ func (r *ExportResponse) Bytes() ([]byte, error) {
 
 // RecursiveList traverses the workspace tree and returns all non-directory
 // objects under the path
-func (a *WorkspaceAPI) RecursiveList(ctx context.Context, path string) ([]ObjectInfo, error) {
+func (a *WorkspaceClient) RecursiveList(ctx context.Context, path string) ([]ObjectInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "recursive-list")
 	var results []ObjectInfo
 	queue := []string{path}
@@ -181,7 +181,7 @@ func UploadFormat(f ImportFormat) UploadOption {
 // extension is automatically removed.
 //
 // workspace.UploadLanguage(...) is only required if source format.
-func (a *WorkspaceAPI) Upload(ctx context.Context, path string, r io.Reader, opts ...UploadOption) error {
+func (a *WorkspaceClient) Upload(ctx context.Context, path string, r io.Reader, opts ...UploadOption) error {
 	buf := &bytes.Buffer{}
 	w := multipart.NewWriter(buf)
 	err := w.WriteField("path", path)
@@ -244,7 +244,7 @@ func (a *WorkspaceAPI) Upload(ctx context.Context, path string, r io.Reader, opt
 // WriteFile is identical to [os.WriteFile] but for Workspace File.
 // Keep in mind: It doesn't upload the notebook, but the file and does
 // always overwrite it.
-func (a *WorkspaceAPI) WriteFile(ctx context.Context, name string, data []byte) error {
+func (a *WorkspaceClient) WriteFile(ctx context.Context, name string, data []byte) error {
 	return a.Upload(ctx, name, bytes.NewBuffer(data),
 		UploadFormat(ImportFormatAuto),
 		UploadOverwrite())
@@ -265,7 +265,7 @@ func DownloadFormat(f ExportFormat) func(q map[string]any) {
 // on an analysis of the `item`’s extension and the file content header provided in the request.
 //
 // Returns [bytes.Buffer] of the path contents.
-func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...DownloadOption) (io.ReadCloser, error) {
+func (a *WorkspaceClient) Download(ctx context.Context, path string, opts ...DownloadOption) (io.ReadCloser, error) {
 	var buf bytes.Buffer
 	query := map[string]any{"path": path, "direct_download": true}
 	for _, v := range opts {
@@ -280,7 +280,7 @@ func (a *WorkspaceAPI) Download(ctx context.Context, path string, opts ...Downlo
 }
 
 // ReadFile is identical to [os.ReadFile] but for workspace files.
-func (a *WorkspaceAPI) ReadFile(ctx context.Context, name string) ([]byte, error) {
+func (a *WorkspaceClient) ReadFile(ctx context.Context, name string) ([]byte, error) {
 	b, err := a.Download(ctx, name)
 	if err != nil {
 		return nil, err

@@ -15,7 +15,7 @@ import (
 // least CAN USE permission on a Pro or Serverless SQL warehouse. Also,
 // Databricks Assistant must be enabled.
 type GenieClient struct {
-	GenieAPI
+	genieBaseClient
 }
 
 func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
@@ -37,7 +37,7 @@ func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
 	}
 
 	return &GenieClient{
-		GenieAPI: GenieAPI{
+		genieBaseClient: genieBaseClient{
 			genieImpl: genieImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -49,7 +49,7 @@ func NewGenieClient(cfg *config.Config) (*GenieClient, error) {
 // Generic resource management can be done with Workspace API (import, export,
 // get-status, list, delete).
 type LakeviewClient struct {
-	LakeviewAPI
+	lakeviewBaseClient
 }
 
 func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
@@ -71,7 +71,7 @@ func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
 	}
 
 	return &LakeviewClient{
-		LakeviewAPI: LakeviewAPI{
+		lakeviewBaseClient: lakeviewBaseClient{
 			lakeviewImpl: lakeviewImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -81,7 +81,7 @@ func NewLakeviewClient(cfg *config.Config) (*LakeviewClient, error) {
 
 // Token-based Lakeview APIs for embedding dashboards in external applications.
 type LakeviewEmbeddedClient struct {
-	LakeviewEmbeddedAPI
+	lakeviewEmbeddedBaseClient
 }
 
 func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, error) {
@@ -103,7 +103,7 @@ func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, err
 	}
 
 	return &LakeviewEmbeddedClient{
-		LakeviewEmbeddedAPI: LakeviewEmbeddedAPI{
+		lakeviewEmbeddedBaseClient: lakeviewEmbeddedBaseClient{
 			lakeviewEmbeddedImpl: lakeviewEmbeddedImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -113,7 +113,7 @@ func NewLakeviewEmbeddedClient(cfg *config.Config) (*LakeviewEmbeddedClient, err
 
 // Query execution APIs for AI / BI Dashboards
 type QueryExecutionClient struct {
-	QueryExecutionAPI
+	queryExecutionBaseClient
 }
 
 func NewQueryExecutionClient(cfg *config.Config) (*QueryExecutionClient, error) {
@@ -135,7 +135,7 @@ func NewQueryExecutionClient(cfg *config.Config) (*QueryExecutionClient, error) 
 	}
 
 	return &QueryExecutionClient{
-		QueryExecutionAPI: QueryExecutionAPI{
+		queryExecutionBaseClient: queryExecutionBaseClient{
 			queryExecutionImpl: queryExecutionImpl{
 				client: apiClient.ApiClient(),
 			},

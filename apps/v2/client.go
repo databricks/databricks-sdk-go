@@ -13,7 +13,7 @@ import (
 // data, use and extend Databricks services, and enable users to interact
 // through single sign-on.
 type AppsClient struct {
-	AppsAPI
+	appsBaseClient
 }
 
 func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
@@ -35,7 +35,7 @@ func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
 	}
 
 	return &AppsClient{
-		AppsAPI: AppsAPI{
+		appsBaseClient: appsBaseClient{
 			appsImpl: appsImpl{
 				client: apiClient.ApiClient(),
 			},

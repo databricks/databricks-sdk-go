@@ -8,7 +8,7 @@ import (
 )
 
 type CommandExecutorV2 struct {
-	executionAPI *CommandExecutionAPI
+	executionAPI *CommandExecutionClient
 	clusterID    string
 	contextID    string
 }

@@ -7,14 +7,14 @@ import (
 	"context"
 )
 
-type AppsAPI struct {
+type appsBaseClient struct {
 	appsImpl
 }
 
 // Delete an app.
 //
 // Deletes an app.
-func (a *AppsAPI) DeleteByName(ctx context.Context, name string) (*App, error) {
+func (a *appsBaseClient) DeleteByName(ctx context.Context, name string) (*App, error) {
 	return a.appsImpl.Delete(ctx, DeleteAppRequest{
 		Name: name,
 	})
@@ -23,7 +23,7 @@ func (a *AppsAPI) DeleteByName(ctx context.Context, name string) (*App, error) {
 // Get an app.
 //
 // Retrieves information for the app with the supplied name.
-func (a *AppsAPI) GetByName(ctx context.Context, name string) (*App, error) {
+func (a *appsBaseClient) GetByName(ctx context.Context, name string) (*App, error) {
 	return a.appsImpl.Get(ctx, GetAppRequest{
 		Name: name,
 	})
@@ -33,7 +33,7 @@ func (a *AppsAPI) GetByName(ctx context.Context, name string) (*App, error) {
 //
 // Retrieves information for the app deployment with the supplied name and
 // deployment id.
-func (a *AppsAPI) GetDeploymentByAppNameAndDeploymentId(ctx context.Context, appName string, deploymentId string) (*AppDeployment, error) {
+func (a *appsBaseClient) GetDeploymentByAppNameAndDeploymentId(ctx context.Context, appName string, deploymentId string) (*AppDeployment, error) {
 	return a.appsImpl.GetDeployment(ctx, GetAppDeploymentRequest{
 		AppName:      appName,
 		DeploymentId: deploymentId,
@@ -43,7 +43,7 @@ func (a *AppsAPI) GetDeploymentByAppNameAndDeploymentId(ctx context.Context, app
 // Get app permission levels.
 //
 // Gets the permission levels that a user can have on an object.
-func (a *AppsAPI) GetPermissionLevelsByAppName(ctx context.Context, appName string) (*GetAppPermissionLevelsResponse, error) {
+func (a *appsBaseClient) GetPermissionLevelsByAppName(ctx context.Context, appName string) (*GetAppPermissionLevelsResponse, error) {
 	return a.appsImpl.GetPermissionLevels(ctx, GetAppPermissionLevelsRequest{
 		AppName: appName,
 	})
@@ -53,7 +53,7 @@ func (a *AppsAPI) GetPermissionLevelsByAppName(ctx context.Context, appName stri
 //
 // Gets the permissions of an app. Apps can inherit permissions from their root
 // object.
-func (a *AppsAPI) GetPermissionsByAppName(ctx context.Context, appName string) (*AppPermissions, error) {
+func (a *appsBaseClient) GetPermissionsByAppName(ctx context.Context, appName string) (*AppPermissions, error) {
 	return a.appsImpl.GetPermissions(ctx, GetAppPermissionsRequest{
 		AppName: appName,
 	})
@@ -62,7 +62,7 @@ func (a *AppsAPI) GetPermissionsByAppName(ctx context.Context, appName string) (
 // List app deployments.
 //
 // Lists all app deployments for the app with the supplied name.
-func (a *AppsAPI) ListDeploymentsByAppName(ctx context.Context, appName string) (*ListAppDeploymentsResponse, error) {
+func (a *appsBaseClient) ListDeploymentsByAppName(ctx context.Context, appName string) (*ListAppDeploymentsResponse, error) {
 	return a.appsImpl.internalListDeployments(ctx, ListAppDeploymentsRequest{
 		AppName: appName,
 	})

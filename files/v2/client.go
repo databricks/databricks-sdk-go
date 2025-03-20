@@ -12,7 +12,7 @@ import (
 // DBFS API makes it simple to interact with various data sources without having
 // to include a users credentials every time to read a file.
 type DbfsClient struct {
-	DbfsAPI
+	dbfsBaseClient
 }
 
 func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
@@ -34,7 +34,7 @@ func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
 	}
 
 	return &DbfsClient{
-		DbfsAPI: DbfsAPI{
+		dbfsBaseClient: dbfsBaseClient{
 			dbfsImpl: dbfsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -64,7 +64,7 @@ func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
 //
 // [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 type FilesClient struct {
-	FilesAPI
+	filesBaseClient
 }
 
 func NewFilesClient(cfg *config.Config) (*FilesClient, error) {
@@ -86,7 +86,7 @@ func NewFilesClient(cfg *config.Config) (*FilesClient, error) {
 	}
 
 	return &FilesClient{
-		FilesAPI: FilesAPI{
+		filesBaseClient: filesBaseClient{
 			filesImpl: filesImpl{
 				client: apiClient.ApiClient(),
 			},

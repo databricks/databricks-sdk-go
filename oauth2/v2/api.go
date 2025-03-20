@@ -7,25 +7,25 @@ import (
 	"context"
 )
 
-type AccountFederationPolicyAPI struct {
+type accountFederationPolicyBaseClient struct {
 	accountFederationPolicyImpl
 }
 
 // Delete account federation policy.
-func (a *AccountFederationPolicyAPI) DeleteByPolicyId(ctx context.Context, policyId string) (*DeleteResponse, error) {
+func (a *accountFederationPolicyBaseClient) DeleteByPolicyId(ctx context.Context, policyId string) (*DeleteResponse, error) {
 	return a.accountFederationPolicyImpl.Delete(ctx, DeleteAccountFederationPolicyRequest{
 		PolicyId: policyId,
 	})
 }
 
 // Get account federation policy.
-func (a *AccountFederationPolicyAPI) GetByPolicyId(ctx context.Context, policyId string) (*FederationPolicy, error) {
+func (a *accountFederationPolicyBaseClient) GetByPolicyId(ctx context.Context, policyId string) (*FederationPolicy, error) {
 	return a.accountFederationPolicyImpl.Get(ctx, GetAccountFederationPolicyRequest{
 		PolicyId: policyId,
 	})
 }
 
-type CustomAppIntegrationAPI struct {
+type customAppIntegrationBaseClient struct {
 	customAppIntegrationImpl
 }
 
@@ -33,7 +33,7 @@ type CustomAppIntegrationAPI struct {
 //
 // Delete an existing Custom OAuth App Integration. You can retrieve the custom
 // OAuth app integration via :method:CustomAppIntegration/get.
-func (a *CustomAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) (*DeleteCustomAppIntegrationOutput, error) {
+func (a *customAppIntegrationBaseClient) DeleteByIntegrationId(ctx context.Context, integrationId string) (*DeleteCustomAppIntegrationOutput, error) {
 	return a.customAppIntegrationImpl.Delete(ctx, DeleteCustomAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
@@ -42,17 +42,17 @@ func (a *CustomAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, int
 // Get OAuth Custom App Integration.
 //
 // Gets the Custom OAuth App Integration for the given integration id.
-func (a *CustomAppIntegrationAPI) GetByIntegrationId(ctx context.Context, integrationId string) (*GetCustomAppIntegrationOutput, error) {
+func (a *customAppIntegrationBaseClient) GetByIntegrationId(ctx context.Context, integrationId string) (*GetCustomAppIntegrationOutput, error) {
 	return a.customAppIntegrationImpl.Get(ctx, GetCustomAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
 }
 
-type OAuthPublishedAppsAPI struct {
+type oAuthPublishedAppsBaseClient struct {
 	oAuthPublishedAppsImpl
 }
 
-type PublishedAppIntegrationAPI struct {
+type publishedAppIntegrationBaseClient struct {
 	publishedAppIntegrationImpl
 }
 
@@ -60,7 +60,7 @@ type PublishedAppIntegrationAPI struct {
 //
 // Delete an existing Published OAuth App Integration. You can retrieve the
 // published OAuth app integration via :method:PublishedAppIntegration/get.
-func (a *PublishedAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, integrationId string) (*DeletePublishedAppIntegrationOutput, error) {
+func (a *publishedAppIntegrationBaseClient) DeleteByIntegrationId(ctx context.Context, integrationId string) (*DeletePublishedAppIntegrationOutput, error) {
 	return a.publishedAppIntegrationImpl.Delete(ctx, DeletePublishedAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
@@ -69,18 +69,18 @@ func (a *PublishedAppIntegrationAPI) DeleteByIntegrationId(ctx context.Context, 
 // Get OAuth Published App Integration.
 //
 // Gets the Published OAuth App Integration for the given integration id.
-func (a *PublishedAppIntegrationAPI) GetByIntegrationId(ctx context.Context, integrationId string) (*GetPublishedAppIntegrationOutput, error) {
+func (a *publishedAppIntegrationBaseClient) GetByIntegrationId(ctx context.Context, integrationId string) (*GetPublishedAppIntegrationOutput, error) {
 	return a.publishedAppIntegrationImpl.Get(ctx, GetPublishedAppIntegrationRequest{
 		IntegrationId: integrationId,
 	})
 }
 
-type ServicePrincipalFederationPolicyAPI struct {
+type servicePrincipalFederationPolicyBaseClient struct {
 	servicePrincipalFederationPolicyImpl
 }
 
 // Delete service principal federation policy.
-func (a *ServicePrincipalFederationPolicyAPI) DeleteByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) (*DeleteResponse, error) {
+func (a *servicePrincipalFederationPolicyBaseClient) DeleteByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) (*DeleteResponse, error) {
 	return a.servicePrincipalFederationPolicyImpl.Delete(ctx, DeleteServicePrincipalFederationPolicyRequest{
 		ServicePrincipalId: servicePrincipalId,
 		PolicyId:           policyId,
@@ -88,7 +88,7 @@ func (a *ServicePrincipalFederationPolicyAPI) DeleteByServicePrincipalIdAndPolic
 }
 
 // Get service principal federation policy.
-func (a *ServicePrincipalFederationPolicyAPI) GetByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) (*FederationPolicy, error) {
+func (a *servicePrincipalFederationPolicyBaseClient) GetByServicePrincipalIdAndPolicyId(ctx context.Context, servicePrincipalId int64, policyId string) (*FederationPolicy, error) {
 	return a.servicePrincipalFederationPolicyImpl.Get(ctx, GetServicePrincipalFederationPolicyRequest{
 		ServicePrincipalId: servicePrincipalId,
 		PolicyId:           policyId,
@@ -96,20 +96,20 @@ func (a *ServicePrincipalFederationPolicyAPI) GetByServicePrincipalIdAndPolicyId
 }
 
 // List service principal federation policies.
-func (a *ServicePrincipalFederationPolicyAPI) ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*ListFederationPoliciesResponse, error) {
+func (a *servicePrincipalFederationPolicyBaseClient) ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*ListFederationPoliciesResponse, error) {
 	return a.servicePrincipalFederationPolicyImpl.internalList(ctx, ListServicePrincipalFederationPoliciesRequest{
 		ServicePrincipalId: servicePrincipalId,
 	})
 }
 
-type ServicePrincipalSecretsAPI struct {
+type servicePrincipalSecretsBaseClient struct {
 	servicePrincipalSecretsImpl
 }
 
 // Delete service principal secret.
 //
 // Delete a secret from the given service principal.
-func (a *ServicePrincipalSecretsAPI) DeleteByServicePrincipalIdAndSecretId(ctx context.Context, servicePrincipalId int64, secretId string) (*DeleteResponse, error) {
+func (a *servicePrincipalSecretsBaseClient) DeleteByServicePrincipalIdAndSecretId(ctx context.Context, servicePrincipalId int64, secretId string) (*DeleteResponse, error) {
 	return a.servicePrincipalSecretsImpl.Delete(ctx, DeleteServicePrincipalSecretRequest{
 		ServicePrincipalId: servicePrincipalId,
 		SecretId:           secretId,
@@ -121,7 +121,7 @@ func (a *ServicePrincipalSecretsAPI) DeleteByServicePrincipalIdAndSecretId(ctx c
 // List all secrets associated with the given service principal. This operation
 // only returns information about the secrets themselves and does not include
 // the secret values.
-func (a *ServicePrincipalSecretsAPI) ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*ListServicePrincipalSecretsResponse, error) {
+func (a *servicePrincipalSecretsBaseClient) ListByServicePrincipalId(ctx context.Context, servicePrincipalId int64) (*ListServicePrincipalSecretsResponse, error) {
 	return a.servicePrincipalSecretsImpl.internalList(ctx, ListServicePrincipalSecretsRequest{
 		ServicePrincipalId: servicePrincipalId,
 	})

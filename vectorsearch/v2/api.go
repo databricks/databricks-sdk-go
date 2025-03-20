@@ -7,32 +7,32 @@ import (
 	"context"
 )
 
-type VectorSearchEndpointsAPI struct {
+type vectorSearchEndpointsBaseClient struct {
 	vectorSearchEndpointsImpl
 }
 
 // Delete an endpoint.
-func (a *VectorSearchEndpointsAPI) DeleteEndpointByEndpointName(ctx context.Context, endpointName string) (*DeleteEndpointResponse, error) {
+func (a *vectorSearchEndpointsBaseClient) DeleteEndpointByEndpointName(ctx context.Context, endpointName string) (*DeleteEndpointResponse, error) {
 	return a.vectorSearchEndpointsImpl.DeleteEndpoint(ctx, DeleteEndpointRequest{
 		EndpointName: endpointName,
 	})
 }
 
 // Get an endpoint.
-func (a *VectorSearchEndpointsAPI) GetEndpointByEndpointName(ctx context.Context, endpointName string) (*EndpointInfo, error) {
+func (a *vectorSearchEndpointsBaseClient) GetEndpointByEndpointName(ctx context.Context, endpointName string) (*EndpointInfo, error) {
 	return a.vectorSearchEndpointsImpl.GetEndpoint(ctx, GetEndpointRequest{
 		EndpointName: endpointName,
 	})
 }
 
-type VectorSearchIndexesAPI struct {
+type vectorSearchIndexesBaseClient struct {
 	vectorSearchIndexesImpl
 }
 
 // Delete an index.
 //
 // Delete an index.
-func (a *VectorSearchIndexesAPI) DeleteIndexByIndexName(ctx context.Context, indexName string) (*DeleteIndexResponse, error) {
+func (a *vectorSearchIndexesBaseClient) DeleteIndexByIndexName(ctx context.Context, indexName string) (*DeleteIndexResponse, error) {
 	return a.vectorSearchIndexesImpl.DeleteIndex(ctx, DeleteIndexRequest{
 		IndexName: indexName,
 	})
@@ -41,7 +41,7 @@ func (a *VectorSearchIndexesAPI) DeleteIndexByIndexName(ctx context.Context, ind
 // Get an index.
 //
 // Get an index.
-func (a *VectorSearchIndexesAPI) GetIndexByIndexName(ctx context.Context, indexName string) (*VectorIndex, error) {
+func (a *vectorSearchIndexesBaseClient) GetIndexByIndexName(ctx context.Context, indexName string) (*VectorIndex, error) {
 	return a.vectorSearchIndexesImpl.GetIndex(ctx, GetIndexRequest{
 		IndexName: indexName,
 	})

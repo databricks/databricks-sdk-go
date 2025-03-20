@@ -16,7 +16,7 @@ import (
 //
 // [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 type GitCredentialsClient struct {
-	GitCredentialsAPI
+	gitCredentialsBaseClient
 }
 
 func NewGitCredentialsClient(cfg *config.Config) (*GitCredentialsClient, error) {
@@ -38,7 +38,7 @@ func NewGitCredentialsClient(cfg *config.Config) (*GitCredentialsClient, error) 
 	}
 
 	return &GitCredentialsClient{
-		GitCredentialsAPI: GitCredentialsAPI{
+		gitCredentialsBaseClient: gitCredentialsBaseClient{
 			gitCredentialsImpl: gitCredentialsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -57,7 +57,7 @@ func NewGitCredentialsClient(cfg *config.Config) (*GitCredentialsClient, error) 
 // science and engineering code development best practices using Git for version
 // control, collaboration, and CI/CD.
 type ReposClient struct {
-	ReposAPI
+	reposBaseClient
 }
 
 func NewReposClient(cfg *config.Config) (*ReposClient, error) {
@@ -79,7 +79,7 @@ func NewReposClient(cfg *config.Config) (*ReposClient, error) {
 	}
 
 	return &ReposClient{
-		ReposAPI: ReposAPI{
+		reposBaseClient: reposBaseClient{
 			reposImpl: reposImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -100,7 +100,7 @@ func NewReposClient(cfg *config.Config) (*ReposClient, error) {
 // that might be displayed in notebooks, it is not possible to prevent such
 // users from reading secrets.
 type SecretsClient struct {
-	SecretsAPI
+	secretsBaseClient
 }
 
 func NewSecretsClient(cfg *config.Config) (*SecretsClient, error) {
@@ -122,7 +122,7 @@ func NewSecretsClient(cfg *config.Config) (*SecretsClient, error) {
 	}
 
 	return &SecretsClient{
-		SecretsAPI: SecretsAPI{
+		secretsBaseClient: secretsBaseClient{
 			secretsImpl: secretsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -136,7 +136,7 @@ func NewSecretsClient(cfg *config.Config) (*SecretsClient, error) {
 // A notebook is a web-based interface to a document that contains runnable
 // code, visualizations, and explanatory text.
 type WorkspaceClient struct {
-	WorkspaceAPI
+	workspaceBaseClient
 }
 
 func NewWorkspaceClient(cfg *config.Config) (*WorkspaceClient, error) {
@@ -158,7 +158,7 @@ func NewWorkspaceClient(cfg *config.Config) (*WorkspaceClient, error) {
 	}
 
 	return &WorkspaceClient{
-		WorkspaceAPI: WorkspaceAPI{
+		workspaceBaseClient: workspaceBaseClient{
 			workspaceImpl: workspaceImpl{
 				client: apiClient.ApiClient(),
 			},

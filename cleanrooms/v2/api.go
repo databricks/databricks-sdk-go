@@ -7,14 +7,14 @@ import (
 	"context"
 )
 
-type CleanRoomAssetsAPI struct {
+type cleanRoomAssetsBaseClient struct {
 	cleanRoomAssetsImpl
 }
 
 // Delete an asset.
 //
 // Delete a clean room asset - unshare/remove the asset from the clean room
-func (a *CleanRoomAssetsAPI) DeleteByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) (*DeleteCleanRoomAssetResponse, error) {
+func (a *cleanRoomAssetsBaseClient) DeleteByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) (*DeleteCleanRoomAssetResponse, error) {
 	return a.cleanRoomAssetsImpl.Delete(ctx, DeleteCleanRoomAssetRequest{
 		CleanRoomName: cleanRoomName,
 		AssetType:     assetType,
@@ -25,7 +25,7 @@ func (a *CleanRoomAssetsAPI) DeleteByCleanRoomNameAndAssetTypeAndAssetFullName(c
 // Get an asset.
 //
 // Get the details of a clean room asset by its type and full name.
-func (a *CleanRoomAssetsAPI) GetByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) (*CleanRoomAsset, error) {
+func (a *cleanRoomAssetsBaseClient) GetByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) (*CleanRoomAsset, error) {
 	return a.cleanRoomAssetsImpl.Get(ctx, GetCleanRoomAssetRequest{
 		CleanRoomName: cleanRoomName,
 		AssetType:     assetType,
@@ -34,26 +34,26 @@ func (a *CleanRoomAssetsAPI) GetByCleanRoomNameAndAssetTypeAndAssetFullName(ctx 
 }
 
 // List assets.
-func (a *CleanRoomAssetsAPI) ListByCleanRoomName(ctx context.Context, cleanRoomName string) (*ListCleanRoomAssetsResponse, error) {
+func (a *cleanRoomAssetsBaseClient) ListByCleanRoomName(ctx context.Context, cleanRoomName string) (*ListCleanRoomAssetsResponse, error) {
 	return a.cleanRoomAssetsImpl.internalList(ctx, ListCleanRoomAssetsRequest{
 		CleanRoomName: cleanRoomName,
 	})
 }
 
-type CleanRoomTaskRunsAPI struct {
+type cleanRoomTaskRunsBaseClient struct {
 	cleanRoomTaskRunsImpl
 }
 
 // List notebook task runs.
 //
 // List all the historical notebook task runs in a clean room.
-func (a *CleanRoomTaskRunsAPI) ListByCleanRoomName(ctx context.Context, cleanRoomName string) (*ListCleanRoomNotebookTaskRunsResponse, error) {
+func (a *cleanRoomTaskRunsBaseClient) ListByCleanRoomName(ctx context.Context, cleanRoomName string) (*ListCleanRoomNotebookTaskRunsResponse, error) {
 	return a.cleanRoomTaskRunsImpl.internalList(ctx, ListCleanRoomNotebookTaskRunsRequest{
 		CleanRoomName: cleanRoomName,
 	})
 }
 
-type CleanRoomsAPI struct {
+type cleanRoomsBaseClient struct {
 	cleanRoomsImpl
 }
 
@@ -63,7 +63,7 @@ type CleanRoomsAPI struct {
 // metastore. If the other collaborators have not deleted the clean room, they
 // will still have the clean room in their metastore, but it will be in a
 // DELETED state and no operations other than deletion can be performed on it.
-func (a *CleanRoomsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
+func (a *cleanRoomsBaseClient) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.cleanRoomsImpl.Delete(ctx, DeleteCleanRoomRequest{
 		Name: name,
 	})
@@ -72,7 +72,7 @@ func (a *CleanRoomsAPI) DeleteByName(ctx context.Context, name string) (*DeleteR
 // Get a clean room.
 //
 // Get the details of a clean room given its name.
-func (a *CleanRoomsAPI) GetByName(ctx context.Context, name string) (*CleanRoom, error) {
+func (a *cleanRoomsBaseClient) GetByName(ctx context.Context, name string) (*CleanRoom, error) {
 	return a.cleanRoomsImpl.Get(ctx, GetCleanRoomRequest{
 		Name: name,
 	})

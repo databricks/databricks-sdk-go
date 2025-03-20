@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
-type AccountMetastoreAssignmentsAPI struct {
+type accountMetastoreAssignmentsBaseClient struct {
 	accountMetastoreAssignmentsImpl
 }
 
@@ -18,7 +18,7 @@ type AccountMetastoreAssignmentsAPI struct {
 //
 // Deletes a metastore assignment to a workspace, leaving the workspace with no
 // metastore.
-func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) (*DeleteResponse, error) {
+func (a *accountMetastoreAssignmentsBaseClient) DeleteByWorkspaceIdAndMetastoreId(ctx context.Context, workspaceId int64, metastoreId string) (*DeleteResponse, error) {
 	return a.accountMetastoreAssignmentsImpl.Delete(ctx, DeleteAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
 		MetastoreId: metastoreId,
@@ -31,7 +31,7 @@ func (a *AccountMetastoreAssignmentsAPI) DeleteByWorkspaceIdAndMetastoreId(ctx c
 // the workspace is assigned a metastore, the mappig will be returned. If no
 // metastore is assigned to the workspace, the assignment will not be found and
 // a 404 returned.
-func (a *AccountMetastoreAssignmentsAPI) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*AccountsMetastoreAssignment, error) {
+func (a *accountMetastoreAssignmentsBaseClient) GetByWorkspaceId(ctx context.Context, workspaceId int64) (*AccountsMetastoreAssignment, error) {
 	return a.accountMetastoreAssignmentsImpl.Get(ctx, GetAccountMetastoreAssignmentRequest{
 		WorkspaceId: workspaceId,
 	})
@@ -41,20 +41,20 @@ func (a *AccountMetastoreAssignmentsAPI) GetByWorkspaceId(ctx context.Context, w
 //
 // Gets a list of all Databricks workspace IDs that have been assigned to given
 // metastore.
-func (a *AccountMetastoreAssignmentsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountMetastoreAssignmentsResponse, error) {
+func (a *accountMetastoreAssignmentsBaseClient) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountMetastoreAssignmentsResponse, error) {
 	return a.accountMetastoreAssignmentsImpl.internalList(ctx, ListAccountMetastoreAssignmentsRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
-type AccountMetastoresAPI struct {
+type accountMetastoresBaseClient struct {
 	accountMetastoresImpl
 }
 
 // Delete a metastore.
 //
 // Deletes a Unity Catalog metastore for an account, both specified by ID.
-func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastoreId string) (*DeleteResponse, error) {
+func (a *accountMetastoresBaseClient) DeleteByMetastoreId(ctx context.Context, metastoreId string) (*DeleteResponse, error) {
 	return a.accountMetastoresImpl.Delete(ctx, DeleteAccountMetastoreRequest{
 		MetastoreId: metastoreId,
 	})
@@ -63,13 +63,13 @@ func (a *AccountMetastoresAPI) DeleteByMetastoreId(ctx context.Context, metastor
 // Get a metastore.
 //
 // Gets a Unity Catalog metastore from an account, both specified by ID.
-func (a *AccountMetastoresAPI) GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsMetastoreInfo, error) {
+func (a *accountMetastoresBaseClient) GetByMetastoreId(ctx context.Context, metastoreId string) (*AccountsMetastoreInfo, error) {
 	return a.accountMetastoresImpl.Get(ctx, GetAccountMetastoreRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
-type AccountStorageCredentialsAPI struct {
+type accountStorageCredentialsBaseClient struct {
 	accountStorageCredentialsImpl
 }
 
@@ -77,7 +77,7 @@ type AccountStorageCredentialsAPI struct {
 //
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
-func (a *AccountStorageCredentialsAPI) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*DeleteResponse, error) {
+func (a *accountStorageCredentialsBaseClient) DeleteByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*DeleteResponse, error) {
 	return a.accountStorageCredentialsImpl.Delete(ctx, DeleteAccountStorageCredentialRequest{
 		MetastoreId:           metastoreId,
 		StorageCredentialName: storageCredentialName,
@@ -89,7 +89,7 @@ func (a *AccountStorageCredentialsAPI) DeleteByMetastoreIdAndStorageCredentialNa
 // Gets a storage credential from the metastore. The caller must be a metastore
 // admin, the owner of the storage credential, or have a level of privilege on
 // the storage credential.
-func (a *AccountStorageCredentialsAPI) GetByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*AccountsStorageCredentialInfo, error) {
+func (a *accountStorageCredentialsBaseClient) GetByMetastoreIdAndStorageCredentialName(ctx context.Context, metastoreId string, storageCredentialName string) (*AccountsStorageCredentialInfo, error) {
 	return a.accountStorageCredentialsImpl.Get(ctx, GetAccountStorageCredentialRequest{
 		MetastoreId:           metastoreId,
 		StorageCredentialName: storageCredentialName,
@@ -100,13 +100,13 @@ func (a *AccountStorageCredentialsAPI) GetByMetastoreIdAndStorageCredentialName(
 //
 // Gets a list of all storage credentials that have been assigned to given
 // metastore.
-func (a *AccountStorageCredentialsAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountStorageCredentialsResponse, error) {
+func (a *accountStorageCredentialsBaseClient) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListAccountStorageCredentialsResponse, error) {
 	return a.accountStorageCredentialsImpl.internalList(ctx, ListAccountStorageCredentialsRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
-type ArtifactAllowlistsAPI struct {
+type artifactAllowlistsBaseClient struct {
 	artifactAllowlistsImpl
 }
 
@@ -114,13 +114,13 @@ type ArtifactAllowlistsAPI struct {
 //
 // Get the artifact allowlist of a certain artifact type. The caller must be a
 // metastore admin or have the **MANAGE ALLOWLIST** privilege on the metastore.
-func (a *ArtifactAllowlistsAPI) GetByArtifactType(ctx context.Context, artifactType ArtifactType) (*ArtifactAllowlistInfo, error) {
+func (a *artifactAllowlistsBaseClient) GetByArtifactType(ctx context.Context, artifactType ArtifactType) (*ArtifactAllowlistInfo, error) {
 	return a.artifactAllowlistsImpl.Get(ctx, GetArtifactAllowlistRequest{
 		ArtifactType: artifactType,
 	})
 }
 
-type CatalogsAPI struct {
+type catalogsBaseClient struct {
 	catalogsImpl
 }
 
@@ -128,7 +128,7 @@ type CatalogsAPI struct {
 //
 // Deletes the catalog that matches the supplied name. The caller must be a
 // metastore admin or the owner of the catalog.
-func (a *CatalogsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
+func (a *catalogsBaseClient) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.catalogsImpl.Delete(ctx, DeleteCatalogRequest{
 		Name: name,
 	})
@@ -139,20 +139,20 @@ func (a *CatalogsAPI) DeleteByName(ctx context.Context, name string) (*DeleteRes
 // Gets the specified catalog in a metastore. The caller must be a metastore
 // admin, the owner of the catalog, or a user that has the **USE_CATALOG**
 // privilege set for their account.
-func (a *CatalogsAPI) GetByName(ctx context.Context, name string) (*CatalogInfo, error) {
+func (a *catalogsBaseClient) GetByName(ctx context.Context, name string) (*CatalogInfo, error) {
 	return a.catalogsImpl.Get(ctx, GetCatalogRequest{
 		Name: name,
 	})
 }
 
-type ConnectionsAPI struct {
+type connectionsBaseClient struct {
 	connectionsImpl
 }
 
 // Delete a connection.
 //
 // Deletes the connection that matches the supplied name.
-func (a *ConnectionsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
+func (a *connectionsBaseClient) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.connectionsImpl.Delete(ctx, DeleteConnectionRequest{
 		Name: name,
 	})
@@ -161,20 +161,20 @@ func (a *ConnectionsAPI) DeleteByName(ctx context.Context, name string) (*Delete
 // Get a connection.
 //
 // Gets a connection from it's name.
-func (a *ConnectionsAPI) GetByName(ctx context.Context, name string) (*ConnectionInfo, error) {
+func (a *connectionsBaseClient) GetByName(ctx context.Context, name string) (*ConnectionInfo, error) {
 	return a.connectionsImpl.Get(ctx, GetConnectionRequest{
 		Name: name,
 	})
 }
 
-// ConnectionInfoNameToFullNameMap calls [ConnectionsAPI.ListAll] and creates a map of results with [ConnectionInfo].Name as key and [ConnectionInfo].FullName as value.
+// ConnectionInfoNameToFullNameMap calls [connectionsBaseClient.ListAll] and creates a map of results with [ConnectionInfo].Name as key and [ConnectionInfo].FullName as value.
 //
 // Returns an error if there's more than one [ConnectionInfo] with the same .Name.
 //
 // Note: All [ConnectionInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *ConnectionsAPI) ConnectionInfoNameToFullNameMap(ctx context.Context, request ListConnectionsRequest) (map[string]string, error) {
+func (a *connectionsBaseClient) ConnectionInfoNameToFullNameMap(ctx context.Context, request ListConnectionsRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -192,7 +192,7 @@ func (a *ConnectionsAPI) ConnectionInfoNameToFullNameMap(ctx context.Context, re
 	return mapping, nil
 }
 
-type CredentialsAPI struct {
+type credentialsBaseClient struct {
 	credentialsImpl
 }
 
@@ -200,7 +200,7 @@ type CredentialsAPI struct {
 //
 // Deletes a service or storage credential from the metastore. The caller must
 // be an owner of the credential.
-func (a *CredentialsAPI) DeleteCredentialByNameArg(ctx context.Context, nameArg string) (*DeleteCredentialResponse, error) {
+func (a *credentialsBaseClient) DeleteCredentialByNameArg(ctx context.Context, nameArg string) (*DeleteCredentialResponse, error) {
 	return a.credentialsImpl.DeleteCredential(ctx, DeleteCredentialRequest{
 		NameArg: nameArg,
 	})
@@ -211,13 +211,13 @@ func (a *CredentialsAPI) DeleteCredentialByNameArg(ctx context.Context, nameArg 
 // Gets a service or storage credential from the metastore. The caller must be a
 // metastore admin, the owner of the credential, or have any permission on the
 // credential.
-func (a *CredentialsAPI) GetCredentialByNameArg(ctx context.Context, nameArg string) (*CredentialInfo, error) {
+func (a *credentialsBaseClient) GetCredentialByNameArg(ctx context.Context, nameArg string) (*CredentialInfo, error) {
 	return a.credentialsImpl.GetCredential(ctx, GetCredentialRequest{
 		NameArg: nameArg,
 	})
 }
 
-type ExternalLocationsAPI struct {
+type externalLocationsBaseClient struct {
 	externalLocationsImpl
 }
 
@@ -225,7 +225,7 @@ type ExternalLocationsAPI struct {
 //
 // Deletes the specified external location from the metastore. The caller must
 // be the owner of the external location.
-func (a *ExternalLocationsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
+func (a *externalLocationsBaseClient) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.externalLocationsImpl.Delete(ctx, DeleteExternalLocationRequest{
 		Name: name,
 	})
@@ -236,13 +236,13 @@ func (a *ExternalLocationsAPI) DeleteByName(ctx context.Context, name string) (*
 // Gets an external location from the metastore. The caller must be either a
 // metastore admin, the owner of the external location, or a user that has some
 // privilege on the external location.
-func (a *ExternalLocationsAPI) GetByName(ctx context.Context, name string) (*ExternalLocationInfo, error) {
+func (a *externalLocationsBaseClient) GetByName(ctx context.Context, name string) (*ExternalLocationInfo, error) {
 	return a.externalLocationsImpl.Get(ctx, GetExternalLocationRequest{
 		Name: name,
 	})
 }
 
-type FunctionsAPI struct {
+type functionsBaseClient struct {
 	functionsImpl
 }
 
@@ -255,7 +255,7 @@ type FunctionsAPI struct {
 // Is the owner of the function itself and have both the **USE_CATALOG**
 // privilege on its parent catalog and the **USE_SCHEMA** privilege on its
 // parent schema
-func (a *FunctionsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
+func (a *functionsBaseClient) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.functionsImpl.Delete(ctx, DeleteFunctionRequest{
 		Name: name,
 	})
@@ -270,20 +270,20 @@ func (a *FunctionsAPI) DeleteByName(ctx context.Context, name string) (*DeleteRe
 // of the function - Have the **USE_CATALOG** privilege on the function's parent
 // catalog, the **USE_SCHEMA** privilege on the function's parent schema, and
 // the **EXECUTE** privilege on the function itself
-func (a *FunctionsAPI) GetByName(ctx context.Context, name string) (*FunctionInfo, error) {
+func (a *functionsBaseClient) GetByName(ctx context.Context, name string) (*FunctionInfo, error) {
 	return a.functionsImpl.Get(ctx, GetFunctionRequest{
 		Name: name,
 	})
 }
 
-// FunctionInfoNameToFullNameMap calls [FunctionsAPI.ListAll] and creates a map of results with [FunctionInfo].Name as key and [FunctionInfo].FullName as value.
+// FunctionInfoNameToFullNameMap calls [functionsBaseClient.ListAll] and creates a map of results with [FunctionInfo].Name as key and [FunctionInfo].FullName as value.
 //
 // Returns an error if there's more than one [FunctionInfo] with the same .Name.
 //
 // Note: All [FunctionInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *FunctionsAPI) FunctionInfoNameToFullNameMap(ctx context.Context, request ListFunctionsRequest) (map[string]string, error) {
+func (a *functionsBaseClient) FunctionInfoNameToFullNameMap(ctx context.Context, request ListFunctionsRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -301,14 +301,14 @@ func (a *FunctionsAPI) FunctionInfoNameToFullNameMap(ctx context.Context, reques
 	return mapping, nil
 }
 
-type GrantsAPI struct {
+type grantsBaseClient struct {
 	grantsImpl
 }
 
 // Get permissions.
 //
 // Gets the permissions for a securable.
-func (a *GrantsAPI) GetBySecurableTypeAndFullName(ctx context.Context, securableType SecurableType, fullName string) (*PermissionsList, error) {
+func (a *grantsBaseClient) GetBySecurableTypeAndFullName(ctx context.Context, securableType SecurableType, fullName string) (*PermissionsList, error) {
 	return a.grantsImpl.Get(ctx, GetGrantRequest{
 		SecurableType: securableType,
 		FullName:      fullName,
@@ -318,21 +318,21 @@ func (a *GrantsAPI) GetBySecurableTypeAndFullName(ctx context.Context, securable
 // Get effective permissions.
 //
 // Gets the effective permissions for a securable.
-func (a *GrantsAPI) GetEffectiveBySecurableTypeAndFullName(ctx context.Context, securableType SecurableType, fullName string) (*EffectivePermissionsList, error) {
+func (a *grantsBaseClient) GetEffectiveBySecurableTypeAndFullName(ctx context.Context, securableType SecurableType, fullName string) (*EffectivePermissionsList, error) {
 	return a.grantsImpl.GetEffective(ctx, GetEffectiveRequest{
 		SecurableType: securableType,
 		FullName:      fullName,
 	})
 }
 
-type MetastoresAPI struct {
+type metastoresBaseClient struct {
 	metastoresImpl
 }
 
 // Delete a metastore.
 //
 // Deletes a metastore. The caller must be a metastore admin.
-func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) (*DeleteResponse, error) {
+func (a *metastoresBaseClient) DeleteById(ctx context.Context, id string) (*DeleteResponse, error) {
 	return a.metastoresImpl.Delete(ctx, DeleteMetastoreRequest{
 		Id: id,
 	})
@@ -342,20 +342,20 @@ func (a *MetastoresAPI) DeleteById(ctx context.Context, id string) (*DeleteRespo
 //
 // Gets a metastore that matches the supplied ID. The caller must be a metastore
 // admin to retrieve this info.
-func (a *MetastoresAPI) GetById(ctx context.Context, id string) (*MetastoreInfo, error) {
+func (a *metastoresBaseClient) GetById(ctx context.Context, id string) (*MetastoreInfo, error) {
 	return a.metastoresImpl.Get(ctx, GetMetastoreRequest{
 		Id: id,
 	})
 }
 
-// MetastoreInfoNameToMetastoreIdMap calls [MetastoresAPI.ListAll] and creates a map of results with [MetastoreInfo].Name as key and [MetastoreInfo].MetastoreId as value.
+// MetastoreInfoNameToMetastoreIdMap calls [metastoresBaseClient.ListAll] and creates a map of results with [MetastoreInfo].Name as key and [MetastoreInfo].MetastoreId as value.
 //
 // Returns an error if there's more than one [MetastoreInfo] with the same .Name.
 //
 // Note: All [MetastoreInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *MetastoresAPI) MetastoreInfoNameToMetastoreIdMap(ctx context.Context) (map[string]string, error) {
+func (a *metastoresBaseClient) MetastoreInfoNameToMetastoreIdMap(ctx context.Context) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx)
@@ -373,14 +373,14 @@ func (a *MetastoresAPI) MetastoreInfoNameToMetastoreIdMap(ctx context.Context) (
 	return mapping, nil
 }
 
-// GetByName calls [MetastoresAPI.MetastoreInfoNameToMetastoreIdMap] and returns a single [MetastoreInfo].
+// GetByName calls [metastoresBaseClient.MetastoreInfoNameToMetastoreIdMap] and returns a single [MetastoreInfo].
 //
 // Returns an error if there's more than one [MetastoreInfo] with the same .Name.
 //
 // Note: All [MetastoreInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *MetastoresAPI) GetByName(ctx context.Context, name string) (*MetastoreInfo, error) {
+func (a *metastoresBaseClient) GetByName(ctx context.Context, name string) (*MetastoreInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx)
 	if err != nil {
@@ -404,13 +404,13 @@ func (a *MetastoresAPI) GetByName(ctx context.Context, name string) (*MetastoreI
 // Delete an assignment.
 //
 // Deletes a metastore assignment. The caller must be an account administrator.
-func (a *MetastoresAPI) UnassignByWorkspaceId(ctx context.Context, workspaceId int64) (*UnassignResponse, error) {
+func (a *metastoresBaseClient) UnassignByWorkspaceId(ctx context.Context, workspaceId int64) (*UnassignResponse, error) {
 	return a.metastoresImpl.Unassign(ctx, UnassignRequest{
 		WorkspaceId: workspaceId,
 	})
 }
 
-type ModelVersionsAPI struct {
+type modelVersionsBaseClient struct {
 	modelVersionsImpl
 }
 
@@ -423,7 +423,7 @@ type ModelVersionsAPI struct {
 // model. For the latter case, the caller must also be the owner or have the
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
-func (a *ModelVersionsAPI) DeleteByFullNameAndVersion(ctx context.Context, fullName string, version int) (*DeleteResponse, error) {
+func (a *modelVersionsBaseClient) DeleteByFullNameAndVersion(ctx context.Context, fullName string, version int) (*DeleteResponse, error) {
 	return a.modelVersionsImpl.Delete(ctx, DeleteModelVersionRequest{
 		FullName: fullName,
 		Version:  version,
@@ -438,7 +438,7 @@ func (a *ModelVersionsAPI) DeleteByFullNameAndVersion(ctx context.Context, fullN
 // privilege on) the parent registered model. For the latter case, the caller
 // must also be the owner or have the **USE_CATALOG** privilege on the parent
 // catalog and the **USE_SCHEMA** privilege on the parent schema.
-func (a *ModelVersionsAPI) GetByFullNameAndVersion(ctx context.Context, fullName string, version int) (*ModelVersionInfo, error) {
+func (a *modelVersionsBaseClient) GetByFullNameAndVersion(ctx context.Context, fullName string, version int) (*ModelVersionInfo, error) {
 	return a.modelVersionsImpl.Get(ctx, GetModelVersionRequest{
 		FullName: fullName,
 		Version:  version,
@@ -453,7 +453,7 @@ func (a *ModelVersionsAPI) GetByFullNameAndVersion(ctx context.Context, fullName
 // privilege on) the registered model. For the latter case, the caller must also
 // be the owner or have the **USE_CATALOG** privilege on the parent catalog and
 // the **USE_SCHEMA** privilege on the parent schema.
-func (a *ModelVersionsAPI) GetByAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) (*ModelVersionInfo, error) {
+func (a *modelVersionsBaseClient) GetByAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) (*ModelVersionInfo, error) {
 	return a.modelVersionsImpl.GetByAlias(ctx, GetByAliasRequest{
 		FullName: fullName,
 		Alias:    alias,
@@ -475,13 +475,13 @@ func (a *ModelVersionsAPI) GetByAliasByFullNameAndAlias(ctx context.Context, ful
 //
 // There is no guarantee of a specific ordering of the elements in the response.
 // The elements in the response will not contain any aliases or tags.
-func (a *ModelVersionsAPI) ListByFullName(ctx context.Context, fullName string) (*ListModelVersionsResponse, error) {
+func (a *modelVersionsBaseClient) ListByFullName(ctx context.Context, fullName string) (*ListModelVersionsResponse, error) {
 	return a.modelVersionsImpl.internalList(ctx, ListModelVersionsRequest{
 		FullName: fullName,
 	})
 }
 
-type OnlineTablesAPI struct {
+type onlineTablesBaseClient struct {
 	onlineTablesImpl
 }
 
@@ -490,7 +490,7 @@ type OnlineTablesAPI struct {
 // Delete an online table. Warning: This will delete all the data in the online
 // table. If the source Delta table was deleted or modified since this Online
 // Table was created, this will lose the data forever!
-func (a *OnlineTablesAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
+func (a *onlineTablesBaseClient) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.onlineTablesImpl.Delete(ctx, DeleteOnlineTableRequest{
 		Name: name,
 	})
@@ -499,13 +499,13 @@ func (a *OnlineTablesAPI) DeleteByName(ctx context.Context, name string) (*Delet
 // Get an Online Table.
 //
 // Get information about an existing online table and its status.
-func (a *OnlineTablesAPI) GetByName(ctx context.Context, name string) (*OnlineTable, error) {
+func (a *onlineTablesBaseClient) GetByName(ctx context.Context, name string) (*OnlineTable, error) {
 	return a.onlineTablesImpl.Get(ctx, GetOnlineTableRequest{
 		Name: name,
 	})
 }
 
-type QualityMonitorsAPI struct {
+type qualityMonitorsBaseClient struct {
 	qualityMonitorsImpl
 }
 
@@ -524,7 +524,7 @@ type QualityMonitorsAPI struct {
 //
 // Note that the metric tables and dashboard will not be deleted as part of this
 // call; those assets must be manually cleaned up (if desired).
-func (a *QualityMonitorsAPI) DeleteByTableName(ctx context.Context, tableName string) (*DeleteResponse, error) {
+func (a *qualityMonitorsBaseClient) DeleteByTableName(ctx context.Context, tableName string) (*DeleteResponse, error) {
 	return a.qualityMonitorsImpl.Delete(ctx, DeleteQualityMonitorRequest{
 		TableName: tableName,
 	})
@@ -544,7 +544,7 @@ func (a *QualityMonitorsAPI) DeleteByTableName(ctx context.Context, tableName st
 // information on assets created by the monitor. Some information (e.g.,
 // dashboard) may be filtered out if the caller is in a different workspace than
 // where the monitor was created.
-func (a *QualityMonitorsAPI) GetByTableName(ctx context.Context, tableName string) (*MonitorInfo, error) {
+func (a *qualityMonitorsBaseClient) GetByTableName(ctx context.Context, tableName string) (*MonitorInfo, error) {
 	return a.qualityMonitorsImpl.Get(ctx, GetQualityMonitorRequest{
 		TableName: tableName,
 	})
@@ -562,7 +562,7 @@ func (a *QualityMonitorsAPI) GetByTableName(ctx context.Context, tableName strin
 //
 // Additionally, the call must be made from the workspace where the monitor was
 // created.
-func (a *QualityMonitorsAPI) GetRefreshByTableNameAndRefreshId(ctx context.Context, tableName string, refreshId string) (*MonitorRefreshInfo, error) {
+func (a *qualityMonitorsBaseClient) GetRefreshByTableNameAndRefreshId(ctx context.Context, tableName string, refreshId string) (*MonitorRefreshInfo, error) {
 	return a.qualityMonitorsImpl.GetRefresh(ctx, GetRefreshRequest{
 		TableName: tableName,
 		RefreshId: refreshId,
@@ -582,13 +582,13 @@ func (a *QualityMonitorsAPI) GetRefreshByTableNameAndRefreshId(ctx context.Conte
 //
 // Additionally, the call must be made from the workspace where the monitor was
 // created.
-func (a *QualityMonitorsAPI) ListRefreshesByTableName(ctx context.Context, tableName string) (*MonitorRefreshListResponse, error) {
+func (a *qualityMonitorsBaseClient) ListRefreshesByTableName(ctx context.Context, tableName string) (*MonitorRefreshListResponse, error) {
 	return a.qualityMonitorsImpl.ListRefreshes(ctx, ListRefreshesRequest{
 		TableName: tableName,
 	})
 }
 
-type RegisteredModelsAPI struct {
+type registeredModelsBaseClient struct {
 	registeredModelsImpl
 }
 
@@ -601,7 +601,7 @@ type RegisteredModelsAPI struct {
 // the latter case, the caller must also be the owner or have the
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
-func (a *RegisteredModelsAPI) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
+func (a *registeredModelsBaseClient) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
 	return a.registeredModelsImpl.Delete(ctx, DeleteRegisteredModelRequest{
 		FullName: fullName,
 	})
@@ -615,7 +615,7 @@ func (a *RegisteredModelsAPI) DeleteByFullName(ctx context.Context, fullName str
 // the latter case, the caller must also be the owner or have the
 // **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
 // privilege on the parent schema.
-func (a *RegisteredModelsAPI) DeleteAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) (*DeleteAliasResponse, error) {
+func (a *registeredModelsBaseClient) DeleteAliasByFullNameAndAlias(ctx context.Context, fullName string, alias string) (*DeleteAliasResponse, error) {
 	return a.registeredModelsImpl.DeleteAlias(ctx, DeleteAliasRequest{
 		FullName: fullName,
 		Alias:    alias,
@@ -630,20 +630,20 @@ func (a *RegisteredModelsAPI) DeleteAliasByFullNameAndAlias(ctx context.Context,
 // privilege on) the registered model. For the latter case, the caller must also
 // be the owner or have the **USE_CATALOG** privilege on the parent catalog and
 // the **USE_SCHEMA** privilege on the parent schema.
-func (a *RegisteredModelsAPI) GetByFullName(ctx context.Context, fullName string) (*RegisteredModelInfo, error) {
+func (a *registeredModelsBaseClient) GetByFullName(ctx context.Context, fullName string) (*RegisteredModelInfo, error) {
 	return a.registeredModelsImpl.Get(ctx, GetRegisteredModelRequest{
 		FullName: fullName,
 	})
 }
 
-// RegisteredModelInfoNameToFullNameMap calls [RegisteredModelsAPI.ListAll] and creates a map of results with [RegisteredModelInfo].Name as key and [RegisteredModelInfo].FullName as value.
+// RegisteredModelInfoNameToFullNameMap calls [registeredModelsBaseClient.ListAll] and creates a map of results with [RegisteredModelInfo].Name as key and [RegisteredModelInfo].FullName as value.
 //
 // Returns an error if there's more than one [RegisteredModelInfo] with the same .Name.
 //
 // Note: All [RegisteredModelInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *RegisteredModelsAPI) RegisteredModelInfoNameToFullNameMap(ctx context.Context, request ListRegisteredModelsRequest) (map[string]string, error) {
+func (a *registeredModelsBaseClient) RegisteredModelInfoNameToFullNameMap(ctx context.Context, request ListRegisteredModelsRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -661,14 +661,14 @@ func (a *RegisteredModelsAPI) RegisteredModelInfoNameToFullNameMap(ctx context.C
 	return mapping, nil
 }
 
-// GetByName calls [RegisteredModelsAPI.RegisteredModelInfoNameToFullNameMap] and returns a single [RegisteredModelInfo].
+// GetByName calls [registeredModelsBaseClient.RegisteredModelInfoNameToFullNameMap] and returns a single [RegisteredModelInfo].
 //
 // Returns an error if there's more than one [RegisteredModelInfo] with the same .Name.
 //
 // Note: All [RegisteredModelInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*RegisteredModelInfo, error) {
+func (a *registeredModelsBaseClient) GetByName(ctx context.Context, name string) (*RegisteredModelInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListRegisteredModelsRequest{})
 	if err != nil {
@@ -689,7 +689,7 @@ func (a *RegisteredModelsAPI) GetByName(ctx context.Context, name string) (*Regi
 	return &alternatives[0], nil
 }
 
-type ResourceQuotasAPI struct {
+type resourceQuotasBaseClient struct {
 	resourceQuotasImpl
 }
 
@@ -699,7 +699,7 @@ type ResourceQuotasAPI struct {
 // defined as a child-parent pair. This API also refreshes the quota count if it
 // is out of date. Refreshes are triggered asynchronously. The updated count
 // might not be returned in the first call.
-func (a *ResourceQuotasAPI) GetQuotaByParentSecurableTypeAndParentFullNameAndQuotaName(ctx context.Context, parentSecurableType string, parentFullName string, quotaName string) (*GetQuotaResponse, error) {
+func (a *resourceQuotasBaseClient) GetQuotaByParentSecurableTypeAndParentFullNameAndQuotaName(ctx context.Context, parentSecurableType string, parentFullName string, quotaName string) (*GetQuotaResponse, error) {
 	return a.resourceQuotasImpl.GetQuota(ctx, GetQuotaRequest{
 		ParentSecurableType: parentSecurableType,
 		ParentFullName:      parentFullName,
@@ -707,7 +707,7 @@ func (a *ResourceQuotasAPI) GetQuotaByParentSecurableTypeAndParentFullNameAndQuo
 	})
 }
 
-type SchemasAPI struct {
+type schemasBaseClient struct {
 	schemasImpl
 }
 
@@ -715,7 +715,7 @@ type SchemasAPI struct {
 //
 // Deletes the specified schema from the parent catalog. The caller must be the
 // owner of the schema or an owner of the parent catalog.
-func (a *SchemasAPI) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
+func (a *schemasBaseClient) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
 	return a.schemasImpl.Delete(ctx, DeleteSchemaRequest{
 		FullName: fullName,
 	})
@@ -726,20 +726,20 @@ func (a *SchemasAPI) DeleteByFullName(ctx context.Context, fullName string) (*De
 // Gets the specified schema within the metastore. The caller must be a
 // metastore admin, the owner of the schema, or a user that has the
 // **USE_SCHEMA** privilege on the schema.
-func (a *SchemasAPI) GetByFullName(ctx context.Context, fullName string) (*SchemaInfo, error) {
+func (a *schemasBaseClient) GetByFullName(ctx context.Context, fullName string) (*SchemaInfo, error) {
 	return a.schemasImpl.Get(ctx, GetSchemaRequest{
 		FullName: fullName,
 	})
 }
 
-// SchemaInfoNameToFullNameMap calls [SchemasAPI.ListAll] and creates a map of results with [SchemaInfo].Name as key and [SchemaInfo].FullName as value.
+// SchemaInfoNameToFullNameMap calls [schemasBaseClient.ListAll] and creates a map of results with [SchemaInfo].Name as key and [SchemaInfo].FullName as value.
 //
 // Returns an error if there's more than one [SchemaInfo] with the same .Name.
 //
 // Note: All [SchemaInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *SchemasAPI) SchemaInfoNameToFullNameMap(ctx context.Context, request ListSchemasRequest) (map[string]string, error) {
+func (a *schemasBaseClient) SchemaInfoNameToFullNameMap(ctx context.Context, request ListSchemasRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -757,14 +757,14 @@ func (a *SchemasAPI) SchemaInfoNameToFullNameMap(ctx context.Context, request Li
 	return mapping, nil
 }
 
-// GetByName calls [SchemasAPI.SchemaInfoNameToFullNameMap] and returns a single [SchemaInfo].
+// GetByName calls [schemasBaseClient.SchemaInfoNameToFullNameMap] and returns a single [SchemaInfo].
 //
 // Returns an error if there's more than one [SchemaInfo] with the same .Name.
 //
 // Note: All [SchemaInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *SchemasAPI) GetByName(ctx context.Context, name string) (*SchemaInfo, error) {
+func (a *schemasBaseClient) GetByName(ctx context.Context, name string) (*SchemaInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListSchemasRequest{})
 	if err != nil {
@@ -785,7 +785,7 @@ func (a *SchemasAPI) GetByName(ctx context.Context, name string) (*SchemaInfo, e
 	return &alternatives[0], nil
 }
 
-type StorageCredentialsAPI struct {
+type storageCredentialsBaseClient struct {
 	storageCredentialsImpl
 }
 
@@ -793,7 +793,7 @@ type StorageCredentialsAPI struct {
 //
 // Deletes a storage credential from the metastore. The caller must be an owner
 // of the storage credential.
-func (a *StorageCredentialsAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
+func (a *storageCredentialsBaseClient) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.storageCredentialsImpl.Delete(ctx, DeleteStorageCredentialRequest{
 		Name: name,
 	})
@@ -804,20 +804,20 @@ func (a *StorageCredentialsAPI) DeleteByName(ctx context.Context, name string) (
 // Gets a storage credential from the metastore. The caller must be a metastore
 // admin, the owner of the storage credential, or have some permission on the
 // storage credential.
-func (a *StorageCredentialsAPI) GetByName(ctx context.Context, name string) (*StorageCredentialInfo, error) {
+func (a *storageCredentialsBaseClient) GetByName(ctx context.Context, name string) (*StorageCredentialInfo, error) {
 	return a.storageCredentialsImpl.Get(ctx, GetStorageCredentialRequest{
 		Name: name,
 	})
 }
 
-// StorageCredentialInfoNameToIdMap calls [StorageCredentialsAPI.ListAll] and creates a map of results with [StorageCredentialInfo].Name as key and [StorageCredentialInfo].Id as value.
+// StorageCredentialInfoNameToIdMap calls [storageCredentialsBaseClient.ListAll] and creates a map of results with [StorageCredentialInfo].Name as key and [StorageCredentialInfo].Id as value.
 //
 // Returns an error if there's more than one [StorageCredentialInfo] with the same .Name.
 //
 // Note: All [StorageCredentialInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *StorageCredentialsAPI) StorageCredentialInfoNameToIdMap(ctx context.Context, request ListStorageCredentialsRequest) (map[string]string, error) {
+func (a *storageCredentialsBaseClient) StorageCredentialInfoNameToIdMap(ctx context.Context, request ListStorageCredentialsRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -835,7 +835,7 @@ func (a *StorageCredentialsAPI) StorageCredentialInfoNameToIdMap(ctx context.Con
 	return mapping, nil
 }
 
-type SystemSchemasAPI struct {
+type systemSchemasBaseClient struct {
 	systemSchemasImpl
 }
 
@@ -843,7 +843,7 @@ type SystemSchemasAPI struct {
 //
 // Disables the system schema and removes it from the system catalog. The caller
 // must be an account admin or a metastore admin.
-func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName string) (*DisableResponse, error) {
+func (a *systemSchemasBaseClient) DisableByMetastoreIdAndSchemaName(ctx context.Context, metastoreId string, schemaName string) (*DisableResponse, error) {
 	return a.systemSchemasImpl.Disable(ctx, DisableRequest{
 		MetastoreId: metastoreId,
 		SchemaName:  schemaName,
@@ -854,13 +854,13 @@ func (a *SystemSchemasAPI) DisableByMetastoreIdAndSchemaName(ctx context.Context
 //
 // Gets an array of system schemas for a metastore. The caller must be an
 // account admin or a metastore admin.
-func (a *SystemSchemasAPI) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListSystemSchemasResponse, error) {
+func (a *systemSchemasBaseClient) ListByMetastoreId(ctx context.Context, metastoreId string) (*ListSystemSchemasResponse, error) {
 	return a.systemSchemasImpl.internalList(ctx, ListSystemSchemasRequest{
 		MetastoreId: metastoreId,
 	})
 }
 
-type TableConstraintsAPI struct {
+type tableConstraintsBaseClient struct {
 	tableConstraintsImpl
 }
 
@@ -875,13 +875,13 @@ type TableConstraintsAPI struct {
 // the user must have the following permissions on all of the child tables: the
 // **USE_CATALOG** privilege on the table's catalog, the **USE_SCHEMA**
 // privilege on the table's schema, and be the owner of the table.
-func (a *TableConstraintsAPI) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
+func (a *tableConstraintsBaseClient) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
 	return a.tableConstraintsImpl.Delete(ctx, DeleteTableConstraintRequest{
 		FullName: fullName,
 	})
 }
 
-type TablesAPI struct {
+type tablesBaseClient struct {
 	tablesImpl
 }
 
@@ -892,7 +892,7 @@ type TablesAPI struct {
 // parent catalog and be the owner of the parent schema, or be the owner of the
 // table and have the **USE_CATALOG** privilege on the parent catalog and the
 // **USE_SCHEMA** privilege on the parent schema.
-func (a *TablesAPI) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
+func (a *tablesBaseClient) DeleteByFullName(ctx context.Context, fullName string) (*DeleteResponse, error) {
 	return a.tablesImpl.Delete(ctx, DeleteTableRequest{
 		FullName: fullName,
 	})
@@ -908,7 +908,7 @@ func (a *TablesAPI) DeleteByFullName(ctx context.Context, fullName string) (*Del
 // privilege on the parent schema, and either be the table owner or have the
 // SELECT privilege on the table. * Have BROWSE privilege on the parent catalog
 // * Have BROWSE privilege on the parent schema.
-func (a *TablesAPI) ExistsByFullName(ctx context.Context, fullName string) (*TableExistsResponse, error) {
+func (a *tablesBaseClient) ExistsByFullName(ctx context.Context, fullName string) (*TableExistsResponse, error) {
 	return a.tablesImpl.Exists(ctx, ExistsRequest{
 		FullName: fullName,
 	})
@@ -923,20 +923,20 @@ func (a *TablesAPI) ExistsByFullName(ctx context.Context, fullName string) (*Tab
 // privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 // parent schema, and either be the table owner or have the SELECT privilege on
 // the table.
-func (a *TablesAPI) GetByFullName(ctx context.Context, fullName string) (*TableInfo, error) {
+func (a *tablesBaseClient) GetByFullName(ctx context.Context, fullName string) (*TableInfo, error) {
 	return a.tablesImpl.Get(ctx, GetTableRequest{
 		FullName: fullName,
 	})
 }
 
-// TableInfoNameToTableIdMap calls [TablesAPI.ListAll] and creates a map of results with [TableInfo].Name as key and [TableInfo].TableId as value.
+// TableInfoNameToTableIdMap calls [tablesBaseClient.ListAll] and creates a map of results with [TableInfo].Name as key and [TableInfo].TableId as value.
 //
 // Returns an error if there's more than one [TableInfo] with the same .Name.
 //
 // Note: All [TableInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *TablesAPI) TableInfoNameToTableIdMap(ctx context.Context, request ListTablesRequest) (map[string]string, error) {
+func (a *tablesBaseClient) TableInfoNameToTableIdMap(ctx context.Context, request ListTablesRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -954,14 +954,14 @@ func (a *TablesAPI) TableInfoNameToTableIdMap(ctx context.Context, request ListT
 	return mapping, nil
 }
 
-// GetByName calls [TablesAPI.TableInfoNameToTableIdMap] and returns a single [TableInfo].
+// GetByName calls [tablesBaseClient.TableInfoNameToTableIdMap] and returns a single [TableInfo].
 //
 // Returns an error if there's more than one [TableInfo] with the same .Name.
 //
 // Note: All [TableInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *TablesAPI) GetByName(ctx context.Context, name string) (*TableInfo, error) {
+func (a *tablesBaseClient) GetByName(ctx context.Context, name string) (*TableInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListTablesRequest{})
 	if err != nil {
@@ -982,11 +982,11 @@ func (a *TablesAPI) GetByName(ctx context.Context, name string) (*TableInfo, err
 	return &alternatives[0], nil
 }
 
-type TemporaryTableCredentialsAPI struct {
+type temporaryTableCredentialsBaseClient struct {
 	temporaryTableCredentialsImpl
 }
 
-type VolumesAPI struct {
+type volumesBaseClient struct {
 	volumesImpl
 }
 
@@ -998,20 +998,20 @@ type VolumesAPI struct {
 // latter case, the caller must also be the owner or have the **USE_CATALOG**
 // privilege on the parent catalog and the **USE_SCHEMA** privilege on the
 // parent schema.
-func (a *VolumesAPI) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
+func (a *volumesBaseClient) DeleteByName(ctx context.Context, name string) (*DeleteResponse, error) {
 	return a.volumesImpl.Delete(ctx, DeleteVolumeRequest{
 		Name: name,
 	})
 }
 
-// VolumeInfoNameToVolumeIdMap calls [VolumesAPI.ListAll] and creates a map of results with [VolumeInfo].Name as key and [VolumeInfo].VolumeId as value.
+// VolumeInfoNameToVolumeIdMap calls [volumesBaseClient.ListAll] and creates a map of results with [VolumeInfo].Name as key and [VolumeInfo].VolumeId as value.
 //
 // Returns an error if there's more than one [VolumeInfo] with the same .Name.
 //
 // Note: All [VolumeInfo] instances are loaded into memory before creating a map.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *VolumesAPI) VolumeInfoNameToVolumeIdMap(ctx context.Context, request ListVolumesRequest) (map[string]string, error) {
+func (a *volumesBaseClient) VolumeInfoNameToVolumeIdMap(ctx context.Context, request ListVolumesRequest) (map[string]string, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "name-to-id")
 	mapping := map[string]string{}
 	result, err := a.ListAll(ctx, request)
@@ -1029,14 +1029,14 @@ func (a *VolumesAPI) VolumeInfoNameToVolumeIdMap(ctx context.Context, request Li
 	return mapping, nil
 }
 
-// GetByName calls [VolumesAPI.VolumeInfoNameToVolumeIdMap] and returns a single [VolumeInfo].
+// GetByName calls [volumesBaseClient.VolumeInfoNameToVolumeIdMap] and returns a single [VolumeInfo].
 //
 // Returns an error if there's more than one [VolumeInfo] with the same .Name.
 //
 // Note: All [VolumeInfo] instances are loaded into memory before returning matching by name.
 //
 // This method is generated by Databricks SDK Code Generator.
-func (a *VolumesAPI) GetByName(ctx context.Context, name string) (*VolumeInfo, error) {
+func (a *volumesBaseClient) GetByName(ctx context.Context, name string) (*VolumeInfo, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "get-by-name")
 	result, err := a.ListAll(ctx, ListVolumesRequest{})
 	if err != nil {
@@ -1065,13 +1065,13 @@ func (a *VolumesAPI) GetByName(ctx context.Context, name string) (*VolumeInfo, e
 // VOLUME** privilege on) the volume. For the latter case, the caller must also
 // be the owner or have the **USE_CATALOG** privilege on the parent catalog and
 // the **USE_SCHEMA** privilege on the parent schema.
-func (a *VolumesAPI) ReadByName(ctx context.Context, name string) (*VolumeInfo, error) {
+func (a *volumesBaseClient) ReadByName(ctx context.Context, name string) (*VolumeInfo, error) {
 	return a.volumesImpl.Read(ctx, ReadVolumeRequest{
 		Name: name,
 	})
 }
 
-type WorkspaceBindingsAPI struct {
+type workspaceBindingsBaseClient struct {
 	workspaceBindingsImpl
 }
 
@@ -1079,7 +1079,7 @@ type WorkspaceBindingsAPI struct {
 //
 // Gets workspace bindings of the catalog. The caller must be a metastore admin
 // or an owner of the catalog.
-func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*CurrentWorkspaceBindings, error) {
+func (a *workspaceBindingsBaseClient) GetByName(ctx context.Context, name string) (*CurrentWorkspaceBindings, error) {
 	return a.workspaceBindingsImpl.Get(ctx, GetWorkspaceBindingRequest{
 		Name: name,
 	})
@@ -1089,7 +1089,7 @@ func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*Cur
 //
 // Gets workspace bindings of the securable. The caller must be a metastore
 // admin or an owner of the securable.
-func (a *WorkspaceBindingsAPI) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType GetBindingsSecurableType, securableName string) (*WorkspaceBindingsResponse, error) {
+func (a *workspaceBindingsBaseClient) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType GetBindingsSecurableType, securableName string) (*WorkspaceBindingsResponse, error) {
 	return a.workspaceBindingsImpl.internalGetBindings(ctx, GetBindingsRequest{
 		SecurableType: securableType,
 		SecurableName: securableName,

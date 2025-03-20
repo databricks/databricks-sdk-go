@@ -19,7 +19,7 @@ import (
 // using the same tools you use to manage other workspace objects such as
 // folders, notebooks, and libraries.
 type ExperimentsClient struct {
-	ExperimentsAPI
+	experimentsBaseClient
 }
 
 func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
@@ -41,7 +41,7 @@ func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
 	}
 
 	return &ExperimentsClient{
-		ExperimentsAPI: ExperimentsAPI{
+		experimentsBaseClient: experimentsBaseClient{
 			experimentsImpl: experimentsImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -52,7 +52,7 @@ func NewExperimentsClient(cfg *config.Config) (*ExperimentsClient, error) {
 // The Forecasting API allows you to create and get serverless forecasting
 // experiments
 type ForecastingClient struct {
-	ForecastingAPI
+	forecastingBaseClient
 }
 
 func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
@@ -74,7 +74,7 @@ func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
 	}
 
 	return &ForecastingClient{
-		ForecastingAPI: ForecastingAPI{
+		forecastingBaseClient: forecastingBaseClient{
 			forecastingImpl: forecastingImpl{
 				client: apiClient.ApiClient(),
 			},
@@ -91,7 +91,7 @@ func NewForecastingClient(cfg *config.Config) (*ForecastingClient, error) {
 // The Workspace Model Registry is a centralized model repository and a UI and
 // set of APIs that enable you to manage the full lifecycle of MLflow Models.
 type ModelRegistryClient struct {
-	ModelRegistryAPI
+	modelRegistryBaseClient
 }
 
 func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
@@ -113,7 +113,7 @@ func NewModelRegistryClient(cfg *config.Config) (*ModelRegistryClient, error) {
 	}
 
 	return &ModelRegistryClient{
-		ModelRegistryAPI: ModelRegistryAPI{
+		modelRegistryBaseClient: modelRegistryBaseClient{
 			modelRegistryImpl: modelRegistryImpl{
 				client: apiClient.ApiClient(),
 			},
