@@ -32,7 +32,7 @@ func NewServingEndpointsClient(cfg *config.Config) (*ServingEndpointsClient, err
 	}
 
 	return &ServingEndpointsClient{
-		ServingEndpointsInterface: NewServingEndpoints(apiClient),
+		ServingEndpointsInterface: NewServingEndpoints(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,6 +59,6 @@ func NewServingEndpointsDataPlaneClient(cfg *config.Config) (*ServingEndpointsDa
 	}
 
 	return &ServingEndpointsDataPlaneClient{
-		ServingEndpointsDataPlaneInterface: NewServingEndpointsDataPlane(apiClient),
+		ServingEndpointsDataPlaneInterface: NewServingEndpointsDataPlane(apiClient.ApiClient()),
 	}, nil
 }

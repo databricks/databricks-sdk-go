@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -16,7 +15,7 @@ import (
 
 // unexported type that holds implementations of just GitCredentials API methods
 type gitCredentialsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *gitCredentialsImpl) Create(ctx context.Context, request CreateCredentialsRequest) (*CreateCredentialsResponse, error) {
@@ -104,7 +103,7 @@ func (a *gitCredentialsImpl) Update(ctx context.Context, request UpdateCredentia
 
 // unexported type that holds implementations of just Repos API methods
 type reposImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *reposImpl) Create(ctx context.Context, request CreateRepoRequest) (*CreateRepoResponse, error) {
@@ -239,7 +238,7 @@ func (a *reposImpl) UpdatePermissions(ctx context.Context, request RepoPermissio
 
 // unexported type that holds implementations of just Secrets API methods
 type secretsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *secretsImpl) CreateScope(ctx context.Context, request CreateScope) (*CreateScopeResponse, error) {
@@ -475,7 +474,7 @@ func (a *secretsImpl) PutSecret(ctx context.Context, request PutSecret) (*PutSec
 
 // unexported type that holds implementations of just Workspace API methods
 type workspaceImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *workspaceImpl) Delete(ctx context.Context, request Delete) (*DeleteResponse, error) {
@@ -616,7 +615,7 @@ func (a *workspaceImpl) UpdatePermissions(ctx context.Context, request Workspace
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -641,5 +640,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

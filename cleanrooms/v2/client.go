@@ -32,7 +32,7 @@ func NewCleanRoomAssetsClient(cfg *config.Config) (*CleanRoomAssetsClient, error
 	}
 
 	return &CleanRoomAssetsClient{
-		CleanRoomAssetsInterface: NewCleanRoomAssets(apiClient),
+		CleanRoomAssetsInterface: NewCleanRoomAssets(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewCleanRoomTaskRunsClient(cfg *config.Config) (*CleanRoomTaskRunsClient, e
 	}
 
 	return &CleanRoomTaskRunsClient{
-		CleanRoomTaskRunsInterface: NewCleanRoomTaskRuns(apiClient),
+		CleanRoomTaskRunsInterface: NewCleanRoomTaskRuns(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,6 +86,6 @@ func NewCleanRoomsClient(cfg *config.Config) (*CleanRoomsClient, error) {
 	}
 
 	return &CleanRoomsClient{
-		CleanRoomsInterface: NewCleanRooms(apiClient),
+		CleanRoomsInterface: NewCleanRooms(apiClient.ApiClient()),
 	}, nil
 }

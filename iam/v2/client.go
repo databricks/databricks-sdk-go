@@ -32,7 +32,7 @@ func NewAccessControlClient(cfg *config.Config) (*AccessControlClient, error) {
 	}
 
 	return &AccessControlClient{
-		AccessControlInterface: NewAccessControl(apiClient),
+		AccessControlInterface: NewAccessControl(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewAccountAccessControlClient(cfg *config.Config) (*AccountAccessControlCli
 	}
 
 	return &AccountAccessControlClient{
-		AccountAccessControlInterface: NewAccountAccessControl(apiClient),
+		AccountAccessControlInterface: NewAccountAccessControl(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewAccountAccessControlProxyClient(cfg *config.Config) (*AccountAccessContr
 	}
 
 	return &AccountAccessControlProxyClient{
-		AccountAccessControlProxyInterface: NewAccountAccessControlProxy(apiClient),
+		AccountAccessControlProxyInterface: NewAccountAccessControlProxy(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,7 +113,7 @@ func NewAccountGroupsClient(cfg *config.Config) (*AccountGroupsClient, error) {
 	}
 
 	return &AccountGroupsClient{
-		AccountGroupsInterface: NewAccountGroups(apiClient),
+		AccountGroupsInterface: NewAccountGroups(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -140,7 +140,7 @@ func NewAccountServicePrincipalsClient(cfg *config.Config) (*AccountServicePrinc
 	}
 
 	return &AccountServicePrincipalsClient{
-		AccountServicePrincipalsInterface: NewAccountServicePrincipals(apiClient),
+		AccountServicePrincipalsInterface: NewAccountServicePrincipals(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -167,7 +167,7 @@ func NewAccountUsersClient(cfg *config.Config) (*AccountUsersClient, error) {
 	}
 
 	return &AccountUsersClient{
-		AccountUsersInterface: NewAccountUsers(apiClient),
+		AccountUsersInterface: NewAccountUsers(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -194,7 +194,7 @@ func NewCurrentUserClient(cfg *config.Config) (*CurrentUserClient, error) {
 	}
 
 	return &CurrentUserClient{
-		CurrentUserInterface: NewCurrentUser(apiClient),
+		CurrentUserInterface: NewCurrentUser(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -221,7 +221,7 @@ func NewGroupsClient(cfg *config.Config) (*GroupsClient, error) {
 	}
 
 	return &GroupsClient{
-		GroupsInterface: NewGroups(apiClient),
+		GroupsInterface: NewGroups(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -248,7 +248,7 @@ func NewPermissionMigrationClient(cfg *config.Config) (*PermissionMigrationClien
 	}
 
 	return &PermissionMigrationClient{
-		PermissionMigrationInterface: NewPermissionMigration(apiClient),
+		PermissionMigrationInterface: NewPermissionMigration(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -275,7 +275,7 @@ func NewPermissionsClient(cfg *config.Config) (*PermissionsClient, error) {
 	}
 
 	return &PermissionsClient{
-		PermissionsInterface: NewPermissions(apiClient),
+		PermissionsInterface: NewPermissions(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -302,7 +302,7 @@ func NewServicePrincipalsClient(cfg *config.Config) (*ServicePrincipalsClient, e
 	}
 
 	return &ServicePrincipalsClient{
-		ServicePrincipalsInterface: NewServicePrincipals(apiClient),
+		ServicePrincipalsInterface: NewServicePrincipals(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -329,7 +329,7 @@ func NewUsersClient(cfg *config.Config) (*UsersClient, error) {
 	}
 
 	return &UsersClient{
-		UsersInterface: NewUsers(apiClient),
+		UsersInterface: NewUsers(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -356,6 +356,6 @@ func NewWorkspaceAssignmentClient(cfg *config.Config) (*WorkspaceAssignmentClien
 	}
 
 	return &WorkspaceAssignmentClient{
-		WorkspaceAssignmentInterface: NewWorkspaceAssignment(apiClient),
+		WorkspaceAssignmentInterface: NewWorkspaceAssignment(apiClient.ApiClient()),
 	}, nil
 }

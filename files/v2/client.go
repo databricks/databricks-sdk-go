@@ -32,7 +32,7 @@ func NewDbfsClient(cfg *config.Config) (*DbfsClient, error) {
 	}
 
 	return &DbfsClient{
-		DbfsInterface: NewDbfs(apiClient),
+		DbfsInterface: NewDbfs(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,6 +59,6 @@ func NewFilesClient(cfg *config.Config) (*FilesClient, error) {
 	}
 
 	return &FilesClient{
-		FilesInterface: NewFiles(apiClient),
+		FilesInterface: NewFiles(apiClient.ApiClient()),
 	}, nil
 }

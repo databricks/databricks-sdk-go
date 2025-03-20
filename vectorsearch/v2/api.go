@@ -6,7 +6,7 @@ package vectorsearch
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
@@ -40,7 +40,7 @@ type VectorSearchEndpointsInterface interface {
 	ListEndpointsAll(ctx context.Context, request ListEndpointsRequest) ([]EndpointInfo, error)
 }
 
-func NewVectorSearchEndpoints(client *client.DatabricksClient) *VectorSearchEndpointsAPI {
+func NewVectorSearchEndpoints(client *httpclient.ApiClient) *VectorSearchEndpointsAPI {
 	return &VectorSearchEndpointsAPI{
 		vectorSearchEndpointsImpl: vectorSearchEndpointsImpl{
 			client: client,
@@ -141,7 +141,7 @@ type VectorSearchIndexesInterface interface {
 	UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error)
 }
 
-func NewVectorSearchIndexes(client *client.DatabricksClient) *VectorSearchIndexesAPI {
+func NewVectorSearchIndexes(client *httpclient.ApiClient) *VectorSearchIndexesAPI {
 	return &VectorSearchIndexesAPI{
 		vectorSearchIndexesImpl: vectorSearchIndexesImpl{
 			client: client,

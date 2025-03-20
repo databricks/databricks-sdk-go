@@ -32,7 +32,7 @@ func NewConsumerFulfillmentsClient(cfg *config.Config) (*ConsumerFulfillmentsCli
 	}
 
 	return &ConsumerFulfillmentsClient{
-		ConsumerFulfillmentsInterface: NewConsumerFulfillments(apiClient),
+		ConsumerFulfillmentsInterface: NewConsumerFulfillments(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewConsumerInstallationsClient(cfg *config.Config) (*ConsumerInstallationsC
 	}
 
 	return &ConsumerInstallationsClient{
-		ConsumerInstallationsInterface: NewConsumerInstallations(apiClient),
+		ConsumerInstallationsInterface: NewConsumerInstallations(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewConsumerListingsClient(cfg *config.Config) (*ConsumerListingsClient, err
 	}
 
 	return &ConsumerListingsClient{
-		ConsumerListingsInterface: NewConsumerListings(apiClient),
+		ConsumerListingsInterface: NewConsumerListings(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,7 +113,7 @@ func NewConsumerPersonalizationRequestsClient(cfg *config.Config) (*ConsumerPers
 	}
 
 	return &ConsumerPersonalizationRequestsClient{
-		ConsumerPersonalizationRequestsInterface: NewConsumerPersonalizationRequests(apiClient),
+		ConsumerPersonalizationRequestsInterface: NewConsumerPersonalizationRequests(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -140,7 +140,7 @@ func NewConsumerProvidersClient(cfg *config.Config) (*ConsumerProvidersClient, e
 	}
 
 	return &ConsumerProvidersClient{
-		ConsumerProvidersInterface: NewConsumerProviders(apiClient),
+		ConsumerProvidersInterface: NewConsumerProviders(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -167,7 +167,7 @@ func NewProviderExchangeFiltersClient(cfg *config.Config) (*ProviderExchangeFilt
 	}
 
 	return &ProviderExchangeFiltersClient{
-		ProviderExchangeFiltersInterface: NewProviderExchangeFilters(apiClient),
+		ProviderExchangeFiltersInterface: NewProviderExchangeFilters(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -194,7 +194,7 @@ func NewProviderExchangesClient(cfg *config.Config) (*ProviderExchangesClient, e
 	}
 
 	return &ProviderExchangesClient{
-		ProviderExchangesInterface: NewProviderExchanges(apiClient),
+		ProviderExchangesInterface: NewProviderExchanges(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -221,7 +221,7 @@ func NewProviderFilesClient(cfg *config.Config) (*ProviderFilesClient, error) {
 	}
 
 	return &ProviderFilesClient{
-		ProviderFilesInterface: NewProviderFiles(apiClient),
+		ProviderFilesInterface: NewProviderFiles(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -248,7 +248,7 @@ func NewProviderListingsClient(cfg *config.Config) (*ProviderListingsClient, err
 	}
 
 	return &ProviderListingsClient{
-		ProviderListingsInterface: NewProviderListings(apiClient),
+		ProviderListingsInterface: NewProviderListings(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -275,7 +275,7 @@ func NewProviderPersonalizationRequestsClient(cfg *config.Config) (*ProviderPers
 	}
 
 	return &ProviderPersonalizationRequestsClient{
-		ProviderPersonalizationRequestsInterface: NewProviderPersonalizationRequests(apiClient),
+		ProviderPersonalizationRequestsInterface: NewProviderPersonalizationRequests(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -302,7 +302,7 @@ func NewProviderProviderAnalyticsDashboardsClient(cfg *config.Config) (*Provider
 	}
 
 	return &ProviderProviderAnalyticsDashboardsClient{
-		ProviderProviderAnalyticsDashboardsInterface: NewProviderProviderAnalyticsDashboards(apiClient),
+		ProviderProviderAnalyticsDashboardsInterface: NewProviderProviderAnalyticsDashboards(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -329,6 +329,6 @@ func NewProviderProvidersClient(cfg *config.Config) (*ProviderProvidersClient, e
 	}
 
 	return &ProviderProvidersClient{
-		ProviderProvidersInterface: NewProviderProviders(apiClient),
+		ProviderProvidersInterface: NewProviderProviders(apiClient.ApiClient()),
 	}, nil
 }

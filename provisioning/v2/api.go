@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
@@ -82,7 +82,7 @@ type CredentialsInterface interface {
 	GetByCredentialsName(ctx context.Context, name string) (*Credential, error)
 }
 
-func NewCredentials(client *client.DatabricksClient) *CredentialsAPI {
+func NewCredentials(client *httpclient.ApiClient) *CredentialsAPI {
 	return &CredentialsAPI{
 		credentialsImpl: credentialsImpl{
 			client: client,
@@ -264,7 +264,7 @@ type EncryptionKeysInterface interface {
 	List(ctx context.Context) ([]CustomerManagedKey, error)
 }
 
-func NewEncryptionKeys(client *client.DatabricksClient) *EncryptionKeysAPI {
+func NewEncryptionKeys(client *httpclient.ApiClient) *EncryptionKeysAPI {
 	return &EncryptionKeysAPI{
 		encryptionKeysImpl: encryptionKeysImpl{
 			client: client,
@@ -394,7 +394,7 @@ type NetworksInterface interface {
 	GetByNetworkName(ctx context.Context, name string) (*Network, error)
 }
 
-func NewNetworks(client *client.DatabricksClient) *NetworksAPI {
+func NewNetworks(client *httpclient.ApiClient) *NetworksAPI {
 	return &NetworksAPI{
 		networksImpl: networksImpl{
 			client: client,
@@ -605,7 +605,7 @@ type PrivateAccessInterface interface {
 	Replace(ctx context.Context, request UpsertPrivateAccessSettingsRequest) (*ReplaceResponse, error)
 }
 
-func NewPrivateAccess(client *client.DatabricksClient) *PrivateAccessAPI {
+func NewPrivateAccess(client *httpclient.ApiClient) *PrivateAccessAPI {
 	return &PrivateAccessAPI{
 		privateAccessImpl: privateAccessImpl{
 			client: client,
@@ -766,7 +766,7 @@ type StorageInterface interface {
 	GetByStorageConfigurationName(ctx context.Context, name string) (*StorageConfiguration, error)
 }
 
-func NewStorage(client *client.DatabricksClient) *StorageAPI {
+func NewStorage(client *httpclient.ApiClient) *StorageAPI {
 	return &StorageAPI{
 		storageImpl: storageImpl{
 			client: client,
@@ -949,7 +949,7 @@ type VpcEndpointsInterface interface {
 	GetByVpcEndpointName(ctx context.Context, name string) (*VpcEndpoint, error)
 }
 
-func NewVpcEndpoints(client *client.DatabricksClient) *VpcEndpointsAPI {
+func NewVpcEndpoints(client *httpclient.ApiClient) *VpcEndpointsAPI {
 	return &VpcEndpointsAPI{
 		vpcEndpointsImpl: vpcEndpointsImpl{
 			client: client,
@@ -1272,7 +1272,7 @@ type WorkspacesInterface interface {
 	Update(ctx context.Context, request UpdateWorkspaceRequest) (*UpdateResponse, error)
 }
 
-func NewWorkspaces(client *client.DatabricksClient) *WorkspacesAPI {
+func NewWorkspaces(client *httpclient.ApiClient) *WorkspacesAPI {
 	return &WorkspacesAPI{
 		workspacesImpl: workspacesImpl{
 			client: client,

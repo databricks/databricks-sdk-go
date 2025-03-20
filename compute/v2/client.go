@@ -32,7 +32,7 @@ func NewClusterPoliciesClient(cfg *config.Config) (*ClusterPoliciesClient, error
 	}
 
 	return &ClusterPoliciesClient{
-		ClusterPoliciesInterface: NewClusterPolicies(apiClient),
+		ClusterPoliciesInterface: NewClusterPolicies(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewClustersClient(cfg *config.Config) (*ClustersClient, error) {
 	}
 
 	return &ClustersClient{
-		ClustersInterface: NewClusters(apiClient),
+		ClustersInterface: NewClusters(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewCommandExecutionClient(cfg *config.Config) (*CommandExecutionClient, err
 	}
 
 	return &CommandExecutionClient{
-		CommandExecutionInterface: NewCommandExecution(apiClient),
+		CommandExecutionInterface: NewCommandExecution(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,7 +113,7 @@ func NewGlobalInitScriptsClient(cfg *config.Config) (*GlobalInitScriptsClient, e
 	}
 
 	return &GlobalInitScriptsClient{
-		GlobalInitScriptsInterface: NewGlobalInitScripts(apiClient),
+		GlobalInitScriptsInterface: NewGlobalInitScripts(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -140,7 +140,7 @@ func NewInstancePoolsClient(cfg *config.Config) (*InstancePoolsClient, error) {
 	}
 
 	return &InstancePoolsClient{
-		InstancePoolsInterface: NewInstancePools(apiClient),
+		InstancePoolsInterface: NewInstancePools(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -167,7 +167,7 @@ func NewInstanceProfilesClient(cfg *config.Config) (*InstanceProfilesClient, err
 	}
 
 	return &InstanceProfilesClient{
-		InstanceProfilesInterface: NewInstanceProfiles(apiClient),
+		InstanceProfilesInterface: NewInstanceProfiles(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -194,7 +194,7 @@ func NewLibrariesClient(cfg *config.Config) (*LibrariesClient, error) {
 	}
 
 	return &LibrariesClient{
-		LibrariesInterface: NewLibraries(apiClient),
+		LibrariesInterface: NewLibraries(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -221,7 +221,7 @@ func NewPolicyComplianceForClustersClient(cfg *config.Config) (*PolicyCompliance
 	}
 
 	return &PolicyComplianceForClustersClient{
-		PolicyComplianceForClustersInterface: NewPolicyComplianceForClusters(apiClient),
+		PolicyComplianceForClustersInterface: NewPolicyComplianceForClusters(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -248,6 +248,6 @@ func NewPolicyFamiliesClient(cfg *config.Config) (*PolicyFamiliesClient, error) 
 	}
 
 	return &PolicyFamiliesClient{
-		PolicyFamiliesInterface: NewPolicyFamilies(apiClient),
+		PolicyFamiliesInterface: NewPolicyFamilies(apiClient.ApiClient()),
 	}, nil
 }

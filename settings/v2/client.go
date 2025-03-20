@@ -32,7 +32,7 @@ func NewAccountIpAccessListsClient(cfg *config.Config) (*AccountIpAccessListsCli
 	}
 
 	return &AccountIpAccessListsClient{
-		AccountIpAccessListsInterface: NewAccountIpAccessLists(apiClient),
+		AccountIpAccessListsInterface: NewAccountIpAccessLists(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewAccountSettingsClient(cfg *config.Config) (*AccountSettingsClient, error
 	}
 
 	return &AccountSettingsClient{
-		AccountSettingsInterface: NewAccountSettings(apiClient),
+		AccountSettingsInterface: NewAccountSettings(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewAibiDashboardEmbeddingAccessPolicyClient(cfg *config.Config) (*AibiDashb
 	}
 
 	return &AibiDashboardEmbeddingAccessPolicyClient{
-		AibiDashboardEmbeddingAccessPolicyInterface: NewAibiDashboardEmbeddingAccessPolicy(apiClient),
+		AibiDashboardEmbeddingAccessPolicyInterface: NewAibiDashboardEmbeddingAccessPolicy(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,7 +113,7 @@ func NewAibiDashboardEmbeddingApprovedDomainsClient(cfg *config.Config) (*AibiDa
 	}
 
 	return &AibiDashboardEmbeddingApprovedDomainsClient{
-		AibiDashboardEmbeddingApprovedDomainsInterface: NewAibiDashboardEmbeddingApprovedDomains(apiClient),
+		AibiDashboardEmbeddingApprovedDomainsInterface: NewAibiDashboardEmbeddingApprovedDomains(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -140,7 +140,7 @@ func NewAutomaticClusterUpdateClient(cfg *config.Config) (*AutomaticClusterUpdat
 	}
 
 	return &AutomaticClusterUpdateClient{
-		AutomaticClusterUpdateInterface: NewAutomaticClusterUpdate(apiClient),
+		AutomaticClusterUpdateInterface: NewAutomaticClusterUpdate(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -167,7 +167,7 @@ func NewComplianceSecurityProfileClient(cfg *config.Config) (*ComplianceSecurity
 	}
 
 	return &ComplianceSecurityProfileClient{
-		ComplianceSecurityProfileInterface: NewComplianceSecurityProfile(apiClient),
+		ComplianceSecurityProfileInterface: NewComplianceSecurityProfile(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -194,7 +194,7 @@ func NewCredentialsManagerClient(cfg *config.Config) (*CredentialsManagerClient,
 	}
 
 	return &CredentialsManagerClient{
-		CredentialsManagerInterface: NewCredentialsManager(apiClient),
+		CredentialsManagerInterface: NewCredentialsManager(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -221,7 +221,7 @@ func NewCspEnablementAccountClient(cfg *config.Config) (*CspEnablementAccountCli
 	}
 
 	return &CspEnablementAccountClient{
-		CspEnablementAccountInterface: NewCspEnablementAccount(apiClient),
+		CspEnablementAccountInterface: NewCspEnablementAccount(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -248,7 +248,7 @@ func NewDefaultNamespaceClient(cfg *config.Config) (*DefaultNamespaceClient, err
 	}
 
 	return &DefaultNamespaceClient{
-		DefaultNamespaceInterface: NewDefaultNamespace(apiClient),
+		DefaultNamespaceInterface: NewDefaultNamespace(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -275,7 +275,7 @@ func NewDisableLegacyAccessClient(cfg *config.Config) (*DisableLegacyAccessClien
 	}
 
 	return &DisableLegacyAccessClient{
-		DisableLegacyAccessInterface: NewDisableLegacyAccess(apiClient),
+		DisableLegacyAccessInterface: NewDisableLegacyAccess(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -302,7 +302,7 @@ func NewDisableLegacyDbfsClient(cfg *config.Config) (*DisableLegacyDbfsClient, e
 	}
 
 	return &DisableLegacyDbfsClient{
-		DisableLegacyDbfsInterface: NewDisableLegacyDbfs(apiClient),
+		DisableLegacyDbfsInterface: NewDisableLegacyDbfs(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -329,7 +329,7 @@ func NewDisableLegacyFeaturesClient(cfg *config.Config) (*DisableLegacyFeaturesC
 	}
 
 	return &DisableLegacyFeaturesClient{
-		DisableLegacyFeaturesInterface: NewDisableLegacyFeatures(apiClient),
+		DisableLegacyFeaturesInterface: NewDisableLegacyFeatures(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -356,7 +356,7 @@ func NewEnableIpAccessListsClient(cfg *config.Config) (*EnableIpAccessListsClien
 	}
 
 	return &EnableIpAccessListsClient{
-		EnableIpAccessListsInterface: NewEnableIpAccessLists(apiClient),
+		EnableIpAccessListsInterface: NewEnableIpAccessLists(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -383,7 +383,7 @@ func NewEnhancedSecurityMonitoringClient(cfg *config.Config) (*EnhancedSecurityM
 	}
 
 	return &EnhancedSecurityMonitoringClient{
-		EnhancedSecurityMonitoringInterface: NewEnhancedSecurityMonitoring(apiClient),
+		EnhancedSecurityMonitoringInterface: NewEnhancedSecurityMonitoring(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -410,7 +410,7 @@ func NewEsmEnablementAccountClient(cfg *config.Config) (*EsmEnablementAccountCli
 	}
 
 	return &EsmEnablementAccountClient{
-		EsmEnablementAccountInterface: NewEsmEnablementAccount(apiClient),
+		EsmEnablementAccountInterface: NewEsmEnablementAccount(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -437,7 +437,7 @@ func NewIpAccessListsClient(cfg *config.Config) (*IpAccessListsClient, error) {
 	}
 
 	return &IpAccessListsClient{
-		IpAccessListsInterface: NewIpAccessLists(apiClient),
+		IpAccessListsInterface: NewIpAccessLists(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -464,7 +464,7 @@ func NewNetworkConnectivityClient(cfg *config.Config) (*NetworkConnectivityClien
 	}
 
 	return &NetworkConnectivityClient{
-		NetworkConnectivityInterface: NewNetworkConnectivity(apiClient),
+		NetworkConnectivityInterface: NewNetworkConnectivity(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -491,7 +491,7 @@ func NewNotificationDestinationsClient(cfg *config.Config) (*NotificationDestina
 	}
 
 	return &NotificationDestinationsClient{
-		NotificationDestinationsInterface: NewNotificationDestinations(apiClient),
+		NotificationDestinationsInterface: NewNotificationDestinations(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -518,7 +518,7 @@ func NewPersonalComputeClient(cfg *config.Config) (*PersonalComputeClient, error
 	}
 
 	return &PersonalComputeClient{
-		PersonalComputeInterface: NewPersonalCompute(apiClient),
+		PersonalComputeInterface: NewPersonalCompute(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -545,7 +545,7 @@ func NewRestrictWorkspaceAdminsClient(cfg *config.Config) (*RestrictWorkspaceAdm
 	}
 
 	return &RestrictWorkspaceAdminsClient{
-		RestrictWorkspaceAdminsInterface: NewRestrictWorkspaceAdmins(apiClient),
+		RestrictWorkspaceAdminsInterface: NewRestrictWorkspaceAdmins(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -572,7 +572,7 @@ func NewSettingsClient(cfg *config.Config) (*SettingsClient, error) {
 	}
 
 	return &SettingsClient{
-		SettingsInterface: NewSettings(apiClient),
+		SettingsInterface: NewSettings(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -599,7 +599,7 @@ func NewTokenManagementClient(cfg *config.Config) (*TokenManagementClient, error
 	}
 
 	return &TokenManagementClient{
-		TokenManagementInterface: NewTokenManagement(apiClient),
+		TokenManagementInterface: NewTokenManagement(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -626,7 +626,7 @@ func NewTokensClient(cfg *config.Config) (*TokensClient, error) {
 	}
 
 	return &TokensClient{
-		TokensInterface: NewTokens(apiClient),
+		TokensInterface: NewTokens(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -653,6 +653,6 @@ func NewWorkspaceConfClient(cfg *config.Config) (*WorkspaceConfClient, error) {
 	}
 
 	return &WorkspaceConfClient{
-		WorkspaceConfInterface: NewWorkspaceConf(apiClient),
+		WorkspaceConfInterface: NewWorkspaceConf(apiClient.ApiClient()),
 	}, nil
 }

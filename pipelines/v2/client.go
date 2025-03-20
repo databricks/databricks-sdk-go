@@ -32,6 +32,6 @@ func NewPipelinesClient(cfg *config.Config) (*PipelinesClient, error) {
 	}
 
 	return &PipelinesClient{
-		PipelinesInterface: NewPipelines(apiClient),
+		PipelinesInterface: NewPipelines(apiClient.ApiClient()),
 	}, nil
 }

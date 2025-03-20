@@ -54,7 +54,7 @@ func TestGetRun(t *testing.T) {
 		defer server.Close()
 
 		mockJobsImpl := &jobsImpl{
-			client: client,
+			client: client.ApiClient(),
 		}
 		api := &JobsAPI{jobsImpl: *mockJobsImpl}
 
@@ -154,7 +154,7 @@ func TestGetRun(t *testing.T) {
 		defer server.Close()
 
 		mockJobsImpl := &jobsImpl{
-			client: client,
+			client: client.ApiClient(),
 		}
 		api := &JobsAPI{jobsImpl: *mockJobsImpl}
 
@@ -298,7 +298,7 @@ func TestGetRun(t *testing.T) {
 		defer server.Close()
 
 		mockJobsImpl := &jobsImpl{
-			client: client,
+			client: client.ApiClient(),
 		}
 		api := &JobsAPI{jobsImpl: *mockJobsImpl}
 
@@ -392,7 +392,7 @@ func TestGetRun(t *testing.T) {
 		defer server.Close()
 
 		mockJobsImpl := &jobsImpl{
-			client: client,
+			client: client.ApiClient(),
 		}
 		api := &JobsAPI{jobsImpl: *mockJobsImpl}
 
@@ -469,7 +469,7 @@ func TestGetJob(t *testing.T) {
 		defer server.Close()
 
 		mockJobsImpl := &jobsImpl{
-			client: client,
+			client: client.ApiClient(),
 		}
 		api := &JobsAPI{jobsImpl: *mockJobsImpl}
 
@@ -648,7 +648,7 @@ func TestGetJob(t *testing.T) {
 		defer server.Close()
 
 		mockJobsImpl := &jobsImpl{
-			client: client,
+			client: client.ApiClient(),
 		}
 		api := &JobsAPI{jobsImpl: *mockJobsImpl}
 
@@ -763,7 +763,7 @@ func TestListJobs(t *testing.T) {
 		defer server.Close()
 
 		mockJobsImpl := &jobsImpl{
-			client: client,
+			client: client.ApiClient(),
 		}
 		api := &JobsAPI{jobsImpl: *mockJobsImpl}
 
@@ -1248,7 +1248,7 @@ func TestListJobs(t *testing.T) {
 		defer server.Close()
 
 		mockJobsImpl := &jobsImpl{
-			client: client,
+			client: client.ApiClient(),
 		}
 		api := &JobsAPI{jobsImpl: *mockJobsImpl}
 

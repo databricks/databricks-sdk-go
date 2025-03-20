@@ -32,7 +32,7 @@ func NewAccountFederationPolicyClient(cfg *config.Config) (*AccountFederationPol
 	}
 
 	return &AccountFederationPolicyClient{
-		AccountFederationPolicyInterface: NewAccountFederationPolicy(apiClient),
+		AccountFederationPolicyInterface: NewAccountFederationPolicy(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewCustomAppIntegrationClient(cfg *config.Config) (*CustomAppIntegrationCli
 	}
 
 	return &CustomAppIntegrationClient{
-		CustomAppIntegrationInterface: NewCustomAppIntegration(apiClient),
+		CustomAppIntegrationInterface: NewCustomAppIntegration(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewOAuthPublishedAppsClient(cfg *config.Config) (*OAuthPublishedAppsClient,
 	}
 
 	return &OAuthPublishedAppsClient{
-		OAuthPublishedAppsInterface: NewOAuthPublishedApps(apiClient),
+		OAuthPublishedAppsInterface: NewOAuthPublishedApps(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,7 +113,7 @@ func NewPublishedAppIntegrationClient(cfg *config.Config) (*PublishedAppIntegrat
 	}
 
 	return &PublishedAppIntegrationClient{
-		PublishedAppIntegrationInterface: NewPublishedAppIntegration(apiClient),
+		PublishedAppIntegrationInterface: NewPublishedAppIntegration(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -140,7 +140,7 @@ func NewServicePrincipalFederationPolicyClient(cfg *config.Config) (*ServicePrin
 	}
 
 	return &ServicePrincipalFederationPolicyClient{
-		ServicePrincipalFederationPolicyInterface: NewServicePrincipalFederationPolicy(apiClient),
+		ServicePrincipalFederationPolicyInterface: NewServicePrincipalFederationPolicy(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -167,6 +167,6 @@ func NewServicePrincipalSecretsClient(cfg *config.Config) (*ServicePrincipalSecr
 	}
 
 	return &ServicePrincipalSecretsClient{
-		ServicePrincipalSecretsInterface: NewServicePrincipalSecrets(apiClient),
+		ServicePrincipalSecretsInterface: NewServicePrincipalSecrets(apiClient.ApiClient()),
 	}, nil
 }

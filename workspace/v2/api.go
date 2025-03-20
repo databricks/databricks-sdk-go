@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -82,7 +82,7 @@ type GitCredentialsInterface interface {
 	Update(ctx context.Context, request UpdateCredentialsRequest) (*UpdateCredentialsResponse, error)
 }
 
-func NewGitCredentials(client *client.DatabricksClient) *GitCredentialsAPI {
+func NewGitCredentials(client *httpclient.ApiClient) *GitCredentialsAPI {
 	return &GitCredentialsAPI{
 		gitCredentialsImpl: gitCredentialsImpl{
 			client: client,
@@ -276,7 +276,7 @@ type ReposInterface interface {
 	UpdatePermissions(ctx context.Context, request RepoPermissionsRequest) (*RepoPermissions, error)
 }
 
-func NewRepos(client *client.DatabricksClient) *ReposAPI {
+func NewRepos(client *httpclient.ApiClient) *ReposAPI {
 	return &ReposAPI{
 		reposImpl: reposImpl{
 			client: client,
@@ -608,7 +608,7 @@ type SecretsInterface interface {
 	PutSecret(ctx context.Context, request PutSecret) (*PutSecretResponse, error)
 }
 
-func NewSecrets(client *client.DatabricksClient) *SecretsAPI {
+func NewSecrets(client *httpclient.ApiClient) *SecretsAPI {
 	return &SecretsAPI{
 		secretsImpl: secretsImpl{
 			client: client,
@@ -816,7 +816,7 @@ type WorkspaceInterface interface {
 	UpdatePermissions(ctx context.Context, request WorkspaceObjectPermissionsRequest) (*WorkspaceObjectPermissions, error)
 }
 
-func NewWorkspace(client *client.DatabricksClient) *WorkspaceAPI {
+func NewWorkspace(client *httpclient.ApiClient) *WorkspaceAPI {
 	return &WorkspaceAPI{
 		workspaceImpl: workspaceImpl{
 			client: client,

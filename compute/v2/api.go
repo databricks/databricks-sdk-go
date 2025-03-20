@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
@@ -117,7 +117,7 @@ type ClusterPoliciesInterface interface {
 	UpdatePermissions(ctx context.Context, request ClusterPolicyPermissionsRequest) (*ClusterPolicyPermissions, error)
 }
 
-func NewClusterPolicies(client *client.DatabricksClient) *ClusterPoliciesAPI {
+func NewClusterPolicies(client *httpclient.ApiClient) *ClusterPoliciesAPI {
 	return &ClusterPoliciesAPI{
 		clusterPoliciesImpl: clusterPoliciesImpl{
 			client: client,
@@ -522,7 +522,7 @@ type ClustersInterface interface {
 	UpdatePermissions(ctx context.Context, request ClusterPermissionsRequest) (*ClusterPermissions, error)
 }
 
-func NewClusters(client *client.DatabricksClient) *ClustersAPI {
+func NewClusters(client *httpclient.ApiClient) *ClustersAPI {
 	return &ClustersAPI{
 		clustersImpl: clustersImpl{
 			client: client,
@@ -751,7 +751,7 @@ type CommandExecutionInterface interface {
 	Execute(ctx context.Context, request Command) (*Created, error)
 }
 
-func NewCommandExecution(client *client.DatabricksClient) *CommandExecutionAPI {
+func NewCommandExecution(client *httpclient.ApiClient) *CommandExecutionAPI {
 	return &CommandExecutionAPI{
 		commandExecutionImpl: commandExecutionImpl{
 			client: client,
@@ -838,7 +838,7 @@ type GlobalInitScriptsInterface interface {
 	Update(ctx context.Context, request GlobalInitScriptUpdateRequest) (*UpdateResponse, error)
 }
 
-func NewGlobalInitScripts(client *client.DatabricksClient) *GlobalInitScriptsAPI {
+func NewGlobalInitScripts(client *httpclient.ApiClient) *GlobalInitScriptsAPI {
 	return &GlobalInitScriptsAPI{
 		globalInitScriptsImpl: globalInitScriptsImpl{
 			client: client,
@@ -1033,7 +1033,7 @@ type InstancePoolsInterface interface {
 	UpdatePermissions(ctx context.Context, request InstancePoolPermissionsRequest) (*InstancePoolPermissions, error)
 }
 
-func NewInstancePools(client *client.DatabricksClient) *InstancePoolsAPI {
+func NewInstancePools(client *httpclient.ApiClient) *InstancePoolsAPI {
 	return &InstancePoolsAPI{
 		instancePoolsImpl: instancePoolsImpl{
 			client: client,
@@ -1216,7 +1216,7 @@ type InstanceProfilesInterface interface {
 	RemoveByInstanceProfileArn(ctx context.Context, instanceProfileArn string) (*RemoveResponse, error)
 }
 
-func NewInstanceProfiles(client *client.DatabricksClient) *InstanceProfilesAPI {
+func NewInstanceProfiles(client *httpclient.ApiClient) *InstanceProfilesAPI {
 	return &InstanceProfilesAPI{
 		instanceProfilesImpl: instanceProfilesImpl{
 			client: client,
@@ -1316,7 +1316,7 @@ type LibrariesInterface interface {
 	Uninstall(ctx context.Context, request UninstallLibraries) (*UninstallLibrariesResponse, error)
 }
 
-func NewLibraries(client *client.DatabricksClient) *LibrariesAPI {
+func NewLibraries(client *httpclient.ApiClient) *LibrariesAPI {
 	return &LibrariesAPI{
 		librariesImpl: librariesImpl{
 			client: client,
@@ -1409,7 +1409,7 @@ type PolicyComplianceForClustersInterface interface {
 	ListComplianceAll(ctx context.Context, request ListClusterCompliancesRequest) ([]ClusterCompliance, error)
 }
 
-func NewPolicyComplianceForClusters(client *client.DatabricksClient) *PolicyComplianceForClustersAPI {
+func NewPolicyComplianceForClusters(client *httpclient.ApiClient) *PolicyComplianceForClustersAPI {
 	return &PolicyComplianceForClustersAPI{
 		policyComplianceForClustersImpl: policyComplianceForClustersImpl{
 			client: client,
@@ -1472,7 +1472,7 @@ type PolicyFamiliesInterface interface {
 	ListAll(ctx context.Context, request ListPolicyFamiliesRequest) ([]PolicyFamily, error)
 }
 
-func NewPolicyFamilies(client *client.DatabricksClient) *PolicyFamiliesAPI {
+func NewPolicyFamilies(client *httpclient.ApiClient) *PolicyFamiliesAPI {
 	return &PolicyFamiliesAPI{
 		policyFamiliesImpl: policyFamiliesImpl{
 			client: client,

@@ -32,7 +32,7 @@ func NewProvidersClient(cfg *config.Config) (*ProvidersClient, error) {
 	}
 
 	return &ProvidersClient{
-		ProvidersInterface: NewProviders(apiClient),
+		ProvidersInterface: NewProviders(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewRecipientActivationClient(cfg *config.Config) (*RecipientActivationClien
 	}
 
 	return &RecipientActivationClient{
-		RecipientActivationInterface: NewRecipientActivation(apiClient),
+		RecipientActivationInterface: NewRecipientActivation(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewRecipientsClient(cfg *config.Config) (*RecipientsClient, error) {
 	}
 
 	return &RecipientsClient{
-		RecipientsInterface: NewRecipients(apiClient),
+		RecipientsInterface: NewRecipients(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,6 +113,6 @@ func NewSharesClient(cfg *config.Config) (*SharesClient, error) {
 	}
 
 	return &SharesClient{
-		SharesInterface: NewShares(apiClient),
+		SharesInterface: NewShares(apiClient.ApiClient()),
 	}, nil
 }

@@ -6,7 +6,7 @@ package apps
 import (
 	"context"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
+	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 )
 
@@ -138,7 +138,7 @@ type AppsInterface interface {
 	UpdatePermissions(ctx context.Context, request AppPermissionsRequest) (*AppPermissions, error)
 }
 
-func NewApps(client *client.DatabricksClient) *AppsAPI {
+func NewApps(client *httpclient.ApiClient) *AppsAPI {
 	return &AppsAPI{
 		appsImpl: appsImpl{
 			client: client,

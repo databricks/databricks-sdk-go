@@ -120,11 +120,9 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 		}
 	}
 
-	rateLimit := rate.Limit(cfg.RateLimitPerSecond)
-
 	return &ApiClient{
 		config:      cfg,
-		rateLimiter: rate.NewLimiter(rateLimit, 1),
+		rateLimiter: rate.NewLimiter(rate.Limit(cfg.RateLimitPerSecond), 1),
 		httpClient:  httpClient,
 	}
 }

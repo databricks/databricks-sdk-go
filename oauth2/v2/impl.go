@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -17,12 +16,12 @@ import (
 
 // unexported type that holds implementations of just AccountFederationPolicy API methods
 type accountFederationPolicyImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *accountFederationPolicyImpl) Create(ctx context.Context, request CreateAccountFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
-	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies", a.client.AccountID())
 	queryParams := make(map[string]any)
 	if request.PolicyId != "" || slices.Contains(request.ForceSendFields, "PolicyId") {
 		queryParams["policy_id"] = request.PolicyId
@@ -36,7 +35,7 @@ func (a *accountFederationPolicyImpl) Create(ctx context.Context, request Create
 
 func (a *accountFederationPolicyImpl) Delete(ctx context.Context, request DeleteAccountFederationPolicyRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.AccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -46,7 +45,7 @@ func (a *accountFederationPolicyImpl) Delete(ctx context.Context, request Delete
 
 func (a *accountFederationPolicyImpl) Get(ctx context.Context, request GetAccountFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
-	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.AccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -86,7 +85,7 @@ func (a *accountFederationPolicyImpl) ListAll(ctx context.Context, request ListA
 }
 func (a *accountFederationPolicyImpl) internalList(ctx context.Context, request ListAccountFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
 	var listFederationPoliciesResponse ListFederationPoliciesResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -96,7 +95,7 @@ func (a *accountFederationPolicyImpl) internalList(ctx context.Context, request 
 
 func (a *accountFederationPolicyImpl) Update(ctx context.Context, request UpdateAccountFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
-	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/federationPolicies/%v", a.client.AccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
 		queryParams["update_mask"] = request.UpdateMask
@@ -110,12 +109,12 @@ func (a *accountFederationPolicyImpl) Update(ctx context.Context, request Update
 
 // unexported type that holds implementations of just CustomAppIntegration API methods
 type customAppIntegrationImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCustomAppIntegration) (*CreateCustomAppIntegrationOutput, error) {
 	var createCustomAppIntegrationOutput CreateCustomAppIntegrationOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -126,7 +125,7 @@ func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCus
 
 func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCustomAppIntegrationRequest) (*DeleteCustomAppIntegrationOutput, error) {
 	var deleteCustomAppIntegrationOutput DeleteCustomAppIntegrationOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.AccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -136,7 +135,7 @@ func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCus
 
 func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomAppIntegrationRequest) (*GetCustomAppIntegrationOutput, error) {
 	var getCustomAppIntegrationOutput GetCustomAppIntegrationOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.AccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -182,7 +181,7 @@ func (a *customAppIntegrationImpl) ListAll(ctx context.Context, request ListCust
 }
 func (a *customAppIntegrationImpl) internalList(ctx context.Context, request ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error) {
 	var getCustomAppIntegrationsOutput GetCustomAppIntegrationsOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -192,7 +191,7 @@ func (a *customAppIntegrationImpl) internalList(ctx context.Context, request Lis
 
 func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCustomAppIntegration) (*UpdateCustomAppIntegrationOutput, error) {
 	var updateCustomAppIntegrationOutput UpdateCustomAppIntegrationOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/custom-app-integrations/%v", a.client.AccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -203,7 +202,7 @@ func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCus
 
 // unexported type that holds implementations of just OAuthPublishedApps API methods
 type oAuthPublishedAppsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 // Get all the published OAuth apps.
@@ -242,7 +241,7 @@ func (a *oAuthPublishedAppsImpl) ListAll(ctx context.Context, request ListOAuthP
 }
 func (a *oAuthPublishedAppsImpl) internalList(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error) {
 	var getPublishedAppsOutput GetPublishedAppsOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-apps", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-apps", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -252,12 +251,12 @@ func (a *oAuthPublishedAppsImpl) internalList(ctx context.Context, request ListO
 
 // unexported type that holds implementations of just PublishedAppIntegration API methods
 type publishedAppIntegrationImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request CreatePublishedAppIntegration) (*CreatePublishedAppIntegrationOutput, error) {
 	var createPublishedAppIntegrationOutput CreatePublishedAppIntegrationOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -268,7 +267,7 @@ func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request Create
 
 func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request DeletePublishedAppIntegrationRequest) (*DeletePublishedAppIntegrationOutput, error) {
 	var deletePublishedAppIntegrationOutput DeletePublishedAppIntegrationOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.AccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -278,7 +277,7 @@ func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request Delete
 
 func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublishedAppIntegrationRequest) (*GetPublishedAppIntegrationOutput, error) {
 	var getPublishedAppIntegrationOutput GetPublishedAppIntegrationOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.AccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -324,7 +323,7 @@ func (a *publishedAppIntegrationImpl) ListAll(ctx context.Context, request ListP
 }
 func (a *publishedAppIntegrationImpl) internalList(ctx context.Context, request ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error) {
 	var getPublishedAppIntegrationsOutput GetPublishedAppIntegrationsOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -334,7 +333,7 @@ func (a *publishedAppIntegrationImpl) internalList(ctx context.Context, request 
 
 func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request UpdatePublishedAppIntegration) (*UpdatePublishedAppIntegrationOutput, error) {
 	var updatePublishedAppIntegrationOutput UpdatePublishedAppIntegrationOutput
-	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.ConfiguredAccountID(), request.IntegrationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/oauth2/published-app-integrations/%v", a.client.AccountID(), request.IntegrationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -345,12 +344,12 @@ func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request Update
 
 // unexported type that holds implementations of just ServicePrincipalFederationPolicy API methods
 type servicePrincipalFederationPolicyImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, request CreateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
-	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.AccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
 	if request.PolicyId != "" || slices.Contains(request.ForceSendFields, "PolicyId") {
 		queryParams["policy_id"] = request.PolicyId
@@ -364,7 +363,7 @@ func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, reque
 
 func (a *servicePrincipalFederationPolicyImpl) Delete(ctx context.Context, request DeleteServicePrincipalFederationPolicyRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.AccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -374,7 +373,7 @@ func (a *servicePrincipalFederationPolicyImpl) Delete(ctx context.Context, reque
 
 func (a *servicePrincipalFederationPolicyImpl) Get(ctx context.Context, request GetServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
-	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.AccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -414,7 +413,7 @@ func (a *servicePrincipalFederationPolicyImpl) ListAll(ctx context.Context, requ
 }
 func (a *servicePrincipalFederationPolicyImpl) internalList(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
 	var listFederationPoliciesResponse ListFederationPoliciesResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies", a.client.AccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -424,7 +423,7 @@ func (a *servicePrincipalFederationPolicyImpl) internalList(ctx context.Context,
 
 func (a *servicePrincipalFederationPolicyImpl) Update(ctx context.Context, request UpdateServicePrincipalFederationPolicyRequest) (*FederationPolicy, error) {
 	var federationPolicy FederationPolicy
-	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.PolicyId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/federationPolicies/%v", a.client.AccountID(), request.ServicePrincipalId, request.PolicyId)
 	queryParams := make(map[string]any)
 	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
 		queryParams["update_mask"] = request.UpdateMask
@@ -438,12 +437,12 @@ func (a *servicePrincipalFederationPolicyImpl) Update(ctx context.Context, reque
 
 // unexported type that holds implementations of just ServicePrincipalSecrets API methods
 type servicePrincipalSecretsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request CreateServicePrincipalSecretRequest) (*CreateServicePrincipalSecretResponse, error) {
 	var createServicePrincipalSecretResponse CreateServicePrincipalSecretResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.AccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -454,7 +453,7 @@ func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request Create
 
 func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request DeleteServicePrincipalSecretRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v", a.client.ConfiguredAccountID(), request.ServicePrincipalId, request.SecretId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v", a.client.AccountID(), request.ServicePrincipalId, request.SecretId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
@@ -501,7 +500,7 @@ func (a *servicePrincipalSecretsImpl) ListAll(ctx context.Context, request ListS
 }
 func (a *servicePrincipalSecretsImpl) internalList(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error) {
 	var listServicePrincipalSecretsResponse ListServicePrincipalSecretsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.ConfiguredAccountID(), request.ServicePrincipalId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets", a.client.AccountID(), request.ServicePrincipalId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -510,7 +509,7 @@ func (a *servicePrincipalSecretsImpl) internalList(ctx context.Context, request 
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -535,5 +534,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

@@ -32,7 +32,7 @@ func NewCredentialsClient(cfg *config.Config) (*CredentialsClient, error) {
 	}
 
 	return &CredentialsClient{
-		CredentialsInterface: NewCredentials(apiClient),
+		CredentialsInterface: NewCredentials(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewEncryptionKeysClient(cfg *config.Config) (*EncryptionKeysClient, error) 
 	}
 
 	return &EncryptionKeysClient{
-		EncryptionKeysInterface: NewEncryptionKeys(apiClient),
+		EncryptionKeysInterface: NewEncryptionKeys(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewNetworksClient(cfg *config.Config) (*NetworksClient, error) {
 	}
 
 	return &NetworksClient{
-		NetworksInterface: NewNetworks(apiClient),
+		NetworksInterface: NewNetworks(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,7 +113,7 @@ func NewPrivateAccessClient(cfg *config.Config) (*PrivateAccessClient, error) {
 	}
 
 	return &PrivateAccessClient{
-		PrivateAccessInterface: NewPrivateAccess(apiClient),
+		PrivateAccessInterface: NewPrivateAccess(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -140,7 +140,7 @@ func NewStorageClient(cfg *config.Config) (*StorageClient, error) {
 	}
 
 	return &StorageClient{
-		StorageInterface: NewStorage(apiClient),
+		StorageInterface: NewStorage(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -167,7 +167,7 @@ func NewVpcEndpointsClient(cfg *config.Config) (*VpcEndpointsClient, error) {
 	}
 
 	return &VpcEndpointsClient{
-		VpcEndpointsInterface: NewVpcEndpoints(apiClient),
+		VpcEndpointsInterface: NewVpcEndpoints(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -194,6 +194,6 @@ func NewWorkspacesClient(cfg *config.Config) (*WorkspacesClient, error) {
 	}
 
 	return &WorkspacesClient{
-		WorkspacesInterface: NewWorkspaces(apiClient),
+		WorkspacesInterface: NewWorkspaces(apiClient.ApiClient()),
 	}, nil
 }

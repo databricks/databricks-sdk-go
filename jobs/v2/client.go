@@ -32,7 +32,7 @@ func NewJobsClient(cfg *config.Config) (*JobsClient, error) {
 	}
 
 	return &JobsClient{
-		JobsInterface: NewJobs(apiClient),
+		JobsInterface: NewJobs(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,6 +59,6 @@ func NewPolicyComplianceForJobsClient(cfg *config.Config) (*PolicyComplianceForJ
 	}
 
 	return &PolicyComplianceForJobsClient{
-		PolicyComplianceForJobsInterface: NewPolicyComplianceForJobs(apiClient),
+		PolicyComplianceForJobsInterface: NewPolicyComplianceForJobs(apiClient.ApiClient()),
 	}, nil
 }

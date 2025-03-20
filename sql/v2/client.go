@@ -32,7 +32,7 @@ func NewAlertsClient(cfg *config.Config) (*AlertsClient, error) {
 	}
 
 	return &AlertsClient{
-		AlertsInterface: NewAlerts(apiClient),
+		AlertsInterface: NewAlerts(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -59,7 +59,7 @@ func NewAlertsLegacyClient(cfg *config.Config) (*AlertsLegacyClient, error) {
 	}
 
 	return &AlertsLegacyClient{
-		AlertsLegacyInterface: NewAlertsLegacy(apiClient),
+		AlertsLegacyInterface: NewAlertsLegacy(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -86,7 +86,7 @@ func NewDashboardWidgetsClient(cfg *config.Config) (*DashboardWidgetsClient, err
 	}
 
 	return &DashboardWidgetsClient{
-		DashboardWidgetsInterface: NewDashboardWidgets(apiClient),
+		DashboardWidgetsInterface: NewDashboardWidgets(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -113,7 +113,7 @@ func NewDashboardsClient(cfg *config.Config) (*DashboardsClient, error) {
 	}
 
 	return &DashboardsClient{
-		DashboardsInterface: NewDashboards(apiClient),
+		DashboardsInterface: NewDashboards(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -140,7 +140,7 @@ func NewDataSourcesClient(cfg *config.Config) (*DataSourcesClient, error) {
 	}
 
 	return &DataSourcesClient{
-		DataSourcesInterface: NewDataSources(apiClient),
+		DataSourcesInterface: NewDataSources(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -167,7 +167,7 @@ func NewDbsqlPermissionsClient(cfg *config.Config) (*DbsqlPermissionsClient, err
 	}
 
 	return &DbsqlPermissionsClient{
-		DbsqlPermissionsInterface: NewDbsqlPermissions(apiClient),
+		DbsqlPermissionsInterface: NewDbsqlPermissions(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -194,7 +194,7 @@ func NewQueriesClient(cfg *config.Config) (*QueriesClient, error) {
 	}
 
 	return &QueriesClient{
-		QueriesInterface: NewQueries(apiClient),
+		QueriesInterface: NewQueries(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -221,7 +221,7 @@ func NewQueriesLegacyClient(cfg *config.Config) (*QueriesLegacyClient, error) {
 	}
 
 	return &QueriesLegacyClient{
-		QueriesLegacyInterface: NewQueriesLegacy(apiClient),
+		QueriesLegacyInterface: NewQueriesLegacy(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -248,7 +248,7 @@ func NewQueryHistoryClient(cfg *config.Config) (*QueryHistoryClient, error) {
 	}
 
 	return &QueryHistoryClient{
-		QueryHistoryInterface: NewQueryHistory(apiClient),
+		QueryHistoryInterface: NewQueryHistory(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -275,7 +275,7 @@ func NewQueryVisualizationsClient(cfg *config.Config) (*QueryVisualizationsClien
 	}
 
 	return &QueryVisualizationsClient{
-		QueryVisualizationsInterface: NewQueryVisualizations(apiClient),
+		QueryVisualizationsInterface: NewQueryVisualizations(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -302,7 +302,7 @@ func NewQueryVisualizationsLegacyClient(cfg *config.Config) (*QueryVisualization
 	}
 
 	return &QueryVisualizationsLegacyClient{
-		QueryVisualizationsLegacyInterface: NewQueryVisualizationsLegacy(apiClient),
+		QueryVisualizationsLegacyInterface: NewQueryVisualizationsLegacy(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -329,7 +329,7 @@ func NewRedashConfigClient(cfg *config.Config) (*RedashConfigClient, error) {
 	}
 
 	return &RedashConfigClient{
-		RedashConfigInterface: NewRedashConfig(apiClient),
+		RedashConfigInterface: NewRedashConfig(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -356,7 +356,7 @@ func NewStatementExecutionClient(cfg *config.Config) (*StatementExecutionClient,
 	}
 
 	return &StatementExecutionClient{
-		StatementExecutionInterface: NewStatementExecution(apiClient),
+		StatementExecutionInterface: NewStatementExecution(apiClient.ApiClient()),
 	}, nil
 }
 
@@ -383,6 +383,6 @@ func NewWarehousesClient(cfg *config.Config) (*WarehousesClient, error) {
 	}
 
 	return &WarehousesClient{
-		WarehousesInterface: NewWarehouses(apiClient),
+		WarehousesInterface: NewWarehouses(apiClient.ApiClient()),
 	}, nil
 }
