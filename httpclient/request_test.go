@@ -55,7 +55,7 @@ func TestMakeRequestBodyFromReader(t *testing.T) {
 }
 
 func TestUrlEncoding(t *testing.T) {
-	data := GetOAuthTokenRequest{
+	data := getOAuthTokenRequest{
 		Assertion:            "assertion",
 		AuthorizationDetails: "[{\"a\":\"b\"}]",
 		GrantType:            "grant",
