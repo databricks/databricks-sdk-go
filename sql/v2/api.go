@@ -6,7 +6,9 @@ package sql
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
@@ -595,6 +597,65 @@ type warehousesBaseClient struct {
 	warehousesImpl
 }
 
+// Create a warehouse.
+//
+// Creates a new SQL warehouse.
+func (a *warehousesBaseClient) Create(ctx context.Context, createWarehouseRequest CreateWarehouseRequest) (*WarehousesCreateWaiter, error) {
+	createWarehouseResponse, err := a.warehousesImpl.Create(ctx, createWarehouseRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WarehousesCreateWaiter{
+		RawResponse: createWarehouseResponse,
+		id:          createWarehouseResponse.Id,
+		service:     a,
+	}, nil
+}
+
+type WarehousesCreateWaiter struct {
+	// RawResponse is the raw response of the Create call.
+	RawResponse *CreateWarehouseResponse
+	service     *warehousesBaseClient
+	id          string
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *WarehousesCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[GetWarehouseResponse](ctx, opts.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
+		getWarehouseResponse, err := w.service.Get(ctx, GetWarehouseRequest{
+			Id: w.id,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := getWarehouseResponse.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if getWarehouseResponse.Health != nil {
+			statusMessage = getWarehouseResponse.Health.Summary
+		}
+		switch status {
+		case StateRunning: // target state
+			return getWarehouseResponse, nil
+		case StateStopped, StateDeleted:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
 // Delete a warehouse.
 //
 // Deletes a SQL warehouse.
@@ -602,6 +663,65 @@ func (a *warehousesBaseClient) DeleteById(ctx context.Context, id string) (*Dele
 	return a.warehousesImpl.Delete(ctx, DeleteWarehouseRequest{
 		Id: id,
 	})
+}
+
+// Update a warehouse.
+//
+// Updates the configuration for a SQL warehouse.
+func (a *warehousesBaseClient) Edit(ctx context.Context, editWarehouseRequest EditWarehouseRequest) (*WarehousesEditWaiter, error) {
+	editWarehouseResponse, err := a.warehousesImpl.Edit(ctx, editWarehouseRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WarehousesEditWaiter{
+		RawResponse: editWarehouseResponse,
+		id:          editWarehouseRequest.Id,
+		service:     a,
+	}, nil
+}
+
+type WarehousesEditWaiter struct {
+	// RawResponse is the raw response of the Edit call.
+	RawResponse *EditWarehouseResponse
+	service     *warehousesBaseClient
+	id          string
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *WarehousesEditWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[GetWarehouseResponse](ctx, opts.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
+		getWarehouseResponse, err := w.service.Get(ctx, GetWarehouseRequest{
+			Id: w.id,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := getWarehouseResponse.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if getWarehouseResponse.Health != nil {
+			statusMessage = getWarehouseResponse.Health.Summary
+		}
+		switch status {
+		case StateRunning: // target state
+			return getWarehouseResponse, nil
+		case StateStopped, StateDeleted:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 // Get warehouse info.
@@ -683,4 +803,118 @@ func (a *warehousesBaseClient) GetByName(ctx context.Context, name string) (*End
 		return nil, fmt.Errorf("there are %d instances of EndpointInfo named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
+}
+
+// Start a warehouse.
+//
+// Starts a SQL warehouse.
+func (a *warehousesBaseClient) Start(ctx context.Context, startRequest StartRequest) (*WarehousesStartWaiter, error) {
+	startWarehouseResponse, err := a.warehousesImpl.Start(ctx, startRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WarehousesStartWaiter{
+		RawResponse: startWarehouseResponse,
+		id:          startRequest.Id,
+		service:     a,
+	}, nil
+}
+
+type WarehousesStartWaiter struct {
+	// RawResponse is the raw response of the Start call.
+	RawResponse *StartWarehouseResponse
+	service     *warehousesBaseClient
+	id          string
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *WarehousesStartWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[GetWarehouseResponse](ctx, opts.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
+		getWarehouseResponse, err := w.service.Get(ctx, GetWarehouseRequest{
+			Id: w.id,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := getWarehouseResponse.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if getWarehouseResponse.Health != nil {
+			statusMessage = getWarehouseResponse.Health.Summary
+		}
+		switch status {
+		case StateRunning: // target state
+			return getWarehouseResponse, nil
+		case StateStopped, StateDeleted:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				StateRunning, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+// Stop a warehouse.
+//
+// Stops a SQL warehouse.
+func (a *warehousesBaseClient) Stop(ctx context.Context, stopRequest StopRequest) (*WarehousesStopWaiter, error) {
+	stopWarehouseResponse, err := a.warehousesImpl.Stop(ctx, stopRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WarehousesStopWaiter{
+		RawResponse: stopWarehouseResponse,
+		id:          stopRequest.Id,
+		service:     a,
+	}, nil
+}
+
+type WarehousesStopWaiter struct {
+	// RawResponse is the raw response of the Stop call.
+	RawResponse *StopWarehouseResponse
+	service     *warehousesBaseClient
+	id          string
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *WarehousesStopWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetWarehouseResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[GetWarehouseResponse](ctx, opts.Timeout, func() (*GetWarehouseResponse, *retries.Err) {
+		getWarehouseResponse, err := w.service.Get(ctx, GetWarehouseRequest{
+			Id: w.id,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := getWarehouseResponse.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if getWarehouseResponse.Health != nil {
+			statusMessage = getWarehouseResponse.Health.Summary
+		}
+		switch status {
+		case StateStopped: // target state
+			return getWarehouseResponse, nil
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }

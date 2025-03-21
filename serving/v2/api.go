@@ -5,6 +5,11 @@ package serving
 
 import (
 	"context"
+	"fmt"
+	"time"
+
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
+	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type servingEndpointsBaseClient struct {
@@ -19,6 +24,60 @@ func (a *servingEndpointsBaseClient) BuildLogsByNameAndServedModelName(ctx conte
 		Name:            name,
 		ServedModelName: servedModelName,
 	})
+}
+
+// Create a new serving endpoint.
+func (a *servingEndpointsBaseClient) Create(ctx context.Context, createServingEndpoint CreateServingEndpoint) (*ServingEndpointsCreateWaiter, error) {
+	servingEndpointDetailed, err := a.servingEndpointsImpl.Create(ctx, createServingEndpoint)
+	if err != nil {
+		return nil, err
+	}
+	return &ServingEndpointsCreateWaiter{
+		RawResponse: servingEndpointDetailed,
+		name:        servingEndpointDetailed.Name,
+		service:     a,
+	}, nil
+}
+
+type ServingEndpointsCreateWaiter struct {
+	// RawResponse is the raw response of the Create call.
+	RawResponse *ServingEndpointDetailed
+	service     *servingEndpointsBaseClient
+	name        string
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *ServingEndpointsCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ServingEndpointDetailed, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[ServingEndpointDetailed](ctx, opts.Timeout, func() (*ServingEndpointDetailed, *retries.Err) {
+		servingEndpointDetailed, err := w.service.Get(ctx, GetServingEndpointRequest{
+			Name: w.name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := servingEndpointDetailed.State.ConfigUpdate
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case EndpointStateConfigUpdateNotUpdating: // target state
+			return servingEndpointDetailed, nil
+		case EndpointStateConfigUpdateUpdateFailed, EndpointStateConfigUpdateUpdateCanceled:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				EndpointStateConfigUpdateNotUpdating, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 // Delete a serving endpoint.
@@ -85,6 +144,65 @@ func (a *servingEndpointsBaseClient) LogsByNameAndServedModelName(ctx context.Co
 		Name:            name,
 		ServedModelName: servedModelName,
 	})
+}
+
+// Update config of a serving endpoint.
+//
+// Updates any combination of the serving endpoint's served entities, the
+// compute configuration of those served entities, and the endpoint's traffic
+// config. An endpoint that already has an update in progress can not be updated
+// until the current update completes or fails.
+func (a *servingEndpointsBaseClient) UpdateConfig(ctx context.Context, endpointCoreConfigInput EndpointCoreConfigInput) (*ServingEndpointsUpdateConfigWaiter, error) {
+	servingEndpointDetailed, err := a.servingEndpointsImpl.UpdateConfig(ctx, endpointCoreConfigInput)
+	if err != nil {
+		return nil, err
+	}
+	return &ServingEndpointsUpdateConfigWaiter{
+		RawResponse: servingEndpointDetailed,
+		name:        servingEndpointDetailed.Name,
+		service:     a,
+	}, nil
+}
+
+type ServingEndpointsUpdateConfigWaiter struct {
+	// RawResponse is the raw response of the UpdateConfig call.
+	RawResponse *ServingEndpointDetailed
+	service     *servingEndpointsBaseClient
+	name        string
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *ServingEndpointsUpdateConfigWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*ServingEndpointDetailed, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[ServingEndpointDetailed](ctx, opts.Timeout, func() (*ServingEndpointDetailed, *retries.Err) {
+		servingEndpointDetailed, err := w.service.Get(ctx, GetServingEndpointRequest{
+			Name: w.name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := servingEndpointDetailed.State.ConfigUpdate
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case EndpointStateConfigUpdateNotUpdating: // target state
+			return servingEndpointDetailed, nil
+		case EndpointStateConfigUpdateUpdateFailed, EndpointStateConfigUpdateUpdateCanceled:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				EndpointStateConfigUpdateNotUpdating, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 type servingEndpointsDataPlaneBaseClient struct {

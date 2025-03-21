@@ -8,6 +8,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/marshal"
 )
 
+// A storage location in Adls Gen2
 type Adlsgen2Info struct {
 	// abfss destination, e.g.
 	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`.
@@ -35,6 +36,8 @@ func (s AutoScale) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Attributes set during cluster creation which are related to Amazon Web
+// Services.
 type AwsAttributes struct {
 	// Availability type used for all subsequent nodes past the
 	// `first_on_demand` ones.
@@ -89,9 +92,6 @@ type AwsAttributes struct {
 	// added to the Databricks environment by an account administrator.
 	//
 	// This feature may only be available to certain customer plans.
-	//
-	// If this field is ommitted, we will pull in the default from the conf if
-	// it exists.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// The bid price for AWS spot instances, as a percentage of the
 	// corresponding instance type's on-demand price. For example, if this field
@@ -103,10 +103,6 @@ type AwsAttributes struct {
 	// instances whose bid price percentage matches this field will be
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
-	//
-	// The default value and documentation here should be kept consistent with
-	// CommonConf.defaultSpotBidPricePercent and
-	// CommonConf.maxSpotBidPricePercent.
 	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west-2a". The provided
@@ -116,8 +112,10 @@ type AwsAttributes struct {
 	// optional field at cluster creation, and if not specified, a default zone
 	// will be used. If the zone specified is "auto", will try to place cluster
 	// in a zone with high availability, and will retry placement in a different
-	// AZ if there is not enough capacity. The list of available zones as well
-	// as the default value can be found by using the `List Zones` method.
+	// AZ if there is not enough capacity.
+	//
+	// The list of available zones as well as the default value can be found by
+	// using the `List Zones` method.
 	ZoneId string `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -165,11 +163,11 @@ func (f *AwsAvailability) Type() string {
 	return "AwsAvailability"
 }
 
+// Attributes set during cluster creation which are related to Microsoft Azure.
 type AzureAttributes struct {
 	// Availability type used for all subsequent nodes past the
-	// `first_on_demand` ones. Note: If `first_on_demand` is zero (which only
-	// happens on pool clusters), this availability type will be used for the
-	// entire cluster.
+	// `first_on_demand` ones. Note: If `first_on_demand` is zero, this
+	// availability type will be used for the entire cluster.
 	Availability AzureAvailability `json:"availability,omitempty"`
 	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. This value should be greater than 0, to make sure
@@ -202,8 +200,8 @@ func (s AzureAttributes) MarshalJSON() ([]byte, error) {
 }
 
 // Availability type used for all subsequent nodes past the `first_on_demand`
-// ones. Note: If `first_on_demand` is zero (which only happens on pool
-// clusters), this availability type will be used for the entire cluster.
+// ones. Note: If `first_on_demand` is zero, this availability type will be used
+// for the entire cluster.
 type AzureAvailability string
 
 const AzureAvailabilityOnDemandAzure AzureAvailability = `ON_DEMAND_AZURE`
@@ -641,6 +639,7 @@ func (s ClusterInstance) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Cluster log delivery config
 type ClusterLogConf struct {
 	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
 	// "dbfs:/home/cluster_log" } }`
@@ -651,7 +650,7 @@ type ClusterLogConf struct {
 	// the cluster iam role in `instance_profile_arn` has permission to write
 	// data to the s3 destination.
 	S3 *S3StorageInfo `json:"s3,omitempty"`
-	// destination needs to be provided. e.g. `{ "volumes" : { "destination" :
+	// destination needs to be provided, e.g. `{ "volumes": { "destination":
 	// "/Volumes/catalog/schema/volume/cluster_log" } }`
 	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 }
@@ -1046,6 +1045,7 @@ func (f *DataSecurityMode) Type() string {
 	return "DataSecurityMode"
 }
 
+// A storage location in DBFS
 type DbfsStorageInfo struct {
 	// dbfs destination, e.g. `dbfs:/my/path`
 	Destination string `json:"destination"`
@@ -1168,7 +1168,8 @@ func (s DockerImage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The type of EBS volumes that will be launched with this cluster.
+// All EBS volume types that Databricks supports. See
+// https://aws.amazon.com/ebs/details/ for details.
 type EbsVolumeType string
 
 const EbsVolumeTypeGeneralPurposeSsd EbsVolumeType = `GENERAL_PURPOSE_SSD`
@@ -1432,12 +1433,13 @@ func (f *Format) Type() string {
 	return "Format"
 }
 
+// Attributes set during cluster creation which are related to GCP.
 type GcpAttributes struct {
-	// This field determines whether the instance pool will contain preemptible
-	// VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs
-	// if the former is unavailable.
+	// This field determines whether the spark executors will be scheduled to
+	// run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback
+	// to on-demand VMs if the former is unavailable.
 	Availability GcpAvailability `json:"availability,omitempty"`
-	// boot disk size in GB
+	// Boot disk size in GB
 	BootDiskSize int `json:"boot_disk_size,omitempty"`
 	// If provided, the cluster will impersonate the google service account when
 	// accessing gcloud services (like GCS). The google service account must
@@ -1454,11 +1456,11 @@ type GcpAttributes struct {
 	// This field determines whether the spark executors will be scheduled to
 	// run on preemptible VMs (when set to true) versus standard compute engine
 	// VMs (when set to false; default). Note: Soon to be deprecated, use the
-	// availability field instead.
+	// 'availability' field instead.
 	UsePreemptibleExecutors bool `json:"use_preemptible_executors,omitempty"`
 	// Identifier for the availability zone in which the cluster resides. This
 	// can be one of the following: - "HA" => High availability, spread nodes
-	// across availability zones for a Databricks deployment region [default] -
+	// across availability zones for a Databricks deployment region [default]. -
 	// "AUTO" => Databricks picks an availability zone to schedule the cluster
 	// on. - A GCP availability zone => Pick One of the available zones for
 	// (machine type + region) from
@@ -1508,6 +1510,7 @@ func (f *GcpAvailability) Type() string {
 	return "GcpAvailability"
 }
 
+// A storage location in Google Cloud Platform's GCS
 type GcsStorageInfo struct {
 	// GCS destination/URI, e.g. `gs://my-bucket/some-prefix`
 	Destination string `json:"destination"`
@@ -1756,31 +1759,31 @@ func (s GitSource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Config for an individual init script Next ID: 11
 type InitScriptInfo struct {
-	// destination needs to be provided. e.g. `{ "abfss" : { "destination" :
-	// "abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>"
-	// } }
+	// destination needs to be provided, e.g.
+	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`
 	Abfss *Adlsgen2Info `json:"abfss,omitempty"`
-	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
+	// destination needs to be provided. e.g. `{ "dbfs": { "destination" :
 	// "dbfs:/home/cluster_log" } }`
 	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
-	// destination needs to be provided. e.g. `{ "file" : { "destination" :
+	// destination needs to be provided, e.g. `{ "file": { "destination":
 	// "file:/my/local/file.sh" } }`
 	File *LocalFileInfo `json:"file,omitempty"`
-	// destination needs to be provided. e.g. `{ "gcs": { "destination":
+	// destination needs to be provided, e.g. `{ "gcs": { "destination":
 	// "gs://my-bucket/file.sh" } }`
 	Gcs *GcsStorageInfo `json:"gcs,omitempty"`
 	// destination and either the region or endpoint need to be provided. e.g.
-	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
-	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
-	// the cluster iam role in `instance_profile_arn` has permission to write
-	// data to the s3 destination.
+	// `{ \"s3\": { \"destination\": \"s3://cluster_log_bucket/prefix\",
+	// \"region\": \"us-west-2\" } }` Cluster iam role is used to access s3,
+	// please make sure the cluster iam role in `instance_profile_arn` has
+	// permission to write data to the s3 destination.
 	S3 *S3StorageInfo `json:"s3,omitempty"`
-	// destination needs to be provided. e.g. `{ "volumes" : { "destination" :
-	// "/Volumes/my-init.sh" } }`
+	// destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\"
+	// : \"/Volumes/my-init.sh\" } }`
 	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
-	// destination needs to be provided. e.g. `{ "workspace" : { "destination" :
-	// "/Users/user1@databricks.com/my-init.sh" } }`
+	// destination needs to be provided, e.g. `{ "workspace": { "destination":
+	// "/cluster-init-scripts/setup-datadog.sh" } }`
 	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
 }
 
@@ -2381,6 +2384,8 @@ func (f *JobSourceDirtyState) Type() string {
 	return "JobSourceDirtyState"
 }
 
+// Contains a snapshot of the latest user specified settings that were used to
+// create/edit the cluster.
 type JobsClusterSpec struct {
 	// When set to true, fixed and default values from the policy will be used
 	// for fields that are omitted. When set to false, only fixed values from
@@ -2452,7 +2457,7 @@ type JobsClusterSpec struct {
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
+	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -2461,6 +2466,11 @@ type JobsClusterSpec struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
+	//
+	// This field, along with node_type_id, should not be set if
+	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
+	// and virtual_cluster_size are specified, driver_node_type_id and
+	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
@@ -2566,7 +2576,7 @@ type JobsClusterSpec struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
+	// Cluster Attributes showing for clusters workload types.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2960,9 +2970,8 @@ type LocalFileInfo struct {
 }
 
 type LogAnalyticsInfo struct {
-	// <needs content added>
 	LogAnalyticsPrimaryKey string `json:"log_analytics_primary_key,omitempty"`
-	// <needs content added>
+
 	LogAnalyticsWorkspaceId string `json:"log_analytics_workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4714,14 +4723,6 @@ func (f *RunType) Type() string {
 	return "RunType"
 }
 
-// Determines the cluster's runtime engine, either standard or Photon.
-//
-// This field is not compatible with legacy `spark_version` values that contain
-// `-photon-`. Remove `-photon-` from the `spark_version` and set
-// `runtime_engine` to `PHOTON`.
-//
-// If left unspecified, the runtime engine defaults to standard unless the
-// spark_version contains -photon-, in which case Photon will be used.
 type RuntimeEngine string
 
 const RuntimeEngineNull RuntimeEngine = `NULL`
@@ -4751,6 +4752,7 @@ func (f *RuntimeEngine) Type() string {
 	return "RuntimeEngine"
 }
 
+// A storage location in Amazon S3
 type S3StorageInfo struct {
 	// (Optional) Set canned access control list for the logs, e.g.
 	// `bucket-owner-full-control`. If `canned_cal` is set, please make sure the
@@ -5336,7 +5338,7 @@ type SubmitTask struct {
 	Libraries []Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
-	NewCluster *JobsClusterSpec `json:"new_cluster,omitempty"`
+	NewCluster *ClusterSpec `json:"new_cluster,omitempty"`
 	// The task runs a notebook when the `notebook_task` field is present.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
@@ -6130,9 +6132,11 @@ func (f *ViewsToExport) Type() string {
 	return "ViewsToExport"
 }
 
+// A storage location back by UC Volumes.
 type VolumesStorageInfo struct {
-	// Unity Catalog volumes file destination, e.g.
-	// `/Volumes/catalog/schema/volume/dir/file`
+	// UC Volumes destination, e.g.
+	// `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or
+	// `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`
 	Destination string `json:"destination"`
 }
 
@@ -6167,13 +6171,14 @@ type WebhookNotifications struct {
 	OnSuccess []Webhook `json:"on_success,omitempty"`
 }
 
+// Cluster Attributes showing for clusters workload types.
 type WorkloadType struct {
 	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
 	Clients ClientsTypes `json:"clients"`
 }
 
+// A storage location in Workspace Filesystem (WSFS)
 type WorkspaceStorageInfo struct {
-	// workspace files destination, e.g.
-	// `/Users/user1@databricks.com/my-init.sh`
+	// wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`
 	Destination string `json:"destination"`
 }

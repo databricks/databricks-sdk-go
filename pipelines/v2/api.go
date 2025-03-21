@@ -6,7 +6,9 @@ package pipelines
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
@@ -128,4 +130,61 @@ func (a *pipelinesBaseClient) ListUpdatesByPipelineId(ctx context.Context, pipel
 	return a.pipelinesImpl.ListUpdates(ctx, ListUpdatesRequest{
 		PipelineId: pipelineId,
 	})
+}
+
+// Stop a pipeline.
+//
+// Stops the pipeline by canceling the active update. If there is no active
+// update for the pipeline, this request is a no-op.
+func (a *pipelinesBaseClient) Stop(ctx context.Context, stopRequest StopRequest) (*PipelinesStopWaiter, error) {
+	stopPipelineResponse, err := a.pipelinesImpl.Stop(ctx, stopRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &PipelinesStopWaiter{
+		RawResponse: stopPipelineResponse,
+		pipelineId:  stopRequest.PipelineId,
+		service:     a,
+	}, nil
+}
+
+type PipelinesStopWaiter struct {
+	// RawResponse is the raw response of the Stop call.
+	RawResponse *StopPipelineResponse
+	service     *pipelinesBaseClient
+	pipelineId  string
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *PipelinesStopWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*GetPipelineResponse, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[GetPipelineResponse](ctx, opts.Timeout, func() (*GetPipelineResponse, *retries.Err) {
+		getPipelineResponse, err := w.service.Get(ctx, GetPipelineRequest{
+			PipelineId: w.pipelineId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := getPipelineResponse.State
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case PipelineStateIdle: // target state
+			return getPipelineResponse, nil
+		case PipelineStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				PipelineStateIdle, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }

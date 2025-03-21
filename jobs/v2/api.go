@@ -6,12 +6,74 @@ package jobs
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
 type jobsBaseClient struct {
 	jobsImpl
+}
+
+// Cancel a run.
+//
+// Cancels a job run or a task run. The run is canceled asynchronously, so it
+// may still be running when this request completes.
+func (a *jobsBaseClient) CancelRun(ctx context.Context, cancelRun CancelRun) (*JobsCancelRunWaiter, error) {
+	cancelRunResponse, err := a.jobsImpl.CancelRun(ctx, cancelRun)
+	if err != nil {
+		return nil, err
+	}
+	return &JobsCancelRunWaiter{
+		RawResponse: cancelRunResponse,
+		runId:       cancelRun.RunId,
+		service:     a,
+	}, nil
+}
+
+type JobsCancelRunWaiter struct {
+	// RawResponse is the raw response of the CancelRun call.
+	RawResponse *CancelRunResponse
+	service     *jobsBaseClient
+	runId       int64
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *JobsCancelRunWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[Run](ctx, opts.Timeout, func() (*Run, *retries.Err) {
+		run, err := w.service.GetRun(ctx, GetRunRequest{
+			RunId: w.runId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := run.State.LifeCycleState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
+		switch status {
+		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
+			return run, nil
+		case RunLifeCycleStateInternalError:
+			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
+				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 // Cancel a run.
@@ -145,6 +207,188 @@ func (a *jobsBaseClient) GetBySettingsName(ctx context.Context, name string) (*B
 		return nil, fmt.Errorf("there are %d instances of BaseJob named '%s'", len(alternatives), name)
 	}
 	return &alternatives[0], nil
+}
+
+// Repair a job run.
+//
+// Re-run one or more tasks. Tasks are re-run as part of the original job run.
+// They use the current job and task settings, and can be viewed in the history
+// for the original job run.
+func (a *jobsBaseClient) RepairRun(ctx context.Context, repairRun RepairRun) (*JobsRepairRunWaiter, error) {
+	repairRunResponse, err := a.jobsImpl.RepairRun(ctx, repairRun)
+	if err != nil {
+		return nil, err
+	}
+	return &JobsRepairRunWaiter{
+		RawResponse: repairRunResponse,
+		runId:       repairRun.RunId,
+		service:     a,
+	}, nil
+}
+
+type JobsRepairRunWaiter struct {
+	// RawResponse is the raw response of the RepairRun call.
+	RawResponse *RepairRunResponse
+	service     *jobsBaseClient
+	runId       int64
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *JobsRepairRunWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[Run](ctx, opts.Timeout, func() (*Run, *retries.Err) {
+		run, err := w.service.GetRun(ctx, GetRunRequest{
+			RunId: w.runId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := run.State.LifeCycleState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
+		switch status {
+		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
+			return run, nil
+		case RunLifeCycleStateInternalError:
+			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
+				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+// Trigger a new job run.
+//
+// Run a job and return the `run_id` of the triggered run.
+func (a *jobsBaseClient) RunNow(ctx context.Context, runNow RunNow) (*JobsRunNowWaiter, error) {
+	runNowResponse, err := a.jobsImpl.RunNow(ctx, runNow)
+	if err != nil {
+		return nil, err
+	}
+	return &JobsRunNowWaiter{
+		RawResponse: runNowResponse,
+		runId:       runNowResponse.RunId,
+		service:     a,
+	}, nil
+}
+
+type JobsRunNowWaiter struct {
+	// RawResponse is the raw response of the RunNow call.
+	RawResponse *RunNowResponse
+	service     *jobsBaseClient
+	runId       int64
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *JobsRunNowWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[Run](ctx, opts.Timeout, func() (*Run, *retries.Err) {
+		run, err := w.service.GetRun(ctx, GetRunRequest{
+			RunId: w.runId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := run.State.LifeCycleState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
+		switch status {
+		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
+			return run, nil
+		case RunLifeCycleStateInternalError:
+			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
+				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
+}
+
+// Create and trigger a one-time run.
+//
+// Submit a one-time run. This endpoint allows you to submit a workload directly
+// without creating a job. Runs submitted using this endpoint don’t display in
+// the UI. Use the `jobs/runs/get` API to check the run state after the job is
+// submitted.
+func (a *jobsBaseClient) Submit(ctx context.Context, submitRun SubmitRun) (*JobsSubmitWaiter, error) {
+	submitRunResponse, err := a.jobsImpl.Submit(ctx, submitRun)
+	if err != nil {
+		return nil, err
+	}
+	return &JobsSubmitWaiter{
+		RawResponse: submitRunResponse,
+		runId:       submitRunResponse.RunId,
+		service:     a,
+	}, nil
+}
+
+type JobsSubmitWaiter struct {
+	// RawResponse is the raw response of the Submit call.
+	RawResponse *SubmitRunResponse
+	service     *jobsBaseClient
+	runId       int64
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *JobsSubmitWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*Run, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[Run](ctx, opts.Timeout, func() (*Run, *retries.Err) {
+		run, err := w.service.GetRun(ctx, GetRunRequest{
+			RunId: w.runId,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := run.State.LifeCycleState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		if run.State != nil {
+			statusMessage = run.State.StateMessage
+		}
+		switch status {
+		case RunLifeCycleStateTerminated, RunLifeCycleStateSkipped: // target state
+			return run, nil
+		case RunLifeCycleStateInternalError:
+			err := fmt.Errorf("failed to reach %s or %s, got %s: %s",
+				RunLifeCycleStateTerminated, RunLifeCycleStateSkipped, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 type policyComplianceForJobsBaseClient struct {

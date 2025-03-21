@@ -259,3 +259,7 @@ func Poll[T any](ctx context.Context, timeout time.Duration, fn func() (*T, *Err
 		return res, nil
 	})
 }
+
+type WaitUntilDoneOptions struct {
+	Timeout time.Duration
+}

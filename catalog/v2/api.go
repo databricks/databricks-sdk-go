@@ -6,7 +6,9 @@ package catalog
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
 )
 
@@ -483,6 +485,62 @@ func (a *modelVersionsBaseClient) ListByFullName(ctx context.Context, fullName s
 
 type onlineTablesBaseClient struct {
 	onlineTablesImpl
+}
+
+// Create an Online Table.
+//
+// Create a new Online Table.
+func (a *onlineTablesBaseClient) Create(ctx context.Context, createOnlineTableRequest CreateOnlineTableRequest) (*OnlineTablesCreateWaiter, error) {
+	onlineTable, err := a.onlineTablesImpl.Create(ctx, createOnlineTableRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &OnlineTablesCreateWaiter{
+		RawResponse: onlineTable,
+		name:        onlineTable.Name,
+		service:     a,
+	}, nil
+}
+
+type OnlineTablesCreateWaiter struct {
+	// RawResponse is the raw response of the Create call.
+	RawResponse *OnlineTable
+	service     *onlineTablesBaseClient
+	name        string
+}
+
+// Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
+// This method will return an error if a failure state is reached.
+func (w *OnlineTablesCreateWaiter) WaitUntilDone(ctx context.Context, opts *retries.WaitUntilDoneOptions) (*OnlineTable, error) {
+	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
+	if opts == nil {
+		opts = &retries.WaitUntilDoneOptions{}
+	}
+	if opts.Timeout == 0 {
+		opts.Timeout = 20 * time.Minute
+	}
+
+	return retries.Poll[OnlineTable](ctx, opts.Timeout, func() (*OnlineTable, *retries.Err) {
+		onlineTable, err := w.service.Get(ctx, GetOnlineTableRequest{
+			Name: w.name,
+		})
+		if err != nil {
+			return nil, retries.Halt(err)
+		}
+		status := onlineTable.UnityCatalogProvisioningState
+		statusMessage := fmt.Sprintf("current status: %s", status)
+		switch status {
+		case ProvisioningInfoStateActive: // target state
+			return onlineTable, nil
+		case ProvisioningInfoStateFailed:
+			err := fmt.Errorf("failed to reach %s, got %s: %s",
+				ProvisioningInfoStateActive, status, statusMessage)
+			return nil, retries.Halt(err)
+		default:
+			return nil, retries.Continues(statusMessage)
+		}
+	})
+
 }
 
 // Delete an Online Table.
