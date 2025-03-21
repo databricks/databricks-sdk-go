@@ -8,12 +8,8 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/retries"
 )
 
-type statementExecutionAPIUtilities interface {
-	ExecuteAndWait(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error)
-}
-
 // [EXPERIMENTAL] Execute a query and wait for results to be available
-func (a *StatementExecutionAPI) ExecuteAndWait(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error) {
+func (a *StatementExecutionClient) ExecuteAndWait(ctx context.Context, request ExecuteStatementRequest) (*StatementResponse, error) {
 	immediateResponse, err := a.ExecuteStatement(ctx, request)
 	if err != nil {
 		return nil, err
@@ -30,7 +26,7 @@ func (a *StatementExecutionAPI) ExecuteAndWait(ctx context.Context, request Exec
 		return nil, fmt.Errorf("%s", msg)
 	default:
 		// TODO: parse request.WaitTimeout and use it here
-		return retries.Poll[StatementResponse](ctx, 20*time.Minute,
+		return retries.Poll(ctx, 20*time.Minute,
 			func() (*StatementResponse, *retries.Err) {
 				res, err := a.GetStatementByStatementId(ctx, immediateResponse.StatementId)
 				if err != nil {

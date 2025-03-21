@@ -6,8 +6,7 @@ import (
 )
 
 type DatabricksClient struct {
-	accountID string
-	client    *httpclient.ApiClient
+	client *httpclient.ApiClient
 }
 
 func New(cfg *config.Config) (*DatabricksClient, error) {
@@ -20,15 +19,8 @@ func New(cfg *config.Config) (*DatabricksClient, error) {
 		return nil, err
 	}
 	return &DatabricksClient{
-		accountID: cfg.AccountID,
-		client:    httpclient.NewApiClient(clientCfg),
+		client: httpclient.NewApiClient(clientCfg),
 	}, nil
-}
-
-// ConfiguredAccountID returns Databricks Account ID if it's provided in config,
-// empty string otherwise
-func (c *DatabricksClient) ConfiguredAccountID() string {
-	return c.accountID
 }
 
 // ApiClient returns the inner Api Client.

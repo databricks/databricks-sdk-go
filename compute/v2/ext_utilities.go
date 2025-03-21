@@ -3,9 +3,6 @@
 // as we still don't have the wait for state methods in the SDK-mod
 package compute
 
-type clustersAPIUtilities interface {
-}
-
 func (c *ClusterDetails) IsRunningOrResizing() bool {
 	return c.State == StateRunning || c.State == StateResizing
 }

@@ -120,7 +120,7 @@ func (ntl *ListNodeTypesResponse) Smallest(r NodeTypeRequest) (string, error) {
 	return "", fmt.Errorf("cannot determine smallest node type")
 }
 
-func (a *ClustersAPI) SelectNodeType(ctx context.Context, r NodeTypeRequest) (string, error) {
+func (a *ClustersClient) SelectNodeType(ctx context.Context, r NodeTypeRequest) (string, error) {
 	nodeTypes, err := a.ListNodeTypes(ctx)
 	if err != nil {
 		return "", err

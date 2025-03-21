@@ -9,7 +9,7 @@ import (
 // List fetches a list of jobs.
 // If expand_tasks is true, the response will include the full list of tasks and job_clusters for each job.
 // This function handles pagination two ways: paginates all the jobs in the list and paginates all the tasks and job_clusters for each job.
-func (a *JobsAPI) List(ctx context.Context, request ListJobsRequest) listing.Iterator[BaseJob] {
+func (a *JobsClient) List(ctx context.Context, request ListJobsRequest) listing.Iterator[BaseJob] {
 	// Fetch jobs with limited elements in top level arrays
 	jobsList := a.jobsImpl.List(ctx, request)
 
@@ -26,7 +26,7 @@ func (a *JobsAPI) List(ctx context.Context, request ListJobsRequest) listing.Ite
 // expandedJobsIterator is a custom iterator that for each job calls job/get in order to fetch full list of tasks and job_clusters.
 type expandedJobsIterator struct {
 	originalIterator listing.Iterator[BaseJob]
-	service          *JobsAPI
+	service          *JobsClient
 }
 
 func (e *expandedJobsIterator) HasNext(ctx context.Context) bool {
@@ -60,7 +60,7 @@ func (e *expandedJobsIterator) Next(ctx context.Context) (BaseJob, error) {
 
 // GetRun retrieves a run based on the provided request.
 // It handles pagination if the run contains multiple iterations or tasks.
-func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, error) {
+func (a *JobsClient) GetRun(ctx context.Context, request GetRunRequest) (*Run, error) {
 	run, err := a.jobsImpl.GetRun(ctx, request)
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func (a *JobsAPI) GetRun(ctx context.Context, request GetRunRequest) (*Run, erro
 
 // Get retrieves a job based on the provided request.
 // It handles pagination if the job contains multiple tasks, job_clusters, job_parameters or environments.
-func (a *JobsAPI) Get(ctx context.Context, request GetJobRequest) (*Job, error) {
+func (a *JobsClient) Get(ctx context.Context, request GetJobRequest) (*Job, error) {
 	job, err := a.jobsImpl.Get(ctx, request)
 	if err != nil {
 		return nil, err

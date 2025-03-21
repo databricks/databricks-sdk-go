@@ -135,11 +135,7 @@ type Update struct {
 	Uninstall []Library
 }
 
-type librariesAPIUtilities interface {
-	UpdateAndWait(ctx context.Context, update Update, options ...retries.Option[ClusterLibraryStatuses]) error
-}
-
-func (a *LibrariesAPI) UpdateAndWait(ctx context.Context, update Update,
+func (a *LibrariesClient) UpdateAndWait(ctx context.Context, update Update,
 	options ...retries.Option[ClusterLibraryStatuses]) error {
 	ctx = useragent.InContext(ctx, "sdk-feature", "update-libraries")
 	if len(update.Uninstall) > 0 {
@@ -175,7 +171,7 @@ func (a *LibrariesAPI) UpdateAndWait(ctx context.Context, update Update,
 }
 
 // clusterID string, timeout time.Duration, isActive bool, refresh bool
-func (a *LibrariesAPI) Wait(ctx context.Context, wait Wait,
+func (a *LibrariesClient) Wait(ctx context.Context, wait Wait,
 	options ...retries.Option[ClusterLibraryStatuses]) (*ClusterLibraryStatuses, error) {
 	ctx = useragent.InContext(ctx, "sdk-feature", "wait-for-libraries")
 	i := retries.Info[ClusterLibraryStatuses]{Timeout: 30 * time.Minute}

@@ -120,11 +120,9 @@ func NewApiClient(cfg ClientConfig) *ApiClient {
 		}
 	}
 
-	rateLimit := rate.Limit(cfg.RateLimitPerSecond)
-
 	return &ApiClient{
 		config:      cfg,
-		rateLimiter: rate.NewLimiter(rateLimit, 1),
+		rateLimiter: rate.NewLimiter(rate.Limit(cfg.RateLimitPerSecond), 1),
 		httpClient:  httpClient,
 	}
 }
@@ -320,8 +318,6 @@ func (c *ApiClient) attempt(
 			return &responseWrapper, nil
 		}
 
-		// proactively release the connections in HTTP connection pool
-		c.httpClient.CloseIdleConnections()
 		return c.handleError(ctx, err, requestBody)
 	}
 }
