@@ -582,17 +582,17 @@ func (a *ClustersAPI) Create(ctx context.Context, createCluster CreateCluster) (
 		return nil, err
 	}
 	return &ClustersCreateWaiter{
-		Response:  createClusterResponse,
-		clusterId: createClusterResponse.ClusterId,
-		service:   a,
+		RawResponse: createClusterResponse,
+		clusterId:   createClusterResponse.ClusterId,
+		service:     a,
 	}, nil
 }
 
 type ClustersCreateWaiter struct {
 	// RawResponse is the raw response of the Create call.
-	Response  *CreateClusterResponse
-	service   *ClustersAPI
-	clusterId string
+	RawResponse *CreateClusterResponse
+	service     *ClustersAPI
+	clusterId   string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -641,17 +641,17 @@ func (a *ClustersAPI) Delete(ctx context.Context, deleteCluster DeleteCluster) (
 		return nil, err
 	}
 	return &ClustersDeleteWaiter{
-		Response:  deleteClusterResponse,
-		clusterId: deleteCluster.ClusterId,
-		service:   a,
+		RawResponse: deleteClusterResponse,
+		clusterId:   deleteCluster.ClusterId,
+		service:     a,
 	}, nil
 }
 
 type ClustersDeleteWaiter struct {
 	// RawResponse is the raw response of the Delete call.
-	Response  *DeleteClusterResponse
-	service   *ClustersAPI
-	clusterId string
+	RawResponse *DeleteClusterResponse
+	service     *ClustersAPI
+	clusterId   string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -720,17 +720,17 @@ func (a *ClustersAPI) Edit(ctx context.Context, editCluster EditCluster) (*Clust
 		return nil, err
 	}
 	return &ClustersEditWaiter{
-		Response:  editClusterResponse,
-		clusterId: editCluster.ClusterId,
-		service:   a,
+		RawResponse: editClusterResponse,
+		clusterId:   editCluster.ClusterId,
+		service:     a,
 	}, nil
 }
 
 type ClustersEditWaiter struct {
 	// RawResponse is the raw response of the Edit call.
-	Response  *EditClusterResponse
-	service   *ClustersAPI
-	clusterId string
+	RawResponse *EditClusterResponse
+	service     *ClustersAPI
+	clusterId   string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -884,17 +884,17 @@ func (a *ClustersAPI) Resize(ctx context.Context, resizeCluster ResizeCluster) (
 		return nil, err
 	}
 	return &ClustersResizeWaiter{
-		Response:  resizeClusterResponse,
-		clusterId: resizeCluster.ClusterId,
-		service:   a,
+		RawResponse: resizeClusterResponse,
+		clusterId:   resizeCluster.ClusterId,
+		service:     a,
 	}, nil
 }
 
 type ClustersResizeWaiter struct {
 	// RawResponse is the raw response of the Resize call.
-	Response  *ResizeClusterResponse
-	service   *ClustersAPI
-	clusterId string
+	RawResponse *ResizeClusterResponse
+	service     *ClustersAPI
+	clusterId   string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -941,17 +941,17 @@ func (a *ClustersAPI) Restart(ctx context.Context, restartCluster RestartCluster
 		return nil, err
 	}
 	return &ClustersRestartWaiter{
-		Response:  restartClusterResponse,
-		clusterId: restartCluster.ClusterId,
-		service:   a,
+		RawResponse: restartClusterResponse,
+		clusterId:   restartCluster.ClusterId,
+		service:     a,
 	}, nil
 }
 
 type ClustersRestartWaiter struct {
 	// RawResponse is the raw response of the Restart call.
-	Response  *RestartClusterResponse
-	service   *ClustersAPI
-	clusterId string
+	RawResponse *RestartClusterResponse
+	service     *ClustersAPI
+	clusterId   string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -1004,17 +1004,17 @@ func (a *ClustersAPI) Start(ctx context.Context, startCluster StartCluster) (*Cl
 		return nil, err
 	}
 	return &ClustersStartWaiter{
-		Response:  startClusterResponse,
-		clusterId: startCluster.ClusterId,
-		service:   a,
+		RawResponse: startClusterResponse,
+		clusterId:   startCluster.ClusterId,
+		service:     a,
 	}, nil
 }
 
 type ClustersStartWaiter struct {
 	// RawResponse is the raw response of the Start call.
-	Response  *StartClusterResponse
-	service   *ClustersAPI
-	clusterId string
+	RawResponse *StartClusterResponse
+	service     *ClustersAPI
+	clusterId   string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -1096,17 +1096,17 @@ func (a *ClustersAPI) Update(ctx context.Context, updateCluster UpdateCluster) (
 		return nil, err
 	}
 	return &ClustersUpdateWaiter{
-		Response:  updateClusterResponse,
-		clusterId: updateCluster.ClusterId,
-		service:   a,
+		RawResponse: updateClusterResponse,
+		clusterId:   updateCluster.ClusterId,
+		service:     a,
 	}, nil
 }
 
 type ClustersUpdateWaiter struct {
 	// RawResponse is the raw response of the Update call.
-	Response  *UpdateClusterResponse
-	service   *ClustersAPI
-	clusterId string
+	RawResponse *UpdateClusterResponse
+	service     *ClustersAPI
+	clusterId   string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -1213,21 +1213,21 @@ func (a *CommandExecutionAPI) Cancel(ctx context.Context, cancelCommand CancelCo
 		return nil, err
 	}
 	return &CommandExecutionCancelWaiter{
-		Response:  cancelResponse,
-		clusterId: cancelCommand.ClusterId,
-		commandId: cancelCommand.CommandId,
-		contextId: cancelCommand.ContextId,
-		service:   a,
+		RawResponse: cancelResponse,
+		clusterId:   cancelCommand.ClusterId,
+		commandId:   cancelCommand.CommandId,
+		contextId:   cancelCommand.ContextId,
+		service:     a,
 	}, nil
 }
 
 type CommandExecutionCancelWaiter struct {
 	// RawResponse is the raw response of the Cancel call.
-	Response  *CancelResponse
-	service   *CommandExecutionAPI
-	clusterId string
-	commandId string
-	contextId string
+	RawResponse *CancelResponse
+	service     *CommandExecutionAPI
+	clusterId   string
+	commandId   string
+	contextId   string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -1280,19 +1280,19 @@ func (a *CommandExecutionAPI) Create(ctx context.Context, createContext CreateCo
 		return nil, err
 	}
 	return &CommandExecutionCreateWaiter{
-		Response:  created,
-		clusterId: createContext.ClusterId,
-		contextId: created.Id,
-		service:   a,
+		RawResponse: created,
+		clusterId:   createContext.ClusterId,
+		contextId:   created.Id,
+		service:     a,
 	}, nil
 }
 
 type CommandExecutionCreateWaiter struct {
 	// RawResponse is the raw response of the Create call.
-	Response  *Created
-	service   *CommandExecutionAPI
-	clusterId string
-	contextId string
+	RawResponse *Created
+	service     *CommandExecutionAPI
+	clusterId   string
+	contextId   string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -1343,21 +1343,21 @@ func (a *CommandExecutionAPI) Execute(ctx context.Context, command Command) (*Co
 		return nil, err
 	}
 	return &CommandExecutionExecuteWaiter{
-		Response:  created,
-		clusterId: command.ClusterId,
-		commandId: created.Id,
-		contextId: command.ContextId,
-		service:   a,
+		RawResponse: created,
+		clusterId:   command.ClusterId,
+		commandId:   created.Id,
+		contextId:   command.ContextId,
+		service:     a,
 	}, nil
 }
 
 type CommandExecutionExecuteWaiter struct {
 	// RawResponse is the raw response of the Execute call.
-	Response  *Created
-	service   *CommandExecutionAPI
-	clusterId string
-	commandId string
-	contextId string
+	RawResponse *Created
+	service     *CommandExecutionAPI
+	clusterId   string
+	commandId   string
+	contextId   string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.

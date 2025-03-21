@@ -201,17 +201,17 @@ func (a *ServingEndpointsAPI) Create(ctx context.Context, createServingEndpoint 
 		return nil, err
 	}
 	return &ServingEndpointsCreateWaiter{
-		Response: servingEndpointDetailed,
-		name:     servingEndpointDetailed.Name,
-		service:  a,
+		RawResponse: servingEndpointDetailed,
+		name:        servingEndpointDetailed.Name,
+		service:     a,
 	}, nil
 }
 
 type ServingEndpointsCreateWaiter struct {
 	// RawResponse is the raw response of the Create call.
-	Response *ServingEndpointDetailed
-	service  *ServingEndpointsAPI
-	name     string
+	RawResponse *ServingEndpointDetailed
+	service     *ServingEndpointsAPI
+	name        string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -326,17 +326,17 @@ func (a *ServingEndpointsAPI) UpdateConfig(ctx context.Context, endpointCoreConf
 		return nil, err
 	}
 	return &ServingEndpointsUpdateConfigWaiter{
-		Response: servingEndpointDetailed,
-		name:     servingEndpointDetailed.Name,
-		service:  a,
+		RawResponse: servingEndpointDetailed,
+		name:        servingEndpointDetailed.Name,
+		service:     a,
 	}, nil
 }
 
 type ServingEndpointsUpdateConfigWaiter struct {
 	// RawResponse is the raw response of the UpdateConfig call.
-	Response *ServingEndpointDetailed
-	service  *ServingEndpointsAPI
-	name     string
+	RawResponse *ServingEndpointDetailed
+	service     *ServingEndpointsAPI
+	name        string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.

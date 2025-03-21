@@ -129,7 +129,7 @@ func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMes
 		return nil, err
 	}
 	return &GenieCreateMessageWaiter{
-		Response:       genieMessage,
+		RawResponse:    genieMessage,
 		conversationId: genieCreateConversationMessageRequest.ConversationId,
 		messageId:      genieMessage.Id,
 		spaceId:        genieCreateConversationMessageRequest.SpaceId,
@@ -139,7 +139,7 @@ func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMes
 
 type GenieCreateMessageWaiter struct {
 	// RawResponse is the raw response of the CreateMessage call.
-	Response       *GenieMessage
+	RawResponse    *GenieMessage
 	service        *GenieAPI
 	conversationId string
 	messageId      string
@@ -252,7 +252,7 @@ func (a *GenieAPI) StartConversation(ctx context.Context, genieStartConversation
 		return nil, err
 	}
 	return &GenieStartConversationWaiter{
-		Response:       genieStartConversationResponse,
+		RawResponse:    genieStartConversationResponse,
 		conversationId: genieStartConversationResponse.ConversationId,
 		messageId:      genieStartConversationResponse.MessageId,
 		spaceId:        genieStartConversationMessageRequest.SpaceId,
@@ -262,7 +262,7 @@ func (a *GenieAPI) StartConversation(ctx context.Context, genieStartConversation
 
 type GenieStartConversationWaiter struct {
 	// RawResponse is the raw response of the StartConversation call.
-	Response       *GenieStartConversationResponse
+	RawResponse    *GenieStartConversationResponse
 	service        *GenieAPI
 	conversationId string
 	messageId      string

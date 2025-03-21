@@ -165,17 +165,17 @@ func (a *AppsAPI) Create(ctx context.Context, createAppRequest CreateAppRequest)
 		return nil, err
 	}
 	return &AppsCreateWaiter{
-		Response: app,
-		name:     app.Name,
-		service:  a,
+		RawResponse: app,
+		name:        app.Name,
+		service:     a,
 	}, nil
 }
 
 type AppsCreateWaiter struct {
 	// RawResponse is the raw response of the Create call.
-	Response *App
-	service  *AppsAPI
-	name     string
+	RawResponse *App
+	service     *AppsAPI
+	name        string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -233,7 +233,7 @@ func (a *AppsAPI) Deploy(ctx context.Context, createAppDeploymentRequest CreateA
 		return nil, err
 	}
 	return &AppsDeployWaiter{
-		Response:     appDeployment,
+		RawResponse:  appDeployment,
 		appName:      createAppDeploymentRequest.AppName,
 		deploymentId: appDeployment.DeploymentId,
 		service:      a,
@@ -242,7 +242,7 @@ func (a *AppsAPI) Deploy(ctx context.Context, createAppDeploymentRequest CreateA
 
 type AppsDeployWaiter struct {
 	// RawResponse is the raw response of the Deploy call.
-	Response     *AppDeployment
+	RawResponse  *AppDeployment
 	service      *AppsAPI
 	appName      string
 	deploymentId string
@@ -343,17 +343,17 @@ func (a *AppsAPI) Start(ctx context.Context, startAppRequest StartAppRequest) (*
 		return nil, err
 	}
 	return &AppsStartWaiter{
-		Response: app,
-		name:     app.Name,
-		service:  a,
+		RawResponse: app,
+		name:        app.Name,
+		service:     a,
 	}, nil
 }
 
 type AppsStartWaiter struct {
 	// RawResponse is the raw response of the Start call.
-	Response *App
-	service  *AppsAPI
-	name     string
+	RawResponse *App
+	service     *AppsAPI
+	name        string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -402,17 +402,17 @@ func (a *AppsAPI) Stop(ctx context.Context, stopAppRequest StopAppRequest) (*App
 		return nil, err
 	}
 	return &AppsStopWaiter{
-		Response: app,
-		name:     app.Name,
-		service:  a,
+		RawResponse: app,
+		name:        app.Name,
+		service:     a,
 	}, nil
 }
 
 type AppsStopWaiter struct {
 	// RawResponse is the raw response of the Stop call.
-	Response *App
-	service  *AppsAPI
-	name     string
+	RawResponse *App
+	service     *AppsAPI
+	name        string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.

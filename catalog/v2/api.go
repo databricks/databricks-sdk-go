@@ -1577,17 +1577,17 @@ func (a *OnlineTablesAPI) Create(ctx context.Context, createOnlineTableRequest C
 		return nil, err
 	}
 	return &OnlineTablesCreateWaiter{
-		Response: onlineTable,
-		name:     onlineTable.Name,
-		service:  a,
+		RawResponse: onlineTable,
+		name:        onlineTable.Name,
+		service:     a,
 	}, nil
 }
 
 type OnlineTablesCreateWaiter struct {
 	// RawResponse is the raw response of the Create call.
-	Response *OnlineTable
-	service  *OnlineTablesAPI
-	name     string
+	RawResponse *OnlineTable
+	service     *OnlineTablesAPI
+	name        string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.

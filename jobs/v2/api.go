@@ -278,17 +278,17 @@ func (a *JobsAPI) CancelRun(ctx context.Context, cancelRun CancelRun) (*JobsCanc
 		return nil, err
 	}
 	return &JobsCancelRunWaiter{
-		Response: cancelRunResponse,
-		runId:    cancelRun.RunId,
-		service:  a,
+		RawResponse: cancelRunResponse,
+		runId:       cancelRun.RunId,
+		service:     a,
 	}, nil
 }
 
 type JobsCancelRunWaiter struct {
 	// RawResponse is the raw response of the CancelRun call.
-	Response *CancelRunResponse
-	service  *JobsAPI
-	runId    int64
+	RawResponse *CancelRunResponse
+	service     *JobsAPI
+	runId       int64
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -472,17 +472,17 @@ func (a *JobsAPI) RepairRun(ctx context.Context, repairRun RepairRun) (*JobsRepa
 		return nil, err
 	}
 	return &JobsRepairRunWaiter{
-		Response: repairRunResponse,
-		runId:    repairRun.RunId,
-		service:  a,
+		RawResponse: repairRunResponse,
+		runId:       repairRun.RunId,
+		service:     a,
 	}, nil
 }
 
 type JobsRepairRunWaiter struct {
 	// RawResponse is the raw response of the RepairRun call.
-	Response *RepairRunResponse
-	service  *JobsAPI
-	runId    int64
+	RawResponse *RepairRunResponse
+	service     *JobsAPI
+	runId       int64
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -531,17 +531,17 @@ func (a *JobsAPI) RunNow(ctx context.Context, runNow RunNow) (*JobsRunNowWaiter,
 		return nil, err
 	}
 	return &JobsRunNowWaiter{
-		Response: runNowResponse,
-		runId:    runNowResponse.RunId,
-		service:  a,
+		RawResponse: runNowResponse,
+		runId:       runNowResponse.RunId,
+		service:     a,
 	}, nil
 }
 
 type JobsRunNowWaiter struct {
 	// RawResponse is the raw response of the RunNow call.
-	Response *RunNowResponse
-	service  *JobsAPI
-	runId    int64
+	RawResponse *RunNowResponse
+	service     *JobsAPI
+	runId       int64
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -593,17 +593,17 @@ func (a *JobsAPI) Submit(ctx context.Context, submitRun SubmitRun) (*JobsSubmitW
 		return nil, err
 	}
 	return &JobsSubmitWaiter{
-		Response: submitRunResponse,
-		runId:    submitRunResponse.RunId,
-		service:  a,
+		RawResponse: submitRunResponse,
+		runId:       submitRunResponse.RunId,
+		service:     a,
 	}, nil
 }
 
 type JobsSubmitWaiter struct {
 	// RawResponse is the raw response of the Submit call.
-	Response *SubmitRunResponse
-	service  *JobsAPI
-	runId    int64
+	RawResponse *SubmitRunResponse
+	service     *JobsAPI
+	runId       int64
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.

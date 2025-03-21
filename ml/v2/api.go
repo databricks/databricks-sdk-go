@@ -410,7 +410,7 @@ func (a *ForecastingAPI) CreateExperiment(ctx context.Context, createForecasting
 		return nil, err
 	}
 	return &ForecastingCreateExperimentWaiter{
-		Response:     createForecastingExperimentResponse,
+		RawResponse:  createForecastingExperimentResponse,
 		experimentId: createForecastingExperimentResponse.ExperimentId,
 		service:      a,
 	}, nil
@@ -418,7 +418,7 @@ func (a *ForecastingAPI) CreateExperiment(ctx context.Context, createForecasting
 
 type ForecastingCreateExperimentWaiter struct {
 	// RawResponse is the raw response of the CreateExperiment call.
-	Response     *CreateForecastingExperimentResponse
+	RawResponse  *CreateForecastingExperimentResponse
 	service      *ForecastingAPI
 	experimentId string
 }

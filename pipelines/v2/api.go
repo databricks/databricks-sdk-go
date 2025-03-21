@@ -314,17 +314,17 @@ func (a *PipelinesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*Pipe
 		return nil, err
 	}
 	return &PipelinesStopWaiter{
-		Response:   stopPipelineResponse,
-		pipelineId: stopRequest.PipelineId,
-		service:    a,
+		RawResponse: stopPipelineResponse,
+		pipelineId:  stopRequest.PipelineId,
+		service:     a,
 	}, nil
 }
 
 type PipelinesStopWaiter struct {
 	// RawResponse is the raw response of the Stop call.
-	Response   *StopPipelineResponse
-	service    *PipelinesAPI
-	pipelineId string
+	RawResponse *StopPipelineResponse
+	service     *PipelinesAPI
+	pipelineId  string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.

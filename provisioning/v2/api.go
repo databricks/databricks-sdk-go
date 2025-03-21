@@ -1305,7 +1305,7 @@ func (a *WorkspacesAPI) Create(ctx context.Context, createWorkspaceRequest Creat
 		return nil, err
 	}
 	return &WorkspacesCreateWaiter{
-		Response:    workspace,
+		RawResponse: workspace,
 		workspaceId: workspace.WorkspaceId,
 		service:     a,
 	}, nil
@@ -1313,7 +1313,7 @@ func (a *WorkspacesAPI) Create(ctx context.Context, createWorkspaceRequest Creat
 
 type WorkspacesCreateWaiter struct {
 	// RawResponse is the raw response of the Create call.
-	Response    *Workspace
+	RawResponse *Workspace
 	service     *WorkspacesAPI
 	workspaceId int64
 }
@@ -1571,7 +1571,7 @@ func (a *WorkspacesAPI) Update(ctx context.Context, updateWorkspaceRequest Updat
 		return nil, err
 	}
 	return &WorkspacesUpdateWaiter{
-		Response:    updateResponse,
+		RawResponse: updateResponse,
 		workspaceId: updateWorkspaceRequest.WorkspaceId,
 		service:     a,
 	}, nil
@@ -1579,7 +1579,7 @@ func (a *WorkspacesAPI) Update(ctx context.Context, updateWorkspaceRequest Updat
 
 type WorkspacesUpdateWaiter struct {
 	// RawResponse is the raw response of the Update call.
-	Response    *UpdateResponse
+	RawResponse *UpdateResponse
 	service     *WorkspacesAPI
 	workspaceId int64
 }

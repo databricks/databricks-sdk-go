@@ -65,7 +65,7 @@ func (a *VectorSearchEndpointsAPI) CreateEndpoint(ctx context.Context, createEnd
 		return nil, err
 	}
 	return &VectorSearchEndpointsCreateEndpointWaiter{
-		Response:     endpointInfo,
+		RawResponse:  endpointInfo,
 		endpointName: endpointInfo.Name,
 		service:      a,
 	}, nil
@@ -73,7 +73,7 @@ func (a *VectorSearchEndpointsAPI) CreateEndpoint(ctx context.Context, createEnd
 
 type VectorSearchEndpointsCreateEndpointWaiter struct {
 	// RawResponse is the raw response of the CreateEndpoint call.
-	Response     *EndpointInfo
+	RawResponse  *EndpointInfo
 	service      *VectorSearchEndpointsAPI
 	endpointName string
 }

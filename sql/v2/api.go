@@ -1749,17 +1749,17 @@ func (a *WarehousesAPI) Create(ctx context.Context, createWarehouseRequest Creat
 		return nil, err
 	}
 	return &WarehousesCreateWaiter{
-		Response: createWarehouseResponse,
-		id:       createWarehouseResponse.Id,
-		service:  a,
+		RawResponse: createWarehouseResponse,
+		id:          createWarehouseResponse.Id,
+		service:     a,
 	}, nil
 }
 
 type WarehousesCreateWaiter struct {
 	// RawResponse is the raw response of the Create call.
-	Response *CreateWarehouseResponse
-	service  *WarehousesAPI
-	id       string
+	RawResponse *CreateWarehouseResponse
+	service     *WarehousesAPI
+	id          string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -1817,17 +1817,17 @@ func (a *WarehousesAPI) Edit(ctx context.Context, editWarehouseRequest EditWareh
 		return nil, err
 	}
 	return &WarehousesEditWaiter{
-		Response: editWarehouseResponse,
-		id:       editWarehouseRequest.Id,
-		service:  a,
+		RawResponse: editWarehouseResponse,
+		id:          editWarehouseRequest.Id,
+		service:     a,
 	}, nil
 }
 
 type WarehousesEditWaiter struct {
 	// RawResponse is the raw response of the Edit call.
-	Response *EditWarehouseResponse
-	service  *WarehousesAPI
-	id       string
+	RawResponse *EditWarehouseResponse
+	service     *WarehousesAPI
+	id          string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -1957,17 +1957,17 @@ func (a *WarehousesAPI) Start(ctx context.Context, startRequest StartRequest) (*
 		return nil, err
 	}
 	return &WarehousesStartWaiter{
-		Response: startWarehouseResponse,
-		id:       startRequest.Id,
-		service:  a,
+		RawResponse: startWarehouseResponse,
+		id:          startRequest.Id,
+		service:     a,
 	}, nil
 }
 
 type WarehousesStartWaiter struct {
 	// RawResponse is the raw response of the Start call.
-	Response *StartWarehouseResponse
-	service  *WarehousesAPI
-	id       string
+	RawResponse *StartWarehouseResponse
+	service     *WarehousesAPI
+	id          string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
@@ -2016,17 +2016,17 @@ func (a *WarehousesAPI) Stop(ctx context.Context, stopRequest StopRequest) (*War
 		return nil, err
 	}
 	return &WarehousesStopWaiter{
-		Response: stopWarehouseResponse,
-		id:       stopRequest.Id,
-		service:  a,
+		RawResponse: stopWarehouseResponse,
+		id:          stopRequest.Id,
+		service:     a,
 	}, nil
 }
 
 type WarehousesStopWaiter struct {
 	// RawResponse is the raw response of the Stop call.
-	Response *StopWarehouseResponse
-	service  *WarehousesAPI
-	id       string
+	RawResponse *StopWarehouseResponse
+	service     *WarehousesAPI
+	id          string
 }
 
 // Polls the server until the operation reaches a terminal state, encounters an error, or reaches a timeout defaults to 20 min.
