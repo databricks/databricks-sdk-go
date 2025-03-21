@@ -30,6 +30,8 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 	return httpclient.ClientConfig{
 		AccountID:          cfg.AccountID,
 		Host:               cfg.Host,
+		AzureResourceID:    cfg.AzureResourceID,
+		Cloud:              cfg.Environment().Cloud,
 		RetryTimeout:       time.Duration(cfg.RetryTimeoutSeconds) * time.Second,
 		HTTPTimeout:        time.Duration(cfg.HTTPTimeoutSeconds) * time.Second,
 		RateLimitPerSecond: cfg.RateLimitPerSecond,
