@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -16,7 +15,7 @@ import (
 
 // unexported type that holds implementations of just ConsumerFulfillments API methods
 type consumerFulfillmentsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 // Get listing content metadata.
@@ -117,7 +116,7 @@ func (a *consumerFulfillmentsImpl) internalList(ctx context.Context, request Lis
 
 // unexported type that holds implementations of just ConsumerInstallations API methods
 type consumerInstallationsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *consumerInstallationsImpl) Create(ctx context.Context, request CreateInstallationRequest) (*Installation, error) {
@@ -242,7 +241,7 @@ func (a *consumerInstallationsImpl) Update(ctx context.Context, request UpdateIn
 
 // unexported type that holds implementations of just ConsumerListings API methods
 type consumerListingsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *consumerListingsImpl) BatchGet(ctx context.Context, request BatchGetListingsRequest) (*BatchGetListingsResponse, error) {
@@ -361,7 +360,7 @@ func (a *consumerListingsImpl) internalSearch(ctx context.Context, request Searc
 
 // unexported type that holds implementations of just ConsumerPersonalizationRequests API methods
 type consumerPersonalizationRequestsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *consumerPersonalizationRequestsImpl) Create(ctx context.Context, request CreatePersonalizationRequest) (*CreatePersonalizationRequestResponse, error) {
@@ -431,7 +430,7 @@ func (a *consumerPersonalizationRequestsImpl) internalList(ctx context.Context, 
 
 // unexported type that holds implementations of just ConsumerProviders API methods
 type consumerProvidersImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *consumerProvidersImpl) BatchGet(ctx context.Context, request BatchGetProvidersRequest) (*BatchGetProvidersResponse, error) {
@@ -502,7 +501,7 @@ func (a *consumerProvidersImpl) internalList(ctx context.Context, request ListPr
 
 // unexported type that holds implementations of just ProviderExchangeFilters API methods
 type providerExchangeFiltersImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *providerExchangeFiltersImpl) Create(ctx context.Context, request CreateExchangeFilterRequest) (*CreateExchangeFilterResponse, error) {
@@ -583,7 +582,7 @@ func (a *providerExchangeFiltersImpl) Update(ctx context.Context, request Update
 
 // unexported type that holds implementations of just ProviderExchanges API methods
 type providerExchangesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *providerExchangesImpl) AddListingToExchange(ctx context.Context, request AddExchangeForListingRequest) (*AddExchangeForListingResponse, error) {
@@ -783,7 +782,7 @@ func (a *providerExchangesImpl) Update(ctx context.Context, request UpdateExchan
 
 // unexported type that holds implementations of just ProviderFiles API methods
 type providerFilesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *providerFilesImpl) Create(ctx context.Context, request CreateFileRequest) (*CreateFileResponse, error) {
@@ -863,7 +862,7 @@ func (a *providerFilesImpl) internalList(ctx context.Context, request ListFilesR
 
 // unexported type that holds implementations of just ProviderListings API methods
 type providerListingsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *providerListingsImpl) Create(ctx context.Context, request CreateListingRequest) (*CreateListingResponse, error) {
@@ -954,7 +953,7 @@ func (a *providerListingsImpl) Update(ctx context.Context, request UpdateListing
 
 // unexported type that holds implementations of just ProviderPersonalizationRequests API methods
 type providerPersonalizationRequestsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 // All personalization requests across all listings.
@@ -1016,7 +1015,7 @@ func (a *providerPersonalizationRequestsImpl) Update(ctx context.Context, reques
 
 // unexported type that holds implementations of just ProviderProviderAnalyticsDashboards API methods
 type providerProviderAnalyticsDashboardsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *providerProviderAnalyticsDashboardsImpl) Create(ctx context.Context) (*ProviderAnalyticsDashboard, error) {
@@ -1062,7 +1061,7 @@ func (a *providerProviderAnalyticsDashboardsImpl) Update(ctx context.Context, re
 
 // unexported type that holds implementations of just ProviderProviders API methods
 type providerProvidersImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *providerProvidersImpl) Create(ctx context.Context, request CreateProviderRequest) (*CreateProviderResponse, error) {
@@ -1152,7 +1151,7 @@ func (a *providerProvidersImpl) Update(ctx context.Context, request UpdateProvid
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -1177,5 +1176,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

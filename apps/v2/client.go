@@ -9,8 +9,11 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/config"
 )
 
+// Apps run directly on a customer’s Databricks instance, integrate with their
+// data, use and extend Databricks services, and enable users to interact
+// through single sign-on.
 type AppsClient struct {
-	AppsInterface
+	appsBaseClient
 }
 
 func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
@@ -32,6 +35,10 @@ func NewAppsClient(cfg *config.Config) (*AppsClient, error) {
 	}
 
 	return &AppsClient{
-		AppsInterface: NewApps(apiClient),
+		appsBaseClient: appsBaseClient{
+			appsImpl: appsImpl{
+				client: apiClient.ApiClient(),
+			},
+		},
 	}, nil
 }

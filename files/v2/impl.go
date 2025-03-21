@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -17,7 +16,7 @@ import (
 
 // unexported type that holds implementations of just Dbfs API methods
 type dbfsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *dbfsImpl) AddBlock(ctx context.Context, request AddBlock) (*AddBlockResponse, error) {
@@ -177,7 +176,7 @@ func (a *dbfsImpl) Read(ctx context.Context, request ReadDbfsRequest) (*ReadResp
 
 // unexported type that holds implementations of just Files API methods
 type filesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *filesImpl) CreateDirectory(ctx context.Context, request CreateDirectoryRequest) (*CreateDirectoryResponse, error) {
@@ -295,7 +294,7 @@ func (a *filesImpl) Upload(ctx context.Context, request UploadRequest) (*UploadR
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -320,5 +319,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

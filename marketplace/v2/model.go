@@ -1353,7 +1353,7 @@ type Listing struct {
 	Detail *ListingDetail `json:"detail,omitempty"`
 
 	Id string `json:"id,omitempty"`
-	// Next Number: 26
+
 	Summary ListingSummary `json:"summary"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1503,7 +1503,6 @@ func (f *ListingStatus) Type() string {
 	return "ListingStatus"
 }
 
-// Next Number: 26
 type ListingSummary struct {
 	Categories []Category `json:"categories,omitempty"`
 

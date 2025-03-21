@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -16,7 +15,7 @@ import (
 
 // unexported type that holds implementations of just Alerts API methods
 type alertsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *alertsImpl) Create(ctx context.Context, request CreateAlertRequest) (*Alert, error) {
@@ -111,7 +110,7 @@ func (a *alertsImpl) Update(ctx context.Context, request UpdateAlertRequest) (*A
 
 // unexported type that holds implementations of just AlertsLegacy API methods
 type alertsLegacyImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *alertsLegacyImpl) Create(ctx context.Context, request CreateAlert) (*LegacyAlert, error) {
@@ -168,7 +167,7 @@ func (a *alertsLegacyImpl) Update(ctx context.Context, request EditAlert) (*Upda
 
 // unexported type that holds implementations of just DashboardWidgets API methods
 type dashboardWidgetsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *dashboardWidgetsImpl) Create(ctx context.Context, request CreateWidget) (*Widget, error) {
@@ -205,7 +204,7 @@ func (a *dashboardWidgetsImpl) Update(ctx context.Context, request CreateWidget)
 
 // unexported type that holds implementations of just Dashboards API methods
 type dashboardsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *dashboardsImpl) Create(ctx context.Context, request DashboardPostContent) (*Dashboard, error) {
@@ -320,7 +319,7 @@ func (a *dashboardsImpl) Update(ctx context.Context, request DashboardEditConten
 
 // unexported type that holds implementations of just DataSources API methods
 type dataSourcesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *dataSourcesImpl) List(ctx context.Context) ([]DataSource, error) {
@@ -335,7 +334,7 @@ func (a *dataSourcesImpl) List(ctx context.Context) ([]DataSource, error) {
 
 // unexported type that holds implementations of just DbsqlPermissions API methods
 type dbsqlPermissionsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *dbsqlPermissionsImpl) Get(ctx context.Context, request GetDbsqlPermissionRequest) (*GetResponse, error) {
@@ -372,7 +371,7 @@ func (a *dbsqlPermissionsImpl) TransferOwnership(ctx context.Context, request Tr
 
 // unexported type that holds implementations of just Queries API methods
 type queriesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *queriesImpl) Create(ctx context.Context, request CreateQueryRequest) (*Query, error) {
@@ -511,7 +510,7 @@ func (a *queriesImpl) Update(ctx context.Context, request UpdateQueryRequest) (*
 
 // unexported type that holds implementations of just QueriesLegacy API methods
 type queriesLegacyImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *queriesLegacyImpl) Create(ctx context.Context, request QueryPostContent) (*LegacyQuery, error) {
@@ -638,7 +637,7 @@ func (a *queriesLegacyImpl) Update(ctx context.Context, request QueryEditContent
 
 // unexported type that holds implementations of just QueryHistory API methods
 type queryHistoryImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryRequest) (*ListQueriesResponse, error) {
@@ -653,7 +652,7 @@ func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryReq
 
 // unexported type that holds implementations of just QueryVisualizations API methods
 type queryVisualizationsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateVisualizationRequest) (*Visualization, error) {
@@ -690,7 +689,7 @@ func (a *queryVisualizationsImpl) Update(ctx context.Context, request UpdateVisu
 
 // unexported type that holds implementations of just QueryVisualizationsLegacy API methods
 type queryVisualizationsLegacyImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *queryVisualizationsLegacyImpl) Create(ctx context.Context, request CreateQueryVisualizationsLegacyRequest) (*LegacyVisualization, error) {
@@ -727,7 +726,7 @@ func (a *queryVisualizationsLegacyImpl) Update(ctx context.Context, request Lega
 
 // unexported type that holds implementations of just RedashConfig API methods
 type redashConfigImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *redashConfigImpl) GetConfig(ctx context.Context) (*ClientConfig, error) {
@@ -742,7 +741,7 @@ func (a *redashConfigImpl) GetConfig(ctx context.Context) (*ClientConfig, error)
 
 // unexported type that holds implementations of just StatementExecution API methods
 type statementExecutionImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request CancelExecutionRequest) (*CancelExecutionResponse, error) {
@@ -787,7 +786,7 @@ func (a *statementExecutionImpl) GetStatementResultChunkN(ctx context.Context, r
 
 // unexported type that holds implementations of just Warehouses API methods
 type warehousesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *warehousesImpl) Create(ctx context.Context, request CreateWarehouseRequest) (*CreateWarehouseResponse, error) {
@@ -954,7 +953,7 @@ func (a *warehousesImpl) UpdatePermissions(ctx context.Context, request Warehous
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -979,5 +978,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -16,12 +15,12 @@ import (
 
 // unexported type that holds implementations of just BillableUsage API methods
 type billableUsageImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *billableUsageImpl) Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error) {
 	var downloadResponse DownloadResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/usage/download", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/usage/download", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
@@ -31,12 +30,12 @@ func (a *billableUsageImpl) Download(ctx context.Context, request DownloadReques
 
 // unexported type that holds implementations of just BudgetPolicy API methods
 type budgetPolicyImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolicyRequest) (*BudgetPolicy, error) {
 	var budgetPolicy BudgetPolicy
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -47,7 +46,7 @@ func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolic
 
 func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolicyRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.AccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -57,7 +56,7 @@ func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolic
 
 func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyRequest) (*BudgetPolicy, error) {
 	var budgetPolicy BudgetPolicy
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.AccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -103,7 +102,7 @@ func (a *budgetPolicyImpl) ListAll(ctx context.Context, request ListBudgetPolici
 }
 func (a *budgetPolicyImpl) internalList(ctx context.Context, request ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error) {
 	var listBudgetPoliciesResponse ListBudgetPoliciesResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -113,7 +112,7 @@ func (a *budgetPolicyImpl) internalList(ctx context.Context, request ListBudgetP
 
 func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolicyRequest) (*BudgetPolicy, error) {
 	var budgetPolicy BudgetPolicy
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.ConfiguredAccountID(), request.PolicyId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budget-policies/%v", a.client.AccountID(), request.PolicyId)
 	queryParams := make(map[string]any)
 	if request.LimitConfig != nil {
 		queryParams["limit_config"] = request.LimitConfig
@@ -127,12 +126,12 @@ func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolic
 
 // unexported type that holds implementations of just Budgets API methods
 type budgetsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurationRequest) (*CreateBudgetConfigurationResponse, error) {
 	var createBudgetConfigurationResponse CreateBudgetConfigurationResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -143,7 +142,7 @@ func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurat
 
 func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) (*DeleteBudgetConfigurationResponse, error) {
 	var deleteBudgetConfigurationResponse DeleteBudgetConfigurationResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.AccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -153,7 +152,7 @@ func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurat
 
 func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error) {
 	var getBudgetConfigurationResponse GetBudgetConfigurationResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.AccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -197,7 +196,7 @@ func (a *budgetsImpl) ListAll(ctx context.Context, request ListBudgetConfigurati
 }
 func (a *budgetsImpl) internalList(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error) {
 	var listBudgetConfigurationsResponse ListBudgetConfigurationsResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -207,7 +206,7 @@ func (a *budgetsImpl) internalList(ctx context.Context, request ListBudgetConfig
 
 func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error) {
 	var updateBudgetConfigurationResponse UpdateBudgetConfigurationResponse
-	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.ConfiguredAccountID(), request.BudgetId)
+	path := fmt.Sprintf("/api/2.1/accounts/%v/budgets/%v", a.client.AccountID(), request.BudgetId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -218,12 +217,12 @@ func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurat
 
 // unexported type that holds implementations of just LogDelivery API methods
 type logDeliveryImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error) {
 	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -234,7 +233,7 @@ func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDe
 
 func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest) (*WrappedLogDeliveryConfiguration, error) {
 	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.AccountID(), request.LogDeliveryConfigurationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -274,7 +273,7 @@ func (a *logDeliveryImpl) ListAll(ctx context.Context, request ListLogDeliveryRe
 }
 func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error) {
 	var wrappedLogDeliveryConfigurations WrappedLogDeliveryConfigurations
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -284,7 +283,7 @@ func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliv
 
 func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeliveryConfigurationStatusRequest) (*PatchStatusResponse, error) {
 	var patchStatusResponse PatchStatusResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.AccountID(), request.LogDeliveryConfigurationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -295,12 +294,12 @@ func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeli
 
 // unexported type that holds implementations of just UsageDashboards API methods
 type usageDashboardsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *usageDashboardsImpl) Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error) {
 	var createBillingUsageDashboardResponse CreateBillingUsageDashboardResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -311,7 +310,7 @@ func (a *usageDashboardsImpl) Create(ctx context.Context, request CreateBillingU
 
 func (a *usageDashboardsImpl) Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error) {
 	var getBillingUsageDashboardResponse GetBillingUsageDashboardResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/dashboard", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -320,7 +319,7 @@ func (a *usageDashboardsImpl) Get(ctx context.Context, request GetBillingUsageDa
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -345,5 +344,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

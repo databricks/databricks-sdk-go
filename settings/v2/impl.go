@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/databricks/client"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/listing"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -16,12 +15,12 @@ import (
 
 // unexported type that holds implementations of just AccountIpAccessLists API methods
 type accountIpAccessListsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
 	var createIpAccessListResponse CreateIpAccessListResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -32,7 +31,7 @@ func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpA
 
 func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessListRequest) (*DeleteResponse, error) {
 	var deleteResponse DeleteResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.AccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	err := do(a.client, ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
@@ -41,7 +40,7 @@ func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAcc
 
 func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpAccessListRequest) (*GetIpAccessListResponse, error) {
 	var getIpAccessListResponse GetIpAccessListResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.AccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -80,7 +79,7 @@ func (a *accountIpAccessListsImpl) ListAll(ctx context.Context) ([]IpAccessListI
 }
 func (a *accountIpAccessListsImpl) internalList(ctx context.Context) (*GetIpAccessListsResponse, error) {
 	var getIpAccessListsResponse GetIpAccessListsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists", a.client.AccountID())
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -90,7 +89,7 @@ func (a *accountIpAccessListsImpl) internalList(ctx context.Context) (*GetIpAcce
 
 func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccessList) (*ReplaceResponse, error) {
 	var replaceResponse ReplaceResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.AccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
@@ -100,7 +99,7 @@ func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceI
 
 func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessList) (*UpdateResponse, error) {
 	var updateResponse UpdateResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), request.IpAccessListId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.AccountID(), request.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
@@ -110,12 +109,12 @@ func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpA
 
 // unexported type that holds implementations of just AccountSettings API methods
 type accountSettingsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 // unexported type that holds implementations of just AibiDashboardEmbeddingAccessPolicy API methods
 type aibiDashboardEmbeddingAccessPolicyImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *aibiDashboardEmbeddingAccessPolicyImpl) Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*DeleteAibiDashboardEmbeddingAccessPolicySettingResponse, error) {
@@ -151,7 +150,7 @@ func (a *aibiDashboardEmbeddingAccessPolicyImpl) Update(ctx context.Context, req
 
 // unexported type that holds implementations of just AibiDashboardEmbeddingApprovedDomains API methods
 type aibiDashboardEmbeddingApprovedDomainsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Delete(ctx context.Context, request DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse, error) {
@@ -187,7 +186,7 @@ func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Update(ctx context.Context, 
 
 // unexported type that holds implementations of just AutomaticClusterUpdate API methods
 type automaticClusterUpdateImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *automaticClusterUpdateImpl) Get(ctx context.Context, request GetAutomaticClusterUpdateSettingRequest) (*AutomaticClusterUpdateSetting, error) {
@@ -213,7 +212,7 @@ func (a *automaticClusterUpdateImpl) Update(ctx context.Context, request UpdateA
 
 // unexported type that holds implementations of just ComplianceSecurityProfile API methods
 type complianceSecurityProfileImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *complianceSecurityProfileImpl) Get(ctx context.Context, request GetComplianceSecurityProfileSettingRequest) (*ComplianceSecurityProfileSetting, error) {
@@ -239,7 +238,7 @@ func (a *complianceSecurityProfileImpl) Update(ctx context.Context, request Upda
 
 // unexported type that holds implementations of just CredentialsManager API methods
 type credentialsManagerImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request ExchangeTokenRequest) (*ExchangeTokenResponse, error) {
@@ -255,12 +254,12 @@ func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request Exch
 
 // unexported type that holds implementations of just CspEnablementAccount API methods
 type cspEnablementAccountImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *cspEnablementAccountImpl) Get(ctx context.Context, request GetCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
 	var cspEnablementAccountSetting CspEnablementAccountSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -270,7 +269,7 @@ func (a *cspEnablementAccountImpl) Get(ctx context.Context, request GetCspEnable
 
 func (a *cspEnablementAccountImpl) Update(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error) {
 	var cspEnablementAccountSetting CspEnablementAccountSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_csp_enablement_ac/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -281,7 +280,7 @@ func (a *cspEnablementAccountImpl) Update(ctx context.Context, request UpdateCsp
 
 // unexported type that holds implementations of just DefaultNamespace API methods
 type defaultNamespaceImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *defaultNamespaceImpl) Delete(ctx context.Context, request DeleteDefaultNamespaceSettingRequest) (*DeleteDefaultNamespaceSettingResponse, error) {
@@ -317,7 +316,7 @@ func (a *defaultNamespaceImpl) Update(ctx context.Context, request UpdateDefault
 
 // unexported type that holds implementations of just DisableLegacyAccess API methods
 type disableLegacyAccessImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *disableLegacyAccessImpl) Delete(ctx context.Context, request DeleteDisableLegacyAccessRequest) (*DeleteDisableLegacyAccessResponse, error) {
@@ -353,7 +352,7 @@ func (a *disableLegacyAccessImpl) Update(ctx context.Context, request UpdateDisa
 
 // unexported type that holds implementations of just DisableLegacyDbfs API methods
 type disableLegacyDbfsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *disableLegacyDbfsImpl) Delete(ctx context.Context, request DeleteDisableLegacyDbfsRequest) (*DeleteDisableLegacyDbfsResponse, error) {
@@ -389,12 +388,12 @@ func (a *disableLegacyDbfsImpl) Update(ctx context.Context, request UpdateDisabl
 
 // unexported type that holds implementations of just DisableLegacyFeatures API methods
 type disableLegacyFeaturesImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *disableLegacyFeaturesImpl) Delete(ctx context.Context, request DeleteDisableLegacyFeaturesRequest) (*DeleteDisableLegacyFeaturesResponse, error) {
 	var deleteDisableLegacyFeaturesResponse DeleteDisableLegacyFeaturesResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -404,7 +403,7 @@ func (a *disableLegacyFeaturesImpl) Delete(ctx context.Context, request DeleteDi
 
 func (a *disableLegacyFeaturesImpl) Get(ctx context.Context, request GetDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error) {
 	var disableLegacyFeatures DisableLegacyFeatures
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -414,7 +413,7 @@ func (a *disableLegacyFeaturesImpl) Get(ctx context.Context, request GetDisableL
 
 func (a *disableLegacyFeaturesImpl) Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error) {
 	var disableLegacyFeatures DisableLegacyFeatures
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/disable_legacy_features/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -425,12 +424,12 @@ func (a *disableLegacyFeaturesImpl) Update(ctx context.Context, request UpdateDi
 
 // unexported type that holds implementations of just EnableIpAccessLists API methods
 type enableIpAccessListsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *enableIpAccessListsImpl) Delete(ctx context.Context, request DeleteAccountIpAccessEnableRequest) (*DeleteAccountIpAccessEnableResponse, error) {
 	var deleteAccountIpAccessEnableResponse DeleteAccountIpAccessEnableResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -440,7 +439,7 @@ func (a *enableIpAccessListsImpl) Delete(ctx context.Context, request DeleteAcco
 
 func (a *enableIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error) {
 	var accountIpAccessEnable AccountIpAccessEnable
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -450,7 +449,7 @@ func (a *enableIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpA
 
 func (a *enableIpAccessListsImpl) Update(ctx context.Context, request UpdateAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error) {
 	var accountIpAccessEnable AccountIpAccessEnable
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/acct_ip_acl_enable/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -461,7 +460,7 @@ func (a *enableIpAccessListsImpl) Update(ctx context.Context, request UpdateAcco
 
 // unexported type that holds implementations of just EnhancedSecurityMonitoring API methods
 type enhancedSecurityMonitoringImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *enhancedSecurityMonitoringImpl) Get(ctx context.Context, request GetEnhancedSecurityMonitoringSettingRequest) (*EnhancedSecurityMonitoringSetting, error) {
@@ -487,12 +486,12 @@ func (a *enhancedSecurityMonitoringImpl) Update(ctx context.Context, request Upd
 
 // unexported type that holds implementations of just EsmEnablementAccount API methods
 type esmEnablementAccountImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *esmEnablementAccountImpl) Get(ctx context.Context, request GetEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
 	var esmEnablementAccountSetting EsmEnablementAccountSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -502,7 +501,7 @@ func (a *esmEnablementAccountImpl) Get(ctx context.Context, request GetEsmEnable
 
 func (a *esmEnablementAccountImpl) Update(ctx context.Context, request UpdateEsmEnablementAccountSettingRequest) (*EsmEnablementAccountSetting, error) {
 	var esmEnablementAccountSetting EsmEnablementAccountSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/shield_esm_enablement_ac/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -513,7 +512,7 @@ func (a *esmEnablementAccountImpl) Update(ctx context.Context, request UpdateEsm
 
 // unexported type that holds implementations of just IpAccessLists API methods
 type ipAccessListsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessList) (*CreateIpAccessListResponse, error) {
@@ -607,12 +606,12 @@ func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessLi
 
 // unexported type that holds implementations of just NetworkConnectivity API methods
 type networkConnectivityImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *networkConnectivityImpl) CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error) {
 	var networkConnectivityConfiguration NetworkConnectivityConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -623,7 +622,7 @@ func (a *networkConnectivityImpl) CreateNetworkConnectivityConfiguration(ctx con
 
 func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
 	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.AccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -634,7 +633,7 @@ func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context,
 
 func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) (*DeleteNetworkConnectivityConfigurationResponse, error) {
 	var deleteNetworkConnectivityConfigurationResponse DeleteNetworkConnectivityConfigurationResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.AccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -644,7 +643,7 @@ func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx con
 
 func (a *networkConnectivityImpl) DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
 	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.AccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -654,7 +653,7 @@ func (a *networkConnectivityImpl) DeletePrivateEndpointRule(ctx context.Context,
 
 func (a *networkConnectivityImpl) GetNetworkConnectivityConfiguration(ctx context.Context, request GetNetworkConnectivityConfigurationRequest) (*NetworkConnectivityConfiguration, error) {
 	var networkConnectivityConfiguration NetworkConnectivityConfiguration
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v", a.client.AccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -664,7 +663,7 @@ func (a *networkConnectivityImpl) GetNetworkConnectivityConfiguration(ctx contex
 
 func (a *networkConnectivityImpl) GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
 	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.AccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -708,7 +707,7 @@ func (a *networkConnectivityImpl) ListNetworkConnectivityConfigurationsAll(ctx c
 }
 func (a *networkConnectivityImpl) internalListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error) {
 	var listNetworkConnectivityConfigurationsResponse ListNetworkConnectivityConfigurationsResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -752,7 +751,7 @@ func (a *networkConnectivityImpl) ListPrivateEndpointRulesAll(ctx context.Contex
 }
 func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
 	var listNccAzurePrivateEndpointRulesResponse ListNccAzurePrivateEndpointRulesResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.AccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -762,7 +761,7 @@ func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.C
 
 // unexported type that holds implementations of just NotificationDestinations API methods
 type notificationDestinationsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *notificationDestinationsImpl) Create(ctx context.Context, request CreateNotificationDestinationRequest) (*NotificationDestination, error) {
@@ -853,12 +852,12 @@ func (a *notificationDestinationsImpl) Update(ctx context.Context, request Updat
 
 // unexported type that holds implementations of just PersonalCompute API methods
 type personalComputeImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *personalComputeImpl) Delete(ctx context.Context, request DeletePersonalComputeSettingRequest) (*DeletePersonalComputeSettingResponse, error) {
 	var deletePersonalComputeSettingResponse DeletePersonalComputeSettingResponse
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -868,7 +867,7 @@ func (a *personalComputeImpl) Delete(ctx context.Context, request DeletePersonal
 
 func (a *personalComputeImpl) Get(ctx context.Context, request GetPersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	var personalComputeSetting PersonalComputeSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -878,7 +877,7 @@ func (a *personalComputeImpl) Get(ctx context.Context, request GetPersonalComput
 
 func (a *personalComputeImpl) Update(ctx context.Context, request UpdatePersonalComputeSettingRequest) (*PersonalComputeSetting, error) {
 	var personalComputeSetting PersonalComputeSetting
-	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.ConfiguredAccountID())
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/dcp_acct_enable/names/default", a.client.AccountID())
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
@@ -889,7 +888,7 @@ func (a *personalComputeImpl) Update(ctx context.Context, request UpdatePersonal
 
 // unexported type that holds implementations of just RestrictWorkspaceAdmins API methods
 type restrictWorkspaceAdminsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *restrictWorkspaceAdminsImpl) Delete(ctx context.Context, request DeleteRestrictWorkspaceAdminsSettingRequest) (*DeleteRestrictWorkspaceAdminsSettingResponse, error) {
@@ -925,12 +924,12 @@ func (a *restrictWorkspaceAdminsImpl) Update(ctx context.Context, request Update
 
 // unexported type that holds implementations of just Settings API methods
 type settingsImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 // unexported type that holds implementations of just TokenManagement API methods
 type tokenManagementImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request CreateOboTokenRequest) (*CreateOboTokenResponse, error) {
@@ -1045,7 +1044,7 @@ func (a *tokenManagementImpl) UpdatePermissions(ctx context.Context, request Tok
 
 // unexported type that holds implementations of just Tokens API methods
 type tokensImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *tokensImpl) Create(ctx context.Context, request CreateTokenRequest) (*CreateTokenResponse, error) {
@@ -1111,7 +1110,7 @@ func (a *tokensImpl) internalList(ctx context.Context) (*ListPublicTokensRespons
 
 // unexported type that holds implementations of just WorkspaceConf API methods
 type workspaceConfImpl struct {
-	client *client.DatabricksClient
+	client *httpclient.ApiClient
 }
 
 func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatusRequest) (*map[string]string, error) {
@@ -1135,7 +1134,7 @@ func (a *workspaceConfImpl) SetStatus(ctx context.Context, request WorkspaceConf
 }
 
 func do(
-	client *client.DatabricksClient,
+	client *httpclient.ApiClient,
 	ctx context.Context,
 	method string,
 	path string,
@@ -1160,5 +1159,5 @@ func do(
 		path = strings.Replace(path, "/api/2.0/fs/files//", "/api/2.0/fs/files/", 1)
 	}
 
-	return client.ApiClient().Do(ctx, method, path, opts...)
+	return client.Do(ctx, method, path, opts...)
 }

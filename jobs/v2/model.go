@@ -8,231 +8,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/databricks/marshal"
 )
 
-type Adlsgen2Info struct {
-	// abfss destination, e.g.
-	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`.
-	Destination string `json:"destination"`
-}
-
-type AutoScale struct {
-	// The maximum number of workers to which the cluster can scale up when
-	// overloaded. Note that `max_workers` must be strictly greater than
-	// `min_workers`.
-	MaxWorkers int `json:"max_workers,omitempty"`
-	// The minimum number of workers to which the cluster can scale down when
-	// underutilized. It is also the initial number of workers the cluster will
-	// have after creation.
-	MinWorkers int `json:"min_workers,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *AutoScale) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AutoScale) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type AwsAttributes struct {
-	// Availability type used for all subsequent nodes past the
-	// `first_on_demand` ones.
-	//
-	// Note: If `first_on_demand` is zero, this availability type will be used
-	// for the entire cluster.
-	Availability AwsAvailability `json:"availability,omitempty"`
-	// The number of volumes launched for each instance. Users can choose up to
-	// 10 volumes. This feature is only enabled for supported node types. Legacy
-	// node types cannot specify custom EBS volumes. For node types with no
-	// instance store, at least one EBS volume needs to be specified; otherwise,
-	// cluster creation will fail.
-	//
-	// These EBS volumes will be mounted at `/ebs0`, `/ebs1`, and etc. Instance
-	// store volumes will be mounted at `/local_disk0`, `/local_disk1`, and etc.
-	//
-	// If EBS volumes are attached, Databricks will configure Spark to use only
-	// the EBS volumes for scratch storage because heterogenously sized scratch
-	// devices can lead to inefficient disk utilization. If no EBS volumes are
-	// attached, Databricks will configure Spark to use instance store volumes.
-	//
-	// Please note that if EBS volumes are specified, then the Spark
-	// configuration `spark.local.dir` will be overridden.
-	EbsVolumeCount int `json:"ebs_volume_count,omitempty"`
-	// If using gp3 volumes, what IOPS to use for the disk. If this is not set,
-	// the maximum performance of a gp2 volume with the same volume size will be
-	// used.
-	EbsVolumeIops int `json:"ebs_volume_iops,omitempty"`
-	// The size of each EBS volume (in GiB) launched for each instance. For
-	// general purpose SSD, this value must be within the range 100 - 4096. For
-	// throughput optimized HDD, this value must be within the range 500 - 4096.
-	EbsVolumeSize int `json:"ebs_volume_size,omitempty"`
-	// If using gp3 volumes, what throughput to use for the disk. If this is not
-	// set, the maximum performance of a gp2 volume with the same volume size
-	// will be used.
-	EbsVolumeThroughput int `json:"ebs_volume_throughput,omitempty"`
-	// The type of EBS volumes that will be launched with this cluster.
-	EbsVolumeType EbsVolumeType `json:"ebs_volume_type,omitempty"`
-	// The first `first_on_demand` nodes of the cluster will be placed on
-	// on-demand instances. If this value is greater than 0, the cluster driver
-	// node in particular will be placed on an on-demand instance. If this value
-	// is greater than or equal to the current cluster size, all nodes will be
-	// placed on on-demand instances. If this value is less than the current
-	// cluster size, `first_on_demand` nodes will be placed on on-demand
-	// instances and the remainder will be placed on `availability` instances.
-	// Note that this value does not affect cluster size and cannot currently be
-	// mutated over the lifetime of a cluster.
-	FirstOnDemand int `json:"first_on_demand,omitempty"`
-	// Nodes for this cluster will only be placed on AWS instances with this
-	// instance profile. If ommitted, nodes will be placed on instances without
-	// an IAM instance profile. The instance profile must have previously been
-	// added to the Databricks environment by an account administrator.
-	//
-	// This feature may only be available to certain customer plans.
-	//
-	// If this field is ommitted, we will pull in the default from the conf if
-	// it exists.
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-	// The bid price for AWS spot instances, as a percentage of the
-	// corresponding instance type's on-demand price. For example, if this field
-	// is set to 50, and the cluster needs a new `r3.xlarge` spot instance, then
-	// the bid price is half of the price of on-demand `r3.xlarge` instances.
-	// Similarly, if this field is set to 200, the bid price is twice the price
-	// of on-demand `r3.xlarge` instances. If not specified, the default value
-	// is 100. When spot instances are requested for this cluster, only spot
-	// instances whose bid price percentage matches this field will be
-	// considered. Note that, for safety, we enforce this field to be no more
-	// than 10000.
-	//
-	// The default value and documentation here should be kept consistent with
-	// CommonConf.defaultSpotBidPricePercent and
-	// CommonConf.maxSpotBidPricePercent.
-	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
-	// Identifier for the availability zone/datacenter in which the cluster
-	// resides. This string will be of a form like "us-west-2a". The provided
-	// availability zone must be in the same region as the Databricks
-	// deployment. For example, "us-west-2a" is not a valid zone id if the
-	// Databricks deployment resides in the "us-east-1" region. This is an
-	// optional field at cluster creation, and if not specified, a default zone
-	// will be used. If the zone specified is "auto", will try to place cluster
-	// in a zone with high availability, and will retry placement in a different
-	// AZ if there is not enough capacity. The list of available zones as well
-	// as the default value can be found by using the `List Zones` method.
-	ZoneId string `json:"zone_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *AwsAttributes) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AwsAttributes) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Availability type used for all subsequent nodes past the `first_on_demand`
-// ones.
-//
-// Note: If `first_on_demand` is zero, this availability type will be used for
-// the entire cluster.
-type AwsAvailability string
-
-const AwsAvailabilityOnDemand AwsAvailability = `ON_DEMAND`
-
-const AwsAvailabilitySpot AwsAvailability = `SPOT`
-
-const AwsAvailabilitySpotWithFallback AwsAvailability = `SPOT_WITH_FALLBACK`
-
-// String representation for [fmt.Print]
-func (f *AwsAvailability) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *AwsAvailability) Set(v string) error {
-	switch v {
-	case `ON_DEMAND`, `SPOT`, `SPOT_WITH_FALLBACK`:
-		*f = AwsAvailability(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND", "SPOT", "SPOT_WITH_FALLBACK"`, v)
-	}
-}
-
-// Type always returns AwsAvailability to satisfy [pflag.Value] interface
-func (f *AwsAvailability) Type() string {
-	return "AwsAvailability"
-}
-
-type AzureAttributes struct {
-	// Availability type used for all subsequent nodes past the
-	// `first_on_demand` ones. Note: If `first_on_demand` is zero (which only
-	// happens on pool clusters), this availability type will be used for the
-	// entire cluster.
-	Availability AzureAvailability `json:"availability,omitempty"`
-	// The first `first_on_demand` nodes of the cluster will be placed on
-	// on-demand instances. This value should be greater than 0, to make sure
-	// the cluster driver node is placed on an on-demand instance. If this value
-	// is greater than or equal to the current cluster size, all nodes will be
-	// placed on on-demand instances. If this value is less than the current
-	// cluster size, `first_on_demand` nodes will be placed on on-demand
-	// instances and the remainder will be placed on `availability` instances.
-	// Note that this value does not affect cluster size and cannot currently be
-	// mutated over the lifetime of a cluster.
-	FirstOnDemand int `json:"first_on_demand,omitempty"`
-	// Defines values necessary to configure and run Azure Log Analytics agent
-	LogAnalyticsInfo *LogAnalyticsInfo `json:"log_analytics_info,omitempty"`
-	// The max bid price to be used for Azure spot instances. The Max price for
-	// the bid cannot be higher than the on-demand price of the instance. If not
-	// specified, the default value is -1, which specifies that the instance
-	// cannot be evicted on the basis of price, and only on the basis of
-	// availability. Further, the value should > 0 or -1.
-	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *AzureAttributes) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s AzureAttributes) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Availability type used for all subsequent nodes past the `first_on_demand`
-// ones. Note: If `first_on_demand` is zero (which only happens on pool
-// clusters), this availability type will be used for the entire cluster.
-type AzureAvailability string
-
-const AzureAvailabilityOnDemandAzure AzureAvailability = `ON_DEMAND_AZURE`
-
-const AzureAvailabilitySpotAzure AzureAvailability = `SPOT_AZURE`
-
-const AzureAvailabilitySpotWithFallbackAzure AzureAvailability = `SPOT_WITH_FALLBACK_AZURE`
-
-// String representation for [fmt.Print]
-func (f *AzureAvailability) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *AzureAvailability) Set(v string) error {
-	switch v {
-	case `ON_DEMAND_AZURE`, `SPOT_AZURE`, `SPOT_WITH_FALLBACK_AZURE`:
-		*f = AzureAvailability(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE", "SPOT_WITH_FALLBACK_AZURE"`, v)
-	}
-}
-
-// Type always returns AzureAvailability to satisfy [pflag.Value] interface
-func (f *AzureAvailability) Type() string {
-	return "AzureAvailability"
-}
-
 type BaseJob struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
@@ -593,23 +368,6 @@ type CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput struct {
 	OutputSchemaInfo *OutputSchemaInfo `json:"output_schema_info,omitempty"`
 }
 
-type ClientsTypes struct {
-	// With jobs set, the cluster can be used for jobs
-	Jobs bool `json:"jobs,omitempty"`
-	// With notebooks set, this cluster can be used for notebooks
-	Notebooks bool `json:"notebooks,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ClientsTypes) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ClientsTypes) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type ClusterInstance struct {
 	// The canonical identifier for the cluster used by a run. This field is
 	// always available for runs on existing clusters. For runs on new clusters,
@@ -639,21 +397,6 @@ func (s *ClusterInstance) UnmarshalJSON(b []byte) error {
 
 func (s ClusterInstance) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type ClusterLogConf struct {
-	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
-	// "dbfs:/home/cluster_log" } }`
-	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
-	// destination and either the region or endpoint need to be provided. e.g.
-	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
-	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
-	// the cluster iam role in `instance_profile_arn` has permission to write
-	// data to the s3 destination.
-	S3 *S3StorageInfo `json:"s3,omitempty"`
-	// destination needs to be provided. e.g. `{ "volumes" : { "destination" :
-	// "/Volumes/catalog/schema/volume/cluster_log" } }`
-	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 }
 
 type ClusterSpec struct {
@@ -955,102 +698,6 @@ type CronSchedule struct {
 	TimezoneId string `json:"timezone_id"`
 }
 
-// Data security mode decides what data governance model to use when accessing
-// data from a cluster.
-//
-// The following modes can only be used when `kind = CLASSIC_PREVIEW`. *
-// `DATA_SECURITY_MODE_AUTO`: Databricks will choose the most appropriate access
-// mode depending on your compute configuration. *
-// `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. *
-// `DATA_SECURITY_MODE_DEDICATED`: Alias for `SINGLE_USER`.
-//
-// The following modes can be used regardless of `kind`. * `NONE`: No security
-// isolation for multiple users sharing the cluster. Data governance features
-// are not available in this mode. * `SINGLE_USER`: A secure cluster that can
-// only be exclusively used by a single user specified in `single_user_name`.
-// Most programming languages, cluster features and data governance features are
-// available in this mode. * `USER_ISOLATION`: A secure cluster that can be
-// shared by multiple users. Cluster users are fully isolated so that they
-// cannot see each other's data and credentials. Most data governance features
-// are supported in this mode. But programming languages and cluster features
-// might be limited.
-//
-// The following modes are deprecated starting with Databricks Runtime 15.0 and
-// will be removed for future Databricks Runtime versions:
-//
-// * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL
-// clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from
-// legacy Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This
-// mode is for users migrating from legacy Passthrough on standard clusters. *
-// `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have
-// UC nor passthrough enabled.
-type DataSecurityMode string
-
-// <Databricks> will choose the most appropriate access mode depending on your
-// compute configuration.
-const DataSecurityModeDataSecurityModeAuto DataSecurityMode = `DATA_SECURITY_MODE_AUTO`
-
-// Alias for `SINGLE_USER`.
-const DataSecurityModeDataSecurityModeDedicated DataSecurityMode = `DATA_SECURITY_MODE_DEDICATED`
-
-// Alias for `USER_ISOLATION`.
-const DataSecurityModeDataSecurityModeStandard DataSecurityMode = `DATA_SECURITY_MODE_STANDARD`
-
-// This mode is for users migrating from legacy Passthrough on high concurrency
-// clusters.
-const DataSecurityModeLegacyPassthrough DataSecurityMode = `LEGACY_PASSTHROUGH`
-
-// This mode is for users migrating from legacy Passthrough on standard
-// clusters.
-const DataSecurityModeLegacySingleUser DataSecurityMode = `LEGACY_SINGLE_USER`
-
-// This mode provides a way that doesn’t have UC nor passthrough enabled.
-const DataSecurityModeLegacySingleUserStandard DataSecurityMode = `LEGACY_SINGLE_USER_STANDARD`
-
-// This mode is for users migrating from legacy Table ACL clusters.
-const DataSecurityModeLegacyTableAcl DataSecurityMode = `LEGACY_TABLE_ACL`
-
-// No security isolation for multiple users sharing the cluster. Data governance
-// features are not available in this mode.
-const DataSecurityModeNone DataSecurityMode = `NONE`
-
-// A secure cluster that can only be exclusively used by a single user specified
-// in `single_user_name`. Most programming languages, cluster features and data
-// governance features are available in this mode.
-const DataSecurityModeSingleUser DataSecurityMode = `SINGLE_USER`
-
-// A secure cluster that can be shared by multiple users. Cluster users are
-// fully isolated so that they cannot see each other's data and credentials.
-// Most data governance features are supported in this mode. But programming
-// languages and cluster features might be limited.
-const DataSecurityModeUserIsolation DataSecurityMode = `USER_ISOLATION`
-
-// String representation for [fmt.Print]
-func (f *DataSecurityMode) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *DataSecurityMode) Set(v string) error {
-	switch v {
-	case `DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, `DATA_SECURITY_MODE_STANDARD`, `LEGACY_PASSTHROUGH`, `LEGACY_SINGLE_USER`, `LEGACY_SINGLE_USER_STANDARD`, `LEGACY_TABLE_ACL`, `NONE`, `SINGLE_USER`, `USER_ISOLATION`:
-		*f = DataSecurityMode(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "DATA_SECURITY_MODE_AUTO", "DATA_SECURITY_MODE_DEDICATED", "DATA_SECURITY_MODE_STANDARD", "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_SINGLE_USER_STANDARD", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
-	}
-}
-
-// Type always returns DataSecurityMode to satisfy [pflag.Value] interface
-func (f *DataSecurityMode) Type() string {
-	return "DataSecurityMode"
-}
-
-type DbfsStorageInfo struct {
-	// dbfs destination, e.g. `dbfs:/my/path`
-	Destination string `json:"destination"`
-}
-
 type DbtOutput struct {
 	// An optional map of headers to send when retrieving the artifact from the
 	// `artifacts_link`.
@@ -1132,68 +779,6 @@ type DeleteRun struct {
 }
 
 type DeleteRunResponse struct {
-}
-
-type DockerBasicAuth struct {
-	// Password of the user
-	Password string `json:"password,omitempty"`
-	// Name of the user
-	Username string `json:"username,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *DockerBasicAuth) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DockerBasicAuth) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type DockerImage struct {
-	// Basic auth with username and password
-	BasicAuth *DockerBasicAuth `json:"basic_auth,omitempty"`
-	// URL of the docker image.
-	Url string `json:"url,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *DockerImage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DockerImage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// The type of EBS volumes that will be launched with this cluster.
-type EbsVolumeType string
-
-const EbsVolumeTypeGeneralPurposeSsd EbsVolumeType = `GENERAL_PURPOSE_SSD`
-
-const EbsVolumeTypeThroughputOptimizedHdd EbsVolumeType = `THROUGHPUT_OPTIMIZED_HDD`
-
-// String representation for [fmt.Print]
-func (f *EbsVolumeType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *EbsVolumeType) Set(v string) error {
-	switch v {
-	case `GENERAL_PURPOSE_SSD`, `THROUGHPUT_OPTIMIZED_HDD`:
-		*f = EbsVolumeType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "GENERAL_PURPOSE_SSD", "THROUGHPUT_OPTIMIZED_HDD"`, v)
-	}
-}
-
-// Type always returns EbsVolumeType to satisfy [pflag.Value] interface
-func (f *EbsVolumeType) Type() string {
-	return "EbsVolumeType"
 }
 
 // Represents a change to the job cluster's settings that would be required for
@@ -1430,87 +1015,6 @@ func (f *Format) Set(v string) error {
 // Type always returns Format to satisfy [pflag.Value] interface
 func (f *Format) Type() string {
 	return "Format"
-}
-
-type GcpAttributes struct {
-	// This field determines whether the instance pool will contain preemptible
-	// VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs
-	// if the former is unavailable.
-	Availability GcpAvailability `json:"availability,omitempty"`
-	// boot disk size in GB
-	BootDiskSize int `json:"boot_disk_size,omitempty"`
-	// If provided, the cluster will impersonate the google service account when
-	// accessing gcloud services (like GCS). The google service account must
-	// have previously been added to the Databricks environment by an account
-	// administrator.
-	GoogleServiceAccount string `json:"google_service_account,omitempty"`
-	// If provided, each node (workers and driver) in the cluster will have this
-	// number of local SSDs attached. Each local SSD is 375GB in size. Refer to
-	// [GCP documentation] for the supported number of local SSDs for each
-	// instance type.
-	//
-	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
-	LocalSsdCount int `json:"local_ssd_count,omitempty"`
-	// This field determines whether the spark executors will be scheduled to
-	// run on preemptible VMs (when set to true) versus standard compute engine
-	// VMs (when set to false; default). Note: Soon to be deprecated, use the
-	// availability field instead.
-	UsePreemptibleExecutors bool `json:"use_preemptible_executors,omitempty"`
-	// Identifier for the availability zone in which the cluster resides. This
-	// can be one of the following: - "HA" => High availability, spread nodes
-	// across availability zones for a Databricks deployment region [default] -
-	// "AUTO" => Databricks picks an availability zone to schedule the cluster
-	// on. - A GCP availability zone => Pick One of the available zones for
-	// (machine type + region) from
-	// https://cloud.google.com/compute/docs/regions-zones.
-	ZoneId string `json:"zone_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *GcpAttributes) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s GcpAttributes) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// This field determines whether the instance pool will contain preemptible VMs,
-// on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the
-// former is unavailable.
-type GcpAvailability string
-
-const GcpAvailabilityOnDemandGcp GcpAvailability = `ON_DEMAND_GCP`
-
-const GcpAvailabilityPreemptibleGcp GcpAvailability = `PREEMPTIBLE_GCP`
-
-const GcpAvailabilityPreemptibleWithFallbackGcp GcpAvailability = `PREEMPTIBLE_WITH_FALLBACK_GCP`
-
-// String representation for [fmt.Print]
-func (f *GcpAvailability) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *GcpAvailability) Set(v string) error {
-	switch v {
-	case `ON_DEMAND_GCP`, `PREEMPTIBLE_GCP`, `PREEMPTIBLE_WITH_FALLBACK_GCP`:
-		*f = GcpAvailability(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_GCP", "PREEMPTIBLE_GCP", "PREEMPTIBLE_WITH_FALLBACK_GCP"`, v)
-	}
-}
-
-// Type always returns GcpAvailability to satisfy [pflag.Value] interface
-func (f *GcpAvailability) Type() string {
-	return "GcpAvailability"
-}
-
-type GcsStorageInfo struct {
-	// GCS destination/URI, e.g. `gs://my-bucket/some-prefix`
-	Destination string `json:"destination"`
 }
 
 // Next field: 9
@@ -1756,34 +1260,6 @@ func (s GitSource) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type InitScriptInfo struct {
-	// destination needs to be provided. e.g. `{ "abfss" : { "destination" :
-	// "abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>"
-	// } }
-	Abfss *Adlsgen2Info `json:"abfss,omitempty"`
-	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
-	// "dbfs:/home/cluster_log" } }`
-	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
-	// destination needs to be provided. e.g. `{ "file" : { "destination" :
-	// "file:/my/local/file.sh" } }`
-	File *LocalFileInfo `json:"file,omitempty"`
-	// destination needs to be provided. e.g. `{ "gcs": { "destination":
-	// "gs://my-bucket/file.sh" } }`
-	Gcs *GcsStorageInfo `json:"gcs,omitempty"`
-	// destination and either the region or endpoint need to be provided. e.g.
-	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
-	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
-	// the cluster iam role in `instance_profile_arn` has permission to write
-	// data to the s3 destination.
-	S3 *S3StorageInfo `json:"s3,omitempty"`
-	// destination needs to be provided. e.g. `{ "volumes" : { "destination" :
-	// "/Volumes/my-init.sh" } }`
-	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
-	// destination needs to be provided. e.g. `{ "workspace" : { "destination" :
-	// "/Users/user1@databricks.com/my-init.sh" } }`
-	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
-}
-
 // Job was retrieved successfully.
 type Job struct {
 	// The time at which this job was created in epoch milliseconds
@@ -1881,7 +1357,7 @@ type JobCluster struct {
 	// determine which cluster to launch for the task execution.
 	JobClusterKey string `json:"job_cluster_key"`
 	// If new_cluster, a description of a cluster that is created for each task.
-	NewCluster JobsClusterSpec `json:"new_cluster"`
+	NewCluster ClusterSpec `json:"new_cluster"`
 }
 
 type JobCompliance struct {
@@ -2381,6 +1857,8 @@ func (f *JobSourceDirtyState) Type() string {
 	return "JobSourceDirtyState"
 }
 
+// Contains a snapshot of the latest user specified settings that were used to
+// create/edit the cluster.
 type JobsClusterSpec struct {
 	// When set to true, fixed and default values from the policy will be used
 	// for fields that are omitted. When set to false, only fixed values from
@@ -2452,7 +1930,7 @@ type JobsClusterSpec struct {
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
+	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -2461,6 +1939,11 @@ type JobsClusterSpec struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
+	//
+	// This field, along with node_type_id, should not be set if
+	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
+	// and virtual_cluster_size are specified, driver_node_type_id and
+	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
@@ -2566,7 +2049,7 @@ type JobsClusterSpec struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
+	// Cluster Attributes showing for clusters workload types.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2951,28 +2434,6 @@ func (s *ListRunsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListRunsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type LocalFileInfo struct {
-	// local file destination, e.g. `file:/my/local/file.sh`
-	Destination string `json:"destination"`
-}
-
-type LogAnalyticsInfo struct {
-	// <needs content added>
-	LogAnalyticsPrimaryKey string `json:"log_analytics_primary_key,omitempty"`
-	// <needs content added>
-	LogAnalyticsWorkspaceId string `json:"log_analytics_workspace_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *LogAnalyticsInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s LogAnalyticsInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -4714,86 +4175,6 @@ func (f *RunType) Type() string {
 	return "RunType"
 }
 
-// Determines the cluster's runtime engine, either standard or Photon.
-//
-// This field is not compatible with legacy `spark_version` values that contain
-// `-photon-`. Remove `-photon-` from the `spark_version` and set
-// `runtime_engine` to `PHOTON`.
-//
-// If left unspecified, the runtime engine defaults to standard unless the
-// spark_version contains -photon-, in which case Photon will be used.
-type RuntimeEngine string
-
-const RuntimeEngineNull RuntimeEngine = `NULL`
-
-const RuntimeEnginePhoton RuntimeEngine = `PHOTON`
-
-const RuntimeEngineStandard RuntimeEngine = `STANDARD`
-
-// String representation for [fmt.Print]
-func (f *RuntimeEngine) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *RuntimeEngine) Set(v string) error {
-	switch v {
-	case `NULL`, `PHOTON`, `STANDARD`:
-		*f = RuntimeEngine(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "NULL", "PHOTON", "STANDARD"`, v)
-	}
-}
-
-// Type always returns RuntimeEngine to satisfy [pflag.Value] interface
-func (f *RuntimeEngine) Type() string {
-	return "RuntimeEngine"
-}
-
-type S3StorageInfo struct {
-	// (Optional) Set canned access control list for the logs, e.g.
-	// `bucket-owner-full-control`. If `canned_cal` is set, please make sure the
-	// cluster iam role has `s3:PutObjectAcl` permission on the destination
-	// bucket and prefix. The full list of possible canned acl can be found at
-	// http://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl.
-	// Please also note that by default only the object owner gets full
-	// controls. If you are using cross account role for writing data, you may
-	// want to set `bucket-owner-full-control` to make bucket owner able to read
-	// the logs.
-	CannedAcl string `json:"canned_acl,omitempty"`
-	// S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be
-	// delivered using cluster iam role, please make sure you set cluster iam
-	// role and the role has write access to the destination. Please also note
-	// that you cannot use AWS keys to deliver logs.
-	Destination string `json:"destination"`
-	// (Optional) Flag to enable server side encryption, `false` by default.
-	EnableEncryption bool `json:"enable_encryption,omitempty"`
-	// (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It
-	// will be used only when encryption is enabled and the default type is
-	// `sse-s3`.
-	EncryptionType string `json:"encryption_type,omitempty"`
-	// S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or
-	// endpoint needs to be set. If both are set, endpoint will be used.
-	Endpoint string `json:"endpoint,omitempty"`
-	// (Optional) Kms key which will be used if encryption is enabled and
-	// encryption type is set to `sse-kms`.
-	KmsKey string `json:"kms_key,omitempty"`
-	// S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set.
-	// If both are set, endpoint will be used.
-	Region string `json:"region,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *S3StorageInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s S3StorageInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 // Optional location type of the SQL file. When set to `WORKSPACE`, the SQL file
 // will be retrieved\ from the local Databricks workspace. When set to `GIT`,
 // the SQL file will be retrieved from a Git repository defined in `git_source`.
@@ -5336,7 +4717,7 @@ type SubmitTask struct {
 	Libraries []Library `json:"libraries,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
-	NewCluster *JobsClusterSpec `json:"new_cluster,omitempty"`
+	NewCluster *ClusterSpec `json:"new_cluster,omitempty"`
 	// The task runs a notebook when the `notebook_task` field is present.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
@@ -5495,7 +4876,7 @@ type Task struct {
 	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
 	// If new_cluster, a description of a new cluster that is created for each
 	// run.
-	NewCluster *JobsClusterSpec `json:"new_cluster,omitempty"`
+	NewCluster *ClusterSpec `json:"new_cluster,omitempty"`
 	// The task runs a notebook when the `notebook_task` field is present.
 	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
 	// Optional notification settings that are used when sending notifications
@@ -6130,12 +5511,6 @@ func (f *ViewsToExport) Type() string {
 	return "ViewsToExport"
 }
 
-type VolumesStorageInfo struct {
-	// Unity Catalog volumes file destination, e.g.
-	// `/Volumes/catalog/schema/volume/dir/file`
-	Destination string `json:"destination"`
-}
-
 type Webhook struct {
 	Id string `json:"id"`
 }
@@ -6165,15 +5540,4 @@ type WebhookNotifications struct {
 	// completes successfully. A maximum of 3 destinations can be specified for
 	// the `on_success` property.
 	OnSuccess []Webhook `json:"on_success,omitempty"`
-}
-
-type WorkloadType struct {
-	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
-	Clients ClientsTypes `json:"clients"`
-}
-
-type WorkspaceStorageInfo struct {
-	// workspace files destination, e.g.
-	// `/Users/user1@databricks.com/my-init.sh`
-	Destination string `json:"destination"`
 }
