@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/databricks/databricks-sdk-go/apierr"
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/logger"
+	"github.com/databricks/databricks-sdk-go/logger/httplog"
 )
 
 func WithResponseHeader(key string, value *string) DoOption {
@@ -92,7 +92,7 @@ func WithResponseUnmarshal(response any) DoOption {
 				return nil
 			}
 			if err = json.Unmarshal(bodyBytes, &response); err != nil {
-				return fmt.Errorf("failed to unmarshal response body: %w. %s", err, apierr.MakeUnexpectedResponse(body.Response, body.RequestBody.DebugBytes, bodyBytes))
+				return fmt.Errorf("failed to unmarshal response body: %w. %s", err, makeUnexpectedResponse(body.Response, body.RequestBody.DebugBytes, bodyBytes))
 			}
 			return nil
 		},
@@ -192,4 +192,21 @@ func parseHeaderTag(field reflect.StructField) headerTag {
 		}
 	}
 	return headerTag
+}
+
+func makeUnexpectedResponse(resp *http.Response, requestBody, responseBody []byte) string {
+	var req *http.Request
+	if resp != nil {
+		req = resp.Request
+	}
+	rts := httplog.RoundTripStringer{
+		Request:                  req,
+		Response:                 resp,
+		RequestBody:              requestBody,
+		ResponseBody:             responseBody,
+		DebugHeaders:             true,
+		DebugTruncateBytes:       10 * 1024,
+		DebugAuthorizationHeader: false,
+	}
+	return fmt.Sprintf("This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\n```\n%s\n```", rts.String())
 }

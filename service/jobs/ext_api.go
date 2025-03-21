@@ -1,6 +1,113 @@
 package jobs
 
-import "context"
+import (
+	"context"
+
+	"github.com/databricks/databricks-sdk-go/listing"
+)
+
+// List fetches a list of jobs.
+// If expand_tasks is true, the response will include the full list of tasks and job_clusters for each job.
+// This function handles pagination two ways: paginates all the jobs in the list and paginates all the tasks and job_clusters for each job.
+func (a *JobsAPI) List(ctx context.Context, request ListJobsRequest) listing.Iterator[BaseJob] {
+	// Fetch jobs with limited elements in top level arrays
+	jobsList := a.jobsImpl.List(ctx, request)
+
+	if !request.ExpandTasks {
+		return jobsList
+	}
+
+	return &expandedJobsIterator{
+		originalIterator: jobsList,
+		service:          a,
+	}
+}
+
+// expandedJobsIterator is a custom iterator that for each job calls job/get in order to fetch full list of tasks and job_clusters.
+type expandedJobsIterator struct {
+	originalIterator listing.Iterator[BaseJob]
+	service          *JobsAPI
+}
+
+func (e *expandedJobsIterator) HasNext(ctx context.Context) bool {
+	return e.originalIterator.HasNext(ctx)
+}
+
+func (e *expandedJobsIterator) Next(ctx context.Context) (BaseJob, error) {
+	job, err := e.originalIterator.Next(ctx)
+	if err != nil {
+		return BaseJob{}, err
+	}
+	if !job.HasMore {
+		return job, nil
+	}
+
+	// Fully fetch all top level arrays for the job
+	getJobRequest := GetJobRequest{JobId: job.JobId}
+	fullJob, err := e.service.Get(ctx, getJobRequest)
+	if err != nil {
+		return BaseJob{}, err
+	}
+
+	job.Settings.Tasks = fullJob.Settings.Tasks
+	job.Settings.JobClusters = fullJob.Settings.JobClusters
+	job.Settings.Parameters = fullJob.Settings.Parameters
+	job.Settings.Environments = fullJob.Settings.Environments
+	job.HasMore = false
+
+	return job, nil
+}
+
+// ListRuns fetches a list of job runs.
+// If expand_tasks is true, the response will include the full list of tasks and job_clusters for each run.
+// This function handles pagination two ways: paginates all the runs in the list and paginates all the tasks and job_clusters for each run.
+func (a *JobsAPI) ListRuns(ctx context.Context, request ListRunsRequest) listing.Iterator[BaseRun] {
+	runsList := a.jobsImpl.ListRuns(ctx, request)
+
+	if !request.ExpandTasks {
+		return runsList
+	}
+
+	return &expandedRunsIterator{
+		originalIterator: runsList,
+		service:          a,
+	}
+}
+
+// expandedRunsIterator is a custom iterator that for each run calls runs/get in order to fetch full list of tasks and job_clusters.
+type expandedRunsIterator struct {
+	originalIterator listing.Iterator[BaseRun]
+	service          *JobsAPI
+}
+
+func (e *expandedRunsIterator) HasNext(ctx context.Context) bool {
+	return e.originalIterator.HasNext(ctx)
+}
+
+func (e *expandedRunsIterator) Next(ctx context.Context) (BaseRun, error) {
+	run, err := e.originalIterator.Next(ctx)
+	if err != nil {
+		return BaseRun{}, err
+	}
+	if !run.HasMore {
+		return run, nil
+	}
+
+	// Fully fetch all top level arrays for the job run.
+	getRunRequest := GetRunRequest{RunId: run.RunId}
+	fullRun, err := e.service.GetRun(ctx, getRunRequest)
+	if err != nil {
+		return BaseRun{}, err
+	}
+
+	run.Tasks = fullRun.Tasks
+	run.JobClusters = fullRun.JobClusters
+	run.JobParameters = fullRun.JobParameters
+	run.RepairHistory = fullRun.RepairHistory
+	run.HasMore = false
+
+	return run, nil
+}
 
 // GetRun retrieves a run based on the provided request.
 // It handles pagination if the run contains multiple iterations or tasks.

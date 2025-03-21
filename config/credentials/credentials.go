@@ -6,25 +6,23 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// CredentialsProvider is an interface for providing credentials to the client.
-// Implementations of this interface should set the necessary headers on the request.
+// CredentialsProvider represents anything that can set credentials, such as
+// a token, in the headers of a request.
 type CredentialsProvider interface {
-	// SetHeaders sets the necessary headers on the request.
+	// SetHeaders sets the credential in the request's headers.
 	SetHeaders(r *http.Request) error
 }
 
-type credentialsProvider struct {
-	setHeaders func(r *http.Request) error
+type credentialsProvider func(r *http.Request) error
+
+func (c credentialsProvider) SetHeaders(r *http.Request) error {
+	return c(r)
 }
 
-func (c *credentialsProvider) SetHeaders(r *http.Request) error {
-	return c.setHeaders(r)
-}
-
-func NewCredentialsProvider(visitor func(r *http.Request) error) CredentialsProvider {
-	return &credentialsProvider{
-		setHeaders: visitor,
-	}
+// NewCredentialsProvider returns a new CredentialsProvider that uses the
+// provided function to set headers on the request.
+func NewCredentialsProvider(f func(r *http.Request) error) CredentialsProvider {
+	return credentialsProvider(f)
 }
 
 // OAuthCredentialsProvider is a specialized CredentialsProvider uses and provides an OAuth token.

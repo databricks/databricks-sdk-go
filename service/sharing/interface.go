@@ -4,8 +4,6 @@ package sharing
 
 import (
 	"context"
-
-	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
 // A data provider is an object representing the organization in the real world
@@ -41,6 +39,12 @@ type ProvidersService interface {
 	//
 	// Use ListAll() to get all ProviderInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error)
+
+	// List assets by provider share.
+	//
+	// Get arrays of assets associated with a specified provider's share. The
+	// caller is the recipient of the share.
+	ListProviderShareAssets(ctx context.Context, request ListProviderShareAssetsRequest) (*ListProviderShareAssetsResponse, error)
 
 	// List shares by Provider.
 	//
@@ -196,7 +200,7 @@ type SharesService interface {
 	//
 	// Gets the permissions for a data share from the metastore. The caller must
 	// be a metastore admin or the owner of the share.
-	SharePermissions(ctx context.Context, request SharePermissionsRequest) (*catalog.PermissionsList, error)
+	SharePermissions(ctx context.Context, request SharePermissionsRequest) (*GetSharePermissionsResponse, error)
 
 	// Update a share.
 	//
@@ -225,7 +229,8 @@ type SharesService interface {
 	// Updates the permissions for a data share in the metastore. The caller
 	// must be a metastore admin or an owner of the share.
 	//
-	// For new recipient grants, the user must also be the owner of the
-	// recipients. recipient revocations do not require additional privileges.
-	UpdatePermissions(ctx context.Context, request UpdateSharePermissions) error
+	// For new recipient grants, the user must also be the recipient owner or
+	// metastore admin. recipient revocations do not require additional
+	// privileges.
+	UpdatePermissions(ctx context.Context, request UpdateSharePermissions) (*UpdateSharePermissionsResponse, error)
 }

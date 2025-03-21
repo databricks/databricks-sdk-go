@@ -74,7 +74,7 @@ func (dpts *dataPlaneTokenSource) Token(ctx context.Context, endpoint string, au
 
 type tokenSource struct {
 	client      OAuthClient
-	cpts        auth.TokenSource
+	cpts        auth.TokenSource //
 	authDetails string
 }
 
