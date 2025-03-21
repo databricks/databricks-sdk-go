@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -341,16 +342,36 @@ func (c *ApiClient) recordRequestLog(
 	logger.Debugf(ctx, "%s", message)
 }
 
+type debugKeyType int
+
+const debugKey debugKeyType = 1
+
+func WithDebug(ctx context.Context, debug bool) context.Context {
+	return context.WithValue(ctx, debugKey, debug)
+}
+
+func IsDebug(ctx context.Context) bool {
+	debug, ok := ctx.Value(debugKey).(bool)
+	return ok && debug
+}
+
+func getDebugBody(ctx context.Context, body io.Reader) (io.Reader, []byte) {
+	if IsDebug(ctx) {
+		debugBytes, _ := io.ReadAll(body)
+		return strings.NewReader(string(debugBytes)), debugBytes
+	}
+	return body, []byte("<http.RoundTripper>")
+}
+
 // RoundTrip implements http.RoundTripper to integrate with golang.org/x/oauth2
 func (c *ApiClient) RoundTrip(request *http.Request) (*http.Response, error) {
 	ctx := request.Context()
 	requestURL := request.URL.String()
+	body, debugBytes := getDebugBody(ctx, request.Body)
 	resp, err := retries.Poll(ctx, c.config.RetryTimeout,
 		c.attempt(ctx, request.Method, requestURL, common.RequestBody{
-			Reader: request.Body,
-			// DO NOT DECODE BODY, because it may contain sensitive payload,
-			// like Azure Service Principal in a multipart/form-data body.
-			DebugBytes: []byte("<http.RoundTripper>"),
+			Reader:     body,
+			DebugBytes: debugBytes,
 		}, func(r *http.Request) error {
 			r.Header = request.Header
 			return nil
