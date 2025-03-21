@@ -156,11 +156,11 @@ func TestGetAPIError(t *testing.T) {
 			wantErrorIs: ErrResourceDoesNotExist,
 		},
 		{
-			name: "unexpected error",
-			resp: makeTestReponseWrapper(http.StatusInternalServerError, `unparsable error message`),
+			name: "unknown error message",
+			resp: makeTestReponseWrapper(http.StatusInternalServerError, "unknown error message"),
 			want: &APIError{
-				ErrorCode:  "INTERNAL_SERVER_ERROR",
-				Message:    "unable to parse response. This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\n```\nGET /api/2.0/myservice\n> * Host: \n<  500 Internal Server Error\n< unparsable error message\n```",
+				ErrorCode:  "UNKNOWN", // default error code
+				Message:    "unknown error message",
 				StatusCode: http.StatusInternalServerError,
 			},
 		},
