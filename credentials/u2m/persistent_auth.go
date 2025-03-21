@@ -108,15 +108,15 @@ func NewPersistentAuth(ctx context.Context, opts ...PersistentAuthOption) (*Pers
 	// this same client to fetch the OAuth endpoints. If the HTTP client is
 	// provided but the endpointSupplier is not, we construct a default
 	// ApiClient for use with BasicOAuthClient.
-	var apiClient *httpclient.ApiClient
+	apiClient := httpclient.NewApiClient(httpclient.ClientConfig{})
 	if p.client == nil {
-		apiClient = httpclient.NewApiClient(httpclient.ClientConfig{})
-		p.client = apiClient.ToHttpClient()
+		p.client = &http.Client{
+			Transport: apiClient,
+			// 30 seconds matches the default timeout of the ApiClient
+			Timeout: 30 * time.Second,
+		}
 	}
 	if p.endpointSupplier == nil {
-		if apiClient == nil {
-			apiClient = httpclient.NewApiClient(httpclient.ClientConfig{})
-		}
 		p.endpointSupplier = &BasicOAuthEndpointSupplier{
 			Client: apiClient,
 		}
