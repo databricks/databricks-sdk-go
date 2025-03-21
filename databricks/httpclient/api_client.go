@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/common"
+	"github.com/databricks/databricks-sdk-go/databricks/common/environment"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient/traceparent"
 	"github.com/databricks/databricks-sdk-go/databricks/httplog"
 	"github.com/databricks/databricks-sdk-go/databricks/log"
@@ -25,8 +26,10 @@ type ClientConfig struct {
 	AuthVisitor RequestVisitor
 	Visitors    []RequestVisitor
 
-	AccountID string
-	Host      string
+	AccountID       string
+	Host            string
+	Cloud           environment.Cloud
+	AzureResourceID string
 
 	RetryTimeout       time.Duration
 	HTTPTimeout        time.Duration
@@ -74,6 +77,24 @@ func (apic *ApiClient) IsAccountClient() bool {
 // AccountID returns the account ID for the client.
 func (apic *ApiClient) AccountID() string {
 	return apic.config.AccountID
+}
+
+// IsAzure returns if the client is configured for Azure Databricks.
+func (apic *ApiClient) IsAzure() bool {
+	if apic.config.AzureResourceID != "" {
+		return true
+	}
+	return apic.config.Cloud == environment.CloudAzure
+}
+
+// IsGcp returns if the client is configured for Databricks on Google Cloud.
+func (apic *ApiClient) IsGcp() bool {
+	return apic.config.Cloud == environment.CloudGCP
+}
+
+// IsAws returns if the client is configured for Databricks on AWS.
+func (apic *ApiClient) IsAws() bool {
+	return apic.config.Host != "" && !apic.IsAzure() && !apic.IsGcp()
 }
 
 const (
