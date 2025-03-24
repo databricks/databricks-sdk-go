@@ -26,10 +26,12 @@ type ClientConfig struct {
 	AuthVisitor RequestVisitor
 	Visitors    []RequestVisitor
 
-	AccountID       string
-	Host            string
-	Cloud           environment.Cloud
-	AzureResourceID string
+	AccountID string
+	Host      string
+	// TODO: Ideally we should not have knowledge of the cloud in the client config.
+	// But `getOrCreateRunningCluster` in `compute/v2/ext_utilities.go` uses this to determine the cloud.
+	// So, we are keeping it for now. But we should reconsider this approach before finalizing the SDK-Mod release.
+	Cloud environment.Cloud
 
 	RetryTimeout       time.Duration
 	HTTPTimeout        time.Duration
@@ -81,9 +83,6 @@ func (apic *ApiClient) AccountID() string {
 
 // IsAzure returns if the client is configured for Azure Databricks.
 func (apic *ApiClient) IsAzure() bool {
-	if apic.config.AzureResourceID != "" {
-		return true
-	}
 	return apic.config.Cloud == environment.CloudAzure
 }
 
@@ -94,7 +93,7 @@ func (apic *ApiClient) IsGcp() bool {
 
 // IsAws returns if the client is configured for Databricks on AWS.
 func (apic *ApiClient) IsAws() bool {
-	return apic.config.Host != "" && !apic.IsAzure() && !apic.IsGcp()
+	return apic.config.Cloud == environment.CloudAWS
 }
 
 const (

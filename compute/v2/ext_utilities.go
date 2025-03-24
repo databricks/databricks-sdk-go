@@ -141,6 +141,11 @@ func (a *ClustersClient) EnsureClusterIsRunning(ctx context.Context, clusterId s
 	})
 }
 
+// TODO: This method currently contains cloud-specific logic (AWS vs others) that requires
+// the client to be aware of the cloud provider. However, we don't want client to contain
+// information about the cloud. We're temporarily including this method, but need to
+// decide on a better approach for handling these mixins before the SDK-Mod release.
+//
 // GetOrCreateRunningCluster creates an autoterminating cluster if it doesn't exist
 func (a *ClustersClient) GetOrCreateRunningCluster(ctx context.Context, name string, custom ...CreateCluster) (c *ClusterDetails, err error) {
 	getOrCreateClusterMutex.Lock()

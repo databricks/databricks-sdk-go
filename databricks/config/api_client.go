@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/common/environment"
 	"github.com/databricks/databricks-sdk-go/databricks/config/credentials"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient"
 	"github.com/databricks/databricks-sdk-go/databricks/useragent"
@@ -26,12 +27,21 @@ func HTTPClientConfigFromConfig(cfg *Config) (httpclient.ClientConfig, error) {
 	if err != nil {
 		return httpclient.ClientConfig{}, err
 	}
-
+	var cloud environment.Cloud
+	switch {
+	case cfg.IsAzure():
+		cloud = environment.CloudAzure
+	case cfg.IsAws():
+		cloud = environment.CloudAWS
+	case cfg.IsGcp():
+		cloud = environment.CloudGCP
+	default:
+		return httpclient.ClientConfig{}, fmt.Errorf("unable to determine cloud from config")
+	}
 	return httpclient.ClientConfig{
 		AccountID:          cfg.AccountID,
 		Host:               cfg.Host,
-		AzureResourceID:    cfg.AzureResourceID,
-		Cloud:              cfg.Environment().Cloud,
+		Cloud:              cloud,
 		RetryTimeout:       time.Duration(cfg.RetryTimeoutSeconds) * time.Second,
 		HTTPTimeout:        time.Duration(cfg.HTTPTimeoutSeconds) * time.Second,
 		RateLimitPerSecond: cfg.RateLimitPerSecond,
