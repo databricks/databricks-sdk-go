@@ -133,7 +133,7 @@ type Config struct {
 	// Environment override to return when resolving the current environment.
 	DatabricksEnvironment *environment.DatabricksEnvironment
 
-	// OIDC and WIF audience for the token
+	// When using Workload Identity Federation, the audience to specify when fetching an ID token from the ID token supplier.
 	TokenAudience string `name:"audience" auth:"-"`
 
 	Loaders []Loader

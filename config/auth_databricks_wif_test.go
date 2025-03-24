@@ -26,16 +26,6 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 			wantErrPrefix: errPrefix("databricks-wif auth: not configured"),
 		},
 		{
-			desc: "missing token audience",
-			cfg: &Config{
-				Host:                       "http://host.com/test",
-				ClientID:                   "client-id",
-				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
-				ActionsIDTokenRequestToken: "token-1337",
-			},
-			wantErrPrefix: errPrefix("databricks-wif auth: not configured"),
-		},
-		{
 			desc: "missing host",
 			cfg: &Config{
 				ClientID:                   "client-id",
@@ -232,6 +222,41 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 				ActionsIDTokenRequestToken: "token-1337",
 				HTTPTransport: fixtures.MappingTransport{
 					"GET /test?version=1&audience=token-audience": {
+						Status: http.StatusOK,
+						ExpectedHeaders: map[string]string{
+							"Authorization": "Bearer token-1337",
+							"Accept":        "application/json",
+						},
+						Response: `{"value": "id-token-42"}`,
+					},
+					"POST /oidc/accounts/ac123/v1/token": {
+						Status: http.StatusOK,
+						ExpectedHeaders: map[string]string{
+							"Content-Type": "application/x-www-form-urlencoded",
+						},
+						Response: map[string]string{
+							"token_type":    "access-token",
+							"access_token":  "test-auth-token",
+							"refresh_token": "refresh",
+							"expires_on":    "0",
+						},
+					},
+				},
+			},
+			wantHeaders: map[string]string{
+				"Authorization": "access-token test-auth-token",
+			},
+		},
+		{
+			desc: "default token audience",
+			cfg: &Config{
+				ClientID:                   "client-id",
+				AccountID:                  "ac123",
+				Host:                       "https://accounts.databricks.com",
+				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
+				ActionsIDTokenRequestToken: "token-1337",
+				HTTPTransport: fixtures.MappingTransport{
+					"GET /test?version=1": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Authorization": "Bearer token-1337",

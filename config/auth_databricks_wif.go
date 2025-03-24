@@ -11,11 +11,16 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 )
 
+// DatabricksWIFCredentials uses a Token Supplier to get a JWT Token and exchanges
+// it for a Databricks Token.
+//
+// Supported suppliers:
+// - GitHub OIDC
 type DatabricksWIFCredentials struct{}
 
 // Configure implements CredentialsStrategy.
 func (d DatabricksWIFCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	if cfg.Host == "" || cfg.ClientID == "" || cfg.TokenAudience == "" {
+	if cfg.Host == "" || cfg.ClientID == "" {
 		return nil, nil
 	}
 
@@ -38,12 +43,12 @@ func (d DatabricksWIFCredentials) Configure(ctx context.Context, cfg *Config) (c
 	}
 
 	ts := &databricksWIFTokenSource{
-		ctx:               ctx,
-		jwtTokenSupplicer: &supplier,
-		audience:          cfg.TokenAudience,
-		clientId:          cfg.ClientID,
-		cfg:               cfg,
-		tokenEndpoint:     endpoints.TokenEndpoint,
+		ctx:             ctx,
+		idTokenSupplier: &supplier,
+		audience:        cfg.TokenAudience,
+		clientId:        cfg.ClientID,
+		cfg:             cfg,
+		tokenEndpoint:   endpoints.TokenEndpoint,
 	}
 
 	visitor := refreshableVisitor(ts)
@@ -56,16 +61,16 @@ func (d DatabricksWIFCredentials) Name() string {
 }
 
 type databricksWIFTokenSource struct {
-	ctx               context.Context
-	jwtTokenSupplicer *GithubOIDCTokenSupplier
-	tokenEndpoint     string
-	audience          string
-	clientId          string
-	cfg               *Config
+	ctx             context.Context
+	idTokenSupplier *GithubOIDCTokenSupplier
+	tokenEndpoint   string
+	audience        string
+	clientId        string
+	cfg             *Config
 }
 
 func (d *databricksWIFTokenSource) Token() (*oauth2.Token, error) {
-	token, err := d.jwtTokenSupplicer.GetOIDCToken(d.ctx, d.audience)
+	token, err := d.idTokenSupplier.GetOIDCToken(d.ctx, d.audience)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +92,7 @@ func (d *databricksWIFTokenSource) Token() (*oauth2.Token, error) {
 		},
 	}
 
-	logger.Debugf(d.ctx, "Getting tokken for client %s", d.clientId)
+	logger.Debugf(d.ctx, "Getting token for client %s", d.clientId)
 
 	return tsConfig.Token(d.ctx)
 }

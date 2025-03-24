@@ -12,6 +12,8 @@ import (
 )
 
 func TestUcAccWifAuth(t *testing.T) {
+	// This test cannot be run locally. It can only be run from GitHub Workflows.
+	_ = GetEnvOrSkipTest(t, "ACTIONS_ID_TOKEN_REQUEST_URL")
 	ctx, a := ucacctTest(t)
 
 	// Create SP with access to the workspace
@@ -74,6 +76,8 @@ func TestUcAccWifAuth(t *testing.T) {
 }
 
 func TestUcAccWifAuthWorkspace(t *testing.T) {
+	// This test cannot be run locally. It can only be run from GitHub Workflows.
+	_ = GetEnvOrSkipTest(t, "ACTIONS_ID_TOKEN_REQUEST_URL")
 	ctx, a := ucacctTest(t)
 
 	workspaceIdEnvVar := GetEnvOrSkipTest(t, "TEST_WORKSPACE_ID")
