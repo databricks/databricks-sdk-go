@@ -1,8 +1,11 @@
 package integration
 
 import (
+	"context"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/databricks/apierr"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/databricks/databricks-sdk-go/provisioning/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -209,102 +212,104 @@ func TestMwsAccVpcEndpoints(t *testing.T) {
 	assert.True(t, len(all) >= 1)
 }
 
-// TODO: Enable this test when LRO is implemented
-//
-// func TestMwsAccWorkspaces(t *testing.T) {
-// 	ctx, cfg := accountTest(t)
-// 	StorageAPI, err := provisioning.NewStorageClient(cfg)
-// 	require.NoError(t, err)
-// 	if !StorageAPI.Config.IsAws() {
-// 		t.SkipNow()
-// 	}
+func TestMwsAccWorkspaces(t *testing.T) {
+	ctx, cfg := accountTest(t)
+	StorageAPI, err := provisioning.NewStorageClient(cfg)
+	require.NoError(t, err)
+	if !cfg.IsAws() {
+		t.SkipNow()
+	}
 
-// 	storage, err := StorageAPI.Create(ctx, provisioning.CreateStorageConfigurationRequest{
-// 		StorageConfigurationName: RandomName("go-sdk-"),
-// 		RootBucketInfo: provisioning.RootBucketInfo{
-// 			BucketName: GetEnvOrSkipTest(t, "TEST_ROOT_BUCKET"),
-// 		},
-// 	})
-// 	require.NoError(t, err)
-// 	t.Cleanup(func() {
-// 		err := StorageAPI.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
-// 		require.NoError(t, err)
-// 	})
+	storage, err := StorageAPI.Create(ctx, provisioning.CreateStorageConfigurationRequest{
+		StorageConfigurationName: RandomName("go-sdk-"),
+		RootBucketInfo: provisioning.RootBucketInfo{
+			BucketName: GetEnvOrSkipTest(t, "TEST_ROOT_BUCKET"),
+		},
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		_, err := StorageAPI.DeleteByStorageConfigurationId(ctx, storage.StorageConfigurationId)
+		require.NoError(t, err)
+	})
 
-// 	// TODO: OpenAPI: Document retry protocol on AWS IAM registration errors
-// 	// See https://github.com/databricks/terraform-provider-databricks/issues/1424
-// 	CredentialsAPI, err := provisioning.NewCredentialsClient(cfg)
-// 	require.NoError(t, err)
-// 	role, err := CredentialsAPI.Create(ctx, provisioning.CreateCredentialRequest{
-// 		CredentialsName: RandomName("go-sdk-"),
-// 		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
-// 			StsRole: &provisioning.CreateCredentialStsRole{
-// 				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
-// 			},
-// 		},
-// 	})
-// 	require.NoError(t, err)
-// 	t.Cleanup(func() {
-// 		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
-// 			return CredentialsAPI.DeleteByCredentialsId(ctx, role.CredentialsId)
-// 		})
-// 		require.NoError(t, err)
-// 	})
+	// TODO: OpenAPI: Document retry protocol on AWS IAM registration errors
+	// See https://github.com/databricks/terraform-provider-databricks/issues/1424
+	CredentialsAPI, err := provisioning.NewCredentialsClient(cfg)
+	require.NoError(t, err)
+	role, err := CredentialsAPI.Create(ctx, provisioning.CreateCredentialRequest{
+		CredentialsName: RandomName("go-sdk-"),
+		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+			StsRole: &provisioning.CreateCredentialStsRole{
+				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
+			},
+		},
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
+			_, err := CredentialsAPI.DeleteByCredentialsId(ctx, role.CredentialsId)
+			return err
+		})
+		require.NoError(t, err)
+	})
 
-// 	updateRole, err := CredentialsAPI.Create(ctx, provisioning.CreateCredentialRequest{
-// 		CredentialsName: RandomName("go-sdk-"),
-// 		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
-// 			StsRole: &provisioning.CreateCredentialStsRole{
-// 				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
-// 			},
-// 		},
-// 	})
-// 	require.NoError(t, err)
-// 	t.Cleanup(func() {
-// 		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
-// 			return CredentialsAPI.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
-// 		})
-// 		require.NoError(t, err)
-// 	})
+	updateRole, err := CredentialsAPI.Create(ctx, provisioning.CreateCredentialRequest{
+		CredentialsName: RandomName("go-sdk-"),
+		AwsCredentials: provisioning.CreateCredentialAwsCredentials{
+			StsRole: &provisioning.CreateCredentialStsRole{
+				RoleArn: GetEnvOrSkipTest(t, "TEST_CROSSACCOUNT_ARN"),
+			},
+		},
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		err := retries.New[struct{}](retries.OnErrors(apierr.ErrResourceConflict)).Wait(ctx, func(ctx context.Context) error {
+			_, err := CredentialsAPI.DeleteByCredentialsId(ctx, updateRole.CredentialsId)
+			return err
+		})
+		require.NoError(t, err)
+	})
 
-// 	// TODO: Add DNS reachability utility
-// 	// Do not use CreateAndWait. If the workspaces is created but does not reach running state,
-// 	// the cleanup step won't be executed since the test will fail at the `require.NoError(t, err)` line.
-// 	WorkspacesAPI, err := provisioning.NewWorkspacesClient(cfg)
-// 	require.NoError(t, err)
-// 	waiter, err := WorkspacesAPI.Create(ctx, provisioning.CreateWorkspaceRequest{
-// 		WorkspaceName:          RandomName("go-sdk-"),
-// 		AwsRegion:              GetEnvOrSkipTest(t, "AWS_REGION"),
-// 		CredentialsId:          role.CredentialsId,
-// 		StorageConfigurationId: storage.StorageConfigurationId,
-// 	})
-// 	require.NoError(t, err)
-// 	t.Cleanup(func() {
-// 		err := WorkspacesAPI.DeleteByWorkspaceId(ctx, waiter.WorkspaceId)
-// 		require.NoError(t, err)
-// 	})
-// 	created, err := waiter.Get()
-// 	require.NoError(t, err)
+	// TODO: Add DNS reachability utility
+	// Do not use CreateAndWait. If the workspaces is created but does not reach running state,
+	// the cleanup step won't be executed since the test will fail at the `require.NoError(t, err)` line.
+	WorkspacesAPI, err := provisioning.NewWorkspacesClient(cfg)
+	require.NoError(t, err)
+	waiter, err := WorkspacesAPI.Create(ctx, provisioning.CreateWorkspaceRequest{
+		WorkspaceName:          RandomName("go-sdk-"),
+		AwsRegion:              GetEnvOrSkipTest(t, "AWS_REGION"),
+		CredentialsId:          role.CredentialsId,
+		StorageConfigurationId: storage.StorageConfigurationId,
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		_, err := WorkspacesAPI.DeleteByWorkspaceId(ctx, waiter.RawResponse.WorkspaceId)
+		require.NoError(t, err)
+	})
+	created, err := waiter.WaitUntilDone(ctx, nil)
+	require.NoError(t, err)
 
-// 	// this also takes a while
-// 	_, err = WorkspacesAPI.UpdateAndWait(ctx, provisioning.UpdateWorkspaceRequest{
-// 		WorkspaceId:   created.WorkspaceId,
-// 		CredentialsId: updateRole.CredentialsId,
-// 	})
-// 	require.NoError(t, err)
+	// this also takes a while
+	uw, err := WorkspacesAPI.Update(ctx, provisioning.UpdateWorkspaceRequest{
+		WorkspaceId:   created.WorkspaceId,
+		CredentialsId: updateRole.CredentialsId,
+	})
 
-// 	byId, err := WorkspacesAPI.GetByWorkspaceId(ctx, created.WorkspaceId)
-// 	require.NoError(t, err)
+	require.NoError(t, err)
+	_, err = uw.WaitUntilDone(ctx, nil)
+	require.NoError(t, err)
+	byId, err := WorkspacesAPI.GetByWorkspaceId(ctx, created.WorkspaceId)
+	require.NoError(t, err)
 
-// 	byName, err := WorkspacesAPI.GetByWorkspaceName(ctx, byId.WorkspaceName)
-// 	require.NoError(t, err)
-// 	assert.Equal(t, byId.WorkspaceId, byName.WorkspaceId)
+	byName, err := WorkspacesAPI.GetByWorkspaceName(ctx, byId.WorkspaceName)
+	require.NoError(t, err)
+	assert.Equal(t, byId.WorkspaceId, byName.WorkspaceId)
 
-// 	all, err := WorkspacesAPI.List(ctx)
-// 	require.NoError(t, err)
+	all, err := WorkspacesAPI.List(ctx)
+	require.NoError(t, err)
 
-// 	names, err := WorkspacesAPI.WorkspaceWorkspaceNameToWorkspaceIdMap(ctx)
-// 	require.NoError(t, err)
-// 	assert.Equal(t, len(names), len(all))
-// 	assert.Equal(t, byId.WorkspaceId, names[byId.WorkspaceName])
-// }
+	names, err := WorkspacesAPI.WorkspaceWorkspaceNameToWorkspaceIdMap(ctx)
+	require.NoError(t, err)
+	assert.Equal(t, len(names), len(all))
+	assert.Equal(t, byId.WorkspaceId, names[byId.WorkspaceName])
+}
