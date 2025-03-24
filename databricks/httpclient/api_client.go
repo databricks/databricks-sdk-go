@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/databricks/common"
+	"github.com/databricks/databricks-sdk-go/databricks/common/environment"
 	"github.com/databricks/databricks-sdk-go/databricks/httpclient/traceparent"
 	"github.com/databricks/databricks-sdk-go/databricks/httplog"
 	"github.com/databricks/databricks-sdk-go/databricks/log"
@@ -27,6 +28,10 @@ type ClientConfig struct {
 
 	AccountID string
 	Host      string
+	// TODO: Ideally we should not have knowledge of the cloud in the client config.
+	// But `getOrCreateRunningCluster` in `compute/v2/ext_utilities.go` uses this to determine the cloud.
+	// So, we are keeping it for now. But we should reconsider this approach before finalizing the SDK-Mod release.
+	Cloud environment.Cloud
 
 	RetryTimeout       time.Duration
 	HTTPTimeout        time.Duration
@@ -74,6 +79,21 @@ func (apic *ApiClient) IsAccountClient() bool {
 // AccountID returns the account ID for the client.
 func (apic *ApiClient) AccountID() string {
 	return apic.config.AccountID
+}
+
+// IsAzure returns if the client is configured for Azure Databricks.
+func (apic *ApiClient) IsAzure() bool {
+	return apic.config.Cloud == environment.CloudAzure
+}
+
+// IsGcp returns if the client is configured for Databricks on Google Cloud.
+func (apic *ApiClient) IsGcp() bool {
+	return apic.config.Cloud == environment.CloudGCP
+}
+
+// IsAws returns if the client is configured for Databricks on AWS.
+func (apic *ApiClient) IsAws() bool {
+	return apic.config.Cloud == environment.CloudAWS
 }
 
 const (
