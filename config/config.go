@@ -16,6 +16,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
+	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -449,4 +450,23 @@ func (c *Config) refreshTokenErrorMapper(ctx context.Context, resp common.Respon
 		message: err.Message,
 		err:     err,
 	}
+}
+
+// getOidcEndpoints returns the OAuth endpoints for the current configuration.
+func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+	c.EnsureResolved()
+	oauthClient := &u2m.BasicOAuthEndpointSupplier{
+		Client: c.refreshClient,
+	}
+	if c.IsAccountClient() {
+		return oauthClient.GetAccountOAuthEndpoints(ctx, c.Host, c.AccountID)
+	}
+	return oauthClient.GetWorkspaceOAuthEndpoints(ctx, c.Host)
+}
+
+func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
+	if c.IsAccountClient() {
+		return u2m.NewBasicAccountOAuthArgument(c.Host, c.AccountID)
+	}
+	return u2m.NewBasicWorkspaceOAuthArgument(c.Host)
 }
