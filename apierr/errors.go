@@ -7,13 +7,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"regexp"
 	"strings"
 
 	"github.com/databricks/databricks-sdk-go/common"
 	"github.com/databricks/databricks-sdk-go/logger"
-	"github.com/databricks/databricks-sdk-go/logger/httplog"
 )
 
 // Deprecated: Use [ErrorDetails] instead.
@@ -58,6 +56,16 @@ func IsMissing(err error) bool {
 	return errors.Is(err, ErrNotFound)
 }
 
+// IsMissing tells if it is missing resource.
+func (apiError *APIError) IsMissing() bool {
+	return errors.Is(apiError, ErrNotFound)
+}
+
+// IsTooManyRequests shows rate exceeded limits.
+func (apiError *APIError) IsTooManyRequests() bool {
+	return errors.Is(apiError, ErrTooManyRequests)
+}
+
 // GetErrorInfo returns all entries in the list of error details of type
 // `ErrorInfo`.
 //
@@ -75,16 +83,6 @@ func GetErrorInfo(err error) []ErrorDetail {
 		}
 	}
 	return filteredDetails
-}
-
-// IsMissing tells if it is missing resource.
-func (apiError *APIError) IsMissing() bool {
-	return errors.Is(apiError, ErrNotFound)
-}
-
-// IsTooManyRequests shows rate exceeded limits.
-func (apiError *APIError) IsTooManyRequests() bool {
-	return errors.Is(apiError, ErrTooManyRequests)
 }
 
 // IsRetriable returns true if error is retriable.
@@ -109,93 +107,61 @@ func (apiError *APIError) IsRetriable(ctx context.Context) bool {
 	return false
 }
 
-// NotFound returns properly formatted Not Found error.
-func NotFound(message string) *APIError {
-	return &APIError{
-		ErrorCode:  "NOT_FOUND",
-		StatusCode: 404,
-		Message:    message,
-	}
-}
-
-func ReadError(statusCode int, err error) *APIError {
-	return &APIError{
-		ErrorCode:  "IO_READ",
-		StatusCode: statusCode,
-		Message:    err.Error(),
-	}
-}
-
-func TooManyRequests() *APIError {
-	return &APIError{
-		ErrorCode:  "TOO_MANY_REQUESTS",
-		StatusCode: 429,
-		Message:    "Current request has to be retried",
-	}
-}
-
-func GenericIOError(ue *url.Error) *APIError {
-	return &APIError{
-		ErrorCode:  "IO_ERROR",
-		StatusCode: 523,
-		Message:    ue.Error(),
-	}
-}
-
-// GetAPIError inspects HTTP errors from the Databricks API for known transient
-// errors.
+// GetAPIError returns the API error from the response. If the response is not
+// an error, it returns nil.
 func GetAPIError(ctx context.Context, resp common.ResponseWrapper) error {
-	if resp.Response.StatusCode == 429 {
-		return TooManyRequests()
-	}
+	// Responses in the 2xx and 3xx ranges are not standard Databricks errors.
 	if resp.Response.StatusCode >= 400 {
-		// read in response body as it is actually an error
-		responseBodyBytes, err := io.ReadAll(resp.ReadCloser)
-		if err != nil {
-			return ReadError(resp.Response.StatusCode, err)
-		}
-		apiError := parseErrorFromResponse(ctx, resp.Response, resp.RequestBody.DebugBytes, responseBodyBytes)
+		apiError := parseErrorFromResponse(ctx, resp)
 		applyOverrides(ctx, apiError, resp.Response)
 		return apiError
 	}
-	// Attempts to access private link workspaces are redirected to the login page with a specific query parameter.
+
+	// Return an error if the response indicates that the request tried to
+	// access a private link workspace without proper access.
 	requestUrl := resp.Response.Request.URL
 	if isPrivateLinkRedirect(requestUrl) {
 		return privateLinkValidationError(requestUrl)
 	}
-	return nil
+
+	return nil // not an error
 }
 
-// errorParser attempts to parse the error from the response body. If successful,
-// it returns a non-nil *APIError. It returns nil if parsing fails or no error is found.
-type errorParser func(context.Context, *http.Response, []byte) *APIError
-
-// errorParsers is a list of errorParser functions that are tried in order to
-// parse an API error from a response body. Most errors should be parsable by
-// the standardErrorParser, but additional parsers can be added here for
-// specific error formats. The order of the parsers is not important, as the set
-// of errors that can be parsed by each parser should be disjoint.
-var errorParsers = []errorParser{
-	standardErrorParser,
-	stringErrorParser,
-	htmlErrorParser,
-}
-
-func parseErrorFromResponse(ctx context.Context, resp *http.Response, requestBody, responseBody []byte) *APIError {
-	if len(responseBody) == 0 {
+func parseErrorFromResponse(ctx context.Context, resp common.ResponseWrapper) *APIError {
+	errorBody, err := io.ReadAll(resp.ReadCloser)
+	if err != nil {
 		return &APIError{
-			Message:    http.StatusText(resp.StatusCode),
-			StatusCode: resp.StatusCode,
+			ErrorCode:  "IO_READ",
+			StatusCode: resp.Response.StatusCode,
+			Message:    err.Error(),
 		}
 	}
 
-	for _, parser := range errorParsers {
-		if apiError := parser(ctx, resp, responseBody); apiError != nil {
-			return apiError
+	if len(errorBody) == 0 {
+		return &APIError{
+			Message:    http.StatusText(resp.Response.StatusCode),
+			StatusCode: resp.Response.StatusCode,
 		}
 	}
 
-	return unknownAPIError(resp, requestBody, responseBody)
+	if err := standardErrorParser(ctx, resp.Response, errorBody); err != nil {
+		return err
+	}
+	if err := stringErrorParser(ctx, resp.Response, errorBody); err != nil {
+		return err
+	}
+	if err := htmlErrorParser(ctx, resp.Response, errorBody); err != nil {
+		return err
+	}
+
+	// Unknown error response typically come from API gateways, load balancers,
+	// and other middlewares. These responses are not expected to be standard
+	// Databricks API errors.
+	return &APIError{
+		ErrorCode:  "UNKNOWN",
+		StatusCode: resp.Response.StatusCode,
+		Message:    string(errorBody),
+	}
 }
 
 // standardErrorParser is the default error parser for Databricks API errors.
@@ -308,39 +274,4 @@ func htmlErrorParser(ctx context.Context, resp *http.Response, responseBody []by
 	}
 
 	return apiErr
-}
-
-// unknownAPIError is a fallback error parser for unexpected error formats.
-func unknownAPIError(resp *http.Response, requestBody, responseBody []byte) *APIError {
-	apiErr := &APIError{
-		StatusCode: resp.StatusCode,
-		Message:    "unable to parse response. " + MakeUnexpectedResponse(resp, requestBody, responseBody),
-	}
-
-	// Preserve status computation from htmlErrorParser in case of unknown error
-	statusParts := strings.SplitN(resp.Status, " ", 2)
-	if len(statusParts) < 2 {
-		apiErr.ErrorCode = "UNKNOWN"
-	} else {
-		apiErr.ErrorCode = strings.ReplaceAll(strings.ToUpper(strings.Trim(statusParts[1], " .")), " ", "_")
-	}
-
-	return apiErr
-}
-
-func MakeUnexpectedResponse(resp *http.Response, requestBody, responseBody []byte) string {
-	var req *http.Request
-	if resp != nil {
-		req = resp.Request
-	}
-	rts := httplog.RoundTripStringer{
-		Request:                  req,
-		Response:                 resp,
-		RequestBody:              requestBody,
-		ResponseBody:             responseBody,
-		DebugHeaders:             true,
-		DebugTruncateBytes:       10 * 1024,
-		DebugAuthorizationHeader: false,
-	}
-	return fmt.Sprintf("This is likely a bug in the Databricks SDK for Go or the underlying REST API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:\n```\n%s\n```", rts.String())
 }
