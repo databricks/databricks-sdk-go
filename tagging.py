@@ -333,9 +333,9 @@ def is_tag_applied(tag: TagInfo) -> bool:
     """
     try:
         # Check if the specific tag exists
-        result = subprocess.check_output(
-            ['git', 'tag', '--list', tag.tag_name()], stderr=subprocess.PIPE, text=True)
-        return result.strip() == tag.tag_name()
+        result = subprocess.run(
+            ['git', 'tag', '--list', tag.tag_name()], stderr=subprocess.PIPE, capture_output=True, text=True, shell=False, check=True)
+        return result.stdout.strip() == tag.tag_name()
     except subprocess.CalledProcessError as e:
         # Raise a exception for git command errors
         raise Exception(f"Git command failed: {e.stderr.strip() or e}") from e
@@ -404,7 +404,7 @@ def reset_repository(hash: Optional[str] = None) -> None:
     :param hash: The commit hash to reset to. If None, it resets to HEAD.
     """
     # Fetch the latest changes from the remote repository
-    subprocess.run(['git', 'fetch'])
+    subprocess.run(['git', 'fetch'], shell=False, check=True)
 
     # Determine the commit hash (default to origin/main if none is provided)
     commit_hash = hash or 'origin/main'
@@ -416,7 +416,7 @@ def reset_repository(hash: Optional[str] = None) -> None:
     command = ['git', 'reset', '--hard', commit_hash]
 
     # Execute the git reset command
-    subprocess.run(command, check=True)
+    subprocess.run(command, check=True, shell=False)
 
 
 def retry_function(func: Callable[[], List[TagInfo]],
@@ -470,11 +470,11 @@ def push_tags(tag_infos: List[TagInfo]) -> None:
 
 def run_command(command: List[str]) -> str:
     """
-    Runs a command and returns the output
+    Runs a command and returns the output safely without shell interpretation
     """
-    output = subprocess.check_output(command)
     print(f'Running command: {" ".join(command)}')
-    return output.decode()
+    result = subprocess.run(command, capture_output=True, text=True, shell=False, check=True)
+    return result.stdout
 
 
 def pull_last_release_commit() -> None:
@@ -482,9 +482,9 @@ def pull_last_release_commit() -> None:
     Reset the repository to the last release. 
     Uses commit for last change to .release_metadata.json, since it's only updated on releases.
     """
-    commit_hash = subprocess.check_output(
+    commit_hash = subprocess.run(
         ['git', 'log', '-n', '1', '--format=%H', '--', '.release_metadata.json'],
-        text=True).strip()
+        text=True, shell=False, capture_output=True, check=True).stdout.strip()
 
     # If no commit is found, raise an exception
     if not commit_hash:
@@ -559,9 +559,10 @@ def validate_git_root():
     """
     Validate that the script is run from the root of the repository.
     """
-    repo_root = subprocess.check_output(["git", "rev-parse",
-                                         "--show-toplevel"]).strip().decode("utf-8")
-    current_dir = subprocess.check_output(["pwd"]).strip().decode("utf-8")
+    repo_root = subprocess.run(["git", "rev-parse", "--show-toplevel"], 
+                              capture_output=True, shell=False, check=True).stdout.strip().decode("utf-8")
+    current_dir = subprocess.run(["pwd"], 
+                               capture_output=True, shell=False, check=True).stdout.strip().decode("utf-8")
     if repo_root != current_dir:
         raise Exception("Please run this script from the root of the repository.")
 
@@ -570,3 +571,4 @@ if __name__ == "__main__":
     validate_git_root()
     init_github()
     process()
+
