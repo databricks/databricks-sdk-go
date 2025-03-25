@@ -1,11 +1,14 @@
 package integration
 
 import (
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/compute/v2"
 	"github.com/databricks/databricks-sdk-go/databricks"
 	"github.com/databricks/databricks-sdk-go/databricks/config"
+	"github.com/databricks/databricks-sdk-go/databricks/retries"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -20,43 +23,39 @@ import (
 // 	return clusterId
 // }
 
-// TODO: Enable this test when LRO is implemented
-//
-// func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
-// 	ctx := workspaceTest(t)
+func TestAccClustersCreateFailsWithTimeoutNoTranspile(t *testing.T) {
+	ctx := workspaceTest(t)
 
-// 	// Fetch list of spark runtime versions
-// 	ClustersAPI, err := compute.NewClustersClient(nil)
-// 	sparkVersions, err := ClustersAPI.SparkVersions(ctx)
-// 	require.NoError(t, err)
+	// Fetch list of spark runtime versions
+	ClustersAPI, err := compute.NewClustersClient(nil)
+	require.NoError(t, err)
+	sparkVersions, err := ClustersAPI.SparkVersions(ctx)
+	require.NoError(t, err)
 
-// 	// Select the latest LTS version without Photon
-// 	latest, err := sparkVersions.Select(compute.SparkVersionRequest{
-// 		Latest:          true,
-// 		LongTermSupport: true,
-// 	})
-// 	require.NoError(t, err)
+	// Select the latest LTS version without Photon
+	latest, err := sparkVersions.Select(compute.SparkVersionRequest{
+		Latest:          true,
+		LongTermSupport: true,
+	})
+	require.NoError(t, err)
 
-// 	var clusterId string
+	// Create a cluster with unreasonably low timeout
+	waiter, err := ClustersAPI.Create(ctx, compute.CreateCluster{
+		ClusterName:            RandomName(t.Name()),
+		SparkVersion:           latest,
+		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
+		AutoterminationMinutes: 10,
+		NumWorkers:             1,
+	})
+	require.NoError(t, err)
+	_, err = waiter.WaitUntilDone(ctx, &retries.WaitUntilDoneOptions{
+		Timeout: 15 * time.Second,
+	})
+	assert.True(t, strings.HasPrefix(err.Error(), "timed out: "))
 
-// 	// Create a cluster with unreasonably low timeout
-// 	_, err = ClustersAPI.CreateAndWait(ctx, compute.CreateCluster{
-// 		ClusterName:            RandomName(t.Name()),
-// 		SparkVersion:           latest,
-// 		InstancePoolId:         GetEnvOrSkipTest(t, "TEST_INSTANCE_POOL_ID"),
-// 		AutoterminationMinutes: 10,
-// 		NumWorkers:             1,
-// 	}, retries.Timeout[compute.ClusterDetails](15*time.Second),
-// 		func(i *retries.Info[compute.ClusterDetails]) {
-// 			if i.Info == nil {
-// 				return
-// 			}
-// 			clusterId = i.Info.ClusterId
-// 		})
-// 	assert.True(t, strings.HasPrefix(err.Error(), "timed out: "))
-// 	_, err = ClustersAPI.DeleteByClusterIdAndWait(ctx, clusterId)
-// 	require.NoError(t, err)
-// }
+	_, err = ClustersAPI.DeleteByClusterId(ctx, waiter.RawResponse.ClusterId)
+	require.NoError(t, err)
+}
 
 func TestAccClustersGetCorrectErrorMessageNoTranspile(t *testing.T) {
 	ctx := workspaceTest(t)
