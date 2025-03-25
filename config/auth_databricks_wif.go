@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
@@ -28,8 +29,15 @@ func (d DatabricksWIFCredentials) Configure(ctx context.Context, cfg *Config) (c
 		cfg: cfg,
 	}
 
+	endpoints, err := cfg.getOidcEndpoints(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	audience := d.getAudience(cfg, endpoints)
+
 	// If no supplier can get an IdToken, skip this CredentialsStrategy
-	idToken, err := supplier.GetOIDCToken(ctx, cfg.TokenAudience)
+	idToken, err := supplier.GetOIDCToken(ctx, audience)
 	if err != nil {
 		return nil, err
 	}
@@ -37,15 +45,10 @@ func (d DatabricksWIFCredentials) Configure(ctx context.Context, cfg *Config) (c
 		return nil, nil
 	}
 
-	endpoints, err := oidcEndpoints(ctx, cfg)
-	if err != nil {
-		return nil, err
-	}
-
 	ts := &databricksWIFTokenSource{
 		ctx:             ctx,
 		idTokenSupplier: &supplier,
-		audience:        cfg.TokenAudience,
+		audience:        audience,
 		clientId:        cfg.ClientID,
 		cfg:             cfg,
 		tokenEndpoint:   endpoints.TokenEndpoint,
@@ -53,6 +56,16 @@ func (d DatabricksWIFCredentials) Configure(ctx context.Context, cfg *Config) (c
 
 	visitor := refreshableVisitor(ts)
 	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
+}
+
+func (d DatabricksWIFCredentials) getAudience(cfg *Config, endpoints *u2m.OAuthAuthorizationServer) string {
+	if cfg.TokenAudience != "" {
+		return cfg.TokenAudience
+	}
+	if cfg.IsAccountClient() {
+		return cfg.AccountID
+	}
+	return endpoints.TokenEndpoint
 }
 
 // Name implements CredentialsStrategy.

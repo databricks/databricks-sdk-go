@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/databricks/databricks-sdk-go/common/environment"
+	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
 )
@@ -54,7 +55,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 				ActionsIDTokenRequestURL: "http://endpoint.com/test?version=1",
 				HTTPTransport: fixtures.MappingTransport{
 					"GET /oidc/.well-known/oauth-authorization-server": {
-						Response: oauthAuthorizationServer{
+						Response: u2m.OAuthAuthorizationServer{
 							AuthorizationEndpoint: "https://host.com/auth",
 							TokenEndpoint:         "https://host.com/oidc/v1/token",
 						},
@@ -72,7 +73,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 				ActionsIDTokenRequestToken: "token-1337",
 				HTTPTransport: fixtures.MappingTransport{
 					"GET /oidc/.well-known/oauth-authorization-server": {
-						Response: oauthAuthorizationServer{
+						Response: u2m.OAuthAuthorizationServer{
 							AuthorizationEndpoint: "https://host.com/auth",
 							TokenEndpoint:         "https://host.com/oidc/v1/token",
 						},
@@ -90,6 +91,12 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
 				ActionsIDTokenRequestToken: "token-1337",
 				HTTPTransport: fixtures.MappingTransport{
+					"GET /oidc/.well-known/oauth-authorization-server": {
+						Response: u2m.OAuthAuthorizationServer{
+							AuthorizationEndpoint: "https://host.com/auth",
+							TokenEndpoint:         "https://host.com/oidc/v1/token",
+						},
+					},
 					"GET /test?version=1&audience=token-audience": {
 						Status: http.StatusInternalServerError,
 						ExpectedHeaders: map[string]string{
@@ -111,7 +118,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 				ActionsIDTokenRequestToken: "token-1337",
 				HTTPTransport: fixtures.MappingTransport{
 					"GET /oidc/.well-known/oauth-authorization-server": {
-						Response: oauthAuthorizationServer{
+						Response: u2m.OAuthAuthorizationServer{
 							AuthorizationEndpoint: "https://host.com/auth",
 							TokenEndpoint:         "https://host.com/oidc/v1/token",
 						},
@@ -144,7 +151,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 				ActionsIDTokenRequestToken: "token-1337",
 				HTTPTransport: fixtures.MappingTransport{
 					"GET /oidc/.well-known/oauth-authorization-server": {
-						Response: oauthAuthorizationServer{
+						Response: u2m.OAuthAuthorizationServer{
 							AuthorizationEndpoint: "https://host.com/auth",
 							TokenEndpoint:         "https://host.com/oidc/v1/token",
 						},
@@ -180,7 +187,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 				ActionsIDTokenRequestToken: "token-1337",
 				HTTPTransport: fixtures.MappingTransport{
 					"GET /oidc/.well-known/oauth-authorization-server": {
-						Response: oauthAuthorizationServer{
+						Response: u2m.OAuthAuthorizationServer{
 							AuthorizationEndpoint: "https://host.com/auth",
 							TokenEndpoint:         "https://host.com/oidc/v1/token",
 						},
@@ -248,7 +255,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 			},
 		},
 		{
-			desc: "default token audience",
+			desc: "default token audience account",
 			cfg: &Config{
 				ClientID:                   "client-id",
 				AccountID:                  "ac123",
@@ -256,7 +263,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
 				ActionsIDTokenRequestToken: "token-1337",
 				HTTPTransport: fixtures.MappingTransport{
-					"GET /test?version=1": {
+					"GET /test?version=1&audience=ac123": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Authorization": "Bearer token-1337",
@@ -265,6 +272,46 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 						Response: `{"value": "id-token-42"}`,
 					},
 					"POST /oidc/accounts/ac123/v1/token": {
+						Status: http.StatusOK,
+						ExpectedHeaders: map[string]string{
+							"Content-Type": "application/x-www-form-urlencoded",
+						},
+						Response: map[string]string{
+							"token_type":    "access-token",
+							"access_token":  "test-auth-token",
+							"refresh_token": "refresh",
+							"expires_on":    "0",
+						},
+					},
+				},
+			},
+			wantHeaders: map[string]string{
+				"Authorization": "access-token test-auth-token",
+			},
+		},
+		{
+			desc: "default token audience workspace",
+			cfg: &Config{
+				ClientID:                   "client-id",
+				Host:                       "https://host.com",
+				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
+				ActionsIDTokenRequestToken: "token-1337",
+				HTTPTransport: fixtures.MappingTransport{
+					"GET /oidc/.well-known/oauth-authorization-server": {
+						Response: u2m.OAuthAuthorizationServer{
+							AuthorizationEndpoint: "https://host.com/auth",
+							TokenEndpoint:         "https://host.com/oidc/v1/token",
+						},
+					},
+					"GET /test?version=1&audience=https://host.com/oidc/v1/token": {
+						Status: http.StatusOK,
+						ExpectedHeaders: map[string]string{
+							"Authorization": "Bearer token-1337",
+							"Accept":        "application/json",
+						},
+						Response: `{"value": "id-token-42"}`,
+					},
+					"POST /oidc/v1/token": {
 						Status: http.StatusOK,
 						ExpectedHeaders: map[string]string{
 							"Content-Type": "application/x-www-form-urlencoded",
