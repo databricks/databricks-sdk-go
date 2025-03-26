@@ -37,6 +37,8 @@ type CreatePipeline struct {
 	DryRun bool `json:"dry_run,omitempty"`
 	// Pipeline product edition.
 	Edition string `json:"edition,omitempty"`
+	// Event log configuration for this pipeline
+	EventLog *EventLogSpec `json:"event_log,omitempty"`
 	// Filters on which Pipeline packages to include in the deployed graph.
 	Filters *Filters `json:"filters,omitempty"`
 	// The definition of a gateway pipeline to support change data capture.
@@ -44,7 +46,7 @@ type CreatePipeline struct {
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
-	// be used with the 'libraries', 'target' or 'catalog' settings.
+	// be used with the 'libraries', 'schema', 'target', or 'catalog' settings.
 	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
@@ -64,16 +66,15 @@ type CreatePipeline struct {
 	// are specified, an error is thrown.
 	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
-	// The presence of this field implies that the pipeline is in direct
-	// publishing mode.
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
-	// Target schema (database) to add tables in this pipeline to. If not
-	// specified, no data is published to the Hive metastore or Unity Catalog.
-	// To publish to Unity Catalog, also specify `catalog`.
+	// Target schema (database) to add tables in this pipeline to. Exactly one
+	// of `schema` or `target` must be specified. To publish to Unity Catalog,
+	// also specify `catalog`. This legacy field is deprecated for pipeline
+	// creation in favor of the `schema` field.
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
@@ -241,6 +242,8 @@ type EditPipeline struct {
 	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
 	Edition string `json:"edition,omitempty"`
+	// Event log configuration for this pipeline
+	EventLog *EventLogSpec `json:"event_log,omitempty"`
 	// If present, the last-modified time of the pipeline settings before the
 	// edit. If the settings were modified after that time, then the request
 	// will fail with a conflict.
@@ -252,7 +255,7 @@ type EditPipeline struct {
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
-	// be used with the 'libraries', 'target' or 'catalog' settings.
+	// be used with the 'libraries', 'schema', 'target', or 'catalog' settings.
 	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
@@ -274,16 +277,15 @@ type EditPipeline struct {
 	// are specified, an error is thrown.
 	RunAs *RunAs `json:"run_as,omitempty"`
 	// The default schema (database) where tables are read from or published to.
-	// The presence of this field implies that the pipeline is in direct
-	// publishing mode.
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
-	// Target schema (database) to add tables in this pipeline to. If not
-	// specified, no data is published to the Hive metastore or Unity Catalog.
-	// To publish to Unity Catalog, also specify `catalog`.
+	// Target schema (database) to add tables in this pipeline to. Exactly one
+	// of `schema` or `target` must be specified. To publish to Unity Catalog,
+	// also specify `catalog`. This legacy field is deprecated for pipeline
+	// creation in favor of the `schema` field.
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`
@@ -349,6 +351,26 @@ func (f *EventLevel) Set(v string) error {
 // Type always returns EventLevel to satisfy [pflag.Value] interface
 func (f *EventLevel) Type() string {
 	return "EventLevel"
+}
+
+// Configurable event log parameters.
+type EventLogSpec struct {
+	// The UC catalog the event log is published under.
+	Catalog string `json:"catalog,omitempty"`
+	// The name the event log is published to in UC.
+	Name string `json:"name,omitempty"`
+	// The UC schema the event log is published under.
+	Schema string `json:"schema,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EventLogSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EventLogSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type FileLibrary struct {
@@ -1187,6 +1209,8 @@ type PipelineSpec struct {
 	Development bool `json:"development,omitempty"`
 	// Pipeline product edition.
 	Edition string `json:"edition,omitempty"`
+	// Event log configuration for this pipeline
+	EventLog *EventLogSpec `json:"event_log,omitempty"`
 	// Filters on which Pipeline packages to include in the deployed graph.
 	Filters *Filters `json:"filters,omitempty"`
 	// The definition of a gateway pipeline to support change data capture.
@@ -1194,7 +1218,7 @@ type PipelineSpec struct {
 	// Unique identifier for this pipeline.
 	Id string `json:"id,omitempty"`
 	// The configuration for a managed ingestion pipeline. These settings cannot
-	// be used with the 'libraries', 'target' or 'catalog' settings.
+	// be used with the 'libraries', 'schema', 'target', or 'catalog' settings.
 	IngestionDefinition *IngestionPipelineDefinition `json:"ingestion_definition,omitempty"`
 	// Libraries or code needed by this deployment.
 	Libraries []PipelineLibrary `json:"libraries,omitempty"`
@@ -1207,16 +1231,15 @@ type PipelineSpec struct {
 	// Restart window of this pipeline.
 	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
 	// The default schema (database) where tables are read from or published to.
-	// The presence of this field implies that the pipeline is in direct
-	// publishing mode.
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
-	// Target schema (database) to add tables in this pipeline to. If not
-	// specified, no data is published to the Hive metastore or Unity Catalog.
-	// To publish to Unity Catalog, also specify `catalog`.
+	// Target schema (database) to add tables in this pipeline to. Exactly one
+	// of `schema` or `target` must be specified. To publish to Unity Catalog,
+	// also specify `catalog`. This legacy field is deprecated for pipeline
+	// creation in favor of the `schema` field.
 	Target string `json:"target,omitempty"`
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
 	Trigger *PipelineTrigger `json:"trigger,omitempty"`

@@ -33,6 +33,10 @@ func (s Ai21LabsConfig) MarshalJSON() ([]byte, error) {
 }
 
 type AiGatewayConfig struct {
+	// Configuration for traffic fallback which auto fallbacks to other served
+	// entities if the request to a served entity fails with certain error
+	// codes, to increase availability.
+	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
 	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
@@ -319,6 +323,27 @@ func (s AnthropicConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ApiKeyAuth struct {
+	// The name of the API key parameter used for authentication.
+	Key string `json:"key"`
+	// The Databricks secret key reference for an API Key. If you prefer to
+	// paste your token directly, see `value_plaintext`.
+	Value string `json:"value,omitempty"`
+	// The API Key provided as a plaintext string. If you prefer to reference
+	// your token using Databricks Secrets, see `value`.
+	ValuePlaintext string `json:"value_plaintext,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ApiKeyAuth) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ApiKeyAuth) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AutoCaptureConfigInput struct {
 	// The name of the catalog in Unity Catalog. NOTE: On update, you cannot
 	// change the catalog name if the inference table is already enabled.
@@ -371,6 +396,25 @@ func (s AutoCaptureConfigOutput) MarshalJSON() ([]byte, error) {
 
 type AutoCaptureState struct {
 	PayloadTable *PayloadTable `json:"payload_table,omitempty"`
+}
+
+type BearerTokenAuth struct {
+	// The Databricks secret key reference for a token. If you prefer to paste
+	// your token directly, see `token_plaintext`.
+	Token string `json:"token,omitempty"`
+	// The token provided as a plaintext string. If you prefer to reference your
+	// token using Databricks Secrets, see `token`.
+	TokenPlaintext string `json:"token_plaintext,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *BearerTokenAuth) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s BearerTokenAuth) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get build logs for a served model
@@ -492,6 +536,18 @@ func (s *CreateServingEndpoint) UnmarshalJSON(b []byte) error {
 
 func (s CreateServingEndpoint) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Configs needed to create a custom provider model route.
+type CustomProviderConfig struct {
+	// This is a field to provide API key authentication for the custom provider
+	// API. You can only specify one authentication method.
+	ApiKeyAuth *ApiKeyAuth `json:"api_key_auth,omitempty"`
+	// This is a field to provide bearer token authentication for the custom
+	// provider API. You can only specify one authentication method.
+	BearerTokenAuth *BearerTokenAuth `json:"bearer_token_auth,omitempty"`
+	// This is a field to provide the URL of the custom provider API.
+	CustomProviderUrl string `json:"custom_provider_url"`
 }
 
 // Details necessary to query this object's API through the DataPlane APIs.
@@ -862,6 +918,8 @@ type ExternalModel struct {
 	AnthropicConfig *AnthropicConfig `json:"anthropic_config,omitempty"`
 	// Cohere Config. Only required if the provider is 'cohere'.
 	CohereConfig *CohereConfig `json:"cohere_config,omitempty"`
+	// Custom Provider Config. Only required if the provider is 'custom'.
+	CustomProviderConfig *CustomProviderConfig `json:"custom_provider_config,omitempty"`
 	// Databricks Model Serving Config. Only required if the provider is
 	// 'databricks-model-serving'.
 	DatabricksModelServingConfig *DatabricksModelServingConfig `json:"databricks_model_serving_config,omitempty"`
@@ -893,6 +951,8 @@ const ExternalModelProviderAnthropic ExternalModelProvider = `anthropic`
 
 const ExternalModelProviderCohere ExternalModelProvider = `cohere`
 
+const ExternalModelProviderCustom ExternalModelProvider = `custom`
+
 const ExternalModelProviderDatabricksModelServing ExternalModelProvider = `databricks-model-serving`
 
 const ExternalModelProviderGoogleCloudVertexAi ExternalModelProvider = `google-cloud-vertex-ai`
@@ -909,11 +969,11 @@ func (f *ExternalModelProvider) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ExternalModelProvider) Set(v string) error {
 	switch v {
-	case `ai21labs`, `amazon-bedrock`, `anthropic`, `cohere`, `databricks-model-serving`, `google-cloud-vertex-ai`, `openai`, `palm`:
+	case `ai21labs`, `amazon-bedrock`, `anthropic`, `cohere`, `custom`, `databricks-model-serving`, `google-cloud-vertex-ai`, `openai`, `palm`:
 		*f = ExternalModelProvider(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ai21labs", "amazon-bedrock", "anthropic", "cohere", "databricks-model-serving", "google-cloud-vertex-ai", "openai", "palm"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ai21labs", "amazon-bedrock", "anthropic", "cohere", "custom", "databricks-model-serving", "google-cloud-vertex-ai", "openai", "palm"`, v)
 	}
 }
 
@@ -939,6 +999,16 @@ func (s *ExternalModelUsageElement) UnmarshalJSON(b []byte) error {
 
 func (s ExternalModelUsageElement) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type FallbackConfig struct {
+	// Whether to enable traffic fallback. When a served entity in the serving
+	// endpoint returns specific error codes (e.g. 500), the request will
+	// automatically be round-robin attempted with other served entities in the
+	// same endpoint, following the order of served entity list, until a
+	// successful response is returned. If all attempts fail, return the last
+	// response with the error code.
+	Enabled bool `json:"enabled"`
 }
 
 // All fields are not sensitive as they are hard-coded in the system and made
@@ -1183,6 +1253,10 @@ func (s PayloadTable) MarshalJSON() ([]byte, error) {
 }
 
 type PutAiGatewayRequest struct {
+	// Configuration for traffic fallback which auto fallbacks to other served
+	// entities if the request to a served entity fails with certain error
+	// codes, to increase availability.
+	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
 	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
@@ -1202,6 +1276,10 @@ type PutAiGatewayRequest struct {
 }
 
 type PutAiGatewayResponse struct {
+	// Configuration for traffic fallback which auto fallbacks to other served
+	// entities if the request to a served entity fails with certain error
+	// codes, to increase availability.
+	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
 	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
@@ -1691,6 +1769,8 @@ func (f *ServedModelInputWorkloadSize) Type() string {
 	return "ServedModelInputWorkloadSize"
 }
 
+// Please keep this in sync with with workload types in
+// InferenceEndpointEntities.scala
 type ServedModelInputWorkloadType string
 
 const ServedModelInputWorkloadTypeCpu ServedModelInputWorkloadType = `CPU`
@@ -2103,6 +2183,8 @@ type ServingEndpointPermissionsRequest struct {
 	ServingEndpointId string `json:"-" url:"-"`
 }
 
+// Please keep this in sync with with workload types in
+// InferenceEndpointEntities.scala
 type ServingModelWorkloadType string
 
 const ServingModelWorkloadTypeCpu ServingModelWorkloadType = `CPU`

@@ -323,27 +323,17 @@ type CreateForecastingExperimentRequest struct {
 	// Name of the column in the input training table used to customize the
 	// weight for each time series to calculate weighted metrics.
 	CustomWeightsColumn string `json:"custom_weights_column,omitempty"`
-	// The quantity of the input data granularity. Together with
-	// data_granularity_unit field, this defines the time interval between
-	// consecutive rows in the time series data. For now, only 1 second,
-	// 1/5/10/15/30 minutes, 1 hour, 1 day, 1 week, 1 month, 1 quarter, 1 year
-	// are supported.
-	DataGranularityQuantity int64 `json:"data_granularity_quantity,omitempty"`
-	// The time unit of the input data granularity. Together with
-	// data_granularity_quantity field, this defines the time interval between
-	// consecutive rows in the time series data. Possible values: * 'W' (weeks)
-	// * 'D' / 'days' / 'day' * 'hours' / 'hour' / 'hr' / 'h' * 'm' / 'minute' /
-	// 'min' / 'minutes' / 'T' * 'S' / 'seconds' / 'sec' / 'second' * 'M' /
-	// 'month' / 'months' * 'Q' / 'quarter' / 'quarters' * 'Y' / 'year' /
-	// 'years'
-	DataGranularityUnit string `json:"data_granularity_unit"`
 	// The path to the created experiment. This is the path where the experiment
 	// will be stored in the workspace.
 	ExperimentPath string `json:"experiment_path,omitempty"`
+	// The granularity of the forecast. This defines the time interval between
+	// consecutive rows in the time series data. Possible values: '1 second', '1
+	// minute', '5 minutes', '10 minutes', '15 minutes', '30 minutes', 'Hourly',
+	// 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'.
+	ForecastGranularity string `json:"forecast_granularity"`
 	// The number of time steps into the future for which predictions should be
-	// made. This value represents a multiple of data_granularity_unit and
-	// data_granularity_quantity determining how far ahead the model will
-	// forecast.
+	// made. This value represents a multiple of forecast_granularity
+	// determining how far ahead the model will forecast.
 	ForecastHorizon int64 `json:"forecast_horizon"`
 	// Region code(s) to consider when automatically adding holiday features.
 	// When empty, no holiday features are added. Only supports 1 holiday region

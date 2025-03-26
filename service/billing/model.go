@@ -260,7 +260,8 @@ type BudgetPolicy struct {
 	// unique.
 	PolicyId string `json:"policy_id,omitempty"`
 	// The name of the policy. - Must be unique among active policies. - Can
-	// contain only characters from the ISO 8859-1 (latin1) set.
+	// contain only characters from the ISO 8859-1 (latin1) set. - Can't start
+	// with reserved keywords such as `databricks:default-policy`.
 	PolicyName string `json:"policy_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

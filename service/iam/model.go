@@ -129,25 +129,25 @@ type ConsistencyToken struct {
 	Value string `json:"value"`
 }
 
-// Delete a group
+// Delete a group.
 type DeleteAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a service principal
+// Delete a service principal.
 type DeleteAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a user
+// Delete a user.
 type DeleteAccountUserRequest struct {
 	// Unique ID for a user in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a group
+// Delete a group.
 type DeleteGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -156,13 +156,13 @@ type DeleteGroupRequest struct {
 type DeleteResponse struct {
 }
 
-// Delete a service principal
+// Delete a service principal.
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 }
 
-// Delete a user
+// Delete a user.
 type DeleteUserRequest struct {
 	// Unique ID for a user in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -179,19 +179,19 @@ type DeleteWorkspaceAssignmentRequest struct {
 type DeleteWorkspacePermissionAssignmentResponse struct {
 }
 
-// Get group details
+// Get group details.
 type GetAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Get service principal details
+// Get service principal details.
 type GetAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
 	Id string `json:"-" url:"-"`
 }
 
-// Get user details
+// Get user details.
 type GetAccountUserRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -238,7 +238,7 @@ type GetAssignableRolesForResourceResponse struct {
 	Roles []Role `json:"roles,omitempty"`
 }
 
-// Get group details
+// Get group details.
 type GetGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -289,7 +289,7 @@ type GetRuleSetRequest struct {
 	Name string `json:"-" url:"name"`
 }
 
-// Get service principal details
+// Get service principal details.
 type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
 	Id string `json:"-" url:"-"`
@@ -322,7 +322,7 @@ func (f *GetSortOrder) Type() string {
 	return "GetSortOrder"
 }
 
-// Get user details
+// Get user details.
 type GetUserRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -431,7 +431,7 @@ func (f *GroupSchema) Type() string {
 	return "GroupSchema"
 }
 
-// List group details
+// List group details.
 type ListAccountGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -465,7 +465,7 @@ func (s ListAccountGroupsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List service principals
+// List service principals.
 type ListAccountServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -499,7 +499,7 @@ func (s ListAccountServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List users
+// List users.
 type ListAccountUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -534,7 +534,7 @@ func (s ListAccountUsersRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List group details
+// List group details.
 type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -641,7 +641,7 @@ func (s ListServicePrincipalResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List service principals
+// List service principals.
 type ListServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -702,7 +702,7 @@ func (f *ListSortOrder) Type() string {
 	return "ListSortOrder"
 }
 
-// List users
+// List users.
 type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
 	Attributes string `json:"-" url:"attributes,omitempty"`
@@ -840,7 +840,7 @@ func (s ObjectPermissions) MarshalJSON() ([]byte, error) {
 }
 
 type PartialUpdate struct {
-	// Unique ID for a user in the Databricks workspace.
+	// Unique ID in the Databricks workspace.
 	Id string `json:"-" url:"-"`
 
 	Operations []Patch `json:"Operations,omitempty"`
@@ -1428,8 +1428,7 @@ type User struct {
 	ExternalId string `json:"externalId,omitempty"`
 
 	Groups []ComplexValue `json:"groups,omitempty"`
-	// Databricks user ID. This is automatically set by Databricks. Any value
-	// provided by the client will be ignored.
+	// Databricks user ID.
 	Id string `json:"id,omitempty" url:"-"`
 
 	Name *Name `json:"name,omitempty"`

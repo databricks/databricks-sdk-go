@@ -50,6 +50,7 @@ func (s AddInstanceProfile) MarshalJSON() ([]byte, error) {
 type AddResponse struct {
 }
 
+// A storage location in Adls Gen2
 type Adlsgen2Info struct {
 	// abfss destination, e.g.
 	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`.
@@ -77,6 +78,8 @@ func (s AutoScale) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Attributes set during cluster creation which are related to Amazon Web
+// Services.
 type AwsAttributes struct {
 	// Availability type used for all subsequent nodes past the
 	// `first_on_demand` ones.
@@ -131,9 +134,6 @@ type AwsAttributes struct {
 	// added to the Databricks environment by an account administrator.
 	//
 	// This feature may only be available to certain customer plans.
-	//
-	// If this field is ommitted, we will pull in the default from the conf if
-	// it exists.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
 	// The bid price for AWS spot instances, as a percentage of the
 	// corresponding instance type's on-demand price. For example, if this field
@@ -145,10 +145,6 @@ type AwsAttributes struct {
 	// instances whose bid price percentage matches this field will be
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
-	//
-	// The default value and documentation here should be kept consistent with
-	// CommonConf.defaultSpotBidPricePercent and
-	// CommonConf.maxSpotBidPricePercent.
 	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west-2a". The provided
@@ -158,8 +154,10 @@ type AwsAttributes struct {
 	// optional field at cluster creation, and if not specified, a default zone
 	// will be used. If the zone specified is "auto", will try to place cluster
 	// in a zone with high availability, and will retry placement in a different
-	// AZ if there is not enough capacity. The list of available zones as well
-	// as the default value can be found by using the `List Zones` method.
+	// AZ if there is not enough capacity.
+	//
+	// The list of available zones as well as the default value can be found by
+	// using the `List Zones` method.
 	ZoneId string `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -207,11 +205,11 @@ func (f *AwsAvailability) Type() string {
 	return "AwsAvailability"
 }
 
+// Attributes set during cluster creation which are related to Microsoft Azure.
 type AzureAttributes struct {
 	// Availability type used for all subsequent nodes past the
-	// `first_on_demand` ones. Note: If `first_on_demand` is zero (which only
-	// happens on pool clusters), this availability type will be used for the
-	// entire cluster.
+	// `first_on_demand` ones. Note: If `first_on_demand` is zero, this
+	// availability type will be used for the entire cluster.
 	Availability AzureAvailability `json:"availability,omitempty"`
 	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. This value should be greater than 0, to make sure
@@ -244,8 +242,8 @@ func (s AzureAttributes) MarshalJSON() ([]byte, error) {
 }
 
 // Availability type used for all subsequent nodes past the `first_on_demand`
-// ones. Note: If `first_on_demand` is zero (which only happens on pool
-// clusters), this availability type will be used for the entire cluster.
+// ones. Note: If `first_on_demand` is zero, this availability type will be used
+// for the entire cluster.
 type AzureAvailability string
 
 const AzureAvailabilityOnDemandAzure AzureAvailability = `ON_DEMAND_AZURE`
@@ -297,7 +295,6 @@ type CancelResponse struct {
 }
 
 type ChangeClusterOwner struct {
-	// <needs content added>
 	ClusterId string `json:"cluster_id"`
 	// New owner of the cluster_id after this RPC.
 	OwnerUsername string `json:"owner_username"`
@@ -329,6 +326,7 @@ type CloneCluster struct {
 }
 
 type CloudProviderNodeInfo struct {
+	// Status as reported by the cloud provider
 	Status []CloudProviderNodeStatus `json:"status,omitempty"`
 }
 
@@ -403,6 +401,8 @@ func (s ClusterAccessControlResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Common set of attributes set during cluster creation. These attributes cannot
+// be changed over the lifetime of a cluster.
 type ClusterAttributes struct {
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
@@ -466,7 +466,7 @@ type ClusterAttributes struct {
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
+	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -475,6 +475,11 @@ type ClusterAttributes struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
+	//
+	// This field, along with node_type_id, should not be set if
+	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
+	// and virtual_cluster_size are specified, driver_node_type_id and
+	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
@@ -569,7 +574,7 @@ type ClusterAttributes struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
+	// Cluster Attributes showing for clusters workload types.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -606,6 +611,7 @@ func (s ClusterCompliance) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Describes all of the metadata about a single Spark cluster in Databricks.
 type ClusterDetails struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
@@ -646,8 +652,7 @@ type ClusterDetails struct {
 	// not specified at creation, the cluster name will be an empty string.
 	ClusterName string `json:"cluster_name,omitempty"`
 	// Determines whether the cluster was created by a user through the UI,
-	// created by the Databricks Jobs Scheduler, or through an API request. This
-	// is the same as cluster_creator, but read only.
+	// created by the Databricks Jobs Scheduler, or through an API request.
 	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
 	// Creator user name. The field won't be included in the response if the
 	// user has already been deleted.
@@ -704,7 +709,7 @@ type ClusterDetails struct {
 	//
 	// - Name: <Databricks internal use>
 	DefaultTags map[string]string `json:"default_tags,omitempty"`
-
+	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// Node on which the Spark driver resides. The driver node contains the
 	// Spark master and the Databricks application that manages the per-notebook
@@ -717,6 +722,11 @@ type ClusterDetails struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
+	//
+	// This field, along with node_type_id, should not be set if
+	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
+	// and virtual_cluster_size are specified, driver_node_type_id and
+	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
@@ -826,10 +836,9 @@ type ClusterDetails struct {
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
 	SparkVersion string `json:"spark_version,omitempty"`
-	// `spec` contains a snapshot of the field values that were used to create
-	// or edit this cluster. The contents of `spec` can be used in the body of a
-	// create cluster request. This field might not be populated for older
-	// clusters. Note: not included in the response of the ListClusters API.
+	// The spec contains a snapshot of the latest user specified settings that
+	// were used to create/edit the cluster. Note: not included in the response
+	// of the ListClusters API.
 	Spec *ClusterSpec `json:"spec,omitempty"`
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
@@ -855,7 +864,7 @@ type ClusterDetails struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
+	// Cluster Attributes showing for clusters workload types.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -870,11 +879,10 @@ func (s ClusterDetails) MarshalJSON() ([]byte, error) {
 }
 
 type ClusterEvent struct {
-	// <needs content added>
 	ClusterId string `json:"cluster_id"`
-	// <needs content added>
+
 	DataPlaneEventDetails *DataPlaneEventDetails `json:"data_plane_event_details,omitempty"`
-	// <needs content added>
+
 	Details *EventDetails `json:"details,omitempty"`
 	// The timestamp when the event occurred, stored as the number of
 	// milliseconds since the Unix epoch. If not provided, this will be assigned
@@ -911,6 +919,7 @@ func (s ClusterLibraryStatuses) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Cluster log delivery config
 type ClusterLogConf struct {
 	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
 	// "dbfs:/home/cluster_log" } }`
@@ -921,7 +930,7 @@ type ClusterLogConf struct {
 	// the cluster iam role in `instance_profile_arn` has permission to write
 	// data to the s3 destination.
 	S3 *S3StorageInfo `json:"s3,omitempty"`
-	// destination needs to be provided. e.g. `{ "volumes" : { "destination" :
+	// destination needs to be provided, e.g. `{ "volumes": { "destination":
 	// "/Volumes/catalog/schema/volume/cluster_log" } }`
 	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 }
@@ -1237,6 +1246,8 @@ func (f *ClusterSource) Type() string {
 	return "ClusterSource"
 }
 
+// Contains a snapshot of the latest user specified settings that were used to
+// create/edit the cluster.
 type ClusterSpec struct {
 	// When set to true, fixed and default values from the policy will be used
 	// for fields that are omitted. When set to false, only fixed values from
@@ -1308,7 +1319,7 @@ type ClusterSpec struct {
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
+	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -1317,6 +1328,11 @@ type ClusterSpec struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
+	//
+	// This field, along with node_type_id, should not be set if
+	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
+	// and virtual_cluster_size are specified, driver_node_type_id and
+	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
@@ -1422,7 +1438,7 @@ type ClusterSpec struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
+	// Cluster Attributes showing for clusters workload types.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1651,7 +1667,7 @@ type CreateCluster struct {
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
+	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -1660,6 +1676,11 @@ type CreateCluster struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
+	//
+	// This field, along with node_type_id, should not be set if
+	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
+	// and virtual_cluster_size are specified, driver_node_type_id and
+	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
@@ -1765,7 +1786,7 @@ type CreateCluster struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
+	// Cluster Attributes showing for clusters workload types.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2010,13 +2031,12 @@ func (s CustomPolicyTag) MarshalJSON() ([]byte, error) {
 }
 
 type DataPlaneEventDetails struct {
-	// <needs content added>
 	EventType DataPlaneEventDetailsEventType `json:"event_type,omitempty"`
-	// <needs content added>
+
 	ExecutorFailures int `json:"executor_failures,omitempty"`
-	// <needs content added>
+
 	HostId string `json:"host_id,omitempty"`
-	// <needs content added>
+
 	Timestamp int64 `json:"timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2030,7 +2050,6 @@ func (s DataPlaneEventDetails) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// <needs content added>
 type DataPlaneEventDetailsEventType string
 
 const DataPlaneEventDetailsEventTypeNodeBlacklisted DataPlaneEventDetailsEventType = `NODE_BLACKLISTED`
@@ -2149,6 +2168,7 @@ func (f *DataSecurityMode) Type() string {
 	return "DataSecurityMode"
 }
 
+// A storage location in DBFS
 type DbfsStorageInfo struct {
 	// dbfs destination, e.g. `dbfs:/my/path`
 	Destination string `json:"destination"`
@@ -2347,7 +2367,8 @@ func (s DockerImage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The type of EBS volumes that will be launched with this cluster.
+// All EBS volume types that Databricks supports. See
+// https://aws.amazon.com/ebs/details/ for details.
 type EbsVolumeType string
 
 const EbsVolumeTypeGeneralPurposeSsd EbsVolumeType = `GENERAL_PURPOSE_SSD`
@@ -2448,7 +2469,7 @@ type EditCluster struct {
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
+	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -2457,6 +2478,11 @@ type EditCluster struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
+	//
+	// This field, along with node_type_id, should not be set if
+	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
+	// and virtual_cluster_size are specified, driver_node_type_id and
+	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
@@ -2562,7 +2588,7 @@ type EditCluster struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
+	// Cluster Attributes showing for clusters workload types.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2747,7 +2773,7 @@ type EventDetails struct {
 	CurrentNumVcpus int `json:"current_num_vcpus,omitempty"`
 	// The current number of nodes in the cluster.
 	CurrentNumWorkers int `json:"current_num_workers,omitempty"`
-	// <needs content added>
+
 	DidNotExpandReason string `json:"did_not_expand_reason,omitempty"`
 	// Current disk size in bytes
 	DiskSize int64 `json:"disk_size,omitempty"`
@@ -2756,7 +2782,7 @@ type EventDetails struct {
 	// Whether or not a blocklisted node should be terminated. For
 	// ClusterEventType NODE_BLACKLISTED.
 	EnableTerminationForNodeBlocklisted bool `json:"enable_termination_for_node_blocklisted,omitempty"`
-	// <needs content added>
+
 	FreeSpace int64 `json:"free_space,omitempty"`
 	// List of global and cluster init scripts associated with this cluster
 	// event.
@@ -2909,12 +2935,13 @@ func (f *EventType) Type() string {
 	return "EventType"
 }
 
+// Attributes set during cluster creation which are related to GCP.
 type GcpAttributes struct {
-	// This field determines whether the instance pool will contain preemptible
-	// VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs
-	// if the former is unavailable.
+	// This field determines whether the spark executors will be scheduled to
+	// run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback
+	// to on-demand VMs if the former is unavailable.
 	Availability GcpAvailability `json:"availability,omitempty"`
-	// boot disk size in GB
+	// Boot disk size in GB
 	BootDiskSize int `json:"boot_disk_size,omitempty"`
 	// If provided, the cluster will impersonate the google service account when
 	// accessing gcloud services (like GCS). The google service account must
@@ -2931,11 +2958,11 @@ type GcpAttributes struct {
 	// This field determines whether the spark executors will be scheduled to
 	// run on preemptible VMs (when set to true) versus standard compute engine
 	// VMs (when set to false; default). Note: Soon to be deprecated, use the
-	// availability field instead.
+	// 'availability' field instead.
 	UsePreemptibleExecutors bool `json:"use_preemptible_executors,omitempty"`
 	// Identifier for the availability zone in which the cluster resides. This
 	// can be one of the following: - "HA" => High availability, spread nodes
-	// across availability zones for a Databricks deployment region [default] -
+	// across availability zones for a Databricks deployment region [default]. -
 	// "AUTO" => Databricks picks an availability zone to schedule the cluster
 	// on. - A GCP availability zone => Pick One of the available zones for
 	// (machine type + region) from
@@ -2985,6 +3012,7 @@ func (f *GcpAvailability) Type() string {
 	return "GcpAvailability"
 }
 
+// A storage location in Google Cloud Platform's GCS
 type GcsStorageInfo struct {
 	// GCS destination/URI, e.g. `gs://my-bucket/some-prefix`
 	Destination string `json:"destination"`
@@ -3097,7 +3125,6 @@ func (s GetEvents) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
 type GetEventsOrder string
 
 const GetEventsOrderAsc GetEventsOrder = `ASC`
@@ -3126,7 +3153,6 @@ func (f *GetEventsOrder) Type() string {
 }
 
 type GetEventsResponse struct {
-	// <content needs to be added>
 	Events []ClusterEvent `json:"events,omitempty"`
 	// The parameters required to retrieve the next page of events. Omitted if
 	// there are no more events to read.
@@ -3417,11 +3443,16 @@ func (s GlobalInitScriptUpdateRequest) MarshalJSON() ([]byte, error) {
 }
 
 type InitScriptEventDetails struct {
-	// The cluster scoped init scripts associated with this cluster event
+	// The cluster scoped init scripts associated with this cluster event.
 	Cluster []InitScriptInfoAndExecutionDetails `json:"cluster,omitempty"`
-	// The global init scripts associated with this cluster event
+	// The global init scripts associated with this cluster event.
 	Global []InitScriptInfoAndExecutionDetails `json:"global,omitempty"`
-	// The private ip address of the node where the init scripts were run.
+	// The private ip of the node we are reporting init script execution details
+	// for (we will select the execution details from only one node rather than
+	// reporting the execution details from every node to keep these event
+	// details small)
+	//
+	// This should only be defined for the INIT_SCRIPTS_FINISHED event
 	ReportedForNode string `json:"reported_for_node,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3435,94 +3466,115 @@ func (s InitScriptEventDetails) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type InitScriptExecutionDetails struct {
-	// Addition details regarding errors.
-	ErrorMessage string `json:"error_message,omitempty"`
-	// The duration of the script execution in seconds.
-	ExecutionDurationSeconds int `json:"execution_duration_seconds,omitempty"`
-	// The current status of the script
-	Status InitScriptExecutionDetailsStatus `json:"status,omitempty"`
+// Result of attempted script execution
+type InitScriptExecutionDetailsInitScriptExecutionStatus string
 
-	ForceSendFields []string `json:"-" url:"-"`
-}
+const InitScriptExecutionDetailsInitScriptExecutionStatusFailedExecution InitScriptExecutionDetailsInitScriptExecutionStatus = `FAILED_EXECUTION`
 
-func (s *InitScriptExecutionDetails) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
+const InitScriptExecutionDetailsInitScriptExecutionStatusFailedFetch InitScriptExecutionDetailsInitScriptExecutionStatus = `FAILED_FETCH`
 
-func (s InitScriptExecutionDetails) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
+const InitScriptExecutionDetailsInitScriptExecutionStatusFuseMountFailed InitScriptExecutionDetailsInitScriptExecutionStatus = `FUSE_MOUNT_FAILED`
 
-// The current status of the script
-type InitScriptExecutionDetailsStatus string
+const InitScriptExecutionDetailsInitScriptExecutionStatusNotExecuted InitScriptExecutionDetailsInitScriptExecutionStatus = `NOT_EXECUTED`
 
-const InitScriptExecutionDetailsStatusFailedExecution InitScriptExecutionDetailsStatus = `FAILED_EXECUTION`
+const InitScriptExecutionDetailsInitScriptExecutionStatusSkipped InitScriptExecutionDetailsInitScriptExecutionStatus = `SKIPPED`
 
-const InitScriptExecutionDetailsStatusFailedFetch InitScriptExecutionDetailsStatus = `FAILED_FETCH`
+const InitScriptExecutionDetailsInitScriptExecutionStatusSucceeded InitScriptExecutionDetailsInitScriptExecutionStatus = `SUCCEEDED`
 
-const InitScriptExecutionDetailsStatusNotExecuted InitScriptExecutionDetailsStatus = `NOT_EXECUTED`
-
-const InitScriptExecutionDetailsStatusSkipped InitScriptExecutionDetailsStatus = `SKIPPED`
-
-const InitScriptExecutionDetailsStatusSucceeded InitScriptExecutionDetailsStatus = `SUCCEEDED`
-
-const InitScriptExecutionDetailsStatusUnknown InitScriptExecutionDetailsStatus = `UNKNOWN`
+const InitScriptExecutionDetailsInitScriptExecutionStatusUnknown InitScriptExecutionDetailsInitScriptExecutionStatus = `UNKNOWN`
 
 // String representation for [fmt.Print]
-func (f *InitScriptExecutionDetailsStatus) String() string {
+func (f *InitScriptExecutionDetailsInitScriptExecutionStatus) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *InitScriptExecutionDetailsStatus) Set(v string) error {
+func (f *InitScriptExecutionDetailsInitScriptExecutionStatus) Set(v string) error {
 	switch v {
-	case `FAILED_EXECUTION`, `FAILED_FETCH`, `NOT_EXECUTED`, `SKIPPED`, `SUCCEEDED`, `UNKNOWN`:
-		*f = InitScriptExecutionDetailsStatus(v)
+	case `FAILED_EXECUTION`, `FAILED_FETCH`, `FUSE_MOUNT_FAILED`, `NOT_EXECUTED`, `SKIPPED`, `SUCCEEDED`, `UNKNOWN`:
+		*f = InitScriptExecutionDetailsInitScriptExecutionStatus(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "FAILED_EXECUTION", "FAILED_FETCH", "NOT_EXECUTED", "SKIPPED", "SUCCEEDED", "UNKNOWN"`, v)
+		return fmt.Errorf(`value "%s" is not one of "FAILED_EXECUTION", "FAILED_FETCH", "FUSE_MOUNT_FAILED", "NOT_EXECUTED", "SKIPPED", "SUCCEEDED", "UNKNOWN"`, v)
 	}
 }
 
-// Type always returns InitScriptExecutionDetailsStatus to satisfy [pflag.Value] interface
-func (f *InitScriptExecutionDetailsStatus) Type() string {
-	return "InitScriptExecutionDetailsStatus"
+// Type always returns InitScriptExecutionDetailsInitScriptExecutionStatus to satisfy [pflag.Value] interface
+func (f *InitScriptExecutionDetailsInitScriptExecutionStatus) Type() string {
+	return "InitScriptExecutionDetailsInitScriptExecutionStatus"
 }
 
+// Config for an individual init script Next ID: 11
 type InitScriptInfo struct {
-	// destination needs to be provided. e.g. `{ "abfss" : { "destination" :
-	// "abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>"
-	// } }
+	// destination needs to be provided, e.g.
+	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`
 	Abfss *Adlsgen2Info `json:"abfss,omitempty"`
-	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
+	// destination needs to be provided. e.g. `{ "dbfs": { "destination" :
 	// "dbfs:/home/cluster_log" } }`
 	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
-	// destination needs to be provided. e.g. `{ "file" : { "destination" :
+	// destination needs to be provided, e.g. `{ "file": { "destination":
 	// "file:/my/local/file.sh" } }`
 	File *LocalFileInfo `json:"file,omitempty"`
-	// destination needs to be provided. e.g. `{ "gcs": { "destination":
+	// destination needs to be provided, e.g. `{ "gcs": { "destination":
 	// "gs://my-bucket/file.sh" } }`
 	Gcs *GcsStorageInfo `json:"gcs,omitempty"`
 	// destination and either the region or endpoint need to be provided. e.g.
-	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
-	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
-	// the cluster iam role in `instance_profile_arn` has permission to write
-	// data to the s3 destination.
+	// `{ \"s3\": { \"destination\": \"s3://cluster_log_bucket/prefix\",
+	// \"region\": \"us-west-2\" } }` Cluster iam role is used to access s3,
+	// please make sure the cluster iam role in `instance_profile_arn` has
+	// permission to write data to the s3 destination.
 	S3 *S3StorageInfo `json:"s3,omitempty"`
-	// destination needs to be provided. e.g. `{ "volumes" : { "destination" :
-	// "/Volumes/my-init.sh" } }`
+	// destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\"
+	// : \"/Volumes/my-init.sh\" } }`
 	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
-	// destination needs to be provided. e.g. `{ "workspace" : { "destination" :
-	// "/Users/user1@databricks.com/my-init.sh" } }`
+	// destination needs to be provided, e.g. `{ "workspace": { "destination":
+	// "/cluster-init-scripts/setup-datadog.sh" } }`
 	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
 }
 
 type InitScriptInfoAndExecutionDetails struct {
-	// Details about the script
-	ExecutionDetails *InitScriptExecutionDetails `json:"execution_details,omitempty"`
-	// The script
-	Script *InitScriptInfo `json:"script,omitempty"`
+	// destination needs to be provided, e.g.
+	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`
+	Abfss *Adlsgen2Info `json:"abfss,omitempty"`
+	// destination needs to be provided. e.g. `{ "dbfs": { "destination" :
+	// "dbfs:/home/cluster_log" } }`
+	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
+	// Additional details regarding errors (such as a file not found message if
+	// the status is FAILED_FETCH). This field should only be used to provide
+	// *additional* information to the status field, not duplicate it.
+	ErrorMessage string `json:"error_message,omitempty"`
+	// The number duration of the script execution in seconds
+	ExecutionDurationSeconds int `json:"execution_duration_seconds,omitempty"`
+	// destination needs to be provided, e.g. `{ "file": { "destination":
+	// "file:/my/local/file.sh" } }`
+	File *LocalFileInfo `json:"file,omitempty"`
+	// destination needs to be provided, e.g. `{ "gcs": { "destination":
+	// "gs://my-bucket/file.sh" } }`
+	Gcs *GcsStorageInfo `json:"gcs,omitempty"`
+	// destination and either the region or endpoint need to be provided. e.g.
+	// `{ \"s3\": { \"destination\": \"s3://cluster_log_bucket/prefix\",
+	// \"region\": \"us-west-2\" } }` Cluster iam role is used to access s3,
+	// please make sure the cluster iam role in `instance_profile_arn` has
+	// permission to write data to the s3 destination.
+	S3 *S3StorageInfo `json:"s3,omitempty"`
+	// The current status of the script
+	Status InitScriptExecutionDetailsInitScriptExecutionStatus `json:"status,omitempty"`
+	// destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\"
+	// : \"/Volumes/my-init.sh\" } }`
+	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
+	// destination needs to be provided, e.g. `{ "workspace": { "destination":
+	// "/cluster-init-scripts/setup-datadog.sh" } }`
+	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *InitScriptInfoAndExecutionDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s InitScriptInfoAndExecutionDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type InstallLibraries struct {
@@ -4192,8 +4244,8 @@ type ListAllClusterLibraryStatusesResponse struct {
 }
 
 type ListAvailableZonesResponse struct {
-	// The availability zone if no `zone_id` is provided in the cluster creation
-	// request.
+	// The availability zone if no ``zone_id`` is provided in the cluster
+	// creation request.
 	DefaultZone string `json:"default_zone,omitempty"`
 	// The list of available zones (e.g., ['us-west-2c', 'us-east-2']).
 	Zones []string `json:"zones,omitempty"`
@@ -4312,7 +4364,6 @@ func (s ListClustersRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListClustersResponse struct {
-	// <needs content added>
 	Clusters []ClusterDetails `json:"clusters,omitempty"`
 	// This field represents the pagination token to retrieve the next page of
 	// results. If the value is "", it means no further results for the request.
@@ -4342,7 +4393,6 @@ type ListClustersSortBy struct {
 	Field ListClustersSortByField `json:"field,omitempty" url:"field,omitempty"`
 }
 
-// The direction to sort by.
 type ListClustersSortByDirection string
 
 const ListClustersSortByDirectionAsc ListClustersSortByDirection = `ASC`
@@ -4370,9 +4420,6 @@ func (f *ListClustersSortByDirection) Type() string {
 	return "ListClustersSortByDirection"
 }
 
-// The sorting criteria. By default, clusters are sorted by 3 columns from
-// highest to lowest precedence: cluster state, pinned or unpinned, then cluster
-// name.
 type ListClustersSortByField string
 
 const ListClustersSortByFieldClusterName ListClustersSortByField = `CLUSTER_NAME`
@@ -4486,7 +4533,6 @@ func (f *ListSortColumn) Type() string {
 	return "ListSortColumn"
 }
 
-// A generic ordering enum for list-based queries.
 type ListSortOrder string
 
 const ListSortOrderAsc ListSortOrder = `ASC`
@@ -4520,9 +4566,8 @@ type LocalFileInfo struct {
 }
 
 type LogAnalyticsInfo struct {
-	// <needs content added>
 	LogAnalyticsPrimaryKey string `json:"log_analytics_primary_key,omitempty"`
-	// <needs content added>
+
 	LogAnalyticsWorkspaceId string `json:"log_analytics_workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4536,6 +4581,7 @@ func (s LogAnalyticsInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The log delivery status
 type LogSyncStatus struct {
 	// The timestamp of last attempt. If the last attempt fails,
 	// `last_exception` will contain the exception in the last attempt.
@@ -4579,15 +4625,21 @@ func (s MavenLibrary) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// This structure embodies the machine type that hosts spark containers Note:
+// this should be an internal data structure for now It is defined in proto in
+// case we want to send it over the wire in the future (which is likely)
 type NodeInstanceType struct {
-	InstanceTypeId string `json:"instance_type_id,omitempty"`
-
+	// Unique identifier across instance types
+	InstanceTypeId string `json:"instance_type_id"`
+	// Size of the individual local disks attached to this instance (i.e. per
+	// local disk).
 	LocalDiskSizeGb int `json:"local_disk_size_gb,omitempty"`
-
+	// Number of local disks that are present on this instance.
 	LocalDisks int `json:"local_disks,omitempty"`
-
+	// Size of the individual local nvme disks attached to this instance (i.e.
+	// per local disk).
 	LocalNvmeDiskSizeGb int `json:"local_nvme_disk_size_gb,omitempty"`
-
+	// Number of local nvme disks that are present on this instance.
 	LocalNvmeDisks int `json:"local_nvme_disks,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4601,11 +4653,16 @@ func (s NodeInstanceType) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// A description of a Spark node type including both the dimensions of the node
+// and the instance type on which it will be hosted.
 type NodeType struct {
-	Category string `json:"category,omitempty"`
+	// A descriptive category for this node type. Examples include "Memory
+	// Optimized" and "Compute Optimized".
+	Category string `json:"category"`
 	// A string description associated with this node type, e.g., "r3.xlarge".
 	Description string `json:"description"`
-
+	// An optional hint at the display order of node types in the UI. Within a
+	// node type category, lowest numbers come first.
 	DisplayOrder int `json:"display_order,omitempty"`
 	// An identifier for the type of hardware that this node runs on, e.g.,
 	// "r3.2xlarge" in AWS.
@@ -4616,17 +4673,17 @@ type NodeType struct {
 	// AWS specific, whether this instance supports encryption in transit, used
 	// for hipaa and pci workloads.
 	IsEncryptedInTransit bool `json:"is_encrypted_in_transit,omitempty"`
-
+	// Whether this is an Arm-based instance.
 	IsGraviton bool `json:"is_graviton,omitempty"`
-
+	// Whether this node is hidden from presentation in the UI.
 	IsHidden bool `json:"is_hidden,omitempty"`
-
+	// Whether this node comes with IO cache enabled by default.
 	IsIoCacheEnabled bool `json:"is_io_cache_enabled,omitempty"`
 	// Memory (in MB) available for this node type.
 	MemoryMb int `json:"memory_mb"`
-
+	// A collection of node type info reported by the cloud provider
 	NodeInfo *CloudProviderNodeInfo `json:"node_info,omitempty"`
-
+	// The NodeInstanceType object corresponding to instance_type_id
 	NodeInstanceType *NodeInstanceType `json:"node_instance_type,omitempty"`
 	// Unique identifier for this node type.
 	NodeTypeId string `json:"node_type_id"`
@@ -4634,21 +4691,20 @@ type NodeType struct {
 	// fractional, e.g., 2.5 cores, if the the number of cores on a machine
 	// instance is not divisible by the number of Spark nodes on that machine.
 	NumCores float64 `json:"num_cores"`
-
+	// Number of GPUs available for this node type.
 	NumGpus int `json:"num_gpus,omitempty"`
 
 	PhotonDriverCapable bool `json:"photon_driver_capable,omitempty"`
 
 	PhotonWorkerCapable bool `json:"photon_worker_capable,omitempty"`
-
+	// Whether this node type support cluster tags.
 	SupportClusterTags bool `json:"support_cluster_tags,omitempty"`
-
+	// Whether this node type support EBS volumes. EBS volumes is disabled for
+	// node types that we could place multiple corresponding containers on the
+	// same hosting instance.
 	SupportEbsVolumes bool `json:"support_ebs_volumes,omitempty"`
-
+	// Whether this node type supports port forwarding.
 	SupportPortForwarding bool `json:"support_port_forwarding,omitempty"`
-	// Indicates if this node type can be used for an instance pool or cluster
-	// with elastic disk enabled. This is true for most node types.
-	SupportsElasticDisk bool `json:"supports_elastic_disk,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4687,7 +4743,6 @@ type PermanentDeleteClusterResponse struct {
 }
 
 type PinCluster struct {
-	// <needs content added>
 	ClusterId string `json:"cluster_id"`
 }
 
@@ -4859,7 +4914,7 @@ type ResizeClusterResponse struct {
 type RestartCluster struct {
 	// The cluster to be started.
 	ClusterId string `json:"cluster_id"`
-	// <needs content added>
+
 	RestartUser string `json:"restart_user,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4943,14 +4998,6 @@ func (s Results) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Determines the cluster's runtime engine, either standard or Photon.
-//
-// This field is not compatible with legacy `spark_version` values that contain
-// `-photon-`. Remove `-photon-` from the `spark_version` and set
-// `runtime_engine` to `PHOTON`.
-//
-// If left unspecified, the runtime engine defaults to standard unless the
-// spark_version contains -photon-, in which case Photon will be used.
 type RuntimeEngine string
 
 const RuntimeEngineNull RuntimeEngine = `NULL`
@@ -4980,6 +5027,7 @@ func (f *RuntimeEngine) Type() string {
 	return "RuntimeEngine"
 }
 
+// A storage location in Amazon S3
 type S3StorageInfo struct {
 	// (Optional) Set canned access control list for the logs, e.g.
 	// `bucket-owner-full-control`. If `canned_cal` is set, please make sure the
@@ -5023,6 +5071,7 @@ func (s S3StorageInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Describes a specific Spark driver or executor.
 type SparkNode struct {
 	// The private IP address of the host instance.
 	HostPrivateIp string `json:"host_private_ip,omitempty"`
@@ -5039,15 +5088,8 @@ type SparkNode struct {
 	// Spark JDBC server on the driver node. To communicate with the JDBC
 	// server, traffic must be manually authorized by adding security group
 	// rules to the "worker-unmanaged" security group via the AWS console.
-	//
-	// Actually it's the public DNS address of the host instance.
 	PublicDns string `json:"public_dns,omitempty"`
 	// The timestamp (in millisecond) when the Spark node is launched.
-	//
-	// The start_timestamp is set right before the container is being launched.
-	// The timestamp when the container is placed on the ResourceManager, before
-	// its launch and setup by the NodeDaemon. This timestamp is the same as the
-	// creation timestamp in the database.
 	StartTimestamp int64 `json:"start_timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5061,6 +5103,7 @@ func (s SparkNode) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Attributes specific to AWS for a Spark node.
 type SparkNodeAwsAttributes struct {
 	// Whether this node is on an Amazon spot instance.
 	IsSpot bool `json:"is_spot,omitempty"`
@@ -5105,7 +5148,13 @@ type StartCluster struct {
 type StartClusterResponse struct {
 }
 
-// Current state of the cluster.
+// The state of a Cluster. The current allowable state transitions are as
+// follows:
+//
+// - `PENDING` -> `RUNNING` - `PENDING` -> `TERMINATING` - `RUNNING` ->
+// `RESIZING` - `RUNNING` -> `RESTARTING` - `RUNNING` -> `TERMINATING` -
+// `RESTARTING` -> `RUNNING` - `RESTARTING` -> `TERMINATING` - `RESIZING` ->
+// `RUNNING` - `RESIZING` -> `TERMINATING` - `TERMINATING` -> `TERMINATED`
 type State string
 
 const StateError State = `ERROR`
@@ -5155,22 +5204,48 @@ type TerminationReason struct {
 	Type TerminationReasonType `json:"type,omitempty"`
 }
 
-// status code indicating why the cluster was terminated
+// The status code indicating why the cluster was terminated
 type TerminationReasonCode string
 
 const TerminationReasonCodeAbuseDetected TerminationReasonCode = `ABUSE_DETECTED`
+
+const TerminationReasonCodeAccessTokenFailure TerminationReasonCode = `ACCESS_TOKEN_FAILURE`
+
+const TerminationReasonCodeAllocationTimeout TerminationReasonCode = `ALLOCATION_TIMEOUT`
+
+const TerminationReasonCodeAllocationTimeoutNodeDaemonNotReady TerminationReasonCode = `ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY`
+
+const TerminationReasonCodeAllocationTimeoutNoHealthyClusters TerminationReasonCode = `ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS`
+
+const TerminationReasonCodeAllocationTimeoutNoMatchedClusters TerminationReasonCode = `ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS`
+
+const TerminationReasonCodeAllocationTimeoutNoReadyClusters TerminationReasonCode = `ALLOCATION_TIMEOUT_NO_READY_CLUSTERS`
+
+const TerminationReasonCodeAllocationTimeoutNoUnallocatedClusters TerminationReasonCode = `ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS`
+
+const TerminationReasonCodeAllocationTimeoutNoWarmedUpClusters TerminationReasonCode = `ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS`
 
 const TerminationReasonCodeAttachProjectFailure TerminationReasonCode = `ATTACH_PROJECT_FAILURE`
 
 const TerminationReasonCodeAwsAuthorizationFailure TerminationReasonCode = `AWS_AUTHORIZATION_FAILURE`
 
+const TerminationReasonCodeAwsInaccessibleKmsKeyFailure TerminationReasonCode = `AWS_INACCESSIBLE_KMS_KEY_FAILURE`
+
+const TerminationReasonCodeAwsInstanceProfileUpdateFailure TerminationReasonCode = `AWS_INSTANCE_PROFILE_UPDATE_FAILURE`
+
 const TerminationReasonCodeAwsInsufficientFreeAddressesInSubnetFailure TerminationReasonCode = `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`
 
 const TerminationReasonCodeAwsInsufficientInstanceCapacityFailure TerminationReasonCode = `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`
 
+const TerminationReasonCodeAwsInvalidKeyPair TerminationReasonCode = `AWS_INVALID_KEY_PAIR`
+
+const TerminationReasonCodeAwsInvalidKmsKeyState TerminationReasonCode = `AWS_INVALID_KMS_KEY_STATE`
+
 const TerminationReasonCodeAwsMaxSpotInstanceCountExceededFailure TerminationReasonCode = `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`
 
 const TerminationReasonCodeAwsRequestLimitExceeded TerminationReasonCode = `AWS_REQUEST_LIMIT_EXCEEDED`
+
+const TerminationReasonCodeAwsResourceQuotaExceeded TerminationReasonCode = `AWS_RESOURCE_QUOTA_EXCEEDED`
 
 const TerminationReasonCodeAwsUnsupportedFailure TerminationReasonCode = `AWS_UNSUPPORTED_FAILURE`
 
@@ -5181,6 +5256,8 @@ const TerminationReasonCodeAzureEphemeralDiskFailure TerminationReasonCode = `AZ
 const TerminationReasonCodeAzureInvalidDeploymentTemplate TerminationReasonCode = `AZURE_INVALID_DEPLOYMENT_TEMPLATE`
 
 const TerminationReasonCodeAzureOperationNotAllowedException TerminationReasonCode = `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`
+
+const TerminationReasonCodeAzurePackedDeploymentPartialFailure TerminationReasonCode = `AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE`
 
 const TerminationReasonCodeAzureQuotaExceededException TerminationReasonCode = `AZURE_QUOTA_EXCEEDED_EXCEPTION`
 
@@ -5198,13 +5275,33 @@ const TerminationReasonCodeBootstrapTimeout TerminationReasonCode = `BOOTSTRAP_T
 
 const TerminationReasonCodeBootstrapTimeoutCloudProviderException TerminationReasonCode = `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`
 
+const TerminationReasonCodeBootstrapTimeoutDueToMisconfig TerminationReasonCode = `BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG`
+
+const TerminationReasonCodeBudgetPolicyLimitEnforcementActivated TerminationReasonCode = `BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED`
+
+const TerminationReasonCodeBudgetPolicyResolutionFailure TerminationReasonCode = `BUDGET_POLICY_RESOLUTION_FAILURE`
+
+const TerminationReasonCodeCloudAccountSetupFailure TerminationReasonCode = `CLOUD_ACCOUNT_SETUP_FAILURE`
+
+const TerminationReasonCodeCloudOperationCancelled TerminationReasonCode = `CLOUD_OPERATION_CANCELLED`
+
 const TerminationReasonCodeCloudProviderDiskSetupFailure TerminationReasonCode = `CLOUD_PROVIDER_DISK_SETUP_FAILURE`
+
+const TerminationReasonCodeCloudProviderInstanceNotLaunched TerminationReasonCode = `CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED`
 
 const TerminationReasonCodeCloudProviderLaunchFailure TerminationReasonCode = `CLOUD_PROVIDER_LAUNCH_FAILURE`
 
+const TerminationReasonCodeCloudProviderLaunchFailureDueToMisconfig TerminationReasonCode = `CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG`
+
 const TerminationReasonCodeCloudProviderResourceStockout TerminationReasonCode = `CLOUD_PROVIDER_RESOURCE_STOCKOUT`
 
+const TerminationReasonCodeCloudProviderResourceStockoutDueToMisconfig TerminationReasonCode = `CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG`
+
 const TerminationReasonCodeCloudProviderShutdown TerminationReasonCode = `CLOUD_PROVIDER_SHUTDOWN`
+
+const TerminationReasonCodeClusterOperationThrottled TerminationReasonCode = `CLUSTER_OPERATION_THROTTLED`
+
+const TerminationReasonCodeClusterOperationTimeout TerminationReasonCode = `CLUSTER_OPERATION_TIMEOUT`
 
 const TerminationReasonCodeCommunicationLost TerminationReasonCode = `COMMUNICATION_LOST`
 
@@ -5212,21 +5309,75 @@ const TerminationReasonCodeContainerLaunchFailure TerminationReasonCode = `CONTA
 
 const TerminationReasonCodeControlPlaneRequestFailure TerminationReasonCode = `CONTROL_PLANE_REQUEST_FAILURE`
 
+const TerminationReasonCodeControlPlaneRequestFailureDueToMisconfig TerminationReasonCode = `CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG`
+
 const TerminationReasonCodeDatabaseConnectionFailure TerminationReasonCode = `DATABASE_CONNECTION_FAILURE`
+
+const TerminationReasonCodeDataAccessConfigChanged TerminationReasonCode = `DATA_ACCESS_CONFIG_CHANGED`
 
 const TerminationReasonCodeDbfsComponentUnhealthy TerminationReasonCode = `DBFS_COMPONENT_UNHEALTHY`
 
+const TerminationReasonCodeDisasterRecoveryReplication TerminationReasonCode = `DISASTER_RECOVERY_REPLICATION`
+
 const TerminationReasonCodeDockerImagePullFailure TerminationReasonCode = `DOCKER_IMAGE_PULL_FAILURE`
+
+const TerminationReasonCodeDriverEviction TerminationReasonCode = `DRIVER_EVICTION`
+
+const TerminationReasonCodeDriverLaunchTimeout TerminationReasonCode = `DRIVER_LAUNCH_TIMEOUT`
+
+const TerminationReasonCodeDriverNodeUnreachable TerminationReasonCode = `DRIVER_NODE_UNREACHABLE`
+
+const TerminationReasonCodeDriverOutOfDisk TerminationReasonCode = `DRIVER_OUT_OF_DISK`
+
+const TerminationReasonCodeDriverOutOfMemory TerminationReasonCode = `DRIVER_OUT_OF_MEMORY`
+
+const TerminationReasonCodeDriverPodCreationFailure TerminationReasonCode = `DRIVER_POD_CREATION_FAILURE`
+
+const TerminationReasonCodeDriverUnexpectedFailure TerminationReasonCode = `DRIVER_UNEXPECTED_FAILURE`
 
 const TerminationReasonCodeDriverUnreachable TerminationReasonCode = `DRIVER_UNREACHABLE`
 
 const TerminationReasonCodeDriverUnresponsive TerminationReasonCode = `DRIVER_UNRESPONSIVE`
 
+const TerminationReasonCodeDynamicSparkConfSizeExceeded TerminationReasonCode = `DYNAMIC_SPARK_CONF_SIZE_EXCEEDED`
+
+const TerminationReasonCodeEosSparkImage TerminationReasonCode = `EOS_SPARK_IMAGE`
+
 const TerminationReasonCodeExecutionComponentUnhealthy TerminationReasonCode = `EXECUTION_COMPONENT_UNHEALTHY`
+
+const TerminationReasonCodeExecutorPodUnscheduled TerminationReasonCode = `EXECUTOR_POD_UNSCHEDULED`
+
+const TerminationReasonCodeGcpApiRateQuotaExceeded TerminationReasonCode = `GCP_API_RATE_QUOTA_EXCEEDED`
+
+const TerminationReasonCodeGcpForbidden TerminationReasonCode = `GCP_FORBIDDEN`
+
+const TerminationReasonCodeGcpIamTimeout TerminationReasonCode = `GCP_IAM_TIMEOUT`
+
+const TerminationReasonCodeGcpInaccessibleKmsKeyFailure TerminationReasonCode = `GCP_INACCESSIBLE_KMS_KEY_FAILURE`
+
+const TerminationReasonCodeGcpInsufficientCapacity TerminationReasonCode = `GCP_INSUFFICIENT_CAPACITY`
+
+const TerminationReasonCodeGcpIpSpaceExhausted TerminationReasonCode = `GCP_IP_SPACE_EXHAUSTED`
+
+const TerminationReasonCodeGcpKmsKeyPermissionDenied TerminationReasonCode = `GCP_KMS_KEY_PERMISSION_DENIED`
+
+const TerminationReasonCodeGcpNotFound TerminationReasonCode = `GCP_NOT_FOUND`
 
 const TerminationReasonCodeGcpQuotaExceeded TerminationReasonCode = `GCP_QUOTA_EXCEEDED`
 
+const TerminationReasonCodeGcpResourceQuotaExceeded TerminationReasonCode = `GCP_RESOURCE_QUOTA_EXCEEDED`
+
+const TerminationReasonCodeGcpServiceAccountAccessDenied TerminationReasonCode = `GCP_SERVICE_ACCOUNT_ACCESS_DENIED`
+
 const TerminationReasonCodeGcpServiceAccountDeleted TerminationReasonCode = `GCP_SERVICE_ACCOUNT_DELETED`
+
+const TerminationReasonCodeGcpServiceAccountNotFound TerminationReasonCode = `GCP_SERVICE_ACCOUNT_NOT_FOUND`
+
+const TerminationReasonCodeGcpSubnetNotReady TerminationReasonCode = `GCP_SUBNET_NOT_READY`
+
+const TerminationReasonCodeGcpTrustedImageProjectsViolated TerminationReasonCode = `GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED`
+
+const TerminationReasonCodeGkeBasedClusterTermination TerminationReasonCode = `GKE_BASED_CLUSTER_TERMINATION`
 
 const TerminationReasonCodeGlobalInitScriptFailure TerminationReasonCode = `GLOBAL_INIT_SCRIPT_FAILURE`
 
@@ -5236,17 +5387,35 @@ const TerminationReasonCodeImagePullPermissionDenied TerminationReasonCode = `IM
 
 const TerminationReasonCodeInactivity TerminationReasonCode = `INACTIVITY`
 
+const TerminationReasonCodeInitContainerNotFinished TerminationReasonCode = `INIT_CONTAINER_NOT_FINISHED`
+
 const TerminationReasonCodeInitScriptFailure TerminationReasonCode = `INIT_SCRIPT_FAILURE`
 
 const TerminationReasonCodeInstancePoolClusterFailure TerminationReasonCode = `INSTANCE_POOL_CLUSTER_FAILURE`
 
+const TerminationReasonCodeInstancePoolMaxCapacityReached TerminationReasonCode = `INSTANCE_POOL_MAX_CAPACITY_REACHED`
+
+const TerminationReasonCodeInstancePoolNotFound TerminationReasonCode = `INSTANCE_POOL_NOT_FOUND`
+
 const TerminationReasonCodeInstanceUnreachable TerminationReasonCode = `INSTANCE_UNREACHABLE`
+
+const TerminationReasonCodeInstanceUnreachableDueToMisconfig TerminationReasonCode = `INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG`
+
+const TerminationReasonCodeInternalCapacityFailure TerminationReasonCode = `INTERNAL_CAPACITY_FAILURE`
 
 const TerminationReasonCodeInternalError TerminationReasonCode = `INTERNAL_ERROR`
 
 const TerminationReasonCodeInvalidArgument TerminationReasonCode = `INVALID_ARGUMENT`
 
+const TerminationReasonCodeInvalidAwsParameter TerminationReasonCode = `INVALID_AWS_PARAMETER`
+
+const TerminationReasonCodeInvalidInstancePlacementProtocol TerminationReasonCode = `INVALID_INSTANCE_PLACEMENT_PROTOCOL`
+
 const TerminationReasonCodeInvalidSparkImage TerminationReasonCode = `INVALID_SPARK_IMAGE`
+
+const TerminationReasonCodeInvalidWorkerImageFailure TerminationReasonCode = `INVALID_WORKER_IMAGE_FAILURE`
+
+const TerminationReasonCodeInPenaltyBox TerminationReasonCode = `IN_PENALTY_BOX`
 
 const TerminationReasonCodeIpExhaustionFailure TerminationReasonCode = `IP_EXHAUSTION_FAILURE`
 
@@ -5256,27 +5425,47 @@ const TerminationReasonCodeK8sAutoscalingFailure TerminationReasonCode = `K8S_AU
 
 const TerminationReasonCodeK8sDbrClusterLaunchTimeout TerminationReasonCode = `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`
 
+const TerminationReasonCodeLazyAllocationTimeout TerminationReasonCode = `LAZY_ALLOCATION_TIMEOUT`
+
+const TerminationReasonCodeMaintenanceMode TerminationReasonCode = `MAINTENANCE_MODE`
+
 const TerminationReasonCodeMetastoreComponentUnhealthy TerminationReasonCode = `METASTORE_COMPONENT_UNHEALTHY`
 
 const TerminationReasonCodeNephosResourceManagement TerminationReasonCode = `NEPHOS_RESOURCE_MANAGEMENT`
+
+const TerminationReasonCodeNetvisorSetupTimeout TerminationReasonCode = `NETVISOR_SETUP_TIMEOUT`
 
 const TerminationReasonCodeNetworkConfigurationFailure TerminationReasonCode = `NETWORK_CONFIGURATION_FAILURE`
 
 const TerminationReasonCodeNfsMountFailure TerminationReasonCode = `NFS_MOUNT_FAILURE`
 
+const TerminationReasonCodeNoMatchedK8s TerminationReasonCode = `NO_MATCHED_K8S`
+
+const TerminationReasonCodeNoMatchedK8sTestingTag TerminationReasonCode = `NO_MATCHED_K8S_TESTING_TAG`
+
 const TerminationReasonCodeNpipTunnelSetupFailure TerminationReasonCode = `NPIP_TUNNEL_SETUP_FAILURE`
 
 const TerminationReasonCodeNpipTunnelTokenFailure TerminationReasonCode = `NPIP_TUNNEL_TOKEN_FAILURE`
 
+const TerminationReasonCodePodAssignmentFailure TerminationReasonCode = `POD_ASSIGNMENT_FAILURE`
+
+const TerminationReasonCodePodSchedulingFailure TerminationReasonCode = `POD_SCHEDULING_FAILURE`
+
 const TerminationReasonCodeRequestRejected TerminationReasonCode = `REQUEST_REJECTED`
 
 const TerminationReasonCodeRequestThrottled TerminationReasonCode = `REQUEST_THROTTLED`
+
+const TerminationReasonCodeResourceUsageBlocked TerminationReasonCode = `RESOURCE_USAGE_BLOCKED`
+
+const TerminationReasonCodeSecretCreationFailure TerminationReasonCode = `SECRET_CREATION_FAILURE`
 
 const TerminationReasonCodeSecretResolutionError TerminationReasonCode = `SECRET_RESOLUTION_ERROR`
 
 const TerminationReasonCodeSecurityDaemonRegistrationException TerminationReasonCode = `SECURITY_DAEMON_REGISTRATION_EXCEPTION`
 
 const TerminationReasonCodeSelfBootstrapFailure TerminationReasonCode = `SELF_BOOTSTRAP_FAILURE`
+
+const TerminationReasonCodeServerlessLongRunningTerminated TerminationReasonCode = `SERVERLESS_LONG_RUNNING_TERMINATED`
 
 const TerminationReasonCodeSkippedSlowNodes TerminationReasonCode = `SKIPPED_SLOW_NODES`
 
@@ -5286,11 +5475,23 @@ const TerminationReasonCodeSparkError TerminationReasonCode = `SPARK_ERROR`
 
 const TerminationReasonCodeSparkImageDownloadFailure TerminationReasonCode = `SPARK_IMAGE_DOWNLOAD_FAILURE`
 
+const TerminationReasonCodeSparkImageDownloadThrottled TerminationReasonCode = `SPARK_IMAGE_DOWNLOAD_THROTTLED`
+
+const TerminationReasonCodeSparkImageNotFound TerminationReasonCode = `SPARK_IMAGE_NOT_FOUND`
+
 const TerminationReasonCodeSparkStartupFailure TerminationReasonCode = `SPARK_STARTUP_FAILURE`
 
 const TerminationReasonCodeSpotInstanceTermination TerminationReasonCode = `SPOT_INSTANCE_TERMINATION`
 
+const TerminationReasonCodeSshBootstrapFailure TerminationReasonCode = `SSH_BOOTSTRAP_FAILURE`
+
 const TerminationReasonCodeStorageDownloadFailure TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE`
+
+const TerminationReasonCodeStorageDownloadFailureDueToMisconfig TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG`
+
+const TerminationReasonCodeStorageDownloadFailureSlow TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE_SLOW`
+
+const TerminationReasonCodeStorageDownloadFailureThrottled TerminationReasonCode = `STORAGE_DOWNLOAD_FAILURE_THROTTLED`
 
 const TerminationReasonCodeStsClientSetupFailure TerminationReasonCode = `STS_CLIENT_SETUP_FAILURE`
 
@@ -5302,11 +5503,15 @@ const TerminationReasonCodeTrialExpired TerminationReasonCode = `TRIAL_EXPIRED`
 
 const TerminationReasonCodeUnexpectedLaunchFailure TerminationReasonCode = `UNEXPECTED_LAUNCH_FAILURE`
 
+const TerminationReasonCodeUnexpectedPodRecreation TerminationReasonCode = `UNEXPECTED_POD_RECREATION`
+
 const TerminationReasonCodeUnknown TerminationReasonCode = `UNKNOWN`
 
 const TerminationReasonCodeUnsupportedInstanceType TerminationReasonCode = `UNSUPPORTED_INSTANCE_TYPE`
 
 const TerminationReasonCodeUpdateInstanceProfileFailure TerminationReasonCode = `UPDATE_INSTANCE_PROFILE_FAILURE`
+
+const TerminationReasonCodeUserInitiatedVmTermination TerminationReasonCode = `USER_INITIATED_VM_TERMINATION`
 
 const TerminationReasonCodeUserRequest TerminationReasonCode = `USER_REQUEST`
 
@@ -5316,6 +5521,8 @@ const TerminationReasonCodeWorkspaceCancelledError TerminationReasonCode = `WORK
 
 const TerminationReasonCodeWorkspaceConfigurationError TerminationReasonCode = `WORKSPACE_CONFIGURATION_ERROR`
 
+const TerminationReasonCodeWorkspaceUpdate TerminationReasonCode = `WORKSPACE_UPDATE`
+
 // String representation for [fmt.Print]
 func (f *TerminationReasonCode) String() string {
 	return string(*f)
@@ -5324,11 +5531,11 @@ func (f *TerminationReasonCode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationReasonCode) Set(v string) error {
 	switch v {
-	case `ABUSE_DETECTED`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_SHUTDOWN`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `DATABASE_CONNECTION_FAILURE`, `DBFS_COMPONENT_UNHEALTHY`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `EXECUTION_COMPONENT_UNHEALTHY`, `GCP_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_UNREACHABLE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_SPARK_IMAGE`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `STORAGE_DOWNLOAD_FAILURE`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`:
+	case `ABUSE_DETECTED`, `ACCESS_TOKEN_FAILURE`, `ALLOCATION_TIMEOUT`, `ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY`, `ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_READY_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS`, `ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS`, `ATTACH_PROJECT_FAILURE`, `AWS_AUTHORIZATION_FAILURE`, `AWS_INACCESSIBLE_KMS_KEY_FAILURE`, `AWS_INSTANCE_PROFILE_UPDATE_FAILURE`, `AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE`, `AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE`, `AWS_INVALID_KEY_PAIR`, `AWS_INVALID_KMS_KEY_STATE`, `AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE`, `AWS_REQUEST_LIMIT_EXCEEDED`, `AWS_RESOURCE_QUOTA_EXCEEDED`, `AWS_UNSUPPORTED_FAILURE`, `AZURE_BYOK_KEY_PERMISSION_FAILURE`, `AZURE_EPHEMERAL_DISK_FAILURE`, `AZURE_INVALID_DEPLOYMENT_TEMPLATE`, `AZURE_OPERATION_NOT_ALLOWED_EXCEPTION`, `AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE`, `AZURE_QUOTA_EXCEEDED_EXCEPTION`, `AZURE_RESOURCE_MANAGER_THROTTLING`, `AZURE_RESOURCE_PROVIDER_THROTTLING`, `AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE`, `AZURE_VM_EXTENSION_FAILURE`, `AZURE_VNET_CONFIGURATION_FAILURE`, `BOOTSTRAP_TIMEOUT`, `BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION`, `BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG`, `BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED`, `BUDGET_POLICY_RESOLUTION_FAILURE`, `CLOUD_ACCOUNT_SETUP_FAILURE`, `CLOUD_OPERATION_CANCELLED`, `CLOUD_PROVIDER_DISK_SETUP_FAILURE`, `CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED`, `CLOUD_PROVIDER_LAUNCH_FAILURE`, `CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT`, `CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG`, `CLOUD_PROVIDER_SHUTDOWN`, `CLUSTER_OPERATION_THROTTLED`, `CLUSTER_OPERATION_TIMEOUT`, `COMMUNICATION_LOST`, `CONTAINER_LAUNCH_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE`, `CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG`, `DATABASE_CONNECTION_FAILURE`, `DATA_ACCESS_CONFIG_CHANGED`, `DBFS_COMPONENT_UNHEALTHY`, `DISASTER_RECOVERY_REPLICATION`, `DOCKER_IMAGE_PULL_FAILURE`, `DRIVER_EVICTION`, `DRIVER_LAUNCH_TIMEOUT`, `DRIVER_NODE_UNREACHABLE`, `DRIVER_OUT_OF_DISK`, `DRIVER_OUT_OF_MEMORY`, `DRIVER_POD_CREATION_FAILURE`, `DRIVER_UNEXPECTED_FAILURE`, `DRIVER_UNREACHABLE`, `DRIVER_UNRESPONSIVE`, `DYNAMIC_SPARK_CONF_SIZE_EXCEEDED`, `EOS_SPARK_IMAGE`, `EXECUTION_COMPONENT_UNHEALTHY`, `EXECUTOR_POD_UNSCHEDULED`, `GCP_API_RATE_QUOTA_EXCEEDED`, `GCP_FORBIDDEN`, `GCP_IAM_TIMEOUT`, `GCP_INACCESSIBLE_KMS_KEY_FAILURE`, `GCP_INSUFFICIENT_CAPACITY`, `GCP_IP_SPACE_EXHAUSTED`, `GCP_KMS_KEY_PERMISSION_DENIED`, `GCP_NOT_FOUND`, `GCP_QUOTA_EXCEEDED`, `GCP_RESOURCE_QUOTA_EXCEEDED`, `GCP_SERVICE_ACCOUNT_ACCESS_DENIED`, `GCP_SERVICE_ACCOUNT_DELETED`, `GCP_SERVICE_ACCOUNT_NOT_FOUND`, `GCP_SUBNET_NOT_READY`, `GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED`, `GKE_BASED_CLUSTER_TERMINATION`, `GLOBAL_INIT_SCRIPT_FAILURE`, `HIVE_METASTORE_PROVISIONING_FAILURE`, `IMAGE_PULL_PERMISSION_DENIED`, `INACTIVITY`, `INIT_CONTAINER_NOT_FINISHED`, `INIT_SCRIPT_FAILURE`, `INSTANCE_POOL_CLUSTER_FAILURE`, `INSTANCE_POOL_MAX_CAPACITY_REACHED`, `INSTANCE_POOL_NOT_FOUND`, `INSTANCE_UNREACHABLE`, `INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG`, `INTERNAL_CAPACITY_FAILURE`, `INTERNAL_ERROR`, `INVALID_ARGUMENT`, `INVALID_AWS_PARAMETER`, `INVALID_INSTANCE_PLACEMENT_PROTOCOL`, `INVALID_SPARK_IMAGE`, `INVALID_WORKER_IMAGE_FAILURE`, `IN_PENALTY_BOX`, `IP_EXHAUSTION_FAILURE`, `JOB_FINISHED`, `K8S_AUTOSCALING_FAILURE`, `K8S_DBR_CLUSTER_LAUNCH_TIMEOUT`, `LAZY_ALLOCATION_TIMEOUT`, `MAINTENANCE_MODE`, `METASTORE_COMPONENT_UNHEALTHY`, `NEPHOS_RESOURCE_MANAGEMENT`, `NETVISOR_SETUP_TIMEOUT`, `NETWORK_CONFIGURATION_FAILURE`, `NFS_MOUNT_FAILURE`, `NO_MATCHED_K8S`, `NO_MATCHED_K8S_TESTING_TAG`, `NPIP_TUNNEL_SETUP_FAILURE`, `NPIP_TUNNEL_TOKEN_FAILURE`, `POD_ASSIGNMENT_FAILURE`, `POD_SCHEDULING_FAILURE`, `REQUEST_REJECTED`, `REQUEST_THROTTLED`, `RESOURCE_USAGE_BLOCKED`, `SECRET_CREATION_FAILURE`, `SECRET_RESOLUTION_ERROR`, `SECURITY_DAEMON_REGISTRATION_EXCEPTION`, `SELF_BOOTSTRAP_FAILURE`, `SERVERLESS_LONG_RUNNING_TERMINATED`, `SKIPPED_SLOW_NODES`, `SLOW_IMAGE_DOWNLOAD`, `SPARK_ERROR`, `SPARK_IMAGE_DOWNLOAD_FAILURE`, `SPARK_IMAGE_DOWNLOAD_THROTTLED`, `SPARK_IMAGE_NOT_FOUND`, `SPARK_STARTUP_FAILURE`, `SPOT_INSTANCE_TERMINATION`, `SSH_BOOTSTRAP_FAILURE`, `STORAGE_DOWNLOAD_FAILURE`, `STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG`, `STORAGE_DOWNLOAD_FAILURE_SLOW`, `STORAGE_DOWNLOAD_FAILURE_THROTTLED`, `STS_CLIENT_SETUP_FAILURE`, `SUBNET_EXHAUSTED_FAILURE`, `TEMPORARILY_UNAVAILABLE`, `TRIAL_EXPIRED`, `UNEXPECTED_LAUNCH_FAILURE`, `UNEXPECTED_POD_RECREATION`, `UNKNOWN`, `UNSUPPORTED_INSTANCE_TYPE`, `UPDATE_INSTANCE_PROFILE_FAILURE`, `USER_INITIATED_VM_TERMINATION`, `USER_REQUEST`, `WORKER_SETUP_FAILURE`, `WORKSPACE_CANCELLED_ERROR`, `WORKSPACE_CONFIGURATION_ERROR`, `WORKSPACE_UPDATE`:
 		*f = TerminationReasonCode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ABUSE_DETECTED", "ATTACH_PROJECT_FAILURE", "AWS_AUTHORIZATION_FAILURE", "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE", "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE", "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE", "AWS_REQUEST_LIMIT_EXCEEDED", "AWS_UNSUPPORTED_FAILURE", "AZURE_BYOK_KEY_PERMISSION_FAILURE", "AZURE_EPHEMERAL_DISK_FAILURE", "AZURE_INVALID_DEPLOYMENT_TEMPLATE", "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION", "AZURE_QUOTA_EXCEEDED_EXCEPTION", "AZURE_RESOURCE_MANAGER_THROTTLING", "AZURE_RESOURCE_PROVIDER_THROTTLING", "AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE", "AZURE_VM_EXTENSION_FAILURE", "AZURE_VNET_CONFIGURATION_FAILURE", "BOOTSTRAP_TIMEOUT", "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION", "CLOUD_PROVIDER_DISK_SETUP_FAILURE", "CLOUD_PROVIDER_LAUNCH_FAILURE", "CLOUD_PROVIDER_RESOURCE_STOCKOUT", "CLOUD_PROVIDER_SHUTDOWN", "COMMUNICATION_LOST", "CONTAINER_LAUNCH_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE", "DATABASE_CONNECTION_FAILURE", "DBFS_COMPONENT_UNHEALTHY", "DOCKER_IMAGE_PULL_FAILURE", "DRIVER_UNREACHABLE", "DRIVER_UNRESPONSIVE", "EXECUTION_COMPONENT_UNHEALTHY", "GCP_QUOTA_EXCEEDED", "GCP_SERVICE_ACCOUNT_DELETED", "GLOBAL_INIT_SCRIPT_FAILURE", "HIVE_METASTORE_PROVISIONING_FAILURE", "IMAGE_PULL_PERMISSION_DENIED", "INACTIVITY", "INIT_SCRIPT_FAILURE", "INSTANCE_POOL_CLUSTER_FAILURE", "INSTANCE_UNREACHABLE", "INTERNAL_ERROR", "INVALID_ARGUMENT", "INVALID_SPARK_IMAGE", "IP_EXHAUSTION_FAILURE", "JOB_FINISHED", "K8S_AUTOSCALING_FAILURE", "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT", "METASTORE_COMPONENT_UNHEALTHY", "NEPHOS_RESOURCE_MANAGEMENT", "NETWORK_CONFIGURATION_FAILURE", "NFS_MOUNT_FAILURE", "NPIP_TUNNEL_SETUP_FAILURE", "NPIP_TUNNEL_TOKEN_FAILURE", "REQUEST_REJECTED", "REQUEST_THROTTLED", "SECRET_RESOLUTION_ERROR", "SECURITY_DAEMON_REGISTRATION_EXCEPTION", "SELF_BOOTSTRAP_FAILURE", "SKIPPED_SLOW_NODES", "SLOW_IMAGE_DOWNLOAD", "SPARK_ERROR", "SPARK_IMAGE_DOWNLOAD_FAILURE", "SPARK_STARTUP_FAILURE", "SPOT_INSTANCE_TERMINATION", "STORAGE_DOWNLOAD_FAILURE", "STS_CLIENT_SETUP_FAILURE", "SUBNET_EXHAUSTED_FAILURE", "TEMPORARILY_UNAVAILABLE", "TRIAL_EXPIRED", "UNEXPECTED_LAUNCH_FAILURE", "UNKNOWN", "UNSUPPORTED_INSTANCE_TYPE", "UPDATE_INSTANCE_PROFILE_FAILURE", "USER_REQUEST", "WORKER_SETUP_FAILURE", "WORKSPACE_CANCELLED_ERROR", "WORKSPACE_CONFIGURATION_ERROR"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ABUSE_DETECTED", "ACCESS_TOKEN_FAILURE", "ALLOCATION_TIMEOUT", "ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY", "ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS", "ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS", "ALLOCATION_TIMEOUT_NO_READY_CLUSTERS", "ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS", "ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS", "ATTACH_PROJECT_FAILURE", "AWS_AUTHORIZATION_FAILURE", "AWS_INACCESSIBLE_KMS_KEY_FAILURE", "AWS_INSTANCE_PROFILE_UPDATE_FAILURE", "AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE", "AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE", "AWS_INVALID_KEY_PAIR", "AWS_INVALID_KMS_KEY_STATE", "AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE", "AWS_REQUEST_LIMIT_EXCEEDED", "AWS_RESOURCE_QUOTA_EXCEEDED", "AWS_UNSUPPORTED_FAILURE", "AZURE_BYOK_KEY_PERMISSION_FAILURE", "AZURE_EPHEMERAL_DISK_FAILURE", "AZURE_INVALID_DEPLOYMENT_TEMPLATE", "AZURE_OPERATION_NOT_ALLOWED_EXCEPTION", "AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE", "AZURE_QUOTA_EXCEEDED_EXCEPTION", "AZURE_RESOURCE_MANAGER_THROTTLING", "AZURE_RESOURCE_PROVIDER_THROTTLING", "AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE", "AZURE_VM_EXTENSION_FAILURE", "AZURE_VNET_CONFIGURATION_FAILURE", "BOOTSTRAP_TIMEOUT", "BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION", "BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG", "BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED", "BUDGET_POLICY_RESOLUTION_FAILURE", "CLOUD_ACCOUNT_SETUP_FAILURE", "CLOUD_OPERATION_CANCELLED", "CLOUD_PROVIDER_DISK_SETUP_FAILURE", "CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED", "CLOUD_PROVIDER_LAUNCH_FAILURE", "CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG", "CLOUD_PROVIDER_RESOURCE_STOCKOUT", "CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG", "CLOUD_PROVIDER_SHUTDOWN", "CLUSTER_OPERATION_THROTTLED", "CLUSTER_OPERATION_TIMEOUT", "COMMUNICATION_LOST", "CONTAINER_LAUNCH_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE", "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG", "DATABASE_CONNECTION_FAILURE", "DATA_ACCESS_CONFIG_CHANGED", "DBFS_COMPONENT_UNHEALTHY", "DISASTER_RECOVERY_REPLICATION", "DOCKER_IMAGE_PULL_FAILURE", "DRIVER_EVICTION", "DRIVER_LAUNCH_TIMEOUT", "DRIVER_NODE_UNREACHABLE", "DRIVER_OUT_OF_DISK", "DRIVER_OUT_OF_MEMORY", "DRIVER_POD_CREATION_FAILURE", "DRIVER_UNEXPECTED_FAILURE", "DRIVER_UNREACHABLE", "DRIVER_UNRESPONSIVE", "DYNAMIC_SPARK_CONF_SIZE_EXCEEDED", "EOS_SPARK_IMAGE", "EXECUTION_COMPONENT_UNHEALTHY", "EXECUTOR_POD_UNSCHEDULED", "GCP_API_RATE_QUOTA_EXCEEDED", "GCP_FORBIDDEN", "GCP_IAM_TIMEOUT", "GCP_INACCESSIBLE_KMS_KEY_FAILURE", "GCP_INSUFFICIENT_CAPACITY", "GCP_IP_SPACE_EXHAUSTED", "GCP_KMS_KEY_PERMISSION_DENIED", "GCP_NOT_FOUND", "GCP_QUOTA_EXCEEDED", "GCP_RESOURCE_QUOTA_EXCEEDED", "GCP_SERVICE_ACCOUNT_ACCESS_DENIED", "GCP_SERVICE_ACCOUNT_DELETED", "GCP_SERVICE_ACCOUNT_NOT_FOUND", "GCP_SUBNET_NOT_READY", "GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED", "GKE_BASED_CLUSTER_TERMINATION", "GLOBAL_INIT_SCRIPT_FAILURE", "HIVE_METASTORE_PROVISIONING_FAILURE", "IMAGE_PULL_PERMISSION_DENIED", "INACTIVITY", "INIT_CONTAINER_NOT_FINISHED", "INIT_SCRIPT_FAILURE", "INSTANCE_POOL_CLUSTER_FAILURE", "INSTANCE_POOL_MAX_CAPACITY_REACHED", "INSTANCE_POOL_NOT_FOUND", "INSTANCE_UNREACHABLE", "INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG", "INTERNAL_CAPACITY_FAILURE", "INTERNAL_ERROR", "INVALID_ARGUMENT", "INVALID_AWS_PARAMETER", "INVALID_INSTANCE_PLACEMENT_PROTOCOL", "INVALID_SPARK_IMAGE", "INVALID_WORKER_IMAGE_FAILURE", "IN_PENALTY_BOX", "IP_EXHAUSTION_FAILURE", "JOB_FINISHED", "K8S_AUTOSCALING_FAILURE", "K8S_DBR_CLUSTER_LAUNCH_TIMEOUT", "LAZY_ALLOCATION_TIMEOUT", "MAINTENANCE_MODE", "METASTORE_COMPONENT_UNHEALTHY", "NEPHOS_RESOURCE_MANAGEMENT", "NETVISOR_SETUP_TIMEOUT", "NETWORK_CONFIGURATION_FAILURE", "NFS_MOUNT_FAILURE", "NO_MATCHED_K8S", "NO_MATCHED_K8S_TESTING_TAG", "NPIP_TUNNEL_SETUP_FAILURE", "NPIP_TUNNEL_TOKEN_FAILURE", "POD_ASSIGNMENT_FAILURE", "POD_SCHEDULING_FAILURE", "REQUEST_REJECTED", "REQUEST_THROTTLED", "RESOURCE_USAGE_BLOCKED", "SECRET_CREATION_FAILURE", "SECRET_RESOLUTION_ERROR", "SECURITY_DAEMON_REGISTRATION_EXCEPTION", "SELF_BOOTSTRAP_FAILURE", "SERVERLESS_LONG_RUNNING_TERMINATED", "SKIPPED_SLOW_NODES", "SLOW_IMAGE_DOWNLOAD", "SPARK_ERROR", "SPARK_IMAGE_DOWNLOAD_FAILURE", "SPARK_IMAGE_DOWNLOAD_THROTTLED", "SPARK_IMAGE_NOT_FOUND", "SPARK_STARTUP_FAILURE", "SPOT_INSTANCE_TERMINATION", "SSH_BOOTSTRAP_FAILURE", "STORAGE_DOWNLOAD_FAILURE", "STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG", "STORAGE_DOWNLOAD_FAILURE_SLOW", "STORAGE_DOWNLOAD_FAILURE_THROTTLED", "STS_CLIENT_SETUP_FAILURE", "SUBNET_EXHAUSTED_FAILURE", "TEMPORARILY_UNAVAILABLE", "TRIAL_EXPIRED", "UNEXPECTED_LAUNCH_FAILURE", "UNEXPECTED_POD_RECREATION", "UNKNOWN", "UNSUPPORTED_INSTANCE_TYPE", "UPDATE_INSTANCE_PROFILE_FAILURE", "USER_INITIATED_VM_TERMINATION", "USER_REQUEST", "WORKER_SETUP_FAILURE", "WORKSPACE_CANCELLED_ERROR", "WORKSPACE_CONFIGURATION_ERROR", "WORKSPACE_UPDATE"`, v)
 	}
 }
 
@@ -5380,7 +5587,6 @@ type UninstallLibrariesResponse struct {
 }
 
 type UnpinCluster struct {
-	// <needs content added>
 	ClusterId string `json:"cluster_id"`
 }
 
@@ -5392,11 +5598,20 @@ type UpdateCluster struct {
 	Cluster *UpdateClusterResource `json:"cluster,omitempty"`
 	// ID of the cluster.
 	ClusterId string `json:"cluster_id"`
-	// Specifies which fields of the cluster will be updated. This is required
-	// in the POST request. The update mask should be supplied as a single
-	// string. To specify multiple fields, separate them with commas (no
-	// spaces). To delete a field from a cluster configuration, add it to the
-	// `update_mask` string but omit it from the `cluster` object.
+	// Used to specify which cluster attributes and size fields to update. See
+	// https://google.aip.dev/161 for more details.
+	//
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
 	UpdateMask string `json:"update_mask"`
 }
 
@@ -5467,7 +5682,7 @@ type UpdateClusterResource struct {
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
 	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
+	// Custom docker image BYOC
 	DockerImage *DockerImage `json:"docker_image,omitempty"`
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
@@ -5476,6 +5691,11 @@ type UpdateClusterResource struct {
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
+	//
+	// This field, along with node_type_id, should not be set if
+	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
+	// and virtual_cluster_size are specified, driver_node_type_id and
+	// node_type_id take precedence.
 	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
@@ -5581,7 +5801,7 @@ type UpdateClusterResource struct {
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
 	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
+	// Cluster Attributes showing for clusters workload types.
 	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5601,19 +5821,22 @@ type UpdateClusterResponse struct {
 type UpdateResponse struct {
 }
 
+// A storage location back by UC Volumes.
 type VolumesStorageInfo struct {
-	// Unity Catalog volumes file destination, e.g.
-	// `/Volumes/catalog/schema/volume/dir/file`
+	// UC Volumes destination, e.g.
+	// `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or
+	// `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`
 	Destination string `json:"destination"`
 }
 
+// Cluster Attributes showing for clusters workload types.
 type WorkloadType struct {
 	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
 	Clients ClientsTypes `json:"clients"`
 }
 
+// A storage location in Workspace Filesystem (WSFS)
 type WorkspaceStorageInfo struct {
-	// workspace files destination, e.g.
-	// `/Users/user1@databricks.com/my-init.sh`
+	// wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`
 	Destination string `json:"destination"`
 }

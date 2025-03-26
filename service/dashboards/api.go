@@ -46,6 +46,13 @@ type GenieInterface interface {
 	// Execute the SQL query in the message.
 	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
+	// Generate full query result download.
+	//
+	// Initiate full SQL query result download and obtain a transient ID for
+	// tracking the download progress. This call initiates a new SQL execution to
+	// generate the query result.
+	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
+
 	// Get conversation message.
 	//
 	// Get message from conversation.

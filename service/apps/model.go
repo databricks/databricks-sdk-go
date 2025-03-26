@@ -30,11 +30,17 @@ type App struct {
 	Description string `json:"description,omitempty"`
 
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// The effective api scopes granted to the user access token.
+	EffectiveUserApiScopes []string `json:"effective_user_api_scopes,omitempty"`
 	// The unique identifier of the app.
 	Id string `json:"id,omitempty"`
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"name"`
+
+	Oauth2AppClientId string `json:"oauth2_app_client_id,omitempty"`
+
+	Oauth2AppIntegrationId string `json:"oauth2_app_integration_id,omitempty"`
 	// The pending deployment of the app. A deployment is considered pending
 	// when it is being prepared for deployment to the app compute.
 	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
@@ -52,6 +58,8 @@ type App struct {
 	Updater string `json:"updater,omitempty"`
 	// The URL of the app once it is deployed.
 	Url string `json:"url,omitempty"`
+
+	UserApiScopes []string `json:"user_api_scopes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }

@@ -556,6 +556,13 @@ type OidcFederationPolicy struct {
 	// endpoint. Databricks strongly recommends relying on your issuer’s well
 	// known endpoint for discovering public keys.
 	JwksJson string `json:"jwks_json,omitempty"`
+	// URL of the public keys used to validate the signature of federated
+	// tokens, in JWKS format. Most use cases should not need to specify this
+	// field. If jwks_uri and jwks_json are both unspecified (recommended),
+	// Databricks automatically fetches the public keys from your issuer’s
+	// well known endpoint. Databricks strongly recommends relying on your
+	// issuer’s well known endpoint for discovering public keys.
+	JwksUri string `json:"jwks_uri,omitempty"`
 	// The required token subject, as specified in the subject claim of
 	// federated tokens. Must be specified for service principal federation
 	// policies. Must not be specified for account federation policies.
