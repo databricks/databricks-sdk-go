@@ -124,9 +124,13 @@ type ClustersService interface {
 	// Create new cluster.
 	//
 	// Creates a new Spark cluster. This method will acquire new instances from
-	// the cloud provider if necessary. Note: Databricks may not be able to
-	// acquire some of the requested nodes, due to cloud provider limitations
-	// (account limits, spot price, etc.) or transient network issues.
+	// the cloud provider if necessary. This method is asynchronous; the
+	// returned ``cluster_id`` can be used to poll the cluster status. When this
+	// method returns, the cluster will be in a ``PENDING`` state. The cluster
+	// will be usable once it enters a ``RUNNING`` state. Note: Databricks may
+	// not be able to acquire some of the requested nodes, due to cloud provider
+	// limitations (account limits, spot price, etc.) or transient network
+	// issues.
 	//
 	// If Databricks acquires at least 85% of the requested on-demand nodes,
 	// cluster creation will succeed. Otherwise the cluster will terminate with
@@ -168,7 +172,7 @@ type ClustersService interface {
 	//
 	// Retrieves a list of events about the activity of a cluster. This API is
 	// paginated. If there are more events to read, the response includes all
-	// the nparameters necessary to request the next page of events.
+	// the parameters necessary to request the next page of events.
 	//
 	// Use EventsAll() to get all ClusterEvent instances, which will iterate over every result page.
 	Events(ctx context.Context, request GetEvents) (*GetEventsResponse, error)
@@ -257,14 +261,12 @@ type ClustersService interface {
 	// Start terminated cluster.
 	//
 	// Starts a terminated Spark cluster with the supplied ID. This works
-	// similar to `createCluster` except:
-	//
-	// * The previous cluster id and attributes are preserved. * The cluster
-	// starts with the last specified cluster size. * If the previous cluster
-	// was an autoscaling cluster, the current cluster starts with the minimum
-	// number of nodes. * If the cluster is not currently in a `TERMINATED`
-	// state, nothing will happen. * Clusters launched to run a job cannot be
-	// started.
+	// similar to `createCluster` except: - The previous cluster id and
+	// attributes are preserved. - The cluster starts with the last specified
+	// cluster size. - If the previous cluster was an autoscaling cluster, the
+	// current cluster starts with the minimum number of nodes. - If the cluster
+	// is not currently in a ``TERMINATED`` state, nothing will happen. -
+	// Clusters launched to run a job cannot be started.
 	Start(ctx context.Context, request StartCluster) error
 
 	// Unpin cluster.

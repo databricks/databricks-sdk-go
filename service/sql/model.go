@@ -1811,6 +1811,53 @@ func (s ExternalLink) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type ExternalQuerySource struct {
+	// The canonical identifier for this SQL alert
+	AlertId string `json:"alert_id,omitempty"`
+	// The canonical identifier for this Lakeview dashboard
+	DashboardId string `json:"dashboard_id,omitempty"`
+	// The canonical identifier for this Genie space
+	GenieSpaceId string `json:"genie_space_id,omitempty"`
+
+	JobInfo *ExternalQuerySourceJobInfo `json:"job_info,omitempty"`
+	// The canonical identifier for this legacy dashboard
+	LegacyDashboardId string `json:"legacy_dashboard_id,omitempty"`
+	// The canonical identifier for this notebook
+	NotebookId string `json:"notebook_id,omitempty"`
+	// The canonical identifier for this SQL query
+	SqlQueryId string `json:"sql_query_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalQuerySource) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalQuerySource) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ExternalQuerySourceJobInfo struct {
+	// The canonical identifier for this job.
+	JobId string `json:"job_id,omitempty"`
+	// The canonical identifier of the run. This ID is unique across all runs of
+	// all jobs.
+	JobRunId string `json:"job_run_id,omitempty"`
+	// The canonical identifier of the task run.
+	JobTaskRunId string `json:"job_task_run_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ExternalQuerySourceJobInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ExternalQuerySourceJobInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type Format string
 
 const FormatArrowStream Format = `ARROW_STREAM`
@@ -3141,6 +3188,10 @@ type QueryInfo struct {
 	QueryEndTimeMs int64 `json:"query_end_time_ms,omitempty"`
 	// The query ID.
 	QueryId string `json:"query_id,omitempty"`
+	// A struct that contains key-value pairs representing Databricks entities
+	// that were involved in the execution of this statement, such as jobs,
+	// notebooks, or dashboards. This field only records Databricks entities.
+	QuerySource *ExternalQuerySource `json:"query_source,omitempty"`
 	// The time the query started.
 	QueryStartTimeMs int64 `json:"query_start_time_ms,omitempty"`
 	// The text of the query.
