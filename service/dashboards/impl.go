@@ -48,6 +48,16 @@ func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecut
 	return &genieGetMessageQueryResultResponse, err
 }
 
+func (a *genieImpl) GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error) {
+	var genieGenerateDownloadFullQueryResultResponse GenieGenerateDownloadFullQueryResultResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/generate-download", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGenerateDownloadFullQueryResultResponse)
+	return &genieGenerateDownloadFullQueryResultResponse, err
+}
+
 func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error) {
 	var genieMessage GenieMessage
 	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v", request.SpaceId, request.ConversationId, request.MessageId)

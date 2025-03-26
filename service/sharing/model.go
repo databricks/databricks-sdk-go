@@ -222,41 +222,7 @@ type DeltaSharingDependencyList struct {
 	Dependencies []DeltaSharingDependency `json:"dependencies,omitempty"`
 }
 
-// A Function in UC as a dependency.
-type DeltaSharingFunctionDependency struct {
-	FunctionName string `json:"function_name,omitempty"`
-
-	SchemaName string `json:"schema_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *DeltaSharingFunctionDependency) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeltaSharingFunctionDependency) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// A Table in UC as a dependency.
-type DeltaSharingTableDependency struct {
-	SchemaName string `json:"schema_name,omitempty"`
-
-	TableName string `json:"table_name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *DeltaSharingTableDependency) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeltaSharingTableDependency) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type Function struct {
+type DeltaSharingFunction struct {
 	// The aliass of registered model.
 	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
 	// The comment of the function.
@@ -293,11 +259,45 @@ type Function struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *Function) UnmarshalJSON(b []byte) error {
+func (s *DeltaSharingFunction) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s Function) MarshalJSON() ([]byte, error) {
+func (s DeltaSharingFunction) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A Function in UC as a dependency.
+type DeltaSharingFunctionDependency struct {
+	FunctionName string `json:"function_name,omitempty"`
+
+	SchemaName string `json:"schema_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeltaSharingFunctionDependency) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeltaSharingFunctionDependency) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A Table in UC as a dependency.
+type DeltaSharingTableDependency struct {
+	SchemaName string `json:"schema_name,omitempty"`
+
+	TableName string `json:"table_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeltaSharingTableDependency) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeltaSharingTableDependency) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -513,7 +513,7 @@ func (s ListProviderShareAssetsRequest) MarshalJSON() ([]byte, error) {
 // share.
 type ListProviderShareAssetsResponse struct {
 	// The list of functions in the share.
-	Functions []Function `json:"functions,omitempty"`
+	Functions []DeltaSharingFunction `json:"functions,omitempty"`
 	// The list of notebooks in the share.
 	Notebooks []NotebookFile `json:"notebooks,omitempty"`
 	// The list of tables in the share.
