@@ -332,13 +332,17 @@ def is_tag_applied(tag: TagInfo) -> bool:
     :raises Exception: If the git command fails.
     """
     try:
-        # Check if the specific tag exists
-        result = subprocess.run(
-            ['git', 'tag', '--list', tag.tag_name()], stderr=subprocess.PIPE, capture_output=True, text=True, shell=False, check=True)
-        return result.stdout.strip() == tag.tag_name()
+        # Check if the specific tag exists - use run_command for consistent security practices
+        tag_name = tag.tag_name()
+        # Validate tag_name to prevent command injection
+        if not re.match(r'^[\w\-./]+$', tag_name):
+            raise ValueError(f"Invalid tag name format: {tag_name}")
+            
+        result = run_command(['git', 'tag', '--list', tag_name])
+        return result.strip() == tag_name
     except subprocess.CalledProcessError as e:
         # Raise a exception for git command errors
-        raise Exception(f"Git command failed: {e.stderr.strip() or e}") from e
+        raise Exception(f"Git command failed: {e}") from e
 
 
 def find_last_tags() -> List[TagInfo]:
@@ -404,7 +408,8 @@ def reset_repository(hash: Optional[str] = None) -> None:
     :param hash: The commit hash to reset to. If None, it resets to HEAD.
     """
     # Fetch the latest changes from the remote repository
-    subprocess.run(['git', 'fetch'], shell=False, check=True)
+    # Use run_command for consistent security practices
+    run_command(['git', 'fetch'])
 
     # Determine the commit hash (default to origin/main if none is provided)
     commit_hash = hash or 'origin/main'
@@ -415,8 +420,8 @@ def reset_repository(hash: Optional[str] = None) -> None:
     # Construct the Git reset command
     command = ['git', 'reset', '--hard', commit_hash]
 
-    # Execute the git reset command
-    subprocess.run(command, check=True, shell=False)
+    # Execute the git reset command using the secure run_command function
+    run_command(command)
 
 
 def retry_function(func: Callable[[], List[TagInfo]],
@@ -470,8 +475,24 @@ def push_tags(tag_infos: List[TagInfo]) -> None:
 
 def run_command(command: List[str]) -> str:
     """
-    Runs a command and returns the output safely without shell interpretation
+    Runs a command and returns the output safely without shell interpretation.
+    This function ensures commands are executed securely by:
+    1. Using shell=False to prevent shell injection
+    2. Accepting only a list of strings to avoid string concatenation vulnerabilities
+    3. Validating input to ensure no unexpected command execution
+    
+    :param command: A list of strings representing the command and its arguments
+    :return: The standard output of the command as a string
+    :raises subprocess.CalledProcessError: If the command returns a non-zero exit code
     """
+    # Validate that command is a list of strings
+    if not isinstance(command, list) or not all(isinstance(item, str) for item in command):
+        raise TypeError("Command must be a list of strings")
+    
+    # Validate that the command is not empty
+    if not command:
+        raise ValueError("Command cannot be empty")
+    
     print(f'Running command: {" ".join(command)}')
     result = subprocess.run(command, capture_output=True, text=True, shell=False, check=True)
     return result.stdout
@@ -482,9 +503,9 @@ def pull_last_release_commit() -> None:
     Reset the repository to the last release. 
     Uses commit for last change to .release_metadata.json, since it's only updated on releases.
     """
-    commit_hash = subprocess.run(
-        ['git', 'log', '-n', '1', '--format=%H', '--', '.release_metadata.json'],
-        text=True, shell=False, capture_output=True, check=True).stdout.strip()
+    # Use the secure run_command function for consistent security practices
+    commit_hash = run_command(
+        ['git', 'log', '-n', '1', '--format=%H', '--', '.release_metadata.json']).strip()
 
     # If no commit is found, raise an exception
     if not commit_hash:
@@ -559,10 +580,10 @@ def validate_git_root():
     """
     Validate that the script is run from the root of the repository.
     """
-    repo_root = subprocess.run(["git", "rev-parse", "--show-toplevel"], 
-                              capture_output=True, shell=False, check=True).stdout.strip().decode("utf-8")
-    current_dir = subprocess.run(["pwd"], 
-                               capture_output=True, shell=False, check=True).stdout.strip().decode("utf-8")
+    # Use the secure run_command function for consistent security practices
+    repo_root = run_command(["git", "rev-parse", "--show-toplevel"]).strip()
+    # Use os.getcwd() instead of running 'pwd' command for better security and portability
+    current_dir = os.getcwd()
     if repo_root != current_dir:
         raise Exception("Please run this script from the root of the repository.")
 
