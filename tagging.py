@@ -480,10 +480,13 @@ def run_command(command: List[str]) -> str:
     1. Using shell=False to prevent shell injection
     2. Accepting only a list of strings to avoid string concatenation vulnerabilities
     3. Validating input to ensure no unexpected command execution
+    4. Sanitizing command arguments to prevent injection attacks
     
     :param command: A list of strings representing the command and its arguments
     :return: The standard output of the command as a string
     :raises subprocess.CalledProcessError: If the command returns a non-zero exit code
+    :raises ValueError: If the command is empty or contains invalid characters
+    :raises TypeError: If the command is not a list of strings
     """
     # Validate that command is a list of strings
     if not isinstance(command, list) or not all(isinstance(item, str) for item in command):
@@ -492,6 +495,19 @@ def run_command(command: List[str]) -> str:
     # Validate that the command is not empty
     if not command:
         raise ValueError("Command cannot be empty")
+    
+    # Validate each argument to prevent command injection
+    # First argument (the command itself) should be validated separately
+    if len(command) > 0:
+        # Validate the command name - should be a simple command without shell metacharacters
+        if not re.match(r'^[\w\-./]+$', command[0]):
+            raise ValueError(f"Invalid command format: {command[0]}")
+        
+        # Validate command arguments - more permissive but still restricted
+        for i, arg in enumerate(command[1:], 1):
+            # Allow common characters in arguments but restrict potentially dangerous ones
+            if '\0' in arg or ';' in arg or '|' in arg or '&' in arg or '`' in arg:
+                raise ValueError(f"Potentially unsafe character in argument {i}: {arg}")
     
     print(f'Running command: {" ".join(command)}')
     result = subprocess.run(command, capture_output=True, text=True, shell=False, check=True)
