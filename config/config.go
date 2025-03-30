@@ -282,6 +282,8 @@ func (c *Config) IsAccountClient() bool {
 	accountsPrefixes := []string{
 		"https://accounts.",
 		"https://accounts-dod.",
+		// "accounts.",
+		// "accounts-dod.",
 	}
 	for _, prefix := range accountsPrefixes {
 		if strings.HasPrefix(c.Host, prefix) {
