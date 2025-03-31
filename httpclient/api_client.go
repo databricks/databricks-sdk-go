@@ -73,10 +73,10 @@ func (cfg ClientConfig) httpTransport() http.RoundTripper {
 }
 
 func NewApiClient(cfg ClientConfig) *ApiClient {
-	cfg.HTTPTimeout = time.Duration(orDefault(int(cfg.HTTPTimeout), int(30*time.Second)))
+	cfg.HTTPTimeout = time.Duration(orDefault(int64(cfg.HTTPTimeout), int64(30*time.Second)))
 	cfg.DebugTruncateBytes = orDefault(cfg.DebugTruncateBytes, 96)
-	cfg.RetryTimeout = time.Duration(orDefault(int(cfg.RetryTimeout), int(5*time.Minute)))
-	cfg.HTTPTimeout = time.Duration(orDefault(int(cfg.HTTPTimeout), int(30*time.Second)))
+	cfg.RetryTimeout = time.Duration(orDefault(int64(cfg.RetryTimeout), int64(5*time.Minute)))
+	cfg.HTTPTimeout = time.Duration(orDefault(int64(cfg.HTTPTimeout), int64(30*time.Second)))
 	if cfg.ErrorMapper == nil {
 		// default generic error mapper
 		cfg.ErrorMapper = DefaultErrorMapper
@@ -392,7 +392,7 @@ func (c *ApiClient) perform(
 	return resp, nil
 }
 
-func orDefault(configured, _default int) int {
+func orDefault(configured, _default int64) int64 {
 	if configured == 0 {
 		return _default
 	}
