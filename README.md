@@ -12,6 +12,7 @@ We are keen to hear feedback from you on these SDKs. Please [file issues](https:
 
 The Databricks SDK for Go includes functionality to accelerate development with [Go](https://go.dev) for the Databricks Lakehouse. It covers all public [Databricks REST API](https://docs.databricks.com/dev-tools/api/index.html) operations. The SDK's internal HTTP client is robust and handles failures on different levels by performing intelligent retries.
 
+
 ## Contents
 
 - [Getting started](#getting-started)
