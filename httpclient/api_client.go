@@ -392,7 +392,11 @@ func (c *ApiClient) perform(
 	return resp, nil
 }
 
-func orDefault(configured, _default int64) int64 {
+type number interface {
+	~int | ~int64 | ~float64 | ~float32
+}
+
+func orDefault[T number](configured, _default T) T {
 	if configured == 0 {
 		return _default
 	}
