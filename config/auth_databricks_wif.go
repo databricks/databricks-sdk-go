@@ -5,107 +5,92 @@ import (
 	"errors"
 	"net/url"
 
-	"github.com/databricks/databricks-sdk-go/config/credentials"
-	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 )
 
-// DatabricksWIFCredentials uses a Token Supplier to get a JWT Token and exchanges
-// it for a Databricks Token.
-//
-// Supported suppliers:
-// - GitHub OIDC
-type DatabricksWIFCredentials struct{}
-
-// Configure implements CredentialsStrategy.
-func (d DatabricksWIFCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	if cfg.Host == "" || cfg.ClientID == "" {
-		return nil, nil
+// Constructs all Workload Identity Federation Credentials Strategies
+func WifTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
+	providers := map[string]TokenProvider{
+		"github-oidc-databricks-wif": &GithubProvider{
+			cfg: cfg,
+		},
+		// Add new providers at the end of the list
 	}
-
-	supplier := GithubOIDCTokenSupplier{
-		cfg: cfg,
+	strategies := []CredentialsStrategy{}
+	for name, provider := range providers {
+		strategies = append(strategies, newWifTokenStrategy(name, cfg, provider))
 	}
+	return strategies
+}
 
-	endpoints, err := cfg.getOidcEndpoints(ctx)
+func newWifTokenStrategy(
+	name string,
+	cfg *Config,
+	tokenProvider TokenProvider,
+) CredentialsStrategy {
+	wifTokenExchange := &wifTokenExchange{
+		cfg:           cfg,
+		tokenProvider: tokenProvider,
+	}
+	return NewTokenSourceStrategy(name, wifTokenExchange)
+}
+
+// wifTokenExchange is a auth.TokenSource which exchanges a token using
+// Workload Identity Federation.
+type wifTokenExchange struct {
+	cfg           *Config
+	tokenProvider TokenProvider
+}
+
+func (w *wifTokenExchange) Token(ctx context.Context) (*oauth2.Token, error) {
+	if w.cfg.ClientID == "" {
+		logger.Debugf(ctx, "Missing cfg.ClientID")
+		return nil, errors.New("missing cfg.ClientID")
+	}
+	if w.cfg.Host == "" {
+		logger.Debugf(ctx, "Missing cfg.Host")
+		return nil, errors.New("missing cfg.Host")
+	}
+	audience, err := w.getAudience(ctx)
 	if err != nil {
 		return nil, err
 	}
-
-	audience := d.getAudience(cfg, endpoints)
-
-	// If no supplier can get an IdToken, skip this CredentialsStrategy
-	idToken, err := supplier.GetOIDCToken(ctx, audience)
+	idToken, err := w.tokenProvider.IDToken(ctx, audience)
 	if err != nil {
 		return nil, err
 	}
-	if idToken == "" {
-		return nil, nil
-	}
-
-	ts := &databricksWIFTokenSource{
-		ctx:             ctx,
-		idTokenSupplier: &supplier,
-		audience:        audience,
-		clientId:        cfg.ClientID,
-		cfg:             cfg,
-		tokenEndpoint:   endpoints.TokenEndpoint,
-	}
-
-	visitor := refreshableVisitor(ts)
-	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
-}
-
-func (d DatabricksWIFCredentials) getAudience(cfg *Config, endpoints *u2m.OAuthAuthorizationServer) string {
-	if cfg.TokenAudience != "" {
-		return cfg.TokenAudience
-	}
-	if cfg.IsAccountClient() {
-		return cfg.AccountID
-	}
-	return endpoints.TokenEndpoint
-}
-
-// Name implements CredentialsStrategy.
-func (d DatabricksWIFCredentials) Name() string {
-	return "databricks-wif"
-}
-
-type databricksWIFTokenSource struct {
-	ctx             context.Context
-	idTokenSupplier *GithubOIDCTokenSupplier
-	tokenEndpoint   string
-	audience        string
-	clientId        string
-	cfg             *Config
-}
-
-func (d *databricksWIFTokenSource) Token() (*oauth2.Token, error) {
-	token, err := d.idTokenSupplier.GetOIDCToken(d.ctx, d.audience)
+	endpoints, err := w.cfg.getOidcEndpoints(ctx)
 	if err != nil {
 		return nil, err
 	}
-	if token == "" {
-		// It should not happen, since we check before constructing the token source.
-		logger.Debugf(d.ctx, "No OIDC token found")
-		return nil, errors.New("cannot get OIDC token")
-	}
-
-	tsConfig := clientcredentials.Config{
-		ClientID:  d.clientId,
+	c := &clientcredentials.Config{
+		ClientID:  w.cfg.ClientID,
 		AuthStyle: oauth2.AuthStyleInParams,
-		TokenURL:  d.tokenEndpoint,
+		TokenURL:  endpoints.TokenEndpoint,
 		Scopes:    []string{"all-apis"},
 		EndpointParams: url.Values{
 			"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
-			"subject_token":      {token},
+			"subject_token":      {idToken.Value},
 			"grant_type":         {"urn:ietf:params:oauth:grant-type:token-exchange"},
 		},
 	}
+	return c.Token(ctx)
+}
 
-	logger.Debugf(d.ctx, "Getting token for client %s", d.clientId)
-
-	return tsConfig.Token(d.ctx)
+func (w *wifTokenExchange) getAudience(ctx context.Context) (string, error) {
+	if w.cfg.TokenAudience != "" {
+		return w.cfg.TokenAudience, nil
+	}
+	// For Databricks Accounts, the account id is the default audience.
+	if w.cfg.IsAccountClient() {
+		return w.cfg.AccountID, nil
+	}
+	// For Databricks Workspaces, the auth endpoint is the default audience.
+	endpoints, err := w.cfg.getOidcEndpoints(ctx)
+	if err != nil {
+		return "", err
+	}
+	return endpoints.TokenEndpoint, nil
 }

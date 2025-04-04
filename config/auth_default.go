@@ -9,23 +9,27 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-var authProviders = []CredentialsStrategy{
-	PatCredentials{},
-	BasicCredentials{},
-	M2mCredentials{},
-	DatabricksCliCredentials,
-	MetadataServiceCredentials{},
-	DatabricksWIFCredentials{},
-
-	// Attempt to configure auth from most specific to most generic (the Azure CLI).
-	AzureGithubOIDCCredentials{},
-	AzureMsiCredentials{},
-	AzureClientSecretCredentials{},
-	AzureCliCredentials{},
-
-	// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
-	GoogleCredentials{},
-	GoogleDefaultCredentials{},
+func buildDefaultStrategies(cfg *Config) []CredentialsStrategy {
+	return append(
+		[]CredentialsStrategy{
+			PatCredentials{},
+			BasicCredentials{},
+			M2mCredentials{},
+			DatabricksCliCredentials,
+			MetadataServiceCredentials{},
+		},
+		// append(
+		// 	WifTokenCredentialStrategies(cfg),
+		// Attempt to configure auth from most specific to most generic (the Azure CLI).
+		AzureGithubOIDCCredentials{},
+		AzureMsiCredentials{},
+		AzureClientSecretCredentials{},
+		AzureCliCredentials{},
+		// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
+		GoogleCredentials{},
+		GoogleDefaultCredentials{},
+		//)...,
+	)
 }
 
 type DefaultCredentials struct {
@@ -46,7 +50,7 @@ var errorMessage = fmt.Sprintf("cannot configure default credentials, please che
 var ErrCannotConfigureAuth = errors.New(errorMessage)
 
 func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	for _, p := range authProviders {
+	for _, p := range buildDefaultStrategies(cfg) {
 		if cfg.AuthType != "" && p.Name() != cfg.AuthType {
 			// ignore other auth types if one is explicitly enforced
 			logger.Infof(ctx, "Ignoring %s auth, because %s is preferred", p.Name(), cfg.AuthType)
