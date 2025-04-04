@@ -30,13 +30,14 @@ func (t *TokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (crede
 	// We don't want to fail here because it's possible that the supplier is enabled
 	// without the user action. For instance, jobs running in GitHub will have
 	// OIDC environment variables added automatically
-	if _, err := t.tokenSource.Token(ctx); err != nil {
+	cached := auth.NewCachedTokenSource(t.tokenSource)
+	if _, err := cached.Token(ctx); err != nil {
 		logger.Debugf(ctx, fmt.Sprintf("Skipping %s due to error: %v", t.name, err))
 		return nil, nil
 	}
 
-	visitor := refreshableVisitor(authconv.OAuth2TokenSource(t.tokenSource))
-	return credentials.NewOAuthCredentialsProvider(visitor, authconv.OAuth2TokenSource(t.tokenSource).Token), nil
+	visitor := refreshableAuthVisitor(cached, ctx)
+	return credentials.NewOAuthCredentialsProvider(visitor, authconv.OAuth2TokenSource(cached).Token), nil
 }
 
 func (t *TokenSourceStrategy) Name() string {
