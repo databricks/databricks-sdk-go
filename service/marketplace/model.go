@@ -658,6 +658,8 @@ type FileParentType string
 
 const FileParentTypeListing FileParentType = `LISTING`
 
+const FileParentTypeListingResource FileParentType = `LISTING_RESOURCE`
+
 const FileParentTypeProvider FileParentType = `PROVIDER`
 
 // String representation for [fmt.Print]
@@ -668,11 +670,11 @@ func (f *FileParentType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *FileParentType) Set(v string) error {
 	switch v {
-	case `LISTING`, `PROVIDER`:
+	case `LISTING`, `LISTING_RESOURCE`, `PROVIDER`:
 		*f = FileParentType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "LISTING", "PROVIDER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "LISTING", "LISTING_RESOURCE", "PROVIDER"`, v)
 	}
 }
 
@@ -1351,7 +1353,7 @@ type Listing struct {
 	Detail *ListingDetail `json:"detail,omitempty"`
 
 	Id string `json:"id,omitempty"`
-	// Next Number: 26
+
 	Summary ListingSummary `json:"summary"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1501,7 +1503,6 @@ func (f *ListingStatus) Type() string {
 	return "ListingStatus"
 }
 
-// Next Number: 26
 type ListingSummary struct {
 	Categories []Category `json:"categories,omitempty"`
 
@@ -1617,6 +1618,8 @@ func (f *ListingType) Type() string {
 
 type MarketplaceFileType string
 
+const MarketplaceFileTypeApp MarketplaceFileType = `APP`
+
 const MarketplaceFileTypeEmbeddedNotebook MarketplaceFileType = `EMBEDDED_NOTEBOOK`
 
 const MarketplaceFileTypeProviderIcon MarketplaceFileType = `PROVIDER_ICON`
@@ -1629,11 +1632,11 @@ func (f *MarketplaceFileType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *MarketplaceFileType) Set(v string) error {
 	switch v {
-	case `EMBEDDED_NOTEBOOK`, `PROVIDER_ICON`:
+	case `APP`, `EMBEDDED_NOTEBOOK`, `PROVIDER_ICON`:
 		*f = MarketplaceFileType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "EMBEDDED_NOTEBOOK", "PROVIDER_ICON"`, v)
+		return fmt.Errorf(`value "%s" is not one of "APP", "EMBEDDED_NOTEBOOK", "PROVIDER_ICON"`, v)
 	}
 }
 

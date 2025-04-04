@@ -2253,6 +2253,8 @@ func (f *PauseStatus) Type() string {
 // Cluster Manager (see cluster-common PerformanceTarget).
 type PerformanceTarget string
 
+const PerformanceTargetBalanced PerformanceTarget = `BALANCED`
+
 const PerformanceTargetCostOptimized PerformanceTarget = `COST_OPTIMIZED`
 
 const PerformanceTargetPerformanceOptimized PerformanceTarget = `PERFORMANCE_OPTIMIZED`
@@ -2265,11 +2267,11 @@ func (f *PerformanceTarget) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PerformanceTarget) Set(v string) error {
 	switch v {
-	case `COST_OPTIMIZED`, `PERFORMANCE_OPTIMIZED`:
+	case `BALANCED`, `COST_OPTIMIZED`, `PERFORMANCE_OPTIMIZED`:
 		*f = PerformanceTarget(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "PERFORMANCE_OPTIMIZED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BALANCED", "COST_OPTIMIZED", "PERFORMANCE_OPTIMIZED"`, v)
 	}
 }
 

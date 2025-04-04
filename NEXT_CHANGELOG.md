@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.61.0
+## Release v0.62.0
 
 ### New Features and Improvements
 * Introduce support for Databricks Workload Identity Federation in GitHub workflows ([1177](https://github.com/databricks/databricks-sdk-go/pull/1177)).
@@ -16,8 +16,5 @@
 ### Documentation
 
 ### Internal Changes
-
-- Stop recommending users to report an issue when the SDK encounters an unknown
-  error ([PR #1189](https://github.com/databricks/databricks-sdk-go/pull/1189)).
 
 ### API Changes

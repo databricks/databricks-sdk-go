@@ -194,7 +194,7 @@ func (a *clustersImpl) Edit(ctx context.Context, request EditCluster) error {
 //
 // Retrieves a list of events about the activity of a cluster. This API is
 // paginated. If there are more events to read, the response includes all the
-// nparameters necessary to request the next page of events.
+// parameters necessary to request the next page of events.
 func (a *clustersImpl) Events(ctx context.Context, request GetEvents) listing.Iterator[ClusterEvent] {
 
 	getNextPage := func(ctx context.Context, req GetEvents) (*GetEventsResponse, error) {
@@ -224,7 +224,7 @@ func (a *clustersImpl) Events(ctx context.Context, request GetEvents) listing.It
 //
 // Retrieves a list of events about the activity of a cluster. This API is
 // paginated. If there are more events to read, the response includes all the
-// nparameters necessary to request the next page of events.
+// parameters necessary to request the next page of events.
 func (a *clustersImpl) EventsAll(ctx context.Context, request GetEvents) ([]ClusterEvent, error) {
 	iterator := a.Events(ctx, request)
 	return listing.ToSliceN[ClusterEvent, int64](ctx, iterator, request.Limit)
@@ -308,8 +308,7 @@ func (a *clustersImpl) List(ctx context.Context, request ListClustersRequest) li
 // are not included.
 func (a *clustersImpl) ListAll(ctx context.Context, request ListClustersRequest) ([]ClusterDetails, error) {
 	iterator := a.List(ctx, request)
-	return listing.ToSliceN[ClusterDetails, int](ctx, iterator, request.PageSize)
-
+	return listing.ToSlice[ClusterDetails](ctx, iterator)
 }
 
 func (a *clustersImpl) internalList(ctx context.Context, request ListClustersRequest) (*ListClustersResponse, error) {
