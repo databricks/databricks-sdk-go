@@ -3,7 +3,7 @@
 [![lines of code](https://tokei.rs/b1/github/databricks/databricks-sdk-go)](<[https://codecov.io/github/databricks/databricks-sdk-go](https://github.com/databricks/databricks-sdk-go)>)
 
 [Beta](https://docs.databricks.com/release-notes/release-types.html): This SDK is supported for production use cases,
-but we do expect future releases to have some interface changes; see [Interface stability](#interface-stability).
+but we do expect future release to have some interface changes; see [Interface stability](#interface-stability).
 We are keen to hear feedback from you on these SDKs. Please [file issues](https://github.com/databricks/databricks-sdk-go/issues), and we will address them
 | See documentation at [Go Packages](https://pkg.go.dev/github.com/databricks/databricks-sdk-go)
 | See also the [Terraform Provider](https://github.com/databricks/terraform-provider-databricks)
