@@ -70,7 +70,7 @@ func (d DatabricksWIFCredentials) getAudience(cfg *Config, endpoints *u2m.OAuthA
 
 // Name implements CredentialsStrategy.
 func (d DatabricksWIFCredentials) Name() string {
-	return "databricks-wif"
+	return "github-oidc"
 }
 
 type databricksWIFTokenSource struct {

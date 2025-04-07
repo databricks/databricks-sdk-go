@@ -62,7 +62,7 @@ func TestUcAccWifAuth(t *testing.T) {
 		Host:          a.Config.Host,
 		AccountID:     a.Config.AccountID,
 		ClientID:      sp.ApplicationId,
-		AuthType:      "databricks-wif",
+		AuthType:      "github-oidc",
 		TokenAudience: "https://github.com/databricks-eng",
 	}
 
@@ -141,7 +141,7 @@ func TestUcAccWifAuthWorkspace(t *testing.T) {
 	wsCfg := &databricks.Config{
 		Host:          workspaceUrl,
 		ClientID:      sp.ApplicationId,
-		AuthType:      "databricks-wif",
+		AuthType:      "github-oidc",
 		TokenAudience: "https://github.com/databricks-eng",
 	}
 

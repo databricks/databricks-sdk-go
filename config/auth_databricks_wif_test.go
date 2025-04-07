@@ -24,7 +24,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 					Cloud: "foo-bar-cloud",
 				},
 			},
-			wantErrPrefix: errPrefix("databricks-wif auth: not configured"),
+			wantErrPrefix: errPrefix("github-oidc auth: not configured"),
 		},
 		{
 			desc: "missing host",
@@ -34,7 +34,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
 				ActionsIDTokenRequestToken: "token-1337",
 			},
-			wantErrPrefix: errPrefix("databricks-wif auth: not configured"),
+			wantErrPrefix: errPrefix("github-oidc auth: not configured"),
 		},
 		{
 			desc: "missing client ID",
@@ -44,7 +44,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 				ActionsIDTokenRequestURL:   "http://endpoint.com/test?version=1",
 				ActionsIDTokenRequestToken: "token-1337",
 			},
-			wantErrPrefix: errPrefix("databricks-wif auth: not configured"),
+			wantErrPrefix: errPrefix("github-oidc auth: not configured"),
 		},
 		{
 			desc: "missing env ACTIONS_ID_TOKEN_REQUEST_TOKEN",
@@ -62,7 +62,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 					},
 				},
 			},
-			wantErrPrefix: errPrefix("databricks-wif auth: not configured"),
+			wantErrPrefix: errPrefix("github-oidc auth: not configured"),
 		},
 		{
 			desc: "missing env ACTIONS_ID_TOKEN_REQUEST_URL",
@@ -80,7 +80,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 					},
 				},
 			},
-			wantErrPrefix: errPrefix("databricks-wif auth: not configured"),
+			wantErrPrefix: errPrefix("github-oidc auth: not configured"),
 		},
 		{
 			desc: "databricks token exchange server error",
@@ -106,7 +106,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 					},
 				},
 			},
-			wantErrPrefix: errPrefix("databricks-wif"),
+			wantErrPrefix: errPrefix("github-oidc"),
 		},
 		{
 			desc: "databricks workspace server error",
@@ -361,7 +361,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 
 func TestDatabricksWIFCredentials_Name(t *testing.T) {
 	c := DatabricksWIFCredentials{}
-	want := "databricks-wif"
+	want := "github-oidc"
 
 	if got := c.Name(); got != want {
 		t.Errorf("Name(): got %s, want %s", got, want)
