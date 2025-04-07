@@ -334,6 +334,7 @@ func TestSimpleRequestContextDeadline(t *testing.T) {
 
 func TestSimpleRequestTimeout(t *testing.T) {
 	ctx := context.Background()
+	// Just a comment
 
 	c := NewApiClient(ClientConfig{
 		HTTPTimeout: 10 * time.Millisecond,
