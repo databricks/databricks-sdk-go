@@ -309,9 +309,9 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 	}
 }
 
-func TestDatabricksWIFCredentials_Name(t *testing.T) {
+func TestDatabricksOidcCredentials_Name(t *testing.T) {
 	strategies := OidcTokenCredentialStrategies(&Config{})
-	expected := []string{"github-oidc-federated-oidc-github"}
+	expected := []string{"github-oidc"}
 	found := []string{}
 	for _, strategy := range strategies {
 		found = append(found, strategy.Name())
