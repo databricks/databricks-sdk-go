@@ -88,7 +88,7 @@ func ExampleConnectionsAPI_Get_connections() {
 
 }
 
-func ExampleConnectionsAPI_ListAll_connections() {
+func ExampleConnectionsAPI_List_connections() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

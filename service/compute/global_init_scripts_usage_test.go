@@ -74,7 +74,7 @@ func ExampleGlobalInitScriptsAPI_Get_globalInitScripts() {
 
 }
 
-func ExampleGlobalInitScriptsAPI_ListAll_globalInitScripts() {
+func ExampleGlobalInitScriptsAPI_List_globalInitScripts() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

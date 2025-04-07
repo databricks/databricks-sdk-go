@@ -15,7 +15,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
 
-func ExampleStatementExecutionAPI_Execute_tables() {
+func ExampleStatementExecutionAPI_ExecuteAndWait_tables() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -67,7 +67,7 @@ func ExampleStatementExecutionAPI_Execute_tables() {
 
 }
 
-func ExampleStatementExecutionAPI_Execute_shares() {
+func ExampleStatementExecutionAPI_ExecuteAndWait_shares() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

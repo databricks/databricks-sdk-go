@@ -10,7 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
 
-func ExampleQueryHistoryAPI_ListAll_sqlQueryHistory() {
+func ExampleQueryHistoryAPI_List_sqlQueryHistory() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
