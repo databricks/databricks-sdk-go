@@ -10,16 +10,15 @@ import (
 )
 
 func buildDefaultStrategies(cfg *Config) []CredentialsStrategy {
-	return append(
-		[]CredentialsStrategy{
-			PatCredentials{},
-			BasicCredentials{},
-			M2mCredentials{},
-			DatabricksCliCredentials,
-			MetadataServiceCredentials{},
-		},
-		// append(
-		// 	WifTokenCredentialStrategies(cfg),
+	strategies := []CredentialsStrategy{}
+	strategies = append(strategies,
+		PatCredentials{},
+		BasicCredentials{},
+		M2mCredentials{},
+		DatabricksCliCredentials,
+		MetadataServiceCredentials{})
+	strategies = append(strategies, OidcTokenCredentialStrategies(cfg)...)
+	strategies = append(strategies,
 		// Attempt to configure auth from most specific to most generic (the Azure CLI).
 		AzureGithubOIDCCredentials{},
 		AzureMsiCredentials{},
@@ -27,9 +26,8 @@ func buildDefaultStrategies(cfg *Config) []CredentialsStrategy {
 		AzureCliCredentials{},
 		// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
 		GoogleCredentials{},
-		GoogleDefaultCredentials{},
-		//)...,
-	)
+		GoogleDefaultCredentials{})
+	return strategies
 }
 
 type DefaultCredentials struct {
