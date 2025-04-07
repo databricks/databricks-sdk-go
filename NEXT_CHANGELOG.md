@@ -8,8 +8,6 @@
 * [Breaking] Users running their worklows in GitHub Actions, which use Cloud native authentication and also have a `DATABRICKS_CLIENT_ID` and `DATABRICKS_HOST` 
   environment variables set may see their authentication start failing due to the order in which the SDK tries different authentication methods.
   In such case, the `DATABRICKS_AUTH_TYPE` environment variable must be set to match the previously used authentication method.  
-* Support user-to-machine authentication in the SDK ([#1108](https://github.com/databricks/databricks-sdk-go/pull/1108)).
-* Instances of `ApiClient` now share the same connection pool by default ([PR #1190](https://github.com/databricks/databricks-sdk-go/pull/1190)).
 
 ### Bug Fixes
 
