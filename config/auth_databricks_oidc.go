@@ -12,9 +12,9 @@ import (
 )
 
 // Constructs all Workload Identity Federation Credentials Strategies
-func WifTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
+func OidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 	providers := map[string]TokenProvider{
-		"github-oidc-databricks-wif": &GithubProvider{
+		"github-oidc": &GithubProvider{
 			actionsIDTokenRequestURL:   cfg.ActionsIDTokenRequestURL,
 			actionsIDTokenRequestToken: cfg.ActionsIDTokenRequestToken,
 			refreshClient:              cfg.refreshClient,
@@ -23,17 +23,17 @@ func WifTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 	}
 	strategies := []CredentialsStrategy{}
 	for name, provider := range providers {
-		strategies = append(strategies, newWifTokenStrategy(name, cfg, provider))
+		strategies = append(strategies, newOidcTokenStrategy(name, cfg, provider))
 	}
 	return strategies
 }
 
-func newWifTokenStrategy(
+func newOidcTokenStrategy(
 	name string,
 	cfg *Config,
 	tokenProvider TokenProvider,
 ) CredentialsStrategy {
-	wifTokenExchange := &wifTokenExchange{
+	oidcTokenExchange := &oidcTokenExchange{
 		clientID:              cfg.ClientID,
 		account:               cfg.IsAccountClient(),
 		accountID:             cfg.AccountID,
@@ -42,12 +42,12 @@ func newWifTokenStrategy(
 		audience:              cfg.TokenAudience,
 		tokenProvider:         tokenProvider,
 	}
-	return NewTokenSourceStrategy(name, wifTokenExchange)
+	return NewTokenSourceStrategy(name, oidcTokenExchange)
 }
 
-// wifTokenExchange is a auth.TokenSource which exchanges a token using
+// oidcTokenExchange is a auth.TokenSource which exchanges a token using
 // Workload Identity Federation.
-type wifTokenExchange struct {
+type oidcTokenExchange struct {
 	clientID              string
 	account               bool
 	accountID             string
@@ -57,7 +57,7 @@ type wifTokenExchange struct {
 	tokenProvider         TokenProvider
 }
 
-func (w *wifTokenExchange) Token(ctx context.Context) (*oauth2.Token, error) {
+func (w *oidcTokenExchange) Token(ctx context.Context) (*oauth2.Token, error) {
 	if w.clientID == "" {
 		logger.Debugf(ctx, "Missing ClientID")
 		return nil, errors.New("missing ClientID")
@@ -92,7 +92,7 @@ func (w *wifTokenExchange) Token(ctx context.Context) (*oauth2.Token, error) {
 	return c.Token(ctx)
 }
 
-func (w *wifTokenExchange) determineAudience(ctx context.Context) (string, error) {
+func (w *oidcTokenExchange) determineAudience(ctx context.Context) (string, error) {
 	if w.audience != "" {
 		return w.audience, nil
 	}

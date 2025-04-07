@@ -28,7 +28,7 @@ func (m *mockIdTokenProvider) IDToken(ctx context.Context, audience string) (*ID
 	}, m.err
 }
 
-func TestDatabricksGithubWIFCredentials(t *testing.T) {
+func TestDatabricksOidcTokenSource(t *testing.T) {
 	testCases := []struct {
 		desc               string
 		cfg                *Config
@@ -270,16 +270,13 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			// if tc.desc != "" {
-			// 	t.Skip()
-			// }
 			p := &mockIdTokenProvider{
 				idToken: tc.idToken,
 				err:     tc.tokenProviderError,
 			}
 			tc.cfg.EnsureResolved()
 			c := tc.cfg.CanonicalHostName()
-			ex := &wifTokenExchange{
+			ex := &oidcTokenExchange{
 				clientID:              tc.cfg.ClientID,
 				account:               tc.cfg.IsAccountClient(),
 				accountID:             tc.cfg.AccountID,
@@ -313,7 +310,7 @@ func TestDatabricksGithubWIFCredentials(t *testing.T) {
 }
 
 func TestDatabricksWIFCredentials_Name(t *testing.T) {
-	strategies := WifTokenCredentialStrategies(&Config{})
+	strategies := OidcTokenCredentialStrategies(&Config{})
 	expected := []string{"github-oidc-federated-oidc-github"}
 	found := []string{}
 	for _, strategy := range strategies {
