@@ -10,24 +10,35 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
+// Creates a CredentialsStrategy from a TokenSource.
+func NewTokenSourceStrategy(
+	name string,
+	tokenSource auth.TokenSource,
+) CredentialsStrategy {
+	return &tokenSourceStrategy{
+		name:        name,
+		tokenSource: tokenSource,
+	}
+}
+
 type IDToken struct {
 	Value string
 }
 
-// TokenProvider is an interface for a Token Provider with an audience.
-type TokenProvider interface {
+// IDTokenSource is an interface for an IDToken Source with an audience.
+type IDTokenSource interface {
 	// Function to get the token
 	IDToken(ctx context.Context, audience string) (*IDToken, error)
 }
 
-// TokenSourceStrategy is wrapper on a auth.TokenSource which converts it into a CredentialsStrategy
-type TokenSourceStrategy struct {
+// tokenSourceStrategy is wrapper on a auth.TokenSource which converts it into a CredentialsStrategy
+type tokenSourceStrategy struct {
 	tokenSource auth.TokenSource
 	name        string
 }
 
 // Configure implements [CredentialsStrategy.Configure].
-func (t *TokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
+func (t *tokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 
 	// If we cannot get a token, skip this CredentialsStrategy.
 	// We don't want to fail here because it's possible that the supplier is enabled
@@ -44,17 +55,6 @@ func (t *TokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (crede
 }
 
 // Name implements [CredentialsStrategy.Name].
-func (t *TokenSourceStrategy) Name() string {
+func (t *tokenSourceStrategy) Name() string {
 	return t.name
-}
-
-// Creates a CredentialsStrategy from a TokenSource.
-func NewTokenSourceStrategy(
-	name string,
-	tokenSource auth.TokenSource,
-) CredentialsStrategy {
-	return &TokenSourceStrategy{
-		name:        name,
-		tokenSource: tokenSource,
-	}
 }

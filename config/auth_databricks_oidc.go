@@ -5,59 +5,44 @@ import (
 	"errors"
 	"net/url"
 
-	"github.com/databricks/databricks-sdk-go/credentials/u2m"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 )
 
-// Constructs all Workload Identity Federation Credentials Strategies
-func OidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
-	providers := map[string]TokenProvider{
-		"github-oidc": &GithubProvider{
-			actionsIDTokenRequestURL:   cfg.ActionsIDTokenRequestURL,
-			actionsIDTokenRequestToken: cfg.ActionsIDTokenRequestToken,
-			refreshClient:              cfg.refreshClient,
-		},
-		// Add new providers at the end of the list
+func NewOIDCTokenExchange(
+	cfg *OIDCTokenExchangeConfig,
+	idTokenProvider IDTokenSource,
+) auth.TokenSource {
+	return &oidcTokenExchange{
+		clientID:      cfg.ClientID,
+		accountID:     cfg.AccountID,
+		host:          cfg.Host,
+		tokenEndpoint: cfg.TokenEndpoint,
+		audience:      cfg.Audience,
+		tokenProvider: idTokenProvider,
 	}
-	strategies := []CredentialsStrategy{}
-	for name, provider := range providers {
-		strategies = append(strategies, newOidcTokenStrategy(name, cfg, provider))
-	}
-	return strategies
 }
 
-func newOidcTokenStrategy(
-	name string,
-	cfg *Config,
-	tokenProvider TokenProvider,
-) CredentialsStrategy {
-	accountId := ""
-	// NOTE: cfg.AccountID can be present even if the client is not an account client.
-	if cfg.IsAccountClient() {
-		accountId = cfg.AccountID
-	}
-	oidcTokenExchange := &oidcTokenExchange{
-		clientID:              cfg.ClientID,
-		accountID:             accountId,
-		host:                  cfg.Host,
-		tokenEndpointProvider: cfg.getOidcEndpoints,
-		audience:              cfg.TokenAudience,
-		tokenProvider:         tokenProvider,
-	}
-	return NewTokenSourceStrategy(name, oidcTokenExchange)
+type OIDCTokenExchangeConfig struct {
+	ClientID        string
+	AccountID       string
+	Host            string
+	TokenEndpoint   string
+	Audience        string
+	IdTokenProvider IDTokenSource
 }
 
 // oidcTokenExchange is a auth.TokenSource which exchanges a token using
 // Workload Identity Federation.
 type oidcTokenExchange struct {
-	clientID              string
-	accountID             string
-	host                  string
-	tokenEndpointProvider func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error)
-	audience              string
-	tokenProvider         TokenProvider
+	clientID      string
+	accountID     string
+	host          string
+	tokenEndpoint string
+	audience      string
+	tokenProvider IDTokenSource
 }
 
 // Token implements [TokenSource.Token]
@@ -70,22 +55,15 @@ func (w *oidcTokenExchange) Token(ctx context.Context) (*oauth2.Token, error) {
 		logger.Debugf(ctx, "Missing Host")
 		return nil, errors.New("missing Host")
 	}
-	audience, err := w.determineAudience(ctx)
-	if err != nil {
-		return nil, err
-	}
+	audience := w.determineAudience()
 	idToken, err := w.tokenProvider.IDToken(ctx, audience)
-	if err != nil {
-		return nil, err
-	}
-	endpoints, err := w.tokenEndpointProvider(ctx)
 	if err != nil {
 		return nil, err
 	}
 	c := &clientcredentials.Config{
 		ClientID:  w.clientID,
 		AuthStyle: oauth2.AuthStyleInParams,
-		TokenURL:  endpoints.TokenEndpoint,
+		TokenURL:  w.tokenEndpoint,
 		Scopes:    []string{"all-apis"},
 		EndpointParams: url.Values{
 			"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
@@ -96,18 +74,14 @@ func (w *oidcTokenExchange) Token(ctx context.Context) (*oauth2.Token, error) {
 	return c.Token(ctx)
 }
 
-func (w *oidcTokenExchange) determineAudience(ctx context.Context) (string, error) {
+func (w *oidcTokenExchange) determineAudience() string {
 	if w.audience != "" {
-		return w.audience, nil
+		return w.audience
 	}
 	// For Databricks Accounts, the account id is the default audience.
 	if w.accountID != "" {
-		return w.accountID, nil
-	}
-	endpoints, err := w.tokenEndpointProvider(ctx)
-	if err != nil {
-		return "", err
+		return w.accountID
 	}
 	// For Databricks Workspaces, the auth endpoint is the default audience.
-	return endpoints.TokenEndpoint, nil
+	return w.tokenEndpoint
 }

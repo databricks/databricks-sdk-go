@@ -45,7 +45,7 @@ func TestDatabricksTokenSourceStrategy(t *testing.T) {
 				token: tc.token,
 				err:   tc.tokenSourceError,
 			}
-			strat := &TokenSourceStrategy{
+			strat := &tokenSourceStrategy{
 				name:        "github-oidc",
 				tokenSource: ts,
 			}

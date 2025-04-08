@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/oauth2"
@@ -30,18 +29,18 @@ func (m *mockIdTokenProvider) IDToken(ctx context.Context, audience string) (*ID
 
 func TestDatabricksOidcTokenSource(t *testing.T) {
 	testCases := []struct {
-		desc                 string
-		clientID             string
-		accountID            string
-		host                 string
-		tokenAudience        string
-		httpTransport        http.RoundTripper
-		oidcEndpointSupplier func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error)
-		idToken              string
-		expectedAudience     string
-		tokenProviderError   error
-		wantToken            string
-		wantErrPrefix        *string
+		desc               string
+		clientID           string
+		accountID          string
+		host               string
+		tokenAudience      string
+		httpTransport      http.RoundTripper
+		oidcEndpoint       string
+		idToken            string
+		expectedAudience   string
+		tokenProviderError error
+		wantToken          string
+		wantErrPrefix      *string
 	}{
 		{
 			desc:          "missing host",
@@ -56,27 +55,12 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantErrPrefix: errPrefix("missing ClientID"),
 		},
 		{
-			desc:     "auth server error",
-			clientID: "client-id",
-			host:     "http://host.com",
-			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
-				return nil, errors.New("databricks OAuth is not supported for this host")
-			},
-			wantErrPrefix: errPrefix("databricks OAuth is not supported for this host"),
-		},
-		{
 			desc: "token provider error",
 
-			clientID:      "client-id",
-			host:          "http://host.com",
-			tokenAudience: "token-audience",
-			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
-				return &u2m.OAuthAuthorizationServer{
-					AuthorizationEndpoint: "https://host.com/auth",
-					TokenEndpoint:         "https://host.com/oidc/v1/token",
-				}, nil
-			},
-
+			clientID:           "client-id",
+			host:               "http://host.com",
+			tokenAudience:      "token-audience",
+			oidcEndpoint:       "https://host.com/oidc/v1/token",
 			expectedAudience:   "token-audience",
 			tokenProviderError: errors.New("error getting id token"),
 			wantErrPrefix:      errPrefix("error getting id token"),
@@ -86,12 +70,7 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			clientID:      "client-id",
 			host:          "http://host.com",
 			tokenAudience: "token-audience",
-			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
-				return &u2m.OAuthAuthorizationServer{
-					AuthorizationEndpoint: "https://host.com/auth",
-					TokenEndpoint:         "https://host.com/oidc/v1/token",
-				}, nil
-			},
+			oidcEndpoint:  "https://host.com/oidc/v1/token",
 			httpTransport: fixtures.MappingTransport{
 				"POST /oidc/v1/token": {
 					Status: http.StatusInternalServerError,
@@ -109,12 +88,7 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			clientID:      "client-id",
 			host:          "http://host.com",
 			tokenAudience: "token-audience",
-			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
-				return &u2m.OAuthAuthorizationServer{
-					AuthorizationEndpoint: "https://host.com/auth",
-					TokenEndpoint:         "https://host.com/oidc/v1/token",
-				}, nil
-			},
+			oidcEndpoint:  "https://host.com/oidc/v1/token",
 			httpTransport: fixtures.MappingTransport{
 				"POST /oidc/v1/token": {
 					Status: http.StatusOK,
@@ -135,12 +109,7 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			clientID:      "client-id",
 			host:          "http://host.com",
 			tokenAudience: "token-audience",
-			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
-				return &u2m.OAuthAuthorizationServer{
-					AuthorizationEndpoint: "https://host.com/auth",
-					TokenEndpoint:         "https://host.com/oidc/v1/token",
-				}, nil
-			},
+			oidcEndpoint:  "https://host.com/oidc/v1/token",
 			httpTransport: fixtures.MappingTransport{
 				"POST /oidc/v1/token": {
 
@@ -173,14 +142,9 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			accountID:     "ac123",
 			host:          "https://accounts.databricks.com",
 			tokenAudience: "token-audience",
-			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
-				return &u2m.OAuthAuthorizationServer{
-					AuthorizationEndpoint: "https://host.com/auth",
-					TokenEndpoint:         "https://host.com/oidc/accounts/ac123/v1/token",
-				}, nil
-			},
+			oidcEndpoint:  "https://host.com/oidc/v1/token",
 			httpTransport: fixtures.MappingTransport{
-				"POST /oidc/accounts/ac123/v1/token": {
+				"POST /oidc/v1/token": {
 					Status: http.StatusOK,
 					ExpectedHeaders: map[string]string{
 						"Content-Type": "application/x-www-form-urlencoded",
@@ -205,18 +169,13 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantToken:        "test-auth-token",
 		},
 		{
-			desc:      "default token audience account",
-			clientID:  "client-id",
-			accountID: "ac123",
-			host:      "https://accounts.databricks.com",
-			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
-				return &u2m.OAuthAuthorizationServer{
-					AuthorizationEndpoint: "https://host.com/auth",
-					TokenEndpoint:         "https://host.com/oidc/accounts/ac123/v1/token",
-				}, nil
-			},
+			desc:         "default token audience account",
+			clientID:     "client-id",
+			accountID:    "ac123",
+			host:         "https://accounts.databricks.com",
+			oidcEndpoint: "https://host.com/oidc/v1/token",
 			httpTransport: fixtures.MappingTransport{
-				"POST /oidc/accounts/ac123/v1/token": {
+				"POST /oidc/v1/token": {
 					Status: http.StatusOK,
 					ExpectedHeaders: map[string]string{
 						"Content-Type": "application/x-www-form-urlencoded",
@@ -234,15 +193,10 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantToken:        "test-auth-token",
 		},
 		{
-			desc:     "default token audience workspace",
-			clientID: "client-id",
-			host:     "https://host.com",
-			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
-				return &u2m.OAuthAuthorizationServer{
-					AuthorizationEndpoint: "https://host.com/auth",
-					TokenEndpoint:         "https://host.com/oidc/v1/token",
-				}, nil
-			},
+			desc:         "default token audience workspace",
+			clientID:     "client-id",
+			host:         "https://host.com",
+			oidcEndpoint: "https://host.com/oidc/v1/token",
 			httpTransport: fixtures.MappingTransport{
 				"POST /oidc/v1/token": {
 					Status: http.StatusOK,
@@ -270,12 +224,12 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 				err:     tc.tokenProviderError,
 			}
 			ex := &oidcTokenExchange{
-				clientID:              tc.clientID,
-				accountID:             tc.accountID,
-				host:                  tc.host,
-				tokenEndpointProvider: tc.oidcEndpointSupplier,
-				audience:              tc.tokenAudience,
-				tokenProvider:         p,
+				clientID:      tc.clientID,
+				accountID:     tc.accountID,
+				host:          tc.host,
+				tokenEndpoint: tc.oidcEndpoint,
+				audience:      tc.tokenAudience,
+				tokenProvider: p,
 			}
 			ctx := context.WithValue(context.Background(), oauth2.HTTPClient, &http.Client{
 				Transport: tc.httpTransport,
@@ -298,17 +252,5 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 				t.Errorf("Authenticate(): mismatch (-want +got):\n%s", diff)
 			}
 		})
-	}
-}
-
-func TestDatabricksOidcCredentials_Name(t *testing.T) {
-	strategies := OidcTokenCredentialStrategies(&Config{})
-	expected := []string{"github-oidc"}
-	found := []string{}
-	for _, strategy := range strategies {
-		found = append(found, strategy.Name())
-	}
-	if diff := cmp.Diff(expected, found); diff != "" {
-		t.Errorf("Strategies mismatch (-want +got):\n%s\n(order must be the same))", diff)
 	}
 }

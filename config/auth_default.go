@@ -9,7 +9,40 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-func buildDefaultStrategies(cfg *Config) []CredentialsStrategy {
+// Constructs all Databricks OIDC Credentials Strategies
+func buildOidcTokenCredentialStrategies(ctx context.Context, cfg *Config) ([]CredentialsStrategy, error) {
+	oidcEndpoints, err := cfg.getOidcEndpoints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	providers := map[string]IDTokenSource{
+		"github-oidc": &GithubProvider{
+			actionsIDTokenRequestURL:   cfg.ActionsIDTokenRequestURL,
+			actionsIDTokenRequestToken: cfg.ActionsIDTokenRequestToken,
+			refreshClient:              cfg.refreshClient,
+		},
+		// Add new providers at the end of the list
+	}
+
+	strategies := []CredentialsStrategy{}
+	for name, provider := range providers {
+		oidcConfig := &OIDCTokenExchangeConfig{
+			ClientID:        cfg.ClientID,
+			Host:            cfg.Host,
+			TokenEndpoint:   oidcEndpoints.TokenEndpoint,
+			Audience:        cfg.TokenAudience,
+			IdTokenProvider: provider,
+		}
+		if cfg.IsAccountClient() {
+			oidcConfig.AccountID = cfg.AccountID
+		}
+		tokenSource := NewOIDCTokenExchange(oidcConfig, provider)
+		strategies = append(strategies, NewTokenSourceStrategy(name, tokenSource))
+	}
+	return strategies, nil
+}
+
+func buildDefaultStrategies(ctx context.Context, cfg *Config) []CredentialsStrategy {
 	strategies := []CredentialsStrategy{}
 	strategies = append(strategies,
 		PatCredentials{},
@@ -17,7 +50,11 @@ func buildDefaultStrategies(cfg *Config) []CredentialsStrategy {
 		M2mCredentials{},
 		DatabricksCliCredentials,
 		MetadataServiceCredentials{})
-	strategies = append(strategies, OidcTokenCredentialStrategies(cfg)...)
+	oidcCredentialStrategies, err := buildOidcTokenCredentialStrategies(ctx, cfg)
+	if err != nil {
+		logger.Debugf(ctx, "Cannot set up OIDC Credentials Strategy: %v. Skipping", err)
+	}
+	strategies = append(strategies, oidcCredentialStrategies...)
 	strategies = append(strategies,
 		// Attempt to configure auth from most specific to most generic (the Azure CLI).
 		AzureGithubOIDCCredentials{},
@@ -48,7 +85,7 @@ var errorMessage = fmt.Sprintf("cannot configure default credentials, please che
 var ErrCannotConfigureAuth = errors.New(errorMessage)
 
 func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	for _, p := range buildDefaultStrategies(cfg) {
+	for _, p := range buildDefaultStrategies(ctx, cfg) {
 		if cfg.AuthType != "" && p.Name() != cfg.AuthType {
 			// ignore other auth types if one is explicitly enforced
 			logger.Infof(ctx, "Ignoring %s auth, because %s is preferred", p.Name(), cfg.AuthType)
