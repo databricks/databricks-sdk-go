@@ -9,12 +9,17 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
+/**
+ * GithubProvider retrieves JWT Tokens from Github Actions.
+ */
 type GithubProvider struct {
 	actionsIDTokenRequestURL   string
 	actionsIDTokenRequestToken string
 	refreshClient              *httpclient.ApiClient
 }
 
+// IDToken returns a JWT Token for the specified audience. It will return
+// an error if not running in GitHub Actions.
 func (g *GithubProvider) IDToken(ctx context.Context, audience string) (*IDToken, error) {
 	if g.actionsIDTokenRequestURL == "" {
 		logger.Debugf(ctx, "Missing ActionsIDTokenRequestURL, likely not calling from a Github action")

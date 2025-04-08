@@ -14,16 +14,19 @@ type IDToken struct {
 	Value string
 }
 
+// TokenProvider is an interface for a Token Provider with an audience.
 type TokenProvider interface {
 	// Function to get the token
 	IDToken(ctx context.Context, audience string) (*IDToken, error)
 }
 
+// TokenSourceStrategy is wrapper on a auth.TokenSource which converts it into a CredentialsStrategy
 type TokenSourceStrategy struct {
 	tokenSource auth.TokenSource
 	name        string
 }
 
+// Configure implements [CredentialsStrategy.Configure].
 func (t *TokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 
 	// If we cannot get a token, skip this CredentialsStrategy.
@@ -40,6 +43,7 @@ func (t *TokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (crede
 	return credentials.NewOAuthCredentialsProvider(visitor, authconv.OAuth2TokenSource(cached).Token), nil
 }
 
+// Name implements [CredentialsStrategy.Name].
 func (t *TokenSourceStrategy) Name() string {
 	return t.name
 }

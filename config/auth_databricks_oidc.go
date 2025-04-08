@@ -60,6 +60,7 @@ type oidcTokenExchange struct {
 	tokenProvider         TokenProvider
 }
 
+// Token implements [TokenSource.Token]
 func (w *oidcTokenExchange) Token(ctx context.Context) (*oauth2.Token, error) {
 	if w.clientID == "" {
 		logger.Debugf(ctx, "Missing ClientID")
