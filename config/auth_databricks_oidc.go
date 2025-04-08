@@ -33,10 +33,14 @@ func newOidcTokenStrategy(
 	cfg *Config,
 	tokenProvider TokenProvider,
 ) CredentialsStrategy {
+	accountId := ""
+	// NOTE: cfg.AccountID can be present even if the client is not an account client.
+	if cfg.IsAccountClient() {
+		accountId = cfg.AccountID
+	}
 	oidcTokenExchange := &oidcTokenExchange{
 		clientID:              cfg.ClientID,
-		account:               cfg.IsAccountClient(),
-		accountID:             cfg.AccountID,
+		accountID:             accountId,
 		host:                  cfg.Host,
 		tokenEndpointProvider: cfg.getOidcEndpoints,
 		audience:              cfg.TokenAudience,
@@ -49,7 +53,6 @@ func newOidcTokenStrategy(
 // Workload Identity Federation.
 type oidcTokenExchange struct {
 	clientID              string
-	account               bool
 	accountID             string
 	host                  string
 	tokenEndpointProvider func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error)
@@ -97,7 +100,7 @@ func (w *oidcTokenExchange) determineAudience(ctx context.Context) (string, erro
 		return w.audience, nil
 	}
 	// For Databricks Accounts, the account id is the default audience.
-	if w.account {
+	if w.accountID != "" {
 		return w.accountID, nil
 	}
 	endpoints, err := w.tokenEndpointProvider(ctx)

@@ -30,80 +30,73 @@ func (m *mockIdTokenProvider) IDToken(ctx context.Context, audience string) (*ID
 
 func TestDatabricksOidcTokenSource(t *testing.T) {
 	testCases := []struct {
-		desc               string
-		cfg                *Config
-		idToken            string
-		expectedAudience   string
-		tokenProviderError error
-		wantToken          string
-		wantErrPrefix      *string
+		desc                 string
+		clientID             string
+		accountID            string
+		host                 string
+		tokenAudience        string
+		httpTransport        http.RoundTripper
+		oidcEndpointSupplier func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error)
+		idToken              string
+		expectedAudience     string
+		tokenProviderError   error
+		wantToken            string
+		wantErrPrefix        *string
 	}{
 		{
-			desc: "missing host",
-			cfg: &Config{
-				ClientID:      "client-id",
-				TokenAudience: "token-audience",
-			},
+			desc:          "missing host",
+			clientID:      "client-id",
+			tokenAudience: "token-audience",
 			wantErrPrefix: errPrefix("missing Host"),
 		},
 		{
-			desc: "missing client ID",
-			cfg: &Config{
-				Host:          "http://host.com/test",
-				TokenAudience: "token-audience",
-			},
+			desc:          "missing client ID",
+			host:          "http://host.com",
+			tokenAudience: "token-audience",
 			wantErrPrefix: errPrefix("missing ClientID"),
 		},
 		{
-			desc: "auth server error",
-			cfg: &Config{
-				ClientID: "client-id",
-				Host:     "http://host.com/test",
-				HTTPTransport: fixtures.MappingTransport{
-					"GET /oidc/.well-known/oauth-authorization-server": {
-						Status: http.StatusNotFound,
-					},
-				},
+			desc:     "auth server error",
+			clientID: "client-id",
+			host:     "http://host.com",
+			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return nil, errors.New("databricks OAuth is not supported for this host")
 			},
 			wantErrPrefix: errPrefix("databricks OAuth is not supported for this host"),
 		},
 		{
 			desc: "token provider error",
-			cfg: &Config{
-				ClientID:      "client-id",
-				Host:          "http://host.com/test",
-				TokenAudience: "token-audience",
-				HTTPTransport: fixtures.MappingTransport{
-					"GET /oidc/.well-known/oauth-authorization-server": {
-						Response: u2m.OAuthAuthorizationServer{
-							AuthorizationEndpoint: "https://host.com/auth",
-							TokenEndpoint:         "https://host.com/oidc/v1/token",
-						},
-					},
-				},
+
+			clientID:      "client-id",
+			host:          "http://host.com",
+			tokenAudience: "token-audience",
+			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					AuthorizationEndpoint: "https://host.com/auth",
+					TokenEndpoint:         "https://host.com/oidc/v1/token",
+				}, nil
 			},
+
 			expectedAudience:   "token-audience",
 			tokenProviderError: errors.New("error getting id token"),
 			wantErrPrefix:      errPrefix("error getting id token"),
 		},
 		{
-			desc: "databricks workspace server error",
-			cfg: &Config{
-				ClientID:      "client-id",
-				Host:          "http://host.com/test",
-				TokenAudience: "token-audience",
-				HTTPTransport: fixtures.MappingTransport{
-					"GET /oidc/.well-known/oauth-authorization-server": {
-						Response: u2m.OAuthAuthorizationServer{
-							AuthorizationEndpoint: "https://host.com/auth",
-							TokenEndpoint:         "https://host.com/oidc/v1/token",
-						},
-					},
-					"POST /oidc/v1/token": {
-						Status: http.StatusInternalServerError,
-						ExpectedHeaders: map[string]string{
-							"Content-Type": "application/x-www-form-urlencoded",
-						},
+			desc:          "databricks workspace server error",
+			clientID:      "client-id",
+			host:          "http://host.com",
+			tokenAudience: "token-audience",
+			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					AuthorizationEndpoint: "https://host.com/auth",
+					TokenEndpoint:         "https://host.com/oidc/v1/token",
+				}, nil
+			},
+			httpTransport: fixtures.MappingTransport{
+				"POST /oidc/v1/token": {
+					Status: http.StatusInternalServerError,
+					ExpectedHeaders: map[string]string{
+						"Content-Type": "application/x-www-form-urlencoded",
 					},
 				},
 			},
@@ -112,26 +105,24 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantErrPrefix:    errPrefix("oauth2: cannot fetch token: Internal Server Error"),
 		},
 		{
-			desc: "invalid auth token",
-			cfg: &Config{
-				ClientID:      "client-id",
-				Host:          "http://host.com/test",
-				TokenAudience: "token-audience",
-				HTTPTransport: fixtures.MappingTransport{
-					"GET /oidc/.well-known/oauth-authorization-server": {
-						Response: u2m.OAuthAuthorizationServer{
-							AuthorizationEndpoint: "https://host.com/auth",
-							TokenEndpoint:         "https://host.com/oidc/v1/token",
-						},
+			desc:          "invalid auth token",
+			clientID:      "client-id",
+			host:          "http://host.com",
+			tokenAudience: "token-audience",
+			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					AuthorizationEndpoint: "https://host.com/auth",
+					TokenEndpoint:         "https://host.com/oidc/v1/token",
+				}, nil
+			},
+			httpTransport: fixtures.MappingTransport{
+				"POST /oidc/v1/token": {
+					Status: http.StatusOK,
+					ExpectedHeaders: map[string]string{
+						"Content-Type": "application/x-www-form-urlencoded",
 					},
-					"POST /oidc/v1/token": {
-						Status: http.StatusOK,
-						ExpectedHeaders: map[string]string{
-							"Content-Type": "application/x-www-form-urlencoded",
-						},
-						Response: map[string]string{
-							"foo": "bar",
-						},
+					Response: map[string]string{
+						"foo": "bar",
 					},
 				},
 			},
@@ -140,37 +131,35 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantErrPrefix:    errPrefix("oauth2: server response missing access_token"),
 		},
 		{
-			desc: "success workspace",
-			cfg: &Config{
-				ClientID:      "client-id",
-				Host:          "http://host.com/test",
-				TokenAudience: "token-audience",
-				HTTPTransport: fixtures.MappingTransport{
-					"GET /oidc/.well-known/oauth-authorization-server": {
-						Response: u2m.OAuthAuthorizationServer{
-							AuthorizationEndpoint: "https://host.com/auth",
-							TokenEndpoint:         "https://host.com/oidc/v1/token",
-						},
-					},
-					"POST /oidc/v1/token": {
+			desc:          "success workspace",
+			clientID:      "client-id",
+			host:          "http://host.com",
+			tokenAudience: "token-audience",
+			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					AuthorizationEndpoint: "https://host.com/auth",
+					TokenEndpoint:         "https://host.com/oidc/v1/token",
+				}, nil
+			},
+			httpTransport: fixtures.MappingTransport{
+				"POST /oidc/v1/token": {
 
-						Status: http.StatusOK,
-						ExpectedHeaders: map[string]string{
-							"Content-Type": "application/x-www-form-urlencoded",
-						},
-						ExpectedRequest: url.Values{
-							"client_id":          {"client-id"},
-							"scope":              {"all-apis"},
-							"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
-							"subject_token":      {"id-token-42"},
-							"grant_type":         {"urn:ietf:params:oauth:grant-type:token-exchange"},
-						},
-						Response: map[string]string{
-							"token_type":    "access-token",
-							"access_token":  "test-auth-token",
-							"refresh_token": "refresh",
-							"expires_on":    "0",
-						},
+					Status: http.StatusOK,
+					ExpectedHeaders: map[string]string{
+						"Content-Type": "application/x-www-form-urlencoded",
+					},
+					ExpectedRequest: url.Values{
+						"client_id":          {"client-id"},
+						"scope":              {"all-apis"},
+						"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
+						"subject_token":      {"id-token-42"},
+						"grant_type":         {"urn:ietf:params:oauth:grant-type:token-exchange"},
+					},
+					Response: map[string]string{
+						"token_type":    "access-token",
+						"access_token":  "test-auth-token",
+						"refresh_token": "refresh",
+						"expires_on":    "0",
 					},
 				},
 			},
@@ -179,31 +168,35 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantToken:        "test-auth-token",
 		},
 		{
-			desc: "success account",
-			cfg: &Config{
-				ClientID:      "client-id",
-				AccountID:     "ac123",
-				Host:          "https://accounts.databricks.com",
-				TokenAudience: "token-audience",
-				HTTPTransport: fixtures.MappingTransport{
-					"POST /oidc/accounts/ac123/v1/token": {
-						Status: http.StatusOK,
-						ExpectedHeaders: map[string]string{
-							"Content-Type": "application/x-www-form-urlencoded",
-						},
-						ExpectedRequest: url.Values{
-							"client_id":          {"client-id"},
-							"scope":              {"all-apis"},
-							"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
-							"subject_token":      {"id-token-42"},
-							"grant_type":         {"urn:ietf:params:oauth:grant-type:token-exchange"},
-						},
-						Response: map[string]string{
-							"token_type":    "access-token",
-							"access_token":  "test-auth-token",
-							"refresh_token": "refresh",
-							"expires_on":    "0",
-						},
+			desc:          "success account",
+			clientID:      "client-id",
+			accountID:     "ac123",
+			host:          "https://accounts.databricks.com",
+			tokenAudience: "token-audience",
+			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					AuthorizationEndpoint: "https://host.com/auth",
+					TokenEndpoint:         "https://host.com/oidc/accounts/ac123/v1/token",
+				}, nil
+			},
+			httpTransport: fixtures.MappingTransport{
+				"POST /oidc/accounts/ac123/v1/token": {
+					Status: http.StatusOK,
+					ExpectedHeaders: map[string]string{
+						"Content-Type": "application/x-www-form-urlencoded",
+					},
+					ExpectedRequest: url.Values{
+						"client_id":          {"client-id"},
+						"scope":              {"all-apis"},
+						"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
+						"subject_token":      {"id-token-42"},
+						"grant_type":         {"urn:ietf:params:oauth:grant-type:token-exchange"},
+					},
+					Response: map[string]string{
+						"token_type":    "access-token",
+						"access_token":  "test-auth-token",
+						"refresh_token": "refresh",
+						"expires_on":    "0",
 					},
 				},
 			},
@@ -212,23 +205,27 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantToken:        "test-auth-token",
 		},
 		{
-			desc: "default token audience account",
-			cfg: &Config{
-				ClientID:  "client-id",
-				AccountID: "ac123",
-				Host:      "https://accounts.databricks.com",
-				HTTPTransport: fixtures.MappingTransport{
-					"POST /oidc/accounts/ac123/v1/token": {
-						Status: http.StatusOK,
-						ExpectedHeaders: map[string]string{
-							"Content-Type": "application/x-www-form-urlencoded",
-						},
-						Response: map[string]string{
-							"token_type":    "access-token",
-							"access_token":  "test-auth-token",
-							"refresh_token": "refresh",
-							"expires_on":    "0",
-						},
+			desc:      "default token audience account",
+			clientID:  "client-id",
+			accountID: "ac123",
+			host:      "https://accounts.databricks.com",
+			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					AuthorizationEndpoint: "https://host.com/auth",
+					TokenEndpoint:         "https://host.com/oidc/accounts/ac123/v1/token",
+				}, nil
+			},
+			httpTransport: fixtures.MappingTransport{
+				"POST /oidc/accounts/ac123/v1/token": {
+					Status: http.StatusOK,
+					ExpectedHeaders: map[string]string{
+						"Content-Type": "application/x-www-form-urlencoded",
+					},
+					Response: map[string]string{
+						"token_type":    "access-token",
+						"access_token":  "test-auth-token",
+						"refresh_token": "refresh",
+						"expires_on":    "0",
 					},
 				},
 			},
@@ -237,28 +234,26 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantToken:        "test-auth-token",
 		},
 		{
-			desc: "default token audience workspace",
-			cfg: &Config{
-				ClientID: "client-id",
-				Host:     "https://host.com",
-				HTTPTransport: fixtures.MappingTransport{
-					"GET /oidc/.well-known/oauth-authorization-server": {
-						Response: u2m.OAuthAuthorizationServer{
-							AuthorizationEndpoint: "https://host.com/auth",
-							TokenEndpoint:         "https://host.com/oidc/v1/token",
-						},
+			desc:     "default token audience workspace",
+			clientID: "client-id",
+			host:     "https://host.com",
+			oidcEndpointSupplier: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					AuthorizationEndpoint: "https://host.com/auth",
+					TokenEndpoint:         "https://host.com/oidc/v1/token",
+				}, nil
+			},
+			httpTransport: fixtures.MappingTransport{
+				"POST /oidc/v1/token": {
+					Status: http.StatusOK,
+					ExpectedHeaders: map[string]string{
+						"Content-Type": "application/x-www-form-urlencoded",
 					},
-					"POST /oidc/v1/token": {
-						Status: http.StatusOK,
-						ExpectedHeaders: map[string]string{
-							"Content-Type": "application/x-www-form-urlencoded",
-						},
-						Response: map[string]string{
-							"token_type":    "access-token",
-							"access_token":  "test-auth-token",
-							"refresh_token": "refresh",
-							"expires_on":    "0",
-						},
+					Response: map[string]string{
+						"token_type":    "access-token",
+						"access_token":  "test-auth-token",
+						"refresh_token": "refresh",
+						"expires_on":    "0",
 					},
 				},
 			},
@@ -274,19 +269,16 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 				idToken: tc.idToken,
 				err:     tc.tokenProviderError,
 			}
-			tc.cfg.EnsureResolved()
-			c := tc.cfg.CanonicalHostName()
 			ex := &oidcTokenExchange{
-				clientID:              tc.cfg.ClientID,
-				account:               tc.cfg.IsAccountClient(),
-				accountID:             tc.cfg.AccountID,
-				host:                  c,
-				tokenEndpointProvider: tc.cfg.getOidcEndpoints,
-				audience:              tc.cfg.TokenAudience,
+				clientID:              tc.clientID,
+				accountID:             tc.accountID,
+				host:                  tc.host,
+				tokenEndpointProvider: tc.oidcEndpointSupplier,
+				audience:              tc.tokenAudience,
 				tokenProvider:         p,
 			}
 			ctx := context.WithValue(context.Background(), oauth2.HTTPClient, &http.Client{
-				Transport: tc.cfg.HTTPTransport,
+				Transport: tc.httpTransport,
 			})
 			token, gotErr := ex.Token(ctx)
 			if tc.wantErrPrefix == nil && gotErr != nil {
