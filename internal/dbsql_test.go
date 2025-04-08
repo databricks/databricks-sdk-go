@@ -122,37 +122,28 @@ func TestAccAlerts(t *testing.T) {
 // As of April 7, 2025: Official support for the legacy version of dashboards has ended. More context: https://docs.databricks.com/gcp/en/sql/user/dashboards
 // func TestAccDashboards(t *testing.T) {
 // 	ctx, w := workspaceTest(t)
-
 // 	// As of April 7, 2025: Official support for the legacy version of dashboards has ended.
 // 	if w.Config.IsGcp() {
 // 		t.Skip("Legacy dashboard creation is not supported on GCP")
 // 	}
-
 // 	created, err := w.Dashboards.Create(ctx, sql.DashboardPostContent{
 // 		Name: RandomName("go-sdk-"),
 // 	})
 // 	require.NoError(t, err)
-
 // 	defer w.Dashboards.DeleteByDashboardId(ctx, created.Id)
-
 // 	byId, err := w.Dashboards.GetByDashboardId(ctx, created.Id)
 // 	require.NoError(t, err)
-
 // 	byName, err := w.Dashboards.GetByName(ctx, byId.Name)
 // 	require.NoError(t, err)
 // 	assert.Equal(t, byId.Id, byName.Id)
-
 // 	all, err := w.Dashboards.ListAll(ctx, sql.ListDashboardsRequest{})
 // 	require.NoError(t, err)
-
 // 	names, err := w.Dashboards.DashboardNameToIdMap(ctx, sql.ListDashboardsRequest{})
 // 	require.NoError(t, err)
 // 	assert.Equal(t, created.Id, names[byId.Name])
 // 	assert.Equal(t, len(all), len(names))
-
 // 	err = w.Dashboards.DeleteByDashboardId(ctx, created.Id)
 // 	require.NoError(t, err)
-
 // 	err = w.Dashboards.Restore(ctx, sql.RestoreDashboardRequest{
 // 		DashboardId: created.Id,
 // 	})
