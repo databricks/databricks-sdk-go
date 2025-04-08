@@ -122,6 +122,11 @@ func TestAccAlerts(t *testing.T) {
 func TestAccDashboards(t *testing.T) {
 	ctx, w := workspaceTest(t)
 
+	// As of April 7, 2025: Official support for the legacy version of dashboards has ended.
+	if w.Config.IsGcp() {
+		t.Skip("Legacy dashboard creation is not supported on GCP")
+	}
+
 	created, err := w.Dashboards.Create(ctx, sql.DashboardPostContent{
 		Name: RandomName("go-sdk-"),
 	})
