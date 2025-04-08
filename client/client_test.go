@@ -33,10 +33,6 @@ func TestSimpleRequestFailsURLError(t *testing.T) {
 		ConfigFile:          "/dev/null",
 		RetryTimeoutSeconds: 1,
 		HTTPTransport: hc(func(r *http.Request) (*http.Response, error) {
-			// Unrelated to this test. This URL is called during Client setup.
-			if r.URL.Path == "/oidc/.well-known/oauth-authorization-server" {
-				return nil, nil
-			}
 			require.Equal(t, "GET", r.Method)
 			require.Equal(t, "/a/b", r.URL.Path)
 			require.Equal(t, "c=d", r.URL.RawQuery)
@@ -316,8 +312,6 @@ func TestHttpTransport(t *testing.T) {
 func TestDoRemovesDoubleSlashesFromFilesAPI(t *testing.T) {
 	i := 0
 	expectedPaths := []string{
-		// Unrelated to this test. This URL is called during Client setup.
-		"/oidc/.well-known/oauth-authorization-server",
 		"/api/2.0/fs/files/Volumes/abc/def/ghi",
 		"/api/2.0/anotherservice//test",
 	}

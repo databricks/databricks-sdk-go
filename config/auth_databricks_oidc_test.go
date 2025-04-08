@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/oauth2"
@@ -29,18 +30,18 @@ func (m *mockIdTokenProvider) IDToken(ctx context.Context, audience string) (*ID
 
 func TestDatabricksOidcTokenSource(t *testing.T) {
 	testCases := []struct {
-		desc               string
-		clientID           string
-		accountID          string
-		host               string
-		tokenAudience      string
-		httpTransport      http.RoundTripper
-		oidcEndpoint       string
-		idToken            string
-		expectedAudience   string
-		tokenProviderError error
-		wantToken          string
-		wantErrPrefix      *string
+		desc                 string
+		clientID             string
+		accountID            string
+		host                 string
+		tokenAudience        string
+		httpTransport        http.RoundTripper
+		oidcEndpointProvider func(context.Context) (*u2m.OAuthAuthorizationServer, error)
+		idToken              string
+		expectedAudience     string
+		tokenProviderError   error
+		wantToken            string
+		wantErrPrefix        *string
 	}{
 		{
 			desc:          "missing host",
@@ -57,10 +58,14 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 		{
 			desc: "token provider error",
 
-			clientID:           "client-id",
-			host:               "http://host.com",
-			tokenAudience:      "token-audience",
-			oidcEndpoint:       "https://host.com/oidc/v1/token",
+			clientID:      "client-id",
+			host:          "http://host.com",
+			tokenAudience: "token-audience",
+			oidcEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					TokenEndpoint: "https://host.com/oidc/v1/token",
+				}, nil
+			},
 			expectedAudience:   "token-audience",
 			tokenProviderError: errors.New("error getting id token"),
 			wantErrPrefix:      errPrefix("error getting id token"),
@@ -70,7 +75,11 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			clientID:      "client-id",
 			host:          "http://host.com",
 			tokenAudience: "token-audience",
-			oidcEndpoint:  "https://host.com/oidc/v1/token",
+			oidcEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					TokenEndpoint: "https://host.com/oidc/v1/token",
+				}, nil
+			},
 			httpTransport: fixtures.MappingTransport{
 				"POST /oidc/v1/token": {
 					Status: http.StatusInternalServerError,
@@ -88,7 +97,11 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			clientID:      "client-id",
 			host:          "http://host.com",
 			tokenAudience: "token-audience",
-			oidcEndpoint:  "https://host.com/oidc/v1/token",
+			oidcEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					TokenEndpoint: "https://host.com/oidc/v1/token",
+				}, nil
+			},
 			httpTransport: fixtures.MappingTransport{
 				"POST /oidc/v1/token": {
 					Status: http.StatusOK,
@@ -109,7 +122,11 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			clientID:      "client-id",
 			host:          "http://host.com",
 			tokenAudience: "token-audience",
-			oidcEndpoint:  "https://host.com/oidc/v1/token",
+			oidcEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					TokenEndpoint: "https://host.com/oidc/v1/token",
+				}, nil
+			},
 			httpTransport: fixtures.MappingTransport{
 				"POST /oidc/v1/token": {
 
@@ -142,7 +159,11 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			accountID:     "ac123",
 			host:          "https://accounts.databricks.com",
 			tokenAudience: "token-audience",
-			oidcEndpoint:  "https://host.com/oidc/v1/token",
+			oidcEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					TokenEndpoint: "https://host.com/oidc/v1/token",
+				}, nil
+			},
 			httpTransport: fixtures.MappingTransport{
 				"POST /oidc/v1/token": {
 					Status: http.StatusOK,
@@ -169,11 +190,15 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantToken:        "test-auth-token",
 		},
 		{
-			desc:         "default token audience account",
-			clientID:     "client-id",
-			accountID:    "ac123",
-			host:         "https://accounts.databricks.com",
-			oidcEndpoint: "https://host.com/oidc/v1/token",
+			desc:      "default token audience account",
+			clientID:  "client-id",
+			accountID: "ac123",
+			host:      "https://accounts.databricks.com",
+			oidcEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					TokenEndpoint: "https://host.com/oidc/v1/token",
+				}, nil
+			},
 			httpTransport: fixtures.MappingTransport{
 				"POST /oidc/v1/token": {
 					Status: http.StatusOK,
@@ -193,10 +218,14 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantToken:        "test-auth-token",
 		},
 		{
-			desc:         "default token audience workspace",
-			clientID:     "client-id",
-			host:         "https://host.com",
-			oidcEndpoint: "https://host.com/oidc/v1/token",
+			desc:     "default token audience workspace",
+			clientID: "client-id",
+			host:     "https://host.com",
+			oidcEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					TokenEndpoint: "https://host.com/oidc/v1/token",
+				}, nil
+			},
 			httpTransport: fixtures.MappingTransport{
 				"POST /oidc/v1/token": {
 					Status: http.StatusOK,
@@ -224,12 +253,12 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 				err:     tc.tokenProviderError,
 			}
 			ex := &oidcTokenExchange{
-				clientID:      tc.clientID,
-				accountID:     tc.accountID,
-				host:          tc.host,
-				tokenEndpoint: tc.oidcEndpoint,
-				audience:      tc.tokenAudience,
-				tokenProvider: p,
+				clientID:              tc.clientID,
+				accountID:             tc.accountID,
+				host:                  tc.host,
+				tokenEndpointProvider: tc.oidcEndpointProvider,
+				audience:              tc.tokenAudience,
+				idTokenProvider:       p,
 			}
 			ctx := context.WithValue(context.Background(), oauth2.HTTPClient, &http.Client{
 				Transport: tc.httpTransport,

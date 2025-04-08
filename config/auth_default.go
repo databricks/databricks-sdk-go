@@ -10,11 +10,7 @@ import (
 )
 
 // Constructs all Databricks OIDC Credentials Strategies
-func buildOidcTokenCredentialStrategies(ctx context.Context, cfg *Config) ([]CredentialsStrategy, error) {
-	oidcEndpoints, err := cfg.getOidcEndpoints(ctx)
-	if err != nil {
-		return nil, err
-	}
+func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 	providers := map[string]IDTokenSource{
 		"github-oidc": &GithubProvider{
 			actionsIDTokenRequestURL:   cfg.ActionsIDTokenRequestURL,
@@ -27,11 +23,11 @@ func buildOidcTokenCredentialStrategies(ctx context.Context, cfg *Config) ([]Cre
 	strategies := []CredentialsStrategy{}
 	for name, provider := range providers {
 		oidcConfig := &OIDCTokenExchangeConfig{
-			ClientID:        cfg.ClientID,
-			Host:            cfg.Host,
-			TokenEndpoint:   oidcEndpoints.TokenEndpoint,
-			Audience:        cfg.TokenAudience,
-			IdTokenProvider: provider,
+			ClientID:              cfg.ClientID,
+			Host:                  cfg.Host,
+			TokenEndpointProvider: cfg.getOidcEndpoints,
+			Audience:              cfg.TokenAudience,
+			IdTokenProvider:       provider,
 		}
 		if cfg.IsAccountClient() {
 			oidcConfig.AccountID = cfg.AccountID
@@ -39,10 +35,10 @@ func buildOidcTokenCredentialStrategies(ctx context.Context, cfg *Config) ([]Cre
 		tokenSource := NewOIDCTokenExchange(oidcConfig, provider)
 		strategies = append(strategies, NewTokenSourceStrategy(name, tokenSource))
 	}
-	return strategies, nil
+	return strategies
 }
 
-func buildDefaultStrategies(ctx context.Context, cfg *Config) []CredentialsStrategy {
+func buildDefaultStrategies(cfg *Config) []CredentialsStrategy {
 	strategies := []CredentialsStrategy{}
 	strategies = append(strategies,
 		PatCredentials{},
@@ -50,11 +46,7 @@ func buildDefaultStrategies(ctx context.Context, cfg *Config) []CredentialsStrat
 		M2mCredentials{},
 		DatabricksCliCredentials,
 		MetadataServiceCredentials{})
-	oidcCredentialStrategies, err := buildOidcTokenCredentialStrategies(ctx, cfg)
-	if err != nil {
-		logger.Debugf(ctx, "Cannot set up OIDC Credentials Strategy: %v. Skipping", err)
-	}
-	strategies = append(strategies, oidcCredentialStrategies...)
+	strategies = append(strategies, buildOidcTokenCredentialStrategies(cfg)...)
 	strategies = append(strategies,
 		// Attempt to configure auth from most specific to most generic (the Azure CLI).
 		AzureGithubOIDCCredentials{},
@@ -85,7 +77,7 @@ var errorMessage = fmt.Sprintf("cannot configure default credentials, please che
 var ErrCannotConfigureAuth = errors.New(errorMessage)
 
 func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	for _, p := range buildDefaultStrategies(ctx, cfg) {
+	for _, p := range buildDefaultStrategies(cfg) {
 		if cfg.AuthType != "" && p.Name() != cfg.AuthType {
 			// ignore other auth types if one is explicitly enforced
 			logger.Infof(ctx, "Ignoring %s auth, because %s is preferred", p.Name(), cfg.AuthType)

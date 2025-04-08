@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
@@ -16,33 +17,33 @@ func NewOIDCTokenExchange(
 	idTokenProvider IDTokenSource,
 ) auth.TokenSource {
 	return &oidcTokenExchange{
-		clientID:      cfg.ClientID,
-		accountID:     cfg.AccountID,
-		host:          cfg.Host,
-		tokenEndpoint: cfg.TokenEndpoint,
-		audience:      cfg.Audience,
-		tokenProvider: idTokenProvider,
+		clientID:              cfg.ClientID,
+		accountID:             cfg.AccountID,
+		host:                  cfg.Host,
+		tokenEndpointProvider: cfg.TokenEndpointProvider,
+		audience:              cfg.Audience,
+		idTokenProvider:       idTokenProvider,
 	}
 }
 
 type OIDCTokenExchangeConfig struct {
-	ClientID        string
-	AccountID       string
-	Host            string
-	TokenEndpoint   string
-	Audience        string
-	IdTokenProvider IDTokenSource
+	ClientID              string
+	AccountID             string
+	Host                  string
+	TokenEndpointProvider func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error)
+	Audience              string
+	IdTokenProvider       IDTokenSource
 }
 
 // oidcTokenExchange is a auth.TokenSource which exchanges a token using
 // Workload Identity Federation.
 type oidcTokenExchange struct {
-	clientID      string
-	accountID     string
-	host          string
-	tokenEndpoint string
-	audience      string
-	tokenProvider IDTokenSource
+	clientID              string
+	accountID             string
+	host                  string
+	tokenEndpointProvider func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error)
+	audience              string
+	idTokenProvider       IDTokenSource
 }
 
 // Token implements [TokenSource.Token]
@@ -55,15 +56,20 @@ func (w *oidcTokenExchange) Token(ctx context.Context) (*oauth2.Token, error) {
 		logger.Debugf(ctx, "Missing Host")
 		return nil, errors.New("missing Host")
 	}
-	audience := w.determineAudience()
-	idToken, err := w.tokenProvider.IDToken(ctx, audience)
+	endpoints, err := w.tokenEndpointProvider(ctx)
 	if err != nil {
 		return nil, err
 	}
+	audience := w.determineAudience(endpoints)
+	idToken, err := w.idTokenProvider.IDToken(ctx, audience)
+	if err != nil {
+		return nil, err
+	}
+
 	c := &clientcredentials.Config{
 		ClientID:  w.clientID,
 		AuthStyle: oauth2.AuthStyleInParams,
-		TokenURL:  w.tokenEndpoint,
+		TokenURL:  endpoints.TokenEndpoint,
 		Scopes:    []string{"all-apis"},
 		EndpointParams: url.Values{
 			"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
@@ -74,7 +80,7 @@ func (w *oidcTokenExchange) Token(ctx context.Context) (*oauth2.Token, error) {
 	return c.Token(ctx)
 }
 
-func (w *oidcTokenExchange) determineAudience() string {
+func (w *oidcTokenExchange) determineAudience(endpoints *u2m.OAuthAuthorizationServer) string {
 	if w.audience != "" {
 		return w.audience
 	}
@@ -83,5 +89,5 @@ func (w *oidcTokenExchange) determineAudience() string {
 		return w.accountID
 	}
 	// For Databricks Workspaces, the auth endpoint is the default audience.
-	return w.tokenEndpoint
+	return endpoints.TokenEndpoint
 }
