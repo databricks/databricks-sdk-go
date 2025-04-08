@@ -252,7 +252,7 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 				idToken: tc.idToken,
 				err:     tc.tokenProviderError,
 			}
-			ex := &oidcTokenExchange{
+			ex := &databricksOIDCTokenSource{
 				clientID:              tc.clientID,
 				accountID:             tc.accountID,
 				host:                  tc.host,

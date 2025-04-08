@@ -22,17 +22,17 @@ func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 
 	strategies := []CredentialsStrategy{}
 	for name, provider := range providers {
-		oidcConfig := &OIDCTokenExchangeConfig{
+		oidcConfig := &DatabricksOIDCTokenSourceConfig{
 			ClientID:              cfg.ClientID,
 			Host:                  cfg.Host,
 			TokenEndpointProvider: cfg.getOidcEndpoints,
 			Audience:              cfg.TokenAudience,
-			IdTokenProvider:       provider,
+			IdTokenSource:         provider,
 		}
 		if cfg.IsAccountClient() {
 			oidcConfig.AccountID = cfg.AccountID
 		}
-		tokenSource := NewOIDCTokenExchange(oidcConfig, provider)
+		tokenSource := NewDatabricksOIDCTokenSource(oidcConfig)
 		strategies = append(strategies, NewTokenSourceStrategy(name, tokenSource))
 	}
 	return strategies

@@ -12,32 +12,33 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 )
 
-func NewOIDCTokenExchange(
-	cfg *OIDCTokenExchangeConfig,
-	idTokenProvider IDTokenSource,
+// Creates a new Databricks OIDC TokenSource.
+func NewDatabricksOIDCTokenSource(
+	cfg *DatabricksOIDCTokenSourceConfig,
 ) auth.TokenSource {
-	return &oidcTokenExchange{
+	return &databricksOIDCTokenSource{
 		clientID:              cfg.ClientID,
 		accountID:             cfg.AccountID,
 		host:                  cfg.Host,
 		tokenEndpointProvider: cfg.TokenEndpointProvider,
 		audience:              cfg.Audience,
-		idTokenProvider:       idTokenProvider,
+		idTokenProvider:       cfg.IdTokenSource,
 	}
 }
 
-type OIDCTokenExchangeConfig struct {
+// Config for Databricks OIDC TokenSource.
+type DatabricksOIDCTokenSourceConfig struct {
 	ClientID              string
 	AccountID             string
 	Host                  string
 	TokenEndpointProvider func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error)
 	Audience              string
-	IdTokenProvider       IDTokenSource
+	IdTokenSource         IDTokenSource
 }
 
-// oidcTokenExchange is a auth.TokenSource which exchanges a token using
+// databricksOIDCTokenSource is a auth.TokenSource which exchanges a token using
 // Workload Identity Federation.
-type oidcTokenExchange struct {
+type databricksOIDCTokenSource struct {
 	clientID              string
 	accountID             string
 	host                  string
@@ -47,7 +48,7 @@ type oidcTokenExchange struct {
 }
 
 // Token implements [TokenSource.Token]
-func (w *oidcTokenExchange) Token(ctx context.Context) (*oauth2.Token, error) {
+func (w *databricksOIDCTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
 	if w.clientID == "" {
 		logger.Debugf(ctx, "Missing ClientID")
 		return nil, errors.New("missing ClientID")
@@ -80,7 +81,7 @@ func (w *oidcTokenExchange) Token(ctx context.Context) (*oauth2.Token, error) {
 	return c.Token(ctx)
 }
 
-func (w *oidcTokenExchange) determineAudience(endpoints *u2m.OAuthAuthorizationServer) string {
+func (w *databricksOIDCTokenSource) determineAudience(endpoints *u2m.OAuthAuthorizationServer) string {
 	if w.audience != "" {
 		return w.audience
 	}
