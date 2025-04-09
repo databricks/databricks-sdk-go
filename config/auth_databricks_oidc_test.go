@@ -251,7 +251,7 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 				err:     tc.tokenProviderError,
 			}
 
-			cfg := &DatabricksOIDCTokenSourceConfig{
+			cfg := DatabricksOIDCTokenSourceConfig{
 				ClientID:              tc.clientID,
 				AccountID:             tc.accountID,
 				Host:                  tc.host,

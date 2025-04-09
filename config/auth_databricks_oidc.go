@@ -13,7 +13,7 @@ import (
 )
 
 // Creates a new Databricks OIDC TokenSource.
-func NewDatabricksOIDCTokenSource(cfg *DatabricksOIDCTokenSourceConfig) auth.TokenSource {
+func NewDatabricksOIDCTokenSource(cfg DatabricksOIDCTokenSourceConfig) auth.TokenSource {
 	return &databricksOIDCTokenSource{
 		cfg: cfg,
 	}
@@ -27,21 +27,21 @@ type DatabricksOIDCTokenSourceConfig struct {
 	// [Optional] AccountID is the account ID of the Databricks Account.
 	// This is only used for Account level tokens.
 	AccountID string
-	// Host is the host of the Databricks cluster.
+	// Host is the host of the Databricks account or workspace.
 	Host string
-	// TokenEndpointProvider is a function that returns the token endpoint for the Databricks OIDC application.
+	// TokenEndpointProvider returns the token endpoint for the Databricks OIDC application.
 	TokenEndpointProvider func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error)
 	// Audience is the audience of the Databricks OIDC application.
 	// This is only used for Workspace level tokens.
 	Audience string
-	// IdTokenSource is a function that returns the ID token to be used for the token exchange.
+	// IdTokenSource returns the IDToken to be used for the token exchange.
 	IdTokenSource IDTokenSource
 }
 
 // databricksOIDCTokenSource is a auth.TokenSource which exchanges a token using
 // Workload Identity Federation.
 type databricksOIDCTokenSource struct {
-	cfg *DatabricksOIDCTokenSourceConfig
+	cfg DatabricksOIDCTokenSourceConfig
 }
 
 // Token implements [TokenSource.Token]

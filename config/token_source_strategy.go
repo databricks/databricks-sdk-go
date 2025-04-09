@@ -52,7 +52,7 @@ func (t *tokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (crede
 		return nil, nil
 	}
 
-	visitor := refreshableAuthVisitor(cached, ctx)
+	visitor := refreshableAuthVisitor(cached)
 	return credentials.NewOAuthCredentialsProvider(visitor, authconv.OAuth2TokenSource(cached).Token), nil
 }
 
