@@ -12,7 +12,7 @@ import (
 // Constructs all Databricks OIDC Credentials Strategies
 func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 	providers := map[string]IDTokenSource{
-		"github-oidc": &GithubProvider{
+		"github-oidc": &githubIDTokenSource{
 			actionsIDTokenRequestURL:   cfg.ActionsIDTokenRequestURL,
 			actionsIDTokenRequestToken: cfg.ActionsIDTokenRequestToken,
 			refreshClient:              cfg.refreshClient,

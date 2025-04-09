@@ -70,7 +70,7 @@ func TestGithubOIDCProvider(t *testing.T) {
 			cli := httpclient.NewApiClient(httpclient.ClientConfig{
 				Transport: tc.httpTransport,
 			})
-			p := &GithubProvider{
+			p := &githubIDTokenSource{
 				actionsIDTokenRequestURL:   tc.tokenRequestUrl,
 				actionsIDTokenRequestToken: tc.tokenRequestToken,
 				refreshClient:              cli,
