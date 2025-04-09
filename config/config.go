@@ -135,7 +135,7 @@ type Config struct {
 	DatabricksEnvironment *environment.DatabricksEnvironment
 
 	// When using Workload Identity Federation, the audience to specify when fetching an ID token from the ID token supplier.
-	TokenAudience string `name:"audience" auth:"-"`
+	TokenAudience string `name:"audience" env:"DATABRICKS_TOKEN_AUDIENCE" auth:"-"`
 
 	Loaders []Loader
 

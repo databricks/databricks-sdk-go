@@ -10,7 +10,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestGithubOIDCProvider(t *testing.T) {
+func TestGithubIDTokenSource(t *testing.T) {
 	testCases := []struct {
 		desc              string
 		tokenRequestUrl   string
