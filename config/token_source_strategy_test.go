@@ -6,18 +6,10 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/oauth2"
 )
-
-type staticTokenSource struct {
-	token *oauth2.Token
-	err   error
-}
-
-func (s *staticTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
-	return s.token, s.err
-}
 
 func TestDatabricksTokenSourceStrategy(t *testing.T) {
 	testCases := []struct {
@@ -41,13 +33,11 @@ func TestDatabricksTokenSourceStrategy(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			ts := &staticTokenSource{
-				token: tc.token,
-				err:   tc.tokenSourceError,
-			}
 			strat := &tokenSourceStrategy{
-				name:        "github-oidc",
-				tokenSource: ts,
+				name: "github-oidc",
+				tokenSource: auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+					return tc.token, tc.tokenSourceError
+				}),
 			}
 			provider, err := strat.Configure(context.Background(), &Config{})
 			if tc.tokenSourceError == nil && provider == nil {

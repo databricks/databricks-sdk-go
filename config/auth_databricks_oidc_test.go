@@ -10,7 +10,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
-	"golang.org/x/oauth2"
 )
 
 type mockIdTokenProvider struct {
@@ -23,9 +22,7 @@ type mockIdTokenProvider struct {
 
 func (m *mockIdTokenProvider) IDToken(ctx context.Context, audience string) (*IDToken, error) {
 	m.audience = audience
-	return &IDToken{
-		m.idToken,
-	}, m.err
+	return &IDToken{Value: m.idToken}, m.err
 }
 
 func TestDatabricksOidcTokenSource(t *testing.T) {
@@ -252,23 +249,31 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 				idToken: tc.idToken,
 				err:     tc.tokenProviderError,
 			}
-			ex := &databricksOIDCTokenSource{
-				clientID:              tc.clientID,
-				accountID:             tc.accountID,
-				host:                  tc.host,
-				tokenEndpointProvider: tc.oidcEndpointProvider,
-				audience:              tc.tokenAudience,
-				idTokenProvider:       p,
+
+			cfg := &DatabricksOIDCTokenSourceConfig{
+				ClientID:              tc.clientID,
+				AccountID:             tc.accountID,
+				Host:                  tc.host,
+				TokenEndpointProvider: tc.oidcEndpointProvider,
+				Audience:              tc.tokenAudience,
+				IdTokenSource:         p,
 			}
-			ctx := context.WithValue(context.Background(), oauth2.HTTPClient, &http.Client{
-				Transport: tc.httpTransport,
-			})
-			token, gotErr := ex.Token(ctx)
-			if tc.wantErrPrefix == nil && gotErr != nil {
-				t.Errorf("Token(ctx): got error %q, want none", gotErr)
+
+			ts := NewDatabricksOIDCTokenSource(cfg)
+			if tc.httpTransport != nil {
+				ts.(*databricksOIDCTokenSource).cfg.TokenEndpointProvider = func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+					return &u2m.OAuthAuthorizationServer{
+						TokenEndpoint: "https://host.com/oidc/v1/token",
+					}, nil
+				}
 			}
-			if tc.wantErrPrefix != nil && !hasPrefix(gotErr, *tc.wantErrPrefix) {
-				t.Errorf("Token(ctx): got error %q, want error with prefix %q", gotErr, *tc.wantErrPrefix)
+
+			token, err := ts.Token(context.Background())
+			if tc.wantErrPrefix == nil && err != nil {
+				t.Errorf("Token(ctx): got error %q, want none", err)
+			}
+			if tc.wantErrPrefix != nil && !hasPrefix(err, *tc.wantErrPrefix) {
+				t.Errorf("Token(ctx): got error %q, want error with prefix %q", err, *tc.wantErrPrefix)
 			}
 			if tc.expectedAudience != p.audience {
 				t.Errorf("mockTokenProvider: got audience %s, want %s", p.audience, tc.expectedAudience)

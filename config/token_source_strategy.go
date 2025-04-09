@@ -10,6 +10,18 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
+// IDToken is a token that can be exchanged for a an access token.
+// Value is the token string.
+type IDToken struct {
+	Value string
+}
+
+// IDTokenSource is anything that returns an IDToken given an audience.
+type IDTokenSource interface {
+	// Function to get the token
+	IDToken(ctx context.Context, audience string) (*IDToken, error)
+}
+
 // Creates a CredentialsStrategy from a TokenSource.
 func NewTokenSourceStrategy(
 	name string,
@@ -19,16 +31,6 @@ func NewTokenSourceStrategy(
 		name:        name,
 		tokenSource: tokenSource,
 	}
-}
-
-type IDToken struct {
-	Value string
-}
-
-// IDTokenSource is an interface for an IDToken Source with an audience.
-type IDTokenSource interface {
-	// Function to get the token
-	IDToken(ctx context.Context, audience string) (*IDToken, error)
 }
 
 // tokenSourceStrategy is wrapper on a auth.TokenSource which converts it into a CredentialsStrategy
