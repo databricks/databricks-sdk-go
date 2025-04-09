@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
+	"golang.org/x/oauth2"
 )
 
 type mockIdTokenProvider struct {
@@ -268,7 +269,14 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 				}
 			}
 
-			token, err := ts.Token(context.Background())
+			ctx := context.Background()
+			if tc.httpTransport != nil {
+				ctx = context.WithValue(ctx, oauth2.HTTPClient, &http.Client{
+					Transport: tc.httpTransport,
+				})
+			}
+
+			token, err := ts.Token(ctx)
 			if tc.wantErrPrefix == nil && err != nil {
 				t.Errorf("Token(ctx): got error %q, want none", err)
 			}
