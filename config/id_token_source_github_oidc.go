@@ -9,9 +9,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-/**
- * githubIDTokenSource retrieves JWT Tokens from Github Actions.
- */
+// githubIDTokenSource retrieves JWT Tokens from Github Actions.
 type githubIDTokenSource struct {
 	actionsIDTokenRequestURL   string
 	actionsIDTokenRequestToken string
