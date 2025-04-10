@@ -23,16 +23,19 @@ func (c AzureGithubOIDCCredentials) Name() string {
 // Configure implements [CredentialsStrategy.Configure].
 func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	// Sanity check that the config is configured for Azure Databricks.
-	if !cfg.IsAzure() || cfg.AzureClientID == "" || cfg.Host == "" || cfg.AzureTenantID == "" {
+	if !cfg.IsAzure() || cfg.AzureClientID == "" || cfg.Host == "" || cfg.AzureTenantID == "" || cfg.ActionsIDTokenRequestURL == "" || cfg.ActionsIDTokenRequestToken == "" {
 		return nil, nil
 	}
-	supplier := GithubOIDCTokenSupplier{cfg: cfg}
+	supplier := githubIDTokenSource{actionsIDTokenRequestURL: cfg.ActionsIDTokenRequestURL,
+		actionsIDTokenRequestToken: cfg.ActionsIDTokenRequestToken,
+		refreshClient:              cfg.refreshClient,
+	}
 
-	idToken, err := supplier.GetOIDCToken(ctx, "api://AzureADTokenExchange")
+	idToken, err := supplier.IDToken(ctx, "api://AzureADTokenExchange")
 	if err != nil {
 		return nil, err
 	}
-	if idToken == "" {
+	if idToken.Value == "" {
 		return nil, nil
 	}
 
@@ -40,7 +43,7 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 		aadEndpoint:   fmt.Sprintf("%s%s/oauth2/token", cfg.Environment().AzureActiveDirectoryEndpoint(), cfg.AzureTenantID),
 		clientID:      cfg.AzureClientID,
 		applicationID: cfg.Environment().AzureApplicationID,
-		idToken:       idToken,
+		idToken:       idToken.Value,
 		httpClient:    cfg.refreshClient,
 	}
 
