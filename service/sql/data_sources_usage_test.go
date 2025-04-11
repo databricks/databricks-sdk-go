@@ -9,7 +9,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-func ExampleDataSourcesAPI_ListAll_queries() {
+func ExampleDataSourcesAPI_List_queries() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -24,7 +24,7 @@ func ExampleDataSourcesAPI_ListAll_queries() {
 
 }
 
-func ExampleDataSourcesAPI_ListAll_alerts() {
+func ExampleDataSourcesAPI_List_alerts() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

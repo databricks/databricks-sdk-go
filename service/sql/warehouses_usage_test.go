@@ -129,7 +129,7 @@ func ExampleWarehousesAPI_Get_sqlWarehouses() {
 
 }
 
-func ExampleWarehousesAPI_ListAll_sqlWarehouses() {
+func ExampleWarehousesAPI_List_sqlWarehouses() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

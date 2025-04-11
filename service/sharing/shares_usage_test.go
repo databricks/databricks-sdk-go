@@ -69,7 +69,7 @@ func ExampleSharesAPI_Get_shares() {
 
 }
 
-func ExampleSharesAPI_ListAll_shares() {
+func ExampleSharesAPI_List_shares() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

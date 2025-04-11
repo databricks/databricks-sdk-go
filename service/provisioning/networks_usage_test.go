@@ -59,7 +59,7 @@ func ExampleNetworksAPI_Get_networks() {
 
 }
 
-func ExampleNetworksAPI_ListAll_networks() {
+func ExampleNetworksAPI_List_networks() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

@@ -203,7 +203,7 @@ func ExampleWorkspaceAPI_Import_workspaceIntegration() {
 
 }
 
-func ExampleWorkspaceAPI_ListAll_workspaceIntegration() {
+func ExampleWorkspaceAPI_List_workspaceIntegration() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

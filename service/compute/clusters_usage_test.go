@@ -335,7 +335,7 @@ func ExampleClustersAPI_Get_clustersApiIntegration() {
 
 }
 
-func ExampleClustersAPI_ListAll_clustersApiIntegration() {
+func ExampleClustersAPI_List_clustersApiIntegration() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

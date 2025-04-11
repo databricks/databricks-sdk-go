@@ -207,7 +207,7 @@ func ExampleCatalogsAPI_Get_catalogs() {
 
 }
 
-func ExampleCatalogsAPI_ListAll_catalogs() {
+func ExampleCatalogsAPI_List_catalogs() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

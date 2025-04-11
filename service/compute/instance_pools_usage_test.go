@@ -127,7 +127,7 @@ func ExampleInstancePoolsAPI_Get_instancePools() {
 
 }
 
-func ExampleInstancePoolsAPI_ListAll_instancePools() {
+func ExampleInstancePoolsAPI_List_instancePools() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

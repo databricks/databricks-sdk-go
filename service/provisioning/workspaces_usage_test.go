@@ -138,7 +138,7 @@ func ExampleWorkspacesAPI_Get_workspaces() {
 
 }
 
-func ExampleWorkspacesAPI_ListAll_workspaces() {
+func ExampleWorkspacesAPI_List_workspaces() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

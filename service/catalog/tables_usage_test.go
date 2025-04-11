@@ -79,7 +79,7 @@ func ExampleTablesAPI_Get_tables() {
 
 }
 
-func ExampleTablesAPI_ListAll_tables() {
+func ExampleTablesAPI_List_tables() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

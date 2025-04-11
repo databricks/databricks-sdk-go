@@ -72,7 +72,7 @@ func ExampleVpcEndpointsAPI_Get_vpcEndpoints() {
 
 }
 
-func ExampleVpcEndpointsAPI_ListAll_vpcEndpoints() {
+func ExampleVpcEndpointsAPI_List_vpcEndpoints() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

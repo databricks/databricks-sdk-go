@@ -129,7 +129,7 @@ func ExampleStorageCredentialsAPI_Get_storageCredentialsOnAws() {
 
 }
 
-func ExampleStorageCredentialsAPI_ListAll_storageCredentialsOnAws() {
+func ExampleStorageCredentialsAPI_List_storageCredentialsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

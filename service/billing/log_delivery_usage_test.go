@@ -151,7 +151,7 @@ func ExampleLogDeliveryAPI_Get_logDelivery() {
 
 }
 
-func ExampleLogDeliveryAPI_ListAll_logDelivery() {
+func ExampleLogDeliveryAPI_List_logDelivery() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

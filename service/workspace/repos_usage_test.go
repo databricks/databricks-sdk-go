@@ -75,7 +75,7 @@ func ExampleReposAPI_Get_repos() {
 
 }
 
-func ExampleReposAPI_ListAll_repos() {
+func ExampleReposAPI_List_repos() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

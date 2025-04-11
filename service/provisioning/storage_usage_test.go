@@ -114,7 +114,7 @@ func ExampleStorageAPI_Get_storage() {
 
 }
 
-func ExampleStorageAPI_ListAll_storage() {
+func ExampleStorageAPI_List_storage() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

@@ -71,7 +71,7 @@ func ExampleGitCredentialsAPI_Get_gitCredentials() {
 
 }
 
-func ExampleGitCredentialsAPI_ListAll_gitCredentials() {
+func ExampleGitCredentialsAPI_List_gitCredentials() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

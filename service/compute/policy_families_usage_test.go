@@ -34,7 +34,7 @@ func ExamplePolicyFamiliesAPI_Get_clusterPolicyFamilies() {
 
 }
 
-func ExamplePolicyFamiliesAPI_ListAll_clusterPolicyFamilies() {
+func ExamplePolicyFamiliesAPI_List_clusterPolicyFamilies() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

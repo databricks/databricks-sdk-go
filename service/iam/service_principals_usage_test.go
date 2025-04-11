@@ -177,7 +177,7 @@ func ExampleServicePrincipalsAPI_Get_servicePrincipalsOnAws() {
 
 }
 
-func ExampleServicePrincipalsAPI_ListAll_accountServicePrincipal() {
+func ExampleServicePrincipalsAPI_List_accountServicePrincipal() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {
@@ -218,7 +218,7 @@ func ExampleServicePrincipalsAPI_ListAll_accountServicePrincipal() {
 
 }
 
-func ExampleServicePrincipalsAPI_ListAll_servicePrincipalsOnAws() {
+func ExampleServicePrincipalsAPI_List_servicePrincipalsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

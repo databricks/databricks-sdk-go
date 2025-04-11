@@ -50,7 +50,7 @@ func ExampleInstanceProfilesAPI_Edit_awsInstanceProfiles() {
 
 }
 
-func ExampleInstanceProfilesAPI_ListAll_awsInstanceProfiles() {
+func ExampleInstanceProfilesAPI_List_awsInstanceProfiles() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

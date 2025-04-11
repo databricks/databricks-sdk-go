@@ -112,7 +112,7 @@ func ExampleTokenManagementAPI_Get_createOboTokenOnAws() {
 
 }
 
-func ExampleTokenManagementAPI_ListAll_createOboTokenOnAws() {
+func ExampleTokenManagementAPI_List_createOboTokenOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

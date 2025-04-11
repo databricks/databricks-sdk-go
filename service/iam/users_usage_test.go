@@ -203,7 +203,7 @@ func ExampleUsersAPI_Get_accountUsers() {
 
 }
 
-func ExampleUsersAPI_ListAll_workspaceUsers() {
+func ExampleUsersAPI_List_workspaceUsers() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
