@@ -36,7 +36,4 @@
 * [Breaking] Changed waiter for [CommandExecutionAPI.Execute](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#CommandExecutionAPI.Execute).
 * [Breaking] Removed `Error`, `Status` and `TransientStatementId` fields for [dashboards.GenieGenerateDownloadFullQueryResultResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieGenerateDownloadFullQueryResultResponse).
 * [Breaking] Removed `Balanced` and `CostOptimized` enum values for [jobs.PerformanceTarget](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PerformanceTarget).
-* [Breaking] Removed waiter for [ClustersAPI.Get](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#ClustersAPI.Get).
-* [Breaking] Removed waiter for [JobsAPI.GetRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobsAPI.GetRun).
 * [Breaking] Removed waiter for [PipelinesAPI.Get](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinesAPI.Get).
-* [Breaking] Removed waiter for [WarehousesAPI.Get](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousesAPI.Get).
