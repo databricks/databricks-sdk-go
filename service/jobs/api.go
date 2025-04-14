@@ -131,7 +131,15 @@ type JobsInterface interface {
 	// `next_page_token` field to check for more results and pass its value as the
 	// `page_token` in subsequent requests. Arrays with fewer than 100 elements in a
 	// page will be empty on later pages.
-	GetRun(ctx context.Context, request GetRunRequest) (*Run, error)
+	GetRun(ctx context.Context, getRunRequest GetRunRequest) (*WaitGetRunJobTerminatedOrSkipped[Run], error)
+
+	// Calls [JobsAPIInterface.GetRun] and waits to reach TERMINATED or SKIPPED state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[Run](60*time.Minute) functional option.
+	//
+	// Deprecated: use [JobsAPIInterface.GetRun].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
+	GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest, options ...retries.Option[Run]) (*Run, error)
 
 	// Get the output for a single run.
 	//
@@ -477,6 +485,58 @@ func (a *JobsAPI) GetPermissionsByJobId(ctx context.Context, jobId string) (*Job
 	return a.jobsImpl.GetPermissions(ctx, GetJobPermissionsRequest{
 		JobId: jobId,
 	})
+}
+
+// Get a single job run.
+//
+// Retrieves the metadata of a run.
+//
+// In Jobs API 2.2, requests for a single job run support pagination of `tasks`
+// and `job_clusters` when either exceeds 100 elements. Use the
+// `next_page_token` field to check for more results and pass its value as the
+// `page_token` in subsequent requests. Arrays with fewer than 100 elements in a
+// page will be empty on later pages.
+func (a *JobsAPI) GetRun(ctx context.Context, getRunRequest GetRunRequest) (*WaitGetRunJobTerminatedOrSkipped[Run], error) {
+	run, err := a.jobsImpl.GetRun(ctx, getRunRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetRunJobTerminatedOrSkipped[Run]{
+		Response: run,
+		RunId:    run.RunId,
+		Poll: func(timeout time.Duration, callback func(*Run)) (*Run, error) {
+			return a.WaitGetRunJobTerminatedOrSkipped(ctx, run.RunId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [JobsAPI.GetRun] and waits to reach TERMINATED or SKIPPED state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[Run](60*time.Minute) functional option.
+//
+// Deprecated: use [JobsAPI.GetRun].Get() or [JobsAPI.WaitGetRunJobTerminatedOrSkipped]
+func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest, options ...retries.Option[Run]) (*Run, error) {
+	wait, err := a.GetRun(ctx, getRunRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[Run]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *Run) {
+		for _, o := range options {
+			o(&retries.Info[Run]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
 }
 
 // Get the output for a single run.

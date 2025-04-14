@@ -1666,12 +1666,22 @@ type WarehousesInterface interface {
 	// Get warehouse info.
 	//
 	// Gets the information for a single SQL warehouse.
-	Get(ctx context.Context, request GetWarehouseRequest) (*GetWarehouseResponse, error)
+	Get(ctx context.Context, getWarehouseRequest GetWarehouseRequest) (*WaitGetWarehouseRunning[GetWarehouseResponse], error)
+
+	// Calls [WarehousesAPIInterface.Get] and waits to reach RUNNING state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
+	//
+	// Deprecated: use [WarehousesAPIInterface.Get].Get() or [WarehousesAPIInterface.WaitGetWarehouseRunning]
+	GetAndWait(ctx context.Context, getWarehouseRequest GetWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error)
 
 	// Get warehouse info.
 	//
 	// Gets the information for a single SQL warehouse.
 	GetById(ctx context.Context, id string) (*GetWarehouseResponse, error)
+
+	GetByIdAndWait(ctx context.Context, id string, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error)
 
 	// Get SQL warehouse permission levels.
 	//
@@ -2008,10 +2018,62 @@ func (a *WarehousesAPI) EditAndWait(ctx context.Context, editWarehouseRequest Ed
 // Get warehouse info.
 //
 // Gets the information for a single SQL warehouse.
+func (a *WarehousesAPI) Get(ctx context.Context, getWarehouseRequest GetWarehouseRequest) (*WaitGetWarehouseRunning[GetWarehouseResponse], error) {
+	getWarehouseResponse, err := a.warehousesImpl.Get(ctx, getWarehouseRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetWarehouseRunning[GetWarehouseResponse]{
+		Response: getWarehouseResponse,
+		Id:       getWarehouseResponse.Id,
+		Poll: func(timeout time.Duration, callback func(*GetWarehouseResponse)) (*GetWarehouseResponse, error) {
+			return a.WaitGetWarehouseRunning(ctx, getWarehouseResponse.Id, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [WarehousesAPI.Get] and waits to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetWarehouseResponse](60*time.Minute) functional option.
+//
+// Deprecated: use [WarehousesAPI.Get].Get() or [WarehousesAPI.WaitGetWarehouseRunning]
+func (a *WarehousesAPI) GetAndWait(ctx context.Context, getWarehouseRequest GetWarehouseRequest, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	wait, err := a.Get(ctx, getWarehouseRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[GetWarehouseResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *GetWarehouseResponse) {
+		for _, o := range options {
+			o(&retries.Info[GetWarehouseResponse]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
+}
+
+// Get warehouse info.
+//
+// Gets the information for a single SQL warehouse.
 func (a *WarehousesAPI) GetById(ctx context.Context, id string) (*GetWarehouseResponse, error) {
 	return a.warehousesImpl.Get(ctx, GetWarehouseRequest{
 		Id: id,
 	})
+}
+
+func (a *WarehousesAPI) GetByIdAndWait(ctx context.Context, id string, options ...retries.Option[GetWarehouseResponse]) (*GetWarehouseResponse, error) {
+	return a.GetAndWait(ctx, GetWarehouseRequest{
+		Id: id,
+	}, options...)
 }
 
 // Get SQL warehouse permission levels.

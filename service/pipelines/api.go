@@ -41,10 +41,20 @@ type PipelinesInterface interface {
 	DeleteByPipelineId(ctx context.Context, pipelineId string) error
 
 	// Get a pipeline.
-	Get(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error)
+	Get(ctx context.Context, getPipelineRequest GetPipelineRequest) (*WaitGetPipelineRunning[GetPipelineResponse], error)
+
+	// Calls [PipelinesAPIInterface.Get] and waits to reach RUNNING state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
+	//
+	// Deprecated: use [PipelinesAPIInterface.Get].Get() or [PipelinesAPIInterface.WaitGetPipelineRunning]
+	GetAndWait(ctx context.Context, getPipelineRequest GetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error)
 
 	// Get a pipeline.
 	GetByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error)
+
+	GetByPipelineIdAndWait(ctx context.Context, pipelineId string, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error)
 
 	// Get pipeline permission levels.
 	//
@@ -323,10 +333,60 @@ func (a *PipelinesAPI) DeleteByPipelineId(ctx context.Context, pipelineId string
 }
 
 // Get a pipeline.
+func (a *PipelinesAPI) Get(ctx context.Context, getPipelineRequest GetPipelineRequest) (*WaitGetPipelineRunning[GetPipelineResponse], error) {
+	getPipelineResponse, err := a.pipelinesImpl.Get(ctx, getPipelineRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetPipelineRunning[GetPipelineResponse]{
+		Response:   getPipelineResponse,
+		PipelineId: getPipelineResponse.PipelineId,
+		Poll: func(timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error) {
+			return a.WaitGetPipelineRunning(ctx, getPipelineResponse.PipelineId, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [PipelinesAPI.Get] and waits to reach RUNNING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
+//
+// Deprecated: use [PipelinesAPI.Get].Get() or [PipelinesAPI.WaitGetPipelineRunning]
+func (a *PipelinesAPI) GetAndWait(ctx context.Context, getPipelineRequest GetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+	wait, err := a.Get(ctx, getPipelineRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[GetPipelineResponse]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *GetPipelineResponse) {
+		for _, o := range options {
+			o(&retries.Info[GetPipelineResponse]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
+}
+
+// Get a pipeline.
 func (a *PipelinesAPI) GetByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
 	return a.pipelinesImpl.Get(ctx, GetPipelineRequest{
 		PipelineId: pipelineId,
 	})
+}
+
+func (a *PipelinesAPI) GetByPipelineIdAndWait(ctx context.Context, pipelineId string, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
+	return a.GetAndWait(ctx, GetPipelineRequest{
+		PipelineId: pipelineId,
+	}, options...)
 }
 
 // Get pipeline permission levels.
