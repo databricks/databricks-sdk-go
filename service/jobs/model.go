@@ -9,6 +9,33 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+type AuthenticationMethod string
+
+const AuthenticationMethodOauth AuthenticationMethod = `OAUTH`
+
+const AuthenticationMethodPat AuthenticationMethod = `PAT`
+
+// String representation for [fmt.Print]
+func (f *AuthenticationMethod) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AuthenticationMethod) Set(v string) error {
+	switch v {
+	case `OAUTH`, `PAT`:
+		*f = AuthenticationMethod(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "OAUTH", "PAT"`, v)
+	}
+}
+
+// Type always returns AuthenticationMethod to satisfy [pflag.Value] interface
+func (f *AuthenticationMethod) Type() string {
+	return "AuthenticationMethod"
+}
+
 type BaseJob struct {
 	// The time at which this job was created in epoch milliseconds
 	// (milliseconds since 1/1/1970 UTC).
@@ -23,7 +50,7 @@ type BaseJob struct {
 	// based on accessible budget policies of the run_as identity on job
 	// creation or modification.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
-	// Indicates if the job has more sub-resources (`tasks`, `job_clusters`)
+	// Indicates if the job has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/get endpoint.
 	// It is only relevant for API 2.2 :method:jobs/list requests with
 	// `expand_tasks=true`.
@@ -72,10 +99,14 @@ type BaseRun struct {
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Description of the run
 	Description string `json:"description,omitempty"`
-	// effective_performance_target is the actual performance target used by the
-	// run during execution. effective_performance_target can differ from the
-	// client-set performance_target depending on if the job was eligible to be
-	// cost-optimized.
+	// The actual performance target used by the serverless run during
+	// execution. This can differ from the client-set performance target on the
+	// request depending on whether the performance mode is supported by the job
+	// type.
+	//
+	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
@@ -99,7 +130,7 @@ type BaseRun struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
-	// Indicates if the run has more sub-resources (`tasks`, `job_clusters`)
+	// Indicates if the run has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/getrun
 	// endpoint. It is only relevant for API 2.2 :method:jobs/listruns requests
 	// with `expand_tasks=true`.
@@ -427,7 +458,6 @@ func (s ClusterSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Next field: 4
 type ComputeConfig struct {
 	// IDof the GPU pool to use.
 	GpuNodePoolId string `json:"gpu_node_pool_id"`
@@ -596,9 +626,7 @@ type CreateJob struct {
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
-	// You must declare dependent libraries in task settings. If more than 100
-	// job clusters are available, you can paginate through them using
-	// :method:jobs/get.
+	// You must declare dependent libraries in task settings.
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// An optional maximum allowed number of concurrent runs of the job. Set
 	// this value if you want to be able to execute multiple runs of the same
@@ -621,8 +649,13 @@ type CreateJob struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
-	// PerformanceTarget defines how performant or cost efficient the execution
-	// of run on serverless should be.
+	// The performance mode on a serverless job. The performance target
+	// determines the level of compute performance or cost-efficiency for the
+	// run.
+	//
+	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
@@ -641,10 +674,13 @@ type CreateJob struct {
 	// limitations as cluster tags. A maximum of 25 tags can be added to the
 	// job.
 	Tags map[string]string `json:"tags,omitempty"`
-	// A list of task specifications to be executed by this job. If more than
-	// 100 tasks are available, you can paginate through them using
-	// :method:jobs/get. Use the `next_page_token` field at the object root to
-	// determine if more results are available.
+	// A list of task specifications to be executed by this job. It supports up
+	// to 1000 elements in write endpoints (:method:jobs/create,
+	// :method:jobs/reset, :method:jobs/update, :method:jobs/submit). Read
+	// endpoints return only 100 tasks. If more than 100 tasks are available,
+	// you can paginate through them using :method:jobs/get. Use the
+	// `next_page_token` field at the object root to determine if more results
+	// are available.
 	Tasks []Task `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
@@ -697,6 +733,46 @@ type CronSchedule struct {
 	//
 	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
 	TimezoneId string `json:"timezone_id"`
+}
+
+type DashboardPageSnapshot struct {
+	PageDisplayName string `json:"page_display_name,omitempty"`
+
+	WidgetErrorDetails []WidgetErrorDetail `json:"widget_error_details,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DashboardPageSnapshot) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DashboardPageSnapshot) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Configures the Lakeview Dashboard job task type.
+type DashboardTask struct {
+	DashboardId string `json:"dashboard_id,omitempty"`
+
+	Subscription *Subscription `json:"subscription,omitempty"`
+	// The warehouse id to execute the dashboard with for the schedule
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DashboardTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DashboardTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DashboardTaskOutput struct {
+	// Should only be populated for manual PDF download jobs.
+	PageSnapshots []DashboardPageSnapshot `json:"page_snapshots,omitempty"`
 }
 
 type DbtOutput struct {
@@ -1000,11 +1076,10 @@ func (f *Format) Type() string {
 	return "Format"
 }
 
-// Next field: 9
 type GenAiComputeTask struct {
 	// Command launcher to run the actual script, e.g. bash, python etc.
 	Command string `json:"command,omitempty"`
-	// Next field: 4
+
 	Compute *ComputeConfig `json:"compute,omitempty"`
 	// Runtime image
 	DlRuntimeImage string `json:"dl_runtime_image"`
@@ -1067,8 +1142,8 @@ type GetJobRequest struct {
 	// The canonical identifier of the job to retrieve information about. This
 	// field is required.
 	JobId int64 `json:"-" url:"job_id"`
-	// Use `next_page_token` returned from the previous GetJob to request the
-	// next page of the job's sub-resources.
+	// Use `next_page_token` returned from the previous GetJob response to
+	// request the next page of the job's array properties.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1124,8 +1199,8 @@ type GetRunRequest struct {
 	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
 	// Whether to include resolved parameter values in the response.
 	IncludeResolvedValues bool `json:"-" url:"include_resolved_values,omitempty"`
-	// Use `next_page_token` returned from the previous GetRun to request the
-	// next page of the run's sub-resources.
+	// Use `next_page_token` returned from the previous GetRun response to
+	// request the next page of the run's array properties.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The canonical identifier of the run for which to retrieve the metadata.
 	// This field is required.
@@ -1258,14 +1333,14 @@ type Job struct {
 	// based on accessible budget policies of the run_as identity on job
 	// creation or modification.
 	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
-	// Indicates if the job has more sub-resources (`tasks`, `job_clusters`)
+	// Indicates if the job has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/get endpoint.
 	// It is only relevant for API 2.2 :method:jobs/list requests with
 	// `expand_tasks=true`.
 	HasMore bool `json:"has_more,omitempty"`
 	// The canonical identifier for this job.
 	JobId int64 `json:"job_id,omitempty"`
-	// A token that can be used to list the next page of sub-resources.
+	// A token that can be used to list the next page of array properties.
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// The email of an active workspace user or the application ID of a service
 	// principal that the job runs as. This value can be changed by setting the
@@ -1709,9 +1784,7 @@ type JobSettings struct {
 	Health *JobsHealthRules `json:"health,omitempty"`
 	// A list of job cluster specifications that can be shared and reused by
 	// tasks of this job. Libraries cannot be declared in a shared job cluster.
-	// You must declare dependent libraries in task settings. If more than 100
-	// job clusters are available, you can paginate through them using
-	// :method:jobs/get.
+	// You must declare dependent libraries in task settings.
 	JobClusters []JobCluster `json:"job_clusters,omitempty"`
 	// An optional maximum allowed number of concurrent runs of the job. Set
 	// this value if you want to be able to execute multiple runs of the same
@@ -1734,8 +1807,13 @@ type JobSettings struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
-	// PerformanceTarget defines how performant or cost efficient the execution
-	// of run on serverless should be.
+	// The performance mode on a serverless job. The performance target
+	// determines the level of compute performance or cost-efficiency for the
+	// run.
+	//
+	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// The queue settings of the job.
 	Queue *QueueSettings `json:"queue,omitempty"`
@@ -1754,10 +1832,13 @@ type JobSettings struct {
 	// limitations as cluster tags. A maximum of 25 tags can be added to the
 	// job.
 	Tags map[string]string `json:"tags,omitempty"`
-	// A list of task specifications to be executed by this job. If more than
-	// 100 tasks are available, you can paginate through them using
-	// :method:jobs/get. Use the `next_page_token` field at the object root to
-	// determine if more results are available.
+	// A list of task specifications to be executed by this job. It supports up
+	// to 1000 elements in write endpoints (:method:jobs/create,
+	// :method:jobs/reset, :method:jobs/update, :method:jobs/submit). Read
+	// endpoints return only 100 tasks. If more than 100 tasks are available,
+	// you can paginate through them using :method:jobs/get. Use the
+	// `next_page_token` field at the object root to determine if more results
+	// are available.
 	Tasks []Task `json:"tasks,omitempty"`
 	// An optional timeout applied to each run of this job. A value of `0` means
 	// no timeout.
@@ -1996,9 +2077,9 @@ func (s ListJobComplianceRequest) MarshalJSON() ([]byte, error) {
 
 // List jobs
 type ListJobsRequest struct {
-	// Whether to include task and cluster details in the response. Note that in
-	// API 2.2, only the first 100 elements will be shown. Use :method:jobs/get
-	// to paginate through all tasks and clusters.
+	// Whether to include task and cluster details in the response. Note that
+	// only the first 100 elements will be shown. Use :method:jobs/get to
+	// paginate through all tasks and clusters.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The number of jobs to return. This value must be greater than 0 and less
 	// or equal to 100. The default value is 20.
@@ -2060,9 +2141,9 @@ type ListRunsRequest struct {
 	// results; otherwise, lists both active and completed runs. This field
 	// cannot be `true` when active_only is `true`.
 	CompletedOnly bool `json:"-" url:"completed_only,omitempty"`
-	// Whether to include task and cluster details in the response. Note that in
-	// API 2.2, only the first 100 elements will be shown. Use
-	// :method:jobs/getrun to paginate through all tasks and clusters.
+	// Whether to include task and cluster details in the response. Note that
+	// only the first 100 elements will be shown. Use :method:jobs/getrun to
+	// paginate through all tasks and clusters.
 	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
 	// The job for which to list runs. If omitted, the Jobs service lists runs
 	// from all jobs.
@@ -2253,11 +2334,9 @@ func (f *PauseStatus) Type() string {
 // Cluster Manager (see cluster-common PerformanceTarget).
 type PerformanceTarget string
 
-const PerformanceTargetBalanced PerformanceTarget = `BALANCED`
-
-const PerformanceTargetCostOptimized PerformanceTarget = `COST_OPTIMIZED`
-
 const PerformanceTargetPerformanceOptimized PerformanceTarget = `PERFORMANCE_OPTIMIZED`
+
+const PerformanceTargetStandard PerformanceTarget = `STANDARD`
 
 // String representation for [fmt.Print]
 func (f *PerformanceTarget) String() string {
@@ -2267,11 +2346,11 @@ func (f *PerformanceTarget) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PerformanceTarget) Set(v string) error {
 	switch v {
-	case `BALANCED`, `COST_OPTIMIZED`, `PERFORMANCE_OPTIMIZED`:
+	case `PERFORMANCE_OPTIMIZED`, `STANDARD`:
 		*f = PerformanceTarget(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BALANCED", "COST_OPTIMIZED", "PERFORMANCE_OPTIMIZED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "PERFORMANCE_OPTIMIZED", "STANDARD"`, v)
 	}
 }
 
@@ -2345,6 +2424,74 @@ func (s *PipelineTask) UnmarshalJSON(b []byte) error {
 }
 
 func (s PipelineTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PowerBiModel struct {
+	// How the published Power BI model authenticates to Databricks
+	AuthenticationMethod AuthenticationMethod `json:"authentication_method,omitempty"`
+	// The name of the Power BI model
+	ModelName string `json:"model_name,omitempty"`
+	// Whether to overwrite existing Power BI models
+	OverwriteExisting bool `json:"overwrite_existing,omitempty"`
+	// The default storage mode of the Power BI model
+	StorageMode StorageMode `json:"storage_mode,omitempty"`
+	// The name of the Power BI workspace of the model
+	WorkspaceName string `json:"workspace_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PowerBiModel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PowerBiModel) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PowerBiTable struct {
+	// The catalog name in Databricks
+	Catalog string `json:"catalog,omitempty"`
+	// The table name in Databricks
+	Name string `json:"name,omitempty"`
+	// The schema name in Databricks
+	Schema string `json:"schema,omitempty"`
+	// The Power BI storage mode of the table
+	StorageMode StorageMode `json:"storage_mode,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PowerBiTable) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PowerBiTable) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PowerBiTask struct {
+	// The resource name of the UC connection to authenticate from Databricks to
+	// Power BI
+	ConnectionResourceName string `json:"connection_resource_name,omitempty"`
+	// The semantic model to update
+	PowerBiModel *PowerBiModel `json:"power_bi_model,omitempty"`
+	// Whether the model should be refreshed after the update
+	RefreshAfterUpdate bool `json:"refresh_after_update,omitempty"`
+	// The tables to be exported to Power BI
+	Tables []PowerBiTable `json:"tables,omitempty"`
+	// The SQL warehouse ID to use as the Power BI data source
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PowerBiTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PowerBiTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2727,10 +2874,14 @@ type Run struct {
 	CreatorUserName string `json:"creator_user_name,omitempty"`
 	// Description of the run
 	Description string `json:"description,omitempty"`
-	// effective_performance_target is the actual performance target used by the
-	// run during execution. effective_performance_target can differ from the
-	// client-set performance_target depending on if the job was eligible to be
-	// cost-optimized.
+	// The actual performance target used by the serverless run during
+	// execution. This can differ from the client-set performance target on the
+	// request depending on whether the performance mode is supported by the job
+	// type.
+	//
+	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The time at which this run ended in epoch milliseconds (milliseconds
 	// since 1/1/1970 UTC). This field is set to 0 if the job is still running.
@@ -2754,7 +2905,7 @@ type Run struct {
 	// Note: dbt and SQL File tasks support only version-controlled sources. If
 	// dbt or SQL File tasks are used, `git_source` must be defined on the job.
 	GitSource *GitSource `json:"git_source,omitempty"`
-	// Indicates if the run has more sub-resources (`tasks`, `job_clusters`)
+	// Indicates if the run has more array properties (`tasks`, `job_clusters`)
 	// that are not shown. They can be accessed via :method:jobs/getrun
 	// endpoint. It is only relevant for API 2.2 :method:jobs/listruns requests
 	// with `expand_tasks=true`.
@@ -2777,7 +2928,7 @@ type Run struct {
 	// field is populated with the ID of the job run that the task run belongs
 	// to.
 	JobRunId int64 `json:"job_run_id,omitempty"`
-	// A token that can be used to list the next page of sub-resources.
+	// A token that can be used to list the next page of array properties.
 	NextPageToken string `json:"next_page_token,omitempty"`
 	// A unique identifier for this job run. This is set to the same value as
 	// `run_id`.
@@ -3245,9 +3396,14 @@ type RunNow struct {
 	// A list of task keys to run inside of the job. If this field is not
 	// provided, all tasks in the job will be run.
 	Only []string `json:"only,omitempty"`
-	// PerformanceTarget defines how performant or cost efficient the execution
-	// of run on serverless compute should be. For RunNow, this performance
-	// target will override the target defined on the job-level.
+	// The performance mode on a serverless job. The performance target
+	// determines the level of compute performance or cost-efficiency for the
+	// run. This field overrides the performance target defined on the job
+	// level.
+	//
+	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance.
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
@@ -3331,6 +3487,8 @@ func (s RunNowResponse) MarshalJSON() ([]byte, error) {
 type RunOutput struct {
 	// The output of a clean rooms notebook task, if available
 	CleanRoomsNotebookOutput *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput `json:"clean_rooms_notebook_output,omitempty"`
+	// The output of a dashboard task, if available
+	DashboardOutput *DashboardTaskOutput `json:"dashboard_output,omitempty"`
 	// The output of a dbt task, if available.
 	DbtOutput *DbtOutput `json:"dbt_output,omitempty"`
 	// An error message indicating why a task failed or why output is not
@@ -3599,6 +3757,8 @@ type RunTask struct {
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
 	ConditionTask *RunConditionTask `json:"condition_task,omitempty"`
+	// The task runs a DashboardTask when the `dashboard_task` field is present.
+	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
@@ -3610,13 +3770,16 @@ type RunTask struct {
 	DependsOn []TaskDependency `json:"depends_on,omitempty"`
 	// An optional description for this task.
 	Description string `json:"description,omitempty"`
-	// Denotes whether or not the task was disabled by the user. Disabled tasks
-	// do not execute and are immediately skipped as soon as they are unblocked.
+	// Deprecated, field was never used in production.
 	Disabled bool `json:"disabled,omitempty"`
-	// effective_performance_target is the actual performance target used by the
-	// run during execution. effective_performance_target can differ from the
-	// client-set performance_target depending on if the job was eligible to be
-	// cost-optimized.
+	// The actual performance target used by the serverless run during
+	// execution. This can differ from the client-set performance target on the
+	// request depending on whether the performance mode is supported by the job
+	// type.
+	//
+	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance.
 	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// An optional set of email addresses notified when the task run begins or
 	// completes. The default behavior is to not send any emails.
@@ -3644,7 +3807,7 @@ type RunTask struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *RunForEachTask `json:"for_each_task,omitempty"`
-	// Next field: 9
+
 	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional specification for a remote Git repository containing the
 	// source code used by tasks. Version-controlled source code is supported by
@@ -3673,6 +3836,9 @@ type RunTask struct {
 	// The task triggers a pipeline update when the `pipeline_task` field is
 	// present. Only pipelines configured to use triggered more are supported.
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
+	// The task triggers a Power BI semantic model update when the
+	// `power_bi_task` field is present.
+	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
@@ -4210,6 +4376,35 @@ func (s SqlTaskSubscription) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type StorageMode string
+
+const StorageModeDirectQuery StorageMode = `DIRECT_QUERY`
+
+const StorageModeDual StorageMode = `DUAL`
+
+const StorageModeImport StorageMode = `IMPORT`
+
+// String representation for [fmt.Print]
+func (f *StorageMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *StorageMode) Set(v string) error {
+	switch v {
+	case `DIRECT_QUERY`, `DUAL`, `IMPORT`:
+		*f = StorageMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DIRECT_QUERY", "DUAL", "IMPORT"`, v)
+	}
+}
+
+// Type always returns StorageMode to satisfy [pflag.Value] interface
+func (f *StorageMode) Type() string {
+	return "StorageMode"
+}
+
 type SubmitRun struct {
 	// List of permissions to set on the job.
 	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
@@ -4309,6 +4504,8 @@ type SubmitTask struct {
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
 	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
+	// The task runs a DashboardTask when the `dashboard_task` field is present.
+	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
@@ -4335,7 +4532,7 @@ type SubmitTask struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
-	// Next field: 9
+
 	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
@@ -4354,6 +4551,9 @@ type SubmitTask struct {
 	// The task triggers a pipeline update when the `pipeline_task` field is
 	// present. Only pipelines configured to use triggered more are supported.
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
+	// The task triggers a Power BI semantic model update when the
+	// `power_bi_task` field is present.
+	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
@@ -4415,6 +4615,42 @@ func (s SubmitTask) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type Subscription struct {
+	// Optional: Allows users to specify a custom subject line on the email sent
+	// to subscribers.
+	CustomSubject string `json:"custom_subject,omitempty"`
+	// When true, the subscription will not send emails.
+	Paused bool `json:"paused,omitempty"`
+
+	Subscribers []SubscriptionSubscriber `json:"subscribers,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Subscription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Subscription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SubscriptionSubscriber struct {
+	DestinationId string `json:"destination_id,omitempty"`
+
+	UserName string `json:"user_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SubscriptionSubscriber) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SubscriptionSubscriber) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type TableUpdateTriggerConfiguration struct {
 	// The table(s) condition based on which to trigger a job run.
 	Condition Condition `json:"condition,omitempty"`
@@ -4453,6 +4689,8 @@ type Task struct {
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
 	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
+	// The task runs a DashboardTask when the `dashboard_task` field is present.
+	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
@@ -4482,7 +4720,7 @@ type Task struct {
 	// The task executes a nested task for every input provided when the
 	// `for_each_task` field is present.
 	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
-	// Next field: 9
+
 	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
 	// An optional set of health rules that can be defined for this job.
 	Health *JobsHealthRules `json:"health,omitempty"`
@@ -4513,6 +4751,9 @@ type Task struct {
 	// The task triggers a pipeline update when the `pipeline_task` field is
 	// present. Only pipelines configured to use triggered more are supported.
 	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
+	// The task triggers a Power BI semantic model update when the
+	// `power_bi_task` field is present.
+	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
 	// The task runs a Python wheel when the `python_wheel_task` field is
 	// present.
 	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
@@ -5167,4 +5408,18 @@ type WebhookNotifications struct {
 	// completes successfully. A maximum of 3 destinations can be specified for
 	// the `on_success` property.
 	OnSuccess []Webhook `json:"on_success,omitempty"`
+}
+
+type WidgetErrorDetail struct {
+	Message string `json:"message,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *WidgetErrorDetail) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WidgetErrorDetail) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }

@@ -422,6 +422,32 @@ func (a *disableLegacyFeaturesImpl) Update(ctx context.Context, request UpdateDi
 	return &disableLegacyFeatures, err
 }
 
+// unexported type that holds implementations of just EnableExportNotebook API methods
+type enableExportNotebookImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *enableExportNotebookImpl) GetEnableExportNotebook(ctx context.Context) (*EnableExportNotebook, error) {
+	var enableExportNotebook EnableExportNotebook
+	path := "/api/2.0/settings/types/enable-export-notebook/names/default"
+
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableExportNotebook)
+	return &enableExportNotebook, err
+}
+
+func (a *enableExportNotebookImpl) PatchEnableExportNotebook(ctx context.Context, request UpdateEnableExportNotebookRequest) (*EnableExportNotebook, error) {
+	var enableExportNotebook EnableExportNotebook
+	path := "/api/2.0/settings/types/enable-export-notebook/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &enableExportNotebook)
+	return &enableExportNotebook, err
+}
+
 // unexported type that holds implementations of just EnableIpAccessLists API methods
 type enableIpAccessListsImpl struct {
 	client *client.DatabricksClient
@@ -456,6 +482,58 @@ func (a *enableIpAccessListsImpl) Update(ctx context.Context, request UpdateAcco
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &accountIpAccessEnable)
 	return &accountIpAccessEnable, err
+}
+
+// unexported type that holds implementations of just EnableNotebookTableClipboard API methods
+type enableNotebookTableClipboardImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *enableNotebookTableClipboardImpl) GetEnableNotebookTableClipboard(ctx context.Context) (*EnableNotebookTableClipboard, error) {
+	var enableNotebookTableClipboard EnableNotebookTableClipboard
+	path := "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default"
+
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableNotebookTableClipboard)
+	return &enableNotebookTableClipboard, err
+}
+
+func (a *enableNotebookTableClipboardImpl) PatchEnableNotebookTableClipboard(ctx context.Context, request UpdateEnableNotebookTableClipboardRequest) (*EnableNotebookTableClipboard, error) {
+	var enableNotebookTableClipboard EnableNotebookTableClipboard
+	path := "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &enableNotebookTableClipboard)
+	return &enableNotebookTableClipboard, err
+}
+
+// unexported type that holds implementations of just EnableResultsDownloading API methods
+type enableResultsDownloadingImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *enableResultsDownloadingImpl) GetEnableResultsDownloading(ctx context.Context) (*EnableResultsDownloading, error) {
+	var enableResultsDownloading EnableResultsDownloading
+	path := "/api/2.0/settings/types/enable-results-downloading/names/default"
+
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableResultsDownloading)
+	return &enableResultsDownloading, err
+}
+
+func (a *enableResultsDownloadingImpl) PatchEnableResultsDownloading(ctx context.Context, request UpdateEnableResultsDownloadingRequest) (*EnableResultsDownloading, error) {
+	var enableResultsDownloading EnableResultsDownloading
+	path := "/api/2.0/settings/types/enable-results-downloading/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &enableResultsDownloading)
+	return &enableResultsDownloading, err
 }
 
 // unexported type that holds implementations of just EnhancedSecurityMonitoring API methods

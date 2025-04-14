@@ -549,6 +549,10 @@ const ColumnTypeNameDouble ColumnTypeName = `DOUBLE`
 
 const ColumnTypeNameFloat ColumnTypeName = `FLOAT`
 
+const ColumnTypeNameGeography ColumnTypeName = `GEOGRAPHY`
+
+const ColumnTypeNameGeometry ColumnTypeName = `GEOMETRY`
+
 const ColumnTypeNameInt ColumnTypeName = `INT`
 
 const ColumnTypeNameInterval ColumnTypeName = `INTERVAL`
@@ -583,11 +587,11 @@ func (f *ColumnTypeName) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ColumnTypeName) Set(v string) error {
 	switch v {
-	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`, `VARIANT`:
+	case `ARRAY`, `BINARY`, `BOOLEAN`, `BYTE`, `CHAR`, `DATE`, `DECIMAL`, `DOUBLE`, `FLOAT`, `GEOGRAPHY`, `GEOMETRY`, `INT`, `INTERVAL`, `LONG`, `MAP`, `NULL`, `SHORT`, `STRING`, `STRUCT`, `TABLE_TYPE`, `TIMESTAMP`, `TIMESTAMP_NTZ`, `USER_DEFINED_TYPE`, `VARIANT`:
 		*f = ColumnTypeName(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TABLE_TYPE", "TIMESTAMP", "TIMESTAMP_NTZ", "USER_DEFINED_TYPE", "VARIANT"`, v)
+		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "GEOGRAPHY", "GEOMETRY", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TABLE_TYPE", "TIMESTAMP", "TIMESTAMP_NTZ", "USER_DEFINED_TYPE", "VARIANT"`, v)
 	}
 }
 
@@ -1217,7 +1221,12 @@ type CreateVolumeRequestContent struct {
 	SchemaName string `json:"schema_name"`
 	// The storage location on the cloud
 	StorageLocation string `json:"storage_location,omitempty"`
-
+	// The type of the volume. An external volume is located in the specified
+	// external location. A managed volume is located in the default location
+	// which is specified by the parent schema, or the parent catalog, or the
+	// Metastore. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 	VolumeType VolumeType `json:"volume_type"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6087,7 +6096,12 @@ type VolumeInfo struct {
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// The unique identifier of the volume
 	VolumeId string `json:"volume_id,omitempty"`
-
+	// The type of the volume. An external volume is located in the specified
+	// external location. A managed volume is located in the default location
+	// which is specified by the parent schema, or the parent catalog, or the
+	// Metastore. [Learn more]
+	//
+	// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 	VolumeType VolumeType `json:"volume_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6101,6 +6115,12 @@ func (s VolumeInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The type of the volume. An external volume is located in the specified
+// external location. A managed volume is located in the default location which
+// is specified by the parent schema, or the parent catalog, or the Metastore.
+// [Learn more]
+//
+// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 type VolumeType string
 
 const VolumeTypeExternal VolumeType = `EXTERNAL`

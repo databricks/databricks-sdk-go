@@ -401,6 +401,242 @@ func (_c *MockExperimentsInterface_GetByName_Call) RunAndReturn(run func(context
 	return _c
 }
 
+// GetCredentialsForTraceDataDownload provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) GetCredentialsForTraceDataDownload(ctx context.Context, request ml.GetCredentialsForTraceDataDownloadRequest) (*ml.GetCredentialsForTraceDataDownloadResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetCredentialsForTraceDataDownload")
+	}
+
+	var r0 *ml.GetCredentialsForTraceDataDownloadResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetCredentialsForTraceDataDownloadRequest) (*ml.GetCredentialsForTraceDataDownloadResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetCredentialsForTraceDataDownloadRequest) *ml.GetCredentialsForTraceDataDownloadResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.GetCredentialsForTraceDataDownloadResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.GetCredentialsForTraceDataDownloadRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_GetCredentialsForTraceDataDownload_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCredentialsForTraceDataDownload'
+type MockExperimentsInterface_GetCredentialsForTraceDataDownload_Call struct {
+	*mock.Call
+}
+
+// GetCredentialsForTraceDataDownload is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.GetCredentialsForTraceDataDownloadRequest
+func (_e *MockExperimentsInterface_Expecter) GetCredentialsForTraceDataDownload(ctx interface{}, request interface{}) *MockExperimentsInterface_GetCredentialsForTraceDataDownload_Call {
+	return &MockExperimentsInterface_GetCredentialsForTraceDataDownload_Call{Call: _e.mock.On("GetCredentialsForTraceDataDownload", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataDownload_Call) Run(run func(ctx context.Context, request ml.GetCredentialsForTraceDataDownloadRequest)) *MockExperimentsInterface_GetCredentialsForTraceDataDownload_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.GetCredentialsForTraceDataDownloadRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataDownload_Call) Return(_a0 *ml.GetCredentialsForTraceDataDownloadResponse, _a1 error) *MockExperimentsInterface_GetCredentialsForTraceDataDownload_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataDownload_Call) RunAndReturn(run func(context.Context, ml.GetCredentialsForTraceDataDownloadRequest) (*ml.GetCredentialsForTraceDataDownloadResponse, error)) *MockExperimentsInterface_GetCredentialsForTraceDataDownload_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetCredentialsForTraceDataDownloadByRequestId provides a mock function with given fields: ctx, requestId
+func (_m *MockExperimentsInterface) GetCredentialsForTraceDataDownloadByRequestId(ctx context.Context, requestId string) (*ml.GetCredentialsForTraceDataDownloadResponse, error) {
+	ret := _m.Called(ctx, requestId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetCredentialsForTraceDataDownloadByRequestId")
+	}
+
+	var r0 *ml.GetCredentialsForTraceDataDownloadResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*ml.GetCredentialsForTraceDataDownloadResponse, error)); ok {
+		return rf(ctx, requestId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *ml.GetCredentialsForTraceDataDownloadResponse); ok {
+		r0 = rf(ctx, requestId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.GetCredentialsForTraceDataDownloadResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, requestId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_GetCredentialsForTraceDataDownloadByRequestId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCredentialsForTraceDataDownloadByRequestId'
+type MockExperimentsInterface_GetCredentialsForTraceDataDownloadByRequestId_Call struct {
+	*mock.Call
+}
+
+// GetCredentialsForTraceDataDownloadByRequestId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - requestId string
+func (_e *MockExperimentsInterface_Expecter) GetCredentialsForTraceDataDownloadByRequestId(ctx interface{}, requestId interface{}) *MockExperimentsInterface_GetCredentialsForTraceDataDownloadByRequestId_Call {
+	return &MockExperimentsInterface_GetCredentialsForTraceDataDownloadByRequestId_Call{Call: _e.mock.On("GetCredentialsForTraceDataDownloadByRequestId", ctx, requestId)}
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataDownloadByRequestId_Call) Run(run func(ctx context.Context, requestId string)) *MockExperimentsInterface_GetCredentialsForTraceDataDownloadByRequestId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataDownloadByRequestId_Call) Return(_a0 *ml.GetCredentialsForTraceDataDownloadResponse, _a1 error) *MockExperimentsInterface_GetCredentialsForTraceDataDownloadByRequestId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataDownloadByRequestId_Call) RunAndReturn(run func(context.Context, string) (*ml.GetCredentialsForTraceDataDownloadResponse, error)) *MockExperimentsInterface_GetCredentialsForTraceDataDownloadByRequestId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetCredentialsForTraceDataUpload provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) GetCredentialsForTraceDataUpload(ctx context.Context, request ml.GetCredentialsForTraceDataUploadRequest) (*ml.GetCredentialsForTraceDataUploadResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetCredentialsForTraceDataUpload")
+	}
+
+	var r0 *ml.GetCredentialsForTraceDataUploadResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetCredentialsForTraceDataUploadRequest) (*ml.GetCredentialsForTraceDataUploadResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetCredentialsForTraceDataUploadRequest) *ml.GetCredentialsForTraceDataUploadResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.GetCredentialsForTraceDataUploadResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.GetCredentialsForTraceDataUploadRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_GetCredentialsForTraceDataUpload_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCredentialsForTraceDataUpload'
+type MockExperimentsInterface_GetCredentialsForTraceDataUpload_Call struct {
+	*mock.Call
+}
+
+// GetCredentialsForTraceDataUpload is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.GetCredentialsForTraceDataUploadRequest
+func (_e *MockExperimentsInterface_Expecter) GetCredentialsForTraceDataUpload(ctx interface{}, request interface{}) *MockExperimentsInterface_GetCredentialsForTraceDataUpload_Call {
+	return &MockExperimentsInterface_GetCredentialsForTraceDataUpload_Call{Call: _e.mock.On("GetCredentialsForTraceDataUpload", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataUpload_Call) Run(run func(ctx context.Context, request ml.GetCredentialsForTraceDataUploadRequest)) *MockExperimentsInterface_GetCredentialsForTraceDataUpload_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.GetCredentialsForTraceDataUploadRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataUpload_Call) Return(_a0 *ml.GetCredentialsForTraceDataUploadResponse, _a1 error) *MockExperimentsInterface_GetCredentialsForTraceDataUpload_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataUpload_Call) RunAndReturn(run func(context.Context, ml.GetCredentialsForTraceDataUploadRequest) (*ml.GetCredentialsForTraceDataUploadResponse, error)) *MockExperimentsInterface_GetCredentialsForTraceDataUpload_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetCredentialsForTraceDataUploadByRequestId provides a mock function with given fields: ctx, requestId
+func (_m *MockExperimentsInterface) GetCredentialsForTraceDataUploadByRequestId(ctx context.Context, requestId string) (*ml.GetCredentialsForTraceDataUploadResponse, error) {
+	ret := _m.Called(ctx, requestId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetCredentialsForTraceDataUploadByRequestId")
+	}
+
+	var r0 *ml.GetCredentialsForTraceDataUploadResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*ml.GetCredentialsForTraceDataUploadResponse, error)); ok {
+		return rf(ctx, requestId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *ml.GetCredentialsForTraceDataUploadResponse); ok {
+		r0 = rf(ctx, requestId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.GetCredentialsForTraceDataUploadResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, requestId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_GetCredentialsForTraceDataUploadByRequestId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCredentialsForTraceDataUploadByRequestId'
+type MockExperimentsInterface_GetCredentialsForTraceDataUploadByRequestId_Call struct {
+	*mock.Call
+}
+
+// GetCredentialsForTraceDataUploadByRequestId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - requestId string
+func (_e *MockExperimentsInterface_Expecter) GetCredentialsForTraceDataUploadByRequestId(ctx interface{}, requestId interface{}) *MockExperimentsInterface_GetCredentialsForTraceDataUploadByRequestId_Call {
+	return &MockExperimentsInterface_GetCredentialsForTraceDataUploadByRequestId_Call{Call: _e.mock.On("GetCredentialsForTraceDataUploadByRequestId", ctx, requestId)}
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataUploadByRequestId_Call) Run(run func(ctx context.Context, requestId string)) *MockExperimentsInterface_GetCredentialsForTraceDataUploadByRequestId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataUploadByRequestId_Call) Return(_a0 *ml.GetCredentialsForTraceDataUploadResponse, _a1 error) *MockExperimentsInterface_GetCredentialsForTraceDataUploadByRequestId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetCredentialsForTraceDataUploadByRequestId_Call) RunAndReturn(run func(context.Context, string) (*ml.GetCredentialsForTraceDataUploadResponse, error)) *MockExperimentsInterface_GetCredentialsForTraceDataUploadByRequestId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetExperiment provides a mock function with given fields: ctx, request
 func (_m *MockExperimentsInterface) GetExperiment(ctx context.Context, request ml.GetExperimentRequest) (*ml.GetExperimentResponse, error) {
 	ret := _m.Called(ctx, request)

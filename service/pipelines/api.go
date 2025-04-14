@@ -16,10 +16,6 @@ import (
 
 type PipelinesInterface interface {
 
-	// WaitGetPipelineRunning repeatedly calls [PipelinesAPI.Get] and waits to reach RUNNING state
-	WaitGetPipelineRunning(ctx context.Context, pipelineId string,
-		timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error)
-
 	// WaitGetPipelineIdle repeatedly calls [PipelinesAPI.Get] and waits to reach IDLE state
 	WaitGetPipelineIdle(ctx context.Context, pipelineId string,
 		timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error)
@@ -203,60 +199,6 @@ func NewPipelines(client *client.DatabricksClient) *PipelinesAPI {
 // those expectations.
 type PipelinesAPI struct {
 	pipelinesImpl
-}
-
-// WaitGetPipelineRunning repeatedly calls [PipelinesAPI.Get] and waits to reach RUNNING state
-func (a *PipelinesAPI) WaitGetPipelineRunning(ctx context.Context, pipelineId string,
-	timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	return retries.Poll[GetPipelineResponse](ctx, timeout, func() (*GetPipelineResponse, *retries.Err) {
-		getPipelineResponse, err := a.Get(ctx, GetPipelineRequest{
-			PipelineId: pipelineId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
-		if callback != nil {
-			callback(getPipelineResponse)
-		}
-		status := getPipelineResponse.State
-		statusMessage := getPipelineResponse.Cause
-		switch status {
-		case PipelineStateRunning: // target state
-			return getPipelineResponse, nil
-		case PipelineStateFailed:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				PipelineStateRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
-}
-
-// WaitGetPipelineRunning is a wrapper that calls [PipelinesAPI.WaitGetPipelineRunning] and waits to reach RUNNING state.
-type WaitGetPipelineRunning[R any] struct {
-	Response   *R
-	PipelineId string `json:"pipeline_id"`
-	Poll       func(time.Duration, func(*GetPipelineResponse)) (*GetPipelineResponse, error)
-	callback   func(*GetPipelineResponse)
-	timeout    time.Duration
-}
-
-// OnProgress invokes a callback every time it polls for the status update.
-func (w *WaitGetPipelineRunning[R]) OnProgress(callback func(*GetPipelineResponse)) *WaitGetPipelineRunning[R] {
-	w.callback = callback
-	return w
-}
-
-// Get the GetPipelineResponse with the default timeout of 20 minutes.
-func (w *WaitGetPipelineRunning[R]) Get() (*GetPipelineResponse, error) {
-	return w.Poll(w.timeout, w.callback)
-}
-
-// Get the GetPipelineResponse with custom timeout.
-func (w *WaitGetPipelineRunning[R]) GetWithTimeout(timeout time.Duration) (*GetPipelineResponse, error) {
-	return w.Poll(timeout, w.callback)
 }
 
 // WaitGetPipelineIdle repeatedly calls [PipelinesAPI.Get] and waits to reach IDLE state
