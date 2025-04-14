@@ -365,23 +365,13 @@ type ClustersInterface interface {
 	//
 	// Retrieves the information for a cluster given its identifier. Clusters can be
 	// described while they are running, or up to 60 days after they are terminated.
-	Get(ctx context.Context, getClusterRequest GetClusterRequest) (*WaitGetClusterRunning[ClusterDetails], error)
-
-	// Calls [ClustersAPIInterface.Get] and waits to reach RUNNING state
-	//
-	// You can override the default timeout of 20 minutes by calling adding
-	// retries.Timeout[ClusterDetails](60*time.Minute) functional option.
-	//
-	// Deprecated: use [ClustersAPIInterface.Get].Get() or [ClustersAPIInterface.WaitGetClusterRunning]
-	GetAndWait(ctx context.Context, getClusterRequest GetClusterRequest, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error)
+	Get(ctx context.Context, request GetClusterRequest) (*ClusterDetails, error)
 
 	// Get cluster info.
 	//
 	// Retrieves the information for a cluster given its identifier. Clusters can be
 	// described while they are running, or up to 60 days after they are terminated.
 	GetByClusterId(ctx context.Context, clusterId string) (*ClusterDetails, error)
-
-	GetByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error)
 
 	// Get cluster permission levels.
 	//
@@ -939,63 +929,10 @@ func (a *ClustersAPI) EditAndWait(ctx context.Context, editCluster EditCluster, 
 //
 // Retrieves the information for a cluster given its identifier. Clusters can be
 // described while they are running, or up to 60 days after they are terminated.
-func (a *ClustersAPI) Get(ctx context.Context, getClusterRequest GetClusterRequest) (*WaitGetClusterRunning[ClusterDetails], error) {
-	clusterDetails, err := a.clustersImpl.Get(ctx, getClusterRequest)
-	if err != nil {
-		return nil, err
-	}
-	return &WaitGetClusterRunning[ClusterDetails]{
-		Response:  clusterDetails,
-		ClusterId: clusterDetails.ClusterId,
-		Poll: func(timeout time.Duration, callback func(*ClusterDetails)) (*ClusterDetails, error) {
-			return a.WaitGetClusterRunning(ctx, clusterDetails.ClusterId, timeout, callback)
-		},
-		timeout:  20 * time.Minute,
-		callback: nil,
-	}, nil
-}
-
-// Calls [ClustersAPI.Get] and waits to reach RUNNING state
-//
-// You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[ClusterDetails](60*time.Minute) functional option.
-//
-// Deprecated: use [ClustersAPI.Get].Get() or [ClustersAPI.WaitGetClusterRunning]
-func (a *ClustersAPI) GetAndWait(ctx context.Context, getClusterRequest GetClusterRequest, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
-	wait, err := a.Get(ctx, getClusterRequest)
-	if err != nil {
-		return nil, err
-	}
-	tmp := &retries.Info[ClusterDetails]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(tmp)
-	}
-	wait.timeout = tmp.Timeout
-	wait.callback = func(info *ClusterDetails) {
-		for _, o := range options {
-			o(&retries.Info[ClusterDetails]{
-				Info:    info,
-				Timeout: wait.timeout,
-			})
-		}
-	}
-	return wait.Get()
-}
-
-// Get cluster info.
-//
-// Retrieves the information for a cluster given its identifier. Clusters can be
-// described while they are running, or up to 60 days after they are terminated.
 func (a *ClustersAPI) GetByClusterId(ctx context.Context, clusterId string) (*ClusterDetails, error) {
 	return a.clustersImpl.Get(ctx, GetClusterRequest{
 		ClusterId: clusterId,
 	})
-}
-
-func (a *ClustersAPI) GetByClusterIdAndWait(ctx context.Context, clusterId string, options ...retries.Option[ClusterDetails]) (*ClusterDetails, error) {
-	return a.GetAndWait(ctx, GetClusterRequest{
-		ClusterId: clusterId,
-	}, options...)
 }
 
 // Get cluster permission levels.

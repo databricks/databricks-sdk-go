@@ -16,10 +16,6 @@ import (
 
 type PipelinesInterface interface {
 
-	// WaitGetPipelineRunning repeatedly calls [PipelinesAPI.Get] and waits to reach RUNNING state
-	WaitGetPipelineRunning(ctx context.Context, pipelineId string,
-		timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error)
-
 	// WaitGetPipelineIdle repeatedly calls [PipelinesAPI.Get] and waits to reach IDLE state
 	WaitGetPipelineIdle(ctx context.Context, pipelineId string,
 		timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error)
@@ -41,20 +37,10 @@ type PipelinesInterface interface {
 	DeleteByPipelineId(ctx context.Context, pipelineId string) error
 
 	// Get a pipeline.
-	Get(ctx context.Context, getPipelineRequest GetPipelineRequest) (*WaitGetPipelineRunning[GetPipelineResponse], error)
-
-	// Calls [PipelinesAPIInterface.Get] and waits to reach RUNNING state
-	//
-	// You can override the default timeout of 20 minutes by calling adding
-	// retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-	//
-	// Deprecated: use [PipelinesAPIInterface.Get].Get() or [PipelinesAPIInterface.WaitGetPipelineRunning]
-	GetAndWait(ctx context.Context, getPipelineRequest GetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error)
+	Get(ctx context.Context, request GetPipelineRequest) (*GetPipelineResponse, error)
 
 	// Get a pipeline.
 	GetByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error)
-
-	GetByPipelineIdAndWait(ctx context.Context, pipelineId string, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error)
 
 	// Get pipeline permission levels.
 	//
@@ -215,60 +201,6 @@ type PipelinesAPI struct {
 	pipelinesImpl
 }
 
-// WaitGetPipelineRunning repeatedly calls [PipelinesAPI.Get] and waits to reach RUNNING state
-func (a *PipelinesAPI) WaitGetPipelineRunning(ctx context.Context, pipelineId string,
-	timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error) {
-	ctx = useragent.InContext(ctx, "sdk-feature", "long-running")
-	return retries.Poll[GetPipelineResponse](ctx, timeout, func() (*GetPipelineResponse, *retries.Err) {
-		getPipelineResponse, err := a.Get(ctx, GetPipelineRequest{
-			PipelineId: pipelineId,
-		})
-		if err != nil {
-			return nil, retries.Halt(err)
-		}
-		if callback != nil {
-			callback(getPipelineResponse)
-		}
-		status := getPipelineResponse.State
-		statusMessage := getPipelineResponse.Cause
-		switch status {
-		case PipelineStateRunning: // target state
-			return getPipelineResponse, nil
-		case PipelineStateFailed:
-			err := fmt.Errorf("failed to reach %s, got %s: %s",
-				PipelineStateRunning, status, statusMessage)
-			return nil, retries.Halt(err)
-		default:
-			return nil, retries.Continues(statusMessage)
-		}
-	})
-}
-
-// WaitGetPipelineRunning is a wrapper that calls [PipelinesAPI.WaitGetPipelineRunning] and waits to reach RUNNING state.
-type WaitGetPipelineRunning[R any] struct {
-	Response   *R
-	PipelineId string `json:"pipeline_id"`
-	Poll       func(time.Duration, func(*GetPipelineResponse)) (*GetPipelineResponse, error)
-	callback   func(*GetPipelineResponse)
-	timeout    time.Duration
-}
-
-// OnProgress invokes a callback every time it polls for the status update.
-func (w *WaitGetPipelineRunning[R]) OnProgress(callback func(*GetPipelineResponse)) *WaitGetPipelineRunning[R] {
-	w.callback = callback
-	return w
-}
-
-// Get the GetPipelineResponse with the default timeout of 20 minutes.
-func (w *WaitGetPipelineRunning[R]) Get() (*GetPipelineResponse, error) {
-	return w.Poll(w.timeout, w.callback)
-}
-
-// Get the GetPipelineResponse with custom timeout.
-func (w *WaitGetPipelineRunning[R]) GetWithTimeout(timeout time.Duration) (*GetPipelineResponse, error) {
-	return w.Poll(timeout, w.callback)
-}
-
 // WaitGetPipelineIdle repeatedly calls [PipelinesAPI.Get] and waits to reach IDLE state
 func (a *PipelinesAPI) WaitGetPipelineIdle(ctx context.Context, pipelineId string,
 	timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error) {
@@ -333,60 +265,10 @@ func (a *PipelinesAPI) DeleteByPipelineId(ctx context.Context, pipelineId string
 }
 
 // Get a pipeline.
-func (a *PipelinesAPI) Get(ctx context.Context, getPipelineRequest GetPipelineRequest) (*WaitGetPipelineRunning[GetPipelineResponse], error) {
-	getPipelineResponse, err := a.pipelinesImpl.Get(ctx, getPipelineRequest)
-	if err != nil {
-		return nil, err
-	}
-	return &WaitGetPipelineRunning[GetPipelineResponse]{
-		Response:   getPipelineResponse,
-		PipelineId: getPipelineResponse.PipelineId,
-		Poll: func(timeout time.Duration, callback func(*GetPipelineResponse)) (*GetPipelineResponse, error) {
-			return a.WaitGetPipelineRunning(ctx, getPipelineResponse.PipelineId, timeout, callback)
-		},
-		timeout:  20 * time.Minute,
-		callback: nil,
-	}, nil
-}
-
-// Calls [PipelinesAPI.Get] and waits to reach RUNNING state
-//
-// You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[GetPipelineResponse](60*time.Minute) functional option.
-//
-// Deprecated: use [PipelinesAPI.Get].Get() or [PipelinesAPI.WaitGetPipelineRunning]
-func (a *PipelinesAPI) GetAndWait(ctx context.Context, getPipelineRequest GetPipelineRequest, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
-	wait, err := a.Get(ctx, getPipelineRequest)
-	if err != nil {
-		return nil, err
-	}
-	tmp := &retries.Info[GetPipelineResponse]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(tmp)
-	}
-	wait.timeout = tmp.Timeout
-	wait.callback = func(info *GetPipelineResponse) {
-		for _, o := range options {
-			o(&retries.Info[GetPipelineResponse]{
-				Info:    info,
-				Timeout: wait.timeout,
-			})
-		}
-	}
-	return wait.Get()
-}
-
-// Get a pipeline.
 func (a *PipelinesAPI) GetByPipelineId(ctx context.Context, pipelineId string) (*GetPipelineResponse, error) {
 	return a.pipelinesImpl.Get(ctx, GetPipelineRequest{
 		PipelineId: pipelineId,
 	})
-}
-
-func (a *PipelinesAPI) GetByPipelineIdAndWait(ctx context.Context, pipelineId string, options ...retries.Option[GetPipelineResponse]) (*GetPipelineResponse, error) {
-	return a.GetAndWait(ctx, GetPipelineRequest{
-		PipelineId: pipelineId,
-	}, options...)
 }
 
 // Get pipeline permission levels.

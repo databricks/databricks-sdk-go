@@ -1422,6 +1422,66 @@ type EmailConfig struct {
 type Empty struct {
 }
 
+type EnableExportNotebook struct {
+	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnableExportNotebook) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnableExportNotebook) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EnableNotebookTableClipboard struct {
+	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnableNotebookTableClipboard) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnableNotebookTableClipboard) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EnableResultsDownloading struct {
+	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnableResultsDownloading) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnableResultsDownloading) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // SHIELD feature: ESM
 type EnhancedSecurityMonitoring struct {
 	IsEnabled bool `json:"is_enabled,omitempty"`
@@ -3108,6 +3168,69 @@ type UpdateDisableLegacyFeaturesRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting DisableLegacyFeatures `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateEnableExportNotebookRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	FieldMask string `json:"field_mask"`
+
+	Setting EnableExportNotebook `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateEnableNotebookTableClipboardRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	FieldMask string `json:"field_mask"`
+
+	Setting EnableNotebookTableClipboard `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateEnableResultsDownloadingRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	FieldMask string `json:"field_mask"`
+
+	Setting EnableResultsDownloading `json:"setting"`
 }
 
 // Details required to update a setting.

@@ -82,22 +82,28 @@ type JobsInterface interface {
 	//
 	// Retrieves the details for a single job.
 	//
-	// In Jobs API 2.2, requests for a single job support pagination of `tasks` and
-	// `job_clusters` when either exceeds 100 elements. Use the `next_page_token`
-	// field to check for more results and pass its value as the `page_token` in
-	// subsequent requests. Arrays with fewer than 100 elements in a page will be
-	// empty on later pages.
+	// Large arrays in the results will be paginated when they exceed 100 elements.
+	// A request for a single job will return all properties for that job, and the
+	// first 100 elements of array properties (`tasks`, `job_clusters`,
+	// `environments` and `parameters`). Use the `next_page_token` field to check
+	// for more results and pass its value as the `page_token` in subsequent
+	// requests. If any array properties have more than 100 elements, additional
+	// results will be returned on subsequent requests. Arrays without additional
+	// results will be empty on later pages.
 	Get(ctx context.Context, request GetJobRequest) (*Job, error)
 
 	// Get a single job.
 	//
 	// Retrieves the details for a single job.
 	//
-	// In Jobs API 2.2, requests for a single job support pagination of `tasks` and
-	// `job_clusters` when either exceeds 100 elements. Use the `next_page_token`
-	// field to check for more results and pass its value as the `page_token` in
-	// subsequent requests. Arrays with fewer than 100 elements in a page will be
-	// empty on later pages.
+	// Large arrays in the results will be paginated when they exceed 100 elements.
+	// A request for a single job will return all properties for that job, and the
+	// first 100 elements of array properties (`tasks`, `job_clusters`,
+	// `environments` and `parameters`). Use the `next_page_token` field to check
+	// for more results and pass its value as the `page_token` in subsequent
+	// requests. If any array properties have more than 100 elements, additional
+	// results will be returned on subsequent requests. Arrays without additional
+	// results will be empty on later pages.
 	GetByJobId(ctx context.Context, jobId int64) (*Job, error)
 
 	// Get job permission levels.
@@ -126,20 +132,15 @@ type JobsInterface interface {
 	//
 	// Retrieves the metadata of a run.
 	//
-	// In Jobs API 2.2, requests for a single job run support pagination of `tasks`
-	// and `job_clusters` when either exceeds 100 elements. Use the
-	// `next_page_token` field to check for more results and pass its value as the
-	// `page_token` in subsequent requests. Arrays with fewer than 100 elements in a
-	// page will be empty on later pages.
-	GetRun(ctx context.Context, getRunRequest GetRunRequest) (*WaitGetRunJobTerminatedOrSkipped[Run], error)
-
-	// Calls [JobsAPIInterface.GetRun] and waits to reach TERMINATED or SKIPPED state
-	//
-	// You can override the default timeout of 20 minutes by calling adding
-	// retries.Timeout[Run](60*time.Minute) functional option.
-	//
-	// Deprecated: use [JobsAPIInterface.GetRun].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
-	GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest, options ...retries.Option[Run]) (*Run, error)
+	// Large arrays in the results will be paginated when they exceed 100 elements.
+	// A request for a single run will return all properties for that run, and the
+	// first 100 elements of array properties (`tasks`, `job_clusters`,
+	// `job_parameters` and `repair_history`). Use the next_page_token field to
+	// check for more results and pass its value as the page_token in subsequent
+	// requests. If any array properties have more than 100 elements, additional
+	// results will be returned on subsequent requests. Arrays without additional
+	// results will be empty on later pages.
+	GetRun(ctx context.Context, request GetRunRequest) (*Run, error)
 
 	// Get the output for a single run.
 	//
@@ -457,11 +458,14 @@ func (a *JobsAPI) DeleteRunByRunId(ctx context.Context, runId int64) error {
 //
 // Retrieves the details for a single job.
 //
-// In Jobs API 2.2, requests for a single job support pagination of `tasks` and
-// `job_clusters` when either exceeds 100 elements. Use the `next_page_token`
-// field to check for more results and pass its value as the `page_token` in
-// subsequent requests. Arrays with fewer than 100 elements in a page will be
-// empty on later pages.
+// Large arrays in the results will be paginated when they exceed 100 elements.
+// A request for a single job will return all properties for that job, and the
+// first 100 elements of array properties (`tasks`, `job_clusters`,
+// `environments` and `parameters`). Use the `next_page_token` field to check
+// for more results and pass its value as the `page_token` in subsequent
+// requests. If any array properties have more than 100 elements, additional
+// results will be returned on subsequent requests. Arrays without additional
+// results will be empty on later pages.
 func (a *JobsAPI) GetByJobId(ctx context.Context, jobId int64) (*Job, error) {
 	return a.jobsImpl.Get(ctx, GetJobRequest{
 		JobId: jobId,
@@ -485,58 +489,6 @@ func (a *JobsAPI) GetPermissionsByJobId(ctx context.Context, jobId string) (*Job
 	return a.jobsImpl.GetPermissions(ctx, GetJobPermissionsRequest{
 		JobId: jobId,
 	})
-}
-
-// Get a single job run.
-//
-// Retrieves the metadata of a run.
-//
-// In Jobs API 2.2, requests for a single job run support pagination of `tasks`
-// and `job_clusters` when either exceeds 100 elements. Use the
-// `next_page_token` field to check for more results and pass its value as the
-// `page_token` in subsequent requests. Arrays with fewer than 100 elements in a
-// page will be empty on later pages.
-func (a *JobsAPI) GetRun(ctx context.Context, getRunRequest GetRunRequest) (*WaitGetRunJobTerminatedOrSkipped[Run], error) {
-	run, err := a.jobsImpl.GetRun(ctx, getRunRequest)
-	if err != nil {
-		return nil, err
-	}
-	return &WaitGetRunJobTerminatedOrSkipped[Run]{
-		Response: run,
-		RunId:    run.RunId,
-		Poll: func(timeout time.Duration, callback func(*Run)) (*Run, error) {
-			return a.WaitGetRunJobTerminatedOrSkipped(ctx, run.RunId, timeout, callback)
-		},
-		timeout:  20 * time.Minute,
-		callback: nil,
-	}, nil
-}
-
-// Calls [JobsAPI.GetRun] and waits to reach TERMINATED or SKIPPED state
-//
-// You can override the default timeout of 20 minutes by calling adding
-// retries.Timeout[Run](60*time.Minute) functional option.
-//
-// Deprecated: use [JobsAPI.GetRun].Get() or [JobsAPI.WaitGetRunJobTerminatedOrSkipped]
-func (a *JobsAPI) GetRunAndWait(ctx context.Context, getRunRequest GetRunRequest, options ...retries.Option[Run]) (*Run, error) {
-	wait, err := a.GetRun(ctx, getRunRequest)
-	if err != nil {
-		return nil, err
-	}
-	tmp := &retries.Info[Run]{Timeout: 20 * time.Minute}
-	for _, o := range options {
-		o(tmp)
-	}
-	wait.timeout = tmp.Timeout
-	wait.callback = func(info *Run) {
-		for _, o := range options {
-			o(&retries.Info[Run]{
-				Info:    info,
-				Timeout: wait.timeout,
-			})
-		}
-	}
-	return wait.Get()
 }
 
 // Get the output for a single run.

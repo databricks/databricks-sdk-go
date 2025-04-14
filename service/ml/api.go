@@ -72,6 +72,18 @@ type ExperimentsInterface interface {
 	// exists.
 	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error)
 
+	// Get credentials to download trace data.
+	GetCredentialsForTraceDataDownload(ctx context.Context, request GetCredentialsForTraceDataDownloadRequest) (*GetCredentialsForTraceDataDownloadResponse, error)
+
+	// Get credentials to download trace data.
+	GetCredentialsForTraceDataDownloadByRequestId(ctx context.Context, requestId string) (*GetCredentialsForTraceDataDownloadResponse, error)
+
+	// Get credentials to upload trace data.
+	GetCredentialsForTraceDataUpload(ctx context.Context, request GetCredentialsForTraceDataUploadRequest) (*GetCredentialsForTraceDataUploadResponse, error)
+
+	// Get credentials to upload trace data.
+	GetCredentialsForTraceDataUploadByRequestId(ctx context.Context, requestId string) (*GetCredentialsForTraceDataUploadResponse, error)
+
 	// Get an experiment.
 	//
 	// Gets metadata for an experiment. This method works on deleted experiments.
@@ -350,6 +362,20 @@ func NewExperiments(client *client.DatabricksClient) *ExperimentsAPI {
 // folders, notebooks, and libraries.
 type ExperimentsAPI struct {
 	experimentsImpl
+}
+
+// Get credentials to download trace data.
+func (a *ExperimentsAPI) GetCredentialsForTraceDataDownloadByRequestId(ctx context.Context, requestId string) (*GetCredentialsForTraceDataDownloadResponse, error) {
+	return a.experimentsImpl.GetCredentialsForTraceDataDownload(ctx, GetCredentialsForTraceDataDownloadRequest{
+		RequestId: requestId,
+	})
+}
+
+// Get credentials to upload trace data.
+func (a *ExperimentsAPI) GetCredentialsForTraceDataUploadByRequestId(ctx context.Context, requestId string) (*GetCredentialsForTraceDataUploadResponse, error) {
+	return a.experimentsImpl.GetCredentialsForTraceDataUpload(ctx, GetCredentialsForTraceDataUploadRequest{
+		RequestId: requestId,
+	})
 }
 
 // Get experiment permission levels.

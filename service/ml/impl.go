@@ -93,6 +93,26 @@ func (a *experimentsImpl) GetByName(ctx context.Context, request GetByNameReques
 	return &getExperimentByNameResponse, err
 }
 
+func (a *experimentsImpl) GetCredentialsForTraceDataDownload(ctx context.Context, request GetCredentialsForTraceDataDownloadRequest) (*GetCredentialsForTraceDataDownloadResponse, error) {
+	var getCredentialsForTraceDataDownloadResponse GetCredentialsForTraceDataDownloadResponse
+	path := fmt.Sprintf("/api/2.0/mlflow/traces/%v/credentials-for-data-download", request.RequestId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCredentialsForTraceDataDownloadResponse)
+	return &getCredentialsForTraceDataDownloadResponse, err
+}
+
+func (a *experimentsImpl) GetCredentialsForTraceDataUpload(ctx context.Context, request GetCredentialsForTraceDataUploadRequest) (*GetCredentialsForTraceDataUploadResponse, error) {
+	var getCredentialsForTraceDataUploadResponse GetCredentialsForTraceDataUploadResponse
+	path := fmt.Sprintf("/api/2.0/mlflow/traces/%v/credentials-for-data-upload", request.RequestId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCredentialsForTraceDataUploadResponse)
+	return &getCredentialsForTraceDataUploadResponse, err
+}
+
 func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error) {
 	var getExperimentResponse GetExperimentResponse
 	path := "/api/2.0/mlflow/experiments/get"
