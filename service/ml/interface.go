@@ -75,6 +75,12 @@ type ExperimentsService interface {
 	// exists.
 	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error)
 
+	// Get credentials to download trace data.
+	GetCredentialsForTraceDataDownload(ctx context.Context, request GetCredentialsForTraceDataDownloadRequest) (*GetCredentialsForTraceDataDownloadResponse, error)
+
+	// Get credentials to upload trace data.
+	GetCredentialsForTraceDataUpload(ctx context.Context, request GetCredentialsForTraceDataUploadRequest) (*GetCredentialsForTraceDataUploadResponse, error)
+
 	// Get an experiment.
 	//
 	// Gets metadata for an experiment. This method works on deleted

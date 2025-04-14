@@ -3163,6 +3163,11 @@ type QueryFilter struct {
 type QueryInfo struct {
 	// SQL Warehouse channel information at the time of query execution
 	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
+	// Client application that ran the statement. For example: Databricks SQL
+	// Editor, Tableau, and Power BI. This field is derived from information
+	// provided by client applications. While values are expected to remain
+	// static over time, this cannot be guaranteed.
+	ClientApplication string `json:"client_application,omitempty"`
 	// Total execution time of the statement ( excluding result fetch time ).
 	Duration int64 `json:"duration,omitempty"`
 	// Alias for `warehouse_id`.
@@ -4682,6 +4687,8 @@ const WarehousePermissionLevelCanMonitor WarehousePermissionLevel = `CAN_MONITOR
 
 const WarehousePermissionLevelCanUse WarehousePermissionLevel = `CAN_USE`
 
+const WarehousePermissionLevelCanView WarehousePermissionLevel = `CAN_VIEW`
+
 const WarehousePermissionLevelIsOwner WarehousePermissionLevel = `IS_OWNER`
 
 // String representation for [fmt.Print]
@@ -4692,11 +4699,11 @@ func (f *WarehousePermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WarehousePermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_MANAGE`, `CAN_MONITOR`, `CAN_USE`, `IS_OWNER`:
+	case `CAN_MANAGE`, `CAN_MONITOR`, `CAN_USE`, `CAN_VIEW`, `IS_OWNER`:
 		*f = WarehousePermissionLevel(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MONITOR", "CAN_USE", "IS_OWNER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MONITOR", "CAN_USE", "CAN_VIEW", "IS_OWNER"`, v)
 	}
 }
 

@@ -116,6 +116,124 @@ func (_c *MockLakeviewEmbeddedInterface_GetPublishedDashboardEmbeddedByDashboard
 	return _c
 }
 
+// GetPublishedDashboardTokenInfo provides a mock function with given fields: ctx, request
+func (_m *MockLakeviewEmbeddedInterface) GetPublishedDashboardTokenInfo(ctx context.Context, request dashboards.GetPublishedDashboardTokenInfoRequest) (*dashboards.GetPublishedDashboardTokenInfoResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPublishedDashboardTokenInfo")
+	}
+
+	var r0 *dashboards.GetPublishedDashboardTokenInfoResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetPublishedDashboardTokenInfoRequest) (*dashboards.GetPublishedDashboardTokenInfoResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GetPublishedDashboardTokenInfoRequest) *dashboards.GetPublishedDashboardTokenInfoResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GetPublishedDashboardTokenInfoResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GetPublishedDashboardTokenInfoRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfo_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPublishedDashboardTokenInfo'
+type MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfo_Call struct {
+	*mock.Call
+}
+
+// GetPublishedDashboardTokenInfo is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GetPublishedDashboardTokenInfoRequest
+func (_e *MockLakeviewEmbeddedInterface_Expecter) GetPublishedDashboardTokenInfo(ctx interface{}, request interface{}) *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfo_Call {
+	return &MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfo_Call{Call: _e.mock.On("GetPublishedDashboardTokenInfo", ctx, request)}
+}
+
+func (_c *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfo_Call) Run(run func(ctx context.Context, request dashboards.GetPublishedDashboardTokenInfoRequest)) *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfo_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GetPublishedDashboardTokenInfoRequest))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfo_Call) Return(_a0 *dashboards.GetPublishedDashboardTokenInfoResponse, _a1 error) *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfo_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfo_Call) RunAndReturn(run func(context.Context, dashboards.GetPublishedDashboardTokenInfoRequest) (*dashboards.GetPublishedDashboardTokenInfoResponse, error)) *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfo_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPublishedDashboardTokenInfoByDashboardId provides a mock function with given fields: ctx, dashboardId
+func (_m *MockLakeviewEmbeddedInterface) GetPublishedDashboardTokenInfoByDashboardId(ctx context.Context, dashboardId string) (*dashboards.GetPublishedDashboardTokenInfoResponse, error) {
+	ret := _m.Called(ctx, dashboardId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPublishedDashboardTokenInfoByDashboardId")
+	}
+
+	var r0 *dashboards.GetPublishedDashboardTokenInfoResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*dashboards.GetPublishedDashboardTokenInfoResponse, error)); ok {
+		return rf(ctx, dashboardId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *dashboards.GetPublishedDashboardTokenInfoResponse); ok {
+		r0 = rf(ctx, dashboardId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GetPublishedDashboardTokenInfoResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, dashboardId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfoByDashboardId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPublishedDashboardTokenInfoByDashboardId'
+type MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfoByDashboardId_Call struct {
+	*mock.Call
+}
+
+// GetPublishedDashboardTokenInfoByDashboardId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dashboardId string
+func (_e *MockLakeviewEmbeddedInterface_Expecter) GetPublishedDashboardTokenInfoByDashboardId(ctx interface{}, dashboardId interface{}) *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfoByDashboardId_Call {
+	return &MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfoByDashboardId_Call{Call: _e.mock.On("GetPublishedDashboardTokenInfoByDashboardId", ctx, dashboardId)}
+}
+
+func (_c *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfoByDashboardId_Call) Run(run func(ctx context.Context, dashboardId string)) *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfoByDashboardId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfoByDashboardId_Call) Return(_a0 *dashboards.GetPublishedDashboardTokenInfoResponse, _a1 error) *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfoByDashboardId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfoByDashboardId_Call) RunAndReturn(run func(context.Context, string) (*dashboards.GetPublishedDashboardTokenInfoResponse, error)) *MockLakeviewEmbeddedInterface_GetPublishedDashboardTokenInfoByDashboardId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockLakeviewEmbeddedInterface creates a new instance of MockLakeviewEmbeddedInterface. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockLakeviewEmbeddedInterface(t interface {

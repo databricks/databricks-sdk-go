@@ -349,6 +349,147 @@ func (_c *MockSettingsInterface_DisableLegacyDbfs_Call) RunAndReturn(run func() 
 	return _c
 }
 
+// EnableExportNotebook provides a mock function with no fields
+func (_m *MockSettingsInterface) EnableExportNotebook() settings.EnableExportNotebookInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for EnableExportNotebook")
+	}
+
+	var r0 settings.EnableExportNotebookInterface
+	if rf, ok := ret.Get(0).(func() settings.EnableExportNotebookInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.EnableExportNotebookInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_EnableExportNotebook_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EnableExportNotebook'
+type MockSettingsInterface_EnableExportNotebook_Call struct {
+	*mock.Call
+}
+
+// EnableExportNotebook is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) EnableExportNotebook() *MockSettingsInterface_EnableExportNotebook_Call {
+	return &MockSettingsInterface_EnableExportNotebook_Call{Call: _e.mock.On("EnableExportNotebook")}
+}
+
+func (_c *MockSettingsInterface_EnableExportNotebook_Call) Run(run func()) *MockSettingsInterface_EnableExportNotebook_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_EnableExportNotebook_Call) Return(_a0 settings.EnableExportNotebookInterface) *MockSettingsInterface_EnableExportNotebook_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_EnableExportNotebook_Call) RunAndReturn(run func() settings.EnableExportNotebookInterface) *MockSettingsInterface_EnableExportNotebook_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// EnableNotebookTableClipboard provides a mock function with no fields
+func (_m *MockSettingsInterface) EnableNotebookTableClipboard() settings.EnableNotebookTableClipboardInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for EnableNotebookTableClipboard")
+	}
+
+	var r0 settings.EnableNotebookTableClipboardInterface
+	if rf, ok := ret.Get(0).(func() settings.EnableNotebookTableClipboardInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.EnableNotebookTableClipboardInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_EnableNotebookTableClipboard_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EnableNotebookTableClipboard'
+type MockSettingsInterface_EnableNotebookTableClipboard_Call struct {
+	*mock.Call
+}
+
+// EnableNotebookTableClipboard is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) EnableNotebookTableClipboard() *MockSettingsInterface_EnableNotebookTableClipboard_Call {
+	return &MockSettingsInterface_EnableNotebookTableClipboard_Call{Call: _e.mock.On("EnableNotebookTableClipboard")}
+}
+
+func (_c *MockSettingsInterface_EnableNotebookTableClipboard_Call) Run(run func()) *MockSettingsInterface_EnableNotebookTableClipboard_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_EnableNotebookTableClipboard_Call) Return(_a0 settings.EnableNotebookTableClipboardInterface) *MockSettingsInterface_EnableNotebookTableClipboard_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_EnableNotebookTableClipboard_Call) RunAndReturn(run func() settings.EnableNotebookTableClipboardInterface) *MockSettingsInterface_EnableNotebookTableClipboard_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// EnableResultsDownloading provides a mock function with no fields
+func (_m *MockSettingsInterface) EnableResultsDownloading() settings.EnableResultsDownloadingInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for EnableResultsDownloading")
+	}
+
+	var r0 settings.EnableResultsDownloadingInterface
+	if rf, ok := ret.Get(0).(func() settings.EnableResultsDownloadingInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.EnableResultsDownloadingInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_EnableResultsDownloading_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EnableResultsDownloading'
+type MockSettingsInterface_EnableResultsDownloading_Call struct {
+	*mock.Call
+}
+
+// EnableResultsDownloading is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) EnableResultsDownloading() *MockSettingsInterface_EnableResultsDownloading_Call {
+	return &MockSettingsInterface_EnableResultsDownloading_Call{Call: _e.mock.On("EnableResultsDownloading")}
+}
+
+func (_c *MockSettingsInterface_EnableResultsDownloading_Call) Run(run func()) *MockSettingsInterface_EnableResultsDownloading_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_EnableResultsDownloading_Call) Return(_a0 settings.EnableResultsDownloadingInterface) *MockSettingsInterface_EnableResultsDownloading_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_EnableResultsDownloading_Call) RunAndReturn(run func() settings.EnableResultsDownloadingInterface) *MockSettingsInterface_EnableResultsDownloading_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // EnhancedSecurityMonitoring provides a mock function with no fields
 func (_m *MockSettingsInterface) EnhancedSecurityMonitoring() settings.EnhancedSecurityMonitoringInterface {
 	ret := _m.Called()

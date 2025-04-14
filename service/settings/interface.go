@@ -275,11 +275,10 @@ type DefaultNamespaceService interface {
 
 // 'Disabling legacy access' has the following impacts:
 //
-// 1. Disables direct access to the Hive Metastore. However, you can still
-// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode (docs
-// link) on any External Location access from the workspace. 3. Alters DBFS path
-// access to use External Location permissions in place of legacy credentials.
-// 4. Enforces Unity Catalog access on all path based access.
+// 1. Disables direct access to Hive Metastores from the workspace. However, you
+// can still access a Hive Metastore through Hive Metastore federation. 2.
+// Disables fallback mode on external location access from the workspace. 3.
+// Disables Databricks Runtime versions prior to 13.3LTS.
 type DisableLegacyAccessService interface {
 
 	// Delete Legacy Access Disablement Status.
@@ -344,6 +343,23 @@ type DisableLegacyFeaturesService interface {
 	Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
 }
 
+// Controls whether users can export notebooks and files from the Workspace. By
+// default, this setting is enabled.
+type EnableExportNotebookService interface {
+
+	// Get the Enable Export Notebook setting.
+	//
+	// Gets the Enable Export Notebook setting.
+	GetEnableExportNotebook(ctx context.Context) (*EnableExportNotebook, error)
+
+	// Update the Enable Export Notebook setting.
+	//
+	// Updates the Enable Export Notebook setting. The model follows eventual
+	// consistency, which means the get after the update operation might receive
+	// stale values for some time.
+	PatchEnableExportNotebook(ctx context.Context, request UpdateEnableExportNotebookRequest) (*EnableExportNotebook, error)
+}
+
 // Controls the enforcement of IP access lists for accessing the account
 // console. Allowing you to enable or disable restricted access based on IP
 // addresses.
@@ -363,6 +379,40 @@ type EnableIpAccessListsService interface {
 	//
 	// Updates the value of the account IP access toggle setting.
 	Update(ctx context.Context, request UpdateAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error)
+}
+
+// Controls whether users can copy tabular data to the clipboard via the UI. By
+// default, this setting is enabled.
+type EnableNotebookTableClipboardService interface {
+
+	// Get the Enable Notebook Table Clipboard setting.
+	//
+	// Gets the Enable Notebook Table Clipboard setting.
+	GetEnableNotebookTableClipboard(ctx context.Context) (*EnableNotebookTableClipboard, error)
+
+	// Update the Enable Notebook Table Clipboard setting.
+	//
+	// Updates the Enable Notebook Table Clipboard setting. The model follows
+	// eventual consistency, which means the get after the update operation
+	// might receive stale values for some time.
+	PatchEnableNotebookTableClipboard(ctx context.Context, request UpdateEnableNotebookTableClipboardRequest) (*EnableNotebookTableClipboard, error)
+}
+
+// Controls whether users can download notebook results. By default, this
+// setting is enabled.
+type EnableResultsDownloadingService interface {
+
+	// Get the Enable Results Downloading setting.
+	//
+	// Gets the Enable Results Downloading setting.
+	GetEnableResultsDownloading(ctx context.Context) (*EnableResultsDownloading, error)
+
+	// Update the Enable Results Downloading setting.
+	//
+	// Updates the Enable Results Downloading setting. The model follows
+	// eventual consistency, which means the get after the update operation
+	// might receive stale values for some time.
+	PatchEnableResultsDownloading(ctx context.Context, request UpdateEnableResultsDownloadingRequest) (*EnableResultsDownloading, error)
 }
 
 // Controls whether enhanced security monitoring is enabled for the current
