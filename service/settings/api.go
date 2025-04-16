@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enable Ip Access Lists, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enable Export Notebook, Enable Ip Access Lists, Enable Notebook Table Clipboard, Enable Results Downloading, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -626,11 +626,10 @@ func NewDisableLegacyAccess(client *client.DatabricksClient) *DisableLegacyAcces
 
 // 'Disabling legacy access' has the following impacts:
 //
-// 1. Disables direct access to the Hive Metastore. However, you can still
-// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode (docs
-// link) on any External Location access from the workspace. 3. Alters DBFS path
-// access to use External Location permissions in place of legacy credentials.
-// 4. Enforces Unity Catalog access on all path based access.
+// 1. Disables direct access to Hive Metastores from the workspace. However, you
+// can still access a Hive Metastore through Hive Metastore federation. 2.
+// Disables fallback mode on external location access from the workspace. 3.
+// Disables Databricks Runtime versions prior to 13.3LTS.
 type DisableLegacyAccessAPI struct {
 	disableLegacyAccessImpl
 }
@@ -705,6 +704,35 @@ type DisableLegacyFeaturesAPI struct {
 	disableLegacyFeaturesImpl
 }
 
+type EnableExportNotebookInterface interface {
+
+	// Get the Enable Export Notebook setting.
+	//
+	// Gets the Enable Export Notebook setting.
+	GetEnableExportNotebook(ctx context.Context) (*EnableExportNotebook, error)
+
+	// Update the Enable Export Notebook setting.
+	//
+	// Updates the Enable Export Notebook setting. The model follows eventual
+	// consistency, which means the get after the update operation might receive
+	// stale values for some time.
+	PatchEnableExportNotebook(ctx context.Context, request UpdateEnableExportNotebookRequest) (*EnableExportNotebook, error)
+}
+
+func NewEnableExportNotebook(client *client.DatabricksClient) *EnableExportNotebookAPI {
+	return &EnableExportNotebookAPI{
+		enableExportNotebookImpl: enableExportNotebookImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls whether users can export notebooks and files from the Workspace. By
+// default, this setting is enabled.
+type EnableExportNotebookAPI struct {
+	enableExportNotebookImpl
+}
+
 type EnableIpAccessListsInterface interface {
 
 	// Delete the account IP access toggle setting.
@@ -736,6 +764,64 @@ func NewEnableIpAccessLists(client *client.DatabricksClient) *EnableIpAccessList
 // addresses.
 type EnableIpAccessListsAPI struct {
 	enableIpAccessListsImpl
+}
+
+type EnableNotebookTableClipboardInterface interface {
+
+	// Get the Enable Notebook Table Clipboard setting.
+	//
+	// Gets the Enable Notebook Table Clipboard setting.
+	GetEnableNotebookTableClipboard(ctx context.Context) (*EnableNotebookTableClipboard, error)
+
+	// Update the Enable Notebook Table Clipboard setting.
+	//
+	// Updates the Enable Notebook Table Clipboard setting. The model follows
+	// eventual consistency, which means the get after the update operation might
+	// receive stale values for some time.
+	PatchEnableNotebookTableClipboard(ctx context.Context, request UpdateEnableNotebookTableClipboardRequest) (*EnableNotebookTableClipboard, error)
+}
+
+func NewEnableNotebookTableClipboard(client *client.DatabricksClient) *EnableNotebookTableClipboardAPI {
+	return &EnableNotebookTableClipboardAPI{
+		enableNotebookTableClipboardImpl: enableNotebookTableClipboardImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls whether users can copy tabular data to the clipboard via the UI. By
+// default, this setting is enabled.
+type EnableNotebookTableClipboardAPI struct {
+	enableNotebookTableClipboardImpl
+}
+
+type EnableResultsDownloadingInterface interface {
+
+	// Get the Enable Results Downloading setting.
+	//
+	// Gets the Enable Results Downloading setting.
+	GetEnableResultsDownloading(ctx context.Context) (*EnableResultsDownloading, error)
+
+	// Update the Enable Results Downloading setting.
+	//
+	// Updates the Enable Results Downloading setting. The model follows eventual
+	// consistency, which means the get after the update operation might receive
+	// stale values for some time.
+	PatchEnableResultsDownloading(ctx context.Context, request UpdateEnableResultsDownloadingRequest) (*EnableResultsDownloading, error)
+}
+
+func NewEnableResultsDownloading(client *client.DatabricksClient) *EnableResultsDownloadingAPI {
+	return &EnableResultsDownloadingAPI{
+		enableResultsDownloadingImpl: enableResultsDownloadingImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls whether users can download notebook results. By default, this
+// setting is enabled.
+type EnableResultsDownloadingAPI struct {
+	enableResultsDownloadingImpl
 }
 
 type EnhancedSecurityMonitoringInterface interface {
@@ -1403,17 +1489,28 @@ type SettingsInterface interface {
 
 	// 'Disabling legacy access' has the following impacts:
 	//
-	// 1. Disables direct access to the Hive Metastore. However, you can still
-	// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode
-	// (docs link) on any External Location access from the workspace. 3. Alters
-	// DBFS path access to use External Location permissions in place of legacy
-	// credentials. 4. Enforces Unity Catalog access on all path based access.
+	// 1. Disables direct access to Hive Metastores from the workspace. However,
+	// you can still access a Hive Metastore through Hive Metastore federation.
+	// 2. Disables fallback mode on external location access from the workspace.
+	// 3. Disables Databricks Runtime versions prior to 13.3LTS.
 	DisableLegacyAccess() DisableLegacyAccessInterface
 
 	// When this setting is on, access to DBFS root and DBFS mounts is
 	// disallowed (as well as creation of new mounts). When the setting is off,
 	// all DBFS functionality is enabled
 	DisableLegacyDbfs() DisableLegacyDbfsInterface
+
+	// Controls whether users can export notebooks and files from the Workspace.
+	// By default, this setting is enabled.
+	EnableExportNotebook() EnableExportNotebookInterface
+
+	// Controls whether users can copy tabular data to the clipboard via the UI.
+	// By default, this setting is enabled.
+	EnableNotebookTableClipboard() EnableNotebookTableClipboardInterface
+
+	// Controls whether users can download notebook results. By default, this
+	// setting is enabled.
+	EnableResultsDownloading() EnableResultsDownloadingInterface
 
 	// Controls whether enhanced security monitoring is enabled for the current
 	// workspace. If the compliance security profile is enabled, this is
@@ -1459,6 +1556,12 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 		disableLegacyAccess: NewDisableLegacyAccess(client),
 
 		disableLegacyDbfs: NewDisableLegacyDbfs(client),
+
+		enableExportNotebook: NewEnableExportNotebook(client),
+
+		enableNotebookTableClipboard: NewEnableNotebookTableClipboard(client),
+
+		enableResultsDownloading: NewEnableResultsDownloading(client),
 
 		enhancedSecurityMonitoring: NewEnhancedSecurityMonitoring(client),
 
@@ -1509,17 +1612,28 @@ type SettingsAPI struct {
 
 	// 'Disabling legacy access' has the following impacts:
 	//
-	// 1. Disables direct access to the Hive Metastore. However, you can still
-	// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode
-	// (docs link) on any External Location access from the workspace. 3. Alters
-	// DBFS path access to use External Location permissions in place of legacy
-	// credentials. 4. Enforces Unity Catalog access on all path based access.
+	// 1. Disables direct access to Hive Metastores from the workspace. However,
+	// you can still access a Hive Metastore through Hive Metastore federation.
+	// 2. Disables fallback mode on external location access from the workspace.
+	// 3. Disables Databricks Runtime versions prior to 13.3LTS.
 	disableLegacyAccess DisableLegacyAccessInterface
 
 	// When this setting is on, access to DBFS root and DBFS mounts is
 	// disallowed (as well as creation of new mounts). When the setting is off,
 	// all DBFS functionality is enabled
 	disableLegacyDbfs DisableLegacyDbfsInterface
+
+	// Controls whether users can export notebooks and files from the Workspace.
+	// By default, this setting is enabled.
+	enableExportNotebook EnableExportNotebookInterface
+
+	// Controls whether users can copy tabular data to the clipboard via the UI.
+	// By default, this setting is enabled.
+	enableNotebookTableClipboard EnableNotebookTableClipboardInterface
+
+	// Controls whether users can download notebook results. By default, this
+	// setting is enabled.
+	enableResultsDownloading EnableResultsDownloadingInterface
 
 	// Controls whether enhanced security monitoring is enabled for the current
 	// workspace. If the compliance security profile is enabled, this is
@@ -1572,6 +1686,18 @@ func (a *SettingsAPI) DisableLegacyAccess() DisableLegacyAccessInterface {
 
 func (a *SettingsAPI) DisableLegacyDbfs() DisableLegacyDbfsInterface {
 	return a.disableLegacyDbfs
+}
+
+func (a *SettingsAPI) EnableExportNotebook() EnableExportNotebookInterface {
+	return a.enableExportNotebook
+}
+
+func (a *SettingsAPI) EnableNotebookTableClipboard() EnableNotebookTableClipboardInterface {
+	return a.enableNotebookTableClipboard
+}
+
+func (a *SettingsAPI) EnableResultsDownloading() EnableResultsDownloadingInterface {
+	return a.enableResultsDownloading
 }
 
 func (a *SettingsAPI) EnhancedSecurityMonitoring() EnhancedSecurityMonitoringInterface {

@@ -82,22 +82,28 @@ type JobsInterface interface {
 	//
 	// Retrieves the details for a single job.
 	//
-	// In Jobs API 2.2, requests for a single job support pagination of `tasks` and
-	// `job_clusters` when either exceeds 100 elements. Use the `next_page_token`
-	// field to check for more results and pass its value as the `page_token` in
-	// subsequent requests. Arrays with fewer than 100 elements in a page will be
-	// empty on later pages.
+	// Large arrays in the results will be paginated when they exceed 100 elements.
+	// A request for a single job will return all properties for that job, and the
+	// first 100 elements of array properties (`tasks`, `job_clusters`,
+	// `environments` and `parameters`). Use the `next_page_token` field to check
+	// for more results and pass its value as the `page_token` in subsequent
+	// requests. If any array properties have more than 100 elements, additional
+	// results will be returned on subsequent requests. Arrays without additional
+	// results will be empty on later pages.
 	Get(ctx context.Context, request GetJobRequest) (*Job, error)
 
 	// Get a single job.
 	//
 	// Retrieves the details for a single job.
 	//
-	// In Jobs API 2.2, requests for a single job support pagination of `tasks` and
-	// `job_clusters` when either exceeds 100 elements. Use the `next_page_token`
-	// field to check for more results and pass its value as the `page_token` in
-	// subsequent requests. Arrays with fewer than 100 elements in a page will be
-	// empty on later pages.
+	// Large arrays in the results will be paginated when they exceed 100 elements.
+	// A request for a single job will return all properties for that job, and the
+	// first 100 elements of array properties (`tasks`, `job_clusters`,
+	// `environments` and `parameters`). Use the `next_page_token` field to check
+	// for more results and pass its value as the `page_token` in subsequent
+	// requests. If any array properties have more than 100 elements, additional
+	// results will be returned on subsequent requests. Arrays without additional
+	// results will be empty on later pages.
 	GetByJobId(ctx context.Context, jobId int64) (*Job, error)
 
 	// Get job permission levels.
@@ -126,11 +132,14 @@ type JobsInterface interface {
 	//
 	// Retrieves the metadata of a run.
 	//
-	// In Jobs API 2.2, requests for a single job run support pagination of `tasks`
-	// and `job_clusters` when either exceeds 100 elements. Use the
-	// `next_page_token` field to check for more results and pass its value as the
-	// `page_token` in subsequent requests. Arrays with fewer than 100 elements in a
-	// page will be empty on later pages.
+	// Large arrays in the results will be paginated when they exceed 100 elements.
+	// A request for a single run will return all properties for that run, and the
+	// first 100 elements of array properties (`tasks`, `job_clusters`,
+	// `job_parameters` and `repair_history`). Use the next_page_token field to
+	// check for more results and pass its value as the page_token in subsequent
+	// requests. If any array properties have more than 100 elements, additional
+	// results will be returned on subsequent requests. Arrays without additional
+	// results will be empty on later pages.
 	GetRun(ctx context.Context, request GetRunRequest) (*Run, error)
 
 	// Get the output for a single run.
@@ -449,11 +458,14 @@ func (a *JobsAPI) DeleteRunByRunId(ctx context.Context, runId int64) error {
 //
 // Retrieves the details for a single job.
 //
-// In Jobs API 2.2, requests for a single job support pagination of `tasks` and
-// `job_clusters` when either exceeds 100 elements. Use the `next_page_token`
-// field to check for more results and pass its value as the `page_token` in
-// subsequent requests. Arrays with fewer than 100 elements in a page will be
-// empty on later pages.
+// Large arrays in the results will be paginated when they exceed 100 elements.
+// A request for a single job will return all properties for that job, and the
+// first 100 elements of array properties (`tasks`, `job_clusters`,
+// `environments` and `parameters`). Use the `next_page_token` field to check
+// for more results and pass its value as the `page_token` in subsequent
+// requests. If any array properties have more than 100 elements, additional
+// results will be returned on subsequent requests. Arrays without additional
+// results will be empty on later pages.
 func (a *JobsAPI) GetByJobId(ctx context.Context, jobId int64) (*Job, error) {
 	return a.jobsImpl.Get(ctx, GetJobRequest{
 		JobId: jobId,

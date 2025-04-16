@@ -1583,67 +1583,6 @@ func (_c *MockPipelinesInterface_WaitGetPipelineIdle_Call) RunAndReturn(run func
 	return _c
 }
 
-// WaitGetPipelineRunning provides a mock function with given fields: ctx, pipelineId, timeout, callback
-func (_m *MockPipelinesInterface) WaitGetPipelineRunning(ctx context.Context, pipelineId string, timeout time.Duration, callback func(*pipelines.GetPipelineResponse)) (*pipelines.GetPipelineResponse, error) {
-	ret := _m.Called(ctx, pipelineId, timeout, callback)
-
-	if len(ret) == 0 {
-		panic("no return value specified for WaitGetPipelineRunning")
-	}
-
-	var r0 *pipelines.GetPipelineResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, time.Duration, func(*pipelines.GetPipelineResponse)) (*pipelines.GetPipelineResponse, error)); ok {
-		return rf(ctx, pipelineId, timeout, callback)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, time.Duration, func(*pipelines.GetPipelineResponse)) *pipelines.GetPipelineResponse); ok {
-		r0 = rf(ctx, pipelineId, timeout, callback)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*pipelines.GetPipelineResponse)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string, time.Duration, func(*pipelines.GetPipelineResponse)) error); ok {
-		r1 = rf(ctx, pipelineId, timeout, callback)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockPipelinesInterface_WaitGetPipelineRunning_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WaitGetPipelineRunning'
-type MockPipelinesInterface_WaitGetPipelineRunning_Call struct {
-	*mock.Call
-}
-
-// WaitGetPipelineRunning is a helper method to define mock.On call
-//   - ctx context.Context
-//   - pipelineId string
-//   - timeout time.Duration
-//   - callback func(*pipelines.GetPipelineResponse)
-func (_e *MockPipelinesInterface_Expecter) WaitGetPipelineRunning(ctx interface{}, pipelineId interface{}, timeout interface{}, callback interface{}) *MockPipelinesInterface_WaitGetPipelineRunning_Call {
-	return &MockPipelinesInterface_WaitGetPipelineRunning_Call{Call: _e.mock.On("WaitGetPipelineRunning", ctx, pipelineId, timeout, callback)}
-}
-
-func (_c *MockPipelinesInterface_WaitGetPipelineRunning_Call) Run(run func(ctx context.Context, pipelineId string, timeout time.Duration, callback func(*pipelines.GetPipelineResponse))) *MockPipelinesInterface_WaitGetPipelineRunning_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(time.Duration), args[3].(func(*pipelines.GetPipelineResponse)))
-	})
-	return _c
-}
-
-func (_c *MockPipelinesInterface_WaitGetPipelineRunning_Call) Return(_a0 *pipelines.GetPipelineResponse, _a1 error) *MockPipelinesInterface_WaitGetPipelineRunning_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockPipelinesInterface_WaitGetPipelineRunning_Call) RunAndReturn(run func(context.Context, string, time.Duration, func(*pipelines.GetPipelineResponse)) (*pipelines.GetPipelineResponse, error)) *MockPipelinesInterface_WaitGetPipelineRunning_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // NewMockPipelinesInterface creates a new instance of MockPipelinesInterface. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockPipelinesInterface(t interface {

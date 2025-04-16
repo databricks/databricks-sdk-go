@@ -166,6 +166,15 @@ func NewMockWorkspaceClient(t interface {
 	mockdisableLegacyDbfs := settings.NewMockDisableLegacyDbfsInterface(t)
 	mocksettingsAPI.On("DisableLegacyDbfs").Return(mockdisableLegacyDbfs).Maybe()
 
+	mockenableExportNotebook := settings.NewMockEnableExportNotebookInterface(t)
+	mocksettingsAPI.On("EnableExportNotebook").Return(mockenableExportNotebook).Maybe()
+
+	mockenableNotebookTableClipboard := settings.NewMockEnableNotebookTableClipboardInterface(t)
+	mocksettingsAPI.On("EnableNotebookTableClipboard").Return(mockenableNotebookTableClipboard).Maybe()
+
+	mockenableResultsDownloading := settings.NewMockEnableResultsDownloadingInterface(t)
+	mocksettingsAPI.On("EnableResultsDownloading").Return(mockenableResultsDownloading).Maybe()
+
 	mockenhancedSecurityMonitoring := settings.NewMockEnhancedSecurityMonitoringInterface(t)
 	mocksettingsAPI.On("EnhancedSecurityMonitoring").Return(mockenhancedSecurityMonitoring).Maybe()
 
@@ -227,6 +236,30 @@ func (m *MockWorkspaceClient) GetMockDisableLegacyDbfsAPI() *settings.MockDisabl
 	api, ok := m.GetMockSettingsAPI().DisableLegacyDbfs().(*settings.MockDisableLegacyDbfsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DisableLegacyDbfs to be *settings.MockDisableLegacyDbfsInterface, actual was %T", m.GetMockSettingsAPI().DisableLegacyDbfs()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockEnableExportNotebookAPI() *settings.MockEnableExportNotebookInterface {
+	api, ok := m.GetMockSettingsAPI().EnableExportNotebook().(*settings.MockEnableExportNotebookInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected EnableExportNotebook to be *settings.MockEnableExportNotebookInterface, actual was %T", m.GetMockSettingsAPI().EnableExportNotebook()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockEnableNotebookTableClipboardAPI() *settings.MockEnableNotebookTableClipboardInterface {
+	api, ok := m.GetMockSettingsAPI().EnableNotebookTableClipboard().(*settings.MockEnableNotebookTableClipboardInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected EnableNotebookTableClipboard to be *settings.MockEnableNotebookTableClipboardInterface, actual was %T", m.GetMockSettingsAPI().EnableNotebookTableClipboard()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockEnableResultsDownloadingAPI() *settings.MockEnableResultsDownloadingInterface {
+	api, ok := m.GetMockSettingsAPI().EnableResultsDownloading().(*settings.MockEnableResultsDownloadingInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected EnableResultsDownloading to be *settings.MockEnableResultsDownloadingInterface, actual was %T", m.GetMockSettingsAPI().EnableResultsDownloading()))
 	}
 	return api
 }

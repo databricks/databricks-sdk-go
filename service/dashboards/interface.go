@@ -33,10 +33,32 @@ type GenieService interface {
 
 	// Generate full query result download.
 	//
-	// Initiate full SQL query result download and obtain a transient ID for
-	// tracking the download progress. This call initiates a new SQL execution
-	// to generate the query result.
+	// Initiate full SQL query result download and obtain a `download_id` to
+	// track the download progress. This call initiates a new SQL execution to
+	// generate the query result. The result is stored in an external link can
+	// be retrieved using the [Get Download Full Query
+	// Result](:method:genie/getdownloadfullqueryresult) API. Warning:
+	// Databricks strongly recommends that you protect the URLs that are
+	// returned by the `EXTERNAL_LINKS` disposition. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
 	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
+
+	// Get download full query result.
+	//
+	// After [Generating a Full Query Result
+	// Download](:method:genie/getdownloadfullqueryresult) and successfully
+	// receiving a `download_id`, use this API to Poll download progress and
+	// retrieve the SQL query result external link(s) upon completion. Warning:
+	// Databricks strongly recommends that you protect the URLs that are
+	// returned by the `EXTERNAL_LINKS` disposition. When you use the
+	// `EXTERNAL_LINKS` disposition, a short-lived, presigned URL is generated,
+	// which can be used to download the results directly from Amazon S3. As a
+	// short-lived access credential is embedded in this presigned URL, you
+	// should protect the URL. Because presigned URLs are already generated with
+	// embedded temporary access credentials, you must not set an Authorization
+	// header in the download requests. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
+	GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error)
 
 	// Get conversation message.
 	//
@@ -164,6 +186,18 @@ type LakeviewEmbeddedService interface {
 	//
 	// Get the current published dashboard within an embedded context.
 	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
+
+	// Read an information of a published dashboard to mint an OAuth token.
+	//
+	// Get a required authorization details and scopes of a published dashboard
+	// to mint an OAuth token. The `authorization_details` can be enriched to
+	// apply additional restriction.
+	//
+	// Example: Adding the following `authorization_details` object to downscope
+	// the viewer permission to specific table ``` { type:
+	// "unity_catalog_privileges", privileges: ["SELECT"], object_type: "TABLE",
+	// object_full_path: "main.default.testdata" } ```
+	GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error)
 }
 
 // Query execution APIs for AI / BI Dashboards

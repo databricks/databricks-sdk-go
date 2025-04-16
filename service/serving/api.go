@@ -137,15 +137,14 @@ type ServingEndpointsInterface interface {
 
 	// Update rate limits of a serving endpoint.
 	//
-	// Used to update the rate limits of a serving endpoint. NOTE: Only foundation
-	// model endpoints are currently supported. For external models, use AI Gateway
-	// to manage rate limits.
+	// Deprecated: Please use AI Gateway to manage rate limits instead.
 	Put(ctx context.Context, request PutRequest) (*PutResponse, error)
 
 	// Update AI Gateway of a serving endpoint.
 	//
-	// Used to update the AI Gateway of a serving endpoint. NOTE: Only external
-	// model and provisioned throughput endpoints are currently supported.
+	// Used to update the AI Gateway of a serving endpoint. NOTE: External model,
+	// provisioned throughput, and pay-per-token endpoints are fully supported;
+	// agent endpoints currently only support inference tables.
 	PutAiGateway(ctx context.Context, request PutAiGatewayRequest) (*PutAiGatewayResponse, error)
 
 	// Query a serving endpoint.

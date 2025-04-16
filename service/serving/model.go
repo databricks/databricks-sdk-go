@@ -506,9 +506,9 @@ func (s CohereConfig) MarshalJSON() ([]byte, error) {
 }
 
 type CreateServingEndpoint struct {
-	// The AI Gateway configuration for the serving endpoint. NOTE: Only
-	// external model and provisioned throughput endpoints are currently
-	// supported.
+	// The AI Gateway configuration for the serving endpoint. NOTE: External
+	// model, provisioned throughput, and pay-per-token endpoints are fully
+	// supported; agent endpoints currently only support inference tables.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
 	// The budget policy to be applied to the serving endpoint.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
@@ -1936,9 +1936,9 @@ type ServerLogsResponse struct {
 }
 
 type ServingEndpoint struct {
-	// The AI Gateway configuration for the serving endpoint. NOTE: Only
-	// external model and provisioned throughput endpoints are currently
-	// supported.
+	// The AI Gateway configuration for the serving endpoint. NOTE: External
+	// model, provisioned throughput, and pay-per-token endpoints are fully
+	// supported; agent endpoints currently only support inference tables.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
 	// The budget policy associated with the endpoint.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
@@ -2018,9 +2018,9 @@ func (s ServingEndpointAccessControlResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ServingEndpointDetailed struct {
-	// The AI Gateway configuration for the serving endpoint. NOTE: Only
-	// external model and provisioned throughput endpoints are currently
-	// supported.
+	// The AI Gateway configuration for the serving endpoint. NOTE: External
+	// model, provisioned throughput, and pay-per-token endpoints are fully
+	// supported; agent endpoints currently only support inference tables.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
 	// The budget policy associated with the endpoint.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`

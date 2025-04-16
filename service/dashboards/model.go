@@ -9,6 +9,48 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
 
+type AuthorizationDetails struct {
+	// Represents downscoped permission rules with specific access rights. This
+	// field is specific to `workspace_rule_set` constraint.
+	GrantRules []AuthorizationDetailsGrantRule `json:"grant_rules,omitempty"`
+	// The acl path of the tree store resource resource.
+	ResourceLegacyAclPath string `json:"resource_legacy_acl_path,omitempty"`
+	// The resource name to which the authorization rule applies. This field is
+	// specific to `workspace_rule_set` constraint. Format:
+	// `workspaces/{workspace_id}/dashboards/{dashboard_id}`
+	ResourceName string `json:"resource_name,omitempty"`
+	// The type of authorization downscoping policy. Ex: `workspace_rule_set`
+	// defines access rules for a specific workspace resource
+	Type string `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AuthorizationDetails) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AuthorizationDetails) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AuthorizationDetailsGrantRule struct {
+	// Permission sets for dashboard are defined in
+	// iam-common/rbac-common/permission-sets/definitions/TreeStoreBasePermissionSets
+	// Ex: `permissionSets/dashboard.runner`
+	PermissionSet string `json:"permission_set,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AuthorizationDetailsGrantRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AuthorizationDetailsGrantRule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Cancel the results for the a query for a published, embedded dashboard
 type CancelPublishedQueryExecutionRequest struct {
 	DashboardName string `json:"-" url:"dashboard_name"`
@@ -317,13 +359,9 @@ type GenieGenerateDownloadFullQueryResultRequest struct {
 }
 
 type GenieGenerateDownloadFullQueryResultResponse struct {
-	// Error message if Genie failed to download the result
-	Error string `json:"error,omitempty"`
-	// Download result status
-	Status MessageStatus `json:"status,omitempty"`
-	// Transient Statement ID. Use this ID to track the download request in
-	// subsequent polling calls
-	TransientStatementId string `json:"transient_statement_id,omitempty"`
+	// Download ID. Use this ID to track the download request in subsequent
+	// polling calls
+	DownloadId string `json:"download_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -346,6 +384,27 @@ type GenieGetConversationMessageRequest struct {
 	// The ID associated with the Genie space where the target conversation is
 	// located.
 	SpaceId string `json:"-" url:"-"`
+}
+
+// Get download full query result
+type GenieGetDownloadFullQueryResultRequest struct {
+	// Attachment ID
+	AttachmentId string `json:"-" url:"-"`
+	// Conversation ID
+	ConversationId string `json:"-" url:"-"`
+	// Download ID. This ID is provided by the [Generate Download
+	// endpoint](:method:genie/generateDownloadFullQueryResult)
+	DownloadId string `json:"-" url:"-"`
+	// Message ID
+	MessageId string `json:"-" url:"-"`
+	// Space ID
+	SpaceId string `json:"-" url:"-"`
+}
+
+type GenieGetDownloadFullQueryResultResponse struct {
+	// SQL Statement Execution response. See [Get status, manifest, and result
+	// first chunk](:method:statementexecution/getstatement) for more details.
+	StatementResponse *sql.StatementResponse `json:"statement_response,omitempty"`
 }
 
 // Get message attachment SQL query result
@@ -551,6 +610,49 @@ type GetPublishedDashboardEmbeddedResponse struct {
 type GetPublishedDashboardRequest struct {
 	// UUID identifying the published dashboard.
 	DashboardId string `json:"-" url:"-"`
+}
+
+// Read an information of a published dashboard to mint an OAuth token.
+type GetPublishedDashboardTokenInfoRequest struct {
+	// UUID identifying the published dashboard.
+	DashboardId string `json:"-" url:"-"`
+	// Provided external value to be included in the custom claim.
+	ExternalValue string `json:"-" url:"external_value,omitempty"`
+	// Provided external viewer id to be included in the custom claim.
+	ExternalViewerId string `json:"-" url:"external_viewer_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetPublishedDashboardTokenInfoRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetPublishedDashboardTokenInfoRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GetPublishedDashboardTokenInfoResponse struct {
+	// Authorization constraints for accessing the published dashboard.
+	// Currently includes `workspace_rule_set` and could be enriched with
+	// `unity_catalog_privileges` before oAuth token generation.
+	AuthorizationDetails []AuthorizationDetails `json:"authorization_details,omitempty"`
+	// Custom claim generated from external_value and external_viewer_id.
+	// Format:
+	// `urn:aibi:external_data:<external_value>:<external_viewer_id>:<dashboard_id>`
+	CustomClaim string `json:"custom_claim,omitempty"`
+	// Scope defining access permissions.
+	Scope string `json:"scope,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetPublishedDashboardTokenInfoResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetPublishedDashboardTokenInfoResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get dashboard schedule
