@@ -101,7 +101,7 @@ func ExampleVolumesAPI_Create_volumes() {
 
 }
 
-func ExampleVolumesAPI_ListAll_volumes() {
+func ExampleVolumesAPI_List_volumes() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

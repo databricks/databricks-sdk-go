@@ -12,7 +12,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-func ExampleMetastoreAssignmentsAPI_ListAll_metastoreAssignments() {
+func ExampleAccountMetastoreAssignmentsAPI_ListAll_metastoreAssignments() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

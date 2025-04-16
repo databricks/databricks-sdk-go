@@ -136,7 +136,7 @@ func ExampleCredentialsAPI_Get_credentials() {
 
 }
 
-func ExampleCredentialsAPI_ListAll_credentials() {
+func ExampleCredentialsAPI_List_credentials() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

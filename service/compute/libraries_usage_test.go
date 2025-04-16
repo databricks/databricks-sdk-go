@@ -11,7 +11,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
-func ExampleLibrariesAPI_Update_libraries() {
+func ExampleLibrariesAPI_UpdateAndWait_libraries() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

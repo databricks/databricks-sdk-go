@@ -71,7 +71,7 @@ func ExampleIpAccessListsAPI_Get_ipAccessLists() {
 
 }
 
-func ExampleIpAccessListsAPI_ListAll_ipAccessLists() {
+func ExampleIpAccessListsAPI_List_ipAccessLists() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

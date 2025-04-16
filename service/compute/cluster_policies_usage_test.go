@@ -133,7 +133,7 @@ func ExampleClusterPoliciesAPI_Get_clusterPolicies() {
 
 }
 
-func ExampleClusterPoliciesAPI_ListAll_clusterPolicies() {
+func ExampleClusterPoliciesAPI_List_clusterPolicies() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

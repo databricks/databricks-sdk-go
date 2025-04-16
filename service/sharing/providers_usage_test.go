@@ -82,7 +82,7 @@ func ExampleProvidersAPI_Get_providers() {
 
 }
 
-func ExampleProvidersAPI_ListAll_providers() {
+func ExampleProvidersAPI_List_providers() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
