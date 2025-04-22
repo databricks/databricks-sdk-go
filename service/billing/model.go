@@ -253,6 +253,10 @@ type BudgetConfigurationFilterWorkspaceIdClause struct {
 
 // Contains the BudgetPolicy details.
 type BudgetPolicy struct {
+	// List of workspaces that this budget policy will be exclusively bound to.
+	// An empty binding implies that this budget policy is open to any workspace
+	// in the account.
+	BindingWorkspaceIds []int64 `json:"binding_workspace_ids,omitempty"`
 	// A list of tags defined by the customer. At most 20 entries are allowed
 	// per policy.
 	CustomTags []compute.CustomPolicyTag `json:"custom_tags,omitempty"`

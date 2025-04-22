@@ -207,6 +207,82 @@ type ApproveTransitionRequestResponse struct {
 	Activity *Activity `json:"activity,omitempty"`
 }
 
+type ArtifactCredentialInfo struct {
+	// A collection of HTTP headers that should be specified when uploading to
+	// or downloading from the specified `signed_uri`.
+	Headers []ArtifactCredentialInfoHttpHeader `json:"headers,omitempty"`
+	// The path, relative to the Run's artifact root location, of the artifact
+	// that can be accessed with the credential.
+	Path string `json:"path,omitempty"`
+	// The ID of the MLflow Run containing the artifact that can be accessed
+	// with the credential.
+	RunId string `json:"run_id,omitempty"`
+	// The signed URI credential that provides access to the artifact.
+	SignedUri string `json:"signed_uri,omitempty"`
+	// The type of the signed credential URI (e.g., an AWS presigned URL or an
+	// Azure Shared Access Signature URI).
+	Type ArtifactCredentialType `json:"type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ArtifactCredentialInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ArtifactCredentialInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ArtifactCredentialInfoHttpHeader struct {
+	// The HTTP header name.
+	Name string `json:"name,omitempty"`
+	// The HTTP header value.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ArtifactCredentialInfoHttpHeader) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ArtifactCredentialInfoHttpHeader) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The type of a given artifact access credential
+type ArtifactCredentialType string
+
+const ArtifactCredentialTypeAwsPresignedUrl ArtifactCredentialType = `AWS_PRESIGNED_URL`
+
+const ArtifactCredentialTypeAzureAdlsGen2SasUri ArtifactCredentialType = `AZURE_ADLS_GEN2_SAS_URI`
+
+const ArtifactCredentialTypeAzureSasUri ArtifactCredentialType = `AZURE_SAS_URI`
+
+const ArtifactCredentialTypeGcpSignedUrl ArtifactCredentialType = `GCP_SIGNED_URL`
+
+// String representation for [fmt.Print]
+func (f *ArtifactCredentialType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ArtifactCredentialType) Set(v string) error {
+	switch v {
+	case `AWS_PRESIGNED_URL`, `AZURE_ADLS_GEN2_SAS_URI`, `AZURE_SAS_URI`, `GCP_SIGNED_URL`:
+		*f = ArtifactCredentialType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AWS_PRESIGNED_URL", "AZURE_ADLS_GEN2_SAS_URI", "AZURE_SAS_URI", "GCP_SIGNED_URL"`, v)
+	}
+}
+
+// Type always returns ArtifactCredentialType to satisfy [pflag.Value] interface
+func (f *ArtifactCredentialType) Type() string {
+	return "ArtifactCredentialType"
+}
+
 // An action that a user (with sufficient permissions) could take on a comment.
 // Valid values are: * `EDIT_COMMENT`: Edit the comment
 //
@@ -320,56 +396,60 @@ func (s CreateExperimentResponse) MarshalJSON() ([]byte, error) {
 }
 
 type CreateForecastingExperimentRequest struct {
-	// Name of the column in the input training table used to customize the
-	// weight for each time series to calculate weighted metrics.
+	// The column in the training table used to customize weights for each time
+	// series.
 	CustomWeightsColumn string `json:"custom_weights_column,omitempty"`
-	// The path to the created experiment. This is the path where the experiment
-	// will be stored in the workspace.
+	// The path in the workspace to store the created experiment.
 	ExperimentPath string `json:"experiment_path,omitempty"`
-	// The granularity of the forecast. This defines the time interval between
-	// consecutive rows in the time series data. Possible values: '1 second', '1
-	// minute', '5 minutes', '10 minutes', '15 minutes', '30 minutes', 'Hourly',
-	// 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly'.
+	// The time interval between consecutive rows in the time series data.
+	// Possible values include: '1 second', '1 minute', '5 minutes', '10
+	// minutes', '15 minutes', '30 minutes', 'Hourly', 'Daily', 'Weekly',
+	// 'Monthly', 'Quarterly', 'Yearly'.
 	ForecastGranularity string `json:"forecast_granularity"`
-	// The number of time steps into the future for which predictions should be
-	// made. This value represents a multiple of forecast_granularity
-	// determining how far ahead the model will forecast.
+	// The number of time steps into the future to make predictions, calculated
+	// as a multiple of forecast_granularity. This value represents how far
+	// ahead the model should forecast.
 	ForecastHorizon int64 `json:"forecast_horizon"`
-	// Region code(s) to consider when automatically adding holiday features.
-	// When empty, no holiday features are added. Only supports 1 holiday region
-	// for now.
+	// The region code(s) to automatically add holiday features. Currently
+	// supports only one region.
 	HolidayRegions []string `json:"holiday_regions,omitempty"`
-	// The maximum duration in minutes for which the experiment is allowed to
-	// run. If the experiment exceeds this time limit it will be stopped
-	// automatically.
+	// Specifies the list of feature columns to include in model training. These
+	// columns must exist in the training data and be of type string, numerical,
+	// or boolean. If not specified, no additional features will be included.
+	// Note: Certain columns are automatically handled: - Automatically
+	// excluded: split_column, target_column, custom_weights_column. -
+	// Automatically included: time_column.
+	IncludeFeatures []string `json:"include_features,omitempty"`
+	// The maximum duration for the experiment in minutes. The experiment stops
+	// automatically if it exceeds this limit.
 	MaxRuntime int64 `json:"max_runtime,omitempty"`
-	// The three-level (fully qualified) path to a unity catalog table. This
-	// table path serves to store the predictions.
+	// The fully qualified path of a Unity Catalog table, formatted as
+	// catalog_name.schema_name.table_name, used to store predictions.
 	PredictionDataPath string `json:"prediction_data_path,omitempty"`
 	// The evaluation metric used to optimize the forecasting model.
 	PrimaryMetric string `json:"primary_metric,omitempty"`
-	// The three-level (fully qualified) path to a unity catalog model. This
-	// model path serves to store the best model.
+	// The fully qualified path of a Unity Catalog model, formatted as
+	// catalog_name.schema_name.model_name, used to store the best model.
 	RegisterTo string `json:"register_to,omitempty"`
-	// Name of the column in the input training table used for custom data
-	// splits. The values in this column must be "train", "validate", or "test"
-	// to indicate which split each row belongs to.
+	// // The column in the training table used for custom data splits. Values
+	// must be 'train', 'validate', or 'test'.
 	SplitColumn string `json:"split_column,omitempty"`
-	// Name of the column in the input training table that serves as the
-	// prediction target. The values in this column will be used as the ground
-	// truth for model training.
+	// The column in the input training table used as the prediction target for
+	// model training. The values in this column are used as the ground truth
+	// for model training.
 	TargetColumn string `json:"target_column"`
-	// Name of the column in the input training table that represents the
-	// timestamp of each row.
+	// The column in the input training table that represents each row's
+	// timestamp.
 	TimeColumn string `json:"time_column"`
-	// Name of the column in the input training table used to group the dataset
-	// to predict individual time series
+	// The column in the training table used to group the dataset for predicting
+	// individual time series.
 	TimeseriesIdentifierColumns []string `json:"timeseries_identifier_columns,omitempty"`
-	// The three-level (fully qualified) name of a unity catalog table. This
-	// table serves as the training data for the forecasting model.
+	// The fully qualified name of a Unity Catalog table, formatted as
+	// catalog_name.schema_name.table_name, used as training data for the
+	// forecasting model.
 	TrainDataPath string `json:"train_data_path"`
-	// The list of frameworks to include for model tuning. Possible values:
-	// 'Prophet', 'ARIMA', 'DeepAR'. An empty list will include all supported
+	// List of frameworks to include for model tuning. Possible values are
+	// 'Prophet', 'ARIMA', 'DeepAR'. An empty list includes all supported
 	// frameworks.
 	TrainingFrameworks []string `json:"training_frameworks,omitempty"`
 
@@ -1015,11 +1095,11 @@ func (s ExperimentTag) MarshalJSON() ([]byte, error) {
 
 // Metadata of a single artifact file or directory.
 type FileInfo struct {
-	// Size in bytes. Unset for directories.
+	// The size in bytes of the file. Unset for directories.
 	FileSize int64 `json:"file_size,omitempty"`
 	// Whether the path is a directory.
 	IsDir bool `json:"is_dir,omitempty"`
-	// Path relative to the root artifact directory run.
+	// The path relative to the root artifact directory run.
 	Path string `json:"path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1091,6 +1171,28 @@ func (f *ForecastingExperimentState) Type() string {
 type GetByNameRequest struct {
 	// Name of the associated experiment.
 	ExperimentName string `json:"-" url:"experiment_name"`
+}
+
+// Get credentials to download trace data
+type GetCredentialsForTraceDataDownloadRequest struct {
+	// The ID of the trace to fetch artifact download credentials for.
+	RequestId string `json:"-" url:"-"`
+}
+
+type GetCredentialsForTraceDataDownloadResponse struct {
+	// The artifact download credentials for the specified trace data.
+	CredentialInfo *ArtifactCredentialInfo `json:"credential_info,omitempty"`
+}
+
+// Get credentials to upload trace data
+type GetCredentialsForTraceDataUploadRequest struct {
+	// The ID of the trace to fetch artifact upload credentials for.
+	RequestId string `json:"-" url:"-"`
+}
+
+type GetCredentialsForTraceDataUploadResponse struct {
+	// The artifact upload credentials for the specified trace data.
+	CredentialInfo *ArtifactCredentialInfo `json:"credential_info,omitempty"`
 }
 
 type GetExperimentByNameResponse struct {
@@ -1387,8 +1489,8 @@ func (s JobSpecWithoutSecret) MarshalJSON() ([]byte, error) {
 
 // List artifacts
 type ListArtifactsRequest struct {
-	// Token indicating the page of artifact results to fetch. `page_token` is
-	// not supported when listing artifacts in UC Volumes. A maximum of 1000
+	// The token indicating the page of artifact results to fetch. `page_token`
+	// is not supported when listing artifacts in UC Volumes. A maximum of 1000
 	// artifacts will be retrieved for UC Volumes. Please call
 	// `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC
 	// Volumes, which supports pagination. See [List directory contents | Files
@@ -1415,11 +1517,11 @@ func (s ListArtifactsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListArtifactsResponse struct {
-	// File location and metadata for artifacts.
+	// The file location and metadata for artifacts.
 	Files []FileInfo `json:"files,omitempty"`
-	// Token that can be used to retrieve the next page of artifact results
+	// The token that can be used to retrieve the next page of artifact results.
 	NextPageToken string `json:"next_page_token,omitempty"`
-	// Root artifact directory for the run.
+	// The root artifact directory for the run.
 	RootUri string `json:"root_uri,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1595,6 +1697,8 @@ type LogBatchResponse struct {
 type LogInputs struct {
 	// Dataset inputs
 	Datasets []DatasetInput `json:"datasets,omitempty"`
+	// Model inputs
+	Models []ModelInput `json:"models,omitempty"`
 	// ID of the run to log under
 	RunId string `json:"run_id"`
 }
@@ -1603,8 +1707,17 @@ type LogInputsResponse struct {
 }
 
 type LogMetric struct {
+	// Dataset digest of the dataset associated with the metric, e.g. an md5
+	// hash of the dataset that uniquely identifies it within datasets of the
+	// same name.
+	DatasetDigest string `json:"dataset_digest,omitempty"`
+	// The name of the dataset associated with the metric. E.g.
+	// “my.uc.table@2” “nyc-taxi-dataset”, “fantastic-elk-3”
+	DatasetName string `json:"dataset_name,omitempty"`
 	// Name of the metric.
 	Key string `json:"key"`
+	// ID of the logged model associated with the metric, if applicable
+	ModelId string `json:"model_id,omitempty"`
 	// ID of the run under which to log the metric. Must be provided.
 	RunId string `json:"run_id,omitempty"`
 	// [Deprecated, use `run_id` instead] ID of the run under which to log the
@@ -1678,13 +1791,25 @@ type LogParamResponse struct {
 
 // Metric associated with a run, represented as a key-value pair.
 type Metric struct {
-	// Key identifying this metric.
+	// The dataset digest of the dataset associated with the metric, e.g. an md5
+	// hash of the dataset that uniquely identifies it within datasets of the
+	// same name.
+	DatasetDigest string `json:"dataset_digest,omitempty"`
+	// The name of the dataset associated with the metric. E.g.
+	// “my.uc.table@2” “nyc-taxi-dataset”, “fantastic-elk-3”
+	DatasetName string `json:"dataset_name,omitempty"`
+	// The key identifying the metric.
 	Key string `json:"key,omitempty"`
-	// Step at which to log the metric.
+	// The ID of the logged model or registered model version associated with
+	// the metric, if applicable.
+	ModelId string `json:"model_id,omitempty"`
+	// The ID of the run containing the metric.
+	RunId string `json:"run_id,omitempty"`
+	// The step at which the metric was logged.
 	Step int64 `json:"step,omitempty"`
-	// The timestamp at which this metric was recorded.
+	// The timestamp at which the metric was recorded.
 	Timestamp int64 `json:"timestamp,omitempty"`
-	// Value associated with this metric.
+	// The value of the metric.
 	Value float64 `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1757,6 +1882,12 @@ func (s *ModelDatabricks) UnmarshalJSON(b []byte) error {
 
 func (s ModelDatabricks) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Represents a LoggedModel or Registered Model Version input to a Run.
+type ModelInput struct {
+	// The unique identifier of the model.
+	ModelId string `json:"model_id"`
 }
 
 type ModelTag struct {
@@ -2479,6 +2610,11 @@ func (f *RunInfoStatus) Type() string {
 type RunInputs struct {
 	// Run metrics.
 	DatasetInputs []DatasetInput `json:"dataset_inputs,omitempty"`
+	// **NOTE**: Experimental: This API field may change or be removed in a
+	// future release without warning.
+	//
+	// Model inputs to the Run.
+	ModelInputs []ModelInput `json:"model_inputs,omitempty"`
 }
 
 // Tag for a run.

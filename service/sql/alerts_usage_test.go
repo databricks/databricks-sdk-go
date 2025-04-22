@@ -145,7 +145,7 @@ func ExampleAlertsAPI_Get_alerts() {
 
 }
 
-func ExampleAlertsAPI_ListAll_alerts() {
+func ExampleAlertsAPI_List_alerts() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

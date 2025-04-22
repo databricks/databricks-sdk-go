@@ -365,7 +365,7 @@ func ExampleJobsAPI_GetRunOutput_jobsApiFullIntegration() {
 
 }
 
-func ExampleJobsAPI_ListAll_jobsApiFullIntegration() {
+func ExampleJobsAPI_List_jobsApiFullIntegration() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

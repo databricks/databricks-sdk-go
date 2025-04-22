@@ -66,7 +66,7 @@ func ExampleRecipientsAPI_Get_recipients() {
 
 }
 
-func ExampleRecipientsAPI_ListAll_recipients() {
+func ExampleRecipientsAPI_List_recipients() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

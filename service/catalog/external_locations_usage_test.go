@@ -144,7 +144,7 @@ func ExampleExternalLocationsAPI_Get_externalLocationsOnAws() {
 
 }
 
-func ExampleExternalLocationsAPI_ListAll_externalLocationsOnAws() {
+func ExampleExternalLocationsAPI_List_externalLocationsOnAws() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
