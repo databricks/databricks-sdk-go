@@ -481,6 +481,124 @@ func (_c *MockVectorSearchEndpointsInterface_ListEndpointsAll_Call) RunAndReturn
 	return _c
 }
 
+// UpdateEndpointBudgetPolicy provides a mock function with given fields: ctx, request
+func (_m *MockVectorSearchEndpointsInterface) UpdateEndpointBudgetPolicy(ctx context.Context, request vectorsearch.PatchEndpointBudgetPolicyRequest) (*vectorsearch.PatchEndpointBudgetPolicyResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateEndpointBudgetPolicy")
+	}
+
+	var r0 *vectorsearch.PatchEndpointBudgetPolicyResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.PatchEndpointBudgetPolicyRequest) (*vectorsearch.PatchEndpointBudgetPolicyResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.PatchEndpointBudgetPolicyRequest) *vectorsearch.PatchEndpointBudgetPolicyResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.PatchEndpointBudgetPolicyResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, vectorsearch.PatchEndpointBudgetPolicyRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_UpdateEndpointBudgetPolicy_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateEndpointBudgetPolicy'
+type MockVectorSearchEndpointsInterface_UpdateEndpointBudgetPolicy_Call struct {
+	*mock.Call
+}
+
+// UpdateEndpointBudgetPolicy is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.PatchEndpointBudgetPolicyRequest
+func (_e *MockVectorSearchEndpointsInterface_Expecter) UpdateEndpointBudgetPolicy(ctx interface{}, request interface{}) *MockVectorSearchEndpointsInterface_UpdateEndpointBudgetPolicy_Call {
+	return &MockVectorSearchEndpointsInterface_UpdateEndpointBudgetPolicy_Call{Call: _e.mock.On("UpdateEndpointBudgetPolicy", ctx, request)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_UpdateEndpointBudgetPolicy_Call) Run(run func(ctx context.Context, request vectorsearch.PatchEndpointBudgetPolicyRequest)) *MockVectorSearchEndpointsInterface_UpdateEndpointBudgetPolicy_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(vectorsearch.PatchEndpointBudgetPolicyRequest))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_UpdateEndpointBudgetPolicy_Call) Return(_a0 *vectorsearch.PatchEndpointBudgetPolicyResponse, _a1 error) *MockVectorSearchEndpointsInterface_UpdateEndpointBudgetPolicy_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_UpdateEndpointBudgetPolicy_Call) RunAndReturn(run func(context.Context, vectorsearch.PatchEndpointBudgetPolicyRequest) (*vectorsearch.PatchEndpointBudgetPolicyResponse, error)) *MockVectorSearchEndpointsInterface_UpdateEndpointBudgetPolicy_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateEndpointCustomTags provides a mock function with given fields: ctx, request
+func (_m *MockVectorSearchEndpointsInterface) UpdateEndpointCustomTags(ctx context.Context, request vectorsearch.UpdateEndpointCustomTagsRequest) (*vectorsearch.UpdateEndpointCustomTagsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateEndpointCustomTags")
+	}
+
+	var r0 *vectorsearch.UpdateEndpointCustomTagsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.UpdateEndpointCustomTagsRequest) (*vectorsearch.UpdateEndpointCustomTagsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.UpdateEndpointCustomTagsRequest) *vectorsearch.UpdateEndpointCustomTagsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.UpdateEndpointCustomTagsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, vectorsearch.UpdateEndpointCustomTagsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateEndpointCustomTags'
+type MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call struct {
+	*mock.Call
+}
+
+// UpdateEndpointCustomTags is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request vectorsearch.UpdateEndpointCustomTagsRequest
+func (_e *MockVectorSearchEndpointsInterface_Expecter) UpdateEndpointCustomTags(ctx interface{}, request interface{}) *MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call {
+	return &MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call{Call: _e.mock.On("UpdateEndpointCustomTags", ctx, request)}
+}
+
+func (_c *MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call) Run(run func(ctx context.Context, request vectorsearch.UpdateEndpointCustomTagsRequest)) *MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(vectorsearch.UpdateEndpointCustomTagsRequest))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call) Return(_a0 *vectorsearch.UpdateEndpointCustomTagsResponse, _a1 error) *MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call) RunAndReturn(run func(context.Context, vectorsearch.UpdateEndpointCustomTagsRequest) (*vectorsearch.UpdateEndpointCustomTagsResponse, error)) *MockVectorSearchEndpointsInterface_UpdateEndpointCustomTags_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // WaitGetEndpointVectorSearchEndpointOnline provides a mock function with given fields: ctx, endpointName, timeout, callback
 func (_m *MockVectorSearchEndpointsInterface) WaitGetEndpointVectorSearchEndpointOnline(ctx context.Context, endpointName string, timeout time.Duration, callback func(*vectorsearch.EndpointInfo)) (*vectorsearch.EndpointInfo, error) {
 	ret := _m.Called(ctx, endpointName, timeout, callback)

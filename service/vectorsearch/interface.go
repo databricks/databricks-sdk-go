@@ -15,25 +15,39 @@ type VectorSearchEndpointsService interface {
 	CreateEndpoint(ctx context.Context, request CreateEndpoint) (*EndpointInfo, error)
 
 	// Delete an endpoint.
+	//
+	// Delete a vector search endpoint.
 	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error
 
 	// Get an endpoint.
+	//
+	// Get details for a single vector search endpoint.
 	GetEndpoint(ctx context.Context, request GetEndpointRequest) (*EndpointInfo, error)
 
 	// List all endpoints.
 	//
+	// List all vector search endpoints in the workspace.
+	//
 	// Use ListEndpointsAll() to get all EndpointInfo instances, which will iterate over every result page.
 	ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointResponse, error)
+
+	// Update the budget policy of an endpoint.
+	//
+	// Update the budget policy of an endpoint
+	UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error)
+
+	// Update the custom tags of an endpoint.
+	UpdateEndpointCustomTags(ctx context.Context, request UpdateEndpointCustomTagsRequest) (*UpdateEndpointCustomTagsResponse, error)
 }
 
 // **Index**: An efficient representation of your embedding vectors that
 // supports real-time and efficient approximate nearest neighbor (ANN) search
 // queries.
 //
-// There are 2 types of Vector Search indexes: * **Delta Sync Index**: An index
+// There are 2 types of Vector Search indexes: - **Delta Sync Index**: An index
 // that automatically syncs with a source Delta Table, automatically and
 // incrementally updating the index as the underlying data in the Delta Table
-// changes. * **Direct Vector Access Index**: An index that supports direct read
+// changes. - **Direct Vector Access Index**: An index that supports direct read
 // and write of vectors and metadata through our REST and SDK APIs. With this
 // model, the user manages index updates.
 type VectorSearchIndexesService interface {
@@ -41,7 +55,7 @@ type VectorSearchIndexesService interface {
 	// Create an index.
 	//
 	// Create a new index.
-	CreateIndex(ctx context.Context, request CreateVectorIndexRequest) (*CreateVectorIndexResponse, error)
+	CreateIndex(ctx context.Context, request CreateVectorIndexRequest) (*VectorIndex, error)
 
 	// Delete data from index.
 	//

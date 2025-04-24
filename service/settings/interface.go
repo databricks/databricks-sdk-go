@@ -343,20 +343,20 @@ type DisableLegacyFeaturesService interface {
 	Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
 }
 
-// Controls whether users can export notebooks and files from the Workspace. By
-// default, this setting is enabled.
+// Controls whether users can export notebooks and files from the Workspace UI.
+// By default, this setting is enabled.
 type EnableExportNotebookService interface {
 
-	// Get the Enable Export Notebook setting.
+	// Get the Notebook and File exporting setting.
 	//
-	// Gets the Enable Export Notebook setting.
+	// Gets the Notebook and File exporting setting.
 	GetEnableExportNotebook(ctx context.Context) (*EnableExportNotebook, error)
 
-	// Update the Enable Export Notebook setting.
+	// Update the Notebook and File exporting setting.
 	//
-	// Updates the Enable Export Notebook setting. The model follows eventual
-	// consistency, which means the get after the update operation might receive
-	// stale values for some time.
+	// Updates the Notebook and File exporting setting. The model follows
+	// eventual consistency, which means the get after the update operation
+	// might receive stale values for some time.
 	PatchEnableExportNotebook(ctx context.Context, request UpdateEnableExportNotebookRequest) (*EnableExportNotebook, error)
 }
 
@@ -385,14 +385,14 @@ type EnableIpAccessListsService interface {
 // default, this setting is enabled.
 type EnableNotebookTableClipboardService interface {
 
-	// Get the Enable Notebook Table Clipboard setting.
+	// Get the Results Table Clipboard features setting.
 	//
-	// Gets the Enable Notebook Table Clipboard setting.
+	// Gets the Results Table Clipboard features setting.
 	GetEnableNotebookTableClipboard(ctx context.Context) (*EnableNotebookTableClipboard, error)
 
-	// Update the Enable Notebook Table Clipboard setting.
+	// Update the Results Table Clipboard features setting.
 	//
-	// Updates the Enable Notebook Table Clipboard setting. The model follows
+	// Updates the Results Table Clipboard features setting. The model follows
 	// eventual consistency, which means the get after the update operation
 	// might receive stale values for some time.
 	PatchEnableNotebookTableClipboard(ctx context.Context, request UpdateEnableNotebookTableClipboardRequest) (*EnableNotebookTableClipboard, error)
@@ -402,16 +402,16 @@ type EnableNotebookTableClipboardService interface {
 // setting is enabled.
 type EnableResultsDownloadingService interface {
 
-	// Get the Enable Results Downloading setting.
+	// Get the Notebook results download setting.
 	//
-	// Gets the Enable Results Downloading setting.
+	// Gets the Notebook results download setting.
 	GetEnableResultsDownloading(ctx context.Context) (*EnableResultsDownloading, error)
 
-	// Update the Enable Results Downloading setting.
+	// Update the Notebook results download setting.
 	//
-	// Updates the Enable Results Downloading setting. The model follows
-	// eventual consistency, which means the get after the update operation
-	// might receive stale values for some time.
+	// Updates the Notebook results download setting. The model follows eventual
+	// consistency, which means the get after the update operation might receive
+	// stale values for some time.
 	PatchEnableResultsDownloading(ctx context.Context, request UpdateEnableResultsDownloadingRequest) (*EnableResultsDownloading, error)
 }
 

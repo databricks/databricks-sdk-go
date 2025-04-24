@@ -33,6 +33,7 @@ func (a *vectorSearchEndpointsImpl) DeleteEndpoint(ctx context.Context, request 
 	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v", request.EndpointName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteEndpointResponse)
 	return err
 }
@@ -48,6 +49,8 @@ func (a *vectorSearchEndpointsImpl) GetEndpoint(ctx context.Context, request Get
 }
 
 // List all endpoints.
+//
+// List all vector search endpoints in the workspace.
 func (a *vectorSearchEndpointsImpl) ListEndpoints(ctx context.Context, request ListEndpointsRequest) listing.Iterator[EndpointInfo] {
 
 	getNextPage := func(ctx context.Context, req ListEndpointsRequest) (*ListEndpointResponse, error) {
@@ -73,6 +76,8 @@ func (a *vectorSearchEndpointsImpl) ListEndpoints(ctx context.Context, request L
 }
 
 // List all endpoints.
+//
+// List all vector search endpoints in the workspace.
 func (a *vectorSearchEndpointsImpl) ListEndpointsAll(ctx context.Context, request ListEndpointsRequest) ([]EndpointInfo, error) {
 	iterator := a.ListEndpoints(ctx, request)
 	return listing.ToSlice[EndpointInfo](ctx, iterator)
@@ -88,20 +93,42 @@ func (a *vectorSearchEndpointsImpl) internalListEndpoints(ctx context.Context, r
 	return &listEndpointResponse, err
 }
 
+func (a *vectorSearchEndpointsImpl) UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error) {
+	var patchEndpointBudgetPolicyResponse PatchEndpointBudgetPolicyResponse
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/budget-policy", request.EndpointName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &patchEndpointBudgetPolicyResponse)
+	return &patchEndpointBudgetPolicyResponse, err
+}
+
+func (a *vectorSearchEndpointsImpl) UpdateEndpointCustomTags(ctx context.Context, request UpdateEndpointCustomTagsRequest) (*UpdateEndpointCustomTagsResponse, error) {
+	var updateEndpointCustomTagsResponse UpdateEndpointCustomTagsResponse
+	path := fmt.Sprintf("/api/2.0/vector-search/endpoints/%v/tags", request.EndpointName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateEndpointCustomTagsResponse)
+	return &updateEndpointCustomTagsResponse, err
+}
+
 // unexported type that holds implementations of just VectorSearchIndexes API methods
 type vectorSearchIndexesImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *vectorSearchIndexesImpl) CreateIndex(ctx context.Context, request CreateVectorIndexRequest) (*CreateVectorIndexResponse, error) {
-	var createVectorIndexResponse CreateVectorIndexResponse
+func (a *vectorSearchIndexesImpl) CreateIndex(ctx context.Context, request CreateVectorIndexRequest) (*VectorIndex, error) {
+	var vectorIndex VectorIndex
 	path := "/api/2.0/vector-search/indexes"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createVectorIndexResponse)
-	return &createVectorIndexResponse, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &vectorIndex)
+	return &vectorIndex, err
 }
 
 func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, request DeleteDataVectorIndexRequest) (*DeleteDataVectorIndexResponse, error) {
@@ -110,8 +137,7 @@ func (a *vectorSearchIndexesImpl) DeleteDataVectorIndex(ctx context.Context, req
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteDataVectorIndexResponse)
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDataVectorIndexResponse)
 	return &deleteDataVectorIndexResponse, err
 }
 
@@ -120,6 +146,7 @@ func (a *vectorSearchIndexesImpl) DeleteIndex(ctx context.Context, request Delet
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v", request.IndexName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteIndexResponse)
 	return err
 }
@@ -217,6 +244,7 @@ func (a *vectorSearchIndexesImpl) SyncIndex(ctx context.Context, request SyncInd
 	path := fmt.Sprintf("/api/2.0/vector-search/indexes/%v/sync", request.IndexName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &syncIndexResponse)
 	return err
 }
