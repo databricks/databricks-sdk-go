@@ -24,10 +24,22 @@ func (s ColumnInfo) MarshalJSON() ([]byte, error) {
 }
 
 type CreateEndpoint struct {
-	// Type of endpoint.
+	// The budget policy id to be applied
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Type of endpoint
 	EndpointType EndpointType `json:"endpoint_type"`
-	// Name of endpoint
+	// Name of the vector search endpoint
 	Name string `json:"name"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateEndpoint) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateEndpoint) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateVectorIndexRequest struct {
@@ -39,13 +51,12 @@ type CreateVectorIndexRequest struct {
 	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
 	// Name of the endpoint to be used for serving the index
 	EndpointName string `json:"endpoint_name"`
-	// There are 2 types of Vector Search indexes:
-	//
-	// - `DELTA_SYNC`: An index that automatically syncs with a source Delta
-	// Table, automatically and incrementally updating the index as the
-	// underlying data in the Delta Table changes. - `DIRECT_ACCESS`: An index
-	// that supports direct read and write of vectors and metadata through our
-	// REST and SDK APIs. With this model, the user manages index updates.
+	// There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that
+	// automatically syncs with a source Delta Table, automatically and
+	// incrementally updating the index as the underlying data in the Delta
+	// Table changes. - `DIRECT_ACCESS`: An index that supports direct read and
+	// write of vectors and metadata through our REST and SDK APIs. With this
+	// model, the user manages index updates.
 	IndexType VectorIndexType `json:"index_type"`
 	// Name of the index
 	Name string `json:"name"`
@@ -53,11 +64,23 @@ type CreateVectorIndexRequest struct {
 	PrimaryKey string `json:"primary_key"`
 }
 
-type CreateVectorIndexResponse struct {
-	VectorIndex *VectorIndex `json:"vector_index,omitempty"`
+type CustomTag struct {
+	// Key field for a vector search endpoint tag.
+	Key string `json:"key"`
+	// [Optional] Value field for a vector search endpoint tag.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-// Result of the upsert or delete operation.
+func (s *CustomTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DeleteDataResult struct {
 	// List of primary keys for rows that failed to process.
 	FailedPrimaryKeys []string `json:"failed_primary_keys,omitempty"`
@@ -75,7 +98,6 @@ func (s DeleteDataResult) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Status of the delete operation.
 type DeleteDataStatus string
 
 const DeleteDataStatusFailure DeleteDataStatus = `FAILURE`
@@ -105,16 +127,15 @@ func (f *DeleteDataStatus) Type() string {
 	return "DeleteDataStatus"
 }
 
-// Request payload for deleting data from a vector index.
+// Delete data from index
 type DeleteDataVectorIndexRequest struct {
 	// Name of the vector index where data is to be deleted. Must be a Direct
 	// Vector Access Index.
 	IndexName string `json:"-" url:"-"`
 	// List of primary keys for the data to be deleted.
-	PrimaryKeys []string `json:"primary_keys"`
+	PrimaryKeys []string `json:"-" url:"primary_keys"`
 }
 
-// Response to a delete data vector index request.
 type DeleteDataVectorIndexResponse struct {
 	// Result of the upsert or delete operation.
 	Result *DeleteDataResult `json:"result,omitempty"`
@@ -124,7 +145,7 @@ type DeleteDataVectorIndexResponse struct {
 
 // Delete an endpoint
 type DeleteEndpointRequest struct {
-	// Name of the endpoint
+	// Name of the vector search endpoint
 	EndpointName string `json:"-" url:"-"`
 }
 
@@ -148,21 +169,18 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	ColumnsToSync []string `json:"columns_to_sync,omitempty"`
 	// The columns that contain the embedding source.
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
-	// The columns that contain the embedding vectors. The format should be
-	// array[double].
+	// The columns that contain the embedding vectors.
 	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
-	// [Optional] Automatically sync the vector index contents and computed
-	// embeddings to the specified Delta table. The only supported table name is
-	// the index name with the suffix `_writeback_table`.
+	// [Optional] Name of the Delta table to sync the vector index contents and
+	// computed embeddings to.
 	EmbeddingWritebackTable string `json:"embedding_writeback_table,omitempty"`
-	// Pipeline execution mode.
-	//
-	// - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
-	// system stops processing after successfully refreshing the source table in
-	// the pipeline once, ensuring the table is updated based on the data
-	// available when the update started. - `CONTINUOUS`: If the pipeline uses
-	// continuous execution, the pipeline processes new data as it arrives in
-	// the source table to keep vector index fresh.
+	// Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the
+	// triggered execution mode, the system stops processing after successfully
+	// refreshing the source table in the pipeline once, ensuring the table is
+	// updated based on the data available when the update started. -
+	// `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline
+	// processes new data as it arrives in the source table to keep vector index
+	// fresh.
 	PipelineType PipelineType `json:"pipeline_type,omitempty"`
 	// The name of the source table.
 	SourceTable string `json:"source_table,omitempty"`
@@ -188,14 +206,13 @@ type DeltaSyncVectorIndexSpecResponse struct {
 	EmbeddingWritebackTable string `json:"embedding_writeback_table,omitempty"`
 	// The ID of the pipeline that is used to sync the index.
 	PipelineId string `json:"pipeline_id,omitempty"`
-	// Pipeline execution mode.
-	//
-	// - `TRIGGERED`: If the pipeline uses the triggered execution mode, the
-	// system stops processing after successfully refreshing the source table in
-	// the pipeline once, ensuring the table is updated based on the data
-	// available when the update started. - `CONTINUOUS`: If the pipeline uses
-	// continuous execution, the pipeline processes new data as it arrives in
-	// the source table to keep vector index fresh.
+	// Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the
+	// triggered execution mode, the system stops processing after successfully
+	// refreshing the source table in the pipeline once, ensuring the table is
+	// updated based on the data available when the update started. -
+	// `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline
+	// processes new data as it arrives in the source table to keep vector index
+	// fresh.
 	PipelineType PipelineType `json:"pipeline_type,omitempty"`
 	// The name of the source table.
 	SourceTable string `json:"source_table,omitempty"`
@@ -212,15 +229,14 @@ func (s DeltaSyncVectorIndexSpecResponse) MarshalJSON() ([]byte, error) {
 }
 
 type DirectAccessVectorIndexSpec struct {
-	// Contains the optional model endpoint to use during query time.
+	// The columns that contain the embedding source. The format should be
+	// array[double].
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
-
+	// The columns that contain the embedding vectors. The format should be
+	// array[double].
 	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
-	// The schema of the index in JSON format.
-	//
-	// Supported types are `integer`, `long`, `float`, `double`, `boolean`,
-	// `string`, `date`, `timestamp`.
-	//
+	// The schema of the index in JSON format. Supported types are `integer`,
+	// `long`, `float`, `double`, `boolean`, `string`, `date`, `timestamp`.
 	// Supported types for vector column: `array<float>`, `array<double>`,`.
 	SchemaJson string `json:"schema_json,omitempty"`
 
@@ -274,9 +290,13 @@ type EndpointInfo struct {
 	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 	// Creator of the endpoint
 	Creator string `json:"creator,omitempty"`
+	// The custom tags assigned to the endpoint
+	CustomTags []CustomTag `json:"custom_tags,omitempty"`
+	// The budget policy id applied to the endpoint
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
 	// Current status of the endpoint
 	EndpointStatus *EndpointStatus `json:"endpoint_status,omitempty"`
-	// Type of endpoint.
+	// Type of endpoint
 	EndpointType EndpointType `json:"endpoint_type,omitempty"`
 	// Unique identifier of the endpoint
 	Id string `json:"id,omitempty"`
@@ -284,7 +304,7 @@ type EndpointInfo struct {
 	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
 	// User who last updated the endpoint
 	LastUpdatedUser string `json:"last_updated_user,omitempty"`
-	// Name of endpoint
+	// Name of the vector search endpoint
 	Name string `json:"name,omitempty"`
 	// Number of indexes on the endpoint
 	NumIndexes int `json:"num_indexes,omitempty"`
@@ -438,7 +458,13 @@ func (s ListIndexesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// copied from proto3 / Google Well Known Types, source:
+// https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
+// `ListValue` is a wrapper around a repeated field of values.
+//
+// The JSON representation for `ListValue` is JSON array.
 type ListValue struct {
+	// Repeated field of dynamically typed values.
 	Values []Value `json:"values,omitempty"`
 }
 
@@ -483,13 +509,12 @@ type MiniVectorIndex struct {
 	Creator string `json:"creator,omitempty"`
 	// Name of the endpoint associated with the index
 	EndpointName string `json:"endpoint_name,omitempty"`
-	// There are 2 types of Vector Search indexes:
-	//
-	// - `DELTA_SYNC`: An index that automatically syncs with a source Delta
-	// Table, automatically and incrementally updating the index as the
-	// underlying data in the Delta Table changes. - `DIRECT_ACCESS`: An index
-	// that supports direct read and write of vectors and metadata through our
-	// REST and SDK APIs. With this model, the user manages index updates.
+	// There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that
+	// automatically syncs with a source Delta Table, automatically and
+	// incrementally updating the index as the underlying data in the Delta
+	// Table changes. - `DIRECT_ACCESS`: An index that supports direct read and
+	// write of vectors and metadata through our REST and SDK APIs. With this
+	// model, the user manages index updates.
 	IndexType VectorIndexType `json:"index_type,omitempty"`
 	// Name of the index
 	Name string `json:"name,omitempty"`
@@ -507,14 +532,34 @@ func (s MiniVectorIndex) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Pipeline execution mode.
-//
-// - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system
-// stops processing after successfully refreshing the source table in the
-// pipeline once, ensuring the table is updated based on the data available when
-// the update started. - `CONTINUOUS`: If the pipeline uses continuous
-// execution, the pipeline processes new data as it arrives in the source table
-// to keep vector index fresh.
+type PatchEndpointBudgetPolicyRequest struct {
+	// The budget policy id to be applied
+	BudgetPolicyId string `json:"budget_policy_id"`
+	// Name of the vector search endpoint
+	EndpointName string `json:"-" url:"-"`
+}
+
+type PatchEndpointBudgetPolicyResponse struct {
+	// The budget policy applied to the vector search endpoint.
+	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PatchEndpointBudgetPolicyResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PatchEndpointBudgetPolicyResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered
+// execution mode, the system stops processing after successfully refreshing the
+// source table in the pipeline once, ensuring the table is updated based on the
+// data available when the update started. - `CONTINUOUS`: If the pipeline uses
+// continuous execution, the pipeline processes new data as it arrives in the
+// source table to keep vector index fresh.
 type PipelineType string
 
 // If the pipeline uses continuous execution, the pipeline processes new data as
@@ -576,10 +621,12 @@ type QueryVectorIndexRequest struct {
 	ColumnsToRerank []string `json:"columns_to_rerank,omitempty"`
 	// JSON string representing query filters.
 	//
-	// Example filters: - `{"id <": 5}`: Filter for id less than 5. - `{"id >":
-	// 5}`: Filter for id greater than 5. - `{"id <=": 5}`: Filter for id less
-	// than equal to 5. - `{"id >=": 5}`: Filter for id greater than equal to 5.
-	// - `{"id": 5}`: Filter for id equal to 5.
+	// Example filters:
+	//
+	// - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for
+	// id greater than 5. - `{"id <=": 5}`: Filter for id less than equal to 5.
+	// - `{"id >=": 5}`: Filter for id greater than equal to 5. - `{"id": 5}`:
+	// Filter for id equal to 5.
 	FiltersJson string `json:"filters_json,omitempty"`
 	// Name of the vector index to query.
 	IndexName string `json:"-" url:"-"`
@@ -631,7 +678,7 @@ func (s QueryVectorIndexResponse) MarshalJSON() ([]byte, error) {
 // Data returned in the query result.
 type ResultData struct {
 	// Data rows returned in the query.
-	DataArray [][]string `json:"data_array,omitempty"`
+	DataArray []ListValue `json:"data_array,omitempty"`
 	// Number of rows in the result set.
 	RowCount int `json:"row_count,omitempty"`
 
@@ -664,7 +711,6 @@ func (s ResultManifest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Request payload for scanning data from a vector index.
 type ScanVectorIndexRequest struct {
 	// Name of the vector index to scan.
 	IndexName string `json:"-" url:"-"`
@@ -702,6 +748,15 @@ func (s ScanVectorIndexResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// copied from proto3 / Google Well Known Types, source:
+// https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
+// `Struct` represents a structured data value, consisting of fields which map
+// to dynamically typed values. In some languages, `Struct` might be supported
+// by a native representation. For example, in scripting languages like JS a
+// struct is represented as an object. The details of that representation are
+// described together with the proto support for the language.
+//
+// The JSON representation for `Struct` is JSON object.
 type Struct struct {
 	// Data entry, corresponding to a row in a vector index.
 	Fields []MapStringValueEntry `json:"fields,omitempty"`
@@ -716,7 +771,30 @@ type SyncIndexRequest struct {
 type SyncIndexResponse struct {
 }
 
-// Result of the upsert or delete operation.
+type UpdateEndpointCustomTagsRequest struct {
+	// The new custom tags for the vector search endpoint
+	CustomTags []CustomTag `json:"custom_tags"`
+	// Name of the vector search endpoint
+	EndpointName string `json:"-" url:"-"`
+}
+
+type UpdateEndpointCustomTagsResponse struct {
+	// All the custom tags that are applied to the vector search endpoint.
+	CustomTags []CustomTag `json:"custom_tags,omitempty"`
+	// The name of the vector search endpoint whose custom tags were updated.
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateEndpointCustomTagsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateEndpointCustomTagsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpsertDataResult struct {
 	// List of primary keys for rows that failed to process.
 	FailedPrimaryKeys []string `json:"failed_primary_keys,omitempty"`
@@ -734,7 +812,6 @@ func (s UpsertDataResult) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Status of the upsert operation.
 type UpsertDataStatus string
 
 const UpsertDataStatusFailure UpsertDataStatus = `FAILURE`
@@ -764,7 +841,6 @@ func (f *UpsertDataStatus) Type() string {
 	return "UpsertDataStatus"
 }
 
-// Request payload for upserting data into a vector index.
 type UpsertDataVectorIndexRequest struct {
 	// Name of the vector index where data is to be upserted. Must be a Direct
 	// Vector Access Index.
@@ -773,7 +849,6 @@ type UpsertDataVectorIndexRequest struct {
 	InputsJson string `json:"inputs_json"`
 }
 
-// Response to an upsert data vector index request.
 type UpsertDataVectorIndexResponse struct {
 	// Result of the upsert or delete operation.
 	Result *UpsertDataResult `json:"result,omitempty"`
@@ -783,15 +858,26 @@ type UpsertDataVectorIndexResponse struct {
 
 type Value struct {
 	BoolValue bool `json:"bool_value,omitempty"`
-
+	// copied from proto3 / Google Well Known Types, source:
+	// https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
+	// `ListValue` is a wrapper around a repeated field of values.
+	//
+	// The JSON representation for `ListValue` is JSON array.
 	ListValue *ListValue `json:"list_value,omitempty"`
-
-	NullValue string `json:"null_value,omitempty"`
 
 	NumberValue float64 `json:"number_value,omitempty"`
 
 	StringValue string `json:"string_value,omitempty"`
-
+	// copied from proto3 / Google Well Known Types, source:
+	// https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
+	// `Struct` represents a structured data value, consisting of fields which
+	// map to dynamically typed values. In some languages, `Struct` might be
+	// supported by a native representation. For example, in scripting languages
+	// like JS a struct is represented as an object. The details of that
+	// representation are described together with the proto support for the
+	// language.
+	//
+	// The JSON representation for `Struct` is JSON object.
 	StructValue *Struct `json:"struct_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -814,13 +900,12 @@ type VectorIndex struct {
 	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
 	// Name of the endpoint associated with the index
 	EndpointName string `json:"endpoint_name,omitempty"`
-	// There are 2 types of Vector Search indexes:
-	//
-	// - `DELTA_SYNC`: An index that automatically syncs with a source Delta
-	// Table, automatically and incrementally updating the index as the
-	// underlying data in the Delta Table changes. - `DIRECT_ACCESS`: An index
-	// that supports direct read and write of vectors and metadata through our
-	// REST and SDK APIs. With this model, the user manages index updates.
+	// There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that
+	// automatically syncs with a source Delta Table, automatically and
+	// incrementally updating the index as the underlying data in the Delta
+	// Table changes. - `DIRECT_ACCESS`: An index that supports direct read and
+	// write of vectors and metadata through our REST and SDK APIs. With this
+	// model, the user manages index updates.
 	IndexType VectorIndexType `json:"index_type,omitempty"`
 	// Name of the index
 	Name string `json:"name,omitempty"`
@@ -861,13 +946,12 @@ func (s VectorIndexStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// There are 2 types of Vector Search indexes:
-//
-// - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table,
-// automatically and incrementally updating the index as the underlying data in
-// the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct
-// read and write of vectors and metadata through our REST and SDK APIs. With
-// this model, the user manages index updates.
+// There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that
+// automatically syncs with a source Delta Table, automatically and
+// incrementally updating the index as the underlying data in the Delta Table
+// changes. - `DIRECT_ACCESS`: An index that supports direct read and write of
+// vectors and metadata through our REST and SDK APIs. With this model, the user
+// manages index updates.
 type VectorIndexType string
 
 // An index that automatically syncs with a source Delta Table, automatically

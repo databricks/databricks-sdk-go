@@ -354,7 +354,7 @@ type GenieGenerateDownloadFullQueryResultRequest struct {
 	ConversationId string `json:"-" url:"-"`
 	// Message ID
 	MessageId string `json:"-" url:"-"`
-	// Space ID
+	// Genie space ID
 	SpaceId string `json:"-" url:"-"`
 }
 
@@ -397,7 +397,7 @@ type GenieGetDownloadFullQueryResultRequest struct {
 	DownloadId string `json:"-" url:"-"`
 	// Message ID
 	MessageId string `json:"-" url:"-"`
-	// Space ID
+	// Genie space ID
 	SpaceId string `json:"-" url:"-"`
 }
 
@@ -557,7 +557,7 @@ func (s GenieResultMetadata) MarshalJSON() ([]byte, error) {
 type GenieSpace struct {
 	// Description of the Genie Space
 	Description string `json:"description,omitempty"`
-	// Space ID
+	// Genie space ID
 	SpaceId string `json:"space_id"`
 	// Title of the Genie Space
 	Title string `json:"title"`
