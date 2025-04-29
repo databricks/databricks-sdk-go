@@ -191,7 +191,7 @@ func (s CleanRoomAssetForeignTableLocalDetails) MarshalJSON() ([]byte, error) {
 }
 
 type CleanRoomAssetNotebook struct {
-	// Server generated checksum that represents the notebook version.
+	// Server generated etag that represents the notebook version.
 	Etag string `json:"etag,omitempty"`
 	// Base 64 representation of the notebook contents. This is the same format
 	// as returned by :method:workspace/export with the format of **HTML**.

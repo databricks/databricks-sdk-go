@@ -110,7 +110,10 @@ experimental/mocks/service/settings/mock_default_namespace_interface.go linguist
 experimental/mocks/service/settings/mock_disable_legacy_access_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_disable_legacy_dbfs_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_disable_legacy_features_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_enable_export_notebook_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_enable_ip_access_lists_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_enable_notebook_table_clipboard_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_enable_results_downloading_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_enhanced_security_monitoring_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_esm_enablement_account_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_ip_access_lists_interface.go linguist-generated=true
