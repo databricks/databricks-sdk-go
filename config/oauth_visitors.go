@@ -35,7 +35,12 @@ func serviceToServiceVisitor(primary, secondary oauth2.TokenSource, secondaryHea
 
 // The same as serviceToServiceVisitor, but without a secondary token source.
 func refreshableVisitor(inner oauth2.TokenSource) func(r *http.Request) error {
-	cts := auth.NewCachedTokenSource(authconv.AuthTokenSource(inner))
+	return refreshableAuthVisitor(authconv.AuthTokenSource(inner))
+}
+
+// The same as serviceToServiceVisitor, but without a secondary token source.
+func refreshableAuthVisitor(inner auth.TokenSource) func(r *http.Request) error {
+	cts := auth.NewCachedTokenSource(inner)
 	return func(r *http.Request) error {
 		inner, err := cts.Token(context.Background())
 		if err != nil {

@@ -134,6 +134,9 @@ type Config struct {
 	// Environment override to return when resolving the current environment.
 	DatabricksEnvironment *environment.DatabricksEnvironment
 
+	// When using Workload Identity Federation, the audience to specify when fetching an ID token from the ID token supplier.
+	TokenAudience string `name:"audience" env:"DATABRICKS_TOKEN_AUDIENCE" auth:"-"`
+
 	Loaders []Loader
 
 	// marker for configuration resolving
