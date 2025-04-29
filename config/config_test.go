@@ -101,3 +101,27 @@ func TestConfig_getOidcEndpoints_workspace(t *testing.T) {
 		TokenEndpoint:         "https://myworkspace.cloud.databricks.com/oidc/v1/token",
 	}, got)
 }
+
+func TestConfig_getOAuthArgument_account(t *testing.T) {
+	c := &Config{
+		Host:      "https://accounts.cloud.databricks.com",
+		AccountID: "abc",
+	}
+	rawGot, err := c.getOAuthArgument()
+	assert.NoError(t, err)
+	got, ok := rawGot.(u2m.BasicAccountOAuthArgument)
+	assert.True(t, ok)
+	assert.Equal(t, "https://accounts.cloud.databricks.com", got.GetAccountHost())
+	assert.Equal(t, "abc", got.GetAccountId())
+}
+
+func TestConfig_getOAuthArgument_workspace(t *testing.T) {
+	c := &Config{
+		Host: "https://myworkspace.cloud.databricks.com",
+	}
+	rawGot, err := c.getOAuthArgument()
+	assert.NoError(t, err)
+	got, ok := rawGot.(u2m.BasicWorkspaceOAuthArgument)
+	assert.True(t, ok)
+	assert.Equal(t, "https://myworkspace.cloud.databricks.com", got.GetWorkspaceHost())
+}

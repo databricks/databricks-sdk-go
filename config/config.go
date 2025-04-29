@@ -458,15 +458,17 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 	oauthClient := &u2m.BasicOAuthEndpointSupplier{
 		Client: c.refreshClient,
 	}
+	host := c.CanonicalHostName()
 	if c.IsAccountClient() {
-		return oauthClient.GetAccountOAuthEndpoints(ctx, c.Host, c.AccountID)
+		return oauthClient.GetAccountOAuthEndpoints(ctx, host, c.AccountID)
 	}
-	return oauthClient.GetWorkspaceOAuthEndpoints(ctx, c.Host)
+	return oauthClient.GetWorkspaceOAuthEndpoints(ctx, host)
 }
 
 func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
+	host := c.CanonicalHostName()
 	if c.IsAccountClient() {
-		return u2m.NewBasicAccountOAuthArgument(c.Host, c.AccountID)
+		return u2m.NewBasicAccountOAuthArgument(host, c.AccountID)
 	}
-	return u2m.NewBasicWorkspaceOAuthArgument(c.Host)
+	return u2m.NewBasicWorkspaceOAuthArgument(host)
 }
