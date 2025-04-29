@@ -103,25 +103,64 @@ func TestConfig_getOidcEndpoints_workspace(t *testing.T) {
 }
 
 func TestConfig_getOAuthArgument_account(t *testing.T) {
-	c := &Config{
-		Host:      "https://accounts.cloud.databricks.com",
-		AccountID: "abc",
+	tests := []struct {
+		name      string
+		host      string
+		accountID string
+	}{
+		{
+			name:      "without trailing slash",
+			host:      "https://accounts.cloud.databricks.com",
+			accountID: "abc",
+		},
+		{
+			name:      "with trailing slash",
+			host:      "https://accounts.cloud.databricks.com/",
+			accountID: "abc",
+		},
 	}
-	rawGot, err := c.getOAuthArgument()
-	assert.NoError(t, err)
-	got, ok := rawGot.(u2m.BasicAccountOAuthArgument)
-	assert.True(t, ok)
-	assert.Equal(t, "https://accounts.cloud.databricks.com", got.GetAccountHost())
-	assert.Equal(t, "abc", got.GetAccountId())
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Config{
+				Host:      tt.host,
+				AccountID: tt.accountID,
+			}
+			rawGot, err := c.getOAuthArgument()
+			assert.NoError(t, err)
+			got, ok := rawGot.(u2m.BasicAccountOAuthArgument)
+			assert.True(t, ok)
+			assert.Equal(t, "https://accounts.cloud.databricks.com", got.GetAccountHost())
+			assert.Equal(t, "abc", got.GetAccountId())
+		})
+	}
 }
 
 func TestConfig_getOAuthArgument_workspace(t *testing.T) {
-	c := &Config{
-		Host: "https://myworkspace.cloud.databricks.com",
+	tests := []struct {
+		name string
+		host string
+	}{
+		{
+			name: "without trailing slash",
+			host: "https://myworkspace.cloud.databricks.com",
+		},
+		{
+			name: "with trailing slash",
+			host: "https://myworkspace.cloud.databricks.com/",
+		},
 	}
-	rawGot, err := c.getOAuthArgument()
-	assert.NoError(t, err)
-	got, ok := rawGot.(u2m.BasicWorkspaceOAuthArgument)
-	assert.True(t, ok)
-	assert.Equal(t, "https://myworkspace.cloud.databricks.com", got.GetWorkspaceHost())
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Config{
+				Host: tt.host,
+			}
+			rawGot, err := c.getOAuthArgument()
+			assert.NoError(t, err)
+			got, ok := rawGot.(u2m.BasicWorkspaceOAuthArgument)
+			assert.True(t, ok)
+			assert.Equal(t, "https://myworkspace.cloud.databricks.com", got.GetWorkspaceHost())
+		})
+	}
 }
