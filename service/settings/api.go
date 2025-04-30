@@ -706,14 +706,14 @@ type DisableLegacyFeaturesAPI struct {
 
 type EnableExportNotebookInterface interface {
 
-	// Get the Enable Export Notebook setting.
+	// Get the Notebook and File exporting setting.
 	//
-	// Gets the Enable Export Notebook setting.
+	// Gets the Notebook and File exporting setting.
 	GetEnableExportNotebook(ctx context.Context) (*EnableExportNotebook, error)
 
-	// Update the Enable Export Notebook setting.
+	// Update the Notebook and File exporting setting.
 	//
-	// Updates the Enable Export Notebook setting. The model follows eventual
+	// Updates the Notebook and File exporting setting. The model follows eventual
 	// consistency, which means the get after the update operation might receive
 	// stale values for some time.
 	PatchEnableExportNotebook(ctx context.Context, request UpdateEnableExportNotebookRequest) (*EnableExportNotebook, error)
@@ -727,8 +727,8 @@ func NewEnableExportNotebook(client *client.DatabricksClient) *EnableExportNoteb
 	}
 }
 
-// Controls whether users can export notebooks and files from the Workspace. By
-// default, this setting is enabled.
+// Controls whether users can export notebooks and files from the Workspace UI.
+// By default, this setting is enabled.
 type EnableExportNotebookAPI struct {
 	enableExportNotebookImpl
 }
@@ -768,14 +768,14 @@ type EnableIpAccessListsAPI struct {
 
 type EnableNotebookTableClipboardInterface interface {
 
-	// Get the Enable Notebook Table Clipboard setting.
+	// Get the Results Table Clipboard features setting.
 	//
-	// Gets the Enable Notebook Table Clipboard setting.
+	// Gets the Results Table Clipboard features setting.
 	GetEnableNotebookTableClipboard(ctx context.Context) (*EnableNotebookTableClipboard, error)
 
-	// Update the Enable Notebook Table Clipboard setting.
+	// Update the Results Table Clipboard features setting.
 	//
-	// Updates the Enable Notebook Table Clipboard setting. The model follows
+	// Updates the Results Table Clipboard features setting. The model follows
 	// eventual consistency, which means the get after the update operation might
 	// receive stale values for some time.
 	PatchEnableNotebookTableClipboard(ctx context.Context, request UpdateEnableNotebookTableClipboardRequest) (*EnableNotebookTableClipboard, error)
@@ -797,14 +797,14 @@ type EnableNotebookTableClipboardAPI struct {
 
 type EnableResultsDownloadingInterface interface {
 
-	// Get the Enable Results Downloading setting.
+	// Get the Notebook results download setting.
 	//
-	// Gets the Enable Results Downloading setting.
+	// Gets the Notebook results download setting.
 	GetEnableResultsDownloading(ctx context.Context) (*EnableResultsDownloading, error)
 
-	// Update the Enable Results Downloading setting.
+	// Update the Notebook results download setting.
 	//
-	// Updates the Enable Results Downloading setting. The model follows eventual
+	// Updates the Notebook results download setting. The model follows eventual
 	// consistency, which means the get after the update operation might receive
 	// stale values for some time.
 	PatchEnableResultsDownloading(ctx context.Context, request UpdateEnableResultsDownloadingRequest) (*EnableResultsDownloading, error)
@@ -1110,6 +1110,20 @@ func (a *IpAccessListsAPI) GetByLabel(ctx context.Context, name string) (*IpAcce
 type NetworkConnectivityInterface interface {
 
 	// Create a network connectivity configuration.
+	//
+	// Creates a network connectivity configuration (NCC), which provides stable
+	// Azure service subnets when accessing your Azure Storage accounts. You can
+	// also use a network connectivity configuration to create Databricks managed
+	// private endpoints so that Databricks serverless compute resources privately
+	// access your resources.
+	//
+	// **IMPORTANT**: After you create the network connectivity configuration, you
+	// must assign one or more workspaces to the new network connectivity
+	// configuration. You can share one network connectivity configuration with
+	// multiple workspaces from the same Azure region within the same Databricks
+	// account. See [configure serverless secure connectivity].
+	//
+	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 	CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error)
 
 	// Create a private endpoint rule.
@@ -1166,12 +1180,12 @@ type NetworkConnectivityInterface interface {
 	// Gets a network connectivity configuration.
 	GetNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*NetworkConnectivityConfiguration, error)
 
-	// Get a private endpoint rule.
+	// Gets a private endpoint rule.
 	//
 	// Gets the private endpoint rule.
 	GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
 
-	// Get a private endpoint rule.
+	// Gets a private endpoint rule.
 	//
 	// Gets the private endpoint rule.
 	GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error)
@@ -1208,6 +1222,12 @@ type NetworkConnectivityInterface interface {
 	//
 	// Gets an array of private endpoint rules.
 	ListPrivateEndpointRulesByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*ListNccAzurePrivateEndpointRulesResponse, error)
+
+	// Update a private endpoint rule.
+	//
+	// Updates a private endpoint rule. Currently only a private endpoint rule to
+	// customer-managed resources is allowed to be updated.
+	UpdateNccAzurePrivateEndpointRulePublic(ctx context.Context, request UpdateNccAzurePrivateEndpointRulePublicRequest) (*NccAzurePrivateEndpointRule, error)
 }
 
 func NewNetworkConnectivity(client *client.DatabricksClient) *NetworkConnectivityAPI {
@@ -1219,7 +1239,14 @@ func NewNetworkConnectivity(client *client.DatabricksClient) *NetworkConnectivit
 }
 
 // These APIs provide configurations for the network connectivity of your
-// workspaces for serverless compute resources.
+// workspaces for serverless compute resources. This API provides stable subnets
+// for your workspace so that you can configure your firewalls on your Azure
+// Storage accounts to allow access from Databricks. You can also use the API to
+// provision private endpoints for Databricks to privately connect serverless
+// compute resources to your Azure resources using Azure Private Link. See
+// [configure serverless secure connectivity].
+//
+// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 type NetworkConnectivityAPI struct {
 	networkConnectivityImpl
 }
@@ -1257,7 +1284,7 @@ func (a *NetworkConnectivityAPI) GetNetworkConnectivityConfigurationByNetworkCon
 	})
 }
 
-// Get a private endpoint rule.
+// Gets a private endpoint rule.
 //
 // Gets the private endpoint rule.
 func (a *NetworkConnectivityAPI) GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error) {
@@ -1500,8 +1527,8 @@ type SettingsInterface interface {
 	// all DBFS functionality is enabled
 	DisableLegacyDbfs() DisableLegacyDbfsInterface
 
-	// Controls whether users can export notebooks and files from the Workspace.
-	// By default, this setting is enabled.
+	// Controls whether users can export notebooks and files from the Workspace
+	// UI. By default, this setting is enabled.
 	EnableExportNotebook() EnableExportNotebookInterface
 
 	// Controls whether users can copy tabular data to the clipboard via the UI.
@@ -1623,8 +1650,8 @@ type SettingsAPI struct {
 	// all DBFS functionality is enabled
 	disableLegacyDbfs DisableLegacyDbfsInterface
 
-	// Controls whether users can export notebooks and files from the Workspace.
-	// By default, this setting is enabled.
+	// Controls whether users can export notebooks and files from the Workspace
+	// UI. By default, this setting is enabled.
 	enableExportNotebook EnableExportNotebookInterface
 
 	// Controls whether users can copy tabular data to the clipboard via the UI.

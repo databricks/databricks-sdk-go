@@ -165,6 +165,98 @@ func (a *alertsLegacyImpl) Update(ctx context.Context, request EditAlert) error 
 	return err
 }
 
+// unexported type that holds implementations of just AlertsV2 API methods
+type alertsV2Impl struct {
+	client *client.DatabricksClient
+}
+
+func (a *alertsV2Impl) CreateAlert(ctx context.Context, request CreateAlertV2Request) (*AlertV2, error) {
+	var alertV2 AlertV2
+	path := "/api/2.0/alerts"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &alertV2)
+	return &alertV2, err
+}
+
+func (a *alertsV2Impl) GetAlert(ctx context.Context, request GetAlertV2Request) (*AlertV2, error) {
+	var alertV2 AlertV2
+	path := fmt.Sprintf("/api/2.0/alerts/%v", request.Id)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &alertV2)
+	return &alertV2, err
+}
+
+// List alerts.
+//
+// Gets a list of alerts accessible to the user, ordered by creation time.
+func (a *alertsV2Impl) ListAlerts(ctx context.Context, request ListAlertsV2Request) listing.Iterator[ListAlertsV2ResponseAlert] {
+
+	getNextPage := func(ctx context.Context, req ListAlertsV2Request) (*ListAlertsV2Response, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListAlerts(ctx, req)
+	}
+	getItems := func(resp *ListAlertsV2Response) []ListAlertsV2ResponseAlert {
+		return resp.Results
+	}
+	getNextReq := func(resp *ListAlertsV2Response) *ListAlertsV2Request {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List alerts.
+//
+// Gets a list of alerts accessible to the user, ordered by creation time.
+func (a *alertsV2Impl) ListAlertsAll(ctx context.Context, request ListAlertsV2Request) ([]ListAlertsV2ResponseAlert, error) {
+	iterator := a.ListAlerts(ctx, request)
+	return listing.ToSlice[ListAlertsV2ResponseAlert](ctx, iterator)
+}
+
+func (a *alertsV2Impl) internalListAlerts(ctx context.Context, request ListAlertsV2Request) (*ListAlertsV2Response, error) {
+	var listAlertsV2Response ListAlertsV2Response
+	path := "/api/2.0/alerts"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listAlertsV2Response)
+	return &listAlertsV2Response, err
+}
+
+func (a *alertsV2Impl) TrashAlert(ctx context.Context, request TrashAlertV2Request) error {
+	var empty Empty
+	path := fmt.Sprintf("/api/2.0/alerts/%v", request.Id)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &empty)
+	return err
+}
+
+func (a *alertsV2Impl) UpdateAlert(ctx context.Context, request UpdateAlertV2Request) (*AlertV2, error) {
+	var alertV2 AlertV2
+	path := fmt.Sprintf("/api/2.0/alerts/%v", request.Id)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &alertV2)
+	return &alertV2, err
+}
+
 // unexported type that holds implementations of just DashboardWidgets API methods
 type dashboardWidgetsImpl struct {
 	client *client.DatabricksClient

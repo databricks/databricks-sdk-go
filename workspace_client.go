@@ -62,6 +62,9 @@ type WorkspaceClient struct {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	AlertsLegacy sql.AlertsLegacyInterface
 
+	// TODO: Add description
+	AlertsV2 sql.AlertsV2Interface
+
 	// Apps run directly on a customer’s Databricks instance, integrate with
 	// their data, use and extend Databricks services, and enable users to
 	// interact through single sign-on.
@@ -1075,10 +1078,10 @@ type WorkspaceClient struct {
 	// supports real-time and efficient approximate nearest neighbor (ANN)
 	// search queries.
 	//
-	// There are 2 types of Vector Search indexes: * **Delta Sync Index**: An
+	// There are 2 types of Vector Search indexes: - **Delta Sync Index**: An
 	// index that automatically syncs with a source Delta Table, automatically
 	// and incrementally updating the index as the underlying data in the Delta
-	// Table changes. * **Direct Vector Access Index**: An index that supports
+	// Table changes. - **Direct Vector Access Index**: An index that supports
 	// direct read and write of vectors and metadata through our REST and SDK
 	// APIs. With this model, the user manages index updates.
 	VectorSearchIndexes vectorsearch.VectorSearchIndexesInterface
@@ -1176,6 +1179,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
 		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),
+		AlertsV2:                            sql.NewAlertsV2(databricksClient),
 		Apps:                                apps.NewApps(databricksClient),
 		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
 		Catalogs:                            catalog.NewCatalogs(databricksClient),

@@ -191,7 +191,7 @@ func (s CleanRoomAssetForeignTableLocalDetails) MarshalJSON() ([]byte, error) {
 }
 
 type CleanRoomAssetNotebook struct {
-	// Server generated checksum that represents the notebook version.
+	// Server generated etag that represents the notebook version.
 	Etag string `json:"etag,omitempty"`
 	// Base 64 representation of the notebook contents. This is the same format
 	// as returned by :method:workspace/export with the format of **HTML**.
@@ -534,7 +534,7 @@ func (s ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
 // Create an asset
 type CreateCleanRoomAssetRequest struct {
 	// Metadata of the clean room asset
-	Asset *CleanRoomAsset `json:"asset,omitempty"`
+	Asset CleanRoomAsset `json:"asset"`
 	// Name of the clean room.
 	CleanRoomName string `json:"-" url:"-"`
 }
@@ -544,7 +544,7 @@ type CreateCleanRoomOutputCatalogRequest struct {
 	// Name of the clean room.
 	CleanRoomName string `json:"-" url:"-"`
 
-	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
+	OutputCatalog CleanRoomOutputCatalog `json:"output_catalog"`
 }
 
 type CreateCleanRoomOutputCatalogResponse struct {
@@ -553,7 +553,7 @@ type CreateCleanRoomOutputCatalogResponse struct {
 
 // Create a clean room
 type CreateCleanRoomRequest struct {
-	CleanRoom *CleanRoom `json:"clean_room,omitempty"`
+	CleanRoom CleanRoom `json:"clean_room"`
 }
 
 // Delete an asset
@@ -716,7 +716,7 @@ func (s ListCleanRoomsResponse) MarshalJSON() ([]byte, error) {
 // Update an asset
 type UpdateCleanRoomAssetRequest struct {
 	// Metadata of the clean room asset
-	Asset *CleanRoomAsset `json:"asset,omitempty"`
+	Asset CleanRoomAsset `json:"asset"`
 	// The type of the asset.
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
 	// Name of the clean room.

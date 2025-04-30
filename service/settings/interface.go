@@ -343,20 +343,20 @@ type DisableLegacyFeaturesService interface {
 	Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
 }
 
-// Controls whether users can export notebooks and files from the Workspace. By
-// default, this setting is enabled.
+// Controls whether users can export notebooks and files from the Workspace UI.
+// By default, this setting is enabled.
 type EnableExportNotebookService interface {
 
-	// Get the Enable Export Notebook setting.
+	// Get the Notebook and File exporting setting.
 	//
-	// Gets the Enable Export Notebook setting.
+	// Gets the Notebook and File exporting setting.
 	GetEnableExportNotebook(ctx context.Context) (*EnableExportNotebook, error)
 
-	// Update the Enable Export Notebook setting.
+	// Update the Notebook and File exporting setting.
 	//
-	// Updates the Enable Export Notebook setting. The model follows eventual
-	// consistency, which means the get after the update operation might receive
-	// stale values for some time.
+	// Updates the Notebook and File exporting setting. The model follows
+	// eventual consistency, which means the get after the update operation
+	// might receive stale values for some time.
 	PatchEnableExportNotebook(ctx context.Context, request UpdateEnableExportNotebookRequest) (*EnableExportNotebook, error)
 }
 
@@ -385,14 +385,14 @@ type EnableIpAccessListsService interface {
 // default, this setting is enabled.
 type EnableNotebookTableClipboardService interface {
 
-	// Get the Enable Notebook Table Clipboard setting.
+	// Get the Results Table Clipboard features setting.
 	//
-	// Gets the Enable Notebook Table Clipboard setting.
+	// Gets the Results Table Clipboard features setting.
 	GetEnableNotebookTableClipboard(ctx context.Context) (*EnableNotebookTableClipboard, error)
 
-	// Update the Enable Notebook Table Clipboard setting.
+	// Update the Results Table Clipboard features setting.
 	//
-	// Updates the Enable Notebook Table Clipboard setting. The model follows
+	// Updates the Results Table Clipboard features setting. The model follows
 	// eventual consistency, which means the get after the update operation
 	// might receive stale values for some time.
 	PatchEnableNotebookTableClipboard(ctx context.Context, request UpdateEnableNotebookTableClipboardRequest) (*EnableNotebookTableClipboard, error)
@@ -402,16 +402,16 @@ type EnableNotebookTableClipboardService interface {
 // setting is enabled.
 type EnableResultsDownloadingService interface {
 
-	// Get the Enable Results Downloading setting.
+	// Get the Notebook results download setting.
 	//
-	// Gets the Enable Results Downloading setting.
+	// Gets the Notebook results download setting.
 	GetEnableResultsDownloading(ctx context.Context) (*EnableResultsDownloading, error)
 
-	// Update the Enable Results Downloading setting.
+	// Update the Notebook results download setting.
 	//
-	// Updates the Enable Results Downloading setting. The model follows
-	// eventual consistency, which means the get after the update operation
-	// might receive stale values for some time.
+	// Updates the Notebook results download setting. The model follows eventual
+	// consistency, which means the get after the update operation might receive
+	// stale values for some time.
 	PatchEnableResultsDownloading(ctx context.Context, request UpdateEnableResultsDownloadingRequest) (*EnableResultsDownloading, error)
 }
 
@@ -562,10 +562,31 @@ type IpAccessListsService interface {
 }
 
 // These APIs provide configurations for the network connectivity of your
-// workspaces for serverless compute resources.
+// workspaces for serverless compute resources. This API provides stable subnets
+// for your workspace so that you can configure your firewalls on your Azure
+// Storage accounts to allow access from Databricks. You can also use the API to
+// provision private endpoints for Databricks to privately connect serverless
+// compute resources to your Azure resources using Azure Private Link. See
+// [configure serverless secure connectivity].
+//
+// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 type NetworkConnectivityService interface {
 
 	// Create a network connectivity configuration.
+	//
+	// Creates a network connectivity configuration (NCC), which provides stable
+	// Azure service subnets when accessing your Azure Storage accounts. You can
+	// also use a network connectivity configuration to create Databricks
+	// managed private endpoints so that Databricks serverless compute resources
+	// privately access your resources.
+	//
+	// **IMPORTANT**: After you create the network connectivity configuration,
+	// you must assign one or more workspaces to the new network connectivity
+	// configuration. You can share one network connectivity configuration with
+	// multiple workspaces from the same Azure region within the same Databricks
+	// account. See [configure serverless secure connectivity].
+	//
+	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 	CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error)
 
 	// Create a private endpoint rule.
@@ -602,7 +623,7 @@ type NetworkConnectivityService interface {
 	// Gets a network connectivity configuration.
 	GetNetworkConnectivityConfiguration(ctx context.Context, request GetNetworkConnectivityConfigurationRequest) (*NetworkConnectivityConfiguration, error)
 
-	// Get a private endpoint rule.
+	// Gets a private endpoint rule.
 	//
 	// Gets the private endpoint rule.
 	GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
@@ -620,6 +641,12 @@ type NetworkConnectivityService interface {
 	//
 	// Use ListPrivateEndpointRulesAll() to get all NccAzurePrivateEndpointRule instances, which will iterate over every result page.
 	ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error)
+
+	// Update a private endpoint rule.
+	//
+	// Updates a private endpoint rule. Currently only a private endpoint rule
+	// to customer-managed resources is allowed to be updated.
+	UpdateNccAzurePrivateEndpointRulePublic(ctx context.Context, request UpdateNccAzurePrivateEndpointRulePublicRequest) (*NccAzurePrivateEndpointRule, error)
 }
 
 // The notification destinations API lets you programmatically manage a

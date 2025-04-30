@@ -361,10 +361,12 @@ func (f *CleanRoomTaskRunResultState) Type() string {
 // Stores the run state of the clean rooms notebook task.
 type CleanRoomTaskRunState struct {
 	// A value indicating the run's current lifecycle state. This field is
-	// always available in the response.
+	// always available in the response. Note: Additional states might be
+	// introduced in future releases.
 	LifeCycleState CleanRoomTaskRunLifeCycleState `json:"life_cycle_state,omitempty"`
 	// A value indicating the run's result. This field is only available for
-	// terminal lifecycle states.
+	// terminal lifecycle states. Note: Additional states might be introduced in
+	// future releases.
 	ResultState CleanRoomTaskRunResultState `json:"result_state,omitempty"`
 }
 
@@ -649,9 +651,8 @@ type CreateJob struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
-	// The performance mode on a serverless job. The performance target
-	// determines the level of compute performance or cost-efficiency for the
-	// run.
+	// The performance mode on a serverless job. This field determines the level
+	// of compute performance or cost-efficiency for the run.
 	//
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
@@ -753,10 +754,13 @@ func (s DashboardPageSnapshot) MarshalJSON() ([]byte, error) {
 
 // Configures the Lakeview Dashboard job task type.
 type DashboardTask struct {
+	// The identifier of the dashboard to refresh.
 	DashboardId string `json:"dashboard_id,omitempty"`
-
+	// Optional: subscription configuration for sending the dashboard snapshot.
 	Subscription *Subscription `json:"subscription,omitempty"`
-	// The warehouse id to execute the dashboard with for the schedule
+	// Optional: The warehouse id to execute the dashboard with for the
+	// schedule. If not specified, the default warehouse of the dashboard will
+	// be used.
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1569,9 +1573,12 @@ func (s JobEmailNotifications) MarshalJSON() ([]byte, error) {
 type JobEnvironment struct {
 	// The key of an environment. It has to be unique within a job.
 	EnvironmentKey string `json:"environment_key"`
-	// The environment entity used to preserve serverless environment side panel
-	// and jobs' environment for non-notebook task. In this minimal environment
-	// spec, only pip dependencies are supported.
+	// The environment entity used to preserve serverless environment side
+	// panel, jobs' environment for non-notebook task, and DLT's environment for
+	// classic and serverless pipelines. (Note: DLT uses a copied version of the
+	// Environment proto below, at
+	// //spark/pipelines/api/protos/copied/libraries-environments-copy.proto) In
+	// this minimal environment spec, only pip dependencies are supported.
 	Spec *compute.Environment `json:"spec,omitempty"`
 }
 
@@ -1807,9 +1814,8 @@ type JobSettings struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
-	// The performance mode on a serverless job. The performance target
-	// determines the level of compute performance or cost-efficiency for the
-	// run.
+	// The performance mode on a serverless job. This field determines the level
+	// of compute performance or cost-efficiency for the run.
 	//
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
@@ -2578,6 +2584,15 @@ type QueueSettings struct {
 }
 
 type RepairHistoryItem struct {
+	// The actual performance target used by the serverless run during
+	// execution. This can differ from the client-set performance target on the
+	// request depending on whether the performance mode is supported by the job
+	// type.
+	//
+	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance.
+	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
 	// The end time of the (repaired) run.
 	EndTime int64 `json:"end_time,omitempty"`
 	// The ID of the repair. Only returned for the items that represent a repair
@@ -2681,6 +2696,15 @@ type RepairRun struct {
 	// [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
 	// [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
 	NotebookParams map[string]string `json:"notebook_params,omitempty"`
+	// The performance mode on a serverless job. The performance target
+	// determines the level of compute performance or cost-efficiency for the
+	// run. This field overrides the performance target defined on the job
+	// level.
+	//
+	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
+	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
+	// through rapid scaling and optimized cluster performance.
+	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
 	// Controls whether the pipeline should perform a full refresh
 	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
 
@@ -3691,12 +3715,14 @@ func (f *RunResultState) Type() string {
 // The current state of the run.
 type RunState struct {
 	// A value indicating the run's current lifecycle state. This field is
-	// always available in the response.
+	// always available in the response. Note: Additional states might be
+	// introduced in future releases.
 	LifeCycleState RunLifeCycleState `json:"life_cycle_state,omitempty"`
 	// The reason indicating why the run was queued.
 	QueueReason string `json:"queue_reason,omitempty"`
 	// A value indicating the run's result. This field is only available for
-	// terminal lifecycle states.
+	// terminal lifecycle states. Note: Additional states might be introduced in
+	// future releases.
 	ResultState RunResultState `json:"result_state,omitempty"`
 	// A descriptive message for the current state. This field is unstructured,
 	// and its exact format is subject to change.
@@ -3757,7 +3783,7 @@ type RunTask struct {
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
 	ConditionTask *RunConditionTask `json:"condition_task,omitempty"`
-	// The task runs a DashboardTask when the `dashboard_task` field is present.
+	// The task refreshes a dashboard and sends a snapshot to subscribers.
 	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
@@ -4504,7 +4530,7 @@ type SubmitTask struct {
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
 	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
-	// The task runs a DashboardTask when the `dashboard_task` field is present.
+	// The task refreshes a dashboard and sends a snapshot to subscribers.
 	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
@@ -4621,7 +4647,7 @@ type Subscription struct {
 	CustomSubject string `json:"custom_subject,omitempty"`
 	// When true, the subscription will not send emails.
 	Paused bool `json:"paused,omitempty"`
-
+	// The list of subscribers to send the snapshot of the dashboard to.
 	Subscribers []SubscriptionSubscriber `json:"subscribers,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4636,8 +4662,11 @@ func (s Subscription) MarshalJSON() ([]byte, error) {
 }
 
 type SubscriptionSubscriber struct {
+	// A snapshot of the dashboard will be sent to the destination when the
+	// `destination_id` field is present.
 	DestinationId string `json:"destination_id,omitempty"`
-
+	// A snapshot of the dashboard will be sent to the user's email when the
+	// `user_name` field is present.
 	UserName string `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4689,7 +4718,7 @@ type Task struct {
 	// task does not require a cluster to execute and does not support retries
 	// or notifications.
 	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
-	// The task runs a DashboardTask when the `dashboard_task` field is present.
+	// The task refreshes a dashboard and sends a snapshot to subscribers.
 	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
@@ -4951,7 +4980,8 @@ func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 // details. * `CLOUD_FAILURE`: The run failed due to a cloud provider issue.
 // Refer to the state message for further details. *
 // `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job
-// level queue size limit.
+// level queue size limit. * `DISABLED`: The run was never executed because it
+// was disabled explicitly by the user.
 //
 // [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
 type TerminationCodeCode string
@@ -4974,6 +5004,9 @@ const TerminationCodeCodeClusterError TerminationCodeCode = `CLUSTER_ERROR`
 // allotted rate limit. Consider spreading the run execution over a larger time
 // frame.
 const TerminationCodeCodeClusterRequestLimitExceeded TerminationCodeCode = `CLUSTER_REQUEST_LIMIT_EXCEEDED`
+
+// The run was never executed because it was disabled explicitly by the user.
+const TerminationCodeCodeDisabled TerminationCodeCode = `DISABLED`
 
 // The run encountered an error while communicating with the Spark Driver.
 const TerminationCodeCodeDriverError TerminationCodeCode = `DRIVER_ERROR`
@@ -5055,11 +5088,11 @@ func (f *TerminationCodeCode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationCodeCode) Set(v string) error {
 	switch v {
-	case `BUDGET_POLICY_LIMIT_EXCEEDED`, `CANCELED`, `CLOUD_FAILURE`, `CLUSTER_ERROR`, `CLUSTER_REQUEST_LIMIT_EXCEEDED`, `DRIVER_ERROR`, `FEATURE_DISABLED`, `INTERNAL_ERROR`, `INVALID_CLUSTER_REQUEST`, `INVALID_RUN_CONFIGURATION`, `LIBRARY_INSTALLATION_ERROR`, `MAX_CONCURRENT_RUNS_EXCEEDED`, `MAX_JOB_QUEUE_SIZE_EXCEEDED`, `MAX_SPARK_CONTEXTS_EXCEEDED`, `REPOSITORY_CHECKOUT_FAILED`, `RESOURCE_NOT_FOUND`, `RUN_EXECUTION_ERROR`, `SKIPPED`, `STORAGE_ACCESS_ERROR`, `SUCCESS`, `UNAUTHORIZED_ERROR`, `USER_CANCELED`, `WORKSPACE_RUN_LIMIT_EXCEEDED`:
+	case `BUDGET_POLICY_LIMIT_EXCEEDED`, `CANCELED`, `CLOUD_FAILURE`, `CLUSTER_ERROR`, `CLUSTER_REQUEST_LIMIT_EXCEEDED`, `DISABLED`, `DRIVER_ERROR`, `FEATURE_DISABLED`, `INTERNAL_ERROR`, `INVALID_CLUSTER_REQUEST`, `INVALID_RUN_CONFIGURATION`, `LIBRARY_INSTALLATION_ERROR`, `MAX_CONCURRENT_RUNS_EXCEEDED`, `MAX_JOB_QUEUE_SIZE_EXCEEDED`, `MAX_SPARK_CONTEXTS_EXCEEDED`, `REPOSITORY_CHECKOUT_FAILED`, `RESOURCE_NOT_FOUND`, `RUN_EXECUTION_ERROR`, `SKIPPED`, `STORAGE_ACCESS_ERROR`, `SUCCESS`, `UNAUTHORIZED_ERROR`, `USER_CANCELED`, `WORKSPACE_RUN_LIMIT_EXCEEDED`:
 		*f = TerminationCodeCode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BUDGET_POLICY_LIMIT_EXCEEDED", "CANCELED", "CLOUD_FAILURE", "CLUSTER_ERROR", "CLUSTER_REQUEST_LIMIT_EXCEEDED", "DRIVER_ERROR", "FEATURE_DISABLED", "INTERNAL_ERROR", "INVALID_CLUSTER_REQUEST", "INVALID_RUN_CONFIGURATION", "LIBRARY_INSTALLATION_ERROR", "MAX_CONCURRENT_RUNS_EXCEEDED", "MAX_JOB_QUEUE_SIZE_EXCEEDED", "MAX_SPARK_CONTEXTS_EXCEEDED", "REPOSITORY_CHECKOUT_FAILED", "RESOURCE_NOT_FOUND", "RUN_EXECUTION_ERROR", "SKIPPED", "STORAGE_ACCESS_ERROR", "SUCCESS", "UNAUTHORIZED_ERROR", "USER_CANCELED", "WORKSPACE_RUN_LIMIT_EXCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BUDGET_POLICY_LIMIT_EXCEEDED", "CANCELED", "CLOUD_FAILURE", "CLUSTER_ERROR", "CLUSTER_REQUEST_LIMIT_EXCEEDED", "DISABLED", "DRIVER_ERROR", "FEATURE_DISABLED", "INTERNAL_ERROR", "INVALID_CLUSTER_REQUEST", "INVALID_RUN_CONFIGURATION", "LIBRARY_INSTALLATION_ERROR", "MAX_CONCURRENT_RUNS_EXCEEDED", "MAX_JOB_QUEUE_SIZE_EXCEEDED", "MAX_SPARK_CONTEXTS_EXCEEDED", "REPOSITORY_CHECKOUT_FAILED", "RESOURCE_NOT_FOUND", "RUN_EXECUTION_ERROR", "SKIPPED", "STORAGE_ACCESS_ERROR", "SUCCESS", "UNAUTHORIZED_ERROR", "USER_CANCELED", "WORKSPACE_RUN_LIMIT_EXCEEDED"`, v)
 	}
 }
 
@@ -5111,7 +5144,9 @@ type TerminationDetails struct {
 	// configuration. Refer to the state message for further details. *
 	// `CLOUD_FAILURE`: The run failed due to a cloud provider issue. Refer to
 	// the state message for further details. * `MAX_JOB_QUEUE_SIZE_EXCEEDED`:
-	// The run was skipped due to reaching the job level queue size limit.
+	// The run was skipped due to reaching the job level queue size limit. *
+	// `DISABLED`: The run was never executed because it was disabled explicitly
+	// by the user.
 	//
 	// [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
 	Code TerminationCodeCode `json:"code,omitempty"`

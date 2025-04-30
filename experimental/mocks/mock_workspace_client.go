@@ -45,6 +45,7 @@ func NewMockWorkspaceClient(t interface {
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
 			Alerts:                              sql.NewMockAlertsInterface(t),
 			AlertsLegacy:                        sql.NewMockAlertsLegacyInterface(t),
+			AlertsV2:                            sql.NewMockAlertsV2Interface(t),
 			Apps:                                apps.NewMockAppsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
@@ -308,6 +309,14 @@ func (m *MockWorkspaceClient) GetMockAlertsLegacyAPI() *sql.MockAlertsLegacyInte
 	api, ok := m.WorkspaceClient.AlertsLegacy.(*sql.MockAlertsLegacyInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected AlertsLegacy to be *sql.MockAlertsLegacyInterface, actual was %T", m.WorkspaceClient.AlertsLegacy))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockAlertsV2API() *sql.MockAlertsV2Interface {
+	api, ok := m.WorkspaceClient.AlertsV2.(*sql.MockAlertsV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected AlertsV2 to be *sql.MockAlertsV2Interface, actual was %T", m.WorkspaceClient.AlertsV2))
 	}
 	return api
 }

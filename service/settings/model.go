@@ -396,6 +396,8 @@ const ComplianceStandardIsmap ComplianceStandard = `ISMAP`
 
 const ComplianceStandardItarEar ComplianceStandard = `ITAR_EAR`
 
+const ComplianceStandardKFsi ComplianceStandard = `K_FSI`
+
 const ComplianceStandardNone ComplianceStandard = `NONE`
 
 const ComplianceStandardPciDss ComplianceStandard = `PCI_DSS`
@@ -408,11 +410,11 @@ func (f *ComplianceStandard) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ComplianceStandard) Set(v string) error {
 	switch v {
-	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `HIPAA`, `HITRUST`, `IRAP_PROTECTED`, `ISMAP`, `ITAR_EAR`, `NONE`, `PCI_DSS`:
+	case `CANADA_PROTECTED_B`, `CYBER_ESSENTIAL_PLUS`, `FEDRAMP_HIGH`, `FEDRAMP_IL5`, `FEDRAMP_MODERATE`, `HIPAA`, `HITRUST`, `IRAP_PROTECTED`, `ISMAP`, `ITAR_EAR`, `K_FSI`, `NONE`, `PCI_DSS`:
 		*f = ComplianceStandard(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "HIPAA", "HITRUST", "IRAP_PROTECTED", "ISMAP", "ITAR_EAR", "NONE", "PCI_DSS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "HIPAA", "HITRUST", "IRAP_PROTECTED", "ISMAP", "ITAR_EAR", "K_FSI", "NONE", "PCI_DSS"`, v)
 	}
 }
 
@@ -453,11 +455,18 @@ type CreateIpAccessListResponse struct {
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
 }
 
+// Create a network connectivity configuration
 type CreateNetworkConnectivityConfigRequest struct {
+	// Properties of the new network connectivity configuration.
+	NetworkConnectivityConfig CreateNetworkConnectivityConfiguration `json:"network_connectivity_config"`
+}
+
+// Properties of the new network connectivity configuration.
+type CreateNetworkConnectivityConfiguration struct {
 	// The name of the network connectivity configuration. The name can contain
 	// alphanumeric characters, hyphens, and underscores. The length must be
 	// between 3 and 30 characters. The name must match the regular expression
-	// `^[0-9a-zA-Z-_]{3,30}$`.
+	// ^[0-9a-zA-Z-_]{3,30}$
 	Name string `json:"name"`
 	// The region for the network connectivity configuration. Only workspaces in
 	// the same region can be attached to the network connectivity
@@ -520,49 +529,42 @@ func (s CreateOboTokenResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type CreatePrivateEndpointRuleRequest struct {
+// Properties of the new private endpoint rule. Note that you must approve the
+// endpoint in Azure portal after initialization.
+type CreatePrivateEndpointRule struct {
+	// Only used by private endpoints to customer-managed resources.
+	//
+	// Domain names of target private link service. When updating this field,
+	// the full list of target domain_names must be specified.
+	DomainNames []string `json:"domain_names,omitempty"`
+	// Only used by private endpoints to Azure first-party services. Enum: blob
+	// | dfs | sqlServer | mysqlServer
+	//
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
-	// one for `blob` and one for `dfs`.
-	GroupId CreatePrivateEndpointRuleRequestGroupId `json:"group_id"`
-	// Your Network Connectvity Configuration ID.
-	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	// one for blob and one for dfs.
+	GroupId string `json:"group_id,omitempty"`
 	// The Azure resource ID of the target resource.
 	ResourceId string `json:"resource_id"`
+
+	ForceSendFields []string `json:"-" url:"-"`
 }
 
-// The sub-resource type (group ID) of the target resource. Note that to connect
-// to workspace root storage (root DBFS), you need two endpoints, one for `blob`
-// and one for `dfs`.
-type CreatePrivateEndpointRuleRequestGroupId string
-
-const CreatePrivateEndpointRuleRequestGroupIdBlob CreatePrivateEndpointRuleRequestGroupId = `blob`
-
-const CreatePrivateEndpointRuleRequestGroupIdDfs CreatePrivateEndpointRuleRequestGroupId = `dfs`
-
-const CreatePrivateEndpointRuleRequestGroupIdMysqlServer CreatePrivateEndpointRuleRequestGroupId = `mysqlServer`
-
-const CreatePrivateEndpointRuleRequestGroupIdSqlServer CreatePrivateEndpointRuleRequestGroupId = `sqlServer`
-
-// String representation for [fmt.Print]
-func (f *CreatePrivateEndpointRuleRequestGroupId) String() string {
-	return string(*f)
+func (s *CreatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
 }
 
-// Set raw string value and validate it against allowed values
-func (f *CreatePrivateEndpointRuleRequestGroupId) Set(v string) error {
-	switch v {
-	case `blob`, `dfs`, `mysqlServer`, `sqlServer`:
-		*f = CreatePrivateEndpointRuleRequestGroupId(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "blob", "dfs", "mysqlServer", "sqlServer"`, v)
-	}
+func (s CreatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
-// Type always returns CreatePrivateEndpointRuleRequestGroupId to satisfy [pflag.Value] interface
-func (f *CreatePrivateEndpointRuleRequestGroupId) Type() string {
-	return "CreatePrivateEndpointRuleRequestGroupId"
+// Create a private endpoint rule
+type CreatePrivateEndpointRuleRequest struct {
+	// Your Network Connectivity Configuration ID.
+	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	// Properties of the new private endpoint rule. Note that you must approve
+	// the endpoint in Azure portal after initialization.
+	PrivateEndpointRule CreatePrivateEndpointRule `json:"private_endpoint_rule"`
 }
 
 type CreateTokenRequest struct {
@@ -939,7 +941,7 @@ type DeleteIpAccessListRequest struct {
 
 // Delete a network connectivity configuration
 type DeleteNetworkConnectivityConfigurationRequest struct {
-	// Your Network Connectvity Configuration ID.
+	// Your Network Connectivity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 }
 
@@ -1412,6 +1414,35 @@ func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestina
 // Type always returns EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType) Type() string {
 	return "EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType"
+}
+
+// The target resources that are supported by Network Connectivity Config. Note:
+// some egress types can support general types that are not defined in
+// EgressResourceType. E.g.: Azure private endpoint supports private link
+// enabled Azure services.
+type EgressResourceType string
+
+const EgressResourceTypeAzureBlobStorage EgressResourceType = `AZURE_BLOB_STORAGE`
+
+// String representation for [fmt.Print]
+func (f *EgressResourceType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressResourceType) Set(v string) error {
+	switch v {
+	case `AZURE_BLOB_STORAGE`:
+		*f = EgressResourceType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AZURE_BLOB_STORAGE"`, v)
+	}
+}
+
+// Type always returns EgressResourceType to satisfy [pflag.Value] interface
+func (f *EgressResourceType) Type() string {
+	return "EgressResourceType"
 }
 
 type EmailConfig struct {
@@ -1929,7 +1960,7 @@ type GetIpAccessListsResponse struct {
 
 // Get a network connectivity configuration
 type GetNetworkConnectivityConfigurationRequest struct {
-	// Your Network Connectvity Configuration ID.
+	// Your Network Connectivity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 }
 
@@ -1960,7 +1991,7 @@ func (s GetPersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Get a private endpoint rule
+// Gets a private endpoint rule
 type GetPrivateEndpointRuleRequest struct {
 	// Your Network Connectvity Configuration ID.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
@@ -2055,6 +2086,7 @@ type ListIpAccessListResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
 
+// The private endpoint rule list was successfully retrieved.
 type ListNccAzurePrivateEndpointRulesResponse struct {
 	Items []NccAzurePrivateEndpointRule `json:"items,omitempty"`
 	// A token that can be used to get the next page of results. If null, there
@@ -2088,6 +2120,7 @@ func (s ListNetworkConnectivityConfigurationsRequest) MarshalJSON() ([]byte, err
 	return marshal.Marshal(s)
 }
 
+// The network connectivity configuration list was successfully retrieved.
 type ListNetworkConnectivityConfigurationsResponse struct {
 	Items []NetworkConnectivityConfiguration `json:"items,omitempty"`
 	// A token that can be used to get the next page of results. If null, there
@@ -2266,20 +2299,21 @@ type NccAwsStableIpRule struct {
 	CidrBlocks []string `json:"cidr_blocks,omitempty"`
 }
 
+// Properties of the new private endpoint rule. Note that you must approve the
+// endpoint in Azure portal after initialization.
 type NccAzurePrivateEndpointRule struct {
 	// The current status of this private endpoint. The private endpoint rules
-	// are effective only if the connection state is `ESTABLISHED`. Remember
-	// that you must approve new endpoints on your resources in the Azure portal
-	// before they take effect.
-	//
-	// The possible values are: - INIT: (deprecated) The endpoint has been
-	// created and pending approval. - PENDING: The endpoint has been created
-	// and pending approval. - ESTABLISHED: The endpoint has been approved and
-	// is ready to use in your serverless compute resources. - REJECTED:
-	// Connection was rejected by the private link resource owner. -
-	// DISCONNECTED: Connection was removed by the private link resource owner,
-	// the private endpoint becomes informative and should be deleted for
-	// clean-up.
+	// are effective only if the connection state is ESTABLISHED. Remember that
+	// you must approve new endpoints on your resources in the Azure portal
+	// before they take effect. The possible values are: - INIT: (deprecated)
+	// The endpoint has been created and pending approval. - PENDING: The
+	// endpoint has been created and pending approval. - ESTABLISHED: The
+	// endpoint has been approved and is ready to use in your serverless compute
+	// resources. - REJECTED: Connection was rejected by the private link
+	// resource owner. - DISCONNECTED: Connection was removed by the private
+	// link resource owner, the private endpoint becomes informative and should
+	// be deleted for clean-up. - EXPIRED: If the endpoint was created but not
+	// approved in 14 days, it will be EXPIRED.
 	ConnectionState NccAzurePrivateEndpointRuleConnectionState `json:"connection_state,omitempty"`
 	// Time in epoch milliseconds when this object was created.
 	CreationTime int64 `json:"creation_time,omitempty"`
@@ -2287,12 +2321,20 @@ type NccAzurePrivateEndpointRule struct {
 	Deactivated bool `json:"deactivated,omitempty"`
 	// Time in epoch milliseconds when this object was deactivated.
 	DeactivatedAt int64 `json:"deactivated_at,omitempty"`
+	// Only used by private endpoints to customer-managed resources.
+	//
+	// Domain names of target private link service. When updating this field,
+	// the full list of target domain_names must be specified.
+	DomainNames []string `json:"domain_names,omitempty"`
 	// The name of the Azure private endpoint resource.
 	EndpointName string `json:"endpoint_name,omitempty"`
+	// Only used by private endpoints to Azure first-party services. Enum: blob
+	// | dfs | sqlServer | mysqlServer
+	//
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
-	// one for `blob` and one for `dfs`.
-	GroupId NccAzurePrivateEndpointRuleGroupId `json:"group_id,omitempty"`
+	// one for blob and one for dfs.
+	GroupId string `json:"group_id,omitempty"`
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
 	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
@@ -2314,23 +2356,13 @@ func (s NccAzurePrivateEndpointRule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The current status of this private endpoint. The private endpoint rules are
-// effective only if the connection state is `ESTABLISHED`. Remember that you
-// must approve new endpoints on your resources in the Azure portal before they
-// take effect.
-//
-// The possible values are: - INIT: (deprecated) The endpoint has been created
-// and pending approval. - PENDING: The endpoint has been created and pending
-// approval. - ESTABLISHED: The endpoint has been approved and is ready to use
-// in your serverless compute resources. - REJECTED: Connection was rejected by
-// the private link resource owner. - DISCONNECTED: Connection was removed by
-// the private link resource owner, the private endpoint becomes informative and
-// should be deleted for clean-up.
 type NccAzurePrivateEndpointRuleConnectionState string
 
 const NccAzurePrivateEndpointRuleConnectionStateDisconnected NccAzurePrivateEndpointRuleConnectionState = `DISCONNECTED`
 
 const NccAzurePrivateEndpointRuleConnectionStateEstablished NccAzurePrivateEndpointRuleConnectionState = `ESTABLISHED`
+
+const NccAzurePrivateEndpointRuleConnectionStateExpired NccAzurePrivateEndpointRuleConnectionState = `EXPIRED`
 
 const NccAzurePrivateEndpointRuleConnectionStateInit NccAzurePrivateEndpointRuleConnectionState = `INIT`
 
@@ -2346,51 +2378,17 @@ func (f *NccAzurePrivateEndpointRuleConnectionState) String() string {
 // Set raw string value and validate it against allowed values
 func (f *NccAzurePrivateEndpointRuleConnectionState) Set(v string) error {
 	switch v {
-	case `DISCONNECTED`, `ESTABLISHED`, `INIT`, `PENDING`, `REJECTED`:
+	case `DISCONNECTED`, `ESTABLISHED`, `EXPIRED`, `INIT`, `PENDING`, `REJECTED`:
 		*f = NccAzurePrivateEndpointRuleConnectionState(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DISCONNECTED", "ESTABLISHED", "INIT", "PENDING", "REJECTED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DISCONNECTED", "ESTABLISHED", "EXPIRED", "INIT", "PENDING", "REJECTED"`, v)
 	}
 }
 
 // Type always returns NccAzurePrivateEndpointRuleConnectionState to satisfy [pflag.Value] interface
 func (f *NccAzurePrivateEndpointRuleConnectionState) Type() string {
 	return "NccAzurePrivateEndpointRuleConnectionState"
-}
-
-// The sub-resource type (group ID) of the target resource. Note that to connect
-// to workspace root storage (root DBFS), you need two endpoints, one for `blob`
-// and one for `dfs`.
-type NccAzurePrivateEndpointRuleGroupId string
-
-const NccAzurePrivateEndpointRuleGroupIdBlob NccAzurePrivateEndpointRuleGroupId = `blob`
-
-const NccAzurePrivateEndpointRuleGroupIdDfs NccAzurePrivateEndpointRuleGroupId = `dfs`
-
-const NccAzurePrivateEndpointRuleGroupIdMysqlServer NccAzurePrivateEndpointRuleGroupId = `mysqlServer`
-
-const NccAzurePrivateEndpointRuleGroupIdSqlServer NccAzurePrivateEndpointRuleGroupId = `sqlServer`
-
-// String representation for [fmt.Print]
-func (f *NccAzurePrivateEndpointRuleGroupId) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *NccAzurePrivateEndpointRuleGroupId) Set(v string) error {
-	switch v {
-	case `blob`, `dfs`, `mysqlServer`, `sqlServer`:
-		*f = NccAzurePrivateEndpointRuleGroupId(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "blob", "dfs", "mysqlServer", "sqlServer"`, v)
-	}
-}
-
-// Type always returns NccAzurePrivateEndpointRuleGroupId to satisfy [pflag.Value] interface
-func (f *NccAzurePrivateEndpointRuleGroupId) Type() string {
-	return "NccAzurePrivateEndpointRuleGroupId"
 }
 
 // The stable Azure service endpoints. You can configure the firewall of your
@@ -2400,10 +2398,10 @@ type NccAzureServiceEndpointRule struct {
 	// The list of subnets from which Databricks network traffic originates when
 	// accessing your Azure resources.
 	Subnets []string `json:"subnets,omitempty"`
-	// The Azure region in which this service endpoint rule applies.
+	// The Azure region in which this service endpoint rule applies..
 	TargetRegion string `json:"target_region,omitempty"`
 	// The Azure services to which this service endpoint rule applies to.
-	TargetServices []string `json:"target_services,omitempty"`
+	TargetServices []EgressResourceType `json:"target_services,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2416,8 +2414,6 @@ func (s NccAzureServiceEndpointRule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The network connectivity rules that apply to network traffic from your
-// serverless compute resources.
 type NccEgressConfig struct {
 	// The network connectivity rules that are applied by default without
 	// resource specific configurations. You can find the stable network
@@ -2428,9 +2424,7 @@ type NccEgressConfig struct {
 	TargetRules *NccEgressTargetRules `json:"target_rules,omitempty"`
 }
 
-// The network connectivity rules that are applied by default without resource
-// specific configurations. You can find the stable network information of your
-// serverless compute resources here.
+// Default rules don't have specific targets.
 type NccEgressDefaultRules struct {
 	// The stable AWS IP CIDR blocks. You can use these to configure the
 	// firewall of your resources to allow traffic from your Databricks
@@ -2442,12 +2436,13 @@ type NccEgressDefaultRules struct {
 	AzureServiceEndpointRule *NccAzureServiceEndpointRule `json:"azure_service_endpoint_rule,omitempty"`
 }
 
-// The network connectivity rules that configured for each destinations. These
-// rules override default rules.
+// Target rule controls the egress rules that are dedicated to specific
+// resources.
 type NccEgressTargetRules struct {
 	AzurePrivateEndpointRules []NccAzurePrivateEndpointRule `json:"azure_private_endpoint_rules,omitempty"`
 }
 
+// Properties of the new network connectivity configuration.
 type NetworkConnectivityConfiguration struct {
 	// The Databricks account ID that hosts the credential.
 	AccountId string `json:"account_id,omitempty"`
@@ -2459,7 +2454,7 @@ type NetworkConnectivityConfiguration struct {
 	// The name of the network connectivity configuration. The name can contain
 	// alphanumeric characters, hyphens, and underscores. The length must be
 	// between 3 and 30 characters. The name must match the regular expression
-	// `^[0-9a-zA-Z-_]{3,30}$`.
+	// ^[0-9a-zA-Z-_]{3,30}$
 	Name string `json:"name,omitempty"`
 	// Databricks network connectivity configuration ID.
 	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
@@ -3304,6 +3299,24 @@ func (s UpdateIpAccessList) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Update a private endpoint rule
+type UpdateNccAzurePrivateEndpointRulePublicRequest struct {
+	// Your Network Connectivity Configuration ID.
+	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	// Properties of the new private endpoint rule. Note that you must approve
+	// the endpoint in Azure portal after initialization.
+	PrivateEndpointRule UpdatePrivateEndpointRule `json:"private_endpoint_rule"`
+	// Your private endpoint rule ID.
+	PrivateEndpointRuleId string `json:"-" url:"-"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	UpdateMask string `json:"-" url:"update_mask"`
+}
+
 type UpdateNotificationDestinationRequest struct {
 	// The configuration for the notification destination. Must wrap EXACTLY one
 	// of the nested configs.
@@ -3343,6 +3356,16 @@ type UpdatePersonalComputeSettingRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting PersonalComputeSetting `json:"setting"`
+}
+
+// Properties of the new private endpoint rule. Note that you must approve the
+// endpoint in Azure portal after initialization.
+type UpdatePrivateEndpointRule struct {
+	// Only used by private endpoints to customer-managed resources.
+	//
+	// Domain names of target private link service. When updating this field,
+	// the full list of target domain_names must be specified.
+	DomainNames []string `json:"domain_names,omitempty"`
 }
 
 type UpdateResponse struct {

@@ -611,14 +611,14 @@ func (s ComputeStatus) MarshalJSON() ([]byte, error) {
 
 // Create an app deployment
 type CreateAppDeploymentRequest struct {
-	AppDeployment *AppDeployment `json:"app_deployment,omitempty"`
+	AppDeployment AppDeployment `json:"app_deployment"`
 	// The name of the app.
 	AppName string `json:"-" url:"-"`
 }
 
 // Create an app
 type CreateAppRequest struct {
-	App *App `json:"app,omitempty"`
+	App App `json:"app"`
 	// If true, the app will not be started after creation.
 	NoCompute bool `json:"-" url:"no_compute,omitempty"`
 
@@ -755,7 +755,7 @@ type StopAppRequest struct {
 
 // Update an app
 type UpdateAppRequest struct {
-	App *App `json:"app,omitempty"`
+	App App `json:"app"`
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
 	Name string `json:"-" url:"-"`
