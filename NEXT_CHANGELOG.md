@@ -31,3 +31,15 @@
 * [Breaking] Removed `GroupId` and `ResourceId` fields for [settings.CreatePrivateEndpointRuleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CreatePrivateEndpointRuleRequest).
 * [Breaking] Removed `Large`, `Medium` and `Small` enum values for [serving.ServedModelInputWorkloadSize](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelInputWorkloadSize).
 * [Breaking] Removed `Blob`, `Dfs`, `MysqlServer` and `SqlServer` enum values for [settings.NccAzurePrivateEndpointRuleGroupId](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccAzurePrivateEndpointRuleGroupId).
+* [Breaking] Field `AppDeployment` of `CreateAppDeploymentRequest` is changed from `*AppDeployment` to `AppDeployment`.
+* [Breaking] Field `App` of `CreateAppRequest` is changed from `*App` to `App`.
+* [Breaking] Field `App` of `UpdateAppRequest` is changed from `*App` to `App`.
+* [Breaking] Field `BudgetPolicy` of `UpdateBudgetPolicyRequest` is changed from `*BudgetPolicy` to `BudgetPolicy`.
+* [Breaking] Field `OnlineTable` of `CreateOnlineTableRequest` is changed from `*OnlineTable` to `OnlineTable`.
+* [Breaking] Field `CleanRoomAsset` of `CreateCleanRoomAssetRequest` is changed from `*CleanRoomAsset` to `CleanRoomAsset`.
+* [Breaking] Field `CleanRoom` of `CreateCleanRoomRequest` is changed from `*CleanRoom` to `CleanRoom`.
+* [Breaking] Field `CleanRoomAsset` of `UpdateCleanRoomAssetRequest` is changed from `*CleanRoomAsset` to `CleanRoomAsset`.
+* [Breaking] Field `Dashboard` of `CreateDashboardRequest` is changed from `*Dashboard` to `Dashboard`.
+* [Breaking] Field `Schedule` of `CreateScheduleRequest` is changed from `*Schedule` to `Schedule`.
+* [Breaking] Field `Subscription` of `CreateSubscriptionRequest` is changed from `*Subscription` to `Subscription`.
+* [Breaking] Field `Dashboard` of `UpdateDashboardRequest` is changed from `*Dashboard` to `Dashboard`.
