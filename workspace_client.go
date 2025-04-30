@@ -62,6 +62,9 @@ type WorkspaceClient struct {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	AlertsLegacy sql.AlertsLegacyInterface
 
+	// TODO: Add description
+	AlertsV2 sql.AlertsV2Interface
+
 	// Apps run directly on a customer’s Databricks instance, integrate with
 	// their data, use and extend Databricks services, and enable users to
 	// interact through single sign-on.
@@ -1176,6 +1179,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
 		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),
+		AlertsV2:                            sql.NewAlertsV2(databricksClient),
 		Apps:                                apps.NewApps(databricksClient),
 		ArtifactAllowlists:                  catalog.NewArtifactAllowlists(databricksClient),
 		Catalogs:                            catalog.NewCatalogs(databricksClient),

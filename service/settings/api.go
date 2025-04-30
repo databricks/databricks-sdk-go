@@ -1110,6 +1110,20 @@ func (a *IpAccessListsAPI) GetByLabel(ctx context.Context, name string) (*IpAcce
 type NetworkConnectivityInterface interface {
 
 	// Create a network connectivity configuration.
+	//
+	// Creates a network connectivity configuration (NCC), which provides stable
+	// Azure service subnets when accessing your Azure Storage accounts. You can
+	// also use a network connectivity configuration to create Databricks managed
+	// private endpoints so that Databricks serverless compute resources privately
+	// access your resources.
+	//
+	// **IMPORTANT**: After you create the network connectivity configuration, you
+	// must assign one or more workspaces to the new network connectivity
+	// configuration. You can share one network connectivity configuration with
+	// multiple workspaces from the same Azure region within the same Databricks
+	// account. See [configure serverless secure connectivity].
+	//
+	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 	CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error)
 
 	// Create a private endpoint rule.
@@ -1166,12 +1180,12 @@ type NetworkConnectivityInterface interface {
 	// Gets a network connectivity configuration.
 	GetNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*NetworkConnectivityConfiguration, error)
 
-	// Get a private endpoint rule.
+	// Gets a private endpoint rule.
 	//
 	// Gets the private endpoint rule.
 	GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
 
-	// Get a private endpoint rule.
+	// Gets a private endpoint rule.
 	//
 	// Gets the private endpoint rule.
 	GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error)
@@ -1208,6 +1222,12 @@ type NetworkConnectivityInterface interface {
 	//
 	// Gets an array of private endpoint rules.
 	ListPrivateEndpointRulesByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*ListNccAzurePrivateEndpointRulesResponse, error)
+
+	// Update a private endpoint rule.
+	//
+	// Updates a private endpoint rule. Currently only a private endpoint rule to
+	// customer-managed resources is allowed to be updated.
+	UpdateNccAzurePrivateEndpointRulePublic(ctx context.Context, request UpdateNccAzurePrivateEndpointRulePublicRequest) (*NccAzurePrivateEndpointRule, error)
 }
 
 func NewNetworkConnectivity(client *client.DatabricksClient) *NetworkConnectivityAPI {
@@ -1219,7 +1239,14 @@ func NewNetworkConnectivity(client *client.DatabricksClient) *NetworkConnectivit
 }
 
 // These APIs provide configurations for the network connectivity of your
-// workspaces for serverless compute resources.
+// workspaces for serverless compute resources. This API provides stable subnets
+// for your workspace so that you can configure your firewalls on your Azure
+// Storage accounts to allow access from Databricks. You can also use the API to
+// provision private endpoints for Databricks to privately connect serverless
+// compute resources to your Azure resources using Azure Private Link. See
+// [configure serverless secure connectivity].
+//
+// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 type NetworkConnectivityAPI struct {
 	networkConnectivityImpl
 }
@@ -1257,7 +1284,7 @@ func (a *NetworkConnectivityAPI) GetNetworkConnectivityConfigurationByNetworkCon
 	})
 }
 
-// Get a private endpoint rule.
+// Gets a private endpoint rule.
 //
 // Gets the private endpoint rule.
 func (a *NetworkConnectivityAPI) GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error) {

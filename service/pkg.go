@@ -14,6 +14,8 @@
 //
 // - [sql.AlertsLegacyAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
+// - [sql.AlertsV2API]: TODO: Add description.
+//
 // - [apps.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
 //
 // - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode.
@@ -326,6 +328,7 @@ var (
 	_ *settings.AibiDashboardEmbeddingApprovedDomainsAPI  = nil
 	_ *sql.AlertsAPI                                      = nil
 	_ *sql.AlertsLegacyAPI                                = nil
+	_ *sql.AlertsV2API                                    = nil
 	_ *apps.AppsAPI                                       = nil
 	_ *catalog.ArtifactAllowlistsAPI                      = nil
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
@@ -345,8 +348,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *provisioning.CredentialsAPI                        = nil
 	_ *catalog.CredentialsAPI                             = nil
+	_ *provisioning.CredentialsAPI                        = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
