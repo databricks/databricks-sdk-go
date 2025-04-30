@@ -35,7 +35,7 @@ func TestUcAccWifAuth(t *testing.T) {
 
 	// Setup Federation Policy
 	p, err := a.ServicePrincipalFederationPolicy.Create(ctx, oauth2.CreateServicePrincipalFederationPolicyRequest{
-		Policy: &oauth2.FederationPolicy{
+		Policy: oauth2.FederationPolicy{
 			OidcPolicy: &oauth2.OidcFederationPolicy{
 				Issuer: "https://token.actions.githubusercontent.com",
 				Audiences: []string{
@@ -117,7 +117,7 @@ func TestUcAccWifAuthWorkspace(t *testing.T) {
 
 	// Setup Federation Policy
 	p, err := a.ServicePrincipalFederationPolicy.Create(ctx, oauth2.CreateServicePrincipalFederationPolicyRequest{
-		Policy: &oauth2.FederationPolicy{
+		Policy: oauth2.FederationPolicy{
 			OidcPolicy: &oauth2.OidcFederationPolicy{
 				Issuer: "https://token.actions.githubusercontent.com",
 				Audiences: []string{
