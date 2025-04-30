@@ -5,6 +5,7 @@
 ### New Features and Improvements
 
 ### Bug Fixes
+* Tolerate trailing slashes in hostnames in `Config`.
 
 ### Documentation
 
