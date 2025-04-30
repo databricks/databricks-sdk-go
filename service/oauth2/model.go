@@ -8,7 +8,7 @@ import (
 
 // Create account federation policy
 type CreateAccountFederationPolicyRequest struct {
-	Policy *FederationPolicy `json:"policy,omitempty"`
+	Policy FederationPolicy `json:"policy"`
 	// The identifier for the federation policy. The identifier must contain
 	// only lowercase alphanumeric characters, numbers, hyphens, and slashes. If
 	// unspecified, the id will be assigned by Databricks.
@@ -109,7 +109,7 @@ func (s CreatePublishedAppIntegrationOutput) MarshalJSON() ([]byte, error) {
 
 // Create service principal federation policy
 type CreateServicePrincipalFederationPolicyRequest struct {
-	Policy *FederationPolicy `json:"policy,omitempty"`
+	Policy FederationPolicy `json:"policy"`
 	// The identifier for the federation policy. The identifier must contain
 	// only lowercase alphanumeric characters, numbers, hyphens, and slashes. If
 	// unspecified, the id will be assigned by Databricks.
@@ -656,7 +656,7 @@ func (s TokenAccessPolicy) MarshalJSON() ([]byte, error) {
 
 // Update account federation policy
 type UpdateAccountFederationPolicyRequest struct {
-	Policy *FederationPolicy `json:"policy,omitempty"`
+	Policy FederationPolicy `json:"policy"`
 	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
 	// The field mask specifies which fields of the policy to update. To specify
@@ -709,7 +709,7 @@ type UpdatePublishedAppIntegrationOutput struct {
 
 // Update service principal federation policy
 type UpdateServicePrincipalFederationPolicyRequest struct {
-	Policy *FederationPolicy `json:"policy,omitempty"`
+	Policy FederationPolicy `json:"policy"`
 	// The identifier for the federation policy.
 	PolicyId string `json:"-" url:"-"`
 	// The service principal id for the federation policy.

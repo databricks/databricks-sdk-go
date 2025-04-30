@@ -1561,8 +1561,9 @@ type ServedEntityInput struct {
 	// single unit of provisioned concurrency can process one request at a time.
 	// Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
 	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
-	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
-	// the provisioned concurrency for each workload size is 0.
+	// provisioned concurrency). Additional custom workload sizes can also be
+	// used when available in the workspace. If scale-to-zero is enabled, the
+	// lower bound of the provisioned concurrency for each workload size is 0.
 	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -1638,8 +1639,9 @@ type ServedEntityOutput struct {
 	// single unit of provisioned concurrency can process one request at a time.
 	// Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
 	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
-	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
-	// the provisioned concurrency for each workload size is 0.
+	// provisioned concurrency). Additional custom workload sizes can also be
+	// used when available in the workspace. If scale-to-zero is enabled, the
+	// lower bound of the provisioned concurrency for each workload size is 0.
 	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -1717,9 +1719,10 @@ type ServedModelInput struct {
 	// single unit of provisioned concurrency can process one request at a time.
 	// Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
 	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
-	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
-	// the provisioned concurrency for each workload size is 0.
-	WorkloadSize ServedModelInputWorkloadSize `json:"workload_size,omitempty"`
+	// provisioned concurrency). Additional custom workload sizes can also be
+	// used when available in the workspace. If scale-to-zero is enabled, the
+	// lower bound of the provisioned concurrency for each workload size is 0.
+	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
 	// parameter is "CPU". For deep learning workloads, GPU acceleration is
@@ -1738,35 +1741,6 @@ func (s *ServedModelInput) UnmarshalJSON(b []byte) error {
 
 func (s ServedModelInput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type ServedModelInputWorkloadSize string
-
-const ServedModelInputWorkloadSizeLarge ServedModelInputWorkloadSize = `Large`
-
-const ServedModelInputWorkloadSizeMedium ServedModelInputWorkloadSize = `Medium`
-
-const ServedModelInputWorkloadSizeSmall ServedModelInputWorkloadSize = `Small`
-
-// String representation for [fmt.Print]
-func (f *ServedModelInputWorkloadSize) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ServedModelInputWorkloadSize) Set(v string) error {
-	switch v {
-	case `Large`, `Medium`, `Small`:
-		*f = ServedModelInputWorkloadSize(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "Large", "Medium", "Small"`, v)
-	}
-}
-
-// Type always returns ServedModelInputWorkloadSize to satisfy [pflag.Value] interface
-func (f *ServedModelInputWorkloadSize) Type() string {
-	return "ServedModelInputWorkloadSize"
 }
 
 // Please keep this in sync with with workload types in
@@ -1838,8 +1812,9 @@ type ServedModelOutput struct {
 	// single unit of provisioned concurrency can process one request at a time.
 	// Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
 	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
-	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
-	// the provisioned concurrency for each workload size is 0.
+	// provisioned concurrency). Additional custom workload sizes can also be
+	// used when available in the workspace. If scale-to-zero is enabled, the
+	// lower bound of the provisioned concurrency for each workload size is 0.
 	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this

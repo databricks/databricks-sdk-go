@@ -695,7 +695,7 @@ func (a *networkConnectivityImpl) CreateNetworkConnectivityConfiguration(ctx con
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &networkConnectivityConfiguration)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.NetworkConnectivityConfig, &networkConnectivityConfiguration)
 	return &networkConnectivityConfiguration, err
 }
 
@@ -706,7 +706,7 @@ func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context,
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &nccAzurePrivateEndpointRule)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.PrivateEndpointRule, &nccAzurePrivateEndpointRule)
 	return &nccAzurePrivateEndpointRule, err
 }
 
@@ -838,6 +838,20 @@ func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.C
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listNccAzurePrivateEndpointRulesResponse)
 	return &listNccAzurePrivateEndpointRulesResponse, err
+}
+
+func (a *networkConnectivityImpl) UpdateNccAzurePrivateEndpointRulePublic(ctx context.Context, request UpdateNccAzurePrivateEndpointRulePublicRequest) (*NccAzurePrivateEndpointRule, error) {
+	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.PrivateEndpointRule, &nccAzurePrivateEndpointRule)
+	return &nccAzurePrivateEndpointRule, err
 }
 
 // unexported type that holds implementations of just NotificationDestinations API methods

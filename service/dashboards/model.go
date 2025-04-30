@@ -79,7 +79,7 @@ type CancelQueryExecutionResponseStatus struct {
 
 // Create dashboard
 type CreateDashboardRequest struct {
-	Dashboard *Dashboard `json:"dashboard,omitempty"`
+	Dashboard Dashboard `json:"dashboard"`
 }
 
 // Create dashboard schedule
@@ -87,7 +87,7 @@ type CreateScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
 	DashboardId string `json:"-" url:"-"`
 
-	Schedule *Schedule `json:"schedule,omitempty"`
+	Schedule Schedule `json:"schedule"`
 }
 
 // Create schedule subscription
@@ -97,7 +97,7 @@ type CreateSubscriptionRequest struct {
 	// UUID identifying the schedule to which the subscription belongs.
 	ScheduleId string `json:"-" url:"-"`
 
-	Subscription *Subscription `json:"subscription,omitempty"`
+	Subscription Subscription `json:"subscription"`
 }
 
 type CronSchedule struct {
@@ -1340,7 +1340,7 @@ type UnpublishDashboardResponse struct {
 
 // Update dashboard
 type UpdateDashboardRequest struct {
-	Dashboard *Dashboard `json:"dashboard,omitempty"`
+	Dashboard Dashboard `json:"dashboard"`
 	// UUID identifying the dashboard.
 	DashboardId string `json:"-" url:"-"`
 }
@@ -1350,7 +1350,7 @@ type UpdateScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
 	DashboardId string `json:"-" url:"-"`
 
-	Schedule *Schedule `json:"schedule,omitempty"`
+	Schedule Schedule `json:"schedule"`
 	// UUID identifying the schedule.
 	ScheduleId string `json:"-" url:"-"`
 }

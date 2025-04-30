@@ -651,9 +651,8 @@ type CreateJob struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
-	// The performance mode on a serverless job. The performance target
-	// determines the level of compute performance or cost-efficiency for the
-	// run.
+	// The performance mode on a serverless job. This field determines the level
+	// of compute performance or cost-efficiency for the run.
 	//
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
@@ -1574,9 +1573,12 @@ func (s JobEmailNotifications) MarshalJSON() ([]byte, error) {
 type JobEnvironment struct {
 	// The key of an environment. It has to be unique within a job.
 	EnvironmentKey string `json:"environment_key"`
-	// The environment entity used to preserve serverless environment side panel
-	// and jobs' environment for non-notebook task. In this minimal environment
-	// spec, only pip dependencies are supported.
+	// The environment entity used to preserve serverless environment side
+	// panel, jobs' environment for non-notebook task, and DLT's environment for
+	// classic and serverless pipelines. (Note: DLT uses a copied version of the
+	// Environment proto below, at
+	// //spark/pipelines/api/protos/copied/libraries-environments-copy.proto) In
+	// this minimal environment spec, only pip dependencies are supported.
 	Spec *compute.Environment `json:"spec,omitempty"`
 }
 
@@ -1812,9 +1814,8 @@ type JobSettings struct {
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
 	// Job-level parameter definitions
 	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
-	// The performance mode on a serverless job. The performance target
-	// determines the level of compute performance or cost-efficiency for the
-	// run.
+	// The performance mode on a serverless job. This field determines the level
+	// of compute performance or cost-efficiency for the run.
 	//
 	// * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
 	// `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times
