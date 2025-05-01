@@ -130,7 +130,7 @@ type AlertsV2Service interface {
 	//
 	// Gets a list of alerts accessible to the user, ordered by creation time.
 	//
-	// Use ListAlertsAll() to get all ListAlertsV2ResponseAlert instances, which will iterate over every result page.
+	// Use ListAlertsAll() to get all AlertV2 instances, which will iterate over every result page.
 	ListAlerts(ctx context.Context, request ListAlertsV2Request) (*ListAlertsV2Response, error)
 
 	// Delete an alert.

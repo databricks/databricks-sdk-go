@@ -249,10 +249,10 @@ func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMes
 	return &WaitGetMessageGenieCompleted[GenieMessage]{
 		Response:       genieMessage,
 		ConversationId: genieCreateConversationMessageRequest.ConversationId,
-		MessageId:      genieMessage.Id,
+		MessageId:      genieMessage.MessageId,
 		SpaceId:        genieCreateConversationMessageRequest.SpaceId,
 		Poll: func(timeout time.Duration, callback func(*GenieMessage)) (*GenieMessage, error) {
-			return a.WaitGetMessageGenieCompleted(ctx, genieCreateConversationMessageRequest.ConversationId, genieMessage.Id, genieCreateConversationMessageRequest.SpaceId, timeout, callback)
+			return a.WaitGetMessageGenieCompleted(ctx, genieCreateConversationMessageRequest.ConversationId, genieMessage.MessageId, genieCreateConversationMessageRequest.SpaceId, timeout, callback)
 		},
 		timeout:  20 * time.Minute,
 		callback: nil,
