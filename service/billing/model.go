@@ -3,14 +3,146 @@
 package billing
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
+	"strings"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
+func identity[T any](obj *T) (*T, error) {
+	return obj, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+// Helper to strip trailing zeros in fractional part
+func rstripZeros(s string) string {
+	for len(s) > 0 && s[len(s)-1] == '0' {
+		s = s[:len(s)-1]
+	}
+	if len(s) > 0 && s[len(s)-1] == '.' {
+		s = s[:len(s)-1]
+	}
+	return s
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
+}
+
 type ActionConfiguration struct {
+	// Databricks action configuration ID.
+	ActionConfigurationId string
+	// The type of the action.
+	ActionType ActionConfigurationType
+	// Target for the action. For example, an email address.
+	Target string
+
+	ForceSendFields []string
+}
+
+func actionConfigurationToPb(st *ActionConfiguration) (*actionConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &actionConfigurationPb{}
+	actionConfigurationIdPb := &st.ActionConfigurationId
+	if actionConfigurationIdPb != nil {
+		pb.ActionConfigurationId = *actionConfigurationIdPb
+	}
+
+	actionTypePb := &st.ActionType
+	if actionTypePb != nil {
+		pb.ActionType = *actionTypePb
+	}
+
+	targetPb := &st.Target
+	if targetPb != nil {
+		pb.Target = *targetPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *ActionConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &actionConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := actionConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ActionConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := actionConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type actionConfigurationPb struct {
 	// Databricks action configuration ID.
 	ActionConfigurationId string `json:"action_configuration_id,omitempty"`
 	// The type of the action.
@@ -21,15 +153,38 @@ type ActionConfiguration struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *ActionConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func actionConfigurationFromPb(pb *actionConfigurationPb) (*ActionConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ActionConfiguration{}
+	actionConfigurationIdField := &pb.ActionConfigurationId
+	if actionConfigurationIdField != nil {
+		st.ActionConfigurationId = *actionConfigurationIdField
+	}
+	actionTypeField := &pb.ActionType
+	if actionTypeField != nil {
+		st.ActionType = *actionTypeField
+	}
+	targetField := &pb.Target
+	if targetField != nil {
+		st.Target = *targetField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s ActionConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *actionConfigurationPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st actionConfigurationPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type ActionConfigurationType string
+type actionConfigurationTypePb string
 
 const ActionConfigurationTypeEmailNotification ActionConfigurationType = `EMAIL_NOTIFICATION`
 
@@ -54,10 +209,119 @@ func (f *ActionConfigurationType) Type() string {
 	return "ActionConfigurationType"
 }
 
+func actionConfigurationTypeToPb(st *ActionConfigurationType) (*actionConfigurationTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := actionConfigurationTypePb(*st)
+	return &pb, nil
+}
+
+func actionConfigurationTypeFromPb(pb *actionConfigurationTypePb) (*ActionConfigurationType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ActionConfigurationType(*pb)
+	return &st, nil
+}
+
 type AlertConfiguration struct {
 	// Configured actions for this alert. These define what happens when an
 	// alert enters a triggered state.
-	ActionConfigurations []ActionConfiguration `json:"action_configurations,omitempty"`
+	ActionConfigurations []ActionConfiguration
+	// Databricks alert configuration ID.
+	AlertConfigurationId string
+	// The threshold for the budget alert to determine if it is in a triggered
+	// state. The number is evaluated based on `quantity_type`.
+	QuantityThreshold string
+	// The way to calculate cost for this budget alert. This is what
+	// `quantity_threshold` is measured in.
+	QuantityType AlertConfigurationQuantityType
+	// The time window of usage data for the budget.
+	TimePeriod AlertConfigurationTimePeriod
+	// The evaluation method to determine when this budget alert is in a
+	// triggered state.
+	TriggerType AlertConfigurationTriggerType
+
+	ForceSendFields []string
+}
+
+func alertConfigurationToPb(st *AlertConfiguration) (*alertConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &alertConfigurationPb{}
+
+	var actionConfigurationsPb []actionConfigurationPb
+	for _, item := range st.ActionConfigurations {
+		itemPb, err := actionConfigurationToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			actionConfigurationsPb = append(actionConfigurationsPb, *itemPb)
+		}
+	}
+	pb.ActionConfigurations = actionConfigurationsPb
+
+	alertConfigurationIdPb := &st.AlertConfigurationId
+	if alertConfigurationIdPb != nil {
+		pb.AlertConfigurationId = *alertConfigurationIdPb
+	}
+
+	quantityThresholdPb := &st.QuantityThreshold
+	if quantityThresholdPb != nil {
+		pb.QuantityThreshold = *quantityThresholdPb
+	}
+
+	quantityTypePb := &st.QuantityType
+	if quantityTypePb != nil {
+		pb.QuantityType = *quantityTypePb
+	}
+
+	timePeriodPb := &st.TimePeriod
+	if timePeriodPb != nil {
+		pb.TimePeriod = *timePeriodPb
+	}
+
+	triggerTypePb := &st.TriggerType
+	if triggerTypePb != nil {
+		pb.TriggerType = *triggerTypePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *AlertConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &alertConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := alertConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AlertConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := alertConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type alertConfigurationPb struct {
+	// Configured actions for this alert. These define what happens when an
+	// alert enters a triggered state.
+	ActionConfigurations []actionConfigurationPb `json:"action_configurations,omitempty"`
 	// Databricks alert configuration ID.
 	AlertConfigurationId string `json:"alert_configuration_id,omitempty"`
 	// The threshold for the budget alert to determine if it is in a triggered
@@ -75,15 +339,58 @@ type AlertConfiguration struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *AlertConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func alertConfigurationFromPb(pb *alertConfigurationPb) (*AlertConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &AlertConfiguration{}
+
+	var actionConfigurationsField []ActionConfiguration
+	for _, item := range pb.ActionConfigurations {
+		itemField, err := actionConfigurationFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemField != nil {
+			actionConfigurationsField = append(actionConfigurationsField, *itemField)
+		}
+	}
+	st.ActionConfigurations = actionConfigurationsField
+	alertConfigurationIdField := &pb.AlertConfigurationId
+	if alertConfigurationIdField != nil {
+		st.AlertConfigurationId = *alertConfigurationIdField
+	}
+	quantityThresholdField := &pb.QuantityThreshold
+	if quantityThresholdField != nil {
+		st.QuantityThreshold = *quantityThresholdField
+	}
+	quantityTypeField := &pb.QuantityType
+	if quantityTypeField != nil {
+		st.QuantityType = *quantityTypeField
+	}
+	timePeriodField := &pb.TimePeriod
+	if timePeriodField != nil {
+		st.TimePeriod = *timePeriodField
+	}
+	triggerTypeField := &pb.TriggerType
+	if triggerTypeField != nil {
+		st.TriggerType = *triggerTypeField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s AlertConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *alertConfigurationPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st alertConfigurationPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type AlertConfigurationQuantityType string
+type alertConfigurationQuantityTypePb string
 
 const AlertConfigurationQuantityTypeListPriceDollarsUsd AlertConfigurationQuantityType = `LIST_PRICE_DOLLARS_USD`
 
@@ -108,7 +415,24 @@ func (f *AlertConfigurationQuantityType) Type() string {
 	return "AlertConfigurationQuantityType"
 }
 
+func alertConfigurationQuantityTypeToPb(st *AlertConfigurationQuantityType) (*alertConfigurationQuantityTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := alertConfigurationQuantityTypePb(*st)
+	return &pb, nil
+}
+
+func alertConfigurationQuantityTypeFromPb(pb *alertConfigurationQuantityTypePb) (*AlertConfigurationQuantityType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AlertConfigurationQuantityType(*pb)
+	return &st, nil
+}
+
 type AlertConfigurationTimePeriod string
+type alertConfigurationTimePeriodPb string
 
 const AlertConfigurationTimePeriodMonth AlertConfigurationTimePeriod = `MONTH`
 
@@ -133,7 +457,24 @@ func (f *AlertConfigurationTimePeriod) Type() string {
 	return "AlertConfigurationTimePeriod"
 }
 
+func alertConfigurationTimePeriodToPb(st *AlertConfigurationTimePeriod) (*alertConfigurationTimePeriodPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := alertConfigurationTimePeriodPb(*st)
+	return &pb, nil
+}
+
+func alertConfigurationTimePeriodFromPb(pb *alertConfigurationTimePeriodPb) (*AlertConfigurationTimePeriod, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AlertConfigurationTimePeriod(*pb)
+	return &st, nil
+}
+
 type AlertConfigurationTriggerType string
+type alertConfigurationTriggerTypePb string
 
 const AlertConfigurationTriggerTypeCumulativeSpendingExceeded AlertConfigurationTriggerType = `CUMULATIVE_SPENDING_EXCEEDED`
 
@@ -158,12 +499,130 @@ func (f *AlertConfigurationTriggerType) Type() string {
 	return "AlertConfigurationTriggerType"
 }
 
+func alertConfigurationTriggerTypeToPb(st *AlertConfigurationTriggerType) (*alertConfigurationTriggerTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := alertConfigurationTriggerTypePb(*st)
+	return &pb, nil
+}
+
+func alertConfigurationTriggerTypeFromPb(pb *alertConfigurationTriggerTypePb) (*AlertConfigurationTriggerType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AlertConfigurationTriggerType(*pb)
+	return &st, nil
+}
+
 type BudgetConfiguration struct {
+	// Databricks account ID.
+	AccountId string
+	// Alerts to configure when this budget is in a triggered state. Budgets
+	// must have exactly one alert configuration.
+	AlertConfigurations []AlertConfiguration
+	// Databricks budget configuration ID.
+	BudgetConfigurationId string
+	// Creation time of this budget configuration.
+	CreateTime int64
+	// Human-readable name of budget configuration. Max Length: 128
+	DisplayName string
+	// Configured filters for this budget. These are applied to your account's
+	// usage to limit the scope of what is considered for this budget. Leave
+	// empty to include all usage for this account. All provided filters must be
+	// matched for usage to be included.
+	Filter *BudgetConfigurationFilter
+	// Update time of this budget configuration.
+	UpdateTime int64
+
+	ForceSendFields []string
+}
+
+func budgetConfigurationToPb(st *BudgetConfiguration) (*budgetConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &budgetConfigurationPb{}
+	accountIdPb := &st.AccountId
+	if accountIdPb != nil {
+		pb.AccountId = *accountIdPb
+	}
+
+	var alertConfigurationsPb []alertConfigurationPb
+	for _, item := range st.AlertConfigurations {
+		itemPb, err := alertConfigurationToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			alertConfigurationsPb = append(alertConfigurationsPb, *itemPb)
+		}
+	}
+	pb.AlertConfigurations = alertConfigurationsPb
+
+	budgetConfigurationIdPb := &st.BudgetConfigurationId
+	if budgetConfigurationIdPb != nil {
+		pb.BudgetConfigurationId = *budgetConfigurationIdPb
+	}
+
+	createTimePb := &st.CreateTime
+	if createTimePb != nil {
+		pb.CreateTime = *createTimePb
+	}
+
+	displayNamePb := &st.DisplayName
+	if displayNamePb != nil {
+		pb.DisplayName = *displayNamePb
+	}
+
+	filterPb, err := budgetConfigurationFilterToPb(st.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterPb != nil {
+		pb.Filter = filterPb
+	}
+
+	updateTimePb := &st.UpdateTime
+	if updateTimePb != nil {
+		pb.UpdateTime = *updateTimePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *BudgetConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &budgetConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := budgetConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BudgetConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := budgetConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type budgetConfigurationPb struct {
 	// Databricks account ID.
 	AccountId string `json:"account_id,omitempty"`
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
-	AlertConfigurations []AlertConfiguration `json:"alert_configurations,omitempty"`
+	AlertConfigurations []alertConfigurationPb `json:"alert_configurations,omitempty"`
 	// Databricks budget configuration ID.
 	BudgetConfigurationId string `json:"budget_configuration_id,omitempty"`
 	// Creation time of this budget configuration.
@@ -174,37 +633,253 @@ type BudgetConfiguration struct {
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
-	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	Filter *budgetConfigurationFilterPb `json:"filter,omitempty"`
 	// Update time of this budget configuration.
 	UpdateTime int64 `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *BudgetConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func budgetConfigurationFromPb(pb *budgetConfigurationPb) (*BudgetConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetConfiguration{}
+	accountIdField := &pb.AccountId
+	if accountIdField != nil {
+		st.AccountId = *accountIdField
+	}
+
+	var alertConfigurationsField []AlertConfiguration
+	for _, item := range pb.AlertConfigurations {
+		itemField, err := alertConfigurationFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemField != nil {
+			alertConfigurationsField = append(alertConfigurationsField, *itemField)
+		}
+	}
+	st.AlertConfigurations = alertConfigurationsField
+	budgetConfigurationIdField := &pb.BudgetConfigurationId
+	if budgetConfigurationIdField != nil {
+		st.BudgetConfigurationId = *budgetConfigurationIdField
+	}
+	createTimeField := &pb.CreateTime
+	if createTimeField != nil {
+		st.CreateTime = *createTimeField
+	}
+	displayNameField := &pb.DisplayName
+	if displayNameField != nil {
+		st.DisplayName = *displayNameField
+	}
+	filterField, err := budgetConfigurationFilterFromPb(pb.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterField != nil {
+		st.Filter = filterField
+	}
+	updateTimeField := &pb.UpdateTime
+	if updateTimeField != nil {
+		st.UpdateTime = *updateTimeField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s BudgetConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *budgetConfigurationPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st budgetConfigurationPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type BudgetConfigurationFilter struct {
 	// A list of tag keys and values that will limit the budget to usage that
 	// includes those specific custom tags. Tags are case-sensitive and should
 	// be entered exactly as they appear in your usage data.
-	Tags []BudgetConfigurationFilterTagClause `json:"tags,omitempty"`
+	Tags []BudgetConfigurationFilterTagClause
 	// If provided, usage must match with the provided Databricks workspace IDs.
-	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause `json:"workspace_id,omitempty"`
+	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause
+}
+
+func budgetConfigurationFilterToPb(st *BudgetConfigurationFilter) (*budgetConfigurationFilterPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &budgetConfigurationFilterPb{}
+
+	var tagsPb []budgetConfigurationFilterTagClausePb
+	for _, item := range st.Tags {
+		itemPb, err := budgetConfigurationFilterTagClauseToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			tagsPb = append(tagsPb, *itemPb)
+		}
+	}
+	pb.Tags = tagsPb
+
+	workspaceIdPb, err := budgetConfigurationFilterWorkspaceIdClauseToPb(st.WorkspaceId)
+	if err != nil {
+		return nil, err
+	}
+	if workspaceIdPb != nil {
+		pb.WorkspaceId = workspaceIdPb
+	}
+
+	return pb, nil
+}
+
+func (st *BudgetConfigurationFilter) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &budgetConfigurationFilterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := budgetConfigurationFilterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BudgetConfigurationFilter) MarshalJSON() ([]byte, error) {
+	pb, err := budgetConfigurationFilterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type budgetConfigurationFilterPb struct {
+	// A list of tag keys and values that will limit the budget to usage that
+	// includes those specific custom tags. Tags are case-sensitive and should
+	// be entered exactly as they appear in your usage data.
+	Tags []budgetConfigurationFilterTagClausePb `json:"tags,omitempty"`
+	// If provided, usage must match with the provided Databricks workspace IDs.
+	WorkspaceId *budgetConfigurationFilterWorkspaceIdClausePb `json:"workspace_id,omitempty"`
+}
+
+func budgetConfigurationFilterFromPb(pb *budgetConfigurationFilterPb) (*BudgetConfigurationFilter, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetConfigurationFilter{}
+
+	var tagsField []BudgetConfigurationFilterTagClause
+	for _, item := range pb.Tags {
+		itemField, err := budgetConfigurationFilterTagClauseFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemField != nil {
+			tagsField = append(tagsField, *itemField)
+		}
+	}
+	st.Tags = tagsField
+	workspaceIdField, err := budgetConfigurationFilterWorkspaceIdClauseFromPb(pb.WorkspaceId)
+	if err != nil {
+		return nil, err
+	}
+	if workspaceIdField != nil {
+		st.WorkspaceId = workspaceIdField
+	}
+
+	return st, nil
 }
 
 type BudgetConfigurationFilterClause struct {
+	Operator BudgetConfigurationFilterOperator
+
+	Values []string
+}
+
+func budgetConfigurationFilterClauseToPb(st *BudgetConfigurationFilterClause) (*budgetConfigurationFilterClausePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &budgetConfigurationFilterClausePb{}
+	operatorPb := &st.Operator
+	if operatorPb != nil {
+		pb.Operator = *operatorPb
+	}
+
+	var valuesPb []string
+	for _, item := range st.Values {
+		itemPb := &item
+		if itemPb != nil {
+			valuesPb = append(valuesPb, *itemPb)
+		}
+	}
+	pb.Values = valuesPb
+
+	return pb, nil
+}
+
+func (st *BudgetConfigurationFilterClause) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &budgetConfigurationFilterClausePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := budgetConfigurationFilterClauseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BudgetConfigurationFilterClause) MarshalJSON() ([]byte, error) {
+	pb, err := budgetConfigurationFilterClauseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type budgetConfigurationFilterClausePb struct {
 	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
 
 	Values []string `json:"values,omitempty"`
 }
 
+func budgetConfigurationFilterClauseFromPb(pb *budgetConfigurationFilterClausePb) (*BudgetConfigurationFilterClause, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetConfigurationFilterClause{}
+	operatorField := &pb.Operator
+	if operatorField != nil {
+		st.Operator = *operatorField
+	}
+
+	var valuesField []string
+	for _, item := range pb.Values {
+		itemField := &item
+		if itemField != nil {
+			valuesField = append(valuesField, *itemField)
+		}
+	}
+	st.Values = valuesField
+
+	return st, nil
+}
+
 type BudgetConfigurationFilterOperator string
+type budgetConfigurationFilterOperatorPb string
 
 const BudgetConfigurationFilterOperatorIn BudgetConfigurationFilterOperator = `IN`
 
@@ -229,26 +904,193 @@ func (f *BudgetConfigurationFilterOperator) Type() string {
 	return "BudgetConfigurationFilterOperator"
 }
 
+func budgetConfigurationFilterOperatorToPb(st *BudgetConfigurationFilterOperator) (*budgetConfigurationFilterOperatorPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := budgetConfigurationFilterOperatorPb(*st)
+	return &pb, nil
+}
+
+func budgetConfigurationFilterOperatorFromPb(pb *budgetConfigurationFilterOperatorPb) (*BudgetConfigurationFilterOperator, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := BudgetConfigurationFilterOperator(*pb)
+	return &st, nil
+}
+
 type BudgetConfigurationFilterTagClause struct {
+	Key string
+
+	Value *BudgetConfigurationFilterClause
+
+	ForceSendFields []string
+}
+
+func budgetConfigurationFilterTagClauseToPb(st *BudgetConfigurationFilterTagClause) (*budgetConfigurationFilterTagClausePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &budgetConfigurationFilterTagClausePb{}
+	keyPb := &st.Key
+	if keyPb != nil {
+		pb.Key = *keyPb
+	}
+
+	valuePb, err := budgetConfigurationFilterClauseToPb(st.Value)
+	if err != nil {
+		return nil, err
+	}
+	if valuePb != nil {
+		pb.Value = valuePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *BudgetConfigurationFilterTagClause) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &budgetConfigurationFilterTagClausePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := budgetConfigurationFilterTagClauseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BudgetConfigurationFilterTagClause) MarshalJSON() ([]byte, error) {
+	pb, err := budgetConfigurationFilterTagClauseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type budgetConfigurationFilterTagClausePb struct {
 	Key string `json:"key,omitempty"`
 
-	Value *BudgetConfigurationFilterClause `json:"value,omitempty"`
+	Value *budgetConfigurationFilterClausePb `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *BudgetConfigurationFilterTagClause) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func budgetConfigurationFilterTagClauseFromPb(pb *budgetConfigurationFilterTagClausePb) (*BudgetConfigurationFilterTagClause, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetConfigurationFilterTagClause{}
+	keyField := &pb.Key
+	if keyField != nil {
+		st.Key = *keyField
+	}
+	valueField, err := budgetConfigurationFilterClauseFromPb(pb.Value)
+	if err != nil {
+		return nil, err
+	}
+	if valueField != nil {
+		st.Value = valueField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s BudgetConfigurationFilterTagClause) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *budgetConfigurationFilterTagClausePb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st budgetConfigurationFilterTagClausePb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type BudgetConfigurationFilterWorkspaceIdClause struct {
+	Operator BudgetConfigurationFilterOperator
+
+	Values []int64
+}
+
+func budgetConfigurationFilterWorkspaceIdClauseToPb(st *BudgetConfigurationFilterWorkspaceIdClause) (*budgetConfigurationFilterWorkspaceIdClausePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &budgetConfigurationFilterWorkspaceIdClausePb{}
+	operatorPb := &st.Operator
+	if operatorPb != nil {
+		pb.Operator = *operatorPb
+	}
+
+	var valuesPb []int64
+	for _, item := range st.Values {
+		itemPb := &item
+		if itemPb != nil {
+			valuesPb = append(valuesPb, *itemPb)
+		}
+	}
+	pb.Values = valuesPb
+
+	return pb, nil
+}
+
+func (st *BudgetConfigurationFilterWorkspaceIdClause) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &budgetConfigurationFilterWorkspaceIdClausePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := budgetConfigurationFilterWorkspaceIdClauseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BudgetConfigurationFilterWorkspaceIdClause) MarshalJSON() ([]byte, error) {
+	pb, err := budgetConfigurationFilterWorkspaceIdClauseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type budgetConfigurationFilterWorkspaceIdClausePb struct {
 	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
 
 	Values []int64 `json:"values,omitempty"`
+}
+
+func budgetConfigurationFilterWorkspaceIdClauseFromPb(pb *budgetConfigurationFilterWorkspaceIdClausePb) (*BudgetConfigurationFilterWorkspaceIdClause, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetConfigurationFilterWorkspaceIdClause{}
+	operatorField := &pb.Operator
+	if operatorField != nil {
+		st.Operator = *operatorField
+	}
+
+	var valuesField []int64
+	for _, item := range pb.Values {
+		itemField := &item
+		if itemField != nil {
+			valuesField = append(valuesField, *itemField)
+		}
+	}
+	st.Values = valuesField
+
+	return st, nil
 }
 
 // Contains the BudgetPolicy details.
@@ -256,10 +1098,95 @@ type BudgetPolicy struct {
 	// List of workspaces that this budget policy will be exclusively bound to.
 	// An empty binding implies that this budget policy is open to any workspace
 	// in the account.
+	BindingWorkspaceIds []int64
+	// A list of tags defined by the customer. At most 20 entries are allowed
+	// per policy.
+	CustomTags []compute.CustomPolicyTag
+	// The Id of the policy. This field is generated by Databricks and globally
+	// unique.
+	PolicyId string
+	// The name of the policy. - Must be unique among active policies. - Can
+	// contain only characters from the ISO 8859-1 (latin1) set. - Can't start
+	// with reserved keywords such as `databricks:default-policy`.
+	PolicyName string
+
+	ForceSendFields []string
+}
+
+func budgetPolicyToPb(st *BudgetPolicy) (*budgetPolicyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &budgetPolicyPb{}
+
+	var bindingWorkspaceIdsPb []int64
+	for _, item := range st.BindingWorkspaceIds {
+		itemPb := &item
+		if itemPb != nil {
+			bindingWorkspaceIdsPb = append(bindingWorkspaceIdsPb, *itemPb)
+		}
+	}
+	pb.BindingWorkspaceIds = bindingWorkspaceIdsPb
+
+	var customTagsPb []compute.CustomPolicyTagPb
+	for _, item := range st.CustomTags {
+		itemPb, err := compute.CustomPolicyTagToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			customTagsPb = append(customTagsPb, *itemPb)
+		}
+	}
+	pb.CustomTags = customTagsPb
+
+	policyIdPb := &st.PolicyId
+	if policyIdPb != nil {
+		pb.PolicyId = *policyIdPb
+	}
+
+	policyNamePb := &st.PolicyName
+	if policyNamePb != nil {
+		pb.PolicyName = *policyNamePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *BudgetPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &budgetPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := budgetPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BudgetPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := budgetPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type budgetPolicyPb struct {
+	// List of workspaces that this budget policy will be exclusively bound to.
+	// An empty binding implies that this budget policy is open to any workspace
+	// in the account.
 	BindingWorkspaceIds []int64 `json:"binding_workspace_ids,omitempty"`
 	// A list of tags defined by the customer. At most 20 entries are allowed
 	// per policy.
-	CustomTags []compute.CustomPolicyTag `json:"custom_tags,omitempty"`
+	CustomTags []compute.CustomPolicyTagPb `json:"custom_tags,omitempty"`
 	// The Id of the policy. This field is generated by Databricks and globally
 	// unique.
 	PolicyId string `json:"policy_id,omitempty"`
@@ -271,15 +1198,110 @@ type BudgetPolicy struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *BudgetPolicy) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func budgetPolicyFromPb(pb *budgetPolicyPb) (*BudgetPolicy, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &BudgetPolicy{}
+
+	var bindingWorkspaceIdsField []int64
+	for _, item := range pb.BindingWorkspaceIds {
+		itemField := &item
+		if itemField != nil {
+			bindingWorkspaceIdsField = append(bindingWorkspaceIdsField, *itemField)
+		}
+	}
+	st.BindingWorkspaceIds = bindingWorkspaceIdsField
+
+	var customTagsField []compute.CustomPolicyTag
+	for _, item := range pb.CustomTags {
+		itemField, err := compute.CustomPolicyTagFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemField != nil {
+			customTagsField = append(customTagsField, *itemField)
+		}
+	}
+	st.CustomTags = customTagsField
+	policyIdField := &pb.PolicyId
+	if policyIdField != nil {
+		st.PolicyId = *policyIdField
+	}
+	policyNameField := &pb.PolicyName
+	if policyNameField != nil {
+		st.PolicyName = *policyNameField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s BudgetPolicy) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *budgetPolicyPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st budgetPolicyPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type CreateBillingUsageDashboardRequest struct {
+	// Workspace level usage dashboard shows usage data for the specified
+	// workspace ID. Global level usage dashboard shows usage data for all
+	// workspaces in the account.
+	DashboardType UsageDashboardType
+	// The workspace ID of the workspace in which the usage dashboard is
+	// created.
+	WorkspaceId int64
+
+	ForceSendFields []string
+}
+
+func createBillingUsageDashboardRequestToPb(st *CreateBillingUsageDashboardRequest) (*createBillingUsageDashboardRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &createBillingUsageDashboardRequestPb{}
+	dashboardTypePb := &st.DashboardType
+	if dashboardTypePb != nil {
+		pb.DashboardType = *dashboardTypePb
+	}
+
+	workspaceIdPb := &st.WorkspaceId
+	if workspaceIdPb != nil {
+		pb.WorkspaceId = *workspaceIdPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *CreateBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createBillingUsageDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createBillingUsageDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createBillingUsageDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type createBillingUsageDashboardRequestPb struct {
 	// Workspace level usage dashboard shows usage data for the specified
 	// workspace ID. Global level usage dashboard shows usage data for all
 	// workspaces in the account.
@@ -291,55 +1313,304 @@ type CreateBillingUsageDashboardRequest struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *CreateBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func createBillingUsageDashboardRequestFromPb(pb *createBillingUsageDashboardRequestPb) (*CreateBillingUsageDashboardRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBillingUsageDashboardRequest{}
+	dashboardTypeField := &pb.DashboardType
+	if dashboardTypeField != nil {
+		st.DashboardType = *dashboardTypeField
+	}
+	workspaceIdField := &pb.WorkspaceId
+	if workspaceIdField != nil {
+		st.WorkspaceId = *workspaceIdField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s CreateBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *createBillingUsageDashboardRequestPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st createBillingUsageDashboardRequestPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type CreateBillingUsageDashboardResponse struct {
+	// The unique id of the usage dashboard.
+	DashboardId string
+
+	ForceSendFields []string
+}
+
+func createBillingUsageDashboardResponseToPb(st *CreateBillingUsageDashboardResponse) (*createBillingUsageDashboardResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &createBillingUsageDashboardResponsePb{}
+	dashboardIdPb := &st.DashboardId
+	if dashboardIdPb != nil {
+		pb.DashboardId = *dashboardIdPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *CreateBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createBillingUsageDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createBillingUsageDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createBillingUsageDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type createBillingUsageDashboardResponsePb struct {
 	// The unique id of the usage dashboard.
 	DashboardId string `json:"dashboard_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *CreateBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func createBillingUsageDashboardResponseFromPb(pb *createBillingUsageDashboardResponsePb) (*CreateBillingUsageDashboardResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBillingUsageDashboardResponse{}
+	dashboardIdField := &pb.DashboardId
+	if dashboardIdField != nil {
+		st.DashboardId = *dashboardIdField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s CreateBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *createBillingUsageDashboardResponsePb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st createBillingUsageDashboardResponsePb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type CreateBudgetConfigurationBudget struct {
 	// Databricks account ID.
+	AccountId string
+	// Alerts to configure when this budget is in a triggered state. Budgets
+	// must have exactly one alert configuration.
+	AlertConfigurations []CreateBudgetConfigurationBudgetAlertConfigurations
+	// Human-readable name of budget configuration. Max Length: 128
+	DisplayName string
+	// Configured filters for this budget. These are applied to your account's
+	// usage to limit the scope of what is considered for this budget. Leave
+	// empty to include all usage for this account. All provided filters must be
+	// matched for usage to be included.
+	Filter *BudgetConfigurationFilter
+
+	ForceSendFields []string
+}
+
+func createBudgetConfigurationBudgetToPb(st *CreateBudgetConfigurationBudget) (*createBudgetConfigurationBudgetPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &createBudgetConfigurationBudgetPb{}
+	accountIdPb := &st.AccountId
+	if accountIdPb != nil {
+		pb.AccountId = *accountIdPb
+	}
+
+	var alertConfigurationsPb []createBudgetConfigurationBudgetAlertConfigurationsPb
+	for _, item := range st.AlertConfigurations {
+		itemPb, err := createBudgetConfigurationBudgetAlertConfigurationsToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			alertConfigurationsPb = append(alertConfigurationsPb, *itemPb)
+		}
+	}
+	pb.AlertConfigurations = alertConfigurationsPb
+
+	displayNamePb := &st.DisplayName
+	if displayNamePb != nil {
+		pb.DisplayName = *displayNamePb
+	}
+
+	filterPb, err := budgetConfigurationFilterToPb(st.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterPb != nil {
+		pb.Filter = filterPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *CreateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createBudgetConfigurationBudgetPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createBudgetConfigurationBudgetFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
+	pb, err := createBudgetConfigurationBudgetToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type createBudgetConfigurationBudgetPb struct {
+	// Databricks account ID.
 	AccountId string `json:"account_id,omitempty"`
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
-	AlertConfigurations []CreateBudgetConfigurationBudgetAlertConfigurations `json:"alert_configurations,omitempty"`
+	AlertConfigurations []createBudgetConfigurationBudgetAlertConfigurationsPb `json:"alert_configurations,omitempty"`
 	// Human-readable name of budget configuration. Max Length: 128
 	DisplayName string `json:"display_name,omitempty"`
 	// Configured filters for this budget. These are applied to your account's
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
-	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	Filter *budgetConfigurationFilterPb `json:"filter,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *CreateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func createBudgetConfigurationBudgetFromPb(pb *createBudgetConfigurationBudgetPb) (*CreateBudgetConfigurationBudget, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetConfigurationBudget{}
+	accountIdField := &pb.AccountId
+	if accountIdField != nil {
+		st.AccountId = *accountIdField
+	}
+
+	var alertConfigurationsField []CreateBudgetConfigurationBudgetAlertConfigurations
+	for _, item := range pb.AlertConfigurations {
+		itemField, err := createBudgetConfigurationBudgetAlertConfigurationsFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemField != nil {
+			alertConfigurationsField = append(alertConfigurationsField, *itemField)
+		}
+	}
+	st.AlertConfigurations = alertConfigurationsField
+	displayNameField := &pb.DisplayName
+	if displayNameField != nil {
+		st.DisplayName = *displayNameField
+	}
+	filterField, err := budgetConfigurationFilterFromPb(pb.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterField != nil {
+		st.Filter = filterField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s CreateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *createBudgetConfigurationBudgetPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st createBudgetConfigurationBudgetPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type CreateBudgetConfigurationBudgetActionConfigurations struct {
+	// The type of the action.
+	ActionType ActionConfigurationType
+	// Target for the action. For example, an email address.
+	Target string
+
+	ForceSendFields []string
+}
+
+func createBudgetConfigurationBudgetActionConfigurationsToPb(st *CreateBudgetConfigurationBudgetActionConfigurations) (*createBudgetConfigurationBudgetActionConfigurationsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &createBudgetConfigurationBudgetActionConfigurationsPb{}
+	actionTypePb := &st.ActionType
+	if actionTypePb != nil {
+		pb.ActionType = *actionTypePb
+	}
+
+	targetPb := &st.Target
+	if targetPb != nil {
+		pb.Target = *targetPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *CreateBudgetConfigurationBudgetActionConfigurations) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createBudgetConfigurationBudgetActionConfigurationsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createBudgetConfigurationBudgetActionConfigurationsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateBudgetConfigurationBudgetActionConfigurations) MarshalJSON() ([]byte, error) {
+	pb, err := createBudgetConfigurationBudgetActionConfigurationsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type createBudgetConfigurationBudgetActionConfigurationsPb struct {
 	// The type of the action.
 	ActionType ActionConfigurationType `json:"action_type,omitempty"`
 	// Target for the action. For example, an email address.
@@ -348,18 +1619,122 @@ type CreateBudgetConfigurationBudgetActionConfigurations struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *CreateBudgetConfigurationBudgetActionConfigurations) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func createBudgetConfigurationBudgetActionConfigurationsFromPb(pb *createBudgetConfigurationBudgetActionConfigurationsPb) (*CreateBudgetConfigurationBudgetActionConfigurations, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetConfigurationBudgetActionConfigurations{}
+	actionTypeField := &pb.ActionType
+	if actionTypeField != nil {
+		st.ActionType = *actionTypeField
+	}
+	targetField := &pb.Target
+	if targetField != nil {
+		st.Target = *targetField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s CreateBudgetConfigurationBudgetActionConfigurations) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *createBudgetConfigurationBudgetActionConfigurationsPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st createBudgetConfigurationBudgetActionConfigurationsPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type CreateBudgetConfigurationBudgetAlertConfigurations struct {
 	// Configured actions for this alert. These define what happens when an
 	// alert enters a triggered state.
-	ActionConfigurations []CreateBudgetConfigurationBudgetActionConfigurations `json:"action_configurations,omitempty"`
+	ActionConfigurations []CreateBudgetConfigurationBudgetActionConfigurations
+	// The threshold for the budget alert to determine if it is in a triggered
+	// state. The number is evaluated based on `quantity_type`.
+	QuantityThreshold string
+	// The way to calculate cost for this budget alert. This is what
+	// `quantity_threshold` is measured in.
+	QuantityType AlertConfigurationQuantityType
+	// The time window of usage data for the budget.
+	TimePeriod AlertConfigurationTimePeriod
+	// The evaluation method to determine when this budget alert is in a
+	// triggered state.
+	TriggerType AlertConfigurationTriggerType
+
+	ForceSendFields []string
+}
+
+func createBudgetConfigurationBudgetAlertConfigurationsToPb(st *CreateBudgetConfigurationBudgetAlertConfigurations) (*createBudgetConfigurationBudgetAlertConfigurationsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &createBudgetConfigurationBudgetAlertConfigurationsPb{}
+
+	var actionConfigurationsPb []createBudgetConfigurationBudgetActionConfigurationsPb
+	for _, item := range st.ActionConfigurations {
+		itemPb, err := createBudgetConfigurationBudgetActionConfigurationsToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			actionConfigurationsPb = append(actionConfigurationsPb, *itemPb)
+		}
+	}
+	pb.ActionConfigurations = actionConfigurationsPb
+
+	quantityThresholdPb := &st.QuantityThreshold
+	if quantityThresholdPb != nil {
+		pb.QuantityThreshold = *quantityThresholdPb
+	}
+
+	quantityTypePb := &st.QuantityType
+	if quantityTypePb != nil {
+		pb.QuantityType = *quantityTypePb
+	}
+
+	timePeriodPb := &st.TimePeriod
+	if timePeriodPb != nil {
+		pb.TimePeriod = *timePeriodPb
+	}
+
+	triggerTypePb := &st.TriggerType
+	if triggerTypePb != nil {
+		pb.TriggerType = *triggerTypePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *CreateBudgetConfigurationBudgetAlertConfigurations) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createBudgetConfigurationBudgetAlertConfigurationsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createBudgetConfigurationBudgetAlertConfigurationsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateBudgetConfigurationBudgetAlertConfigurations) MarshalJSON() ([]byte, error) {
+	pb, err := createBudgetConfigurationBudgetAlertConfigurationsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type createBudgetConfigurationBudgetAlertConfigurationsPb struct {
+	// Configured actions for this alert. These define what happens when an
+	// alert enters a triggered state.
+	ActionConfigurations []createBudgetConfigurationBudgetActionConfigurationsPb `json:"action_configurations,omitempty"`
 	// The threshold for the budget alert to determine if it is in a triggered
 	// state. The number is evaluated based on `quantity_type`.
 	QuantityThreshold string `json:"quantity_threshold,omitempty"`
@@ -375,22 +1750,184 @@ type CreateBudgetConfigurationBudgetAlertConfigurations struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *CreateBudgetConfigurationBudgetAlertConfigurations) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func createBudgetConfigurationBudgetAlertConfigurationsFromPb(pb *createBudgetConfigurationBudgetAlertConfigurationsPb) (*CreateBudgetConfigurationBudgetAlertConfigurations, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetConfigurationBudgetAlertConfigurations{}
+
+	var actionConfigurationsField []CreateBudgetConfigurationBudgetActionConfigurations
+	for _, item := range pb.ActionConfigurations {
+		itemField, err := createBudgetConfigurationBudgetActionConfigurationsFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemField != nil {
+			actionConfigurationsField = append(actionConfigurationsField, *itemField)
+		}
+	}
+	st.ActionConfigurations = actionConfigurationsField
+	quantityThresholdField := &pb.QuantityThreshold
+	if quantityThresholdField != nil {
+		st.QuantityThreshold = *quantityThresholdField
+	}
+	quantityTypeField := &pb.QuantityType
+	if quantityTypeField != nil {
+		st.QuantityType = *quantityTypeField
+	}
+	timePeriodField := &pb.TimePeriod
+	if timePeriodField != nil {
+		st.TimePeriod = *timePeriodField
+	}
+	triggerTypeField := &pb.TriggerType
+	if triggerTypeField != nil {
+		st.TriggerType = *triggerTypeField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s CreateBudgetConfigurationBudgetAlertConfigurations) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *createBudgetConfigurationBudgetAlertConfigurationsPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st createBudgetConfigurationBudgetAlertConfigurationsPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type CreateBudgetConfigurationRequest struct {
 	// Properties of the new budget configuration.
-	Budget CreateBudgetConfigurationBudget `json:"budget"`
+	Budget CreateBudgetConfigurationBudget
+}
+
+func createBudgetConfigurationRequestToPb(st *CreateBudgetConfigurationRequest) (*createBudgetConfigurationRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &createBudgetConfigurationRequestPb{}
+	budgetPb, err := createBudgetConfigurationBudgetToPb(&st.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetPb != nil {
+		pb.Budget = *budgetPb
+	}
+
+	return pb, nil
+}
+
+func (st *CreateBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createBudgetConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createBudgetConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createBudgetConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type createBudgetConfigurationRequestPb struct {
+	// Properties of the new budget configuration.
+	Budget createBudgetConfigurationBudgetPb `json:"budget"`
+}
+
+func createBudgetConfigurationRequestFromPb(pb *createBudgetConfigurationRequestPb) (*CreateBudgetConfigurationRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetConfigurationRequest{}
+	budgetField, err := createBudgetConfigurationBudgetFromPb(&pb.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetField != nil {
+		st.Budget = *budgetField
+	}
+
+	return st, nil
 }
 
 type CreateBudgetConfigurationResponse struct {
 	// The created budget configuration.
-	Budget *BudgetConfiguration `json:"budget,omitempty"`
+	Budget *BudgetConfiguration
+}
+
+func createBudgetConfigurationResponseToPb(st *CreateBudgetConfigurationResponse) (*createBudgetConfigurationResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &createBudgetConfigurationResponsePb{}
+	budgetPb, err := budgetConfigurationToPb(st.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetPb != nil {
+		pb.Budget = budgetPb
+	}
+
+	return pb, nil
+}
+
+func (st *CreateBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createBudgetConfigurationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createBudgetConfigurationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateBudgetConfigurationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createBudgetConfigurationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type createBudgetConfigurationResponsePb struct {
+	// The created budget configuration.
+	Budget *budgetConfigurationPb `json:"budget,omitempty"`
+}
+
+func createBudgetConfigurationResponseFromPb(pb *createBudgetConfigurationResponsePb) (*CreateBudgetConfigurationResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetConfigurationResponse{}
+	budgetField, err := budgetConfigurationFromPb(pb.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetField != nil {
+		st.Budget = budgetField
+	}
+
+	return st, nil
 }
 
 // A request to create a BudgetPolicy.
@@ -398,7 +1935,67 @@ type CreateBudgetPolicyRequest struct {
 	// The policy to create. `policy_id` needs to be empty as it will be
 	// generated `policy_name` must be provided, custom_tags may need to be
 	// provided depending on the cloud provider. All other fields are optional.
-	Policy *BudgetPolicy `json:"policy,omitempty"`
+	Policy *BudgetPolicy
+	// A unique identifier for this request. Restricted to 36 ASCII characters.
+	// A random UUID is recommended. This request is only idempotent if a
+	// `request_id` is provided.
+	RequestId string
+
+	ForceSendFields []string
+}
+
+func createBudgetPolicyRequestToPb(st *CreateBudgetPolicyRequest) (*createBudgetPolicyRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &createBudgetPolicyRequestPb{}
+	policyPb, err := budgetPolicyToPb(st.Policy)
+	if err != nil {
+		return nil, err
+	}
+	if policyPb != nil {
+		pb.Policy = policyPb
+	}
+
+	requestIdPb := &st.RequestId
+	if requestIdPb != nil {
+		pb.RequestId = *requestIdPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *CreateBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createBudgetPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createBudgetPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createBudgetPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type createBudgetPolicyRequestPb struct {
+	// The policy to create. `policy_id` needs to be empty as it will be
+	// generated `policy_name` must be provided, custom_tags may need to be
+	// provided depending on the cloud provider. All other fields are optional.
+	Policy *budgetPolicyPb `json:"policy,omitempty"`
 	// A unique identifier for this request. Restricted to 36 ASCII characters.
 	// A random UUID is recommended. This request is only idempotent if a
 	// `request_id` is provided.
@@ -407,15 +2004,193 @@ type CreateBudgetPolicyRequest struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *CreateBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func createBudgetPolicyRequestFromPb(pb *createBudgetPolicyRequestPb) (*CreateBudgetPolicyRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateBudgetPolicyRequest{}
+	policyField, err := budgetPolicyFromPb(pb.Policy)
+	if err != nil {
+		return nil, err
+	}
+	if policyField != nil {
+		st.Policy = policyField
+	}
+	requestIdField := &pb.RequestId
+	if requestIdField != nil {
+		st.RequestId = *requestIdField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s CreateBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *createBudgetPolicyRequestPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st createBudgetPolicyRequestPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type CreateLogDeliveryConfigurationParams struct {
+	// The optional human-readable name of the log delivery configuration.
+	// Defaults to empty.
+	ConfigName string
+	// The ID for a method:credentials/create that represents the AWS IAM role
+	// with policy and trust relationship as described in the main billable
+	// usage documentation page. See [Configure billable usage delivery].
+	//
+	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	CredentialsId string
+	// The optional delivery path prefix within Amazon S3 storage. Defaults to
+	// empty, which means that logs are delivered to the root of the bucket.
+	// This must be a valid S3 object key. This must not start or end with a
+	// slash character.
+	DeliveryPathPrefix string
+	// This field applies only if `log_type` is `BILLABLE_USAGE`. This is the
+	// optional start month and year for delivery, specified in `YYYY-MM`
+	// format. Defaults to current year and month. `BILLABLE_USAGE` logs are not
+	// available for usage before March 2019 (`2019-03`).
+	DeliveryStartTime string
+	// Log delivery type. Supported values are:
+	//
+	// * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the
+	// CSV schema, see the [View billable usage].
+	//
+	// * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema,
+	// see [Configure audit logging]
+	//
+	// [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	LogType LogType
+	// The file type of log delivery.
+	//
+	// * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the
+	// CSV (comma-separated values) format is supported. For the schema, see the
+	// [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be
+	// `JSON`. Only the JSON (JavaScript Object Notation) format is supported.
+	// For the schema, see the [Configuring audit logs].
+	//
+	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+	OutputFormat OutputFormat
+	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
+	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
+	// the configuration](#operation/patch-log-delivery-config-status) later.
+	// Deletion of a configuration is not supported, so disable a log delivery
+	// configuration that is no longer needed.
+	Status LogDeliveryConfigStatus
+	// The ID for a method:storage/create that represents the S3 bucket with
+	// bucket policy as described in the main billable usage documentation page.
+	// See [Configure billable usage delivery].
+	//
+	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	StorageConfigurationId string
+	// Optional filter that specifies workspace IDs to deliver logs for. By
+	// default the workspace filter is empty and log delivery applies at the
+	// account level, delivering workspace-level logs for all workspaces in your
+	// account, plus account level logs. You can optionally set this field to an
+	// array of workspace IDs (each one is an `int64`) to which log delivery
+	// should apply, in which case only workspace-level logs relating to the
+	// specified workspaces are delivered. If you plan to use different log
+	// delivery configurations for different workspaces, set this field
+	// explicitly. Be aware that delivery configurations mentioning specific
+	// workspaces won't apply to new workspaces created in the future, and
+	// delivery won't include account level logs. For some types of Databricks
+	// deployments there is only one workspace per account ID, so this field is
+	// unnecessary.
+	WorkspaceIdsFilter []int64
+
+	ForceSendFields []string
+}
+
+func createLogDeliveryConfigurationParamsToPb(st *CreateLogDeliveryConfigurationParams) (*createLogDeliveryConfigurationParamsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &createLogDeliveryConfigurationParamsPb{}
+	configNamePb := &st.ConfigName
+	if configNamePb != nil {
+		pb.ConfigName = *configNamePb
+	}
+
+	credentialsIdPb := &st.CredentialsId
+	if credentialsIdPb != nil {
+		pb.CredentialsId = *credentialsIdPb
+	}
+
+	deliveryPathPrefixPb := &st.DeliveryPathPrefix
+	if deliveryPathPrefixPb != nil {
+		pb.DeliveryPathPrefix = *deliveryPathPrefixPb
+	}
+
+	deliveryStartTimePb := &st.DeliveryStartTime
+	if deliveryStartTimePb != nil {
+		pb.DeliveryStartTime = *deliveryStartTimePb
+	}
+
+	logTypePb := &st.LogType
+	if logTypePb != nil {
+		pb.LogType = *logTypePb
+	}
+
+	outputFormatPb := &st.OutputFormat
+	if outputFormatPb != nil {
+		pb.OutputFormat = *outputFormatPb
+	}
+
+	statusPb := &st.Status
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+
+	storageConfigurationIdPb := &st.StorageConfigurationId
+	if storageConfigurationIdPb != nil {
+		pb.StorageConfigurationId = *storageConfigurationIdPb
+	}
+
+	var workspaceIdsFilterPb []int64
+	for _, item := range st.WorkspaceIdsFilter {
+		itemPb := &item
+		if itemPb != nil {
+			workspaceIdsFilterPb = append(workspaceIdsFilterPb, *itemPb)
+		}
+	}
+	pb.WorkspaceIdsFilter = workspaceIdsFilterPb
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *CreateLogDeliveryConfigurationParams) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createLogDeliveryConfigurationParamsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createLogDeliveryConfigurationParamsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
+	pb, err := createLogDeliveryConfigurationParamsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type createLogDeliveryConfigurationParamsPb struct {
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
 	ConfigName string `json:"config_name,omitempty"`
@@ -489,30 +2264,285 @@ type CreateLogDeliveryConfigurationParams struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *CreateLogDeliveryConfigurationParams) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func createLogDeliveryConfigurationParamsFromPb(pb *createLogDeliveryConfigurationParamsPb) (*CreateLogDeliveryConfigurationParams, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &CreateLogDeliveryConfigurationParams{}
+	configNameField := &pb.ConfigName
+	if configNameField != nil {
+		st.ConfigName = *configNameField
+	}
+	credentialsIdField := &pb.CredentialsId
+	if credentialsIdField != nil {
+		st.CredentialsId = *credentialsIdField
+	}
+	deliveryPathPrefixField := &pb.DeliveryPathPrefix
+	if deliveryPathPrefixField != nil {
+		st.DeliveryPathPrefix = *deliveryPathPrefixField
+	}
+	deliveryStartTimeField := &pb.DeliveryStartTime
+	if deliveryStartTimeField != nil {
+		st.DeliveryStartTime = *deliveryStartTimeField
+	}
+	logTypeField := &pb.LogType
+	if logTypeField != nil {
+		st.LogType = *logTypeField
+	}
+	outputFormatField := &pb.OutputFormat
+	if outputFormatField != nil {
+		st.OutputFormat = *outputFormatField
+	}
+	statusField := &pb.Status
+	if statusField != nil {
+		st.Status = *statusField
+	}
+	storageConfigurationIdField := &pb.StorageConfigurationId
+	if storageConfigurationIdField != nil {
+		st.StorageConfigurationId = *storageConfigurationIdField
+	}
+
+	var workspaceIdsFilterField []int64
+	for _, item := range pb.WorkspaceIdsFilter {
+		itemField := &item
+		if itemField != nil {
+			workspaceIdsFilterField = append(workspaceIdsFilterField, *itemField)
+		}
+	}
+	st.WorkspaceIdsFilter = workspaceIdsFilterField
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s CreateLogDeliveryConfigurationParams) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *createLogDeliveryConfigurationParamsPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st createLogDeliveryConfigurationParamsPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 // Delete budget
 type DeleteBudgetConfigurationRequest struct {
 	// The Databricks budget configuration ID.
+	BudgetId string
+}
+
+func deleteBudgetConfigurationRequestToPb(st *DeleteBudgetConfigurationRequest) (*deleteBudgetConfigurationRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &deleteBudgetConfigurationRequestPb{}
+	budgetIdPb := &st.BudgetId
+	if budgetIdPb != nil {
+		pb.BudgetId = *budgetIdPb
+	}
+
+	return pb, nil
+}
+
+func (st *DeleteBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteBudgetConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteBudgetConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteBudgetConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type deleteBudgetConfigurationRequestPb struct {
+	// The Databricks budget configuration ID.
 	BudgetId string `json:"-" url:"-"`
+}
+
+func deleteBudgetConfigurationRequestFromPb(pb *deleteBudgetConfigurationRequestPb) (*DeleteBudgetConfigurationRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteBudgetConfigurationRequest{}
+	budgetIdField := &pb.BudgetId
+	if budgetIdField != nil {
+		st.BudgetId = *budgetIdField
+	}
+
+	return st, nil
 }
 
 type DeleteBudgetConfigurationResponse struct {
 }
 
+func deleteBudgetConfigurationResponseToPb(st *DeleteBudgetConfigurationResponse) (*deleteBudgetConfigurationResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &deleteBudgetConfigurationResponsePb{}
+
+	return pb, nil
+}
+
+func (st *DeleteBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteBudgetConfigurationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteBudgetConfigurationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteBudgetConfigurationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteBudgetConfigurationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type deleteBudgetConfigurationResponsePb struct {
+}
+
+func deleteBudgetConfigurationResponseFromPb(pb *deleteBudgetConfigurationResponsePb) (*DeleteBudgetConfigurationResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteBudgetConfigurationResponse{}
+
+	return st, nil
+}
+
 // Delete a budget policy
 type DeleteBudgetPolicyRequest struct {
+	// The Id of the policy.
+	PolicyId string
+}
+
+func deleteBudgetPolicyRequestToPb(st *DeleteBudgetPolicyRequest) (*deleteBudgetPolicyRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &deleteBudgetPolicyRequestPb{}
+	policyIdPb := &st.PolicyId
+	if policyIdPb != nil {
+		pb.PolicyId = *policyIdPb
+	}
+
+	return pb, nil
+}
+
+func (st *DeleteBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteBudgetPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteBudgetPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteBudgetPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type deleteBudgetPolicyRequestPb struct {
 	// The Id of the policy.
 	PolicyId string `json:"-" url:"-"`
 }
 
+func deleteBudgetPolicyRequestFromPb(pb *deleteBudgetPolicyRequestPb) (*DeleteBudgetPolicyRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteBudgetPolicyRequest{}
+	policyIdField := &pb.PolicyId
+	if policyIdField != nil {
+		st.PolicyId = *policyIdField
+	}
+
+	return st, nil
+}
+
 type DeleteResponse struct {
+}
+
+func deleteResponseToPb(st *DeleteResponse) (*deleteResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &deleteResponsePb{}
+
+	return pb, nil
+}
+
+func (st *DeleteResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type deleteResponsePb struct {
+}
+
+func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DeleteResponse{}
+
+	return st, nil
 }
 
 // The status string for log delivery. Possible values are: * `CREATED`: There
@@ -525,6 +2555,7 @@ type DeleteResponse struct {
 // `NOT_FOUND`: The log delivery status as the configuration has been disabled
 // since the release of this feature or there are no workspaces in the account.
 type DeliveryStatus string
+type deliveryStatusPb string
 
 // There were no log delivery attempts since the config was created.
 const DeliveryStatusCreated DeliveryStatus = `CREATED`
@@ -565,8 +2596,88 @@ func (f *DeliveryStatus) Type() string {
 	return "DeliveryStatus"
 }
 
+func deliveryStatusToPb(st *DeliveryStatus) (*deliveryStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := deliveryStatusPb(*st)
+	return &pb, nil
+}
+
+func deliveryStatusFromPb(pb *deliveryStatusPb) (*DeliveryStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := DeliveryStatus(*pb)
+	return &st, nil
+}
+
 // Return billable usage logs
 type DownloadRequest struct {
+	// Format: `YYYY-MM`. Last month to return billable usage logs for. This
+	// field is required.
+	EndMonth string
+	// Specify whether to include personally identifiable information in the
+	// billable usage logs, for example the email addresses of cluster creators.
+	// Handle this information with care. Defaults to false.
+	PersonalData bool
+	// Format: `YYYY-MM`. First month to return billable usage logs for. This
+	// field is required.
+	StartMonth string
+
+	ForceSendFields []string
+}
+
+func downloadRequestToPb(st *DownloadRequest) (*downloadRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &downloadRequestPb{}
+	endMonthPb := &st.EndMonth
+	if endMonthPb != nil {
+		pb.EndMonth = *endMonthPb
+	}
+
+	personalDataPb := &st.PersonalData
+	if personalDataPb != nil {
+		pb.PersonalData = *personalDataPb
+	}
+
+	startMonthPb := &st.StartMonth
+	if startMonthPb != nil {
+		pb.StartMonth = *startMonthPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *DownloadRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &downloadRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := downloadRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DownloadRequest) MarshalJSON() ([]byte, error) {
+	pb, err := downloadRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type downloadRequestPb struct {
 	// Format: `YYYY-MM`. Last month to return billable usage logs for. This
 	// field is required.
 	EndMonth string `json:"-" url:"end_month"`
@@ -581,21 +2692,161 @@ type DownloadRequest struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *DownloadRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func downloadRequestFromPb(pb *downloadRequestPb) (*DownloadRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DownloadRequest{}
+	endMonthField := &pb.EndMonth
+	if endMonthField != nil {
+		st.EndMonth = *endMonthField
+	}
+	personalDataField := &pb.PersonalData
+	if personalDataField != nil {
+		st.PersonalData = *personalDataField
+	}
+	startMonthField := &pb.StartMonth
+	if startMonthField != nil {
+		st.StartMonth = *startMonthField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s DownloadRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *downloadRequestPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st downloadRequestPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type DownloadResponse struct {
+	Contents io.ReadCloser
+}
+
+func downloadResponseToPb(st *DownloadResponse) (*downloadResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &downloadResponsePb{}
+	contentsPb := &st.Contents
+	if contentsPb != nil {
+		pb.Contents = *contentsPb
+	}
+
+	return pb, nil
+}
+
+func (st *DownloadResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &downloadResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := downloadResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DownloadResponse) MarshalJSON() ([]byte, error) {
+	pb, err := downloadResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type downloadResponsePb struct {
 	Contents io.ReadCloser `json:"-"`
+}
+
+func downloadResponseFromPb(pb *downloadResponsePb) (*DownloadResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &DownloadResponse{}
+	contentsField := &pb.Contents
+	if contentsField != nil {
+		st.Contents = *contentsField
+	}
+
+	return st, nil
 }
 
 // Structured representation of a filter to be applied to a list of policies.
 // All specified filters will be applied in conjunction.
 type Filter struct {
+	// The policy creator user id to be filtered on. If unspecified, all
+	// policies will be returned.
+	CreatorUserId int64
+	// The policy creator user name to be filtered on. If unspecified, all
+	// policies will be returned.
+	CreatorUserName string
+	// The partial name of policies to be filtered on. If unspecified, all
+	// policies will be returned.
+	PolicyName string
+
+	ForceSendFields []string
+}
+
+func filterToPb(st *Filter) (*filterPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &filterPb{}
+	creatorUserIdPb := &st.CreatorUserId
+	if creatorUserIdPb != nil {
+		pb.CreatorUserId = *creatorUserIdPb
+	}
+
+	creatorUserNamePb := &st.CreatorUserName
+	if creatorUserNamePb != nil {
+		pb.CreatorUserName = *creatorUserNamePb
+	}
+
+	policyNamePb := &st.PolicyName
+	if policyNamePb != nil {
+		pb.PolicyName = *policyNamePb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *Filter) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &filterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := filterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st Filter) MarshalJSON() ([]byte, error) {
+	pb, err := filterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type filterPb struct {
 	// The policy creator user id to be filtered on. If unspecified, all
 	// policies will be returned.
 	CreatorUserId int64 `json:"creator_user_id,omitempty" url:"creator_user_id,omitempty"`
@@ -609,16 +2860,94 @@ type Filter struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *Filter) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func filterFromPb(pb *filterPb) (*Filter, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &Filter{}
+	creatorUserIdField := &pb.CreatorUserId
+	if creatorUserIdField != nil {
+		st.CreatorUserId = *creatorUserIdField
+	}
+	creatorUserNameField := &pb.CreatorUserName
+	if creatorUserNameField != nil {
+		st.CreatorUserName = *creatorUserNameField
+	}
+	policyNameField := &pb.PolicyName
+	if policyNameField != nil {
+		st.PolicyName = *policyNameField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s Filter) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *filterPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st filterPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 // Get usage dashboard
 type GetBillingUsageDashboardRequest struct {
+	// Workspace level usage dashboard shows usage data for the specified
+	// workspace ID. Global level usage dashboard shows usage data for all
+	// workspaces in the account.
+	DashboardType UsageDashboardType
+	// The workspace ID of the workspace in which the usage dashboard is
+	// created.
+	WorkspaceId int64
+
+	ForceSendFields []string
+}
+
+func getBillingUsageDashboardRequestToPb(st *GetBillingUsageDashboardRequest) (*getBillingUsageDashboardRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &getBillingUsageDashboardRequestPb{}
+	dashboardTypePb := &st.DashboardType
+	if dashboardTypePb != nil {
+		pb.DashboardType = *dashboardTypePb
+	}
+
+	workspaceIdPb := &st.WorkspaceId
+	if workspaceIdPb != nil {
+		pb.WorkspaceId = *workspaceIdPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *GetBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getBillingUsageDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getBillingUsageDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getBillingUsageDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type getBillingUsageDashboardRequestPb struct {
 	// Workspace level usage dashboard shows usage data for the specified
 	// workspace ID. Global level usage dashboard shows usage data for all
 	// workspaces in the account.
@@ -630,15 +2959,86 @@ type GetBillingUsageDashboardRequest struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *GetBillingUsageDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func getBillingUsageDashboardRequestFromPb(pb *getBillingUsageDashboardRequestPb) (*GetBillingUsageDashboardRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetBillingUsageDashboardRequest{}
+	dashboardTypeField := &pb.DashboardType
+	if dashboardTypeField != nil {
+		st.DashboardType = *dashboardTypeField
+	}
+	workspaceIdField := &pb.WorkspaceId
+	if workspaceIdField != nil {
+		st.WorkspaceId = *workspaceIdField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s GetBillingUsageDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *getBillingUsageDashboardRequestPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st getBillingUsageDashboardRequestPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type GetBillingUsageDashboardResponse struct {
+	// The unique id of the usage dashboard.
+	DashboardId string
+	// The URL of the usage dashboard.
+	DashboardUrl string
+
+	ForceSendFields []string
+}
+
+func getBillingUsageDashboardResponseToPb(st *GetBillingUsageDashboardResponse) (*getBillingUsageDashboardResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &getBillingUsageDashboardResponsePb{}
+	dashboardIdPb := &st.DashboardId
+	if dashboardIdPb != nil {
+		pb.DashboardId = *dashboardIdPb
+	}
+
+	dashboardUrlPb := &st.DashboardUrl
+	if dashboardUrlPb != nil {
+		pb.DashboardUrl = *dashboardUrlPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *GetBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getBillingUsageDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getBillingUsageDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getBillingUsageDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type getBillingUsageDashboardResponsePb struct {
 	// The unique id of the usage dashboard.
 	DashboardId string `json:"dashboard_id,omitempty"`
 	// The URL of the usage dashboard.
@@ -647,34 +3047,281 @@ type GetBillingUsageDashboardResponse struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *GetBillingUsageDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func getBillingUsageDashboardResponseFromPb(pb *getBillingUsageDashboardResponsePb) (*GetBillingUsageDashboardResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetBillingUsageDashboardResponse{}
+	dashboardIdField := &pb.DashboardId
+	if dashboardIdField != nil {
+		st.DashboardId = *dashboardIdField
+	}
+	dashboardUrlField := &pb.DashboardUrl
+	if dashboardUrlField != nil {
+		st.DashboardUrl = *dashboardUrlField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s GetBillingUsageDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *getBillingUsageDashboardResponsePb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st getBillingUsageDashboardResponsePb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 // Get budget
 type GetBudgetConfigurationRequest struct {
 	// The budget configuration ID
+	BudgetId string
+}
+
+func getBudgetConfigurationRequestToPb(st *GetBudgetConfigurationRequest) (*getBudgetConfigurationRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &getBudgetConfigurationRequestPb{}
+	budgetIdPb := &st.BudgetId
+	if budgetIdPb != nil {
+		pb.BudgetId = *budgetIdPb
+	}
+
+	return pb, nil
+}
+
+func (st *GetBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getBudgetConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getBudgetConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getBudgetConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type getBudgetConfigurationRequestPb struct {
+	// The budget configuration ID
 	BudgetId string `json:"-" url:"-"`
 }
 
+func getBudgetConfigurationRequestFromPb(pb *getBudgetConfigurationRequestPb) (*GetBudgetConfigurationRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetBudgetConfigurationRequest{}
+	budgetIdField := &pb.BudgetId
+	if budgetIdField != nil {
+		st.BudgetId = *budgetIdField
+	}
+
+	return st, nil
+}
+
 type GetBudgetConfigurationResponse struct {
-	Budget *BudgetConfiguration `json:"budget,omitempty"`
+	Budget *BudgetConfiguration
+}
+
+func getBudgetConfigurationResponseToPb(st *GetBudgetConfigurationResponse) (*getBudgetConfigurationResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &getBudgetConfigurationResponsePb{}
+	budgetPb, err := budgetConfigurationToPb(st.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetPb != nil {
+		pb.Budget = budgetPb
+	}
+
+	return pb, nil
+}
+
+func (st *GetBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getBudgetConfigurationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getBudgetConfigurationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetBudgetConfigurationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getBudgetConfigurationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type getBudgetConfigurationResponsePb struct {
+	Budget *budgetConfigurationPb `json:"budget,omitempty"`
+}
+
+func getBudgetConfigurationResponseFromPb(pb *getBudgetConfigurationResponsePb) (*GetBudgetConfigurationResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetBudgetConfigurationResponse{}
+	budgetField, err := budgetConfigurationFromPb(pb.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetField != nil {
+		st.Budget = budgetField
+	}
+
+	return st, nil
 }
 
 // Get a budget policy
 type GetBudgetPolicyRequest struct {
 	// The Id of the policy.
+	PolicyId string
+}
+
+func getBudgetPolicyRequestToPb(st *GetBudgetPolicyRequest) (*getBudgetPolicyRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &getBudgetPolicyRequestPb{}
+	policyIdPb := &st.PolicyId
+	if policyIdPb != nil {
+		pb.PolicyId = *policyIdPb
+	}
+
+	return pb, nil
+}
+
+func (st *GetBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getBudgetPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getBudgetPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getBudgetPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type getBudgetPolicyRequestPb struct {
+	// The Id of the policy.
 	PolicyId string `json:"-" url:"-"`
+}
+
+func getBudgetPolicyRequestFromPb(pb *getBudgetPolicyRequestPb) (*GetBudgetPolicyRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetBudgetPolicyRequest{}
+	policyIdField := &pb.PolicyId
+	if policyIdField != nil {
+		st.PolicyId = *policyIdField
+	}
+
+	return st, nil
 }
 
 // Get log delivery configuration
 type GetLogDeliveryRequest struct {
 	// Databricks log delivery configuration ID
+	LogDeliveryConfigurationId string
+}
+
+func getLogDeliveryRequestToPb(st *GetLogDeliveryRequest) (*getLogDeliveryRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &getLogDeliveryRequestPb{}
+	logDeliveryConfigurationIdPb := &st.LogDeliveryConfigurationId
+	if logDeliveryConfigurationIdPb != nil {
+		pb.LogDeliveryConfigurationId = *logDeliveryConfigurationIdPb
+	}
+
+	return pb, nil
+}
+
+func (st *GetLogDeliveryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getLogDeliveryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getLogDeliveryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetLogDeliveryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getLogDeliveryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type getLogDeliveryRequestPb struct {
+	// Databricks log delivery configuration ID
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
+}
+
+func getLogDeliveryRequestFromPb(pb *getLogDeliveryRequestPb) (*GetLogDeliveryRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &GetLogDeliveryRequest{}
+	logDeliveryConfigurationIdField := &pb.LogDeliveryConfigurationId
+	if logDeliveryConfigurationIdField != nil {
+		st.LogDeliveryConfigurationId = *logDeliveryConfigurationIdField
+	}
+
+	return st, nil
 }
 
 // The limit configuration of the policy. Limit configuration provide a budget
@@ -682,8 +3329,102 @@ type GetLogDeliveryRequest struct {
 type LimitConfig struct {
 }
 
+func limitConfigToPb(st *LimitConfig) (*limitConfigPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &limitConfigPb{}
+
+	return pb, nil
+}
+
+func (st *LimitConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &limitConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := limitConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st LimitConfig) MarshalJSON() ([]byte, error) {
+	pb, err := limitConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type limitConfigPb struct {
+}
+
+func limitConfigFromPb(pb *limitConfigPb) (*LimitConfig, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &LimitConfig{}
+
+	return st, nil
+}
+
 // Get all budgets
 type ListBudgetConfigurationsRequest struct {
+	// A page token received from a previous get all budget configurations call.
+	// This token can be used to retrieve the subsequent page. Requests first
+	// page if absent.
+	PageToken string
+
+	ForceSendFields []string
+}
+
+func listBudgetConfigurationsRequestToPb(st *ListBudgetConfigurationsRequest) (*listBudgetConfigurationsRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &listBudgetConfigurationsRequestPb{}
+	pageTokenPb := &st.PageToken
+	if pageTokenPb != nil {
+		pb.PageToken = *pageTokenPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *ListBudgetConfigurationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listBudgetConfigurationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listBudgetConfigurationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListBudgetConfigurationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listBudgetConfigurationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type listBudgetConfigurationsRequestPb struct {
 	// A page token received from a previous get all budget configurations call.
 	// This token can be used to retrieve the subsequent page. Requests first
 	// page if absent.
@@ -692,16 +3433,91 @@ type ListBudgetConfigurationsRequest struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *ListBudgetConfigurationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func listBudgetConfigurationsRequestFromPb(pb *listBudgetConfigurationsRequestPb) (*ListBudgetConfigurationsRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListBudgetConfigurationsRequest{}
+	pageTokenField := &pb.PageToken
+	if pageTokenField != nil {
+		st.PageToken = *pageTokenField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s ListBudgetConfigurationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *listBudgetConfigurationsRequestPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st listBudgetConfigurationsRequestPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type ListBudgetConfigurationsResponse struct {
-	Budgets []BudgetConfiguration `json:"budgets,omitempty"`
+	Budgets []BudgetConfiguration
+	// Token which can be sent as `page_token` to retrieve the next page of
+	// results. If this field is omitted, there are no subsequent budgets.
+	NextPageToken string
+
+	ForceSendFields []string
+}
+
+func listBudgetConfigurationsResponseToPb(st *ListBudgetConfigurationsResponse) (*listBudgetConfigurationsResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &listBudgetConfigurationsResponsePb{}
+
+	var budgetsPb []budgetConfigurationPb
+	for _, item := range st.Budgets {
+		itemPb, err := budgetConfigurationToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			budgetsPb = append(budgetsPb, *itemPb)
+		}
+	}
+	pb.Budgets = budgetsPb
+
+	nextPageTokenPb := &st.NextPageToken
+	if nextPageTokenPb != nil {
+		pb.NextPageToken = *nextPageTokenPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *ListBudgetConfigurationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listBudgetConfigurationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listBudgetConfigurationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListBudgetConfigurationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listBudgetConfigurationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type listBudgetConfigurationsResponsePb struct {
+	Budgets []budgetConfigurationPb `json:"budgets,omitempty"`
 	// Token which can be sent as `page_token` to retrieve the next page of
 	// results. If this field is omitted, there are no subsequent budgets.
 	NextPageToken string `json:"next_page_token,omitempty"`
@@ -709,18 +3525,125 @@ type ListBudgetConfigurationsResponse struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *ListBudgetConfigurationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func listBudgetConfigurationsResponseFromPb(pb *listBudgetConfigurationsResponsePb) (*ListBudgetConfigurationsResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListBudgetConfigurationsResponse{}
+
+	var budgetsField []BudgetConfiguration
+	for _, item := range pb.Budgets {
+		itemField, err := budgetConfigurationFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemField != nil {
+			budgetsField = append(budgetsField, *itemField)
+		}
+	}
+	st.Budgets = budgetsField
+	nextPageTokenField := &pb.NextPageToken
+	if nextPageTokenField != nil {
+		st.NextPageToken = *nextPageTokenField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s ListBudgetConfigurationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *listBudgetConfigurationsResponsePb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st listBudgetConfigurationsResponsePb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 // List policies
 type ListBudgetPoliciesRequest struct {
 	// A filter to apply to the list of policies.
-	FilterBy *Filter `json:"-" url:"filter_by,omitempty"`
+	FilterBy *Filter
+	// The maximum number of budget policies to return. If unspecified, at most
+	// 100 budget policies will be returned. The maximum value is 1000; values
+	// above 1000 will be coerced to 1000.
+	PageSize int
+	// A page token, received from a previous `ListServerlessPolicies` call.
+	// Provide this to retrieve the subsequent page. If unspecified, the first
+	// page will be returned.
+	//
+	// When paginating, all other parameters provided to
+	// `ListServerlessPoliciesRequest` must match the call that provided the
+	// page token.
+	PageToken string
+	// The sort specification.
+	SortSpec *SortSpec
+
+	ForceSendFields []string
+}
+
+func listBudgetPoliciesRequestToPb(st *ListBudgetPoliciesRequest) (*listBudgetPoliciesRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &listBudgetPoliciesRequestPb{}
+	filterByPb, err := filterToPb(st.FilterBy)
+	if err != nil {
+		return nil, err
+	}
+	if filterByPb != nil {
+		pb.FilterBy = filterByPb
+	}
+
+	pageSizePb := &st.PageSize
+	if pageSizePb != nil {
+		pb.PageSize = *pageSizePb
+	}
+
+	pageTokenPb := &st.PageToken
+	if pageTokenPb != nil {
+		pb.PageToken = *pageTokenPb
+	}
+
+	sortSpecPb, err := sortSpecToPb(st.SortSpec)
+	if err != nil {
+		return nil, err
+	}
+	if sortSpecPb != nil {
+		pb.SortSpec = sortSpecPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *ListBudgetPoliciesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listBudgetPoliciesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listBudgetPoliciesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListBudgetPoliciesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listBudgetPoliciesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type listBudgetPoliciesRequestPb struct {
+	// A filter to apply to the list of policies.
+	FilterBy *filterPb `json:"-" url:"filter_by,omitempty"`
 	// The maximum number of budget policies to return. If unspecified, at most
 	// 100 budget policies will be returned. The maximum value is 1000; values
 	// above 1000 will be coerced to 1000.
@@ -734,26 +3657,127 @@ type ListBudgetPoliciesRequest struct {
 	// page token.
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The sort specification.
-	SortSpec *SortSpec `json:"-" url:"sort_spec,omitempty"`
+	SortSpec *sortSpecPb `json:"-" url:"sort_spec,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *ListBudgetPoliciesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func listBudgetPoliciesRequestFromPb(pb *listBudgetPoliciesRequestPb) (*ListBudgetPoliciesRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListBudgetPoliciesRequest{}
+	filterByField, err := filterFromPb(pb.FilterBy)
+	if err != nil {
+		return nil, err
+	}
+	if filterByField != nil {
+		st.FilterBy = filterByField
+	}
+	pageSizeField := &pb.PageSize
+	if pageSizeField != nil {
+		st.PageSize = *pageSizeField
+	}
+	pageTokenField := &pb.PageToken
+	if pageTokenField != nil {
+		st.PageToken = *pageTokenField
+	}
+	sortSpecField, err := sortSpecFromPb(pb.SortSpec)
+	if err != nil {
+		return nil, err
+	}
+	if sortSpecField != nil {
+		st.SortSpec = sortSpecField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s ListBudgetPoliciesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *listBudgetPoliciesRequestPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st listBudgetPoliciesRequestPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 // A list of policies.
 type ListBudgetPoliciesResponse struct {
 	// A token that can be sent as `page_token` to retrieve the next page. If
 	// this field is omitted, there are no subsequent pages.
+	NextPageToken string
+
+	Policies []BudgetPolicy
+	// A token that can be sent as `page_token` to retrieve the previous page.
+	// In this field is omitted, there are no previous pages.
+	PreviousPageToken string
+
+	ForceSendFields []string
+}
+
+func listBudgetPoliciesResponseToPb(st *ListBudgetPoliciesResponse) (*listBudgetPoliciesResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &listBudgetPoliciesResponsePb{}
+	nextPageTokenPb := &st.NextPageToken
+	if nextPageTokenPb != nil {
+		pb.NextPageToken = *nextPageTokenPb
+	}
+
+	var policiesPb []budgetPolicyPb
+	for _, item := range st.Policies {
+		itemPb, err := budgetPolicyToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			policiesPb = append(policiesPb, *itemPb)
+		}
+	}
+	pb.Policies = policiesPb
+
+	previousPageTokenPb := &st.PreviousPageToken
+	if previousPageTokenPb != nil {
+		pb.PreviousPageToken = *previousPageTokenPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *ListBudgetPoliciesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listBudgetPoliciesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listBudgetPoliciesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListBudgetPoliciesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listBudgetPoliciesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type listBudgetPoliciesResponsePb struct {
+	// A token that can be sent as `page_token` to retrieve the next page. If
+	// this field is omitted, there are no subsequent pages.
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	Policies []BudgetPolicy `json:"policies,omitempty"`
+	Policies []budgetPolicyPb `json:"policies,omitempty"`
 	// A token that can be sent as `page_token` to retrieve the previous page.
 	// In this field is omitted, there are no previous pages.
 	PreviousPageToken string `json:"previous_page_token,omitempty"`
@@ -761,16 +3785,106 @@ type ListBudgetPoliciesResponse struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *ListBudgetPoliciesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func listBudgetPoliciesResponseFromPb(pb *listBudgetPoliciesResponsePb) (*ListBudgetPoliciesResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListBudgetPoliciesResponse{}
+	nextPageTokenField := &pb.NextPageToken
+	if nextPageTokenField != nil {
+		st.NextPageToken = *nextPageTokenField
+	}
+
+	var policiesField []BudgetPolicy
+	for _, item := range pb.Policies {
+		itemField, err := budgetPolicyFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemField != nil {
+			policiesField = append(policiesField, *itemField)
+		}
+	}
+	st.Policies = policiesField
+	previousPageTokenField := &pb.PreviousPageToken
+	if previousPageTokenField != nil {
+		st.PreviousPageToken = *previousPageTokenField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s ListBudgetPoliciesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *listBudgetPoliciesResponsePb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st listBudgetPoliciesResponsePb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 // Get all log delivery configurations
 type ListLogDeliveryRequest struct {
+	// Filter by credential configuration ID.
+	CredentialsId string
+	// Filter by status `ENABLED` or `DISABLED`.
+	Status LogDeliveryConfigStatus
+	// Filter by storage configuration ID.
+	StorageConfigurationId string
+
+	ForceSendFields []string
+}
+
+func listLogDeliveryRequestToPb(st *ListLogDeliveryRequest) (*listLogDeliveryRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &listLogDeliveryRequestPb{}
+	credentialsIdPb := &st.CredentialsId
+	if credentialsIdPb != nil {
+		pb.CredentialsId = *credentialsIdPb
+	}
+
+	statusPb := &st.Status
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+
+	storageConfigurationIdPb := &st.StorageConfigurationId
+	if storageConfigurationIdPb != nil {
+		pb.StorageConfigurationId = *storageConfigurationIdPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *ListLogDeliveryRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listLogDeliveryRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listLogDeliveryRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listLogDeliveryRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type listLogDeliveryRequestPb struct {
 	// Filter by credential configuration ID.
 	CredentialsId string `json:"-" url:"credentials_id,omitempty"`
 	// Filter by status `ENABLED` or `DISABLED`.
@@ -781,12 +3895,34 @@ type ListLogDeliveryRequest struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *ListLogDeliveryRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func listLogDeliveryRequestFromPb(pb *listLogDeliveryRequestPb) (*ListLogDeliveryRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListLogDeliveryRequest{}
+	credentialsIdField := &pb.CredentialsId
+	if credentialsIdField != nil {
+		st.CredentialsId = *credentialsIdField
+	}
+	statusField := &pb.Status
+	if statusField != nil {
+		st.Status = *statusField
+	}
+	storageConfigurationIdField := &pb.StorageConfigurationId
+	if storageConfigurationIdField != nil {
+		st.StorageConfigurationId = *storageConfigurationIdField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *listLogDeliveryRequestPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st listLogDeliveryRequestPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 // Status of log delivery configuration. Set to `ENABLED` (enabled) or
@@ -795,6 +3931,7 @@ func (s ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
 // of a configuration is not supported, so disable a log delivery configuration
 // that is no longer needed.
 type LogDeliveryConfigStatus string
+type logDeliveryConfigStatusPb string
 
 const LogDeliveryConfigStatusDisabled LogDeliveryConfigStatus = `DISABLED`
 
@@ -821,7 +3958,220 @@ func (f *LogDeliveryConfigStatus) Type() string {
 	return "LogDeliveryConfigStatus"
 }
 
+func logDeliveryConfigStatusToPb(st *LogDeliveryConfigStatus) (*logDeliveryConfigStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := logDeliveryConfigStatusPb(*st)
+	return &pb, nil
+}
+
+func logDeliveryConfigStatusFromPb(pb *logDeliveryConfigStatusPb) (*LogDeliveryConfigStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := LogDeliveryConfigStatus(*pb)
+	return &st, nil
+}
+
 type LogDeliveryConfiguration struct {
+	// The Databricks account ID that hosts the log delivery configuration.
+	AccountId string
+	// Databricks log delivery configuration ID.
+	ConfigId string
+	// The optional human-readable name of the log delivery configuration.
+	// Defaults to empty.
+	ConfigName string
+	// Time in epoch milliseconds when the log delivery configuration was
+	// created.
+	CreationTime int64
+	// The ID for a method:credentials/create that represents the AWS IAM role
+	// with policy and trust relationship as described in the main billable
+	// usage documentation page. See [Configure billable usage delivery].
+	//
+	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	CredentialsId string
+	// The optional delivery path prefix within Amazon S3 storage. Defaults to
+	// empty, which means that logs are delivered to the root of the bucket.
+	// This must be a valid S3 object key. This must not start or end with a
+	// slash character.
+	DeliveryPathPrefix string
+	// This field applies only if `log_type` is `BILLABLE_USAGE`. This is the
+	// optional start month and year for delivery, specified in `YYYY-MM`
+	// format. Defaults to current year and month. `BILLABLE_USAGE` logs are not
+	// available for usage before March 2019 (`2019-03`).
+	DeliveryStartTime string
+	// Databricks log delivery status.
+	LogDeliveryStatus *LogDeliveryStatus
+	// Log delivery type. Supported values are:
+	//
+	// * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the
+	// CSV schema, see the [View billable usage].
+	//
+	// * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema,
+	// see [Configure audit logging]
+	//
+	// [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	LogType LogType
+	// The file type of log delivery.
+	//
+	// * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the
+	// CSV (comma-separated values) format is supported. For the schema, see the
+	// [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be
+	// `JSON`. Only the JSON (JavaScript Object Notation) format is supported.
+	// For the schema, see the [Configuring audit logs].
+	//
+	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+	OutputFormat OutputFormat
+	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
+	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
+	// the configuration](#operation/patch-log-delivery-config-status) later.
+	// Deletion of a configuration is not supported, so disable a log delivery
+	// configuration that is no longer needed.
+	Status LogDeliveryConfigStatus
+	// The ID for a method:storage/create that represents the S3 bucket with
+	// bucket policy as described in the main billable usage documentation page.
+	// See [Configure billable usage delivery].
+	//
+	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	StorageConfigurationId string
+	// Time in epoch milliseconds when the log delivery configuration was
+	// updated.
+	UpdateTime int64
+	// Optional filter that specifies workspace IDs to deliver logs for. By
+	// default the workspace filter is empty and log delivery applies at the
+	// account level, delivering workspace-level logs for all workspaces in your
+	// account, plus account level logs. You can optionally set this field to an
+	// array of workspace IDs (each one is an `int64`) to which log delivery
+	// should apply, in which case only workspace-level logs relating to the
+	// specified workspaces are delivered. If you plan to use different log
+	// delivery configurations for different workspaces, set this field
+	// explicitly. Be aware that delivery configurations mentioning specific
+	// workspaces won't apply to new workspaces created in the future, and
+	// delivery won't include account level logs. For some types of Databricks
+	// deployments there is only one workspace per account ID, so this field is
+	// unnecessary.
+	WorkspaceIdsFilter []int64
+
+	ForceSendFields []string
+}
+
+func logDeliveryConfigurationToPb(st *LogDeliveryConfiguration) (*logDeliveryConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &logDeliveryConfigurationPb{}
+	accountIdPb := &st.AccountId
+	if accountIdPb != nil {
+		pb.AccountId = *accountIdPb
+	}
+
+	configIdPb := &st.ConfigId
+	if configIdPb != nil {
+		pb.ConfigId = *configIdPb
+	}
+
+	configNamePb := &st.ConfigName
+	if configNamePb != nil {
+		pb.ConfigName = *configNamePb
+	}
+
+	creationTimePb := &st.CreationTime
+	if creationTimePb != nil {
+		pb.CreationTime = *creationTimePb
+	}
+
+	credentialsIdPb := &st.CredentialsId
+	if credentialsIdPb != nil {
+		pb.CredentialsId = *credentialsIdPb
+	}
+
+	deliveryPathPrefixPb := &st.DeliveryPathPrefix
+	if deliveryPathPrefixPb != nil {
+		pb.DeliveryPathPrefix = *deliveryPathPrefixPb
+	}
+
+	deliveryStartTimePb := &st.DeliveryStartTime
+	if deliveryStartTimePb != nil {
+		pb.DeliveryStartTime = *deliveryStartTimePb
+	}
+
+	logDeliveryStatusPb, err := logDeliveryStatusToPb(st.LogDeliveryStatus)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryStatusPb != nil {
+		pb.LogDeliveryStatus = logDeliveryStatusPb
+	}
+
+	logTypePb := &st.LogType
+	if logTypePb != nil {
+		pb.LogType = *logTypePb
+	}
+
+	outputFormatPb := &st.OutputFormat
+	if outputFormatPb != nil {
+		pb.OutputFormat = *outputFormatPb
+	}
+
+	statusPb := &st.Status
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+
+	storageConfigurationIdPb := &st.StorageConfigurationId
+	if storageConfigurationIdPb != nil {
+		pb.StorageConfigurationId = *storageConfigurationIdPb
+	}
+
+	updateTimePb := &st.UpdateTime
+	if updateTimePb != nil {
+		pb.UpdateTime = *updateTimePb
+	}
+
+	var workspaceIdsFilterPb []int64
+	for _, item := range st.WorkspaceIdsFilter {
+		itemPb := &item
+		if itemPb != nil {
+			workspaceIdsFilterPb = append(workspaceIdsFilterPb, *itemPb)
+		}
+	}
+	pb.WorkspaceIdsFilter = workspaceIdsFilterPb
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *LogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &logDeliveryConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := logDeliveryConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st LogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := logDeliveryConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type logDeliveryConfigurationPb struct {
 	// The Databricks account ID that hosts the log delivery configuration.
 	AccountId string `json:"account_id,omitempty"`
 	// Databricks log delivery configuration ID.
@@ -849,7 +4199,7 @@ type LogDeliveryConfiguration struct {
 	// available for usage before March 2019 (`2019-03`).
 	DeliveryStartTime string `json:"delivery_start_time,omitempty"`
 	// Databricks log delivery status.
-	LogDeliveryStatus *LogDeliveryStatus `json:"log_delivery_status,omitempty"`
+	LogDeliveryStatus *logDeliveryStatusPb `json:"log_delivery_status,omitempty"`
 	// Log delivery type. Supported values are:
 	//
 	// * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the
@@ -907,16 +4257,168 @@ type LogDeliveryConfiguration struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *LogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func logDeliveryConfigurationFromPb(pb *logDeliveryConfigurationPb) (*LogDeliveryConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &LogDeliveryConfiguration{}
+	accountIdField := &pb.AccountId
+	if accountIdField != nil {
+		st.AccountId = *accountIdField
+	}
+	configIdField := &pb.ConfigId
+	if configIdField != nil {
+		st.ConfigId = *configIdField
+	}
+	configNameField := &pb.ConfigName
+	if configNameField != nil {
+		st.ConfigName = *configNameField
+	}
+	creationTimeField := &pb.CreationTime
+	if creationTimeField != nil {
+		st.CreationTime = *creationTimeField
+	}
+	credentialsIdField := &pb.CredentialsId
+	if credentialsIdField != nil {
+		st.CredentialsId = *credentialsIdField
+	}
+	deliveryPathPrefixField := &pb.DeliveryPathPrefix
+	if deliveryPathPrefixField != nil {
+		st.DeliveryPathPrefix = *deliveryPathPrefixField
+	}
+	deliveryStartTimeField := &pb.DeliveryStartTime
+	if deliveryStartTimeField != nil {
+		st.DeliveryStartTime = *deliveryStartTimeField
+	}
+	logDeliveryStatusField, err := logDeliveryStatusFromPb(pb.LogDeliveryStatus)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryStatusField != nil {
+		st.LogDeliveryStatus = logDeliveryStatusField
+	}
+	logTypeField := &pb.LogType
+	if logTypeField != nil {
+		st.LogType = *logTypeField
+	}
+	outputFormatField := &pb.OutputFormat
+	if outputFormatField != nil {
+		st.OutputFormat = *outputFormatField
+	}
+	statusField := &pb.Status
+	if statusField != nil {
+		st.Status = *statusField
+	}
+	storageConfigurationIdField := &pb.StorageConfigurationId
+	if storageConfigurationIdField != nil {
+		st.StorageConfigurationId = *storageConfigurationIdField
+	}
+	updateTimeField := &pb.UpdateTime
+	if updateTimeField != nil {
+		st.UpdateTime = *updateTimeField
+	}
+
+	var workspaceIdsFilterField []int64
+	for _, item := range pb.WorkspaceIdsFilter {
+		itemField := &item
+		if itemField != nil {
+			workspaceIdsFilterField = append(workspaceIdsFilterField, *itemField)
+		}
+	}
+	st.WorkspaceIdsFilter = workspaceIdsFilterField
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s LogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *logDeliveryConfigurationPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st logDeliveryConfigurationPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 // Databricks log delivery status.
 type LogDeliveryStatus struct {
+	// The UTC time for the latest log delivery attempt.
+	LastAttemptTime string
+	// The UTC time for the latest successful log delivery.
+	LastSuccessfulAttemptTime string
+	// Informative message about the latest log delivery attempt. If the log
+	// delivery fails with USER_FAILURE, error details will be provided for
+	// fixing misconfigurations in cloud permissions.
+	Message string
+	// The status string for log delivery. Possible values are: * `CREATED`:
+	// There were no log delivery attempts since the config was created. *
+	// `SUCCEEDED`: The latest attempt of log delivery has succeeded completely.
+	// * `USER_FAILURE`: The latest attempt of log delivery failed because of
+	// misconfiguration of customer provided permissions on role or storage. *
+	// `SYSTEM_FAILURE`: The latest attempt of log delivery failed because of an
+	// Databricks internal error. Contact support if it doesn't go away soon. *
+	// `NOT_FOUND`: The log delivery status as the configuration has been
+	// disabled since the release of this feature or there are no workspaces in
+	// the account.
+	Status DeliveryStatus
+
+	ForceSendFields []string
+}
+
+func logDeliveryStatusToPb(st *LogDeliveryStatus) (*logDeliveryStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &logDeliveryStatusPb{}
+	lastAttemptTimePb := &st.LastAttemptTime
+	if lastAttemptTimePb != nil {
+		pb.LastAttemptTime = *lastAttemptTimePb
+	}
+
+	lastSuccessfulAttemptTimePb := &st.LastSuccessfulAttemptTime
+	if lastSuccessfulAttemptTimePb != nil {
+		pb.LastSuccessfulAttemptTime = *lastSuccessfulAttemptTimePb
+	}
+
+	messagePb := &st.Message
+	if messagePb != nil {
+		pb.Message = *messagePb
+	}
+
+	statusPb := &st.Status
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *LogDeliveryStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &logDeliveryStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := logDeliveryStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st LogDeliveryStatus) MarshalJSON() ([]byte, error) {
+	pb, err := logDeliveryStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type logDeliveryStatusPb struct {
 	// The UTC time for the latest log delivery attempt.
 	LastAttemptTime string `json:"last_attempt_time,omitempty"`
 	// The UTC time for the latest successful log delivery.
@@ -940,12 +4442,38 @@ type LogDeliveryStatus struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *LogDeliveryStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func logDeliveryStatusFromPb(pb *logDeliveryStatusPb) (*LogDeliveryStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &LogDeliveryStatus{}
+	lastAttemptTimeField := &pb.LastAttemptTime
+	if lastAttemptTimeField != nil {
+		st.LastAttemptTime = *lastAttemptTimeField
+	}
+	lastSuccessfulAttemptTimeField := &pb.LastSuccessfulAttemptTime
+	if lastSuccessfulAttemptTimeField != nil {
+		st.LastSuccessfulAttemptTime = *lastSuccessfulAttemptTimeField
+	}
+	messageField := &pb.Message
+	if messageField != nil {
+		st.Message = *messageField
+	}
+	statusField := &pb.Status
+	if statusField != nil {
+		st.Status = *statusField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s LogDeliveryStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *logDeliveryStatusPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st logDeliveryStatusPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 // Log delivery type. Supported values are:
@@ -961,6 +4489,7 @@ func (s LogDeliveryStatus) MarshalJSON() ([]byte, error) {
 // [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 // [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 type LogType string
+type logTypePb string
 
 const LogTypeAuditLogs LogType = `AUDIT_LOGS`
 
@@ -987,6 +4516,22 @@ func (f *LogType) Type() string {
 	return "LogType"
 }
 
+func logTypeToPb(st *LogType) (*logTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := logTypePb(*st)
+	return &pb, nil
+}
+
+func logTypeFromPb(pb *logTypePb) (*LogType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := LogType(*pb)
+	return &st, nil
+}
+
 // The file type of log delivery.
 //
 // * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV
@@ -998,6 +4543,7 @@ func (f *LogType) Type() string {
 // [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 // [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 type OutputFormat string
+type outputFormatPb string
 
 const OutputFormatCsv OutputFormat = `CSV`
 
@@ -1024,10 +4570,125 @@ func (f *OutputFormat) Type() string {
 	return "OutputFormat"
 }
 
+func outputFormatToPb(st *OutputFormat) (*outputFormatPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := outputFormatPb(*st)
+	return &pb, nil
+}
+
+func outputFormatFromPb(pb *outputFormatPb) (*OutputFormat, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := OutputFormat(*pb)
+	return &st, nil
+}
+
 type PatchStatusResponse struct {
 }
 
+func patchStatusResponseToPb(st *PatchStatusResponse) (*patchStatusResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &patchStatusResponsePb{}
+
+	return pb, nil
+}
+
+func (st *PatchStatusResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &patchStatusResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := patchStatusResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PatchStatusResponse) MarshalJSON() ([]byte, error) {
+	pb, err := patchStatusResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type patchStatusResponsePb struct {
+}
+
+func patchStatusResponseFromPb(pb *patchStatusResponsePb) (*PatchStatusResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &PatchStatusResponse{}
+
+	return st, nil
+}
+
 type SortSpec struct {
+	// Whether to sort in descending order.
+	Descending bool
+	// The filed to sort by
+	Field SortSpecField
+
+	ForceSendFields []string
+}
+
+func sortSpecToPb(st *SortSpec) (*sortSpecPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &sortSpecPb{}
+	descendingPb := &st.Descending
+	if descendingPb != nil {
+		pb.Descending = *descendingPb
+	}
+
+	fieldPb := &st.Field
+	if fieldPb != nil {
+		pb.Field = *fieldPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *SortSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sortSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := sortSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st SortSpec) MarshalJSON() ([]byte, error) {
+	pb, err := sortSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type sortSpecPb struct {
 	// Whether to sort in descending order.
 	Descending bool `json:"descending,omitempty" url:"descending,omitempty"`
 	// The filed to sort by
@@ -1036,15 +4697,34 @@ type SortSpec struct {
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *SortSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func sortSpecFromPb(pb *sortSpecPb) (*SortSpec, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &SortSpec{}
+	descendingField := &pb.Descending
+	if descendingField != nil {
+		st.Descending = *descendingField
+	}
+	fieldField := &pb.Field
+	if fieldField != nil {
+		st.Field = *fieldField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s SortSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *sortSpecPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st sortSpecPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type SortSpecField string
+type sortSpecFieldPb string
 
 const SortSpecFieldPolicyName SortSpecField = `POLICY_NAME`
 
@@ -1069,12 +4749,116 @@ func (f *SortSpecField) Type() string {
 	return "SortSpecField"
 }
 
+func sortSpecFieldToPb(st *SortSpecField) (*sortSpecFieldPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := sortSpecFieldPb(*st)
+	return &pb, nil
+}
+
+func sortSpecFieldFromPb(pb *sortSpecFieldPb) (*SortSpecField, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := SortSpecField(*pb)
+	return &st, nil
+}
+
 type UpdateBudgetConfigurationBudget struct {
+	// Databricks account ID.
+	AccountId string
+	// Alerts to configure when this budget is in a triggered state. Budgets
+	// must have exactly one alert configuration.
+	AlertConfigurations []AlertConfiguration
+	// Databricks budget configuration ID.
+	BudgetConfigurationId string
+	// Human-readable name of budget configuration. Max Length: 128
+	DisplayName string
+	// Configured filters for this budget. These are applied to your account's
+	// usage to limit the scope of what is considered for this budget. Leave
+	// empty to include all usage for this account. All provided filters must be
+	// matched for usage to be included.
+	Filter *BudgetConfigurationFilter
+
+	ForceSendFields []string
+}
+
+func updateBudgetConfigurationBudgetToPb(st *UpdateBudgetConfigurationBudget) (*updateBudgetConfigurationBudgetPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &updateBudgetConfigurationBudgetPb{}
+	accountIdPb := &st.AccountId
+	if accountIdPb != nil {
+		pb.AccountId = *accountIdPb
+	}
+
+	var alertConfigurationsPb []alertConfigurationPb
+	for _, item := range st.AlertConfigurations {
+		itemPb, err := alertConfigurationToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			alertConfigurationsPb = append(alertConfigurationsPb, *itemPb)
+		}
+	}
+	pb.AlertConfigurations = alertConfigurationsPb
+
+	budgetConfigurationIdPb := &st.BudgetConfigurationId
+	if budgetConfigurationIdPb != nil {
+		pb.BudgetConfigurationId = *budgetConfigurationIdPb
+	}
+
+	displayNamePb := &st.DisplayName
+	if displayNamePb != nil {
+		pb.DisplayName = *displayNamePb
+	}
+
+	filterPb, err := budgetConfigurationFilterToPb(st.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterPb != nil {
+		pb.Filter = filterPb
+	}
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *UpdateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateBudgetConfigurationBudgetPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateBudgetConfigurationBudgetFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
+	pb, err := updateBudgetConfigurationBudgetToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type updateBudgetConfigurationBudgetPb struct {
 	// Databricks account ID.
 	AccountId string `json:"account_id,omitempty"`
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
-	AlertConfigurations []AlertConfiguration `json:"alert_configurations,omitempty"`
+	AlertConfigurations []alertConfigurationPb `json:"alert_configurations,omitempty"`
 	// Databricks budget configuration ID.
 	BudgetConfigurationId string `json:"budget_configuration_id,omitempty"`
 	// Human-readable name of budget configuration. Max Length: 128
@@ -1083,45 +4867,368 @@ type UpdateBudgetConfigurationBudget struct {
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
-	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	Filter *budgetConfigurationFilterPb `json:"filter,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *UpdateBudgetConfigurationBudget) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func updateBudgetConfigurationBudgetFromPb(pb *updateBudgetConfigurationBudgetPb) (*UpdateBudgetConfigurationBudget, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateBudgetConfigurationBudget{}
+	accountIdField := &pb.AccountId
+	if accountIdField != nil {
+		st.AccountId = *accountIdField
+	}
+
+	var alertConfigurationsField []AlertConfiguration
+	for _, item := range pb.AlertConfigurations {
+		itemField, err := alertConfigurationFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemField != nil {
+			alertConfigurationsField = append(alertConfigurationsField, *itemField)
+		}
+	}
+	st.AlertConfigurations = alertConfigurationsField
+	budgetConfigurationIdField := &pb.BudgetConfigurationId
+	if budgetConfigurationIdField != nil {
+		st.BudgetConfigurationId = *budgetConfigurationIdField
+	}
+	displayNameField := &pb.DisplayName
+	if displayNameField != nil {
+		st.DisplayName = *displayNameField
+	}
+	filterField, err := budgetConfigurationFilterFromPb(pb.Filter)
+	if err != nil {
+		return nil, err
+	}
+	if filterField != nil {
+		st.Filter = filterField
+	}
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
 }
 
-func (s UpdateBudgetConfigurationBudget) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st *updateBudgetConfigurationBudgetPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st updateBudgetConfigurationBudgetPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
 }
 
 type UpdateBudgetConfigurationRequest struct {
 	// The updated budget. This will overwrite the budget specified by the
 	// budget ID.
-	Budget UpdateBudgetConfigurationBudget `json:"budget"`
+	Budget UpdateBudgetConfigurationBudget
+	// The Databricks budget configuration ID.
+	BudgetId string
+}
+
+func updateBudgetConfigurationRequestToPb(st *UpdateBudgetConfigurationRequest) (*updateBudgetConfigurationRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &updateBudgetConfigurationRequestPb{}
+	budgetPb, err := updateBudgetConfigurationBudgetToPb(&st.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetPb != nil {
+		pb.Budget = *budgetPb
+	}
+
+	budgetIdPb := &st.BudgetId
+	if budgetIdPb != nil {
+		pb.BudgetId = *budgetIdPb
+	}
+
+	return pb, nil
+}
+
+func (st *UpdateBudgetConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateBudgetConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateBudgetConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateBudgetConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateBudgetConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type updateBudgetConfigurationRequestPb struct {
+	// The updated budget. This will overwrite the budget specified by the
+	// budget ID.
+	Budget updateBudgetConfigurationBudgetPb `json:"budget"`
 	// The Databricks budget configuration ID.
 	BudgetId string `json:"-" url:"-"`
 }
 
+func updateBudgetConfigurationRequestFromPb(pb *updateBudgetConfigurationRequestPb) (*UpdateBudgetConfigurationRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateBudgetConfigurationRequest{}
+	budgetField, err := updateBudgetConfigurationBudgetFromPb(&pb.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetField != nil {
+		st.Budget = *budgetField
+	}
+	budgetIdField := &pb.BudgetId
+	if budgetIdField != nil {
+		st.BudgetId = *budgetIdField
+	}
+
+	return st, nil
+}
+
 type UpdateBudgetConfigurationResponse struct {
 	// The updated budget.
-	Budget *BudgetConfiguration `json:"budget,omitempty"`
+	Budget *BudgetConfiguration
+}
+
+func updateBudgetConfigurationResponseToPb(st *UpdateBudgetConfigurationResponse) (*updateBudgetConfigurationResponsePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &updateBudgetConfigurationResponsePb{}
+	budgetPb, err := budgetConfigurationToPb(st.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetPb != nil {
+		pb.Budget = budgetPb
+	}
+
+	return pb, nil
+}
+
+func (st *UpdateBudgetConfigurationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateBudgetConfigurationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateBudgetConfigurationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateBudgetConfigurationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateBudgetConfigurationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type updateBudgetConfigurationResponsePb struct {
+	// The updated budget.
+	Budget *budgetConfigurationPb `json:"budget,omitempty"`
+}
+
+func updateBudgetConfigurationResponseFromPb(pb *updateBudgetConfigurationResponsePb) (*UpdateBudgetConfigurationResponse, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateBudgetConfigurationResponse{}
+	budgetField, err := budgetConfigurationFromPb(pb.Budget)
+	if err != nil {
+		return nil, err
+	}
+	if budgetField != nil {
+		st.Budget = budgetField
+	}
+
+	return st, nil
 }
 
 // Update a budget policy
 type UpdateBudgetPolicyRequest struct {
 	// DEPRECATED. This is redundant field as LimitConfig is part of the
 	// BudgetPolicy
-	LimitConfig *LimitConfig `json:"-" url:"limit_config,omitempty"`
+	LimitConfig *LimitConfig
 	// Contains the BudgetPolicy details.
-	Policy BudgetPolicy `json:"policy"`
+	Policy BudgetPolicy
+	// The Id of the policy. This field is generated by Databricks and globally
+	// unique.
+	PolicyId string
+}
+
+func updateBudgetPolicyRequestToPb(st *UpdateBudgetPolicyRequest) (*updateBudgetPolicyRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &updateBudgetPolicyRequestPb{}
+	limitConfigPb, err := limitConfigToPb(st.LimitConfig)
+	if err != nil {
+		return nil, err
+	}
+	if limitConfigPb != nil {
+		pb.LimitConfig = limitConfigPb
+	}
+
+	policyPb, err := budgetPolicyToPb(&st.Policy)
+	if err != nil {
+		return nil, err
+	}
+	if policyPb != nil {
+		pb.Policy = *policyPb
+	}
+
+	policyIdPb := &st.PolicyId
+	if policyIdPb != nil {
+		pb.PolicyId = *policyIdPb
+	}
+
+	return pb, nil
+}
+
+func (st *UpdateBudgetPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateBudgetPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateBudgetPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateBudgetPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type updateBudgetPolicyRequestPb struct {
+	// DEPRECATED. This is redundant field as LimitConfig is part of the
+	// BudgetPolicy
+	LimitConfig *limitConfigPb `json:"-" url:"limit_config,omitempty"`
+	// Contains the BudgetPolicy details.
+	Policy budgetPolicyPb `json:"policy"`
 	// The Id of the policy. This field is generated by Databricks and globally
 	// unique.
 	PolicyId string `json:"-" url:"-"`
 }
 
+func updateBudgetPolicyRequestFromPb(pb *updateBudgetPolicyRequestPb) (*UpdateBudgetPolicyRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateBudgetPolicyRequest{}
+	limitConfigField, err := limitConfigFromPb(pb.LimitConfig)
+	if err != nil {
+		return nil, err
+	}
+	if limitConfigField != nil {
+		st.LimitConfig = limitConfigField
+	}
+	policyField, err := budgetPolicyFromPb(&pb.Policy)
+	if err != nil {
+		return nil, err
+	}
+	if policyField != nil {
+		st.Policy = *policyField
+	}
+	policyIdField := &pb.PolicyId
+	if policyIdField != nil {
+		st.PolicyId = *policyIdField
+	}
+
+	return st, nil
+}
+
 type UpdateLogDeliveryConfigurationStatusRequest struct {
+	// Databricks log delivery configuration ID
+	LogDeliveryConfigurationId string
+	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
+	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
+	// the configuration](#operation/patch-log-delivery-config-status) later.
+	// Deletion of a configuration is not supported, so disable a log delivery
+	// configuration that is no longer needed.
+	Status LogDeliveryConfigStatus
+}
+
+func updateLogDeliveryConfigurationStatusRequestToPb(st *UpdateLogDeliveryConfigurationStatusRequest) (*updateLogDeliveryConfigurationStatusRequestPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &updateLogDeliveryConfigurationStatusRequestPb{}
+	logDeliveryConfigurationIdPb := &st.LogDeliveryConfigurationId
+	if logDeliveryConfigurationIdPb != nil {
+		pb.LogDeliveryConfigurationId = *logDeliveryConfigurationIdPb
+	}
+
+	statusPb := &st.Status
+	if statusPb != nil {
+		pb.Status = *statusPb
+	}
+
+	return pb, nil
+}
+
+func (st *UpdateLogDeliveryConfigurationStatusRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateLogDeliveryConfigurationStatusRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateLogDeliveryConfigurationStatusRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateLogDeliveryConfigurationStatusRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateLogDeliveryConfigurationStatusRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type updateLogDeliveryConfigurationStatusRequestPb struct {
 	// Databricks log delivery configuration ID
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
@@ -1132,7 +5239,25 @@ type UpdateLogDeliveryConfigurationStatusRequest struct {
 	Status LogDeliveryConfigStatus `json:"status"`
 }
 
+func updateLogDeliveryConfigurationStatusRequestFromPb(pb *updateLogDeliveryConfigurationStatusRequestPb) (*UpdateLogDeliveryConfigurationStatusRequest, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &UpdateLogDeliveryConfigurationStatusRequest{}
+	logDeliveryConfigurationIdField := &pb.LogDeliveryConfigurationId
+	if logDeliveryConfigurationIdField != nil {
+		st.LogDeliveryConfigurationId = *logDeliveryConfigurationIdField
+	}
+	statusField := &pb.Status
+	if statusField != nil {
+		st.Status = *statusField
+	}
+
+	return st, nil
+}
+
 type UsageDashboardType string
+type usageDashboardTypePb string
 
 const UsageDashboardTypeUsageDashboardTypeGlobal UsageDashboardType = `USAGE_DASHBOARD_TYPE_GLOBAL`
 
@@ -1159,14 +5284,223 @@ func (f *UsageDashboardType) Type() string {
 	return "UsageDashboardType"
 }
 
+func usageDashboardTypeToPb(st *UsageDashboardType) (*usageDashboardTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := usageDashboardTypePb(*st)
+	return &pb, nil
+}
+
+func usageDashboardTypeFromPb(pb *usageDashboardTypePb) (*UsageDashboardType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := UsageDashboardType(*pb)
+	return &st, nil
+}
+
 type WrappedCreateLogDeliveryConfiguration struct {
-	LogDeliveryConfiguration *CreateLogDeliveryConfigurationParams `json:"log_delivery_configuration,omitempty"`
+	LogDeliveryConfiguration *CreateLogDeliveryConfigurationParams
+}
+
+func wrappedCreateLogDeliveryConfigurationToPb(st *WrappedCreateLogDeliveryConfiguration) (*wrappedCreateLogDeliveryConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &wrappedCreateLogDeliveryConfigurationPb{}
+	logDeliveryConfigurationPb, err := createLogDeliveryConfigurationParamsToPb(st.LogDeliveryConfiguration)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryConfigurationPb != nil {
+		pb.LogDeliveryConfiguration = logDeliveryConfigurationPb
+	}
+
+	return pb, nil
+}
+
+func (st *WrappedCreateLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &wrappedCreateLogDeliveryConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := wrappedCreateLogDeliveryConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st WrappedCreateLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := wrappedCreateLogDeliveryConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type wrappedCreateLogDeliveryConfigurationPb struct {
+	LogDeliveryConfiguration *createLogDeliveryConfigurationParamsPb `json:"log_delivery_configuration,omitempty"`
+}
+
+func wrappedCreateLogDeliveryConfigurationFromPb(pb *wrappedCreateLogDeliveryConfigurationPb) (*WrappedCreateLogDeliveryConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &WrappedCreateLogDeliveryConfiguration{}
+	logDeliveryConfigurationField, err := createLogDeliveryConfigurationParamsFromPb(pb.LogDeliveryConfiguration)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryConfigurationField != nil {
+		st.LogDeliveryConfiguration = logDeliveryConfigurationField
+	}
+
+	return st, nil
 }
 
 type WrappedLogDeliveryConfiguration struct {
-	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
+	LogDeliveryConfiguration *LogDeliveryConfiguration
+}
+
+func wrappedLogDeliveryConfigurationToPb(st *WrappedLogDeliveryConfiguration) (*wrappedLogDeliveryConfigurationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &wrappedLogDeliveryConfigurationPb{}
+	logDeliveryConfigurationPb, err := logDeliveryConfigurationToPb(st.LogDeliveryConfiguration)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryConfigurationPb != nil {
+		pb.LogDeliveryConfiguration = logDeliveryConfigurationPb
+	}
+
+	return pb, nil
+}
+
+func (st *WrappedLogDeliveryConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &wrappedLogDeliveryConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := wrappedLogDeliveryConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st WrappedLogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := wrappedLogDeliveryConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type wrappedLogDeliveryConfigurationPb struct {
+	LogDeliveryConfiguration *logDeliveryConfigurationPb `json:"log_delivery_configuration,omitempty"`
+}
+
+func wrappedLogDeliveryConfigurationFromPb(pb *wrappedLogDeliveryConfigurationPb) (*WrappedLogDeliveryConfiguration, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &WrappedLogDeliveryConfiguration{}
+	logDeliveryConfigurationField, err := logDeliveryConfigurationFromPb(pb.LogDeliveryConfiguration)
+	if err != nil {
+		return nil, err
+	}
+	if logDeliveryConfigurationField != nil {
+		st.LogDeliveryConfiguration = logDeliveryConfigurationField
+	}
+
+	return st, nil
 }
 
 type WrappedLogDeliveryConfigurations struct {
-	LogDeliveryConfigurations []LogDeliveryConfiguration `json:"log_delivery_configurations,omitempty"`
+	LogDeliveryConfigurations []LogDeliveryConfiguration
+}
+
+func wrappedLogDeliveryConfigurationsToPb(st *WrappedLogDeliveryConfigurations) (*wrappedLogDeliveryConfigurationsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &wrappedLogDeliveryConfigurationsPb{}
+
+	var logDeliveryConfigurationsPb []logDeliveryConfigurationPb
+	for _, item := range st.LogDeliveryConfigurations {
+		itemPb, err := logDeliveryConfigurationToPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemPb != nil {
+			logDeliveryConfigurationsPb = append(logDeliveryConfigurationsPb, *itemPb)
+		}
+	}
+	pb.LogDeliveryConfigurations = logDeliveryConfigurationsPb
+
+	return pb, nil
+}
+
+func (st *WrappedLogDeliveryConfigurations) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &wrappedLogDeliveryConfigurationsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := wrappedLogDeliveryConfigurationsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st WrappedLogDeliveryConfigurations) MarshalJSON() ([]byte, error) {
+	pb, err := wrappedLogDeliveryConfigurationsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type wrappedLogDeliveryConfigurationsPb struct {
+	LogDeliveryConfigurations []logDeliveryConfigurationPb `json:"log_delivery_configurations,omitempty"`
+}
+
+func wrappedLogDeliveryConfigurationsFromPb(pb *wrappedLogDeliveryConfigurationsPb) (*WrappedLogDeliveryConfigurations, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &WrappedLogDeliveryConfigurations{}
+
+	var logDeliveryConfigurationsField []LogDeliveryConfiguration
+	for _, item := range pb.LogDeliveryConfigurations {
+		itemField, err := logDeliveryConfigurationFromPb(&item)
+		if err != nil {
+			return nil, err
+		}
+		if itemField != nil {
+			logDeliveryConfigurationsField = append(logDeliveryConfigurationsField, *itemField)
+		}
+	}
+	st.LogDeliveryConfigurations = logDeliveryConfigurationsField
+
+	return st, nil
 }

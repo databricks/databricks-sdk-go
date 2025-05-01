@@ -131,6 +131,7 @@ experimental/mocks/service/sharing/mock_recipients_interface.go linguist-generat
 experimental/mocks/service/sharing/mock_shares_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_alerts_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_alerts_legacy_interface.go linguist-generated=true
+experimental/mocks/service/sql/mock_alerts_v2_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_dashboard_widgets_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_dashboards_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_data_sources_interface.go linguist-generated=true
