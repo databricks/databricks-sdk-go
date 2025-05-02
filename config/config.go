@@ -108,6 +108,9 @@ type Config struct {
 	// specified by this argument. This argument also holds currently selected auth.
 	AuthType string `name:"auth_type" env:"DATABRICKS_AUTH_TYPE" auth:"-"`
 
+	// Path to the file containing the JWT token.
+	IDTokenFilePath string `name:"databricks_id_token_file_path" env:"DATABRICKS_ID_TOKEN_FILE_PATH" auth:"file-oidc"`
+
 	// Skip SSL certificate verification for HTTP calls.
 	// Use at your own risk or for unit testing purposes.
 	InsecureSkipVerify bool `name:"skip_verify" auth:"-"`

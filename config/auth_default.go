@@ -24,6 +24,12 @@ func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 				refreshClient:              cfg.refreshClient,
 			},
 		},
+		{
+			name: "file-oidc",
+			tokenSource: &fileIDTokenSource{
+				idTokenFilePath: cfg.IDTokenFilePath,
+			},
+		},
 		// Add new providers at the end of the list
 	}
 	strategies := []CredentialsStrategy{}
