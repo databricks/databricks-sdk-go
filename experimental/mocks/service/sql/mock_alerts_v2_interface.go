@@ -24,6 +24,65 @@ func (_m *MockAlertsV2Interface) EXPECT() *MockAlertsV2Interface_Expecter {
 	return &MockAlertsV2Interface_Expecter{mock: &_m.Mock}
 }
 
+// AlertV2DisplayNameToIdMap provides a mock function with given fields: ctx, request
+func (_m *MockAlertsV2Interface) AlertV2DisplayNameToIdMap(ctx context.Context, request sql.ListAlertsV2Request) (map[string]string, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for AlertV2DisplayNameToIdMap")
+	}
+
+	var r0 map[string]string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListAlertsV2Request) (map[string]string, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListAlertsV2Request) map[string]string); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(map[string]string)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, sql.ListAlertsV2Request) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockAlertsV2Interface_AlertV2DisplayNameToIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AlertV2DisplayNameToIdMap'
+type MockAlertsV2Interface_AlertV2DisplayNameToIdMap_Call struct {
+	*mock.Call
+}
+
+// AlertV2DisplayNameToIdMap is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request sql.ListAlertsV2Request
+func (_e *MockAlertsV2Interface_Expecter) AlertV2DisplayNameToIdMap(ctx interface{}, request interface{}) *MockAlertsV2Interface_AlertV2DisplayNameToIdMap_Call {
+	return &MockAlertsV2Interface_AlertV2DisplayNameToIdMap_Call{Call: _e.mock.On("AlertV2DisplayNameToIdMap", ctx, request)}
+}
+
+func (_c *MockAlertsV2Interface_AlertV2DisplayNameToIdMap_Call) Run(run func(ctx context.Context, request sql.ListAlertsV2Request)) *MockAlertsV2Interface_AlertV2DisplayNameToIdMap_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(sql.ListAlertsV2Request))
+	})
+	return _c
+}
+
+func (_c *MockAlertsV2Interface_AlertV2DisplayNameToIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockAlertsV2Interface_AlertV2DisplayNameToIdMap_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAlertsV2Interface_AlertV2DisplayNameToIdMap_Call) RunAndReturn(run func(context.Context, sql.ListAlertsV2Request) (map[string]string, error)) *MockAlertsV2Interface_AlertV2DisplayNameToIdMap_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateAlert provides a mock function with given fields: ctx, request
 func (_m *MockAlertsV2Interface) CreateAlert(ctx context.Context, request sql.CreateAlertV2Request) (*sql.AlertV2, error) {
 	ret := _m.Called(ctx, request)
@@ -202,23 +261,23 @@ func (_c *MockAlertsV2Interface_GetAlertById_Call) RunAndReturn(run func(context
 }
 
 // GetByDisplayName provides a mock function with given fields: ctx, name
-func (_m *MockAlertsV2Interface) GetByDisplayName(ctx context.Context, name string) (*sql.ListAlertsV2ResponseAlert, error) {
+func (_m *MockAlertsV2Interface) GetByDisplayName(ctx context.Context, name string) (*sql.AlertV2, error) {
 	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByDisplayName")
 	}
 
-	var r0 *sql.ListAlertsV2ResponseAlert
+	var r0 *sql.AlertV2
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*sql.ListAlertsV2ResponseAlert, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*sql.AlertV2, error)); ok {
 		return rf(ctx, name)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *sql.ListAlertsV2ResponseAlert); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *sql.AlertV2); ok {
 		r0 = rf(ctx, name)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*sql.ListAlertsV2ResponseAlert)
+			r0 = ret.Get(0).(*sql.AlertV2)
 		}
 	}
 
@@ -250,30 +309,30 @@ func (_c *MockAlertsV2Interface_GetByDisplayName_Call) Run(run func(ctx context.
 	return _c
 }
 
-func (_c *MockAlertsV2Interface_GetByDisplayName_Call) Return(_a0 *sql.ListAlertsV2ResponseAlert, _a1 error) *MockAlertsV2Interface_GetByDisplayName_Call {
+func (_c *MockAlertsV2Interface_GetByDisplayName_Call) Return(_a0 *sql.AlertV2, _a1 error) *MockAlertsV2Interface_GetByDisplayName_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAlertsV2Interface_GetByDisplayName_Call) RunAndReturn(run func(context.Context, string) (*sql.ListAlertsV2ResponseAlert, error)) *MockAlertsV2Interface_GetByDisplayName_Call {
+func (_c *MockAlertsV2Interface_GetByDisplayName_Call) RunAndReturn(run func(context.Context, string) (*sql.AlertV2, error)) *MockAlertsV2Interface_GetByDisplayName_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListAlerts provides a mock function with given fields: ctx, request
-func (_m *MockAlertsV2Interface) ListAlerts(ctx context.Context, request sql.ListAlertsV2Request) listing.Iterator[sql.ListAlertsV2ResponseAlert] {
+func (_m *MockAlertsV2Interface) ListAlerts(ctx context.Context, request sql.ListAlertsV2Request) listing.Iterator[sql.AlertV2] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAlerts")
 	}
 
-	var r0 listing.Iterator[sql.ListAlertsV2ResponseAlert]
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListAlertsV2Request) listing.Iterator[sql.ListAlertsV2ResponseAlert]); ok {
+	var r0 listing.Iterator[sql.AlertV2]
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListAlertsV2Request) listing.Iterator[sql.AlertV2]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(listing.Iterator[sql.ListAlertsV2ResponseAlert])
+			r0 = ret.Get(0).(listing.Iterator[sql.AlertV2])
 		}
 	}
 
@@ -299,34 +358,34 @@ func (_c *MockAlertsV2Interface_ListAlerts_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *MockAlertsV2Interface_ListAlerts_Call) Return(_a0 listing.Iterator[sql.ListAlertsV2ResponseAlert]) *MockAlertsV2Interface_ListAlerts_Call {
+func (_c *MockAlertsV2Interface_ListAlerts_Call) Return(_a0 listing.Iterator[sql.AlertV2]) *MockAlertsV2Interface_ListAlerts_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockAlertsV2Interface_ListAlerts_Call) RunAndReturn(run func(context.Context, sql.ListAlertsV2Request) listing.Iterator[sql.ListAlertsV2ResponseAlert]) *MockAlertsV2Interface_ListAlerts_Call {
+func (_c *MockAlertsV2Interface_ListAlerts_Call) RunAndReturn(run func(context.Context, sql.ListAlertsV2Request) listing.Iterator[sql.AlertV2]) *MockAlertsV2Interface_ListAlerts_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListAlertsAll provides a mock function with given fields: ctx, request
-func (_m *MockAlertsV2Interface) ListAlertsAll(ctx context.Context, request sql.ListAlertsV2Request) ([]sql.ListAlertsV2ResponseAlert, error) {
+func (_m *MockAlertsV2Interface) ListAlertsAll(ctx context.Context, request sql.ListAlertsV2Request) ([]sql.AlertV2, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAlertsAll")
 	}
 
-	var r0 []sql.ListAlertsV2ResponseAlert
+	var r0 []sql.AlertV2
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListAlertsV2Request) ([]sql.ListAlertsV2ResponseAlert, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListAlertsV2Request) ([]sql.AlertV2, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListAlertsV2Request) []sql.ListAlertsV2ResponseAlert); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, sql.ListAlertsV2Request) []sql.AlertV2); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]sql.ListAlertsV2ResponseAlert)
+			r0 = ret.Get(0).([]sql.AlertV2)
 		}
 	}
 
@@ -358,71 +417,12 @@ func (_c *MockAlertsV2Interface_ListAlertsAll_Call) Run(run func(ctx context.Con
 	return _c
 }
 
-func (_c *MockAlertsV2Interface_ListAlertsAll_Call) Return(_a0 []sql.ListAlertsV2ResponseAlert, _a1 error) *MockAlertsV2Interface_ListAlertsAll_Call {
+func (_c *MockAlertsV2Interface_ListAlertsAll_Call) Return(_a0 []sql.AlertV2, _a1 error) *MockAlertsV2Interface_ListAlertsAll_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAlertsV2Interface_ListAlertsAll_Call) RunAndReturn(run func(context.Context, sql.ListAlertsV2Request) ([]sql.ListAlertsV2ResponseAlert, error)) *MockAlertsV2Interface_ListAlertsAll_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ListAlertsV2ResponseAlertDisplayNameToIdMap provides a mock function with given fields: ctx, request
-func (_m *MockAlertsV2Interface) ListAlertsV2ResponseAlertDisplayNameToIdMap(ctx context.Context, request sql.ListAlertsV2Request) (map[string]string, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ListAlertsV2ResponseAlertDisplayNameToIdMap")
-	}
-
-	var r0 map[string]string
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListAlertsV2Request) (map[string]string, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, sql.ListAlertsV2Request) map[string]string); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]string)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, sql.ListAlertsV2Request) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockAlertsV2Interface_ListAlertsV2ResponseAlertDisplayNameToIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListAlertsV2ResponseAlertDisplayNameToIdMap'
-type MockAlertsV2Interface_ListAlertsV2ResponseAlertDisplayNameToIdMap_Call struct {
-	*mock.Call
-}
-
-// ListAlertsV2ResponseAlertDisplayNameToIdMap is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request sql.ListAlertsV2Request
-func (_e *MockAlertsV2Interface_Expecter) ListAlertsV2ResponseAlertDisplayNameToIdMap(ctx interface{}, request interface{}) *MockAlertsV2Interface_ListAlertsV2ResponseAlertDisplayNameToIdMap_Call {
-	return &MockAlertsV2Interface_ListAlertsV2ResponseAlertDisplayNameToIdMap_Call{Call: _e.mock.On("ListAlertsV2ResponseAlertDisplayNameToIdMap", ctx, request)}
-}
-
-func (_c *MockAlertsV2Interface_ListAlertsV2ResponseAlertDisplayNameToIdMap_Call) Run(run func(ctx context.Context, request sql.ListAlertsV2Request)) *MockAlertsV2Interface_ListAlertsV2ResponseAlertDisplayNameToIdMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(sql.ListAlertsV2Request))
-	})
-	return _c
-}
-
-func (_c *MockAlertsV2Interface_ListAlertsV2ResponseAlertDisplayNameToIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockAlertsV2Interface_ListAlertsV2ResponseAlertDisplayNameToIdMap_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockAlertsV2Interface_ListAlertsV2ResponseAlertDisplayNameToIdMap_Call) RunAndReturn(run func(context.Context, sql.ListAlertsV2Request) (map[string]string, error)) *MockAlertsV2Interface_ListAlertsV2ResponseAlertDisplayNameToIdMap_Call {
+func (_c *MockAlertsV2Interface_ListAlertsAll_Call) RunAndReturn(run func(context.Context, sql.ListAlertsV2Request) ([]sql.AlertV2, error)) *MockAlertsV2Interface_ListAlertsAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

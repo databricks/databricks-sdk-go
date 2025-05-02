@@ -2811,7 +2811,7 @@ func (s ListAlertsV2Request) MarshalJSON() ([]byte, error) {
 type ListAlertsV2Response struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	Results []ListAlertsV2ResponseAlert `json:"results,omitempty"`
+	Results []AlertV2 `json:"results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2821,47 +2821,6 @@ func (s *ListAlertsV2Response) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListAlertsV2Response) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type ListAlertsV2ResponseAlert struct {
-	// The timestamp indicating when the alert was created.
-	CreateTime string `json:"create_time,omitempty"`
-	// Custom description for the alert. support mustache template.
-	CustomDescription string `json:"custom_description,omitempty"`
-	// Custom summary for the alert. support mustache template.
-	CustomSummary string `json:"custom_summary,omitempty"`
-	// The display name of the alert.
-	DisplayName string `json:"display_name,omitempty"`
-
-	Evaluation *AlertV2Evaluation `json:"evaluation,omitempty"`
-	// UUID identifying the alert.
-	Id string `json:"id,omitempty"`
-	// Indicates whether the query is trashed.
-	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
-	// The owner's username. This field is set to "Unavailable" if the user has
-	// been deleted.
-	OwnerUserName string `json:"owner_user_name,omitempty"`
-	// Text of the query to be run.
-	QueryText string `json:"query_text,omitempty"`
-	// The run as username. This field is set to "Unavailable" if the user has
-	// been deleted.
-	RunAsUserName string `json:"run_as_user_name,omitempty"`
-
-	Schedule *CronSchedule `json:"schedule,omitempty"`
-	// The timestamp indicating when the alert was updated.
-	UpdateTime string `json:"update_time,omitempty"`
-	// ID of the SQL warehouse attached to the alert.
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ListAlertsV2ResponseAlert) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListAlertsV2ResponseAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
