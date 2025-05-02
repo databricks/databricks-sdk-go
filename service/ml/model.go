@@ -410,6 +410,10 @@ type CreateForecastingExperimentRequest struct {
 	// as a multiple of forecast_granularity. This value represents how far
 	// ahead the model should forecast.
 	ForecastHorizon int64 `json:"forecast_horizon"`
+	// The fully qualified path of a Unity Catalog table, formatted as
+	// catalog_name.schema_name.table_name, used to store future feature data
+	// for predictions.
+	FutureFeatureDataPath string `json:"future_feature_data_path,omitempty"`
 	// The region code(s) to automatically add holiday features. Currently
 	// supports only one region.
 	HolidayRegions []string `json:"holiday_regions,omitempty"`
@@ -444,7 +448,7 @@ type CreateForecastingExperimentRequest struct {
 	// The column in the training table used to group the dataset for predicting
 	// individual time series.
 	TimeseriesIdentifierColumns []string `json:"timeseries_identifier_columns,omitempty"`
-	// The fully qualified name of a Unity Catalog table, formatted as
+	// The fully qualified path of a Unity Catalog table, formatted as
 	// catalog_name.schema_name.table_name, used as training data for the
 	// forecasting model.
 	TrainDataPath string `json:"train_data_path"`

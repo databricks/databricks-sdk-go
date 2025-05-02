@@ -372,7 +372,8 @@ type UploadRequest struct {
 	Contents io.ReadCloser `json:"-"`
 	// The absolute path of the file.
 	FilePath string `json:"-" url:"-"`
-	// If true, an existing file will be overwritten.
+	// If true or unspecified, an existing file will be overwritten. If false,
+	// an error will be returned if the path points to an existing file.
 	Overwrite bool `json:"-" url:"overwrite,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

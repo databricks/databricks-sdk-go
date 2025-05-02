@@ -678,7 +678,7 @@ func (s QueryVectorIndexResponse) MarshalJSON() ([]byte, error) {
 // Data returned in the query result.
 type ResultData struct {
 	// Data rows returned in the query.
-	DataArray []ListValue `json:"data_array,omitempty"`
+	DataArray [][]string `json:"data_array,omitempty"`
 	// Number of rows in the result set.
 	RowCount int `json:"row_count,omitempty"`
 
