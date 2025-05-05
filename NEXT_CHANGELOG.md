@@ -4,9 +4,8 @@
 
 ### New Features and Improvements
 
-- Add support for OIDC ID token authentication using an environment variable 
-  (default `DATABRICKS_OIDC_TOKEN`, customizable via 
-  `DATABRICKS_OIDC_TOKEN_ENV`).
+- Add support for OIDC ID token authentication using an environment variable
+  ([PR #1215](https://github.com/databricks/databricks-sdk-go/pull/1215)).
 
 ### Bug Fixes
 
