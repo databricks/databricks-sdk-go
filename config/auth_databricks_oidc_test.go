@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
@@ -21,9 +22,9 @@ type mockIdTokenProvider struct {
 	err     error
 }
 
-func (m *mockIdTokenProvider) IDToken(ctx context.Context, audience string) (*IDToken, error) {
+func (m *mockIdTokenProvider) IDToken(ctx context.Context, audience string) (*oidc.IDToken, error) {
 	m.audience = audience
-	return &IDToken{Value: m.idToken}, m.err
+	return &oidc.IDToken{Value: m.idToken}, m.err
 }
 
 func TestDatabricksOidcTokenSource(t *testing.T) {

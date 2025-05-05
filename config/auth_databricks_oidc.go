@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -35,7 +36,7 @@ type DatabricksOIDCTokenSourceConfig struct {
 	// This is only used for Workspace level tokens.
 	Audience string
 	// IdTokenSource returns the IDToken to be used for the token exchange.
-	IdTokenSource IDTokenSource
+	IdTokenSource oidc.IDTokenSource
 }
 
 // databricksOIDCTokenSource is a auth.TokenSource which exchanges a token using

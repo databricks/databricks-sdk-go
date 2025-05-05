@@ -108,6 +108,9 @@ type Config struct {
 	// specified by this argument. This argument also holds currently selected auth.
 	AuthType string `name:"auth_type" env:"DATABRICKS_AUTH_TYPE" auth:"-"`
 
+	// Environment variable name that contains an OIDC ID token.
+	OIDCTokenEnv string `name:"oidc_token_env" env:"DATABRICKS_OIDC_TOKEN_ENV" auth:"-"`
+
 	// Skip SSL certificate verification for HTTP calls.
 	// Use at your own risk or for unit testing purposes.
 	InsecureSkipVerify bool `name:"skip_verify" auth:"-"`
