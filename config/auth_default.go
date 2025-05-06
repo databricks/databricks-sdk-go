@@ -18,14 +18,6 @@ func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 	}
 	idTokenSources := []namedIdTokenSource{
 		{
-			name: "github-oidc",
-			tokenSource: &githubIDTokenSource{
-				actionsIDTokenRequestURL:   cfg.ActionsIDTokenRequestURL,
-				actionsIDTokenRequestToken: cfg.ActionsIDTokenRequestToken,
-				refreshClient:              cfg.refreshClient,
-			},
-		},
-		{
 			name: "env-oidc",
 			// If the OIDCTokenEnv is not set, use DATABRICKS_OIDC_TOKEN as
 			// default value.
@@ -36,6 +28,14 @@ func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 				}
 				return oidc.NewEnvIDTokenSource(v)
 			}(),
+		},
+		{
+			name: "github-oidc",
+			tokenSource: &githubIDTokenSource{
+				actionsIDTokenRequestURL:   cfg.ActionsIDTokenRequestURL,
+				actionsIDTokenRequestToken: cfg.ActionsIDTokenRequestToken,
+				refreshClient:              cfg.refreshClient,
+			},
 		},
 		// Add new providers at the end of the list
 	}
