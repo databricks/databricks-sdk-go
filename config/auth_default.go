@@ -30,17 +30,15 @@ func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 			}(),
 		},
 		{
+			name:        "file-oidc",
+			tokenSource: oidc.NewFileTokenSource(cfg.OIDCTokenFilepath),
+		},
+		{
 			name: "github-oidc",
 			tokenSource: &githubIDTokenSource{
 				actionsIDTokenRequestURL:   cfg.ActionsIDTokenRequestURL,
 				actionsIDTokenRequestToken: cfg.ActionsIDTokenRequestToken,
 				refreshClient:              cfg.refreshClient,
-			},
-		},
-		{
-			name: "file-oidc",
-			tokenSource: &fileIDTokenSource{
-				idTokenFilePath: cfg.OIDCTokenFilepath,
 			},
 		},
 		// Add new providers at the end of the list
