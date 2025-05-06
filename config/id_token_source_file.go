@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -15,10 +16,10 @@ type fileIDTokenSource struct {
 
 // IDToken returns a JWT Token for the specified audience. It will return
 // an error if not running in GitHub Actions.
-func (g *fileIDTokenSource) IDToken(ctx context.Context, audience string) (*IDToken, error) {
+func (g *fileIDTokenSource) IDToken(ctx context.Context, audience string) (*oidc.IDToken, error) {
 	if g.idTokenFilePath == "" {
-		logger.Debugf(ctx, "Missing IDTokenFilePath")
-		return nil, errors.New("missing IDTokenFilePath")
+		logger.Debugf(ctx, "Missing OIDCTokenFilepath")
+		return nil, errors.New("missing OIDCTokenFilepath")
 	}
 
 	data, err := os.ReadFile(g.idTokenFilePath)
@@ -26,5 +27,5 @@ func (g *fileIDTokenSource) IDToken(ctx context.Context, audience string) (*IDTo
 		return nil, err
 	}
 
-	return &IDToken{Value: string(data)}, nil
+	return &oidc.IDToken{Value: string(data)}, nil
 }

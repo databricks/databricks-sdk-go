@@ -40,7 +40,7 @@ func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 		{
 			name: "file-oidc",
 			tokenSource: &fileIDTokenSource{
-				idTokenFilePath: cfg.IDTokenFilePath,
+				idTokenFilePath: cfg.OIDCTokenFilepath,
 			},
 		},
 		// Add new providers at the end of the list
