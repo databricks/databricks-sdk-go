@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
@@ -17,7 +18,7 @@ func TestGithubIDTokenSource(t *testing.T) {
 		tokenRequestToken string
 		audience          string
 		httpTransport     http.RoundTripper
-		wantToken         *IDToken
+		wantToken         *oidc.IDToken
 		wantErrPrefix     *string
 	}{
 		{
@@ -59,7 +60,7 @@ func TestGithubIDTokenSource(t *testing.T) {
 					Response: `{"value": "id-token-42"}`,
 				},
 			},
-			wantToken: &IDToken{
+			wantToken: &oidc.IDToken{
 				Value: "id-token-42",
 			},
 		},

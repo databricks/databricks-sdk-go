@@ -7,24 +7,12 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/oauth2"
 )
-
-type mockIdTokenProvider struct {
-	// input
-	audience string
-	// output
-	idToken string
-	err     error
-}
-
-func (m *mockIdTokenProvider) IDToken(ctx context.Context, audience string) (*IDToken, error) {
-	m.audience = audience
-	return &IDToken{Value: m.idToken}, m.err
-}
 
 func TestDatabricksOidcTokenSource(t *testing.T) {
 	testCases := []struct {
@@ -36,7 +24,7 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 		httpTransport        http.RoundTripper
 		oidcEndpointProvider func(context.Context) (*u2m.OAuthAuthorizationServer, error)
 		idToken              string
-		expectedAudience     string
+		wantAudience         string
 		tokenProviderError   error
 		wantToken            string
 		wantErrPrefix        *string
@@ -64,7 +52,7 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 					TokenEndpoint: "https://host.com/oidc/v1/token",
 				}, nil
 			},
-			expectedAudience:   "token-audience",
+			wantAudience:       "token-audience",
 			tokenProviderError: errors.New("error getting id token"),
 			wantErrPrefix:      errPrefix("error getting id token"),
 		},
@@ -86,9 +74,9 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 					},
 				},
 			},
-			expectedAudience: "token-audience",
-			idToken:          "id-token-42",
-			wantErrPrefix:    errPrefix("oauth2: cannot fetch token: Internal Server Error"),
+			wantAudience:  "token-audience",
+			idToken:       "id-token-42",
+			wantErrPrefix: errPrefix("oauth2: cannot fetch token: Internal Server Error"),
 		},
 		{
 			desc:          "invalid auth token",
@@ -111,9 +99,9 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 					},
 				},
 			},
-			expectedAudience: "token-audience",
-			idToken:          "id-token-42",
-			wantErrPrefix:    errPrefix("oauth2: server response missing access_token"),
+			wantAudience:  "token-audience",
+			idToken:       "id-token-42",
+			wantErrPrefix: errPrefix("oauth2: server response missing access_token"),
 		},
 		{
 			desc:          "success workspace",
@@ -147,9 +135,9 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 					},
 				},
 			},
-			expectedAudience: "token-audience",
-			idToken:          "id-token-42",
-			wantToken:        "test-auth-token",
+			wantAudience: "token-audience",
+			idToken:      "id-token-42",
+			wantToken:    "test-auth-token",
 		},
 		{
 			desc:          "success account",
@@ -183,9 +171,9 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 					},
 				},
 			},
-			expectedAudience: "token-audience",
-			idToken:          "id-token-42",
-			wantToken:        "test-auth-token",
+			wantAudience: "token-audience",
+			idToken:      "id-token-42",
+			wantToken:    "test-auth-token",
 		},
 		{
 			desc:      "default token audience account",
@@ -211,9 +199,9 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 					},
 				},
 			},
-			expectedAudience: "ac123",
-			idToken:          "id-token-42",
-			wantToken:        "test-auth-token",
+			wantAudience: "ac123",
+			idToken:      "id-token-42",
+			wantToken:    "test-auth-token",
 		},
 		{
 			desc:     "default token audience workspace",
@@ -238,26 +226,25 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 					},
 				},
 			},
-			expectedAudience: "https://host.com/oidc/v1/token",
-			idToken:          "id-token-42",
-			wantToken:        "test-auth-token",
+			wantAudience: "https://host.com/oidc/v1/token",
+			idToken:      "id-token-42",
+			wantToken:    "test-auth-token",
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			p := &mockIdTokenProvider{
-				idToken: tc.idToken,
-				err:     tc.tokenProviderError,
-			}
-
+			var gotAudience string // set when IDTokenSource is called
 			cfg := DatabricksOIDCTokenSourceConfig{
 				ClientID:              tc.clientID,
 				AccountID:             tc.accountID,
 				Host:                  tc.host,
 				TokenEndpointProvider: tc.oidcEndpointProvider,
 				Audience:              tc.tokenAudience,
-				IdTokenSource:         p,
+				IdTokenSource: oidc.IDTokenSourceFn(func(ctx context.Context, aud string) (*oidc.IDToken, error) {
+					gotAudience = aud
+					return &oidc.IDToken{Value: tc.idToken}, tc.tokenProviderError
+				}),
 			}
 
 			ts := NewDatabricksOIDCTokenSource(cfg)
@@ -283,8 +270,8 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			if tc.wantErrPrefix != nil && !hasPrefix(err, *tc.wantErrPrefix) {
 				t.Errorf("Token(ctx): got error %q, want error with prefix %q", err, *tc.wantErrPrefix)
 			}
-			if tc.expectedAudience != p.audience {
-				t.Errorf("mockTokenProvider: got audience %s, want %s", p.audience, tc.expectedAudience)
+			if tc.wantAudience != gotAudience {
+				t.Errorf("mockTokenProvider: got audience %s, want %s", gotAudience, tc.wantAudience)
 			}
 			tokenValue := ""
 			if token != nil {
