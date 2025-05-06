@@ -1,13 +1,8 @@
 # NEXT CHANGELOG
 
-## Release v0.68.0
+## Release v0.69.0
 
 ### New Features and Improvements
-
-- Add support for OIDC ID token authentication using a file
-  ([PR #1213](https://github.com/databricks/databricks-sdk-go/pull/1213)).
-- Add support for OIDC ID token authentication using an environment variable
-  ([PR #1215](https://github.com/databricks/databricks-sdk-go/pull/1215)).
 
 ### Bug Fixes
 
