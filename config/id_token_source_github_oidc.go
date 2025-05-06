@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
@@ -18,7 +19,7 @@ type githubIDTokenSource struct {
 
 // IDToken returns a JWT Token for the specified audience. It will return
 // an error if not running in GitHub Actions.
-func (g *githubIDTokenSource) IDToken(ctx context.Context, audience string) (*IDToken, error) {
+func (g *githubIDTokenSource) IDToken(ctx context.Context, audience string) (*oidc.IDToken, error) {
 	if g.actionsIDTokenRequestURL == "" {
 		logger.Debugf(ctx, "Missing ActionsIDTokenRequestURL, likely not calling from a Github action")
 		return nil, errors.New("missing ActionsIDTokenRequestURL")
@@ -28,7 +29,7 @@ func (g *githubIDTokenSource) IDToken(ctx context.Context, audience string) (*ID
 		return nil, errors.New("missing ActionsIDTokenRequestToken")
 	}
 
-	resp := &IDToken{}
+	resp := &oidc.IDToken{}
 	requestUrl := g.actionsIDTokenRequestURL
 	if audience != "" {
 		requestUrl = fmt.Sprintf("%s&audience=%s", requestUrl, audience)

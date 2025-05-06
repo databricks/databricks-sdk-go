@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -13,9 +14,21 @@ import (
 func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 	type namedIdTokenSource struct {
 		name        string
-		tokenSource IDTokenSource
+		tokenSource oidc.IDTokenSource
 	}
 	idTokenSources := []namedIdTokenSource{
+		{
+			name: "env-oidc",
+			// If the OIDCTokenEnv is not set, use DATABRICKS_OIDC_TOKEN as
+			// default value.
+			tokenSource: func() oidc.IDTokenSource {
+				v := cfg.OIDCTokenEnv
+				if v == "" {
+					v = "DATABRICKS_OIDC_TOKEN"
+				}
+				return oidc.NewEnvIDTokenSource(v)
+			}(),
+		},
 		{
 			name: "github-oidc",
 			tokenSource: &githubIDTokenSource{
@@ -32,6 +45,7 @@ func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 		},
 		// Add new providers at the end of the list
 	}
+
 	strategies := []CredentialsStrategy{}
 	for _, idTokenSource := range idTokenSources {
 		oidcConfig := DatabricksOIDCTokenSourceConfig{

@@ -110,8 +110,7 @@ func (a *pipelinesImpl) ListPipelineEvents(ctx context.Context, request ListPipe
 // Retrieves events for a pipeline.
 func (a *pipelinesImpl) ListPipelineEventsAll(ctx context.Context, request ListPipelineEventsRequest) ([]PipelineEvent, error) {
 	iterator := a.ListPipelineEvents(ctx, request)
-	return listing.ToSliceN[PipelineEvent, int](ctx, iterator, request.MaxResults)
-
+	return listing.ToSlice[PipelineEvent](ctx, iterator)
 }
 
 func (a *pipelinesImpl) internalListPipelineEvents(ctx context.Context, request ListPipelineEventsRequest) (*ListPipelineEventsResponse, error) {
@@ -156,8 +155,7 @@ func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelines
 // Lists pipelines defined in the Delta Live Tables system.
 func (a *pipelinesImpl) ListPipelinesAll(ctx context.Context, request ListPipelinesRequest) ([]PipelineStateInfo, error) {
 	iterator := a.ListPipelines(ctx, request)
-	return listing.ToSliceN[PipelineStateInfo, int](ctx, iterator, request.MaxResults)
-
+	return listing.ToSlice[PipelineStateInfo](ctx, iterator)
 }
 
 func (a *pipelinesImpl) internalListPipelines(ctx context.Context, request ListPipelinesRequest) (*ListPipelinesResponse, error) {

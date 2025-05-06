@@ -194,13 +194,13 @@ func (a *alertsV2Impl) GetAlert(ctx context.Context, request GetAlertV2Request) 
 // List alerts.
 //
 // Gets a list of alerts accessible to the user, ordered by creation time.
-func (a *alertsV2Impl) ListAlerts(ctx context.Context, request ListAlertsV2Request) listing.Iterator[ListAlertsV2ResponseAlert] {
+func (a *alertsV2Impl) ListAlerts(ctx context.Context, request ListAlertsV2Request) listing.Iterator[AlertV2] {
 
 	getNextPage := func(ctx context.Context, req ListAlertsV2Request) (*ListAlertsV2Response, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalListAlerts(ctx, req)
 	}
-	getItems := func(resp *ListAlertsV2Response) []ListAlertsV2ResponseAlert {
+	getItems := func(resp *ListAlertsV2Response) []AlertV2 {
 		return resp.Results
 	}
 	getNextReq := func(resp *ListAlertsV2Response) *ListAlertsV2Request {
@@ -221,9 +221,9 @@ func (a *alertsV2Impl) ListAlerts(ctx context.Context, request ListAlertsV2Reque
 // List alerts.
 //
 // Gets a list of alerts accessible to the user, ordered by creation time.
-func (a *alertsV2Impl) ListAlertsAll(ctx context.Context, request ListAlertsV2Request) ([]ListAlertsV2ResponseAlert, error) {
+func (a *alertsV2Impl) ListAlertsAll(ctx context.Context, request ListAlertsV2Request) ([]AlertV2, error) {
 	iterator := a.ListAlerts(ctx, request)
-	return listing.ToSlice[ListAlertsV2ResponseAlert](ctx, iterator)
+	return listing.ToSlice[AlertV2](ctx, iterator)
 }
 
 func (a *alertsV2Impl) internalListAlerts(ctx context.Context, request ListAlertsV2Request) (*ListAlertsV2Response, error) {
