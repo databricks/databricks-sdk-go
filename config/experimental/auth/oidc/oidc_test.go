@@ -3,6 +3,8 @@ package oidc
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -39,48 +41,35 @@ func TestNewEnvIDTokenSource(t *testing.T) {
 		desc     string
 		envName  string
 		envValue string
-		audience string
 		want     *IDToken
 		wantErr  bool
 	}{
 		{
-			desc:     "Success - variable set",
+			desc:     "success",
 			envName:  "OIDC_TEST_TOKEN_SUCCESS",
 			envValue: "test-token-123",
-			audience: "test-audience-1",
 			want:     &IDToken{Value: "test-token-123"},
 			wantErr:  false,
 		},
 		{
-			desc:     "Failure - variable not set",
+			desc:     "missing env var",
 			envName:  "OIDC_TEST_TOKEN_MISSING",
 			envValue: "",
-			audience: "test-audience-2",
 			want:     nil,
 			wantErr:  true,
 		},
 		{
-			desc:     "Failure - variable set to empty string",
+			desc:     "empty env var",
 			envName:  "OIDC_TEST_TOKEN_EMPTY",
 			envValue: "",
-			audience: "test-audience-3",
 			want:     nil,
 			wantErr:  true,
 		},
 		{
-			desc:     "Success - different variable name",
+			desc:     "different variable name",
 			envName:  "ANOTHER_OIDC_TOKEN",
 			envValue: "another-token-456",
-			audience: "test-audience-4",
 			want:     &IDToken{Value: "another-token-456"},
-			wantErr:  false,
-		},
-		{
-			desc:     "Success - empty audience string",
-			envName:  "OIDC_TEST_TOKEN_NO_AUDIENCE",
-			envValue: "token-no-audience",
-			audience: "",
-			want:     &IDToken{Value: "token-no-audience"},
 			wantErr:  false,
 		},
 	}
@@ -90,7 +79,80 @@ func TestNewEnvIDTokenSource(t *testing.T) {
 			t.Setenv(tc.envName, tc.envValue)
 
 			ts := NewEnvIDTokenSource(tc.envName)
-			got, gotErr := ts.IDToken(context.Background(), tc.audience)
+			got, gotErr := ts.IDToken(context.Background(), "")
+
+			if tc.wantErr && gotErr == nil {
+				t.Fatalf("IDToken() want error, got none")
+			}
+			if !tc.wantErr && gotErr != nil {
+				t.Fatalf("IDToken() want no error, got error: %v", gotErr)
+			}
+			if !cmp.Equal(got, tc.want) {
+				t.Errorf("IDToken() token = %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
+
+type testFile struct {
+	filename    string
+	filecontent string
+}
+
+func TestNewFileTokenSource(t *testing.T) {
+	testCases := []struct {
+		desc     string
+		file     *testFile // file to create
+		filepath string
+		want     *IDToken
+		wantErr  bool
+	}{
+		{
+			desc:     "missing filepath",
+			file:     &testFile{filename: "token", filecontent: "content"},
+			filepath: "",
+			wantErr:  true,
+		},
+		{
+			desc:     "empty file",
+			file:     &testFile{filename: "token", filecontent: ""},
+			filepath: "token",
+			wantErr:  true,
+		},
+		{
+			desc:     "file does not exist",
+			filepath: "nonexistent-file",
+			wantErr:  true,
+		},
+		{
+			desc:     "file exists",
+			file:     &testFile{filename: "token", filecontent: "content"},
+			filepath: "token",
+			want:     &IDToken{Value: "content"},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			tmpDir := t.TempDir()
+
+			// Create the test file if any is given.
+			if tc.file != nil {
+				tokenFile := filepath.Join(tmpDir, tc.file.filename)
+				if err := os.WriteFile(tokenFile, []byte(tc.file.filecontent), 0644); err != nil {
+					t.Fatalf("failed to create token file: %v", err)
+				}
+			}
+
+			// Only compute the fully qualified filepath if the relative
+			// filepath is given.
+			fp := tc.filepath
+			if tc.filepath != "" {
+				fp = filepath.Join(tmpDir, tc.filepath)
+			}
+
+			ts := NewFileTokenSource(fp)
+			got, gotErr := ts.IDToken(context.Background(), "")
 
 			if tc.wantErr && gotErr == nil {
 				t.Fatalf("IDToken() want error, got none")

@@ -34,7 +34,7 @@ func (fn IDTokenSourceFn) IDToken(ctx context.Context, audience string) (*IDToke
 	return fn(ctx, audience)
 }
 
-// NewEnvIDTokenSource returns an IDTokenSource that reads the token from
+// NewEnvIDTokenSource returns an IDTokenSource that reads the IDtoken from
 // environment variable env.
 //
 // Note that the IDTokenSource does not cache the token and will read the token
@@ -46,5 +46,26 @@ func NewEnvIDTokenSource(env string) IDTokenSource {
 			return nil, fmt.Errorf("missing env var %q", env)
 		}
 		return &IDToken{Value: t}, nil
+	})
+}
+
+// NewFileTokenSource returns an IDTokenSource that reads the ID token from a
+// file. The file should contain a single line with the token.
+func NewFileTokenSource(path string) IDTokenSource {
+	return IDTokenSourceFn(func(ctx context.Context, _ string) (*IDToken, error) {
+		if path == "" {
+			return nil, fmt.Errorf("missing path")
+		}
+		t, err := os.ReadFile(path)
+		if err != nil {
+			if os.IsNotExist(err) {
+				return nil, fmt.Errorf("file %q does not exist", path)
+			}
+			return nil, err
+		}
+		if len(t) == 0 {
+			return nil, fmt.Errorf("file %q is empty", path)
+		}
+		return &IDToken{Value: string(t)}, nil
 	})
 }

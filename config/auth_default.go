@@ -30,6 +30,10 @@ func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 			}(),
 		},
 		{
+			name:        "file-oidc",
+			tokenSource: oidc.NewFileTokenSource(cfg.OIDCTokenFilepath),
+		},
+		{
 			name: "github-oidc",
 			tokenSource: &githubIDTokenSource{
 				actionsIDTokenRequestURL:   cfg.ActionsIDTokenRequestURL,
