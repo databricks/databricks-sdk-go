@@ -72,6 +72,8 @@
 //
 // - [sql.DataSourcesAPI]: This API is provided to assist you in making new query objects.
 //
+// - [catalog.DatabaseInstancesAPI]: Database Instances provide access to a database via REST API or direct SQL.
+//
 // - [files.DbfsAPI]: DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
 //
 // - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/set.
@@ -135,6 +137,12 @@
 // - [dashboards.LakeviewEmbeddedAPI]: Token-based Lakeview APIs for embedding dashboards in external applications.
 //
 // - [compute.LibrariesAPI]: The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster.
+//
+// - [settings.LlmProxyPartnerPoweredAccountAPI]: Determines if partner powered models are enabled or not for a specific account.
+//
+// - [settings.LlmProxyPartnerPoweredEnforceAPI]: Determines if the account-level partner-powered setting value is enforced upon the workspace-level partner-powered setting.
+//
+// - [settings.LlmProxyPartnerPoweredWorkspaceAPI]: Determines if partner powered models are enabled or not for a specific workspace.
 //
 // - [billing.LogDeliveryAPI]: These APIs manage log delivery configurations for this account.
 //
@@ -357,6 +365,7 @@ var (
 	_ *sql.DashboardWidgetsAPI                            = nil
 	_ *sql.DashboardsAPI                                  = nil
 	_ *sql.DataSourcesAPI                                 = nil
+	_ *catalog.DatabaseInstancesAPI                       = nil
 	_ *files.DbfsAPI                                      = nil
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil
@@ -389,6 +398,9 @@ var (
 	_ *dashboards.LakeviewAPI                             = nil
 	_ *dashboards.LakeviewEmbeddedAPI                     = nil
 	_ *compute.LibrariesAPI                               = nil
+	_ *settings.LlmProxyPartnerPoweredAccountAPI          = nil
+	_ *settings.LlmProxyPartnerPoweredEnforceAPI          = nil
+	_ *settings.LlmProxyPartnerPoweredWorkspaceAPI        = nil
 	_ *billing.LogDeliveryAPI                             = nil
 	_ *catalog.AccountMetastoreAssignmentsAPI             = nil
 	_ *catalog.MetastoresAPI                              = nil

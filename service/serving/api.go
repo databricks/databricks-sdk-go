@@ -42,6 +42,17 @@ type ServingEndpointsInterface interface {
 	// Deprecated: use [ServingEndpointsAPIInterface.Create].Get() or [ServingEndpointsAPIInterface.WaitGetServingEndpointNotUpdating]
 	CreateAndWait(ctx context.Context, createServingEndpoint CreateServingEndpoint, options ...retries.Option[ServingEndpointDetailed]) (*ServingEndpointDetailed, error)
 
+	// Create a new PT serving endpoint.
+	CreateProvisionedThroughputEndpoint(ctx context.Context, createPtEndpointRequest CreatePtEndpointRequest) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error)
+
+	// Calls [ServingEndpointsAPIInterface.CreateProvisionedThroughputEndpoint] and waits to reach NOT_UPDATING state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[ServingEndpointDetailed](60*time.Minute) functional option.
+	//
+	// Deprecated: use [ServingEndpointsAPIInterface.CreateProvisionedThroughputEndpoint].Get() or [ServingEndpointsAPIInterface.WaitGetServingEndpointNotUpdating]
+	CreateProvisionedThroughputEndpointAndWait(ctx context.Context, createPtEndpointRequest CreatePtEndpointRequest, options ...retries.Option[ServingEndpointDetailed]) (*ServingEndpointDetailed, error)
+
 	// Delete a serving endpoint.
 	Delete(ctx context.Context, request DeleteServingEndpointRequest) error
 
@@ -178,6 +189,21 @@ type ServingEndpointsInterface interface {
 	// Updates the permissions on a serving endpoint. Serving endpoints can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+
+	// Update config of a PT serving endpoint.
+	//
+	// Updates any combination of the pt endpoint's served entities, the compute
+	// configuration of those served entities, and the endpoint's traffic config.
+	// Updates are instantaneous and endpoint should be updated instantly
+	UpdateProvisionedThroughputEndpointConfig(ctx context.Context, updateProvisionedThroughputEndpointConfigRequest UpdateProvisionedThroughputEndpointConfigRequest) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error)
+
+	// Calls [ServingEndpointsAPIInterface.UpdateProvisionedThroughputEndpointConfig] and waits to reach NOT_UPDATING state
+	//
+	// You can override the default timeout of 20 minutes by calling adding
+	// retries.Timeout[ServingEndpointDetailed](60*time.Minute) functional option.
+	//
+	// Deprecated: use [ServingEndpointsAPIInterface.UpdateProvisionedThroughputEndpointConfig].Get() or [ServingEndpointsAPIInterface.WaitGetServingEndpointNotUpdating]
+	UpdateProvisionedThroughputEndpointConfigAndWait(ctx context.Context, updateProvisionedThroughputEndpointConfigRequest UpdateProvisionedThroughputEndpointConfigRequest, options ...retries.Option[ServingEndpointDetailed]) (*ServingEndpointDetailed, error)
 }
 
 func NewServingEndpoints(client *client.DatabricksClient) *ServingEndpointsAPI {
@@ -313,6 +339,50 @@ func (a *ServingEndpointsAPI) CreateAndWait(ctx context.Context, createServingEn
 	return wait.Get()
 }
 
+// Create a new PT serving endpoint.
+func (a *ServingEndpointsAPI) CreateProvisionedThroughputEndpoint(ctx context.Context, createPtEndpointRequest CreatePtEndpointRequest) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error) {
+	servingEndpointDetailed, err := a.servingEndpointsImpl.CreateProvisionedThroughputEndpoint(ctx, createPtEndpointRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetServingEndpointNotUpdating[ServingEndpointDetailed]{
+		Response: servingEndpointDetailed,
+		Name:     servingEndpointDetailed.Name,
+		Poll: func(timeout time.Duration, callback func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error) {
+			return a.WaitGetServingEndpointNotUpdating(ctx, servingEndpointDetailed.Name, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [ServingEndpointsAPI.CreateProvisionedThroughputEndpoint] and waits to reach NOT_UPDATING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[ServingEndpointDetailed](60*time.Minute) functional option.
+//
+// Deprecated: use [ServingEndpointsAPI.CreateProvisionedThroughputEndpoint].Get() or [ServingEndpointsAPI.WaitGetServingEndpointNotUpdating]
+func (a *ServingEndpointsAPI) CreateProvisionedThroughputEndpointAndWait(ctx context.Context, createPtEndpointRequest CreatePtEndpointRequest, options ...retries.Option[ServingEndpointDetailed]) (*ServingEndpointDetailed, error) {
+	wait, err := a.CreateProvisionedThroughputEndpoint(ctx, createPtEndpointRequest)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[ServingEndpointDetailed]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *ServingEndpointDetailed) {
+		for _, o := range options {
+			o(&retries.Info[ServingEndpointDetailed]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
+}
+
 // Delete a serving endpoint.
 func (a *ServingEndpointsAPI) DeleteByName(ctx context.Context, name string) error {
 	return a.servingEndpointsImpl.Delete(ctx, DeleteServingEndpointRequest{
@@ -409,6 +479,54 @@ func (a *ServingEndpointsAPI) UpdateConfig(ctx context.Context, endpointCoreConf
 // Deprecated: use [ServingEndpointsAPI.UpdateConfig].Get() or [ServingEndpointsAPI.WaitGetServingEndpointNotUpdating]
 func (a *ServingEndpointsAPI) UpdateConfigAndWait(ctx context.Context, endpointCoreConfigInput EndpointCoreConfigInput, options ...retries.Option[ServingEndpointDetailed]) (*ServingEndpointDetailed, error) {
 	wait, err := a.UpdateConfig(ctx, endpointCoreConfigInput)
+	if err != nil {
+		return nil, err
+	}
+	tmp := &retries.Info[ServingEndpointDetailed]{Timeout: 20 * time.Minute}
+	for _, o := range options {
+		o(tmp)
+	}
+	wait.timeout = tmp.Timeout
+	wait.callback = func(info *ServingEndpointDetailed) {
+		for _, o := range options {
+			o(&retries.Info[ServingEndpointDetailed]{
+				Info:    info,
+				Timeout: wait.timeout,
+			})
+		}
+	}
+	return wait.Get()
+}
+
+// Update config of a PT serving endpoint.
+//
+// Updates any combination of the pt endpoint's served entities, the compute
+// configuration of those served entities, and the endpoint's traffic config.
+// Updates are instantaneous and endpoint should be updated instantly
+func (a *ServingEndpointsAPI) UpdateProvisionedThroughputEndpointConfig(ctx context.Context, updateProvisionedThroughputEndpointConfigRequest UpdateProvisionedThroughputEndpointConfigRequest) (*WaitGetServingEndpointNotUpdating[ServingEndpointDetailed], error) {
+	servingEndpointDetailed, err := a.servingEndpointsImpl.UpdateProvisionedThroughputEndpointConfig(ctx, updateProvisionedThroughputEndpointConfigRequest)
+	if err != nil {
+		return nil, err
+	}
+	return &WaitGetServingEndpointNotUpdating[ServingEndpointDetailed]{
+		Response: servingEndpointDetailed,
+		Name:     servingEndpointDetailed.Name,
+		Poll: func(timeout time.Duration, callback func(*ServingEndpointDetailed)) (*ServingEndpointDetailed, error) {
+			return a.WaitGetServingEndpointNotUpdating(ctx, servingEndpointDetailed.Name, timeout, callback)
+		},
+		timeout:  20 * time.Minute,
+		callback: nil,
+	}, nil
+}
+
+// Calls [ServingEndpointsAPI.UpdateProvisionedThroughputEndpointConfig] and waits to reach NOT_UPDATING state
+//
+// You can override the default timeout of 20 minutes by calling adding
+// retries.Timeout[ServingEndpointDetailed](60*time.Minute) functional option.
+//
+// Deprecated: use [ServingEndpointsAPI.UpdateProvisionedThroughputEndpointConfig].Get() or [ServingEndpointsAPI.WaitGetServingEndpointNotUpdating]
+func (a *ServingEndpointsAPI) UpdateProvisionedThroughputEndpointConfigAndWait(ctx context.Context, updateProvisionedThroughputEndpointConfigRequest UpdateProvisionedThroughputEndpointConfigRequest, options ...retries.Option[ServingEndpointDetailed]) (*ServingEndpointDetailed, error) {
+	wait, err := a.UpdateProvisionedThroughputEndpointConfig(ctx, updateProvisionedThroughputEndpointConfigRequest)
 	if err != nil {
 		return nil, err
 	}

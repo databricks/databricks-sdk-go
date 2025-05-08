@@ -4941,19 +4941,20 @@ func (s TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 
 // The code indicates why the run was terminated. Additional codes might be
 // introduced in future releases. * `SUCCESS`: The run was completed
-// successfully. * `USER_CANCELED`: The run was successfully canceled during
-// execution by a user. * `CANCELED`: The run was canceled during execution by
-// the Databricks platform; for example, if the maximum run duration was
-// exceeded. * `SKIPPED`: Run was never executed, for example, if the upstream
-// task run failed, the dependency type condition was not met, or there were no
-// material tasks to execute. * `INTERNAL_ERROR`: The run encountered an
-// unexpected error. Refer to the state message for further details. *
-// `DRIVER_ERROR`: The run encountered an error while communicating with the
-// Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster error. Refer
-// to the state message for further details. * `REPOSITORY_CHECKOUT_FAILED`:
-// Failed to complete the checkout due to an error when communicating with the
-// third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because it
-// issued an invalid request to start the cluster. *
+// successfully. * `SUCCESS_WITH_FAILURES`: The run was completed successfully
+// but some child runs failed. * `USER_CANCELED`: The run was successfully
+// canceled during execution by a user. * `CANCELED`: The run was canceled
+// during execution by the Databricks platform; for example, if the maximum run
+// duration was exceeded. * `SKIPPED`: Run was never executed, for example, if
+// the upstream task run failed, the dependency type condition was not met, or
+// there were no material tasks to execute. * `INTERNAL_ERROR`: The run
+// encountered an unexpected error. Refer to the state message for further
+// details. * `DRIVER_ERROR`: The run encountered an error while communicating
+// with the Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster
+// error. Refer to the state message for further details. *
+// `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error
+// when communicating with the third party service. * `INVALID_CLUSTER_REQUEST`:
+// The run failed because it issued an invalid request to start the cluster. *
 // `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for the
 // maximum number of concurrent active runs. Consider scheduling the runs over a
 // larger time frame. * `FEATURE_DISABLED`: The run failed because it tried to
@@ -5069,6 +5070,9 @@ const TerminationCodeCodeStorageAccessError TerminationCodeCode = `STORAGE_ACCES
 // The run was completed successfully.
 const TerminationCodeCodeSuccess TerminationCodeCode = `SUCCESS`
 
+// The run was completed successfully but some child runs failed.
+const TerminationCodeCodeSuccessWithFailures TerminationCodeCode = `SUCCESS_WITH_FAILURES`
+
 // The run failed due to a permission issue while accessing a resource. Refer to
 // the state message for further details.
 const TerminationCodeCodeUnauthorizedError TerminationCodeCode = `UNAUTHORIZED_ERROR`
@@ -5088,11 +5092,11 @@ func (f *TerminationCodeCode) String() string {
 // Set raw string value and validate it against allowed values
 func (f *TerminationCodeCode) Set(v string) error {
 	switch v {
-	case `BUDGET_POLICY_LIMIT_EXCEEDED`, `CANCELED`, `CLOUD_FAILURE`, `CLUSTER_ERROR`, `CLUSTER_REQUEST_LIMIT_EXCEEDED`, `DISABLED`, `DRIVER_ERROR`, `FEATURE_DISABLED`, `INTERNAL_ERROR`, `INVALID_CLUSTER_REQUEST`, `INVALID_RUN_CONFIGURATION`, `LIBRARY_INSTALLATION_ERROR`, `MAX_CONCURRENT_RUNS_EXCEEDED`, `MAX_JOB_QUEUE_SIZE_EXCEEDED`, `MAX_SPARK_CONTEXTS_EXCEEDED`, `REPOSITORY_CHECKOUT_FAILED`, `RESOURCE_NOT_FOUND`, `RUN_EXECUTION_ERROR`, `SKIPPED`, `STORAGE_ACCESS_ERROR`, `SUCCESS`, `UNAUTHORIZED_ERROR`, `USER_CANCELED`, `WORKSPACE_RUN_LIMIT_EXCEEDED`:
+	case `BUDGET_POLICY_LIMIT_EXCEEDED`, `CANCELED`, `CLOUD_FAILURE`, `CLUSTER_ERROR`, `CLUSTER_REQUEST_LIMIT_EXCEEDED`, `DISABLED`, `DRIVER_ERROR`, `FEATURE_DISABLED`, `INTERNAL_ERROR`, `INVALID_CLUSTER_REQUEST`, `INVALID_RUN_CONFIGURATION`, `LIBRARY_INSTALLATION_ERROR`, `MAX_CONCURRENT_RUNS_EXCEEDED`, `MAX_JOB_QUEUE_SIZE_EXCEEDED`, `MAX_SPARK_CONTEXTS_EXCEEDED`, `REPOSITORY_CHECKOUT_FAILED`, `RESOURCE_NOT_FOUND`, `RUN_EXECUTION_ERROR`, `SKIPPED`, `STORAGE_ACCESS_ERROR`, `SUCCESS`, `SUCCESS_WITH_FAILURES`, `UNAUTHORIZED_ERROR`, `USER_CANCELED`, `WORKSPACE_RUN_LIMIT_EXCEEDED`:
 		*f = TerminationCodeCode(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BUDGET_POLICY_LIMIT_EXCEEDED", "CANCELED", "CLOUD_FAILURE", "CLUSTER_ERROR", "CLUSTER_REQUEST_LIMIT_EXCEEDED", "DISABLED", "DRIVER_ERROR", "FEATURE_DISABLED", "INTERNAL_ERROR", "INVALID_CLUSTER_REQUEST", "INVALID_RUN_CONFIGURATION", "LIBRARY_INSTALLATION_ERROR", "MAX_CONCURRENT_RUNS_EXCEEDED", "MAX_JOB_QUEUE_SIZE_EXCEEDED", "MAX_SPARK_CONTEXTS_EXCEEDED", "REPOSITORY_CHECKOUT_FAILED", "RESOURCE_NOT_FOUND", "RUN_EXECUTION_ERROR", "SKIPPED", "STORAGE_ACCESS_ERROR", "SUCCESS", "UNAUTHORIZED_ERROR", "USER_CANCELED", "WORKSPACE_RUN_LIMIT_EXCEEDED"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BUDGET_POLICY_LIMIT_EXCEEDED", "CANCELED", "CLOUD_FAILURE", "CLUSTER_ERROR", "CLUSTER_REQUEST_LIMIT_EXCEEDED", "DISABLED", "DRIVER_ERROR", "FEATURE_DISABLED", "INTERNAL_ERROR", "INVALID_CLUSTER_REQUEST", "INVALID_RUN_CONFIGURATION", "LIBRARY_INSTALLATION_ERROR", "MAX_CONCURRENT_RUNS_EXCEEDED", "MAX_JOB_QUEUE_SIZE_EXCEEDED", "MAX_SPARK_CONTEXTS_EXCEEDED", "REPOSITORY_CHECKOUT_FAILED", "RESOURCE_NOT_FOUND", "RUN_EXECUTION_ERROR", "SKIPPED", "STORAGE_ACCESS_ERROR", "SUCCESS", "SUCCESS_WITH_FAILURES", "UNAUTHORIZED_ERROR", "USER_CANCELED", "WORKSPACE_RUN_LIMIT_EXCEEDED"`, v)
 	}
 }
 
@@ -5104,19 +5108,20 @@ func (f *TerminationCodeCode) Type() string {
 type TerminationDetails struct {
 	// The code indicates why the run was terminated. Additional codes might be
 	// introduced in future releases. * `SUCCESS`: The run was completed
-	// successfully. * `USER_CANCELED`: The run was successfully canceled during
-	// execution by a user. * `CANCELED`: The run was canceled during execution
-	// by the Databricks platform; for example, if the maximum run duration was
-	// exceeded. * `SKIPPED`: Run was never executed, for example, if the
-	// upstream task run failed, the dependency type condition was not met, or
-	// there were no material tasks to execute. * `INTERNAL_ERROR`: The run
-	// encountered an unexpected error. Refer to the state message for further
-	// details. * `DRIVER_ERROR`: The run encountered an error while
-	// communicating with the Spark Driver. * `CLUSTER_ERROR`: The run failed
-	// due to a cluster error. Refer to the state message for further details. *
-	// `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an
-	// error when communicating with the third party service. *
-	// `INVALID_CLUSTER_REQUEST`: The run failed because it issued an invalid
+	// successfully. * `SUCCESS_WITH_FAILURES`: The run was completed
+	// successfully but some child runs failed. * `USER_CANCELED`: The run was
+	// successfully canceled during execution by a user. * `CANCELED`: The run
+	// was canceled during execution by the Databricks platform; for example, if
+	// the maximum run duration was exceeded. * `SKIPPED`: Run was never
+	// executed, for example, if the upstream task run failed, the dependency
+	// type condition was not met, or there were no material tasks to execute. *
+	// `INTERNAL_ERROR`: The run encountered an unexpected error. Refer to the
+	// state message for further details. * `DRIVER_ERROR`: The run encountered
+	// an error while communicating with the Spark Driver. * `CLUSTER_ERROR`:
+	// The run failed due to a cluster error. Refer to the state message for
+	// further details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the
+	// checkout due to an error when communicating with the third party service.
+	// * `INVALID_CLUSTER_REQUEST`: The run failed because it issued an invalid
 	// request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The
 	// workspace has reached the quota for the maximum number of concurrent
 	// active runs. Consider scheduling the runs over a larger time frame. *
