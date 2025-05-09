@@ -1,18 +1,26 @@
-package config
+package oidc
 
 import (
 	"context"
 	"errors"
 	"net/http"
 	"net/url"
+	"strings"
 	"testing"
 
-	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient/fixtures"
 	"github.com/google/go-cmp/cmp"
 	"golang.org/x/oauth2"
 )
+
+func errPrefix(s string) *string {
+	return &s
+}
+
+func hasPrefix(err error, prefix string) bool {
+	return strings.HasPrefix(err.Error(), prefix)
+}
 
 func TestDatabricksOidcTokenSource(t *testing.T) {
 	testCases := []struct {
@@ -34,12 +42,6 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			clientID:      "client-id",
 			tokenAudience: "token-audience",
 			wantErrPrefix: errPrefix("missing Host"),
-		},
-		{
-			desc:          "missing client ID",
-			host:          "http://host.com",
-			tokenAudience: "token-audience",
-			wantErrPrefix: errPrefix("missing ClientID"),
 		},
 		{
 			desc: "token provider error",
@@ -104,7 +106,7 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantErrPrefix: errPrefix("oauth2: server response missing access_token"),
 		},
 		{
-			desc:          "success workspace",
+			desc:          "success WIF workspace",
 			clientID:      "client-id",
 			host:          "http://host.com",
 			tokenAudience: "token-audience",
@@ -140,7 +142,7 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			wantToken:    "test-auth-token",
 		},
 		{
-			desc:          "success account",
+			desc:          "success WIF account",
 			clientID:      "client-id",
 			accountID:     "ac123",
 			host:          "https://accounts.databricks.com",
@@ -230,6 +232,40 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 			idToken:      "id-token-42",
 			wantToken:    "test-auth-token",
 		},
+		{
+			desc:          "success account-wide",
+			host:          "http://host.com",
+			tokenAudience: "token-audience",
+			oidcEndpointProvider: func(ctx context.Context) (*u2m.OAuthAuthorizationServer, error) {
+				return &u2m.OAuthAuthorizationServer{
+					TokenEndpoint: "https://host.com/oidc/v1/token",
+				}, nil
+			},
+			httpTransport: fixtures.MappingTransport{
+				"POST /oidc/v1/token": {
+
+					Status: http.StatusOK,
+					ExpectedHeaders: map[string]string{
+						"Content-Type": "application/x-www-form-urlencoded",
+					},
+					ExpectedRequest: url.Values{
+						"scope":              {"all-apis"},
+						"subject_token_type": {"urn:ietf:params:oauth:token-type:jwt"},
+						"subject_token":      {"id-token-42"},
+						"grant_type":         {"urn:ietf:params:oauth:grant-type:token-exchange"},
+					},
+					Response: map[string]string{
+						"token_type":    "access-token",
+						"access_token":  "test-auth-token",
+						"refresh_token": "refresh",
+						"expires_on":    "0",
+					},
+				},
+			},
+			wantAudience: "token-audience",
+			idToken:      "id-token-42",
+			wantToken:    "test-auth-token",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -241,9 +277,9 @@ func TestDatabricksOidcTokenSource(t *testing.T) {
 				Host:                  tc.host,
 				TokenEndpointProvider: tc.oidcEndpointProvider,
 				Audience:              tc.tokenAudience,
-				IdTokenSource: oidc.IDTokenSourceFn(func(ctx context.Context, aud string) (*oidc.IDToken, error) {
+				IDTokenSource: IDTokenSourceFn(func(ctx context.Context, aud string) (*IDToken, error) {
 					gotAudience = aud
-					return &oidc.IDToken{Value: tc.idToken}, tc.tokenProviderError
+					return &IDToken{Value: tc.idToken}, tc.tokenProviderError
 				}),
 			}
 
