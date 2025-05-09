@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"golang.org/x/oauth2"
 )
@@ -26,10 +27,11 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 	if !cfg.IsAzure() || cfg.AzureClientID == "" || cfg.Host == "" || cfg.AzureTenantID == "" || cfg.ActionsIDTokenRequestURL == "" || cfg.ActionsIDTokenRequestToken == "" {
 		return nil, nil
 	}
-	supplier := githubIDTokenSource{actionsIDTokenRequestURL: cfg.ActionsIDTokenRequestURL,
-		actionsIDTokenRequestToken: cfg.ActionsIDTokenRequestToken,
-		refreshClient:              cfg.refreshClient,
-	}
+	supplier := oidc.NewGithubIDTokenSource(
+		cfg.refreshClient,
+		cfg.ActionsIDTokenRequestURL,
+		cfg.ActionsIDTokenRequestToken,
+	)
 
 	idToken, err := supplier.IDToken(ctx, "api://AzureADTokenExchange")
 	if err != nil {

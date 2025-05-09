@@ -35,28 +35,28 @@ func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
 		},
 		{
 			name: "github-oidc",
-			tokenSource: &githubIDTokenSource{
-				actionsIDTokenRequestURL:   cfg.ActionsIDTokenRequestURL,
-				actionsIDTokenRequestToken: cfg.ActionsIDTokenRequestToken,
-				refreshClient:              cfg.refreshClient,
-			},
+			tokenSource: oidc.NewGithubIDTokenSource(
+				cfg.refreshClient,
+				cfg.ActionsIDTokenRequestURL,
+				cfg.ActionsIDTokenRequestToken,
+			),
 		},
 		// Add new providers at the end of the list
 	}
 
 	strategies := []CredentialsStrategy{}
 	for _, idTokenSource := range idTokenSources {
-		oidcConfig := DatabricksOIDCTokenSourceConfig{
+		oidcConfig := oidc.DatabricksOIDCTokenSourceConfig{
 			ClientID:              cfg.ClientID,
 			Host:                  cfg.CanonicalHostName(),
 			TokenEndpointProvider: cfg.getOidcEndpoints,
 			Audience:              cfg.TokenAudience,
-			IdTokenSource:         idTokenSource.tokenSource,
+			IDTokenSource:         idTokenSource.tokenSource,
 		}
 		if cfg.IsAccountClient() {
 			oidcConfig.AccountID = cfg.AccountID
 		}
-		tokenSource := NewDatabricksOIDCTokenSource(oidcConfig)
+		tokenSource := oidc.NewDatabricksOIDCTokenSource(oidcConfig)
 		strategies = append(strategies, NewTokenSourceStrategy(idTokenSource.name, tokenSource))
 	}
 	return strategies
