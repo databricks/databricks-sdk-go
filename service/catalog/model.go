@@ -5572,6 +5572,10 @@ type UpdateMetastore struct {
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
 	DeltaSharingScope UpdateMetastoreDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+
+   // Whether to allow non-DBR clients to directly access entities under the
+   // metastore.
+   ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
 	// New name for the metastore.
