@@ -317,6 +317,48 @@ type CredentialsService interface {
 	ValidateCredential(ctx context.Context, request ValidateCredentialRequest) (*ValidateCredentialResponse, error)
 }
 
+// Database Instances provide access to a database via REST API or direct SQL.
+type DatabaseInstancesService interface {
+
+	// Create a Database Catalog.
+	CreateDatabaseCatalog(ctx context.Context, request CreateDatabaseCatalogRequest) (*DatabaseCatalog, error)
+
+	// Create a Database Instance.
+	CreateDatabaseInstance(ctx context.Context, request CreateDatabaseInstanceRequest) (*DatabaseInstance, error)
+
+	// Create a Synced Database Table.
+	CreateSyncedDatabaseTable(ctx context.Context, request CreateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
+
+	// Delete a Database Catalog.
+	DeleteDatabaseCatalog(ctx context.Context, request DeleteDatabaseCatalogRequest) error
+
+	// Delete a Database Instance.
+	DeleteDatabaseInstance(ctx context.Context, request DeleteDatabaseInstanceRequest) error
+
+	// Delete a Synced Database Table.
+	DeleteSyncedDatabaseTable(ctx context.Context, request DeleteSyncedDatabaseTableRequest) error
+
+	// Find a Database Instance by uid.
+	FindDatabaseInstanceByUid(ctx context.Context, request FindDatabaseInstanceByUidRequest) (*DatabaseInstance, error)
+
+	// Get a Database Catalog.
+	GetDatabaseCatalog(ctx context.Context, request GetDatabaseCatalogRequest) (*DatabaseCatalog, error)
+
+	// Get a Database Instance.
+	GetDatabaseInstance(ctx context.Context, request GetDatabaseInstanceRequest) (*DatabaseInstance, error)
+
+	// Get a Synced Database Table.
+	GetSyncedDatabaseTable(ctx context.Context, request GetSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
+
+	// List Database Instances.
+	//
+	// Use ListDatabaseInstancesAll() to get all DatabaseInstance instances, which will iterate over every result page.
+	ListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error)
+
+	// Update a Database Instance.
+	UpdateDatabaseInstance(ctx context.Context, request UpdateDatabaseInstanceRequest) (*DatabaseInstance, error)
+}
+
 // An external location is an object that combines a cloud storage path with a
 // storage credential that authorizes access to the cloud storage path. Each
 // external location is subject to Unity Catalog access-control policies that

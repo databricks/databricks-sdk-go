@@ -561,6 +561,61 @@ type IpAccessListsService interface {
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 
+// Determines if partner powered models are enabled or not for a specific
+// account
+type LlmProxyPartnerPoweredAccountService interface {
+
+	// Get the enable partner powered AI features account setting.
+	//
+	// Gets the enable partner powered AI features account setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error)
+
+	// Update the enable partner powered AI features account setting.
+	//
+	// Updates the enable partner powered AI features account setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error)
+}
+
+// Determines if the account-level partner-powered setting value is enforced
+// upon the workspace-level partner-powered setting
+type LlmProxyPartnerPoweredEnforceService interface {
+
+	// Get the enforcement status of partner powered AI features account
+	// setting.
+	//
+	// Gets the enforcement status of partner powered AI features account
+	// setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error)
+
+	// Update the enforcement status of partner powered AI features account
+	// setting.
+	//
+	// Updates the enable enforcement status of partner powered AI features
+	// account setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error)
+}
+
+// Determines if partner powered models are enabled or not for a specific
+// workspace
+type LlmProxyPartnerPoweredWorkspaceService interface {
+
+	// Delete the enable partner powered AI features workspace setting.
+	//
+	// Reverts the enable partner powered AI features workspace setting to its
+	// default value.
+	Delete(ctx context.Context, request DeleteLlmProxyPartnerPoweredWorkspaceRequest) (*DeleteLlmProxyPartnerPoweredWorkspaceResponse, error)
+
+	// Get the enable partner powered AI features workspace setting.
+	//
+	// Gets the enable partner powered AI features workspace setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error)
+
+	// Update the enable partner powered AI features workspace setting.
+	//
+	// Updates the enable partner powered AI features workspace setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error)
+}
+
 // These APIs provide configurations for the network connectivity of your
 // workspaces for serverless compute resources. This API provides stable subnets
 // for your workspace so that you can configure your firewalls on your Azure

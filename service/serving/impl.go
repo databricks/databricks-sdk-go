@@ -42,6 +42,17 @@ func (a *servingEndpointsImpl) Create(ctx context.Context, request CreateServing
 	return &servingEndpointDetailed, err
 }
 
+func (a *servingEndpointsImpl) CreateProvisionedThroughputEndpoint(ctx context.Context, request CreatePtEndpointRequest) (*ServingEndpointDetailed, error) {
+	var servingEndpointDetailed ServingEndpointDetailed
+	path := "/api/2.0/serving-endpoints/pt"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &servingEndpointDetailed)
+	return &servingEndpointDetailed, err
+}
+
 func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServingEndpointRequest) error {
 	var deleteResponse DeleteResponse
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", request.Name)
@@ -233,6 +244,17 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &servingEndpointPermissions)
 	return &servingEndpointPermissions, err
+}
+
+func (a *servingEndpointsImpl) UpdateProvisionedThroughputEndpointConfig(ctx context.Context, request UpdateProvisionedThroughputEndpointConfigRequest) (*ServingEndpointDetailed, error) {
+	var servingEndpointDetailed ServingEndpointDetailed
+	path := fmt.Sprintf("/api/2.0/serving-endpoints/pt/%v/config", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &servingEndpointDetailed)
+	return &servingEndpointDetailed, err
 }
 
 // unexported type that holds implementations of just ServingEndpointsDataPlane API methods

@@ -177,7 +177,7 @@ func (a *alertsV2Impl) CreateAlert(ctx context.Context, request CreateAlertV2Req
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &alertV2)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Alert, &alertV2)
 	return &alertV2, err
 }
 
@@ -250,10 +250,13 @@ func (a *alertsV2Impl) UpdateAlert(ctx context.Context, request UpdateAlertV2Req
 	var alertV2 AlertV2
 	path := fmt.Sprintf("/api/2.0/alerts/%v", request.Id)
 	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &alertV2)
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Alert, &alertV2)
 	return &alertV2, err
 }
 
