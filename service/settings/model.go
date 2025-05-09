@@ -939,6 +939,40 @@ type DeleteIpAccessListRequest struct {
 	IpAccessListId string `json:"-" url:"-"`
 }
 
+// Delete the enable partner powered AI features workspace setting
+type DeleteLlmProxyPartnerPoweredWorkspaceRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteLlmProxyPartnerPoweredWorkspaceResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
+}
+
 // Delete a network connectivity configuration
 type DeleteNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
@@ -1958,6 +1992,74 @@ type GetIpAccessListsResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
 }
 
+// Get the enable partner powered AI features account setting
+type GetLlmProxyPartnerPoweredAccountRequest struct {
+	AccountId string `json:"-" url:"-"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetLlmProxyPartnerPoweredAccountRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetLlmProxyPartnerPoweredAccountRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get the enforcement status of partner powered AI features account setting
+type GetLlmProxyPartnerPoweredEnforceRequest struct {
+	AccountId string `json:"-" url:"-"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetLlmProxyPartnerPoweredEnforceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetLlmProxyPartnerPoweredEnforceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Get the enable partner powered AI features workspace setting
+type GetLlmProxyPartnerPoweredWorkspaceRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get a network connectivity configuration
 type GetNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
@@ -2272,6 +2374,90 @@ func (f *ListType) Set(v string) error {
 // Type always returns ListType to satisfy [pflag.Value] interface
 func (f *ListType) Type() string {
 	return "ListType"
+}
+
+type LlmProxyPartnerPoweredAccount struct {
+	BooleanVal BooleanMessage `json:"boolean_val"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LlmProxyPartnerPoweredAccount) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LlmProxyPartnerPoweredAccount) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type LlmProxyPartnerPoweredEnforce struct {
+	BooleanVal BooleanMessage `json:"boolean_val"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LlmProxyPartnerPoweredEnforce) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LlmProxyPartnerPoweredEnforce) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type LlmProxyPartnerPoweredWorkspace struct {
+	BooleanVal BooleanMessage `json:"boolean_val"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LlmProxyPartnerPoweredWorkspace) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LlmProxyPartnerPoweredWorkspace) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type MicrosoftTeamsConfig struct {
@@ -3297,6 +3483,73 @@ func (s *UpdateIpAccessList) UnmarshalJSON(b []byte) error {
 
 func (s UpdateIpAccessList) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Details required to update a setting.
+type UpdateLlmProxyPartnerPoweredAccountRequest struct {
+	// Databricks account ID of the account being managed.
+	AccountId string `json:"-" url:"-"`
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	FieldMask string `json:"field_mask"`
+
+	Setting LlmProxyPartnerPoweredAccount `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateLlmProxyPartnerPoweredEnforceRequest struct {
+	// Databricks account ID of the account being managed.
+	AccountId string `json:"-" url:"-"`
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	FieldMask string `json:"field_mask"`
+
+	Setting LlmProxyPartnerPoweredEnforce `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateLlmProxyPartnerPoweredWorkspaceRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	FieldMask string `json:"field_mask"`
+
+	Setting LlmProxyPartnerPoweredWorkspace `json:"setting"`
 }
 
 // Update a private endpoint rule

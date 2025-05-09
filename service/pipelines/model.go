@@ -549,6 +549,10 @@ type IngestionPipelineDefinition struct {
 	// Required. Settings specifying tables to replicate and the destination for
 	// the replicated tables.
 	Objects []IngestionConfig `json:"objects,omitempty"`
+	// The type of the foreign source. The source type will be inferred from the
+	// source connection or ingestion gateway. This field is output only and
+	// will be ignored if provided.
+	SourceType IngestionSourceType `json:"source_type,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in the pipeline.
 	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
@@ -562,6 +566,53 @@ func (s *IngestionPipelineDefinition) UnmarshalJSON(b []byte) error {
 
 func (s IngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type IngestionSourceType string
+
+const IngestionSourceTypeDynamics365 IngestionSourceType = `DYNAMICS365`
+
+const IngestionSourceTypeGa4RawData IngestionSourceType = `GA4_RAW_DATA`
+
+const IngestionSourceTypeManagedPostgresql IngestionSourceType = `MANAGED_POSTGRESQL`
+
+const IngestionSourceTypeMysql IngestionSourceType = `MYSQL`
+
+const IngestionSourceTypeNetsuite IngestionSourceType = `NETSUITE`
+
+const IngestionSourceTypeOracle IngestionSourceType = `ORACLE`
+
+const IngestionSourceTypePostgresql IngestionSourceType = `POSTGRESQL`
+
+const IngestionSourceTypeSalesforce IngestionSourceType = `SALESFORCE`
+
+const IngestionSourceTypeServicenow IngestionSourceType = `SERVICENOW`
+
+const IngestionSourceTypeSharepoint IngestionSourceType = `SHAREPOINT`
+
+const IngestionSourceTypeSqlserver IngestionSourceType = `SQLSERVER`
+
+const IngestionSourceTypeWorkdayRaas IngestionSourceType = `WORKDAY_RAAS`
+
+// String representation for [fmt.Print]
+func (f *IngestionSourceType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IngestionSourceType) Set(v string) error {
+	switch v {
+	case `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `WORKDAY_RAAS`:
+		*f = IngestionSourceType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "WORKDAY_RAAS"`, v)
+	}
+}
+
+// Type always returns IngestionSourceType to satisfy [pflag.Value] interface
+func (f *IngestionSourceType) Type() string {
+	return "IngestionSourceType"
 }
 
 // List pipeline events
@@ -824,6 +875,21 @@ func (s Origin) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type PathPattern struct {
+	// The source code to include for pipelines
+	Include string `json:"include,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PathPattern) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PathPattern) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PipelineAccessControlRequest struct {
 	// name of the group
 	GroupName string `json:"group_name,omitempty"`
@@ -1075,6 +1141,10 @@ type PipelineLibrary struct {
 	// The path to a file that defines a pipeline and is stored in the
 	// Databricks Repos.
 	File *FileLibrary `json:"file,omitempty"`
+	// The unified field to include source codes. Each entry can be a notebook
+	// path, a file path, or a folder path that ends `/**`. This field cannot be
+	// used together with `notebook` or `file`.
+	Glob *PathPattern `json:"glob,omitempty"`
 	// URI of the jar to be installed. Currently only DBFS is supported.
 	Jar string `json:"jar,omitempty"`
 	// Specification of a maven library to be installed.
@@ -1560,6 +1630,8 @@ type StartUpdateCause string
 
 const StartUpdateCauseApiCall StartUpdateCause = `API_CALL`
 
+const StartUpdateCauseInfrastructureMaintenance StartUpdateCause = `INFRASTRUCTURE_MAINTENANCE`
+
 const StartUpdateCauseJobTask StartUpdateCause = `JOB_TASK`
 
 const StartUpdateCauseRetryOnFailure StartUpdateCause = `RETRY_ON_FAILURE`
@@ -1578,11 +1650,11 @@ func (f *StartUpdateCause) String() string {
 // Set raw string value and validate it against allowed values
 func (f *StartUpdateCause) Set(v string) error {
 	switch v {
-	case `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
+	case `API_CALL`, `INFRASTRUCTURE_MAINTENANCE`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
 		*f = StartUpdateCause(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "API_CALL", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "API_CALL", "INFRASTRUCTURE_MAINTENANCE", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
 	}
 }
 
@@ -1756,6 +1828,8 @@ type UpdateInfoCause string
 
 const UpdateInfoCauseApiCall UpdateInfoCause = `API_CALL`
 
+const UpdateInfoCauseInfrastructureMaintenance UpdateInfoCause = `INFRASTRUCTURE_MAINTENANCE`
+
 const UpdateInfoCauseJobTask UpdateInfoCause = `JOB_TASK`
 
 const UpdateInfoCauseRetryOnFailure UpdateInfoCause = `RETRY_ON_FAILURE`
@@ -1774,11 +1848,11 @@ func (f *UpdateInfoCause) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UpdateInfoCause) Set(v string) error {
 	switch v {
-	case `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
+	case `API_CALL`, `INFRASTRUCTURE_MAINTENANCE`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
 		*f = UpdateInfoCause(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "API_CALL", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "API_CALL", "INFRASTRUCTURE_MAINTENANCE", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
 	}
 }
 

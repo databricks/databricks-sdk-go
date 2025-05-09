@@ -261,7 +261,7 @@ func (_c *MockPermissionsInterface_GetPermissionLevelsByRequestObjectTypeAndRequ
 }
 
 // Set provides a mock function with given fields: ctx, request
-func (_m *MockPermissionsInterface) Set(ctx context.Context, request iam.PermissionsRequest) (*iam.ObjectPermissions, error) {
+func (_m *MockPermissionsInterface) Set(ctx context.Context, request iam.SetObjectPermissions) (*iam.ObjectPermissions, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -270,10 +270,10 @@ func (_m *MockPermissionsInterface) Set(ctx context.Context, request iam.Permiss
 
 	var r0 *iam.ObjectPermissions
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, iam.PermissionsRequest) (*iam.ObjectPermissions, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.SetObjectPermissions) (*iam.ObjectPermissions, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, iam.PermissionsRequest) *iam.ObjectPermissions); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.SetObjectPermissions) *iam.ObjectPermissions); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -281,7 +281,7 @@ func (_m *MockPermissionsInterface) Set(ctx context.Context, request iam.Permiss
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, iam.PermissionsRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, iam.SetObjectPermissions) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -297,14 +297,14 @@ type MockPermissionsInterface_Set_Call struct {
 
 // Set is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request iam.PermissionsRequest
+//   - request iam.SetObjectPermissions
 func (_e *MockPermissionsInterface_Expecter) Set(ctx interface{}, request interface{}) *MockPermissionsInterface_Set_Call {
 	return &MockPermissionsInterface_Set_Call{Call: _e.mock.On("Set", ctx, request)}
 }
 
-func (_c *MockPermissionsInterface_Set_Call) Run(run func(ctx context.Context, request iam.PermissionsRequest)) *MockPermissionsInterface_Set_Call {
+func (_c *MockPermissionsInterface_Set_Call) Run(run func(ctx context.Context, request iam.SetObjectPermissions)) *MockPermissionsInterface_Set_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(iam.PermissionsRequest))
+		run(args[0].(context.Context), args[1].(iam.SetObjectPermissions))
 	})
 	return _c
 }
@@ -314,13 +314,13 @@ func (_c *MockPermissionsInterface_Set_Call) Return(_a0 *iam.ObjectPermissions, 
 	return _c
 }
 
-func (_c *MockPermissionsInterface_Set_Call) RunAndReturn(run func(context.Context, iam.PermissionsRequest) (*iam.ObjectPermissions, error)) *MockPermissionsInterface_Set_Call {
+func (_c *MockPermissionsInterface_Set_Call) RunAndReturn(run func(context.Context, iam.SetObjectPermissions) (*iam.ObjectPermissions, error)) *MockPermissionsInterface_Set_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockPermissionsInterface) Update(ctx context.Context, request iam.PermissionsRequest) (*iam.ObjectPermissions, error) {
+func (_m *MockPermissionsInterface) Update(ctx context.Context, request iam.UpdateObjectPermissions) (*iam.ObjectPermissions, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
@@ -329,10 +329,10 @@ func (_m *MockPermissionsInterface) Update(ctx context.Context, request iam.Perm
 
 	var r0 *iam.ObjectPermissions
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, iam.PermissionsRequest) (*iam.ObjectPermissions, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.UpdateObjectPermissions) (*iam.ObjectPermissions, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, iam.PermissionsRequest) *iam.ObjectPermissions); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, iam.UpdateObjectPermissions) *iam.ObjectPermissions); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
@@ -340,7 +340,7 @@ func (_m *MockPermissionsInterface) Update(ctx context.Context, request iam.Perm
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, iam.PermissionsRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, iam.UpdateObjectPermissions) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -356,14 +356,14 @@ type MockPermissionsInterface_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request iam.PermissionsRequest
+//   - request iam.UpdateObjectPermissions
 func (_e *MockPermissionsInterface_Expecter) Update(ctx interface{}, request interface{}) *MockPermissionsInterface_Update_Call {
 	return &MockPermissionsInterface_Update_Call{Call: _e.mock.On("Update", ctx, request)}
 }
 
-func (_c *MockPermissionsInterface_Update_Call) Run(run func(ctx context.Context, request iam.PermissionsRequest)) *MockPermissionsInterface_Update_Call {
+func (_c *MockPermissionsInterface_Update_Call) Run(run func(ctx context.Context, request iam.UpdateObjectPermissions)) *MockPermissionsInterface_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(iam.PermissionsRequest))
+		run(args[0].(context.Context), args[1].(iam.UpdateObjectPermissions))
 	})
 	return _c
 }
@@ -373,7 +373,7 @@ func (_c *MockPermissionsInterface_Update_Call) Return(_a0 *iam.ObjectPermission
 	return _c
 }
 
-func (_c *MockPermissionsInterface_Update_Call) RunAndReturn(run func(context.Context, iam.PermissionsRequest) (*iam.ObjectPermissions, error)) *MockPermissionsInterface_Update_Call {
+func (_c *MockPermissionsInterface_Update_Call) RunAndReturn(run func(context.Context, iam.UpdateObjectPermissions) (*iam.ObjectPermissions, error)) *MockPermissionsInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -458,11 +458,6 @@ func (s ListIndexesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// copied from proto3 / Google Well Known Types, source:
-// https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-// `ListValue` is a wrapper around a repeated field of values.
-//
-// The JSON representation for `ListValue` is JSON array.
 type ListValue struct {
 	// Repeated field of dynamically typed values.
 	Values []Value `json:"values,omitempty"`
@@ -748,15 +743,6 @@ func (s ScanVectorIndexResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// copied from proto3 / Google Well Known Types, source:
-// https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-// `Struct` represents a structured data value, consisting of fields which map
-// to dynamically typed values. In some languages, `Struct` might be supported
-// by a native representation. For example, in scripting languages like JS a
-// struct is represented as an object. The details of that representation are
-// described together with the proto support for the language.
-//
-// The JSON representation for `Struct` is JSON object.
 type Struct struct {
 	// Data entry, corresponding to a row in a vector index.
 	Fields []MapStringValueEntry `json:"fields,omitempty"`
@@ -858,26 +844,13 @@ type UpsertDataVectorIndexResponse struct {
 
 type Value struct {
 	BoolValue bool `json:"bool_value,omitempty"`
-	// copied from proto3 / Google Well Known Types, source:
-	// https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-	// `ListValue` is a wrapper around a repeated field of values.
-	//
-	// The JSON representation for `ListValue` is JSON array.
+
 	ListValue *ListValue `json:"list_value,omitempty"`
 
 	NumberValue float64 `json:"number_value,omitempty"`
 
 	StringValue string `json:"string_value,omitempty"`
-	// copied from proto3 / Google Well Known Types, source:
-	// https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
-	// `Struct` represents a structured data value, consisting of fields which
-	// map to dynamically typed values. In some languages, `Struct` might be
-	// supported by a native representation. For example, in scripting languages
-	// like JS a struct is represented as an object. The details of that
-	// representation are described together with the proto support for the
-	// language.
-	//
-	// The JSON representation for `Struct` is JSON object.
+
 	StructValue *Struct `json:"struct_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`

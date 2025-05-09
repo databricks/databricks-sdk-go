@@ -2631,10 +2631,6 @@ type EditInstancePool struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
-	// For Fleet-pool V2, this object contains the information about the
-	// alternate node type ids to use when attempting to launch a cluster if the
-	// node type id is not available.
-	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -2766,9 +2762,27 @@ type Environment struct {
 	// project path>(WSFS or Volumes in Databricks), <vcs project url> E.g.
 	// dependencies: ["foo==0.0.1", "-r /Workspace/test/requirements.txt"]
 	Dependencies []string `json:"dependencies,omitempty"`
+	// We renamed `client` to `environment_version` in notebook exports. This
+	// field is meant solely so that imported notebooks with
+	// `environment_version` can be deserialized correctly, in a
+	// backwards-compatible way (i.e. if `client` is specified instead of
+	// `environment_version`, it will be deserialized correctly). Do NOT use
+	// this field for any other purpose, e.g. notebook storage. This field is
+	// not yet exposed to customers (e.g. in the jobs API).
+	EnvironmentVersion string `json:"environment_version,omitempty"`
 	// List of jar dependencies, should be string representing volume paths. For
 	// example: `/Volumes/path/to/test.jar`.
 	JarDependencies []string `json:"jar_dependencies,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *Environment) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s Environment) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type EventDetails struct {
@@ -3269,10 +3283,6 @@ type GetInstancePool struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
-	// For Fleet-pool V2, this object contains the information about the
-	// alternate node type ids to use when attempting to launch a cluster if the
-	// node type id is not available.
-	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -3726,10 +3736,6 @@ type InstancePoolAndStats struct {
 	MaxCapacity int `json:"max_capacity,omitempty"`
 	// Minimum number of idle instances to keep in the instance pool
 	MinIdleInstances int `json:"min_idle_instances,omitempty"`
-	// For Fleet-pool V2, this object contains the information about the
-	// alternate node type ids to use when attempting to launch a cluster if the
-	// node type id is not available.
-	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
@@ -4761,12 +4767,6 @@ func (s *NodeType) UnmarshalJSON(b []byte) error {
 
 func (s NodeType) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-// For Fleet-V2 using classic clusters, this object contains the information
-// about the alternate node type ids to use when attempting to launch a cluster.
-// It can be used with both the driver and worker node types.
-type NodeTypeFlexibility struct {
 }
 
 // Error message of a failed pending instances

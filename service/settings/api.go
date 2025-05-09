@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enable Export Notebook, Enable Ip Access Lists, Enable Notebook Table Clipboard, Enable Results Downloading, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enable Export Notebook, Enable Ip Access Lists, Enable Notebook Table Clipboard, Enable Results Downloading, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Llm Proxy Partner Powered Account, Llm Proxy Partner Powered Enforce, Llm Proxy Partner Powered Workspace, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -255,6 +255,14 @@ type AccountSettingsInterface interface {
 	// individually for each workspace.
 	EsmEnablementAccount() EsmEnablementAccountInterface
 
+	// Determines if partner powered models are enabled or not for a specific
+	// account
+	LlmProxyPartnerPoweredAccount() LlmProxyPartnerPoweredAccountInterface
+
+	// Determines if the account-level partner-powered setting value is enforced
+	// upon the workspace-level partner-powered setting
+	LlmProxyPartnerPoweredEnforce() LlmProxyPartnerPoweredEnforceInterface
+
 	// The Personal Compute enablement setting lets you control which users can
 	// use the Personal Compute default policy to create compute resources. By
 	// default all users in all workspaces have access (ON), but you can change
@@ -281,6 +289,10 @@ func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 		enableIpAccessLists: NewEnableIpAccessLists(client),
 
 		esmEnablementAccount: NewEsmEnablementAccount(client),
+
+		llmProxyPartnerPoweredAccount: NewLlmProxyPartnerPoweredAccount(client),
+
+		llmProxyPartnerPoweredEnforce: NewLlmProxyPartnerPoweredEnforce(client),
 
 		personalCompute: NewPersonalCompute(client),
 	}
@@ -320,6 +332,14 @@ type AccountSettingsAPI struct {
 	// individually for each workspace.
 	esmEnablementAccount EsmEnablementAccountInterface
 
+	// Determines if partner powered models are enabled or not for a specific
+	// account
+	llmProxyPartnerPoweredAccount LlmProxyPartnerPoweredAccountInterface
+
+	// Determines if the account-level partner-powered setting value is enforced
+	// upon the workspace-level partner-powered setting
+	llmProxyPartnerPoweredEnforce LlmProxyPartnerPoweredEnforceInterface
+
 	// The Personal Compute enablement setting lets you control which users can
 	// use the Personal Compute default policy to create compute resources. By
 	// default all users in all workspaces have access (ON), but you can change
@@ -347,6 +367,14 @@ func (a *AccountSettingsAPI) EnableIpAccessLists() EnableIpAccessListsInterface 
 
 func (a *AccountSettingsAPI) EsmEnablementAccount() EsmEnablementAccountInterface {
 	return a.esmEnablementAccount
+}
+
+func (a *AccountSettingsAPI) LlmProxyPartnerPoweredAccount() LlmProxyPartnerPoweredAccountInterface {
+	return a.llmProxyPartnerPoweredAccount
+}
+
+func (a *AccountSettingsAPI) LlmProxyPartnerPoweredEnforce() LlmProxyPartnerPoweredEnforceInterface {
+	return a.llmProxyPartnerPoweredEnforce
 }
 
 func (a *AccountSettingsAPI) PersonalCompute() PersonalComputeInterface {
@@ -1107,6 +1135,122 @@ func (a *IpAccessListsAPI) GetByLabel(ctx context.Context, name string) (*IpAcce
 	return &alternatives[0], nil
 }
 
+type LlmProxyPartnerPoweredAccountInterface interface {
+
+	// Get the enable partner powered AI features account setting.
+	//
+	// Gets the enable partner powered AI features account setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error)
+
+	// Get the enable partner powered AI features account setting.
+	//
+	// Gets the enable partner powered AI features account setting.
+	GetByAccountId(ctx context.Context, accountId string) (*LlmProxyPartnerPoweredAccount, error)
+
+	// Update the enable partner powered AI features account setting.
+	//
+	// Updates the enable partner powered AI features account setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error)
+}
+
+func NewLlmProxyPartnerPoweredAccount(client *client.DatabricksClient) *LlmProxyPartnerPoweredAccountAPI {
+	return &LlmProxyPartnerPoweredAccountAPI{
+		llmProxyPartnerPoweredAccountImpl: llmProxyPartnerPoweredAccountImpl{
+			client: client,
+		},
+	}
+}
+
+// Determines if partner powered models are enabled or not for a specific
+// account
+type LlmProxyPartnerPoweredAccountAPI struct {
+	llmProxyPartnerPoweredAccountImpl
+}
+
+// Get the enable partner powered AI features account setting.
+//
+// Gets the enable partner powered AI features account setting.
+func (a *LlmProxyPartnerPoweredAccountAPI) GetByAccountId(ctx context.Context, accountId string) (*LlmProxyPartnerPoweredAccount, error) {
+	return a.llmProxyPartnerPoweredAccountImpl.Get(ctx, GetLlmProxyPartnerPoweredAccountRequest{
+		AccountId: accountId,
+	})
+}
+
+type LlmProxyPartnerPoweredEnforceInterface interface {
+
+	// Get the enforcement status of partner powered AI features account setting.
+	//
+	// Gets the enforcement status of partner powered AI features account setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error)
+
+	// Get the enforcement status of partner powered AI features account setting.
+	//
+	// Gets the enforcement status of partner powered AI features account setting.
+	GetByAccountId(ctx context.Context, accountId string) (*LlmProxyPartnerPoweredEnforce, error)
+
+	// Update the enforcement status of partner powered AI features account setting.
+	//
+	// Updates the enable enforcement status of partner powered AI features account
+	// setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error)
+}
+
+func NewLlmProxyPartnerPoweredEnforce(client *client.DatabricksClient) *LlmProxyPartnerPoweredEnforceAPI {
+	return &LlmProxyPartnerPoweredEnforceAPI{
+		llmProxyPartnerPoweredEnforceImpl: llmProxyPartnerPoweredEnforceImpl{
+			client: client,
+		},
+	}
+}
+
+// Determines if the account-level partner-powered setting value is enforced
+// upon the workspace-level partner-powered setting
+type LlmProxyPartnerPoweredEnforceAPI struct {
+	llmProxyPartnerPoweredEnforceImpl
+}
+
+// Get the enforcement status of partner powered AI features account setting.
+//
+// Gets the enforcement status of partner powered AI features account setting.
+func (a *LlmProxyPartnerPoweredEnforceAPI) GetByAccountId(ctx context.Context, accountId string) (*LlmProxyPartnerPoweredEnforce, error) {
+	return a.llmProxyPartnerPoweredEnforceImpl.Get(ctx, GetLlmProxyPartnerPoweredEnforceRequest{
+		AccountId: accountId,
+	})
+}
+
+type LlmProxyPartnerPoweredWorkspaceInterface interface {
+
+	// Delete the enable partner powered AI features workspace setting.
+	//
+	// Reverts the enable partner powered AI features workspace setting to its
+	// default value.
+	Delete(ctx context.Context, request DeleteLlmProxyPartnerPoweredWorkspaceRequest) (*DeleteLlmProxyPartnerPoweredWorkspaceResponse, error)
+
+	// Get the enable partner powered AI features workspace setting.
+	//
+	// Gets the enable partner powered AI features workspace setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error)
+
+	// Update the enable partner powered AI features workspace setting.
+	//
+	// Updates the enable partner powered AI features workspace setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error)
+}
+
+func NewLlmProxyPartnerPoweredWorkspace(client *client.DatabricksClient) *LlmProxyPartnerPoweredWorkspaceAPI {
+	return &LlmProxyPartnerPoweredWorkspaceAPI{
+		llmProxyPartnerPoweredWorkspaceImpl: llmProxyPartnerPoweredWorkspaceImpl{
+			client: client,
+		},
+	}
+}
+
+// Determines if partner powered models are enabled or not for a specific
+// workspace
+type LlmProxyPartnerPoweredWorkspaceAPI struct {
+	llmProxyPartnerPoweredWorkspaceImpl
+}
+
 type NetworkConnectivityInterface interface {
 
 	// Create a network connectivity configuration.
@@ -1548,6 +1692,10 @@ type SettingsInterface interface {
 	// this setting and it is not permanent.
 	EnhancedSecurityMonitoring() EnhancedSecurityMonitoringInterface
 
+	// Determines if partner powered models are enabled or not for a specific
+	// workspace
+	LlmProxyPartnerPoweredWorkspace() LlmProxyPartnerPoweredWorkspaceInterface
+
 	// The Restrict Workspace Admins setting lets you control the capabilities
 	// of workspace admins. With the setting status set to ALLOW_ALL, workspace
 	// admins can create service principal personal access tokens on behalf of
@@ -1591,6 +1739,8 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 		enableResultsDownloading: NewEnableResultsDownloading(client),
 
 		enhancedSecurityMonitoring: NewEnhancedSecurityMonitoring(client),
+
+		llmProxyPartnerPoweredWorkspace: NewLlmProxyPartnerPoweredWorkspace(client),
 
 		restrictWorkspaceAdmins: NewRestrictWorkspaceAdmins(client),
 	}
@@ -1671,6 +1821,10 @@ type SettingsAPI struct {
 	// this setting and it is not permanent.
 	enhancedSecurityMonitoring EnhancedSecurityMonitoringInterface
 
+	// Determines if partner powered models are enabled or not for a specific
+	// workspace
+	llmProxyPartnerPoweredWorkspace LlmProxyPartnerPoweredWorkspaceInterface
+
 	// The Restrict Workspace Admins setting lets you control the capabilities
 	// of workspace admins. With the setting status set to ALLOW_ALL, workspace
 	// admins can create service principal personal access tokens on behalf of
@@ -1729,6 +1883,10 @@ func (a *SettingsAPI) EnableResultsDownloading() EnableResultsDownloadingInterfa
 
 func (a *SettingsAPI) EnhancedSecurityMonitoring() EnhancedSecurityMonitoringInterface {
 	return a.enhancedSecurityMonitoring
+}
+
+func (a *SettingsAPI) LlmProxyPartnerPoweredWorkspace() LlmProxyPartnerPoweredWorkspaceInterface {
+	return a.llmProxyPartnerPoweredWorkspace
 }
 
 func (a *SettingsAPI) RestrictWorkspaceAdmins() RestrictWorkspaceAdminsInterface {
