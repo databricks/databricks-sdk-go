@@ -126,7 +126,8 @@ func (b bodyLogger) redactedDump(prefix string, body []byte) string {
 			sb.WriteString(prefix)
 			for _, c := range line {
 				// Convert non-ASCII and non-printable characters to '.'
-				if c > unicode.MaxASCII || !unicode.IsPrint(c) {
+				// But preserve tabs and spaces for indentation
+				if c > unicode.MaxASCII || (!unicode.IsPrint(c) && c != '\t') {
 					c = '.'
 				}
 				sb.WriteRune(c)
