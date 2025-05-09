@@ -208,6 +208,100 @@ func (_c *MockAccountSettingsInterface_EsmEnablementAccount_Call) RunAndReturn(r
 	return _c
 }
 
+// LlmProxyPartnerPoweredAccount provides a mock function with no fields
+func (_m *MockAccountSettingsInterface) LlmProxyPartnerPoweredAccount() settings.LlmProxyPartnerPoweredAccountInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for LlmProxyPartnerPoweredAccount")
+	}
+
+	var r0 settings.LlmProxyPartnerPoweredAccountInterface
+	if rf, ok := ret.Get(0).(func() settings.LlmProxyPartnerPoweredAccountInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.LlmProxyPartnerPoweredAccountInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockAccountSettingsInterface_LlmProxyPartnerPoweredAccount_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LlmProxyPartnerPoweredAccount'
+type MockAccountSettingsInterface_LlmProxyPartnerPoweredAccount_Call struct {
+	*mock.Call
+}
+
+// LlmProxyPartnerPoweredAccount is a helper method to define mock.On call
+func (_e *MockAccountSettingsInterface_Expecter) LlmProxyPartnerPoweredAccount() *MockAccountSettingsInterface_LlmProxyPartnerPoweredAccount_Call {
+	return &MockAccountSettingsInterface_LlmProxyPartnerPoweredAccount_Call{Call: _e.mock.On("LlmProxyPartnerPoweredAccount")}
+}
+
+func (_c *MockAccountSettingsInterface_LlmProxyPartnerPoweredAccount_Call) Run(run func()) *MockAccountSettingsInterface_LlmProxyPartnerPoweredAccount_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_LlmProxyPartnerPoweredAccount_Call) Return(_a0 settings.LlmProxyPartnerPoweredAccountInterface) *MockAccountSettingsInterface_LlmProxyPartnerPoweredAccount_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_LlmProxyPartnerPoweredAccount_Call) RunAndReturn(run func() settings.LlmProxyPartnerPoweredAccountInterface) *MockAccountSettingsInterface_LlmProxyPartnerPoweredAccount_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// LlmProxyPartnerPoweredEnforce provides a mock function with no fields
+func (_m *MockAccountSettingsInterface) LlmProxyPartnerPoweredEnforce() settings.LlmProxyPartnerPoweredEnforceInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for LlmProxyPartnerPoweredEnforce")
+	}
+
+	var r0 settings.LlmProxyPartnerPoweredEnforceInterface
+	if rf, ok := ret.Get(0).(func() settings.LlmProxyPartnerPoweredEnforceInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.LlmProxyPartnerPoweredEnforceInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockAccountSettingsInterface_LlmProxyPartnerPoweredEnforce_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LlmProxyPartnerPoweredEnforce'
+type MockAccountSettingsInterface_LlmProxyPartnerPoweredEnforce_Call struct {
+	*mock.Call
+}
+
+// LlmProxyPartnerPoweredEnforce is a helper method to define mock.On call
+func (_e *MockAccountSettingsInterface_Expecter) LlmProxyPartnerPoweredEnforce() *MockAccountSettingsInterface_LlmProxyPartnerPoweredEnforce_Call {
+	return &MockAccountSettingsInterface_LlmProxyPartnerPoweredEnforce_Call{Call: _e.mock.On("LlmProxyPartnerPoweredEnforce")}
+}
+
+func (_c *MockAccountSettingsInterface_LlmProxyPartnerPoweredEnforce_Call) Run(run func()) *MockAccountSettingsInterface_LlmProxyPartnerPoweredEnforce_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_LlmProxyPartnerPoweredEnforce_Call) Return(_a0 settings.LlmProxyPartnerPoweredEnforceInterface) *MockAccountSettingsInterface_LlmProxyPartnerPoweredEnforce_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAccountSettingsInterface_LlmProxyPartnerPoweredEnforce_Call) RunAndReturn(run func() settings.LlmProxyPartnerPoweredEnforceInterface) *MockAccountSettingsInterface_LlmProxyPartnerPoweredEnforce_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // PersonalCompute provides a mock function with no fields
 func (_m *MockAccountSettingsInterface) PersonalCompute() settings.PersonalComputeInterface {
 	ret := _m.Called()
