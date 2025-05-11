@@ -67,6 +67,7 @@ func NewMockWorkspaceClient(t interface {
 			DashboardWidgets:                    sql.NewMockDashboardWidgetsInterface(t),
 			Dashboards:                          sql.NewMockDashboardsInterface(t),
 			DataSources:                         sql.NewMockDataSourcesInterface(t),
+			DatabaseInstances:                   catalog.NewMockDatabaseInstancesInterface(t),
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
 			Experiments:                         ml.NewMockExperimentsInterface(t),
@@ -179,6 +180,9 @@ func NewMockWorkspaceClient(t interface {
 	mockenhancedSecurityMonitoring := settings.NewMockEnhancedSecurityMonitoringInterface(t)
 	mocksettingsAPI.On("EnhancedSecurityMonitoring").Return(mockenhancedSecurityMonitoring).Maybe()
 
+	mockllmProxyPartnerPoweredWorkspace := settings.NewMockLlmProxyPartnerPoweredWorkspaceInterface(t)
+	mocksettingsAPI.On("LlmProxyPartnerPoweredWorkspace").Return(mockllmProxyPartnerPoweredWorkspace).Maybe()
+
 	mockrestrictWorkspaceAdmins := settings.NewMockRestrictWorkspaceAdminsInterface(t)
 	mocksettingsAPI.On("RestrictWorkspaceAdmins").Return(mockrestrictWorkspaceAdmins).Maybe()
 
@@ -269,6 +273,14 @@ func (m *MockWorkspaceClient) GetMockEnhancedSecurityMonitoringAPI() *settings.M
 	api, ok := m.GetMockSettingsAPI().EnhancedSecurityMonitoring().(*settings.MockEnhancedSecurityMonitoringInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected EnhancedSecurityMonitoring to be *settings.MockEnhancedSecurityMonitoringInterface, actual was %T", m.GetMockSettingsAPI().EnhancedSecurityMonitoring()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockLlmProxyPartnerPoweredWorkspaceAPI() *settings.MockLlmProxyPartnerPoweredWorkspaceInterface {
+	api, ok := m.GetMockSettingsAPI().LlmProxyPartnerPoweredWorkspace().(*settings.MockLlmProxyPartnerPoweredWorkspaceInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected LlmProxyPartnerPoweredWorkspace to be *settings.MockLlmProxyPartnerPoweredWorkspaceInterface, actual was %T", m.GetMockSettingsAPI().LlmProxyPartnerPoweredWorkspace()))
 	}
 	return api
 }
@@ -485,6 +497,14 @@ func (m *MockWorkspaceClient) GetMockDataSourcesAPI() *sql.MockDataSourcesInterf
 	api, ok := m.WorkspaceClient.DataSources.(*sql.MockDataSourcesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DataSources to be *sql.MockDataSourcesInterface, actual was %T", m.WorkspaceClient.DataSources))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDatabaseInstancesAPI() *catalog.MockDatabaseInstancesInterface {
+	api, ok := m.WorkspaceClient.DatabaseInstances.(*catalog.MockDatabaseInstancesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DatabaseInstances to be *catalog.MockDatabaseInstancesInterface, actual was %T", m.WorkspaceClient.DatabaseInstances))
 	}
 	return api
 }

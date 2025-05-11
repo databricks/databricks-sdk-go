@@ -891,8 +891,9 @@ func (s CreateAlertRequestAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Create an alert
 type CreateAlertV2Request struct {
-	Alert *AlertV2 `json:"alert,omitempty"`
+	Alert AlertV2 `json:"alert"`
 }
 
 type CreateQueryRequest struct {
@@ -4854,8 +4855,9 @@ func (s UpdateAlertRequestAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Update an alert
 type UpdateAlertV2Request struct {
-	Alert *AlertV2 `json:"alert,omitempty"`
+	Alert AlertV2 `json:"alert"`
 	// UUID identifying the alert.
 	Id string `json:"-" url:"-"`
 	// The field mask must be a single string, with multiple fields separated by
@@ -4869,7 +4871,7 @@ type UpdateAlertV2Request struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
-	UpdateMask string `json:"update_mask"`
+	UpdateMask string `json:"-" url:"update_mask"`
 }
 
 type UpdateQueryRequest struct {

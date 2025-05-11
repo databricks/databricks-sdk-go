@@ -595,7 +595,7 @@ func (a *permissionsImpl) GetPermissionLevels(ctx context.Context, request GetPe
 	return &getPermissionLevelsResponse, err
 }
 
-func (a *permissionsImpl) Set(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
+func (a *permissionsImpl) Set(ctx context.Context, request SetObjectPermissions) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	queryParams := make(map[string]any)
@@ -606,7 +606,7 @@ func (a *permissionsImpl) Set(ctx context.Context, request PermissionsRequest) (
 	return &objectPermissions, err
 }
 
-func (a *permissionsImpl) Update(ctx context.Context, request PermissionsRequest) (*ObjectPermissions, error) {
+func (a *permissionsImpl) Update(ctx context.Context, request UpdateObjectPermissions) (*ObjectPermissions, error) {
 	var objectPermissions ObjectPermissions
 	path := fmt.Sprintf("/api/2.0/permissions/%v/%v", request.RequestObjectType, request.RequestObjectId)
 	queryParams := make(map[string]any)

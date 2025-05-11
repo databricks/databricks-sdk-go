@@ -26,23 +26,23 @@ func (_m *MockWorkspaceBindingsInterface) EXPECT() *MockWorkspaceBindingsInterfa
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceBindingsInterface) Get(ctx context.Context, request catalog.GetWorkspaceBindingRequest) (*catalog.CurrentWorkspaceBindings, error) {
+func (_m *MockWorkspaceBindingsInterface) Get(ctx context.Context, request catalog.GetWorkspaceBindingRequest) (*catalog.GetCatalogWorkspaceBindingsResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Get")
 	}
 
-	var r0 *catalog.CurrentWorkspaceBindings
+	var r0 *catalog.GetCatalogWorkspaceBindingsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetWorkspaceBindingRequest) (*catalog.CurrentWorkspaceBindings, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetWorkspaceBindingRequest) (*catalog.GetCatalogWorkspaceBindingsResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetWorkspaceBindingRequest) *catalog.CurrentWorkspaceBindings); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetWorkspaceBindingRequest) *catalog.GetCatalogWorkspaceBindingsResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.CurrentWorkspaceBindings)
+			r0 = ret.Get(0).(*catalog.GetCatalogWorkspaceBindingsResponse)
 		}
 	}
 
@@ -74,12 +74,12 @@ func (_c *MockWorkspaceBindingsInterface_Get_Call) Run(run func(ctx context.Cont
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_Get_Call) Return(_a0 *catalog.CurrentWorkspaceBindings, _a1 error) *MockWorkspaceBindingsInterface_Get_Call {
+func (_c *MockWorkspaceBindingsInterface_Get_Call) Return(_a0 *catalog.GetCatalogWorkspaceBindingsResponse, _a1 error) *MockWorkspaceBindingsInterface_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_Get_Call) RunAndReturn(run func(context.Context, catalog.GetWorkspaceBindingRequest) (*catalog.CurrentWorkspaceBindings, error)) *MockWorkspaceBindingsInterface_Get_Call {
+func (_c *MockWorkspaceBindingsInterface_Get_Call) RunAndReturn(run func(context.Context, catalog.GetWorkspaceBindingRequest) (*catalog.GetCatalogWorkspaceBindingsResponse, error)) *MockWorkspaceBindingsInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -193,27 +193,27 @@ func (_c *MockWorkspaceBindingsInterface_GetBindingsAll_Call) RunAndReturn(run f
 }
 
 // GetBindingsBySecurableTypeAndSecurableName provides a mock function with given fields: ctx, securableType, securableName
-func (_m *MockWorkspaceBindingsInterface) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType catalog.GetBindingsSecurableType, securableName string) (*catalog.WorkspaceBindingsResponse, error) {
+func (_m *MockWorkspaceBindingsInterface) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType string, securableName string) (*catalog.GetWorkspaceBindingsResponse, error) {
 	ret := _m.Called(ctx, securableType, securableName)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetBindingsBySecurableTypeAndSecurableName")
 	}
 
-	var r0 *catalog.WorkspaceBindingsResponse
+	var r0 *catalog.GetWorkspaceBindingsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetBindingsSecurableType, string) (*catalog.WorkspaceBindingsResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*catalog.GetWorkspaceBindingsResponse, error)); ok {
 		return rf(ctx, securableType, securableName)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetBindingsSecurableType, string) *catalog.WorkspaceBindingsResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *catalog.GetWorkspaceBindingsResponse); ok {
 		r0 = rf(ctx, securableType, securableName)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.WorkspaceBindingsResponse)
+			r0 = ret.Get(0).(*catalog.GetWorkspaceBindingsResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, catalog.GetBindingsSecurableType, string) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
 		r1 = rf(ctx, securableType, securableName)
 	} else {
 		r1 = ret.Error(1)
@@ -229,47 +229,47 @@ type MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_C
 
 // GetBindingsBySecurableTypeAndSecurableName is a helper method to define mock.On call
 //   - ctx context.Context
-//   - securableType catalog.GetBindingsSecurableType
+//   - securableType string
 //   - securableName string
 func (_e *MockWorkspaceBindingsInterface_Expecter) GetBindingsBySecurableTypeAndSecurableName(ctx interface{}, securableType interface{}, securableName interface{}) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
 	return &MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call{Call: _e.mock.On("GetBindingsBySecurableTypeAndSecurableName", ctx, securableType, securableName)}
 }
 
-func (_c *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call) Run(run func(ctx context.Context, securableType catalog.GetBindingsSecurableType, securableName string)) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
+func (_c *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call) Run(run func(ctx context.Context, securableType string, securableName string)) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(catalog.GetBindingsSecurableType), args[2].(string))
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
 	})
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call) Return(_a0 *catalog.WorkspaceBindingsResponse, _a1 error) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
+func (_c *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call) Return(_a0 *catalog.GetWorkspaceBindingsResponse, _a1 error) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call) RunAndReturn(run func(context.Context, catalog.GetBindingsSecurableType, string) (*catalog.WorkspaceBindingsResponse, error)) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
+func (_c *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call) RunAndReturn(run func(context.Context, string, string) (*catalog.GetWorkspaceBindingsResponse, error)) *MockWorkspaceBindingsInterface_GetBindingsBySecurableTypeAndSecurableName_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetByName provides a mock function with given fields: ctx, name
-func (_m *MockWorkspaceBindingsInterface) GetByName(ctx context.Context, name string) (*catalog.CurrentWorkspaceBindings, error) {
+func (_m *MockWorkspaceBindingsInterface) GetByName(ctx context.Context, name string) (*catalog.GetCatalogWorkspaceBindingsResponse, error) {
 	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByName")
 	}
 
-	var r0 *catalog.CurrentWorkspaceBindings
+	var r0 *catalog.GetCatalogWorkspaceBindingsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.CurrentWorkspaceBindings, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.GetCatalogWorkspaceBindingsResponse, error)); ok {
 		return rf(ctx, name)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.CurrentWorkspaceBindings); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.GetCatalogWorkspaceBindingsResponse); ok {
 		r0 = rf(ctx, name)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.CurrentWorkspaceBindings)
+			r0 = ret.Get(0).(*catalog.GetCatalogWorkspaceBindingsResponse)
 		}
 	}
 
@@ -301,34 +301,34 @@ func (_c *MockWorkspaceBindingsInterface_GetByName_Call) Run(run func(ctx contex
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_GetByName_Call) Return(_a0 *catalog.CurrentWorkspaceBindings, _a1 error) *MockWorkspaceBindingsInterface_GetByName_Call {
+func (_c *MockWorkspaceBindingsInterface_GetByName_Call) Return(_a0 *catalog.GetCatalogWorkspaceBindingsResponse, _a1 error) *MockWorkspaceBindingsInterface_GetByName_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*catalog.CurrentWorkspaceBindings, error)) *MockWorkspaceBindingsInterface_GetByName_Call {
+func (_c *MockWorkspaceBindingsInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*catalog.GetCatalogWorkspaceBindingsResponse, error)) *MockWorkspaceBindingsInterface_GetByName_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceBindingsInterface) Update(ctx context.Context, request catalog.UpdateWorkspaceBindings) (*catalog.CurrentWorkspaceBindings, error) {
+func (_m *MockWorkspaceBindingsInterface) Update(ctx context.Context, request catalog.UpdateWorkspaceBindings) (*catalog.UpdateCatalogWorkspaceBindingsResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 *catalog.CurrentWorkspaceBindings
+	var r0 *catalog.UpdateCatalogWorkspaceBindingsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdateWorkspaceBindings) (*catalog.CurrentWorkspaceBindings, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdateWorkspaceBindings) (*catalog.UpdateCatalogWorkspaceBindingsResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdateWorkspaceBindings) *catalog.CurrentWorkspaceBindings); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdateWorkspaceBindings) *catalog.UpdateCatalogWorkspaceBindingsResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.CurrentWorkspaceBindings)
+			r0 = ret.Get(0).(*catalog.UpdateCatalogWorkspaceBindingsResponse)
 		}
 	}
 
@@ -360,34 +360,34 @@ func (_c *MockWorkspaceBindingsInterface_Update_Call) Run(run func(ctx context.C
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_Update_Call) Return(_a0 *catalog.CurrentWorkspaceBindings, _a1 error) *MockWorkspaceBindingsInterface_Update_Call {
+func (_c *MockWorkspaceBindingsInterface_Update_Call) Return(_a0 *catalog.UpdateCatalogWorkspaceBindingsResponse, _a1 error) *MockWorkspaceBindingsInterface_Update_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdateWorkspaceBindings) (*catalog.CurrentWorkspaceBindings, error)) *MockWorkspaceBindingsInterface_Update_Call {
+func (_c *MockWorkspaceBindingsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdateWorkspaceBindings) (*catalog.UpdateCatalogWorkspaceBindingsResponse, error)) *MockWorkspaceBindingsInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // UpdateBindings provides a mock function with given fields: ctx, request
-func (_m *MockWorkspaceBindingsInterface) UpdateBindings(ctx context.Context, request catalog.UpdateWorkspaceBindingsParameters) (*catalog.WorkspaceBindingsResponse, error) {
+func (_m *MockWorkspaceBindingsInterface) UpdateBindings(ctx context.Context, request catalog.UpdateWorkspaceBindingsParameters) (*catalog.UpdateWorkspaceBindingsResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for UpdateBindings")
 	}
 
-	var r0 *catalog.WorkspaceBindingsResponse
+	var r0 *catalog.UpdateWorkspaceBindingsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdateWorkspaceBindingsParameters) (*catalog.WorkspaceBindingsResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdateWorkspaceBindingsParameters) (*catalog.UpdateWorkspaceBindingsResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdateWorkspaceBindingsParameters) *catalog.WorkspaceBindingsResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdateWorkspaceBindingsParameters) *catalog.UpdateWorkspaceBindingsResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.WorkspaceBindingsResponse)
+			r0 = ret.Get(0).(*catalog.UpdateWorkspaceBindingsResponse)
 		}
 	}
 
@@ -419,12 +419,12 @@ func (_c *MockWorkspaceBindingsInterface_UpdateBindings_Call) Run(run func(ctx c
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_UpdateBindings_Call) Return(_a0 *catalog.WorkspaceBindingsResponse, _a1 error) *MockWorkspaceBindingsInterface_UpdateBindings_Call {
+func (_c *MockWorkspaceBindingsInterface_UpdateBindings_Call) Return(_a0 *catalog.UpdateWorkspaceBindingsResponse, _a1 error) *MockWorkspaceBindingsInterface_UpdateBindings_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockWorkspaceBindingsInterface_UpdateBindings_Call) RunAndReturn(run func(context.Context, catalog.UpdateWorkspaceBindingsParameters) (*catalog.WorkspaceBindingsResponse, error)) *MockWorkspaceBindingsInterface_UpdateBindings_Call {
+func (_c *MockWorkspaceBindingsInterface_UpdateBindings_Call) RunAndReturn(run func(context.Context, catalog.UpdateWorkspaceBindingsParameters) (*catalog.UpdateWorkspaceBindingsResponse, error)) *MockWorkspaceBindingsInterface_UpdateBindings_Call {
 	_c.Call.Return(run)
 	return _c
 }

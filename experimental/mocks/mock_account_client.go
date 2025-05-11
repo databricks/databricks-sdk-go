@@ -76,6 +76,12 @@ func NewMockAccountClient(t interface {
 	mockEsmEnablementAccount := settings.NewMockEsmEnablementAccountInterface(t)
 	mockAccountSettingsAPI.On("EsmEnablementAccount").Return(mockEsmEnablementAccount).Maybe()
 
+	mockLlmProxyPartnerPoweredAccount := settings.NewMockLlmProxyPartnerPoweredAccountInterface(t)
+	mockAccountSettingsAPI.On("LlmProxyPartnerPoweredAccount").Return(mockLlmProxyPartnerPoweredAccount).Maybe()
+
+	mockLlmProxyPartnerPoweredEnforce := settings.NewMockLlmProxyPartnerPoweredEnforceInterface(t)
+	mockAccountSettingsAPI.On("LlmProxyPartnerPoweredEnforce").Return(mockLlmProxyPartnerPoweredEnforce).Maybe()
+
 	mockPersonalCompute := settings.NewMockPersonalComputeInterface(t)
 	mockAccountSettingsAPI.On("PersonalCompute").Return(mockPersonalCompute).Maybe()
 
@@ -110,6 +116,22 @@ func (m *MockAccountClient) GetMockEsmEnablementAccountAPI() *settings.MockEsmEn
 	api, ok := m.GetMockAccountSettingsAPI().EsmEnablementAccount().(*settings.MockEsmEnablementAccountInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected EsmEnablementAccount to be *settings.MockEsmEnablementAccountInterface, actual was %T", m.GetMockAccountSettingsAPI().EsmEnablementAccount()))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockLlmProxyPartnerPoweredAccountAPI() *settings.MockLlmProxyPartnerPoweredAccountInterface {
+	api, ok := m.GetMockAccountSettingsAPI().LlmProxyPartnerPoweredAccount().(*settings.MockLlmProxyPartnerPoweredAccountInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected LlmProxyPartnerPoweredAccount to be *settings.MockLlmProxyPartnerPoweredAccountInterface, actual was %T", m.GetMockAccountSettingsAPI().LlmProxyPartnerPoweredAccount()))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockLlmProxyPartnerPoweredEnforceAPI() *settings.MockLlmProxyPartnerPoweredEnforceInterface {
+	api, ok := m.GetMockAccountSettingsAPI().LlmProxyPartnerPoweredEnforce().(*settings.MockLlmProxyPartnerPoweredEnforceInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected LlmProxyPartnerPoweredEnforce to be *settings.MockLlmProxyPartnerPoweredEnforceInterface, actual was %T", m.GetMockAccountSettingsAPI().LlmProxyPartnerPoweredEnforce()))
 	}
 	return api
 }

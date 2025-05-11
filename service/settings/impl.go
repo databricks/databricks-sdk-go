@@ -683,6 +683,94 @@ func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessLi
 	return err
 }
 
+// unexported type that holds implementations of just LlmProxyPartnerPoweredAccount API methods
+type llmProxyPartnerPoweredAccountImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *llmProxyPartnerPoweredAccountImpl) Get(ctx context.Context, request GetLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error) {
+	var llmProxyPartnerPoweredAccount LlmProxyPartnerPoweredAccount
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered/names/default", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &llmProxyPartnerPoweredAccount)
+	return &llmProxyPartnerPoweredAccount, err
+}
+
+func (a *llmProxyPartnerPoweredAccountImpl) Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error) {
+	var llmProxyPartnerPoweredAccount LlmProxyPartnerPoweredAccount
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered/names/default", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &llmProxyPartnerPoweredAccount)
+	return &llmProxyPartnerPoweredAccount, err
+}
+
+// unexported type that holds implementations of just LlmProxyPartnerPoweredEnforce API methods
+type llmProxyPartnerPoweredEnforceImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *llmProxyPartnerPoweredEnforceImpl) Get(ctx context.Context, request GetLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error) {
+	var llmProxyPartnerPoweredEnforce LlmProxyPartnerPoweredEnforce
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered_enforce/names/default", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &llmProxyPartnerPoweredEnforce)
+	return &llmProxyPartnerPoweredEnforce, err
+}
+
+func (a *llmProxyPartnerPoweredEnforceImpl) Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error) {
+	var llmProxyPartnerPoweredEnforce LlmProxyPartnerPoweredEnforce
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered_enforce/names/default", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &llmProxyPartnerPoweredEnforce)
+	return &llmProxyPartnerPoweredEnforce, err
+}
+
+// unexported type that holds implementations of just LlmProxyPartnerPoweredWorkspace API methods
+type llmProxyPartnerPoweredWorkspaceImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *llmProxyPartnerPoweredWorkspaceImpl) Delete(ctx context.Context, request DeleteLlmProxyPartnerPoweredWorkspaceRequest) (*DeleteLlmProxyPartnerPoweredWorkspaceResponse, error) {
+	var deleteLlmProxyPartnerPoweredWorkspaceResponse DeleteLlmProxyPartnerPoweredWorkspaceResponse
+	path := "/api/2.0/settings/types/llm_proxy_partner_powered/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteLlmProxyPartnerPoweredWorkspaceResponse)
+	return &deleteLlmProxyPartnerPoweredWorkspaceResponse, err
+}
+
+func (a *llmProxyPartnerPoweredWorkspaceImpl) Get(ctx context.Context, request GetLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error) {
+	var llmProxyPartnerPoweredWorkspace LlmProxyPartnerPoweredWorkspace
+	path := "/api/2.0/settings/types/llm_proxy_partner_powered/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &llmProxyPartnerPoweredWorkspace)
+	return &llmProxyPartnerPoweredWorkspace, err
+}
+
+func (a *llmProxyPartnerPoweredWorkspaceImpl) Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error) {
+	var llmProxyPartnerPoweredWorkspace LlmProxyPartnerPoweredWorkspace
+	path := "/api/2.0/settings/types/llm_proxy_partner_powered/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &llmProxyPartnerPoweredWorkspace)
+	return &llmProxyPartnerPoweredWorkspace, err
+}
+
 // unexported type that holds implementations of just NetworkConnectivity API methods
 type networkConnectivityImpl struct {
 	client *client.DatabricksClient
