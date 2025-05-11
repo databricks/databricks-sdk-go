@@ -3546,13 +3546,13 @@ type WorkspaceBindingsInterface interface {
 	//
 	// Gets workspace bindings of the catalog. The caller must be a metastore admin
 	// or an owner of the catalog.
-	Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error)
+	Get(ctx context.Context, request GetWorkspaceBindingRequest) (*GetCatalogWorkspaceBindingsResponse, error)
 
 	// Get catalog workspace bindings.
 	//
 	// Gets workspace bindings of the catalog. The caller must be a metastore admin
 	// or an owner of the catalog.
-	GetByName(ctx context.Context, name string) (*CurrentWorkspaceBindings, error)
+	GetByName(ctx context.Context, name string) (*GetCatalogWorkspaceBindingsResponse, error)
 
 	// Get securable workspace bindings.
 	//
@@ -3574,19 +3574,19 @@ type WorkspaceBindingsInterface interface {
 	//
 	// Gets workspace bindings of the securable. The caller must be a metastore
 	// admin or an owner of the securable.
-	GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType GetBindingsSecurableType, securableName string) (*WorkspaceBindingsResponse, error)
+	GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType string, securableName string) (*GetWorkspaceBindingsResponse, error)
 
 	// Update catalog workspace bindings.
 	//
 	// Updates workspace bindings of the catalog. The caller must be a metastore
 	// admin or an owner of the catalog.
-	Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error)
+	Update(ctx context.Context, request UpdateWorkspaceBindings) (*UpdateCatalogWorkspaceBindingsResponse, error)
 
 	// Update securable workspace bindings.
 	//
 	// Updates workspace bindings of the securable. The caller must be a metastore
 	// admin or an owner of the securable.
-	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error)
+	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*UpdateWorkspaceBindingsResponse, error)
 }
 
 func NewWorkspaceBindings(client *client.DatabricksClient) *WorkspaceBindingsAPI {
@@ -3615,7 +3615,7 @@ func NewWorkspaceBindings(client *client.DatabricksClient) *WorkspaceBindingsAPI
 // introduces the ability to bind a securable in READ_ONLY mode (catalogs only).
 //
 // Securable types that support binding: - catalog - storage_credential -
-// external_location
+// credential - external_location
 type WorkspaceBindingsAPI struct {
 	workspaceBindingsImpl
 }
@@ -3624,7 +3624,7 @@ type WorkspaceBindingsAPI struct {
 //
 // Gets workspace bindings of the catalog. The caller must be a metastore admin
 // or an owner of the catalog.
-func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*CurrentWorkspaceBindings, error) {
+func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*GetCatalogWorkspaceBindingsResponse, error) {
 	return a.workspaceBindingsImpl.Get(ctx, GetWorkspaceBindingRequest{
 		Name: name,
 	})
@@ -3634,7 +3634,7 @@ func (a *WorkspaceBindingsAPI) GetByName(ctx context.Context, name string) (*Cur
 //
 // Gets workspace bindings of the securable. The caller must be a metastore
 // admin or an owner of the securable.
-func (a *WorkspaceBindingsAPI) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType GetBindingsSecurableType, securableName string) (*WorkspaceBindingsResponse, error) {
+func (a *WorkspaceBindingsAPI) GetBindingsBySecurableTypeAndSecurableName(ctx context.Context, securableType string, securableName string) (*GetWorkspaceBindingsResponse, error) {
 	return a.workspaceBindingsImpl.internalGetBindings(ctx, GetBindingsRequest{
 		SecurableType: securableType,
 		SecurableName: securableName,

@@ -81,65 +81,6 @@ func (_c *MockLlmProxyPartnerPoweredAccountInterface_Get_Call) RunAndReturn(run 
 	return _c
 }
 
-// GetByAccountId provides a mock function with given fields: ctx, accountId
-func (_m *MockLlmProxyPartnerPoweredAccountInterface) GetByAccountId(ctx context.Context, accountId string) (*settings.LlmProxyPartnerPoweredAccount, error) {
-	ret := _m.Called(ctx, accountId)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByAccountId")
-	}
-
-	var r0 *settings.LlmProxyPartnerPoweredAccount
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*settings.LlmProxyPartnerPoweredAccount, error)); ok {
-		return rf(ctx, accountId)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *settings.LlmProxyPartnerPoweredAccount); ok {
-		r0 = rf(ctx, accountId)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.LlmProxyPartnerPoweredAccount)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, accountId)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockLlmProxyPartnerPoweredAccountInterface_GetByAccountId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByAccountId'
-type MockLlmProxyPartnerPoweredAccountInterface_GetByAccountId_Call struct {
-	*mock.Call
-}
-
-// GetByAccountId is a helper method to define mock.On call
-//   - ctx context.Context
-//   - accountId string
-func (_e *MockLlmProxyPartnerPoweredAccountInterface_Expecter) GetByAccountId(ctx interface{}, accountId interface{}) *MockLlmProxyPartnerPoweredAccountInterface_GetByAccountId_Call {
-	return &MockLlmProxyPartnerPoweredAccountInterface_GetByAccountId_Call{Call: _e.mock.On("GetByAccountId", ctx, accountId)}
-}
-
-func (_c *MockLlmProxyPartnerPoweredAccountInterface_GetByAccountId_Call) Run(run func(ctx context.Context, accountId string)) *MockLlmProxyPartnerPoweredAccountInterface_GetByAccountId_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockLlmProxyPartnerPoweredAccountInterface_GetByAccountId_Call) Return(_a0 *settings.LlmProxyPartnerPoweredAccount, _a1 error) *MockLlmProxyPartnerPoweredAccountInterface_GetByAccountId_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockLlmProxyPartnerPoweredAccountInterface_GetByAccountId_Call) RunAndReturn(run func(context.Context, string) (*settings.LlmProxyPartnerPoweredAccount, error)) *MockLlmProxyPartnerPoweredAccountInterface_GetByAccountId_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockLlmProxyPartnerPoweredAccountInterface) Update(ctx context.Context, request settings.UpdateLlmProxyPartnerPoweredAccountRequest) (*settings.LlmProxyPartnerPoweredAccount, error) {
 	ret := _m.Called(ctx, request)

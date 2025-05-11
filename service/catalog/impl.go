@@ -2228,14 +2228,14 @@ type workspaceBindingsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error) {
-	var currentWorkspaceBindings CurrentWorkspaceBindings
+func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*GetCatalogWorkspaceBindingsResponse, error) {
+	var getCatalogWorkspaceBindingsResponse GetCatalogWorkspaceBindingsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &currentWorkspaceBindings)
-	return &currentWorkspaceBindings, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCatalogWorkspaceBindingsResponse)
+	return &getCatalogWorkspaceBindingsResponse, err
 }
 
 // Get securable workspace bindings.
@@ -2244,14 +2244,14 @@ func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBin
 // admin or an owner of the securable.
 func (a *workspaceBindingsImpl) GetBindings(ctx context.Context, request GetBindingsRequest) listing.Iterator[WorkspaceBinding] {
 
-	getNextPage := func(ctx context.Context, req GetBindingsRequest) (*WorkspaceBindingsResponse, error) {
+	getNextPage := func(ctx context.Context, req GetBindingsRequest) (*GetWorkspaceBindingsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalGetBindings(ctx, req)
 	}
-	getItems := func(resp *WorkspaceBindingsResponse) []WorkspaceBinding {
+	getItems := func(resp *GetWorkspaceBindingsResponse) []WorkspaceBinding {
 		return resp.Bindings
 	}
-	getNextReq := func(resp *WorkspaceBindingsResponse) *GetBindingsRequest {
+	getNextReq := func(resp *GetWorkspaceBindingsResponse) *GetBindingsRequest {
 		if resp.NextPageToken == "" {
 			return nil
 		}
@@ -2275,34 +2275,34 @@ func (a *workspaceBindingsImpl) GetBindingsAll(ctx context.Context, request GetB
 	return listing.ToSlice[WorkspaceBinding](ctx, iterator)
 }
 
-func (a *workspaceBindingsImpl) internalGetBindings(ctx context.Context, request GetBindingsRequest) (*WorkspaceBindingsResponse, error) {
-	var workspaceBindingsResponse WorkspaceBindingsResponse
+func (a *workspaceBindingsImpl) internalGetBindings(ctx context.Context, request GetBindingsRequest) (*GetWorkspaceBindingsResponse, error) {
+	var getWorkspaceBindingsResponse GetWorkspaceBindingsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", request.SecurableType, request.SecurableName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspaceBindingsResponse)
-	return &workspaceBindingsResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getWorkspaceBindingsResponse)
+	return &getWorkspaceBindingsResponse, err
 }
 
-func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error) {
-	var currentWorkspaceBindings CurrentWorkspaceBindings
+func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorkspaceBindings) (*UpdateCatalogWorkspaceBindingsResponse, error) {
+	var updateCatalogWorkspaceBindingsResponse UpdateCatalogWorkspaceBindingsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &currentWorkspaceBindings)
-	return &currentWorkspaceBindings, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateCatalogWorkspaceBindingsResponse)
+	return &updateCatalogWorkspaceBindingsResponse, err
 }
 
-func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error) {
-	var workspaceBindingsResponse WorkspaceBindingsResponse
+func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*UpdateWorkspaceBindingsResponse, error) {
+	var updateWorkspaceBindingsResponse UpdateWorkspaceBindingsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", request.SecurableType, request.SecurableName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &workspaceBindingsResponse)
-	return &workspaceBindingsResponse, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateWorkspaceBindingsResponse)
+	return &updateWorkspaceBindingsResponse, err
 }

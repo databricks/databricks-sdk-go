@@ -17,6 +17,7 @@ experimental/mocks/service/catalog/mock_artifact_allowlists_interface.go linguis
 experimental/mocks/service/catalog/mock_catalogs_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_connections_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_credentials_interface.go linguist-generated=true
+experimental/mocks/service/catalog/mock_database_instances_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_external_locations_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_functions_interface.go linguist-generated=true
 experimental/mocks/service/catalog/mock_grants_interface.go linguist-generated=true
@@ -117,6 +118,9 @@ experimental/mocks/service/settings/mock_enable_results_downloading_interface.go
 experimental/mocks/service/settings/mock_enhanced_security_monitoring_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_esm_enablement_account_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_ip_access_lists_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_llm_proxy_partner_powered_account_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_llm_proxy_partner_powered_enforce_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_llm_proxy_partner_powered_workspace_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_network_connectivity_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_notification_destinations_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_personal_compute_interface.go linguist-generated=true

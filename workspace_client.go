@@ -1112,7 +1112,7 @@ type WorkspaceClient struct {
 	// only).
 	//
 	// Securable types that support binding: - catalog - storage_credential -
-	// external_location
+	// credential - external_location
 	WorkspaceBindings catalog.WorkspaceBindingsInterface
 
 	// This API allows updating known workspace settings for advanced users.

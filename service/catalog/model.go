@@ -1385,12 +1385,6 @@ func (s CredentialValidationResult) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Currently assigned workspaces
-type CurrentWorkspaceBindings struct {
-	// A list of workspace IDs.
-	Workspaces []int64 `json:"workspaces,omitempty"`
-}
-
 // Data source format
 type DataSourceFormat string
 
@@ -2628,8 +2622,9 @@ type GetBindingsRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The name of the securable.
 	SecurableName string `json:"-" url:"-"`
-	// The type of the securable to bind to a workspace.
-	SecurableType GetBindingsSecurableType `json:"-" url:"-"`
+	// The type of the securable to bind to a workspace (catalog,
+	// storage_credential, credential, or external_location).
+	SecurableType string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2640,37 +2635,6 @@ func (s *GetBindingsRequest) UnmarshalJSON(b []byte) error {
 
 func (s GetBindingsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type GetBindingsSecurableType string
-
-const GetBindingsSecurableTypeCatalog GetBindingsSecurableType = `catalog`
-
-const GetBindingsSecurableTypeCredential GetBindingsSecurableType = `credential`
-
-const GetBindingsSecurableTypeExternalLocation GetBindingsSecurableType = `external_location`
-
-const GetBindingsSecurableTypeStorageCredential GetBindingsSecurableType = `storage_credential`
-
-// String representation for [fmt.Print]
-func (f *GetBindingsSecurableType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *GetBindingsSecurableType) Set(v string) error {
-	switch v {
-	case `catalog`, `credential`, `external_location`, `storage_credential`:
-		*f = GetBindingsSecurableType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "credential", "external_location", "storage_credential"`, v)
-	}
-}
-
-// Type always returns GetBindingsSecurableType to satisfy [pflag.Value] interface
-func (f *GetBindingsSecurableType) Type() string {
-	return "GetBindingsSecurableType"
 }
 
 // Get Model Version By Alias
@@ -2711,6 +2675,11 @@ func (s *GetCatalogRequest) UnmarshalJSON(b []byte) error {
 
 func (s GetCatalogRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type GetCatalogWorkspaceBindingsResponse struct {
+	// A list of workspace IDs
+	Workspaces []int64 `json:"workspaces,omitempty"`
 }
 
 // Get a connection
@@ -3045,6 +3014,25 @@ func (s GetTableRequest) MarshalJSON() ([]byte, error) {
 type GetWorkspaceBindingRequest struct {
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
+}
+
+type GetWorkspaceBindingsResponse struct {
+	// List of workspace bindings
+	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type IsolationMode string
@@ -5703,37 +5691,6 @@ type UnassignResponse struct {
 type UpdateAssignmentResponse struct {
 }
 
-type UpdateBindingsSecurableType string
-
-const UpdateBindingsSecurableTypeCatalog UpdateBindingsSecurableType = `catalog`
-
-const UpdateBindingsSecurableTypeCredential UpdateBindingsSecurableType = `credential`
-
-const UpdateBindingsSecurableTypeExternalLocation UpdateBindingsSecurableType = `external_location`
-
-const UpdateBindingsSecurableTypeStorageCredential UpdateBindingsSecurableType = `storage_credential`
-
-// String representation for [fmt.Print]
-func (f *UpdateBindingsSecurableType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *UpdateBindingsSecurableType) Set(v string) error {
-	switch v {
-	case `catalog`, `credential`, `external_location`, `storage_credential`:
-		*f = UpdateBindingsSecurableType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "credential", "external_location", "storage_credential"`, v)
-	}
-}
-
-// Type always returns UpdateBindingsSecurableType to satisfy [pflag.Value] interface
-func (f *UpdateBindingsSecurableType) Type() string {
-	return "UpdateBindingsSecurableType"
-}
-
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -5763,6 +5720,11 @@ func (s *UpdateCatalog) UnmarshalJSON(b []byte) error {
 
 func (s UpdateCatalog) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateCatalogWorkspaceBindingsResponse struct {
+	// A list of workspace IDs
+	Workspaces []int64 `json:"workspaces,omitempty"`
 }
 
 type UpdateConnection struct {
@@ -6196,14 +6158,21 @@ type UpdateWorkspaceBindings struct {
 }
 
 type UpdateWorkspaceBindingsParameters struct {
-	// List of workspace bindings
+	// List of workspace bindings.
 	Add []WorkspaceBinding `json:"add,omitempty"`
-	// List of workspace bindings
+	// List of workspace bindings.
 	Remove []WorkspaceBinding `json:"remove,omitempty"`
 	// The name of the securable.
 	SecurableName string `json:"-" url:"-"`
-	// The type of the securable to bind to a workspace.
-	SecurableType UpdateBindingsSecurableType `json:"-" url:"-"`
+	// The type of the securable to bind to a workspace (catalog,
+	// storage_credential, credential, or external_location).
+	SecurableType string `json:"-" url:"-"`
+}
+
+// A list of workspace IDs that are bound to the securable
+type UpdateWorkspaceBindingsResponse struct {
+	// List of workspace bindings.
+	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 }
 
 // Next ID: 17
@@ -6509,21 +6478,14 @@ func (f *VolumeType) Type() string {
 }
 
 type WorkspaceBinding struct {
+	// One of READ_WRITE/READ_ONLY. Default is READ_WRITE.
 	BindingType WorkspaceBindingBindingType `json:"binding_type,omitempty"`
-
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Required
+	WorkspaceId int64 `json:"workspace_id"`
 }
 
-func (s *WorkspaceBinding) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WorkspaceBinding) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
+// Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation`
+// enum in `credentials_common.proto`.
 type WorkspaceBindingBindingType string
 
 const WorkspaceBindingBindingTypeBindingTypeReadOnly WorkspaceBindingBindingType = `BINDING_TYPE_READ_ONLY`
@@ -6549,24 +6511,4 @@ func (f *WorkspaceBindingBindingType) Set(v string) error {
 // Type always returns WorkspaceBindingBindingType to satisfy [pflag.Value] interface
 func (f *WorkspaceBindingBindingType) Type() string {
 	return "WorkspaceBindingBindingType"
-}
-
-// Currently assigned workspace bindings
-type WorkspaceBindingsResponse struct {
-	// List of workspace bindings
-	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
-	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
-	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *WorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }

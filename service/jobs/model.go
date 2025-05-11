@@ -462,7 +462,7 @@ func (s ClusterSpec) MarshalJSON() ([]byte, error) {
 
 type ComputeConfig struct {
 	// IDof the GPU pool to use.
-	GpuNodePoolId string `json:"gpu_node_pool_id"`
+	GpuNodePoolId string `json:"gpu_node_pool_id,omitempty"`
 	// GPU type.
 	GpuType string `json:"gpu_type,omitempty"`
 	// Number of GPUs.

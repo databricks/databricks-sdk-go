@@ -1615,6 +1615,8 @@ type ServedEntityInput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
@@ -1691,6 +1693,8 @@ type ServedEntityOutput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
@@ -1773,6 +1777,8 @@ type ServedModelInput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled"`
@@ -1864,6 +1870,8 @@ type ServedModelOutput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`

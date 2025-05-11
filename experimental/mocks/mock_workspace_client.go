@@ -145,12 +145,6 @@ func NewMockWorkspaceClient(t interface {
 		},
 	}
 
-	mockllmProxyPartnerPoweredAccount := settings.NewMockLlmProxyPartnerPoweredAccountInterface(t)
-	mockaccountSettingsAPI.On("LlmProxyPartnerPoweredAccount").Return(mockllmProxyPartnerPoweredAccount).Maybe()
-
-	mockllmProxyPartnerPoweredEnforce := settings.NewMockLlmProxyPartnerPoweredEnforceInterface(t)
-	mockaccountSettingsAPI.On("LlmProxyPartnerPoweredEnforce").Return(mockllmProxyPartnerPoweredEnforce).Maybe()
-
 	mocksettingsAPI := cli.GetMockSettingsAPI()
 
 	mockaibiDashboardEmbeddingAccessPolicy := settings.NewMockAibiDashboardEmbeddingAccessPolicyInterface(t)
@@ -279,22 +273,6 @@ func (m *MockWorkspaceClient) GetMockEnhancedSecurityMonitoringAPI() *settings.M
 	api, ok := m.GetMockSettingsAPI().EnhancedSecurityMonitoring().(*settings.MockEnhancedSecurityMonitoringInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected EnhancedSecurityMonitoring to be *settings.MockEnhancedSecurityMonitoringInterface, actual was %T", m.GetMockSettingsAPI().EnhancedSecurityMonitoring()))
-	}
-	return api
-}
-
-func (m *MockWorkspaceClient) GetMockLlmProxyPartnerPoweredAccountAPI() *settings.MockLlmProxyPartnerPoweredAccountInterface {
-	api, ok := m.GetMockAccountSettingsAPI().LlmProxyPartnerPoweredAccount().(*settings.MockLlmProxyPartnerPoweredAccountInterface)
-	if !ok {
-		panic(fmt.Sprintf("expected LlmProxyPartnerPoweredAccount to be *settings.MockLlmProxyPartnerPoweredAccountInterface, actual was %T", m.GetMockAccountSettingsAPI().LlmProxyPartnerPoweredAccount()))
-	}
-	return api
-}
-
-func (m *MockWorkspaceClient) GetMockLlmProxyPartnerPoweredEnforceAPI() *settings.MockLlmProxyPartnerPoweredEnforceInterface {
-	api, ok := m.GetMockAccountSettingsAPI().LlmProxyPartnerPoweredEnforce().(*settings.MockLlmProxyPartnerPoweredEnforceInterface)
-	if !ok {
-		panic(fmt.Sprintf("expected LlmProxyPartnerPoweredEnforce to be *settings.MockLlmProxyPartnerPoweredEnforceInterface, actual was %T", m.GetMockAccountSettingsAPI().LlmProxyPartnerPoweredEnforce()))
 	}
 	return api
 }

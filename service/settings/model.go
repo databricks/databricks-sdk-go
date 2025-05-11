@@ -1994,7 +1994,6 @@ type GetIpAccessListsResponse struct {
 
 // Get the enable partner powered AI features account setting
 type GetLlmProxyPartnerPoweredAccountRequest struct {
-	AccountId string `json:"-" url:"-"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -2017,7 +2016,6 @@ func (s GetLlmProxyPartnerPoweredAccountRequest) MarshalJSON() ([]byte, error) {
 
 // Get the enforcement status of partner powered AI features account setting
 type GetLlmProxyPartnerPoweredEnforceRequest struct {
-	AccountId string `json:"-" url:"-"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -3487,8 +3485,6 @@ func (s UpdateIpAccessList) MarshalJSON() ([]byte, error) {
 
 // Details required to update a setting.
 type UpdateLlmProxyPartnerPoweredAccountRequest struct {
-	// Databricks account ID of the account being managed.
-	AccountId string `json:"-" url:"-"`
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`
@@ -3510,8 +3506,6 @@ type UpdateLlmProxyPartnerPoweredAccountRequest struct {
 
 // Details required to update a setting.
 type UpdateLlmProxyPartnerPoweredEnforceRequest struct {
-	// Databricks account ID of the account being managed.
-	AccountId string `json:"-" url:"-"`
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
 	AllowMissing bool `json:"allow_missing"`

@@ -1397,14 +1397,14 @@ type VolumesService interface {
 // introduces the ability to bind a securable in READ_ONLY mode (catalogs only).
 //
 // Securable types that support binding: - catalog - storage_credential -
-// external_location
+// credential - external_location
 type WorkspaceBindingsService interface {
 
 	// Get catalog workspace bindings.
 	//
 	// Gets workspace bindings of the catalog. The caller must be a metastore
 	// admin or an owner of the catalog.
-	Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error)
+	Get(ctx context.Context, request GetWorkspaceBindingRequest) (*GetCatalogWorkspaceBindingsResponse, error)
 
 	// Get securable workspace bindings.
 	//
@@ -1412,17 +1412,17 @@ type WorkspaceBindingsService interface {
 	// admin or an owner of the securable.
 	//
 	// Use GetBindingsAll() to get all WorkspaceBinding instances, which will iterate over every result page.
-	GetBindings(ctx context.Context, request GetBindingsRequest) (*WorkspaceBindingsResponse, error)
+	GetBindings(ctx context.Context, request GetBindingsRequest) (*GetWorkspaceBindingsResponse, error)
 
 	// Update catalog workspace bindings.
 	//
 	// Updates workspace bindings of the catalog. The caller must be a metastore
 	// admin or an owner of the catalog.
-	Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error)
+	Update(ctx context.Context, request UpdateWorkspaceBindings) (*UpdateCatalogWorkspaceBindingsResponse, error)
 
 	// Update securable workspace bindings.
 	//
 	// Updates workspace bindings of the securable. The caller must be a
 	// metastore admin or an owner of the securable.
-	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error)
+	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*UpdateWorkspaceBindingsResponse, error)
 }

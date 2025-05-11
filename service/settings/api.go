@@ -1142,11 +1142,6 @@ type LlmProxyPartnerPoweredAccountInterface interface {
 	// Gets the enable partner powered AI features account setting.
 	Get(ctx context.Context, request GetLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error)
 
-	// Get the enable partner powered AI features account setting.
-	//
-	// Gets the enable partner powered AI features account setting.
-	GetByAccountId(ctx context.Context, accountId string) (*LlmProxyPartnerPoweredAccount, error)
-
 	// Update the enable partner powered AI features account setting.
 	//
 	// Updates the enable partner powered AI features account setting.
@@ -1167,26 +1162,12 @@ type LlmProxyPartnerPoweredAccountAPI struct {
 	llmProxyPartnerPoweredAccountImpl
 }
 
-// Get the enable partner powered AI features account setting.
-//
-// Gets the enable partner powered AI features account setting.
-func (a *LlmProxyPartnerPoweredAccountAPI) GetByAccountId(ctx context.Context, accountId string) (*LlmProxyPartnerPoweredAccount, error) {
-	return a.llmProxyPartnerPoweredAccountImpl.Get(ctx, GetLlmProxyPartnerPoweredAccountRequest{
-		AccountId: accountId,
-	})
-}
-
 type LlmProxyPartnerPoweredEnforceInterface interface {
 
 	// Get the enforcement status of partner powered AI features account setting.
 	//
 	// Gets the enforcement status of partner powered AI features account setting.
 	Get(ctx context.Context, request GetLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error)
-
-	// Get the enforcement status of partner powered AI features account setting.
-	//
-	// Gets the enforcement status of partner powered AI features account setting.
-	GetByAccountId(ctx context.Context, accountId string) (*LlmProxyPartnerPoweredEnforce, error)
 
 	// Update the enforcement status of partner powered AI features account setting.
 	//
@@ -1207,15 +1188,6 @@ func NewLlmProxyPartnerPoweredEnforce(client *client.DatabricksClient) *LlmProxy
 // upon the workspace-level partner-powered setting
 type LlmProxyPartnerPoweredEnforceAPI struct {
 	llmProxyPartnerPoweredEnforceImpl
-}
-
-// Get the enforcement status of partner powered AI features account setting.
-//
-// Gets the enforcement status of partner powered AI features account setting.
-func (a *LlmProxyPartnerPoweredEnforceAPI) GetByAccountId(ctx context.Context, accountId string) (*LlmProxyPartnerPoweredEnforce, error) {
-	return a.llmProxyPartnerPoweredEnforceImpl.Get(ctx, GetLlmProxyPartnerPoweredEnforceRequest{
-		AccountId: accountId,
-	})
 }
 
 type LlmProxyPartnerPoweredWorkspaceInterface interface {
