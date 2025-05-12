@@ -43,7 +43,7 @@ func TestAccGenericPermissions(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	_, err = w.Permissions.Set(ctx, iam.PermissionsRequest{
+	_, err = w.Permissions.Set(ctx, iam.SetObjectPermissions{
 		RequestObjectType: "notebooks",
 		RequestObjectId:   fmt.Sprintf("%d", obj.ObjectId),
 		AccessControlList: []iam.AccessControlRequest{
