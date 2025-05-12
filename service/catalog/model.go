@@ -818,6 +818,18 @@ func (s CreateCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Create a Database Catalog
+type CreateDatabaseCatalogRequest struct {
+	Catalog DatabaseCatalog `json:"catalog"`
+}
+
+// Create a Database Instance
+type CreateDatabaseInstanceRequest struct {
+	// A DatabaseInstance represents a logical Postgres instance, comprised of
+	// both compute and storage.
+	DatabaseInstance DatabaseInstance `json:"database_instance"`
+}
+
 type CreateExternalLocation struct {
 	// The AWS access point to use when accesing s3 for this external location.
 	AccessPoint string `json:"access_point,omitempty"`
@@ -1201,6 +1213,12 @@ func (s CreateStorageCredential) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Create a Synced Database Table
+type CreateSyncedDatabaseTableRequest struct {
+	// Next field marker: 10
+	SyncedTable SyncedDatabaseTable `json:"synced_table"`
+}
+
 type CreateTableConstraint struct {
 	// A table constraint, as defined by *one* of the following fields being
 	// set: __primary_key_constraint__, __foreign_key_constraint__,
@@ -1367,12 +1385,6 @@ func (s CredentialValidationResult) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Currently assigned workspaces
-type CurrentWorkspaceBindings struct {
-	// A list of workspace IDs.
-	Workspaces []int64 `json:"workspaces,omitempty"`
-}
-
 // Data source format
 type DataSourceFormat string
 
@@ -1441,6 +1453,102 @@ func (f *DataSourceFormat) Set(v string) error {
 // Type always returns DataSourceFormat to satisfy [pflag.Value] interface
 func (f *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
+}
+
+type DatabaseCatalog struct {
+	CreateDatabaseIfNotExists bool `json:"create_database_if_not_exists,omitempty"`
+	// The name of the DatabaseInstance housing the database.
+	DatabaseInstanceName string `json:"database_instance_name"`
+	// The name of the database (in a instance) associated with the catalog.
+	DatabaseName string `json:"database_name"`
+	// The name of the catalog in UC.
+	Name string `json:"name"`
+
+	Uid string `json:"uid,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseCatalog) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseCatalog) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A DatabaseInstance represents a logical Postgres instance, comprised of both
+// compute and storage.
+type DatabaseInstance struct {
+	// Password for admin user to create. If not provided, no user will be
+	// created.
+	AdminPassword string `json:"admin_password,omitempty"`
+	// Name of the admin role for the instance. If not provided, defaults to
+	// 'databricks_admin'.
+	AdminRolename string `json:"admin_rolename,omitempty"`
+	// The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4".
+	Capacity string `json:"capacity,omitempty"`
+	// The timestamp when the instance was created.
+	CreationTime string `json:"creation_time,omitempty"`
+	// The email of the creator of the instance.
+	Creator string `json:"creator,omitempty"`
+	// The name of the instance. This is the unique identifier for the instance.
+	Name string `json:"name"`
+	// The version of Postgres running on the instance.
+	PgVersion string `json:"pg_version,omitempty"`
+	// The DNS endpoint to connect to the instance for read+write access.
+	ReadWriteDns string `json:"read_write_dns,omitempty"`
+	// The current state of the instance.
+	State DatabaseInstanceState `json:"state,omitempty"`
+	// Whether the instance is stopped.
+	Stopped bool `json:"stopped,omitempty"`
+	// An immutable UUID identifier for the instance.
+	Uid string `json:"uid,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DatabaseInstance) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DatabaseInstance) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DatabaseInstanceState string
+
+const DatabaseInstanceStateAvailable DatabaseInstanceState = `AVAILABLE`
+
+const DatabaseInstanceStateDeleting DatabaseInstanceState = `DELETING`
+
+const DatabaseInstanceStateFailingOver DatabaseInstanceState = `FAILING_OVER`
+
+const DatabaseInstanceStateStarting DatabaseInstanceState = `STARTING`
+
+const DatabaseInstanceStateStopped DatabaseInstanceState = `STOPPED`
+
+const DatabaseInstanceStateUpdating DatabaseInstanceState = `UPDATING`
+
+// String representation for [fmt.Print]
+func (f *DatabaseInstanceState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DatabaseInstanceState) Set(v string) error {
+	switch v {
+	case `AVAILABLE`, `DELETING`, `FAILING_OVER`, `STARTING`, `STOPPED`, `UPDATING`:
+		*f = DatabaseInstanceState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AVAILABLE", "DELETING", "FAILING_OVER", "STARTING", "STOPPED", "UPDATING"`, v)
+	}
+}
+
+// Type always returns DatabaseInstanceState to satisfy [pflag.Value] interface
+func (f *DatabaseInstanceState) Type() string {
+	return "DatabaseInstanceState"
 }
 
 // GCP long-lived credential. Databricks-created Google Cloud Storage service
@@ -1593,6 +1701,43 @@ func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
 type DeleteCredentialResponse struct {
 }
 
+// Delete a Database Catalog
+type DeleteDatabaseCatalogRequest struct {
+	Name string `json:"-" url:"-"`
+}
+
+type DeleteDatabaseCatalogResponse struct {
+}
+
+// Delete a Database Instance
+type DeleteDatabaseInstanceRequest struct {
+	// By default, a instance cannot be deleted if it has descendant instances
+	// created via PITR. If this flag is specified as true, all descendent
+	// instances will be deleted as well.
+	Force bool `json:"-" url:"force,omitempty"`
+	// Name of the instance to delete.
+	Name string `json:"-" url:"-"`
+	// If false, the database instance is soft deleted. Soft deleted instances
+	// behave as if they are deleted, and cannot be used for CRUD operations nor
+	// connected to. However they can be undeleted by calling the undelete API
+	// for a limited time. If true, the database instance is hard deleted and
+	// cannot be undeleted.
+	Purge bool `json:"-" url:"purge,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DeleteDatabaseInstanceResponse struct {
+}
+
 // Delete an external location
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
@@ -1712,6 +1857,14 @@ func (s *DeleteStorageCredentialRequest) UnmarshalJSON(b []byte) error {
 
 func (s DeleteStorageCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Delete a Synced Database Table
+type DeleteSyncedDatabaseTableRequest struct {
+	Name string `json:"-" url:"-"`
+}
+
+type DeleteSyncedDatabaseTableResponse struct {
 }
 
 // Delete a table constraint
@@ -1901,12 +2054,23 @@ func (f *EnablePredictiveOptimization) Type() string {
 	return "EnablePredictiveOptimization"
 }
 
-// Enable a system schema
 type EnableRequest struct {
+	// the catalog for which the system schema is to enabled in
+	CatalogName string `json:"catalog_name,omitempty"`
 	// The metastore ID under which the system schema lives.
 	MetastoreId string `json:"-" url:"-"`
 	// Full name of the system schema.
 	SchemaName string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EnableRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EnableRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type EnableResponse struct {
@@ -1997,6 +2161,22 @@ func (s *FailedStatus) UnmarshalJSON(b []byte) error {
 }
 
 func (s FailedStatus) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Find a Database Instance by uid
+type FindDatabaseInstanceByUidRequest struct {
+	// UID of the cluster to get.
+	Uid string `json:"-" url:"uid,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FindDatabaseInstanceByUidRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FindDatabaseInstanceByUidRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2442,8 +2622,9 @@ type GetBindingsRequest struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
 	// The name of the securable.
 	SecurableName string `json:"-" url:"-"`
-	// The type of the securable to bind to a workspace.
-	SecurableType GetBindingsSecurableType `json:"-" url:"-"`
+	// The type of the securable to bind to a workspace (catalog,
+	// storage_credential, credential, or external_location).
+	SecurableType string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2454,37 +2635,6 @@ func (s *GetBindingsRequest) UnmarshalJSON(b []byte) error {
 
 func (s GetBindingsRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type GetBindingsSecurableType string
-
-const GetBindingsSecurableTypeCatalog GetBindingsSecurableType = `catalog`
-
-const GetBindingsSecurableTypeCredential GetBindingsSecurableType = `credential`
-
-const GetBindingsSecurableTypeExternalLocation GetBindingsSecurableType = `external_location`
-
-const GetBindingsSecurableTypeStorageCredential GetBindingsSecurableType = `storage_credential`
-
-// String representation for [fmt.Print]
-func (f *GetBindingsSecurableType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *GetBindingsSecurableType) Set(v string) error {
-	switch v {
-	case `catalog`, `credential`, `external_location`, `storage_credential`:
-		*f = GetBindingsSecurableType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "credential", "external_location", "storage_credential"`, v)
-	}
-}
-
-// Type always returns GetBindingsSecurableType to satisfy [pflag.Value] interface
-func (f *GetBindingsSecurableType) Type() string {
-	return "GetBindingsSecurableType"
 }
 
 // Get Model Version By Alias
@@ -2527,6 +2677,11 @@ func (s GetCatalogRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type GetCatalogWorkspaceBindingsResponse struct {
+	// A list of workspace IDs
+	Workspaces []int64 `json:"workspaces,omitempty"`
+}
+
 // Get a connection
 type GetConnectionRequest struct {
 	// Name of the connection.
@@ -2537,6 +2692,17 @@ type GetConnectionRequest struct {
 type GetCredentialRequest struct {
 	// Name of the credential.
 	NameArg string `json:"-" url:"-"`
+}
+
+// Get a Database Catalog
+type GetDatabaseCatalogRequest struct {
+	Name string `json:"-" url:"-"`
+}
+
+// Get a Database Instance
+type GetDatabaseInstanceRequest struct {
+	// Name of the cluster to get.
+	Name string `json:"-" url:"-"`
 }
 
 // Get effective permissions
@@ -2816,6 +2982,11 @@ type GetStorageCredentialRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
+// Get a Synced Database Table
+type GetSyncedDatabaseTableRequest struct {
+	Name string `json:"-" url:"-"`
+}
+
 // Get a table
 type GetTableRequest struct {
 	// Full name of the table.
@@ -2843,6 +3014,25 @@ func (s GetTableRequest) MarshalJSON() ([]byte, error) {
 type GetWorkspaceBindingRequest struct {
 	// The name of the catalog.
 	Name string `json:"-" url:"-"`
+}
+
+type GetWorkspaceBindingsResponse struct {
+	// List of workspace bindings
+	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type IsolationMode string
@@ -3023,6 +3213,42 @@ func (s *ListCredentialsResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListCredentialsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List Database Instances
+type ListDatabaseInstancesRequest struct {
+	// Upper bound for items returned.
+	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Pagination token to go to the next page of Database Instances. Requests
+	// first page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseInstancesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseInstancesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListDatabaseInstancesResponse struct {
+	// List of instances.
+	DatabaseInstances []DatabaseInstance `json:"database_instances,omitempty"`
+	// Pagination token to request the next page of instances.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListDatabaseInstancesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListDatabaseInstancesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -4222,6 +4448,30 @@ type NamedTableConstraint struct {
 	Name string `json:"name"`
 }
 
+// Custom fields that user can set for pipeline while creating
+// SyncedDatabaseTable. Note that other fields of pipeline are still inferred by
+// table def internally
+type NewPipelineSpec struct {
+	// UC catalog for the pipeline to store intermediate files (checkpoints,
+	// event logs etc). This needs to be a standard catalog where the user has
+	// permissions to create Delta tables.
+	StorageCatalog string `json:"storage_catalog,omitempty"`
+	// UC schema for the pipeline to store intermediate files (checkpoints,
+	// event logs etc). This needs to be in the standard catalog where the user
+	// has permissions to create Delta tables.
+	StorageSchema string `json:"storage_schema,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *NewPipelineSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NewPipelineSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Online Table information.
 type OnlineTable struct {
 	// Full three-part (catalog, schema, table) name of the table.
@@ -5027,57 +5277,122 @@ func (s StorageCredentialInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-type SystemSchemaInfo struct {
-	// Name of the system schema.
-	Schema string `json:"schema,omitempty"`
-	// The current state of enablement for the system schema. An empty string
-	// means the system schema is available and ready for opt-in.
-	State SystemSchemaInfoState `json:"state,omitempty"`
+// Next field marker: 10
+type SyncedDatabaseTable struct {
+	// Synced Table data synchronization status
+	DataSynchronizationStatus *OnlineTableStatus `json:"data_synchronization_status,omitempty"`
+	// Name of the target database instance. This is required when creating
+	// synced database tables in standard catalogs. This is optional when
+	// creating synced database tables in registered catalogs. If this field is
+	// specified when creating synced database tables in registered catalogs,
+	// the database instance name MUST match that of the registered catalog (or
+	// the request will be rejected).
+	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
+	// Target Postgres database object (logical database) name for this table.
+	// This field is optional in all scenarios.
+	//
+	// When creating a synced table in a registered Postgres catalog, the target
+	// Postgres database name is inferred to be that of the registered catalog.
+	// If this field is specified in this scenario, the Postgres database name
+	// MUST match that of the registered catalog (or the request will be
+	// rejected).
+	//
+	// When creating a synced table in a standard catalog, the target database
+	// name is inferred to be that of the standard catalog. In this scenario,
+	// specifying this field will allow targeting an arbitrary postgres
+	// database.
+	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
+	// Full three-part (catalog, schema, table) name of the table.
+	Name string `json:"name"`
+	// Specification of a synced database table.
+	Spec *SyncedTableSpec `json:"spec,omitempty"`
+	// Data serving REST API URL for this table
+	TableServingUrl string `json:"table_serving_url,omitempty"`
+	// The provisioning state of the synced table entity in Unity Catalog. This
+	// is distinct from the state of the data synchronization pipeline (i.e. the
+	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
+	// runs asynchronously).
+	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
-func (s *SystemSchemaInfo) UnmarshalJSON(b []byte) error {
+func (s *SyncedDatabaseTable) UnmarshalJSON(b []byte) error {
 	return marshal.Unmarshal(b, s)
 }
 
-func (s SystemSchemaInfo) MarshalJSON() ([]byte, error) {
+func (s SyncedDatabaseTable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The current state of enablement for the system schema. An empty string means
-// the system schema is available and ready for opt-in.
-type SystemSchemaInfoState string
+type SyncedTableSchedulingPolicy string
 
-const SystemSchemaInfoStateAvailable SystemSchemaInfoState = `AVAILABLE`
+const SyncedTableSchedulingPolicyContinuous SyncedTableSchedulingPolicy = `CONTINUOUS`
 
-const SystemSchemaInfoStateDisableInitialized SystemSchemaInfoState = `DISABLE_INITIALIZED`
+const SyncedTableSchedulingPolicySnapshot SyncedTableSchedulingPolicy = `SNAPSHOT`
 
-const SystemSchemaInfoStateEnableCompleted SystemSchemaInfoState = `ENABLE_COMPLETED`
-
-const SystemSchemaInfoStateEnableInitialized SystemSchemaInfoState = `ENABLE_INITIALIZED`
-
-const SystemSchemaInfoStateUnavailable SystemSchemaInfoState = `UNAVAILABLE`
+const SyncedTableSchedulingPolicyTriggered SyncedTableSchedulingPolicy = `TRIGGERED`
 
 // String representation for [fmt.Print]
-func (f *SystemSchemaInfoState) String() string {
+func (f *SyncedTableSchedulingPolicy) String() string {
 	return string(*f)
 }
 
 // Set raw string value and validate it against allowed values
-func (f *SystemSchemaInfoState) Set(v string) error {
+func (f *SyncedTableSchedulingPolicy) Set(v string) error {
 	switch v {
-	case `AVAILABLE`, `DISABLE_INITIALIZED`, `ENABLE_COMPLETED`, `ENABLE_INITIALIZED`, `UNAVAILABLE`:
-		*f = SystemSchemaInfoState(v)
+	case `CONTINUOUS`, `SNAPSHOT`, `TRIGGERED`:
+		*f = SyncedTableSchedulingPolicy(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "AVAILABLE", "DISABLE_INITIALIZED", "ENABLE_COMPLETED", "ENABLE_INITIALIZED", "UNAVAILABLE"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "SNAPSHOT", "TRIGGERED"`, v)
 	}
 }
 
-// Type always returns SystemSchemaInfoState to satisfy [pflag.Value] interface
-func (f *SystemSchemaInfoState) Type() string {
-	return "SystemSchemaInfoState"
+// Type always returns SyncedTableSchedulingPolicy to satisfy [pflag.Value] interface
+func (f *SyncedTableSchedulingPolicy) Type() string {
+	return "SyncedTableSchedulingPolicy"
+}
+
+// Specification of a synced database table.
+type SyncedTableSpec struct {
+	// If true, the synced table's logical database and schema resources in PG
+	// will be created if they do not already exist.
+	CreateDatabaseObjectsIfMissing bool `json:"create_database_objects_if_missing,omitempty"`
+	// Spec of new pipeline. Should be empty if pipeline_id is set
+	NewPipelineSpec *NewPipelineSpec `json:"new_pipeline_spec,omitempty"`
+	// ID of the associated pipeline. Should be empty if new_pipeline_spec is
+	// set
+	PipelineId string `json:"pipeline_id,omitempty"`
+	// Primary Key columns to be used for data insert/update in the destination.
+	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
+	// Scheduling policy of the underlying pipeline.
+	SchedulingPolicy SyncedTableSchedulingPolicy `json:"scheduling_policy,omitempty"`
+	// Three-part (catalog, schema, table) name of the source Delta table.
+	SourceTableFullName string `json:"source_table_full_name,omitempty"`
+	// Time series key to deduplicate (tie-break) rows with the same primary
+	// key.
+	TimeseriesKey string `json:"timeseries_key,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SyncedTableSpec) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SyncedTableSpec) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SystemSchemaInfo struct {
+	// Name of the system schema.
+	Schema string `json:"schema"`
+	// The current state of enablement for the system schema. An empty string
+	// means the system schema is available and ready for opt-in. Possible
+	// values: AVAILABLE | ENABLE_INITIALIZED | ENABLE_COMPLETED |
+	// DISABLE_INITIALIZED | UNAVAILABLE
+	State string `json:"state"`
 }
 
 // A table constraint, as defined by *one* of the following fields being set:
@@ -5376,37 +5691,6 @@ type UnassignResponse struct {
 type UpdateAssignmentResponse struct {
 }
 
-type UpdateBindingsSecurableType string
-
-const UpdateBindingsSecurableTypeCatalog UpdateBindingsSecurableType = `catalog`
-
-const UpdateBindingsSecurableTypeCredential UpdateBindingsSecurableType = `credential`
-
-const UpdateBindingsSecurableTypeExternalLocation UpdateBindingsSecurableType = `external_location`
-
-const UpdateBindingsSecurableTypeStorageCredential UpdateBindingsSecurableType = `storage_credential`
-
-// String representation for [fmt.Print]
-func (f *UpdateBindingsSecurableType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *UpdateBindingsSecurableType) Set(v string) error {
-	switch v {
-	case `catalog`, `credential`, `external_location`, `storage_credential`:
-		*f = UpdateBindingsSecurableType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "catalog", "credential", "external_location", "storage_credential"`, v)
-	}
-}
-
-// Type always returns UpdateBindingsSecurableType to satisfy [pflag.Value] interface
-func (f *UpdateBindingsSecurableType) Type() string {
-	return "UpdateBindingsSecurableType"
-}
-
 type UpdateCatalog struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -5436,6 +5720,11 @@ func (s *UpdateCatalog) UnmarshalJSON(b []byte) error {
 
 func (s UpdateCatalog) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type UpdateCatalogWorkspaceBindingsResponse struct {
+	// A list of workspace IDs
+	Workspaces []int64 `json:"workspaces,omitempty"`
 }
 
 type UpdateConnection struct {
@@ -5501,6 +5790,17 @@ func (s *UpdateCredentialRequest) UnmarshalJSON(b []byte) error {
 
 func (s UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Update a Database Instance
+type UpdateDatabaseInstanceRequest struct {
+	// A DatabaseInstance represents a logical Postgres instance, comprised of
+	// both compute and storage.
+	DatabaseInstance DatabaseInstance `json:"database_instance"`
+	// The name of the instance. This is the unique identifier for the instance.
+	Name string `json:"-" url:"-"`
+	// The list of fields to update.
+	UpdateMask string `json:"-" url:"update_mask"`
 }
 
 type UpdateExternalLocation struct {
@@ -5858,14 +6158,21 @@ type UpdateWorkspaceBindings struct {
 }
 
 type UpdateWorkspaceBindingsParameters struct {
-	// List of workspace bindings
+	// List of workspace bindings.
 	Add []WorkspaceBinding `json:"add,omitempty"`
-	// List of workspace bindings
+	// List of workspace bindings.
 	Remove []WorkspaceBinding `json:"remove,omitempty"`
 	// The name of the securable.
 	SecurableName string `json:"-" url:"-"`
-	// The type of the securable to bind to a workspace.
-	SecurableType UpdateBindingsSecurableType `json:"-" url:"-"`
+	// The type of the securable to bind to a workspace (catalog,
+	// storage_credential, credential, or external_location).
+	SecurableType string `json:"-" url:"-"`
+}
+
+// A list of workspace IDs that are bound to the securable
+type UpdateWorkspaceBindingsResponse struct {
+	// List of workspace bindings.
+	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
 }
 
 // Next ID: 17
@@ -6171,21 +6478,14 @@ func (f *VolumeType) Type() string {
 }
 
 type WorkspaceBinding struct {
+	// One of READ_WRITE/READ_ONLY. Default is READ_WRITE.
 	BindingType WorkspaceBindingBindingType `json:"binding_type,omitempty"`
-
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
+	// Required
+	WorkspaceId int64 `json:"workspace_id"`
 }
 
-func (s *WorkspaceBinding) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WorkspaceBinding) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
+// Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation`
+// enum in `credentials_common.proto`.
 type WorkspaceBindingBindingType string
 
 const WorkspaceBindingBindingTypeBindingTypeReadOnly WorkspaceBindingBindingType = `BINDING_TYPE_READ_ONLY`
@@ -6211,24 +6511,4 @@ func (f *WorkspaceBindingBindingType) Set(v string) error {
 // Type always returns WorkspaceBindingBindingType to satisfy [pflag.Value] interface
 func (f *WorkspaceBindingBindingType) Type() string {
 	return "WorkspaceBindingBindingType"
-}
-
-// Currently assigned workspace bindings
-type WorkspaceBindingsResponse struct {
-	// List of workspace bindings
-	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
-	// Opaque token to retrieve the next page of results. Absent if there are no
-	// more pages. __page_token__ should be set to this value for the next
-	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *WorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s WorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }

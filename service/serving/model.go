@@ -505,6 +505,32 @@ func (s CohereConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreatePtEndpointRequest struct {
+	// The AI Gateway configuration for the serving endpoint.
+	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// The budget policy associated with the endpoint.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// The core config of the serving endpoint.
+	Config PtEndpointCoreConfig `json:"config"`
+	// The name of the serving endpoint. This field is required and must be
+	// unique across a Databricks workspace. An endpoint name can consist of
+	// alphanumeric characters, dashes, and underscores.
+	Name string `json:"name"`
+	// Tags to be attached to the serving endpoint and automatically propagated
+	// to billing logs.
+	Tags []EndpointTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreatePtEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreatePtEndpointRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateServingEndpoint struct {
 	// The AI Gateway configuration for the serving endpoint. NOTE: External
 	// model, provisioned throughput, and pay-per-token endpoints are fully
@@ -1252,6 +1278,42 @@ func (s PayloadTable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type PtEndpointCoreConfig struct {
+	// The list of served entities under the serving endpoint config.
+	ServedEntities []PtServedModel `json:"served_entities,omitempty"`
+
+	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
+}
+
+type PtServedModel struct {
+	// The name of the entity to be served. The entity may be a model in the
+	// Databricks Model Registry, a model in the Unity Catalog (UC), or a
+	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full
+	// name of the object should be given in the form of
+	// **catalog_name.schema_name.model_name**.
+	EntityName string `json:"entity_name"`
+
+	EntityVersion string `json:"entity_version,omitempty"`
+	// The name of a served entity. It must be unique across an endpoint. A
+	// served entity name can consist of alphanumeric characters, dashes, and
+	// underscores. If not specified for an external model, this field defaults
+	// to external_model.name, with '.' and ':' replaced with '-', and if not
+	// specified for other entities, it defaults to entity_name-entity_version.
+	Name string `json:"name,omitempty"`
+	// The number of model units to be provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PtServedModel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PtServedModel) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PutAiGatewayRequest struct {
 	// Configuration for traffic fallback which auto fallbacks to other served
 	// entities if the request to a served entity fails with certain error
@@ -1553,6 +1615,8 @@ type ServedEntityInput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
@@ -1629,6 +1693,8 @@ type ServedEntityOutput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
@@ -1711,6 +1777,8 @@ type ServedModelInput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled"`
@@ -1802,6 +1870,8 @@ type ServedModelOutput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
@@ -2196,6 +2266,12 @@ func (f *ServingModelWorkloadType) Type() string {
 type TrafficConfig struct {
 	// The list of routes that define traffic to each served entity.
 	Routes []Route `json:"routes,omitempty"`
+}
+
+type UpdateProvisionedThroughputEndpointConfigRequest struct {
+	Config PtEndpointCoreConfig `json:"config"`
+	// The name of the pt endpoint to update. This field is required.
+	Name string `json:"-" url:"-"`
 }
 
 type V1ResponseChoiceElement struct {

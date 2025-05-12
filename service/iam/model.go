@@ -251,9 +251,12 @@ type GetPasswordPermissionLevelsResponse struct {
 
 // Get object permission levels
 type GetPermissionLevelsRequest struct {
-	// <needs content>
 	RequestObjectId string `json:"-" url:"-"`
-	// <needs content>
+	// The type of the request object. Can be one of the following: alerts,
+	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
+	// directories, experiments, files, instance-pools, jobs, notebooks,
+	// pipelines, queries, registered-models, repos, serving-endpoints, or
+	// warehouses.
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -1103,6 +1106,8 @@ const PermissionLevelCanAttachTo PermissionLevel = `CAN_ATTACH_TO`
 
 const PermissionLevelCanBind PermissionLevel = `CAN_BIND`
 
+const PermissionLevelCanCreate PermissionLevel = `CAN_CREATE`
+
 const PermissionLevelCanEdit PermissionLevel = `CAN_EDIT`
 
 const PermissionLevelCanEditMetadata PermissionLevel = `CAN_EDIT_METADATA`
@@ -1116,6 +1121,8 @@ const PermissionLevelCanManageRun PermissionLevel = `CAN_MANAGE_RUN`
 const PermissionLevelCanManageStagingVersions PermissionLevel = `CAN_MANAGE_STAGING_VERSIONS`
 
 const PermissionLevelCanMonitor PermissionLevel = `CAN_MONITOR`
+
+const PermissionLevelCanMonitorOnly PermissionLevel = `CAN_MONITOR_ONLY`
 
 const PermissionLevelCanQuery PermissionLevel = `CAN_QUERY`
 
@@ -1141,11 +1148,11 @@ func (f *PermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *PermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_ATTACH_TO`, `CAN_BIND`, `CAN_EDIT`, `CAN_EDIT_METADATA`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_RUN`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_MONITOR`, `CAN_QUERY`, `CAN_READ`, `CAN_RESTART`, `CAN_RUN`, `CAN_USE`, `CAN_VIEW`, `CAN_VIEW_METADATA`, `IS_OWNER`:
+	case `CAN_ATTACH_TO`, `CAN_BIND`, `CAN_CREATE`, `CAN_EDIT`, `CAN_EDIT_METADATA`, `CAN_MANAGE`, `CAN_MANAGE_PRODUCTION_VERSIONS`, `CAN_MANAGE_RUN`, `CAN_MANAGE_STAGING_VERSIONS`, `CAN_MONITOR`, `CAN_MONITOR_ONLY`, `CAN_QUERY`, `CAN_READ`, `CAN_RESTART`, `CAN_RUN`, `CAN_USE`, `CAN_VIEW`, `CAN_VIEW_METADATA`, `IS_OWNER`:
 		*f = PermissionLevel(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_BIND", "CAN_EDIT", "CAN_EDIT_METADATA", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_RUN", "CAN_MANAGE_STAGING_VERSIONS", "CAN_MONITOR", "CAN_QUERY", "CAN_READ", "CAN_RESTART", "CAN_RUN", "CAN_USE", "CAN_VIEW", "CAN_VIEW_METADATA", "IS_OWNER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CAN_ATTACH_TO", "CAN_BIND", "CAN_CREATE", "CAN_EDIT", "CAN_EDIT_METADATA", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_RUN", "CAN_MANAGE_STAGING_VERSIONS", "CAN_MONITOR", "CAN_MONITOR_ONLY", "CAN_QUERY", "CAN_READ", "CAN_RESTART", "CAN_RUN", "CAN_USE", "CAN_VIEW", "CAN_VIEW_METADATA", "IS_OWNER"`, v)
 	}
 }
 
@@ -1185,18 +1192,6 @@ func (s *PermissionsDescription) UnmarshalJSON(b []byte) error {
 
 func (s PermissionsDescription) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type PermissionsRequest struct {
-	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
-	// The id of the request object.
-	RequestObjectId string `json:"-" url:"-"`
-	// The type of the request object. Can be one of the following: alerts,
-	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
-	// directories, experiments, files, instance-pools, jobs, notebooks,
-	// pipelines, queries, registered-models, repos, serving-endpoints, or
-	// warehouses.
-	RequestObjectType string `json:"-" url:"-"`
 }
 
 // Information about the principal assigned to the workspace.
@@ -1381,6 +1376,30 @@ func (f *ServicePrincipalSchema) Set(v string) error {
 // Type always returns ServicePrincipalSchema to satisfy [pflag.Value] interface
 func (f *ServicePrincipalSchema) Type() string {
 	return "ServicePrincipalSchema"
+}
+
+type SetObjectPermissions struct {
+	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
+	// The id of the request object.
+	RequestObjectId string `json:"-" url:"-"`
+	// The type of the request object. Can be one of the following: alerts,
+	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
+	// directories, experiments, files, instance-pools, jobs, notebooks,
+	// pipelines, queries, registered-models, repos, serving-endpoints, or
+	// warehouses.
+	RequestObjectType string `json:"-" url:"-"`
+}
+
+type UpdateObjectPermissions struct {
+	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
+	// The id of the request object.
+	RequestObjectId string `json:"-" url:"-"`
+	// The type of the request object. Can be one of the following: alerts,
+	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
+	// directories, experiments, files, instance-pools, jobs, notebooks,
+	// pipelines, queries, registered-models, repos, serving-endpoints, or
+	// warehouses.
+	RequestObjectType string `json:"-" url:"-"`
 }
 
 type UpdateResponse struct {

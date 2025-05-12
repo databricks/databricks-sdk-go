@@ -537,6 +537,53 @@ func (_c *MockSettingsInterface_EnhancedSecurityMonitoring_Call) RunAndReturn(ru
 	return _c
 }
 
+// LlmProxyPartnerPoweredWorkspace provides a mock function with no fields
+func (_m *MockSettingsInterface) LlmProxyPartnerPoweredWorkspace() settings.LlmProxyPartnerPoweredWorkspaceInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for LlmProxyPartnerPoweredWorkspace")
+	}
+
+	var r0 settings.LlmProxyPartnerPoweredWorkspaceInterface
+	if rf, ok := ret.Get(0).(func() settings.LlmProxyPartnerPoweredWorkspaceInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.LlmProxyPartnerPoweredWorkspaceInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_LlmProxyPartnerPoweredWorkspace_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LlmProxyPartnerPoweredWorkspace'
+type MockSettingsInterface_LlmProxyPartnerPoweredWorkspace_Call struct {
+	*mock.Call
+}
+
+// LlmProxyPartnerPoweredWorkspace is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) LlmProxyPartnerPoweredWorkspace() *MockSettingsInterface_LlmProxyPartnerPoweredWorkspace_Call {
+	return &MockSettingsInterface_LlmProxyPartnerPoweredWorkspace_Call{Call: _e.mock.On("LlmProxyPartnerPoweredWorkspace")}
+}
+
+func (_c *MockSettingsInterface_LlmProxyPartnerPoweredWorkspace_Call) Run(run func()) *MockSettingsInterface_LlmProxyPartnerPoweredWorkspace_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_LlmProxyPartnerPoweredWorkspace_Call) Return(_a0 settings.LlmProxyPartnerPoweredWorkspaceInterface) *MockSettingsInterface_LlmProxyPartnerPoweredWorkspace_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_LlmProxyPartnerPoweredWorkspace_Call) RunAndReturn(run func() settings.LlmProxyPartnerPoweredWorkspaceInterface) *MockSettingsInterface_LlmProxyPartnerPoweredWorkspace_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // RestrictWorkspaceAdmins provides a mock function with no fields
 func (_m *MockSettingsInterface) RestrictWorkspaceAdmins() settings.RestrictWorkspaceAdminsInterface {
 	ret := _m.Called()
