@@ -11,79 +11,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type AclItem struct {
 	// The permission level applied to the principal.
+	// Wire name: 'permission'
 	Permission AclPermission
 	// The principal in which the permission is applied.
+	// Wire name: 'principal'
 	Principal string
 }
 
@@ -92,15 +25,9 @@ func aclItemToPb(st *AclItem) (*aclItemPb, error) {
 		return nil, nil
 	}
 	pb := &aclItemPb{}
-	permissionPb := &st.Permission
-	if permissionPb != nil {
-		pb.Permission = *permissionPb
-	}
+	pb.Permission = st.Permission
 
-	principalPb := &st.Principal
-	if principalPb != nil {
-		pb.Principal = *principalPb
-	}
+	pb.Principal = st.Principal
 
 	return pb, nil
 }
@@ -142,14 +69,8 @@ func aclItemFromPb(pb *aclItemPb) (*AclItem, error) {
 		return nil, nil
 	}
 	st := &AclItem{}
-	permissionField := &pb.Permission
-	if permissionField != nil {
-		st.Permission = *permissionField
-	}
-	principalField := &pb.Principal
-	if principalField != nil {
-		st.Principal = *principalField
-	}
+	st.Permission = pb.Permission
+	st.Principal = pb.Principal
 
 	return st, nil
 }
@@ -202,9 +123,11 @@ func aclPermissionFromPb(pb *aclPermissionPb) (*AclPermission, error) {
 
 type AzureKeyVaultSecretScopeMetadata struct {
 	// The DNS of the KeyVault
+	// Wire name: 'dns_name'
 	DnsName string
 	// The resource id of the azure KeyVault that user wants to associate the
 	// scope with.
+	// Wire name: 'resource_id'
 	ResourceId string
 }
 
@@ -213,15 +136,9 @@ func azureKeyVaultSecretScopeMetadataToPb(st *AzureKeyVaultSecretScopeMetadata) 
 		return nil, nil
 	}
 	pb := &azureKeyVaultSecretScopeMetadataPb{}
-	dnsNamePb := &st.DnsName
-	if dnsNamePb != nil {
-		pb.DnsName = *dnsNamePb
-	}
+	pb.DnsName = st.DnsName
 
-	resourceIdPb := &st.ResourceId
-	if resourceIdPb != nil {
-		pb.ResourceId = *resourceIdPb
-	}
+	pb.ResourceId = st.ResourceId
 
 	return pb, nil
 }
@@ -264,14 +181,8 @@ func azureKeyVaultSecretScopeMetadataFromPb(pb *azureKeyVaultSecretScopeMetadata
 		return nil, nil
 	}
 	st := &AzureKeyVaultSecretScopeMetadata{}
-	dnsNameField := &pb.DnsName
-	if dnsNameField != nil {
-		st.DnsName = *dnsNameField
-	}
-	resourceIdField := &pb.ResourceId
-	if resourceIdField != nil {
-		st.ResourceId = *resourceIdField
-	}
+	st.DnsName = pb.DnsName
+	st.ResourceId = pb.ResourceId
 
 	return st, nil
 }
@@ -281,6 +192,7 @@ type CreateCredentialsRequest struct {
 	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
 	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
 	// `awsCodeCommit`.
+	// Wire name: 'git_provider'
 	GitProvider string
 	// The username or email provided with your Git provider account, depending
 	// on which provider you are using. For GitHub, GitHub Enterprise Server, or
@@ -289,15 +201,17 @@ type CreateCredentialsRequest struct {
 	// BitBucket or BitBucket Server, username must be used. For all other
 	// providers please see your provider's Personal Access Token authentication
 	// documentation to see what is supported.
+	// Wire name: 'git_username'
 	GitUsername string
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
 	// scoped access tokens. [Learn more].
 	//
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+	// Wire name: 'personal_access_token'
 	PersonalAccessToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createCredentialsRequestToPb(st *CreateCredentialsRequest) (*createCredentialsRequestPb, error) {
@@ -305,20 +219,11 @@ func createCredentialsRequestToPb(st *CreateCredentialsRequest) (*createCredenti
 		return nil, nil
 	}
 	pb := &createCredentialsRequestPb{}
-	gitProviderPb := &st.GitProvider
-	if gitProviderPb != nil {
-		pb.GitProvider = *gitProviderPb
-	}
+	pb.GitProvider = st.GitProvider
 
-	gitUsernamePb := &st.GitUsername
-	if gitUsernamePb != nil {
-		pb.GitUsername = *gitUsernamePb
-	}
+	pb.GitUsername = st.GitUsername
 
-	personalAccessTokenPb := &st.PersonalAccessToken
-	if personalAccessTokenPb != nil {
-		pb.PersonalAccessToken = *personalAccessTokenPb
-	}
+	pb.PersonalAccessToken = st.PersonalAccessToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -378,18 +283,9 @@ func createCredentialsRequestFromPb(pb *createCredentialsRequestPb) (*CreateCred
 		return nil, nil
 	}
 	st := &CreateCredentialsRequest{}
-	gitProviderField := &pb.GitProvider
-	if gitProviderField != nil {
-		st.GitProvider = *gitProviderField
-	}
-	gitUsernameField := &pb.GitUsername
-	if gitUsernameField != nil {
-		st.GitUsername = *gitUsernameField
-	}
-	personalAccessTokenField := &pb.PersonalAccessToken
-	if personalAccessTokenField != nil {
-		st.PersonalAccessToken = *personalAccessTokenField
-	}
+	st.GitProvider = pb.GitProvider
+	st.GitUsername = pb.GitUsername
+	st.PersonalAccessToken = pb.PersonalAccessToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -405,14 +301,17 @@ func (st createCredentialsRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateCredentialsResponse struct {
 	// ID of the credential object in the workspace.
+	// Wire name: 'credential_id'
 	CredentialId int64
 	// The Git provider associated with the credential.
+	// Wire name: 'git_provider'
 	GitProvider string
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
+	// Wire name: 'git_username'
 	GitUsername string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createCredentialsResponseToPb(st *CreateCredentialsResponse) (*createCredentialsResponsePb, error) {
@@ -420,20 +319,11 @@ func createCredentialsResponseToPb(st *CreateCredentialsResponse) (*createCreden
 		return nil, nil
 	}
 	pb := &createCredentialsResponsePb{}
-	credentialIdPb := &st.CredentialId
-	if credentialIdPb != nil {
-		pb.CredentialId = *credentialIdPb
-	}
+	pb.CredentialId = st.CredentialId
 
-	gitProviderPb := &st.GitProvider
-	if gitProviderPb != nil {
-		pb.GitProvider = *gitProviderPb
-	}
+	pb.GitProvider = st.GitProvider
 
-	gitUsernamePb := &st.GitUsername
-	if gitUsernamePb != nil {
-		pb.GitUsername = *gitUsernamePb
-	}
+	pb.GitUsername = st.GitUsername
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -481,18 +371,9 @@ func createCredentialsResponseFromPb(pb *createCredentialsResponsePb) (*CreateCr
 		return nil, nil
 	}
 	st := &CreateCredentialsResponse{}
-	credentialIdField := &pb.CredentialId
-	if credentialIdField != nil {
-		st.CredentialId = *credentialIdField
-	}
-	gitProviderField := &pb.GitProvider
-	if gitProviderField != nil {
-		st.GitProvider = *gitProviderField
-	}
-	gitUsernameField := &pb.GitUsername
-	if gitUsernameField != nil {
-		st.GitUsername = *gitUsernameField
-	}
+	st.CredentialId = pb.CredentialId
+	st.GitProvider = pb.GitProvider
+	st.GitUsername = pb.GitUsername
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -510,19 +391,23 @@ type CreateRepoRequest struct {
 	// Desired path for the repo in the workspace. Almost any path in the
 	// workspace can be chosen. If repo is created in `/Repos`, path must be in
 	// the format `/Repos/{folder}/{repo-name}`.
+	// Wire name: 'path'
 	Path string
 	// Git provider. This field is case-insensitive. The available Git providers
 	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
 	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
 	// `awsCodeCommit`.
+	// Wire name: 'provider'
 	Provider string
 	// If specified, the repo will be created with sparse checkout enabled. You
 	// cannot enable/disable sparse checkout after the repo is created.
+	// Wire name: 'sparse_checkout'
 	SparseCheckout *SparseCheckout
 	// URL of the Git repository to be linked.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createRepoRequestToPb(st *CreateRepoRequest) (*createRepoRequestPb, error) {
@@ -530,15 +415,9 @@ func createRepoRequestToPb(st *CreateRepoRequest) (*createRepoRequestPb, error) 
 		return nil, nil
 	}
 	pb := &createRepoRequestPb{}
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	providerPb := &st.Provider
-	if providerPb != nil {
-		pb.Provider = *providerPb
-	}
+	pb.Provider = st.Provider
 
 	sparseCheckoutPb, err := sparseCheckoutToPb(st.SparseCheckout)
 	if err != nil {
@@ -548,10 +427,7 @@ func createRepoRequestToPb(st *CreateRepoRequest) (*createRepoRequestPb, error) 
 		pb.SparseCheckout = sparseCheckoutPb
 	}
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -606,14 +482,8 @@ func createRepoRequestFromPb(pb *createRepoRequestPb) (*CreateRepoRequest, error
 		return nil, nil
 	}
 	st := &CreateRepoRequest{}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	providerField := &pb.Provider
-	if providerField != nil {
-		st.Provider = *providerField
-	}
+	st.Path = pb.Path
+	st.Provider = pb.Provider
 	sparseCheckoutField, err := sparseCheckoutFromPb(pb.SparseCheckout)
 	if err != nil {
 		return nil, err
@@ -621,10 +491,7 @@ func createRepoRequestFromPb(pb *createRepoRequestPb) (*CreateRepoRequest, error
 	if sparseCheckoutField != nil {
 		st.SparseCheckout = sparseCheckoutField
 	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -640,22 +507,29 @@ func (st createRepoRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateRepoResponse struct {
 	// Branch that the Git folder (repo) is checked out to.
+	// Wire name: 'branch'
 	Branch string
 	// SHA-1 hash representing the commit ID of the current HEAD of the Git
 	// folder (repo).
+	// Wire name: 'head_commit_id'
 	HeadCommitId string
 	// ID of the Git folder (repo) object in the workspace.
+	// Wire name: 'id'
 	Id int64
 	// Path of the Git folder (repo) in the workspace.
+	// Wire name: 'path'
 	Path string
 	// Git provider of the linked Git repository.
+	// Wire name: 'provider'
 	Provider string
 	// Sparse checkout settings for the Git folder (repo).
+	// Wire name: 'sparse_checkout'
 	SparseCheckout *SparseCheckout
 	// URL of the linked Git repository.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createRepoResponseToPb(st *CreateRepoResponse) (*createRepoResponsePb, error) {
@@ -663,30 +537,15 @@ func createRepoResponseToPb(st *CreateRepoResponse) (*createRepoResponsePb, erro
 		return nil, nil
 	}
 	pb := &createRepoResponsePb{}
-	branchPb := &st.Branch
-	if branchPb != nil {
-		pb.Branch = *branchPb
-	}
+	pb.Branch = st.Branch
 
-	headCommitIdPb := &st.HeadCommitId
-	if headCommitIdPb != nil {
-		pb.HeadCommitId = *headCommitIdPb
-	}
+	pb.HeadCommitId = st.HeadCommitId
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	providerPb := &st.Provider
-	if providerPb != nil {
-		pb.Provider = *providerPb
-	}
+	pb.Provider = st.Provider
 
 	sparseCheckoutPb, err := sparseCheckoutToPb(st.SparseCheckout)
 	if err != nil {
@@ -696,10 +555,7 @@ func createRepoResponseToPb(st *CreateRepoResponse) (*createRepoResponsePb, erro
 		pb.SparseCheckout = sparseCheckoutPb
 	}
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -755,26 +611,11 @@ func createRepoResponseFromPb(pb *createRepoResponsePb) (*CreateRepoResponse, er
 		return nil, nil
 	}
 	st := &CreateRepoResponse{}
-	branchField := &pb.Branch
-	if branchField != nil {
-		st.Branch = *branchField
-	}
-	headCommitIdField := &pb.HeadCommitId
-	if headCommitIdField != nil {
-		st.HeadCommitId = *headCommitIdField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	providerField := &pb.Provider
-	if providerField != nil {
-		st.Provider = *providerField
-	}
+	st.Branch = pb.Branch
+	st.HeadCommitId = pb.HeadCommitId
+	st.Id = pb.Id
+	st.Path = pb.Path
+	st.Provider = pb.Provider
 	sparseCheckoutField, err := sparseCheckoutFromPb(pb.SparseCheckout)
 	if err != nil {
 		return nil, err
@@ -782,10 +623,7 @@ func createRepoResponseFromPb(pb *createRepoResponsePb) (*CreateRepoResponse, er
 	if sparseCheckoutField != nil {
 		st.SparseCheckout = sparseCheckoutField
 	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -801,17 +639,21 @@ func (st createRepoResponsePb) MarshalJSON() ([]byte, error) {
 
 type CreateScope struct {
 	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
+	// Wire name: 'backend_azure_keyvault'
 	BackendAzureKeyvault *AzureKeyVaultSecretScopeMetadata
 	// The principal that is initially granted `MANAGE` permission to the
 	// created scope.
+	// Wire name: 'initial_manage_principal'
 	InitialManagePrincipal string
 	// Scope name requested by the user. Scope names are unique.
+	// Wire name: 'scope'
 	Scope string
 	// The backend type the scope will be created with. If not specified, will
 	// default to `DATABRICKS`
+	// Wire name: 'scope_backend_type'
 	ScopeBackendType ScopeBackendType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createScopeToPb(st *CreateScope) (*createScopePb, error) {
@@ -827,20 +669,11 @@ func createScopeToPb(st *CreateScope) (*createScopePb, error) {
 		pb.BackendAzureKeyvault = backendAzureKeyvaultPb
 	}
 
-	initialManagePrincipalPb := &st.InitialManagePrincipal
-	if initialManagePrincipalPb != nil {
-		pb.InitialManagePrincipal = *initialManagePrincipalPb
-	}
+	pb.InitialManagePrincipal = st.InitialManagePrincipal
 
-	scopePb := &st.Scope
-	if scopePb != nil {
-		pb.Scope = *scopePb
-	}
+	pb.Scope = st.Scope
 
-	scopeBackendTypePb := &st.ScopeBackendType
-	if scopeBackendTypePb != nil {
-		pb.ScopeBackendType = *scopeBackendTypePb
-	}
+	pb.ScopeBackendType = st.ScopeBackendType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -898,18 +731,9 @@ func createScopeFromPb(pb *createScopePb) (*CreateScope, error) {
 	if backendAzureKeyvaultField != nil {
 		st.BackendAzureKeyvault = backendAzureKeyvaultField
 	}
-	initialManagePrincipalField := &pb.InitialManagePrincipal
-	if initialManagePrincipalField != nil {
-		st.InitialManagePrincipal = *initialManagePrincipalField
-	}
-	scopeField := &pb.Scope
-	if scopeField != nil {
-		st.Scope = *scopeField
-	}
-	scopeBackendTypeField := &pb.ScopeBackendType
-	if scopeBackendTypeField != nil {
-		st.ScopeBackendType = *scopeBackendTypeField
-	}
+	st.InitialManagePrincipal = pb.InitialManagePrincipal
+	st.Scope = pb.Scope
+	st.ScopeBackendType = pb.ScopeBackendType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -974,14 +798,17 @@ func createScopeResponseFromPb(pb *createScopeResponsePb) (*CreateScopeResponse,
 
 type CredentialInfo struct {
 	// ID of the credential object in the workspace.
+	// Wire name: 'credential_id'
 	CredentialId int64
 	// The Git provider associated with the credential.
+	// Wire name: 'git_provider'
 	GitProvider string
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
+	// Wire name: 'git_username'
 	GitUsername string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func credentialInfoToPb(st *CredentialInfo) (*credentialInfoPb, error) {
@@ -989,20 +816,11 @@ func credentialInfoToPb(st *CredentialInfo) (*credentialInfoPb, error) {
 		return nil, nil
 	}
 	pb := &credentialInfoPb{}
-	credentialIdPb := &st.CredentialId
-	if credentialIdPb != nil {
-		pb.CredentialId = *credentialIdPb
-	}
+	pb.CredentialId = st.CredentialId
 
-	gitProviderPb := &st.GitProvider
-	if gitProviderPb != nil {
-		pb.GitProvider = *gitProviderPb
-	}
+	pb.GitProvider = st.GitProvider
 
-	gitUsernamePb := &st.GitUsername
-	if gitUsernamePb != nil {
-		pb.GitUsername = *gitUsernamePb
-	}
+	pb.GitUsername = st.GitUsername
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1050,18 +868,9 @@ func credentialInfoFromPb(pb *credentialInfoPb) (*CredentialInfo, error) {
 		return nil, nil
 	}
 	st := &CredentialInfo{}
-	credentialIdField := &pb.CredentialId
-	if credentialIdField != nil {
-		st.CredentialId = *credentialIdField
-	}
-	gitProviderField := &pb.GitProvider
-	if gitProviderField != nil {
-		st.GitProvider = *gitProviderField
-	}
-	gitUsernameField := &pb.GitUsername
-	if gitUsernameField != nil {
-		st.GitUsername = *gitUsernameField
-	}
+	st.CredentialId = pb.CredentialId
+	st.GitProvider = pb.GitProvider
+	st.GitUsername = pb.GitUsername
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1077,14 +886,16 @@ func (st credentialInfoPb) MarshalJSON() ([]byte, error) {
 
 type Delete struct {
 	// The absolute path of the notebook or directory.
+	// Wire name: 'path'
 	Path string
 	// The flag that specifies whether to delete the object recursively. It is
 	// `false` by default. Please note this deleting directory is not atomic. If
 	// it fails in the middle, some of objects under this directory may be
 	// deleted and cannot be undone.
+	// Wire name: 'recursive'
 	Recursive bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteToPb(st *Delete) (*deletePb, error) {
@@ -1092,15 +903,9 @@ func deleteToPb(st *Delete) (*deletePb, error) {
 		return nil, nil
 	}
 	pb := &deletePb{}
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	recursivePb := &st.Recursive
-	if recursivePb != nil {
-		pb.Recursive = *recursivePb
-	}
+	pb.Recursive = st.Recursive
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1148,14 +953,8 @@ func deleteFromPb(pb *deletePb) (*Delete, error) {
 		return nil, nil
 	}
 	st := &Delete{}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	recursiveField := &pb.Recursive
-	if recursiveField != nil {
-		st.Recursive = *recursiveField
-	}
+	st.Path = pb.Path
+	st.Recursive = pb.Recursive
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1171,8 +970,10 @@ func (st deletePb) MarshalJSON() ([]byte, error) {
 
 type DeleteAcl struct {
 	// The principal to remove an existing ACL from.
+	// Wire name: 'principal'
 	Principal string
 	// The name of the scope to remove permissions from.
+	// Wire name: 'scope'
 	Scope string
 }
 
@@ -1181,15 +982,9 @@ func deleteAclToPb(st *DeleteAcl) (*deleteAclPb, error) {
 		return nil, nil
 	}
 	pb := &deleteAclPb{}
-	principalPb := &st.Principal
-	if principalPb != nil {
-		pb.Principal = *principalPb
-	}
+	pb.Principal = st.Principal
 
-	scopePb := &st.Scope
-	if scopePb != nil {
-		pb.Scope = *scopePb
-	}
+	pb.Scope = st.Scope
 
 	return pb, nil
 }
@@ -1231,14 +1026,8 @@ func deleteAclFromPb(pb *deleteAclPb) (*DeleteAcl, error) {
 		return nil, nil
 	}
 	st := &DeleteAcl{}
-	principalField := &pb.Principal
-	if principalField != nil {
-		st.Principal = *principalField
-	}
-	scopeField := &pb.Scope
-	if scopeField != nil {
-		st.Scope = *scopeField
-	}
+	st.Principal = pb.Principal
+	st.Scope = pb.Scope
 
 	return st, nil
 }
@@ -1295,7 +1084,8 @@ func deleteAclResponseFromPb(pb *deleteAclResponsePb) (*DeleteAclResponse, error
 // Delete a credential
 type DeleteCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
-	CredentialId int64
+	// Wire name: 'credential_id'
+	CredentialId int64 `tf:"-"`
 }
 
 func deleteCredentialsRequestToPb(st *DeleteCredentialsRequest) (*deleteCredentialsRequestPb, error) {
@@ -1303,10 +1093,7 @@ func deleteCredentialsRequestToPb(st *DeleteCredentialsRequest) (*deleteCredenti
 		return nil, nil
 	}
 	pb := &deleteCredentialsRequestPb{}
-	credentialIdPb := &st.CredentialId
-	if credentialIdPb != nil {
-		pb.CredentialId = *credentialIdPb
-	}
+	pb.CredentialId = st.CredentialId
 
 	return pb, nil
 }
@@ -1346,10 +1133,7 @@ func deleteCredentialsRequestFromPb(pb *deleteCredentialsRequestPb) (*DeleteCred
 		return nil, nil
 	}
 	st := &DeleteCredentialsRequest{}
-	credentialIdField := &pb.CredentialId
-	if credentialIdField != nil {
-		st.CredentialId = *credentialIdField
-	}
+	st.CredentialId = pb.CredentialId
 
 	return st, nil
 }
@@ -1406,7 +1190,8 @@ func deleteCredentialsResponseFromPb(pb *deleteCredentialsResponsePb) (*DeleteCr
 // Delete a repo
 type DeleteRepoRequest struct {
 	// The ID for the corresponding repo to delete.
-	RepoId int64
+	// Wire name: 'repo_id'
+	RepoId int64 `tf:"-"`
 }
 
 func deleteRepoRequestToPb(st *DeleteRepoRequest) (*deleteRepoRequestPb, error) {
@@ -1414,10 +1199,7 @@ func deleteRepoRequestToPb(st *DeleteRepoRequest) (*deleteRepoRequestPb, error) 
 		return nil, nil
 	}
 	pb := &deleteRepoRequestPb{}
-	repoIdPb := &st.RepoId
-	if repoIdPb != nil {
-		pb.RepoId = *repoIdPb
-	}
+	pb.RepoId = st.RepoId
 
 	return pb, nil
 }
@@ -1457,10 +1239,7 @@ func deleteRepoRequestFromPb(pb *deleteRepoRequestPb) (*DeleteRepoRequest, error
 		return nil, nil
 	}
 	st := &DeleteRepoRequest{}
-	repoIdField := &pb.RepoId
-	if repoIdField != nil {
-		st.RepoId = *repoIdField
-	}
+	st.RepoId = pb.RepoId
 
 	return st, nil
 }
@@ -1565,6 +1344,7 @@ func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
 
 type DeleteScope struct {
 	// Name of the scope to delete.
+	// Wire name: 'scope'
 	Scope string
 }
 
@@ -1573,10 +1353,7 @@ func deleteScopeToPb(st *DeleteScope) (*deleteScopePb, error) {
 		return nil, nil
 	}
 	pb := &deleteScopePb{}
-	scopePb := &st.Scope
-	if scopePb != nil {
-		pb.Scope = *scopePb
-	}
+	pb.Scope = st.Scope
 
 	return pb, nil
 }
@@ -1616,10 +1393,7 @@ func deleteScopeFromPb(pb *deleteScopePb) (*DeleteScope, error) {
 		return nil, nil
 	}
 	st := &DeleteScope{}
-	scopeField := &pb.Scope
-	if scopeField != nil {
-		st.Scope = *scopeField
-	}
+	st.Scope = pb.Scope
 
 	return st, nil
 }
@@ -1675,8 +1449,10 @@ func deleteScopeResponseFromPb(pb *deleteScopeResponsePb) (*DeleteScopeResponse,
 
 type DeleteSecret struct {
 	// Name of the secret to delete.
+	// Wire name: 'key'
 	Key string
 	// The name of the scope that contains the secret to delete.
+	// Wire name: 'scope'
 	Scope string
 }
 
@@ -1685,15 +1461,9 @@ func deleteSecretToPb(st *DeleteSecret) (*deleteSecretPb, error) {
 		return nil, nil
 	}
 	pb := &deleteSecretPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	scopePb := &st.Scope
-	if scopePb != nil {
-		pb.Scope = *scopePb
-	}
+	pb.Scope = st.Scope
 
 	return pb, nil
 }
@@ -1735,14 +1505,8 @@ func deleteSecretFromPb(pb *deleteSecretPb) (*DeleteSecret, error) {
 		return nil, nil
 	}
 	st := &DeleteSecret{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	scopeField := &pb.Scope
-	if scopeField != nil {
-		st.Scope = *scopeField
-	}
+	st.Key = pb.Key
+	st.Scope = pb.Scope
 
 	return st, nil
 }
@@ -1867,10 +1631,12 @@ type ExportRequest struct {
 	// Markdown format. - `AUTO`: The object or directory is exported depending
 	// on the objects type. Directory exports will include notebooks and
 	// workspace files.
-	Format ExportFormat
+	// Wire name: 'format'
+	Format ExportFormat `tf:"-"`
 	// The absolute path of the object or directory. Exporting a directory is
 	// only supported for the `DBC`, `SOURCE`, and `AUTO` format.
-	Path string
+	// Wire name: 'path'
+	Path string `tf:"-"`
 }
 
 func exportRequestToPb(st *ExportRequest) (*exportRequestPb, error) {
@@ -1878,15 +1644,9 @@ func exportRequestToPb(st *ExportRequest) (*exportRequestPb, error) {
 		return nil, nil
 	}
 	pb := &exportRequestPb{}
-	formatPb := &st.Format
-	if formatPb != nil {
-		pb.Format = *formatPb
-	}
+	pb.Format = st.Format
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	return pb, nil
 }
@@ -1942,14 +1702,8 @@ func exportRequestFromPb(pb *exportRequestPb) (*ExportRequest, error) {
 		return nil, nil
 	}
 	st := &ExportRequest{}
-	formatField := &pb.Format
-	if formatField != nil {
-		st.Format = *formatField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Format = pb.Format
+	st.Path = pb.Path
 
 	return st, nil
 }
@@ -1959,11 +1713,13 @@ func exportRequestFromPb(pb *exportRequestPb) (*ExportRequest, error) {
 type ExportResponse struct {
 	// The base64-encoded content. If the limit (10MB) is exceeded, exception
 	// with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
+	// Wire name: 'content'
 	Content string
 	// The file type of the exported file.
+	// Wire name: 'file_type'
 	FileType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func exportResponseToPb(st *ExportResponse) (*exportResponsePb, error) {
@@ -1971,15 +1727,9 @@ func exportResponseToPb(st *ExportResponse) (*exportResponsePb, error) {
 		return nil, nil
 	}
 	pb := &exportResponsePb{}
-	contentPb := &st.Content
-	if contentPb != nil {
-		pb.Content = *contentPb
-	}
+	pb.Content = st.Content
 
-	fileTypePb := &st.FileType
-	if fileTypePb != nil {
-		pb.FileType = *fileTypePb
-	}
+	pb.FileType = st.FileType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2025,14 +1775,8 @@ func exportResponseFromPb(pb *exportResponsePb) (*ExportResponse, error) {
 		return nil, nil
 	}
 	st := &ExportResponse{}
-	contentField := &pb.Content
-	if contentField != nil {
-		st.Content = *contentField
-	}
-	fileTypeField := &pb.FileType
-	if fileTypeField != nil {
-		st.FileType = *fileTypeField
-	}
+	st.Content = pb.Content
+	st.FileType = pb.FileType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2049,9 +1793,11 @@ func (st exportResponsePb) MarshalJSON() ([]byte, error) {
 // Get secret ACL details
 type GetAclRequest struct {
 	// The principal to fetch ACL information for.
-	Principal string
+	// Wire name: 'principal'
+	Principal string `tf:"-"`
 	// The name of the scope to fetch ACL information from.
-	Scope string
+	// Wire name: 'scope'
+	Scope string `tf:"-"`
 }
 
 func getAclRequestToPb(st *GetAclRequest) (*getAclRequestPb, error) {
@@ -2059,15 +1805,9 @@ func getAclRequestToPb(st *GetAclRequest) (*getAclRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getAclRequestPb{}
-	principalPb := &st.Principal
-	if principalPb != nil {
-		pb.Principal = *principalPb
-	}
+	pb.Principal = st.Principal
 
-	scopePb := &st.Scope
-	if scopePb != nil {
-		pb.Scope = *scopePb
-	}
+	pb.Scope = st.Scope
 
 	return pb, nil
 }
@@ -2109,14 +1849,8 @@ func getAclRequestFromPb(pb *getAclRequestPb) (*GetAclRequest, error) {
 		return nil, nil
 	}
 	st := &GetAclRequest{}
-	principalField := &pb.Principal
-	if principalField != nil {
-		st.Principal = *principalField
-	}
-	scopeField := &pb.Scope
-	if scopeField != nil {
-		st.Scope = *scopeField
-	}
+	st.Principal = pb.Principal
+	st.Scope = pb.Scope
 
 	return st, nil
 }
@@ -2124,7 +1858,8 @@ func getAclRequestFromPb(pb *getAclRequestPb) (*GetAclRequest, error) {
 // Get a credential entry
 type GetCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
-	CredentialId int64
+	// Wire name: 'credential_id'
+	CredentialId int64 `tf:"-"`
 }
 
 func getCredentialsRequestToPb(st *GetCredentialsRequest) (*getCredentialsRequestPb, error) {
@@ -2132,10 +1867,7 @@ func getCredentialsRequestToPb(st *GetCredentialsRequest) (*getCredentialsReques
 		return nil, nil
 	}
 	pb := &getCredentialsRequestPb{}
-	credentialIdPb := &st.CredentialId
-	if credentialIdPb != nil {
-		pb.CredentialId = *credentialIdPb
-	}
+	pb.CredentialId = st.CredentialId
 
 	return pb, nil
 }
@@ -2175,24 +1907,24 @@ func getCredentialsRequestFromPb(pb *getCredentialsRequestPb) (*GetCredentialsRe
 		return nil, nil
 	}
 	st := &GetCredentialsRequest{}
-	credentialIdField := &pb.CredentialId
-	if credentialIdField != nil {
-		st.CredentialId = *credentialIdField
-	}
+	st.CredentialId = pb.CredentialId
 
 	return st, nil
 }
 
 type GetCredentialsResponse struct {
 	// ID of the credential object in the workspace.
+	// Wire name: 'credential_id'
 	CredentialId int64
 	// The Git provider associated with the credential.
+	// Wire name: 'git_provider'
 	GitProvider string
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
+	// Wire name: 'git_username'
 	GitUsername string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getCredentialsResponseToPb(st *GetCredentialsResponse) (*getCredentialsResponsePb, error) {
@@ -2200,20 +1932,11 @@ func getCredentialsResponseToPb(st *GetCredentialsResponse) (*getCredentialsResp
 		return nil, nil
 	}
 	pb := &getCredentialsResponsePb{}
-	credentialIdPb := &st.CredentialId
-	if credentialIdPb != nil {
-		pb.CredentialId = *credentialIdPb
-	}
+	pb.CredentialId = st.CredentialId
 
-	gitProviderPb := &st.GitProvider
-	if gitProviderPb != nil {
-		pb.GitProvider = *gitProviderPb
-	}
+	pb.GitProvider = st.GitProvider
 
-	gitUsernamePb := &st.GitUsername
-	if gitUsernamePb != nil {
-		pb.GitUsername = *gitUsernamePb
-	}
+	pb.GitUsername = st.GitUsername
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2261,18 +1984,9 @@ func getCredentialsResponseFromPb(pb *getCredentialsResponsePb) (*GetCredentials
 		return nil, nil
 	}
 	st := &GetCredentialsResponse{}
-	credentialIdField := &pb.CredentialId
-	if credentialIdField != nil {
-		st.CredentialId = *credentialIdField
-	}
-	gitProviderField := &pb.GitProvider
-	if gitProviderField != nil {
-		st.GitProvider = *gitProviderField
-	}
-	gitUsernameField := &pb.GitUsername
-	if gitUsernameField != nil {
-		st.GitUsername = *gitUsernameField
-	}
+	st.CredentialId = pb.CredentialId
+	st.GitProvider = pb.GitProvider
+	st.GitUsername = pb.GitUsername
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2289,7 +2003,8 @@ func (st getCredentialsResponsePb) MarshalJSON() ([]byte, error) {
 // Get repo permission levels
 type GetRepoPermissionLevelsRequest struct {
 	// The repo for which to get or manage permissions.
-	RepoId string
+	// Wire name: 'repo_id'
+	RepoId string `tf:"-"`
 }
 
 func getRepoPermissionLevelsRequestToPb(st *GetRepoPermissionLevelsRequest) (*getRepoPermissionLevelsRequestPb, error) {
@@ -2297,10 +2012,7 @@ func getRepoPermissionLevelsRequestToPb(st *GetRepoPermissionLevelsRequest) (*ge
 		return nil, nil
 	}
 	pb := &getRepoPermissionLevelsRequestPb{}
-	repoIdPb := &st.RepoId
-	if repoIdPb != nil {
-		pb.RepoId = *repoIdPb
-	}
+	pb.RepoId = st.RepoId
 
 	return pb, nil
 }
@@ -2340,16 +2052,14 @@ func getRepoPermissionLevelsRequestFromPb(pb *getRepoPermissionLevelsRequestPb) 
 		return nil, nil
 	}
 	st := &GetRepoPermissionLevelsRequest{}
-	repoIdField := &pb.RepoId
-	if repoIdField != nil {
-		st.RepoId = *repoIdField
-	}
+	st.RepoId = pb.RepoId
 
 	return st, nil
 }
 
 type GetRepoPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []RepoPermissionsDescription
 }
 
@@ -2411,13 +2121,13 @@ func getRepoPermissionLevelsResponseFromPb(pb *getRepoPermissionLevelsResponsePb
 	st := &GetRepoPermissionLevelsResponse{}
 
 	var permissionLevelsField []RepoPermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := repoPermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := repoPermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -2428,7 +2138,8 @@ func getRepoPermissionLevelsResponseFromPb(pb *getRepoPermissionLevelsResponsePb
 // Get repo permissions
 type GetRepoPermissionsRequest struct {
 	// The repo for which to get or manage permissions.
-	RepoId string
+	// Wire name: 'repo_id'
+	RepoId string `tf:"-"`
 }
 
 func getRepoPermissionsRequestToPb(st *GetRepoPermissionsRequest) (*getRepoPermissionsRequestPb, error) {
@@ -2436,10 +2147,7 @@ func getRepoPermissionsRequestToPb(st *GetRepoPermissionsRequest) (*getRepoPermi
 		return nil, nil
 	}
 	pb := &getRepoPermissionsRequestPb{}
-	repoIdPb := &st.RepoId
-	if repoIdPb != nil {
-		pb.RepoId = *repoIdPb
-	}
+	pb.RepoId = st.RepoId
 
 	return pb, nil
 }
@@ -2479,10 +2187,7 @@ func getRepoPermissionsRequestFromPb(pb *getRepoPermissionsRequestPb) (*GetRepoP
 		return nil, nil
 	}
 	st := &GetRepoPermissionsRequest{}
-	repoIdField := &pb.RepoId
-	if repoIdField != nil {
-		st.RepoId = *repoIdField
-	}
+	st.RepoId = pb.RepoId
 
 	return st, nil
 }
@@ -2490,7 +2195,8 @@ func getRepoPermissionsRequestFromPb(pb *getRepoPermissionsRequestPb) (*GetRepoP
 // Get a repo
 type GetRepoRequest struct {
 	// ID of the Git folder (repo) object in the workspace.
-	RepoId int64
+	// Wire name: 'repo_id'
+	RepoId int64 `tf:"-"`
 }
 
 func getRepoRequestToPb(st *GetRepoRequest) (*getRepoRequestPb, error) {
@@ -2498,10 +2204,7 @@ func getRepoRequestToPb(st *GetRepoRequest) (*getRepoRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getRepoRequestPb{}
-	repoIdPb := &st.RepoId
-	if repoIdPb != nil {
-		pb.RepoId = *repoIdPb
-	}
+	pb.RepoId = st.RepoId
 
 	return pb, nil
 }
@@ -2541,31 +2244,35 @@ func getRepoRequestFromPb(pb *getRepoRequestPb) (*GetRepoRequest, error) {
 		return nil, nil
 	}
 	st := &GetRepoRequest{}
-	repoIdField := &pb.RepoId
-	if repoIdField != nil {
-		st.RepoId = *repoIdField
-	}
+	st.RepoId = pb.RepoId
 
 	return st, nil
 }
 
 type GetRepoResponse struct {
 	// Branch that the local version of the repo is checked out to.
+	// Wire name: 'branch'
 	Branch string
 	// SHA-1 hash representing the commit ID of the current HEAD of the repo.
+	// Wire name: 'head_commit_id'
 	HeadCommitId string
 	// ID of the Git folder (repo) object in the workspace.
+	// Wire name: 'id'
 	Id int64
 	// Path of the Git folder (repo) in the workspace.
+	// Wire name: 'path'
 	Path string
 	// Git provider of the linked Git repository.
+	// Wire name: 'provider'
 	Provider string
 	// Sparse checkout settings for the Git folder (repo).
+	// Wire name: 'sparse_checkout'
 	SparseCheckout *SparseCheckout
 	// URL of the linked Git repository.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getRepoResponseToPb(st *GetRepoResponse) (*getRepoResponsePb, error) {
@@ -2573,30 +2280,15 @@ func getRepoResponseToPb(st *GetRepoResponse) (*getRepoResponsePb, error) {
 		return nil, nil
 	}
 	pb := &getRepoResponsePb{}
-	branchPb := &st.Branch
-	if branchPb != nil {
-		pb.Branch = *branchPb
-	}
+	pb.Branch = st.Branch
 
-	headCommitIdPb := &st.HeadCommitId
-	if headCommitIdPb != nil {
-		pb.HeadCommitId = *headCommitIdPb
-	}
+	pb.HeadCommitId = st.HeadCommitId
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	providerPb := &st.Provider
-	if providerPb != nil {
-		pb.Provider = *providerPb
-	}
+	pb.Provider = st.Provider
 
 	sparseCheckoutPb, err := sparseCheckoutToPb(st.SparseCheckout)
 	if err != nil {
@@ -2606,10 +2298,7 @@ func getRepoResponseToPb(st *GetRepoResponse) (*getRepoResponsePb, error) {
 		pb.SparseCheckout = sparseCheckoutPb
 	}
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2664,26 +2353,11 @@ func getRepoResponseFromPb(pb *getRepoResponsePb) (*GetRepoResponse, error) {
 		return nil, nil
 	}
 	st := &GetRepoResponse{}
-	branchField := &pb.Branch
-	if branchField != nil {
-		st.Branch = *branchField
-	}
-	headCommitIdField := &pb.HeadCommitId
-	if headCommitIdField != nil {
-		st.HeadCommitId = *headCommitIdField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	providerField := &pb.Provider
-	if providerField != nil {
-		st.Provider = *providerField
-	}
+	st.Branch = pb.Branch
+	st.HeadCommitId = pb.HeadCommitId
+	st.Id = pb.Id
+	st.Path = pb.Path
+	st.Provider = pb.Provider
 	sparseCheckoutField, err := sparseCheckoutFromPb(pb.SparseCheckout)
 	if err != nil {
 		return nil, err
@@ -2691,10 +2365,7 @@ func getRepoResponseFromPb(pb *getRepoResponsePb) (*GetRepoResponse, error) {
 	if sparseCheckoutField != nil {
 		st.SparseCheckout = sparseCheckoutField
 	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2711,9 +2382,11 @@ func (st getRepoResponsePb) MarshalJSON() ([]byte, error) {
 // Get a secret
 type GetSecretRequest struct {
 	// The key to fetch secret for.
-	Key string
+	// Wire name: 'key'
+	Key string `tf:"-"`
 	// The name of the scope to fetch secret information from.
-	Scope string
+	// Wire name: 'scope'
+	Scope string `tf:"-"`
 }
 
 func getSecretRequestToPb(st *GetSecretRequest) (*getSecretRequestPb, error) {
@@ -2721,15 +2394,9 @@ func getSecretRequestToPb(st *GetSecretRequest) (*getSecretRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getSecretRequestPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	scopePb := &st.Scope
-	if scopePb != nil {
-		pb.Scope = *scopePb
-	}
+	pb.Scope = st.Scope
 
 	return pb, nil
 }
@@ -2771,25 +2438,21 @@ func getSecretRequestFromPb(pb *getSecretRequestPb) (*GetSecretRequest, error) {
 		return nil, nil
 	}
 	st := &GetSecretRequest{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	scopeField := &pb.Scope
-	if scopeField != nil {
-		st.Scope = *scopeField
-	}
+	st.Key = pb.Key
+	st.Scope = pb.Scope
 
 	return st, nil
 }
 
 type GetSecretResponse struct {
 	// A unique name to identify the secret.
+	// Wire name: 'key'
 	Key string
 	// The value of the secret in its byte representation.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getSecretResponseToPb(st *GetSecretResponse) (*getSecretResponsePb, error) {
@@ -2797,15 +2460,9 @@ func getSecretResponseToPb(st *GetSecretResponse) (*getSecretResponsePb, error) 
 		return nil, nil
 	}
 	pb := &getSecretResponsePb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2850,14 +2507,8 @@ func getSecretResponseFromPb(pb *getSecretResponsePb) (*GetSecretResponse, error
 		return nil, nil
 	}
 	st := &GetSecretResponse{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2874,7 +2525,8 @@ func (st getSecretResponsePb) MarshalJSON() ([]byte, error) {
 // Get status
 type GetStatusRequest struct {
 	// The absolute path of the notebook or directory.
-	Path string
+	// Wire name: 'path'
+	Path string `tf:"-"`
 }
 
 func getStatusRequestToPb(st *GetStatusRequest) (*getStatusRequestPb, error) {
@@ -2882,10 +2534,7 @@ func getStatusRequestToPb(st *GetStatusRequest) (*getStatusRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getStatusRequestPb{}
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	return pb, nil
 }
@@ -2925,10 +2574,7 @@ func getStatusRequestFromPb(pb *getStatusRequestPb) (*GetStatusRequest, error) {
 		return nil, nil
 	}
 	st := &GetStatusRequest{}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Path = pb.Path
 
 	return st, nil
 }
@@ -2936,9 +2582,11 @@ func getStatusRequestFromPb(pb *getStatusRequestPb) (*GetStatusRequest, error) {
 // Get workspace object permission levels
 type GetWorkspaceObjectPermissionLevelsRequest struct {
 	// The workspace object for which to get or manage permissions.
-	WorkspaceObjectId string
+	// Wire name: 'workspace_object_id'
+	WorkspaceObjectId string `tf:"-"`
 	// The workspace object type for which to get or manage permissions.
-	WorkspaceObjectType string
+	// Wire name: 'workspace_object_type'
+	WorkspaceObjectType string `tf:"-"`
 }
 
 func getWorkspaceObjectPermissionLevelsRequestToPb(st *GetWorkspaceObjectPermissionLevelsRequest) (*getWorkspaceObjectPermissionLevelsRequestPb, error) {
@@ -2946,15 +2594,9 @@ func getWorkspaceObjectPermissionLevelsRequestToPb(st *GetWorkspaceObjectPermiss
 		return nil, nil
 	}
 	pb := &getWorkspaceObjectPermissionLevelsRequestPb{}
-	workspaceObjectIdPb := &st.WorkspaceObjectId
-	if workspaceObjectIdPb != nil {
-		pb.WorkspaceObjectId = *workspaceObjectIdPb
-	}
+	pb.WorkspaceObjectId = st.WorkspaceObjectId
 
-	workspaceObjectTypePb := &st.WorkspaceObjectType
-	if workspaceObjectTypePb != nil {
-		pb.WorkspaceObjectType = *workspaceObjectTypePb
-	}
+	pb.WorkspaceObjectType = st.WorkspaceObjectType
 
 	return pb, nil
 }
@@ -2996,20 +2638,15 @@ func getWorkspaceObjectPermissionLevelsRequestFromPb(pb *getWorkspaceObjectPermi
 		return nil, nil
 	}
 	st := &GetWorkspaceObjectPermissionLevelsRequest{}
-	workspaceObjectIdField := &pb.WorkspaceObjectId
-	if workspaceObjectIdField != nil {
-		st.WorkspaceObjectId = *workspaceObjectIdField
-	}
-	workspaceObjectTypeField := &pb.WorkspaceObjectType
-	if workspaceObjectTypeField != nil {
-		st.WorkspaceObjectType = *workspaceObjectTypeField
-	}
+	st.WorkspaceObjectId = pb.WorkspaceObjectId
+	st.WorkspaceObjectType = pb.WorkspaceObjectType
 
 	return st, nil
 }
 
 type GetWorkspaceObjectPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []WorkspaceObjectPermissionsDescription
 }
 
@@ -3071,13 +2708,13 @@ func getWorkspaceObjectPermissionLevelsResponseFromPb(pb *getWorkspaceObjectPerm
 	st := &GetWorkspaceObjectPermissionLevelsResponse{}
 
 	var permissionLevelsField []WorkspaceObjectPermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := workspaceObjectPermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := workspaceObjectPermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -3088,9 +2725,11 @@ func getWorkspaceObjectPermissionLevelsResponseFromPb(pb *getWorkspaceObjectPerm
 // Get workspace object permissions
 type GetWorkspaceObjectPermissionsRequest struct {
 	// The workspace object for which to get or manage permissions.
-	WorkspaceObjectId string
+	// Wire name: 'workspace_object_id'
+	WorkspaceObjectId string `tf:"-"`
 	// The workspace object type for which to get or manage permissions.
-	WorkspaceObjectType string
+	// Wire name: 'workspace_object_type'
+	WorkspaceObjectType string `tf:"-"`
 }
 
 func getWorkspaceObjectPermissionsRequestToPb(st *GetWorkspaceObjectPermissionsRequest) (*getWorkspaceObjectPermissionsRequestPb, error) {
@@ -3098,15 +2737,9 @@ func getWorkspaceObjectPermissionsRequestToPb(st *GetWorkspaceObjectPermissionsR
 		return nil, nil
 	}
 	pb := &getWorkspaceObjectPermissionsRequestPb{}
-	workspaceObjectIdPb := &st.WorkspaceObjectId
-	if workspaceObjectIdPb != nil {
-		pb.WorkspaceObjectId = *workspaceObjectIdPb
-	}
+	pb.WorkspaceObjectId = st.WorkspaceObjectId
 
-	workspaceObjectTypePb := &st.WorkspaceObjectType
-	if workspaceObjectTypePb != nil {
-		pb.WorkspaceObjectType = *workspaceObjectTypePb
-	}
+	pb.WorkspaceObjectType = st.WorkspaceObjectType
 
 	return pb, nil
 }
@@ -3148,14 +2781,8 @@ func getWorkspaceObjectPermissionsRequestFromPb(pb *getWorkspaceObjectPermission
 		return nil, nil
 	}
 	st := &GetWorkspaceObjectPermissionsRequest{}
-	workspaceObjectIdField := &pb.WorkspaceObjectId
-	if workspaceObjectIdField != nil {
-		st.WorkspaceObjectId = *workspaceObjectIdField
-	}
-	workspaceObjectTypeField := &pb.WorkspaceObjectType
-	if workspaceObjectTypeField != nil {
-		st.WorkspaceObjectType = *workspaceObjectTypeField
-	}
+	st.WorkspaceObjectId = pb.WorkspaceObjectId
+	st.WorkspaceObjectType = pb.WorkspaceObjectType
 
 	return st, nil
 }
@@ -3166,6 +2793,7 @@ type Import struct {
 	// If the limit (10MB) is exceeded, exception with error code
 	// **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown. This parameter might be absent,
 	// and instead a posted file is used.
+	// Wire name: 'content'
 	Content string
 	// This specifies the format of the file to be imported.
 	//
@@ -3180,19 +2808,23 @@ type Import struct {
 	// notebook is imported in Databricks archive format. Required for
 	// directories. - `R_MARKDOWN`: The notebook is imported from R Markdown
 	// format.
+	// Wire name: 'format'
 	Format ImportFormat
 	// The language of the object. This value is set only if the object type is
 	// `NOTEBOOK`.
+	// Wire name: 'language'
 	Language Language
 	// The flag that specifies whether to overwrite existing object. It is
 	// `false` by default. For `DBC` format, `overwrite` is not supported since
 	// it may contain a directory.
+	// Wire name: 'overwrite'
 	Overwrite bool
 	// The absolute path of the object or directory. Importing a directory is
 	// only supported for the `DBC` and `SOURCE` formats.
+	// Wire name: 'path'
 	Path string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func importToPb(st *Import) (*importPb, error) {
@@ -3200,30 +2832,15 @@ func importToPb(st *Import) (*importPb, error) {
 		return nil, nil
 	}
 	pb := &importPb{}
-	contentPb := &st.Content
-	if contentPb != nil {
-		pb.Content = *contentPb
-	}
+	pb.Content = st.Content
 
-	formatPb := &st.Format
-	if formatPb != nil {
-		pb.Format = *formatPb
-	}
+	pb.Format = st.Format
 
-	languagePb := &st.Language
-	if languagePb != nil {
-		pb.Language = *languagePb
-	}
+	pb.Language = st.Language
 
-	overwritePb := &st.Overwrite
-	if overwritePb != nil {
-		pb.Overwrite = *overwritePb
-	}
+	pb.Overwrite = st.Overwrite
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3294,26 +2911,11 @@ func importFromPb(pb *importPb) (*Import, error) {
 		return nil, nil
 	}
 	st := &Import{}
-	contentField := &pb.Content
-	if contentField != nil {
-		st.Content = *contentField
-	}
-	formatField := &pb.Format
-	if formatField != nil {
-		st.Format = *formatField
-	}
-	languageField := &pb.Language
-	if languageField != nil {
-		st.Language = *languageField
-	}
-	overwriteField := &pb.Overwrite
-	if overwriteField != nil {
-		st.Overwrite = *overwriteField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Content = pb.Content
+	st.Format = pb.Format
+	st.Language = pb.Language
+	st.Overwrite = pb.Overwrite
+	st.Path = pb.Path
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3483,7 +3085,8 @@ func languageFromPb(pb *languagePb) (*Language, error) {
 // Lists ACLs
 type ListAclsRequest struct {
 	// The name of the scope to fetch ACL information from.
-	Scope string
+	// Wire name: 'scope'
+	Scope string `tf:"-"`
 }
 
 func listAclsRequestToPb(st *ListAclsRequest) (*listAclsRequestPb, error) {
@@ -3491,10 +3094,7 @@ func listAclsRequestToPb(st *ListAclsRequest) (*listAclsRequestPb, error) {
 		return nil, nil
 	}
 	pb := &listAclsRequestPb{}
-	scopePb := &st.Scope
-	if scopePb != nil {
-		pb.Scope = *scopePb
-	}
+	pb.Scope = st.Scope
 
 	return pb, nil
 }
@@ -3534,16 +3134,14 @@ func listAclsRequestFromPb(pb *listAclsRequestPb) (*ListAclsRequest, error) {
 		return nil, nil
 	}
 	st := &ListAclsRequest{}
-	scopeField := &pb.Scope
-	if scopeField != nil {
-		st.Scope = *scopeField
-	}
+	st.Scope = pb.Scope
 
 	return st, nil
 }
 
 type ListAclsResponse struct {
 	// The associated ACLs rule applied to principals in the given scope.
+	// Wire name: 'items'
 	Items []AclItem
 }
 
@@ -3605,13 +3203,13 @@ func listAclsResponseFromPb(pb *listAclsResponsePb) (*ListAclsResponse, error) {
 	st := &ListAclsResponse{}
 
 	var itemsField []AclItem
-	for _, item := range pb.Items {
-		itemField, err := aclItemFromPb(&item)
+	for _, itemPb := range pb.Items {
+		item, err := aclItemFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			itemsField = append(itemsField, *itemField)
+		if item != nil {
+			itemsField = append(itemsField, *item)
 		}
 	}
 	st.Items = itemsField
@@ -3621,6 +3219,7 @@ func listAclsResponseFromPb(pb *listAclsResponsePb) (*ListAclsResponse, error) {
 
 type ListCredentialsResponse struct {
 	// List of credentials.
+	// Wire name: 'credentials'
 	Credentials []CredentialInfo
 }
 
@@ -3682,13 +3281,13 @@ func listCredentialsResponseFromPb(pb *listCredentialsResponsePb) (*ListCredenti
 	st := &ListCredentialsResponse{}
 
 	var credentialsField []CredentialInfo
-	for _, item := range pb.Credentials {
-		itemField, err := credentialInfoFromPb(&item)
+	for _, itemPb := range pb.Credentials {
+		item, err := credentialInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			credentialsField = append(credentialsField, *itemField)
+		if item != nil {
+			credentialsField = append(credentialsField, *item)
 		}
 	}
 	st.Credentials = credentialsField
@@ -3701,13 +3300,15 @@ type ListReposRequest struct {
 	// Token used to get the next page of results. If not specified, returns the
 	// first page of results as well as a next page token if there are more
 	// results.
-	NextPageToken string
+	// Wire name: 'next_page_token'
+	NextPageToken string `tf:"-"`
 	// Filters repos that have paths starting with the given path prefix. If not
 	// provided or when provided an effectively empty prefix (`/` or
 	// `/Workspace`) Git folders (repos) from `/Workspace/Repos` will be served.
-	PathPrefix string
+	// Wire name: 'path_prefix'
+	PathPrefix string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listReposRequestToPb(st *ListReposRequest) (*listReposRequestPb, error) {
@@ -3715,15 +3316,9 @@ func listReposRequestToPb(st *ListReposRequest) (*listReposRequestPb, error) {
 		return nil, nil
 	}
 	pb := &listReposRequestPb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
-	pathPrefixPb := &st.PathPrefix
-	if pathPrefixPb != nil {
-		pb.PathPrefix = *pathPrefixPb
-	}
+	pb.PathPrefix = st.PathPrefix
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3772,14 +3367,8 @@ func listReposRequestFromPb(pb *listReposRequestPb) (*ListReposRequest, error) {
 		return nil, nil
 	}
 	st := &ListReposRequest{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
-	pathPrefixField := &pb.PathPrefix
-	if pathPrefixField != nil {
-		st.PathPrefix = *pathPrefixField
-	}
+	st.NextPageToken = pb.NextPageToken
+	st.PathPrefix = pb.PathPrefix
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3796,11 +3385,13 @@ func (st listReposRequestPb) MarshalJSON() ([]byte, error) {
 type ListReposResponse struct {
 	// Token that can be specified as a query parameter to the `GET /repos`
 	// endpoint to retrieve the next page of results.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// List of Git folders (repos).
+	// Wire name: 'repos'
 	Repos []RepoInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listReposResponseToPb(st *ListReposResponse) (*listReposResponsePb, error) {
@@ -3808,10 +3399,7 @@ func listReposResponseToPb(st *ListReposResponse) (*listReposResponsePb, error) 
 		return nil, nil
 	}
 	pb := &listReposResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var reposPb []repoInfoPb
 	for _, item := range st.Repos {
@@ -3869,19 +3457,16 @@ func listReposResponseFromPb(pb *listReposResponsePb) (*ListReposResponse, error
 		return nil, nil
 	}
 	st := &ListReposResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var reposField []RepoInfo
-	for _, item := range pb.Repos {
-		itemField, err := repoInfoFromPb(&item)
+	for _, itemPb := range pb.Repos {
+		item, err := repoInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			reposField = append(reposField, *itemField)
+		if item != nil {
+			reposField = append(reposField, *item)
 		}
 	}
 	st.Repos = reposField
@@ -3900,6 +3485,7 @@ func (st listReposResponsePb) MarshalJSON() ([]byte, error) {
 
 type ListResponse struct {
 	// List of objects.
+	// Wire name: 'objects'
 	Objects []ObjectInfo
 }
 
@@ -3961,13 +3547,13 @@ func listResponseFromPb(pb *listResponsePb) (*ListResponse, error) {
 	st := &ListResponse{}
 
 	var objectsField []ObjectInfo
-	for _, item := range pb.Objects {
-		itemField, err := objectInfoFromPb(&item)
+	for _, itemPb := range pb.Objects {
+		item, err := objectInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			objectsField = append(objectsField, *itemField)
+		if item != nil {
+			objectsField = append(objectsField, *item)
 		}
 	}
 	st.Objects = objectsField
@@ -3977,6 +3563,7 @@ func listResponseFromPb(pb *listResponsePb) (*ListResponse, error) {
 
 type ListScopesResponse struct {
 	// The available secret scopes.
+	// Wire name: 'scopes'
 	Scopes []SecretScope
 }
 
@@ -4038,13 +3625,13 @@ func listScopesResponseFromPb(pb *listScopesResponsePb) (*ListScopesResponse, er
 	st := &ListScopesResponse{}
 
 	var scopesField []SecretScope
-	for _, item := range pb.Scopes {
-		itemField, err := secretScopeFromPb(&item)
+	for _, itemPb := range pb.Scopes {
+		item, err := secretScopeFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			scopesField = append(scopesField, *itemField)
+		if item != nil {
+			scopesField = append(scopesField, *item)
 		}
 	}
 	st.Scopes = scopesField
@@ -4055,7 +3642,8 @@ func listScopesResponseFromPb(pb *listScopesResponsePb) (*ListScopesResponse, er
 // List secret keys
 type ListSecretsRequest struct {
 	// The name of the scope to list secrets within.
-	Scope string
+	// Wire name: 'scope'
+	Scope string `tf:"-"`
 }
 
 func listSecretsRequestToPb(st *ListSecretsRequest) (*listSecretsRequestPb, error) {
@@ -4063,10 +3651,7 @@ func listSecretsRequestToPb(st *ListSecretsRequest) (*listSecretsRequestPb, erro
 		return nil, nil
 	}
 	pb := &listSecretsRequestPb{}
-	scopePb := &st.Scope
-	if scopePb != nil {
-		pb.Scope = *scopePb
-	}
+	pb.Scope = st.Scope
 
 	return pb, nil
 }
@@ -4106,16 +3691,14 @@ func listSecretsRequestFromPb(pb *listSecretsRequestPb) (*ListSecretsRequest, er
 		return nil, nil
 	}
 	st := &ListSecretsRequest{}
-	scopeField := &pb.Scope
-	if scopeField != nil {
-		st.Scope = *scopeField
-	}
+	st.Scope = pb.Scope
 
 	return st, nil
 }
 
 type ListSecretsResponse struct {
 	// Metadata information of all secrets contained within the given scope.
+	// Wire name: 'secrets'
 	Secrets []SecretMetadata
 }
 
@@ -4177,13 +3760,13 @@ func listSecretsResponseFromPb(pb *listSecretsResponsePb) (*ListSecretsResponse,
 	st := &ListSecretsResponse{}
 
 	var secretsField []SecretMetadata
-	for _, item := range pb.Secrets {
-		itemField, err := secretMetadataFromPb(&item)
+	for _, itemPb := range pb.Secrets {
+		item, err := secretMetadataFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			secretsField = append(secretsField, *itemField)
+		if item != nil {
+			secretsField = append(secretsField, *item)
 		}
 	}
 	st.Secrets = secretsField
@@ -4194,11 +3777,13 @@ func listSecretsResponseFromPb(pb *listSecretsResponsePb) (*ListSecretsResponse,
 // List contents
 type ListWorkspaceRequest struct {
 	// UTC timestamp in milliseconds
-	NotebooksModifiedAfter int64
+	// Wire name: 'notebooks_modified_after'
+	NotebooksModifiedAfter int64 `tf:"-"`
 	// The absolute path of the notebook or directory.
-	Path string
+	// Wire name: 'path'
+	Path string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listWorkspaceRequestToPb(st *ListWorkspaceRequest) (*listWorkspaceRequestPb, error) {
@@ -4206,15 +3791,9 @@ func listWorkspaceRequestToPb(st *ListWorkspaceRequest) (*listWorkspaceRequestPb
 		return nil, nil
 	}
 	pb := &listWorkspaceRequestPb{}
-	notebooksModifiedAfterPb := &st.NotebooksModifiedAfter
-	if notebooksModifiedAfterPb != nil {
-		pb.NotebooksModifiedAfter = *notebooksModifiedAfterPb
-	}
+	pb.NotebooksModifiedAfter = st.NotebooksModifiedAfter
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4259,14 +3838,8 @@ func listWorkspaceRequestFromPb(pb *listWorkspaceRequestPb) (*ListWorkspaceReque
 		return nil, nil
 	}
 	st := &ListWorkspaceRequest{}
-	notebooksModifiedAfterField := &pb.NotebooksModifiedAfter
-	if notebooksModifiedAfterField != nil {
-		st.NotebooksModifiedAfter = *notebooksModifiedAfterField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.NotebooksModifiedAfter = pb.NotebooksModifiedAfter
+	st.Path = pb.Path
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4284,6 +3857,7 @@ type Mkdirs struct {
 	// The absolute path of the directory. If the parent directories do not
 	// exist, it will also create them. If the directory already exists, this
 	// command will do nothing and succeed.
+	// Wire name: 'path'
 	Path string
 }
 
@@ -4292,10 +3866,7 @@ func mkdirsToPb(st *Mkdirs) (*mkdirsPb, error) {
 		return nil, nil
 	}
 	pb := &mkdirsPb{}
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	return pb, nil
 }
@@ -4337,10 +3908,7 @@ func mkdirsFromPb(pb *mkdirsPb) (*Mkdirs, error) {
 		return nil, nil
 	}
 	st := &Mkdirs{}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Path = pb.Path
 
 	return st, nil
 }
@@ -4398,29 +3966,37 @@ func mkdirsResponseFromPb(pb *mkdirsResponsePb) (*MkdirsResponse, error) {
 // and “get-status“.
 type ObjectInfo struct {
 	// Only applicable to files. The creation UTC timestamp.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// The language of the object. This value is set only if the object type is
 	// ``NOTEBOOK``.
+	// Wire name: 'language'
 	Language Language
 	// Only applicable to files, the last modified UTC timestamp.
+	// Wire name: 'modified_at'
 	ModifiedAt int64
 	// Unique identifier for the object.
+	// Wire name: 'object_id'
 	ObjectId int64
 	// The type of the object in workspace.
 	//
 	// - `NOTEBOOK`: document that contains runnable code, visualizations, and
 	// explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`:
 	// file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard
+	// Wire name: 'object_type'
 	ObjectType ObjectType
 	// The absolute path of the object.
+	// Wire name: 'path'
 	Path string
 	// A unique identifier for the object that is consistent across all
 	// Databricks APIs.
+	// Wire name: 'resource_id'
 	ResourceId string
 	// Only applicable to files. The file size in bytes can be returned.
+	// Wire name: 'size'
 	Size int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func objectInfoToPb(st *ObjectInfo) (*objectInfoPb, error) {
@@ -4428,45 +4004,21 @@ func objectInfoToPb(st *ObjectInfo) (*objectInfoPb, error) {
 		return nil, nil
 	}
 	pb := &objectInfoPb{}
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	languagePb := &st.Language
-	if languagePb != nil {
-		pb.Language = *languagePb
-	}
+	pb.Language = st.Language
 
-	modifiedAtPb := &st.ModifiedAt
-	if modifiedAtPb != nil {
-		pb.ModifiedAt = *modifiedAtPb
-	}
+	pb.ModifiedAt = st.ModifiedAt
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	resourceIdPb := &st.ResourceId
-	if resourceIdPb != nil {
-		pb.ResourceId = *resourceIdPb
-	}
+	pb.ResourceId = st.ResourceId
 
-	sizePb := &st.Size
-	if sizePb != nil {
-		pb.Size = *sizePb
-	}
+	pb.Size = st.Size
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4529,38 +4081,14 @@ func objectInfoFromPb(pb *objectInfoPb) (*ObjectInfo, error) {
 		return nil, nil
 	}
 	st := &ObjectInfo{}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	languageField := &pb.Language
-	if languageField != nil {
-		st.Language = *languageField
-	}
-	modifiedAtField := &pb.ModifiedAt
-	if modifiedAtField != nil {
-		st.ModifiedAt = *modifiedAtField
-	}
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	resourceIdField := &pb.ResourceId
-	if resourceIdField != nil {
-		st.ResourceId = *resourceIdField
-	}
-	sizeField := &pb.Size
-	if sizeField != nil {
-		st.Size = *sizeField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.Language = pb.Language
+	st.ModifiedAt = pb.ModifiedAt
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
+	st.Path = pb.Path
+	st.ResourceId = pb.ResourceId
+	st.Size = pb.Size
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4629,10 +4157,13 @@ func objectTypeFromPb(pb *objectTypePb) (*ObjectType, error) {
 
 type PutAcl struct {
 	// The permission level applied to the principal.
+	// Wire name: 'permission'
 	Permission AclPermission
 	// The principal in which the permission is applied.
+	// Wire name: 'principal'
 	Principal string
 	// The name of the scope to apply permissions to.
+	// Wire name: 'scope'
 	Scope string
 }
 
@@ -4641,20 +4172,11 @@ func putAclToPb(st *PutAcl) (*putAclPb, error) {
 		return nil, nil
 	}
 	pb := &putAclPb{}
-	permissionPb := &st.Permission
-	if permissionPb != nil {
-		pb.Permission = *permissionPb
-	}
+	pb.Permission = st.Permission
 
-	principalPb := &st.Principal
-	if principalPb != nil {
-		pb.Principal = *principalPb
-	}
+	pb.Principal = st.Principal
 
-	scopePb := &st.Scope
-	if scopePb != nil {
-		pb.Scope = *scopePb
-	}
+	pb.Scope = st.Scope
 
 	return pb, nil
 }
@@ -4698,18 +4220,9 @@ func putAclFromPb(pb *putAclPb) (*PutAcl, error) {
 		return nil, nil
 	}
 	st := &PutAcl{}
-	permissionField := &pb.Permission
-	if permissionField != nil {
-		st.Permission = *permissionField
-	}
-	principalField := &pb.Principal
-	if principalField != nil {
-		st.Principal = *principalField
-	}
-	scopeField := &pb.Scope
-	if scopeField != nil {
-		st.Scope = *scopeField
-	}
+	st.Permission = pb.Permission
+	st.Principal = pb.Principal
+	st.Scope = pb.Scope
 
 	return st, nil
 }
@@ -4765,15 +4278,19 @@ func putAclResponseFromPb(pb *putAclResponsePb) (*PutAclResponse, error) {
 
 type PutSecret struct {
 	// If specified, value will be stored as bytes.
+	// Wire name: 'bytes_value'
 	BytesValue string
 	// A unique name to identify the secret.
+	// Wire name: 'key'
 	Key string
 	// The name of the scope to which the secret will be associated with.
+	// Wire name: 'scope'
 	Scope string
 	// If specified, note that the value will be stored in UTF-8 (MB4) form.
+	// Wire name: 'string_value'
 	StringValue string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func putSecretToPb(st *PutSecret) (*putSecretPb, error) {
@@ -4781,25 +4298,13 @@ func putSecretToPb(st *PutSecret) (*putSecretPb, error) {
 		return nil, nil
 	}
 	pb := &putSecretPb{}
-	bytesValuePb := &st.BytesValue
-	if bytesValuePb != nil {
-		pb.BytesValue = *bytesValuePb
-	}
+	pb.BytesValue = st.BytesValue
 
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	scopePb := &st.Scope
-	if scopePb != nil {
-		pb.Scope = *scopePb
-	}
+	pb.Scope = st.Scope
 
-	stringValuePb := &st.StringValue
-	if stringValuePb != nil {
-		pb.StringValue = *stringValuePb
-	}
+	pb.StringValue = st.StringValue
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4848,22 +4353,10 @@ func putSecretFromPb(pb *putSecretPb) (*PutSecret, error) {
 		return nil, nil
 	}
 	st := &PutSecret{}
-	bytesValueField := &pb.BytesValue
-	if bytesValueField != nil {
-		st.BytesValue = *bytesValueField
-	}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	scopeField := &pb.Scope
-	if scopeField != nil {
-		st.Scope = *scopeField
-	}
-	stringValueField := &pb.StringValue
-	if stringValueField != nil {
-		st.StringValue = *stringValueField
-	}
+	st.BytesValue = pb.BytesValue
+	st.Key = pb.Key
+	st.Scope = pb.Scope
+	st.StringValue = pb.StringValue
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4928,15 +4421,19 @@ func putSecretResponseFromPb(pb *putSecretResponsePb) (*PutSecretResponse, error
 
 type RepoAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel RepoPermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func repoAccessControlRequestToPb(st *RepoAccessControlRequest) (*repoAccessControlRequestPb, error) {
@@ -4944,25 +4441,13 @@ func repoAccessControlRequestToPb(st *RepoAccessControlRequest) (*repoAccessCont
 		return nil, nil
 	}
 	pb := &repoAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5011,22 +4496,10 @@ func repoAccessControlRequestFromPb(pb *repoAccessControlRequestPb) (*RepoAccess
 		return nil, nil
 	}
 	st := &RepoAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5042,17 +4515,22 @@ func (st repoAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type RepoAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []RepoPermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func repoAccessControlResponseToPb(st *RepoAccessControlResponse) (*repoAccessControlResponsePb, error) {
@@ -5073,25 +4551,13 @@ func repoAccessControlResponseToPb(st *RepoAccessControlResponse) (*repoAccessCo
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5144,32 +4610,20 @@ func repoAccessControlResponseFromPb(pb *repoAccessControlResponsePb) (*RepoAcce
 	st := &RepoAccessControlResponse{}
 
 	var allPermissionsField []RepoPermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := repoPermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := repoPermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5186,21 +4640,28 @@ func (st repoAccessControlResponsePb) MarshalJSON() ([]byte, error) {
 // Git folder (repo) information.
 type RepoInfo struct {
 	// Name of the current git branch of the git folder (repo).
+	// Wire name: 'branch'
 	Branch string
 	// Current git commit id of the git folder (repo).
+	// Wire name: 'head_commit_id'
 	HeadCommitId string
 	// Id of the git folder (repo) in the Workspace.
+	// Wire name: 'id'
 	Id int64
 	// Root path of the git folder (repo) in the Workspace.
+	// Wire name: 'path'
 	Path string
 	// Git provider of the remote git repository, e.g. `gitHub`.
+	// Wire name: 'provider'
 	Provider string
 	// Sparse checkout config for the git folder (repo).
+	// Wire name: 'sparse_checkout'
 	SparseCheckout *SparseCheckout
 	// URL of the remote git repository.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func repoInfoToPb(st *RepoInfo) (*repoInfoPb, error) {
@@ -5208,30 +4669,15 @@ func repoInfoToPb(st *RepoInfo) (*repoInfoPb, error) {
 		return nil, nil
 	}
 	pb := &repoInfoPb{}
-	branchPb := &st.Branch
-	if branchPb != nil {
-		pb.Branch = *branchPb
-	}
+	pb.Branch = st.Branch
 
-	headCommitIdPb := &st.HeadCommitId
-	if headCommitIdPb != nil {
-		pb.HeadCommitId = *headCommitIdPb
-	}
+	pb.HeadCommitId = st.HeadCommitId
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	providerPb := &st.Provider
-	if providerPb != nil {
-		pb.Provider = *providerPb
-	}
+	pb.Provider = st.Provider
 
 	sparseCheckoutPb, err := sparseCheckoutToPb(st.SparseCheckout)
 	if err != nil {
@@ -5241,10 +4687,7 @@ func repoInfoToPb(st *RepoInfo) (*repoInfoPb, error) {
 		pb.SparseCheckout = sparseCheckoutPb
 	}
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5299,26 +4742,11 @@ func repoInfoFromPb(pb *repoInfoPb) (*RepoInfo, error) {
 		return nil, nil
 	}
 	st := &RepoInfo{}
-	branchField := &pb.Branch
-	if branchField != nil {
-		st.Branch = *branchField
-	}
-	headCommitIdField := &pb.HeadCommitId
-	if headCommitIdField != nil {
-		st.HeadCommitId = *headCommitIdField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	providerField := &pb.Provider
-	if providerField != nil {
-		st.Provider = *providerField
-	}
+	st.Branch = pb.Branch
+	st.HeadCommitId = pb.HeadCommitId
+	st.Id = pb.Id
+	st.Path = pb.Path
+	st.Provider = pb.Provider
 	sparseCheckoutField, err := sparseCheckoutFromPb(pb.SparseCheckout)
 	if err != nil {
 		return nil, err
@@ -5326,10 +4754,7 @@ func repoInfoFromPb(pb *repoInfoPb) (*RepoInfo, error) {
 	if sparseCheckoutField != nil {
 		st.SparseCheckout = sparseCheckoutField
 	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5344,13 +4769,17 @@ func (st repoInfoPb) MarshalJSON() ([]byte, error) {
 }
 
 type RepoPermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel RepoPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func repoPermissionToPb(st *RepoPermission) (*repoPermissionPb, error) {
@@ -5358,24 +4787,11 @@ func repoPermissionToPb(st *RepoPermission) (*repoPermissionPb, error) {
 		return nil, nil
 	}
 	pb := &repoPermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5421,23 +4837,9 @@ func repoPermissionFromPb(pb *repoPermissionPb) (*RepoPermission, error) {
 		return nil, nil
 	}
 	st := &RepoPermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5501,13 +4903,17 @@ func repoPermissionLevelFromPb(pb *repoPermissionLevelPb) (*RepoPermissionLevel,
 }
 
 type RepoPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []RepoAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func repoPermissionsToPb(st *RepoPermissions) (*repoPermissionsPb, error) {
@@ -5528,15 +4934,9 @@ func repoPermissionsToPb(st *RepoPermissions) (*repoPermissionsPb, error) {
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5584,24 +4984,18 @@ func repoPermissionsFromPb(pb *repoPermissionsPb) (*RepoPermissions, error) {
 	st := &RepoPermissions{}
 
 	var accessControlListField []RepoAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := repoAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := repoAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5616,11 +5010,14 @@ func (st repoPermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type RepoPermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel RepoPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func repoPermissionsDescriptionToPb(st *RepoPermissionsDescription) (*repoPermissionsDescriptionPb, error) {
@@ -5628,15 +5025,9 @@ func repoPermissionsDescriptionToPb(st *RepoPermissionsDescription) (*repoPermis
 		return nil, nil
 	}
 	pb := &repoPermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5680,14 +5071,8 @@ func repoPermissionsDescriptionFromPb(pb *repoPermissionsDescriptionPb) (*RepoPe
 		return nil, nil
 	}
 	st := &RepoPermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5702,9 +5087,12 @@ func (st repoPermissionsDescriptionPb) MarshalJSON() ([]byte, error) {
 }
 
 type RepoPermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []RepoAccessControlRequest
 	// The repo for which to get or manage permissions.
-	RepoId string
+	// Wire name: 'repo_id'
+	RepoId string `tf:"-"`
 }
 
 func repoPermissionsRequestToPb(st *RepoPermissionsRequest) (*repoPermissionsRequestPb, error) {
@@ -5725,10 +5113,7 @@ func repoPermissionsRequestToPb(st *RepoPermissionsRequest) (*repoPermissionsReq
 	}
 	pb.AccessControlList = accessControlListPb
 
-	repoIdPb := &st.RepoId
-	if repoIdPb != nil {
-		pb.RepoId = *repoIdPb
-	}
+	pb.RepoId = st.RepoId
 
 	return pb, nil
 }
@@ -5771,20 +5156,17 @@ func repoPermissionsRequestFromPb(pb *repoPermissionsRequestPb) (*RepoPermission
 	st := &RepoPermissionsRequest{}
 
 	var accessControlListField []RepoAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := repoAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := repoAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	repoIdField := &pb.RepoId
-	if repoIdField != nil {
-		st.RepoId = *repoIdField
-	}
+	st.RepoId = pb.RepoId
 
 	return st, nil
 }
@@ -5835,11 +5217,13 @@ func scopeBackendTypeFromPb(pb *scopeBackendTypePb) (*ScopeBackendType, error) {
 
 type SecretMetadata struct {
 	// A unique name to identify the secret.
+	// Wire name: 'key'
 	Key string
 	// The last updated timestamp (in milliseconds) for the secret.
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func secretMetadataToPb(st *SecretMetadata) (*secretMetadataPb, error) {
@@ -5847,15 +5231,9 @@ func secretMetadataToPb(st *SecretMetadata) (*secretMetadataPb, error) {
 		return nil, nil
 	}
 	pb := &secretMetadataPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5900,14 +5278,8 @@ func secretMetadataFromPb(pb *secretMetadataPb) (*SecretMetadata, error) {
 		return nil, nil
 	}
 	st := &SecretMetadata{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
+	st.Key = pb.Key
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5923,13 +5295,16 @@ func (st secretMetadataPb) MarshalJSON() ([]byte, error) {
 
 type SecretScope struct {
 	// The type of secret scope backend.
+	// Wire name: 'backend_type'
 	BackendType ScopeBackendType
 	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
+	// Wire name: 'keyvault_metadata'
 	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata
 	// A unique name to identify the secret scope.
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func secretScopeToPb(st *SecretScope) (*secretScopePb, error) {
@@ -5937,10 +5312,7 @@ func secretScopeToPb(st *SecretScope) (*secretScopePb, error) {
 		return nil, nil
 	}
 	pb := &secretScopePb{}
-	backendTypePb := &st.BackendType
-	if backendTypePb != nil {
-		pb.BackendType = *backendTypePb
-	}
+	pb.BackendType = st.BackendType
 
 	keyvaultMetadataPb, err := azureKeyVaultSecretScopeMetadataToPb(st.KeyvaultMetadata)
 	if err != nil {
@@ -5950,10 +5322,7 @@ func secretScopeToPb(st *SecretScope) (*secretScopePb, error) {
 		pb.KeyvaultMetadata = keyvaultMetadataPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6000,10 +5369,7 @@ func secretScopeFromPb(pb *secretScopePb) (*SecretScope, error) {
 		return nil, nil
 	}
 	st := &SecretScope{}
-	backendTypeField := &pb.BackendType
-	if backendTypeField != nil {
-		st.BackendType = *backendTypeField
-	}
+	st.BackendType = pb.BackendType
 	keyvaultMetadataField, err := azureKeyVaultSecretScopeMetadataFromPb(pb.KeyvaultMetadata)
 	if err != nil {
 		return nil, err
@@ -6011,10 +5377,7 @@ func secretScopeFromPb(pb *secretScopePb) (*SecretScope, error) {
 	if keyvaultMetadataField != nil {
 		st.KeyvaultMetadata = keyvaultMetadataField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6034,6 +5397,7 @@ type SparseCheckout struct {
 	// details.
 	//
 	// [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
+	// Wire name: 'patterns'
 	Patterns []string
 }
 
@@ -6042,15 +5406,7 @@ func sparseCheckoutToPb(st *SparseCheckout) (*sparseCheckoutPb, error) {
 		return nil, nil
 	}
 	pb := &sparseCheckoutPb{}
-
-	var patternsPb []string
-	for _, item := range st.Patterns {
-		itemPb := &item
-		if itemPb != nil {
-			patternsPb = append(patternsPb, *itemPb)
-		}
-	}
-	pb.Patterns = patternsPb
+	pb.Patterns = st.Patterns
 
 	return pb, nil
 }
@@ -6093,15 +5449,7 @@ func sparseCheckoutFromPb(pb *sparseCheckoutPb) (*SparseCheckout, error) {
 		return nil, nil
 	}
 	st := &SparseCheckout{}
-
-	var patternsField []string
-	for _, item := range pb.Patterns {
-		itemField := &item
-		if itemField != nil {
-			patternsField = append(patternsField, *itemField)
-		}
-	}
-	st.Patterns = patternsField
+	st.Patterns = pb.Patterns
 
 	return st, nil
 }
@@ -6112,6 +5460,7 @@ type SparseCheckoutUpdate struct {
 	// details.
 	//
 	// [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
+	// Wire name: 'patterns'
 	Patterns []string
 }
 
@@ -6120,15 +5469,7 @@ func sparseCheckoutUpdateToPb(st *SparseCheckoutUpdate) (*sparseCheckoutUpdatePb
 		return nil, nil
 	}
 	pb := &sparseCheckoutUpdatePb{}
-
-	var patternsPb []string
-	for _, item := range st.Patterns {
-		itemPb := &item
-		if itemPb != nil {
-			patternsPb = append(patternsPb, *itemPb)
-		}
-	}
-	pb.Patterns = patternsPb
+	pb.Patterns = st.Patterns
 
 	return pb, nil
 }
@@ -6171,26 +5512,20 @@ func sparseCheckoutUpdateFromPb(pb *sparseCheckoutUpdatePb) (*SparseCheckoutUpda
 		return nil, nil
 	}
 	st := &SparseCheckoutUpdate{}
-
-	var patternsField []string
-	for _, item := range pb.Patterns {
-		itemField := &item
-		if itemField != nil {
-			patternsField = append(patternsField, *itemField)
-		}
-	}
-	st.Patterns = patternsField
+	st.Patterns = pb.Patterns
 
 	return st, nil
 }
 
 type UpdateCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
-	CredentialId int64
+	// Wire name: 'credential_id'
+	CredentialId int64 `tf:"-"`
 	// Git provider. This field is case-insensitive. The available Git providers
 	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
 	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
 	// `awsCodeCommit`.
+	// Wire name: 'git_provider'
 	GitProvider string
 	// The username or email provided with your Git provider account, depending
 	// on which provider you are using. For GitHub, GitHub Enterprise Server, or
@@ -6199,15 +5534,17 @@ type UpdateCredentialsRequest struct {
 	// BitBucket or BitBucket Server, username must be used. For all other
 	// providers please see your provider's Personal Access Token authentication
 	// documentation to see what is supported.
+	// Wire name: 'git_username'
 	GitUsername string
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
 	// scoped access tokens. [Learn more].
 	//
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+	// Wire name: 'personal_access_token'
 	PersonalAccessToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateCredentialsRequestToPb(st *UpdateCredentialsRequest) (*updateCredentialsRequestPb, error) {
@@ -6215,25 +5552,13 @@ func updateCredentialsRequestToPb(st *UpdateCredentialsRequest) (*updateCredenti
 		return nil, nil
 	}
 	pb := &updateCredentialsRequestPb{}
-	credentialIdPb := &st.CredentialId
-	if credentialIdPb != nil {
-		pb.CredentialId = *credentialIdPb
-	}
+	pb.CredentialId = st.CredentialId
 
-	gitProviderPb := &st.GitProvider
-	if gitProviderPb != nil {
-		pb.GitProvider = *gitProviderPb
-	}
+	pb.GitProvider = st.GitProvider
 
-	gitUsernamePb := &st.GitUsername
-	if gitUsernamePb != nil {
-		pb.GitUsername = *gitUsernamePb
-	}
+	pb.GitUsername = st.GitUsername
 
-	personalAccessTokenPb := &st.PersonalAccessToken
-	if personalAccessTokenPb != nil {
-		pb.PersonalAccessToken = *personalAccessTokenPb
-	}
+	pb.PersonalAccessToken = st.PersonalAccessToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6295,22 +5620,10 @@ func updateCredentialsRequestFromPb(pb *updateCredentialsRequestPb) (*UpdateCred
 		return nil, nil
 	}
 	st := &UpdateCredentialsRequest{}
-	credentialIdField := &pb.CredentialId
-	if credentialIdField != nil {
-		st.CredentialId = *credentialIdField
-	}
-	gitProviderField := &pb.GitProvider
-	if gitProviderField != nil {
-		st.GitProvider = *gitProviderField
-	}
-	gitUsernameField := &pb.GitUsername
-	if gitUsernameField != nil {
-		st.GitUsername = *gitUsernameField
-	}
-	personalAccessTokenField := &pb.PersonalAccessToken
-	if personalAccessTokenField != nil {
-		st.PersonalAccessToken = *personalAccessTokenField
-	}
+	st.CredentialId = pb.CredentialId
+	st.GitProvider = pb.GitProvider
+	st.GitUsername = pb.GitUsername
+	st.PersonalAccessToken = pb.PersonalAccessToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6375,19 +5688,23 @@ func updateCredentialsResponseFromPb(pb *updateCredentialsResponsePb) (*UpdateCr
 
 type UpdateRepoRequest struct {
 	// Branch that the local version of the repo is checked out to.
+	// Wire name: 'branch'
 	Branch string
 	// ID of the Git folder (repo) object in the workspace.
-	RepoId int64
+	// Wire name: 'repo_id'
+	RepoId int64 `tf:"-"`
 	// If specified, update the sparse checkout settings. The update will fail
 	// if sparse checkout is not enabled for the repo.
+	// Wire name: 'sparse_checkout'
 	SparseCheckout *SparseCheckoutUpdate
 	// Tag that the local version of the repo is checked out to. Updating the
 	// repo to a tag puts the repo in a detached HEAD state. Before committing
 	// new changes, you must update the repo to a branch instead of the detached
 	// HEAD.
+	// Wire name: 'tag'
 	Tag string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateRepoRequestToPb(st *UpdateRepoRequest) (*updateRepoRequestPb, error) {
@@ -6395,15 +5712,9 @@ func updateRepoRequestToPb(st *UpdateRepoRequest) (*updateRepoRequestPb, error) 
 		return nil, nil
 	}
 	pb := &updateRepoRequestPb{}
-	branchPb := &st.Branch
-	if branchPb != nil {
-		pb.Branch = *branchPb
-	}
+	pb.Branch = st.Branch
 
-	repoIdPb := &st.RepoId
-	if repoIdPb != nil {
-		pb.RepoId = *repoIdPb
-	}
+	pb.RepoId = st.RepoId
 
 	sparseCheckoutPb, err := sparseCheckoutUpdateToPb(st.SparseCheckout)
 	if err != nil {
@@ -6413,10 +5724,7 @@ func updateRepoRequestToPb(st *UpdateRepoRequest) (*updateRepoRequestPb, error) 
 		pb.SparseCheckout = sparseCheckoutPb
 	}
 
-	tagPb := &st.Tag
-	if tagPb != nil {
-		pb.Tag = *tagPb
-	}
+	pb.Tag = st.Tag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6469,14 +5777,8 @@ func updateRepoRequestFromPb(pb *updateRepoRequestPb) (*UpdateRepoRequest, error
 		return nil, nil
 	}
 	st := &UpdateRepoRequest{}
-	branchField := &pb.Branch
-	if branchField != nil {
-		st.Branch = *branchField
-	}
-	repoIdField := &pb.RepoId
-	if repoIdField != nil {
-		st.RepoId = *repoIdField
-	}
+	st.Branch = pb.Branch
+	st.RepoId = pb.RepoId
 	sparseCheckoutField, err := sparseCheckoutUpdateFromPb(pb.SparseCheckout)
 	if err != nil {
 		return nil, err
@@ -6484,10 +5786,7 @@ func updateRepoRequestFromPb(pb *updateRepoRequestPb) (*UpdateRepoRequest, error
 	if sparseCheckoutField != nil {
 		st.SparseCheckout = sparseCheckoutField
 	}
-	tagField := &pb.Tag
-	if tagField != nil {
-		st.Tag = *tagField
-	}
+	st.Tag = pb.Tag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6552,15 +5851,19 @@ func updateRepoResponseFromPb(pb *updateRepoResponsePb) (*UpdateRepoResponse, er
 
 type WorkspaceObjectAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel WorkspaceObjectPermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func workspaceObjectAccessControlRequestToPb(st *WorkspaceObjectAccessControlRequest) (*workspaceObjectAccessControlRequestPb, error) {
@@ -6568,25 +5871,13 @@ func workspaceObjectAccessControlRequestToPb(st *WorkspaceObjectAccessControlReq
 		return nil, nil
 	}
 	pb := &workspaceObjectAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6635,22 +5926,10 @@ func workspaceObjectAccessControlRequestFromPb(pb *workspaceObjectAccessControlR
 		return nil, nil
 	}
 	st := &WorkspaceObjectAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6666,17 +5945,22 @@ func (st workspaceObjectAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type WorkspaceObjectAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []WorkspaceObjectPermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func workspaceObjectAccessControlResponseToPb(st *WorkspaceObjectAccessControlResponse) (*workspaceObjectAccessControlResponsePb, error) {
@@ -6697,25 +5981,13 @@ func workspaceObjectAccessControlResponseToPb(st *WorkspaceObjectAccessControlRe
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6768,32 +6040,20 @@ func workspaceObjectAccessControlResponseFromPb(pb *workspaceObjectAccessControl
 	st := &WorkspaceObjectAccessControlResponse{}
 
 	var allPermissionsField []WorkspaceObjectPermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := workspaceObjectPermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := workspaceObjectPermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6808,13 +6068,17 @@ func (st workspaceObjectAccessControlResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type WorkspaceObjectPermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel WorkspaceObjectPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func workspaceObjectPermissionToPb(st *WorkspaceObjectPermission) (*workspaceObjectPermissionPb, error) {
@@ -6822,24 +6086,11 @@ func workspaceObjectPermissionToPb(st *WorkspaceObjectPermission) (*workspaceObj
 		return nil, nil
 	}
 	pb := &workspaceObjectPermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6885,23 +6136,9 @@ func workspaceObjectPermissionFromPb(pb *workspaceObjectPermissionPb) (*Workspac
 		return nil, nil
 	}
 	st := &WorkspaceObjectPermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6965,13 +6202,17 @@ func workspaceObjectPermissionLevelFromPb(pb *workspaceObjectPermissionLevelPb) 
 }
 
 type WorkspaceObjectPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []WorkspaceObjectAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func workspaceObjectPermissionsToPb(st *WorkspaceObjectPermissions) (*workspaceObjectPermissionsPb, error) {
@@ -6992,15 +6233,9 @@ func workspaceObjectPermissionsToPb(st *WorkspaceObjectPermissions) (*workspaceO
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7048,24 +6283,18 @@ func workspaceObjectPermissionsFromPb(pb *workspaceObjectPermissionsPb) (*Worksp
 	st := &WorkspaceObjectPermissions{}
 
 	var accessControlListField []WorkspaceObjectAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := workspaceObjectAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := workspaceObjectAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7080,11 +6309,14 @@ func (st workspaceObjectPermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type WorkspaceObjectPermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel WorkspaceObjectPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func workspaceObjectPermissionsDescriptionToPb(st *WorkspaceObjectPermissionsDescription) (*workspaceObjectPermissionsDescriptionPb, error) {
@@ -7092,15 +6324,9 @@ func workspaceObjectPermissionsDescriptionToPb(st *WorkspaceObjectPermissionsDes
 		return nil, nil
 	}
 	pb := &workspaceObjectPermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7144,14 +6370,8 @@ func workspaceObjectPermissionsDescriptionFromPb(pb *workspaceObjectPermissionsD
 		return nil, nil
 	}
 	st := &WorkspaceObjectPermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7166,11 +6386,15 @@ func (st workspaceObjectPermissionsDescriptionPb) MarshalJSON() ([]byte, error) 
 }
 
 type WorkspaceObjectPermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []WorkspaceObjectAccessControlRequest
 	// The workspace object for which to get or manage permissions.
-	WorkspaceObjectId string
+	// Wire name: 'workspace_object_id'
+	WorkspaceObjectId string `tf:"-"`
 	// The workspace object type for which to get or manage permissions.
-	WorkspaceObjectType string
+	// Wire name: 'workspace_object_type'
+	WorkspaceObjectType string `tf:"-"`
 }
 
 func workspaceObjectPermissionsRequestToPb(st *WorkspaceObjectPermissionsRequest) (*workspaceObjectPermissionsRequestPb, error) {
@@ -7191,15 +6415,9 @@ func workspaceObjectPermissionsRequestToPb(st *WorkspaceObjectPermissionsRequest
 	}
 	pb.AccessControlList = accessControlListPb
 
-	workspaceObjectIdPb := &st.WorkspaceObjectId
-	if workspaceObjectIdPb != nil {
-		pb.WorkspaceObjectId = *workspaceObjectIdPb
-	}
+	pb.WorkspaceObjectId = st.WorkspaceObjectId
 
-	workspaceObjectTypePb := &st.WorkspaceObjectType
-	if workspaceObjectTypePb != nil {
-		pb.WorkspaceObjectType = *workspaceObjectTypePb
-	}
+	pb.WorkspaceObjectType = st.WorkspaceObjectType
 
 	return pb, nil
 }
@@ -7244,24 +6462,72 @@ func workspaceObjectPermissionsRequestFromPb(pb *workspaceObjectPermissionsReque
 	st := &WorkspaceObjectPermissionsRequest{}
 
 	var accessControlListField []WorkspaceObjectAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := workspaceObjectAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := workspaceObjectAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	workspaceObjectIdField := &pb.WorkspaceObjectId
-	if workspaceObjectIdField != nil {
-		st.WorkspaceObjectId = *workspaceObjectIdField
-	}
-	workspaceObjectTypeField := &pb.WorkspaceObjectType
-	if workspaceObjectTypeField != nil {
-		st.WorkspaceObjectType = *workspaceObjectTypeField
-	}
+	st.WorkspaceObjectId = pb.WorkspaceObjectId
+	st.WorkspaceObjectType = pb.WorkspaceObjectType
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

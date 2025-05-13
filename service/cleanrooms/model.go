@@ -15,108 +15,49 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sharing"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type CleanRoom struct {
 	// Whether clean room access is restricted due to [CSP]
 	//
 	// [CSP]: https://docs.databricks.com/en/security/privacy/security-profile.html
+	// Wire name: 'access_restricted'
 	AccessRestricted CleanRoomAccessRestricted
 
+	// Wire name: 'comment'
 	Comment string
 	// When the clean room was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// The alias of the collaborator tied to the local clean room.
+	// Wire name: 'local_collaborator_alias'
 	LocalCollaboratorAlias string
 	// The name of the clean room. It should follow [UC securable naming
 	// requirements].
 	//
 	// [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
+	// Wire name: 'name'
 	Name string
 	// Output catalog of the clean room. It is an output only field. Output
 	// catalog is manipulated using the separate CreateCleanRoomOutputCatalog
 	// API.
+	// Wire name: 'output_catalog'
 	OutputCatalog *CleanRoomOutputCatalog
 	// This is Databricks username of the owner of the local clean room
 	// securable for permission management.
+	// Wire name: 'owner'
 	Owner string
 	// Central clean room details. During creation, users need to specify
 	// cloud_vendor, region, and collaborators.global_metastore_id. This field
 	// will not be filled in the ListCleanRooms call.
+	// Wire name: 'remote_detailed_info'
 	RemoteDetailedInfo *CleanRoomRemoteDetail
 	// Clean room status.
+	// Wire name: 'status'
 	Status CleanRoomStatusEnum
 	// When the clean room was last updated, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cleanRoomToPb(st *CleanRoom) (*cleanRoomPb, error) {
@@ -124,30 +65,15 @@ func cleanRoomToPb(st *CleanRoom) (*cleanRoomPb, error) {
 		return nil, nil
 	}
 	pb := &cleanRoomPb{}
-	accessRestrictedPb := &st.AccessRestricted
-	if accessRestrictedPb != nil {
-		pb.AccessRestricted = *accessRestrictedPb
-	}
+	pb.AccessRestricted = st.AccessRestricted
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	localCollaboratorAliasPb := &st.LocalCollaboratorAlias
-	if localCollaboratorAliasPb != nil {
-		pb.LocalCollaboratorAlias = *localCollaboratorAliasPb
-	}
+	pb.LocalCollaboratorAlias = st.LocalCollaboratorAlias
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	outputCatalogPb, err := cleanRoomOutputCatalogToPb(st.OutputCatalog)
 	if err != nil {
@@ -157,10 +83,7 @@ func cleanRoomToPb(st *CleanRoom) (*cleanRoomPb, error) {
 		pb.OutputCatalog = outputCatalogPb
 	}
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
 	remoteDetailedInfoPb, err := cleanRoomRemoteDetailToPb(st.RemoteDetailedInfo)
 	if err != nil {
@@ -170,15 +93,9 @@ func cleanRoomToPb(st *CleanRoom) (*cleanRoomPb, error) {
 		pb.RemoteDetailedInfo = remoteDetailedInfoPb
 	}
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -249,26 +166,11 @@ func cleanRoomFromPb(pb *cleanRoomPb) (*CleanRoom, error) {
 		return nil, nil
 	}
 	st := &CleanRoom{}
-	accessRestrictedField := &pb.AccessRestricted
-	if accessRestrictedField != nil {
-		st.AccessRestricted = *accessRestrictedField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	localCollaboratorAliasField := &pb.LocalCollaboratorAlias
-	if localCollaboratorAliasField != nil {
-		st.LocalCollaboratorAlias = *localCollaboratorAliasField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.AccessRestricted = pb.AccessRestricted
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.LocalCollaboratorAlias = pb.LocalCollaboratorAlias
+	st.Name = pb.Name
 	outputCatalogField, err := cleanRoomOutputCatalogFromPb(pb.OutputCatalog)
 	if err != nil {
 		return nil, err
@@ -276,10 +178,7 @@ func cleanRoomFromPb(pb *cleanRoomPb) (*CleanRoom, error) {
 	if outputCatalogField != nil {
 		st.OutputCatalog = outputCatalogField
 	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
+	st.Owner = pb.Owner
 	remoteDetailedInfoField, err := cleanRoomRemoteDetailFromPb(pb.RemoteDetailedInfo)
 	if err != nil {
 		return nil, err
@@ -287,14 +186,8 @@ func cleanRoomFromPb(pb *cleanRoomPb) (*CleanRoom, error) {
 	if remoteDetailedInfoField != nil {
 		st.RemoteDetailedInfo = remoteDetailedInfoField
 	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
+	st.Status = pb.Status
+	st.UpdatedAt = pb.UpdatedAt
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -355,14 +248,18 @@ func cleanRoomAccessRestrictedFromPb(pb *cleanRoomAccessRestrictedPb) (*CleanRoo
 // Metadata of the clean room asset
 type CleanRoomAsset struct {
 	// When the asset is added to the clean room, in epoch milliseconds.
+	// Wire name: 'added_at'
 	AddedAt int64
 	// The type of the asset.
+	// Wire name: 'asset_type'
 	AssetType CleanRoomAssetAssetType
 	// Foreign table details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **FOREIGN_TABLE**
+	// Wire name: 'foreign_table'
 	ForeignTable *CleanRoomAssetForeignTable
 	// Local details for a foreign that are only available to its owner. Present
 	// if and only if **asset_type** is **FOREIGN_TABLE**
+	// Wire name: 'foreign_table_local_details'
 	ForeignTableLocalDetails *CleanRoomAssetForeignTableLocalDetails
 	// A fully qualified name that uniquely identifies the asset within the
 	// clean room. This is also the name displayed in the clean room UI.
@@ -371,31 +268,40 @@ type CleanRoomAsset struct {
 	// *shared_catalog*.*shared_schema*.*asset_name*
 	//
 	// For notebooks, the name is the notebook file name.
+	// Wire name: 'name'
 	Name string
 	// Notebook details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **NOTEBOOK_FILE**
+	// Wire name: 'notebook'
 	Notebook *CleanRoomAssetNotebook
 	// The alias of the collaborator who owns this asset
+	// Wire name: 'owner_collaborator_alias'
 	OwnerCollaboratorAlias string
 	// Status of the asset
+	// Wire name: 'status'
 	Status CleanRoomAssetStatusEnum
 	// Table details available to all collaborators of the clean room. Present
 	// if and only if **asset_type** is **TABLE**
+	// Wire name: 'table'
 	Table *CleanRoomAssetTable
 	// Local details for a table that are only available to its owner. Present
 	// if and only if **asset_type** is **TABLE**
+	// Wire name: 'table_local_details'
 	TableLocalDetails *CleanRoomAssetTableLocalDetails
 	// View details available to all collaborators of the clean room. Present if
 	// and only if **asset_type** is **VIEW**
+	// Wire name: 'view'
 	View *CleanRoomAssetView
 	// Local details for a view that are only available to its owner. Present if
 	// and only if **asset_type** is **VIEW**
+	// Wire name: 'view_local_details'
 	ViewLocalDetails *CleanRoomAssetViewLocalDetails
 	// Local details for a volume that are only available to its owner. Present
 	// if and only if **asset_type** is **VOLUME**
+	// Wire name: 'volume_local_details'
 	VolumeLocalDetails *CleanRoomAssetVolumeLocalDetails
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cleanRoomAssetToPb(st *CleanRoomAsset) (*cleanRoomAssetPb, error) {
@@ -403,15 +309,9 @@ func cleanRoomAssetToPb(st *CleanRoomAsset) (*cleanRoomAssetPb, error) {
 		return nil, nil
 	}
 	pb := &cleanRoomAssetPb{}
-	addedAtPb := &st.AddedAt
-	if addedAtPb != nil {
-		pb.AddedAt = *addedAtPb
-	}
+	pb.AddedAt = st.AddedAt
 
-	assetTypePb := &st.AssetType
-	if assetTypePb != nil {
-		pb.AssetType = *assetTypePb
-	}
+	pb.AssetType = st.AssetType
 
 	foreignTablePb, err := cleanRoomAssetForeignTableToPb(st.ForeignTable)
 	if err != nil {
@@ -429,10 +329,7 @@ func cleanRoomAssetToPb(st *CleanRoomAsset) (*cleanRoomAssetPb, error) {
 		pb.ForeignTableLocalDetails = foreignTableLocalDetailsPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	notebookPb, err := cleanRoomAssetNotebookToPb(st.Notebook)
 	if err != nil {
@@ -442,15 +339,9 @@ func cleanRoomAssetToPb(st *CleanRoomAsset) (*cleanRoomAssetPb, error) {
 		pb.Notebook = notebookPb
 	}
 
-	ownerCollaboratorAliasPb := &st.OwnerCollaboratorAlias
-	if ownerCollaboratorAliasPb != nil {
-		pb.OwnerCollaboratorAlias = *ownerCollaboratorAliasPb
-	}
+	pb.OwnerCollaboratorAlias = st.OwnerCollaboratorAlias
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	tablePb, err := cleanRoomAssetTableToPb(st.Table)
 	if err != nil {
@@ -571,14 +462,8 @@ func cleanRoomAssetFromPb(pb *cleanRoomAssetPb) (*CleanRoomAsset, error) {
 		return nil, nil
 	}
 	st := &CleanRoomAsset{}
-	addedAtField := &pb.AddedAt
-	if addedAtField != nil {
-		st.AddedAt = *addedAtField
-	}
-	assetTypeField := &pb.AssetType
-	if assetTypeField != nil {
-		st.AssetType = *assetTypeField
-	}
+	st.AddedAt = pb.AddedAt
+	st.AssetType = pb.AssetType
 	foreignTableField, err := cleanRoomAssetForeignTableFromPb(pb.ForeignTable)
 	if err != nil {
 		return nil, err
@@ -593,10 +478,7 @@ func cleanRoomAssetFromPb(pb *cleanRoomAssetPb) (*CleanRoomAsset, error) {
 	if foreignTableLocalDetailsField != nil {
 		st.ForeignTableLocalDetails = foreignTableLocalDetailsField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 	notebookField, err := cleanRoomAssetNotebookFromPb(pb.Notebook)
 	if err != nil {
 		return nil, err
@@ -604,14 +486,8 @@ func cleanRoomAssetFromPb(pb *cleanRoomAssetPb) (*CleanRoomAsset, error) {
 	if notebookField != nil {
 		st.Notebook = notebookField
 	}
-	ownerCollaboratorAliasField := &pb.OwnerCollaboratorAlias
-	if ownerCollaboratorAliasField != nil {
-		st.OwnerCollaboratorAlias = *ownerCollaboratorAliasField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.OwnerCollaboratorAlias = pb.OwnerCollaboratorAlias
+	st.Status = pb.Status
 	tableField, err := cleanRoomAssetTableFromPb(pb.Table)
 	if err != nil {
 		return nil, err
@@ -712,6 +588,7 @@ func cleanRoomAssetAssetTypeFromPb(pb *cleanRoomAssetAssetTypePb) (*CleanRoomAss
 
 type CleanRoomAssetForeignTable struct {
 	// The metadata information of the columns in the foreign table
+	// Wire name: 'columns'
 	Columns []catalog.ColumnInfo
 }
 
@@ -773,13 +650,13 @@ func cleanRoomAssetForeignTableFromPb(pb *cleanRoomAssetForeignTablePb) (*CleanR
 	st := &CleanRoomAssetForeignTable{}
 
 	var columnsField []catalog.ColumnInfo
-	for _, item := range pb.Columns {
-		itemField, err := catalog.ColumnInfoFromPb(&item)
+	for _, itemPb := range pb.Columns {
+		item, err := catalog.ColumnInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			columnsField = append(columnsField, *itemField)
+		if item != nil {
+			columnsField = append(columnsField, *item)
 		}
 	}
 	st.Columns = columnsField
@@ -790,9 +667,10 @@ func cleanRoomAssetForeignTableFromPb(pb *cleanRoomAssetForeignTablePb) (*CleanR
 type CleanRoomAssetForeignTableLocalDetails struct {
 	// The fully qualified name of the foreign table in its owner's local
 	// metastore, in the format of *catalog*.*schema*.*foreign_table_name*
+	// Wire name: 'local_name'
 	LocalName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cleanRoomAssetForeignTableLocalDetailsToPb(st *CleanRoomAssetForeignTableLocalDetails) (*cleanRoomAssetForeignTableLocalDetailsPb, error) {
@@ -800,10 +678,7 @@ func cleanRoomAssetForeignTableLocalDetailsToPb(st *CleanRoomAssetForeignTableLo
 		return nil, nil
 	}
 	pb := &cleanRoomAssetForeignTableLocalDetailsPb{}
-	localNamePb := &st.LocalName
-	if localNamePb != nil {
-		pb.LocalName = *localNamePb
-	}
+	pb.LocalName = st.LocalName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -847,10 +722,7 @@ func cleanRoomAssetForeignTableLocalDetailsFromPb(pb *cleanRoomAssetForeignTable
 		return nil, nil
 	}
 	st := &CleanRoomAssetForeignTableLocalDetails{}
-	localNameField := &pb.LocalName
-	if localNameField != nil {
-		st.LocalName = *localNameField
-	}
+	st.LocalName = pb.LocalName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -866,12 +738,14 @@ func (st cleanRoomAssetForeignTableLocalDetailsPb) MarshalJSON() ([]byte, error)
 
 type CleanRoomAssetNotebook struct {
 	// Server generated etag that represents the notebook version.
+	// Wire name: 'etag'
 	Etag string
 	// Base 64 representation of the notebook contents. This is the same format
 	// as returned by :method:workspace/export with the format of **HTML**.
+	// Wire name: 'notebook_content'
 	NotebookContent string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cleanRoomAssetNotebookToPb(st *CleanRoomAssetNotebook) (*cleanRoomAssetNotebookPb, error) {
@@ -879,15 +753,9 @@ func cleanRoomAssetNotebookToPb(st *CleanRoomAssetNotebook) (*cleanRoomAssetNote
 		return nil, nil
 	}
 	pb := &cleanRoomAssetNotebookPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	notebookContentPb := &st.NotebookContent
-	if notebookContentPb != nil {
-		pb.NotebookContent = *notebookContentPb
-	}
+	pb.NotebookContent = st.NotebookContent
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -933,14 +801,8 @@ func cleanRoomAssetNotebookFromPb(pb *cleanRoomAssetNotebookPb) (*CleanRoomAsset
 		return nil, nil
 	}
 	st := &CleanRoomAssetNotebook{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	notebookContentField := &pb.NotebookContent
-	if notebookContentField != nil {
-		st.NotebookContent = *notebookContentField
-	}
+	st.Etag = pb.Etag
+	st.NotebookContent = pb.NotebookContent
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1002,6 +864,7 @@ func cleanRoomAssetStatusEnumFromPb(pb *cleanRoomAssetStatusEnumPb) (*CleanRoomA
 
 type CleanRoomAssetTable struct {
 	// The metadata information of the columns in the table
+	// Wire name: 'columns'
 	Columns []catalog.ColumnInfo
 }
 
@@ -1063,13 +926,13 @@ func cleanRoomAssetTableFromPb(pb *cleanRoomAssetTablePb) (*CleanRoomAssetTable,
 	st := &CleanRoomAssetTable{}
 
 	var columnsField []catalog.ColumnInfo
-	for _, item := range pb.Columns {
-		itemField, err := catalog.ColumnInfoFromPb(&item)
+	for _, itemPb := range pb.Columns {
+		item, err := catalog.ColumnInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			columnsField = append(columnsField, *itemField)
+		if item != nil {
+			columnsField = append(columnsField, *item)
 		}
 	}
 	st.Columns = columnsField
@@ -1080,11 +943,13 @@ func cleanRoomAssetTableFromPb(pb *cleanRoomAssetTablePb) (*CleanRoomAssetTable,
 type CleanRoomAssetTableLocalDetails struct {
 	// The fully qualified name of the table in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*table_name*
+	// Wire name: 'local_name'
 	LocalName string
 	// Partition filtering specification for a shared table.
+	// Wire name: 'partitions'
 	Partitions []sharing.Partition
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cleanRoomAssetTableLocalDetailsToPb(st *CleanRoomAssetTableLocalDetails) (*cleanRoomAssetTableLocalDetailsPb, error) {
@@ -1092,10 +957,7 @@ func cleanRoomAssetTableLocalDetailsToPb(st *CleanRoomAssetTableLocalDetails) (*
 		return nil, nil
 	}
 	pb := &cleanRoomAssetTableLocalDetailsPb{}
-	localNamePb := &st.LocalName
-	if localNamePb != nil {
-		pb.LocalName = *localNamePb
-	}
+	pb.LocalName = st.LocalName
 
 	var partitionsPb []sharing.PartitionPb
 	for _, item := range st.Partitions {
@@ -1153,19 +1015,16 @@ func cleanRoomAssetTableLocalDetailsFromPb(pb *cleanRoomAssetTableLocalDetailsPb
 		return nil, nil
 	}
 	st := &CleanRoomAssetTableLocalDetails{}
-	localNameField := &pb.LocalName
-	if localNameField != nil {
-		st.LocalName = *localNameField
-	}
+	st.LocalName = pb.LocalName
 
 	var partitionsField []sharing.Partition
-	for _, item := range pb.Partitions {
-		itemField, err := sharing.PartitionFromPb(&item)
+	for _, itemPb := range pb.Partitions {
+		item, err := sharing.PartitionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			partitionsField = append(partitionsField, *itemField)
+		if item != nil {
+			partitionsField = append(partitionsField, *item)
 		}
 	}
 	st.Partitions = partitionsField
@@ -1184,6 +1043,7 @@ func (st cleanRoomAssetTableLocalDetailsPb) MarshalJSON() ([]byte, error) {
 
 type CleanRoomAssetView struct {
 	// The metadata information of the columns in the view
+	// Wire name: 'columns'
 	Columns []catalog.ColumnInfo
 }
 
@@ -1245,13 +1105,13 @@ func cleanRoomAssetViewFromPb(pb *cleanRoomAssetViewPb) (*CleanRoomAssetView, er
 	st := &CleanRoomAssetView{}
 
 	var columnsField []catalog.ColumnInfo
-	for _, item := range pb.Columns {
-		itemField, err := catalog.ColumnInfoFromPb(&item)
+	for _, itemPb := range pb.Columns {
+		item, err := catalog.ColumnInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			columnsField = append(columnsField, *itemField)
+		if item != nil {
+			columnsField = append(columnsField, *item)
 		}
 	}
 	st.Columns = columnsField
@@ -1262,9 +1122,10 @@ func cleanRoomAssetViewFromPb(pb *cleanRoomAssetViewPb) (*CleanRoomAssetView, er
 type CleanRoomAssetViewLocalDetails struct {
 	// The fully qualified name of the view in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*view_name*
+	// Wire name: 'local_name'
 	LocalName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cleanRoomAssetViewLocalDetailsToPb(st *CleanRoomAssetViewLocalDetails) (*cleanRoomAssetViewLocalDetailsPb, error) {
@@ -1272,10 +1133,7 @@ func cleanRoomAssetViewLocalDetailsToPb(st *CleanRoomAssetViewLocalDetails) (*cl
 		return nil, nil
 	}
 	pb := &cleanRoomAssetViewLocalDetailsPb{}
-	localNamePb := &st.LocalName
-	if localNamePb != nil {
-		pb.LocalName = *localNamePb
-	}
+	pb.LocalName = st.LocalName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1319,10 +1177,7 @@ func cleanRoomAssetViewLocalDetailsFromPb(pb *cleanRoomAssetViewLocalDetailsPb) 
 		return nil, nil
 	}
 	st := &CleanRoomAssetViewLocalDetails{}
-	localNameField := &pb.LocalName
-	if localNameField != nil {
-		st.LocalName = *localNameField
-	}
+	st.LocalName = pb.LocalName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1339,9 +1194,10 @@ func (st cleanRoomAssetViewLocalDetailsPb) MarshalJSON() ([]byte, error) {
 type CleanRoomAssetVolumeLocalDetails struct {
 	// The fully qualified name of the volume in its owner's local metastore, in
 	// the format of *catalog*.*schema*.*volume_name*
+	// Wire name: 'local_name'
 	LocalName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cleanRoomAssetVolumeLocalDetailsToPb(st *CleanRoomAssetVolumeLocalDetails) (*cleanRoomAssetVolumeLocalDetailsPb, error) {
@@ -1349,10 +1205,7 @@ func cleanRoomAssetVolumeLocalDetailsToPb(st *CleanRoomAssetVolumeLocalDetails) 
 		return nil, nil
 	}
 	pb := &cleanRoomAssetVolumeLocalDetailsPb{}
-	localNamePb := &st.LocalName
-	if localNamePb != nil {
-		pb.LocalName = *localNamePb
-	}
+	pb.LocalName = st.LocalName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1396,10 +1249,7 @@ func cleanRoomAssetVolumeLocalDetailsFromPb(pb *cleanRoomAssetVolumeLocalDetails
 		return nil, nil
 	}
 	st := &CleanRoomAssetVolumeLocalDetails{}
-	localNameField := &pb.LocalName
-	if localNameField != nil {
-		st.LocalName = *localNameField
-	}
+	st.LocalName = pb.LocalName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1422,30 +1272,36 @@ type CleanRoomCollaborator struct {
 	// requirements].
 	//
 	// [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
+	// Wire name: 'collaborator_alias'
 	CollaboratorAlias string
 	// Generated display name for the collaborator. In the case of a single
 	// metastore clean room, it is the clean room name. For x-metastore clean
 	// rooms, it is the organization name of the metastore. It is not restricted
 	// to these values and could change in the future
+	// Wire name: 'display_name'
 	DisplayName string
 	// The global Unity Catalog metastore id of the collaborator. The identifier
 	// is of format cloud:region:metastore-uuid.
+	// Wire name: 'global_metastore_id'
 	GlobalMetastoreId string
 	// Email of the user who is receiving the clean room "invitation". It should
 	// be empty for the creator of the clean room, and non-empty for the
 	// invitees of the clean room. It is only returned in the output when clean
 	// room creator calls GET
+	// Wire name: 'invite_recipient_email'
 	InviteRecipientEmail string
 	// Workspace ID of the user who is receiving the clean room "invitation".
 	// Must be specified if invite_recipient_email is specified. It should be
 	// empty when the collaborator is the creator of the clean room.
+	// Wire name: 'invite_recipient_workspace_id'
 	InviteRecipientWorkspaceId int64
 	// [Organization
 	// name](:method:metastores/list#metastores-delta_sharing_organization_name)
 	// configured in the metastore
+	// Wire name: 'organization_name'
 	OrganizationName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cleanRoomCollaboratorToPb(st *CleanRoomCollaborator) (*cleanRoomCollaboratorPb, error) {
@@ -1453,35 +1309,17 @@ func cleanRoomCollaboratorToPb(st *CleanRoomCollaborator) (*cleanRoomCollaborato
 		return nil, nil
 	}
 	pb := &cleanRoomCollaboratorPb{}
-	collaboratorAliasPb := &st.CollaboratorAlias
-	if collaboratorAliasPb != nil {
-		pb.CollaboratorAlias = *collaboratorAliasPb
-	}
+	pb.CollaboratorAlias = st.CollaboratorAlias
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	globalMetastoreIdPb := &st.GlobalMetastoreId
-	if globalMetastoreIdPb != nil {
-		pb.GlobalMetastoreId = *globalMetastoreIdPb
-	}
+	pb.GlobalMetastoreId = st.GlobalMetastoreId
 
-	inviteRecipientEmailPb := &st.InviteRecipientEmail
-	if inviteRecipientEmailPb != nil {
-		pb.InviteRecipientEmail = *inviteRecipientEmailPb
-	}
+	pb.InviteRecipientEmail = st.InviteRecipientEmail
 
-	inviteRecipientWorkspaceIdPb := &st.InviteRecipientWorkspaceId
-	if inviteRecipientWorkspaceIdPb != nil {
-		pb.InviteRecipientWorkspaceId = *inviteRecipientWorkspaceIdPb
-	}
+	pb.InviteRecipientWorkspaceId = st.InviteRecipientWorkspaceId
 
-	organizationNamePb := &st.OrganizationName
-	if organizationNamePb != nil {
-		pb.OrganizationName = *organizationNamePb
-	}
+	pb.OrganizationName = st.OrganizationName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1551,30 +1389,12 @@ func cleanRoomCollaboratorFromPb(pb *cleanRoomCollaboratorPb) (*CleanRoomCollabo
 		return nil, nil
 	}
 	st := &CleanRoomCollaborator{}
-	collaboratorAliasField := &pb.CollaboratorAlias
-	if collaboratorAliasField != nil {
-		st.CollaboratorAlias = *collaboratorAliasField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	globalMetastoreIdField := &pb.GlobalMetastoreId
-	if globalMetastoreIdField != nil {
-		st.GlobalMetastoreId = *globalMetastoreIdField
-	}
-	inviteRecipientEmailField := &pb.InviteRecipientEmail
-	if inviteRecipientEmailField != nil {
-		st.InviteRecipientEmail = *inviteRecipientEmailField
-	}
-	inviteRecipientWorkspaceIdField := &pb.InviteRecipientWorkspaceId
-	if inviteRecipientWorkspaceIdField != nil {
-		st.InviteRecipientWorkspaceId = *inviteRecipientWorkspaceIdField
-	}
-	organizationNameField := &pb.OrganizationName
-	if organizationNameField != nil {
-		st.OrganizationName = *organizationNameField
-	}
+	st.CollaboratorAlias = pb.CollaboratorAlias
+	st.DisplayName = pb.DisplayName
+	st.GlobalMetastoreId = pb.GlobalMetastoreId
+	st.InviteRecipientEmail = pb.InviteRecipientEmail
+	st.InviteRecipientWorkspaceId = pb.InviteRecipientWorkspaceId
+	st.OrganizationName = pb.OrganizationName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1594,23 +1414,30 @@ type CleanRoomNotebookTaskRun struct {
 	// only included in the LIST API. if the task was run within the same
 	// workspace the API is being called. If the task run was in a different
 	// workspace under the same metastore, only the workspace_id is included.
+	// Wire name: 'collaborator_job_run_info'
 	CollaboratorJobRunInfo *CollaboratorJobRunInfo
 	// State of the task run.
+	// Wire name: 'notebook_job_run_state'
 	NotebookJobRunState *jobs.CleanRoomTaskRunState
 	// Asset name of the notebook executed in this task run.
+	// Wire name: 'notebook_name'
 	NotebookName string
 	// Expiration time of the output schema of the task run (if any), in epoch
 	// milliseconds.
+	// Wire name: 'output_schema_expiration_time'
 	OutputSchemaExpirationTime int64
 	// Name of the output schema associated with the clean rooms notebook task
 	// run.
+	// Wire name: 'output_schema_name'
 	OutputSchemaName string
 	// Duration of the task run, in milliseconds.
+	// Wire name: 'run_duration'
 	RunDuration int64
 	// When the task run started, in epoch milliseconds.
+	// Wire name: 'start_time'
 	StartTime int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cleanRoomNotebookTaskRunToPb(st *CleanRoomNotebookTaskRun) (*cleanRoomNotebookTaskRunPb, error) {
@@ -1634,30 +1461,15 @@ func cleanRoomNotebookTaskRunToPb(st *CleanRoomNotebookTaskRun) (*cleanRoomNoteb
 		pb.NotebookJobRunState = notebookJobRunStatePb
 	}
 
-	notebookNamePb := &st.NotebookName
-	if notebookNamePb != nil {
-		pb.NotebookName = *notebookNamePb
-	}
+	pb.NotebookName = st.NotebookName
 
-	outputSchemaExpirationTimePb := &st.OutputSchemaExpirationTime
-	if outputSchemaExpirationTimePb != nil {
-		pb.OutputSchemaExpirationTime = *outputSchemaExpirationTimePb
-	}
+	pb.OutputSchemaExpirationTime = st.OutputSchemaExpirationTime
 
-	outputSchemaNamePb := &st.OutputSchemaName
-	if outputSchemaNamePb != nil {
-		pb.OutputSchemaName = *outputSchemaNamePb
-	}
+	pb.OutputSchemaName = st.OutputSchemaName
 
-	runDurationPb := &st.RunDuration
-	if runDurationPb != nil {
-		pb.RunDuration = *runDurationPb
-	}
+	pb.RunDuration = st.RunDuration
 
-	startTimePb := &st.StartTime
-	if startTimePb != nil {
-		pb.StartTime = *startTimePb
-	}
+	pb.StartTime = st.StartTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1731,26 +1543,11 @@ func cleanRoomNotebookTaskRunFromPb(pb *cleanRoomNotebookTaskRunPb) (*CleanRoomN
 	if notebookJobRunStateField != nil {
 		st.NotebookJobRunState = notebookJobRunStateField
 	}
-	notebookNameField := &pb.NotebookName
-	if notebookNameField != nil {
-		st.NotebookName = *notebookNameField
-	}
-	outputSchemaExpirationTimeField := &pb.OutputSchemaExpirationTime
-	if outputSchemaExpirationTimeField != nil {
-		st.OutputSchemaExpirationTime = *outputSchemaExpirationTimeField
-	}
-	outputSchemaNameField := &pb.OutputSchemaName
-	if outputSchemaNameField != nil {
-		st.OutputSchemaName = *outputSchemaNameField
-	}
-	runDurationField := &pb.RunDuration
-	if runDurationField != nil {
-		st.RunDuration = *runDurationField
-	}
-	startTimeField := &pb.StartTime
-	if startTimeField != nil {
-		st.StartTime = *startTimeField
-	}
+	st.NotebookName = pb.NotebookName
+	st.OutputSchemaExpirationTime = pb.OutputSchemaExpirationTime
+	st.OutputSchemaName = pb.OutputSchemaName
+	st.RunDuration = pb.RunDuration
+	st.StartTime = pb.StartTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1769,11 +1566,13 @@ type CleanRoomOutputCatalog struct {
 	// naming requirements]. The field will always exist if status is CREATED.
 	//
 	// [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
+	// Wire name: 'catalog_name'
 	CatalogName string
 
+	// Wire name: 'status'
 	Status CleanRoomOutputCatalogOutputCatalogStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cleanRoomOutputCatalogToPb(st *CleanRoomOutputCatalog) (*cleanRoomOutputCatalogPb, error) {
@@ -1781,15 +1580,9 @@ func cleanRoomOutputCatalogToPb(st *CleanRoomOutputCatalog) (*cleanRoomOutputCat
 		return nil, nil
 	}
 	pb := &cleanRoomOutputCatalogPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1837,14 +1630,8 @@ func cleanRoomOutputCatalogFromPb(pb *cleanRoomOutputCatalogPb) (*CleanRoomOutpu
 		return nil, nil
 	}
 	st := &CleanRoomOutputCatalog{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.CatalogName = pb.CatalogName
+	st.Status = pb.Status
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1907,8 +1694,10 @@ func cleanRoomOutputCatalogOutputCatalogStatusFromPb(pb *cleanRoomOutputCatalogO
 // Publicly visible central clean room details.
 type CleanRoomRemoteDetail struct {
 	// Central clean room ID.
+	// Wire name: 'central_clean_room_id'
 	CentralCleanRoomId string
 	// Cloud vendor (aws,azure,gcp) of the central clean room.
+	// Wire name: 'cloud_vendor'
 	CloudVendor string
 	// Collaborators in the central clean room. There should one and only one
 	// collaborator in the list that satisfies the owner condition:
@@ -1917,18 +1706,23 @@ type CleanRoomRemoteDetail struct {
 	// CreateCleanRoom).
 	//
 	// 2. Its invite_recipient_email is empty.
+	// Wire name: 'collaborators'
 	Collaborators []CleanRoomCollaborator
 	// The compliance security profile used to process regulated data following
 	// compliance standards.
+	// Wire name: 'compliance_security_profile'
 	ComplianceSecurityProfile *ComplianceSecurityProfile
 	// Collaborator who creates the clean room.
+	// Wire name: 'creator'
 	Creator *CleanRoomCollaborator
 	// Egress network policy to apply to the central clean room workspace.
+	// Wire name: 'egress_network_policy'
 	EgressNetworkPolicy *settings.EgressNetworkPolicy
 	// Region of the central clean room.
+	// Wire name: 'region'
 	Region string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cleanRoomRemoteDetailToPb(st *CleanRoomRemoteDetail) (*cleanRoomRemoteDetailPb, error) {
@@ -1936,15 +1730,9 @@ func cleanRoomRemoteDetailToPb(st *CleanRoomRemoteDetail) (*cleanRoomRemoteDetai
 		return nil, nil
 	}
 	pb := &cleanRoomRemoteDetailPb{}
-	centralCleanRoomIdPb := &st.CentralCleanRoomId
-	if centralCleanRoomIdPb != nil {
-		pb.CentralCleanRoomId = *centralCleanRoomIdPb
-	}
+	pb.CentralCleanRoomId = st.CentralCleanRoomId
 
-	cloudVendorPb := &st.CloudVendor
-	if cloudVendorPb != nil {
-		pb.CloudVendor = *cloudVendorPb
-	}
+	pb.CloudVendor = st.CloudVendor
 
 	var collaboratorsPb []cleanRoomCollaboratorPb
 	for _, item := range st.Collaborators {
@@ -1982,10 +1770,7 @@ func cleanRoomRemoteDetailToPb(st *CleanRoomRemoteDetail) (*cleanRoomRemoteDetai
 		pb.EgressNetworkPolicy = egressNetworkPolicyPb
 	}
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2047,23 +1832,17 @@ func cleanRoomRemoteDetailFromPb(pb *cleanRoomRemoteDetailPb) (*CleanRoomRemoteD
 		return nil, nil
 	}
 	st := &CleanRoomRemoteDetail{}
-	centralCleanRoomIdField := &pb.CentralCleanRoomId
-	if centralCleanRoomIdField != nil {
-		st.CentralCleanRoomId = *centralCleanRoomIdField
-	}
-	cloudVendorField := &pb.CloudVendor
-	if cloudVendorField != nil {
-		st.CloudVendor = *cloudVendorField
-	}
+	st.CentralCleanRoomId = pb.CentralCleanRoomId
+	st.CloudVendor = pb.CloudVendor
 
 	var collaboratorsField []CleanRoomCollaborator
-	for _, item := range pb.Collaborators {
-		itemField, err := cleanRoomCollaboratorFromPb(&item)
+	for _, itemPb := range pb.Collaborators {
+		item, err := cleanRoomCollaboratorFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			collaboratorsField = append(collaboratorsField, *itemField)
+		if item != nil {
+			collaboratorsField = append(collaboratorsField, *item)
 		}
 	}
 	st.Collaborators = collaboratorsField
@@ -2088,10 +1867,7 @@ func cleanRoomRemoteDetailFromPb(pb *cleanRoomRemoteDetailPb) (*CleanRoomRemoteD
 	if egressNetworkPolicyField != nil {
 		st.EgressNetworkPolicy = egressNetworkPolicyField
 	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
+	st.Region = pb.Region
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2155,17 +1931,22 @@ func cleanRoomStatusEnumFromPb(pb *cleanRoomStatusEnumPb) (*CleanRoomStatusEnum,
 
 type CollaboratorJobRunInfo struct {
 	// Alias of the collaborator that triggered the task run.
+	// Wire name: 'collaborator_alias'
 	CollaboratorAlias string
 	// Job ID of the task run in the collaborator's workspace.
+	// Wire name: 'collaborator_job_id'
 	CollaboratorJobId int64
 	// Job run ID of the task run in the collaborator's workspace.
+	// Wire name: 'collaborator_job_run_id'
 	CollaboratorJobRunId int64
 	// Task run ID of the task run in the collaborator's workspace.
+	// Wire name: 'collaborator_task_run_id'
 	CollaboratorTaskRunId int64
 	// ID of the collaborator's workspace that triggered the task run.
+	// Wire name: 'collaborator_workspace_id'
 	CollaboratorWorkspaceId int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func collaboratorJobRunInfoToPb(st *CollaboratorJobRunInfo) (*collaboratorJobRunInfoPb, error) {
@@ -2173,30 +1954,15 @@ func collaboratorJobRunInfoToPb(st *CollaboratorJobRunInfo) (*collaboratorJobRun
 		return nil, nil
 	}
 	pb := &collaboratorJobRunInfoPb{}
-	collaboratorAliasPb := &st.CollaboratorAlias
-	if collaboratorAliasPb != nil {
-		pb.CollaboratorAlias = *collaboratorAliasPb
-	}
+	pb.CollaboratorAlias = st.CollaboratorAlias
 
-	collaboratorJobIdPb := &st.CollaboratorJobId
-	if collaboratorJobIdPb != nil {
-		pb.CollaboratorJobId = *collaboratorJobIdPb
-	}
+	pb.CollaboratorJobId = st.CollaboratorJobId
 
-	collaboratorJobRunIdPb := &st.CollaboratorJobRunId
-	if collaboratorJobRunIdPb != nil {
-		pb.CollaboratorJobRunId = *collaboratorJobRunIdPb
-	}
+	pb.CollaboratorJobRunId = st.CollaboratorJobRunId
 
-	collaboratorTaskRunIdPb := &st.CollaboratorTaskRunId
-	if collaboratorTaskRunIdPb != nil {
-		pb.CollaboratorTaskRunId = *collaboratorTaskRunIdPb
-	}
+	pb.CollaboratorTaskRunId = st.CollaboratorTaskRunId
 
-	collaboratorWorkspaceIdPb := &st.CollaboratorWorkspaceId
-	if collaboratorWorkspaceIdPb != nil {
-		pb.CollaboratorWorkspaceId = *collaboratorWorkspaceIdPb
-	}
+	pb.CollaboratorWorkspaceId = st.CollaboratorWorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2247,26 +2013,11 @@ func collaboratorJobRunInfoFromPb(pb *collaboratorJobRunInfoPb) (*CollaboratorJo
 		return nil, nil
 	}
 	st := &CollaboratorJobRunInfo{}
-	collaboratorAliasField := &pb.CollaboratorAlias
-	if collaboratorAliasField != nil {
-		st.CollaboratorAlias = *collaboratorAliasField
-	}
-	collaboratorJobIdField := &pb.CollaboratorJobId
-	if collaboratorJobIdField != nil {
-		st.CollaboratorJobId = *collaboratorJobIdField
-	}
-	collaboratorJobRunIdField := &pb.CollaboratorJobRunId
-	if collaboratorJobRunIdField != nil {
-		st.CollaboratorJobRunId = *collaboratorJobRunIdField
-	}
-	collaboratorTaskRunIdField := &pb.CollaboratorTaskRunId
-	if collaboratorTaskRunIdField != nil {
-		st.CollaboratorTaskRunId = *collaboratorTaskRunIdField
-	}
-	collaboratorWorkspaceIdField := &pb.CollaboratorWorkspaceId
-	if collaboratorWorkspaceIdField != nil {
-		st.CollaboratorWorkspaceId = *collaboratorWorkspaceIdField
-	}
+	st.CollaboratorAlias = pb.CollaboratorAlias
+	st.CollaboratorJobId = pb.CollaboratorJobId
+	st.CollaboratorJobRunId = pb.CollaboratorJobRunId
+	st.CollaboratorTaskRunId = pb.CollaboratorTaskRunId
+	st.CollaboratorWorkspaceId = pb.CollaboratorWorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2285,11 +2036,13 @@ func (st collaboratorJobRunInfoPb) MarshalJSON() ([]byte, error) {
 type ComplianceSecurityProfile struct {
 	// The list of compliance standards that the compliance security profile is
 	// configured to enforce.
+	// Wire name: 'compliance_standards'
 	ComplianceStandards []settings.ComplianceStandard
 	// Whether the compliance security profile is enabled.
+	// Wire name: 'is_enabled'
 	IsEnabled bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func complianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*complianceSecurityProfilePb, error) {
@@ -2310,10 +2063,7 @@ func complianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*complianceSe
 	}
 	pb.ComplianceStandards = complianceStandardsPb
 
-	isEnabledPb := &st.IsEnabled
-	if isEnabledPb != nil {
-		pb.IsEnabled = *isEnabledPb
-	}
+	pb.IsEnabled = st.IsEnabled
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2361,20 +2111,17 @@ func complianceSecurityProfileFromPb(pb *complianceSecurityProfilePb) (*Complian
 	st := &ComplianceSecurityProfile{}
 
 	var complianceStandardsField []settings.ComplianceStandard
-	for _, item := range pb.ComplianceStandards {
-		itemField, err := settings.ComplianceStandardFromPb(&item)
+	for _, itemPb := range pb.ComplianceStandards {
+		item, err := settings.ComplianceStandardFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			complianceStandardsField = append(complianceStandardsField, *itemField)
+		if item != nil {
+			complianceStandardsField = append(complianceStandardsField, *item)
 		}
 	}
 	st.ComplianceStandards = complianceStandardsField
-	isEnabledField := &pb.IsEnabled
-	if isEnabledField != nil {
-		st.IsEnabled = *isEnabledField
-	}
+	st.IsEnabled = pb.IsEnabled
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2391,9 +2138,11 @@ func (st complianceSecurityProfilePb) MarshalJSON() ([]byte, error) {
 // Create an asset
 type CreateCleanRoomAssetRequest struct {
 	// Metadata of the clean room asset
+	// Wire name: 'asset'
 	Asset CleanRoomAsset
 	// Name of the clean room.
-	CleanRoomName string
+	// Wire name: 'clean_room_name'
+	CleanRoomName string `tf:"-"`
 }
 
 func createCleanRoomAssetRequestToPb(st *CreateCleanRoomAssetRequest) (*createCleanRoomAssetRequestPb, error) {
@@ -2409,10 +2158,7 @@ func createCleanRoomAssetRequestToPb(st *CreateCleanRoomAssetRequest) (*createCl
 		pb.Asset = *assetPb
 	}
 
-	cleanRoomNamePb := &st.CleanRoomName
-	if cleanRoomNamePb != nil {
-		pb.CleanRoomName = *cleanRoomNamePb
-	}
+	pb.CleanRoomName = st.CleanRoomName
 
 	return pb, nil
 }
@@ -2461,10 +2207,7 @@ func createCleanRoomAssetRequestFromPb(pb *createCleanRoomAssetRequestPb) (*Crea
 	if assetField != nil {
 		st.Asset = *assetField
 	}
-	cleanRoomNameField := &pb.CleanRoomName
-	if cleanRoomNameField != nil {
-		st.CleanRoomName = *cleanRoomNameField
-	}
+	st.CleanRoomName = pb.CleanRoomName
 
 	return st, nil
 }
@@ -2472,8 +2215,10 @@ func createCleanRoomAssetRequestFromPb(pb *createCleanRoomAssetRequestPb) (*Crea
 // Create an output catalog
 type CreateCleanRoomOutputCatalogRequest struct {
 	// Name of the clean room.
-	CleanRoomName string
+	// Wire name: 'clean_room_name'
+	CleanRoomName string `tf:"-"`
 
+	// Wire name: 'output_catalog'
 	OutputCatalog CleanRoomOutputCatalog
 }
 
@@ -2482,10 +2227,7 @@ func createCleanRoomOutputCatalogRequestToPb(st *CreateCleanRoomOutputCatalogReq
 		return nil, nil
 	}
 	pb := &createCleanRoomOutputCatalogRequestPb{}
-	cleanRoomNamePb := &st.CleanRoomName
-	if cleanRoomNamePb != nil {
-		pb.CleanRoomName = *cleanRoomNamePb
-	}
+	pb.CleanRoomName = st.CleanRoomName
 
 	outputCatalogPb, err := cleanRoomOutputCatalogToPb(&st.OutputCatalog)
 	if err != nil {
@@ -2535,10 +2277,7 @@ func createCleanRoomOutputCatalogRequestFromPb(pb *createCleanRoomOutputCatalogR
 		return nil, nil
 	}
 	st := &CreateCleanRoomOutputCatalogRequest{}
-	cleanRoomNameField := &pb.CleanRoomName
-	if cleanRoomNameField != nil {
-		st.CleanRoomName = *cleanRoomNameField
-	}
+	st.CleanRoomName = pb.CleanRoomName
 	outputCatalogField, err := cleanRoomOutputCatalogFromPb(&pb.OutputCatalog)
 	if err != nil {
 		return nil, err
@@ -2551,6 +2290,8 @@ func createCleanRoomOutputCatalogRequestFromPb(pb *createCleanRoomOutputCatalogR
 }
 
 type CreateCleanRoomOutputCatalogResponse struct {
+
+	// Wire name: 'output_catalog'
 	OutputCatalog *CleanRoomOutputCatalog
 }
 
@@ -2617,6 +2358,8 @@ func createCleanRoomOutputCatalogResponseFromPb(pb *createCleanRoomOutputCatalog
 
 // Create a clean room
 type CreateCleanRoomRequest struct {
+
+	// Wire name: 'clean_room'
 	CleanRoom CleanRoom
 }
 
@@ -2685,11 +2428,14 @@ func createCleanRoomRequestFromPb(pb *createCleanRoomRequestPb) (*CreateCleanRoo
 type DeleteCleanRoomAssetRequest struct {
 	// The fully qualified name of the asset, it is same as the name field in
 	// CleanRoomAsset.
-	AssetFullName string
+	// Wire name: 'asset_full_name'
+	AssetFullName string `tf:"-"`
 	// The type of the asset.
-	AssetType CleanRoomAssetAssetType
+	// Wire name: 'asset_type'
+	AssetType CleanRoomAssetAssetType `tf:"-"`
 	// Name of the clean room.
-	CleanRoomName string
+	// Wire name: 'clean_room_name'
+	CleanRoomName string `tf:"-"`
 }
 
 func deleteCleanRoomAssetRequestToPb(st *DeleteCleanRoomAssetRequest) (*deleteCleanRoomAssetRequestPb, error) {
@@ -2697,20 +2443,11 @@ func deleteCleanRoomAssetRequestToPb(st *DeleteCleanRoomAssetRequest) (*deleteCl
 		return nil, nil
 	}
 	pb := &deleteCleanRoomAssetRequestPb{}
-	assetFullNamePb := &st.AssetFullName
-	if assetFullNamePb != nil {
-		pb.AssetFullName = *assetFullNamePb
-	}
+	pb.AssetFullName = st.AssetFullName
 
-	assetTypePb := &st.AssetType
-	if assetTypePb != nil {
-		pb.AssetType = *assetTypePb
-	}
+	pb.AssetType = st.AssetType
 
-	cleanRoomNamePb := &st.CleanRoomName
-	if cleanRoomNamePb != nil {
-		pb.CleanRoomName = *cleanRoomNamePb
-	}
+	pb.CleanRoomName = st.CleanRoomName
 
 	return pb, nil
 }
@@ -2755,18 +2492,9 @@ func deleteCleanRoomAssetRequestFromPb(pb *deleteCleanRoomAssetRequestPb) (*Dele
 		return nil, nil
 	}
 	st := &DeleteCleanRoomAssetRequest{}
-	assetFullNameField := &pb.AssetFullName
-	if assetFullNameField != nil {
-		st.AssetFullName = *assetFullNameField
-	}
-	assetTypeField := &pb.AssetType
-	if assetTypeField != nil {
-		st.AssetType = *assetTypeField
-	}
-	cleanRoomNameField := &pb.CleanRoomName
-	if cleanRoomNameField != nil {
-		st.CleanRoomName = *cleanRoomNameField
-	}
+	st.AssetFullName = pb.AssetFullName
+	st.AssetType = pb.AssetType
+	st.CleanRoomName = pb.CleanRoomName
 
 	return st, nil
 }
@@ -2825,7 +2553,8 @@ func deleteCleanRoomAssetResponseFromPb(pb *deleteCleanRoomAssetResponsePb) (*De
 // Delete a clean room
 type DeleteCleanRoomRequest struct {
 	// Name of the clean room.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func deleteCleanRoomRequestToPb(st *DeleteCleanRoomRequest) (*deleteCleanRoomRequestPb, error) {
@@ -2833,10 +2562,7 @@ func deleteCleanRoomRequestToPb(st *DeleteCleanRoomRequest) (*deleteCleanRoomReq
 		return nil, nil
 	}
 	pb := &deleteCleanRoomRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -2876,10 +2602,7 @@ func deleteCleanRoomRequestFromPb(pb *deleteCleanRoomRequestPb) (*DeleteCleanRoo
 		return nil, nil
 	}
 	st := &DeleteCleanRoomRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -2937,11 +2660,14 @@ func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
 type GetCleanRoomAssetRequest struct {
 	// The fully qualified name of the asset, it is same as the name field in
 	// CleanRoomAsset.
-	AssetFullName string
+	// Wire name: 'asset_full_name'
+	AssetFullName string `tf:"-"`
 	// The type of the asset.
-	AssetType CleanRoomAssetAssetType
+	// Wire name: 'asset_type'
+	AssetType CleanRoomAssetAssetType `tf:"-"`
 	// Name of the clean room.
-	CleanRoomName string
+	// Wire name: 'clean_room_name'
+	CleanRoomName string `tf:"-"`
 }
 
 func getCleanRoomAssetRequestToPb(st *GetCleanRoomAssetRequest) (*getCleanRoomAssetRequestPb, error) {
@@ -2949,20 +2675,11 @@ func getCleanRoomAssetRequestToPb(st *GetCleanRoomAssetRequest) (*getCleanRoomAs
 		return nil, nil
 	}
 	pb := &getCleanRoomAssetRequestPb{}
-	assetFullNamePb := &st.AssetFullName
-	if assetFullNamePb != nil {
-		pb.AssetFullName = *assetFullNamePb
-	}
+	pb.AssetFullName = st.AssetFullName
 
-	assetTypePb := &st.AssetType
-	if assetTypePb != nil {
-		pb.AssetType = *assetTypePb
-	}
+	pb.AssetType = st.AssetType
 
-	cleanRoomNamePb := &st.CleanRoomName
-	if cleanRoomNamePb != nil {
-		pb.CleanRoomName = *cleanRoomNamePb
-	}
+	pb.CleanRoomName = st.CleanRoomName
 
 	return pb, nil
 }
@@ -3007,25 +2724,18 @@ func getCleanRoomAssetRequestFromPb(pb *getCleanRoomAssetRequestPb) (*GetCleanRo
 		return nil, nil
 	}
 	st := &GetCleanRoomAssetRequest{}
-	assetFullNameField := &pb.AssetFullName
-	if assetFullNameField != nil {
-		st.AssetFullName = *assetFullNameField
-	}
-	assetTypeField := &pb.AssetType
-	if assetTypeField != nil {
-		st.AssetType = *assetTypeField
-	}
-	cleanRoomNameField := &pb.CleanRoomName
-	if cleanRoomNameField != nil {
-		st.CleanRoomName = *cleanRoomNameField
-	}
+	st.AssetFullName = pb.AssetFullName
+	st.AssetType = pb.AssetType
+	st.CleanRoomName = pb.CleanRoomName
 
 	return st, nil
 }
 
 // Get a clean room
 type GetCleanRoomRequest struct {
-	Name string
+
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func getCleanRoomRequestToPb(st *GetCleanRoomRequest) (*getCleanRoomRequestPb, error) {
@@ -3033,10 +2743,7 @@ func getCleanRoomRequestToPb(st *GetCleanRoomRequest) (*getCleanRoomRequestPb, e
 		return nil, nil
 	}
 	pb := &getCleanRoomRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -3075,10 +2782,7 @@ func getCleanRoomRequestFromPb(pb *getCleanRoomRequestPb) (*GetCleanRoomRequest,
 		return nil, nil
 	}
 	st := &GetCleanRoomRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -3086,11 +2790,13 @@ func getCleanRoomRequestFromPb(pb *getCleanRoomRequestPb) (*GetCleanRoomRequest,
 // List assets
 type ListCleanRoomAssetsRequest struct {
 	// Name of the clean room.
-	CleanRoomName string
+	// Wire name: 'clean_room_name'
+	CleanRoomName string `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listCleanRoomAssetsRequestToPb(st *ListCleanRoomAssetsRequest) (*listCleanRoomAssetsRequestPb, error) {
@@ -3098,15 +2804,9 @@ func listCleanRoomAssetsRequestToPb(st *ListCleanRoomAssetsRequest) (*listCleanR
 		return nil, nil
 	}
 	pb := &listCleanRoomAssetsRequestPb{}
-	cleanRoomNamePb := &st.CleanRoomName
-	if cleanRoomNamePb != nil {
-		pb.CleanRoomName = *cleanRoomNamePb
-	}
+	pb.CleanRoomName = st.CleanRoomName
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3151,14 +2851,8 @@ func listCleanRoomAssetsRequestFromPb(pb *listCleanRoomAssetsRequestPb) (*ListCl
 		return nil, nil
 	}
 	st := &ListCleanRoomAssetsRequest{}
-	cleanRoomNameField := &pb.CleanRoomName
-	if cleanRoomNameField != nil {
-		st.CleanRoomName = *cleanRoomNameField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.CleanRoomName = pb.CleanRoomName
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3174,13 +2868,15 @@ func (st listCleanRoomAssetsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListCleanRoomAssetsResponse struct {
 	// Assets in the clean room.
+	// Wire name: 'assets'
 	Assets []CleanRoomAsset
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. page_token should be set to this value for the next request
 	// (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listCleanRoomAssetsResponseToPb(st *ListCleanRoomAssetsResponse) (*listCleanRoomAssetsResponsePb, error) {
@@ -3201,10 +2897,7 @@ func listCleanRoomAssetsResponseToPb(st *ListCleanRoomAssetsResponse) (*listClea
 	}
 	pb.Assets = assetsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3253,20 +2946,17 @@ func listCleanRoomAssetsResponseFromPb(pb *listCleanRoomAssetsResponsePb) (*List
 	st := &ListCleanRoomAssetsResponse{}
 
 	var assetsField []CleanRoomAsset
-	for _, item := range pb.Assets {
-		itemField, err := cleanRoomAssetFromPb(&item)
+	for _, itemPb := range pb.Assets {
+		item, err := cleanRoomAssetFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			assetsField = append(assetsField, *itemField)
+		if item != nil {
+			assetsField = append(assetsField, *item)
 		}
 	}
 	st.Assets = assetsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3283,16 +2973,20 @@ func (st listCleanRoomAssetsResponsePb) MarshalJSON() ([]byte, error) {
 // List notebook task runs
 type ListCleanRoomNotebookTaskRunsRequest struct {
 	// Name of the clean room.
-	CleanRoomName string
+	// Wire name: 'clean_room_name'
+	CleanRoomName string `tf:"-"`
 	// Notebook name
-	NotebookName string
+	// Wire name: 'notebook_name'
+	NotebookName string `tf:"-"`
 	// The maximum number of task runs to return. Currently ignored - all runs
 	// will be returned.
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listCleanRoomNotebookTaskRunsRequestToPb(st *ListCleanRoomNotebookTaskRunsRequest) (*listCleanRoomNotebookTaskRunsRequestPb, error) {
@@ -3300,25 +2994,13 @@ func listCleanRoomNotebookTaskRunsRequestToPb(st *ListCleanRoomNotebookTaskRunsR
 		return nil, nil
 	}
 	pb := &listCleanRoomNotebookTaskRunsRequestPb{}
-	cleanRoomNamePb := &st.CleanRoomName
-	if cleanRoomNamePb != nil {
-		pb.CleanRoomName = *cleanRoomNamePb
-	}
+	pb.CleanRoomName = st.CleanRoomName
 
-	notebookNamePb := &st.NotebookName
-	if notebookNamePb != nil {
-		pb.NotebookName = *notebookNamePb
-	}
+	pb.NotebookName = st.NotebookName
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3368,22 +3050,10 @@ func listCleanRoomNotebookTaskRunsRequestFromPb(pb *listCleanRoomNotebookTaskRun
 		return nil, nil
 	}
 	st := &ListCleanRoomNotebookTaskRunsRequest{}
-	cleanRoomNameField := &pb.CleanRoomName
-	if cleanRoomNameField != nil {
-		st.CleanRoomName = *cleanRoomNameField
-	}
-	notebookNameField := &pb.NotebookName
-	if notebookNameField != nil {
-		st.NotebookName = *notebookNameField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.CleanRoomName = pb.CleanRoomName
+	st.NotebookName = pb.NotebookName
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3401,11 +3071,13 @@ type ListCleanRoomNotebookTaskRunsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. page_token should be set to this value for the next request
 	// (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// Name of the clean room.
+	// Wire name: 'runs'
 	Runs []CleanRoomNotebookTaskRun
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listCleanRoomNotebookTaskRunsResponseToPb(st *ListCleanRoomNotebookTaskRunsResponse) (*listCleanRoomNotebookTaskRunsResponsePb, error) {
@@ -3413,10 +3085,7 @@ func listCleanRoomNotebookTaskRunsResponseToPb(st *ListCleanRoomNotebookTaskRuns
 		return nil, nil
 	}
 	pb := &listCleanRoomNotebookTaskRunsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var runsPb []cleanRoomNotebookTaskRunPb
 	for _, item := range st.Runs {
@@ -3475,19 +3144,16 @@ func listCleanRoomNotebookTaskRunsResponseFromPb(pb *listCleanRoomNotebookTaskRu
 		return nil, nil
 	}
 	st := &ListCleanRoomNotebookTaskRunsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var runsField []CleanRoomNotebookTaskRun
-	for _, item := range pb.Runs {
-		itemField, err := cleanRoomNotebookTaskRunFromPb(&item)
+	for _, itemPb := range pb.Runs {
+		item, err := cleanRoomNotebookTaskRunFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			runsField = append(runsField, *itemField)
+		if item != nil {
+			runsField = append(runsField, *item)
 		}
 	}
 	st.Runs = runsField
@@ -3508,11 +3174,13 @@ func (st listCleanRoomNotebookTaskRunsResponsePb) MarshalJSON() ([]byte, error) 
 type ListCleanRoomsRequest struct {
 	// Maximum number of clean rooms to return (i.e., the page length). Defaults
 	// to 100.
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listCleanRoomsRequestToPb(st *ListCleanRoomsRequest) (*listCleanRoomsRequestPb, error) {
@@ -3520,15 +3188,9 @@ func listCleanRoomsRequestToPb(st *ListCleanRoomsRequest) (*listCleanRoomsReques
 		return nil, nil
 	}
 	pb := &listCleanRoomsRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3574,14 +3236,8 @@ func listCleanRoomsRequestFromPb(pb *listCleanRoomsRequestPb) (*ListCleanRoomsRe
 		return nil, nil
 	}
 	st := &ListCleanRoomsRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3596,13 +3252,16 @@ func (st listCleanRoomsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListCleanRoomsResponse struct {
+
+	// Wire name: 'clean_rooms'
 	CleanRooms []CleanRoom
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. page_token should be set to this value for the next request
 	// (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listCleanRoomsResponseToPb(st *ListCleanRoomsResponse) (*listCleanRoomsResponsePb, error) {
@@ -3623,10 +3282,7 @@ func listCleanRoomsResponseToPb(st *ListCleanRoomsResponse) (*listCleanRoomsResp
 	}
 	pb.CleanRooms = cleanRoomsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3674,20 +3330,17 @@ func listCleanRoomsResponseFromPb(pb *listCleanRoomsResponsePb) (*ListCleanRooms
 	st := &ListCleanRoomsResponse{}
 
 	var cleanRoomsField []CleanRoom
-	for _, item := range pb.CleanRooms {
-		itemField, err := cleanRoomFromPb(&item)
+	for _, itemPb := range pb.CleanRooms {
+		item, err := cleanRoomFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			cleanRoomsField = append(cleanRoomsField, *itemField)
+		if item != nil {
+			cleanRoomsField = append(cleanRoomsField, *item)
 		}
 	}
 	st.CleanRooms = cleanRoomsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3704,11 +3357,14 @@ func (st listCleanRoomsResponsePb) MarshalJSON() ([]byte, error) {
 // Update an asset
 type UpdateCleanRoomAssetRequest struct {
 	// Metadata of the clean room asset
+	// Wire name: 'asset'
 	Asset CleanRoomAsset
 	// The type of the asset.
-	AssetType CleanRoomAssetAssetType
+	// Wire name: 'asset_type'
+	AssetType CleanRoomAssetAssetType `tf:"-"`
 	// Name of the clean room.
-	CleanRoomName string
+	// Wire name: 'clean_room_name'
+	CleanRoomName string `tf:"-"`
 	// A fully qualified name that uniquely identifies the asset within the
 	// clean room. This is also the name displayed in the clean room UI.
 	//
@@ -3716,7 +3372,8 @@ type UpdateCleanRoomAssetRequest struct {
 	// *shared_catalog*.*shared_schema*.*asset_name*
 	//
 	// For notebooks, the name is the notebook file name.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func updateCleanRoomAssetRequestToPb(st *UpdateCleanRoomAssetRequest) (*updateCleanRoomAssetRequestPb, error) {
@@ -3732,20 +3389,11 @@ func updateCleanRoomAssetRequestToPb(st *UpdateCleanRoomAssetRequest) (*updateCl
 		pb.Asset = *assetPb
 	}
 
-	assetTypePb := &st.AssetType
-	if assetTypePb != nil {
-		pb.AssetType = *assetTypePb
-	}
+	pb.AssetType = st.AssetType
 
-	cleanRoomNamePb := &st.CleanRoomName
-	if cleanRoomNamePb != nil {
-		pb.CleanRoomName = *cleanRoomNamePb
-	}
+	pb.CleanRoomName = st.CleanRoomName
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -3804,26 +3452,20 @@ func updateCleanRoomAssetRequestFromPb(pb *updateCleanRoomAssetRequestPb) (*Upda
 	if assetField != nil {
 		st.Asset = *assetField
 	}
-	assetTypeField := &pb.AssetType
-	if assetTypeField != nil {
-		st.AssetType = *assetTypeField
-	}
-	cleanRoomNameField := &pb.CleanRoomName
-	if cleanRoomNameField != nil {
-		st.CleanRoomName = *cleanRoomNameField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.AssetType = pb.AssetType
+	st.CleanRoomName = pb.CleanRoomName
+	st.Name = pb.Name
 
 	return st, nil
 }
 
 type UpdateCleanRoomRequest struct {
+
+	// Wire name: 'clean_room'
 	CleanRoom *CleanRoom
 	// Name of the clean room.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func updateCleanRoomRequestToPb(st *UpdateCleanRoomRequest) (*updateCleanRoomRequestPb, error) {
@@ -3839,10 +3481,7 @@ func updateCleanRoomRequestToPb(st *UpdateCleanRoomRequest) (*updateCleanRoomReq
 		pb.CleanRoom = cleanRoomPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -3890,10 +3529,61 @@ func updateCleanRoomRequestFromPb(pb *updateCleanRoomRequestPb) (*UpdateCleanRoo
 	if cleanRoomField != nil {
 		st.CleanRoom = cleanRoomField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

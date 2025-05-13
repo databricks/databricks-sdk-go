@@ -12,75 +12,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 // The delta sharing authentication type.
 type AuthenticationType string
 type authenticationTypePb string
@@ -216,16 +147,20 @@ func columnTypeNameFromPb(pb *columnTypeNamePb) (*ColumnTypeName, error) {
 
 type CreateProvider struct {
 	// The delta sharing authentication type.
+	// Wire name: 'authentication_type'
 	AuthenticationType AuthenticationType
 	// Description about the provider.
+	// Wire name: 'comment'
 	Comment string
 	// The name of the Provider.
+	// Wire name: 'name'
 	Name string
 	// This field is required when the __authentication_type__ is **TOKEN**,
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
+	// Wire name: 'recipient_profile_str'
 	RecipientProfileStr string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createProviderToPb(st *CreateProvider) (*createProviderPb, error) {
@@ -233,25 +168,13 @@ func createProviderToPb(st *CreateProvider) (*createProviderPb, error) {
 		return nil, nil
 	}
 	pb := &createProviderPb{}
-	authenticationTypePb := &st.AuthenticationType
-	if authenticationTypePb != nil {
-		pb.AuthenticationType = *authenticationTypePb
-	}
+	pb.AuthenticationType = st.AuthenticationType
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	recipientProfileStrPb := &st.RecipientProfileStr
-	if recipientProfileStrPb != nil {
-		pb.RecipientProfileStr = *recipientProfileStrPb
-	}
+	pb.RecipientProfileStr = st.RecipientProfileStr
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -301,22 +224,10 @@ func createProviderFromPb(pb *createProviderPb) (*CreateProvider, error) {
 		return nil, nil
 	}
 	st := &CreateProvider{}
-	authenticationTypeField := &pb.AuthenticationType
-	if authenticationTypeField != nil {
-		st.AuthenticationType = *authenticationTypeField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	recipientProfileStrField := &pb.RecipientProfileStr
-	if recipientProfileStrField != nil {
-		st.RecipientProfileStr = *recipientProfileStrField
-	}
+	st.AuthenticationType = pb.AuthenticationType
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.RecipientProfileStr = pb.RecipientProfileStr
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -332,32 +243,41 @@ func (st createProviderPb) MarshalJSON() ([]byte, error) {
 
 type CreateRecipient struct {
 	// The delta sharing authentication type.
+	// Wire name: 'authentication_type'
 	AuthenticationType AuthenticationType
 	// Description about the recipient.
+	// Wire name: 'comment'
 	Comment string
 	// The global Unity Catalog metastore id provided by the data recipient.
 	// This field is only present when the __authentication_type__ is
 	// **DATABRICKS**. The identifier is of format
 	// __cloud__:__region__:__metastore-uuid__.
+	// Wire name: 'data_recipient_global_metastore_id'
 	DataRecipientGlobalMetastoreId string
 	// Expiration timestamp of the token, in epoch milliseconds.
+	// Wire name: 'expiration_time'
 	ExpirationTime int64
 	// IP Access List
+	// Wire name: 'ip_access_list'
 	IpAccessList *IpAccessList
 	// Name of Recipient.
+	// Wire name: 'name'
 	Name string
 	// Username of the recipient owner.
+	// Wire name: 'owner'
 	Owner string
 	// Recipient properties as map of string key-value pairs. When provided in
 	// update request, the specified properties will override the existing
 	// properties. To add and remove properties, one would need to perform a
 	// read-modify-write.
+	// Wire name: 'properties_kvpairs'
 	PropertiesKvpairs *SecurablePropertiesKvPairs
 	// The one-time sharing code provided by the data recipient. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
+	// Wire name: 'sharing_code'
 	SharingCode string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createRecipientToPb(st *CreateRecipient) (*createRecipientPb, error) {
@@ -365,25 +285,13 @@ func createRecipientToPb(st *CreateRecipient) (*createRecipientPb, error) {
 		return nil, nil
 	}
 	pb := &createRecipientPb{}
-	authenticationTypePb := &st.AuthenticationType
-	if authenticationTypePb != nil {
-		pb.AuthenticationType = *authenticationTypePb
-	}
+	pb.AuthenticationType = st.AuthenticationType
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	dataRecipientGlobalMetastoreIdPb := &st.DataRecipientGlobalMetastoreId
-	if dataRecipientGlobalMetastoreIdPb != nil {
-		pb.DataRecipientGlobalMetastoreId = *dataRecipientGlobalMetastoreIdPb
-	}
+	pb.DataRecipientGlobalMetastoreId = st.DataRecipientGlobalMetastoreId
 
-	expirationTimePb := &st.ExpirationTime
-	if expirationTimePb != nil {
-		pb.ExpirationTime = *expirationTimePb
-	}
+	pb.ExpirationTime = st.ExpirationTime
 
 	ipAccessListPb, err := ipAccessListToPb(st.IpAccessList)
 	if err != nil {
@@ -393,15 +301,9 @@ func createRecipientToPb(st *CreateRecipient) (*createRecipientPb, error) {
 		pb.IpAccessList = ipAccessListPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
 	propertiesKvpairsPb, err := securablePropertiesKvPairsToPb(st.PropertiesKvpairs)
 	if err != nil {
@@ -411,10 +313,7 @@ func createRecipientToPb(st *CreateRecipient) (*createRecipientPb, error) {
 		pb.PropertiesKvpairs = propertiesKvpairsPb
 	}
 
-	sharingCodePb := &st.SharingCode
-	if sharingCodePb != nil {
-		pb.SharingCode = *sharingCodePb
-	}
+	pb.SharingCode = st.SharingCode
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -480,22 +379,10 @@ func createRecipientFromPb(pb *createRecipientPb) (*CreateRecipient, error) {
 		return nil, nil
 	}
 	st := &CreateRecipient{}
-	authenticationTypeField := &pb.AuthenticationType
-	if authenticationTypeField != nil {
-		st.AuthenticationType = *authenticationTypeField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	dataRecipientGlobalMetastoreIdField := &pb.DataRecipientGlobalMetastoreId
-	if dataRecipientGlobalMetastoreIdField != nil {
-		st.DataRecipientGlobalMetastoreId = *dataRecipientGlobalMetastoreIdField
-	}
-	expirationTimeField := &pb.ExpirationTime
-	if expirationTimeField != nil {
-		st.ExpirationTime = *expirationTimeField
-	}
+	st.AuthenticationType = pb.AuthenticationType
+	st.Comment = pb.Comment
+	st.DataRecipientGlobalMetastoreId = pb.DataRecipientGlobalMetastoreId
+	st.ExpirationTime = pb.ExpirationTime
 	ipAccessListField, err := ipAccessListFromPb(pb.IpAccessList)
 	if err != nil {
 		return nil, err
@@ -503,14 +390,8 @@ func createRecipientFromPb(pb *createRecipientPb) (*CreateRecipient, error) {
 	if ipAccessListField != nil {
 		st.IpAccessList = ipAccessListField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
+	st.Name = pb.Name
+	st.Owner = pb.Owner
 	propertiesKvpairsField, err := securablePropertiesKvPairsFromPb(pb.PropertiesKvpairs)
 	if err != nil {
 		return nil, err
@@ -518,10 +399,7 @@ func createRecipientFromPb(pb *createRecipientPb) (*CreateRecipient, error) {
 	if propertiesKvpairsField != nil {
 		st.PropertiesKvpairs = propertiesKvpairsField
 	}
-	sharingCodeField := &pb.SharingCode
-	if sharingCodeField != nil {
-		st.SharingCode = *sharingCodeField
-	}
+	st.SharingCode = pb.SharingCode
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -537,13 +415,16 @@ func (st createRecipientPb) MarshalJSON() ([]byte, error) {
 
 type CreateShare struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Name of the share.
+	// Wire name: 'name'
 	Name string
 	// Storage root URL for the share.
+	// Wire name: 'storage_root'
 	StorageRoot string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createShareToPb(st *CreateShare) (*createSharePb, error) {
@@ -551,20 +432,11 @@ func createShareToPb(st *CreateShare) (*createSharePb, error) {
 		return nil, nil
 	}
 	pb := &createSharePb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	storageRootPb := &st.StorageRoot
-	if storageRootPb != nil {
-		pb.StorageRoot = *storageRootPb
-	}
+	pb.StorageRoot = st.StorageRoot
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -611,18 +483,9 @@ func createShareFromPb(pb *createSharePb) (*CreateShare, error) {
 		return nil, nil
 	}
 	st := &CreateShare{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	storageRootField := &pb.StorageRoot
-	if storageRootField != nil {
-		st.StorageRoot = *storageRootField
-	}
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.StorageRoot = pb.StorageRoot
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -639,7 +502,8 @@ func (st createSharePb) MarshalJSON() ([]byte, error) {
 // Delete a provider
 type DeleteProviderRequest struct {
 	// Name of the provider.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func deleteProviderRequestToPb(st *DeleteProviderRequest) (*deleteProviderRequestPb, error) {
@@ -647,10 +511,7 @@ func deleteProviderRequestToPb(st *DeleteProviderRequest) (*deleteProviderReques
 		return nil, nil
 	}
 	pb := &deleteProviderRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -690,10 +551,7 @@ func deleteProviderRequestFromPb(pb *deleteProviderRequestPb) (*DeleteProviderRe
 		return nil, nil
 	}
 	st := &DeleteProviderRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -701,7 +559,8 @@ func deleteProviderRequestFromPb(pb *deleteProviderRequestPb) (*DeleteProviderRe
 // Delete a share recipient
 type DeleteRecipientRequest struct {
 	// Name of the recipient.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func deleteRecipientRequestToPb(st *DeleteRecipientRequest) (*deleteRecipientRequestPb, error) {
@@ -709,10 +568,7 @@ func deleteRecipientRequestToPb(st *DeleteRecipientRequest) (*deleteRecipientReq
 		return nil, nil
 	}
 	pb := &deleteRecipientRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -752,10 +608,7 @@ func deleteRecipientRequestFromPb(pb *deleteRecipientRequestPb) (*DeleteRecipien
 		return nil, nil
 	}
 	st := &DeleteRecipientRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -812,7 +665,8 @@ func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
 // Delete a share
 type DeleteShareRequest struct {
 	// The name of the share.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func deleteShareRequestToPb(st *DeleteShareRequest) (*deleteShareRequestPb, error) {
@@ -820,10 +674,7 @@ func deleteShareRequestToPb(st *DeleteShareRequest) (*deleteShareRequestPb, erro
 		return nil, nil
 	}
 	pb := &deleteShareRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -863,10 +714,7 @@ func deleteShareRequestFromPb(pb *deleteShareRequestPb) (*DeleteShareRequest, er
 		return nil, nil
 	}
 	st := &DeleteShareRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -874,8 +722,10 @@ func deleteShareRequestFromPb(pb *deleteShareRequestPb) (*DeleteShareRequest, er
 // Represents a UC dependency.
 type DeltaSharingDependency struct {
 	// A Function in UC as a dependency.
+	// Wire name: 'function'
 	Function *DeltaSharingFunctionDependency
 	// A Table in UC as a dependency.
+	// Wire name: 'table'
 	Table *DeltaSharingTableDependency
 }
 
@@ -961,6 +811,7 @@ func deltaSharingDependencyFromPb(pb *deltaSharingDependencyPb) (*DeltaSharingDe
 // Represents a list of dependencies.
 type DeltaSharingDependencyList struct {
 	// An array of Dependency.
+	// Wire name: 'dependencies'
 	Dependencies []DeltaSharingDependency
 }
 
@@ -1022,13 +873,13 @@ func deltaSharingDependencyListFromPb(pb *deltaSharingDependencyListPb) (*DeltaS
 	st := &DeltaSharingDependencyList{}
 
 	var dependenciesField []DeltaSharingDependency
-	for _, item := range pb.Dependencies {
-		itemField, err := deltaSharingDependencyFromPb(&item)
+	for _, itemPb := range pb.Dependencies {
+		item, err := deltaSharingDependencyFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			dependenciesField = append(dependenciesField, *itemField)
+		if item != nil {
+			dependenciesField = append(dependenciesField, *item)
 		}
 	}
 	st.Dependencies = dependenciesField
@@ -1038,39 +889,55 @@ func deltaSharingDependencyListFromPb(pb *deltaSharingDependencyListPb) (*DeltaS
 
 type DeltaSharingFunction struct {
 	// The aliass of registered model.
+	// Wire name: 'aliases'
 	Aliases []RegisteredModelAlias
 	// The comment of the function.
+	// Wire name: 'comment'
 	Comment string
 	// The data type of the function.
+	// Wire name: 'data_type'
 	DataType ColumnTypeName
 	// The dependency list of the function.
+	// Wire name: 'dependency_list'
 	DependencyList *DeltaSharingDependencyList
 	// The full data type of the function.
+	// Wire name: 'full_data_type'
 	FullDataType string
 	// The id of the function.
+	// Wire name: 'id'
 	Id string
 	// The function parameter information.
+	// Wire name: 'input_params'
 	InputParams *FunctionParameterInfos
 	// The name of the function.
+	// Wire name: 'name'
 	Name string
 	// The properties of the function.
+	// Wire name: 'properties'
 	Properties string
 	// The routine definition of the function.
+	// Wire name: 'routine_definition'
 	RoutineDefinition string
 	// The name of the schema that the function belongs to.
+	// Wire name: 'schema'
 	Schema string
 	// The securable kind of the function.
+	// Wire name: 'securable_kind'
 	SecurableKind SharedSecurableKind
 	// The name of the share that the function belongs to.
+	// Wire name: 'share'
 	Share string
 	// The id of the share that the function belongs to.
+	// Wire name: 'share_id'
 	ShareId string
 	// The storage location of the function.
+	// Wire name: 'storage_location'
 	StorageLocation string
 	// The tags of the function.
+	// Wire name: 'tags'
 	Tags []catalog.TagKeyValue
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deltaSharingFunctionToPb(st *DeltaSharingFunction) (*deltaSharingFunctionPb, error) {
@@ -1091,15 +958,9 @@ func deltaSharingFunctionToPb(st *DeltaSharingFunction) (*deltaSharingFunctionPb
 	}
 	pb.Aliases = aliasesPb
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	dataTypePb := &st.DataType
-	if dataTypePb != nil {
-		pb.DataType = *dataTypePb
-	}
+	pb.DataType = st.DataType
 
 	dependencyListPb, err := deltaSharingDependencyListToPb(st.DependencyList)
 	if err != nil {
@@ -1109,15 +970,9 @@ func deltaSharingFunctionToPb(st *DeltaSharingFunction) (*deltaSharingFunctionPb
 		pb.DependencyList = dependencyListPb
 	}
 
-	fullDataTypePb := &st.FullDataType
-	if fullDataTypePb != nil {
-		pb.FullDataType = *fullDataTypePb
-	}
+	pb.FullDataType = st.FullDataType
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	inputParamsPb, err := functionParameterInfosToPb(st.InputParams)
 	if err != nil {
@@ -1127,45 +982,21 @@ func deltaSharingFunctionToPb(st *DeltaSharingFunction) (*deltaSharingFunctionPb
 		pb.InputParams = inputParamsPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	propertiesPb := &st.Properties
-	if propertiesPb != nil {
-		pb.Properties = *propertiesPb
-	}
+	pb.Properties = st.Properties
 
-	routineDefinitionPb := &st.RoutineDefinition
-	if routineDefinitionPb != nil {
-		pb.RoutineDefinition = *routineDefinitionPb
-	}
+	pb.RoutineDefinition = st.RoutineDefinition
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	securableKindPb := &st.SecurableKind
-	if securableKindPb != nil {
-		pb.SecurableKind = *securableKindPb
-	}
+	pb.SecurableKind = st.SecurableKind
 
-	sharePb := &st.Share
-	if sharePb != nil {
-		pb.Share = *sharePb
-	}
+	pb.Share = st.Share
 
-	shareIdPb := &st.ShareId
-	if shareIdPb != nil {
-		pb.ShareId = *shareIdPb
-	}
+	pb.ShareId = st.ShareId
 
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
 	var tagsPb []catalog.TagKeyValuePb
 	for _, item := range st.Tags {
@@ -1252,24 +1083,18 @@ func deltaSharingFunctionFromPb(pb *deltaSharingFunctionPb) (*DeltaSharingFuncti
 	st := &DeltaSharingFunction{}
 
 	var aliasesField []RegisteredModelAlias
-	for _, item := range pb.Aliases {
-		itemField, err := registeredModelAliasFromPb(&item)
+	for _, itemPb := range pb.Aliases {
+		item, err := registeredModelAliasFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			aliasesField = append(aliasesField, *itemField)
+		if item != nil {
+			aliasesField = append(aliasesField, *item)
 		}
 	}
 	st.Aliases = aliasesField
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	dataTypeField := &pb.DataType
-	if dataTypeField != nil {
-		st.DataType = *dataTypeField
-	}
+	st.Comment = pb.Comment
+	st.DataType = pb.DataType
 	dependencyListField, err := deltaSharingDependencyListFromPb(pb.DependencyList)
 	if err != nil {
 		return nil, err
@@ -1277,14 +1102,8 @@ func deltaSharingFunctionFromPb(pb *deltaSharingFunctionPb) (*DeltaSharingFuncti
 	if dependencyListField != nil {
 		st.DependencyList = dependencyListField
 	}
-	fullDataTypeField := &pb.FullDataType
-	if fullDataTypeField != nil {
-		st.FullDataType = *fullDataTypeField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.FullDataType = pb.FullDataType
+	st.Id = pb.Id
 	inputParamsField, err := functionParameterInfosFromPb(pb.InputParams)
 	if err != nil {
 		return nil, err
@@ -1292,47 +1111,23 @@ func deltaSharingFunctionFromPb(pb *deltaSharingFunctionPb) (*DeltaSharingFuncti
 	if inputParamsField != nil {
 		st.InputParams = inputParamsField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	propertiesField := &pb.Properties
-	if propertiesField != nil {
-		st.Properties = *propertiesField
-	}
-	routineDefinitionField := &pb.RoutineDefinition
-	if routineDefinitionField != nil {
-		st.RoutineDefinition = *routineDefinitionField
-	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-	securableKindField := &pb.SecurableKind
-	if securableKindField != nil {
-		st.SecurableKind = *securableKindField
-	}
-	shareField := &pb.Share
-	if shareField != nil {
-		st.Share = *shareField
-	}
-	shareIdField := &pb.ShareId
-	if shareIdField != nil {
-		st.ShareId = *shareIdField
-	}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
+	st.Name = pb.Name
+	st.Properties = pb.Properties
+	st.RoutineDefinition = pb.RoutineDefinition
+	st.Schema = pb.Schema
+	st.SecurableKind = pb.SecurableKind
+	st.Share = pb.Share
+	st.ShareId = pb.ShareId
+	st.StorageLocation = pb.StorageLocation
 
 	var tagsField []catalog.TagKeyValue
-	for _, item := range pb.Tags {
-		itemField, err := catalog.TagKeyValueFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := catalog.TagKeyValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -1351,11 +1146,14 @@ func (st deltaSharingFunctionPb) MarshalJSON() ([]byte, error) {
 
 // A Function in UC as a dependency.
 type DeltaSharingFunctionDependency struct {
+
+	// Wire name: 'function_name'
 	FunctionName string
 
+	// Wire name: 'schema_name'
 	SchemaName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deltaSharingFunctionDependencyToPb(st *DeltaSharingFunctionDependency) (*deltaSharingFunctionDependencyPb, error) {
@@ -1363,15 +1161,9 @@ func deltaSharingFunctionDependencyToPb(st *DeltaSharingFunctionDependency) (*de
 		return nil, nil
 	}
 	pb := &deltaSharingFunctionDependencyPb{}
-	functionNamePb := &st.FunctionName
-	if functionNamePb != nil {
-		pb.FunctionName = *functionNamePb
-	}
+	pb.FunctionName = st.FunctionName
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1415,14 +1207,8 @@ func deltaSharingFunctionDependencyFromPb(pb *deltaSharingFunctionDependencyPb) 
 		return nil, nil
 	}
 	st := &DeltaSharingFunctionDependency{}
-	functionNameField := &pb.FunctionName
-	if functionNameField != nil {
-		st.FunctionName = *functionNameField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
+	st.FunctionName = pb.FunctionName
+	st.SchemaName = pb.SchemaName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1438,11 +1224,14 @@ func (st deltaSharingFunctionDependencyPb) MarshalJSON() ([]byte, error) {
 
 // A Table in UC as a dependency.
 type DeltaSharingTableDependency struct {
+
+	// Wire name: 'schema_name'
 	SchemaName string
 
+	// Wire name: 'table_name'
 	TableName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deltaSharingTableDependencyToPb(st *DeltaSharingTableDependency) (*deltaSharingTableDependencyPb, error) {
@@ -1450,15 +1239,9 @@ func deltaSharingTableDependencyToPb(st *DeltaSharingTableDependency) (*deltaSha
 		return nil, nil
 	}
 	pb := &deltaSharingTableDependencyPb{}
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
-	tableNamePb := &st.TableName
-	if tableNamePb != nil {
-		pb.TableName = *tableNamePb
-	}
+	pb.TableName = st.TableName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1502,14 +1285,8 @@ func deltaSharingTableDependencyFromPb(pb *deltaSharingTableDependencyPb) (*Delt
 		return nil, nil
 	}
 	st := &DeltaSharingTableDependency{}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
-	tableNameField := &pb.TableName
-	if tableNameField != nil {
-		st.TableName = *tableNameField
-	}
+	st.SchemaName = pb.SchemaName
+	st.TableName = pb.TableName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1527,31 +1304,43 @@ func (st deltaSharingTableDependencyPb) MarshalJSON() ([]byte, error) {
 // and output columns.
 type FunctionParameterInfo struct {
 	// The comment of the parameter.
+	// Wire name: 'comment'
 	Comment string
 	// The name of the parameter.
+	// Wire name: 'name'
 	Name string
 	// The default value of the parameter.
+	// Wire name: 'parameter_default'
 	ParameterDefault string
 	// The mode of the function parameter.
+	// Wire name: 'parameter_mode'
 	ParameterMode FunctionParameterMode
 	// The type of the function parameter.
+	// Wire name: 'parameter_type'
 	ParameterType FunctionParameterType
 	// The position of the parameter.
+	// Wire name: 'position'
 	Position int
 	// The interval type of the parameter type.
+	// Wire name: 'type_interval_type'
 	TypeIntervalType string
 	// The type of the parameter in JSON format.
+	// Wire name: 'type_json'
 	TypeJson string
 	// The type of the parameter in Enum format.
+	// Wire name: 'type_name'
 	TypeName ColumnTypeName
 	// The precision of the parameter type.
+	// Wire name: 'type_precision'
 	TypePrecision int
 	// The scale of the parameter type.
+	// Wire name: 'type_scale'
 	TypeScale int
 	// The type of the parameter in text format.
+	// Wire name: 'type_text'
 	TypeText string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func functionParameterInfoToPb(st *FunctionParameterInfo) (*functionParameterInfoPb, error) {
@@ -1559,65 +1348,29 @@ func functionParameterInfoToPb(st *FunctionParameterInfo) (*functionParameterInf
 		return nil, nil
 	}
 	pb := &functionParameterInfoPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	parameterDefaultPb := &st.ParameterDefault
-	if parameterDefaultPb != nil {
-		pb.ParameterDefault = *parameterDefaultPb
-	}
+	pb.ParameterDefault = st.ParameterDefault
 
-	parameterModePb := &st.ParameterMode
-	if parameterModePb != nil {
-		pb.ParameterMode = *parameterModePb
-	}
+	pb.ParameterMode = st.ParameterMode
 
-	parameterTypePb := &st.ParameterType
-	if parameterTypePb != nil {
-		pb.ParameterType = *parameterTypePb
-	}
+	pb.ParameterType = st.ParameterType
 
-	positionPb := &st.Position
-	if positionPb != nil {
-		pb.Position = *positionPb
-	}
+	pb.Position = st.Position
 
-	typeIntervalTypePb := &st.TypeIntervalType
-	if typeIntervalTypePb != nil {
-		pb.TypeIntervalType = *typeIntervalTypePb
-	}
+	pb.TypeIntervalType = st.TypeIntervalType
 
-	typeJsonPb := &st.TypeJson
-	if typeJsonPb != nil {
-		pb.TypeJson = *typeJsonPb
-	}
+	pb.TypeJson = st.TypeJson
 
-	typeNamePb := &st.TypeName
-	if typeNamePb != nil {
-		pb.TypeName = *typeNamePb
-	}
+	pb.TypeName = st.TypeName
 
-	typePrecisionPb := &st.TypePrecision
-	if typePrecisionPb != nil {
-		pb.TypePrecision = *typePrecisionPb
-	}
+	pb.TypePrecision = st.TypePrecision
 
-	typeScalePb := &st.TypeScale
-	if typeScalePb != nil {
-		pb.TypeScale = *typeScalePb
-	}
+	pb.TypeScale = st.TypeScale
 
-	typeTextPb := &st.TypeText
-	if typeTextPb != nil {
-		pb.TypeText = *typeTextPb
-	}
+	pb.TypeText = st.TypeText
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1682,54 +1435,18 @@ func functionParameterInfoFromPb(pb *functionParameterInfoPb) (*FunctionParamete
 		return nil, nil
 	}
 	st := &FunctionParameterInfo{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	parameterDefaultField := &pb.ParameterDefault
-	if parameterDefaultField != nil {
-		st.ParameterDefault = *parameterDefaultField
-	}
-	parameterModeField := &pb.ParameterMode
-	if parameterModeField != nil {
-		st.ParameterMode = *parameterModeField
-	}
-	parameterTypeField := &pb.ParameterType
-	if parameterTypeField != nil {
-		st.ParameterType = *parameterTypeField
-	}
-	positionField := &pb.Position
-	if positionField != nil {
-		st.Position = *positionField
-	}
-	typeIntervalTypeField := &pb.TypeIntervalType
-	if typeIntervalTypeField != nil {
-		st.TypeIntervalType = *typeIntervalTypeField
-	}
-	typeJsonField := &pb.TypeJson
-	if typeJsonField != nil {
-		st.TypeJson = *typeJsonField
-	}
-	typeNameField := &pb.TypeName
-	if typeNameField != nil {
-		st.TypeName = *typeNameField
-	}
-	typePrecisionField := &pb.TypePrecision
-	if typePrecisionField != nil {
-		st.TypePrecision = *typePrecisionField
-	}
-	typeScaleField := &pb.TypeScale
-	if typeScaleField != nil {
-		st.TypeScale = *typeScaleField
-	}
-	typeTextField := &pb.TypeText
-	if typeTextField != nil {
-		st.TypeText = *typeTextField
-	}
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.ParameterDefault = pb.ParameterDefault
+	st.ParameterMode = pb.ParameterMode
+	st.ParameterType = pb.ParameterType
+	st.Position = pb.Position
+	st.TypeIntervalType = pb.TypeIntervalType
+	st.TypeJson = pb.TypeJson
+	st.TypeName = pb.TypeName
+	st.TypePrecision = pb.TypePrecision
+	st.TypeScale = pb.TypeScale
+	st.TypeText = pb.TypeText
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1745,6 +1462,7 @@ func (st functionParameterInfoPb) MarshalJSON() ([]byte, error) {
 
 type FunctionParameterInfos struct {
 	// The list of parameters of the function.
+	// Wire name: 'parameters'
 	Parameters []FunctionParameterInfo
 }
 
@@ -1806,13 +1524,13 @@ func functionParameterInfosFromPb(pb *functionParameterInfosPb) (*FunctionParame
 	st := &FunctionParameterInfos{}
 
 	var parametersField []FunctionParameterInfo
-	for _, item := range pb.Parameters {
-		itemField, err := functionParameterInfoFromPb(&item)
+	for _, itemPb := range pb.Parameters {
+		item, err := functionParameterInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			parametersField = append(parametersField, *itemField)
+		if item != nil {
+			parametersField = append(parametersField, *item)
 		}
 	}
 	st.Parameters = parametersField
@@ -1913,7 +1631,8 @@ func functionParameterTypeFromPb(pb *functionParameterTypePb) (*FunctionParamete
 // Get a share activation URL
 type GetActivationUrlInfoRequest struct {
 	// The one time activation url. It also accepts activation token.
-	ActivationUrl string
+	// Wire name: 'activation_url'
+	ActivationUrl string `tf:"-"`
 }
 
 func getActivationUrlInfoRequestToPb(st *GetActivationUrlInfoRequest) (*getActivationUrlInfoRequestPb, error) {
@@ -1921,10 +1640,7 @@ func getActivationUrlInfoRequestToPb(st *GetActivationUrlInfoRequest) (*getActiv
 		return nil, nil
 	}
 	pb := &getActivationUrlInfoRequestPb{}
-	activationUrlPb := &st.ActivationUrl
-	if activationUrlPb != nil {
-		pb.ActivationUrl = *activationUrlPb
-	}
+	pb.ActivationUrl = st.ActivationUrl
 
 	return pb, nil
 }
@@ -1964,10 +1680,7 @@ func getActivationUrlInfoRequestFromPb(pb *getActivationUrlInfoRequestPb) (*GetA
 		return nil, nil
 	}
 	st := &GetActivationUrlInfoRequest{}
-	activationUrlField := &pb.ActivationUrl
-	if activationUrlField != nil {
-		st.ActivationUrl = *activationUrlField
-	}
+	st.ActivationUrl = pb.ActivationUrl
 
 	return st, nil
 }
@@ -2024,7 +1737,8 @@ func getActivationUrlInfoResponseFromPb(pb *getActivationUrlInfoResponsePb) (*Ge
 // Get a provider
 type GetProviderRequest struct {
 	// Name of the provider.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func getProviderRequestToPb(st *GetProviderRequest) (*getProviderRequestPb, error) {
@@ -2032,10 +1746,7 @@ func getProviderRequestToPb(st *GetProviderRequest) (*getProviderRequestPb, erro
 		return nil, nil
 	}
 	pb := &getProviderRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -2075,10 +1786,7 @@ func getProviderRequestFromPb(pb *getProviderRequestPb) (*GetProviderRequest, er
 		return nil, nil
 	}
 	st := &GetProviderRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -2086,7 +1794,8 @@ func getProviderRequestFromPb(pb *getProviderRequestPb) (*GetProviderRequest, er
 // Get a share recipient
 type GetRecipientRequest struct {
 	// Name of the recipient.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func getRecipientRequestToPb(st *GetRecipientRequest) (*getRecipientRequestPb, error) {
@@ -2094,10 +1803,7 @@ func getRecipientRequestToPb(st *GetRecipientRequest) (*getRecipientRequestPb, e
 		return nil, nil
 	}
 	pb := &getRecipientRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -2137,10 +1843,7 @@ func getRecipientRequestFromPb(pb *getRecipientRequestPb) (*GetRecipientRequest,
 		return nil, nil
 	}
 	st := &GetRecipientRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -2149,11 +1852,13 @@ type GetRecipientSharePermissionsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// An array of data share permissions for a recipient.
+	// Wire name: 'permissions_out'
 	PermissionsOut []ShareToPrivilegeAssignment
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getRecipientSharePermissionsResponseToPb(st *GetRecipientSharePermissionsResponse) (*getRecipientSharePermissionsResponsePb, error) {
@@ -2161,10 +1866,7 @@ func getRecipientSharePermissionsResponseToPb(st *GetRecipientSharePermissionsRe
 		return nil, nil
 	}
 	pb := &getRecipientSharePermissionsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var permissionsOutPb []shareToPrivilegeAssignmentPb
 	for _, item := range st.PermissionsOut {
@@ -2223,19 +1925,16 @@ func getRecipientSharePermissionsResponseFromPb(pb *getRecipientSharePermissions
 		return nil, nil
 	}
 	st := &GetRecipientSharePermissionsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var permissionsOutField []ShareToPrivilegeAssignment
-	for _, item := range pb.PermissionsOut {
-		itemField, err := shareToPrivilegeAssignmentFromPb(&item)
+	for _, itemPb := range pb.PermissionsOut {
+		item, err := shareToPrivilegeAssignmentFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionsOutField = append(permissionsOutField, *itemField)
+		if item != nil {
+			permissionsOutField = append(permissionsOutField, *item)
 		}
 	}
 	st.PermissionsOut = permissionsOutField
@@ -2256,11 +1955,13 @@ type GetSharePermissionsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// The privileges assigned to each principal
+	// Wire name: 'privilege_assignments'
 	PrivilegeAssignments []PrivilegeAssignment
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getSharePermissionsResponseToPb(st *GetSharePermissionsResponse) (*getSharePermissionsResponsePb, error) {
@@ -2268,10 +1969,7 @@ func getSharePermissionsResponseToPb(st *GetSharePermissionsResponse) (*getShare
 		return nil, nil
 	}
 	pb := &getSharePermissionsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var privilegeAssignmentsPb []privilegeAssignmentPb
 	for _, item := range st.PrivilegeAssignments {
@@ -2330,19 +2028,16 @@ func getSharePermissionsResponseFromPb(pb *getSharePermissionsResponsePb) (*GetS
 		return nil, nil
 	}
 	st := &GetSharePermissionsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var privilegeAssignmentsField []PrivilegeAssignment
-	for _, item := range pb.PrivilegeAssignments {
-		itemField, err := privilegeAssignmentFromPb(&item)
+	for _, itemPb := range pb.PrivilegeAssignments {
+		item, err := privilegeAssignmentFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			privilegeAssignmentsField = append(privilegeAssignmentsField, *itemField)
+		if item != nil {
+			privilegeAssignmentsField = append(privilegeAssignmentsField, *item)
 		}
 	}
 	st.PrivilegeAssignments = privilegeAssignmentsField
@@ -2362,11 +2057,13 @@ func (st getSharePermissionsResponsePb) MarshalJSON() ([]byte, error) {
 // Get a share
 type GetShareRequest struct {
 	// Query for data to include in the share.
-	IncludeSharedData bool
+	// Wire name: 'include_shared_data'
+	IncludeSharedData bool `tf:"-"`
 	// The name of the share.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getShareRequestToPb(st *GetShareRequest) (*getShareRequestPb, error) {
@@ -2374,15 +2071,9 @@ func getShareRequestToPb(st *GetShareRequest) (*getShareRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getShareRequestPb{}
-	includeSharedDataPb := &st.IncludeSharedData
-	if includeSharedDataPb != nil {
-		pb.IncludeSharedData = *includeSharedDataPb
-	}
+	pb.IncludeSharedData = st.IncludeSharedData
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2427,14 +2118,8 @@ func getShareRequestFromPb(pb *getShareRequestPb) (*GetShareRequest, error) {
 		return nil, nil
 	}
 	st := &GetShareRequest{}
-	includeSharedDataField := &pb.IncludeSharedData
-	if includeSharedDataField != nil {
-		st.IncludeSharedData = *includeSharedDataField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.IncludeSharedData = pb.IncludeSharedData
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2450,6 +2135,7 @@ func (st getShareRequestPb) MarshalJSON() ([]byte, error) {
 
 type IpAccessList struct {
 	// Allowed IP Addresses in CIDR notation. Limit of 100.
+	// Wire name: 'allowed_ip_addresses'
 	AllowedIpAddresses []string
 }
 
@@ -2458,15 +2144,7 @@ func ipAccessListToPb(st *IpAccessList) (*ipAccessListPb, error) {
 		return nil, nil
 	}
 	pb := &ipAccessListPb{}
-
-	var allowedIpAddressesPb []string
-	for _, item := range st.AllowedIpAddresses {
-		itemPb := &item
-		if itemPb != nil {
-			allowedIpAddressesPb = append(allowedIpAddressesPb, *itemPb)
-		}
-	}
-	pb.AllowedIpAddresses = allowedIpAddressesPb
+	pb.AllowedIpAddresses = st.AllowedIpAddresses
 
 	return pb, nil
 }
@@ -2506,15 +2184,7 @@ func ipAccessListFromPb(pb *ipAccessListPb) (*IpAccessList, error) {
 		return nil, nil
 	}
 	st := &IpAccessList{}
-
-	var allowedIpAddressesField []string
-	for _, item := range pb.AllowedIpAddresses {
-		itemField := &item
-		if itemField != nil {
-			allowedIpAddressesField = append(allowedIpAddressesField, *itemField)
-		}
-	}
-	st.AllowedIpAddresses = allowedIpAddressesField
+	st.AllowedIpAddresses = pb.AllowedIpAddresses
 
 	return st, nil
 }
@@ -2522,19 +2192,25 @@ func ipAccessListFromPb(pb *ipAccessListPb) (*IpAccessList, error) {
 // List assets by provider share
 type ListProviderShareAssetsRequest struct {
 	// Maximum number of functions to return.
-	FunctionMaxResults int
+	// Wire name: 'function_max_results'
+	FunctionMaxResults int `tf:"-"`
 	// Maximum number of notebooks to return.
-	NotebookMaxResults int
+	// Wire name: 'notebook_max_results'
+	NotebookMaxResults int `tf:"-"`
 	// The name of the provider who owns the share.
-	ProviderName string
+	// Wire name: 'provider_name'
+	ProviderName string `tf:"-"`
 	// The name of the share.
-	ShareName string
+	// Wire name: 'share_name'
+	ShareName string `tf:"-"`
 	// Maximum number of tables to return.
-	TableMaxResults int
+	// Wire name: 'table_max_results'
+	TableMaxResults int `tf:"-"`
 	// Maximum number of volumes to return.
-	VolumeMaxResults int
+	// Wire name: 'volume_max_results'
+	VolumeMaxResults int `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listProviderShareAssetsRequestToPb(st *ListProviderShareAssetsRequest) (*listProviderShareAssetsRequestPb, error) {
@@ -2542,35 +2218,17 @@ func listProviderShareAssetsRequestToPb(st *ListProviderShareAssetsRequest) (*li
 		return nil, nil
 	}
 	pb := &listProviderShareAssetsRequestPb{}
-	functionMaxResultsPb := &st.FunctionMaxResults
-	if functionMaxResultsPb != nil {
-		pb.FunctionMaxResults = *functionMaxResultsPb
-	}
+	pb.FunctionMaxResults = st.FunctionMaxResults
 
-	notebookMaxResultsPb := &st.NotebookMaxResults
-	if notebookMaxResultsPb != nil {
-		pb.NotebookMaxResults = *notebookMaxResultsPb
-	}
+	pb.NotebookMaxResults = st.NotebookMaxResults
 
-	providerNamePb := &st.ProviderName
-	if providerNamePb != nil {
-		pb.ProviderName = *providerNamePb
-	}
+	pb.ProviderName = st.ProviderName
 
-	shareNamePb := &st.ShareName
-	if shareNamePb != nil {
-		pb.ShareName = *shareNamePb
-	}
+	pb.ShareName = st.ShareName
 
-	tableMaxResultsPb := &st.TableMaxResults
-	if tableMaxResultsPb != nil {
-		pb.TableMaxResults = *tableMaxResultsPb
-	}
+	pb.TableMaxResults = st.TableMaxResults
 
-	volumeMaxResultsPb := &st.VolumeMaxResults
-	if volumeMaxResultsPb != nil {
-		pb.VolumeMaxResults = *volumeMaxResultsPb
-	}
+	pb.VolumeMaxResults = st.VolumeMaxResults
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2623,30 +2281,12 @@ func listProviderShareAssetsRequestFromPb(pb *listProviderShareAssetsRequestPb) 
 		return nil, nil
 	}
 	st := &ListProviderShareAssetsRequest{}
-	functionMaxResultsField := &pb.FunctionMaxResults
-	if functionMaxResultsField != nil {
-		st.FunctionMaxResults = *functionMaxResultsField
-	}
-	notebookMaxResultsField := &pb.NotebookMaxResults
-	if notebookMaxResultsField != nil {
-		st.NotebookMaxResults = *notebookMaxResultsField
-	}
-	providerNameField := &pb.ProviderName
-	if providerNameField != nil {
-		st.ProviderName = *providerNameField
-	}
-	shareNameField := &pb.ShareName
-	if shareNameField != nil {
-		st.ShareName = *shareNameField
-	}
-	tableMaxResultsField := &pb.TableMaxResults
-	if tableMaxResultsField != nil {
-		st.TableMaxResults = *tableMaxResultsField
-	}
-	volumeMaxResultsField := &pb.VolumeMaxResults
-	if volumeMaxResultsField != nil {
-		st.VolumeMaxResults = *volumeMaxResultsField
-	}
+	st.FunctionMaxResults = pb.FunctionMaxResults
+	st.NotebookMaxResults = pb.NotebookMaxResults
+	st.ProviderName = pb.ProviderName
+	st.ShareName = pb.ShareName
+	st.TableMaxResults = pb.TableMaxResults
+	st.VolumeMaxResults = pb.VolumeMaxResults
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2664,12 +2304,16 @@ func (st listProviderShareAssetsRequestPb) MarshalJSON() ([]byte, error) {
 // share.
 type ListProviderShareAssetsResponse struct {
 	// The list of functions in the share.
+	// Wire name: 'functions'
 	Functions []DeltaSharingFunction
 	// The list of notebooks in the share.
+	// Wire name: 'notebooks'
 	Notebooks []NotebookFile
 	// The list of tables in the share.
+	// Wire name: 'tables'
 	Tables []Table
 	// The list of volumes in the share.
+	// Wire name: 'volumes'
 	Volumes []Volume
 }
 
@@ -2773,49 +2417,49 @@ func listProviderShareAssetsResponseFromPb(pb *listProviderShareAssetsResponsePb
 	st := &ListProviderShareAssetsResponse{}
 
 	var functionsField []DeltaSharingFunction
-	for _, item := range pb.Functions {
-		itemField, err := deltaSharingFunctionFromPb(&item)
+	for _, itemPb := range pb.Functions {
+		item, err := deltaSharingFunctionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			functionsField = append(functionsField, *itemField)
+		if item != nil {
+			functionsField = append(functionsField, *item)
 		}
 	}
 	st.Functions = functionsField
 
 	var notebooksField []NotebookFile
-	for _, item := range pb.Notebooks {
-		itemField, err := notebookFileFromPb(&item)
+	for _, itemPb := range pb.Notebooks {
+		item, err := notebookFileFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			notebooksField = append(notebooksField, *itemField)
+		if item != nil {
+			notebooksField = append(notebooksField, *item)
 		}
 	}
 	st.Notebooks = notebooksField
 
 	var tablesField []Table
-	for _, item := range pb.Tables {
-		itemField, err := tableFromPb(&item)
+	for _, itemPb := range pb.Tables {
+		item, err := tableFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tablesField = append(tablesField, *itemField)
+		if item != nil {
+			tablesField = append(tablesField, *item)
 		}
 	}
 	st.Tables = tablesField
 
 	var volumesField []Volume
-	for _, item := range pb.Volumes {
-		itemField, err := volumeFromPb(&item)
+	for _, itemPb := range pb.Volumes {
+		item, err := volumeFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			volumesField = append(volumesField, *itemField)
+		if item != nil {
+			volumesField = append(volumesField, *item)
 		}
 	}
 	st.Volumes = volumesField
@@ -2827,11 +2471,13 @@ type ListProviderSharesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// An array of provider shares.
+	// Wire name: 'shares'
 	Shares []ProviderShare
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listProviderSharesResponseToPb(st *ListProviderSharesResponse) (*listProviderSharesResponsePb, error) {
@@ -2839,10 +2485,7 @@ func listProviderSharesResponseToPb(st *ListProviderSharesResponse) (*listProvid
 		return nil, nil
 	}
 	pb := &listProviderSharesResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var sharesPb []providerSharePb
 	for _, item := range st.Shares {
@@ -2901,19 +2544,16 @@ func listProviderSharesResponseFromPb(pb *listProviderSharesResponsePb) (*ListPr
 		return nil, nil
 	}
 	st := &ListProviderSharesResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var sharesField []ProviderShare
-	for _, item := range pb.Shares {
-		itemField, err := providerShareFromPb(&item)
+	for _, itemPb := range pb.Shares {
+		item, err := providerShareFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			sharesField = append(sharesField, *itemField)
+		if item != nil {
+			sharesField = append(sharesField, *item)
 		}
 	}
 	st.Shares = sharesField
@@ -2934,7 +2574,8 @@ func (st listProviderSharesResponsePb) MarshalJSON() ([]byte, error) {
 type ListProvidersRequest struct {
 	// If not provided, all providers will be returned. If no providers exist
 	// with this ID, no results will be returned.
-	DataProviderGlobalMetastoreId string
+	// Wire name: 'data_provider_global_metastore_id'
+	DataProviderGlobalMetastoreId string `tf:"-"`
 	// Maximum number of providers to return. - when set to 0, the page length
 	// is set to a server configured value (recommended); - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
@@ -2944,11 +2585,13 @@ type ListProvidersRequest struct {
 	// the specified max_results size, even zero. The only definitive indication
 	// that no further providers can be fetched is when the next_page_token is
 	// unset from the response.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listProvidersRequestToPb(st *ListProvidersRequest) (*listProvidersRequestPb, error) {
@@ -2956,20 +2599,11 @@ func listProvidersRequestToPb(st *ListProvidersRequest) (*listProvidersRequestPb
 		return nil, nil
 	}
 	pb := &listProvidersRequestPb{}
-	dataProviderGlobalMetastoreIdPb := &st.DataProviderGlobalMetastoreId
-	if dataProviderGlobalMetastoreIdPb != nil {
-		pb.DataProviderGlobalMetastoreId = *dataProviderGlobalMetastoreIdPb
-	}
+	pb.DataProviderGlobalMetastoreId = st.DataProviderGlobalMetastoreId
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3025,18 +2659,9 @@ func listProvidersRequestFromPb(pb *listProvidersRequestPb) (*ListProvidersReque
 		return nil, nil
 	}
 	st := &ListProvidersRequest{}
-	dataProviderGlobalMetastoreIdField := &pb.DataProviderGlobalMetastoreId
-	if dataProviderGlobalMetastoreIdField != nil {
-		st.DataProviderGlobalMetastoreId = *dataProviderGlobalMetastoreIdField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.DataProviderGlobalMetastoreId = pb.DataProviderGlobalMetastoreId
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3054,11 +2679,13 @@ type ListProvidersResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// An array of provider information objects.
+	// Wire name: 'providers'
 	Providers []ProviderInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listProvidersResponseToPb(st *ListProvidersResponse) (*listProvidersResponsePb, error) {
@@ -3066,10 +2693,7 @@ func listProvidersResponseToPb(st *ListProvidersResponse) (*listProvidersRespons
 		return nil, nil
 	}
 	pb := &listProvidersResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var providersPb []providerInfoPb
 	for _, item := range st.Providers {
@@ -3128,19 +2752,16 @@ func listProvidersResponseFromPb(pb *listProvidersResponsePb) (*ListProvidersRes
 		return nil, nil
 	}
 	st := &ListProvidersResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var providersField []ProviderInfo
-	for _, item := range pb.Providers {
-		itemField, err := providerInfoFromPb(&item)
+	for _, itemPb := range pb.Providers {
+		item, err := providerInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			providersField = append(providersField, *itemField)
+		if item != nil {
+			providersField = append(providersField, *item)
 		}
 	}
 	st.Providers = providersField
@@ -3161,7 +2782,8 @@ func (st listProvidersResponsePb) MarshalJSON() ([]byte, error) {
 type ListRecipientsRequest struct {
 	// If not provided, all recipients will be returned. If no recipients exist
 	// with this ID, no results will be returned.
-	DataRecipientGlobalMetastoreId string
+	// Wire name: 'data_recipient_global_metastore_id'
+	DataRecipientGlobalMetastoreId string `tf:"-"`
 	// Maximum number of recipients to return. - when set to 0, the page length
 	// is set to a server configured value (recommended); - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
@@ -3171,11 +2793,13 @@ type ListRecipientsRequest struct {
 	// than the specified max_results size, even zero. The only definitive
 	// indication that no further recipients can be fetched is when the
 	// next_page_token is unset from the response.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listRecipientsRequestToPb(st *ListRecipientsRequest) (*listRecipientsRequestPb, error) {
@@ -3183,20 +2807,11 @@ func listRecipientsRequestToPb(st *ListRecipientsRequest) (*listRecipientsReques
 		return nil, nil
 	}
 	pb := &listRecipientsRequestPb{}
-	dataRecipientGlobalMetastoreIdPb := &st.DataRecipientGlobalMetastoreId
-	if dataRecipientGlobalMetastoreIdPb != nil {
-		pb.DataRecipientGlobalMetastoreId = *dataRecipientGlobalMetastoreIdPb
-	}
+	pb.DataRecipientGlobalMetastoreId = st.DataRecipientGlobalMetastoreId
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3252,18 +2867,9 @@ func listRecipientsRequestFromPb(pb *listRecipientsRequestPb) (*ListRecipientsRe
 		return nil, nil
 	}
 	st := &ListRecipientsRequest{}
-	dataRecipientGlobalMetastoreIdField := &pb.DataRecipientGlobalMetastoreId
-	if dataRecipientGlobalMetastoreIdField != nil {
-		st.DataRecipientGlobalMetastoreId = *dataRecipientGlobalMetastoreIdField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.DataRecipientGlobalMetastoreId = pb.DataRecipientGlobalMetastoreId
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3281,11 +2887,13 @@ type ListRecipientsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// An array of recipient information objects.
+	// Wire name: 'recipients'
 	Recipients []RecipientInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listRecipientsResponseToPb(st *ListRecipientsResponse) (*listRecipientsResponsePb, error) {
@@ -3293,10 +2901,7 @@ func listRecipientsResponseToPb(st *ListRecipientsResponse) (*listRecipientsResp
 		return nil, nil
 	}
 	pb := &listRecipientsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var recipientsPb []recipientInfoPb
 	for _, item := range st.Recipients {
@@ -3355,19 +2960,16 @@ func listRecipientsResponseFromPb(pb *listRecipientsResponsePb) (*ListRecipients
 		return nil, nil
 	}
 	st := &ListRecipientsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var recipientsField []RecipientInfo
-	for _, item := range pb.Recipients {
-		itemField, err := recipientInfoFromPb(&item)
+	for _, itemPb := range pb.Recipients {
+		item, err := recipientInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			recipientsField = append(recipientsField, *itemField)
+		if item != nil {
+			recipientsField = append(recipientsField, *item)
 		}
 	}
 	st.Recipients = recipientsField
@@ -3395,13 +2997,16 @@ type ListSharesRequest struct {
 	// the specified max_results size, even zero. The only definitive indication
 	// that no further shares can be fetched is when the next_page_token is
 	// unset from the response.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Name of the provider in which to list shares.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listSharesRequestToPb(st *ListSharesRequest) (*listSharesRequestPb, error) {
@@ -3409,20 +3014,11 @@ func listSharesRequestToPb(st *ListSharesRequest) (*listSharesRequestPb, error) 
 		return nil, nil
 	}
 	pb := &listSharesRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3477,18 +3073,9 @@ func listSharesRequestFromPb(pb *listSharesRequestPb) (*ListSharesRequest, error
 		return nil, nil
 	}
 	st := &ListSharesRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.MaxResults = pb.MaxResults
+	st.Name = pb.Name
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3506,11 +3093,13 @@ type ListSharesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// An array of data share information objects.
+	// Wire name: 'shares'
 	Shares []ShareInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listSharesResponseToPb(st *ListSharesResponse) (*listSharesResponsePb, error) {
@@ -3518,10 +3107,7 @@ func listSharesResponseToPb(st *ListSharesResponse) (*listSharesResponsePb, erro
 		return nil, nil
 	}
 	pb := &listSharesResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var sharesPb []shareInfoPb
 	for _, item := range st.Shares {
@@ -3580,19 +3166,16 @@ func listSharesResponseFromPb(pb *listSharesResponsePb) (*ListSharesResponse, er
 		return nil, nil
 	}
 	st := &ListSharesResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var sharesField []ShareInfo
-	for _, item := range pb.Shares {
-		itemField, err := shareInfoFromPb(&item)
+	for _, itemPb := range pb.Shares {
+		item, err := shareInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			sharesField = append(sharesField, *itemField)
+		if item != nil {
+			sharesField = append(sharesField, *item)
 		}
 	}
 	st.Shares = sharesField
@@ -3611,19 +3194,25 @@ func (st listSharesResponsePb) MarshalJSON() ([]byte, error) {
 
 type NotebookFile struct {
 	// The comment of the notebook file.
+	// Wire name: 'comment'
 	Comment string
 	// The id of the notebook file.
+	// Wire name: 'id'
 	Id string
 	// Name of the notebook file.
+	// Wire name: 'name'
 	Name string
 	// The name of the share that the notebook file belongs to.
+	// Wire name: 'share'
 	Share string
 	// The id of the share that the notebook file belongs to.
+	// Wire name: 'share_id'
 	ShareId string
 	// The tags of the notebook file.
+	// Wire name: 'tags'
 	Tags []catalog.TagKeyValue
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func notebookFileToPb(st *NotebookFile) (*notebookFilePb, error) {
@@ -3631,30 +3220,15 @@ func notebookFileToPb(st *NotebookFile) (*notebookFilePb, error) {
 		return nil, nil
 	}
 	pb := &notebookFilePb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	sharePb := &st.Share
-	if sharePb != nil {
-		pb.Share = *sharePb
-	}
+	pb.Share = st.Share
 
-	shareIdPb := &st.ShareId
-	if shareIdPb != nil {
-		pb.ShareId = *shareIdPb
-	}
+	pb.ShareId = st.ShareId
 
 	var tagsPb []catalog.TagKeyValuePb
 	for _, item := range st.Tags {
@@ -3719,35 +3293,20 @@ func notebookFileFromPb(pb *notebookFilePb) (*NotebookFile, error) {
 		return nil, nil
 	}
 	st := &NotebookFile{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	shareField := &pb.Share
-	if shareField != nil {
-		st.Share = *shareField
-	}
-	shareIdField := &pb.ShareId
-	if shareIdField != nil {
-		st.ShareId = *shareIdField
-	}
+	st.Comment = pb.Comment
+	st.Id = pb.Id
+	st.Name = pb.Name
+	st.Share = pb.Share
+	st.ShareId = pb.ShareId
 
 	var tagsField []catalog.TagKeyValue
-	for _, item := range pb.Tags {
-		itemField, err := catalog.TagKeyValueFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := catalog.TagKeyValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -3766,6 +3325,7 @@ func (st notebookFilePb) MarshalJSON() ([]byte, error) {
 
 type Partition struct {
 	// An array of partition values.
+	// Wire name: 'values'
 	Values []PartitionValue
 }
 
@@ -3827,13 +3387,13 @@ func PartitionFromPb(pb *PartitionPb) (*Partition, error) {
 	st := &Partition{}
 
 	var valuesField []PartitionValue
-	for _, item := range pb.Values {
-		itemField, err := partitionValueFromPb(&item)
+	for _, itemPb := range pb.Values {
+		item, err := partitionValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			valuesField = append(valuesField, *itemField)
+		if item != nil {
+			valuesField = append(valuesField, *item)
 		}
 	}
 	st.Values = valuesField
@@ -3843,19 +3403,23 @@ func PartitionFromPb(pb *PartitionPb) (*Partition, error) {
 
 type PartitionValue struct {
 	// The name of the partition column.
+	// Wire name: 'name'
 	Name string
 	// The operator to apply for the value.
+	// Wire name: 'op'
 	Op PartitionValueOp
 	// The key of a Delta Sharing recipient's property. For example
 	// "databricks-account-id". When this field is set, field `value` can not be
 	// set.
+	// Wire name: 'recipient_property_key'
 	RecipientPropertyKey string
 	// The value of the partition column. When this value is not set, it means
 	// `null` value. When this field is set, field `recipient_property_key` can
 	// not be set.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func partitionValueToPb(st *PartitionValue) (*partitionValuePb, error) {
@@ -3863,25 +3427,13 @@ func partitionValueToPb(st *PartitionValue) (*partitionValuePb, error) {
 		return nil, nil
 	}
 	pb := &partitionValuePb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	opPb := &st.Op
-	if opPb != nil {
-		pb.Op = *opPb
-	}
+	pb.Op = st.Op
 
-	recipientPropertyKeyPb := &st.RecipientPropertyKey
-	if recipientPropertyKeyPb != nil {
-		pb.RecipientPropertyKey = *recipientPropertyKeyPb
-	}
+	pb.RecipientPropertyKey = st.RecipientPropertyKey
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3934,22 +3486,10 @@ func partitionValueFromPb(pb *partitionValuePb) (*PartitionValue, error) {
 		return nil, nil
 	}
 	st := &PartitionValue{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	opField := &pb.Op
-	if opField != nil {
-		st.Op = *opField
-	}
-	recipientPropertyKeyField := &pb.RecipientPropertyKey
-	if recipientPropertyKeyField != nil {
-		st.RecipientPropertyKey = *recipientPropertyKeyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Name = pb.Name
+	st.Op = pb.Op
+	st.RecipientPropertyKey = pb.RecipientPropertyKey
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4009,13 +3549,16 @@ func partitionValueOpFromPb(pb *partitionValueOpPb) (*PartitionValueOp, error) {
 
 type PermissionsChange struct {
 	// The set of privileges to add.
+	// Wire name: 'add'
 	Add []string
 	// The principal whose privileges we are changing.
+	// Wire name: 'principal'
 	Principal string
 	// The set of privileges to remove.
+	// Wire name: 'remove'
 	Remove []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func permissionsChangeToPb(st *PermissionsChange) (*permissionsChangePb, error) {
@@ -4023,29 +3566,11 @@ func permissionsChangeToPb(st *PermissionsChange) (*permissionsChangePb, error) 
 		return nil, nil
 	}
 	pb := &permissionsChangePb{}
+	pb.Add = st.Add
 
-	var addPb []string
-	for _, item := range st.Add {
-		itemPb := &item
-		if itemPb != nil {
-			addPb = append(addPb, *itemPb)
-		}
-	}
-	pb.Add = addPb
+	pb.Principal = st.Principal
 
-	principalPb := &st.Principal
-	if principalPb != nil {
-		pb.Principal = *principalPb
-	}
-
-	var removePb []string
-	for _, item := range st.Remove {
-		itemPb := &item
-		if itemPb != nil {
-			removePb = append(removePb, *itemPb)
-		}
-	}
-	pb.Remove = removePb
+	pb.Remove = st.Remove
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4092,28 +3617,9 @@ func permissionsChangeFromPb(pb *permissionsChangePb) (*PermissionsChange, error
 		return nil, nil
 	}
 	st := &PermissionsChange{}
-
-	var addField []string
-	for _, item := range pb.Add {
-		itemField := &item
-		if itemField != nil {
-			addField = append(addField, *itemField)
-		}
-	}
-	st.Add = addField
-	principalField := &pb.Principal
-	if principalField != nil {
-		st.Principal = *principalField
-	}
-
-	var removeField []string
-	for _, item := range pb.Remove {
-		itemField := &item
-		if itemField != nil {
-			removeField = append(removeField, *itemField)
-		}
-	}
-	st.Remove = removeField
+	st.Add = pb.Add
+	st.Principal = pb.Principal
+	st.Remove = pb.Remove
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4259,11 +3765,13 @@ func privilegeFromPb(pb *privilegePb) (*Privilege, error) {
 
 type PrivilegeAssignment struct {
 	// The principal (user email address or group name).
+	// Wire name: 'principal'
 	Principal string
 	// The privileges assigned to the principal.
+	// Wire name: 'privileges'
 	Privileges []Privilege
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func privilegeAssignmentToPb(st *PrivilegeAssignment) (*privilegeAssignmentPb, error) {
@@ -4271,19 +3779,9 @@ func privilegeAssignmentToPb(st *PrivilegeAssignment) (*privilegeAssignmentPb, e
 		return nil, nil
 	}
 	pb := &privilegeAssignmentPb{}
-	principalPb := &st.Principal
-	if principalPb != nil {
-		pb.Principal = *principalPb
-	}
+	pb.Principal = st.Principal
 
-	var privilegesPb []Privilege
-	for _, item := range st.Privileges {
-		itemPb := &item
-		if itemPb != nil {
-			privilegesPb = append(privilegesPb, *itemPb)
-		}
-	}
-	pb.Privileges = privilegesPb
+	pb.Privileges = st.Privileges
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4328,19 +3826,8 @@ func privilegeAssignmentFromPb(pb *privilegeAssignmentPb) (*PrivilegeAssignment,
 		return nil, nil
 	}
 	st := &PrivilegeAssignment{}
-	principalField := &pb.Principal
-	if principalField != nil {
-		st.Principal = *principalField
-	}
-
-	var privilegesField []Privilege
-	for _, item := range pb.Privileges {
-		itemField := &item
-		if itemField != nil {
-			privilegesField = append(privilegesField, *itemField)
-		}
-	}
-	st.Privileges = privilegesField
+	st.Principal = pb.Principal
+	st.Privileges = pb.Privileges
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4356,42 +3843,56 @@ func (st privilegeAssignmentPb) MarshalJSON() ([]byte, error) {
 
 type ProviderInfo struct {
 	// The delta sharing authentication type.
+	// Wire name: 'authentication_type'
 	AuthenticationType AuthenticationType
 	// Cloud vendor of the provider's UC metastore. This field is only present
 	// when the __authentication_type__ is **DATABRICKS**.
+	// Wire name: 'cloud'
 	Cloud string
 	// Description about the provider.
+	// Wire name: 'comment'
 	Comment string
 	// Time at which this Provider was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of Provider creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// The global UC metastore id of the data provider. This field is only
 	// present when the __authentication_type__ is **DATABRICKS**. The
 	// identifier is of format __cloud__:__region__:__metastore-uuid__.
+	// Wire name: 'data_provider_global_metastore_id'
 	DataProviderGlobalMetastoreId string
 	// UUID of the provider's UC metastore. This field is only present when the
 	// __authentication_type__ is **DATABRICKS**.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// The name of the Provider.
+	// Wire name: 'name'
 	Name string
 	// Username of Provider owner.
+	// Wire name: 'owner'
 	Owner string
 	// The recipient profile. This field is only present when the
 	// authentication_type is `TOKEN` or `OAUTH_CLIENT_CREDENTIALS`.
+	// Wire name: 'recipient_profile'
 	RecipientProfile *RecipientProfile
 	// This field is required when the __authentication_type__ is **TOKEN**,
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
+	// Wire name: 'recipient_profile_str'
 	RecipientProfileStr string
 	// Cloud region of the provider's UC metastore. This field is only present
 	// when the __authentication_type__ is **DATABRICKS**.
+	// Wire name: 'region'
 	Region string
 	// Time at which this Provider was created, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of user who last modified Provider.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func providerInfoToPb(st *ProviderInfo) (*providerInfoPb, error) {
@@ -4399,50 +3900,23 @@ func providerInfoToPb(st *ProviderInfo) (*providerInfoPb, error) {
 		return nil, nil
 	}
 	pb := &providerInfoPb{}
-	authenticationTypePb := &st.AuthenticationType
-	if authenticationTypePb != nil {
-		pb.AuthenticationType = *authenticationTypePb
-	}
+	pb.AuthenticationType = st.AuthenticationType
 
-	cloudPb := &st.Cloud
-	if cloudPb != nil {
-		pb.Cloud = *cloudPb
-	}
+	pb.Cloud = st.Cloud
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	dataProviderGlobalMetastoreIdPb := &st.DataProviderGlobalMetastoreId
-	if dataProviderGlobalMetastoreIdPb != nil {
-		pb.DataProviderGlobalMetastoreId = *dataProviderGlobalMetastoreIdPb
-	}
+	pb.DataProviderGlobalMetastoreId = st.DataProviderGlobalMetastoreId
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
 	recipientProfilePb, err := recipientProfileToPb(st.RecipientProfile)
 	if err != nil {
@@ -4452,25 +3926,13 @@ func providerInfoToPb(st *ProviderInfo) (*providerInfoPb, error) {
 		pb.RecipientProfile = recipientProfilePb
 	}
 
-	recipientProfileStrPb := &st.RecipientProfileStr
-	if recipientProfileStrPb != nil {
-		pb.RecipientProfileStr = *recipientProfileStrPb
-	}
+	pb.RecipientProfileStr = st.RecipientProfileStr
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4546,42 +4008,15 @@ func providerInfoFromPb(pb *providerInfoPb) (*ProviderInfo, error) {
 		return nil, nil
 	}
 	st := &ProviderInfo{}
-	authenticationTypeField := &pb.AuthenticationType
-	if authenticationTypeField != nil {
-		st.AuthenticationType = *authenticationTypeField
-	}
-	cloudField := &pb.Cloud
-	if cloudField != nil {
-		st.Cloud = *cloudField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	dataProviderGlobalMetastoreIdField := &pb.DataProviderGlobalMetastoreId
-	if dataProviderGlobalMetastoreIdField != nil {
-		st.DataProviderGlobalMetastoreId = *dataProviderGlobalMetastoreIdField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
+	st.AuthenticationType = pb.AuthenticationType
+	st.Cloud = pb.Cloud
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.DataProviderGlobalMetastoreId = pb.DataProviderGlobalMetastoreId
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
 	recipientProfileField, err := recipientProfileFromPb(pb.RecipientProfile)
 	if err != nil {
 		return nil, err
@@ -4589,22 +4024,10 @@ func providerInfoFromPb(pb *providerInfoPb) (*ProviderInfo, error) {
 	if recipientProfileField != nil {
 		st.RecipientProfile = recipientProfileField
 	}
-	recipientProfileStrField := &pb.RecipientProfileStr
-	if recipientProfileStrField != nil {
-		st.RecipientProfileStr = *recipientProfileStrField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.RecipientProfileStr = pb.RecipientProfileStr
+	st.Region = pb.Region
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4620,9 +4043,10 @@ func (st providerInfoPb) MarshalJSON() ([]byte, error) {
 
 type ProviderShare struct {
 	// The name of the Provider Share.
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func providerShareToPb(st *ProviderShare) (*providerSharePb, error) {
@@ -4630,10 +4054,7 @@ func providerShareToPb(st *ProviderShare) (*providerSharePb, error) {
 		return nil, nil
 	}
 	pb := &providerSharePb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4676,10 +4097,7 @@ func providerShareFromPb(pb *providerSharePb) (*ProviderShare, error) {
 		return nil, nil
 	}
 	st := &ProviderShare{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4696,56 +4114,75 @@ func (st providerSharePb) MarshalJSON() ([]byte, error) {
 type RecipientInfo struct {
 	// A boolean status field showing whether the Recipient's activation URL has
 	// been exercised or not.
+	// Wire name: 'activated'
 	Activated bool
 	// Full activation url to retrieve the access token. It will be empty if the
 	// token is already retrieved.
+	// Wire name: 'activation_url'
 	ActivationUrl string
 	// The delta sharing authentication type.
+	// Wire name: 'authentication_type'
 	AuthenticationType AuthenticationType
 	// Cloud vendor of the recipient's Unity Catalog Metastore. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
+	// Wire name: 'cloud'
 	Cloud string
 	// Description about the recipient.
+	// Wire name: 'comment'
 	Comment string
 	// Time at which this recipient was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of recipient creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// The global Unity Catalog metastore id provided by the data recipient.
 	// This field is only present when the __authentication_type__ is
 	// **DATABRICKS**. The identifier is of format
 	// __cloud__:__region__:__metastore-uuid__.
+	// Wire name: 'data_recipient_global_metastore_id'
 	DataRecipientGlobalMetastoreId string
 	// Expiration timestamp of the token, in epoch milliseconds.
+	// Wire name: 'expiration_time'
 	ExpirationTime int64
 	// IP Access List
+	// Wire name: 'ip_access_list'
 	IpAccessList *IpAccessList
 	// Unique identifier of recipient's Unity Catalog Metastore. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// Name of Recipient.
+	// Wire name: 'name'
 	Name string
 	// Username of the recipient owner.
+	// Wire name: 'owner'
 	Owner string
 	// Recipient properties as map of string key-value pairs. When provided in
 	// update request, the specified properties will override the existing
 	// properties. To add and remove properties, one would need to perform a
 	// read-modify-write.
+	// Wire name: 'properties_kvpairs'
 	PropertiesKvpairs *SecurablePropertiesKvPairs
 	// Cloud region of the recipient's Unity Catalog Metastore. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
+	// Wire name: 'region'
 	Region string
 	// The one-time sharing code provided by the data recipient. This field is
 	// only present when the __authentication_type__ is **DATABRICKS**.
+	// Wire name: 'sharing_code'
 	SharingCode string
 	// This field is only present when the __authentication_type__ is **TOKEN**.
+	// Wire name: 'tokens'
 	Tokens []RecipientTokenInfo
 	// Time at which the recipient was updated, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of recipient updater.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func recipientInfoToPb(st *RecipientInfo) (*recipientInfoPb, error) {
@@ -4753,50 +4190,23 @@ func recipientInfoToPb(st *RecipientInfo) (*recipientInfoPb, error) {
 		return nil, nil
 	}
 	pb := &recipientInfoPb{}
-	activatedPb := &st.Activated
-	if activatedPb != nil {
-		pb.Activated = *activatedPb
-	}
+	pb.Activated = st.Activated
 
-	activationUrlPb := &st.ActivationUrl
-	if activationUrlPb != nil {
-		pb.ActivationUrl = *activationUrlPb
-	}
+	pb.ActivationUrl = st.ActivationUrl
 
-	authenticationTypePb := &st.AuthenticationType
-	if authenticationTypePb != nil {
-		pb.AuthenticationType = *authenticationTypePb
-	}
+	pb.AuthenticationType = st.AuthenticationType
 
-	cloudPb := &st.Cloud
-	if cloudPb != nil {
-		pb.Cloud = *cloudPb
-	}
+	pb.Cloud = st.Cloud
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	dataRecipientGlobalMetastoreIdPb := &st.DataRecipientGlobalMetastoreId
-	if dataRecipientGlobalMetastoreIdPb != nil {
-		pb.DataRecipientGlobalMetastoreId = *dataRecipientGlobalMetastoreIdPb
-	}
+	pb.DataRecipientGlobalMetastoreId = st.DataRecipientGlobalMetastoreId
 
-	expirationTimePb := &st.ExpirationTime
-	if expirationTimePb != nil {
-		pb.ExpirationTime = *expirationTimePb
-	}
+	pb.ExpirationTime = st.ExpirationTime
 
 	ipAccessListPb, err := ipAccessListToPb(st.IpAccessList)
 	if err != nil {
@@ -4806,20 +4216,11 @@ func recipientInfoToPb(st *RecipientInfo) (*recipientInfoPb, error) {
 		pb.IpAccessList = ipAccessListPb
 	}
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
 	propertiesKvpairsPb, err := securablePropertiesKvPairsToPb(st.PropertiesKvpairs)
 	if err != nil {
@@ -4829,15 +4230,9 @@ func recipientInfoToPb(st *RecipientInfo) (*recipientInfoPb, error) {
 		pb.PropertiesKvpairs = propertiesKvpairsPb
 	}
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
-	sharingCodePb := &st.SharingCode
-	if sharingCodePb != nil {
-		pb.SharingCode = *sharingCodePb
-	}
+	pb.SharingCode = st.SharingCode
 
 	var tokensPb []recipientTokenInfoPb
 	for _, item := range st.Tokens {
@@ -4851,15 +4246,9 @@ func recipientInfoToPb(st *RecipientInfo) (*recipientInfoPb, error) {
 	}
 	pb.Tokens = tokensPb
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4950,42 +4339,15 @@ func recipientInfoFromPb(pb *recipientInfoPb) (*RecipientInfo, error) {
 		return nil, nil
 	}
 	st := &RecipientInfo{}
-	activatedField := &pb.Activated
-	if activatedField != nil {
-		st.Activated = *activatedField
-	}
-	activationUrlField := &pb.ActivationUrl
-	if activationUrlField != nil {
-		st.ActivationUrl = *activationUrlField
-	}
-	authenticationTypeField := &pb.AuthenticationType
-	if authenticationTypeField != nil {
-		st.AuthenticationType = *authenticationTypeField
-	}
-	cloudField := &pb.Cloud
-	if cloudField != nil {
-		st.Cloud = *cloudField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	dataRecipientGlobalMetastoreIdField := &pb.DataRecipientGlobalMetastoreId
-	if dataRecipientGlobalMetastoreIdField != nil {
-		st.DataRecipientGlobalMetastoreId = *dataRecipientGlobalMetastoreIdField
-	}
-	expirationTimeField := &pb.ExpirationTime
-	if expirationTimeField != nil {
-		st.ExpirationTime = *expirationTimeField
-	}
+	st.Activated = pb.Activated
+	st.ActivationUrl = pb.ActivationUrl
+	st.AuthenticationType = pb.AuthenticationType
+	st.Cloud = pb.Cloud
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.DataRecipientGlobalMetastoreId = pb.DataRecipientGlobalMetastoreId
+	st.ExpirationTime = pb.ExpirationTime
 	ipAccessListField, err := ipAccessListFromPb(pb.IpAccessList)
 	if err != nil {
 		return nil, err
@@ -4993,18 +4355,9 @@ func recipientInfoFromPb(pb *recipientInfoPb) (*RecipientInfo, error) {
 	if ipAccessListField != nil {
 		st.IpAccessList = ipAccessListField
 	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
 	propertiesKvpairsField, err := securablePropertiesKvPairsFromPb(pb.PropertiesKvpairs)
 	if err != nil {
 		return nil, err
@@ -5012,34 +4365,22 @@ func recipientInfoFromPb(pb *recipientInfoPb) (*RecipientInfo, error) {
 	if propertiesKvpairsField != nil {
 		st.PropertiesKvpairs = propertiesKvpairsField
 	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
-	sharingCodeField := &pb.SharingCode
-	if sharingCodeField != nil {
-		st.SharingCode = *sharingCodeField
-	}
+	st.Region = pb.Region
+	st.SharingCode = pb.SharingCode
 
 	var tokensField []RecipientTokenInfo
-	for _, item := range pb.Tokens {
-		itemField, err := recipientTokenInfoFromPb(&item)
+	for _, itemPb := range pb.Tokens {
+		item, err := recipientTokenInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tokensField = append(tokensField, *itemField)
+		if item != nil {
+			tokensField = append(tokensField, *item)
 		}
 	}
 	st.Tokens = tokensField
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5055,13 +4396,16 @@ func (st recipientInfoPb) MarshalJSON() ([]byte, error) {
 
 type RecipientProfile struct {
 	// The token used to authorize the recipient.
+	// Wire name: 'bearer_token'
 	BearerToken string
 	// The endpoint for the share to be used by the recipient.
+	// Wire name: 'endpoint'
 	Endpoint string
 	// The version number of the recipient's credentials on a share.
+	// Wire name: 'share_credentials_version'
 	ShareCredentialsVersion int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func recipientProfileToPb(st *RecipientProfile) (*recipientProfilePb, error) {
@@ -5069,20 +4413,11 @@ func recipientProfileToPb(st *RecipientProfile) (*recipientProfilePb, error) {
 		return nil, nil
 	}
 	pb := &recipientProfilePb{}
-	bearerTokenPb := &st.BearerToken
-	if bearerTokenPb != nil {
-		pb.BearerToken = *bearerTokenPb
-	}
+	pb.BearerToken = st.BearerToken
 
-	endpointPb := &st.Endpoint
-	if endpointPb != nil {
-		pb.Endpoint = *endpointPb
-	}
+	pb.Endpoint = st.Endpoint
 
-	shareCredentialsVersionPb := &st.ShareCredentialsVersion
-	if shareCredentialsVersionPb != nil {
-		pb.ShareCredentialsVersion = *shareCredentialsVersionPb
-	}
+	pb.ShareCredentialsVersion = st.ShareCredentialsVersion
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5129,18 +4464,9 @@ func recipientProfileFromPb(pb *recipientProfilePb) (*RecipientProfile, error) {
 		return nil, nil
 	}
 	st := &RecipientProfile{}
-	bearerTokenField := &pb.BearerToken
-	if bearerTokenField != nil {
-		st.BearerToken = *bearerTokenField
-	}
-	endpointField := &pb.Endpoint
-	if endpointField != nil {
-		st.Endpoint = *endpointField
-	}
-	shareCredentialsVersionField := &pb.ShareCredentialsVersion
-	if shareCredentialsVersionField != nil {
-		st.ShareCredentialsVersion = *shareCredentialsVersionField
-	}
+	st.BearerToken = pb.BearerToken
+	st.Endpoint = pb.Endpoint
+	st.ShareCredentialsVersion = pb.ShareCredentialsVersion
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5157,21 +4483,28 @@ func (st recipientProfilePb) MarshalJSON() ([]byte, error) {
 type RecipientTokenInfo struct {
 	// Full activation URL to retrieve the access token. It will be empty if the
 	// token is already retrieved.
+	// Wire name: 'activation_url'
 	ActivationUrl string
 	// Time at which this recipient token was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of recipient token creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Expiration timestamp of the token in epoch milliseconds.
+	// Wire name: 'expiration_time'
 	ExpirationTime int64
 	// Unique ID of the recipient token.
+	// Wire name: 'id'
 	Id string
 	// Time at which this recipient token was updated, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of recipient token updater.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func recipientTokenInfoToPb(st *RecipientTokenInfo) (*recipientTokenInfoPb, error) {
@@ -5179,40 +4512,19 @@ func recipientTokenInfoToPb(st *RecipientTokenInfo) (*recipientTokenInfoPb, erro
 		return nil, nil
 	}
 	pb := &recipientTokenInfoPb{}
-	activationUrlPb := &st.ActivationUrl
-	if activationUrlPb != nil {
-		pb.ActivationUrl = *activationUrlPb
-	}
+	pb.ActivationUrl = st.ActivationUrl
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	expirationTimePb := &st.ExpirationTime
-	if expirationTimePb != nil {
-		pb.ExpirationTime = *expirationTimePb
-	}
+	pb.ExpirationTime = st.ExpirationTime
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5268,34 +4580,13 @@ func recipientTokenInfoFromPb(pb *recipientTokenInfoPb) (*RecipientTokenInfo, er
 		return nil, nil
 	}
 	st := &RecipientTokenInfo{}
-	activationUrlField := &pb.ActivationUrl
-	if activationUrlField != nil {
-		st.ActivationUrl = *activationUrlField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	expirationTimeField := &pb.ExpirationTime
-	if expirationTimeField != nil {
-		st.ExpirationTime = *expirationTimeField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.ActivationUrl = pb.ActivationUrl
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.ExpirationTime = pb.ExpirationTime
+	st.Id = pb.Id
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5311,11 +4602,13 @@ func (st recipientTokenInfoPb) MarshalJSON() ([]byte, error) {
 
 type RegisteredModelAlias struct {
 	// Name of the alias.
+	// Wire name: 'alias_name'
 	AliasName string
 	// Numeric model version that alias will reference.
+	// Wire name: 'version_num'
 	VersionNum int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func registeredModelAliasToPb(st *RegisteredModelAlias) (*registeredModelAliasPb, error) {
@@ -5323,15 +4616,9 @@ func registeredModelAliasToPb(st *RegisteredModelAlias) (*registeredModelAliasPb
 		return nil, nil
 	}
 	pb := &registeredModelAliasPb{}
-	aliasNamePb := &st.AliasName
-	if aliasNamePb != nil {
-		pb.AliasName = *aliasNamePb
-	}
+	pb.AliasName = st.AliasName
 
-	versionNumPb := &st.VersionNum
-	if versionNumPb != nil {
-		pb.VersionNum = *versionNumPb
-	}
+	pb.VersionNum = st.VersionNum
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5376,14 +4663,8 @@ func registeredModelAliasFromPb(pb *registeredModelAliasPb) (*RegisteredModelAli
 		return nil, nil
 	}
 	st := &RegisteredModelAlias{}
-	aliasNameField := &pb.AliasName
-	if aliasNameField != nil {
-		st.AliasName = *aliasNameField
-	}
-	versionNumField := &pb.VersionNum
-	if versionNumField != nil {
-		st.VersionNum = *versionNumField
-	}
+	st.AliasName = pb.AliasName
+	st.VersionNum = pb.VersionNum
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5400,7 +4681,8 @@ func (st registeredModelAliasPb) MarshalJSON() ([]byte, error) {
 // Get an access token
 type RetrieveTokenRequest struct {
 	// The one time activation url. It also accepts activation token.
-	ActivationUrl string
+	// Wire name: 'activation_url'
+	ActivationUrl string `tf:"-"`
 }
 
 func retrieveTokenRequestToPb(st *RetrieveTokenRequest) (*retrieveTokenRequestPb, error) {
@@ -5408,10 +4690,7 @@ func retrieveTokenRequestToPb(st *RetrieveTokenRequest) (*retrieveTokenRequestPb
 		return nil, nil
 	}
 	pb := &retrieveTokenRequestPb{}
-	activationUrlPb := &st.ActivationUrl
-	if activationUrlPb != nil {
-		pb.ActivationUrl = *activationUrlPb
-	}
+	pb.ActivationUrl = st.ActivationUrl
 
 	return pb, nil
 }
@@ -5451,25 +4730,26 @@ func retrieveTokenRequestFromPb(pb *retrieveTokenRequestPb) (*RetrieveTokenReque
 		return nil, nil
 	}
 	st := &RetrieveTokenRequest{}
-	activationUrlField := &pb.ActivationUrl
-	if activationUrlField != nil {
-		st.ActivationUrl = *activationUrlField
-	}
+	st.ActivationUrl = pb.ActivationUrl
 
 	return st, nil
 }
 
 type RetrieveTokenResponse struct {
 	// The token used to authorize the recipient.
+	// Wire name: 'bearerToken'
 	BearerToken string
 	// The endpoint for the share to be used by the recipient.
+	// Wire name: 'endpoint'
 	Endpoint string
 	// Expiration timestamp of the token in epoch milliseconds.
+	// Wire name: 'expirationTime'
 	ExpirationTime string
 	// These field names must follow the delta sharing protocol.
+	// Wire name: 'shareCredentialsVersion'
 	ShareCredentialsVersion int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func retrieveTokenResponseToPb(st *RetrieveTokenResponse) (*retrieveTokenResponsePb, error) {
@@ -5477,25 +4757,13 @@ func retrieveTokenResponseToPb(st *RetrieveTokenResponse) (*retrieveTokenRespons
 		return nil, nil
 	}
 	pb := &retrieveTokenResponsePb{}
-	bearerTokenPb := &st.BearerToken
-	if bearerTokenPb != nil {
-		pb.BearerToken = *bearerTokenPb
-	}
+	pb.BearerToken = st.BearerToken
 
-	endpointPb := &st.Endpoint
-	if endpointPb != nil {
-		pb.Endpoint = *endpointPb
-	}
+	pb.Endpoint = st.Endpoint
 
-	expirationTimePb := &st.ExpirationTime
-	if expirationTimePb != nil {
-		pb.ExpirationTime = *expirationTimePb
-	}
+	pb.ExpirationTime = st.ExpirationTime
 
-	shareCredentialsVersionPb := &st.ShareCredentialsVersion
-	if shareCredentialsVersionPb != nil {
-		pb.ShareCredentialsVersion = *shareCredentialsVersionPb
-	}
+	pb.ShareCredentialsVersion = st.ShareCredentialsVersion
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5544,22 +4812,10 @@ func retrieveTokenResponseFromPb(pb *retrieveTokenResponsePb) (*RetrieveTokenRes
 		return nil, nil
 	}
 	st := &RetrieveTokenResponse{}
-	bearerTokenField := &pb.BearerToken
-	if bearerTokenField != nil {
-		st.BearerToken = *bearerTokenField
-	}
-	endpointField := &pb.Endpoint
-	if endpointField != nil {
-		st.Endpoint = *endpointField
-	}
-	expirationTimeField := &pb.ExpirationTime
-	if expirationTimeField != nil {
-		st.ExpirationTime = *expirationTimeField
-	}
-	shareCredentialsVersionField := &pb.ShareCredentialsVersion
-	if shareCredentialsVersionField != nil {
-		st.ShareCredentialsVersion = *shareCredentialsVersionField
-	}
+	st.BearerToken = pb.BearerToken
+	st.Endpoint = pb.Endpoint
+	st.ExpirationTime = pb.ExpirationTime
+	st.ShareCredentialsVersion = pb.ShareCredentialsVersion
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5578,9 +4834,11 @@ type RotateRecipientToken struct {
 	// the expiration_time of existing token only to a smaller timestamp, it
 	// cannot extend the expiration_time. Use 0 to expire the existing token
 	// immediately, negative number will return an error.
+	// Wire name: 'existing_token_expire_in_seconds'
 	ExistingTokenExpireInSeconds int64
 	// The name of the Recipient.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func rotateRecipientTokenToPb(st *RotateRecipientToken) (*rotateRecipientTokenPb, error) {
@@ -5588,15 +4846,9 @@ func rotateRecipientTokenToPb(st *RotateRecipientToken) (*rotateRecipientTokenPb
 		return nil, nil
 	}
 	pb := &rotateRecipientTokenPb{}
-	existingTokenExpireInSecondsPb := &st.ExistingTokenExpireInSeconds
-	if existingTokenExpireInSecondsPb != nil {
-		pb.ExistingTokenExpireInSeconds = *existingTokenExpireInSecondsPb
-	}
+	pb.ExistingTokenExpireInSeconds = st.ExistingTokenExpireInSeconds
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -5641,14 +4893,8 @@ func rotateRecipientTokenFromPb(pb *rotateRecipientTokenPb) (*RotateRecipientTok
 		return nil, nil
 	}
 	st := &RotateRecipientToken{}
-	existingTokenExpireInSecondsField := &pb.ExistingTokenExpireInSeconds
-	if existingTokenExpireInSecondsField != nil {
-		st.ExistingTokenExpireInSeconds = *existingTokenExpireInSecondsField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.ExistingTokenExpireInSeconds = pb.ExistingTokenExpireInSeconds
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -5657,6 +4903,7 @@ func rotateRecipientTokenFromPb(pb *rotateRecipientTokenPb) (*RotateRecipientTok
 // to the securable.
 type SecurablePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string
 }
 
@@ -5665,15 +4912,7 @@ func securablePropertiesKvPairsToPb(st *SecurablePropertiesKvPairs) (*securableP
 		return nil, nil
 	}
 	pb := &securablePropertiesKvPairsPb{}
-
-	propertiesPb := map[string]string{}
-	for k, v := range st.Properties {
-		itemPb := &v
-		if itemPb != nil {
-			propertiesPb[k] = *itemPb
-		}
-	}
-	pb.Properties = propertiesPb
+	pb.Properties = st.Properties
 
 	return pb, nil
 }
@@ -5713,42 +4952,44 @@ func securablePropertiesKvPairsFromPb(pb *securablePropertiesKvPairsPb) (*Secura
 		return nil, nil
 	}
 	st := &SecurablePropertiesKvPairs{}
-
-	propertiesField := map[string]string{}
-	for k, v := range pb.Properties {
-		itemField := &v
-		if itemField != nil {
-			propertiesField[k] = *itemField
-		}
-	}
-	st.Properties = propertiesField
+	st.Properties = pb.Properties
 
 	return st, nil
 }
 
 type ShareInfo struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Time at which this share was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of share creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Name of the share.
+	// Wire name: 'name'
 	Name string
 	// A list of shared data objects within the share.
+	// Wire name: 'objects'
 	Objects []SharedDataObject
 	// Username of current owner of share.
+	// Wire name: 'owner'
 	Owner string
 	// Storage Location URL (full path) for the share.
+	// Wire name: 'storage_location'
 	StorageLocation string
 	// Storage root URL for the share.
+	// Wire name: 'storage_root'
 	StorageRoot string
 	// Time at which this share was updated, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of share updater.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func shareInfoToPb(st *ShareInfo) (*shareInfoPb, error) {
@@ -5756,25 +4997,13 @@ func shareInfoToPb(st *ShareInfo) (*shareInfoPb, error) {
 		return nil, nil
 	}
 	pb := &shareInfoPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var objectsPb []sharedDataObjectPb
 	for _, item := range st.Objects {
@@ -5788,30 +5017,15 @@ func shareInfoToPb(st *ShareInfo) (*shareInfoPb, error) {
 	}
 	pb.Objects = objectsPb
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
-	storageRootPb := &st.StorageRoot
-	if storageRootPb != nil {
-		pb.StorageRoot = *storageRootPb
-	}
+	pb.StorageRoot = st.StorageRoot
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5872,54 +5086,27 @@ func shareInfoFromPb(pb *shareInfoPb) (*ShareInfo, error) {
 		return nil, nil
 	}
 	st := &ShareInfo{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.Name = pb.Name
 
 	var objectsField []SharedDataObject
-	for _, item := range pb.Objects {
-		itemField, err := sharedDataObjectFromPb(&item)
+	for _, itemPb := range pb.Objects {
+		item, err := sharedDataObjectFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			objectsField = append(objectsField, *itemField)
+		if item != nil {
+			objectsField = append(objectsField, *item)
 		}
 	}
 	st.Objects = objectsField
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
-	storageRootField := &pb.StorageRoot
-	if storageRootField != nil {
-		st.StorageRoot = *storageRootField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.Owner = pb.Owner
+	st.StorageLocation = pb.StorageLocation
+	st.StorageRoot = pb.StorageRoot
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5944,13 +5131,16 @@ type SharePermissionsRequest struct {
 	// than the specified max_results size, even zero. The only definitive
 	// indication that no further permissions can be fetched is when the
 	// next_page_token is unset from the response.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// The name of the Recipient.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func sharePermissionsRequestToPb(st *SharePermissionsRequest) (*sharePermissionsRequestPb, error) {
@@ -5958,20 +5148,11 @@ func sharePermissionsRequestToPb(st *SharePermissionsRequest) (*sharePermissions
 		return nil, nil
 	}
 	pb := &sharePermissionsRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6026,18 +5207,9 @@ func sharePermissionsRequestFromPb(pb *sharePermissionsRequestPb) (*SharePermiss
 		return nil, nil
 	}
 	st := &SharePermissionsRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.MaxResults = pb.MaxResults
+	st.Name = pb.Name
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6053,11 +5225,13 @@ func (st sharePermissionsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ShareToPrivilegeAssignment struct {
 	// The privileges assigned to the principal.
+	// Wire name: 'privilege_assignments'
 	PrivilegeAssignments []PrivilegeAssignment
 	// The share name.
+	// Wire name: 'share_name'
 	ShareName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func shareToPrivilegeAssignmentToPb(st *ShareToPrivilegeAssignment) (*shareToPrivilegeAssignmentPb, error) {
@@ -6078,10 +5252,7 @@ func shareToPrivilegeAssignmentToPb(st *ShareToPrivilegeAssignment) (*shareToPri
 	}
 	pb.PrivilegeAssignments = privilegeAssignmentsPb
 
-	shareNamePb := &st.ShareName
-	if shareNamePb != nil {
-		pb.ShareName = *shareNamePb
-	}
+	pb.ShareName = st.ShareName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6128,20 +5299,17 @@ func shareToPrivilegeAssignmentFromPb(pb *shareToPrivilegeAssignmentPb) (*ShareT
 	st := &ShareToPrivilegeAssignment{}
 
 	var privilegeAssignmentsField []PrivilegeAssignment
-	for _, item := range pb.PrivilegeAssignments {
-		itemField, err := privilegeAssignmentFromPb(&item)
+	for _, itemPb := range pb.PrivilegeAssignments {
+		item, err := privilegeAssignmentFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			privilegeAssignmentsField = append(privilegeAssignmentsField, *itemField)
+		if item != nil {
+			privilegeAssignmentsField = append(privilegeAssignmentsField, *item)
 		}
 	}
 	st.PrivilegeAssignments = privilegeAssignmentsField
-	shareNameField := &pb.ShareName
-	if shareNameField != nil {
-		st.ShareName = *shareNameField
-	}
+	st.ShareName = pb.ShareName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6158,32 +5326,42 @@ func (st shareToPrivilegeAssignmentPb) MarshalJSON() ([]byte, error) {
 type SharedDataObject struct {
 	// The time when this data object is added to the share, in epoch
 	// milliseconds.
+	// Wire name: 'added_at'
 	AddedAt int64
 	// Username of the sharer.
+	// Wire name: 'added_by'
 	AddedBy string
 	// Whether to enable cdf or indicate if cdf is enabled on the shared object.
+	// Wire name: 'cdf_enabled'
 	CdfEnabled bool
 	// A user-provided comment when adding the data object to the share.
+	// Wire name: 'comment'
 	Comment string
 	// The content of the notebook file when the data object type is
 	// NOTEBOOK_FILE. This should be base64 encoded. Required for adding a
 	// NOTEBOOK_FILE, optional for updating, ignored for other types.
+	// Wire name: 'content'
 	Content string
 	// The type of the data object.
+	// Wire name: 'data_object_type'
 	DataObjectType SharedDataObjectDataObjectType
 	// Whether to enable or disable sharing of data history. If not specified,
 	// the default is **DISABLED**.
+	// Wire name: 'history_data_sharing_status'
 	HistoryDataSharingStatus SharedDataObjectHistoryDataSharingStatus
 	// A fully qualified name that uniquely identifies a data object. For
 	// example, a table's fully qualified name is in the format of
 	// `<catalog>.<schema>.<table>`,
+	// Wire name: 'name'
 	Name string
 	// Array of partitions for the shared data.
+	// Wire name: 'partitions'
 	Partitions []Partition
 	// A user-provided new name for the data object within the share. If this
 	// new name is not provided, the object's original name will be used as the
 	// `shared_as` name. The `shared_as` name must be unique within a share. For
 	// tables, the new name must follow the format of `<schema>.<table>`.
+	// Wire name: 'shared_as'
 	SharedAs string
 	// The start version associated with the object. This allows data providers
 	// to control the lowest object version that is accessible by clients. If
@@ -6192,17 +5370,20 @@ type SharedDataObject struct {
 	// version of the object at the time it was added to the share.
 	//
 	// NOTE: The start_version should be <= the `current` version of the object.
+	// Wire name: 'start_version'
 	StartVersion int64
 	// One of: **ACTIVE**, **PERMISSION_DENIED**.
+	// Wire name: 'status'
 	Status SharedDataObjectStatus
 	// A user-provided new name for the shared object within the share. If this
 	// new name is not not provided, the object's original name will be used as
 	// the `string_shared_as` name. The `string_shared_as` name must be unique
 	// for objects of the same type within a Share. For notebooks, the new name
 	// should be the new notebook file name.
+	// Wire name: 'string_shared_as'
 	StringSharedAs string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func sharedDataObjectToPb(st *SharedDataObject) (*sharedDataObjectPb, error) {
@@ -6210,45 +5391,21 @@ func sharedDataObjectToPb(st *SharedDataObject) (*sharedDataObjectPb, error) {
 		return nil, nil
 	}
 	pb := &sharedDataObjectPb{}
-	addedAtPb := &st.AddedAt
-	if addedAtPb != nil {
-		pb.AddedAt = *addedAtPb
-	}
+	pb.AddedAt = st.AddedAt
 
-	addedByPb := &st.AddedBy
-	if addedByPb != nil {
-		pb.AddedBy = *addedByPb
-	}
+	pb.AddedBy = st.AddedBy
 
-	cdfEnabledPb := &st.CdfEnabled
-	if cdfEnabledPb != nil {
-		pb.CdfEnabled = *cdfEnabledPb
-	}
+	pb.CdfEnabled = st.CdfEnabled
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	contentPb := &st.Content
-	if contentPb != nil {
-		pb.Content = *contentPb
-	}
+	pb.Content = st.Content
 
-	dataObjectTypePb := &st.DataObjectType
-	if dataObjectTypePb != nil {
-		pb.DataObjectType = *dataObjectTypePb
-	}
+	pb.DataObjectType = st.DataObjectType
 
-	historyDataSharingStatusPb := &st.HistoryDataSharingStatus
-	if historyDataSharingStatusPb != nil {
-		pb.HistoryDataSharingStatus = *historyDataSharingStatusPb
-	}
+	pb.HistoryDataSharingStatus = st.HistoryDataSharingStatus
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var partitionsPb []PartitionPb
 	for _, item := range st.Partitions {
@@ -6262,25 +5419,13 @@ func sharedDataObjectToPb(st *SharedDataObject) (*sharedDataObjectPb, error) {
 	}
 	pb.Partitions = partitionsPb
 
-	sharedAsPb := &st.SharedAs
-	if sharedAsPb != nil {
-		pb.SharedAs = *sharedAsPb
-	}
+	pb.SharedAs = st.SharedAs
 
-	startVersionPb := &st.StartVersion
-	if startVersionPb != nil {
-		pb.StartVersion = *startVersionPb
-	}
+	pb.StartVersion = st.StartVersion
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	stringSharedAsPb := &st.StringSharedAs
-	if stringSharedAsPb != nil {
-		pb.StringSharedAs = *stringSharedAsPb
-	}
+	pb.StringSharedAs = st.StringSharedAs
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6366,66 +5511,30 @@ func sharedDataObjectFromPb(pb *sharedDataObjectPb) (*SharedDataObject, error) {
 		return nil, nil
 	}
 	st := &SharedDataObject{}
-	addedAtField := &pb.AddedAt
-	if addedAtField != nil {
-		st.AddedAt = *addedAtField
-	}
-	addedByField := &pb.AddedBy
-	if addedByField != nil {
-		st.AddedBy = *addedByField
-	}
-	cdfEnabledField := &pb.CdfEnabled
-	if cdfEnabledField != nil {
-		st.CdfEnabled = *cdfEnabledField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	contentField := &pb.Content
-	if contentField != nil {
-		st.Content = *contentField
-	}
-	dataObjectTypeField := &pb.DataObjectType
-	if dataObjectTypeField != nil {
-		st.DataObjectType = *dataObjectTypeField
-	}
-	historyDataSharingStatusField := &pb.HistoryDataSharingStatus
-	if historyDataSharingStatusField != nil {
-		st.HistoryDataSharingStatus = *historyDataSharingStatusField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.AddedAt = pb.AddedAt
+	st.AddedBy = pb.AddedBy
+	st.CdfEnabled = pb.CdfEnabled
+	st.Comment = pb.Comment
+	st.Content = pb.Content
+	st.DataObjectType = pb.DataObjectType
+	st.HistoryDataSharingStatus = pb.HistoryDataSharingStatus
+	st.Name = pb.Name
 
 	var partitionsField []Partition
-	for _, item := range pb.Partitions {
-		itemField, err := PartitionFromPb(&item)
+	for _, itemPb := range pb.Partitions {
+		item, err := PartitionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			partitionsField = append(partitionsField, *itemField)
+		if item != nil {
+			partitionsField = append(partitionsField, *item)
 		}
 	}
 	st.Partitions = partitionsField
-	sharedAsField := &pb.SharedAs
-	if sharedAsField != nil {
-		st.SharedAs = *sharedAsField
-	}
-	startVersionField := &pb.StartVersion
-	if startVersionField != nil {
-		st.StartVersion = *startVersionField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	stringSharedAsField := &pb.StringSharedAs
-	if stringSharedAsField != nil {
-		st.StringSharedAs = *stringSharedAsField
-	}
+	st.SharedAs = pb.SharedAs
+	st.StartVersion = pb.StartVersion
+	st.Status = pb.Status
+	st.StringSharedAs = pb.StringSharedAs
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6587,8 +5696,10 @@ func sharedDataObjectStatusFromPb(pb *sharedDataObjectStatusPb) (*SharedDataObje
 
 type SharedDataObjectUpdate struct {
 	// One of: **ADD**, **REMOVE**, **UPDATE**.
+	// Wire name: 'action'
 	Action SharedDataObjectUpdateAction
 	// The data object that is being added, removed, or updated.
+	// Wire name: 'data_object'
 	DataObject *SharedDataObject
 }
 
@@ -6597,10 +5708,7 @@ func sharedDataObjectUpdateToPb(st *SharedDataObjectUpdate) (*sharedDataObjectUp
 		return nil, nil
 	}
 	pb := &sharedDataObjectUpdatePb{}
-	actionPb := &st.Action
-	if actionPb != nil {
-		pb.Action = *actionPb
-	}
+	pb.Action = st.Action
 
 	dataObjectPb, err := sharedDataObjectToPb(st.DataObject)
 	if err != nil {
@@ -6650,10 +5758,7 @@ func sharedDataObjectUpdateFromPb(pb *sharedDataObjectUpdatePb) (*SharedDataObje
 		return nil, nil
 	}
 	st := &SharedDataObjectUpdate{}
-	actionField := &pb.Action
-	if actionField != nil {
-		st.Action = *actionField
-	}
+	st.Action = pb.Action
 	dataObjectField, err := sharedDataObjectFromPb(pb.DataObject)
 	if err != nil {
 		return nil, err
@@ -6760,26 +5865,35 @@ func sharedSecurableKindFromPb(pb *sharedSecurableKindPb) (*SharedSecurableKind,
 
 type Table struct {
 	// The comment of the table.
+	// Wire name: 'comment'
 	Comment string
 	// The id of the table.
+	// Wire name: 'id'
 	Id string
 	// Internal information for D2D sharing that should not be disclosed to
 	// external users.
+	// Wire name: 'internal_attributes'
 	InternalAttributes *TableInternalAttributes
 	// The name of a materialized table.
+	// Wire name: 'materialized_table_name'
 	MaterializedTableName string
 	// The name of the table.
+	// Wire name: 'name'
 	Name string
 	// The name of the schema that the table belongs to.
+	// Wire name: 'schema'
 	Schema string
 	// The name of the share that the table belongs to.
+	// Wire name: 'share'
 	Share string
 	// The id of the share that the table belongs to.
+	// Wire name: 'share_id'
 	ShareId string
 	// The Tags of the table.
+	// Wire name: 'tags'
 	Tags []catalog.TagKeyValue
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tableToPb(st *Table) (*tablePb, error) {
@@ -6787,15 +5901,9 @@ func tableToPb(st *Table) (*tablePb, error) {
 		return nil, nil
 	}
 	pb := &tablePb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	internalAttributesPb, err := tableInternalAttributesToPb(st.InternalAttributes)
 	if err != nil {
@@ -6805,30 +5913,15 @@ func tableToPb(st *Table) (*tablePb, error) {
 		pb.InternalAttributes = internalAttributesPb
 	}
 
-	materializedTableNamePb := &st.MaterializedTableName
-	if materializedTableNamePb != nil {
-		pb.MaterializedTableName = *materializedTableNamePb
-	}
+	pb.MaterializedTableName = st.MaterializedTableName
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	sharePb := &st.Share
-	if sharePb != nil {
-		pb.Share = *sharePb
-	}
+	pb.Share = st.Share
 
-	shareIdPb := &st.ShareId
-	if shareIdPb != nil {
-		pb.ShareId = *shareIdPb
-	}
+	pb.ShareId = st.ShareId
 
 	var tagsPb []catalog.TagKeyValuePb
 	for _, item := range st.Tags {
@@ -6900,14 +5993,8 @@ func tableFromPb(pb *tablePb) (*Table, error) {
 		return nil, nil
 	}
 	st := &Table{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Comment = pb.Comment
+	st.Id = pb.Id
 	internalAttributesField, err := tableInternalAttributesFromPb(pb.InternalAttributes)
 	if err != nil {
 		return nil, err
@@ -6915,35 +6002,20 @@ func tableFromPb(pb *tablePb) (*Table, error) {
 	if internalAttributesField != nil {
 		st.InternalAttributes = internalAttributesField
 	}
-	materializedTableNameField := &pb.MaterializedTableName
-	if materializedTableNameField != nil {
-		st.MaterializedTableName = *materializedTableNameField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-	shareField := &pb.Share
-	if shareField != nil {
-		st.Share = *shareField
-	}
-	shareIdField := &pb.ShareId
-	if shareIdField != nil {
-		st.ShareId = *shareIdField
-	}
+	st.MaterializedTableName = pb.MaterializedTableName
+	st.Name = pb.Name
+	st.Schema = pb.Schema
+	st.Share = pb.Share
+	st.ShareId = pb.ShareId
 
 	var tagsField []catalog.TagKeyValue
-	for _, item := range pb.Tags {
-		itemField, err := catalog.TagKeyValueFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := catalog.TagKeyValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -6971,16 +6043,20 @@ type TableInternalAttributes struct {
 	// on the recipient side to be whitelisted when SEG is enabled on the
 	// workspace of the recipient, to allow the recipient users to query this
 	// shared VIEW/FOREIGN_TABLE.
+	// Wire name: 'parent_storage_location'
 	ParentStorageLocation string
 	// The cloud storage location of a shard table with DIRECTORY_BASED_TABLE
 	// type.
+	// Wire name: 'storage_location'
 	StorageLocation string
 	// The type of the shared table.
+	// Wire name: 'type'
 	Type TableInternalAttributesSharedTableType
 	// The view definition of a shared view. DEPRECATED.
+	// Wire name: 'view_definition'
 	ViewDefinition string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tableInternalAttributesToPb(st *TableInternalAttributes) (*tableInternalAttributesPb, error) {
@@ -6988,25 +6064,13 @@ func tableInternalAttributesToPb(st *TableInternalAttributes) (*tableInternalAtt
 		return nil, nil
 	}
 	pb := &tableInternalAttributesPb{}
-	parentStorageLocationPb := &st.ParentStorageLocation
-	if parentStorageLocationPb != nil {
-		pb.ParentStorageLocation = *parentStorageLocationPb
-	}
+	pb.ParentStorageLocation = st.ParentStorageLocation
 
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
-	viewDefinitionPb := &st.ViewDefinition
-	if viewDefinitionPb != nil {
-		pb.ViewDefinition = *viewDefinitionPb
-	}
+	pb.ViewDefinition = st.ViewDefinition
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7063,22 +6127,10 @@ func tableInternalAttributesFromPb(pb *tableInternalAttributesPb) (*TableInterna
 		return nil, nil
 	}
 	st := &TableInternalAttributes{}
-	parentStorageLocationField := &pb.ParentStorageLocation
-	if parentStorageLocationField != nil {
-		st.ParentStorageLocation = *parentStorageLocationField
-	}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
-	viewDefinitionField := &pb.ViewDefinition
-	if viewDefinitionField != nil {
-		st.ViewDefinition = *viewDefinitionField
-	}
+	st.ParentStorageLocation = pb.ParentStorageLocation
+	st.StorageLocation = pb.StorageLocation
+	st.Type = pb.Type
+	st.ViewDefinition = pb.ViewDefinition
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7146,18 +6198,23 @@ func tableInternalAttributesSharedTableTypeFromPb(pb *tableInternalAttributesSha
 
 type UpdateProvider struct {
 	// Description about the provider.
+	// Wire name: 'comment'
 	Comment string
 	// Name of the provider.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the provider.
+	// Wire name: 'new_name'
 	NewName string
 	// Username of Provider owner.
+	// Wire name: 'owner'
 	Owner string
 	// This field is required when the __authentication_type__ is **TOKEN**,
 	// **OAUTH_CLIENT_CREDENTIALS** or not provided.
+	// Wire name: 'recipient_profile_str'
 	RecipientProfileStr string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateProviderToPb(st *UpdateProvider) (*updateProviderPb, error) {
@@ -7165,30 +6222,15 @@ func updateProviderToPb(st *UpdateProvider) (*updateProviderPb, error) {
 		return nil, nil
 	}
 	pb := &updateProviderPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	recipientProfileStrPb := &st.RecipientProfileStr
-	if recipientProfileStrPb != nil {
-		pb.RecipientProfileStr = *recipientProfileStrPb
-	}
+	pb.RecipientProfileStr = st.RecipientProfileStr
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7240,26 +6282,11 @@ func updateProviderFromPb(pb *updateProviderPb) (*UpdateProvider, error) {
 		return nil, nil
 	}
 	st := &UpdateProvider{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	recipientProfileStrField := &pb.RecipientProfileStr
-	if recipientProfileStrField != nil {
-		st.RecipientProfileStr = *recipientProfileStrField
-	}
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.RecipientProfileStr = pb.RecipientProfileStr
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7275,24 +6302,31 @@ func (st updateProviderPb) MarshalJSON() ([]byte, error) {
 
 type UpdateRecipient struct {
 	// Description about the recipient.
+	// Wire name: 'comment'
 	Comment string
 	// Expiration timestamp of the token, in epoch milliseconds.
+	// Wire name: 'expiration_time'
 	ExpirationTime int64
 	// IP Access List
+	// Wire name: 'ip_access_list'
 	IpAccessList *IpAccessList
 	// Name of the recipient.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the recipient. .
+	// Wire name: 'new_name'
 	NewName string
 	// Username of the recipient owner.
+	// Wire name: 'owner'
 	Owner string
 	// Recipient properties as map of string key-value pairs. When provided in
 	// update request, the specified properties will override the existing
 	// properties. To add and remove properties, one would need to perform a
 	// read-modify-write.
+	// Wire name: 'properties_kvpairs'
 	PropertiesKvpairs *SecurablePropertiesKvPairs
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateRecipientToPb(st *UpdateRecipient) (*updateRecipientPb, error) {
@@ -7300,15 +6334,9 @@ func updateRecipientToPb(st *UpdateRecipient) (*updateRecipientPb, error) {
 		return nil, nil
 	}
 	pb := &updateRecipientPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	expirationTimePb := &st.ExpirationTime
-	if expirationTimePb != nil {
-		pb.ExpirationTime = *expirationTimePb
-	}
+	pb.ExpirationTime = st.ExpirationTime
 
 	ipAccessListPb, err := ipAccessListToPb(st.IpAccessList)
 	if err != nil {
@@ -7318,20 +6346,11 @@ func updateRecipientToPb(st *UpdateRecipient) (*updateRecipientPb, error) {
 		pb.IpAccessList = ipAccessListPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
 	propertiesKvpairsPb, err := securablePropertiesKvPairsToPb(st.PropertiesKvpairs)
 	if err != nil {
@@ -7397,14 +6416,8 @@ func updateRecipientFromPb(pb *updateRecipientPb) (*UpdateRecipient, error) {
 		return nil, nil
 	}
 	st := &UpdateRecipient{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	expirationTimeField := &pb.ExpirationTime
-	if expirationTimeField != nil {
-		st.ExpirationTime = *expirationTimeField
-	}
+	st.Comment = pb.Comment
+	st.ExpirationTime = pb.ExpirationTime
 	ipAccessListField, err := ipAccessListFromPb(pb.IpAccessList)
 	if err != nil {
 		return nil, err
@@ -7412,18 +6425,9 @@ func updateRecipientFromPb(pb *updateRecipientPb) (*UpdateRecipient, error) {
 	if ipAccessListField != nil {
 		st.IpAccessList = ipAccessListField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
 	propertiesKvpairsField, err := securablePropertiesKvPairsFromPb(pb.PropertiesKvpairs)
 	if err != nil {
 		return nil, err
@@ -7446,19 +6450,25 @@ func (st updateRecipientPb) MarshalJSON() ([]byte, error) {
 
 type UpdateShare struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// The name of the share.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the share.
+	// Wire name: 'new_name'
 	NewName string
 	// Username of current owner of share.
+	// Wire name: 'owner'
 	Owner string
 	// Storage root URL for the share.
+	// Wire name: 'storage_root'
 	StorageRoot string
 	// Array of shared data object updates.
+	// Wire name: 'updates'
 	Updates []SharedDataObjectUpdate
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateShareToPb(st *UpdateShare) (*updateSharePb, error) {
@@ -7466,30 +6476,15 @@ func updateShareToPb(st *UpdateShare) (*updateSharePb, error) {
 		return nil, nil
 	}
 	pb := &updateSharePb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	storageRootPb := &st.StorageRoot
-	if storageRootPb != nil {
-		pb.StorageRoot = *storageRootPb
-	}
+	pb.StorageRoot = st.StorageRoot
 
 	var updatesPb []sharedDataObjectUpdatePb
 	for _, item := range st.Updates {
@@ -7554,35 +6549,20 @@ func updateShareFromPb(pb *updateSharePb) (*UpdateShare, error) {
 		return nil, nil
 	}
 	st := &UpdateShare{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	storageRootField := &pb.StorageRoot
-	if storageRootField != nil {
-		st.StorageRoot = *storageRootField
-	}
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.StorageRoot = pb.StorageRoot
 
 	var updatesField []SharedDataObjectUpdate
-	for _, item := range pb.Updates {
-		itemField, err := sharedDataObjectUpdateFromPb(&item)
+	for _, itemPb := range pb.Updates {
+		item, err := sharedDataObjectUpdateFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			updatesField = append(updatesField, *itemField)
+		if item != nil {
+			updatesField = append(updatesField, *item)
 		}
 	}
 	st.Updates = updatesField
@@ -7601,9 +6581,11 @@ func (st updateSharePb) MarshalJSON() ([]byte, error) {
 
 type UpdateSharePermissions struct {
 	// Array of permission changes.
+	// Wire name: 'changes'
 	Changes []PermissionsChange
 	// The name of the share.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func updateSharePermissionsToPb(st *UpdateSharePermissions) (*updateSharePermissionsPb, error) {
@@ -7624,10 +6606,7 @@ func updateSharePermissionsToPb(st *UpdateSharePermissions) (*updateSharePermiss
 	}
 	pb.Changes = changesPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -7671,26 +6650,24 @@ func updateSharePermissionsFromPb(pb *updateSharePermissionsPb) (*UpdateSharePer
 	st := &UpdateSharePermissions{}
 
 	var changesField []PermissionsChange
-	for _, item := range pb.Changes {
-		itemField, err := permissionsChangeFromPb(&item)
+	for _, itemPb := range pb.Changes {
+		item, err := permissionsChangeFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			changesField = append(changesField, *itemField)
+		if item != nil {
+			changesField = append(changesField, *item)
 		}
 	}
 	st.Changes = changesField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
 
 type UpdateSharePermissionsResponse struct {
 	// The privileges assigned to each principal
+	// Wire name: 'privilege_assignments'
 	PrivilegeAssignments []PrivilegeAssignment
 }
 
@@ -7752,13 +6729,13 @@ func updateSharePermissionsResponseFromPb(pb *updateSharePermissionsResponsePb) 
 	st := &UpdateSharePermissionsResponse{}
 
 	var privilegeAssignmentsField []PrivilegeAssignment
-	for _, item := range pb.PrivilegeAssignments {
-		itemField, err := privilegeAssignmentFromPb(&item)
+	for _, itemPb := range pb.PrivilegeAssignments {
+		item, err := privilegeAssignmentFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			privilegeAssignmentsField = append(privilegeAssignmentsField, *itemField)
+		if item != nil {
+			privilegeAssignmentsField = append(privilegeAssignmentsField, *item)
 		}
 	}
 	st.PrivilegeAssignments = privilegeAssignmentsField
@@ -7768,26 +6745,34 @@ func updateSharePermissionsResponseFromPb(pb *updateSharePermissionsResponsePb) 
 
 type Volume struct {
 	// The comment of the volume.
+	// Wire name: 'comment'
 	Comment string
 	// This id maps to the shared_volume_id in database Recipient needs
 	// shared_volume_id for recon to check if this volume is already in
 	// recipient's DB or not.
+	// Wire name: 'id'
 	Id string
 	// Internal attributes for D2D sharing that should not be disclosed to
 	// external users.
+	// Wire name: 'internal_attributes'
 	InternalAttributes *VolumeInternalAttributes
 	// The name of the volume.
+	// Wire name: 'name'
 	Name string
 	// The name of the schema that the volume belongs to.
+	// Wire name: 'schema'
 	Schema string
 	// The name of the share that the volume belongs to.
+	// Wire name: 'share'
 	Share string
 	// / The id of the share that the volume belongs to.
+	// Wire name: 'share_id'
 	ShareId string
 	// The tags of the volume.
+	// Wire name: 'tags'
 	Tags []catalog.TagKeyValue
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func volumeToPb(st *Volume) (*volumePb, error) {
@@ -7795,15 +6780,9 @@ func volumeToPb(st *Volume) (*volumePb, error) {
 		return nil, nil
 	}
 	pb := &volumePb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	internalAttributesPb, err := volumeInternalAttributesToPb(st.InternalAttributes)
 	if err != nil {
@@ -7813,25 +6792,13 @@ func volumeToPb(st *Volume) (*volumePb, error) {
 		pb.InternalAttributes = internalAttributesPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	sharePb := &st.Share
-	if sharePb != nil {
-		pb.Share = *sharePb
-	}
+	pb.Share = st.Share
 
-	shareIdPb := &st.ShareId
-	if shareIdPb != nil {
-		pb.ShareId = *shareIdPb
-	}
+	pb.ShareId = st.ShareId
 
 	var tagsPb []catalog.TagKeyValuePb
 	for _, item := range st.Tags {
@@ -7903,14 +6870,8 @@ func volumeFromPb(pb *volumePb) (*Volume, error) {
 		return nil, nil
 	}
 	st := &Volume{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Comment = pb.Comment
+	st.Id = pb.Id
 	internalAttributesField, err := volumeInternalAttributesFromPb(pb.InternalAttributes)
 	if err != nil {
 		return nil, err
@@ -7918,31 +6879,19 @@ func volumeFromPb(pb *volumePb) (*Volume, error) {
 	if internalAttributesField != nil {
 		st.InternalAttributes = internalAttributesField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-	shareField := &pb.Share
-	if shareField != nil {
-		st.Share = *shareField
-	}
-	shareIdField := &pb.ShareId
-	if shareIdField != nil {
-		st.ShareId = *shareIdField
-	}
+	st.Name = pb.Name
+	st.Schema = pb.Schema
+	st.Share = pb.Share
+	st.ShareId = pb.ShareId
 
 	var tagsField []catalog.TagKeyValue
-	for _, item := range pb.Tags {
-		itemField, err := catalog.TagKeyValueFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := catalog.TagKeyValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -7963,11 +6912,13 @@ func (st volumePb) MarshalJSON() ([]byte, error) {
 // users.
 type VolumeInternalAttributes struct {
 	// The cloud storage location of the volume
+	// Wire name: 'storage_location'
 	StorageLocation string
 	// The type of the shared volume.
+	// Wire name: 'type'
 	Type string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func volumeInternalAttributesToPb(st *VolumeInternalAttributes) (*volumeInternalAttributesPb, error) {
@@ -7975,15 +6926,9 @@ func volumeInternalAttributesToPb(st *VolumeInternalAttributes) (*volumeInternal
 		return nil, nil
 	}
 	pb := &volumeInternalAttributesPb{}
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8028,14 +6973,8 @@ func volumeInternalAttributesFromPb(pb *volumeInternalAttributesPb) (*VolumeInte
 		return nil, nil
 	}
 	st := &VolumeInternalAttributes{}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.StorageLocation = pb.StorageLocation
+	st.Type = pb.Type
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8047,4 +6986,58 @@ func (st *volumeInternalAttributesPb) UnmarshalJSON(b []byte) error {
 
 func (st volumeInternalAttributesPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

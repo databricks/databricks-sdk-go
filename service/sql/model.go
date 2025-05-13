@@ -11,84 +11,19 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type AccessControl struct {
+
+	// Wire name: 'group_name'
 	GroupName string
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
 	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
+	// Wire name: 'permission_level'
 	PermissionLevel PermissionLevel
 
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func accessControlToPb(st *AccessControl) (*accessControlPb, error) {
@@ -96,20 +31,11 @@ func accessControlToPb(st *AccessControl) (*accessControlPb, error) {
 		return nil, nil
 	}
 	pb := &accessControlPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -156,18 +82,9 @@ func accessControlFromPb(pb *accessControlPb) (*AccessControl, error) {
 		return nil, nil
 	}
 	st := &AccessControl{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -239,50 +156,65 @@ func aggregationFromPb(pb *aggregationPb) (*Aggregation, error) {
 
 type Alert struct {
 	// Trigger conditions of the alert.
+	// Wire name: 'condition'
 	Condition *AlertCondition
 	// The timestamp indicating when the alert was created.
+	// Wire name: 'create_time'
 	CreateTime string
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Wire name: 'custom_body'
 	CustomBody string
 	// Custom subject of alert notification, if it exists. This can include
 	// email subject entries and Slack notification headers, for example. See
 	// [here] for custom templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Wire name: 'custom_subject'
 	CustomSubject string
 	// The display name of the alert.
+	// Wire name: 'display_name'
 	DisplayName string
 	// UUID identifying the alert.
+	// Wire name: 'id'
 	Id string
 	// The workspace state of the alert. Used for tracking trashed status.
+	// Wire name: 'lifecycle_state'
 	LifecycleState LifecycleState
 	// Whether to notify alert subscribers when alert returns back to normal.
+	// Wire name: 'notify_on_ok'
 	NotifyOnOk bool
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
+	// Wire name: 'owner_user_name'
 	OwnerUserName string
 	// The workspace path of the folder containing the alert.
+	// Wire name: 'parent_path'
 	ParentPath string
 	// UUID of the query attached to the alert.
+	// Wire name: 'query_id'
 	QueryId string
 	// Number of seconds an alert must wait after being triggered to rearm
 	// itself. After rearming, it can be triggered again. If 0 or not specified,
 	// the alert will not be triggered again.
+	// Wire name: 'seconds_to_retrigger'
 	SecondsToRetrigger int
 	// Current state of the alert's trigger status. This field is set to UNKNOWN
 	// if the alert has not yet been evaluated or ran into an error during the
 	// last evaluation.
+	// Wire name: 'state'
 	State AlertState
 	// Timestamp when the alert was last triggered, if the alert has been
 	// triggered before.
+	// Wire name: 'trigger_time'
 	TriggerTime string
 	// The timestamp indicating when the alert was updated.
+	// Wire name: 'update_time'
 	UpdateTime string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertToPb(st *Alert) (*alertPb, error) {
@@ -298,75 +230,33 @@ func alertToPb(st *Alert) (*alertPb, error) {
 		pb.Condition = conditionPb
 	}
 
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	customBodyPb := &st.CustomBody
-	if customBodyPb != nil {
-		pb.CustomBody = *customBodyPb
-	}
+	pb.CustomBody = st.CustomBody
 
-	customSubjectPb := &st.CustomSubject
-	if customSubjectPb != nil {
-		pb.CustomSubject = *customSubjectPb
-	}
+	pb.CustomSubject = st.CustomSubject
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lifecycleStatePb := &st.LifecycleState
-	if lifecycleStatePb != nil {
-		pb.LifecycleState = *lifecycleStatePb
-	}
+	pb.LifecycleState = st.LifecycleState
 
-	notifyOnOkPb := &st.NotifyOnOk
-	if notifyOnOkPb != nil {
-		pb.NotifyOnOk = *notifyOnOkPb
-	}
+	pb.NotifyOnOk = st.NotifyOnOk
 
-	ownerUserNamePb := &st.OwnerUserName
-	if ownerUserNamePb != nil {
-		pb.OwnerUserName = *ownerUserNamePb
-	}
+	pb.OwnerUserName = st.OwnerUserName
 
-	parentPathPb := &st.ParentPath
-	if parentPathPb != nil {
-		pb.ParentPath = *parentPathPb
-	}
+	pb.ParentPath = st.ParentPath
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	secondsToRetriggerPb := &st.SecondsToRetrigger
-	if secondsToRetriggerPb != nil {
-		pb.SecondsToRetrigger = *secondsToRetriggerPb
-	}
+	pb.SecondsToRetrigger = st.SecondsToRetrigger
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
-	triggerTimePb := &st.TriggerTime
-	if triggerTimePb != nil {
-		pb.TriggerTime = *triggerTimePb
-	}
+	pb.TriggerTime = st.TriggerTime
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -457,62 +347,20 @@ func alertFromPb(pb *alertPb) (*Alert, error) {
 	if conditionField != nil {
 		st.Condition = conditionField
 	}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	customBodyField := &pb.CustomBody
-	if customBodyField != nil {
-		st.CustomBody = *customBodyField
-	}
-	customSubjectField := &pb.CustomSubject
-	if customSubjectField != nil {
-		st.CustomSubject = *customSubjectField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lifecycleStateField := &pb.LifecycleState
-	if lifecycleStateField != nil {
-		st.LifecycleState = *lifecycleStateField
-	}
-	notifyOnOkField := &pb.NotifyOnOk
-	if notifyOnOkField != nil {
-		st.NotifyOnOk = *notifyOnOkField
-	}
-	ownerUserNameField := &pb.OwnerUserName
-	if ownerUserNameField != nil {
-		st.OwnerUserName = *ownerUserNameField
-	}
-	parentPathField := &pb.ParentPath
-	if parentPathField != nil {
-		st.ParentPath = *parentPathField
-	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-	secondsToRetriggerField := &pb.SecondsToRetrigger
-	if secondsToRetriggerField != nil {
-		st.SecondsToRetrigger = *secondsToRetriggerField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
-	triggerTimeField := &pb.TriggerTime
-	if triggerTimeField != nil {
-		st.TriggerTime = *triggerTimeField
-	}
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
+	st.CreateTime = pb.CreateTime
+	st.CustomBody = pb.CustomBody
+	st.CustomSubject = pb.CustomSubject
+	st.DisplayName = pb.DisplayName
+	st.Id = pb.Id
+	st.LifecycleState = pb.LifecycleState
+	st.NotifyOnOk = pb.NotifyOnOk
+	st.OwnerUserName = pb.OwnerUserName
+	st.ParentPath = pb.ParentPath
+	st.QueryId = pb.QueryId
+	st.SecondsToRetrigger = pb.SecondsToRetrigger
+	st.State = pb.State
+	st.TriggerTime = pb.TriggerTime
+	st.UpdateTime = pb.UpdateTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -528,13 +376,17 @@ func (st alertPb) MarshalJSON() ([]byte, error) {
 
 type AlertCondition struct {
 	// Alert state if result is empty.
+	// Wire name: 'empty_result_state'
 	EmptyResultState AlertState
 	// Operator used for comparison in alert evaluation.
+	// Wire name: 'op'
 	Op AlertOperator
 	// Name of the column from the query result to use for comparison in alert
 	// evaluation.
+	// Wire name: 'operand'
 	Operand *AlertConditionOperand
 	// Threshold value used for comparison in alert evaluation.
+	// Wire name: 'threshold'
 	Threshold *AlertConditionThreshold
 }
 
@@ -543,15 +395,9 @@ func alertConditionToPb(st *AlertCondition) (*alertConditionPb, error) {
 		return nil, nil
 	}
 	pb := &alertConditionPb{}
-	emptyResultStatePb := &st.EmptyResultState
-	if emptyResultStatePb != nil {
-		pb.EmptyResultState = *emptyResultStatePb
-	}
+	pb.EmptyResultState = st.EmptyResultState
 
-	opPb := &st.Op
-	if opPb != nil {
-		pb.Op = *opPb
-	}
+	pb.Op = st.Op
 
 	operandPb, err := alertConditionOperandToPb(st.Operand)
 	if err != nil {
@@ -614,14 +460,8 @@ func alertConditionFromPb(pb *alertConditionPb) (*AlertCondition, error) {
 		return nil, nil
 	}
 	st := &AlertCondition{}
-	emptyResultStateField := &pb.EmptyResultState
-	if emptyResultStateField != nil {
-		st.EmptyResultState = *emptyResultStateField
-	}
-	opField := &pb.Op
-	if opField != nil {
-		st.Op = *opField
-	}
+	st.EmptyResultState = pb.EmptyResultState
+	st.Op = pb.Op
 	operandField, err := alertConditionOperandFromPb(pb.Operand)
 	if err != nil {
 		return nil, err
@@ -641,6 +481,8 @@ func alertConditionFromPb(pb *alertConditionPb) (*AlertCondition, error) {
 }
 
 type AlertConditionOperand struct {
+
+	// Wire name: 'column'
 	Column *AlertOperandColumn
 }
 
@@ -706,6 +548,8 @@ func alertConditionOperandFromPb(pb *alertConditionOperandPb) (*AlertConditionOp
 }
 
 type AlertConditionThreshold struct {
+
+	// Wire name: 'value'
 	Value *AlertOperandValue
 }
 
@@ -822,9 +666,11 @@ func alertEvaluationStateFromPb(pb *alertEvaluationStatePb) (*AlertEvaluationSta
 }
 
 type AlertOperandColumn struct {
+
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertOperandColumnToPb(st *AlertOperandColumn) (*alertOperandColumnPb, error) {
@@ -832,10 +678,7 @@ func alertOperandColumnToPb(st *AlertOperandColumn) (*alertOperandColumnPb, erro
 		return nil, nil
 	}
 	pb := &alertOperandColumnPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -877,10 +720,7 @@ func alertOperandColumnFromPb(pb *alertOperandColumnPb) (*AlertOperandColumn, er
 		return nil, nil
 	}
 	st := &AlertOperandColumn{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -895,13 +735,17 @@ func (st alertOperandColumnPb) MarshalJSON() ([]byte, error) {
 }
 
 type AlertOperandValue struct {
+
+	// Wire name: 'bool_value'
 	BoolValue bool
 
+	// Wire name: 'double_value'
 	DoubleValue float64
 
+	// Wire name: 'string_value'
 	StringValue string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertOperandValueToPb(st *AlertOperandValue) (*alertOperandValuePb, error) {
@@ -909,20 +753,11 @@ func alertOperandValueToPb(st *AlertOperandValue) (*alertOperandValuePb, error) 
 		return nil, nil
 	}
 	pb := &alertOperandValuePb{}
-	boolValuePb := &st.BoolValue
-	if boolValuePb != nil {
-		pb.BoolValue = *boolValuePb
-	}
+	pb.BoolValue = st.BoolValue
 
-	doubleValuePb := &st.DoubleValue
-	if doubleValuePb != nil {
-		pb.DoubleValue = *doubleValuePb
-	}
+	pb.DoubleValue = st.DoubleValue
 
-	stringValuePb := &st.StringValue
-	if stringValuePb != nil {
-		pb.StringValue = *stringValuePb
-	}
+	pb.StringValue = st.StringValue
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -968,18 +803,9 @@ func alertOperandValueFromPb(pb *alertOperandValuePb) (*AlertOperandValue, error
 		return nil, nil
 	}
 	st := &AlertOperandValue{}
-	boolValueField := &pb.BoolValue
-	if boolValueField != nil {
-		st.BoolValue = *boolValueField
-	}
-	doubleValueField := &pb.DoubleValue
-	if doubleValueField != nil {
-		st.DoubleValue = *doubleValueField
-	}
-	stringValueField := &pb.StringValue
-	if stringValueField != nil {
-		st.StringValue = *stringValueField
-	}
+	st.BoolValue = pb.BoolValue
+	st.DoubleValue = pb.DoubleValue
+	st.StringValue = pb.StringValue
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1050,31 +876,38 @@ func alertOperatorFromPb(pb *alertOperatorPb) (*AlertOperator, error) {
 // Alert configuration options.
 type AlertOptions struct {
 	// Name of column in the query result to compare in alert evaluation.
+	// Wire name: 'column'
 	Column string
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Wire name: 'custom_body'
 	CustomBody string
 	// Custom subject of alert notification, if it exists. This includes email
 	// subject, Slack notification header, etc. See [here] for custom templating
 	// instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Wire name: 'custom_subject'
 	CustomSubject string
 	// State that alert evaluates to when query result is empty.
+	// Wire name: 'empty_result_state'
 	EmptyResultState AlertOptionsEmptyResultState
 	// Whether or not the alert is muted. If an alert is muted, it will not
 	// notify users and notification destinations when triggered.
+	// Wire name: 'muted'
 	Muted bool
 	// Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`,
 	// `!=`
+	// Wire name: 'op'
 	Op string
 	// Value used to compare in alert evaluation. Supported types include
 	// strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true).
+	// Wire name: 'value'
 	Value any
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertOptionsToPb(st *AlertOptions) (*alertOptionsPb, error) {
@@ -1082,40 +915,19 @@ func alertOptionsToPb(st *AlertOptions) (*alertOptionsPb, error) {
 		return nil, nil
 	}
 	pb := &alertOptionsPb{}
-	columnPb := &st.Column
-	if columnPb != nil {
-		pb.Column = *columnPb
-	}
+	pb.Column = st.Column
 
-	customBodyPb := &st.CustomBody
-	if customBodyPb != nil {
-		pb.CustomBody = *customBodyPb
-	}
+	pb.CustomBody = st.CustomBody
 
-	customSubjectPb := &st.CustomSubject
-	if customSubjectPb != nil {
-		pb.CustomSubject = *customSubjectPb
-	}
+	pb.CustomSubject = st.CustomSubject
 
-	emptyResultStatePb := &st.EmptyResultState
-	if emptyResultStatePb != nil {
-		pb.EmptyResultState = *emptyResultStatePb
-	}
+	pb.EmptyResultState = st.EmptyResultState
 
-	mutedPb := &st.Muted
-	if mutedPb != nil {
-		pb.Muted = *mutedPb
-	}
+	pb.Muted = st.Muted
 
-	opPb := &st.Op
-	if opPb != nil {
-		pb.Op = *opPb
-	}
+	pb.Op = st.Op
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1180,34 +992,13 @@ func alertOptionsFromPb(pb *alertOptionsPb) (*AlertOptions, error) {
 		return nil, nil
 	}
 	st := &AlertOptions{}
-	columnField := &pb.Column
-	if columnField != nil {
-		st.Column = *columnField
-	}
-	customBodyField := &pb.CustomBody
-	if customBodyField != nil {
-		st.CustomBody = *customBodyField
-	}
-	customSubjectField := &pb.CustomSubject
-	if customSubjectField != nil {
-		st.CustomSubject = *customSubjectField
-	}
-	emptyResultStateField := &pb.EmptyResultState
-	if emptyResultStateField != nil {
-		st.EmptyResultState = *emptyResultStateField
-	}
-	mutedField := &pb.Muted
-	if mutedField != nil {
-		st.Muted = *mutedField
-	}
-	opField := &pb.Op
-	if opField != nil {
-		st.Op = *opField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Column = pb.Column
+	st.CustomBody = pb.CustomBody
+	st.CustomSubject = pb.CustomSubject
+	st.EmptyResultState = pb.EmptyResultState
+	st.Muted = pb.Muted
+	st.Op = pb.Op
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1270,46 +1061,59 @@ func alertOptionsEmptyResultStateFromPb(pb *alertOptionsEmptyResultStatePb) (*Al
 
 type AlertQuery struct {
 	// The timestamp when this query was created.
+	// Wire name: 'created_at'
 	CreatedAt string
 	// Data source ID maps to the ID of the data source used by the resource and
 	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
+	// Wire name: 'data_source_id'
 	DataSourceId string
 	// General description that conveys additional information about this query
 	// such as usage notes.
+	// Wire name: 'description'
 	Description string
 	// Query ID.
+	// Wire name: 'id'
 	Id string
 	// Indicates whether the query is trashed. Trashed queries can't be used in
 	// dashboards, or appear in search results. If this boolean is `true`, the
 	// `options` property for this query includes a `moved_to_trash_at`
 	// timestamp. Trashed queries are permanently deleted after 30 days.
+	// Wire name: 'is_archived'
 	IsArchived bool
 	// Whether the query is a draft. Draft queries only appear in list views for
 	// their owners. Visualizations from draft queries cannot appear on
 	// dashboards.
+	// Wire name: 'is_draft'
 	IsDraft bool
 	// Text parameter types are not safe from SQL injection for all types of
 	// data source. Set this Boolean parameter to `true` if a query either does
 	// not use any text type parameters or uses a data source type where text
 	// type parameters are handled safely.
+	// Wire name: 'is_safe'
 	IsSafe bool
 	// The title of this query that appears in list views, widget headings, and
 	// on the query page.
+	// Wire name: 'name'
 	Name string
 
+	// Wire name: 'options'
 	Options *QueryOptions
 	// The text of the query to be run.
+	// Wire name: 'query'
 	Query string
 
+	// Wire name: 'tags'
 	Tags []string
 	// The timestamp at which this query was last updated.
+	// Wire name: 'updated_at'
 	UpdatedAt string
 	// The ID of the user who owns the query.
+	// Wire name: 'user_id'
 	UserId int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertQueryToPb(st *AlertQuery) (*alertQueryPb, error) {
@@ -1317,45 +1121,21 @@ func alertQueryToPb(st *AlertQuery) (*alertQueryPb, error) {
 		return nil, nil
 	}
 	pb := &alertQueryPb{}
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	dataSourceIdPb := &st.DataSourceId
-	if dataSourceIdPb != nil {
-		pb.DataSourceId = *dataSourceIdPb
-	}
+	pb.DataSourceId = st.DataSourceId
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	isArchivedPb := &st.IsArchived
-	if isArchivedPb != nil {
-		pb.IsArchived = *isArchivedPb
-	}
+	pb.IsArchived = st.IsArchived
 
-	isDraftPb := &st.IsDraft
-	if isDraftPb != nil {
-		pb.IsDraft = *isDraftPb
-	}
+	pb.IsDraft = st.IsDraft
 
-	isSafePb := &st.IsSafe
-	if isSafePb != nil {
-		pb.IsSafe = *isSafePb
-	}
+	pb.IsSafe = st.IsSafe
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	optionsPb, err := queryOptionsToPb(st.Options)
 	if err != nil {
@@ -1365,29 +1145,13 @@ func alertQueryToPb(st *AlertQuery) (*alertQueryPb, error) {
 		pb.Options = optionsPb
 	}
 
-	queryPb := &st.Query
-	if queryPb != nil {
-		pb.Query = *queryPb
-	}
+	pb.Query = st.Query
 
-	var tagsPb []string
-	for _, item := range st.Tags {
-		itemPb := &item
-		if itemPb != nil {
-			tagsPb = append(tagsPb, *itemPb)
-		}
-	}
-	pb.Tags = tagsPb
+	pb.Tags = st.Tags
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1467,38 +1231,14 @@ func alertQueryFromPb(pb *alertQueryPb) (*AlertQuery, error) {
 		return nil, nil
 	}
 	st := &AlertQuery{}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	dataSourceIdField := &pb.DataSourceId
-	if dataSourceIdField != nil {
-		st.DataSourceId = *dataSourceIdField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	isArchivedField := &pb.IsArchived
-	if isArchivedField != nil {
-		st.IsArchived = *isArchivedField
-	}
-	isDraftField := &pb.IsDraft
-	if isDraftField != nil {
-		st.IsDraft = *isDraftField
-	}
-	isSafeField := &pb.IsSafe
-	if isSafeField != nil {
-		st.IsSafe = *isSafeField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.DataSourceId = pb.DataSourceId
+	st.Description = pb.Description
+	st.Id = pb.Id
+	st.IsArchived = pb.IsArchived
+	st.IsDraft = pb.IsDraft
+	st.IsSafe = pb.IsSafe
+	st.Name = pb.Name
 	optionsField, err := queryOptionsFromPb(pb.Options)
 	if err != nil {
 		return nil, err
@@ -1506,27 +1246,10 @@ func alertQueryFromPb(pb *alertQueryPb) (*AlertQuery, error) {
 	if optionsField != nil {
 		st.Options = optionsField
 	}
-	queryField := &pb.Query
-	if queryField != nil {
-		st.Query = *queryField
-	}
-
-	var tagsField []string
-	for _, item := range pb.Tags {
-		itemField := &item
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
-		}
-	}
-	st.Tags = tagsField
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.Query = pb.Query
+	st.Tags = pb.Tags
+	st.UpdatedAt = pb.UpdatedAt
+	st.UserId = pb.UserId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1588,38 +1311,52 @@ func alertStateFromPb(pb *alertStatePb) (*AlertState, error) {
 
 type AlertV2 struct {
 	// The timestamp indicating when the alert was created.
-	CreateTime *time.Time
+	// Wire name: 'create_time'
+	CreateTime string
 	// Custom description for the alert. support mustache template.
+	// Wire name: 'custom_description'
 	CustomDescription string
 	// Custom summary for the alert. support mustache template.
+	// Wire name: 'custom_summary'
 	CustomSummary string
 	// The display name of the alert.
+	// Wire name: 'display_name'
 	DisplayName string
 
+	// Wire name: 'evaluation'
 	Evaluation *AlertV2Evaluation
 	// UUID identifying the alert.
+	// Wire name: 'id'
 	Id string
 	// Indicates whether the query is trashed.
+	// Wire name: 'lifecycle_state'
 	LifecycleState LifecycleState
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
+	// Wire name: 'owner_user_name'
 	OwnerUserName string
 	// The workspace path of the folder containing the alert. Can only be set on
 	// create, and cannot be updated.
+	// Wire name: 'parent_path'
 	ParentPath string
 	// Text of the query to be run.
+	// Wire name: 'query_text'
 	QueryText string
 	// The run as username. This field is set to "Unavailable" if the user has
 	// been deleted.
+	// Wire name: 'run_as_user_name'
 	RunAsUserName string
 
+	// Wire name: 'schedule'
 	Schedule *CronSchedule
 	// The timestamp indicating when the alert was updated.
-	UpdateTime *time.Time
+	// Wire name: 'update_time'
+	UpdateTime string
 	// ID of the SQL warehouse attached to the alert.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertV2ToPb(st *AlertV2) (*alertV2Pb, error) {
@@ -1627,28 +1364,13 @@ func alertV2ToPb(st *AlertV2) (*alertV2Pb, error) {
 		return nil, nil
 	}
 	pb := &alertV2Pb{}
-	createTimePb, err := timestampToPb(st.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	customDescriptionPb := &st.CustomDescription
-	if customDescriptionPb != nil {
-		pb.CustomDescription = *customDescriptionPb
-	}
+	pb.CustomDescription = st.CustomDescription
 
-	customSummaryPb := &st.CustomSummary
-	if customSummaryPb != nil {
-		pb.CustomSummary = *customSummaryPb
-	}
+	pb.CustomSummary = st.CustomSummary
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
 	evaluationPb, err := alertV2EvaluationToPb(st.Evaluation)
 	if err != nil {
@@ -1658,35 +1380,17 @@ func alertV2ToPb(st *AlertV2) (*alertV2Pb, error) {
 		pb.Evaluation = evaluationPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lifecycleStatePb := &st.LifecycleState
-	if lifecycleStatePb != nil {
-		pb.LifecycleState = *lifecycleStatePb
-	}
+	pb.LifecycleState = st.LifecycleState
 
-	ownerUserNamePb := &st.OwnerUserName
-	if ownerUserNamePb != nil {
-		pb.OwnerUserName = *ownerUserNamePb
-	}
+	pb.OwnerUserName = st.OwnerUserName
 
-	parentPathPb := &st.ParentPath
-	if parentPathPb != nil {
-		pb.ParentPath = *parentPathPb
-	}
+	pb.ParentPath = st.ParentPath
 
-	queryTextPb := &st.QueryText
-	if queryTextPb != nil {
-		pb.QueryText = *queryTextPb
-	}
+	pb.QueryText = st.QueryText
 
-	runAsUserNamePb := &st.RunAsUserName
-	if runAsUserNamePb != nil {
-		pb.RunAsUserName = *runAsUserNamePb
-	}
+	pb.RunAsUserName = st.RunAsUserName
 
 	schedulePb, err := cronScheduleToPb(st.Schedule)
 	if err != nil {
@@ -1696,18 +1400,9 @@ func alertV2ToPb(st *AlertV2) (*alertV2Pb, error) {
 		pb.Schedule = schedulePb
 	}
 
-	updateTimePb, err := timestampToPb(st.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1779,25 +1474,10 @@ func alertV2FromPb(pb *alertV2Pb) (*AlertV2, error) {
 		return nil, nil
 	}
 	st := &AlertV2{}
-	createTimeField, err := timestampFromPb(&pb.CreateTime)
-	if err != nil {
-		return nil, err
-	}
-	if createTimeField != nil {
-		st.CreateTime = createTimeField
-	}
-	customDescriptionField := &pb.CustomDescription
-	if customDescriptionField != nil {
-		st.CustomDescription = *customDescriptionField
-	}
-	customSummaryField := &pb.CustomSummary
-	if customSummaryField != nil {
-		st.CustomSummary = *customSummaryField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
+	st.CreateTime = pb.CreateTime
+	st.CustomDescription = pb.CustomDescription
+	st.CustomSummary = pb.CustomSummary
+	st.DisplayName = pb.DisplayName
 	evaluationField, err := alertV2EvaluationFromPb(pb.Evaluation)
 	if err != nil {
 		return nil, err
@@ -1805,30 +1485,12 @@ func alertV2FromPb(pb *alertV2Pb) (*AlertV2, error) {
 	if evaluationField != nil {
 		st.Evaluation = evaluationField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lifecycleStateField := &pb.LifecycleState
-	if lifecycleStateField != nil {
-		st.LifecycleState = *lifecycleStateField
-	}
-	ownerUserNameField := &pb.OwnerUserName
-	if ownerUserNameField != nil {
-		st.OwnerUserName = *ownerUserNameField
-	}
-	parentPathField := &pb.ParentPath
-	if parentPathField != nil {
-		st.ParentPath = *parentPathField
-	}
-	queryTextField := &pb.QueryText
-	if queryTextField != nil {
-		st.QueryText = *queryTextField
-	}
-	runAsUserNameField := &pb.RunAsUserName
-	if runAsUserNameField != nil {
-		st.RunAsUserName = *runAsUserNameField
-	}
+	st.Id = pb.Id
+	st.LifecycleState = pb.LifecycleState
+	st.OwnerUserName = pb.OwnerUserName
+	st.ParentPath = pb.ParentPath
+	st.QueryText = pb.QueryText
+	st.RunAsUserName = pb.RunAsUserName
 	scheduleField, err := cronScheduleFromPb(pb.Schedule)
 	if err != nil {
 		return nil, err
@@ -1836,17 +1498,8 @@ func alertV2FromPb(pb *alertV2Pb) (*AlertV2, error) {
 	if scheduleField != nil {
 		st.Schedule = scheduleField
 	}
-	updateTimeField, err := timestampFromPb(&pb.UpdateTime)
-	if err != nil {
-		return nil, err
-	}
-	if updateTimeField != nil {
-		st.UpdateTime = updateTimeField
-	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.UpdateTime = pb.UpdateTime
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1862,21 +1515,28 @@ func (st alertV2Pb) MarshalJSON() ([]byte, error) {
 
 type AlertV2Evaluation struct {
 	// Operator used for comparison in alert evaluation.
+	// Wire name: 'comparison_operator'
 	ComparisonOperator ComparisonOperator
 	// Alert state if result is empty.
+	// Wire name: 'empty_result_state'
 	EmptyResultState AlertEvaluationState
 	// Timestamp of the last evaluation.
-	LastEvaluatedAt *time.Time
+	// Wire name: 'last_evaluated_at'
+	LastEvaluatedAt string
 	// User or Notification Destination to notify when alert is triggered.
+	// Wire name: 'notification'
 	Notification *AlertV2Notification
 	// Source column from result to use to evaluate alert
+	// Wire name: 'source'
 	Source *AlertV2OperandColumn
 	// Latest state of alert evaluation.
+	// Wire name: 'state'
 	State AlertEvaluationState
 	// Threshold to user for alert evaluation, can be a column or a value.
+	// Wire name: 'threshold'
 	Threshold *AlertV2Operand
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertV2EvaluationToPb(st *AlertV2Evaluation) (*alertV2EvaluationPb, error) {
@@ -1884,23 +1544,11 @@ func alertV2EvaluationToPb(st *AlertV2Evaluation) (*alertV2EvaluationPb, error) 
 		return nil, nil
 	}
 	pb := &alertV2EvaluationPb{}
-	comparisonOperatorPb := &st.ComparisonOperator
-	if comparisonOperatorPb != nil {
-		pb.ComparisonOperator = *comparisonOperatorPb
-	}
+	pb.ComparisonOperator = st.ComparisonOperator
 
-	emptyResultStatePb := &st.EmptyResultState
-	if emptyResultStatePb != nil {
-		pb.EmptyResultState = *emptyResultStatePb
-	}
+	pb.EmptyResultState = st.EmptyResultState
 
-	lastEvaluatedAtPb, err := timestampToPb(st.LastEvaluatedAt)
-	if err != nil {
-		return nil, err
-	}
-	if lastEvaluatedAtPb != nil {
-		pb.LastEvaluatedAt = *lastEvaluatedAtPb
-	}
+	pb.LastEvaluatedAt = st.LastEvaluatedAt
 
 	notificationPb, err := alertV2NotificationToPb(st.Notification)
 	if err != nil {
@@ -1918,10 +1566,7 @@ func alertV2EvaluationToPb(st *AlertV2Evaluation) (*alertV2EvaluationPb, error) 
 		pb.Source = sourcePb
 	}
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	thresholdPb, err := alertV2OperandToPb(st.Threshold)
 	if err != nil {
@@ -1984,21 +1629,9 @@ func alertV2EvaluationFromPb(pb *alertV2EvaluationPb) (*AlertV2Evaluation, error
 		return nil, nil
 	}
 	st := &AlertV2Evaluation{}
-	comparisonOperatorField := &pb.ComparisonOperator
-	if comparisonOperatorField != nil {
-		st.ComparisonOperator = *comparisonOperatorField
-	}
-	emptyResultStateField := &pb.EmptyResultState
-	if emptyResultStateField != nil {
-		st.EmptyResultState = *emptyResultStateField
-	}
-	lastEvaluatedAtField, err := timestampFromPb(&pb.LastEvaluatedAt)
-	if err != nil {
-		return nil, err
-	}
-	if lastEvaluatedAtField != nil {
-		st.LastEvaluatedAt = lastEvaluatedAtField
-	}
+	st.ComparisonOperator = pb.ComparisonOperator
+	st.EmptyResultState = pb.EmptyResultState
+	st.LastEvaluatedAt = pb.LastEvaluatedAt
 	notificationField, err := alertV2NotificationFromPb(pb.Notification)
 	if err != nil {
 		return nil, err
@@ -2013,10 +1646,7 @@ func alertV2EvaluationFromPb(pb *alertV2EvaluationPb) (*AlertV2Evaluation, error
 	if sourceField != nil {
 		st.Source = sourceField
 	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.State = pb.State
 	thresholdField, err := alertV2OperandFromPb(pb.Threshold)
 	if err != nil {
 		return nil, err
@@ -2039,15 +1669,18 @@ func (st alertV2EvaluationPb) MarshalJSON() ([]byte, error) {
 
 type AlertV2Notification struct {
 	// Whether to notify alert subscribers when alert returns back to normal.
+	// Wire name: 'notify_on_ok'
 	NotifyOnOk bool
 	// Number of seconds an alert must wait after being triggered to rearm
 	// itself. After rearming, it can be triggered again. If 0 or not specified,
 	// the alert will not be triggered again.
+	// Wire name: 'retrigger_seconds'
 	RetriggerSeconds int
 
+	// Wire name: 'subscriptions'
 	Subscriptions []AlertV2Subscription
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertV2NotificationToPb(st *AlertV2Notification) (*alertV2NotificationPb, error) {
@@ -2055,15 +1688,9 @@ func alertV2NotificationToPb(st *AlertV2Notification) (*alertV2NotificationPb, e
 		return nil, nil
 	}
 	pb := &alertV2NotificationPb{}
-	notifyOnOkPb := &st.NotifyOnOk
-	if notifyOnOkPb != nil {
-		pb.NotifyOnOk = *notifyOnOkPb
-	}
+	pb.NotifyOnOk = st.NotifyOnOk
 
-	retriggerSecondsPb := &st.RetriggerSeconds
-	if retriggerSecondsPb != nil {
-		pb.RetriggerSeconds = *retriggerSecondsPb
-	}
+	pb.RetriggerSeconds = st.RetriggerSeconds
 
 	var subscriptionsPb []alertV2SubscriptionPb
 	for _, item := range st.Subscriptions {
@@ -2124,23 +1751,17 @@ func alertV2NotificationFromPb(pb *alertV2NotificationPb) (*AlertV2Notification,
 		return nil, nil
 	}
 	st := &AlertV2Notification{}
-	notifyOnOkField := &pb.NotifyOnOk
-	if notifyOnOkField != nil {
-		st.NotifyOnOk = *notifyOnOkField
-	}
-	retriggerSecondsField := &pb.RetriggerSeconds
-	if retriggerSecondsField != nil {
-		st.RetriggerSeconds = *retriggerSecondsField
-	}
+	st.NotifyOnOk = pb.NotifyOnOk
+	st.RetriggerSeconds = pb.RetriggerSeconds
 
 	var subscriptionsField []AlertV2Subscription
-	for _, item := range pb.Subscriptions {
-		itemField, err := alertV2SubscriptionFromPb(&item)
+	for _, itemPb := range pb.Subscriptions {
+		item, err := alertV2SubscriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			subscriptionsField = append(subscriptionsField, *itemField)
+		if item != nil {
+			subscriptionsField = append(subscriptionsField, *item)
 		}
 	}
 	st.Subscriptions = subscriptionsField
@@ -2158,8 +1779,11 @@ func (st alertV2NotificationPb) MarshalJSON() ([]byte, error) {
 }
 
 type AlertV2Operand struct {
+
+	// Wire name: 'column'
 	Column *AlertV2OperandColumn
 
+	// Wire name: 'value'
 	Value *AlertV2OperandValue
 }
 
@@ -2242,13 +1866,17 @@ func alertV2OperandFromPb(pb *alertV2OperandPb) (*AlertV2Operand, error) {
 }
 
 type AlertV2OperandColumn struct {
+
+	// Wire name: 'aggregation'
 	Aggregation Aggregation
 
+	// Wire name: 'display'
 	Display string
 
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertV2OperandColumnToPb(st *AlertV2OperandColumn) (*alertV2OperandColumnPb, error) {
@@ -2256,20 +1884,11 @@ func alertV2OperandColumnToPb(st *AlertV2OperandColumn) (*alertV2OperandColumnPb
 		return nil, nil
 	}
 	pb := &alertV2OperandColumnPb{}
-	aggregationPb := &st.Aggregation
-	if aggregationPb != nil {
-		pb.Aggregation = *aggregationPb
-	}
+	pb.Aggregation = st.Aggregation
 
-	displayPb := &st.Display
-	if displayPb != nil {
-		pb.Display = *displayPb
-	}
+	pb.Display = st.Display
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2315,18 +1934,9 @@ func alertV2OperandColumnFromPb(pb *alertV2OperandColumnPb) (*AlertV2OperandColu
 		return nil, nil
 	}
 	st := &AlertV2OperandColumn{}
-	aggregationField := &pb.Aggregation
-	if aggregationField != nil {
-		st.Aggregation = *aggregationField
-	}
-	displayField := &pb.Display
-	if displayField != nil {
-		st.Display = *displayField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Aggregation = pb.Aggregation
+	st.Display = pb.Display
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2341,13 +1951,17 @@ func (st alertV2OperandColumnPb) MarshalJSON() ([]byte, error) {
 }
 
 type AlertV2OperandValue struct {
+
+	// Wire name: 'bool_value'
 	BoolValue bool
 
+	// Wire name: 'double_value'
 	DoubleValue float64
 
+	// Wire name: 'string_value'
 	StringValue string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertV2OperandValueToPb(st *AlertV2OperandValue) (*alertV2OperandValuePb, error) {
@@ -2355,20 +1969,11 @@ func alertV2OperandValueToPb(st *AlertV2OperandValue) (*alertV2OperandValuePb, e
 		return nil, nil
 	}
 	pb := &alertV2OperandValuePb{}
-	boolValuePb := &st.BoolValue
-	if boolValuePb != nil {
-		pb.BoolValue = *boolValuePb
-	}
+	pb.BoolValue = st.BoolValue
 
-	doubleValuePb := &st.DoubleValue
-	if doubleValuePb != nil {
-		pb.DoubleValue = *doubleValuePb
-	}
+	pb.DoubleValue = st.DoubleValue
 
-	stringValuePb := &st.StringValue
-	if stringValuePb != nil {
-		pb.StringValue = *stringValuePb
-	}
+	pb.StringValue = st.StringValue
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2414,18 +2019,9 @@ func alertV2OperandValueFromPb(pb *alertV2OperandValuePb) (*AlertV2OperandValue,
 		return nil, nil
 	}
 	st := &AlertV2OperandValue{}
-	boolValueField := &pb.BoolValue
-	if boolValueField != nil {
-		st.BoolValue = *boolValueField
-	}
-	doubleValueField := &pb.DoubleValue
-	if doubleValueField != nil {
-		st.DoubleValue = *doubleValueField
-	}
-	stringValueField := &pb.StringValue
-	if stringValueField != nil {
-		st.StringValue = *stringValueField
-	}
+	st.BoolValue = pb.BoolValue
+	st.DoubleValue = pb.DoubleValue
+	st.StringValue = pb.StringValue
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2440,11 +2036,14 @@ func (st alertV2OperandValuePb) MarshalJSON() ([]byte, error) {
 }
 
 type AlertV2Subscription struct {
+
+	// Wire name: 'destination_id'
 	DestinationId string
 
+	// Wire name: 'user_email'
 	UserEmail string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertV2SubscriptionToPb(st *AlertV2Subscription) (*alertV2SubscriptionPb, error) {
@@ -2452,15 +2051,9 @@ func alertV2SubscriptionToPb(st *AlertV2Subscription) (*alertV2SubscriptionPb, e
 		return nil, nil
 	}
 	pb := &alertV2SubscriptionPb{}
-	destinationIdPb := &st.DestinationId
-	if destinationIdPb != nil {
-		pb.DestinationId = *destinationIdPb
-	}
+	pb.DestinationId = st.DestinationId
 
-	userEmailPb := &st.UserEmail
-	if userEmailPb != nil {
-		pb.UserEmail = *userEmailPb
-	}
+	pb.UserEmail = st.UserEmail
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2504,14 +2097,8 @@ func alertV2SubscriptionFromPb(pb *alertV2SubscriptionPb) (*AlertV2Subscription,
 		return nil, nil
 	}
 	st := &AlertV2Subscription{}
-	destinationIdField := &pb.DestinationId
-	if destinationIdField != nil {
-		st.DestinationId = *destinationIdField
-	}
-	userEmailField := &pb.UserEmail
-	if userEmailField != nil {
-		st.UserEmail = *userEmailField
-	}
+	st.DestinationId = pb.DestinationId
+	st.UserEmail = pb.UserEmail
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2531,15 +2118,19 @@ func (st alertV2SubscriptionPb) MarshalJSON() ([]byte, error) {
 type BaseChunkInfo struct {
 	// The number of bytes in the result chunk. This field is not available when
 	// using `INLINE` disposition.
+	// Wire name: 'byte_count'
 	ByteCount int64
 	// The position within the sequence of result set chunks.
+	// Wire name: 'chunk_index'
 	ChunkIndex int
 	// The number of rows within the result chunk.
+	// Wire name: 'row_count'
 	RowCount int64
 	// The starting row offset within the result set.
+	// Wire name: 'row_offset'
 	RowOffset int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func baseChunkInfoToPb(st *BaseChunkInfo) (*baseChunkInfoPb, error) {
@@ -2547,25 +2138,13 @@ func baseChunkInfoToPb(st *BaseChunkInfo) (*baseChunkInfoPb, error) {
 		return nil, nil
 	}
 	pb := &baseChunkInfoPb{}
-	byteCountPb := &st.ByteCount
-	if byteCountPb != nil {
-		pb.ByteCount = *byteCountPb
-	}
+	pb.ByteCount = st.ByteCount
 
-	chunkIndexPb := &st.ChunkIndex
-	if chunkIndexPb != nil {
-		pb.ChunkIndex = *chunkIndexPb
-	}
+	pb.ChunkIndex = st.ChunkIndex
 
-	rowCountPb := &st.RowCount
-	if rowCountPb != nil {
-		pb.RowCount = *rowCountPb
-	}
+	pb.RowCount = st.RowCount
 
-	rowOffsetPb := &st.RowOffset
-	if rowOffsetPb != nil {
-		pb.RowOffset = *rowOffsetPb
-	}
+	pb.RowOffset = st.RowOffset
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2615,22 +2194,10 @@ func baseChunkInfoFromPb(pb *baseChunkInfoPb) (*BaseChunkInfo, error) {
 		return nil, nil
 	}
 	st := &BaseChunkInfo{}
-	byteCountField := &pb.ByteCount
-	if byteCountField != nil {
-		st.ByteCount = *byteCountField
-	}
-	chunkIndexField := &pb.ChunkIndex
-	if chunkIndexField != nil {
-		st.ChunkIndex = *chunkIndexField
-	}
-	rowCountField := &pb.RowCount
-	if rowCountField != nil {
-		st.RowCount = *rowCountField
-	}
-	rowOffsetField := &pb.RowOffset
-	if rowOffsetField != nil {
-		st.RowOffset = *rowOffsetField
-	}
+	st.ByteCount = pb.ByteCount
+	st.ChunkIndex = pb.ChunkIndex
+	st.RowCount = pb.RowCount
+	st.RowOffset = pb.RowOffset
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2648,7 +2215,8 @@ func (st baseChunkInfoPb) MarshalJSON() ([]byte, error) {
 type CancelExecutionRequest struct {
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
-	StatementId string
+	// Wire name: 'statement_id'
+	StatementId string `tf:"-"`
 }
 
 func cancelExecutionRequestToPb(st *CancelExecutionRequest) (*cancelExecutionRequestPb, error) {
@@ -2656,10 +2224,7 @@ func cancelExecutionRequestToPb(st *CancelExecutionRequest) (*cancelExecutionReq
 		return nil, nil
 	}
 	pb := &cancelExecutionRequestPb{}
-	statementIdPb := &st.StatementId
-	if statementIdPb != nil {
-		pb.StatementId = *statementIdPb
-	}
+	pb.StatementId = st.StatementId
 
 	return pb, nil
 }
@@ -2700,10 +2265,7 @@ func cancelExecutionRequestFromPb(pb *cancelExecutionRequestPb) (*CancelExecutio
 		return nil, nil
 	}
 	st := &CancelExecutionRequest{}
-	statementIdField := &pb.StatementId
-	if statementIdField != nil {
-		st.StatementId = *statementIdField
-	}
+	st.StatementId = pb.StatementId
 
 	return st, nil
 }
@@ -2760,11 +2322,14 @@ func cancelExecutionResponseFromPb(pb *cancelExecutionResponsePb) (*CancelExecut
 // Configures the channel name and DBSQL version of the warehouse.
 // CHANNEL_NAME_CUSTOM should be chosen only when `dbsql_version` is specified.
 type Channel struct {
+
+	// Wire name: 'dbsql_version'
 	DbsqlVersion string
 
+	// Wire name: 'name'
 	Name ChannelName
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func channelToPb(st *Channel) (*channelPb, error) {
@@ -2772,15 +2337,9 @@ func channelToPb(st *Channel) (*channelPb, error) {
 		return nil, nil
 	}
 	pb := &channelPb{}
-	dbsqlVersionPb := &st.DbsqlVersion
-	if dbsqlVersionPb != nil {
-		pb.DbsqlVersion = *dbsqlVersionPb
-	}
+	pb.DbsqlVersion = st.DbsqlVersion
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2824,14 +2383,8 @@ func channelFromPb(pb *channelPb) (*Channel, error) {
 		return nil, nil
 	}
 	st := &Channel{}
-	dbsqlVersionField := &pb.DbsqlVersion
-	if dbsqlVersionField != nil {
-		st.DbsqlVersion = *dbsqlVersionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.DbsqlVersion = pb.DbsqlVersion
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2848,11 +2401,13 @@ func (st channelPb) MarshalJSON() ([]byte, error) {
 // Details about a Channel.
 type ChannelInfo struct {
 	// DB SQL Version the Channel is mapped to.
+	// Wire name: 'dbsql_version'
 	DbsqlVersion string
 	// Name of the channel
+	// Wire name: 'name'
 	Name ChannelName
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func channelInfoToPb(st *ChannelInfo) (*channelInfoPb, error) {
@@ -2860,15 +2415,9 @@ func channelInfoToPb(st *ChannelInfo) (*channelInfoPb, error) {
 		return nil, nil
 	}
 	pb := &channelInfoPb{}
-	dbsqlVersionPb := &st.DbsqlVersion
-	if dbsqlVersionPb != nil {
-		pb.DbsqlVersion = *dbsqlVersionPb
-	}
+	pb.DbsqlVersion = st.DbsqlVersion
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2913,14 +2462,8 @@ func channelInfoFromPb(pb *channelInfoPb) (*ChannelInfo, error) {
 		return nil, nil
 	}
 	st := &ChannelInfo{}
-	dbsqlVersionField := &pb.DbsqlVersion
-	if dbsqlVersionField != nil {
-		st.DbsqlVersion = *dbsqlVersionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.DbsqlVersion = pb.DbsqlVersion
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2983,27 +2526,38 @@ func channelNameFromPb(pb *channelNamePb) (*ChannelName, error) {
 }
 
 type ClientConfig struct {
+
+	// Wire name: 'allow_custom_js_visualizations'
 	AllowCustomJsVisualizations bool
 
+	// Wire name: 'allow_downloads'
 	AllowDownloads bool
 
+	// Wire name: 'allow_external_shares'
 	AllowExternalShares bool
 
+	// Wire name: 'allow_subscriptions'
 	AllowSubscriptions bool
 
+	// Wire name: 'date_format'
 	DateFormat string
 
+	// Wire name: 'date_time_format'
 	DateTimeFormat string
 
+	// Wire name: 'disable_publish'
 	DisablePublish bool
 
+	// Wire name: 'enable_legacy_autodetect_types'
 	EnableLegacyAutodetectTypes bool
 
+	// Wire name: 'feature_show_permissions_control'
 	FeatureShowPermissionsControl bool
 
+	// Wire name: 'hide_plotly_mode_bar'
 	HidePlotlyModeBar bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clientConfigToPb(st *ClientConfig) (*clientConfigPb, error) {
@@ -3011,55 +2565,25 @@ func clientConfigToPb(st *ClientConfig) (*clientConfigPb, error) {
 		return nil, nil
 	}
 	pb := &clientConfigPb{}
-	allowCustomJsVisualizationsPb := &st.AllowCustomJsVisualizations
-	if allowCustomJsVisualizationsPb != nil {
-		pb.AllowCustomJsVisualizations = *allowCustomJsVisualizationsPb
-	}
+	pb.AllowCustomJsVisualizations = st.AllowCustomJsVisualizations
 
-	allowDownloadsPb := &st.AllowDownloads
-	if allowDownloadsPb != nil {
-		pb.AllowDownloads = *allowDownloadsPb
-	}
+	pb.AllowDownloads = st.AllowDownloads
 
-	allowExternalSharesPb := &st.AllowExternalShares
-	if allowExternalSharesPb != nil {
-		pb.AllowExternalShares = *allowExternalSharesPb
-	}
+	pb.AllowExternalShares = st.AllowExternalShares
 
-	allowSubscriptionsPb := &st.AllowSubscriptions
-	if allowSubscriptionsPb != nil {
-		pb.AllowSubscriptions = *allowSubscriptionsPb
-	}
+	pb.AllowSubscriptions = st.AllowSubscriptions
 
-	dateFormatPb := &st.DateFormat
-	if dateFormatPb != nil {
-		pb.DateFormat = *dateFormatPb
-	}
+	pb.DateFormat = st.DateFormat
 
-	dateTimeFormatPb := &st.DateTimeFormat
-	if dateTimeFormatPb != nil {
-		pb.DateTimeFormat = *dateTimeFormatPb
-	}
+	pb.DateTimeFormat = st.DateTimeFormat
 
-	disablePublishPb := &st.DisablePublish
-	if disablePublishPb != nil {
-		pb.DisablePublish = *disablePublishPb
-	}
+	pb.DisablePublish = st.DisablePublish
 
-	enableLegacyAutodetectTypesPb := &st.EnableLegacyAutodetectTypes
-	if enableLegacyAutodetectTypesPb != nil {
-		pb.EnableLegacyAutodetectTypes = *enableLegacyAutodetectTypesPb
-	}
+	pb.EnableLegacyAutodetectTypes = st.EnableLegacyAutodetectTypes
 
-	featureShowPermissionsControlPb := &st.FeatureShowPermissionsControl
-	if featureShowPermissionsControlPb != nil {
-		pb.FeatureShowPermissionsControl = *featureShowPermissionsControlPb
-	}
+	pb.FeatureShowPermissionsControl = st.FeatureShowPermissionsControl
 
-	hidePlotlyModeBarPb := &st.HidePlotlyModeBar
-	if hidePlotlyModeBarPb != nil {
-		pb.HidePlotlyModeBar = *hidePlotlyModeBarPb
-	}
+	pb.HidePlotlyModeBar = st.HidePlotlyModeBar
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3119,46 +2643,16 @@ func clientConfigFromPb(pb *clientConfigPb) (*ClientConfig, error) {
 		return nil, nil
 	}
 	st := &ClientConfig{}
-	allowCustomJsVisualizationsField := &pb.AllowCustomJsVisualizations
-	if allowCustomJsVisualizationsField != nil {
-		st.AllowCustomJsVisualizations = *allowCustomJsVisualizationsField
-	}
-	allowDownloadsField := &pb.AllowDownloads
-	if allowDownloadsField != nil {
-		st.AllowDownloads = *allowDownloadsField
-	}
-	allowExternalSharesField := &pb.AllowExternalShares
-	if allowExternalSharesField != nil {
-		st.AllowExternalShares = *allowExternalSharesField
-	}
-	allowSubscriptionsField := &pb.AllowSubscriptions
-	if allowSubscriptionsField != nil {
-		st.AllowSubscriptions = *allowSubscriptionsField
-	}
-	dateFormatField := &pb.DateFormat
-	if dateFormatField != nil {
-		st.DateFormat = *dateFormatField
-	}
-	dateTimeFormatField := &pb.DateTimeFormat
-	if dateTimeFormatField != nil {
-		st.DateTimeFormat = *dateTimeFormatField
-	}
-	disablePublishField := &pb.DisablePublish
-	if disablePublishField != nil {
-		st.DisablePublish = *disablePublishField
-	}
-	enableLegacyAutodetectTypesField := &pb.EnableLegacyAutodetectTypes
-	if enableLegacyAutodetectTypesField != nil {
-		st.EnableLegacyAutodetectTypes = *enableLegacyAutodetectTypesField
-	}
-	featureShowPermissionsControlField := &pb.FeatureShowPermissionsControl
-	if featureShowPermissionsControlField != nil {
-		st.FeatureShowPermissionsControl = *featureShowPermissionsControlField
-	}
-	hidePlotlyModeBarField := &pb.HidePlotlyModeBar
-	if hidePlotlyModeBarField != nil {
-		st.HidePlotlyModeBar = *hidePlotlyModeBarField
-	}
+	st.AllowCustomJsVisualizations = pb.AllowCustomJsVisualizations
+	st.AllowDownloads = pb.AllowDownloads
+	st.AllowExternalShares = pb.AllowExternalShares
+	st.AllowSubscriptions = pb.AllowSubscriptions
+	st.DateFormat = pb.DateFormat
+	st.DateTimeFormat = pb.DateTimeFormat
+	st.DisablePublish = pb.DisablePublish
+	st.EnableLegacyAutodetectTypes = pb.EnableLegacyAutodetectTypes
+	st.FeatureShowPermissionsControl = pb.FeatureShowPermissionsControl
+	st.HidePlotlyModeBar = pb.HidePlotlyModeBar
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3174,24 +2668,31 @@ func (st clientConfigPb) MarshalJSON() ([]byte, error) {
 
 type ColumnInfo struct {
 	// The name of the column.
+	// Wire name: 'name'
 	Name string
 	// The ordinal position of the column (starting at position 0).
+	// Wire name: 'position'
 	Position int
 	// The format of the interval type.
+	// Wire name: 'type_interval_type'
 	TypeIntervalType string
 	// The name of the base data type. This doesn't include details for complex
 	// types such as STRUCT, MAP or ARRAY.
+	// Wire name: 'type_name'
 	TypeName ColumnInfoTypeName
 	// Specifies the number of digits in a number. This applies to the DECIMAL
 	// type.
+	// Wire name: 'type_precision'
 	TypePrecision int
 	// Specifies the number of digits to the right of the decimal point in a
 	// number. This applies to the DECIMAL type.
+	// Wire name: 'type_scale'
 	TypeScale int
 	// The full SQL type specification.
+	// Wire name: 'type_text'
 	TypeText string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func columnInfoToPb(st *ColumnInfo) (*columnInfoPb, error) {
@@ -3199,40 +2700,19 @@ func columnInfoToPb(st *ColumnInfo) (*columnInfoPb, error) {
 		return nil, nil
 	}
 	pb := &columnInfoPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	positionPb := &st.Position
-	if positionPb != nil {
-		pb.Position = *positionPb
-	}
+	pb.Position = st.Position
 
-	typeIntervalTypePb := &st.TypeIntervalType
-	if typeIntervalTypePb != nil {
-		pb.TypeIntervalType = *typeIntervalTypePb
-	}
+	pb.TypeIntervalType = st.TypeIntervalType
 
-	typeNamePb := &st.TypeName
-	if typeNamePb != nil {
-		pb.TypeName = *typeNamePb
-	}
+	pb.TypeName = st.TypeName
 
-	typePrecisionPb := &st.TypePrecision
-	if typePrecisionPb != nil {
-		pb.TypePrecision = *typePrecisionPb
-	}
+	pb.TypePrecision = st.TypePrecision
 
-	typeScalePb := &st.TypeScale
-	if typeScalePb != nil {
-		pb.TypeScale = *typeScalePb
-	}
+	pb.TypeScale = st.TypeScale
 
-	typeTextPb := &st.TypeText
-	if typeTextPb != nil {
-		pb.TypeText = *typeTextPb
-	}
+	pb.TypeText = st.TypeText
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3290,34 +2770,13 @@ func columnInfoFromPb(pb *columnInfoPb) (*ColumnInfo, error) {
 		return nil, nil
 	}
 	st := &ColumnInfo{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	positionField := &pb.Position
-	if positionField != nil {
-		st.Position = *positionField
-	}
-	typeIntervalTypeField := &pb.TypeIntervalType
-	if typeIntervalTypeField != nil {
-		st.TypeIntervalType = *typeIntervalTypeField
-	}
-	typeNameField := &pb.TypeName
-	if typeNameField != nil {
-		st.TypeName = *typeNameField
-	}
-	typePrecisionField := &pb.TypePrecision
-	if typePrecisionField != nil {
-		st.TypePrecision = *typePrecisionField
-	}
-	typeScaleField := &pb.TypeScale
-	if typeScaleField != nil {
-		st.TypeScale = *typeScaleField
-	}
-	typeTextField := &pb.TypeText
-	if typeTextField != nil {
-		st.TypeText = *typeTextField
-	}
+	st.Name = pb.Name
+	st.Position = pb.Position
+	st.TypeIntervalType = pb.TypeIntervalType
+	st.TypeName = pb.TypeName
+	st.TypePrecision = pb.TypePrecision
+	st.TypeScale = pb.TypeScale
+	st.TypeText = pb.TypeText
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3469,19 +2928,24 @@ func comparisonOperatorFromPb(pb *comparisonOperatorPb) (*ComparisonOperator, er
 
 type CreateAlert struct {
 	// Name of the alert.
+	// Wire name: 'name'
 	Name string
 	// Alert configuration options.
+	// Wire name: 'options'
 	Options AlertOptions
 	// The identifier of the workspace folder containing the object.
+	// Wire name: 'parent'
 	Parent string
 	// Query ID.
+	// Wire name: 'query_id'
 	QueryId string
 	// Number of seconds after being triggered before the alert rearms itself
 	// and can be triggered again. If `null`, alert will never be triggered
 	// again.
+	// Wire name: 'rearm'
 	Rearm int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createAlertToPb(st *CreateAlert) (*createAlertPb, error) {
@@ -3489,10 +2953,7 @@ func createAlertToPb(st *CreateAlert) (*createAlertPb, error) {
 		return nil, nil
 	}
 	pb := &createAlertPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	optionsPb, err := alertOptionsToPb(&st.Options)
 	if err != nil {
@@ -3502,20 +2963,11 @@ func createAlertToPb(st *CreateAlert) (*createAlertPb, error) {
 		pb.Options = *optionsPb
 	}
 
-	parentPb := &st.Parent
-	if parentPb != nil {
-		pb.Parent = *parentPb
-	}
+	pb.Parent = st.Parent
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	rearmPb := &st.Rearm
-	if rearmPb != nil {
-		pb.Rearm = *rearmPb
-	}
+	pb.Rearm = st.Rearm
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3568,10 +3020,7 @@ func createAlertFromPb(pb *createAlertPb) (*CreateAlert, error) {
 		return nil, nil
 	}
 	st := &CreateAlert{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 	optionsField, err := alertOptionsFromPb(&pb.Options)
 	if err != nil {
 		return nil, err
@@ -3579,18 +3028,9 @@ func createAlertFromPb(pb *createAlertPb) (*CreateAlert, error) {
 	if optionsField != nil {
 		st.Options = *optionsField
 	}
-	parentField := &pb.Parent
-	if parentField != nil {
-		st.Parent = *parentField
-	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-	rearmField := &pb.Rearm
-	if rearmField != nil {
-		st.Rearm = *rearmField
-	}
+	st.Parent = pb.Parent
+	st.QueryId = pb.QueryId
+	st.Rearm = pb.Rearm
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3605,13 +3045,16 @@ func (st createAlertPb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateAlertRequest struct {
+
+	// Wire name: 'alert'
 	Alert *CreateAlertRequestAlert
 	// If true, automatically resolve alert display name conflicts. Otherwise,
 	// fail the request if the alert's display name conflicts with an existing
 	// alert's display name.
+	// Wire name: 'auto_resolve_display_name'
 	AutoResolveDisplayName bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createAlertRequestToPb(st *CreateAlertRequest) (*createAlertRequestPb, error) {
@@ -3627,10 +3070,7 @@ func createAlertRequestToPb(st *CreateAlertRequest) (*createAlertRequestPb, erro
 		pb.Alert = alertPb
 	}
 
-	autoResolveDisplayNamePb := &st.AutoResolveDisplayName
-	if autoResolveDisplayNamePb != nil {
-		pb.AutoResolveDisplayName = *autoResolveDisplayNamePb
-	}
+	pb.AutoResolveDisplayName = st.AutoResolveDisplayName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3683,10 +3123,7 @@ func createAlertRequestFromPb(pb *createAlertRequestPb) (*CreateAlertRequest, er
 	if alertField != nil {
 		st.Alert = alertField
 	}
-	autoResolveDisplayNameField := &pb.AutoResolveDisplayName
-	if autoResolveDisplayNameField != nil {
-		st.AutoResolveDisplayName = *autoResolveDisplayNameField
-	}
+	st.AutoResolveDisplayName = pb.AutoResolveDisplayName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3702,32 +3139,40 @@ func (st createAlertRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateAlertRequestAlert struct {
 	// Trigger conditions of the alert.
+	// Wire name: 'condition'
 	Condition *AlertCondition
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Wire name: 'custom_body'
 	CustomBody string
 	// Custom subject of alert notification, if it exists. This can include
 	// email subject entries and Slack notification headers, for example. See
 	// [here] for custom templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Wire name: 'custom_subject'
 	CustomSubject string
 	// The display name of the alert.
+	// Wire name: 'display_name'
 	DisplayName string
 	// Whether to notify alert subscribers when alert returns back to normal.
+	// Wire name: 'notify_on_ok'
 	NotifyOnOk bool
 	// The workspace path of the folder containing the alert.
+	// Wire name: 'parent_path'
 	ParentPath string
 	// UUID of the query attached to the alert.
+	// Wire name: 'query_id'
 	QueryId string
 	// Number of seconds an alert must wait after being triggered to rearm
 	// itself. After rearming, it can be triggered again. If 0 or not specified,
 	// the alert will not be triggered again.
+	// Wire name: 'seconds_to_retrigger'
 	SecondsToRetrigger int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createAlertRequestAlertToPb(st *CreateAlertRequestAlert) (*createAlertRequestAlertPb, error) {
@@ -3743,40 +3188,19 @@ func createAlertRequestAlertToPb(st *CreateAlertRequestAlert) (*createAlertReque
 		pb.Condition = conditionPb
 	}
 
-	customBodyPb := &st.CustomBody
-	if customBodyPb != nil {
-		pb.CustomBody = *customBodyPb
-	}
+	pb.CustomBody = st.CustomBody
 
-	customSubjectPb := &st.CustomSubject
-	if customSubjectPb != nil {
-		pb.CustomSubject = *customSubjectPb
-	}
+	pb.CustomSubject = st.CustomSubject
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	notifyOnOkPb := &st.NotifyOnOk
-	if notifyOnOkPb != nil {
-		pb.NotifyOnOk = *notifyOnOkPb
-	}
+	pb.NotifyOnOk = st.NotifyOnOk
 
-	parentPathPb := &st.ParentPath
-	if parentPathPb != nil {
-		pb.ParentPath = *parentPathPb
-	}
+	pb.ParentPath = st.ParentPath
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	secondsToRetriggerPb := &st.SecondsToRetrigger
-	if secondsToRetriggerPb != nil {
-		pb.SecondsToRetrigger = *secondsToRetriggerPb
-	}
+	pb.SecondsToRetrigger = st.SecondsToRetrigger
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3849,34 +3273,13 @@ func createAlertRequestAlertFromPb(pb *createAlertRequestAlertPb) (*CreateAlertR
 	if conditionField != nil {
 		st.Condition = conditionField
 	}
-	customBodyField := &pb.CustomBody
-	if customBodyField != nil {
-		st.CustomBody = *customBodyField
-	}
-	customSubjectField := &pb.CustomSubject
-	if customSubjectField != nil {
-		st.CustomSubject = *customSubjectField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	notifyOnOkField := &pb.NotifyOnOk
-	if notifyOnOkField != nil {
-		st.NotifyOnOk = *notifyOnOkField
-	}
-	parentPathField := &pb.ParentPath
-	if parentPathField != nil {
-		st.ParentPath = *parentPathField
-	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-	secondsToRetriggerField := &pb.SecondsToRetrigger
-	if secondsToRetriggerField != nil {
-		st.SecondsToRetrigger = *secondsToRetriggerField
-	}
+	st.CustomBody = pb.CustomBody
+	st.CustomSubject = pb.CustomSubject
+	st.DisplayName = pb.DisplayName
+	st.NotifyOnOk = pb.NotifyOnOk
+	st.ParentPath = pb.ParentPath
+	st.QueryId = pb.QueryId
+	st.SecondsToRetrigger = pb.SecondsToRetrigger
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3891,6 +3294,8 @@ func (st createAlertRequestAlertPb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateAlertV2Request struct {
+
+	// Wire name: 'alert'
 	Alert *AlertV2
 }
 
@@ -3959,11 +3364,13 @@ type CreateQueryRequest struct {
 	// If true, automatically resolve query display name conflicts. Otherwise,
 	// fail the request if the query's display name conflicts with an existing
 	// query's display name.
+	// Wire name: 'auto_resolve_display_name'
 	AutoResolveDisplayName bool
 
+	// Wire name: 'query'
 	Query *CreateQueryRequestQuery
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createQueryRequestToPb(st *CreateQueryRequest) (*createQueryRequestPb, error) {
@@ -3971,10 +3378,7 @@ func createQueryRequestToPb(st *CreateQueryRequest) (*createQueryRequestPb, erro
 		return nil, nil
 	}
 	pb := &createQueryRequestPb{}
-	autoResolveDisplayNamePb := &st.AutoResolveDisplayName
-	if autoResolveDisplayNamePb != nil {
-		pb.AutoResolveDisplayName = *autoResolveDisplayNamePb
-	}
+	pb.AutoResolveDisplayName = st.AutoResolveDisplayName
 
 	queryPb, err := createQueryRequestQueryToPb(st.Query)
 	if err != nil {
@@ -4029,10 +3433,7 @@ func createQueryRequestFromPb(pb *createQueryRequestPb) (*CreateQueryRequest, er
 		return nil, nil
 	}
 	st := &CreateQueryRequest{}
-	autoResolveDisplayNameField := &pb.AutoResolveDisplayName
-	if autoResolveDisplayNameField != nil {
-		st.AutoResolveDisplayName = *autoResolveDisplayNameField
-	}
+	st.AutoResolveDisplayName = pb.AutoResolveDisplayName
 	queryField, err := createQueryRequestQueryFromPb(pb.Query)
 	if err != nil {
 		return nil, err
@@ -4055,31 +3456,42 @@ func (st createQueryRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateQueryRequestQuery struct {
 	// Whether to apply a 1000 row limit to the query result.
+	// Wire name: 'apply_auto_limit'
 	ApplyAutoLimit bool
 	// Name of the catalog where this query will be executed.
+	// Wire name: 'catalog'
 	Catalog string
 	// General description that conveys additional information about this query
 	// such as usage notes.
+	// Wire name: 'description'
 	Description string
 	// Display name of the query that appears in list views, widget headings,
 	// and on the query page.
+	// Wire name: 'display_name'
 	DisplayName string
 	// List of query parameter definitions.
+	// Wire name: 'parameters'
 	Parameters []QueryParameter
 	// Workspace path of the workspace folder containing the object.
+	// Wire name: 'parent_path'
 	ParentPath string
 	// Text of the query to be run.
+	// Wire name: 'query_text'
 	QueryText string
 	// Sets the "Run as" role for the object.
+	// Wire name: 'run_as_mode'
 	RunAsMode RunAsMode
 	// Name of the schema where this query will be executed.
+	// Wire name: 'schema'
 	Schema string
 
+	// Wire name: 'tags'
 	Tags []string
 	// ID of the SQL warehouse attached to the query.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createQueryRequestQueryToPb(st *CreateQueryRequestQuery) (*createQueryRequestQueryPb, error) {
@@ -4087,25 +3499,13 @@ func createQueryRequestQueryToPb(st *CreateQueryRequestQuery) (*createQueryReque
 		return nil, nil
 	}
 	pb := &createQueryRequestQueryPb{}
-	applyAutoLimitPb := &st.ApplyAutoLimit
-	if applyAutoLimitPb != nil {
-		pb.ApplyAutoLimit = *applyAutoLimitPb
-	}
+	pb.ApplyAutoLimit = st.ApplyAutoLimit
 
-	catalogPb := &st.Catalog
-	if catalogPb != nil {
-		pb.Catalog = *catalogPb
-	}
+	pb.Catalog = st.Catalog
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
 	var parametersPb []queryParameterPb
 	for _, item := range st.Parameters {
@@ -4119,39 +3519,17 @@ func createQueryRequestQueryToPb(st *CreateQueryRequestQuery) (*createQueryReque
 	}
 	pb.Parameters = parametersPb
 
-	parentPathPb := &st.ParentPath
-	if parentPathPb != nil {
-		pb.ParentPath = *parentPathPb
-	}
+	pb.ParentPath = st.ParentPath
 
-	queryTextPb := &st.QueryText
-	if queryTextPb != nil {
-		pb.QueryText = *queryTextPb
-	}
+	pb.QueryText = st.QueryText
 
-	runAsModePb := &st.RunAsMode
-	if runAsModePb != nil {
-		pb.RunAsMode = *runAsModePb
-	}
+	pb.RunAsMode = st.RunAsMode
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	var tagsPb []string
-	for _, item := range st.Tags {
-		itemPb := &item
-		if itemPb != nil {
-			tagsPb = append(tagsPb, *itemPb)
-		}
-	}
-	pb.Tags = tagsPb
+	pb.Tags = st.Tags
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4216,63 +3594,28 @@ func createQueryRequestQueryFromPb(pb *createQueryRequestQueryPb) (*CreateQueryR
 		return nil, nil
 	}
 	st := &CreateQueryRequestQuery{}
-	applyAutoLimitField := &pb.ApplyAutoLimit
-	if applyAutoLimitField != nil {
-		st.ApplyAutoLimit = *applyAutoLimitField
-	}
-	catalogField := &pb.Catalog
-	if catalogField != nil {
-		st.Catalog = *catalogField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
+	st.ApplyAutoLimit = pb.ApplyAutoLimit
+	st.Catalog = pb.Catalog
+	st.Description = pb.Description
+	st.DisplayName = pb.DisplayName
 
 	var parametersField []QueryParameter
-	for _, item := range pb.Parameters {
-		itemField, err := queryParameterFromPb(&item)
+	for _, itemPb := range pb.Parameters {
+		item, err := queryParameterFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			parametersField = append(parametersField, *itemField)
+		if item != nil {
+			parametersField = append(parametersField, *item)
 		}
 	}
 	st.Parameters = parametersField
-	parentPathField := &pb.ParentPath
-	if parentPathField != nil {
-		st.ParentPath = *parentPathField
-	}
-	queryTextField := &pb.QueryText
-	if queryTextField != nil {
-		st.QueryText = *queryTextField
-	}
-	runAsModeField := &pb.RunAsMode
-	if runAsModeField != nil {
-		st.RunAsMode = *runAsModeField
-	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-
-	var tagsField []string
-	for _, item := range pb.Tags {
-		itemField := &item
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
-		}
-	}
-	st.Tags = tagsField
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.ParentPath = pb.ParentPath
+	st.QueryText = pb.QueryText
+	st.RunAsMode = pb.RunAsMode
+	st.Schema = pb.Schema
+	st.Tags = pb.Tags
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4290,20 +3633,25 @@ func (st createQueryRequestQueryPb) MarshalJSON() ([]byte, error) {
 type CreateQueryVisualizationsLegacyRequest struct {
 	// A short description of this visualization. This is not displayed in the
 	// UI.
+	// Wire name: 'description'
 	Description string
 	// The name of the visualization that appears on dashboards and the query
 	// screen.
+	// Wire name: 'name'
 	Name string
 	// The options object varies widely from one visualization type to the next
 	// and is unsupported. Databricks does not recommend modifying visualization
 	// settings in JSON.
+	// Wire name: 'options'
 	Options any
 	// The identifier returned by :method:queries/create
+	// Wire name: 'query_id'
 	QueryId string
 	// The type of visualization: chart, table, pivot table, and so on.
+	// Wire name: 'type'
 	Type string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createQueryVisualizationsLegacyRequestToPb(st *CreateQueryVisualizationsLegacyRequest) (*createQueryVisualizationsLegacyRequestPb, error) {
@@ -4311,30 +3659,15 @@ func createQueryVisualizationsLegacyRequestToPb(st *CreateQueryVisualizationsLeg
 		return nil, nil
 	}
 	pb := &createQueryVisualizationsLegacyRequestPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	optionsPb := &st.Options
-	if optionsPb != nil {
-		pb.Options = *optionsPb
-	}
+	pb.Options = st.Options
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4389,26 +3722,11 @@ func createQueryVisualizationsLegacyRequestFromPb(pb *createQueryVisualizationsL
 		return nil, nil
 	}
 	st := &CreateQueryVisualizationsLegacyRequest{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	optionsField := &pb.Options
-	if optionsField != nil {
-		st.Options = *optionsField
-	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.Description = pb.Description
+	st.Name = pb.Name
+	st.Options = pb.Options
+	st.QueryId = pb.QueryId
+	st.Type = pb.Type
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4423,6 +3741,8 @@ func (st createQueryVisualizationsLegacyRequestPb) MarshalJSON() ([]byte, error)
 }
 
 type CreateVisualizationRequest struct {
+
+	// Wire name: 'visualization'
 	Visualization *CreateVisualizationRequestVisualization
 }
 
@@ -4489,21 +3809,26 @@ func createVisualizationRequestFromPb(pb *createVisualizationRequestPb) (*Create
 
 type CreateVisualizationRequestVisualization struct {
 	// The display name of the visualization.
+	// Wire name: 'display_name'
 	DisplayName string
 	// UUID of the query that the visualization is attached to.
+	// Wire name: 'query_id'
 	QueryId string
 	// The visualization options varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying
 	// visualization options directly.
+	// Wire name: 'serialized_options'
 	SerializedOptions string
 	// The visualization query plan varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying the
 	// visualization query plan directly.
+	// Wire name: 'serialized_query_plan'
 	SerializedQueryPlan string
 	// The type of visualization: counter, table, funnel, and so on.
+	// Wire name: 'type'
 	Type string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createVisualizationRequestVisualizationToPb(st *CreateVisualizationRequestVisualization) (*createVisualizationRequestVisualizationPb, error) {
@@ -4511,30 +3836,15 @@ func createVisualizationRequestVisualizationToPb(st *CreateVisualizationRequestV
 		return nil, nil
 	}
 	pb := &createVisualizationRequestVisualizationPb{}
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	serializedOptionsPb := &st.SerializedOptions
-	if serializedOptionsPb != nil {
-		pb.SerializedOptions = *serializedOptionsPb
-	}
+	pb.SerializedOptions = st.SerializedOptions
 
-	serializedQueryPlanPb := &st.SerializedQueryPlan
-	if serializedQueryPlanPb != nil {
-		pb.SerializedQueryPlan = *serializedQueryPlanPb
-	}
+	pb.SerializedQueryPlan = st.SerializedQueryPlan
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4589,26 +3899,11 @@ func createVisualizationRequestVisualizationFromPb(pb *createVisualizationReques
 		return nil, nil
 	}
 	st := &CreateVisualizationRequestVisualization{}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-	serializedOptionsField := &pb.SerializedOptions
-	if serializedOptionsField != nil {
-		st.SerializedOptions = *serializedOptionsField
-	}
-	serializedQueryPlanField := &pb.SerializedQueryPlan
-	if serializedQueryPlanField != nil {
-		st.SerializedQueryPlan = *serializedQueryPlanField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.DisplayName = pb.DisplayName
+	st.QueryId = pb.QueryId
+	st.SerializedOptions = pb.SerializedOptions
+	st.SerializedQueryPlan = pb.SerializedQueryPlan
+	st.Type = pb.Type
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4631,8 +3926,10 @@ type CreateWarehouseRequest struct {
 	// autostop.
 	//
 	// Defaults to 120 mins
+	// Wire name: 'auto_stop_mins'
 	AutoStopMins int
 	// Channel Details
+	// Wire name: 'channel'
 	Channel *Channel
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
@@ -4640,16 +3937,21 @@ type CreateWarehouseRequest struct {
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large
+	// Wire name: 'cluster_size'
 	ClusterSize string
 	// warehouse creator name
+	// Wire name: 'creator_name'
 	CreatorName string
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to false.
+	// Wire name: 'enable_photon'
 	EnablePhoton bool
 	// Configures whether the warehouse should use serverless compute
+	// Wire name: 'enable_serverless_compute'
 	EnableServerlessCompute bool
 	// Deprecated. Instance profile used to pass IAM role to the cluster
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
@@ -4657,6 +3959,7 @@ type CreateWarehouseRequest struct {
 	// Supported values: - Must be >= min_num_clusters - Must be <= 30.
 	//
 	// Defaults to min_clusters if unset.
+	// Wire name: 'max_num_clusters'
 	MaxNumClusters int
 	// Minimum number of available clusters that will be maintained for this SQL
 	// warehouse. Increasing this will ensure that a larger number of clusters
@@ -4667,25 +3970,30 @@ type CreateWarehouseRequest struct {
 	// Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
 	//
 	// Defaults to 1
+	// Wire name: 'min_num_clusters'
 	MinNumClusters int
 	// Logical name for the cluster.
 	//
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
+	// Wire name: 'name'
 	Name string
 	// Configurations whether the warehouse should use spot instances.
+	// Wire name: 'spot_instance_policy'
 	SpotInstancePolicy SpotInstancePolicy
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
+	// Wire name: 'tags'
 	Tags *EndpointTags
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
+	// Wire name: 'warehouse_type'
 	WarehouseType CreateWarehouseRequestWarehouseType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createWarehouseRequestToPb(st *CreateWarehouseRequest) (*createWarehouseRequestPb, error) {
@@ -4693,10 +4001,7 @@ func createWarehouseRequestToPb(st *CreateWarehouseRequest) (*createWarehouseReq
 		return nil, nil
 	}
 	pb := &createWarehouseRequestPb{}
-	autoStopMinsPb := &st.AutoStopMins
-	if autoStopMinsPb != nil {
-		pb.AutoStopMins = *autoStopMinsPb
-	}
+	pb.AutoStopMins = st.AutoStopMins
 
 	channelPb, err := channelToPb(st.Channel)
 	if err != nil {
@@ -4706,50 +4011,23 @@ func createWarehouseRequestToPb(st *CreateWarehouseRequest) (*createWarehouseReq
 		pb.Channel = channelPb
 	}
 
-	clusterSizePb := &st.ClusterSize
-	if clusterSizePb != nil {
-		pb.ClusterSize = *clusterSizePb
-	}
+	pb.ClusterSize = st.ClusterSize
 
-	creatorNamePb := &st.CreatorName
-	if creatorNamePb != nil {
-		pb.CreatorName = *creatorNamePb
-	}
+	pb.CreatorName = st.CreatorName
 
-	enablePhotonPb := &st.EnablePhoton
-	if enablePhotonPb != nil {
-		pb.EnablePhoton = *enablePhotonPb
-	}
+	pb.EnablePhoton = st.EnablePhoton
 
-	enableServerlessComputePb := &st.EnableServerlessCompute
-	if enableServerlessComputePb != nil {
-		pb.EnableServerlessCompute = *enableServerlessComputePb
-	}
+	pb.EnableServerlessCompute = st.EnableServerlessCompute
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	maxNumClustersPb := &st.MaxNumClusters
-	if maxNumClustersPb != nil {
-		pb.MaxNumClusters = *maxNumClustersPb
-	}
+	pb.MaxNumClusters = st.MaxNumClusters
 
-	minNumClustersPb := &st.MinNumClusters
-	if minNumClustersPb != nil {
-		pb.MinNumClusters = *minNumClustersPb
-	}
+	pb.MinNumClusters = st.MinNumClusters
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	spotInstancePolicyPb := &st.SpotInstancePolicy
-	if spotInstancePolicyPb != nil {
-		pb.SpotInstancePolicy = *spotInstancePolicyPb
-	}
+	pb.SpotInstancePolicy = st.SpotInstancePolicy
 
 	tagsPb, err := endpointTagsToPb(st.Tags)
 	if err != nil {
@@ -4759,10 +4037,7 @@ func createWarehouseRequestToPb(st *CreateWarehouseRequest) (*createWarehouseReq
 		pb.Tags = tagsPb
 	}
 
-	warehouseTypePb := &st.WarehouseType
-	if warehouseTypePb != nil {
-		pb.WarehouseType = *warehouseTypePb
-	}
+	pb.WarehouseType = st.WarehouseType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4864,10 +4139,7 @@ func createWarehouseRequestFromPb(pb *createWarehouseRequestPb) (*CreateWarehous
 		return nil, nil
 	}
 	st := &CreateWarehouseRequest{}
-	autoStopMinsField := &pb.AutoStopMins
-	if autoStopMinsField != nil {
-		st.AutoStopMins = *autoStopMinsField
-	}
+	st.AutoStopMins = pb.AutoStopMins
 	channelField, err := channelFromPb(pb.Channel)
 	if err != nil {
 		return nil, err
@@ -4875,42 +4147,15 @@ func createWarehouseRequestFromPb(pb *createWarehouseRequestPb) (*CreateWarehous
 	if channelField != nil {
 		st.Channel = channelField
 	}
-	clusterSizeField := &pb.ClusterSize
-	if clusterSizeField != nil {
-		st.ClusterSize = *clusterSizeField
-	}
-	creatorNameField := &pb.CreatorName
-	if creatorNameField != nil {
-		st.CreatorName = *creatorNameField
-	}
-	enablePhotonField := &pb.EnablePhoton
-	if enablePhotonField != nil {
-		st.EnablePhoton = *enablePhotonField
-	}
-	enableServerlessComputeField := &pb.EnableServerlessCompute
-	if enableServerlessComputeField != nil {
-		st.EnableServerlessCompute = *enableServerlessComputeField
-	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	maxNumClustersField := &pb.MaxNumClusters
-	if maxNumClustersField != nil {
-		st.MaxNumClusters = *maxNumClustersField
-	}
-	minNumClustersField := &pb.MinNumClusters
-	if minNumClustersField != nil {
-		st.MinNumClusters = *minNumClustersField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	spotInstancePolicyField := &pb.SpotInstancePolicy
-	if spotInstancePolicyField != nil {
-		st.SpotInstancePolicy = *spotInstancePolicyField
-	}
+	st.ClusterSize = pb.ClusterSize
+	st.CreatorName = pb.CreatorName
+	st.EnablePhoton = pb.EnablePhoton
+	st.EnableServerlessCompute = pb.EnableServerlessCompute
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.MaxNumClusters = pb.MaxNumClusters
+	st.MinNumClusters = pb.MinNumClusters
+	st.Name = pb.Name
+	st.SpotInstancePolicy = pb.SpotInstancePolicy
 	tagsField, err := endpointTagsFromPb(pb.Tags)
 	if err != nil {
 		return nil, err
@@ -4918,10 +4163,7 @@ func createWarehouseRequestFromPb(pb *createWarehouseRequestPb) (*CreateWarehous
 	if tagsField != nil {
 		st.Tags = tagsField
 	}
-	warehouseTypeField := &pb.WarehouseType
-	if warehouseTypeField != nil {
-		st.WarehouseType = *warehouseTypeField
-	}
+	st.WarehouseType = pb.WarehouseType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4986,9 +4228,10 @@ func createWarehouseRequestWarehouseTypeFromPb(pb *createWarehouseRequestWarehou
 
 type CreateWarehouseResponse struct {
 	// Id for the SQL warehouse. This value is unique across all SQL warehouses.
+	// Wire name: 'id'
 	Id string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createWarehouseResponseToPb(st *CreateWarehouseResponse) (*createWarehouseResponsePb, error) {
@@ -4996,10 +4239,7 @@ func createWarehouseResponseToPb(st *CreateWarehouseResponse) (*createWarehouseR
 		return nil, nil
 	}
 	pb := &createWarehouseResponsePb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5042,10 +4282,7 @@ func createWarehouseResponseFromPb(pb *createWarehouseResponsePb) (*CreateWareho
 		return nil, nil
 	}
 	st := &CreateWarehouseResponse{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5061,21 +4298,27 @@ func (st createWarehouseResponsePb) MarshalJSON() ([]byte, error) {
 
 type CreateWidget struct {
 	// Dashboard ID returned by :method:dashboards/create.
+	// Wire name: 'dashboard_id'
 	DashboardId string
 	// Widget ID returned by :method:dashboardwidgets/create
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 
+	// Wire name: 'options'
 	Options WidgetOptions
 	// If this is a textbox widget, the application displays this text. This
 	// field is ignored if the widget contains a visualization in the
 	// `visualization` field.
+	// Wire name: 'text'
 	Text string
 	// Query Vizualization ID returned by :method:queryvisualizations/create.
+	// Wire name: 'visualization_id'
 	VisualizationId string
 	// Width of a widget
+	// Wire name: 'width'
 	Width int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createWidgetToPb(st *CreateWidget) (*createWidgetPb, error) {
@@ -5083,15 +4326,9 @@ func createWidgetToPb(st *CreateWidget) (*createWidgetPb, error) {
 		return nil, nil
 	}
 	pb := &createWidgetPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	optionsPb, err := widgetOptionsToPb(&st.Options)
 	if err != nil {
@@ -5101,20 +4338,11 @@ func createWidgetToPb(st *CreateWidget) (*createWidgetPb, error) {
 		pb.Options = *optionsPb
 	}
 
-	textPb := &st.Text
-	if textPb != nil {
-		pb.Text = *textPb
-	}
+	pb.Text = st.Text
 
-	visualizationIdPb := &st.VisualizationId
-	if visualizationIdPb != nil {
-		pb.VisualizationId = *visualizationIdPb
-	}
+	pb.VisualizationId = st.VisualizationId
 
-	widthPb := &st.Width
-	if widthPb != nil {
-		pb.Width = *widthPb
-	}
+	pb.Width = st.Width
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5169,14 +4397,8 @@ func createWidgetFromPb(pb *createWidgetPb) (*CreateWidget, error) {
 		return nil, nil
 	}
 	st := &CreateWidget{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.DashboardId = pb.DashboardId
+	st.Id = pb.Id
 	optionsField, err := widgetOptionsFromPb(&pb.Options)
 	if err != nil {
 		return nil, err
@@ -5184,18 +4406,9 @@ func createWidgetFromPb(pb *createWidgetPb) (*CreateWidget, error) {
 	if optionsField != nil {
 		st.Options = *optionsField
 	}
-	textField := &pb.Text
-	if textField != nil {
-		st.Text = *textField
-	}
-	visualizationIdField := &pb.VisualizationId
-	if visualizationIdField != nil {
-		st.VisualizationId = *visualizationIdField
-	}
-	widthField := &pb.Width
-	if widthField != nil {
-		st.Width = *widthField
-	}
+	st.Text = pb.Text
+	st.VisualizationId = pb.VisualizationId
+	st.Width = pb.Width
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5211,19 +4424,22 @@ func (st createWidgetPb) MarshalJSON() ([]byte, error) {
 
 type CronSchedule struct {
 	// Indicate whether this schedule is paused or not.
+	// Wire name: 'pause_status'
 	PauseStatus SchedulePauseStatus
 	// A cron expression using quartz syntax that specifies the schedule for
 	// this pipeline. Should use the quartz format described here:
 	// http://www.quartz-scheduler.org/documentation/quartz-2.1.7/tutorials/tutorial-lesson-06.html
+	// Wire name: 'quartz_cron_schedule'
 	QuartzCronSchedule string
 	// A Java timezone id. The schedule will be resolved using this timezone.
 	// This will be combined with the quartz_cron_schedule to determine the
 	// schedule. See
 	// https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
 	// for details.
+	// Wire name: 'timezone_id'
 	TimezoneId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cronScheduleToPb(st *CronSchedule) (*cronSchedulePb, error) {
@@ -5231,20 +4447,11 @@ func cronScheduleToPb(st *CronSchedule) (*cronSchedulePb, error) {
 		return nil, nil
 	}
 	pb := &cronSchedulePb{}
-	pauseStatusPb := &st.PauseStatus
-	if pauseStatusPb != nil {
-		pb.PauseStatus = *pauseStatusPb
-	}
+	pb.PauseStatus = st.PauseStatus
 
-	quartzCronSchedulePb := &st.QuartzCronSchedule
-	if quartzCronSchedulePb != nil {
-		pb.QuartzCronSchedule = *quartzCronSchedulePb
-	}
+	pb.QuartzCronSchedule = st.QuartzCronSchedule
 
-	timezoneIdPb := &st.TimezoneId
-	if timezoneIdPb != nil {
-		pb.TimezoneId = *timezoneIdPb
-	}
+	pb.TimezoneId = st.TimezoneId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5297,18 +4504,9 @@ func cronScheduleFromPb(pb *cronSchedulePb) (*CronSchedule, error) {
 		return nil, nil
 	}
 	st := &CronSchedule{}
-	pauseStatusField := &pb.PauseStatus
-	if pauseStatusField != nil {
-		st.PauseStatus = *pauseStatusField
-	}
-	quartzCronScheduleField := &pb.QuartzCronSchedule
-	if quartzCronScheduleField != nil {
-		st.QuartzCronSchedule = *quartzCronScheduleField
-	}
-	timezoneIdField := &pb.TimezoneId
-	if timezoneIdField != nil {
-		st.TimezoneId = *timezoneIdField
-	}
+	st.PauseStatus = pb.PauseStatus
+	st.QuartzCronSchedule = pb.QuartzCronSchedule
+	st.TimezoneId = pb.TimezoneId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5326,51 +4524,68 @@ func (st cronSchedulePb) MarshalJSON() ([]byte, error) {
 // boxes.
 type Dashboard struct {
 	// Whether the authenticated user can edit the query definition.
+	// Wire name: 'can_edit'
 	CanEdit bool
 	// Timestamp when this dashboard was created.
+	// Wire name: 'created_at'
 	CreatedAt string
 	// In the web application, query filters that share a name are coupled to a
 	// single selection box if this value is `true`.
+	// Wire name: 'dashboard_filters_enabled'
 	DashboardFiltersEnabled bool
 	// The ID for this dashboard.
+	// Wire name: 'id'
 	Id string
 	// Indicates whether a dashboard is trashed. Trashed dashboards won't appear
 	// in list views. If this boolean is `true`, the `options` property for this
 	// dashboard includes a `moved_to_trash_at` timestamp. Items in trash are
 	// permanently deleted after 30 days.
+	// Wire name: 'is_archived'
 	IsArchived bool
 	// Whether a dashboard is a draft. Draft dashboards only appear in list
 	// views for their owners.
+	// Wire name: 'is_draft'
 	IsDraft bool
 	// Indicates whether this query object appears in the current user's
 	// favorites list. This flag determines whether the star icon for favorites
 	// is selected.
+	// Wire name: 'is_favorite'
 	IsFavorite bool
 	// The title of the dashboard that appears in list views and at the top of
 	// the dashboard page.
+	// Wire name: 'name'
 	Name string
 
+	// Wire name: 'options'
 	Options *DashboardOptions
 	// The identifier of the workspace folder containing the object.
+	// Wire name: 'parent'
 	Parent string
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
 	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
+	// Wire name: 'permission_tier'
 	PermissionTier PermissionLevel
 	// URL slug. Usually mirrors the query name with dashes (`-`) instead of
 	// spaces. Appears in the URL for this query.
+	// Wire name: 'slug'
 	Slug string
 
+	// Wire name: 'tags'
 	Tags []string
 	// Timestamp when this dashboard was last updated.
+	// Wire name: 'updated_at'
 	UpdatedAt string
 
+	// Wire name: 'user'
 	User *User
 	// The ID of the user who owns the dashboard.
+	// Wire name: 'user_id'
 	UserId int
 
+	// Wire name: 'widgets'
 	Widgets []Widget
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dashboardToPb(st *Dashboard) (*dashboardPb, error) {
@@ -5378,45 +4593,21 @@ func dashboardToPb(st *Dashboard) (*dashboardPb, error) {
 		return nil, nil
 	}
 	pb := &dashboardPb{}
-	canEditPb := &st.CanEdit
-	if canEditPb != nil {
-		pb.CanEdit = *canEditPb
-	}
+	pb.CanEdit = st.CanEdit
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	dashboardFiltersEnabledPb := &st.DashboardFiltersEnabled
-	if dashboardFiltersEnabledPb != nil {
-		pb.DashboardFiltersEnabled = *dashboardFiltersEnabledPb
-	}
+	pb.DashboardFiltersEnabled = st.DashboardFiltersEnabled
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	isArchivedPb := &st.IsArchived
-	if isArchivedPb != nil {
-		pb.IsArchived = *isArchivedPb
-	}
+	pb.IsArchived = st.IsArchived
 
-	isDraftPb := &st.IsDraft
-	if isDraftPb != nil {
-		pb.IsDraft = *isDraftPb
-	}
+	pb.IsDraft = st.IsDraft
 
-	isFavoritePb := &st.IsFavorite
-	if isFavoritePb != nil {
-		pb.IsFavorite = *isFavoritePb
-	}
+	pb.IsFavorite = st.IsFavorite
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	optionsPb, err := dashboardOptionsToPb(st.Options)
 	if err != nil {
@@ -5426,34 +4617,15 @@ func dashboardToPb(st *Dashboard) (*dashboardPb, error) {
 		pb.Options = optionsPb
 	}
 
-	parentPb := &st.Parent
-	if parentPb != nil {
-		pb.Parent = *parentPb
-	}
+	pb.Parent = st.Parent
 
-	permissionTierPb := &st.PermissionTier
-	if permissionTierPb != nil {
-		pb.PermissionTier = *permissionTierPb
-	}
+	pb.PermissionTier = st.PermissionTier
 
-	slugPb := &st.Slug
-	if slugPb != nil {
-		pb.Slug = *slugPb
-	}
+	pb.Slug = st.Slug
 
-	var tagsPb []string
-	for _, item := range st.Tags {
-		itemPb := &item
-		if itemPb != nil {
-			tagsPb = append(tagsPb, *itemPb)
-		}
-	}
-	pb.Tags = tagsPb
+	pb.Tags = st.Tags
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
 	userPb, err := userToPb(st.User)
 	if err != nil {
@@ -5463,10 +4635,7 @@ func dashboardToPb(st *Dashboard) (*dashboardPb, error) {
 		pb.User = userPb
 	}
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	var widgetsPb []widgetPb
 	for _, item := range st.Widgets {
@@ -5563,38 +4732,14 @@ func dashboardFromPb(pb *dashboardPb) (*Dashboard, error) {
 		return nil, nil
 	}
 	st := &Dashboard{}
-	canEditField := &pb.CanEdit
-	if canEditField != nil {
-		st.CanEdit = *canEditField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	dashboardFiltersEnabledField := &pb.DashboardFiltersEnabled
-	if dashboardFiltersEnabledField != nil {
-		st.DashboardFiltersEnabled = *dashboardFiltersEnabledField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	isArchivedField := &pb.IsArchived
-	if isArchivedField != nil {
-		st.IsArchived = *isArchivedField
-	}
-	isDraftField := &pb.IsDraft
-	if isDraftField != nil {
-		st.IsDraft = *isDraftField
-	}
-	isFavoriteField := &pb.IsFavorite
-	if isFavoriteField != nil {
-		st.IsFavorite = *isFavoriteField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.CanEdit = pb.CanEdit
+	st.CreatedAt = pb.CreatedAt
+	st.DashboardFiltersEnabled = pb.DashboardFiltersEnabled
+	st.Id = pb.Id
+	st.IsArchived = pb.IsArchived
+	st.IsDraft = pb.IsDraft
+	st.IsFavorite = pb.IsFavorite
+	st.Name = pb.Name
 	optionsField, err := dashboardOptionsFromPb(pb.Options)
 	if err != nil {
 		return nil, err
@@ -5602,31 +4747,11 @@ func dashboardFromPb(pb *dashboardPb) (*Dashboard, error) {
 	if optionsField != nil {
 		st.Options = optionsField
 	}
-	parentField := &pb.Parent
-	if parentField != nil {
-		st.Parent = *parentField
-	}
-	permissionTierField := &pb.PermissionTier
-	if permissionTierField != nil {
-		st.PermissionTier = *permissionTierField
-	}
-	slugField := &pb.Slug
-	if slugField != nil {
-		st.Slug = *slugField
-	}
-
-	var tagsField []string
-	for _, item := range pb.Tags {
-		itemField := &item
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
-		}
-	}
-	st.Tags = tagsField
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
+	st.Parent = pb.Parent
+	st.PermissionTier = pb.PermissionTier
+	st.Slug = pb.Slug
+	st.Tags = pb.Tags
+	st.UpdatedAt = pb.UpdatedAt
 	userField, err := userFromPb(pb.User)
 	if err != nil {
 		return nil, err
@@ -5634,19 +4759,16 @@ func dashboardFromPb(pb *dashboardPb) (*Dashboard, error) {
 	if userField != nil {
 		st.User = userField
 	}
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.UserId = pb.UserId
 
 	var widgetsField []Widget
-	for _, item := range pb.Widgets {
-		itemField, err := widgetFromPb(&item)
+	for _, itemPb := range pb.Widgets {
+		item, err := widgetFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			widgetsField = append(widgetsField, *itemField)
+		if item != nil {
+			widgetsField = append(widgetsField, *item)
 		}
 	}
 	st.Widgets = widgetsField
@@ -5664,18 +4786,23 @@ func (st dashboardPb) MarshalJSON() ([]byte, error) {
 }
 
 type DashboardEditContent struct {
-	DashboardId string
+
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 	// The title of this dashboard that appears in list views and at the top of
 	// the dashboard page.
+	// Wire name: 'name'
 	Name string
 	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
 	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
 	// owner" behavior)
+	// Wire name: 'run_as_role'
 	RunAsRole RunAsRole
 
+	// Wire name: 'tags'
 	Tags []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dashboardEditContentToPb(st *DashboardEditContent) (*dashboardEditContentPb, error) {
@@ -5683,29 +4810,13 @@ func dashboardEditContentToPb(st *DashboardEditContent) (*dashboardEditContentPb
 		return nil, nil
 	}
 	pb := &dashboardEditContentPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	runAsRolePb := &st.RunAsRole
-	if runAsRolePb != nil {
-		pb.RunAsRole = *runAsRolePb
-	}
+	pb.RunAsRole = st.RunAsRole
 
-	var tagsPb []string
-	for _, item := range st.Tags {
-		itemPb := &item
-		if itemPb != nil {
-			tagsPb = append(tagsPb, *itemPb)
-		}
-	}
-	pb.Tags = tagsPb
+	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5756,27 +4867,10 @@ func dashboardEditContentFromPb(pb *dashboardEditContentPb) (*DashboardEditConte
 		return nil, nil
 	}
 	st := &DashboardEditContent{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	runAsRoleField := &pb.RunAsRole
-	if runAsRoleField != nil {
-		st.RunAsRole = *runAsRoleField
-	}
-
-	var tagsField []string
-	for _, item := range pb.Tags {
-		itemField := &item
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
-		}
-	}
-	st.Tags = tagsField
+	st.DashboardId = pb.DashboardId
+	st.Name = pb.Name
+	st.RunAsRole = pb.RunAsRole
+	st.Tags = pb.Tags
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5794,9 +4888,10 @@ type DashboardOptions struct {
 	// The timestamp when this dashboard was moved to trash. Only present when
 	// the `is_archived` property is `true`. Trashed items are deleted after
 	// thirty days.
+	// Wire name: 'moved_to_trash_at'
 	MovedToTrashAt string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dashboardOptionsToPb(st *DashboardOptions) (*dashboardOptionsPb, error) {
@@ -5804,10 +4899,7 @@ func dashboardOptionsToPb(st *DashboardOptions) (*dashboardOptionsPb, error) {
 		return nil, nil
 	}
 	pb := &dashboardOptionsPb{}
-	movedToTrashAtPb := &st.MovedToTrashAt
-	if movedToTrashAtPb != nil {
-		pb.MovedToTrashAt = *movedToTrashAtPb
-	}
+	pb.MovedToTrashAt = st.MovedToTrashAt
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5852,10 +4944,7 @@ func dashboardOptionsFromPb(pb *dashboardOptionsPb) (*DashboardOptions, error) {
 		return nil, nil
 	}
 	st := &DashboardOptions{}
-	movedToTrashAtField := &pb.MovedToTrashAt
-	if movedToTrashAtField != nil {
-		st.MovedToTrashAt = *movedToTrashAtField
-	}
+	st.MovedToTrashAt = pb.MovedToTrashAt
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5871,23 +4960,29 @@ func (st dashboardOptionsPb) MarshalJSON() ([]byte, error) {
 
 type DashboardPostContent struct {
 	// Indicates whether the dashboard filters are enabled
+	// Wire name: 'dashboard_filters_enabled'
 	DashboardFiltersEnabled bool
 	// Indicates whether this dashboard object should appear in the current
 	// user's favorites list.
+	// Wire name: 'is_favorite'
 	IsFavorite bool
 	// The title of this dashboard that appears in list views and at the top of
 	// the dashboard page.
+	// Wire name: 'name'
 	Name string
 	// The identifier of the workspace folder containing the object.
+	// Wire name: 'parent'
 	Parent string
 	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
 	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
 	// owner" behavior)
+	// Wire name: 'run_as_role'
 	RunAsRole RunAsRole
 
+	// Wire name: 'tags'
 	Tags []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dashboardPostContentToPb(st *DashboardPostContent) (*dashboardPostContentPb, error) {
@@ -5895,39 +4990,17 @@ func dashboardPostContentToPb(st *DashboardPostContent) (*dashboardPostContentPb
 		return nil, nil
 	}
 	pb := &dashboardPostContentPb{}
-	dashboardFiltersEnabledPb := &st.DashboardFiltersEnabled
-	if dashboardFiltersEnabledPb != nil {
-		pb.DashboardFiltersEnabled = *dashboardFiltersEnabledPb
-	}
+	pb.DashboardFiltersEnabled = st.DashboardFiltersEnabled
 
-	isFavoritePb := &st.IsFavorite
-	if isFavoritePb != nil {
-		pb.IsFavorite = *isFavoritePb
-	}
+	pb.IsFavorite = st.IsFavorite
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	parentPb := &st.Parent
-	if parentPb != nil {
-		pb.Parent = *parentPb
-	}
+	pb.Parent = st.Parent
 
-	runAsRolePb := &st.RunAsRole
-	if runAsRolePb != nil {
-		pb.RunAsRole = *runAsRolePb
-	}
+	pb.RunAsRole = st.RunAsRole
 
-	var tagsPb []string
-	for _, item := range st.Tags {
-		itemPb := &item
-		if itemPb != nil {
-			tagsPb = append(tagsPb, *itemPb)
-		}
-	}
-	pb.Tags = tagsPb
+	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5984,35 +5057,12 @@ func dashboardPostContentFromPb(pb *dashboardPostContentPb) (*DashboardPostConte
 		return nil, nil
 	}
 	st := &DashboardPostContent{}
-	dashboardFiltersEnabledField := &pb.DashboardFiltersEnabled
-	if dashboardFiltersEnabledField != nil {
-		st.DashboardFiltersEnabled = *dashboardFiltersEnabledField
-	}
-	isFavoriteField := &pb.IsFavorite
-	if isFavoriteField != nil {
-		st.IsFavorite = *isFavoriteField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	parentField := &pb.Parent
-	if parentField != nil {
-		st.Parent = *parentField
-	}
-	runAsRoleField := &pb.RunAsRole
-	if runAsRoleField != nil {
-		st.RunAsRole = *runAsRoleField
-	}
-
-	var tagsField []string
-	for _, item := range pb.Tags {
-		itemField := &item
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
-		}
-	}
-	st.Tags = tagsField
+	st.DashboardFiltersEnabled = pb.DashboardFiltersEnabled
+	st.IsFavorite = pb.IsFavorite
+	st.Name = pb.Name
+	st.Parent = pb.Parent
+	st.RunAsRole = pb.RunAsRole
+	st.Tags = pb.Tags
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6032,28 +5082,37 @@ type DataSource struct {
 	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
+	// Wire name: 'id'
 	Id string
 	// The string name of this data source / SQL warehouse as it appears in the
 	// Databricks SQL web application.
+	// Wire name: 'name'
 	Name string
 	// Reserved for internal use.
+	// Wire name: 'pause_reason'
 	PauseReason string
 	// Reserved for internal use.
+	// Wire name: 'paused'
 	Paused int
 	// Reserved for internal use.
+	// Wire name: 'supports_auto_limit'
 	SupportsAutoLimit bool
 	// Reserved for internal use.
+	// Wire name: 'syntax'
 	Syntax string
 	// The type of data source. For SQL warehouses, this will be
 	// `databricks_internal`.
+	// Wire name: 'type'
 	Type string
 	// Reserved for internal use.
+	// Wire name: 'view_only'
 	ViewOnly bool
 	// The ID of the associated SQL warehouse, if this data source is backed by
 	// a SQL warehouse.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dataSourceToPb(st *DataSource) (*dataSourcePb, error) {
@@ -6061,50 +5120,23 @@ func dataSourceToPb(st *DataSource) (*dataSourcePb, error) {
 		return nil, nil
 	}
 	pb := &dataSourcePb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	pauseReasonPb := &st.PauseReason
-	if pauseReasonPb != nil {
-		pb.PauseReason = *pauseReasonPb
-	}
+	pb.PauseReason = st.PauseReason
 
-	pausedPb := &st.Paused
-	if pausedPb != nil {
-		pb.Paused = *pausedPb
-	}
+	pb.Paused = st.Paused
 
-	supportsAutoLimitPb := &st.SupportsAutoLimit
-	if supportsAutoLimitPb != nil {
-		pb.SupportsAutoLimit = *supportsAutoLimitPb
-	}
+	pb.SupportsAutoLimit = st.SupportsAutoLimit
 
-	syntaxPb := &st.Syntax
-	if syntaxPb != nil {
-		pb.Syntax = *syntaxPb
-	}
+	pb.Syntax = st.Syntax
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
-	viewOnlyPb := &st.ViewOnly
-	if viewOnlyPb != nil {
-		pb.ViewOnly = *viewOnlyPb
-	}
+	pb.ViewOnly = st.ViewOnly
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6169,42 +5201,15 @@ func dataSourceFromPb(pb *dataSourcePb) (*DataSource, error) {
 		return nil, nil
 	}
 	st := &DataSource{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	pauseReasonField := &pb.PauseReason
-	if pauseReasonField != nil {
-		st.PauseReason = *pauseReasonField
-	}
-	pausedField := &pb.Paused
-	if pausedField != nil {
-		st.Paused = *pausedField
-	}
-	supportsAutoLimitField := &pb.SupportsAutoLimit
-	if supportsAutoLimitField != nil {
-		st.SupportsAutoLimit = *supportsAutoLimitField
-	}
-	syntaxField := &pb.Syntax
-	if syntaxField != nil {
-		st.Syntax = *syntaxField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
-	viewOnlyField := &pb.ViewOnly
-	if viewOnlyField != nil {
-		st.ViewOnly = *viewOnlyField
-	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.Id = pb.Id
+	st.Name = pb.Name
+	st.PauseReason = pb.PauseReason
+	st.Paused = pb.Paused
+	st.SupportsAutoLimit = pb.SupportsAutoLimit
+	st.Syntax = pb.Syntax
+	st.Type = pb.Type
+	st.ViewOnly = pb.ViewOnly
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6265,8 +5270,11 @@ func datePrecisionFromPb(pb *datePrecisionPb) (*DatePrecision, error) {
 }
 
 type DateRange struct {
+
+	// Wire name: 'end'
 	End string
 
+	// Wire name: 'start'
 	Start string
 }
 
@@ -6275,15 +5283,9 @@ func dateRangeToPb(st *DateRange) (*dateRangePb, error) {
 		return nil, nil
 	}
 	pb := &dateRangePb{}
-	endPb := &st.End
-	if endPb != nil {
-		pb.End = *endPb
-	}
+	pb.End = st.End
 
-	startPb := &st.Start
-	if startPb != nil {
-		pb.Start = *startPb
-	}
+	pb.Start = st.Start
 
 	return pb, nil
 }
@@ -6324,30 +5326,28 @@ func dateRangeFromPb(pb *dateRangePb) (*DateRange, error) {
 		return nil, nil
 	}
 	st := &DateRange{}
-	endField := &pb.End
-	if endField != nil {
-		st.End = *endField
-	}
-	startField := &pb.Start
-	if startField != nil {
-		st.Start = *startField
-	}
+	st.End = pb.End
+	st.Start = pb.Start
 
 	return st, nil
 }
 
 type DateRangeValue struct {
 	// Manually specified date-time range value.
+	// Wire name: 'date_range_value'
 	DateRangeValue *DateRange
 	// Dynamic date-time range value based on current date-time.
+	// Wire name: 'dynamic_date_range_value'
 	DynamicDateRangeValue DateRangeValueDynamicDateRange
 	// Date-time precision to format the value into when the query is run.
 	// Defaults to DAY_PRECISION (YYYY-MM-DD).
+	// Wire name: 'precision'
 	Precision DatePrecision
 
+	// Wire name: 'start_day_of_week'
 	StartDayOfWeek int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dateRangeValueToPb(st *DateRangeValue) (*dateRangeValuePb, error) {
@@ -6363,20 +5363,11 @@ func dateRangeValueToPb(st *DateRangeValue) (*dateRangeValuePb, error) {
 		pb.DateRangeValue = dateRangeValuePb
 	}
 
-	dynamicDateRangeValuePb := &st.DynamicDateRangeValue
-	if dynamicDateRangeValuePb != nil {
-		pb.DynamicDateRangeValue = *dynamicDateRangeValuePb
-	}
+	pb.DynamicDateRangeValue = st.DynamicDateRangeValue
 
-	precisionPb := &st.Precision
-	if precisionPb != nil {
-		pb.Precision = *precisionPb
-	}
+	pb.Precision = st.Precision
 
-	startDayOfWeekPb := &st.StartDayOfWeek
-	if startDayOfWeekPb != nil {
-		pb.StartDayOfWeek = *startDayOfWeekPb
-	}
+	pb.StartDayOfWeek = st.StartDayOfWeek
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6433,18 +5424,9 @@ func dateRangeValueFromPb(pb *dateRangeValuePb) (*DateRangeValue, error) {
 	if dateRangeValueField != nil {
 		st.DateRangeValue = dateRangeValueField
 	}
-	dynamicDateRangeValueField := &pb.DynamicDateRangeValue
-	if dynamicDateRangeValueField != nil {
-		st.DynamicDateRangeValue = *dynamicDateRangeValueField
-	}
-	precisionField := &pb.Precision
-	if precisionField != nil {
-		st.Precision = *precisionField
-	}
-	startDayOfWeekField := &pb.StartDayOfWeek
-	if startDayOfWeekField != nil {
-		st.StartDayOfWeek = *startDayOfWeekField
-	}
+	st.DynamicDateRangeValue = pb.DynamicDateRangeValue
+	st.Precision = pb.Precision
+	st.StartDayOfWeek = pb.StartDayOfWeek
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6534,14 +5516,17 @@ func dateRangeValueDynamicDateRangeFromPb(pb *dateRangeValueDynamicDateRangePb) 
 
 type DateValue struct {
 	// Manually specified date-time value.
+	// Wire name: 'date_value'
 	DateValue string
 	// Dynamic date-time value based on current date-time.
+	// Wire name: 'dynamic_date_value'
 	DynamicDateValue DateValueDynamicDate
 	// Date-time precision to format the value into when the query is run.
 	// Defaults to DAY_PRECISION (YYYY-MM-DD).
+	// Wire name: 'precision'
 	Precision DatePrecision
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dateValueToPb(st *DateValue) (*dateValuePb, error) {
@@ -6549,20 +5534,11 @@ func dateValueToPb(st *DateValue) (*dateValuePb, error) {
 		return nil, nil
 	}
 	pb := &dateValuePb{}
-	dateValuePb := &st.DateValue
-	if dateValuePb != nil {
-		pb.DateValue = *dateValuePb
-	}
+	pb.DateValue = st.DateValue
 
-	dynamicDateValuePb := &st.DynamicDateValue
-	if dynamicDateValuePb != nil {
-		pb.DynamicDateValue = *dynamicDateValuePb
-	}
+	pb.DynamicDateValue = st.DynamicDateValue
 
-	precisionPb := &st.Precision
-	if precisionPb != nil {
-		pb.Precision = *precisionPb
-	}
+	pb.Precision = st.Precision
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6610,18 +5586,9 @@ func dateValueFromPb(pb *dateValuePb) (*DateValue, error) {
 		return nil, nil
 	}
 	st := &DateValue{}
-	dateValueField := &pb.DateValue
-	if dateValueField != nil {
-		st.DateValue = *dateValueField
-	}
-	dynamicDateValueField := &pb.DynamicDateValue
-	if dynamicDateValueField != nil {
-		st.DynamicDateValue = *dynamicDateValueField
-	}
-	precisionField := &pb.Precision
-	if precisionField != nil {
-		st.Precision = *precisionField
-	}
+	st.DateValue = pb.DateValue
+	st.DynamicDateValue = pb.DynamicDateValue
+	st.Precision = pb.Precision
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6681,7 +5648,9 @@ func dateValueDynamicDateFromPb(pb *dateValueDynamicDatePb) (*DateValueDynamicDa
 
 // Delete an alert
 type DeleteAlertsLegacyRequest struct {
-	AlertId string
+
+	// Wire name: 'alert_id'
+	AlertId string `tf:"-"`
 }
 
 func deleteAlertsLegacyRequestToPb(st *DeleteAlertsLegacyRequest) (*deleteAlertsLegacyRequestPb, error) {
@@ -6689,10 +5658,7 @@ func deleteAlertsLegacyRequestToPb(st *DeleteAlertsLegacyRequest) (*deleteAlerts
 		return nil, nil
 	}
 	pb := &deleteAlertsLegacyRequestPb{}
-	alertIdPb := &st.AlertId
-	if alertIdPb != nil {
-		pb.AlertId = *alertIdPb
-	}
+	pb.AlertId = st.AlertId
 
 	return pb, nil
 }
@@ -6731,17 +5697,16 @@ func deleteAlertsLegacyRequestFromPb(pb *deleteAlertsLegacyRequestPb) (*DeleteAl
 		return nil, nil
 	}
 	st := &DeleteAlertsLegacyRequest{}
-	alertIdField := &pb.AlertId
-	if alertIdField != nil {
-		st.AlertId = *alertIdField
-	}
+	st.AlertId = pb.AlertId
 
 	return st, nil
 }
 
 // Remove a dashboard
 type DeleteDashboardRequest struct {
-	DashboardId string
+
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 }
 
 func deleteDashboardRequestToPb(st *DeleteDashboardRequest) (*deleteDashboardRequestPb, error) {
@@ -6749,10 +5714,7 @@ func deleteDashboardRequestToPb(st *DeleteDashboardRequest) (*deleteDashboardReq
 		return nil, nil
 	}
 	pb := &deleteDashboardRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	return pb, nil
 }
@@ -6791,10 +5753,7 @@ func deleteDashboardRequestFromPb(pb *deleteDashboardRequestPb) (*DeleteDashboar
 		return nil, nil
 	}
 	st := &DeleteDashboardRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 
 	return st, nil
 }
@@ -6802,7 +5761,8 @@ func deleteDashboardRequestFromPb(pb *deleteDashboardRequestPb) (*DeleteDashboar
 // Remove widget
 type DeleteDashboardWidgetRequest struct {
 	// Widget ID returned by :method:dashboardwidgets/create
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteDashboardWidgetRequestToPb(st *DeleteDashboardWidgetRequest) (*deleteDashboardWidgetRequestPb, error) {
@@ -6810,10 +5770,7 @@ func deleteDashboardWidgetRequestToPb(st *DeleteDashboardWidgetRequest) (*delete
 		return nil, nil
 	}
 	pb := &deleteDashboardWidgetRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -6853,17 +5810,16 @@ func deleteDashboardWidgetRequestFromPb(pb *deleteDashboardWidgetRequestPb) (*De
 		return nil, nil
 	}
 	st := &DeleteDashboardWidgetRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 // Delete a query
 type DeleteQueriesLegacyRequest struct {
-	QueryId string
+
+	// Wire name: 'query_id'
+	QueryId string `tf:"-"`
 }
 
 func deleteQueriesLegacyRequestToPb(st *DeleteQueriesLegacyRequest) (*deleteQueriesLegacyRequestPb, error) {
@@ -6871,10 +5827,7 @@ func deleteQueriesLegacyRequestToPb(st *DeleteQueriesLegacyRequest) (*deleteQuer
 		return nil, nil
 	}
 	pb := &deleteQueriesLegacyRequestPb{}
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
 	return pb, nil
 }
@@ -6913,10 +5866,7 @@ func deleteQueriesLegacyRequestFromPb(pb *deleteQueriesLegacyRequestPb) (*Delete
 		return nil, nil
 	}
 	st := &DeleteQueriesLegacyRequest{}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
+	st.QueryId = pb.QueryId
 
 	return st, nil
 }
@@ -6924,7 +5874,8 @@ func deleteQueriesLegacyRequestFromPb(pb *deleteQueriesLegacyRequestPb) (*Delete
 // Remove visualization
 type DeleteQueryVisualizationsLegacyRequest struct {
 	// Widget ID returned by :method:queryvizualisations/create
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteQueryVisualizationsLegacyRequestToPb(st *DeleteQueryVisualizationsLegacyRequest) (*deleteQueryVisualizationsLegacyRequestPb, error) {
@@ -6932,10 +5883,7 @@ func deleteQueryVisualizationsLegacyRequestToPb(st *DeleteQueryVisualizationsLeg
 		return nil, nil
 	}
 	pb := &deleteQueryVisualizationsLegacyRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -6975,10 +5923,7 @@ func deleteQueryVisualizationsLegacyRequestFromPb(pb *deleteQueryVisualizationsL
 		return nil, nil
 	}
 	st := &DeleteQueryVisualizationsLegacyRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -7034,7 +5979,9 @@ func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
 
 // Remove a visualization
 type DeleteVisualizationRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteVisualizationRequestToPb(st *DeleteVisualizationRequest) (*deleteVisualizationRequestPb, error) {
@@ -7042,10 +5989,7 @@ func deleteVisualizationRequestToPb(st *DeleteVisualizationRequest) (*deleteVisu
 		return nil, nil
 	}
 	pb := &deleteVisualizationRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -7084,10 +6028,7 @@ func deleteVisualizationRequestFromPb(pb *deleteVisualizationRequestPb) (*Delete
 		return nil, nil
 	}
 	st := &DeleteVisualizationRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -7095,7 +6036,8 @@ func deleteVisualizationRequestFromPb(pb *deleteVisualizationRequestPb) (*Delete
 // Delete a warehouse
 type DeleteWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteWarehouseRequestToPb(st *DeleteWarehouseRequest) (*deleteWarehouseRequestPb, error) {
@@ -7103,10 +6045,7 @@ func deleteWarehouseRequestToPb(st *DeleteWarehouseRequest) (*deleteWarehouseReq
 		return nil, nil
 	}
 	pb := &deleteWarehouseRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -7146,10 +6085,7 @@ func deleteWarehouseRequestFromPb(pb *deleteWarehouseRequestPb) (*DeleteWarehous
 		return nil, nil
 	}
 	st := &DeleteWarehouseRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -7248,19 +6184,25 @@ func dispositionFromPb(pb *dispositionPb) (*Disposition, error) {
 }
 
 type EditAlert struct {
-	AlertId string
+
+	// Wire name: 'alert_id'
+	AlertId string `tf:"-"`
 	// Name of the alert.
+	// Wire name: 'name'
 	Name string
 	// Alert configuration options.
+	// Wire name: 'options'
 	Options AlertOptions
 	// Query ID.
+	// Wire name: 'query_id'
 	QueryId string
 	// Number of seconds after being triggered before the alert rearms itself
 	// and can be triggered again. If `null`, alert will never be triggered
 	// again.
+	// Wire name: 'rearm'
 	Rearm int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func editAlertToPb(st *EditAlert) (*editAlertPb, error) {
@@ -7268,15 +6210,9 @@ func editAlertToPb(st *EditAlert) (*editAlertPb, error) {
 		return nil, nil
 	}
 	pb := &editAlertPb{}
-	alertIdPb := &st.AlertId
-	if alertIdPb != nil {
-		pb.AlertId = *alertIdPb
-	}
+	pb.AlertId = st.AlertId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	optionsPb, err := alertOptionsToPb(&st.Options)
 	if err != nil {
@@ -7286,15 +6222,9 @@ func editAlertToPb(st *EditAlert) (*editAlertPb, error) {
 		pb.Options = *optionsPb
 	}
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	rearmPb := &st.Rearm
-	if rearmPb != nil {
-		pb.Rearm = *rearmPb
-	}
+	pb.Rearm = st.Rearm
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7346,14 +6276,8 @@ func editAlertFromPb(pb *editAlertPb) (*EditAlert, error) {
 		return nil, nil
 	}
 	st := &EditAlert{}
-	alertIdField := &pb.AlertId
-	if alertIdField != nil {
-		st.AlertId = *alertIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.AlertId = pb.AlertId
+	st.Name = pb.Name
 	optionsField, err := alertOptionsFromPb(&pb.Options)
 	if err != nil {
 		return nil, err
@@ -7361,14 +6285,8 @@ func editAlertFromPb(pb *editAlertPb) (*EditAlert, error) {
 	if optionsField != nil {
 		st.Options = *optionsField
 	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-	rearmField := &pb.Rearm
-	if rearmField != nil {
-		st.Rearm = *rearmField
-	}
+	st.QueryId = pb.QueryId
+	st.Rearm = pb.Rearm
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7389,8 +6307,10 @@ type EditWarehouseRequest struct {
 	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
 	//
 	// Defaults to 120 mins
+	// Wire name: 'auto_stop_mins'
 	AutoStopMins int
 	// Channel Details
+	// Wire name: 'channel'
 	Channel *Channel
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
@@ -7398,18 +6318,24 @@ type EditWarehouseRequest struct {
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large
+	// Wire name: 'cluster_size'
 	ClusterSize string
 	// warehouse creator name
+	// Wire name: 'creator_name'
 	CreatorName string
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to false.
+	// Wire name: 'enable_photon'
 	EnablePhoton bool
 	// Configures whether the warehouse should use serverless compute.
+	// Wire name: 'enable_serverless_compute'
 	EnableServerlessCompute bool
 	// Required. Id of the warehouse to configure.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 	// Deprecated. Instance profile used to pass IAM role to the cluster
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
@@ -7417,6 +6343,7 @@ type EditWarehouseRequest struct {
 	// Supported values: - Must be >= min_num_clusters - Must be <= 30.
 	//
 	// Defaults to min_clusters if unset.
+	// Wire name: 'max_num_clusters'
 	MaxNumClusters int
 	// Minimum number of available clusters that will be maintained for this SQL
 	// warehouse. Increasing this will ensure that a larger number of clusters
@@ -7427,25 +6354,30 @@ type EditWarehouseRequest struct {
 	// Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
 	//
 	// Defaults to 1
+	// Wire name: 'min_num_clusters'
 	MinNumClusters int
 	// Logical name for the cluster.
 	//
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
+	// Wire name: 'name'
 	Name string
 	// Configurations whether the warehouse should use spot instances.
+	// Wire name: 'spot_instance_policy'
 	SpotInstancePolicy SpotInstancePolicy
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
+	// Wire name: 'tags'
 	Tags *EndpointTags
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
+	// Wire name: 'warehouse_type'
 	WarehouseType EditWarehouseRequestWarehouseType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func editWarehouseRequestToPb(st *EditWarehouseRequest) (*editWarehouseRequestPb, error) {
@@ -7453,10 +6385,7 @@ func editWarehouseRequestToPb(st *EditWarehouseRequest) (*editWarehouseRequestPb
 		return nil, nil
 	}
 	pb := &editWarehouseRequestPb{}
-	autoStopMinsPb := &st.AutoStopMins
-	if autoStopMinsPb != nil {
-		pb.AutoStopMins = *autoStopMinsPb
-	}
+	pb.AutoStopMins = st.AutoStopMins
 
 	channelPb, err := channelToPb(st.Channel)
 	if err != nil {
@@ -7466,55 +6395,25 @@ func editWarehouseRequestToPb(st *EditWarehouseRequest) (*editWarehouseRequestPb
 		pb.Channel = channelPb
 	}
 
-	clusterSizePb := &st.ClusterSize
-	if clusterSizePb != nil {
-		pb.ClusterSize = *clusterSizePb
-	}
+	pb.ClusterSize = st.ClusterSize
 
-	creatorNamePb := &st.CreatorName
-	if creatorNamePb != nil {
-		pb.CreatorName = *creatorNamePb
-	}
+	pb.CreatorName = st.CreatorName
 
-	enablePhotonPb := &st.EnablePhoton
-	if enablePhotonPb != nil {
-		pb.EnablePhoton = *enablePhotonPb
-	}
+	pb.EnablePhoton = st.EnablePhoton
 
-	enableServerlessComputePb := &st.EnableServerlessCompute
-	if enableServerlessComputePb != nil {
-		pb.EnableServerlessCompute = *enableServerlessComputePb
-	}
+	pb.EnableServerlessCompute = st.EnableServerlessCompute
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	maxNumClustersPb := &st.MaxNumClusters
-	if maxNumClustersPb != nil {
-		pb.MaxNumClusters = *maxNumClustersPb
-	}
+	pb.MaxNumClusters = st.MaxNumClusters
 
-	minNumClustersPb := &st.MinNumClusters
-	if minNumClustersPb != nil {
-		pb.MinNumClusters = *minNumClustersPb
-	}
+	pb.MinNumClusters = st.MinNumClusters
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	spotInstancePolicyPb := &st.SpotInstancePolicy
-	if spotInstancePolicyPb != nil {
-		pb.SpotInstancePolicy = *spotInstancePolicyPb
-	}
+	pb.SpotInstancePolicy = st.SpotInstancePolicy
 
 	tagsPb, err := endpointTagsToPb(st.Tags)
 	if err != nil {
@@ -7524,10 +6423,7 @@ func editWarehouseRequestToPb(st *EditWarehouseRequest) (*editWarehouseRequestPb
 		pb.Tags = tagsPb
 	}
 
-	warehouseTypePb := &st.WarehouseType
-	if warehouseTypePb != nil {
-		pb.WarehouseType = *warehouseTypePb
-	}
+	pb.WarehouseType = st.WarehouseType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7629,10 +6525,7 @@ func editWarehouseRequestFromPb(pb *editWarehouseRequestPb) (*EditWarehouseReque
 		return nil, nil
 	}
 	st := &EditWarehouseRequest{}
-	autoStopMinsField := &pb.AutoStopMins
-	if autoStopMinsField != nil {
-		st.AutoStopMins = *autoStopMinsField
-	}
+	st.AutoStopMins = pb.AutoStopMins
 	channelField, err := channelFromPb(pb.Channel)
 	if err != nil {
 		return nil, err
@@ -7640,46 +6533,16 @@ func editWarehouseRequestFromPb(pb *editWarehouseRequestPb) (*EditWarehouseReque
 	if channelField != nil {
 		st.Channel = channelField
 	}
-	clusterSizeField := &pb.ClusterSize
-	if clusterSizeField != nil {
-		st.ClusterSize = *clusterSizeField
-	}
-	creatorNameField := &pb.CreatorName
-	if creatorNameField != nil {
-		st.CreatorName = *creatorNameField
-	}
-	enablePhotonField := &pb.EnablePhoton
-	if enablePhotonField != nil {
-		st.EnablePhoton = *enablePhotonField
-	}
-	enableServerlessComputeField := &pb.EnableServerlessCompute
-	if enableServerlessComputeField != nil {
-		st.EnableServerlessCompute = *enableServerlessComputeField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	maxNumClustersField := &pb.MaxNumClusters
-	if maxNumClustersField != nil {
-		st.MaxNumClusters = *maxNumClustersField
-	}
-	minNumClustersField := &pb.MinNumClusters
-	if minNumClustersField != nil {
-		st.MinNumClusters = *minNumClustersField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	spotInstancePolicyField := &pb.SpotInstancePolicy
-	if spotInstancePolicyField != nil {
-		st.SpotInstancePolicy = *spotInstancePolicyField
-	}
+	st.ClusterSize = pb.ClusterSize
+	st.CreatorName = pb.CreatorName
+	st.EnablePhoton = pb.EnablePhoton
+	st.EnableServerlessCompute = pb.EnableServerlessCompute
+	st.Id = pb.Id
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.MaxNumClusters = pb.MaxNumClusters
+	st.MinNumClusters = pb.MinNumClusters
+	st.Name = pb.Name
+	st.SpotInstancePolicy = pb.SpotInstancePolicy
 	tagsField, err := endpointTagsFromPb(pb.Tags)
 	if err != nil {
 		return nil, err
@@ -7687,10 +6550,7 @@ func editWarehouseRequestFromPb(pb *editWarehouseRequestPb) (*EditWarehouseReque
 	if tagsField != nil {
 		st.Tags = tagsField
 	}
-	warehouseTypeField := &pb.WarehouseType
-	if warehouseTypeField != nil {
-		st.WarehouseType = *warehouseTypeField
-	}
+	st.WarehouseType = pb.WarehouseType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7854,11 +6714,14 @@ func emptyFromPb(pb *emptyPb) (*Empty, error) {
 }
 
 type EndpointConfPair struct {
+
+	// Wire name: 'key'
 	Key string
 
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func endpointConfPairToPb(st *EndpointConfPair) (*endpointConfPairPb, error) {
@@ -7866,15 +6729,9 @@ func endpointConfPairToPb(st *EndpointConfPair) (*endpointConfPairPb, error) {
 		return nil, nil
 	}
 	pb := &endpointConfPairPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7918,14 +6775,8 @@ func endpointConfPairFromPb(pb *endpointConfPairPb) (*EndpointConfPair, error) {
 		return nil, nil
 	}
 	st := &EndpointConfPair{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7941,19 +6792,24 @@ func (st endpointConfPairPb) MarshalJSON() ([]byte, error) {
 
 type EndpointHealth struct {
 	// Details about errors that are causing current degraded/failed status.
+	// Wire name: 'details'
 	Details string
 	// The reason for failure to bring up clusters for this warehouse. This is
 	// available when status is 'FAILED' and sometimes when it is DEGRADED.
+	// Wire name: 'failure_reason'
 	FailureReason *TerminationReason
 	// Deprecated. split into summary and details for security
+	// Wire name: 'message'
 	Message string
 	// Health status of the warehouse.
+	// Wire name: 'status'
 	Status Status
 	// A short summary of the health status in case of degraded/failed
 	// warehouses.
+	// Wire name: 'summary'
 	Summary string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func endpointHealthToPb(st *EndpointHealth) (*endpointHealthPb, error) {
@@ -7961,10 +6817,7 @@ func endpointHealthToPb(st *EndpointHealth) (*endpointHealthPb, error) {
 		return nil, nil
 	}
 	pb := &endpointHealthPb{}
-	detailsPb := &st.Details
-	if detailsPb != nil {
-		pb.Details = *detailsPb
-	}
+	pb.Details = st.Details
 
 	failureReasonPb, err := terminationReasonToPb(st.FailureReason)
 	if err != nil {
@@ -7974,20 +6827,11 @@ func endpointHealthToPb(st *EndpointHealth) (*endpointHealthPb, error) {
 		pb.FailureReason = failureReasonPb
 	}
 
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	summaryPb := &st.Summary
-	if summaryPb != nil {
-		pb.Summary = *summaryPb
-	}
+	pb.Summary = st.Summary
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8040,10 +6884,7 @@ func endpointHealthFromPb(pb *endpointHealthPb) (*EndpointHealth, error) {
 		return nil, nil
 	}
 	st := &EndpointHealth{}
-	detailsField := &pb.Details
-	if detailsField != nil {
-		st.Details = *detailsField
-	}
+	st.Details = pb.Details
 	failureReasonField, err := terminationReasonFromPb(pb.FailureReason)
 	if err != nil {
 		return nil, err
@@ -8051,18 +6892,9 @@ func endpointHealthFromPb(pb *endpointHealthPb) (*EndpointHealth, error) {
 	if failureReasonField != nil {
 		st.FailureReason = failureReasonField
 	}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	summaryField := &pb.Summary
-	if summaryField != nil {
-		st.Summary = *summaryField
-	}
+	st.Message = pb.Message
+	st.Status = pb.Status
+	st.Summary = pb.Summary
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8083,8 +6915,10 @@ type EndpointInfo struct {
 	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
 	//
 	// Defaults to 120 mins
+	// Wire name: 'auto_stop_mins'
 	AutoStopMins int
 	// Channel Details
+	// Wire name: 'channel'
 	Channel *Channel
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
@@ -8092,23 +6926,31 @@ type EndpointInfo struct {
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large
+	// Wire name: 'cluster_size'
 	ClusterSize string
 	// warehouse creator name
+	// Wire name: 'creator_name'
 	CreatorName string
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to false.
+	// Wire name: 'enable_photon'
 	EnablePhoton bool
 	// Configures whether the warehouse should use serverless compute
+	// Wire name: 'enable_serverless_compute'
 	EnableServerlessCompute bool
 	// Optional health status. Assume the warehouse is healthy if this field is
 	// not set.
+	// Wire name: 'health'
 	Health *EndpointHealth
 	// unique identifier for warehouse
+	// Wire name: 'id'
 	Id string
 	// Deprecated. Instance profile used to pass IAM role to the cluster
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// the jdbc connection string for this warehouse
+	// Wire name: 'jdbc_url'
 	JdbcUrl string
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
@@ -8116,6 +6958,7 @@ type EndpointInfo struct {
 	// Supported values: - Must be >= min_num_clusters - Must be <= 30.
 	//
 	// Defaults to min_clusters if unset.
+	// Wire name: 'max_num_clusters'
 	MaxNumClusters int
 	// Minimum number of available clusters that will be maintained for this SQL
 	// warehouse. Increasing this will ensure that a larger number of clusters
@@ -8126,33 +6969,42 @@ type EndpointInfo struct {
 	// Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
 	//
 	// Defaults to 1
+	// Wire name: 'min_num_clusters'
 	MinNumClusters int
 	// Logical name for the cluster.
 	//
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
+	// Wire name: 'name'
 	Name string
 	// Deprecated. current number of active sessions for the warehouse
+	// Wire name: 'num_active_sessions'
 	NumActiveSessions int64
 	// current number of clusters running for the service
+	// Wire name: 'num_clusters'
 	NumClusters int
 	// ODBC parameters for the SQL warehouse
+	// Wire name: 'odbc_params'
 	OdbcParams *OdbcParams
 	// Configurations whether the warehouse should use spot instances.
+	// Wire name: 'spot_instance_policy'
 	SpotInstancePolicy SpotInstancePolicy
 	// State of the warehouse
+	// Wire name: 'state'
 	State State
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
+	// Wire name: 'tags'
 	Tags *EndpointTags
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
+	// Wire name: 'warehouse_type'
 	WarehouseType EndpointInfoWarehouseType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
@@ -8160,10 +7012,7 @@ func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
 		return nil, nil
 	}
 	pb := &endpointInfoPb{}
-	autoStopMinsPb := &st.AutoStopMins
-	if autoStopMinsPb != nil {
-		pb.AutoStopMins = *autoStopMinsPb
-	}
+	pb.AutoStopMins = st.AutoStopMins
 
 	channelPb, err := channelToPb(st.Channel)
 	if err != nil {
@@ -8173,25 +7022,13 @@ func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
 		pb.Channel = channelPb
 	}
 
-	clusterSizePb := &st.ClusterSize
-	if clusterSizePb != nil {
-		pb.ClusterSize = *clusterSizePb
-	}
+	pb.ClusterSize = st.ClusterSize
 
-	creatorNamePb := &st.CreatorName
-	if creatorNamePb != nil {
-		pb.CreatorName = *creatorNamePb
-	}
+	pb.CreatorName = st.CreatorName
 
-	enablePhotonPb := &st.EnablePhoton
-	if enablePhotonPb != nil {
-		pb.EnablePhoton = *enablePhotonPb
-	}
+	pb.EnablePhoton = st.EnablePhoton
 
-	enableServerlessComputePb := &st.EnableServerlessCompute
-	if enableServerlessComputePb != nil {
-		pb.EnableServerlessCompute = *enableServerlessComputePb
-	}
+	pb.EnableServerlessCompute = st.EnableServerlessCompute
 
 	healthPb, err := endpointHealthToPb(st.Health)
 	if err != nil {
@@ -8201,45 +7038,21 @@ func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
 		pb.Health = healthPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	jdbcUrlPb := &st.JdbcUrl
-	if jdbcUrlPb != nil {
-		pb.JdbcUrl = *jdbcUrlPb
-	}
+	pb.JdbcUrl = st.JdbcUrl
 
-	maxNumClustersPb := &st.MaxNumClusters
-	if maxNumClustersPb != nil {
-		pb.MaxNumClusters = *maxNumClustersPb
-	}
+	pb.MaxNumClusters = st.MaxNumClusters
 
-	minNumClustersPb := &st.MinNumClusters
-	if minNumClustersPb != nil {
-		pb.MinNumClusters = *minNumClustersPb
-	}
+	pb.MinNumClusters = st.MinNumClusters
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	numActiveSessionsPb := &st.NumActiveSessions
-	if numActiveSessionsPb != nil {
-		pb.NumActiveSessions = *numActiveSessionsPb
-	}
+	pb.NumActiveSessions = st.NumActiveSessions
 
-	numClustersPb := &st.NumClusters
-	if numClustersPb != nil {
-		pb.NumClusters = *numClustersPb
-	}
+	pb.NumClusters = st.NumClusters
 
 	odbcParamsPb, err := odbcParamsToPb(st.OdbcParams)
 	if err != nil {
@@ -8249,15 +7062,9 @@ func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
 		pb.OdbcParams = odbcParamsPb
 	}
 
-	spotInstancePolicyPb := &st.SpotInstancePolicy
-	if spotInstancePolicyPb != nil {
-		pb.SpotInstancePolicy = *spotInstancePolicyPb
-	}
+	pb.SpotInstancePolicy = st.SpotInstancePolicy
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	tagsPb, err := endpointTagsToPb(st.Tags)
 	if err != nil {
@@ -8267,10 +7074,7 @@ func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
 		pb.Tags = tagsPb
 	}
 
-	warehouseTypePb := &st.WarehouseType
-	if warehouseTypePb != nil {
-		pb.WarehouseType = *warehouseTypePb
-	}
+	pb.WarehouseType = st.WarehouseType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8385,10 +7189,7 @@ func endpointInfoFromPb(pb *endpointInfoPb) (*EndpointInfo, error) {
 		return nil, nil
 	}
 	st := &EndpointInfo{}
-	autoStopMinsField := &pb.AutoStopMins
-	if autoStopMinsField != nil {
-		st.AutoStopMins = *autoStopMinsField
-	}
+	st.AutoStopMins = pb.AutoStopMins
 	channelField, err := channelFromPb(pb.Channel)
 	if err != nil {
 		return nil, err
@@ -8396,22 +7197,10 @@ func endpointInfoFromPb(pb *endpointInfoPb) (*EndpointInfo, error) {
 	if channelField != nil {
 		st.Channel = channelField
 	}
-	clusterSizeField := &pb.ClusterSize
-	if clusterSizeField != nil {
-		st.ClusterSize = *clusterSizeField
-	}
-	creatorNameField := &pb.CreatorName
-	if creatorNameField != nil {
-		st.CreatorName = *creatorNameField
-	}
-	enablePhotonField := &pb.EnablePhoton
-	if enablePhotonField != nil {
-		st.EnablePhoton = *enablePhotonField
-	}
-	enableServerlessComputeField := &pb.EnableServerlessCompute
-	if enableServerlessComputeField != nil {
-		st.EnableServerlessCompute = *enableServerlessComputeField
-	}
+	st.ClusterSize = pb.ClusterSize
+	st.CreatorName = pb.CreatorName
+	st.EnablePhoton = pb.EnablePhoton
+	st.EnableServerlessCompute = pb.EnableServerlessCompute
 	healthField, err := endpointHealthFromPb(pb.Health)
 	if err != nil {
 		return nil, err
@@ -8419,38 +7208,14 @@ func endpointInfoFromPb(pb *endpointInfoPb) (*EndpointInfo, error) {
 	if healthField != nil {
 		st.Health = healthField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	jdbcUrlField := &pb.JdbcUrl
-	if jdbcUrlField != nil {
-		st.JdbcUrl = *jdbcUrlField
-	}
-	maxNumClustersField := &pb.MaxNumClusters
-	if maxNumClustersField != nil {
-		st.MaxNumClusters = *maxNumClustersField
-	}
-	minNumClustersField := &pb.MinNumClusters
-	if minNumClustersField != nil {
-		st.MinNumClusters = *minNumClustersField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	numActiveSessionsField := &pb.NumActiveSessions
-	if numActiveSessionsField != nil {
-		st.NumActiveSessions = *numActiveSessionsField
-	}
-	numClustersField := &pb.NumClusters
-	if numClustersField != nil {
-		st.NumClusters = *numClustersField
-	}
+	st.Id = pb.Id
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.JdbcUrl = pb.JdbcUrl
+	st.MaxNumClusters = pb.MaxNumClusters
+	st.MinNumClusters = pb.MinNumClusters
+	st.Name = pb.Name
+	st.NumActiveSessions = pb.NumActiveSessions
+	st.NumClusters = pb.NumClusters
 	odbcParamsField, err := odbcParamsFromPb(pb.OdbcParams)
 	if err != nil {
 		return nil, err
@@ -8458,14 +7223,8 @@ func endpointInfoFromPb(pb *endpointInfoPb) (*EndpointInfo, error) {
 	if odbcParamsField != nil {
 		st.OdbcParams = odbcParamsField
 	}
-	spotInstancePolicyField := &pb.SpotInstancePolicy
-	if spotInstancePolicyField != nil {
-		st.SpotInstancePolicy = *spotInstancePolicyField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.SpotInstancePolicy = pb.SpotInstancePolicy
+	st.State = pb.State
 	tagsField, err := endpointTagsFromPb(pb.Tags)
 	if err != nil {
 		return nil, err
@@ -8473,10 +7232,7 @@ func endpointInfoFromPb(pb *endpointInfoPb) (*EndpointInfo, error) {
 	if tagsField != nil {
 		st.Tags = tagsField
 	}
-	warehouseTypeField := &pb.WarehouseType
-	if warehouseTypeField != nil {
-		st.WarehouseType = *warehouseTypeField
-	}
+	st.WarehouseType = pb.WarehouseType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8540,11 +7296,14 @@ func endpointInfoWarehouseTypeFromPb(pb *endpointInfoWarehouseTypePb) (*Endpoint
 }
 
 type EndpointTagPair struct {
+
+	// Wire name: 'key'
 	Key string
 
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func endpointTagPairToPb(st *EndpointTagPair) (*endpointTagPairPb, error) {
@@ -8552,15 +7311,9 @@ func endpointTagPairToPb(st *EndpointTagPair) (*endpointTagPairPb, error) {
 		return nil, nil
 	}
 	pb := &endpointTagPairPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8604,14 +7357,8 @@ func endpointTagPairFromPb(pb *endpointTagPairPb) (*EndpointTagPair, error) {
 		return nil, nil
 	}
 	st := &EndpointTagPair{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8626,6 +7373,8 @@ func (st endpointTagPairPb) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointTags struct {
+
+	// Wire name: 'custom_tags'
 	CustomTags []EndpointTagPair
 }
 
@@ -8686,13 +7435,13 @@ func endpointTagsFromPb(pb *endpointTagsPb) (*EndpointTags, error) {
 	st := &EndpointTags{}
 
 	var customTagsField []EndpointTagPair
-	for _, item := range pb.CustomTags {
-		itemField, err := endpointTagPairFromPb(&item)
+	for _, itemPb := range pb.CustomTags {
+		item, err := endpointTagPairFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			customTagsField = append(customTagsField, *itemField)
+		if item != nil {
+			customTagsField = append(customTagsField, *item)
 		}
 	}
 	st.CustomTags = customTagsField
@@ -8702,13 +7451,16 @@ func endpointTagsFromPb(pb *endpointTagsPb) (*EndpointTags, error) {
 
 type EnumValue struct {
 	// List of valid query parameter values, newline delimited.
+	// Wire name: 'enum_options'
 	EnumOptions string
 	// If specified, allows multiple values to be selected for this parameter.
+	// Wire name: 'multi_values_options'
 	MultiValuesOptions *MultiValuesOptions
 	// List of selected query parameter values.
+	// Wire name: 'values'
 	Values []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func enumValueToPb(st *EnumValue) (*enumValuePb, error) {
@@ -8716,10 +7468,7 @@ func enumValueToPb(st *EnumValue) (*enumValuePb, error) {
 		return nil, nil
 	}
 	pb := &enumValuePb{}
-	enumOptionsPb := &st.EnumOptions
-	if enumOptionsPb != nil {
-		pb.EnumOptions = *enumOptionsPb
-	}
+	pb.EnumOptions = st.EnumOptions
 
 	multiValuesOptionsPb, err := multiValuesOptionsToPb(st.MultiValuesOptions)
 	if err != nil {
@@ -8729,14 +7478,7 @@ func enumValueToPb(st *EnumValue) (*enumValuePb, error) {
 		pb.MultiValuesOptions = multiValuesOptionsPb
 	}
 
-	var valuesPb []string
-	for _, item := range st.Values {
-		itemPb := &item
-		if itemPb != nil {
-			valuesPb = append(valuesPb, *itemPb)
-		}
-	}
-	pb.Values = valuesPb
+	pb.Values = st.Values
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8783,10 +7525,7 @@ func enumValueFromPb(pb *enumValuePb) (*EnumValue, error) {
 		return nil, nil
 	}
 	st := &EnumValue{}
-	enumOptionsField := &pb.EnumOptions
-	if enumOptionsField != nil {
-		st.EnumOptions = *enumOptionsField
-	}
+	st.EnumOptions = pb.EnumOptions
 	multiValuesOptionsField, err := multiValuesOptionsFromPb(pb.MultiValuesOptions)
 	if err != nil {
 		return nil, err
@@ -8794,15 +7533,7 @@ func enumValueFromPb(pb *enumValuePb) (*EnumValue, error) {
 	if multiValuesOptionsField != nil {
 		st.MultiValuesOptions = multiValuesOptionsField
 	}
-
-	var valuesField []string
-	for _, item := range pb.Values {
-		itemField := &item
-		if itemField != nil {
-			valuesField = append(valuesField, *itemField)
-		}
-	}
-	st.Values = valuesField
+	st.Values = pb.Values
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8823,13 +7554,16 @@ type ExecuteStatementRequest struct {
 	// byte limit, then `truncated` in the response is set to `true`. When using
 	// `EXTERNAL_LINKS` disposition, a default `byte_limit` of 100 GiB is
 	// applied if `byte_limit` is not explcitly set.
+	// Wire name: 'byte_limit'
 	ByteLimit int64
 	// Sets default catalog for statement execution, similar to [`USE CATALOG`]
 	// in SQL.
 	//
 	// [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
+	// Wire name: 'catalog'
 	Catalog string
 
+	// Wire name: 'disposition'
 	Disposition Disposition
 	// Statement execution supports three result formats: `JSON_ARRAY`
 	// (default), `ARROW_STREAM`, and `CSV`.
@@ -8867,6 +7601,7 @@ type ExecuteStatementRequest struct {
 	//
 	// [Apache Arrow streaming format]: https://arrow.apache.org/docs/format/Columnar.html#ipc-streaming-format
 	// [RFC 4180]: https://www.rfc-editor.org/rfc/rfc4180
+	// Wire name: 'format'
 	Format Format
 	// When `wait_timeout > 0s`, the call will block up to the specified time.
 	// If the statement execution doesn't finish within this time,
@@ -8876,6 +7611,7 @@ type ExecuteStatementRequest struct {
 	// polling with :method:statementexecution/getStatement. When set to
 	// `CANCEL`, the statement execution is canceled and the call returns with a
 	// `CANCELED` state.
+	// Wire name: 'on_wait_timeout'
 	OnWaitTimeout ExecuteStatementRequestOnWaitTimeout
 	// A list of parameters to pass into a SQL statement containing parameter
 	// markers. A parameter consists of a name, a value, and optionally a type.
@@ -8907,18 +7643,22 @@ type ExecuteStatementRequest struct {
 	//
 	// [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
 	// [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+	// Wire name: 'parameters'
 	Parameters []StatementParameterListItem
 	// Applies the given row limit to the statement's result set, but unlike the
 	// `LIMIT` clause in SQL, it also sets the `truncated` field in the response
 	// to indicate whether the result was trimmed due to the limit or not.
+	// Wire name: 'row_limit'
 	RowLimit int64
 	// Sets default schema for statement execution, similar to [`USE SCHEMA`] in
 	// SQL.
 	//
 	// [`USE SCHEMA`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-schema.html
+	// Wire name: 'schema'
 	Schema string
 	// The SQL statement to execute. The statement can optionally be
 	// parameterized, see `parameters`.
+	// Wire name: 'statement'
 	Statement string
 	// The time in seconds the call will wait for the statement's result set as
 	// `Ns`, where `N` can be set to 0 or to a value between 5 and 50.
@@ -8934,14 +7674,16 @@ type ExecuteStatementRequest struct {
 	// manifest and result data (or a `FAILED` state in case of an execution
 	// error). If the statement takes longer to execute, `on_wait_timeout`
 	// determines what should happen after the timeout is reached.
+	// Wire name: 'wait_timeout'
 	WaitTimeout string
 	// Warehouse upon which to execute a statement. See also [What are SQL
 	// warehouses?]
 	//
 	// [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func executeStatementRequestToPb(st *ExecuteStatementRequest) (*executeStatementRequestPb, error) {
@@ -8949,30 +7691,15 @@ func executeStatementRequestToPb(st *ExecuteStatementRequest) (*executeStatement
 		return nil, nil
 	}
 	pb := &executeStatementRequestPb{}
-	byteLimitPb := &st.ByteLimit
-	if byteLimitPb != nil {
-		pb.ByteLimit = *byteLimitPb
-	}
+	pb.ByteLimit = st.ByteLimit
 
-	catalogPb := &st.Catalog
-	if catalogPb != nil {
-		pb.Catalog = *catalogPb
-	}
+	pb.Catalog = st.Catalog
 
-	dispositionPb := &st.Disposition
-	if dispositionPb != nil {
-		pb.Disposition = *dispositionPb
-	}
+	pb.Disposition = st.Disposition
 
-	formatPb := &st.Format
-	if formatPb != nil {
-		pb.Format = *formatPb
-	}
+	pb.Format = st.Format
 
-	onWaitTimeoutPb := &st.OnWaitTimeout
-	if onWaitTimeoutPb != nil {
-		pb.OnWaitTimeout = *onWaitTimeoutPb
-	}
+	pb.OnWaitTimeout = st.OnWaitTimeout
 
 	var parametersPb []statementParameterListItemPb
 	for _, item := range st.Parameters {
@@ -8986,30 +7713,15 @@ func executeStatementRequestToPb(st *ExecuteStatementRequest) (*executeStatement
 	}
 	pb.Parameters = parametersPb
 
-	rowLimitPb := &st.RowLimit
-	if rowLimitPb != nil {
-		pb.RowLimit = *rowLimitPb
-	}
+	pb.RowLimit = st.RowLimit
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	statementPb := &st.Statement
-	if statementPb != nil {
-		pb.Statement = *statementPb
-	}
+	pb.Statement = st.Statement
 
-	waitTimeoutPb := &st.WaitTimeout
-	if waitTimeoutPb != nil {
-		pb.WaitTimeout = *waitTimeoutPb
-	}
+	pb.WaitTimeout = st.WaitTimeout
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9173,58 +7885,28 @@ func executeStatementRequestFromPb(pb *executeStatementRequestPb) (*ExecuteState
 		return nil, nil
 	}
 	st := &ExecuteStatementRequest{}
-	byteLimitField := &pb.ByteLimit
-	if byteLimitField != nil {
-		st.ByteLimit = *byteLimitField
-	}
-	catalogField := &pb.Catalog
-	if catalogField != nil {
-		st.Catalog = *catalogField
-	}
-	dispositionField := &pb.Disposition
-	if dispositionField != nil {
-		st.Disposition = *dispositionField
-	}
-	formatField := &pb.Format
-	if formatField != nil {
-		st.Format = *formatField
-	}
-	onWaitTimeoutField := &pb.OnWaitTimeout
-	if onWaitTimeoutField != nil {
-		st.OnWaitTimeout = *onWaitTimeoutField
-	}
+	st.ByteLimit = pb.ByteLimit
+	st.Catalog = pb.Catalog
+	st.Disposition = pb.Disposition
+	st.Format = pb.Format
+	st.OnWaitTimeout = pb.OnWaitTimeout
 
 	var parametersField []StatementParameterListItem
-	for _, item := range pb.Parameters {
-		itemField, err := statementParameterListItemFromPb(&item)
+	for _, itemPb := range pb.Parameters {
+		item, err := statementParameterListItemFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			parametersField = append(parametersField, *itemField)
+		if item != nil {
+			parametersField = append(parametersField, *item)
 		}
 	}
 	st.Parameters = parametersField
-	rowLimitField := &pb.RowLimit
-	if rowLimitField != nil {
-		st.RowLimit = *rowLimitField
-	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-	statementField := &pb.Statement
-	if statementField != nil {
-		st.Statement = *statementField
-	}
-	waitTimeoutField := &pb.WaitTimeout
-	if waitTimeoutField != nil {
-		st.WaitTimeout = *waitTimeoutField
-	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.RowLimit = pb.RowLimit
+	st.Schema = pb.Schema
+	st.Statement = pb.Statement
+	st.WaitTimeout = pb.WaitTimeout
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9292,36 +7974,45 @@ func executeStatementRequestOnWaitTimeoutFromPb(pb *executeStatementRequestOnWai
 type ExternalLink struct {
 	// The number of bytes in the result chunk. This field is not available when
 	// using `INLINE` disposition.
+	// Wire name: 'byte_count'
 	ByteCount int64
 	// The position within the sequence of result set chunks.
+	// Wire name: 'chunk_index'
 	ChunkIndex int
 	// Indicates the date-time that the given external link will expire and
 	// becomes invalid, after which point a new `external_link` must be
 	// requested.
+	// Wire name: 'expiration'
 	Expiration string
 
+	// Wire name: 'external_link'
 	ExternalLink string
 	// HTTP headers that must be included with a GET request to the
 	// `external_link`. Each header is provided as a key-value pair. Headers are
 	// typically used to pass a decryption key to the external service. The
 	// values of these headers should be considered sensitive and the client
 	// should not expose these values in a log.
+	// Wire name: 'http_headers'
 	HttpHeaders map[string]string
 	// When fetching, provides the `chunk_index` for the _next_ chunk. If
 	// absent, indicates there are no more chunks. The next chunk can be fetched
 	// with a :method:statementexecution/getStatementResultChunkN request.
+	// Wire name: 'next_chunk_index'
 	NextChunkIndex int
 	// When fetching, provides a link to fetch the _next_ chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
 	// joined with your `$DATABRICKS_HOST`, and should be treated as an opaque
 	// link. This is an alternative to using `next_chunk_index`.
+	// Wire name: 'next_chunk_internal_link'
 	NextChunkInternalLink string
 	// The number of rows within the result chunk.
+	// Wire name: 'row_count'
 	RowCount int64
 	// The starting row offset within the result set.
+	// Wire name: 'row_offset'
 	RowOffset int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func externalLinkToPb(st *ExternalLink) (*externalLinkPb, error) {
@@ -9329,54 +8020,23 @@ func externalLinkToPb(st *ExternalLink) (*externalLinkPb, error) {
 		return nil, nil
 	}
 	pb := &externalLinkPb{}
-	byteCountPb := &st.ByteCount
-	if byteCountPb != nil {
-		pb.ByteCount = *byteCountPb
-	}
+	pb.ByteCount = st.ByteCount
 
-	chunkIndexPb := &st.ChunkIndex
-	if chunkIndexPb != nil {
-		pb.ChunkIndex = *chunkIndexPb
-	}
+	pb.ChunkIndex = st.ChunkIndex
 
-	expirationPb := &st.Expiration
-	if expirationPb != nil {
-		pb.Expiration = *expirationPb
-	}
+	pb.Expiration = st.Expiration
 
-	externalLinkPb := &st.ExternalLink
-	if externalLinkPb != nil {
-		pb.ExternalLink = *externalLinkPb
-	}
+	pb.ExternalLink = st.ExternalLink
 
-	httpHeadersPb := map[string]string{}
-	for k, v := range st.HttpHeaders {
-		itemPb := &v
-		if itemPb != nil {
-			httpHeadersPb[k] = *itemPb
-		}
-	}
-	pb.HttpHeaders = httpHeadersPb
+	pb.HttpHeaders = st.HttpHeaders
 
-	nextChunkIndexPb := &st.NextChunkIndex
-	if nextChunkIndexPb != nil {
-		pb.NextChunkIndex = *nextChunkIndexPb
-	}
+	pb.NextChunkIndex = st.NextChunkIndex
 
-	nextChunkInternalLinkPb := &st.NextChunkInternalLink
-	if nextChunkInternalLinkPb != nil {
-		pb.NextChunkInternalLink = *nextChunkInternalLinkPb
-	}
+	pb.NextChunkInternalLink = st.NextChunkInternalLink
 
-	rowCountPb := &st.RowCount
-	if rowCountPb != nil {
-		pb.RowCount = *rowCountPb
-	}
+	pb.RowCount = st.RowCount
 
-	rowOffsetPb := &st.RowOffset
-	if rowOffsetPb != nil {
-		pb.RowOffset = *rowOffsetPb
-	}
+	pb.RowOffset = st.RowOffset
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9447,47 +8107,15 @@ func externalLinkFromPb(pb *externalLinkPb) (*ExternalLink, error) {
 		return nil, nil
 	}
 	st := &ExternalLink{}
-	byteCountField := &pb.ByteCount
-	if byteCountField != nil {
-		st.ByteCount = *byteCountField
-	}
-	chunkIndexField := &pb.ChunkIndex
-	if chunkIndexField != nil {
-		st.ChunkIndex = *chunkIndexField
-	}
-	expirationField := &pb.Expiration
-	if expirationField != nil {
-		st.Expiration = *expirationField
-	}
-	externalLinkField := &pb.ExternalLink
-	if externalLinkField != nil {
-		st.ExternalLink = *externalLinkField
-	}
-
-	httpHeadersField := map[string]string{}
-	for k, v := range pb.HttpHeaders {
-		itemField := &v
-		if itemField != nil {
-			httpHeadersField[k] = *itemField
-		}
-	}
-	st.HttpHeaders = httpHeadersField
-	nextChunkIndexField := &pb.NextChunkIndex
-	if nextChunkIndexField != nil {
-		st.NextChunkIndex = *nextChunkIndexField
-	}
-	nextChunkInternalLinkField := &pb.NextChunkInternalLink
-	if nextChunkInternalLinkField != nil {
-		st.NextChunkInternalLink = *nextChunkInternalLinkField
-	}
-	rowCountField := &pb.RowCount
-	if rowCountField != nil {
-		st.RowCount = *rowCountField
-	}
-	rowOffsetField := &pb.RowOffset
-	if rowOffsetField != nil {
-		st.RowOffset = *rowOffsetField
-	}
+	st.ByteCount = pb.ByteCount
+	st.ChunkIndex = pb.ChunkIndex
+	st.Expiration = pb.Expiration
+	st.ExternalLink = pb.ExternalLink
+	st.HttpHeaders = pb.HttpHeaders
+	st.NextChunkIndex = pb.NextChunkIndex
+	st.NextChunkInternalLink = pb.NextChunkInternalLink
+	st.RowCount = pb.RowCount
+	st.RowOffset = pb.RowOffset
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9503,21 +8131,28 @@ func (st externalLinkPb) MarshalJSON() ([]byte, error) {
 
 type ExternalQuerySource struct {
 	// The canonical identifier for this SQL alert
+	// Wire name: 'alert_id'
 	AlertId string
 	// The canonical identifier for this Lakeview dashboard
+	// Wire name: 'dashboard_id'
 	DashboardId string
 	// The canonical identifier for this Genie space
+	// Wire name: 'genie_space_id'
 	GenieSpaceId string
 
+	// Wire name: 'job_info'
 	JobInfo *ExternalQuerySourceJobInfo
 	// The canonical identifier for this legacy dashboard
+	// Wire name: 'legacy_dashboard_id'
 	LegacyDashboardId string
 	// The canonical identifier for this notebook
+	// Wire name: 'notebook_id'
 	NotebookId string
 	// The canonical identifier for this SQL query
+	// Wire name: 'sql_query_id'
 	SqlQueryId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func externalQuerySourceToPb(st *ExternalQuerySource) (*externalQuerySourcePb, error) {
@@ -9525,20 +8160,11 @@ func externalQuerySourceToPb(st *ExternalQuerySource) (*externalQuerySourcePb, e
 		return nil, nil
 	}
 	pb := &externalQuerySourcePb{}
-	alertIdPb := &st.AlertId
-	if alertIdPb != nil {
-		pb.AlertId = *alertIdPb
-	}
+	pb.AlertId = st.AlertId
 
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	genieSpaceIdPb := &st.GenieSpaceId
-	if genieSpaceIdPb != nil {
-		pb.GenieSpaceId = *genieSpaceIdPb
-	}
+	pb.GenieSpaceId = st.GenieSpaceId
 
 	jobInfoPb, err := externalQuerySourceJobInfoToPb(st.JobInfo)
 	if err != nil {
@@ -9548,20 +8174,11 @@ func externalQuerySourceToPb(st *ExternalQuerySource) (*externalQuerySourcePb, e
 		pb.JobInfo = jobInfoPb
 	}
 
-	legacyDashboardIdPb := &st.LegacyDashboardId
-	if legacyDashboardIdPb != nil {
-		pb.LegacyDashboardId = *legacyDashboardIdPb
-	}
+	pb.LegacyDashboardId = st.LegacyDashboardId
 
-	notebookIdPb := &st.NotebookId
-	if notebookIdPb != nil {
-		pb.NotebookId = *notebookIdPb
-	}
+	pb.NotebookId = st.NotebookId
 
-	sqlQueryIdPb := &st.SqlQueryId
-	if sqlQueryIdPb != nil {
-		pb.SqlQueryId = *sqlQueryIdPb
-	}
+	pb.SqlQueryId = st.SqlQueryId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9616,18 +8233,9 @@ func externalQuerySourceFromPb(pb *externalQuerySourcePb) (*ExternalQuerySource,
 		return nil, nil
 	}
 	st := &ExternalQuerySource{}
-	alertIdField := &pb.AlertId
-	if alertIdField != nil {
-		st.AlertId = *alertIdField
-	}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	genieSpaceIdField := &pb.GenieSpaceId
-	if genieSpaceIdField != nil {
-		st.GenieSpaceId = *genieSpaceIdField
-	}
+	st.AlertId = pb.AlertId
+	st.DashboardId = pb.DashboardId
+	st.GenieSpaceId = pb.GenieSpaceId
 	jobInfoField, err := externalQuerySourceJobInfoFromPb(pb.JobInfo)
 	if err != nil {
 		return nil, err
@@ -9635,18 +8243,9 @@ func externalQuerySourceFromPb(pb *externalQuerySourcePb) (*ExternalQuerySource,
 	if jobInfoField != nil {
 		st.JobInfo = jobInfoField
 	}
-	legacyDashboardIdField := &pb.LegacyDashboardId
-	if legacyDashboardIdField != nil {
-		st.LegacyDashboardId = *legacyDashboardIdField
-	}
-	notebookIdField := &pb.NotebookId
-	if notebookIdField != nil {
-		st.NotebookId = *notebookIdField
-	}
-	sqlQueryIdField := &pb.SqlQueryId
-	if sqlQueryIdField != nil {
-		st.SqlQueryId = *sqlQueryIdField
-	}
+	st.LegacyDashboardId = pb.LegacyDashboardId
+	st.NotebookId = pb.NotebookId
+	st.SqlQueryId = pb.SqlQueryId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9662,14 +8261,17 @@ func (st externalQuerySourcePb) MarshalJSON() ([]byte, error) {
 
 type ExternalQuerySourceJobInfo struct {
 	// The canonical identifier for this job.
+	// Wire name: 'job_id'
 	JobId string
 	// The canonical identifier of the run. This ID is unique across all runs of
 	// all jobs.
+	// Wire name: 'job_run_id'
 	JobRunId string
 	// The canonical identifier of the task run.
+	// Wire name: 'job_task_run_id'
 	JobTaskRunId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func externalQuerySourceJobInfoToPb(st *ExternalQuerySourceJobInfo) (*externalQuerySourceJobInfoPb, error) {
@@ -9677,20 +8279,11 @@ func externalQuerySourceJobInfoToPb(st *ExternalQuerySourceJobInfo) (*externalQu
 		return nil, nil
 	}
 	pb := &externalQuerySourceJobInfoPb{}
-	jobIdPb := &st.JobId
-	if jobIdPb != nil {
-		pb.JobId = *jobIdPb
-	}
+	pb.JobId = st.JobId
 
-	jobRunIdPb := &st.JobRunId
-	if jobRunIdPb != nil {
-		pb.JobRunId = *jobRunIdPb
-	}
+	pb.JobRunId = st.JobRunId
 
-	jobTaskRunIdPb := &st.JobTaskRunId
-	if jobTaskRunIdPb != nil {
-		pb.JobTaskRunId = *jobTaskRunIdPb
-	}
+	pb.JobTaskRunId = st.JobTaskRunId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9738,18 +8331,9 @@ func externalQuerySourceJobInfoFromPb(pb *externalQuerySourceJobInfoPb) (*Extern
 		return nil, nil
 	}
 	st := &ExternalQuerySourceJobInfo{}
-	jobIdField := &pb.JobId
-	if jobIdField != nil {
-		st.JobId = *jobIdField
-	}
-	jobRunIdField := &pb.JobRunId
-	if jobRunIdField != nil {
-		st.JobRunId = *jobRunIdField
-	}
-	jobTaskRunIdField := &pb.JobTaskRunId
-	if jobTaskRunIdField != nil {
-		st.JobTaskRunId = *jobTaskRunIdField
-	}
+	st.JobId = pb.JobId
+	st.JobRunId = pb.JobRunId
+	st.JobTaskRunId = pb.JobTaskRunId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9811,7 +8395,9 @@ func formatFromPb(pb *formatPb) (*Format, error) {
 
 // Get an alert
 type GetAlertRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getAlertRequestToPb(st *GetAlertRequest) (*getAlertRequestPb, error) {
@@ -9819,10 +8405,7 @@ func getAlertRequestToPb(st *GetAlertRequest) (*getAlertRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getAlertRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -9861,17 +8444,16 @@ func getAlertRequestFromPb(pb *getAlertRequestPb) (*GetAlertRequest, error) {
 		return nil, nil
 	}
 	st := &GetAlertRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 // Get an alert
 type GetAlertV2Request struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getAlertV2RequestToPb(st *GetAlertV2Request) (*getAlertV2RequestPb, error) {
@@ -9879,10 +8461,7 @@ func getAlertV2RequestToPb(st *GetAlertV2Request) (*getAlertV2RequestPb, error) 
 		return nil, nil
 	}
 	pb := &getAlertV2RequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -9921,17 +8500,16 @@ func getAlertV2RequestFromPb(pb *getAlertV2RequestPb) (*GetAlertV2Request, error
 		return nil, nil
 	}
 	st := &GetAlertV2Request{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 // Get an alert
 type GetAlertsLegacyRequest struct {
-	AlertId string
+
+	// Wire name: 'alert_id'
+	AlertId string `tf:"-"`
 }
 
 func getAlertsLegacyRequestToPb(st *GetAlertsLegacyRequest) (*getAlertsLegacyRequestPb, error) {
@@ -9939,10 +8517,7 @@ func getAlertsLegacyRequestToPb(st *GetAlertsLegacyRequest) (*getAlertsLegacyReq
 		return nil, nil
 	}
 	pb := &getAlertsLegacyRequestPb{}
-	alertIdPb := &st.AlertId
-	if alertIdPb != nil {
-		pb.AlertId = *alertIdPb
-	}
+	pb.AlertId = st.AlertId
 
 	return pb, nil
 }
@@ -9981,17 +8556,16 @@ func getAlertsLegacyRequestFromPb(pb *getAlertsLegacyRequestPb) (*GetAlertsLegac
 		return nil, nil
 	}
 	st := &GetAlertsLegacyRequest{}
-	alertIdField := &pb.AlertId
-	if alertIdField != nil {
-		st.AlertId = *alertIdField
-	}
+	st.AlertId = pb.AlertId
 
 	return st, nil
 }
 
 // Retrieve a definition
 type GetDashboardRequest struct {
-	DashboardId string
+
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 }
 
 func getDashboardRequestToPb(st *GetDashboardRequest) (*getDashboardRequestPb, error) {
@@ -9999,10 +8573,7 @@ func getDashboardRequestToPb(st *GetDashboardRequest) (*getDashboardRequestPb, e
 		return nil, nil
 	}
 	pb := &getDashboardRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	return pb, nil
 }
@@ -10041,10 +8612,7 @@ func getDashboardRequestFromPb(pb *getDashboardRequestPb) (*GetDashboardRequest,
 		return nil, nil
 	}
 	st := &GetDashboardRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 
 	return st, nil
 }
@@ -10052,9 +8620,11 @@ func getDashboardRequestFromPb(pb *getDashboardRequestPb) (*GetDashboardRequest,
 // Get object ACL
 type GetDbsqlPermissionRequest struct {
 	// Object ID. An ACL is returned for the object with this UUID.
-	ObjectId string
+	// Wire name: 'objectId'
+	ObjectId string `tf:"-"`
 	// The type of object permissions to check.
-	ObjectType ObjectTypePlural
+	// Wire name: 'objectType'
+	ObjectType ObjectTypePlural `tf:"-"`
 }
 
 func getDbsqlPermissionRequestToPb(st *GetDbsqlPermissionRequest) (*getDbsqlPermissionRequestPb, error) {
@@ -10062,15 +8632,9 @@ func getDbsqlPermissionRequestToPb(st *GetDbsqlPermissionRequest) (*getDbsqlPerm
 		return nil, nil
 	}
 	pb := &getDbsqlPermissionRequestPb{}
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	return pb, nil
 }
@@ -10112,21 +8676,17 @@ func getDbsqlPermissionRequestFromPb(pb *getDbsqlPermissionRequestPb) (*GetDbsql
 		return nil, nil
 	}
 	st := &GetDbsqlPermissionRequest{}
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	return st, nil
 }
 
 // Get a query definition.
 type GetQueriesLegacyRequest struct {
-	QueryId string
+
+	// Wire name: 'query_id'
+	QueryId string `tf:"-"`
 }
 
 func getQueriesLegacyRequestToPb(st *GetQueriesLegacyRequest) (*getQueriesLegacyRequestPb, error) {
@@ -10134,10 +8694,7 @@ func getQueriesLegacyRequestToPb(st *GetQueriesLegacyRequest) (*getQueriesLegacy
 		return nil, nil
 	}
 	pb := &getQueriesLegacyRequestPb{}
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
 	return pb, nil
 }
@@ -10176,17 +8733,16 @@ func getQueriesLegacyRequestFromPb(pb *getQueriesLegacyRequestPb) (*GetQueriesLe
 		return nil, nil
 	}
 	st := &GetQueriesLegacyRequest{}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
+	st.QueryId = pb.QueryId
 
 	return st, nil
 }
 
 // Get a query
 type GetQueryRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getQueryRequestToPb(st *GetQueryRequest) (*getQueryRequestPb, error) {
@@ -10194,10 +8750,7 @@ func getQueryRequestToPb(st *GetQueryRequest) (*getQueryRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getQueryRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -10236,22 +8789,23 @@ func getQueryRequestFromPb(pb *getQueryRequestPb) (*GetQueryRequest, error) {
 		return nil, nil
 	}
 	st := &GetQueryRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type GetResponse struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []AccessControl
 	// An object's type and UUID, separated by a forward slash (/) character.
+	// Wire name: 'object_id'
 	ObjectId string
 	// A singular noun object type.
+	// Wire name: 'object_type'
 	ObjectType ObjectType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getResponseToPb(st *GetResponse) (*getResponsePb, error) {
@@ -10272,15 +8826,9 @@ func getResponseToPb(st *GetResponse) (*getResponsePb, error) {
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10328,24 +8876,18 @@ func getResponseFromPb(pb *getResponsePb) (*GetResponse, error) {
 	st := &GetResponse{}
 
 	var accessControlListField []AccessControl
-	for _, item := range pb.AccessControlList {
-		itemField, err := accessControlFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := accessControlFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10363,7 +8905,8 @@ func (st getResponsePb) MarshalJSON() ([]byte, error) {
 type GetStatementRequest struct {
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
-	StatementId string
+	// Wire name: 'statement_id'
+	StatementId string `tf:"-"`
 }
 
 func getStatementRequestToPb(st *GetStatementRequest) (*getStatementRequestPb, error) {
@@ -10371,10 +8914,7 @@ func getStatementRequestToPb(st *GetStatementRequest) (*getStatementRequestPb, e
 		return nil, nil
 	}
 	pb := &getStatementRequestPb{}
-	statementIdPb := &st.StatementId
-	if statementIdPb != nil {
-		pb.StatementId = *statementIdPb
-	}
+	pb.StatementId = st.StatementId
 
 	return pb, nil
 }
@@ -10415,20 +8955,20 @@ func getStatementRequestFromPb(pb *getStatementRequestPb) (*GetStatementRequest,
 		return nil, nil
 	}
 	st := &GetStatementRequest{}
-	statementIdField := &pb.StatementId
-	if statementIdField != nil {
-		st.StatementId = *statementIdField
-	}
+	st.StatementId = pb.StatementId
 
 	return st, nil
 }
 
 // Get result chunk by index
 type GetStatementResultChunkNRequest struct {
-	ChunkIndex int
+
+	// Wire name: 'chunk_index'
+	ChunkIndex int `tf:"-"`
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
-	StatementId string
+	// Wire name: 'statement_id'
+	StatementId string `tf:"-"`
 }
 
 func getStatementResultChunkNRequestToPb(st *GetStatementResultChunkNRequest) (*getStatementResultChunkNRequestPb, error) {
@@ -10436,15 +8976,9 @@ func getStatementResultChunkNRequestToPb(st *GetStatementResultChunkNRequest) (*
 		return nil, nil
 	}
 	pb := &getStatementResultChunkNRequestPb{}
-	chunkIndexPb := &st.ChunkIndex
-	if chunkIndexPb != nil {
-		pb.ChunkIndex = *chunkIndexPb
-	}
+	pb.ChunkIndex = st.ChunkIndex
 
-	statementIdPb := &st.StatementId
-	if statementIdPb != nil {
-		pb.StatementId = *statementIdPb
-	}
+	pb.StatementId = st.StatementId
 
 	return pb, nil
 }
@@ -10486,14 +9020,8 @@ func getStatementResultChunkNRequestFromPb(pb *getStatementResultChunkNRequestPb
 		return nil, nil
 	}
 	st := &GetStatementResultChunkNRequest{}
-	chunkIndexField := &pb.ChunkIndex
-	if chunkIndexField != nil {
-		st.ChunkIndex = *chunkIndexField
-	}
-	statementIdField := &pb.StatementId
-	if statementIdField != nil {
-		st.StatementId = *statementIdField
-	}
+	st.ChunkIndex = pb.ChunkIndex
+	st.StatementId = pb.StatementId
 
 	return st, nil
 }
@@ -10501,7 +9029,8 @@ func getStatementResultChunkNRequestFromPb(pb *getStatementResultChunkNRequestPb
 // Get SQL warehouse permission levels
 type GetWarehousePermissionLevelsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
-	WarehouseId string
+	// Wire name: 'warehouse_id'
+	WarehouseId string `tf:"-"`
 }
 
 func getWarehousePermissionLevelsRequestToPb(st *GetWarehousePermissionLevelsRequest) (*getWarehousePermissionLevelsRequestPb, error) {
@@ -10509,10 +9038,7 @@ func getWarehousePermissionLevelsRequestToPb(st *GetWarehousePermissionLevelsReq
 		return nil, nil
 	}
 	pb := &getWarehousePermissionLevelsRequestPb{}
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	return pb, nil
 }
@@ -10552,16 +9078,14 @@ func getWarehousePermissionLevelsRequestFromPb(pb *getWarehousePermissionLevelsR
 		return nil, nil
 	}
 	st := &GetWarehousePermissionLevelsRequest{}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.WarehouseId = pb.WarehouseId
 
 	return st, nil
 }
 
 type GetWarehousePermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []WarehousePermissionsDescription
 }
 
@@ -10623,13 +9147,13 @@ func getWarehousePermissionLevelsResponseFromPb(pb *getWarehousePermissionLevels
 	st := &GetWarehousePermissionLevelsResponse{}
 
 	var permissionLevelsField []WarehousePermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := warehousePermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := warehousePermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -10640,7 +9164,8 @@ func getWarehousePermissionLevelsResponseFromPb(pb *getWarehousePermissionLevels
 // Get SQL warehouse permissions
 type GetWarehousePermissionsRequest struct {
 	// The SQL warehouse for which to get or manage permissions.
-	WarehouseId string
+	// Wire name: 'warehouse_id'
+	WarehouseId string `tf:"-"`
 }
 
 func getWarehousePermissionsRequestToPb(st *GetWarehousePermissionsRequest) (*getWarehousePermissionsRequestPb, error) {
@@ -10648,10 +9173,7 @@ func getWarehousePermissionsRequestToPb(st *GetWarehousePermissionsRequest) (*ge
 		return nil, nil
 	}
 	pb := &getWarehousePermissionsRequestPb{}
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	return pb, nil
 }
@@ -10691,10 +9213,7 @@ func getWarehousePermissionsRequestFromPb(pb *getWarehousePermissionsRequestPb) 
 		return nil, nil
 	}
 	st := &GetWarehousePermissionsRequest{}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.WarehouseId = pb.WarehouseId
 
 	return st, nil
 }
@@ -10702,7 +9221,8 @@ func getWarehousePermissionsRequestFromPb(pb *getWarehousePermissionsRequestPb) 
 // Get warehouse info
 type GetWarehouseRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getWarehouseRequestToPb(st *GetWarehouseRequest) (*getWarehouseRequestPb, error) {
@@ -10710,10 +9230,7 @@ func getWarehouseRequestToPb(st *GetWarehouseRequest) (*getWarehouseRequestPb, e
 		return nil, nil
 	}
 	pb := &getWarehouseRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -10753,10 +9270,7 @@ func getWarehouseRequestFromPb(pb *getWarehouseRequestPb) (*GetWarehouseRequest,
 		return nil, nil
 	}
 	st := &GetWarehouseRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -10768,8 +9282,10 @@ type GetWarehouseResponse struct {
 	// Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
 	//
 	// Defaults to 120 mins
+	// Wire name: 'auto_stop_mins'
 	AutoStopMins int
 	// Channel Details
+	// Wire name: 'channel'
 	Channel *Channel
 	// Size of the clusters allocated for this warehouse. Increasing the size of
 	// a spark cluster allows you to run larger queries on it. If you want to
@@ -10777,23 +9293,31 @@ type GetWarehouseResponse struct {
 	//
 	// Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large
 	// - 2X-Large - 3X-Large - 4X-Large
+	// Wire name: 'cluster_size'
 	ClusterSize string
 	// warehouse creator name
+	// Wire name: 'creator_name'
 	CreatorName string
 	// Configures whether the warehouse should use Photon optimized clusters.
 	//
 	// Defaults to false.
+	// Wire name: 'enable_photon'
 	EnablePhoton bool
 	// Configures whether the warehouse should use serverless compute
+	// Wire name: 'enable_serverless_compute'
 	EnableServerlessCompute bool
 	// Optional health status. Assume the warehouse is healthy if this field is
 	// not set.
+	// Wire name: 'health'
 	Health *EndpointHealth
 	// unique identifier for warehouse
+	// Wire name: 'id'
 	Id string
 	// Deprecated. Instance profile used to pass IAM role to the cluster
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// the jdbc connection string for this warehouse
+	// Wire name: 'jdbc_url'
 	JdbcUrl string
 	// Maximum number of clusters that the autoscaler will create to handle
 	// concurrent queries.
@@ -10801,6 +9325,7 @@ type GetWarehouseResponse struct {
 	// Supported values: - Must be >= min_num_clusters - Must be <= 30.
 	//
 	// Defaults to min_clusters if unset.
+	// Wire name: 'max_num_clusters'
 	MaxNumClusters int
 	// Minimum number of available clusters that will be maintained for this SQL
 	// warehouse. Increasing this will ensure that a larger number of clusters
@@ -10811,33 +9336,42 @@ type GetWarehouseResponse struct {
 	// Supported values: - Must be > 0 - Must be <= min(max_num_clusters, 30)
 	//
 	// Defaults to 1
+	// Wire name: 'min_num_clusters'
 	MinNumClusters int
 	// Logical name for the cluster.
 	//
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
+	// Wire name: 'name'
 	Name string
 	// Deprecated. current number of active sessions for the warehouse
+	// Wire name: 'num_active_sessions'
 	NumActiveSessions int64
 	// current number of clusters running for the service
+	// Wire name: 'num_clusters'
 	NumClusters int
 	// ODBC parameters for the SQL warehouse
+	// Wire name: 'odbc_params'
 	OdbcParams *OdbcParams
 	// Configurations whether the warehouse should use spot instances.
+	// Wire name: 'spot_instance_policy'
 	SpotInstancePolicy SpotInstancePolicy
 	// State of the warehouse
+	// Wire name: 'state'
 	State State
 	// A set of key-value pairs that will be tagged on all resources (e.g., AWS
 	// instances and EBS volumes) associated with this SQL warehouse.
 	//
 	// Supported values: - Number of tags < 45.
+	// Wire name: 'tags'
 	Tags *EndpointTags
 	// Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless
 	// compute, you must set to `PRO` and also set the field
 	// `enable_serverless_compute` to `true`.
+	// Wire name: 'warehouse_type'
 	WarehouseType GetWarehouseResponseWarehouseType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getWarehouseResponseToPb(st *GetWarehouseResponse) (*getWarehouseResponsePb, error) {
@@ -10845,10 +9379,7 @@ func getWarehouseResponseToPb(st *GetWarehouseResponse) (*getWarehouseResponsePb
 		return nil, nil
 	}
 	pb := &getWarehouseResponsePb{}
-	autoStopMinsPb := &st.AutoStopMins
-	if autoStopMinsPb != nil {
-		pb.AutoStopMins = *autoStopMinsPb
-	}
+	pb.AutoStopMins = st.AutoStopMins
 
 	channelPb, err := channelToPb(st.Channel)
 	if err != nil {
@@ -10858,25 +9389,13 @@ func getWarehouseResponseToPb(st *GetWarehouseResponse) (*getWarehouseResponsePb
 		pb.Channel = channelPb
 	}
 
-	clusterSizePb := &st.ClusterSize
-	if clusterSizePb != nil {
-		pb.ClusterSize = *clusterSizePb
-	}
+	pb.ClusterSize = st.ClusterSize
 
-	creatorNamePb := &st.CreatorName
-	if creatorNamePb != nil {
-		pb.CreatorName = *creatorNamePb
-	}
+	pb.CreatorName = st.CreatorName
 
-	enablePhotonPb := &st.EnablePhoton
-	if enablePhotonPb != nil {
-		pb.EnablePhoton = *enablePhotonPb
-	}
+	pb.EnablePhoton = st.EnablePhoton
 
-	enableServerlessComputePb := &st.EnableServerlessCompute
-	if enableServerlessComputePb != nil {
-		pb.EnableServerlessCompute = *enableServerlessComputePb
-	}
+	pb.EnableServerlessCompute = st.EnableServerlessCompute
 
 	healthPb, err := endpointHealthToPb(st.Health)
 	if err != nil {
@@ -10886,45 +9405,21 @@ func getWarehouseResponseToPb(st *GetWarehouseResponse) (*getWarehouseResponsePb
 		pb.Health = healthPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	jdbcUrlPb := &st.JdbcUrl
-	if jdbcUrlPb != nil {
-		pb.JdbcUrl = *jdbcUrlPb
-	}
+	pb.JdbcUrl = st.JdbcUrl
 
-	maxNumClustersPb := &st.MaxNumClusters
-	if maxNumClustersPb != nil {
-		pb.MaxNumClusters = *maxNumClustersPb
-	}
+	pb.MaxNumClusters = st.MaxNumClusters
 
-	minNumClustersPb := &st.MinNumClusters
-	if minNumClustersPb != nil {
-		pb.MinNumClusters = *minNumClustersPb
-	}
+	pb.MinNumClusters = st.MinNumClusters
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	numActiveSessionsPb := &st.NumActiveSessions
-	if numActiveSessionsPb != nil {
-		pb.NumActiveSessions = *numActiveSessionsPb
-	}
+	pb.NumActiveSessions = st.NumActiveSessions
 
-	numClustersPb := &st.NumClusters
-	if numClustersPb != nil {
-		pb.NumClusters = *numClustersPb
-	}
+	pb.NumClusters = st.NumClusters
 
 	odbcParamsPb, err := odbcParamsToPb(st.OdbcParams)
 	if err != nil {
@@ -10934,15 +9429,9 @@ func getWarehouseResponseToPb(st *GetWarehouseResponse) (*getWarehouseResponsePb
 		pb.OdbcParams = odbcParamsPb
 	}
 
-	spotInstancePolicyPb := &st.SpotInstancePolicy
-	if spotInstancePolicyPb != nil {
-		pb.SpotInstancePolicy = *spotInstancePolicyPb
-	}
+	pb.SpotInstancePolicy = st.SpotInstancePolicy
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	tagsPb, err := endpointTagsToPb(st.Tags)
 	if err != nil {
@@ -10952,10 +9441,7 @@ func getWarehouseResponseToPb(st *GetWarehouseResponse) (*getWarehouseResponsePb
 		pb.Tags = tagsPb
 	}
 
-	warehouseTypePb := &st.WarehouseType
-	if warehouseTypePb != nil {
-		pb.WarehouseType = *warehouseTypePb
-	}
+	pb.WarehouseType = st.WarehouseType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11070,10 +9556,7 @@ func getWarehouseResponseFromPb(pb *getWarehouseResponsePb) (*GetWarehouseRespon
 		return nil, nil
 	}
 	st := &GetWarehouseResponse{}
-	autoStopMinsField := &pb.AutoStopMins
-	if autoStopMinsField != nil {
-		st.AutoStopMins = *autoStopMinsField
-	}
+	st.AutoStopMins = pb.AutoStopMins
 	channelField, err := channelFromPb(pb.Channel)
 	if err != nil {
 		return nil, err
@@ -11081,22 +9564,10 @@ func getWarehouseResponseFromPb(pb *getWarehouseResponsePb) (*GetWarehouseRespon
 	if channelField != nil {
 		st.Channel = channelField
 	}
-	clusterSizeField := &pb.ClusterSize
-	if clusterSizeField != nil {
-		st.ClusterSize = *clusterSizeField
-	}
-	creatorNameField := &pb.CreatorName
-	if creatorNameField != nil {
-		st.CreatorName = *creatorNameField
-	}
-	enablePhotonField := &pb.EnablePhoton
-	if enablePhotonField != nil {
-		st.EnablePhoton = *enablePhotonField
-	}
-	enableServerlessComputeField := &pb.EnableServerlessCompute
-	if enableServerlessComputeField != nil {
-		st.EnableServerlessCompute = *enableServerlessComputeField
-	}
+	st.ClusterSize = pb.ClusterSize
+	st.CreatorName = pb.CreatorName
+	st.EnablePhoton = pb.EnablePhoton
+	st.EnableServerlessCompute = pb.EnableServerlessCompute
 	healthField, err := endpointHealthFromPb(pb.Health)
 	if err != nil {
 		return nil, err
@@ -11104,38 +9575,14 @@ func getWarehouseResponseFromPb(pb *getWarehouseResponsePb) (*GetWarehouseRespon
 	if healthField != nil {
 		st.Health = healthField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	jdbcUrlField := &pb.JdbcUrl
-	if jdbcUrlField != nil {
-		st.JdbcUrl = *jdbcUrlField
-	}
-	maxNumClustersField := &pb.MaxNumClusters
-	if maxNumClustersField != nil {
-		st.MaxNumClusters = *maxNumClustersField
-	}
-	minNumClustersField := &pb.MinNumClusters
-	if minNumClustersField != nil {
-		st.MinNumClusters = *minNumClustersField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	numActiveSessionsField := &pb.NumActiveSessions
-	if numActiveSessionsField != nil {
-		st.NumActiveSessions = *numActiveSessionsField
-	}
-	numClustersField := &pb.NumClusters
-	if numClustersField != nil {
-		st.NumClusters = *numClustersField
-	}
+	st.Id = pb.Id
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.JdbcUrl = pb.JdbcUrl
+	st.MaxNumClusters = pb.MaxNumClusters
+	st.MinNumClusters = pb.MinNumClusters
+	st.Name = pb.Name
+	st.NumActiveSessions = pb.NumActiveSessions
+	st.NumClusters = pb.NumClusters
 	odbcParamsField, err := odbcParamsFromPb(pb.OdbcParams)
 	if err != nil {
 		return nil, err
@@ -11143,14 +9590,8 @@ func getWarehouseResponseFromPb(pb *getWarehouseResponsePb) (*GetWarehouseRespon
 	if odbcParamsField != nil {
 		st.OdbcParams = odbcParamsField
 	}
-	spotInstancePolicyField := &pb.SpotInstancePolicy
-	if spotInstancePolicyField != nil {
-		st.SpotInstancePolicy = *spotInstancePolicyField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.SpotInstancePolicy = pb.SpotInstancePolicy
+	st.State = pb.State
 	tagsField, err := endpointTagsFromPb(pb.Tags)
 	if err != nil {
 		return nil, err
@@ -11158,10 +9599,7 @@ func getWarehouseResponseFromPb(pb *getWarehouseResponsePb) (*GetWarehouseRespon
 	if tagsField != nil {
 		st.Tags = tagsField
 	}
-	warehouseTypeField := &pb.WarehouseType
-	if warehouseTypeField != nil {
-		st.WarehouseType = *warehouseTypeField
-	}
+	st.WarehouseType = pb.WarehouseType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11226,11 +9664,14 @@ func getWarehouseResponseWarehouseTypeFromPb(pb *getWarehouseResponseWarehouseTy
 
 type GetWorkspaceWarehouseConfigResponse struct {
 	// Optional: Channel selection details
+	// Wire name: 'channel'
 	Channel *Channel
 	// Deprecated: Use sql_configuration_parameters
+	// Wire name: 'config_param'
 	ConfigParam *RepeatedEndpointConfPairs
 	// Spark confs for external hive metastore configuration JSON serialized
 	// size must be less than <= 512K
+	// Wire name: 'data_access_config'
 	DataAccessConfig []EndpointConfPair
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
@@ -11238,20 +9679,26 @@ type GetWorkspaceWarehouseConfigResponse struct {
 	// SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing
 	// warehouses to be converted to another type. Used by frontend to save
 	// specific type availability in the warehouse create and edit form UI.
+	// Wire name: 'enabled_warehouse_types'
 	EnabledWarehouseTypes []WarehouseTypePair
 	// Deprecated: Use sql_configuration_parameters
+	// Wire name: 'global_param'
 	GlobalParam *RepeatedEndpointConfPairs
 	// GCP only: Google Service Account used to pass to cluster to access Google
 	// Cloud Storage
+	// Wire name: 'google_service_account'
 	GoogleServiceAccount string
 	// AWS Only: Instance profile used to pass IAM role to the cluster
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// Security policy for warehouses
+	// Wire name: 'security_policy'
 	SecurityPolicy GetWorkspaceWarehouseConfigResponseSecurityPolicy
 	// SQL configuration parameters
+	// Wire name: 'sql_configuration_parameters'
 	SqlConfigurationParameters *RepeatedEndpointConfPairs
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getWorkspaceWarehouseConfigResponseToPb(st *GetWorkspaceWarehouseConfigResponse) (*getWorkspaceWarehouseConfigResponsePb, error) {
@@ -11307,20 +9754,11 @@ func getWorkspaceWarehouseConfigResponseToPb(st *GetWorkspaceWarehouseConfigResp
 		pb.GlobalParam = globalParamPb
 	}
 
-	googleServiceAccountPb := &st.GoogleServiceAccount
-	if googleServiceAccountPb != nil {
-		pb.GoogleServiceAccount = *googleServiceAccountPb
-	}
+	pb.GoogleServiceAccount = st.GoogleServiceAccount
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	securityPolicyPb := &st.SecurityPolicy
-	if securityPolicyPb != nil {
-		pb.SecurityPolicy = *securityPolicyPb
-	}
+	pb.SecurityPolicy = st.SecurityPolicy
 
 	sqlConfigurationParametersPb, err := repeatedEndpointConfPairsToPb(st.SqlConfigurationParameters)
 	if err != nil {
@@ -11410,25 +9848,25 @@ func getWorkspaceWarehouseConfigResponseFromPb(pb *getWorkspaceWarehouseConfigRe
 	}
 
 	var dataAccessConfigField []EndpointConfPair
-	for _, item := range pb.DataAccessConfig {
-		itemField, err := endpointConfPairFromPb(&item)
+	for _, itemPb := range pb.DataAccessConfig {
+		item, err := endpointConfPairFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			dataAccessConfigField = append(dataAccessConfigField, *itemField)
+		if item != nil {
+			dataAccessConfigField = append(dataAccessConfigField, *item)
 		}
 	}
 	st.DataAccessConfig = dataAccessConfigField
 
 	var enabledWarehouseTypesField []WarehouseTypePair
-	for _, item := range pb.EnabledWarehouseTypes {
-		itemField, err := warehouseTypePairFromPb(&item)
+	for _, itemPb := range pb.EnabledWarehouseTypes {
+		item, err := warehouseTypePairFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			enabledWarehouseTypesField = append(enabledWarehouseTypesField, *itemField)
+		if item != nil {
+			enabledWarehouseTypesField = append(enabledWarehouseTypesField, *item)
 		}
 	}
 	st.EnabledWarehouseTypes = enabledWarehouseTypesField
@@ -11439,18 +9877,9 @@ func getWorkspaceWarehouseConfigResponseFromPb(pb *getWorkspaceWarehouseConfigRe
 	if globalParamField != nil {
 		st.GlobalParam = globalParamField
 	}
-	googleServiceAccountField := &pb.GoogleServiceAccount
-	if googleServiceAccountField != nil {
-		st.GoogleServiceAccount = *googleServiceAccountField
-	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	securityPolicyField := &pb.SecurityPolicy
-	if securityPolicyField != nil {
-		st.SecurityPolicy = *securityPolicyField
-	}
+	st.GoogleServiceAccount = pb.GoogleServiceAccount
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.SecurityPolicy = pb.SecurityPolicy
 	sqlConfigurationParametersField, err := repeatedEndpointConfPairsFromPb(pb.SqlConfigurationParameters)
 	if err != nil {
 		return nil, err
@@ -11520,33 +9949,44 @@ func getWorkspaceWarehouseConfigResponseSecurityPolicyFromPb(pb *getWorkspaceWar
 
 type LegacyAlert struct {
 	// Timestamp when the alert was created.
+	// Wire name: 'created_at'
 	CreatedAt string
 	// Alert ID.
+	// Wire name: 'id'
 	Id string
 	// Timestamp when the alert was last triggered.
+	// Wire name: 'last_triggered_at'
 	LastTriggeredAt string
 	// Name of the alert.
+	// Wire name: 'name'
 	Name string
 	// Alert configuration options.
+	// Wire name: 'options'
 	Options *AlertOptions
 	// The identifier of the workspace folder containing the object.
+	// Wire name: 'parent'
 	Parent string
 
+	// Wire name: 'query'
 	Query *AlertQuery
 	// Number of seconds after being triggered before the alert rearms itself
 	// and can be triggered again. If `null`, alert will never be triggered
 	// again.
+	// Wire name: 'rearm'
 	Rearm int
 	// State of the alert. Possible values are: `unknown` (yet to be evaluated),
 	// `triggered` (evaluated and fulfilled trigger conditions), or `ok`
 	// (evaluated and did not fulfill trigger conditions).
+	// Wire name: 'state'
 	State LegacyAlertState
 	// Timestamp when the alert was last updated.
+	// Wire name: 'updated_at'
 	UpdatedAt string
 
+	// Wire name: 'user'
 	User *User
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func legacyAlertToPb(st *LegacyAlert) (*legacyAlertPb, error) {
@@ -11554,25 +9994,13 @@ func legacyAlertToPb(st *LegacyAlert) (*legacyAlertPb, error) {
 		return nil, nil
 	}
 	pb := &legacyAlertPb{}
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lastTriggeredAtPb := &st.LastTriggeredAt
-	if lastTriggeredAtPb != nil {
-		pb.LastTriggeredAt = *lastTriggeredAtPb
-	}
+	pb.LastTriggeredAt = st.LastTriggeredAt
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	optionsPb, err := alertOptionsToPb(st.Options)
 	if err != nil {
@@ -11582,10 +10010,7 @@ func legacyAlertToPb(st *LegacyAlert) (*legacyAlertPb, error) {
 		pb.Options = optionsPb
 	}
 
-	parentPb := &st.Parent
-	if parentPb != nil {
-		pb.Parent = *parentPb
-	}
+	pb.Parent = st.Parent
 
 	queryPb, err := alertQueryToPb(st.Query)
 	if err != nil {
@@ -11595,20 +10020,11 @@ func legacyAlertToPb(st *LegacyAlert) (*legacyAlertPb, error) {
 		pb.Query = queryPb
 	}
 
-	rearmPb := &st.Rearm
-	if rearmPb != nil {
-		pb.Rearm = *rearmPb
-	}
+	pb.Rearm = st.Rearm
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
 	userPb, err := userToPb(st.User)
 	if err != nil {
@@ -11683,22 +10099,10 @@ func legacyAlertFromPb(pb *legacyAlertPb) (*LegacyAlert, error) {
 		return nil, nil
 	}
 	st := &LegacyAlert{}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastTriggeredAtField := &pb.LastTriggeredAt
-	if lastTriggeredAtField != nil {
-		st.LastTriggeredAt = *lastTriggeredAtField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.Id = pb.Id
+	st.LastTriggeredAt = pb.LastTriggeredAt
+	st.Name = pb.Name
 	optionsField, err := alertOptionsFromPb(pb.Options)
 	if err != nil {
 		return nil, err
@@ -11706,10 +10110,7 @@ func legacyAlertFromPb(pb *legacyAlertPb) (*LegacyAlert, error) {
 	if optionsField != nil {
 		st.Options = optionsField
 	}
-	parentField := &pb.Parent
-	if parentField != nil {
-		st.Parent = *parentField
-	}
+	st.Parent = pb.Parent
 	queryField, err := alertQueryFromPb(pb.Query)
 	if err != nil {
 		return nil, err
@@ -11717,18 +10118,9 @@ func legacyAlertFromPb(pb *legacyAlertPb) (*LegacyAlert, error) {
 	if queryField != nil {
 		st.Query = queryField
 	}
-	rearmField := &pb.Rearm
-	if rearmField != nil {
-		st.Rearm = *rearmField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
+	st.Rearm = pb.Rearm
+	st.State = pb.State
+	st.UpdatedAt = pb.UpdatedAt
 	userField, err := userFromPb(pb.User)
 	if err != nil {
 		return nil, err
@@ -11801,74 +10193,98 @@ func legacyAlertStateFromPb(pb *legacyAlertStatePb) (*LegacyAlertState, error) {
 type LegacyQuery struct {
 	// Describes whether the authenticated user is allowed to edit the
 	// definition of this query.
+	// Wire name: 'can_edit'
 	CanEdit bool
 	// The timestamp when this query was created.
+	// Wire name: 'created_at'
 	CreatedAt string
 	// Data source ID maps to the ID of the data source used by the resource and
 	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
+	// Wire name: 'data_source_id'
 	DataSourceId string
 	// General description that conveys additional information about this query
 	// such as usage notes.
+	// Wire name: 'description'
 	Description string
 	// Query ID.
+	// Wire name: 'id'
 	Id string
 	// Indicates whether the query is trashed. Trashed queries can't be used in
 	// dashboards, or appear in search results. If this boolean is `true`, the
 	// `options` property for this query includes a `moved_to_trash_at`
 	// timestamp. Trashed queries are permanently deleted after 30 days.
+	// Wire name: 'is_archived'
 	IsArchived bool
 	// Whether the query is a draft. Draft queries only appear in list views for
 	// their owners. Visualizations from draft queries cannot appear on
 	// dashboards.
+	// Wire name: 'is_draft'
 	IsDraft bool
 	// Whether this query object appears in the current user's favorites list.
 	// This flag determines whether the star icon for favorites is selected.
+	// Wire name: 'is_favorite'
 	IsFavorite bool
 	// Text parameter types are not safe from SQL injection for all types of
 	// data source. Set this Boolean parameter to `true` if a query either does
 	// not use any text type parameters or uses a data source type where text
 	// type parameters are handled safely.
+	// Wire name: 'is_safe'
 	IsSafe bool
 
+	// Wire name: 'last_modified_by'
 	LastModifiedBy *User
 	// The ID of the user who last saved changes to this query.
+	// Wire name: 'last_modified_by_id'
 	LastModifiedById int
 	// If there is a cached result for this query and user, this field includes
 	// the query result ID. If this query uses parameters, this field is always
 	// null.
+	// Wire name: 'latest_query_data_id'
 	LatestQueryDataId string
 	// The title of this query that appears in list views, widget headings, and
 	// on the query page.
+	// Wire name: 'name'
 	Name string
 
+	// Wire name: 'options'
 	Options *QueryOptions
 	// The identifier of the workspace folder containing the object.
+	// Wire name: 'parent'
 	Parent string
 	// * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query *
 	// `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
+	// Wire name: 'permission_tier'
 	PermissionTier PermissionLevel
 	// The text of the query to be run.
+	// Wire name: 'query'
 	Query string
 	// A SHA-256 hash of the query text along with the authenticated user ID.
+	// Wire name: 'query_hash'
 	QueryHash string
 	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
 	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
 	// owner" behavior)
+	// Wire name: 'run_as_role'
 	RunAsRole RunAsRole
 
+	// Wire name: 'tags'
 	Tags []string
 	// The timestamp at which this query was last updated.
+	// Wire name: 'updated_at'
 	UpdatedAt string
 
+	// Wire name: 'user'
 	User *User
 	// The ID of the user who owns the query.
+	// Wire name: 'user_id'
 	UserId int
 
+	// Wire name: 'visualizations'
 	Visualizations []LegacyVisualization
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func legacyQueryToPb(st *LegacyQuery) (*legacyQueryPb, error) {
@@ -11876,50 +10292,23 @@ func legacyQueryToPb(st *LegacyQuery) (*legacyQueryPb, error) {
 		return nil, nil
 	}
 	pb := &legacyQueryPb{}
-	canEditPb := &st.CanEdit
-	if canEditPb != nil {
-		pb.CanEdit = *canEditPb
-	}
+	pb.CanEdit = st.CanEdit
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	dataSourceIdPb := &st.DataSourceId
-	if dataSourceIdPb != nil {
-		pb.DataSourceId = *dataSourceIdPb
-	}
+	pb.DataSourceId = st.DataSourceId
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	isArchivedPb := &st.IsArchived
-	if isArchivedPb != nil {
-		pb.IsArchived = *isArchivedPb
-	}
+	pb.IsArchived = st.IsArchived
 
-	isDraftPb := &st.IsDraft
-	if isDraftPb != nil {
-		pb.IsDraft = *isDraftPb
-	}
+	pb.IsDraft = st.IsDraft
 
-	isFavoritePb := &st.IsFavorite
-	if isFavoritePb != nil {
-		pb.IsFavorite = *isFavoritePb
-	}
+	pb.IsFavorite = st.IsFavorite
 
-	isSafePb := &st.IsSafe
-	if isSafePb != nil {
-		pb.IsSafe = *isSafePb
-	}
+	pb.IsSafe = st.IsSafe
 
 	lastModifiedByPb, err := userToPb(st.LastModifiedBy)
 	if err != nil {
@@ -11929,20 +10318,11 @@ func legacyQueryToPb(st *LegacyQuery) (*legacyQueryPb, error) {
 		pb.LastModifiedBy = lastModifiedByPb
 	}
 
-	lastModifiedByIdPb := &st.LastModifiedById
-	if lastModifiedByIdPb != nil {
-		pb.LastModifiedById = *lastModifiedByIdPb
-	}
+	pb.LastModifiedById = st.LastModifiedById
 
-	latestQueryDataIdPb := &st.LatestQueryDataId
-	if latestQueryDataIdPb != nil {
-		pb.LatestQueryDataId = *latestQueryDataIdPb
-	}
+	pb.LatestQueryDataId = st.LatestQueryDataId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	optionsPb, err := queryOptionsToPb(st.Options)
 	if err != nil {
@@ -11952,44 +10332,19 @@ func legacyQueryToPb(st *LegacyQuery) (*legacyQueryPb, error) {
 		pb.Options = optionsPb
 	}
 
-	parentPb := &st.Parent
-	if parentPb != nil {
-		pb.Parent = *parentPb
-	}
+	pb.Parent = st.Parent
 
-	permissionTierPb := &st.PermissionTier
-	if permissionTierPb != nil {
-		pb.PermissionTier = *permissionTierPb
-	}
+	pb.PermissionTier = st.PermissionTier
 
-	queryPb := &st.Query
-	if queryPb != nil {
-		pb.Query = *queryPb
-	}
+	pb.Query = st.Query
 
-	queryHashPb := &st.QueryHash
-	if queryHashPb != nil {
-		pb.QueryHash = *queryHashPb
-	}
+	pb.QueryHash = st.QueryHash
 
-	runAsRolePb := &st.RunAsRole
-	if runAsRolePb != nil {
-		pb.RunAsRole = *runAsRolePb
-	}
+	pb.RunAsRole = st.RunAsRole
 
-	var tagsPb []string
-	for _, item := range st.Tags {
-		itemPb := &item
-		if itemPb != nil {
-			tagsPb = append(tagsPb, *itemPb)
-		}
-	}
-	pb.Tags = tagsPb
+	pb.Tags = st.Tags
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
 	userPb, err := userToPb(st.User)
 	if err != nil {
@@ -11999,10 +10354,7 @@ func legacyQueryToPb(st *LegacyQuery) (*legacyQueryPb, error) {
 		pb.User = userPb
 	}
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	var visualizationsPb []legacyVisualizationPb
 	for _, item := range st.Visualizations {
@@ -12123,42 +10475,15 @@ func legacyQueryFromPb(pb *legacyQueryPb) (*LegacyQuery, error) {
 		return nil, nil
 	}
 	st := &LegacyQuery{}
-	canEditField := &pb.CanEdit
-	if canEditField != nil {
-		st.CanEdit = *canEditField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	dataSourceIdField := &pb.DataSourceId
-	if dataSourceIdField != nil {
-		st.DataSourceId = *dataSourceIdField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	isArchivedField := &pb.IsArchived
-	if isArchivedField != nil {
-		st.IsArchived = *isArchivedField
-	}
-	isDraftField := &pb.IsDraft
-	if isDraftField != nil {
-		st.IsDraft = *isDraftField
-	}
-	isFavoriteField := &pb.IsFavorite
-	if isFavoriteField != nil {
-		st.IsFavorite = *isFavoriteField
-	}
-	isSafeField := &pb.IsSafe
-	if isSafeField != nil {
-		st.IsSafe = *isSafeField
-	}
+	st.CanEdit = pb.CanEdit
+	st.CreatedAt = pb.CreatedAt
+	st.DataSourceId = pb.DataSourceId
+	st.Description = pb.Description
+	st.Id = pb.Id
+	st.IsArchived = pb.IsArchived
+	st.IsDraft = pb.IsDraft
+	st.IsFavorite = pb.IsFavorite
+	st.IsSafe = pb.IsSafe
 	lastModifiedByField, err := userFromPb(pb.LastModifiedBy)
 	if err != nil {
 		return nil, err
@@ -12166,18 +10491,9 @@ func legacyQueryFromPb(pb *legacyQueryPb) (*LegacyQuery, error) {
 	if lastModifiedByField != nil {
 		st.LastModifiedBy = lastModifiedByField
 	}
-	lastModifiedByIdField := &pb.LastModifiedById
-	if lastModifiedByIdField != nil {
-		st.LastModifiedById = *lastModifiedByIdField
-	}
-	latestQueryDataIdField := &pb.LatestQueryDataId
-	if latestQueryDataIdField != nil {
-		st.LatestQueryDataId = *latestQueryDataIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.LastModifiedById = pb.LastModifiedById
+	st.LatestQueryDataId = pb.LatestQueryDataId
+	st.Name = pb.Name
 	optionsField, err := queryOptionsFromPb(pb.Options)
 	if err != nil {
 		return nil, err
@@ -12185,39 +10501,13 @@ func legacyQueryFromPb(pb *legacyQueryPb) (*LegacyQuery, error) {
 	if optionsField != nil {
 		st.Options = optionsField
 	}
-	parentField := &pb.Parent
-	if parentField != nil {
-		st.Parent = *parentField
-	}
-	permissionTierField := &pb.PermissionTier
-	if permissionTierField != nil {
-		st.PermissionTier = *permissionTierField
-	}
-	queryField := &pb.Query
-	if queryField != nil {
-		st.Query = *queryField
-	}
-	queryHashField := &pb.QueryHash
-	if queryHashField != nil {
-		st.QueryHash = *queryHashField
-	}
-	runAsRoleField := &pb.RunAsRole
-	if runAsRoleField != nil {
-		st.RunAsRole = *runAsRoleField
-	}
-
-	var tagsField []string
-	for _, item := range pb.Tags {
-		itemField := &item
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
-		}
-	}
-	st.Tags = tagsField
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
+	st.Parent = pb.Parent
+	st.PermissionTier = pb.PermissionTier
+	st.Query = pb.Query
+	st.QueryHash = pb.QueryHash
+	st.RunAsRole = pb.RunAsRole
+	st.Tags = pb.Tags
+	st.UpdatedAt = pb.UpdatedAt
 	userField, err := userFromPb(pb.User)
 	if err != nil {
 		return nil, err
@@ -12225,19 +10515,16 @@ func legacyQueryFromPb(pb *legacyQueryPb) (*LegacyQuery, error) {
 	if userField != nil {
 		st.User = userField
 	}
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.UserId = pb.UserId
 
 	var visualizationsField []LegacyVisualization
-	for _, item := range pb.Visualizations {
-		itemField, err := legacyVisualizationFromPb(&item)
+	for _, itemPb := range pb.Visualizations {
+		item, err := legacyVisualizationFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			visualizationsField = append(visualizationsField, *itemField)
+		if item != nil {
+			visualizationsField = append(visualizationsField, *item)
 		}
 	}
 	st.Visualizations = visualizationsField
@@ -12260,27 +10547,36 @@ func (st legacyQueryPb) MarshalJSON() ([]byte, error) {
 // same endpoint. Databricks does not recommend constructing ad-hoc
 // visualizations entirely in JSON.
 type LegacyVisualization struct {
+
+	// Wire name: 'created_at'
 	CreatedAt string
 	// A short description of this visualization. This is not displayed in the
 	// UI.
+	// Wire name: 'description'
 	Description string
 	// The UUID for this visualization.
+	// Wire name: 'id'
 	Id string
 	// The name of the visualization that appears on dashboards and the query
 	// screen.
+	// Wire name: 'name'
 	Name string
 	// The options object varies widely from one visualization type to the next
 	// and is unsupported. Databricks does not recommend modifying visualization
 	// settings in JSON.
+	// Wire name: 'options'
 	Options any
 
+	// Wire name: 'query'
 	Query *LegacyQuery
 	// The type of visualization: chart, table, pivot table, and so on.
+	// Wire name: 'type'
 	Type string
 
+	// Wire name: 'updated_at'
 	UpdatedAt string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func legacyVisualizationToPb(st *LegacyVisualization) (*legacyVisualizationPb, error) {
@@ -12288,30 +10584,15 @@ func legacyVisualizationToPb(st *LegacyVisualization) (*legacyVisualizationPb, e
 		return nil, nil
 	}
 	pb := &legacyVisualizationPb{}
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	optionsPb := &st.Options
-	if optionsPb != nil {
-		pb.Options = *optionsPb
-	}
+	pb.Options = st.Options
 
 	queryPb, err := legacyQueryToPb(st.Query)
 	if err != nil {
@@ -12321,15 +10602,9 @@ func legacyVisualizationToPb(st *LegacyVisualization) (*legacyVisualizationPb, e
 		pb.Query = queryPb
 	}
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12389,26 +10664,11 @@ func legacyVisualizationFromPb(pb *legacyVisualizationPb) (*LegacyVisualization,
 		return nil, nil
 	}
 	st := &LegacyVisualization{}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	optionsField := &pb.Options
-	if optionsField != nil {
-		st.Options = *optionsField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.Description = pb.Description
+	st.Id = pb.Id
+	st.Name = pb.Name
+	st.Options = pb.Options
 	queryField, err := legacyQueryFromPb(pb.Query)
 	if err != nil {
 		return nil, err
@@ -12416,14 +10676,8 @@ func legacyVisualizationFromPb(pb *legacyVisualizationPb) (*LegacyVisualization,
 	if queryField != nil {
 		st.Query = queryField
 	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
+	st.Type = pb.Type
+	st.UpdatedAt = pb.UpdatedAt
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12483,11 +10737,14 @@ func lifecycleStateFromPb(pb *lifecycleStatePb) (*LifecycleState, error) {
 
 // List alerts
 type ListAlertsRequest struct {
-	PageSize int
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAlertsRequestToPb(st *ListAlertsRequest) (*listAlertsRequestPb, error) {
@@ -12495,15 +10752,9 @@ func listAlertsRequestToPb(st *ListAlertsRequest) (*listAlertsRequestPb, error) 
 		return nil, nil
 	}
 	pb := &listAlertsRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12547,14 +10798,8 @@ func listAlertsRequestFromPb(pb *listAlertsRequestPb) (*ListAlertsRequest, error
 		return nil, nil
 	}
 	st := &ListAlertsRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12569,11 +10814,14 @@ func (st listAlertsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListAlertsResponse struct {
+
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'results'
 	Results []ListAlertsResponseAlert
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAlertsResponseToPb(st *ListAlertsResponse) (*listAlertsResponsePb, error) {
@@ -12581,10 +10829,7 @@ func listAlertsResponseToPb(st *ListAlertsResponse) (*listAlertsResponsePb, erro
 		return nil, nil
 	}
 	pb := &listAlertsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var resultsPb []listAlertsResponseAlertPb
 	for _, item := range st.Results {
@@ -12640,19 +10885,16 @@ func listAlertsResponseFromPb(pb *listAlertsResponsePb) (*ListAlertsResponse, er
 		return nil, nil
 	}
 	st := &ListAlertsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var resultsField []ListAlertsResponseAlert
-	for _, item := range pb.Results {
-		itemField, err := listAlertsResponseAlertFromPb(&item)
+	for _, itemPb := range pb.Results {
+		item, err := listAlertsResponseAlertFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resultsField = append(resultsField, *itemField)
+		if item != nil {
+			resultsField = append(resultsField, *item)
 		}
 	}
 	st.Results = resultsField
@@ -12671,48 +10913,62 @@ func (st listAlertsResponsePb) MarshalJSON() ([]byte, error) {
 
 type ListAlertsResponseAlert struct {
 	// Trigger conditions of the alert.
+	// Wire name: 'condition'
 	Condition *AlertCondition
 	// The timestamp indicating when the alert was created.
+	// Wire name: 'create_time'
 	CreateTime string
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Wire name: 'custom_body'
 	CustomBody string
 	// Custom subject of alert notification, if it exists. This can include
 	// email subject entries and Slack notification headers, for example. See
 	// [here] for custom templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Wire name: 'custom_subject'
 	CustomSubject string
 	// The display name of the alert.
+	// Wire name: 'display_name'
 	DisplayName string
 	// UUID identifying the alert.
+	// Wire name: 'id'
 	Id string
 	// The workspace state of the alert. Used for tracking trashed status.
+	// Wire name: 'lifecycle_state'
 	LifecycleState LifecycleState
 	// Whether to notify alert subscribers when alert returns back to normal.
+	// Wire name: 'notify_on_ok'
 	NotifyOnOk bool
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
+	// Wire name: 'owner_user_name'
 	OwnerUserName string
 	// UUID of the query attached to the alert.
+	// Wire name: 'query_id'
 	QueryId string
 	// Number of seconds an alert must wait after being triggered to rearm
 	// itself. After rearming, it can be triggered again. If 0 or not specified,
 	// the alert will not be triggered again.
+	// Wire name: 'seconds_to_retrigger'
 	SecondsToRetrigger int
 	// Current state of the alert's trigger status. This field is set to UNKNOWN
 	// if the alert has not yet been evaluated or ran into an error during the
 	// last evaluation.
+	// Wire name: 'state'
 	State AlertState
 	// Timestamp when the alert was last triggered, if the alert has been
 	// triggered before.
+	// Wire name: 'trigger_time'
 	TriggerTime string
 	// The timestamp indicating when the alert was updated.
+	// Wire name: 'update_time'
 	UpdateTime string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAlertsResponseAlertToPb(st *ListAlertsResponseAlert) (*listAlertsResponseAlertPb, error) {
@@ -12728,70 +10984,31 @@ func listAlertsResponseAlertToPb(st *ListAlertsResponseAlert) (*listAlertsRespon
 		pb.Condition = conditionPb
 	}
 
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	customBodyPb := &st.CustomBody
-	if customBodyPb != nil {
-		pb.CustomBody = *customBodyPb
-	}
+	pb.CustomBody = st.CustomBody
 
-	customSubjectPb := &st.CustomSubject
-	if customSubjectPb != nil {
-		pb.CustomSubject = *customSubjectPb
-	}
+	pb.CustomSubject = st.CustomSubject
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lifecycleStatePb := &st.LifecycleState
-	if lifecycleStatePb != nil {
-		pb.LifecycleState = *lifecycleStatePb
-	}
+	pb.LifecycleState = st.LifecycleState
 
-	notifyOnOkPb := &st.NotifyOnOk
-	if notifyOnOkPb != nil {
-		pb.NotifyOnOk = *notifyOnOkPb
-	}
+	pb.NotifyOnOk = st.NotifyOnOk
 
-	ownerUserNamePb := &st.OwnerUserName
-	if ownerUserNamePb != nil {
-		pb.OwnerUserName = *ownerUserNamePb
-	}
+	pb.OwnerUserName = st.OwnerUserName
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	secondsToRetriggerPb := &st.SecondsToRetrigger
-	if secondsToRetriggerPb != nil {
-		pb.SecondsToRetrigger = *secondsToRetriggerPb
-	}
+	pb.SecondsToRetrigger = st.SecondsToRetrigger
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
-	triggerTimePb := &st.TriggerTime
-	if triggerTimePb != nil {
-		pb.TriggerTime = *triggerTimePb
-	}
+	pb.TriggerTime = st.TriggerTime
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12880,58 +11097,19 @@ func listAlertsResponseAlertFromPb(pb *listAlertsResponseAlertPb) (*ListAlertsRe
 	if conditionField != nil {
 		st.Condition = conditionField
 	}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	customBodyField := &pb.CustomBody
-	if customBodyField != nil {
-		st.CustomBody = *customBodyField
-	}
-	customSubjectField := &pb.CustomSubject
-	if customSubjectField != nil {
-		st.CustomSubject = *customSubjectField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lifecycleStateField := &pb.LifecycleState
-	if lifecycleStateField != nil {
-		st.LifecycleState = *lifecycleStateField
-	}
-	notifyOnOkField := &pb.NotifyOnOk
-	if notifyOnOkField != nil {
-		st.NotifyOnOk = *notifyOnOkField
-	}
-	ownerUserNameField := &pb.OwnerUserName
-	if ownerUserNameField != nil {
-		st.OwnerUserName = *ownerUserNameField
-	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-	secondsToRetriggerField := &pb.SecondsToRetrigger
-	if secondsToRetriggerField != nil {
-		st.SecondsToRetrigger = *secondsToRetriggerField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
-	triggerTimeField := &pb.TriggerTime
-	if triggerTimeField != nil {
-		st.TriggerTime = *triggerTimeField
-	}
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
+	st.CreateTime = pb.CreateTime
+	st.CustomBody = pb.CustomBody
+	st.CustomSubject = pb.CustomSubject
+	st.DisplayName = pb.DisplayName
+	st.Id = pb.Id
+	st.LifecycleState = pb.LifecycleState
+	st.NotifyOnOk = pb.NotifyOnOk
+	st.OwnerUserName = pb.OwnerUserName
+	st.QueryId = pb.QueryId
+	st.SecondsToRetrigger = pb.SecondsToRetrigger
+	st.State = pb.State
+	st.TriggerTime = pb.TriggerTime
+	st.UpdateTime = pb.UpdateTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12947,11 +11125,14 @@ func (st listAlertsResponseAlertPb) MarshalJSON() ([]byte, error) {
 
 // List alerts
 type ListAlertsV2Request struct {
-	PageSize int
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAlertsV2RequestToPb(st *ListAlertsV2Request) (*listAlertsV2RequestPb, error) {
@@ -12959,15 +11140,9 @@ func listAlertsV2RequestToPb(st *ListAlertsV2Request) (*listAlertsV2RequestPb, e
 		return nil, nil
 	}
 	pb := &listAlertsV2RequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13011,14 +11186,8 @@ func listAlertsV2RequestFromPb(pb *listAlertsV2RequestPb) (*ListAlertsV2Request,
 		return nil, nil
 	}
 	st := &ListAlertsV2Request{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13033,11 +11202,14 @@ func (st listAlertsV2RequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListAlertsV2Response struct {
+
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	Results []AlertV2
+	// Wire name: 'results'
+	Results []ListAlertsV2ResponseAlert
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAlertsV2ResponseToPb(st *ListAlertsV2Response) (*listAlertsV2ResponsePb, error) {
@@ -13045,14 +11217,11 @@ func listAlertsV2ResponseToPb(st *ListAlertsV2Response) (*listAlertsV2ResponsePb
 		return nil, nil
 	}
 	pb := &listAlertsV2ResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
-	var resultsPb []alertV2Pb
+	var resultsPb []listAlertsV2ResponseAlertPb
 	for _, item := range st.Results {
-		itemPb, err := alertV2ToPb(&item)
+		itemPb, err := listAlertsV2ResponseAlertToPb(&item)
 		if err != nil {
 			return nil, err
 		}
@@ -13094,7 +11263,7 @@ func (st ListAlertsV2Response) MarshalJSON() ([]byte, error) {
 type listAlertsV2ResponsePb struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	Results []alertV2Pb `json:"results,omitempty"`
+	Results []listAlertsV2ResponseAlertPb `json:"results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -13104,19 +11273,16 @@ func listAlertsV2ResponseFromPb(pb *listAlertsV2ResponsePb) (*ListAlertsV2Respon
 		return nil, nil
 	}
 	st := &ListAlertsV2Response{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
-	var resultsField []AlertV2
-	for _, item := range pb.Results {
-		itemField, err := alertV2FromPb(&item)
+	var resultsField []ListAlertsV2ResponseAlert
+	for _, itemPb := range pb.Results {
+		item, err := listAlertsV2ResponseAlertFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resultsField = append(resultsField, *itemField)
+		if item != nil {
+			resultsField = append(resultsField, *item)
 		}
 	}
 	st.Results = resultsField
@@ -13133,18 +11299,216 @@ func (st listAlertsV2ResponsePb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
 }
 
+type ListAlertsV2ResponseAlert struct {
+	// The timestamp indicating when the alert was created.
+	// Wire name: 'create_time'
+	CreateTime string
+	// Custom description for the alert. support mustache template.
+	// Wire name: 'custom_description'
+	CustomDescription string
+	// Custom summary for the alert. support mustache template.
+	// Wire name: 'custom_summary'
+	CustomSummary string
+	// The display name of the alert.
+	// Wire name: 'display_name'
+	DisplayName string
+
+	// Wire name: 'evaluation'
+	Evaluation *AlertV2Evaluation
+	// UUID identifying the alert.
+	// Wire name: 'id'
+	Id string
+	// Indicates whether the query is trashed.
+	// Wire name: 'lifecycle_state'
+	LifecycleState LifecycleState
+	// The owner's username. This field is set to "Unavailable" if the user has
+	// been deleted.
+	// Wire name: 'owner_user_name'
+	OwnerUserName string
+	// Text of the query to be run.
+	// Wire name: 'query_text'
+	QueryText string
+	// The run as username. This field is set to "Unavailable" if the user has
+	// been deleted.
+	// Wire name: 'run_as_user_name'
+	RunAsUserName string
+
+	// Wire name: 'schedule'
+	Schedule *CronSchedule
+	// The timestamp indicating when the alert was updated.
+	// Wire name: 'update_time'
+	UpdateTime string
+	// ID of the SQL warehouse attached to the alert.
+	// Wire name: 'warehouse_id'
+	WarehouseId string
+
+	ForceSendFields []string `tf:"-"`
+}
+
+func listAlertsV2ResponseAlertToPb(st *ListAlertsV2ResponseAlert) (*listAlertsV2ResponseAlertPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := &listAlertsV2ResponseAlertPb{}
+	pb.CreateTime = st.CreateTime
+
+	pb.CustomDescription = st.CustomDescription
+
+	pb.CustomSummary = st.CustomSummary
+
+	pb.DisplayName = st.DisplayName
+
+	evaluationPb, err := alertV2EvaluationToPb(st.Evaluation)
+	if err != nil {
+		return nil, err
+	}
+	if evaluationPb != nil {
+		pb.Evaluation = evaluationPb
+	}
+
+	pb.Id = st.Id
+
+	pb.LifecycleState = st.LifecycleState
+
+	pb.OwnerUserName = st.OwnerUserName
+
+	pb.QueryText = st.QueryText
+
+	pb.RunAsUserName = st.RunAsUserName
+
+	schedulePb, err := cronScheduleToPb(st.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if schedulePb != nil {
+		pb.Schedule = schedulePb
+	}
+
+	pb.UpdateTime = st.UpdateTime
+
+	pb.WarehouseId = st.WarehouseId
+
+	pb.ForceSendFields = st.ForceSendFields
+	return pb, nil
+}
+
+func (st *ListAlertsV2ResponseAlert) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAlertsV2ResponseAlertPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAlertsV2ResponseAlertFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListAlertsV2ResponseAlert) MarshalJSON() ([]byte, error) {
+	pb, err := listAlertsV2ResponseAlertToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type listAlertsV2ResponseAlertPb struct {
+	// The timestamp indicating when the alert was created.
+	CreateTime string `json:"create_time,omitempty"`
+	// Custom description for the alert. support mustache template.
+	CustomDescription string `json:"custom_description,omitempty"`
+	// Custom summary for the alert. support mustache template.
+	CustomSummary string `json:"custom_summary,omitempty"`
+	// The display name of the alert.
+	DisplayName string `json:"display_name,omitempty"`
+
+	Evaluation *alertV2EvaluationPb `json:"evaluation,omitempty"`
+	// UUID identifying the alert.
+	Id string `json:"id,omitempty"`
+	// Indicates whether the query is trashed.
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// The owner's username. This field is set to "Unavailable" if the user has
+	// been deleted.
+	OwnerUserName string `json:"owner_user_name,omitempty"`
+	// Text of the query to be run.
+	QueryText string `json:"query_text,omitempty"`
+	// The run as username. This field is set to "Unavailable" if the user has
+	// been deleted.
+	RunAsUserName string `json:"run_as_user_name,omitempty"`
+
+	Schedule *cronSchedulePb `json:"schedule,omitempty"`
+	// The timestamp indicating when the alert was updated.
+	UpdateTime string `json:"update_time,omitempty"`
+	// ID of the SQL warehouse attached to the alert.
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func listAlertsV2ResponseAlertFromPb(pb *listAlertsV2ResponseAlertPb) (*ListAlertsV2ResponseAlert, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := &ListAlertsV2ResponseAlert{}
+	st.CreateTime = pb.CreateTime
+	st.CustomDescription = pb.CustomDescription
+	st.CustomSummary = pb.CustomSummary
+	st.DisplayName = pb.DisplayName
+	evaluationField, err := alertV2EvaluationFromPb(pb.Evaluation)
+	if err != nil {
+		return nil, err
+	}
+	if evaluationField != nil {
+		st.Evaluation = evaluationField
+	}
+	st.Id = pb.Id
+	st.LifecycleState = pb.LifecycleState
+	st.OwnerUserName = pb.OwnerUserName
+	st.QueryText = pb.QueryText
+	st.RunAsUserName = pb.RunAsUserName
+	scheduleField, err := cronScheduleFromPb(pb.Schedule)
+	if err != nil {
+		return nil, err
+	}
+	if scheduleField != nil {
+		st.Schedule = scheduleField
+	}
+	st.UpdateTime = pb.UpdateTime
+	st.WarehouseId = pb.WarehouseId
+
+	st.ForceSendFields = pb.ForceSendFields
+	return st, nil
+}
+
+func (st *listAlertsV2ResponseAlertPb) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, st)
+}
+
+func (st listAlertsV2ResponseAlertPb) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(st)
+}
+
 // Get dashboard objects
 type ListDashboardsRequest struct {
 	// Name of dashboard attribute to order by.
-	Order ListOrder
+	// Wire name: 'order'
+	Order ListOrder `tf:"-"`
 	// Page number to retrieve.
-	Page int
+	// Wire name: 'page'
+	Page int `tf:"-"`
 	// Number of dashboards to return per page.
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// Full text search term.
-	Q string
+	// Wire name: 'q'
+	Q string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listDashboardsRequestToPb(st *ListDashboardsRequest) (*listDashboardsRequestPb, error) {
@@ -13152,25 +11516,13 @@ func listDashboardsRequestToPb(st *ListDashboardsRequest) (*listDashboardsReques
 		return nil, nil
 	}
 	pb := &listDashboardsRequestPb{}
-	orderPb := &st.Order
-	if orderPb != nil {
-		pb.Order = *orderPb
-	}
+	pb.Order = st.Order
 
-	pagePb := &st.Page
-	if pagePb != nil {
-		pb.Page = *pagePb
-	}
+	pb.Page = st.Page
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	qPb := &st.Q
-	if qPb != nil {
-		pb.Q = *qPb
-	}
+	pb.Q = st.Q
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13219,22 +11571,10 @@ func listDashboardsRequestFromPb(pb *listDashboardsRequestPb) (*ListDashboardsRe
 		return nil, nil
 	}
 	st := &ListDashboardsRequest{}
-	orderField := &pb.Order
-	if orderField != nil {
-		st.Order = *orderField
-	}
-	pageField := &pb.Page
-	if pageField != nil {
-		st.Page = *pageField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	qField := &pb.Q
-	if qField != nil {
-		st.Q = *qField
-	}
+	st.Order = pb.Order
+	st.Page = pb.Page
+	st.PageSize = pb.PageSize
+	st.Q = pb.Q
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13308,15 +11648,19 @@ type ListQueriesLegacyRequest struct {
 	// - `executed_at`: The timestamp when the query was last run.
 	//
 	// - `created_by`: The user name of the user that created the query.
-	Order string
+	// Wire name: 'order'
+	Order string `tf:"-"`
 	// Page number to retrieve.
-	Page int
+	// Wire name: 'page'
+	Page int `tf:"-"`
 	// Number of queries to return per page.
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// Full text search term
-	Q string
+	// Wire name: 'q'
+	Q string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listQueriesLegacyRequestToPb(st *ListQueriesLegacyRequest) (*listQueriesLegacyRequestPb, error) {
@@ -13324,25 +11668,13 @@ func listQueriesLegacyRequestToPb(st *ListQueriesLegacyRequest) (*listQueriesLeg
 		return nil, nil
 	}
 	pb := &listQueriesLegacyRequestPb{}
-	orderPb := &st.Order
-	if orderPb != nil {
-		pb.Order = *orderPb
-	}
+	pb.Order = st.Order
 
-	pagePb := &st.Page
-	if pagePb != nil {
-		pb.Page = *pagePb
-	}
+	pb.Page = st.Page
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	qPb := &st.Q
-	if qPb != nil {
-		pb.Q = *qPb
-	}
+	pb.Q = st.Q
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13404,22 +11736,10 @@ func listQueriesLegacyRequestFromPb(pb *listQueriesLegacyRequestPb) (*ListQuerie
 		return nil, nil
 	}
 	st := &ListQueriesLegacyRequest{}
-	orderField := &pb.Order
-	if orderField != nil {
-		st.Order = *orderField
-	}
-	pageField := &pb.Page
-	if pageField != nil {
-		st.Page = *pageField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	qField := &pb.Q
-	if qField != nil {
-		st.Q = *qField
-	}
+	st.Order = pb.Order
+	st.Page = pb.Page
+	st.PageSize = pb.PageSize
+	st.Q = pb.Q
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13435,11 +11755,14 @@ func (st listQueriesLegacyRequestPb) MarshalJSON() ([]byte, error) {
 
 // List queries
 type ListQueriesRequest struct {
-	PageSize int
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listQueriesRequestToPb(st *ListQueriesRequest) (*listQueriesRequestPb, error) {
@@ -13447,15 +11770,9 @@ func listQueriesRequestToPb(st *ListQueriesRequest) (*listQueriesRequestPb, erro
 		return nil, nil
 	}
 	pb := &listQueriesRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13499,14 +11816,8 @@ func listQueriesRequestFromPb(pb *listQueriesRequestPb) (*ListQueriesRequest, er
 		return nil, nil
 	}
 	st := &ListQueriesRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13522,13 +11833,16 @@ func (st listQueriesRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListQueriesResponse struct {
 	// Whether there is another page of results.
+	// Wire name: 'has_next_page'
 	HasNextPage bool
 	// A token that can be used to get the next page of results.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'res'
 	Res []QueryInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listQueriesResponseToPb(st *ListQueriesResponse) (*listQueriesResponsePb, error) {
@@ -13536,15 +11850,9 @@ func listQueriesResponseToPb(st *ListQueriesResponse) (*listQueriesResponsePb, e
 		return nil, nil
 	}
 	pb := &listQueriesResponsePb{}
-	hasNextPagePb := &st.HasNextPage
-	if hasNextPagePb != nil {
-		pb.HasNextPage = *hasNextPagePb
-	}
+	pb.HasNextPage = st.HasNextPage
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var resPb []queryInfoPb
 	for _, item := range st.Res {
@@ -13603,23 +11911,17 @@ func listQueriesResponseFromPb(pb *listQueriesResponsePb) (*ListQueriesResponse,
 		return nil, nil
 	}
 	st := &ListQueriesResponse{}
-	hasNextPageField := &pb.HasNextPage
-	if hasNextPageField != nil {
-		st.HasNextPage = *hasNextPageField
-	}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.HasNextPage = pb.HasNextPage
+	st.NextPageToken = pb.NextPageToken
 
 	var resField []QueryInfo
-	for _, item := range pb.Res {
-		itemField, err := queryInfoFromPb(&item)
+	for _, itemPb := range pb.Res {
+		item, err := queryInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resField = append(resField, *itemField)
+		if item != nil {
+			resField = append(resField, *item)
 		}
 	}
 	st.Res = resField
@@ -13639,20 +11941,24 @@ func (st listQueriesResponsePb) MarshalJSON() ([]byte, error) {
 // List Queries
 type ListQueryHistoryRequest struct {
 	// A filter to limit query history results. This field is optional.
-	FilterBy *QueryFilter
+	// Wire name: 'filter_by'
+	FilterBy *QueryFilter `tf:"-"`
 	// Whether to include the query metrics with each query. Only use this for a
 	// small subset of queries (max_results). Defaults to false.
-	IncludeMetrics bool
+	// Wire name: 'include_metrics'
+	IncludeMetrics bool `tf:"-"`
 	// Limit the number of results returned in one page. Must be less than 1000
 	// and the default is 100.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// A token that can be used to get the next page of results. The token can
 	// contains characters that need to be encoded before using it in a URL. For
 	// example, the character '+' needs to be replaced by %2B. This field is
 	// optional.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listQueryHistoryRequestToPb(st *ListQueryHistoryRequest) (*listQueryHistoryRequestPb, error) {
@@ -13668,20 +11974,11 @@ func listQueryHistoryRequestToPb(st *ListQueryHistoryRequest) (*listQueryHistory
 		pb.FilterBy = filterByPb
 	}
 
-	includeMetricsPb := &st.IncludeMetrics
-	if includeMetricsPb != nil {
-		pb.IncludeMetrics = *includeMetricsPb
-	}
+	pb.IncludeMetrics = st.IncludeMetrics
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13742,18 +12039,9 @@ func listQueryHistoryRequestFromPb(pb *listQueryHistoryRequestPb) (*ListQueryHis
 	if filterByField != nil {
 		st.FilterBy = filterByField
 	}
-	includeMetricsField := &pb.IncludeMetrics
-	if includeMetricsField != nil {
-		st.IncludeMetrics = *includeMetricsField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.IncludeMetrics = pb.IncludeMetrics
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13768,11 +12056,14 @@ func (st listQueryHistoryRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListQueryObjectsResponse struct {
+
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'results'
 	Results []ListQueryObjectsResponseQuery
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listQueryObjectsResponseToPb(st *ListQueryObjectsResponse) (*listQueryObjectsResponsePb, error) {
@@ -13780,10 +12071,7 @@ func listQueryObjectsResponseToPb(st *ListQueryObjectsResponse) (*listQueryObjec
 		return nil, nil
 	}
 	pb := &listQueryObjectsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var resultsPb []listQueryObjectsResponseQueryPb
 	for _, item := range st.Results {
@@ -13839,19 +12127,16 @@ func listQueryObjectsResponseFromPb(pb *listQueryObjectsResponsePb) (*ListQueryO
 		return nil, nil
 	}
 	st := &ListQueryObjectsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var resultsField []ListQueryObjectsResponseQuery
-	for _, item := range pb.Results {
-		itemField, err := listQueryObjectsResponseQueryFromPb(&item)
+	for _, itemPb := range pb.Results {
+		item, err := listQueryObjectsResponseQueryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resultsField = append(resultsField, *itemField)
+		if item != nil {
+			resultsField = append(resultsField, *item)
 		}
 	}
 	st.Results = resultsField
@@ -13870,41 +12155,57 @@ func (st listQueryObjectsResponsePb) MarshalJSON() ([]byte, error) {
 
 type ListQueryObjectsResponseQuery struct {
 	// Whether to apply a 1000 row limit to the query result.
+	// Wire name: 'apply_auto_limit'
 	ApplyAutoLimit bool
 	// Name of the catalog where this query will be executed.
+	// Wire name: 'catalog'
 	Catalog string
 	// Timestamp when this query was created.
+	// Wire name: 'create_time'
 	CreateTime string
 	// General description that conveys additional information about this query
 	// such as usage notes.
+	// Wire name: 'description'
 	Description string
 	// Display name of the query that appears in list views, widget headings,
 	// and on the query page.
+	// Wire name: 'display_name'
 	DisplayName string
 	// UUID identifying the query.
+	// Wire name: 'id'
 	Id string
 	// Username of the user who last saved changes to this query.
+	// Wire name: 'last_modifier_user_name'
 	LastModifierUserName string
 	// Indicates whether the query is trashed.
+	// Wire name: 'lifecycle_state'
 	LifecycleState LifecycleState
 	// Username of the user that owns the query.
+	// Wire name: 'owner_user_name'
 	OwnerUserName string
 	// List of query parameter definitions.
+	// Wire name: 'parameters'
 	Parameters []QueryParameter
 	// Text of the query to be run.
+	// Wire name: 'query_text'
 	QueryText string
 	// Sets the "Run as" role for the object.
+	// Wire name: 'run_as_mode'
 	RunAsMode RunAsMode
 	// Name of the schema where this query will be executed.
+	// Wire name: 'schema'
 	Schema string
 
+	// Wire name: 'tags'
 	Tags []string
 	// Timestamp when this query was last updated.
+	// Wire name: 'update_time'
 	UpdateTime string
 	// ID of the SQL warehouse attached to the query.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listQueryObjectsResponseQueryToPb(st *ListQueryObjectsResponseQuery) (*listQueryObjectsResponseQueryPb, error) {
@@ -13912,50 +12213,23 @@ func listQueryObjectsResponseQueryToPb(st *ListQueryObjectsResponseQuery) (*list
 		return nil, nil
 	}
 	pb := &listQueryObjectsResponseQueryPb{}
-	applyAutoLimitPb := &st.ApplyAutoLimit
-	if applyAutoLimitPb != nil {
-		pb.ApplyAutoLimit = *applyAutoLimitPb
-	}
+	pb.ApplyAutoLimit = st.ApplyAutoLimit
 
-	catalogPb := &st.Catalog
-	if catalogPb != nil {
-		pb.Catalog = *catalogPb
-	}
+	pb.Catalog = st.Catalog
 
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lastModifierUserNamePb := &st.LastModifierUserName
-	if lastModifierUserNamePb != nil {
-		pb.LastModifierUserName = *lastModifierUserNamePb
-	}
+	pb.LastModifierUserName = st.LastModifierUserName
 
-	lifecycleStatePb := &st.LifecycleState
-	if lifecycleStatePb != nil {
-		pb.LifecycleState = *lifecycleStatePb
-	}
+	pb.LifecycleState = st.LifecycleState
 
-	ownerUserNamePb := &st.OwnerUserName
-	if ownerUserNamePb != nil {
-		pb.OwnerUserName = *ownerUserNamePb
-	}
+	pb.OwnerUserName = st.OwnerUserName
 
 	var parametersPb []queryParameterPb
 	for _, item := range st.Parameters {
@@ -13969,39 +12243,17 @@ func listQueryObjectsResponseQueryToPb(st *ListQueryObjectsResponseQuery) (*list
 	}
 	pb.Parameters = parametersPb
 
-	queryTextPb := &st.QueryText
-	if queryTextPb != nil {
-		pb.QueryText = *queryTextPb
-	}
+	pb.QueryText = st.QueryText
 
-	runAsModePb := &st.RunAsMode
-	if runAsModePb != nil {
-		pb.RunAsMode = *runAsModePb
-	}
+	pb.RunAsMode = st.RunAsMode
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	var tagsPb []string
-	for _, item := range st.Tags {
-		itemPb := &item
-		if itemPb != nil {
-			tagsPb = append(tagsPb, *itemPb)
-		}
-	}
-	pb.Tags = tagsPb
+	pb.Tags = st.Tags
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14076,83 +12328,33 @@ func listQueryObjectsResponseQueryFromPb(pb *listQueryObjectsResponseQueryPb) (*
 		return nil, nil
 	}
 	st := &ListQueryObjectsResponseQuery{}
-	applyAutoLimitField := &pb.ApplyAutoLimit
-	if applyAutoLimitField != nil {
-		st.ApplyAutoLimit = *applyAutoLimitField
-	}
-	catalogField := &pb.Catalog
-	if catalogField != nil {
-		st.Catalog = *catalogField
-	}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastModifierUserNameField := &pb.LastModifierUserName
-	if lastModifierUserNameField != nil {
-		st.LastModifierUserName = *lastModifierUserNameField
-	}
-	lifecycleStateField := &pb.LifecycleState
-	if lifecycleStateField != nil {
-		st.LifecycleState = *lifecycleStateField
-	}
-	ownerUserNameField := &pb.OwnerUserName
-	if ownerUserNameField != nil {
-		st.OwnerUserName = *ownerUserNameField
-	}
+	st.ApplyAutoLimit = pb.ApplyAutoLimit
+	st.Catalog = pb.Catalog
+	st.CreateTime = pb.CreateTime
+	st.Description = pb.Description
+	st.DisplayName = pb.DisplayName
+	st.Id = pb.Id
+	st.LastModifierUserName = pb.LastModifierUserName
+	st.LifecycleState = pb.LifecycleState
+	st.OwnerUserName = pb.OwnerUserName
 
 	var parametersField []QueryParameter
-	for _, item := range pb.Parameters {
-		itemField, err := queryParameterFromPb(&item)
+	for _, itemPb := range pb.Parameters {
+		item, err := queryParameterFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			parametersField = append(parametersField, *itemField)
+		if item != nil {
+			parametersField = append(parametersField, *item)
 		}
 	}
 	st.Parameters = parametersField
-	queryTextField := &pb.QueryText
-	if queryTextField != nil {
-		st.QueryText = *queryTextField
-	}
-	runAsModeField := &pb.RunAsMode
-	if runAsModeField != nil {
-		st.RunAsMode = *runAsModeField
-	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-
-	var tagsField []string
-	for _, item := range pb.Tags {
-		itemField := &item
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
-		}
-	}
-	st.Tags = tagsField
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.QueryText = pb.QueryText
+	st.RunAsMode = pb.RunAsMode
+	st.Schema = pb.Schema
+	st.Tags = pb.Tags
+	st.UpdateTime = pb.UpdateTime
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14168,15 +12370,19 @@ func (st listQueryObjectsResponseQueryPb) MarshalJSON() ([]byte, error) {
 
 type ListResponse struct {
 	// The total number of dashboards.
+	// Wire name: 'count'
 	Count int
 	// The current page being displayed.
+	// Wire name: 'page'
 	Page int
 	// The number of dashboards per page.
+	// Wire name: 'page_size'
 	PageSize int
 	// List of dashboards returned.
+	// Wire name: 'results'
 	Results []Dashboard
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listResponseToPb(st *ListResponse) (*listResponsePb, error) {
@@ -14184,20 +12390,11 @@ func listResponseToPb(st *ListResponse) (*listResponsePb, error) {
 		return nil, nil
 	}
 	pb := &listResponsePb{}
-	countPb := &st.Count
-	if countPb != nil {
-		pb.Count = *countPb
-	}
+	pb.Count = st.Count
 
-	pagePb := &st.Page
-	if pagePb != nil {
-		pb.Page = *pagePb
-	}
+	pb.Page = st.Page
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
 	var resultsPb []dashboardPb
 	for _, item := range st.Results {
@@ -14258,27 +12455,18 @@ func listResponseFromPb(pb *listResponsePb) (*ListResponse, error) {
 		return nil, nil
 	}
 	st := &ListResponse{}
-	countField := &pb.Count
-	if countField != nil {
-		st.Count = *countField
-	}
-	pageField := &pb.Page
-	if pageField != nil {
-		st.Page = *pageField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
+	st.Count = pb.Count
+	st.Page = pb.Page
+	st.PageSize = pb.PageSize
 
 	var resultsField []Dashboard
-	for _, item := range pb.Results {
-		itemField, err := dashboardFromPb(&item)
+	for _, itemPb := range pb.Results {
+		item, err := dashboardFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resultsField = append(resultsField, *itemField)
+		if item != nil {
+			resultsField = append(resultsField, *item)
 		}
 	}
 	st.Results = resultsField
@@ -14297,13 +12485,17 @@ func (st listResponsePb) MarshalJSON() ([]byte, error) {
 
 // List visualizations on a query
 type ListVisualizationsForQueryRequest struct {
-	Id string
 
-	PageSize int
+	// Wire name: 'id'
+	Id string `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listVisualizationsForQueryRequestToPb(st *ListVisualizationsForQueryRequest) (*listVisualizationsForQueryRequestPb, error) {
@@ -14311,20 +12503,11 @@ func listVisualizationsForQueryRequestToPb(st *ListVisualizationsForQueryRequest
 		return nil, nil
 	}
 	pb := &listVisualizationsForQueryRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14370,18 +12553,9 @@ func listVisualizationsForQueryRequestFromPb(pb *listVisualizationsForQueryReque
 		return nil, nil
 	}
 	st := &ListVisualizationsForQueryRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.Id = pb.Id
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14396,11 +12570,14 @@ func (st listVisualizationsForQueryRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListVisualizationsForQueryResponse struct {
+
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'results'
 	Results []Visualization
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listVisualizationsForQueryResponseToPb(st *ListVisualizationsForQueryResponse) (*listVisualizationsForQueryResponsePb, error) {
@@ -14408,10 +12585,7 @@ func listVisualizationsForQueryResponseToPb(st *ListVisualizationsForQueryRespon
 		return nil, nil
 	}
 	pb := &listVisualizationsForQueryResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var resultsPb []visualizationPb
 	for _, item := range st.Results {
@@ -14467,19 +12641,16 @@ func listVisualizationsForQueryResponseFromPb(pb *listVisualizationsForQueryResp
 		return nil, nil
 	}
 	st := &ListVisualizationsForQueryResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var resultsField []Visualization
-	for _, item := range pb.Results {
-		itemField, err := visualizationFromPb(&item)
+	for _, itemPb := range pb.Results {
+		item, err := visualizationFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resultsField = append(resultsField, *itemField)
+		if item != nil {
+			resultsField = append(resultsField, *item)
 		}
 	}
 	st.Results = resultsField
@@ -14500,9 +12671,10 @@ func (st listVisualizationsForQueryResponsePb) MarshalJSON() ([]byte, error) {
 type ListWarehousesRequest struct {
 	// Service Principal which will be used to fetch the list of warehouses. If
 	// not specified, the user from the session header is used.
-	RunAsUserId int
+	// Wire name: 'run_as_user_id'
+	RunAsUserId int `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listWarehousesRequestToPb(st *ListWarehousesRequest) (*listWarehousesRequestPb, error) {
@@ -14510,10 +12682,7 @@ func listWarehousesRequestToPb(st *ListWarehousesRequest) (*listWarehousesReques
 		return nil, nil
 	}
 	pb := &listWarehousesRequestPb{}
-	runAsUserIdPb := &st.RunAsUserId
-	if runAsUserIdPb != nil {
-		pb.RunAsUserId = *runAsUserIdPb
-	}
+	pb.RunAsUserId = st.RunAsUserId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14557,10 +12726,7 @@ func listWarehousesRequestFromPb(pb *listWarehousesRequestPb) (*ListWarehousesRe
 		return nil, nil
 	}
 	st := &ListWarehousesRequest{}
-	runAsUserIdField := &pb.RunAsUserId
-	if runAsUserIdField != nil {
-		st.RunAsUserId = *runAsUserIdField
-	}
+	st.RunAsUserId = pb.RunAsUserId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14576,6 +12742,7 @@ func (st listWarehousesRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListWarehousesResponse struct {
 	// A list of warehouses and their configurations.
+	// Wire name: 'warehouses'
 	Warehouses []EndpointInfo
 }
 
@@ -14637,13 +12804,13 @@ func listWarehousesResponseFromPb(pb *listWarehousesResponsePb) (*ListWarehouses
 	st := &ListWarehousesResponse{}
 
 	var warehousesField []EndpointInfo
-	for _, item := range pb.Warehouses {
-		itemField, err := endpointInfoFromPb(&item)
+	for _, itemPb := range pb.Warehouses {
+		item, err := endpointInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			warehousesField = append(warehousesField, *itemField)
+		if item != nil {
+			warehousesField = append(warehousesField, *item)
 		}
 	}
 	st.Warehouses = warehousesField
@@ -14653,14 +12820,17 @@ func listWarehousesResponseFromPb(pb *listWarehousesResponsePb) (*ListWarehouses
 
 type MultiValuesOptions struct {
 	// Character that prefixes each selected parameter value.
+	// Wire name: 'prefix'
 	Prefix string
 	// Character that separates each selected parameter value. Defaults to a
 	// comma.
+	// Wire name: 'separator'
 	Separator string
 	// Character that suffixes each selected parameter value.
+	// Wire name: 'suffix'
 	Suffix string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func multiValuesOptionsToPb(st *MultiValuesOptions) (*multiValuesOptionsPb, error) {
@@ -14668,20 +12838,11 @@ func multiValuesOptionsToPb(st *MultiValuesOptions) (*multiValuesOptionsPb, erro
 		return nil, nil
 	}
 	pb := &multiValuesOptionsPb{}
-	prefixPb := &st.Prefix
-	if prefixPb != nil {
-		pb.Prefix = *prefixPb
-	}
+	pb.Prefix = st.Prefix
 
-	separatorPb := &st.Separator
-	if separatorPb != nil {
-		pb.Separator = *separatorPb
-	}
+	pb.Separator = st.Separator
 
-	suffixPb := &st.Suffix
-	if suffixPb != nil {
-		pb.Suffix = *suffixPb
-	}
+	pb.Suffix = st.Suffix
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14729,18 +12890,9 @@ func multiValuesOptionsFromPb(pb *multiValuesOptionsPb) (*MultiValuesOptions, er
 		return nil, nil
 	}
 	st := &MultiValuesOptions{}
-	prefixField := &pb.Prefix
-	if prefixField != nil {
-		st.Prefix = *prefixField
-	}
-	separatorField := &pb.Separator
-	if separatorField != nil {
-		st.Separator = *separatorField
-	}
-	suffixField := &pb.Suffix
-	if suffixField != nil {
-		st.Suffix = *suffixField
-	}
+	st.Prefix = pb.Prefix
+	st.Separator = pb.Separator
+	st.Suffix = pb.Suffix
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14755,9 +12907,11 @@ func (st multiValuesOptionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type NumericValue struct {
+
+	// Wire name: 'value'
 	Value float64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func numericValueToPb(st *NumericValue) (*numericValuePb, error) {
@@ -14765,10 +12919,7 @@ func numericValueToPb(st *NumericValue) (*numericValuePb, error) {
 		return nil, nil
 	}
 	pb := &numericValuePb{}
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14810,10 +12961,7 @@ func numericValueFromPb(pb *numericValuePb) (*NumericValue, error) {
 		return nil, nil
 	}
 	st := &NumericValue{}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14926,15 +13074,20 @@ func objectTypePluralFromPb(pb *objectTypePluralPb) (*ObjectTypePlural, error) {
 }
 
 type OdbcParams struct {
+
+	// Wire name: 'hostname'
 	Hostname string
 
+	// Wire name: 'path'
 	Path string
 
+	// Wire name: 'port'
 	Port int
 
+	// Wire name: 'protocol'
 	Protocol string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func odbcParamsToPb(st *OdbcParams) (*odbcParamsPb, error) {
@@ -14942,25 +13095,13 @@ func odbcParamsToPb(st *OdbcParams) (*odbcParamsPb, error) {
 		return nil, nil
 	}
 	pb := &odbcParamsPb{}
-	hostnamePb := &st.Hostname
-	if hostnamePb != nil {
-		pb.Hostname = *hostnamePb
-	}
+	pb.Hostname = st.Hostname
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	portPb := &st.Port
-	if portPb != nil {
-		pb.Port = *portPb
-	}
+	pb.Port = st.Port
 
-	protocolPb := &st.Protocol
-	if protocolPb != nil {
-		pb.Protocol = *protocolPb
-	}
+	pb.Protocol = st.Protocol
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15008,22 +13149,10 @@ func odbcParamsFromPb(pb *odbcParamsPb) (*OdbcParams, error) {
 		return nil, nil
 	}
 	st := &OdbcParams{}
-	hostnameField := &pb.Hostname
-	if hostnameField != nil {
-		st.Hostname = *hostnameField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	portField := &pb.Port
-	if portField != nil {
-		st.Port = *portField
-	}
-	protocolField := &pb.Protocol
-	if protocolField != nil {
-		st.Protocol = *protocolField
-	}
+	st.Hostname = pb.Hostname
+	st.Path = pb.Path
+	st.Port = pb.Port
+	st.Protocol = pb.Protocol
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15087,24 +13216,31 @@ func ownableObjectTypeFromPb(pb *ownableObjectTypePb) (*OwnableObjectType, error
 type Parameter struct {
 	// List of valid parameter values, newline delimited. Only applies for
 	// dropdown list parameters.
+	// Wire name: 'enumOptions'
 	EnumOptions string
 	// If specified, allows multiple values to be selected for this parameter.
 	// Only applies to dropdown list and query-based dropdown list parameters.
+	// Wire name: 'multiValuesOptions'
 	MultiValuesOptions *MultiValuesOptions
 	// The literal parameter marker that appears between double curly braces in
 	// the query text.
+	// Wire name: 'name'
 	Name string
 	// The UUID of the query that provides the parameter values. Only applies
 	// for query-based dropdown list parameters.
+	// Wire name: 'queryId'
 	QueryId string
 	// The text displayed in a parameter picking widget.
+	// Wire name: 'title'
 	Title string
 	// Parameters can have several different types.
+	// Wire name: 'type'
 	Type ParameterType
 	// The default value for this parameter.
+	// Wire name: 'value'
 	Value any
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func parameterToPb(st *Parameter) (*parameterPb, error) {
@@ -15112,10 +13248,7 @@ func parameterToPb(st *Parameter) (*parameterPb, error) {
 		return nil, nil
 	}
 	pb := &parameterPb{}
-	enumOptionsPb := &st.EnumOptions
-	if enumOptionsPb != nil {
-		pb.EnumOptions = *enumOptionsPb
-	}
+	pb.EnumOptions = st.EnumOptions
 
 	multiValuesOptionsPb, err := multiValuesOptionsToPb(st.MultiValuesOptions)
 	if err != nil {
@@ -15125,30 +13258,15 @@ func parameterToPb(st *Parameter) (*parameterPb, error) {
 		pb.MultiValuesOptions = multiValuesOptionsPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	titlePb := &st.Title
-	if titlePb != nil {
-		pb.Title = *titlePb
-	}
+	pb.Title = st.Title
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15207,10 +13325,7 @@ func parameterFromPb(pb *parameterPb) (*Parameter, error) {
 		return nil, nil
 	}
 	st := &Parameter{}
-	enumOptionsField := &pb.EnumOptions
-	if enumOptionsField != nil {
-		st.EnumOptions = *enumOptionsField
-	}
+	st.EnumOptions = pb.EnumOptions
 	multiValuesOptionsField, err := multiValuesOptionsFromPb(pb.MultiValuesOptions)
 	if err != nil {
 		return nil, err
@@ -15218,26 +13333,11 @@ func parameterFromPb(pb *parameterPb) (*Parameter, error) {
 	if multiValuesOptionsField != nil {
 		st.MultiValuesOptions = multiValuesOptionsField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-	titleField := &pb.Title
-	if titleField != nil {
-		st.Title = *titleField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Name = pb.Name
+	st.QueryId = pb.QueryId
+	st.Title = pb.Title
+	st.Type = pb.Type
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15411,43 +13511,60 @@ func plansStateFromPb(pb *plansStatePb) (*PlansState, error) {
 
 type Query struct {
 	// Whether to apply a 1000 row limit to the query result.
+	// Wire name: 'apply_auto_limit'
 	ApplyAutoLimit bool
 	// Name of the catalog where this query will be executed.
+	// Wire name: 'catalog'
 	Catalog string
 	// Timestamp when this query was created.
+	// Wire name: 'create_time'
 	CreateTime string
 	// General description that conveys additional information about this query
 	// such as usage notes.
+	// Wire name: 'description'
 	Description string
 	// Display name of the query that appears in list views, widget headings,
 	// and on the query page.
+	// Wire name: 'display_name'
 	DisplayName string
 	// UUID identifying the query.
+	// Wire name: 'id'
 	Id string
 	// Username of the user who last saved changes to this query.
+	// Wire name: 'last_modifier_user_name'
 	LastModifierUserName string
 	// Indicates whether the query is trashed.
+	// Wire name: 'lifecycle_state'
 	LifecycleState LifecycleState
 	// Username of the user that owns the query.
+	// Wire name: 'owner_user_name'
 	OwnerUserName string
 	// List of query parameter definitions.
+	// Wire name: 'parameters'
 	Parameters []QueryParameter
 	// Workspace path of the workspace folder containing the object.
+	// Wire name: 'parent_path'
 	ParentPath string
 	// Text of the query to be run.
+	// Wire name: 'query_text'
 	QueryText string
 	// Sets the "Run as" role for the object.
+	// Wire name: 'run_as_mode'
 	RunAsMode RunAsMode
 	// Name of the schema where this query will be executed.
+	// Wire name: 'schema'
 	Schema string
 
+	// Wire name: 'tags'
 	Tags []string
 	// Timestamp when this query was last updated.
+	// Wire name: 'update_time'
 	UpdateTime string
 	// ID of the SQL warehouse attached to the query.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryToPb(st *Query) (*queryPb, error) {
@@ -15455,50 +13572,23 @@ func queryToPb(st *Query) (*queryPb, error) {
 		return nil, nil
 	}
 	pb := &queryPb{}
-	applyAutoLimitPb := &st.ApplyAutoLimit
-	if applyAutoLimitPb != nil {
-		pb.ApplyAutoLimit = *applyAutoLimitPb
-	}
+	pb.ApplyAutoLimit = st.ApplyAutoLimit
 
-	catalogPb := &st.Catalog
-	if catalogPb != nil {
-		pb.Catalog = *catalogPb
-	}
+	pb.Catalog = st.Catalog
 
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lastModifierUserNamePb := &st.LastModifierUserName
-	if lastModifierUserNamePb != nil {
-		pb.LastModifierUserName = *lastModifierUserNamePb
-	}
+	pb.LastModifierUserName = st.LastModifierUserName
 
-	lifecycleStatePb := &st.LifecycleState
-	if lifecycleStatePb != nil {
-		pb.LifecycleState = *lifecycleStatePb
-	}
+	pb.LifecycleState = st.LifecycleState
 
-	ownerUserNamePb := &st.OwnerUserName
-	if ownerUserNamePb != nil {
-		pb.OwnerUserName = *ownerUserNamePb
-	}
+	pb.OwnerUserName = st.OwnerUserName
 
 	var parametersPb []queryParameterPb
 	for _, item := range st.Parameters {
@@ -15512,44 +13602,19 @@ func queryToPb(st *Query) (*queryPb, error) {
 	}
 	pb.Parameters = parametersPb
 
-	parentPathPb := &st.ParentPath
-	if parentPathPb != nil {
-		pb.ParentPath = *parentPathPb
-	}
+	pb.ParentPath = st.ParentPath
 
-	queryTextPb := &st.QueryText
-	if queryTextPb != nil {
-		pb.QueryText = *queryTextPb
-	}
+	pb.QueryText = st.QueryText
 
-	runAsModePb := &st.RunAsMode
-	if runAsModePb != nil {
-		pb.RunAsMode = *runAsModePb
-	}
+	pb.RunAsMode = st.RunAsMode
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	var tagsPb []string
-	for _, item := range st.Tags {
-		itemPb := &item
-		if itemPb != nil {
-			tagsPb = append(tagsPb, *itemPb)
-		}
-	}
-	pb.Tags = tagsPb
+	pb.Tags = st.Tags
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15626,87 +13691,34 @@ func queryFromPb(pb *queryPb) (*Query, error) {
 		return nil, nil
 	}
 	st := &Query{}
-	applyAutoLimitField := &pb.ApplyAutoLimit
-	if applyAutoLimitField != nil {
-		st.ApplyAutoLimit = *applyAutoLimitField
-	}
-	catalogField := &pb.Catalog
-	if catalogField != nil {
-		st.Catalog = *catalogField
-	}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastModifierUserNameField := &pb.LastModifierUserName
-	if lastModifierUserNameField != nil {
-		st.LastModifierUserName = *lastModifierUserNameField
-	}
-	lifecycleStateField := &pb.LifecycleState
-	if lifecycleStateField != nil {
-		st.LifecycleState = *lifecycleStateField
-	}
-	ownerUserNameField := &pb.OwnerUserName
-	if ownerUserNameField != nil {
-		st.OwnerUserName = *ownerUserNameField
-	}
+	st.ApplyAutoLimit = pb.ApplyAutoLimit
+	st.Catalog = pb.Catalog
+	st.CreateTime = pb.CreateTime
+	st.Description = pb.Description
+	st.DisplayName = pb.DisplayName
+	st.Id = pb.Id
+	st.LastModifierUserName = pb.LastModifierUserName
+	st.LifecycleState = pb.LifecycleState
+	st.OwnerUserName = pb.OwnerUserName
 
 	var parametersField []QueryParameter
-	for _, item := range pb.Parameters {
-		itemField, err := queryParameterFromPb(&item)
+	for _, itemPb := range pb.Parameters {
+		item, err := queryParameterFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			parametersField = append(parametersField, *itemField)
+		if item != nil {
+			parametersField = append(parametersField, *item)
 		}
 	}
 	st.Parameters = parametersField
-	parentPathField := &pb.ParentPath
-	if parentPathField != nil {
-		st.ParentPath = *parentPathField
-	}
-	queryTextField := &pb.QueryText
-	if queryTextField != nil {
-		st.QueryText = *queryTextField
-	}
-	runAsModeField := &pb.RunAsMode
-	if runAsModeField != nil {
-		st.RunAsMode = *runAsModeField
-	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-
-	var tagsField []string
-	for _, item := range pb.Tags {
-		itemField := &item
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
-		}
-	}
-	st.Tags = tagsField
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.ParentPath = pb.ParentPath
+	st.QueryText = pb.QueryText
+	st.RunAsMode = pb.RunAsMode
+	st.Schema = pb.Schema
+	st.Tags = pb.Tags
+	st.UpdateTime = pb.UpdateTime
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15722,13 +13734,16 @@ func (st queryPb) MarshalJSON() ([]byte, error) {
 
 type QueryBackedValue struct {
 	// If specified, allows multiple values to be selected for this parameter.
+	// Wire name: 'multi_values_options'
 	MultiValuesOptions *MultiValuesOptions
 	// UUID of the query that provides the parameter values.
+	// Wire name: 'query_id'
 	QueryId string
 	// List of selected query parameter values.
+	// Wire name: 'values'
 	Values []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryBackedValueToPb(st *QueryBackedValue) (*queryBackedValuePb, error) {
@@ -15744,19 +13759,9 @@ func queryBackedValueToPb(st *QueryBackedValue) (*queryBackedValuePb, error) {
 		pb.MultiValuesOptions = multiValuesOptionsPb
 	}
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	var valuesPb []string
-	for _, item := range st.Values {
-		itemPb := &item
-		if itemPb != nil {
-			valuesPb = append(valuesPb, *itemPb)
-		}
-	}
-	pb.Values = valuesPb
+	pb.Values = st.Values
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15810,19 +13815,8 @@ func queryBackedValueFromPb(pb *queryBackedValuePb) (*QueryBackedValue, error) {
 	if multiValuesOptionsField != nil {
 		st.MultiValuesOptions = multiValuesOptionsField
 	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-
-	var valuesField []string
-	for _, item := range pb.Values {
-		itemField := &item
-		if itemField != nil {
-			valuesField = append(valuesField, *itemField)
-		}
-	}
-	st.Values = valuesField
+	st.QueryId = pb.QueryId
+	st.Values = pb.Values
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15841,29 +13835,37 @@ type QueryEditContent struct {
 	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
+	// Wire name: 'data_source_id'
 	DataSourceId string
 	// General description that conveys additional information about this query
 	// such as usage notes.
+	// Wire name: 'description'
 	Description string
 	// The title of this query that appears in list views, widget headings, and
 	// on the query page.
+	// Wire name: 'name'
 	Name string
 	// Exclusively used for storing a list parameter definitions. A parameter is
 	// an object with `title`, `name`, `type`, and `value` properties. The
 	// `value` field here is the default value. It can be overridden at runtime.
+	// Wire name: 'options'
 	Options any
 	// The text of the query to be run.
+	// Wire name: 'query'
 	Query string
 
-	QueryId string
+	// Wire name: 'query_id'
+	QueryId string `tf:"-"`
 	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
 	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
 	// owner" behavior)
+	// Wire name: 'run_as_role'
 	RunAsRole RunAsRole
 
+	// Wire name: 'tags'
 	Tags []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryEditContentToPb(st *QueryEditContent) (*queryEditContentPb, error) {
@@ -15871,49 +13873,21 @@ func queryEditContentToPb(st *QueryEditContent) (*queryEditContentPb, error) {
 		return nil, nil
 	}
 	pb := &queryEditContentPb{}
-	dataSourceIdPb := &st.DataSourceId
-	if dataSourceIdPb != nil {
-		pb.DataSourceId = *dataSourceIdPb
-	}
+	pb.DataSourceId = st.DataSourceId
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	optionsPb := &st.Options
-	if optionsPb != nil {
-		pb.Options = *optionsPb
-	}
+	pb.Options = st.Options
 
-	queryPb := &st.Query
-	if queryPb != nil {
-		pb.Query = *queryPb
-	}
+	pb.Query = st.Query
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	runAsRolePb := &st.RunAsRole
-	if runAsRolePb != nil {
-		pb.RunAsRole = *runAsRolePb
-	}
+	pb.RunAsRole = st.RunAsRole
 
-	var tagsPb []string
-	for _, item := range st.Tags {
-		itemPb := &item
-		if itemPb != nil {
-			tagsPb = append(tagsPb, *itemPb)
-		}
-	}
-	pb.Tags = tagsPb
+	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15979,43 +13953,14 @@ func queryEditContentFromPb(pb *queryEditContentPb) (*QueryEditContent, error) {
 		return nil, nil
 	}
 	st := &QueryEditContent{}
-	dataSourceIdField := &pb.DataSourceId
-	if dataSourceIdField != nil {
-		st.DataSourceId = *dataSourceIdField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	optionsField := &pb.Options
-	if optionsField != nil {
-		st.Options = *optionsField
-	}
-	queryField := &pb.Query
-	if queryField != nil {
-		st.Query = *queryField
-	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-	runAsRoleField := &pb.RunAsRole
-	if runAsRoleField != nil {
-		st.RunAsRole = *runAsRoleField
-	}
-
-	var tagsField []string
-	for _, item := range pb.Tags {
-		itemField := &item
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
-		}
-	}
-	st.Tags = tagsField
+	st.DataSourceId = pb.DataSourceId
+	st.Description = pb.Description
+	st.Name = pb.Name
+	st.Options = pb.Options
+	st.Query = pb.Query
+	st.QueryId = pb.QueryId
+	st.RunAsRole = pb.RunAsRole
+	st.Tags = pb.Tags
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16032,14 +13977,19 @@ func (st queryEditContentPb) MarshalJSON() ([]byte, error) {
 type QueryFilter struct {
 	// A range filter for query submitted time. The time range must be <= 30
 	// days.
+	// Wire name: 'query_start_time_range'
 	QueryStartTimeRange *TimeRange
 	// A list of statement IDs.
+	// Wire name: 'statement_ids'
 	StatementIds []string
 
+	// Wire name: 'statuses'
 	Statuses []QueryStatus
 	// A list of user IDs who ran the queries.
+	// Wire name: 'user_ids'
 	UserIds []int64
 	// A list of warehouse IDs.
+	// Wire name: 'warehouse_ids'
 	WarehouseIds []string
 }
 
@@ -16056,41 +14006,13 @@ func queryFilterToPb(st *QueryFilter) (*queryFilterPb, error) {
 		pb.QueryStartTimeRange = queryStartTimeRangePb
 	}
 
-	var statementIdsPb []string
-	for _, item := range st.StatementIds {
-		itemPb := &item
-		if itemPb != nil {
-			statementIdsPb = append(statementIdsPb, *itemPb)
-		}
-	}
-	pb.StatementIds = statementIdsPb
+	pb.StatementIds = st.StatementIds
 
-	var statusesPb []QueryStatus
-	for _, item := range st.Statuses {
-		itemPb := &item
-		if itemPb != nil {
-			statusesPb = append(statusesPb, *itemPb)
-		}
-	}
-	pb.Statuses = statusesPb
+	pb.Statuses = st.Statuses
 
-	var userIdsPb []int64
-	for _, item := range st.UserIds {
-		itemPb := &item
-		if itemPb != nil {
-			userIdsPb = append(userIdsPb, *itemPb)
-		}
-	}
-	pb.UserIds = userIdsPb
+	pb.UserIds = st.UserIds
 
-	var warehouseIdsPb []string
-	for _, item := range st.WarehouseIds {
-		itemPb := &item
-		if itemPb != nil {
-			warehouseIdsPb = append(warehouseIdsPb, *itemPb)
-		}
-	}
-	pb.WarehouseIds = warehouseIdsPb
+	pb.WarehouseIds = st.WarehouseIds
 
 	return pb, nil
 }
@@ -16146,107 +14068,99 @@ func queryFilterFromPb(pb *queryFilterPb) (*QueryFilter, error) {
 	if queryStartTimeRangeField != nil {
 		st.QueryStartTimeRange = queryStartTimeRangeField
 	}
-
-	var statementIdsField []string
-	for _, item := range pb.StatementIds {
-		itemField := &item
-		if itemField != nil {
-			statementIdsField = append(statementIdsField, *itemField)
-		}
-	}
-	st.StatementIds = statementIdsField
-
-	var statusesField []QueryStatus
-	for _, item := range pb.Statuses {
-		itemField := &item
-		if itemField != nil {
-			statusesField = append(statusesField, *itemField)
-		}
-	}
-	st.Statuses = statusesField
-
-	var userIdsField []int64
-	for _, item := range pb.UserIds {
-		itemField := &item
-		if itemField != nil {
-			userIdsField = append(userIdsField, *itemField)
-		}
-	}
-	st.UserIds = userIdsField
-
-	var warehouseIdsField []string
-	for _, item := range pb.WarehouseIds {
-		itemField := &item
-		if itemField != nil {
-			warehouseIdsField = append(warehouseIdsField, *itemField)
-		}
-	}
-	st.WarehouseIds = warehouseIdsField
+	st.StatementIds = pb.StatementIds
+	st.Statuses = pb.Statuses
+	st.UserIds = pb.UserIds
+	st.WarehouseIds = pb.WarehouseIds
 
 	return st, nil
 }
 
 type QueryInfo struct {
 	// SQL Warehouse channel information at the time of query execution
+	// Wire name: 'channel_used'
 	ChannelUsed *ChannelInfo
 	// Client application that ran the statement. For example: Databricks SQL
 	// Editor, Tableau, and Power BI. This field is derived from information
 	// provided by client applications. While values are expected to remain
 	// static over time, this cannot be guaranteed.
+	// Wire name: 'client_application'
 	ClientApplication string
 	// Total execution time of the statement ( excluding result fetch time ).
+	// Wire name: 'duration'
 	Duration int64
 	// Alias for `warehouse_id`.
+	// Wire name: 'endpoint_id'
 	EndpointId string
 	// Message describing why the query could not complete.
+	// Wire name: 'error_message'
 	ErrorMessage string
 	// The ID of the user whose credentials were used to run the query.
+	// Wire name: 'executed_as_user_id'
 	ExecutedAsUserId int64
 	// The email address or username of the user whose credentials were used to
 	// run the query.
+	// Wire name: 'executed_as_user_name'
 	ExecutedAsUserName string
 	// The time execution of the query ended.
+	// Wire name: 'execution_end_time_ms'
 	ExecutionEndTimeMs int64
 	// Whether more updates for the query are expected.
+	// Wire name: 'is_final'
 	IsFinal bool
 	// A key that can be used to look up query details.
+	// Wire name: 'lookup_key'
 	LookupKey string
 	// Metrics about query execution.
+	// Wire name: 'metrics'
 	Metrics *QueryMetrics
 	// Whether plans exist for the execution, or the reason why they are missing
+	// Wire name: 'plans_state'
 	PlansState PlansState
 	// The time the query ended.
+	// Wire name: 'query_end_time_ms'
 	QueryEndTimeMs int64
 	// The query ID.
+	// Wire name: 'query_id'
 	QueryId string
 	// A struct that contains key-value pairs representing Databricks entities
 	// that were involved in the execution of this statement, such as jobs,
 	// notebooks, or dashboards. This field only records Databricks entities.
+	// Wire name: 'query_source'
 	QuerySource *ExternalQuerySource
 	// The time the query started.
+	// Wire name: 'query_start_time_ms'
 	QueryStartTimeMs int64
 	// The text of the query.
+	// Wire name: 'query_text'
 	QueryText string
 	// The number of results returned by the query.
+	// Wire name: 'rows_produced'
 	RowsProduced int64
 	// URL to the Spark UI query plan.
+	// Wire name: 'spark_ui_url'
 	SparkUiUrl string
 	// Type of statement for this query
+	// Wire name: 'statement_type'
 	StatementType QueryStatementType
 	// Query status with one the following values:
 	//
 	// - `QUEUED`: Query has been received and queued. - `RUNNING`: Query has
 	// started. - `CANCELED`: Query has been cancelled by the user. - `FAILED`:
 	// Query has failed. - `FINISHED`: Query has completed.
+	// Wire name: 'status'
 	Status QueryStatus
 	// The ID of the user who ran the query.
+	// Wire name: 'user_id'
 	UserId int64
 	// The email address or username of the user who ran the query.
+	// Wire name: 'user_name'
 	UserName string
 	// Warehouse ID.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryInfoToPb(st *QueryInfo) (*queryInfoPb, error) {
@@ -16262,50 +14176,23 @@ func queryInfoToPb(st *QueryInfo) (*queryInfoPb, error) {
 		pb.ChannelUsed = channelUsedPb
 	}
 
-	clientApplicationPb := &st.ClientApplication
-	if clientApplicationPb != nil {
-		pb.ClientApplication = *clientApplicationPb
-	}
+	pb.ClientApplication = st.ClientApplication
 
-	durationPb := &st.Duration
-	if durationPb != nil {
-		pb.Duration = *durationPb
-	}
+	pb.Duration = st.Duration
 
-	endpointIdPb := &st.EndpointId
-	if endpointIdPb != nil {
-		pb.EndpointId = *endpointIdPb
-	}
+	pb.EndpointId = st.EndpointId
 
-	errorMessagePb := &st.ErrorMessage
-	if errorMessagePb != nil {
-		pb.ErrorMessage = *errorMessagePb
-	}
+	pb.ErrorMessage = st.ErrorMessage
 
-	executedAsUserIdPb := &st.ExecutedAsUserId
-	if executedAsUserIdPb != nil {
-		pb.ExecutedAsUserId = *executedAsUserIdPb
-	}
+	pb.ExecutedAsUserId = st.ExecutedAsUserId
 
-	executedAsUserNamePb := &st.ExecutedAsUserName
-	if executedAsUserNamePb != nil {
-		pb.ExecutedAsUserName = *executedAsUserNamePb
-	}
+	pb.ExecutedAsUserName = st.ExecutedAsUserName
 
-	executionEndTimeMsPb := &st.ExecutionEndTimeMs
-	if executionEndTimeMsPb != nil {
-		pb.ExecutionEndTimeMs = *executionEndTimeMsPb
-	}
+	pb.ExecutionEndTimeMs = st.ExecutionEndTimeMs
 
-	isFinalPb := &st.IsFinal
-	if isFinalPb != nil {
-		pb.IsFinal = *isFinalPb
-	}
+	pb.IsFinal = st.IsFinal
 
-	lookupKeyPb := &st.LookupKey
-	if lookupKeyPb != nil {
-		pb.LookupKey = *lookupKeyPb
-	}
+	pb.LookupKey = st.LookupKey
 
 	metricsPb, err := queryMetricsToPb(st.Metrics)
 	if err != nil {
@@ -16315,20 +14202,11 @@ func queryInfoToPb(st *QueryInfo) (*queryInfoPb, error) {
 		pb.Metrics = metricsPb
 	}
 
-	plansStatePb := &st.PlansState
-	if plansStatePb != nil {
-		pb.PlansState = *plansStatePb
-	}
+	pb.PlansState = st.PlansState
 
-	queryEndTimeMsPb := &st.QueryEndTimeMs
-	if queryEndTimeMsPb != nil {
-		pb.QueryEndTimeMs = *queryEndTimeMsPb
-	}
+	pb.QueryEndTimeMs = st.QueryEndTimeMs
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
 	querySourcePb, err := externalQuerySourceToPb(st.QuerySource)
 	if err != nil {
@@ -16338,50 +14216,23 @@ func queryInfoToPb(st *QueryInfo) (*queryInfoPb, error) {
 		pb.QuerySource = querySourcePb
 	}
 
-	queryStartTimeMsPb := &st.QueryStartTimeMs
-	if queryStartTimeMsPb != nil {
-		pb.QueryStartTimeMs = *queryStartTimeMsPb
-	}
+	pb.QueryStartTimeMs = st.QueryStartTimeMs
 
-	queryTextPb := &st.QueryText
-	if queryTextPb != nil {
-		pb.QueryText = *queryTextPb
-	}
+	pb.QueryText = st.QueryText
 
-	rowsProducedPb := &st.RowsProduced
-	if rowsProducedPb != nil {
-		pb.RowsProduced = *rowsProducedPb
-	}
+	pb.RowsProduced = st.RowsProduced
 
-	sparkUiUrlPb := &st.SparkUiUrl
-	if sparkUiUrlPb != nil {
-		pb.SparkUiUrl = *sparkUiUrlPb
-	}
+	pb.SparkUiUrl = st.SparkUiUrl
 
-	statementTypePb := &st.StatementType
-	if statementTypePb != nil {
-		pb.StatementType = *statementTypePb
-	}
+	pb.StatementType = st.StatementType
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16487,42 +14338,15 @@ func queryInfoFromPb(pb *queryInfoPb) (*QueryInfo, error) {
 	if channelUsedField != nil {
 		st.ChannelUsed = channelUsedField
 	}
-	clientApplicationField := &pb.ClientApplication
-	if clientApplicationField != nil {
-		st.ClientApplication = *clientApplicationField
-	}
-	durationField := &pb.Duration
-	if durationField != nil {
-		st.Duration = *durationField
-	}
-	endpointIdField := &pb.EndpointId
-	if endpointIdField != nil {
-		st.EndpointId = *endpointIdField
-	}
-	errorMessageField := &pb.ErrorMessage
-	if errorMessageField != nil {
-		st.ErrorMessage = *errorMessageField
-	}
-	executedAsUserIdField := &pb.ExecutedAsUserId
-	if executedAsUserIdField != nil {
-		st.ExecutedAsUserId = *executedAsUserIdField
-	}
-	executedAsUserNameField := &pb.ExecutedAsUserName
-	if executedAsUserNameField != nil {
-		st.ExecutedAsUserName = *executedAsUserNameField
-	}
-	executionEndTimeMsField := &pb.ExecutionEndTimeMs
-	if executionEndTimeMsField != nil {
-		st.ExecutionEndTimeMs = *executionEndTimeMsField
-	}
-	isFinalField := &pb.IsFinal
-	if isFinalField != nil {
-		st.IsFinal = *isFinalField
-	}
-	lookupKeyField := &pb.LookupKey
-	if lookupKeyField != nil {
-		st.LookupKey = *lookupKeyField
-	}
+	st.ClientApplication = pb.ClientApplication
+	st.Duration = pb.Duration
+	st.EndpointId = pb.EndpointId
+	st.ErrorMessage = pb.ErrorMessage
+	st.ExecutedAsUserId = pb.ExecutedAsUserId
+	st.ExecutedAsUserName = pb.ExecutedAsUserName
+	st.ExecutionEndTimeMs = pb.ExecutionEndTimeMs
+	st.IsFinal = pb.IsFinal
+	st.LookupKey = pb.LookupKey
 	metricsField, err := queryMetricsFromPb(pb.Metrics)
 	if err != nil {
 		return nil, err
@@ -16530,18 +14354,9 @@ func queryInfoFromPb(pb *queryInfoPb) (*QueryInfo, error) {
 	if metricsField != nil {
 		st.Metrics = metricsField
 	}
-	plansStateField := &pb.PlansState
-	if plansStateField != nil {
-		st.PlansState = *plansStateField
-	}
-	queryEndTimeMsField := &pb.QueryEndTimeMs
-	if queryEndTimeMsField != nil {
-		st.QueryEndTimeMs = *queryEndTimeMsField
-	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
+	st.PlansState = pb.PlansState
+	st.QueryEndTimeMs = pb.QueryEndTimeMs
+	st.QueryId = pb.QueryId
 	querySourceField, err := externalQuerySourceFromPb(pb.QuerySource)
 	if err != nil {
 		return nil, err
@@ -16549,42 +14364,15 @@ func queryInfoFromPb(pb *queryInfoPb) (*QueryInfo, error) {
 	if querySourceField != nil {
 		st.QuerySource = querySourceField
 	}
-	queryStartTimeMsField := &pb.QueryStartTimeMs
-	if queryStartTimeMsField != nil {
-		st.QueryStartTimeMs = *queryStartTimeMsField
-	}
-	queryTextField := &pb.QueryText
-	if queryTextField != nil {
-		st.QueryText = *queryTextField
-	}
-	rowsProducedField := &pb.RowsProduced
-	if rowsProducedField != nil {
-		st.RowsProduced = *rowsProducedField
-	}
-	sparkUiUrlField := &pb.SparkUiUrl
-	if sparkUiUrlField != nil {
-		st.SparkUiUrl = *sparkUiUrlField
-	}
-	statementTypeField := &pb.StatementType
-	if statementTypeField != nil {
-		st.StatementType = *statementTypeField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.QueryStartTimeMs = pb.QueryStartTimeMs
+	st.QueryText = pb.QueryText
+	st.RowsProduced = pb.RowsProduced
+	st.SparkUiUrl = pb.SparkUiUrl
+	st.StatementType = pb.StatementType
+	st.Status = pb.Status
+	st.UserId = pb.UserId
+	st.UserName = pb.UserName
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16600,15 +14388,19 @@ func (st queryInfoPb) MarshalJSON() ([]byte, error) {
 
 type QueryList struct {
 	// The total number of queries.
+	// Wire name: 'count'
 	Count int
 	// The page number that is currently displayed.
+	// Wire name: 'page'
 	Page int
 	// The number of queries per page.
+	// Wire name: 'page_size'
 	PageSize int
 	// List of queries returned.
+	// Wire name: 'results'
 	Results []LegacyQuery
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryListToPb(st *QueryList) (*queryListPb, error) {
@@ -16616,20 +14408,11 @@ func queryListToPb(st *QueryList) (*queryListPb, error) {
 		return nil, nil
 	}
 	pb := &queryListPb{}
-	countPb := &st.Count
-	if countPb != nil {
-		pb.Count = *countPb
-	}
+	pb.Count = st.Count
 
-	pagePb := &st.Page
-	if pagePb != nil {
-		pb.Page = *pagePb
-	}
+	pb.Page = st.Page
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
 	var resultsPb []legacyQueryPb
 	for _, item := range st.Results {
@@ -16690,27 +14473,18 @@ func queryListFromPb(pb *queryListPb) (*QueryList, error) {
 		return nil, nil
 	}
 	st := &QueryList{}
-	countField := &pb.Count
-	if countField != nil {
-		st.Count = *countField
-	}
-	pageField := &pb.Page
-	if pageField != nil {
-		st.Page = *pageField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
+	st.Count = pb.Count
+	st.Page = pb.Page
+	st.PageSize = pb.PageSize
 
 	var resultsField []LegacyQuery
-	for _, item := range pb.Results {
-		itemField, err := legacyQueryFromPb(&item)
+	for _, itemPb := range pb.Results {
+		item, err := legacyQueryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resultsField = append(resultsField, *itemField)
+		if item != nil {
+			resultsField = append(resultsField, *item)
 		}
 	}
 	st.Results = resultsField
@@ -16731,63 +14505,85 @@ func (st queryListPb) MarshalJSON() ([]byte, error) {
 // Metrics come from the driver and are stored in the history service database.
 type QueryMetrics struct {
 	// Time spent loading metadata and optimizing the query, in milliseconds.
+	// Wire name: 'compilation_time_ms'
 	CompilationTimeMs int64
 	// Time spent executing the query, in milliseconds.
+	// Wire name: 'execution_time_ms'
 	ExecutionTimeMs int64
 	// Total amount of data sent over the network between executor nodes during
 	// shuffle, in bytes.
+	// Wire name: 'network_sent_bytes'
 	NetworkSentBytes int64
 	// Timestamp of when the query was enqueued waiting while the warehouse was
 	// at max load. This field is optional and will not appear if the query
 	// skipped the overloading queue.
+	// Wire name: 'overloading_queue_start_timestamp'
 	OverloadingQueueStartTimestamp int64
 	// Total execution time for all individual Photon query engine tasks in the
 	// query, in milliseconds.
+	// Wire name: 'photon_total_time_ms'
 	PhotonTotalTimeMs int64
 	// Timestamp of when the query was enqueued waiting for a cluster to be
 	// provisioned for the warehouse. This field is optional and will not appear
 	// if the query skipped the provisioning queue.
+	// Wire name: 'provisioning_queue_start_timestamp'
 	ProvisioningQueueStartTimestamp int64
 	// Total number of bytes in all tables not read due to pruning
+	// Wire name: 'pruned_bytes'
 	PrunedBytes int64
 	// Total number of files from all tables not read due to pruning
+	// Wire name: 'pruned_files_count'
 	PrunedFilesCount int64
 	// Timestamp of when the underlying compute started compilation of the
 	// query.
+	// Wire name: 'query_compilation_start_timestamp'
 	QueryCompilationStartTimestamp int64
 	// Total size of data read by the query, in bytes.
+	// Wire name: 'read_bytes'
 	ReadBytes int64
 	// Size of persistent data read from the cache, in bytes.
+	// Wire name: 'read_cache_bytes'
 	ReadCacheBytes int64
 	// Number of files read after pruning
+	// Wire name: 'read_files_count'
 	ReadFilesCount int64
 	// Number of partitions read after pruning.
+	// Wire name: 'read_partitions_count'
 	ReadPartitionsCount int64
 	// Size of persistent data read from cloud object storage on your cloud
 	// tenant, in bytes.
+	// Wire name: 'read_remote_bytes'
 	ReadRemoteBytes int64
 	// Time spent fetching the query results after the execution finished, in
 	// milliseconds.
+	// Wire name: 'result_fetch_time_ms'
 	ResultFetchTimeMs int64
 	// `true` if the query result was fetched from cache, `false` otherwise.
+	// Wire name: 'result_from_cache'
 	ResultFromCache bool
 	// Total number of rows returned by the query.
+	// Wire name: 'rows_produced_count'
 	RowsProducedCount int64
 	// Total number of rows read by the query.
+	// Wire name: 'rows_read_count'
 	RowsReadCount int64
 	// Size of data temporarily written to disk while executing the query, in
 	// bytes.
+	// Wire name: 'spill_to_disk_bytes'
 	SpillToDiskBytes int64
 	// Sum of execution time for all of the query’s tasks, in milliseconds.
+	// Wire name: 'task_total_time_ms'
 	TaskTotalTimeMs int64
 	// Total execution time of the query from the client’s point of view, in
 	// milliseconds.
+	// Wire name: 'total_time_ms'
 	TotalTimeMs int64
 	// Size pf persistent data written to cloud object storage in your cloud
 	// tenant, in bytes.
+	// Wire name: 'write_remote_bytes'
 	WriteRemoteBytes int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryMetricsToPb(st *QueryMetrics) (*queryMetricsPb, error) {
@@ -16795,115 +14591,49 @@ func queryMetricsToPb(st *QueryMetrics) (*queryMetricsPb, error) {
 		return nil, nil
 	}
 	pb := &queryMetricsPb{}
-	compilationTimeMsPb := &st.CompilationTimeMs
-	if compilationTimeMsPb != nil {
-		pb.CompilationTimeMs = *compilationTimeMsPb
-	}
+	pb.CompilationTimeMs = st.CompilationTimeMs
 
-	executionTimeMsPb := &st.ExecutionTimeMs
-	if executionTimeMsPb != nil {
-		pb.ExecutionTimeMs = *executionTimeMsPb
-	}
+	pb.ExecutionTimeMs = st.ExecutionTimeMs
 
-	networkSentBytesPb := &st.NetworkSentBytes
-	if networkSentBytesPb != nil {
-		pb.NetworkSentBytes = *networkSentBytesPb
-	}
+	pb.NetworkSentBytes = st.NetworkSentBytes
 
-	overloadingQueueStartTimestampPb := &st.OverloadingQueueStartTimestamp
-	if overloadingQueueStartTimestampPb != nil {
-		pb.OverloadingQueueStartTimestamp = *overloadingQueueStartTimestampPb
-	}
+	pb.OverloadingQueueStartTimestamp = st.OverloadingQueueStartTimestamp
 
-	photonTotalTimeMsPb := &st.PhotonTotalTimeMs
-	if photonTotalTimeMsPb != nil {
-		pb.PhotonTotalTimeMs = *photonTotalTimeMsPb
-	}
+	pb.PhotonTotalTimeMs = st.PhotonTotalTimeMs
 
-	provisioningQueueStartTimestampPb := &st.ProvisioningQueueStartTimestamp
-	if provisioningQueueStartTimestampPb != nil {
-		pb.ProvisioningQueueStartTimestamp = *provisioningQueueStartTimestampPb
-	}
+	pb.ProvisioningQueueStartTimestamp = st.ProvisioningQueueStartTimestamp
 
-	prunedBytesPb := &st.PrunedBytes
-	if prunedBytesPb != nil {
-		pb.PrunedBytes = *prunedBytesPb
-	}
+	pb.PrunedBytes = st.PrunedBytes
 
-	prunedFilesCountPb := &st.PrunedFilesCount
-	if prunedFilesCountPb != nil {
-		pb.PrunedFilesCount = *prunedFilesCountPb
-	}
+	pb.PrunedFilesCount = st.PrunedFilesCount
 
-	queryCompilationStartTimestampPb := &st.QueryCompilationStartTimestamp
-	if queryCompilationStartTimestampPb != nil {
-		pb.QueryCompilationStartTimestamp = *queryCompilationStartTimestampPb
-	}
+	pb.QueryCompilationStartTimestamp = st.QueryCompilationStartTimestamp
 
-	readBytesPb := &st.ReadBytes
-	if readBytesPb != nil {
-		pb.ReadBytes = *readBytesPb
-	}
+	pb.ReadBytes = st.ReadBytes
 
-	readCacheBytesPb := &st.ReadCacheBytes
-	if readCacheBytesPb != nil {
-		pb.ReadCacheBytes = *readCacheBytesPb
-	}
+	pb.ReadCacheBytes = st.ReadCacheBytes
 
-	readFilesCountPb := &st.ReadFilesCount
-	if readFilesCountPb != nil {
-		pb.ReadFilesCount = *readFilesCountPb
-	}
+	pb.ReadFilesCount = st.ReadFilesCount
 
-	readPartitionsCountPb := &st.ReadPartitionsCount
-	if readPartitionsCountPb != nil {
-		pb.ReadPartitionsCount = *readPartitionsCountPb
-	}
+	pb.ReadPartitionsCount = st.ReadPartitionsCount
 
-	readRemoteBytesPb := &st.ReadRemoteBytes
-	if readRemoteBytesPb != nil {
-		pb.ReadRemoteBytes = *readRemoteBytesPb
-	}
+	pb.ReadRemoteBytes = st.ReadRemoteBytes
 
-	resultFetchTimeMsPb := &st.ResultFetchTimeMs
-	if resultFetchTimeMsPb != nil {
-		pb.ResultFetchTimeMs = *resultFetchTimeMsPb
-	}
+	pb.ResultFetchTimeMs = st.ResultFetchTimeMs
 
-	resultFromCachePb := &st.ResultFromCache
-	if resultFromCachePb != nil {
-		pb.ResultFromCache = *resultFromCachePb
-	}
+	pb.ResultFromCache = st.ResultFromCache
 
-	rowsProducedCountPb := &st.RowsProducedCount
-	if rowsProducedCountPb != nil {
-		pb.RowsProducedCount = *rowsProducedCountPb
-	}
+	pb.RowsProducedCount = st.RowsProducedCount
 
-	rowsReadCountPb := &st.RowsReadCount
-	if rowsReadCountPb != nil {
-		pb.RowsReadCount = *rowsReadCountPb
-	}
+	pb.RowsReadCount = st.RowsReadCount
 
-	spillToDiskBytesPb := &st.SpillToDiskBytes
-	if spillToDiskBytesPb != nil {
-		pb.SpillToDiskBytes = *spillToDiskBytesPb
-	}
+	pb.SpillToDiskBytes = st.SpillToDiskBytes
 
-	taskTotalTimeMsPb := &st.TaskTotalTimeMs
-	if taskTotalTimeMsPb != nil {
-		pb.TaskTotalTimeMs = *taskTotalTimeMsPb
-	}
+	pb.TaskTotalTimeMs = st.TaskTotalTimeMs
 
-	totalTimeMsPb := &st.TotalTimeMs
-	if totalTimeMsPb != nil {
-		pb.TotalTimeMs = *totalTimeMsPb
-	}
+	pb.TotalTimeMs = st.TotalTimeMs
 
-	writeRemoteBytesPb := &st.WriteRemoteBytes
-	if writeRemoteBytesPb != nil {
-		pb.WriteRemoteBytes = *writeRemoteBytesPb
-	}
+	pb.WriteRemoteBytes = st.WriteRemoteBytes
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17000,94 +14730,28 @@ func queryMetricsFromPb(pb *queryMetricsPb) (*QueryMetrics, error) {
 		return nil, nil
 	}
 	st := &QueryMetrics{}
-	compilationTimeMsField := &pb.CompilationTimeMs
-	if compilationTimeMsField != nil {
-		st.CompilationTimeMs = *compilationTimeMsField
-	}
-	executionTimeMsField := &pb.ExecutionTimeMs
-	if executionTimeMsField != nil {
-		st.ExecutionTimeMs = *executionTimeMsField
-	}
-	networkSentBytesField := &pb.NetworkSentBytes
-	if networkSentBytesField != nil {
-		st.NetworkSentBytes = *networkSentBytesField
-	}
-	overloadingQueueStartTimestampField := &pb.OverloadingQueueStartTimestamp
-	if overloadingQueueStartTimestampField != nil {
-		st.OverloadingQueueStartTimestamp = *overloadingQueueStartTimestampField
-	}
-	photonTotalTimeMsField := &pb.PhotonTotalTimeMs
-	if photonTotalTimeMsField != nil {
-		st.PhotonTotalTimeMs = *photonTotalTimeMsField
-	}
-	provisioningQueueStartTimestampField := &pb.ProvisioningQueueStartTimestamp
-	if provisioningQueueStartTimestampField != nil {
-		st.ProvisioningQueueStartTimestamp = *provisioningQueueStartTimestampField
-	}
-	prunedBytesField := &pb.PrunedBytes
-	if prunedBytesField != nil {
-		st.PrunedBytes = *prunedBytesField
-	}
-	prunedFilesCountField := &pb.PrunedFilesCount
-	if prunedFilesCountField != nil {
-		st.PrunedFilesCount = *prunedFilesCountField
-	}
-	queryCompilationStartTimestampField := &pb.QueryCompilationStartTimestamp
-	if queryCompilationStartTimestampField != nil {
-		st.QueryCompilationStartTimestamp = *queryCompilationStartTimestampField
-	}
-	readBytesField := &pb.ReadBytes
-	if readBytesField != nil {
-		st.ReadBytes = *readBytesField
-	}
-	readCacheBytesField := &pb.ReadCacheBytes
-	if readCacheBytesField != nil {
-		st.ReadCacheBytes = *readCacheBytesField
-	}
-	readFilesCountField := &pb.ReadFilesCount
-	if readFilesCountField != nil {
-		st.ReadFilesCount = *readFilesCountField
-	}
-	readPartitionsCountField := &pb.ReadPartitionsCount
-	if readPartitionsCountField != nil {
-		st.ReadPartitionsCount = *readPartitionsCountField
-	}
-	readRemoteBytesField := &pb.ReadRemoteBytes
-	if readRemoteBytesField != nil {
-		st.ReadRemoteBytes = *readRemoteBytesField
-	}
-	resultFetchTimeMsField := &pb.ResultFetchTimeMs
-	if resultFetchTimeMsField != nil {
-		st.ResultFetchTimeMs = *resultFetchTimeMsField
-	}
-	resultFromCacheField := &pb.ResultFromCache
-	if resultFromCacheField != nil {
-		st.ResultFromCache = *resultFromCacheField
-	}
-	rowsProducedCountField := &pb.RowsProducedCount
-	if rowsProducedCountField != nil {
-		st.RowsProducedCount = *rowsProducedCountField
-	}
-	rowsReadCountField := &pb.RowsReadCount
-	if rowsReadCountField != nil {
-		st.RowsReadCount = *rowsReadCountField
-	}
-	spillToDiskBytesField := &pb.SpillToDiskBytes
-	if spillToDiskBytesField != nil {
-		st.SpillToDiskBytes = *spillToDiskBytesField
-	}
-	taskTotalTimeMsField := &pb.TaskTotalTimeMs
-	if taskTotalTimeMsField != nil {
-		st.TaskTotalTimeMs = *taskTotalTimeMsField
-	}
-	totalTimeMsField := &pb.TotalTimeMs
-	if totalTimeMsField != nil {
-		st.TotalTimeMs = *totalTimeMsField
-	}
-	writeRemoteBytesField := &pb.WriteRemoteBytes
-	if writeRemoteBytesField != nil {
-		st.WriteRemoteBytes = *writeRemoteBytesField
-	}
+	st.CompilationTimeMs = pb.CompilationTimeMs
+	st.ExecutionTimeMs = pb.ExecutionTimeMs
+	st.NetworkSentBytes = pb.NetworkSentBytes
+	st.OverloadingQueueStartTimestamp = pb.OverloadingQueueStartTimestamp
+	st.PhotonTotalTimeMs = pb.PhotonTotalTimeMs
+	st.ProvisioningQueueStartTimestamp = pb.ProvisioningQueueStartTimestamp
+	st.PrunedBytes = pb.PrunedBytes
+	st.PrunedFilesCount = pb.PrunedFilesCount
+	st.QueryCompilationStartTimestamp = pb.QueryCompilationStartTimestamp
+	st.ReadBytes = pb.ReadBytes
+	st.ReadCacheBytes = pb.ReadCacheBytes
+	st.ReadFilesCount = pb.ReadFilesCount
+	st.ReadPartitionsCount = pb.ReadPartitionsCount
+	st.ReadRemoteBytes = pb.ReadRemoteBytes
+	st.ResultFetchTimeMs = pb.ResultFetchTimeMs
+	st.ResultFromCache = pb.ResultFromCache
+	st.RowsProducedCount = pb.RowsProducedCount
+	st.RowsReadCount = pb.RowsReadCount
+	st.SpillToDiskBytes = pb.SpillToDiskBytes
+	st.TaskTotalTimeMs = pb.TaskTotalTimeMs
+	st.TotalTimeMs = pb.TotalTimeMs
+	st.WriteRemoteBytes = pb.WriteRemoteBytes
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17103,17 +14767,21 @@ func (st queryMetricsPb) MarshalJSON() ([]byte, error) {
 
 type QueryOptions struct {
 	// The name of the catalog to execute this query in.
+	// Wire name: 'catalog'
 	Catalog string
 	// The timestamp when this query was moved to trash. Only present when the
 	// `is_archived` property is `true`. Trashed items are deleted after thirty
 	// days.
+	// Wire name: 'moved_to_trash_at'
 	MovedToTrashAt string
 
+	// Wire name: 'parameters'
 	Parameters []Parameter
 	// The name of the schema to execute this query in.
+	// Wire name: 'schema'
 	Schema string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryOptionsToPb(st *QueryOptions) (*queryOptionsPb, error) {
@@ -17121,15 +14789,9 @@ func queryOptionsToPb(st *QueryOptions) (*queryOptionsPb, error) {
 		return nil, nil
 	}
 	pb := &queryOptionsPb{}
-	catalogPb := &st.Catalog
-	if catalogPb != nil {
-		pb.Catalog = *catalogPb
-	}
+	pb.Catalog = st.Catalog
 
-	movedToTrashAtPb := &st.MovedToTrashAt
-	if movedToTrashAtPb != nil {
-		pb.MovedToTrashAt = *movedToTrashAtPb
-	}
+	pb.MovedToTrashAt = st.MovedToTrashAt
 
 	var parametersPb []parameterPb
 	for _, item := range st.Parameters {
@@ -17143,10 +14805,7 @@ func queryOptionsToPb(st *QueryOptions) (*queryOptionsPb, error) {
 	}
 	pb.Parameters = parametersPb
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17197,30 +14856,21 @@ func queryOptionsFromPb(pb *queryOptionsPb) (*QueryOptions, error) {
 		return nil, nil
 	}
 	st := &QueryOptions{}
-	catalogField := &pb.Catalog
-	if catalogField != nil {
-		st.Catalog = *catalogField
-	}
-	movedToTrashAtField := &pb.MovedToTrashAt
-	if movedToTrashAtField != nil {
-		st.MovedToTrashAt = *movedToTrashAtField
-	}
+	st.Catalog = pb.Catalog
+	st.MovedToTrashAt = pb.MovedToTrashAt
 
 	var parametersField []Parameter
-	for _, item := range pb.Parameters {
-		itemField, err := parameterFromPb(&item)
+	for _, itemPb := range pb.Parameters {
+		item, err := parameterFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			parametersField = append(parametersField, *itemField)
+		if item != nil {
+			parametersField = append(parametersField, *item)
 		}
 	}
 	st.Parameters = parametersField
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
+	st.Schema = pb.Schema
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17237,25 +14887,33 @@ func (st queryOptionsPb) MarshalJSON() ([]byte, error) {
 type QueryParameter struct {
 	// Date-range query parameter value. Can only specify one of
 	// `dynamic_date_range_value` or `date_range_value`.
+	// Wire name: 'date_range_value'
 	DateRangeValue *DateRangeValue
 	// Date query parameter value. Can only specify one of `dynamic_date_value`
 	// or `date_value`.
+	// Wire name: 'date_value'
 	DateValue *DateValue
 	// Dropdown query parameter value.
+	// Wire name: 'enum_value'
 	EnumValue *EnumValue
 	// Literal parameter marker that appears between double curly braces in the
 	// query text.
+	// Wire name: 'name'
 	Name string
 	// Numeric query parameter value.
+	// Wire name: 'numeric_value'
 	NumericValue *NumericValue
 	// Query-based dropdown query parameter value.
+	// Wire name: 'query_backed_value'
 	QueryBackedValue *QueryBackedValue
 	// Text query parameter value.
+	// Wire name: 'text_value'
 	TextValue *TextValue
 	// Text displayed in the user-facing parameter widget in the UI.
+	// Wire name: 'title'
 	Title string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryParameterToPb(st *QueryParameter) (*queryParameterPb, error) {
@@ -17287,10 +14945,7 @@ func queryParameterToPb(st *QueryParameter) (*queryParameterPb, error) {
 		pb.EnumValue = enumValuePb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	numericValuePb, err := numericValueToPb(st.NumericValue)
 	if err != nil {
@@ -17316,10 +14971,7 @@ func queryParameterToPb(st *QueryParameter) (*queryParameterPb, error) {
 		pb.TextValue = textValuePb
 	}
 
-	titlePb := &st.Title
-	if titlePb != nil {
-		pb.Title = *titlePb
-	}
+	pb.Title = st.Title
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17400,10 +15052,7 @@ func queryParameterFromPb(pb *queryParameterPb) (*QueryParameter, error) {
 	if enumValueField != nil {
 		st.EnumValue = enumValueField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 	numericValueField, err := numericValueFromPb(pb.NumericValue)
 	if err != nil {
 		return nil, err
@@ -17425,10 +15074,7 @@ func queryParameterFromPb(pb *queryParameterPb) (*QueryParameter, error) {
 	if textValueField != nil {
 		st.TextValue = textValueField
 	}
-	titleField := &pb.Title
-	if titleField != nil {
-		st.Title = *titleField
-	}
+	st.Title = pb.Title
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17447,29 +15093,37 @@ type QueryPostContent struct {
 	// is distinct from the warehouse ID. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
+	// Wire name: 'data_source_id'
 	DataSourceId string
 	// General description that conveys additional information about this query
 	// such as usage notes.
+	// Wire name: 'description'
 	Description string
 	// The title of this query that appears in list views, widget headings, and
 	// on the query page.
+	// Wire name: 'name'
 	Name string
 	// Exclusively used for storing a list parameter definitions. A parameter is
 	// an object with `title`, `name`, `type`, and `value` properties. The
 	// `value` field here is the default value. It can be overridden at runtime.
+	// Wire name: 'options'
 	Options any
 	// The identifier of the workspace folder containing the object.
+	// Wire name: 'parent'
 	Parent string
 	// The text of the query to be run.
+	// Wire name: 'query'
 	Query string
 	// Sets the **Run as** role for the object. Must be set to one of `"viewer"`
 	// (signifying "run as viewer" behavior) or `"owner"` (signifying "run as
 	// owner" behavior)
+	// Wire name: 'run_as_role'
 	RunAsRole RunAsRole
 
+	// Wire name: 'tags'
 	Tags []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryPostContentToPb(st *QueryPostContent) (*queryPostContentPb, error) {
@@ -17477,49 +15131,21 @@ func queryPostContentToPb(st *QueryPostContent) (*queryPostContentPb, error) {
 		return nil, nil
 	}
 	pb := &queryPostContentPb{}
-	dataSourceIdPb := &st.DataSourceId
-	if dataSourceIdPb != nil {
-		pb.DataSourceId = *dataSourceIdPb
-	}
+	pb.DataSourceId = st.DataSourceId
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	optionsPb := &st.Options
-	if optionsPb != nil {
-		pb.Options = *optionsPb
-	}
+	pb.Options = st.Options
 
-	parentPb := &st.Parent
-	if parentPb != nil {
-		pb.Parent = *parentPb
-	}
+	pb.Parent = st.Parent
 
-	queryPb := &st.Query
-	if queryPb != nil {
-		pb.Query = *queryPb
-	}
+	pb.Query = st.Query
 
-	runAsRolePb := &st.RunAsRole
-	if runAsRolePb != nil {
-		pb.RunAsRole = *runAsRolePb
-	}
+	pb.RunAsRole = st.RunAsRole
 
-	var tagsPb []string
-	for _, item := range st.Tags {
-		itemPb := &item
-		if itemPb != nil {
-			tagsPb = append(tagsPb, *itemPb)
-		}
-	}
-	pb.Tags = tagsPb
+	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17585,43 +15211,14 @@ func queryPostContentFromPb(pb *queryPostContentPb) (*QueryPostContent, error) {
 		return nil, nil
 	}
 	st := &QueryPostContent{}
-	dataSourceIdField := &pb.DataSourceId
-	if dataSourceIdField != nil {
-		st.DataSourceId = *dataSourceIdField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	optionsField := &pb.Options
-	if optionsField != nil {
-		st.Options = *optionsField
-	}
-	parentField := &pb.Parent
-	if parentField != nil {
-		st.Parent = *parentField
-	}
-	queryField := &pb.Query
-	if queryField != nil {
-		st.Query = *queryField
-	}
-	runAsRoleField := &pb.RunAsRole
-	if runAsRoleField != nil {
-		st.RunAsRole = *runAsRoleField
-	}
-
-	var tagsField []string
-	for _, item := range pb.Tags {
-		itemField := &item
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
-		}
-	}
-	st.Tags = tagsField
+	st.DataSourceId = pb.DataSourceId
+	st.Description = pb.Description
+	st.Name = pb.Name
+	st.Options = pb.Options
+	st.Parent = pb.Parent
+	st.Query = pb.Query
+	st.RunAsRole = pb.RunAsRole
+	st.Tags = pb.Tags
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17778,8 +15375,10 @@ func queryStatusFromPb(pb *queryStatusPb) (*QueryStatus, error) {
 
 type RepeatedEndpointConfPairs struct {
 	// Deprecated: Use configuration_pairs
+	// Wire name: 'config_pair'
 	ConfigPair []EndpointConfPair
 
+	// Wire name: 'configuration_pairs'
 	ConfigurationPairs []EndpointConfPair
 }
 
@@ -17855,25 +15454,25 @@ func repeatedEndpointConfPairsFromPb(pb *repeatedEndpointConfPairsPb) (*Repeated
 	st := &RepeatedEndpointConfPairs{}
 
 	var configPairField []EndpointConfPair
-	for _, item := range pb.ConfigPair {
-		itemField, err := endpointConfPairFromPb(&item)
+	for _, itemPb := range pb.ConfigPair {
+		item, err := endpointConfPairFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			configPairField = append(configPairField, *itemField)
+		if item != nil {
+			configPairField = append(configPairField, *item)
 		}
 	}
 	st.ConfigPair = configPairField
 
 	var configurationPairsField []EndpointConfPair
-	for _, item := range pb.ConfigurationPairs {
-		itemField, err := endpointConfPairFromPb(&item)
+	for _, itemPb := range pb.ConfigurationPairs {
+		item, err := endpointConfPairFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			configurationPairsField = append(configurationPairsField, *itemField)
+		if item != nil {
+			configurationPairsField = append(configurationPairsField, *item)
 		}
 	}
 	st.ConfigurationPairs = configurationPairsField
@@ -17883,7 +15482,9 @@ func repeatedEndpointConfPairsFromPb(pb *repeatedEndpointConfPairsPb) (*Repeated
 
 // Restore a dashboard
 type RestoreDashboardRequest struct {
-	DashboardId string
+
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 }
 
 func restoreDashboardRequestToPb(st *RestoreDashboardRequest) (*restoreDashboardRequestPb, error) {
@@ -17891,10 +15492,7 @@ func restoreDashboardRequestToPb(st *RestoreDashboardRequest) (*restoreDashboard
 		return nil, nil
 	}
 	pb := &restoreDashboardRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	return pb, nil
 }
@@ -17933,17 +15531,16 @@ func restoreDashboardRequestFromPb(pb *restoreDashboardRequestPb) (*RestoreDashb
 		return nil, nil
 	}
 	st := &RestoreDashboardRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 
 	return st, nil
 }
 
 // Restore a query
 type RestoreQueriesLegacyRequest struct {
-	QueryId string
+
+	// Wire name: 'query_id'
+	QueryId string `tf:"-"`
 }
 
 func restoreQueriesLegacyRequestToPb(st *RestoreQueriesLegacyRequest) (*restoreQueriesLegacyRequestPb, error) {
@@ -17951,10 +15548,7 @@ func restoreQueriesLegacyRequestToPb(st *RestoreQueriesLegacyRequest) (*restoreQ
 		return nil, nil
 	}
 	pb := &restoreQueriesLegacyRequestPb{}
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
 	return pb, nil
 }
@@ -17993,10 +15587,7 @@ func restoreQueriesLegacyRequestFromPb(pb *restoreQueriesLegacyRequestPb) (*Rest
 		return nil, nil
 	}
 	st := &RestoreQueriesLegacyRequest{}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
+	st.QueryId = pb.QueryId
 
 	return st, nil
 }
@@ -18053,30 +15644,38 @@ func restoreResponseFromPb(pb *restoreResponsePb) (*RestoreResponse, error) {
 type ResultData struct {
 	// The number of bytes in the result chunk. This field is not available when
 	// using `INLINE` disposition.
+	// Wire name: 'byte_count'
 	ByteCount int64
 	// The position within the sequence of result set chunks.
+	// Wire name: 'chunk_index'
 	ChunkIndex int
 	// The `JSON_ARRAY` format is an array of arrays of values, where each
 	// non-null value is formatted as a string. Null values are encoded as JSON
 	// `null`.
+	// Wire name: 'data_array'
 	DataArray [][]string
 
+	// Wire name: 'external_links'
 	ExternalLinks []ExternalLink
 	// When fetching, provides the `chunk_index` for the _next_ chunk. If
 	// absent, indicates there are no more chunks. The next chunk can be fetched
 	// with a :method:statementexecution/getStatementResultChunkN request.
+	// Wire name: 'next_chunk_index'
 	NextChunkIndex int
 	// When fetching, provides a link to fetch the _next_ chunk. If absent,
 	// indicates there are no more chunks. This link is an absolute `path` to be
 	// joined with your `$DATABRICKS_HOST`, and should be treated as an opaque
 	// link. This is an alternative to using `next_chunk_index`.
+	// Wire name: 'next_chunk_internal_link'
 	NextChunkInternalLink string
 	// The number of rows within the result chunk.
+	// Wire name: 'row_count'
 	RowCount int64
 	// The starting row offset within the result set.
+	// Wire name: 'row_offset'
 	RowOffset int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func resultDataToPb(st *ResultData) (*resultDataPb, error) {
@@ -18084,24 +15683,11 @@ func resultDataToPb(st *ResultData) (*resultDataPb, error) {
 		return nil, nil
 	}
 	pb := &resultDataPb{}
-	byteCountPb := &st.ByteCount
-	if byteCountPb != nil {
-		pb.ByteCount = *byteCountPb
-	}
+	pb.ByteCount = st.ByteCount
 
-	chunkIndexPb := &st.ChunkIndex
-	if chunkIndexPb != nil {
-		pb.ChunkIndex = *chunkIndexPb
-	}
+	pb.ChunkIndex = st.ChunkIndex
 
-	var dataArrayPb [][]string
-	for _, item := range st.DataArray {
-		itemPb := &item
-		if itemPb != nil {
-			dataArrayPb = append(dataArrayPb, *itemPb)
-		}
-	}
-	pb.DataArray = dataArrayPb
+	pb.DataArray = st.DataArray
 
 	var externalLinksPb []externalLinkPb
 	for _, item := range st.ExternalLinks {
@@ -18115,25 +15701,13 @@ func resultDataToPb(st *ResultData) (*resultDataPb, error) {
 	}
 	pb.ExternalLinks = externalLinksPb
 
-	nextChunkIndexPb := &st.NextChunkIndex
-	if nextChunkIndexPb != nil {
-		pb.NextChunkIndex = *nextChunkIndexPb
-	}
+	pb.NextChunkIndex = st.NextChunkIndex
 
-	nextChunkInternalLinkPb := &st.NextChunkInternalLink
-	if nextChunkInternalLinkPb != nil {
-		pb.NextChunkInternalLink = *nextChunkInternalLinkPb
-	}
+	pb.NextChunkInternalLink = st.NextChunkInternalLink
 
-	rowCountPb := &st.RowCount
-	if rowCountPb != nil {
-		pb.RowCount = *rowCountPb
-	}
+	pb.RowCount = st.RowCount
 
-	rowOffsetPb := &st.RowOffset
-	if rowOffsetPb != nil {
-		pb.RowOffset = *rowOffsetPb
-	}
+	pb.RowOffset = st.RowOffset
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18198,51 +15772,25 @@ func resultDataFromPb(pb *resultDataPb) (*ResultData, error) {
 		return nil, nil
 	}
 	st := &ResultData{}
-	byteCountField := &pb.ByteCount
-	if byteCountField != nil {
-		st.ByteCount = *byteCountField
-	}
-	chunkIndexField := &pb.ChunkIndex
-	if chunkIndexField != nil {
-		st.ChunkIndex = *chunkIndexField
-	}
-
-	var dataArrayField [][]string
-	for _, item := range pb.DataArray {
-		itemField := &item
-		if itemField != nil {
-			dataArrayField = append(dataArrayField, *itemField)
-		}
-	}
-	st.DataArray = dataArrayField
+	st.ByteCount = pb.ByteCount
+	st.ChunkIndex = pb.ChunkIndex
+	st.DataArray = pb.DataArray
 
 	var externalLinksField []ExternalLink
-	for _, item := range pb.ExternalLinks {
-		itemField, err := externalLinkFromPb(&item)
+	for _, itemPb := range pb.ExternalLinks {
+		item, err := externalLinkFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			externalLinksField = append(externalLinksField, *itemField)
+		if item != nil {
+			externalLinksField = append(externalLinksField, *item)
 		}
 	}
 	st.ExternalLinks = externalLinksField
-	nextChunkIndexField := &pb.NextChunkIndex
-	if nextChunkIndexField != nil {
-		st.NextChunkIndex = *nextChunkIndexField
-	}
-	nextChunkInternalLinkField := &pb.NextChunkInternalLink
-	if nextChunkInternalLinkField != nil {
-		st.NextChunkInternalLink = *nextChunkInternalLinkField
-	}
-	rowCountField := &pb.RowCount
-	if rowCountField != nil {
-		st.RowCount = *rowCountField
-	}
-	rowOffsetField := &pb.RowOffset
-	if rowOffsetField != nil {
-		st.RowOffset = *rowOffsetField
-	}
+	st.NextChunkIndex = pb.NextChunkIndex
+	st.NextChunkInternalLink = pb.NextChunkInternalLink
+	st.RowCount = pb.RowCount
+	st.RowOffset = pb.RowOffset
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -18259,23 +15807,30 @@ func (st resultDataPb) MarshalJSON() ([]byte, error) {
 // The result manifest provides schema and metadata for the result set.
 type ResultManifest struct {
 	// Array of result set chunk metadata.
+	// Wire name: 'chunks'
 	Chunks []BaseChunkInfo
 
+	// Wire name: 'format'
 	Format Format
 	// The schema is an ordered list of column descriptions.
+	// Wire name: 'schema'
 	Schema *ResultSchema
 	// The total number of bytes in the result set. This field is not available
 	// when using `INLINE` disposition.
+	// Wire name: 'total_byte_count'
 	TotalByteCount int64
 	// The total number of chunks that the result set has been divided into.
+	// Wire name: 'total_chunk_count'
 	TotalChunkCount int
 	// The total number of rows in the result set.
+	// Wire name: 'total_row_count'
 	TotalRowCount int64
 	// Indicates whether the result is truncated due to `row_limit` or
 	// `byte_limit`.
+	// Wire name: 'truncated'
 	Truncated bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func resultManifestToPb(st *ResultManifest) (*resultManifestPb, error) {
@@ -18296,10 +15851,7 @@ func resultManifestToPb(st *ResultManifest) (*resultManifestPb, error) {
 	}
 	pb.Chunks = chunksPb
 
-	formatPb := &st.Format
-	if formatPb != nil {
-		pb.Format = *formatPb
-	}
+	pb.Format = st.Format
 
 	schemaPb, err := resultSchemaToPb(st.Schema)
 	if err != nil {
@@ -18309,25 +15861,13 @@ func resultManifestToPb(st *ResultManifest) (*resultManifestPb, error) {
 		pb.Schema = schemaPb
 	}
 
-	totalByteCountPb := &st.TotalByteCount
-	if totalByteCountPb != nil {
-		pb.TotalByteCount = *totalByteCountPb
-	}
+	pb.TotalByteCount = st.TotalByteCount
 
-	totalChunkCountPb := &st.TotalChunkCount
-	if totalChunkCountPb != nil {
-		pb.TotalChunkCount = *totalChunkCountPb
-	}
+	pb.TotalChunkCount = st.TotalChunkCount
 
-	totalRowCountPb := &st.TotalRowCount
-	if totalRowCountPb != nil {
-		pb.TotalRowCount = *totalRowCountPb
-	}
+	pb.TotalRowCount = st.TotalRowCount
 
-	truncatedPb := &st.Truncated
-	if truncatedPb != nil {
-		pb.Truncated = *truncatedPb
-	}
+	pb.Truncated = st.Truncated
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18386,20 +15926,17 @@ func resultManifestFromPb(pb *resultManifestPb) (*ResultManifest, error) {
 	st := &ResultManifest{}
 
 	var chunksField []BaseChunkInfo
-	for _, item := range pb.Chunks {
-		itemField, err := baseChunkInfoFromPb(&item)
+	for _, itemPb := range pb.Chunks {
+		item, err := baseChunkInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			chunksField = append(chunksField, *itemField)
+		if item != nil {
+			chunksField = append(chunksField, *item)
 		}
 	}
 	st.Chunks = chunksField
-	formatField := &pb.Format
-	if formatField != nil {
-		st.Format = *formatField
-	}
+	st.Format = pb.Format
 	schemaField, err := resultSchemaFromPb(pb.Schema)
 	if err != nil {
 		return nil, err
@@ -18407,22 +15944,10 @@ func resultManifestFromPb(pb *resultManifestPb) (*ResultManifest, error) {
 	if schemaField != nil {
 		st.Schema = schemaField
 	}
-	totalByteCountField := &pb.TotalByteCount
-	if totalByteCountField != nil {
-		st.TotalByteCount = *totalByteCountField
-	}
-	totalChunkCountField := &pb.TotalChunkCount
-	if totalChunkCountField != nil {
-		st.TotalChunkCount = *totalChunkCountField
-	}
-	totalRowCountField := &pb.TotalRowCount
-	if totalRowCountField != nil {
-		st.TotalRowCount = *totalRowCountField
-	}
-	truncatedField := &pb.Truncated
-	if truncatedField != nil {
-		st.Truncated = *truncatedField
-	}
+	st.TotalByteCount = pb.TotalByteCount
+	st.TotalChunkCount = pb.TotalChunkCount
+	st.TotalRowCount = pb.TotalRowCount
+	st.Truncated = pb.Truncated
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -18438,11 +15963,14 @@ func (st resultManifestPb) MarshalJSON() ([]byte, error) {
 
 // The schema is an ordered list of column descriptions.
 type ResultSchema struct {
+
+	// Wire name: 'column_count'
 	ColumnCount int
 
+	// Wire name: 'columns'
 	Columns []ColumnInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func resultSchemaToPb(st *ResultSchema) (*resultSchemaPb, error) {
@@ -18450,10 +15978,7 @@ func resultSchemaToPb(st *ResultSchema) (*resultSchemaPb, error) {
 		return nil, nil
 	}
 	pb := &resultSchemaPb{}
-	columnCountPb := &st.ColumnCount
-	if columnCountPb != nil {
-		pb.ColumnCount = *columnCountPb
-	}
+	pb.ColumnCount = st.ColumnCount
 
 	var columnsPb []columnInfoPb
 	for _, item := range st.Columns {
@@ -18509,19 +16034,16 @@ func resultSchemaFromPb(pb *resultSchemaPb) (*ResultSchema, error) {
 		return nil, nil
 	}
 	st := &ResultSchema{}
-	columnCountField := &pb.ColumnCount
-	if columnCountField != nil {
-		st.ColumnCount = *columnCountField
-	}
+	st.ColumnCount = pb.ColumnCount
 
 	var columnsField []ColumnInfo
-	for _, item := range pb.Columns {
-		itemField, err := columnInfoFromPb(&item)
+	for _, itemPb := range pb.Columns {
+		item, err := columnInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			columnsField = append(columnsField, *itemField)
+		if item != nil {
+			columnsField = append(columnsField, *item)
 		}
 	}
 	st.Columns = columnsField
@@ -18674,11 +16196,14 @@ func schedulePauseStatusFromPb(pb *schedulePauseStatusPb) (*SchedulePauseStatus,
 }
 
 type ServiceError struct {
+
+	// Wire name: 'error_code'
 	ErrorCode ServiceErrorCode
 	// A brief summary of the error condition.
+	// Wire name: 'message'
 	Message string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func serviceErrorToPb(st *ServiceError) (*serviceErrorPb, error) {
@@ -18686,15 +16211,9 @@ func serviceErrorToPb(st *ServiceError) (*serviceErrorPb, error) {
 		return nil, nil
 	}
 	pb := &serviceErrorPb{}
-	errorCodePb := &st.ErrorCode
-	if errorCodePb != nil {
-		pb.ErrorCode = *errorCodePb
-	}
+	pb.ErrorCode = st.ErrorCode
 
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18738,14 +16257,8 @@ func serviceErrorFromPb(pb *serviceErrorPb) (*ServiceError, error) {
 		return nil, nil
 	}
 	st := &ServiceError{}
-	errorCodeField := &pb.ErrorCode
-	if errorCodeField != nil {
-		st.ErrorCode = *errorCodeField
-	}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
+	st.ErrorCode = pb.ErrorCode
+	st.Message = pb.Message
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -18829,12 +16342,16 @@ func serviceErrorCodeFromPb(pb *serviceErrorCodePb) (*ServiceErrorCode, error) {
 
 // Set object ACL
 type SetRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []AccessControl
 	// Object ID. The ACL for the object with this UUID is overwritten by this
 	// request's POST content.
-	ObjectId string
+	// Wire name: 'objectId'
+	ObjectId string `tf:"-"`
 	// The type of object permission to set.
-	ObjectType ObjectTypePlural
+	// Wire name: 'objectType'
+	ObjectType ObjectTypePlural `tf:"-"`
 }
 
 func setRequestToPb(st *SetRequest) (*setRequestPb, error) {
@@ -18855,15 +16372,9 @@ func setRequestToPb(st *SetRequest) (*setRequestPb, error) {
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	return pb, nil
 }
@@ -18909,36 +16420,34 @@ func setRequestFromPb(pb *setRequestPb) (*SetRequest, error) {
 	st := &SetRequest{}
 
 	var accessControlListField []AccessControl
-	for _, item := range pb.AccessControlList {
-		itemField, err := accessControlFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := accessControlFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	return st, nil
 }
 
 type SetResponse struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []AccessControl
 	// An object's type and UUID, separated by a forward slash (/) character.
+	// Wire name: 'object_id'
 	ObjectId string
 	// A singular noun object type.
+	// Wire name: 'object_type'
 	ObjectType ObjectType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func setResponseToPb(st *SetResponse) (*setResponsePb, error) {
@@ -18959,15 +16468,9 @@ func setResponseToPb(st *SetResponse) (*setResponsePb, error) {
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -19015,24 +16518,18 @@ func setResponseFromPb(pb *setResponsePb) (*SetResponse, error) {
 	st := &SetResponse{}
 
 	var accessControlListField []AccessControl
-	for _, item := range pb.AccessControlList {
-		itemField, err := accessControlFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := accessControlFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -19048,11 +16545,14 @@ func (st setResponsePb) MarshalJSON() ([]byte, error) {
 
 type SetWorkspaceWarehouseConfigRequest struct {
 	// Optional: Channel selection details
+	// Wire name: 'channel'
 	Channel *Channel
 	// Deprecated: Use sql_configuration_parameters
+	// Wire name: 'config_param'
 	ConfigParam *RepeatedEndpointConfPairs
 	// Spark confs for external hive metastore configuration JSON serialized
 	// size must be less than <= 512K
+	// Wire name: 'data_access_config'
 	DataAccessConfig []EndpointConfPair
 	// List of Warehouse Types allowed in this workspace (limits allowed value
 	// of the type field in CreateWarehouse and EditWarehouse). Note: Some types
@@ -19060,20 +16560,26 @@ type SetWorkspaceWarehouseConfigRequest struct {
 	// SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing
 	// warehouses to be converted to another type. Used by frontend to save
 	// specific type availability in the warehouse create and edit form UI.
+	// Wire name: 'enabled_warehouse_types'
 	EnabledWarehouseTypes []WarehouseTypePair
 	// Deprecated: Use sql_configuration_parameters
+	// Wire name: 'global_param'
 	GlobalParam *RepeatedEndpointConfPairs
 	// GCP only: Google Service Account used to pass to cluster to access Google
 	// Cloud Storage
+	// Wire name: 'google_service_account'
 	GoogleServiceAccount string
 	// AWS Only: Instance profile used to pass IAM role to the cluster
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// Security policy for warehouses
+	// Wire name: 'security_policy'
 	SecurityPolicy SetWorkspaceWarehouseConfigRequestSecurityPolicy
 	// SQL configuration parameters
+	// Wire name: 'sql_configuration_parameters'
 	SqlConfigurationParameters *RepeatedEndpointConfPairs
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func setWorkspaceWarehouseConfigRequestToPb(st *SetWorkspaceWarehouseConfigRequest) (*setWorkspaceWarehouseConfigRequestPb, error) {
@@ -19129,20 +16635,11 @@ func setWorkspaceWarehouseConfigRequestToPb(st *SetWorkspaceWarehouseConfigReque
 		pb.GlobalParam = globalParamPb
 	}
 
-	googleServiceAccountPb := &st.GoogleServiceAccount
-	if googleServiceAccountPb != nil {
-		pb.GoogleServiceAccount = *googleServiceAccountPb
-	}
+	pb.GoogleServiceAccount = st.GoogleServiceAccount
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	securityPolicyPb := &st.SecurityPolicy
-	if securityPolicyPb != nil {
-		pb.SecurityPolicy = *securityPolicyPb
-	}
+	pb.SecurityPolicy = st.SecurityPolicy
 
 	sqlConfigurationParametersPb, err := repeatedEndpointConfPairsToPb(st.SqlConfigurationParameters)
 	if err != nil {
@@ -19232,25 +16729,25 @@ func setWorkspaceWarehouseConfigRequestFromPb(pb *setWorkspaceWarehouseConfigReq
 	}
 
 	var dataAccessConfigField []EndpointConfPair
-	for _, item := range pb.DataAccessConfig {
-		itemField, err := endpointConfPairFromPb(&item)
+	for _, itemPb := range pb.DataAccessConfig {
+		item, err := endpointConfPairFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			dataAccessConfigField = append(dataAccessConfigField, *itemField)
+		if item != nil {
+			dataAccessConfigField = append(dataAccessConfigField, *item)
 		}
 	}
 	st.DataAccessConfig = dataAccessConfigField
 
 	var enabledWarehouseTypesField []WarehouseTypePair
-	for _, item := range pb.EnabledWarehouseTypes {
-		itemField, err := warehouseTypePairFromPb(&item)
+	for _, itemPb := range pb.EnabledWarehouseTypes {
+		item, err := warehouseTypePairFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			enabledWarehouseTypesField = append(enabledWarehouseTypesField, *itemField)
+		if item != nil {
+			enabledWarehouseTypesField = append(enabledWarehouseTypesField, *item)
 		}
 	}
 	st.EnabledWarehouseTypes = enabledWarehouseTypesField
@@ -19261,18 +16758,9 @@ func setWorkspaceWarehouseConfigRequestFromPb(pb *setWorkspaceWarehouseConfigReq
 	if globalParamField != nil {
 		st.GlobalParam = globalParamField
 	}
-	googleServiceAccountField := &pb.GoogleServiceAccount
-	if googleServiceAccountField != nil {
-		st.GoogleServiceAccount = *googleServiceAccountField
-	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	securityPolicyField := &pb.SecurityPolicy
-	if securityPolicyField != nil {
-		st.SecurityPolicy = *securityPolicyField
-	}
+	st.GoogleServiceAccount = pb.GoogleServiceAccount
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.SecurityPolicy = pb.SecurityPolicy
 	sqlConfigurationParametersField, err := repeatedEndpointConfPairsFromPb(pb.SqlConfigurationParameters)
 	if err != nil {
 		return nil, err
@@ -19439,7 +16927,8 @@ func spotInstancePolicyFromPb(pb *spotInstancePolicyPb) (*SpotInstancePolicy, er
 // Start a warehouse
 type StartRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func startRequestToPb(st *StartRequest) (*startRequestPb, error) {
@@ -19447,10 +16936,7 @@ func startRequestToPb(st *StartRequest) (*startRequestPb, error) {
 		return nil, nil
 	}
 	pb := &startRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -19490,10 +16976,7 @@ func startRequestFromPb(pb *startRequestPb) (*StartRequest, error) {
 		return nil, nil
 	}
 	st := &StartRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -19602,6 +17085,7 @@ func stateFromPb(pb *statePb) (*State, error) {
 
 type StatementParameterListItem struct {
 	// The name of a parameter marker to be substituted in the statement.
+	// Wire name: 'name'
 	Name string
 	// The data type, given as a string. For example: `INT`, `STRING`,
 	// `DECIMAL(10,2)`. If no type is given the type is assumed to be `STRING`.
@@ -19610,12 +17094,14 @@ type StatementParameterListItem struct {
 	// reference.
 	//
 	// [Data types]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+	// Wire name: 'type'
 	Type string
 	// The value to substitute, represented as a string. If omitted, the value
 	// is interpreted as NULL.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func statementParameterListItemToPb(st *StatementParameterListItem) (*statementParameterListItemPb, error) {
@@ -19623,20 +17109,11 @@ func statementParameterListItemToPb(st *StatementParameterListItem) (*statementP
 		return nil, nil
 	}
 	pb := &statementParameterListItemPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -19690,18 +17167,9 @@ func statementParameterListItemFromPb(pb *statementParameterListItemPb) (*Statem
 		return nil, nil
 	}
 	st := &StatementParameterListItem{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Name = pb.Name
+	st.Type = pb.Type
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -19717,17 +17185,21 @@ func (st statementParameterListItemPb) MarshalJSON() ([]byte, error) {
 
 type StatementResponse struct {
 	// The result manifest provides schema and metadata for the result set.
+	// Wire name: 'manifest'
 	Manifest *ResultManifest
 
+	// Wire name: 'result'
 	Result *ResultData
 	// The statement ID is returned upon successfully submitting a SQL
 	// statement, and is a required reference for all subsequent calls.
+	// Wire name: 'statement_id'
 	StatementId string
 	// The status response includes execution state and if relevant, error
 	// information.
+	// Wire name: 'status'
 	Status *StatementStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func StatementResponseToPb(st *StatementResponse) (*StatementResponsePb, error) {
@@ -19751,10 +17223,7 @@ func StatementResponseToPb(st *StatementResponse) (*StatementResponsePb, error) 
 		pb.Result = resultPb
 	}
 
-	statementIdPb := &st.StatementId
-	if statementIdPb != nil {
-		pb.StatementId = *statementIdPb
-	}
+	pb.StatementId = st.StatementId
 
 	statusPb, err := statementStatusToPb(st.Status)
 	if err != nil {
@@ -19827,10 +17296,7 @@ func StatementResponseFromPb(pb *StatementResponsePb) (*StatementResponse, error
 	if resultField != nil {
 		st.Result = resultField
 	}
-	statementIdField := &pb.StatementId
-	if statementIdField != nil {
-		st.StatementId = *statementIdField
-	}
+	st.StatementId = pb.StatementId
 	statusField, err := statementStatusFromPb(pb.Status)
 	if err != nil {
 		return nil, err
@@ -19920,6 +17386,8 @@ func statementStateFromPb(pb *statementStatePb) (*StatementState, error) {
 // The status response includes execution state and if relevant, error
 // information.
 type StatementStatus struct {
+
+	// Wire name: 'error'
 	Error *ServiceError
 	// Statement execution state: - `PENDING`: waiting for warehouse -
 	// `RUNNING`: running - `SUCCEEDED`: execution was successful, result data
@@ -19928,6 +17396,7 @@ type StatementStatus struct {
 	// come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL`
 	// - `CLOSED`: execution successful, and statement closed; result no longer
 	// available for fetch
+	// Wire name: 'state'
 	State StatementState
 }
 
@@ -19944,10 +17413,7 @@ func statementStatusToPb(st *StatementStatus) (*statementStatusPb, error) {
 		pb.Error = errorPb
 	}
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	return pb, nil
 }
@@ -20001,10 +17467,7 @@ func statementStatusFromPb(pb *statementStatusPb) (*StatementStatus, error) {
 	if errorField != nil {
 		st.Error = errorField
 	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.State = pb.State
 
 	return st, nil
 }
@@ -20061,7 +17524,8 @@ func statusFromPb(pb *statusPb) (*Status, error) {
 // Stop a warehouse
 type StopRequest struct {
 	// Required. Id of the SQL warehouse.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func stopRequestToPb(st *StopRequest) (*stopRequestPb, error) {
@@ -20069,10 +17533,7 @@ func stopRequestToPb(st *StopRequest) (*stopRequestPb, error) {
 		return nil, nil
 	}
 	pb := &stopRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -20112,10 +17573,7 @@ func stopRequestFromPb(pb *stopRequestPb) (*StopRequest, error) {
 		return nil, nil
 	}
 	st := &StopRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -20170,6 +17628,8 @@ func stopWarehouseResponseFromPb(pb *stopWarehouseResponsePb) (*StopWarehouseRes
 }
 
 type Success struct {
+
+	// Wire name: 'message'
 	Message SuccessMessage
 }
 
@@ -20178,10 +17638,7 @@ func successToPb(st *Success) (*successPb, error) {
 		return nil, nil
 	}
 	pb := &successPb{}
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
 	return pb, nil
 }
@@ -20220,10 +17677,7 @@ func successFromPb(pb *successPb) (*Success, error) {
 		return nil, nil
 	}
 	st := &Success{}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
+	st.Message = pb.Message
 
 	return st, nil
 }
@@ -20272,11 +17726,14 @@ func successMessageFromPb(pb *successMessagePb) (*SuccessMessage, error) {
 
 type TerminationReason struct {
 	// status code indicating why the cluster was terminated
+	// Wire name: 'code'
 	Code TerminationReasonCode
 	// list of parameters that provide additional information about why the
 	// cluster was terminated
+	// Wire name: 'parameters'
 	Parameters map[string]string
 	// type of the termination
+	// Wire name: 'type'
 	Type TerminationReasonType
 }
 
@@ -20285,24 +17742,11 @@ func terminationReasonToPb(st *TerminationReason) (*terminationReasonPb, error) 
 		return nil, nil
 	}
 	pb := &terminationReasonPb{}
-	codePb := &st.Code
-	if codePb != nil {
-		pb.Code = *codePb
-	}
+	pb.Code = st.Code
 
-	parametersPb := map[string]string{}
-	for k, v := range st.Parameters {
-		itemPb := &v
-		if itemPb != nil {
-			parametersPb[k] = *itemPb
-		}
-	}
-	pb.Parameters = parametersPb
+	pb.Parameters = st.Parameters
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	return pb, nil
 }
@@ -20347,23 +17791,9 @@ func terminationReasonFromPb(pb *terminationReasonPb) (*TerminationReason, error
 		return nil, nil
 	}
 	st := &TerminationReason{}
-	codeField := &pb.Code
-	if codeField != nil {
-		st.Code = *codeField
-	}
-
-	parametersField := map[string]string{}
-	for k, v := range pb.Parameters {
-		itemField := &v
-		if itemField != nil {
-			parametersField[k] = *itemField
-		}
-	}
-	st.Parameters = parametersField
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.Code = pb.Code
+	st.Parameters = pb.Parameters
+	st.Type = pb.Type
 
 	return st, nil
 }
@@ -20617,9 +18047,11 @@ func terminationReasonTypeFromPb(pb *terminationReasonTypePb) (*TerminationReaso
 }
 
 type TextValue struct {
+
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func textValueToPb(st *TextValue) (*textValuePb, error) {
@@ -20627,10 +18059,7 @@ func textValueToPb(st *TextValue) (*textValuePb, error) {
 		return nil, nil
 	}
 	pb := &textValuePb{}
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -20672,10 +18101,7 @@ func textValueFromPb(pb *textValuePb) (*TextValue, error) {
 		return nil, nil
 	}
 	st := &TextValue{}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -20691,11 +18117,13 @@ func (st textValuePb) MarshalJSON() ([]byte, error) {
 
 type TimeRange struct {
 	// The end time in milliseconds.
+	// Wire name: 'end_time_ms'
 	EndTimeMs int64
 	// The start time in milliseconds.
+	// Wire name: 'start_time_ms'
 	StartTimeMs int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func timeRangeToPb(st *TimeRange) (*timeRangePb, error) {
@@ -20703,15 +18131,9 @@ func timeRangeToPb(st *TimeRange) (*timeRangePb, error) {
 		return nil, nil
 	}
 	pb := &timeRangePb{}
-	endTimeMsPb := &st.EndTimeMs
-	if endTimeMsPb != nil {
-		pb.EndTimeMs = *endTimeMsPb
-	}
+	pb.EndTimeMs = st.EndTimeMs
 
-	startTimeMsPb := &st.StartTimeMs
-	if startTimeMsPb != nil {
-		pb.StartTimeMs = *startTimeMsPb
-	}
+	pb.StartTimeMs = st.StartTimeMs
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -20756,14 +18178,8 @@ func timeRangeFromPb(pb *timeRangePb) (*TimeRange, error) {
 		return nil, nil
 	}
 	st := &TimeRange{}
-	endTimeMsField := &pb.EndTimeMs
-	if endTimeMsField != nil {
-		st.EndTimeMs = *endTimeMsField
-	}
-	startTimeMsField := &pb.StartTimeMs
-	if startTimeMsField != nil {
-		st.StartTimeMs = *startTimeMsField
-	}
+	st.EndTimeMs = pb.EndTimeMs
+	st.StartTimeMs = pb.StartTimeMs
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -20779,9 +18195,10 @@ func (st timeRangePb) MarshalJSON() ([]byte, error) {
 
 type TransferOwnershipObjectId struct {
 	// Email address for the new owner, who must exist in the workspace.
+	// Wire name: 'new_owner'
 	NewOwner string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func transferOwnershipObjectIdToPb(st *TransferOwnershipObjectId) (*transferOwnershipObjectIdPb, error) {
@@ -20789,10 +18206,7 @@ func transferOwnershipObjectIdToPb(st *TransferOwnershipObjectId) (*transferOwne
 		return nil, nil
 	}
 	pb := &transferOwnershipObjectIdPb{}
-	newOwnerPb := &st.NewOwner
-	if newOwnerPb != nil {
-		pb.NewOwner = *newOwnerPb
-	}
+	pb.NewOwner = st.NewOwner
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -20835,10 +18249,7 @@ func transferOwnershipObjectIdFromPb(pb *transferOwnershipObjectIdPb) (*Transfer
 		return nil, nil
 	}
 	st := &TransferOwnershipObjectId{}
-	newOwnerField := &pb.NewOwner
-	if newOwnerField != nil {
-		st.NewOwner = *newOwnerField
-	}
+	st.NewOwner = pb.NewOwner
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -20855,13 +18266,16 @@ func (st transferOwnershipObjectIdPb) MarshalJSON() ([]byte, error) {
 // Transfer object ownership
 type TransferOwnershipRequest struct {
 	// Email address for the new owner, who must exist in the workspace.
+	// Wire name: 'new_owner'
 	NewOwner string
 	// The ID of the object on which to change ownership.
-	ObjectId TransferOwnershipObjectId
+	// Wire name: 'objectId'
+	ObjectId TransferOwnershipObjectId `tf:"-"`
 	// The type of object on which to change ownership.
-	ObjectType OwnableObjectType
+	// Wire name: 'objectType'
+	ObjectType OwnableObjectType `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func transferOwnershipRequestToPb(st *TransferOwnershipRequest) (*transferOwnershipRequestPb, error) {
@@ -20869,10 +18283,7 @@ func transferOwnershipRequestToPb(st *TransferOwnershipRequest) (*transferOwners
 		return nil, nil
 	}
 	pb := &transferOwnershipRequestPb{}
-	newOwnerPb := &st.NewOwner
-	if newOwnerPb != nil {
-		pb.NewOwner = *newOwnerPb
-	}
+	pb.NewOwner = st.NewOwner
 
 	objectIdPb, err := transferOwnershipObjectIdToPb(&st.ObjectId)
 	if err != nil {
@@ -20882,10 +18293,7 @@ func transferOwnershipRequestToPb(st *TransferOwnershipRequest) (*transferOwners
 		pb.ObjectId = *objectIdPb
 	}
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -20932,10 +18340,7 @@ func transferOwnershipRequestFromPb(pb *transferOwnershipRequestPb) (*TransferOw
 		return nil, nil
 	}
 	st := &TransferOwnershipRequest{}
-	newOwnerField := &pb.NewOwner
-	if newOwnerField != nil {
-		st.NewOwner = *newOwnerField
-	}
+	st.NewOwner = pb.NewOwner
 	objectIdField, err := transferOwnershipObjectIdFromPb(&pb.ObjectId)
 	if err != nil {
 		return nil, err
@@ -20943,10 +18348,7 @@ func transferOwnershipRequestFromPb(pb *transferOwnershipRequestPb) (*TransferOw
 	if objectIdField != nil {
 		st.ObjectId = *objectIdField
 	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -20962,7 +18364,9 @@ func (st transferOwnershipRequestPb) MarshalJSON() ([]byte, error) {
 
 // Delete an alert
 type TrashAlertRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func trashAlertRequestToPb(st *TrashAlertRequest) (*trashAlertRequestPb, error) {
@@ -20970,10 +18374,7 @@ func trashAlertRequestToPb(st *TrashAlertRequest) (*trashAlertRequestPb, error) 
 		return nil, nil
 	}
 	pb := &trashAlertRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -21012,17 +18413,16 @@ func trashAlertRequestFromPb(pb *trashAlertRequestPb) (*TrashAlertRequest, error
 		return nil, nil
 	}
 	st := &TrashAlertRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 // Delete an alert
 type TrashAlertV2Request struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func trashAlertV2RequestToPb(st *TrashAlertV2Request) (*trashAlertV2RequestPb, error) {
@@ -21030,10 +18430,7 @@ func trashAlertV2RequestToPb(st *TrashAlertV2Request) (*trashAlertV2RequestPb, e
 		return nil, nil
 	}
 	pb := &trashAlertV2RequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -21072,17 +18469,16 @@ func trashAlertV2RequestFromPb(pb *trashAlertV2RequestPb) (*TrashAlertV2Request,
 		return nil, nil
 	}
 	st := &TrashAlertV2Request{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 // Delete a query
 type TrashQueryRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func trashQueryRequestToPb(st *TrashQueryRequest) (*trashQueryRequestPb, error) {
@@ -21090,10 +18486,7 @@ func trashQueryRequestToPb(st *TrashQueryRequest) (*trashQueryRequestPb, error) 
 		return nil, nil
 	}
 	pb := &trashQueryRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -21132,18 +18525,18 @@ func trashQueryRequestFromPb(pb *trashQueryRequestPb) (*TrashQueryRequest, error
 		return nil, nil
 	}
 	st := &TrashQueryRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type UpdateAlertRequest struct {
+
+	// Wire name: 'alert'
 	Alert *UpdateAlertRequestAlert
 
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -21155,6 +18548,7 @@ type UpdateAlertRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'update_mask'
 	UpdateMask string
 }
 
@@ -21171,15 +18565,9 @@ func updateAlertRequestToPb(st *UpdateAlertRequest) (*updateAlertRequestPb, erro
 		pb.Alert = alertPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	updateMaskPb := &st.UpdateMask
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
 }
@@ -21239,47 +18627,49 @@ func updateAlertRequestFromPb(pb *updateAlertRequestPb) (*UpdateAlertRequest, er
 	if alertField != nil {
 		st.Alert = alertField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	updateMaskField := &pb.UpdateMask
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.Id = pb.Id
+	st.UpdateMask = pb.UpdateMask
 
 	return st, nil
 }
 
 type UpdateAlertRequestAlert struct {
 	// Trigger conditions of the alert.
+	// Wire name: 'condition'
 	Condition *AlertCondition
 	// Custom body of alert notification, if it exists. See [here] for custom
 	// templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Wire name: 'custom_body'
 	CustomBody string
 	// Custom subject of alert notification, if it exists. This can include
 	// email subject entries and Slack notification headers, for example. See
 	// [here] for custom templating instructions.
 	//
 	// [here]: https://docs.databricks.com/sql/user/alerts/index.html
+	// Wire name: 'custom_subject'
 	CustomSubject string
 	// The display name of the alert.
+	// Wire name: 'display_name'
 	DisplayName string
 	// Whether to notify alert subscribers when alert returns back to normal.
+	// Wire name: 'notify_on_ok'
 	NotifyOnOk bool
 	// The owner's username. This field is set to "Unavailable" if the user has
 	// been deleted.
+	// Wire name: 'owner_user_name'
 	OwnerUserName string
 	// UUID of the query attached to the alert.
+	// Wire name: 'query_id'
 	QueryId string
 	// Number of seconds an alert must wait after being triggered to rearm
 	// itself. After rearming, it can be triggered again. If 0 or not specified,
 	// the alert will not be triggered again.
+	// Wire name: 'seconds_to_retrigger'
 	SecondsToRetrigger int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateAlertRequestAlertToPb(st *UpdateAlertRequestAlert) (*updateAlertRequestAlertPb, error) {
@@ -21295,40 +18685,19 @@ func updateAlertRequestAlertToPb(st *UpdateAlertRequestAlert) (*updateAlertReque
 		pb.Condition = conditionPb
 	}
 
-	customBodyPb := &st.CustomBody
-	if customBodyPb != nil {
-		pb.CustomBody = *customBodyPb
-	}
+	pb.CustomBody = st.CustomBody
 
-	customSubjectPb := &st.CustomSubject
-	if customSubjectPb != nil {
-		pb.CustomSubject = *customSubjectPb
-	}
+	pb.CustomSubject = st.CustomSubject
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	notifyOnOkPb := &st.NotifyOnOk
-	if notifyOnOkPb != nil {
-		pb.NotifyOnOk = *notifyOnOkPb
-	}
+	pb.NotifyOnOk = st.NotifyOnOk
 
-	ownerUserNamePb := &st.OwnerUserName
-	if ownerUserNamePb != nil {
-		pb.OwnerUserName = *ownerUserNamePb
-	}
+	pb.OwnerUserName = st.OwnerUserName
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	secondsToRetriggerPb := &st.SecondsToRetrigger
-	if secondsToRetriggerPb != nil {
-		pb.SecondsToRetrigger = *secondsToRetriggerPb
-	}
+	pb.SecondsToRetrigger = st.SecondsToRetrigger
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -21402,34 +18771,13 @@ func updateAlertRequestAlertFromPb(pb *updateAlertRequestAlertPb) (*UpdateAlertR
 	if conditionField != nil {
 		st.Condition = conditionField
 	}
-	customBodyField := &pb.CustomBody
-	if customBodyField != nil {
-		st.CustomBody = *customBodyField
-	}
-	customSubjectField := &pb.CustomSubject
-	if customSubjectField != nil {
-		st.CustomSubject = *customSubjectField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	notifyOnOkField := &pb.NotifyOnOk
-	if notifyOnOkField != nil {
-		st.NotifyOnOk = *notifyOnOkField
-	}
-	ownerUserNameField := &pb.OwnerUserName
-	if ownerUserNameField != nil {
-		st.OwnerUserName = *ownerUserNameField
-	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-	secondsToRetriggerField := &pb.SecondsToRetrigger
-	if secondsToRetriggerField != nil {
-		st.SecondsToRetrigger = *secondsToRetriggerField
-	}
+	st.CustomBody = pb.CustomBody
+	st.CustomSubject = pb.CustomSubject
+	st.DisplayName = pb.DisplayName
+	st.NotifyOnOk = pb.NotifyOnOk
+	st.OwnerUserName = pb.OwnerUserName
+	st.QueryId = pb.QueryId
+	st.SecondsToRetrigger = pb.SecondsToRetrigger
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -21444,9 +18792,12 @@ func (st updateAlertRequestAlertPb) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateAlertV2Request struct {
+
+	// Wire name: 'alert'
 	Alert *AlertV2
 	// UUID identifying the alert.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -21458,7 +18809,8 @@ type UpdateAlertV2Request struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
-	UpdateMask []string
+	// Wire name: 'update_mask'
+	UpdateMask string
 }
 
 func updateAlertV2RequestToPb(st *UpdateAlertV2Request) (*updateAlertV2RequestPb, error) {
@@ -21474,18 +18826,9 @@ func updateAlertV2RequestToPb(st *UpdateAlertV2Request) (*updateAlertV2RequestPb
 		pb.Alert = alertPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	updateMaskPb, err := fieldMaskToPb(&st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
 }
@@ -21545,24 +18888,18 @@ func updateAlertV2RequestFromPb(pb *updateAlertV2RequestPb) (*UpdateAlertV2Reque
 	if alertField != nil {
 		st.Alert = alertField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.Id = pb.Id
+	st.UpdateMask = pb.UpdateMask
 
 	return st, nil
 }
 
 type UpdateQueryRequest struct {
-	Id string
 
+	// Wire name: 'id'
+	Id string `tf:"-"`
+
+	// Wire name: 'query'
 	Query *UpdateQueryRequestQuery
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -21575,6 +18912,7 @@ type UpdateQueryRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'update_mask'
 	UpdateMask string
 }
 
@@ -21583,10 +18921,7 @@ func updateQueryRequestToPb(st *UpdateQueryRequest) (*updateQueryRequestPb, erro
 		return nil, nil
 	}
 	pb := &updateQueryRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	queryPb, err := updateQueryRequestQueryToPb(st.Query)
 	if err != nil {
@@ -21596,10 +18931,7 @@ func updateQueryRequestToPb(st *UpdateQueryRequest) (*updateQueryRequestPb, erro
 		pb.Query = queryPb
 	}
 
-	updateMaskPb := &st.UpdateMask
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
 }
@@ -21652,10 +18984,7 @@ func updateQueryRequestFromPb(pb *updateQueryRequestPb) (*UpdateQueryRequest, er
 		return nil, nil
 	}
 	st := &UpdateQueryRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	queryField, err := updateQueryRequestQueryFromPb(pb.Query)
 	if err != nil {
 		return nil, err
@@ -21663,41 +18992,49 @@ func updateQueryRequestFromPb(pb *updateQueryRequestPb) (*UpdateQueryRequest, er
 	if queryField != nil {
 		st.Query = queryField
 	}
-	updateMaskField := &pb.UpdateMask
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.UpdateMask = pb.UpdateMask
 
 	return st, nil
 }
 
 type UpdateQueryRequestQuery struct {
 	// Whether to apply a 1000 row limit to the query result.
+	// Wire name: 'apply_auto_limit'
 	ApplyAutoLimit bool
 	// Name of the catalog where this query will be executed.
+	// Wire name: 'catalog'
 	Catalog string
 	// General description that conveys additional information about this query
 	// such as usage notes.
+	// Wire name: 'description'
 	Description string
 	// Display name of the query that appears in list views, widget headings,
 	// and on the query page.
+	// Wire name: 'display_name'
 	DisplayName string
 	// Username of the user that owns the query.
+	// Wire name: 'owner_user_name'
 	OwnerUserName string
 	// List of query parameter definitions.
+	// Wire name: 'parameters'
 	Parameters []QueryParameter
 	// Text of the query to be run.
+	// Wire name: 'query_text'
 	QueryText string
 	// Sets the "Run as" role for the object.
+	// Wire name: 'run_as_mode'
 	RunAsMode RunAsMode
 	// Name of the schema where this query will be executed.
+	// Wire name: 'schema'
 	Schema string
 
+	// Wire name: 'tags'
 	Tags []string
 	// ID of the SQL warehouse attached to the query.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateQueryRequestQueryToPb(st *UpdateQueryRequestQuery) (*updateQueryRequestQueryPb, error) {
@@ -21705,30 +19042,15 @@ func updateQueryRequestQueryToPb(st *UpdateQueryRequestQuery) (*updateQueryReque
 		return nil, nil
 	}
 	pb := &updateQueryRequestQueryPb{}
-	applyAutoLimitPb := &st.ApplyAutoLimit
-	if applyAutoLimitPb != nil {
-		pb.ApplyAutoLimit = *applyAutoLimitPb
-	}
+	pb.ApplyAutoLimit = st.ApplyAutoLimit
 
-	catalogPb := &st.Catalog
-	if catalogPb != nil {
-		pb.Catalog = *catalogPb
-	}
+	pb.Catalog = st.Catalog
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	ownerUserNamePb := &st.OwnerUserName
-	if ownerUserNamePb != nil {
-		pb.OwnerUserName = *ownerUserNamePb
-	}
+	pb.OwnerUserName = st.OwnerUserName
 
 	var parametersPb []queryParameterPb
 	for _, item := range st.Parameters {
@@ -21742,34 +19064,15 @@ func updateQueryRequestQueryToPb(st *UpdateQueryRequestQuery) (*updateQueryReque
 	}
 	pb.Parameters = parametersPb
 
-	queryTextPb := &st.QueryText
-	if queryTextPb != nil {
-		pb.QueryText = *queryTextPb
-	}
+	pb.QueryText = st.QueryText
 
-	runAsModePb := &st.RunAsMode
-	if runAsModePb != nil {
-		pb.RunAsMode = *runAsModePb
-	}
+	pb.RunAsMode = st.RunAsMode
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	var tagsPb []string
-	for _, item := range st.Tags {
-		itemPb := &item
-		if itemPb != nil {
-			tagsPb = append(tagsPb, *itemPb)
-		}
-	}
-	pb.Tags = tagsPb
+	pb.Tags = st.Tags
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -21834,63 +19137,28 @@ func updateQueryRequestQueryFromPb(pb *updateQueryRequestQueryPb) (*UpdateQueryR
 		return nil, nil
 	}
 	st := &UpdateQueryRequestQuery{}
-	applyAutoLimitField := &pb.ApplyAutoLimit
-	if applyAutoLimitField != nil {
-		st.ApplyAutoLimit = *applyAutoLimitField
-	}
-	catalogField := &pb.Catalog
-	if catalogField != nil {
-		st.Catalog = *catalogField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	ownerUserNameField := &pb.OwnerUserName
-	if ownerUserNameField != nil {
-		st.OwnerUserName = *ownerUserNameField
-	}
+	st.ApplyAutoLimit = pb.ApplyAutoLimit
+	st.Catalog = pb.Catalog
+	st.Description = pb.Description
+	st.DisplayName = pb.DisplayName
+	st.OwnerUserName = pb.OwnerUserName
 
 	var parametersField []QueryParameter
-	for _, item := range pb.Parameters {
-		itemField, err := queryParameterFromPb(&item)
+	for _, itemPb := range pb.Parameters {
+		item, err := queryParameterFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			parametersField = append(parametersField, *itemField)
+		if item != nil {
+			parametersField = append(parametersField, *item)
 		}
 	}
 	st.Parameters = parametersField
-	queryTextField := &pb.QueryText
-	if queryTextField != nil {
-		st.QueryText = *queryTextField
-	}
-	runAsModeField := &pb.RunAsMode
-	if runAsModeField != nil {
-		st.RunAsMode = *runAsModeField
-	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-
-	var tagsField []string
-	for _, item := range pb.Tags {
-		itemField := &item
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
-		}
-	}
-	st.Tags = tagsField
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.QueryText = pb.QueryText
+	st.RunAsMode = pb.RunAsMode
+	st.Schema = pb.Schema
+	st.Tags = pb.Tags
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -21954,7 +19222,9 @@ func updateResponseFromPb(pb *updateResponsePb) (*UpdateResponse, error) {
 }
 
 type UpdateVisualizationRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
@@ -21966,8 +19236,10 @@ type UpdateVisualizationRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'update_mask'
 	UpdateMask string
 
+	// Wire name: 'visualization'
 	Visualization *UpdateVisualizationRequestVisualization
 }
 
@@ -21976,15 +19248,9 @@ func updateVisualizationRequestToPb(st *UpdateVisualizationRequest) (*updateVisu
 		return nil, nil
 	}
 	pb := &updateVisualizationRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	updateMaskPb := &st.UpdateMask
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	visualizationPb, err := updateVisualizationRequestVisualizationToPb(st.Visualization)
 	if err != nil {
@@ -22045,14 +19311,8 @@ func updateVisualizationRequestFromPb(pb *updateVisualizationRequestPb) (*Update
 		return nil, nil
 	}
 	st := &UpdateVisualizationRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	updateMaskField := &pb.UpdateMask
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.Id = pb.Id
+	st.UpdateMask = pb.UpdateMask
 	visualizationField, err := updateVisualizationRequestVisualizationFromPb(pb.Visualization)
 	if err != nil {
 		return nil, err
@@ -22066,19 +19326,23 @@ func updateVisualizationRequestFromPb(pb *updateVisualizationRequestPb) (*Update
 
 type UpdateVisualizationRequestVisualization struct {
 	// The display name of the visualization.
+	// Wire name: 'display_name'
 	DisplayName string
 	// The visualization options varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying
 	// visualization options directly.
+	// Wire name: 'serialized_options'
 	SerializedOptions string
 	// The visualization query plan varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying the
 	// visualization query plan directly.
+	// Wire name: 'serialized_query_plan'
 	SerializedQueryPlan string
 	// The type of visualization: counter, table, funnel, and so on.
+	// Wire name: 'type'
 	Type string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateVisualizationRequestVisualizationToPb(st *UpdateVisualizationRequestVisualization) (*updateVisualizationRequestVisualizationPb, error) {
@@ -22086,25 +19350,13 @@ func updateVisualizationRequestVisualizationToPb(st *UpdateVisualizationRequestV
 		return nil, nil
 	}
 	pb := &updateVisualizationRequestVisualizationPb{}
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	serializedOptionsPb := &st.SerializedOptions
-	if serializedOptionsPb != nil {
-		pb.SerializedOptions = *serializedOptionsPb
-	}
+	pb.SerializedOptions = st.SerializedOptions
 
-	serializedQueryPlanPb := &st.SerializedQueryPlan
-	if serializedQueryPlanPb != nil {
-		pb.SerializedQueryPlan = *serializedQueryPlanPb
-	}
+	pb.SerializedQueryPlan = st.SerializedQueryPlan
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22157,22 +19409,10 @@ func updateVisualizationRequestVisualizationFromPb(pb *updateVisualizationReques
 		return nil, nil
 	}
 	st := &UpdateVisualizationRequestVisualization{}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	serializedOptionsField := &pb.SerializedOptions
-	if serializedOptionsField != nil {
-		st.SerializedOptions = *serializedOptionsField
-	}
-	serializedQueryPlanField := &pb.SerializedQueryPlan
-	if serializedQueryPlanField != nil {
-		st.SerializedQueryPlan = *serializedQueryPlanField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.DisplayName = pb.DisplayName
+	st.SerializedOptions = pb.SerializedOptions
+	st.SerializedQueryPlan = pb.SerializedQueryPlan
+	st.Type = pb.Type
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22187,13 +19427,17 @@ func (st updateVisualizationRequestVisualizationPb) MarshalJSON() ([]byte, error
 }
 
 type User struct {
+
+	// Wire name: 'email'
 	Email string
 
+	// Wire name: 'id'
 	Id int
 
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func userToPb(st *User) (*userPb, error) {
@@ -22201,20 +19445,11 @@ func userToPb(st *User) (*userPb, error) {
 		return nil, nil
 	}
 	pb := &userPb{}
-	emailPb := &st.Email
-	if emailPb != nil {
-		pb.Email = *emailPb
-	}
+	pb.Email = st.Email
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22260,18 +19495,9 @@ func userFromPb(pb *userPb) (*User, error) {
 		return nil, nil
 	}
 	st := &User{}
-	emailField := &pb.Email
-	if emailField != nil {
-		st.Email = *emailField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Email = pb.Email
+	st.Id = pb.Id
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22287,27 +19513,35 @@ func (st userPb) MarshalJSON() ([]byte, error) {
 
 type Visualization struct {
 	// The timestamp indicating when the visualization was created.
+	// Wire name: 'create_time'
 	CreateTime string
 	// The display name of the visualization.
+	// Wire name: 'display_name'
 	DisplayName string
 	// UUID identifying the visualization.
+	// Wire name: 'id'
 	Id string
 	// UUID of the query that the visualization is attached to.
+	// Wire name: 'query_id'
 	QueryId string
 	// The visualization options varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying
 	// visualization options directly.
+	// Wire name: 'serialized_options'
 	SerializedOptions string
 	// The visualization query plan varies widely from one visualization type to
 	// the next and is unsupported. Databricks does not recommend modifying the
 	// visualization query plan directly.
+	// Wire name: 'serialized_query_plan'
 	SerializedQueryPlan string
 	// The type of visualization: counter, table, funnel, and so on.
+	// Wire name: 'type'
 	Type string
 	// The timestamp indicating when the visualization was updated.
+	// Wire name: 'update_time'
 	UpdateTime string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func visualizationToPb(st *Visualization) (*visualizationPb, error) {
@@ -22315,45 +19549,21 @@ func visualizationToPb(st *Visualization) (*visualizationPb, error) {
 		return nil, nil
 	}
 	pb := &visualizationPb{}
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	queryIdPb := &st.QueryId
-	if queryIdPb != nil {
-		pb.QueryId = *queryIdPb
-	}
+	pb.QueryId = st.QueryId
 
-	serializedOptionsPb := &st.SerializedOptions
-	if serializedOptionsPb != nil {
-		pb.SerializedOptions = *serializedOptionsPb
-	}
+	pb.SerializedOptions = st.SerializedOptions
 
-	serializedQueryPlanPb := &st.SerializedQueryPlan
-	if serializedQueryPlanPb != nil {
-		pb.SerializedQueryPlan = *serializedQueryPlanPb
-	}
+	pb.SerializedQueryPlan = st.SerializedQueryPlan
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22414,38 +19624,14 @@ func visualizationFromPb(pb *visualizationPb) (*Visualization, error) {
 		return nil, nil
 	}
 	st := &Visualization{}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	queryIdField := &pb.QueryId
-	if queryIdField != nil {
-		st.QueryId = *queryIdField
-	}
-	serializedOptionsField := &pb.SerializedOptions
-	if serializedOptionsField != nil {
-		st.SerializedOptions = *serializedOptionsField
-	}
-	serializedQueryPlanField := &pb.SerializedQueryPlan
-	if serializedQueryPlanField != nil {
-		st.SerializedQueryPlan = *serializedQueryPlanField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
+	st.CreateTime = pb.CreateTime
+	st.DisplayName = pb.DisplayName
+	st.Id = pb.Id
+	st.QueryId = pb.QueryId
+	st.SerializedOptions = pb.SerializedOptions
+	st.SerializedQueryPlan = pb.SerializedQueryPlan
+	st.Type = pb.Type
+	st.UpdateTime = pb.UpdateTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22461,15 +19647,19 @@ func (st visualizationPb) MarshalJSON() ([]byte, error) {
 
 type WarehouseAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel WarehousePermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func warehouseAccessControlRequestToPb(st *WarehouseAccessControlRequest) (*warehouseAccessControlRequestPb, error) {
@@ -22477,25 +19667,13 @@ func warehouseAccessControlRequestToPb(st *WarehouseAccessControlRequest) (*ware
 		return nil, nil
 	}
 	pb := &warehouseAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22544,22 +19722,10 @@ func warehouseAccessControlRequestFromPb(pb *warehouseAccessControlRequestPb) (*
 		return nil, nil
 	}
 	st := &WarehouseAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22575,17 +19741,22 @@ func (st warehouseAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type WarehouseAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []WarehousePermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func warehouseAccessControlResponseToPb(st *WarehouseAccessControlResponse) (*warehouseAccessControlResponsePb, error) {
@@ -22606,25 +19777,13 @@ func warehouseAccessControlResponseToPb(st *WarehouseAccessControlResponse) (*wa
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22677,32 +19836,20 @@ func warehouseAccessControlResponseFromPb(pb *warehouseAccessControlResponsePb) 
 	st := &WarehouseAccessControlResponse{}
 
 	var allPermissionsField []WarehousePermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := warehousePermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := warehousePermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22717,13 +19864,17 @@ func (st warehouseAccessControlResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type WarehousePermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel WarehousePermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func warehousePermissionToPb(st *WarehousePermission) (*warehousePermissionPb, error) {
@@ -22731,24 +19882,11 @@ func warehousePermissionToPb(st *WarehousePermission) (*warehousePermissionPb, e
 		return nil, nil
 	}
 	pb := &warehousePermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22794,23 +19932,9 @@ func warehousePermissionFromPb(pb *warehousePermissionPb) (*WarehousePermission,
 		return nil, nil
 	}
 	st := &WarehousePermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22876,13 +20000,17 @@ func warehousePermissionLevelFromPb(pb *warehousePermissionLevelPb) (*WarehouseP
 }
 
 type WarehousePermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []WarehouseAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func warehousePermissionsToPb(st *WarehousePermissions) (*warehousePermissionsPb, error) {
@@ -22903,15 +20031,9 @@ func warehousePermissionsToPb(st *WarehousePermissions) (*warehousePermissionsPb
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22959,24 +20081,18 @@ func warehousePermissionsFromPb(pb *warehousePermissionsPb) (*WarehousePermissio
 	st := &WarehousePermissions{}
 
 	var accessControlListField []WarehouseAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := warehouseAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := warehouseAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22991,11 +20107,14 @@ func (st warehousePermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type WarehousePermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel WarehousePermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func warehousePermissionsDescriptionToPb(st *WarehousePermissionsDescription) (*warehousePermissionsDescriptionPb, error) {
@@ -23003,15 +20122,9 @@ func warehousePermissionsDescriptionToPb(st *WarehousePermissionsDescription) (*
 		return nil, nil
 	}
 	pb := &warehousePermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23055,14 +20168,8 @@ func warehousePermissionsDescriptionFromPb(pb *warehousePermissionsDescriptionPb
 		return nil, nil
 	}
 	st := &WarehousePermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23077,9 +20184,12 @@ func (st warehousePermissionsDescriptionPb) MarshalJSON() ([]byte, error) {
 }
 
 type WarehousePermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []WarehouseAccessControlRequest
 	// The SQL warehouse for which to get or manage permissions.
-	WarehouseId string
+	// Wire name: 'warehouse_id'
+	WarehouseId string `tf:"-"`
 }
 
 func warehousePermissionsRequestToPb(st *WarehousePermissionsRequest) (*warehousePermissionsRequestPb, error) {
@@ -23100,10 +20210,7 @@ func warehousePermissionsRequestToPb(st *WarehousePermissionsRequest) (*warehous
 	}
 	pb.AccessControlList = accessControlListPb
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	return pb, nil
 }
@@ -23146,20 +20253,17 @@ func warehousePermissionsRequestFromPb(pb *warehousePermissionsRequestPb) (*Ware
 	st := &WarehousePermissionsRequest{}
 
 	var accessControlListField []WarehouseAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := warehouseAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := warehouseAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.WarehouseId = pb.WarehouseId
 
 	return st, nil
 }
@@ -23167,11 +20271,13 @@ func warehousePermissionsRequestFromPb(pb *warehousePermissionsRequestPb) (*Ware
 type WarehouseTypePair struct {
 	// If set to false the specific warehouse type will not be be allowed as a
 	// value for warehouse_type in CreateWarehouse and EditWarehouse
+	// Wire name: 'enabled'
 	Enabled bool
 	// Warehouse type: `PRO` or `CLASSIC`.
+	// Wire name: 'warehouse_type'
 	WarehouseType WarehouseTypePairWarehouseType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func warehouseTypePairToPb(st *WarehouseTypePair) (*warehouseTypePairPb, error) {
@@ -23179,15 +20285,9 @@ func warehouseTypePairToPb(st *WarehouseTypePair) (*warehouseTypePairPb, error) 
 		return nil, nil
 	}
 	pb := &warehouseTypePairPb{}
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
-	warehouseTypePb := &st.WarehouseType
-	if warehouseTypePb != nil {
-		pb.WarehouseType = *warehouseTypePb
-	}
+	pb.WarehouseType = st.WarehouseType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23233,14 +20333,8 @@ func warehouseTypePairFromPb(pb *warehouseTypePairPb) (*WarehouseTypePair, error
 		return nil, nil
 	}
 	st := &WarehouseTypePair{}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
-	warehouseTypeField := &pb.WarehouseType
-	if warehouseTypeField != nil {
-		st.WarehouseType = *warehouseTypeField
-	}
+	st.Enabled = pb.Enabled
+	st.WarehouseType = pb.WarehouseType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23303,19 +20397,23 @@ func warehouseTypePairWarehouseTypeFromPb(pb *warehouseTypePairWarehouseTypePb) 
 
 type Widget struct {
 	// The unique ID for this widget.
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'options'
 	Options *WidgetOptions
 	// The visualization description API changes frequently and is unsupported.
 	// You can duplicate a visualization by copying description objects received
 	// _from the API_ and then using them to create a new one with a POST
 	// request to the same endpoint. Databricks does not recommend constructing
 	// ad-hoc visualizations entirely in JSON.
+	// Wire name: 'visualization'
 	Visualization *LegacyVisualization
 	// Unused field.
+	// Wire name: 'width'
 	Width int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func widgetToPb(st *Widget) (*widgetPb, error) {
@@ -23323,10 +20421,7 @@ func widgetToPb(st *Widget) (*widgetPb, error) {
 		return nil, nil
 	}
 	pb := &widgetPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	optionsPb, err := widgetOptionsToPb(st.Options)
 	if err != nil {
@@ -23344,10 +20439,7 @@ func widgetToPb(st *Widget) (*widgetPb, error) {
 		pb.Visualization = visualizationPb
 	}
 
-	widthPb := &st.Width
-	if widthPb != nil {
-		pb.Width = *widthPb
-	}
+	pb.Width = st.Width
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23400,10 +20492,7 @@ func widgetFromPb(pb *widgetPb) (*Widget, error) {
 		return nil, nil
 	}
 	st := &Widget{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	optionsField, err := widgetOptionsFromPb(pb.Options)
 	if err != nil {
 		return nil, err
@@ -23418,10 +20507,7 @@ func widgetFromPb(pb *widgetPb) (*Widget, error) {
 	if visualizationField != nil {
 		st.Visualization = visualizationField
 	}
-	widthField := &pb.Width
-	if widthField != nil {
-		st.Width = *widthField
-	}
+	st.Width = pb.Width
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23437,24 +20523,31 @@ func (st widgetPb) MarshalJSON() ([]byte, error) {
 
 type WidgetOptions struct {
 	// Timestamp when this object was created
+	// Wire name: 'created_at'
 	CreatedAt string
 	// Custom description of the widget
+	// Wire name: 'description'
 	Description string
 	// Whether this widget is hidden on the dashboard.
+	// Wire name: 'isHidden'
 	IsHidden bool
 	// How parameters used by the visualization in this widget relate to other
 	// widgets on the dashboard. Databricks does not recommend modifying this
 	// definition in JSON.
+	// Wire name: 'parameterMappings'
 	ParameterMappings any
 	// Coordinates of this widget on a dashboard. This portion of the API
 	// changes frequently and is unsupported.
+	// Wire name: 'position'
 	Position *WidgetPosition
 	// Custom title of the widget
+	// Wire name: 'title'
 	Title string
 	// Timestamp of the last time this object was updated.
+	// Wire name: 'updated_at'
 	UpdatedAt string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func widgetOptionsToPb(st *WidgetOptions) (*widgetOptionsPb, error) {
@@ -23462,25 +20555,13 @@ func widgetOptionsToPb(st *WidgetOptions) (*widgetOptionsPb, error) {
 		return nil, nil
 	}
 	pb := &widgetOptionsPb{}
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	isHiddenPb := &st.IsHidden
-	if isHiddenPb != nil {
-		pb.IsHidden = *isHiddenPb
-	}
+	pb.IsHidden = st.IsHidden
 
-	parameterMappingsPb := &st.ParameterMappings
-	if parameterMappingsPb != nil {
-		pb.ParameterMappings = *parameterMappingsPb
-	}
+	pb.ParameterMappings = st.ParameterMappings
 
 	positionPb, err := widgetPositionToPb(st.Position)
 	if err != nil {
@@ -23490,15 +20571,9 @@ func widgetOptionsToPb(st *WidgetOptions) (*widgetOptionsPb, error) {
 		pb.Position = positionPb
 	}
 
-	titlePb := &st.Title
-	if titlePb != nil {
-		pb.Title = *titlePb
-	}
+	pb.Title = st.Title
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23556,22 +20631,10 @@ func widgetOptionsFromPb(pb *widgetOptionsPb) (*WidgetOptions, error) {
 		return nil, nil
 	}
 	st := &WidgetOptions{}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	isHiddenField := &pb.IsHidden
-	if isHiddenField != nil {
-		st.IsHidden = *isHiddenField
-	}
-	parameterMappingsField := &pb.ParameterMappings
-	if parameterMappingsField != nil {
-		st.ParameterMappings = *parameterMappingsField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.Description = pb.Description
+	st.IsHidden = pb.IsHidden
+	st.ParameterMappings = pb.ParameterMappings
 	positionField, err := widgetPositionFromPb(pb.Position)
 	if err != nil {
 		return nil, err
@@ -23579,14 +20642,8 @@ func widgetOptionsFromPb(pb *widgetOptionsPb) (*WidgetOptions, error) {
 	if positionField != nil {
 		st.Position = positionField
 	}
-	titleField := &pb.Title
-	if titleField != nil {
-		st.Title = *titleField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
+	st.Title = pb.Title
+	st.UpdatedAt = pb.UpdatedAt
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23604,17 +20661,22 @@ func (st widgetOptionsPb) MarshalJSON() ([]byte, error) {
 // frequently and is unsupported.
 type WidgetPosition struct {
 	// reserved for internal use
+	// Wire name: 'autoHeight'
 	AutoHeight bool
 	// column in the dashboard grid. Values start with 0
+	// Wire name: 'col'
 	Col int
 	// row in the dashboard grid. Values start with 0
+	// Wire name: 'row'
 	Row int
 	// width of the widget measured in dashboard grid cells
+	// Wire name: 'sizeX'
 	SizeX int
 	// height of the widget measured in dashboard grid cells
+	// Wire name: 'sizeY'
 	SizeY int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func widgetPositionToPb(st *WidgetPosition) (*widgetPositionPb, error) {
@@ -23622,30 +20684,15 @@ func widgetPositionToPb(st *WidgetPosition) (*widgetPositionPb, error) {
 		return nil, nil
 	}
 	pb := &widgetPositionPb{}
-	autoHeightPb := &st.AutoHeight
-	if autoHeightPb != nil {
-		pb.AutoHeight = *autoHeightPb
-	}
+	pb.AutoHeight = st.AutoHeight
 
-	colPb := &st.Col
-	if colPb != nil {
-		pb.Col = *colPb
-	}
+	pb.Col = st.Col
 
-	rowPb := &st.Row
-	if rowPb != nil {
-		pb.Row = *rowPb
-	}
+	pb.Row = st.Row
 
-	sizeXPb := &st.SizeX
-	if sizeXPb != nil {
-		pb.SizeX = *sizeXPb
-	}
+	pb.SizeX = st.SizeX
 
-	sizeYPb := &st.SizeY
-	if sizeYPb != nil {
-		pb.SizeY = *sizeYPb
-	}
+	pb.SizeY = st.SizeY
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23696,26 +20743,11 @@ func widgetPositionFromPb(pb *widgetPositionPb) (*WidgetPosition, error) {
 		return nil, nil
 	}
 	st := &WidgetPosition{}
-	autoHeightField := &pb.AutoHeight
-	if autoHeightField != nil {
-		st.AutoHeight = *autoHeightField
-	}
-	colField := &pb.Col
-	if colField != nil {
-		st.Col = *colField
-	}
-	rowField := &pb.Row
-	if rowField != nil {
-		st.Row = *rowField
-	}
-	sizeXField := &pb.SizeX
-	if sizeXField != nil {
-		st.SizeX = *sizeXField
-	}
-	sizeYField := &pb.SizeY
-	if sizeYField != nil {
-		st.SizeY = *sizeYField
-	}
+	st.AutoHeight = pb.AutoHeight
+	st.Col = pb.Col
+	st.Row = pb.Row
+	st.SizeX = pb.SizeX
+	st.SizeY = pb.SizeY
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23727,4 +20759,58 @@ func (st *widgetPositionPb) UnmarshalJSON(b []byte) error {
 
 func (st widgetPositionPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

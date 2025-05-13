@@ -30,15 +30,22 @@ func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConver
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &genieMessagePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieMessagePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := genieMessageFromPb(&genieMessagePb)
+	resp, err := genieMessageFromPb(&genieMessagePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -55,15 +62,22 @@ func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request G
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&genieGetMessageQueryResultResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
+	resp, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -80,15 +94,22 @@ func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecut
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&genieGetMessageQueryResultResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
+	resp, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -105,15 +126,22 @@ func (a *genieImpl) GenerateDownloadFullQueryResult(ctx context.Context, request
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGenerateDownloadFullQueryResultResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&genieGenerateDownloadFullQueryResultResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := genieGenerateDownloadFullQueryResultResponseFromPb(&genieGenerateDownloadFullQueryResultResponsePb)
+	resp, err := genieGenerateDownloadFullQueryResultResponseFromPb(&genieGenerateDownloadFullQueryResultResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -130,15 +158,22 @@ func (a *genieImpl) GetDownloadFullQueryResult(ctx context.Context, request Geni
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &genieGetDownloadFullQueryResultResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieGetDownloadFullQueryResultResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := genieGetDownloadFullQueryResultResponseFromPb(&genieGetDownloadFullQueryResultResponsePb)
+	resp, err := genieGetDownloadFullQueryResultResponseFromPb(&genieGetDownloadFullQueryResultResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -155,15 +190,22 @@ func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversation
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &genieMessagePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieMessagePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := genieMessageFromPb(&genieMessagePb)
+	resp, err := genieMessageFromPb(&genieMessagePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -180,15 +222,22 @@ func (a *genieImpl) GetMessageAttachmentQueryResult(ctx context.Context, request
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &genieGetMessageQueryResultResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieGetMessageQueryResultResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
+	resp, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -205,15 +254,22 @@ func (a *genieImpl) GetMessageQueryResult(ctx context.Context, request GenieGetM
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &genieGetMessageQueryResultResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieGetMessageQueryResultResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
+	resp, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -230,15 +286,22 @@ func (a *genieImpl) GetMessageQueryResultByAttachment(ctx context.Context, reque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &genieGetMessageQueryResultResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieGetMessageQueryResultResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
+	resp, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -255,15 +318,22 @@ func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &genieSpacePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieSpacePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := genieSpaceFromPb(&genieSpacePb)
+	resp, err := genieSpaceFromPb(&genieSpacePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -281,15 +351,22 @@ func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartCon
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &genieStartConversationResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieStartConversationResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := genieStartConversationResponseFromPb(&genieStartConversationResponsePb)
+	resp, err := genieStartConversationResponseFromPb(&genieStartConversationResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -312,15 +389,22 @@ func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardReques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).Dashboard, &dashboardPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Dashboard,
+		&dashboardPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := dashboardFromPb(&dashboardPb)
+	resp, err := dashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -338,15 +422,22 @@ func (a *lakeviewImpl) CreateSchedule(ctx context.Context, request CreateSchedul
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).Schedule, &schedulePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Schedule,
+		&schedulePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := scheduleFromPb(&schedulePb)
+	resp, err := scheduleFromPb(&schedulePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -364,15 +455,22 @@ func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSub
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).Subscription, &subscriptionPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Subscription,
+		&subscriptionPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := subscriptionFromPb(&subscriptionPb)
+	resp, err := subscriptionFromPb(&subscriptionPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -389,7 +487,15 @@ func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteSchedul
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteScheduleResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteScheduleResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -409,7 +515,15 @@ func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSub
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteSubscriptionResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteSubscriptionResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -429,15 +543,22 @@ func (a *lakeviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*D
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &dashboardPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&dashboardPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := dashboardFromPb(&dashboardPb)
+	resp, err := dashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -454,15 +575,22 @@ func (a *lakeviewImpl) GetPublished(ctx context.Context, request GetPublishedDas
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &publishedDashboardPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&publishedDashboardPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := publishedDashboardFromPb(&publishedDashboardPb)
+	resp, err := publishedDashboardFromPb(&publishedDashboardPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -479,15 +607,22 @@ func (a *lakeviewImpl) GetSchedule(ctx context.Context, request GetScheduleReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &schedulePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&schedulePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := scheduleFromPb(&schedulePb)
+	resp, err := scheduleFromPb(&schedulePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -504,15 +639,22 @@ func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscript
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &subscriptionPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&subscriptionPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := subscriptionFromPb(&subscriptionPb)
+	resp, err := subscriptionFromPb(&subscriptionPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -560,15 +702,22 @@ func (a *lakeviewImpl) internalList(ctx context.Context, request ListDashboardsR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listDashboardsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listDashboardsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listDashboardsResponseFromPb(&listDashboardsResponsePb)
+	resp, err := listDashboardsResponseFromPb(&listDashboardsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -616,15 +765,22 @@ func (a *lakeviewImpl) internalListSchedules(ctx context.Context, request ListSc
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listSchedulesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listSchedulesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listSchedulesResponseFromPb(&listSchedulesResponsePb)
+	resp, err := listSchedulesResponseFromPb(&listSchedulesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -672,15 +828,22 @@ func (a *lakeviewImpl) internalListSubscriptions(ctx context.Context, request Li
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listSubscriptionsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listSubscriptionsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listSubscriptionsResponseFromPb(&listSubscriptionsResponsePb)
+	resp, err := listSubscriptionsResponseFromPb(&listSubscriptionsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -698,15 +861,22 @@ func (a *lakeviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &dashboardPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&dashboardPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := dashboardFromPb(&dashboardPb)
+	resp, err := dashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -724,15 +894,22 @@ func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*Pu
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &publishedDashboardPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&publishedDashboardPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := publishedDashboardFromPb(&publishedDashboardPb)
+	resp, err := publishedDashboardFromPb(&publishedDashboardPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -749,7 +926,15 @@ func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &trashDashboardResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&trashDashboardResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -769,7 +954,15 @@ func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboard
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &unpublishDashboardResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&unpublishDashboardResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -790,15 +983,22 @@ func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardReques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb).Dashboard, &dashboardPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Dashboard,
+		&dashboardPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := dashboardFromPb(&dashboardPb)
+	resp, err := dashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -816,15 +1016,22 @@ func (a *lakeviewImpl) UpdateSchedule(ctx context.Context, request UpdateSchedul
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb).Schedule, &schedulePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Schedule,
+		&schedulePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := scheduleFromPb(&schedulePb)
+	resp, err := scheduleFromPb(&schedulePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -846,7 +1053,15 @@ func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getPublishedDashboardEmbeddedResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getPublishedDashboardEmbeddedResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -866,15 +1081,22 @@ func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Contex
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getPublishedDashboardTokenInfoResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getPublishedDashboardTokenInfoResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getPublishedDashboardTokenInfoResponseFromPb(&getPublishedDashboardTokenInfoResponsePb)
+	resp, err := getPublishedDashboardTokenInfoResponseFromPb(&getPublishedDashboardTokenInfoResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -896,15 +1118,22 @@ func (a *queryExecutionImpl) CancelPublishedQueryExecution(ctx context.Context, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &cancelQueryExecutionResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&cancelQueryExecutionResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := cancelQueryExecutionResponseFromPb(&cancelQueryExecutionResponsePb)
+	resp, err := cancelQueryExecutionResponseFromPb(&cancelQueryExecutionResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -922,7 +1151,15 @@ func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context,
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &executeQueryResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&executeQueryResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -942,15 +1179,22 @@ func (a *queryExecutionImpl) PollPublishedQueryStatus(ctx context.Context, reque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &pollQueryStatusResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&pollQueryStatusResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := pollQueryStatusResponseFromPb(&pollQueryStatusResponsePb)
+	resp, err := pollQueryStatusResponseFromPb(&pollQueryStatusResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }

@@ -12,90 +12,25 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type AuthorizationDetails struct {
 	// Represents downscoped permission rules with specific access rights. This
 	// field is specific to `workspace_rule_set` constraint.
+	// Wire name: 'grant_rules'
 	GrantRules []AuthorizationDetailsGrantRule
 	// The acl path of the tree store resource resource.
+	// Wire name: 'resource_legacy_acl_path'
 	ResourceLegacyAclPath string
 	// The resource name to which the authorization rule applies. This field is
 	// specific to `workspace_rule_set` constraint. Format:
 	// `workspaces/{workspace_id}/dashboards/{dashboard_id}`
+	// Wire name: 'resource_name'
 	ResourceName string
 	// The type of authorization downscoping policy. Ex: `workspace_rule_set`
 	// defines access rules for a specific workspace resource
+	// Wire name: 'type'
 	Type string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func authorizationDetailsToPb(st *AuthorizationDetails) (*authorizationDetailsPb, error) {
@@ -116,20 +51,11 @@ func authorizationDetailsToPb(st *AuthorizationDetails) (*authorizationDetailsPb
 	}
 	pb.GrantRules = grantRulesPb
 
-	resourceLegacyAclPathPb := &st.ResourceLegacyAclPath
-	if resourceLegacyAclPathPb != nil {
-		pb.ResourceLegacyAclPath = *resourceLegacyAclPathPb
-	}
+	pb.ResourceLegacyAclPath = st.ResourceLegacyAclPath
 
-	resourceNamePb := &st.ResourceName
-	if resourceNamePb != nil {
-		pb.ResourceName = *resourceNamePb
-	}
+	pb.ResourceName = st.ResourceName
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -184,28 +110,19 @@ func authorizationDetailsFromPb(pb *authorizationDetailsPb) (*AuthorizationDetai
 	st := &AuthorizationDetails{}
 
 	var grantRulesField []AuthorizationDetailsGrantRule
-	for _, item := range pb.GrantRules {
-		itemField, err := authorizationDetailsGrantRuleFromPb(&item)
+	for _, itemPb := range pb.GrantRules {
+		item, err := authorizationDetailsGrantRuleFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			grantRulesField = append(grantRulesField, *itemField)
+		if item != nil {
+			grantRulesField = append(grantRulesField, *item)
 		}
 	}
 	st.GrantRules = grantRulesField
-	resourceLegacyAclPathField := &pb.ResourceLegacyAclPath
-	if resourceLegacyAclPathField != nil {
-		st.ResourceLegacyAclPath = *resourceLegacyAclPathField
-	}
-	resourceNameField := &pb.ResourceName
-	if resourceNameField != nil {
-		st.ResourceName = *resourceNameField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.ResourceLegacyAclPath = pb.ResourceLegacyAclPath
+	st.ResourceName = pb.ResourceName
+	st.Type = pb.Type
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -223,9 +140,10 @@ type AuthorizationDetailsGrantRule struct {
 	// Permission sets for dashboard are defined in
 	// iam-common/rbac-common/permission-sets/definitions/TreeStoreBasePermissionSets
 	// Ex: `permissionSets/dashboard.runner`
+	// Wire name: 'permission_set'
 	PermissionSet string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func authorizationDetailsGrantRuleToPb(st *AuthorizationDetailsGrantRule) (*authorizationDetailsGrantRulePb, error) {
@@ -233,10 +151,7 @@ func authorizationDetailsGrantRuleToPb(st *AuthorizationDetailsGrantRule) (*auth
 		return nil, nil
 	}
 	pb := &authorizationDetailsGrantRulePb{}
-	permissionSetPb := &st.PermissionSet
-	if permissionSetPb != nil {
-		pb.PermissionSet = *permissionSetPb
-	}
+	pb.PermissionSet = st.PermissionSet
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -281,10 +196,7 @@ func authorizationDetailsGrantRuleFromPb(pb *authorizationDetailsGrantRulePb) (*
 		return nil, nil
 	}
 	st := &AuthorizationDetailsGrantRule{}
-	permissionSetField := &pb.PermissionSet
-	if permissionSetField != nil {
-		st.PermissionSet = *permissionSetField
-	}
+	st.PermissionSet = pb.PermissionSet
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -300,12 +212,16 @@ func (st authorizationDetailsGrantRulePb) MarshalJSON() ([]byte, error) {
 
 // Cancel the results for the a query for a published, embedded dashboard
 type CancelPublishedQueryExecutionRequest struct {
-	DashboardName string
 
-	DashboardRevisionId string
+	// Wire name: 'dashboard_name'
+	DashboardName string `tf:"-"`
+
+	// Wire name: 'dashboard_revision_id'
+	DashboardRevisionId string `tf:"-"`
 	// Example:
 	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
-	Tokens []string
+	// Wire name: 'tokens'
+	Tokens []string `tf:"-"`
 }
 
 func cancelPublishedQueryExecutionRequestToPb(st *CancelPublishedQueryExecutionRequest) (*cancelPublishedQueryExecutionRequestPb, error) {
@@ -313,24 +229,11 @@ func cancelPublishedQueryExecutionRequestToPb(st *CancelPublishedQueryExecutionR
 		return nil, nil
 	}
 	pb := &cancelPublishedQueryExecutionRequestPb{}
-	dashboardNamePb := &st.DashboardName
-	if dashboardNamePb != nil {
-		pb.DashboardName = *dashboardNamePb
-	}
+	pb.DashboardName = st.DashboardName
 
-	dashboardRevisionIdPb := &st.DashboardRevisionId
-	if dashboardRevisionIdPb != nil {
-		pb.DashboardRevisionId = *dashboardRevisionIdPb
-	}
+	pb.DashboardRevisionId = st.DashboardRevisionId
 
-	var tokensPb []string
-	for _, item := range st.Tokens {
-		itemPb := &item
-		if itemPb != nil {
-			tokensPb = append(tokensPb, *itemPb)
-		}
-	}
-	pb.Tokens = tokensPb
+	pb.Tokens = st.Tokens
 
 	return pb, nil
 }
@@ -374,28 +277,16 @@ func cancelPublishedQueryExecutionRequestFromPb(pb *cancelPublishedQueryExecutio
 		return nil, nil
 	}
 	st := &CancelPublishedQueryExecutionRequest{}
-	dashboardNameField := &pb.DashboardName
-	if dashboardNameField != nil {
-		st.DashboardName = *dashboardNameField
-	}
-	dashboardRevisionIdField := &pb.DashboardRevisionId
-	if dashboardRevisionIdField != nil {
-		st.DashboardRevisionId = *dashboardRevisionIdField
-	}
-
-	var tokensField []string
-	for _, item := range pb.Tokens {
-		itemField := &item
-		if itemField != nil {
-			tokensField = append(tokensField, *itemField)
-		}
-	}
-	st.Tokens = tokensField
+	st.DashboardName = pb.DashboardName
+	st.DashboardRevisionId = pb.DashboardRevisionId
+	st.Tokens = pb.Tokens
 
 	return st, nil
 }
 
 type CancelQueryExecutionResponse struct {
+
+	// Wire name: 'status'
 	Status []CancelQueryExecutionResponseStatus
 }
 
@@ -456,13 +347,13 @@ func cancelQueryExecutionResponseFromPb(pb *cancelQueryExecutionResponsePb) (*Ca
 	st := &CancelQueryExecutionResponse{}
 
 	var statusField []CancelQueryExecutionResponseStatus
-	for _, item := range pb.Status {
-		itemField, err := cancelQueryExecutionResponseStatusFromPb(&item)
+	for _, itemPb := range pb.Status {
+		item, err := cancelQueryExecutionResponseStatusFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			statusField = append(statusField, *itemField)
+		if item != nil {
+			statusField = append(statusField, *item)
 		}
 	}
 	st.Status = statusField
@@ -473,12 +364,15 @@ func cancelQueryExecutionResponseFromPb(pb *cancelQueryExecutionResponsePb) (*Ca
 type CancelQueryExecutionResponseStatus struct {
 	// The token to poll for result asynchronously Example:
 	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	// Wire name: 'data_token'
 	DataToken string
 	// Represents an empty message, similar to google.protobuf.Empty, which is
 	// not available in the firm right now.
+	// Wire name: 'pending'
 	Pending *Empty
 	// Represents an empty message, similar to google.protobuf.Empty, which is
 	// not available in the firm right now.
+	// Wire name: 'success'
 	Success *Empty
 }
 
@@ -487,10 +381,7 @@ func cancelQueryExecutionResponseStatusToPb(st *CancelQueryExecutionResponseStat
 		return nil, nil
 	}
 	pb := &cancelQueryExecutionResponseStatusPb{}
-	dataTokenPb := &st.DataToken
-	if dataTokenPb != nil {
-		pb.DataToken = *dataTokenPb
-	}
+	pb.DataToken = st.DataToken
 
 	pendingPb, err := emptyToPb(st.Pending)
 	if err != nil {
@@ -553,10 +444,7 @@ func cancelQueryExecutionResponseStatusFromPb(pb *cancelQueryExecutionResponseSt
 		return nil, nil
 	}
 	st := &CancelQueryExecutionResponseStatus{}
-	dataTokenField := &pb.DataToken
-	if dataTokenField != nil {
-		st.DataToken = *dataTokenField
-	}
+	st.DataToken = pb.DataToken
 	pendingField, err := emptyFromPb(pb.Pending)
 	if err != nil {
 		return nil, err
@@ -577,6 +465,8 @@ func cancelQueryExecutionResponseStatusFromPb(pb *cancelQueryExecutionResponseSt
 
 // Create dashboard
 type CreateDashboardRequest struct {
+
+	// Wire name: 'dashboard'
 	Dashboard Dashboard
 }
 
@@ -644,8 +534,10 @@ func createDashboardRequestFromPb(pb *createDashboardRequestPb) (*CreateDashboar
 // Create dashboard schedule
 type CreateScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 
+	// Wire name: 'schedule'
 	Schedule Schedule
 }
 
@@ -654,10 +546,7 @@ func createScheduleRequestToPb(st *CreateScheduleRequest) (*createScheduleReques
 		return nil, nil
 	}
 	pb := &createScheduleRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	schedulePb, err := scheduleToPb(&st.Schedule)
 	if err != nil {
@@ -707,10 +596,7 @@ func createScheduleRequestFromPb(pb *createScheduleRequestPb) (*CreateScheduleRe
 		return nil, nil
 	}
 	st := &CreateScheduleRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 	scheduleField, err := scheduleFromPb(&pb.Schedule)
 	if err != nil {
 		return nil, err
@@ -725,10 +611,13 @@ func createScheduleRequestFromPb(pb *createScheduleRequestPb) (*CreateScheduleRe
 // Create schedule subscription
 type CreateSubscriptionRequest struct {
 	// UUID identifying the dashboard to which the subscription belongs.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 	// UUID identifying the schedule to which the subscription belongs.
-	ScheduleId string
+	// Wire name: 'schedule_id'
+	ScheduleId string `tf:"-"`
 
+	// Wire name: 'subscription'
 	Subscription Subscription
 }
 
@@ -737,15 +626,9 @@ func createSubscriptionRequestToPb(st *CreateSubscriptionRequest) (*createSubscr
 		return nil, nil
 	}
 	pb := &createSubscriptionRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	scheduleIdPb := &st.ScheduleId
-	if scheduleIdPb != nil {
-		pb.ScheduleId = *scheduleIdPb
-	}
+	pb.ScheduleId = st.ScheduleId
 
 	subscriptionPb, err := subscriptionToPb(&st.Subscription)
 	if err != nil {
@@ -797,14 +680,8 @@ func createSubscriptionRequestFromPb(pb *createSubscriptionRequestPb) (*CreateSu
 		return nil, nil
 	}
 	st := &CreateSubscriptionRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	scheduleIdField := &pb.ScheduleId
-	if scheduleIdField != nil {
-		st.ScheduleId = *scheduleIdField
-	}
+	st.DashboardId = pb.DashboardId
+	st.ScheduleId = pb.ScheduleId
 	subscriptionField, err := subscriptionFromPb(&pb.Subscription)
 	if err != nil {
 		return nil, err
@@ -821,11 +698,13 @@ type CronSchedule struct {
 	// everyday at 8am. See [Cron Trigger] for details.
 	//
 	// [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
+	// Wire name: 'quartz_cron_expression'
 	QuartzCronExpression string
 	// A Java timezone id. The schedule will be resolved with respect to this
 	// timezone. See [Java TimeZone] for details.
 	//
 	// [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html
+	// Wire name: 'timezone_id'
 	TimezoneId string
 }
 
@@ -834,15 +713,9 @@ func cronScheduleToPb(st *CronSchedule) (*cronSchedulePb, error) {
 		return nil, nil
 	}
 	pb := &cronSchedulePb{}
-	quartzCronExpressionPb := &st.QuartzCronExpression
-	if quartzCronExpressionPb != nil {
-		pb.QuartzCronExpression = *quartzCronExpressionPb
-	}
+	pb.QuartzCronExpression = st.QuartzCronExpression
 
-	timezoneIdPb := &st.TimezoneId
-	if timezoneIdPb != nil {
-		pb.TimezoneId = *timezoneIdPb
-	}
+	pb.TimezoneId = st.TimezoneId
 
 	return pb, nil
 }
@@ -890,38 +763,39 @@ func cronScheduleFromPb(pb *cronSchedulePb) (*CronSchedule, error) {
 		return nil, nil
 	}
 	st := &CronSchedule{}
-	quartzCronExpressionField := &pb.QuartzCronExpression
-	if quartzCronExpressionField != nil {
-		st.QuartzCronExpression = *quartzCronExpressionField
-	}
-	timezoneIdField := &pb.TimezoneId
-	if timezoneIdField != nil {
-		st.TimezoneId = *timezoneIdField
-	}
+	st.QuartzCronExpression = pb.QuartzCronExpression
+	st.TimezoneId = pb.TimezoneId
 
 	return st, nil
 }
 
 type Dashboard struct {
 	// The timestamp of when the dashboard was created.
+	// Wire name: 'create_time'
 	CreateTime string
 	// UUID identifying the dashboard.
+	// Wire name: 'dashboard_id'
 	DashboardId string
 	// The display name of the dashboard.
+	// Wire name: 'display_name'
 	DisplayName string
 	// The etag for the dashboard. Can be optionally provided on updates to
 	// ensure that the dashboard has not been modified since the last read. This
 	// field is excluded in List Dashboards responses.
+	// Wire name: 'etag'
 	Etag string
 	// The state of the dashboard resource. Used for tracking trashed status.
+	// Wire name: 'lifecycle_state'
 	LifecycleState LifecycleState
 	// The workspace path of the folder containing the dashboard. Includes
 	// leading slash and no trailing slash. This field is excluded in List
 	// Dashboards responses.
+	// Wire name: 'parent_path'
 	ParentPath string
 	// The workspace path of the dashboard asset, including the file name.
 	// Exported dashboards always have the file extension `.lvdash.json`. This
 	// field is excluded in List Dashboards responses.
+	// Wire name: 'path'
 	Path string
 	// The contents of the dashboard in serialized string form. This field is
 	// excluded in List Dashboards responses. Use the [get dashboard API] to
@@ -930,14 +804,17 @@ type Dashboard struct {
 	// represents the dashboard's layout and components.
 	//
 	// [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
+	// Wire name: 'serialized_dashboard'
 	SerializedDashboard string
 	// The timestamp of when the dashboard was last updated by the user. This
 	// field is excluded in List Dashboards responses.
+	// Wire name: 'update_time'
 	UpdateTime string
 	// The warehouse ID used to run the dashboard.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dashboardToPb(st *Dashboard) (*dashboardPb, error) {
@@ -945,55 +822,25 @@ func dashboardToPb(st *Dashboard) (*dashboardPb, error) {
 		return nil, nil
 	}
 	pb := &dashboardPb{}
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	lifecycleStatePb := &st.LifecycleState
-	if lifecycleStatePb != nil {
-		pb.LifecycleState = *lifecycleStatePb
-	}
+	pb.LifecycleState = st.LifecycleState
 
-	parentPathPb := &st.ParentPath
-	if parentPathPb != nil {
-		pb.ParentPath = *parentPathPb
-	}
+	pb.ParentPath = st.ParentPath
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	serializedDashboardPb := &st.SerializedDashboard
-	if serializedDashboardPb != nil {
-		pb.SerializedDashboard = *serializedDashboardPb
-	}
+	pb.SerializedDashboard = st.SerializedDashboard
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1067,46 +914,16 @@ func dashboardFromPb(pb *dashboardPb) (*Dashboard, error) {
 		return nil, nil
 	}
 	st := &Dashboard{}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	lifecycleStateField := &pb.LifecycleState
-	if lifecycleStateField != nil {
-		st.LifecycleState = *lifecycleStateField
-	}
-	parentPathField := &pb.ParentPath
-	if parentPathField != nil {
-		st.ParentPath = *parentPathField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	serializedDashboardField := &pb.SerializedDashboard
-	if serializedDashboardField != nil {
-		st.SerializedDashboard = *serializedDashboardField
-	}
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.CreateTime = pb.CreateTime
+	st.DashboardId = pb.DashboardId
+	st.DisplayName = pb.DisplayName
+	st.Etag = pb.Etag
+	st.LifecycleState = pb.LifecycleState
+	st.ParentPath = pb.ParentPath
+	st.Path = pb.Path
+	st.SerializedDashboard = pb.SerializedDashboard
+	st.UpdateTime = pb.UpdateTime
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1165,14 +982,17 @@ func dashboardViewFromPb(pb *dashboardViewPb) (*DashboardView, error) {
 // Delete dashboard schedule
 type DeleteScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 	// The etag for the schedule. Optionally, it can be provided to verify that
 	// the schedule has not been modified from its last retrieval.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 	// UUID identifying the schedule.
-	ScheduleId string
+	// Wire name: 'schedule_id'
+	ScheduleId string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteScheduleRequestToPb(st *DeleteScheduleRequest) (*deleteScheduleRequestPb, error) {
@@ -1180,20 +1000,11 @@ func deleteScheduleRequestToPb(st *DeleteScheduleRequest) (*deleteScheduleReques
 		return nil, nil
 	}
 	pb := &deleteScheduleRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	scheduleIdPb := &st.ScheduleId
-	if scheduleIdPb != nil {
-		pb.ScheduleId = *scheduleIdPb
-	}
+	pb.ScheduleId = st.ScheduleId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1241,18 +1052,9 @@ func deleteScheduleRequestFromPb(pb *deleteScheduleRequestPb) (*DeleteScheduleRe
 		return nil, nil
 	}
 	st := &DeleteScheduleRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	scheduleIdField := &pb.ScheduleId
-	if scheduleIdField != nil {
-		st.ScheduleId = *scheduleIdField
-	}
+	st.DashboardId = pb.DashboardId
+	st.Etag = pb.Etag
+	st.ScheduleId = pb.ScheduleId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1318,16 +1120,20 @@ func deleteScheduleResponseFromPb(pb *deleteScheduleResponsePb) (*DeleteSchedule
 // Delete schedule subscription
 type DeleteSubscriptionRequest struct {
 	// UUID identifying the dashboard which the subscription belongs.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 	// The etag for the subscription. Can be optionally provided to ensure that
 	// the subscription has not been modified since the last read.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 	// UUID identifying the schedule which the subscription belongs.
-	ScheduleId string
+	// Wire name: 'schedule_id'
+	ScheduleId string `tf:"-"`
 	// UUID identifying the subscription.
-	SubscriptionId string
+	// Wire name: 'subscription_id'
+	SubscriptionId string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteSubscriptionRequestToPb(st *DeleteSubscriptionRequest) (*deleteSubscriptionRequestPb, error) {
@@ -1335,25 +1141,13 @@ func deleteSubscriptionRequestToPb(st *DeleteSubscriptionRequest) (*deleteSubscr
 		return nil, nil
 	}
 	pb := &deleteSubscriptionRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	scheduleIdPb := &st.ScheduleId
-	if scheduleIdPb != nil {
-		pb.ScheduleId = *scheduleIdPb
-	}
+	pb.ScheduleId = st.ScheduleId
 
-	subscriptionIdPb := &st.SubscriptionId
-	if subscriptionIdPb != nil {
-		pb.SubscriptionId = *subscriptionIdPb
-	}
+	pb.SubscriptionId = st.SubscriptionId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1403,22 +1197,10 @@ func deleteSubscriptionRequestFromPb(pb *deleteSubscriptionRequestPb) (*DeleteSu
 		return nil, nil
 	}
 	st := &DeleteSubscriptionRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	scheduleIdField := &pb.ScheduleId
-	if scheduleIdField != nil {
-		st.ScheduleId = *scheduleIdField
-	}
-	subscriptionIdField := &pb.SubscriptionId
-	if subscriptionIdField != nil {
-		st.SubscriptionId = *subscriptionIdField
-	}
+	st.DashboardId = pb.DashboardId
+	st.Etag = pb.Etag
+	st.ScheduleId = pb.ScheduleId
+	st.SubscriptionId = pb.SubscriptionId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1540,14 +1322,17 @@ type ExecutePublishedDashboardQueryRequest struct {
 	// Dashboard name and revision_id is required to retrieve
 	// PublishedDatasetDataModel which contains the list of datasets,
 	// warehouse_id, and embedded_credentials
+	// Wire name: 'dashboard_name'
 	DashboardName string
 
+	// Wire name: 'dashboard_revision_id'
 	DashboardRevisionId string
 	// A dashboard schedule can override the warehouse used as compute for
 	// processing the published dashboard queries
+	// Wire name: 'override_warehouse_id'
 	OverrideWarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func executePublishedDashboardQueryRequestToPb(st *ExecutePublishedDashboardQueryRequest) (*executePublishedDashboardQueryRequestPb, error) {
@@ -1555,20 +1340,11 @@ func executePublishedDashboardQueryRequestToPb(st *ExecutePublishedDashboardQuer
 		return nil, nil
 	}
 	pb := &executePublishedDashboardQueryRequestPb{}
-	dashboardNamePb := &st.DashboardName
-	if dashboardNamePb != nil {
-		pb.DashboardName = *dashboardNamePb
-	}
+	pb.DashboardName = st.DashboardName
 
-	dashboardRevisionIdPb := &st.DashboardRevisionId
-	if dashboardRevisionIdPb != nil {
-		pb.DashboardRevisionId = *dashboardRevisionIdPb
-	}
+	pb.DashboardRevisionId = st.DashboardRevisionId
 
-	overrideWarehouseIdPb := &st.OverrideWarehouseId
-	if overrideWarehouseIdPb != nil {
-		pb.OverrideWarehouseId = *overrideWarehouseIdPb
-	}
+	pb.OverrideWarehouseId = st.OverrideWarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1618,18 +1394,9 @@ func executePublishedDashboardQueryRequestFromPb(pb *executePublishedDashboardQu
 		return nil, nil
 	}
 	st := &ExecutePublishedDashboardQueryRequest{}
-	dashboardNameField := &pb.DashboardName
-	if dashboardNameField != nil {
-		st.DashboardName = *dashboardNameField
-	}
-	dashboardRevisionIdField := &pb.DashboardRevisionId
-	if dashboardRevisionIdField != nil {
-		st.DashboardRevisionId = *dashboardRevisionIdField
-	}
-	overrideWarehouseIdField := &pb.OverrideWarehouseId
-	if overrideWarehouseIdField != nil {
-		st.OverrideWarehouseId = *overrideWarehouseIdField
-	}
+	st.DashboardName = pb.DashboardName
+	st.DashboardRevisionId = pb.DashboardRevisionId
+	st.OverrideWarehouseId = pb.OverrideWarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1695,13 +1462,16 @@ func executeQueryResponseFromPb(pb *executeQueryResponsePb) (*ExecuteQueryRespon
 // Genie AI Response
 type GenieAttachment struct {
 	// Attachment ID
+	// Wire name: 'attachment_id'
 	AttachmentId string
 	// Query Attachment if Genie responds with a SQL query
+	// Wire name: 'query'
 	Query *GenieQueryAttachment
 	// Text Attachment if Genie responds with text
+	// Wire name: 'text'
 	Text *TextAttachment
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func genieAttachmentToPb(st *GenieAttachment) (*genieAttachmentPb, error) {
@@ -1709,10 +1479,7 @@ func genieAttachmentToPb(st *GenieAttachment) (*genieAttachmentPb, error) {
 		return nil, nil
 	}
 	pb := &genieAttachmentPb{}
-	attachmentIdPb := &st.AttachmentId
-	if attachmentIdPb != nil {
-		pb.AttachmentId = *attachmentIdPb
-	}
+	pb.AttachmentId = st.AttachmentId
 
 	queryPb, err := genieQueryAttachmentToPb(st.Query)
 	if err != nil {
@@ -1775,10 +1542,7 @@ func genieAttachmentFromPb(pb *genieAttachmentPb) (*GenieAttachment, error) {
 		return nil, nil
 	}
 	st := &GenieAttachment{}
-	attachmentIdField := &pb.AttachmentId
-	if attachmentIdField != nil {
-		st.AttachmentId = *attachmentIdField
-	}
+	st.AttachmentId = pb.AttachmentId
 	queryField, err := genieQueryAttachmentFromPb(pb.Query)
 	if err != nil {
 		return nil, err
@@ -1808,21 +1572,28 @@ func (st genieAttachmentPb) MarshalJSON() ([]byte, error) {
 
 type GenieConversation struct {
 	// Conversation ID
+	// Wire name: 'conversation_id'
 	ConversationId string
 	// Timestamp when the message was created
+	// Wire name: 'created_timestamp'
 	CreatedTimestamp int64
 	// Conversation ID. Legacy identifier, use conversation_id instead
+	// Wire name: 'id'
 	Id string
 	// Timestamp when the message was last updated
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// Genie space ID
+	// Wire name: 'space_id'
 	SpaceId string
 	// Conversation title
+	// Wire name: 'title'
 	Title string
 	// ID of the user who created the conversation
+	// Wire name: 'user_id'
 	UserId int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func genieConversationToPb(st *GenieConversation) (*genieConversationPb, error) {
@@ -1830,40 +1601,19 @@ func genieConversationToPb(st *GenieConversation) (*genieConversationPb, error) 
 		return nil, nil
 	}
 	pb := &genieConversationPb{}
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
-	createdTimestampPb := &st.CreatedTimestamp
-	if createdTimestampPb != nil {
-		pb.CreatedTimestamp = *createdTimestampPb
-	}
+	pb.CreatedTimestamp = st.CreatedTimestamp
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
-	titlePb := &st.Title
-	if titlePb != nil {
-		pb.Title = *titlePb
-	}
+	pb.Title = st.Title
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1918,34 +1668,13 @@ func genieConversationFromPb(pb *genieConversationPb) (*GenieConversation, error
 		return nil, nil
 	}
 	st := &GenieConversation{}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
-	createdTimestampField := &pb.CreatedTimestamp
-	if createdTimestampField != nil {
-		st.CreatedTimestamp = *createdTimestampField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
-	titleField := &pb.Title
-	if titleField != nil {
-		st.Title = *titleField
-	}
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.ConversationId = pb.ConversationId
+	st.CreatedTimestamp = pb.CreatedTimestamp
+	st.Id = pb.Id
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
+	st.SpaceId = pb.SpaceId
+	st.Title = pb.Title
+	st.UserId = pb.UserId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1961,11 +1690,14 @@ func (st genieConversationPb) MarshalJSON() ([]byte, error) {
 
 type GenieCreateConversationMessageRequest struct {
 	// User message content.
+	// Wire name: 'content'
 	Content string
 	// The ID associated with the conversation.
-	ConversationId string
+	// Wire name: 'conversation_id'
+	ConversationId string `tf:"-"`
 	// The ID associated with the Genie space where the conversation is started.
-	SpaceId string
+	// Wire name: 'space_id'
+	SpaceId string `tf:"-"`
 }
 
 func genieCreateConversationMessageRequestToPb(st *GenieCreateConversationMessageRequest) (*genieCreateConversationMessageRequestPb, error) {
@@ -1973,20 +1705,11 @@ func genieCreateConversationMessageRequestToPb(st *GenieCreateConversationMessag
 		return nil, nil
 	}
 	pb := &genieCreateConversationMessageRequestPb{}
-	contentPb := &st.Content
-	if contentPb != nil {
-		pb.Content = *contentPb
-	}
+	pb.Content = st.Content
 
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
@@ -2030,18 +1753,9 @@ func genieCreateConversationMessageRequestFromPb(pb *genieCreateConversationMess
 		return nil, nil
 	}
 	st := &GenieCreateConversationMessageRequest{}
-	contentField := &pb.Content
-	if contentField != nil {
-		st.Content = *contentField
-	}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
+	st.Content = pb.Content
+	st.ConversationId = pb.ConversationId
+	st.SpaceId = pb.SpaceId
 
 	return st, nil
 }
@@ -2049,13 +1763,17 @@ func genieCreateConversationMessageRequestFromPb(pb *genieCreateConversationMess
 // Execute message attachment SQL query
 type GenieExecuteMessageAttachmentQueryRequest struct {
 	// Attachment ID
-	AttachmentId string
+	// Wire name: 'attachment_id'
+	AttachmentId string `tf:"-"`
 	// Conversation ID
-	ConversationId string
+	// Wire name: 'conversation_id'
+	ConversationId string `tf:"-"`
 	// Message ID
-	MessageId string
+	// Wire name: 'message_id'
+	MessageId string `tf:"-"`
 	// Genie space ID
-	SpaceId string
+	// Wire name: 'space_id'
+	SpaceId string `tf:"-"`
 }
 
 func genieExecuteMessageAttachmentQueryRequestToPb(st *GenieExecuteMessageAttachmentQueryRequest) (*genieExecuteMessageAttachmentQueryRequestPb, error) {
@@ -2063,25 +1781,13 @@ func genieExecuteMessageAttachmentQueryRequestToPb(st *GenieExecuteMessageAttach
 		return nil, nil
 	}
 	pb := &genieExecuteMessageAttachmentQueryRequestPb{}
-	attachmentIdPb := &st.AttachmentId
-	if attachmentIdPb != nil {
-		pb.AttachmentId = *attachmentIdPb
-	}
+	pb.AttachmentId = st.AttachmentId
 
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
-	messageIdPb := &st.MessageId
-	if messageIdPb != nil {
-		pb.MessageId = *messageIdPb
-	}
+	pb.MessageId = st.MessageId
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
@@ -2127,22 +1833,10 @@ func genieExecuteMessageAttachmentQueryRequestFromPb(pb *genieExecuteMessageAtta
 		return nil, nil
 	}
 	st := &GenieExecuteMessageAttachmentQueryRequest{}
-	attachmentIdField := &pb.AttachmentId
-	if attachmentIdField != nil {
-		st.AttachmentId = *attachmentIdField
-	}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
-	messageIdField := &pb.MessageId
-	if messageIdField != nil {
-		st.MessageId = *messageIdField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
+	st.AttachmentId = pb.AttachmentId
+	st.ConversationId = pb.ConversationId
+	st.MessageId = pb.MessageId
+	st.SpaceId = pb.SpaceId
 
 	return st, nil
 }
@@ -2150,11 +1844,14 @@ func genieExecuteMessageAttachmentQueryRequestFromPb(pb *genieExecuteMessageAtta
 // [Deprecated] Execute SQL query in a conversation message
 type GenieExecuteMessageQueryRequest struct {
 	// Conversation ID
-	ConversationId string
+	// Wire name: 'conversation_id'
+	ConversationId string `tf:"-"`
 	// Message ID
-	MessageId string
+	// Wire name: 'message_id'
+	MessageId string `tf:"-"`
 	// Genie space ID
-	SpaceId string
+	// Wire name: 'space_id'
+	SpaceId string `tf:"-"`
 }
 
 func genieExecuteMessageQueryRequestToPb(st *GenieExecuteMessageQueryRequest) (*genieExecuteMessageQueryRequestPb, error) {
@@ -2162,20 +1859,11 @@ func genieExecuteMessageQueryRequestToPb(st *GenieExecuteMessageQueryRequest) (*
 		return nil, nil
 	}
 	pb := &genieExecuteMessageQueryRequestPb{}
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
-	messageIdPb := &st.MessageId
-	if messageIdPb != nil {
-		pb.MessageId = *messageIdPb
-	}
+	pb.MessageId = st.MessageId
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
@@ -2219,18 +1907,9 @@ func genieExecuteMessageQueryRequestFromPb(pb *genieExecuteMessageQueryRequestPb
 		return nil, nil
 	}
 	st := &GenieExecuteMessageQueryRequest{}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
-	messageIdField := &pb.MessageId
-	if messageIdField != nil {
-		st.MessageId = *messageIdField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
+	st.ConversationId = pb.ConversationId
+	st.MessageId = pb.MessageId
+	st.SpaceId = pb.SpaceId
 
 	return st, nil
 }
@@ -2238,13 +1917,17 @@ func genieExecuteMessageQueryRequestFromPb(pb *genieExecuteMessageQueryRequestPb
 // Generate full query result download
 type GenieGenerateDownloadFullQueryResultRequest struct {
 	// Attachment ID
-	AttachmentId string
+	// Wire name: 'attachment_id'
+	AttachmentId string `tf:"-"`
 	// Conversation ID
-	ConversationId string
+	// Wire name: 'conversation_id'
+	ConversationId string `tf:"-"`
 	// Message ID
-	MessageId string
+	// Wire name: 'message_id'
+	MessageId string `tf:"-"`
 	// Genie space ID
-	SpaceId string
+	// Wire name: 'space_id'
+	SpaceId string `tf:"-"`
 }
 
 func genieGenerateDownloadFullQueryResultRequestToPb(st *GenieGenerateDownloadFullQueryResultRequest) (*genieGenerateDownloadFullQueryResultRequestPb, error) {
@@ -2252,25 +1935,13 @@ func genieGenerateDownloadFullQueryResultRequestToPb(st *GenieGenerateDownloadFu
 		return nil, nil
 	}
 	pb := &genieGenerateDownloadFullQueryResultRequestPb{}
-	attachmentIdPb := &st.AttachmentId
-	if attachmentIdPb != nil {
-		pb.AttachmentId = *attachmentIdPb
-	}
+	pb.AttachmentId = st.AttachmentId
 
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
-	messageIdPb := &st.MessageId
-	if messageIdPb != nil {
-		pb.MessageId = *messageIdPb
-	}
+	pb.MessageId = st.MessageId
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
@@ -2316,22 +1987,10 @@ func genieGenerateDownloadFullQueryResultRequestFromPb(pb *genieGenerateDownload
 		return nil, nil
 	}
 	st := &GenieGenerateDownloadFullQueryResultRequest{}
-	attachmentIdField := &pb.AttachmentId
-	if attachmentIdField != nil {
-		st.AttachmentId = *attachmentIdField
-	}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
-	messageIdField := &pb.MessageId
-	if messageIdField != nil {
-		st.MessageId = *messageIdField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
+	st.AttachmentId = pb.AttachmentId
+	st.ConversationId = pb.ConversationId
+	st.MessageId = pb.MessageId
+	st.SpaceId = pb.SpaceId
 
 	return st, nil
 }
@@ -2339,9 +1998,10 @@ func genieGenerateDownloadFullQueryResultRequestFromPb(pb *genieGenerateDownload
 type GenieGenerateDownloadFullQueryResultResponse struct {
 	// Download ID. Use this ID to track the download request in subsequent
 	// polling calls
+	// Wire name: 'download_id'
 	DownloadId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func genieGenerateDownloadFullQueryResultResponseToPb(st *GenieGenerateDownloadFullQueryResultResponse) (*genieGenerateDownloadFullQueryResultResponsePb, error) {
@@ -2349,10 +2009,7 @@ func genieGenerateDownloadFullQueryResultResponseToPb(st *GenieGenerateDownloadF
 		return nil, nil
 	}
 	pb := &genieGenerateDownloadFullQueryResultResponsePb{}
-	downloadIdPb := &st.DownloadId
-	if downloadIdPb != nil {
-		pb.DownloadId = *downloadIdPb
-	}
+	pb.DownloadId = st.DownloadId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2396,10 +2053,7 @@ func genieGenerateDownloadFullQueryResultResponseFromPb(pb *genieGenerateDownloa
 		return nil, nil
 	}
 	st := &GenieGenerateDownloadFullQueryResultResponse{}
-	downloadIdField := &pb.DownloadId
-	if downloadIdField != nil {
-		st.DownloadId = *downloadIdField
-	}
+	st.DownloadId = pb.DownloadId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2416,13 +2070,16 @@ func (st genieGenerateDownloadFullQueryResultResponsePb) MarshalJSON() ([]byte, 
 // Get conversation message
 type GenieGetConversationMessageRequest struct {
 	// The ID associated with the target conversation.
-	ConversationId string
+	// Wire name: 'conversation_id'
+	ConversationId string `tf:"-"`
 	// The ID associated with the target message from the identified
 	// conversation.
-	MessageId string
+	// Wire name: 'message_id'
+	MessageId string `tf:"-"`
 	// The ID associated with the Genie space where the target conversation is
 	// located.
-	SpaceId string
+	// Wire name: 'space_id'
+	SpaceId string `tf:"-"`
 }
 
 func genieGetConversationMessageRequestToPb(st *GenieGetConversationMessageRequest) (*genieGetConversationMessageRequestPb, error) {
@@ -2430,20 +2087,11 @@ func genieGetConversationMessageRequestToPb(st *GenieGetConversationMessageReque
 		return nil, nil
 	}
 	pb := &genieGetConversationMessageRequestPb{}
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
-	messageIdPb := &st.MessageId
-	if messageIdPb != nil {
-		pb.MessageId = *messageIdPb
-	}
+	pb.MessageId = st.MessageId
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
@@ -2489,18 +2137,9 @@ func genieGetConversationMessageRequestFromPb(pb *genieGetConversationMessageReq
 		return nil, nil
 	}
 	st := &GenieGetConversationMessageRequest{}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
-	messageIdField := &pb.MessageId
-	if messageIdField != nil {
-		st.MessageId = *messageIdField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
+	st.ConversationId = pb.ConversationId
+	st.MessageId = pb.MessageId
+	st.SpaceId = pb.SpaceId
 
 	return st, nil
 }
@@ -2508,16 +2147,21 @@ func genieGetConversationMessageRequestFromPb(pb *genieGetConversationMessageReq
 // Get download full query result
 type GenieGetDownloadFullQueryResultRequest struct {
 	// Attachment ID
-	AttachmentId string
+	// Wire name: 'attachment_id'
+	AttachmentId string `tf:"-"`
 	// Conversation ID
-	ConversationId string
+	// Wire name: 'conversation_id'
+	ConversationId string `tf:"-"`
 	// Download ID. This ID is provided by the [Generate Download
 	// endpoint](:method:genie/generateDownloadFullQueryResult)
-	DownloadId string
+	// Wire name: 'download_id'
+	DownloadId string `tf:"-"`
 	// Message ID
-	MessageId string
+	// Wire name: 'message_id'
+	MessageId string `tf:"-"`
 	// Genie space ID
-	SpaceId string
+	// Wire name: 'space_id'
+	SpaceId string `tf:"-"`
 }
 
 func genieGetDownloadFullQueryResultRequestToPb(st *GenieGetDownloadFullQueryResultRequest) (*genieGetDownloadFullQueryResultRequestPb, error) {
@@ -2525,30 +2169,15 @@ func genieGetDownloadFullQueryResultRequestToPb(st *GenieGetDownloadFullQueryRes
 		return nil, nil
 	}
 	pb := &genieGetDownloadFullQueryResultRequestPb{}
-	attachmentIdPb := &st.AttachmentId
-	if attachmentIdPb != nil {
-		pb.AttachmentId = *attachmentIdPb
-	}
+	pb.AttachmentId = st.AttachmentId
 
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
-	downloadIdPb := &st.DownloadId
-	if downloadIdPb != nil {
-		pb.DownloadId = *downloadIdPb
-	}
+	pb.DownloadId = st.DownloadId
 
-	messageIdPb := &st.MessageId
-	if messageIdPb != nil {
-		pb.MessageId = *messageIdPb
-	}
+	pb.MessageId = st.MessageId
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
@@ -2597,26 +2226,11 @@ func genieGetDownloadFullQueryResultRequestFromPb(pb *genieGetDownloadFullQueryR
 		return nil, nil
 	}
 	st := &GenieGetDownloadFullQueryResultRequest{}
-	attachmentIdField := &pb.AttachmentId
-	if attachmentIdField != nil {
-		st.AttachmentId = *attachmentIdField
-	}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
-	downloadIdField := &pb.DownloadId
-	if downloadIdField != nil {
-		st.DownloadId = *downloadIdField
-	}
-	messageIdField := &pb.MessageId
-	if messageIdField != nil {
-		st.MessageId = *messageIdField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
+	st.AttachmentId = pb.AttachmentId
+	st.ConversationId = pb.ConversationId
+	st.DownloadId = pb.DownloadId
+	st.MessageId = pb.MessageId
+	st.SpaceId = pb.SpaceId
 
 	return st, nil
 }
@@ -2624,6 +2238,7 @@ func genieGetDownloadFullQueryResultRequestFromPb(pb *genieGetDownloadFullQueryR
 type GenieGetDownloadFullQueryResultResponse struct {
 	// SQL Statement Execution response. See [Get status, manifest, and result
 	// first chunk](:method:statementexecution/getstatement) for more details.
+	// Wire name: 'statement_response'
 	StatementResponse *sql.StatementResponse
 }
 
@@ -2693,13 +2308,17 @@ func genieGetDownloadFullQueryResultResponseFromPb(pb *genieGetDownloadFullQuery
 // Get message attachment SQL query result
 type GenieGetMessageAttachmentQueryResultRequest struct {
 	// Attachment ID
-	AttachmentId string
+	// Wire name: 'attachment_id'
+	AttachmentId string `tf:"-"`
 	// Conversation ID
-	ConversationId string
+	// Wire name: 'conversation_id'
+	ConversationId string `tf:"-"`
 	// Message ID
-	MessageId string
+	// Wire name: 'message_id'
+	MessageId string `tf:"-"`
 	// Genie space ID
-	SpaceId string
+	// Wire name: 'space_id'
+	SpaceId string `tf:"-"`
 }
 
 func genieGetMessageAttachmentQueryResultRequestToPb(st *GenieGetMessageAttachmentQueryResultRequest) (*genieGetMessageAttachmentQueryResultRequestPb, error) {
@@ -2707,25 +2326,13 @@ func genieGetMessageAttachmentQueryResultRequestToPb(st *GenieGetMessageAttachme
 		return nil, nil
 	}
 	pb := &genieGetMessageAttachmentQueryResultRequestPb{}
-	attachmentIdPb := &st.AttachmentId
-	if attachmentIdPb != nil {
-		pb.AttachmentId = *attachmentIdPb
-	}
+	pb.AttachmentId = st.AttachmentId
 
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
-	messageIdPb := &st.MessageId
-	if messageIdPb != nil {
-		pb.MessageId = *messageIdPb
-	}
+	pb.MessageId = st.MessageId
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
@@ -2771,22 +2378,10 @@ func genieGetMessageAttachmentQueryResultRequestFromPb(pb *genieGetMessageAttach
 		return nil, nil
 	}
 	st := &GenieGetMessageAttachmentQueryResultRequest{}
-	attachmentIdField := &pb.AttachmentId
-	if attachmentIdField != nil {
-		st.AttachmentId = *attachmentIdField
-	}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
-	messageIdField := &pb.MessageId
-	if messageIdField != nil {
-		st.MessageId = *messageIdField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
+	st.AttachmentId = pb.AttachmentId
+	st.ConversationId = pb.ConversationId
+	st.MessageId = pb.MessageId
+	st.SpaceId = pb.SpaceId
 
 	return st, nil
 }
@@ -2794,11 +2389,14 @@ func genieGetMessageAttachmentQueryResultRequestFromPb(pb *genieGetMessageAttach
 // [Deprecated] Get conversation message SQL query result
 type GenieGetMessageQueryResultRequest struct {
 	// Conversation ID
-	ConversationId string
+	// Wire name: 'conversation_id'
+	ConversationId string `tf:"-"`
 	// Message ID
-	MessageId string
+	// Wire name: 'message_id'
+	MessageId string `tf:"-"`
 	// Genie space ID
-	SpaceId string
+	// Wire name: 'space_id'
+	SpaceId string `tf:"-"`
 }
 
 func genieGetMessageQueryResultRequestToPb(st *GenieGetMessageQueryResultRequest) (*genieGetMessageQueryResultRequestPb, error) {
@@ -2806,20 +2404,11 @@ func genieGetMessageQueryResultRequestToPb(st *GenieGetMessageQueryResultRequest
 		return nil, nil
 	}
 	pb := &genieGetMessageQueryResultRequestPb{}
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
-	messageIdPb := &st.MessageId
-	if messageIdPb != nil {
-		pb.MessageId = *messageIdPb
-	}
+	pb.MessageId = st.MessageId
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
@@ -2863,18 +2452,9 @@ func genieGetMessageQueryResultRequestFromPb(pb *genieGetMessageQueryResultReque
 		return nil, nil
 	}
 	st := &GenieGetMessageQueryResultRequest{}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
-	messageIdField := &pb.MessageId
-	if messageIdField != nil {
-		st.MessageId = *messageIdField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
+	st.ConversationId = pb.ConversationId
+	st.MessageId = pb.MessageId
+	st.SpaceId = pb.SpaceId
 
 	return st, nil
 }
@@ -2882,6 +2462,7 @@ func genieGetMessageQueryResultRequestFromPb(pb *genieGetMessageQueryResultReque
 type GenieGetMessageQueryResultResponse struct {
 	// SQL Statement Execution response. See [Get status, manifest, and result
 	// first chunk](:method:statementexecution/getstatement) for more details.
+	// Wire name: 'statement_response'
 	StatementResponse *sql.StatementResponse
 }
 
@@ -2951,13 +2532,17 @@ func genieGetMessageQueryResultResponseFromPb(pb *genieGetMessageQueryResultResp
 // [Deprecated] Get conversation message SQL query result
 type GenieGetQueryResultByAttachmentRequest struct {
 	// Attachment ID
-	AttachmentId string
+	// Wire name: 'attachment_id'
+	AttachmentId string `tf:"-"`
 	// Conversation ID
-	ConversationId string
+	// Wire name: 'conversation_id'
+	ConversationId string `tf:"-"`
 	// Message ID
-	MessageId string
+	// Wire name: 'message_id'
+	MessageId string `tf:"-"`
 	// Genie space ID
-	SpaceId string
+	// Wire name: 'space_id'
+	SpaceId string `tf:"-"`
 }
 
 func genieGetQueryResultByAttachmentRequestToPb(st *GenieGetQueryResultByAttachmentRequest) (*genieGetQueryResultByAttachmentRequestPb, error) {
@@ -2965,25 +2550,13 @@ func genieGetQueryResultByAttachmentRequestToPb(st *GenieGetQueryResultByAttachm
 		return nil, nil
 	}
 	pb := &genieGetQueryResultByAttachmentRequestPb{}
-	attachmentIdPb := &st.AttachmentId
-	if attachmentIdPb != nil {
-		pb.AttachmentId = *attachmentIdPb
-	}
+	pb.AttachmentId = st.AttachmentId
 
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
-	messageIdPb := &st.MessageId
-	if messageIdPb != nil {
-		pb.MessageId = *messageIdPb
-	}
+	pb.MessageId = st.MessageId
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
@@ -3029,22 +2602,10 @@ func genieGetQueryResultByAttachmentRequestFromPb(pb *genieGetQueryResultByAttac
 		return nil, nil
 	}
 	st := &GenieGetQueryResultByAttachmentRequest{}
-	attachmentIdField := &pb.AttachmentId
-	if attachmentIdField != nil {
-		st.AttachmentId = *attachmentIdField
-	}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
-	messageIdField := &pb.MessageId
-	if messageIdField != nil {
-		st.MessageId = *messageIdField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
+	st.AttachmentId = pb.AttachmentId
+	st.ConversationId = pb.ConversationId
+	st.MessageId = pb.MessageId
+	st.SpaceId = pb.SpaceId
 
 	return st, nil
 }
@@ -3052,7 +2613,8 @@ func genieGetQueryResultByAttachmentRequestFromPb(pb *genieGetQueryResultByAttac
 // Get Genie Space
 type GenieGetSpaceRequest struct {
 	// The ID associated with the Genie space
-	SpaceId string
+	// Wire name: 'space_id'
+	SpaceId string `tf:"-"`
 }
 
 func genieGetSpaceRequestToPb(st *GenieGetSpaceRequest) (*genieGetSpaceRequestPb, error) {
@@ -3060,10 +2622,7 @@ func genieGetSpaceRequestToPb(st *GenieGetSpaceRequest) (*genieGetSpaceRequestPb
 		return nil, nil
 	}
 	pb := &genieGetSpaceRequestPb{}
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
@@ -3103,36 +2662,43 @@ func genieGetSpaceRequestFromPb(pb *genieGetSpaceRequestPb) (*GenieGetSpaceReque
 		return nil, nil
 	}
 	st := &GenieGetSpaceRequest{}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
+	st.SpaceId = pb.SpaceId
 
 	return st, nil
 }
 
 type GenieMessage struct {
 	// AI-generated response to the message
+	// Wire name: 'attachments'
 	Attachments []GenieAttachment
 	// User message content
+	// Wire name: 'content'
 	Content string
 	// Conversation ID
+	// Wire name: 'conversation_id'
 	ConversationId string
 	// Timestamp when the message was created
+	// Wire name: 'created_timestamp'
 	CreatedTimestamp int64
 	// Error message if Genie failed to respond to the message
+	// Wire name: 'error'
 	Error *MessageError
 	// Message ID. Legacy identifier, use message_id instead
+	// Wire name: 'id'
 	Id string
 	// Timestamp when the message was last updated
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// Message ID
+	// Wire name: 'message_id'
 	MessageId string
 	// The result of SQL query if the message includes a query attachment.
 	// Deprecated. Use `query_result_metadata` in `GenieQueryAttachment`
 	// instead.
+	// Wire name: 'query_result'
 	QueryResult *Result
 	// Genie space ID
+	// Wire name: 'space_id'
 	SpaceId string
 	// MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching
 	// metadata from the data sources. * `FILTERING_CONTEXT`: Running smart
@@ -3151,11 +2717,13 @@ type GenieMessage struct {
 	// Rerun the SQL query result by calling
 	// [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery)
 	// API. * `CANCELLED`: Message has been cancelled.
+	// Wire name: 'status'
 	Status MessageStatus
 	// ID of the user who created the message
+	// Wire name: 'user_id'
 	UserId int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func genieMessageToPb(st *GenieMessage) (*genieMessagePb, error) {
@@ -3176,20 +2744,11 @@ func genieMessageToPb(st *GenieMessage) (*genieMessagePb, error) {
 	}
 	pb.Attachments = attachmentsPb
 
-	contentPb := &st.Content
-	if contentPb != nil {
-		pb.Content = *contentPb
-	}
+	pb.Content = st.Content
 
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
-	createdTimestampPb := &st.CreatedTimestamp
-	if createdTimestampPb != nil {
-		pb.CreatedTimestamp = *createdTimestampPb
-	}
+	pb.CreatedTimestamp = st.CreatedTimestamp
 
 	errorPb, err := messageErrorToPb(st.Error)
 	if err != nil {
@@ -3199,20 +2758,11 @@ func genieMessageToPb(st *GenieMessage) (*genieMessagePb, error) {
 		pb.Error = errorPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
-	messageIdPb := &st.MessageId
-	if messageIdPb != nil {
-		pb.MessageId = *messageIdPb
-	}
+	pb.MessageId = st.MessageId
 
 	queryResultPb, err := resultToPb(st.QueryResult)
 	if err != nil {
@@ -3222,20 +2772,11 @@ func genieMessageToPb(st *GenieMessage) (*genieMessagePb, error) {
 		pb.QueryResult = queryResultPb
 	}
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3320,28 +2861,19 @@ func genieMessageFromPb(pb *genieMessagePb) (*GenieMessage, error) {
 	st := &GenieMessage{}
 
 	var attachmentsField []GenieAttachment
-	for _, item := range pb.Attachments {
-		itemField, err := genieAttachmentFromPb(&item)
+	for _, itemPb := range pb.Attachments {
+		item, err := genieAttachmentFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			attachmentsField = append(attachmentsField, *itemField)
+		if item != nil {
+			attachmentsField = append(attachmentsField, *item)
 		}
 	}
 	st.Attachments = attachmentsField
-	contentField := &pb.Content
-	if contentField != nil {
-		st.Content = *contentField
-	}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
-	createdTimestampField := &pb.CreatedTimestamp
-	if createdTimestampField != nil {
-		st.CreatedTimestamp = *createdTimestampField
-	}
+	st.Content = pb.Content
+	st.ConversationId = pb.ConversationId
+	st.CreatedTimestamp = pb.CreatedTimestamp
 	errorField, err := messageErrorFromPb(pb.Error)
 	if err != nil {
 		return nil, err
@@ -3349,18 +2881,9 @@ func genieMessageFromPb(pb *genieMessagePb) (*GenieMessage, error) {
 	if errorField != nil {
 		st.Error = errorField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
-	messageIdField := &pb.MessageId
-	if messageIdField != nil {
-		st.MessageId = *messageIdField
-	}
+	st.Id = pb.Id
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
+	st.MessageId = pb.MessageId
 	queryResultField, err := resultFromPb(pb.QueryResult)
 	if err != nil {
 		return nil, err
@@ -3368,18 +2891,9 @@ func genieMessageFromPb(pb *genieMessagePb) (*GenieMessage, error) {
 	if queryResultField != nil {
 		st.QueryResult = queryResultField
 	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.SpaceId = pb.SpaceId
+	st.Status = pb.Status
+	st.UserId = pb.UserId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3395,23 +2909,30 @@ func (st genieMessagePb) MarshalJSON() ([]byte, error) {
 
 type GenieQueryAttachment struct {
 	// Description of the query
+	// Wire name: 'description'
 	Description string
 
+	// Wire name: 'id'
 	Id string
 	// Time when the user updated the query last
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// AI generated SQL query
+	// Wire name: 'query'
 	Query string
 	// Metadata associated with the query result.
+	// Wire name: 'query_result_metadata'
 	QueryResultMetadata *GenieResultMetadata
 	// Statement Execution API statement id. Use [Get status, manifest, and
 	// result first chunk](:method:statementexecution/getstatement) to get the
 	// full result data.
+	// Wire name: 'statement_id'
 	StatementId string
 	// Name of the query
+	// Wire name: 'title'
 	Title string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func genieQueryAttachmentToPb(st *GenieQueryAttachment) (*genieQueryAttachmentPb, error) {
@@ -3419,25 +2940,13 @@ func genieQueryAttachmentToPb(st *GenieQueryAttachment) (*genieQueryAttachmentPb
 		return nil, nil
 	}
 	pb := &genieQueryAttachmentPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
-	queryPb := &st.Query
-	if queryPb != nil {
-		pb.Query = *queryPb
-	}
+	pb.Query = st.Query
 
 	queryResultMetadataPb, err := genieResultMetadataToPb(st.QueryResultMetadata)
 	if err != nil {
@@ -3447,15 +2956,9 @@ func genieQueryAttachmentToPb(st *GenieQueryAttachment) (*genieQueryAttachmentPb
 		pb.QueryResultMetadata = queryResultMetadataPb
 	}
 
-	statementIdPb := &st.StatementId
-	if statementIdPb != nil {
-		pb.StatementId = *statementIdPb
-	}
+	pb.StatementId = st.StatementId
 
-	titlePb := &st.Title
-	if titlePb != nil {
-		pb.Title = *titlePb
-	}
+	pb.Title = st.Title
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3512,22 +3015,10 @@ func genieQueryAttachmentFromPb(pb *genieQueryAttachmentPb) (*GenieQueryAttachme
 		return nil, nil
 	}
 	st := &GenieQueryAttachment{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
-	queryField := &pb.Query
-	if queryField != nil {
-		st.Query = *queryField
-	}
+	st.Description = pb.Description
+	st.Id = pb.Id
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
+	st.Query = pb.Query
 	queryResultMetadataField, err := genieResultMetadataFromPb(pb.QueryResultMetadata)
 	if err != nil {
 		return nil, err
@@ -3535,14 +3026,8 @@ func genieQueryAttachmentFromPb(pb *genieQueryAttachmentPb) (*GenieQueryAttachme
 	if queryResultMetadataField != nil {
 		st.QueryResultMetadata = queryResultMetadataField
 	}
-	statementIdField := &pb.StatementId
-	if statementIdField != nil {
-		st.StatementId = *statementIdField
-	}
-	titleField := &pb.Title
-	if titleField != nil {
-		st.Title = *titleField
-	}
+	st.StatementId = pb.StatementId
+	st.Title = pb.Title
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3558,11 +3043,13 @@ func (st genieQueryAttachmentPb) MarshalJSON() ([]byte, error) {
 
 type GenieResultMetadata struct {
 	// Indicates whether the result set is truncated.
+	// Wire name: 'is_truncated'
 	IsTruncated bool
 	// The number of rows in the result set.
+	// Wire name: 'row_count'
 	RowCount int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func genieResultMetadataToPb(st *GenieResultMetadata) (*genieResultMetadataPb, error) {
@@ -3570,15 +3057,9 @@ func genieResultMetadataToPb(st *GenieResultMetadata) (*genieResultMetadataPb, e
 		return nil, nil
 	}
 	pb := &genieResultMetadataPb{}
-	isTruncatedPb := &st.IsTruncated
-	if isTruncatedPb != nil {
-		pb.IsTruncated = *isTruncatedPb
-	}
+	pb.IsTruncated = st.IsTruncated
 
-	rowCountPb := &st.RowCount
-	if rowCountPb != nil {
-		pb.RowCount = *rowCountPb
-	}
+	pb.RowCount = st.RowCount
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3623,14 +3104,8 @@ func genieResultMetadataFromPb(pb *genieResultMetadataPb) (*GenieResultMetadata,
 		return nil, nil
 	}
 	st := &GenieResultMetadata{}
-	isTruncatedField := &pb.IsTruncated
-	if isTruncatedField != nil {
-		st.IsTruncated = *isTruncatedField
-	}
-	rowCountField := &pb.RowCount
-	if rowCountField != nil {
-		st.RowCount = *rowCountField
-	}
+	st.IsTruncated = pb.IsTruncated
+	st.RowCount = pb.RowCount
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3646,13 +3121,16 @@ func (st genieResultMetadataPb) MarshalJSON() ([]byte, error) {
 
 type GenieSpace struct {
 	// Description of the Genie Space
+	// Wire name: 'description'
 	Description string
 	// Genie space ID
+	// Wire name: 'space_id'
 	SpaceId string
 	// Title of the Genie Space
+	// Wire name: 'title'
 	Title string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func genieSpaceToPb(st *GenieSpace) (*genieSpacePb, error) {
@@ -3660,20 +3138,11 @@ func genieSpaceToPb(st *GenieSpace) (*genieSpacePb, error) {
 		return nil, nil
 	}
 	pb := &genieSpacePb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
-	titlePb := &st.Title
-	if titlePb != nil {
-		pb.Title = *titlePb
-	}
+	pb.Title = st.Title
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3720,18 +3189,9 @@ func genieSpaceFromPb(pb *genieSpacePb) (*GenieSpace, error) {
 		return nil, nil
 	}
 	st := &GenieSpace{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
-	titleField := &pb.Title
-	if titleField != nil {
-		st.Title = *titleField
-	}
+	st.Description = pb.Description
+	st.SpaceId = pb.SpaceId
+	st.Title = pb.Title
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3747,10 +3207,12 @@ func (st genieSpacePb) MarshalJSON() ([]byte, error) {
 
 type GenieStartConversationMessageRequest struct {
 	// The text of the message that starts the conversation.
+	// Wire name: 'content'
 	Content string
 	// The ID associated with the Genie space where you want to start a
 	// conversation.
-	SpaceId string
+	// Wire name: 'space_id'
+	SpaceId string `tf:"-"`
 }
 
 func genieStartConversationMessageRequestToPb(st *GenieStartConversationMessageRequest) (*genieStartConversationMessageRequestPb, error) {
@@ -3758,15 +3220,9 @@ func genieStartConversationMessageRequestToPb(st *GenieStartConversationMessageR
 		return nil, nil
 	}
 	pb := &genieStartConversationMessageRequestPb{}
-	contentPb := &st.Content
-	if contentPb != nil {
-		pb.Content = *contentPb
-	}
+	pb.Content = st.Content
 
-	spaceIdPb := &st.SpaceId
-	if spaceIdPb != nil {
-		pb.SpaceId = *spaceIdPb
-	}
+	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
@@ -3809,25 +3265,24 @@ func genieStartConversationMessageRequestFromPb(pb *genieStartConversationMessag
 		return nil, nil
 	}
 	st := &GenieStartConversationMessageRequest{}
-	contentField := &pb.Content
-	if contentField != nil {
-		st.Content = *contentField
-	}
-	spaceIdField := &pb.SpaceId
-	if spaceIdField != nil {
-		st.SpaceId = *spaceIdField
-	}
+	st.Content = pb.Content
+	st.SpaceId = pb.SpaceId
 
 	return st, nil
 }
 
 type GenieStartConversationResponse struct {
+
+	// Wire name: 'conversation'
 	Conversation *GenieConversation
 	// Conversation ID
+	// Wire name: 'conversation_id'
 	ConversationId string
 
+	// Wire name: 'message'
 	Message *GenieMessage
 	// Message ID
+	// Wire name: 'message_id'
 	MessageId string
 }
 
@@ -3844,10 +3299,7 @@ func genieStartConversationResponseToPb(st *GenieStartConversationResponse) (*ge
 		pb.Conversation = conversationPb
 	}
 
-	conversationIdPb := &st.ConversationId
-	if conversationIdPb != nil {
-		pb.ConversationId = *conversationIdPb
-	}
+	pb.ConversationId = st.ConversationId
 
 	messagePb, err := genieMessageToPb(st.Message)
 	if err != nil {
@@ -3857,10 +3309,7 @@ func genieStartConversationResponseToPb(st *GenieStartConversationResponse) (*ge
 		pb.Message = messagePb
 	}
 
-	messageIdPb := &st.MessageId
-	if messageIdPb != nil {
-		pb.MessageId = *messageIdPb
-	}
+	pb.MessageId = st.MessageId
 
 	return pb, nil
 }
@@ -3912,10 +3361,7 @@ func genieStartConversationResponseFromPb(pb *genieStartConversationResponsePb) 
 	if conversationField != nil {
 		st.Conversation = conversationField
 	}
-	conversationIdField := &pb.ConversationId
-	if conversationIdField != nil {
-		st.ConversationId = *conversationIdField
-	}
+	st.ConversationId = pb.ConversationId
 	messageField, err := genieMessageFromPb(pb.Message)
 	if err != nil {
 		return nil, err
@@ -3923,10 +3369,7 @@ func genieStartConversationResponseFromPb(pb *genieStartConversationResponsePb) 
 	if messageField != nil {
 		st.Message = messageField
 	}
-	messageIdField := &pb.MessageId
-	if messageIdField != nil {
-		st.MessageId = *messageIdField
-	}
+	st.MessageId = pb.MessageId
 
 	return st, nil
 }
@@ -3934,7 +3377,8 @@ func genieStartConversationResponseFromPb(pb *genieStartConversationResponsePb) 
 // Get dashboard
 type GetDashboardRequest struct {
 	// UUID identifying the dashboard.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 }
 
 func getDashboardRequestToPb(st *GetDashboardRequest) (*getDashboardRequestPb, error) {
@@ -3942,10 +3386,7 @@ func getDashboardRequestToPb(st *GetDashboardRequest) (*getDashboardRequestPb, e
 		return nil, nil
 	}
 	pb := &getDashboardRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	return pb, nil
 }
@@ -3985,10 +3426,7 @@ func getDashboardRequestFromPb(pb *getDashboardRequestPb) (*GetDashboardRequest,
 		return nil, nil
 	}
 	st := &GetDashboardRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 
 	return st, nil
 }
@@ -3996,7 +3434,8 @@ func getDashboardRequestFromPb(pb *getDashboardRequestPb) (*GetDashboardRequest,
 // Read a published dashboard in an embedded ui.
 type GetPublishedDashboardEmbeddedRequest struct {
 	// UUID identifying the published dashboard.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 }
 
 func getPublishedDashboardEmbeddedRequestToPb(st *GetPublishedDashboardEmbeddedRequest) (*getPublishedDashboardEmbeddedRequestPb, error) {
@@ -4004,10 +3443,7 @@ func getPublishedDashboardEmbeddedRequestToPb(st *GetPublishedDashboardEmbeddedR
 		return nil, nil
 	}
 	pb := &getPublishedDashboardEmbeddedRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	return pb, nil
 }
@@ -4047,10 +3483,7 @@ func getPublishedDashboardEmbeddedRequestFromPb(pb *getPublishedDashboardEmbedde
 		return nil, nil
 	}
 	st := &GetPublishedDashboardEmbeddedRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 
 	return st, nil
 }
@@ -4107,7 +3540,8 @@ func getPublishedDashboardEmbeddedResponseFromPb(pb *getPublishedDashboardEmbedd
 // Get published dashboard
 type GetPublishedDashboardRequest struct {
 	// UUID identifying the published dashboard.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 }
 
 func getPublishedDashboardRequestToPb(st *GetPublishedDashboardRequest) (*getPublishedDashboardRequestPb, error) {
@@ -4115,10 +3549,7 @@ func getPublishedDashboardRequestToPb(st *GetPublishedDashboardRequest) (*getPub
 		return nil, nil
 	}
 	pb := &getPublishedDashboardRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	return pb, nil
 }
@@ -4158,10 +3589,7 @@ func getPublishedDashboardRequestFromPb(pb *getPublishedDashboardRequestPb) (*Ge
 		return nil, nil
 	}
 	st := &GetPublishedDashboardRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 
 	return st, nil
 }
@@ -4169,13 +3597,16 @@ func getPublishedDashboardRequestFromPb(pb *getPublishedDashboardRequestPb) (*Ge
 // Read an information of a published dashboard to mint an OAuth token.
 type GetPublishedDashboardTokenInfoRequest struct {
 	// UUID identifying the published dashboard.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 	// Provided external value to be included in the custom claim.
-	ExternalValue string
+	// Wire name: 'external_value'
+	ExternalValue string `tf:"-"`
 	// Provided external viewer id to be included in the custom claim.
-	ExternalViewerId string
+	// Wire name: 'external_viewer_id'
+	ExternalViewerId string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getPublishedDashboardTokenInfoRequestToPb(st *GetPublishedDashboardTokenInfoRequest) (*getPublishedDashboardTokenInfoRequestPb, error) {
@@ -4183,20 +3614,11 @@ func getPublishedDashboardTokenInfoRequestToPb(st *GetPublishedDashboardTokenInf
 		return nil, nil
 	}
 	pb := &getPublishedDashboardTokenInfoRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	externalValuePb := &st.ExternalValue
-	if externalValuePb != nil {
-		pb.ExternalValue = *externalValuePb
-	}
+	pb.ExternalValue = st.ExternalValue
 
-	externalViewerIdPb := &st.ExternalViewerId
-	if externalViewerIdPb != nil {
-		pb.ExternalViewerId = *externalViewerIdPb
-	}
+	pb.ExternalViewerId = st.ExternalViewerId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4243,18 +3665,9 @@ func getPublishedDashboardTokenInfoRequestFromPb(pb *getPublishedDashboardTokenI
 		return nil, nil
 	}
 	st := &GetPublishedDashboardTokenInfoRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	externalValueField := &pb.ExternalValue
-	if externalValueField != nil {
-		st.ExternalValue = *externalValueField
-	}
-	externalViewerIdField := &pb.ExternalViewerId
-	if externalViewerIdField != nil {
-		st.ExternalViewerId = *externalViewerIdField
-	}
+	st.DashboardId = pb.DashboardId
+	st.ExternalValue = pb.ExternalValue
+	st.ExternalViewerId = pb.ExternalViewerId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4272,15 +3685,18 @@ type GetPublishedDashboardTokenInfoResponse struct {
 	// Authorization constraints for accessing the published dashboard.
 	// Currently includes `workspace_rule_set` and could be enriched with
 	// `unity_catalog_privileges` before oAuth token generation.
+	// Wire name: 'authorization_details'
 	AuthorizationDetails []AuthorizationDetails
 	// Custom claim generated from external_value and external_viewer_id.
 	// Format:
 	// `urn:aibi:external_data:<external_value>:<external_viewer_id>:<dashboard_id>`
+	// Wire name: 'custom_claim'
 	CustomClaim string
 	// Scope defining access permissions.
+	// Wire name: 'scope'
 	Scope string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getPublishedDashboardTokenInfoResponseToPb(st *GetPublishedDashboardTokenInfoResponse) (*getPublishedDashboardTokenInfoResponsePb, error) {
@@ -4301,15 +3717,9 @@ func getPublishedDashboardTokenInfoResponseToPb(st *GetPublishedDashboardTokenIn
 	}
 	pb.AuthorizationDetails = authorizationDetailsPb
 
-	customClaimPb := &st.CustomClaim
-	if customClaimPb != nil {
-		pb.CustomClaim = *customClaimPb
-	}
+	pb.CustomClaim = st.CustomClaim
 
-	scopePb := &st.Scope
-	if scopePb != nil {
-		pb.Scope = *scopePb
-	}
+	pb.Scope = st.Scope
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4362,24 +3772,18 @@ func getPublishedDashboardTokenInfoResponseFromPb(pb *getPublishedDashboardToken
 	st := &GetPublishedDashboardTokenInfoResponse{}
 
 	var authorizationDetailsField []AuthorizationDetails
-	for _, item := range pb.AuthorizationDetails {
-		itemField, err := authorizationDetailsFromPb(&item)
+	for _, itemPb := range pb.AuthorizationDetails {
+		item, err := authorizationDetailsFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			authorizationDetailsField = append(authorizationDetailsField, *itemField)
+		if item != nil {
+			authorizationDetailsField = append(authorizationDetailsField, *item)
 		}
 	}
 	st.AuthorizationDetails = authorizationDetailsField
-	customClaimField := &pb.CustomClaim
-	if customClaimField != nil {
-		st.CustomClaim = *customClaimField
-	}
-	scopeField := &pb.Scope
-	if scopeField != nil {
-		st.Scope = *scopeField
-	}
+	st.CustomClaim = pb.CustomClaim
+	st.Scope = pb.Scope
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4396,9 +3800,11 @@ func (st getPublishedDashboardTokenInfoResponsePb) MarshalJSON() ([]byte, error)
 // Get dashboard schedule
 type GetScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 	// UUID identifying the schedule.
-	ScheduleId string
+	// Wire name: 'schedule_id'
+	ScheduleId string `tf:"-"`
 }
 
 func getScheduleRequestToPb(st *GetScheduleRequest) (*getScheduleRequestPb, error) {
@@ -4406,15 +3812,9 @@ func getScheduleRequestToPb(st *GetScheduleRequest) (*getScheduleRequestPb, erro
 		return nil, nil
 	}
 	pb := &getScheduleRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	scheduleIdPb := &st.ScheduleId
-	if scheduleIdPb != nil {
-		pb.ScheduleId = *scheduleIdPb
-	}
+	pb.ScheduleId = st.ScheduleId
 
 	return pb, nil
 }
@@ -4456,14 +3856,8 @@ func getScheduleRequestFromPb(pb *getScheduleRequestPb) (*GetScheduleRequest, er
 		return nil, nil
 	}
 	st := &GetScheduleRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	scheduleIdField := &pb.ScheduleId
-	if scheduleIdField != nil {
-		st.ScheduleId = *scheduleIdField
-	}
+	st.DashboardId = pb.DashboardId
+	st.ScheduleId = pb.ScheduleId
 
 	return st, nil
 }
@@ -4471,11 +3865,14 @@ func getScheduleRequestFromPb(pb *getScheduleRequestPb) (*GetScheduleRequest, er
 // Get schedule subscription
 type GetSubscriptionRequest struct {
 	// UUID identifying the dashboard which the subscription belongs.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 	// UUID identifying the schedule which the subscription belongs.
-	ScheduleId string
+	// Wire name: 'schedule_id'
+	ScheduleId string `tf:"-"`
 	// UUID identifying the subscription.
-	SubscriptionId string
+	// Wire name: 'subscription_id'
+	SubscriptionId string `tf:"-"`
 }
 
 func getSubscriptionRequestToPb(st *GetSubscriptionRequest) (*getSubscriptionRequestPb, error) {
@@ -4483,20 +3880,11 @@ func getSubscriptionRequestToPb(st *GetSubscriptionRequest) (*getSubscriptionReq
 		return nil, nil
 	}
 	pb := &getSubscriptionRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	scheduleIdPb := &st.ScheduleId
-	if scheduleIdPb != nil {
-		pb.ScheduleId = *scheduleIdPb
-	}
+	pb.ScheduleId = st.ScheduleId
 
-	subscriptionIdPb := &st.SubscriptionId
-	if subscriptionIdPb != nil {
-		pb.SubscriptionId = *subscriptionIdPb
-	}
+	pb.SubscriptionId = st.SubscriptionId
 
 	return pb, nil
 }
@@ -4540,18 +3928,9 @@ func getSubscriptionRequestFromPb(pb *getSubscriptionRequestPb) (*GetSubscriptio
 		return nil, nil
 	}
 	st := &GetSubscriptionRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	scheduleIdField := &pb.ScheduleId
-	if scheduleIdField != nil {
-		st.ScheduleId = *scheduleIdField
-	}
-	subscriptionIdField := &pb.SubscriptionId
-	if subscriptionIdField != nil {
-		st.SubscriptionId = *subscriptionIdField
-	}
+	st.DashboardId = pb.DashboardId
+	st.ScheduleId = pb.ScheduleId
+	st.SubscriptionId = pb.SubscriptionId
 
 	return st, nil
 }
@@ -4603,17 +3982,21 @@ func lifecycleStateFromPb(pb *lifecycleStatePb) (*LifecycleState, error) {
 // List dashboards
 type ListDashboardsRequest struct {
 	// The number of dashboards to return per page.
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// A page token, received from a previous `ListDashboards` call. This token
 	// can be used to retrieve the subsequent page.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The flag to include dashboards located in the trash. If unspecified, only
 	// active dashboards will be returned.
-	ShowTrashed bool
+	// Wire name: 'show_trashed'
+	ShowTrashed bool `tf:"-"`
 	// `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
-	View DashboardView
+	// Wire name: 'view'
+	View DashboardView `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listDashboardsRequestToPb(st *ListDashboardsRequest) (*listDashboardsRequestPb, error) {
@@ -4621,25 +4004,13 @@ func listDashboardsRequestToPb(st *ListDashboardsRequest) (*listDashboardsReques
 		return nil, nil
 	}
 	pb := &listDashboardsRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	showTrashedPb := &st.ShowTrashed
-	if showTrashedPb != nil {
-		pb.ShowTrashed = *showTrashedPb
-	}
+	pb.ShowTrashed = st.ShowTrashed
 
-	viewPb := &st.View
-	if viewPb != nil {
-		pb.View = *viewPb
-	}
+	pb.View = st.View
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4690,22 +4061,10 @@ func listDashboardsRequestFromPb(pb *listDashboardsRequestPb) (*ListDashboardsRe
 		return nil, nil
 	}
 	st := &ListDashboardsRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	showTrashedField := &pb.ShowTrashed
-	if showTrashedField != nil {
-		st.ShowTrashed = *showTrashedField
-	}
-	viewField := &pb.View
-	if viewField != nil {
-		st.View = *viewField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+	st.ShowTrashed = pb.ShowTrashed
+	st.View = pb.View
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4720,12 +4079,15 @@ func (st listDashboardsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListDashboardsResponse struct {
+
+	// Wire name: 'dashboards'
 	Dashboards []Dashboard
 	// A token, which can be sent as `page_token` to retrieve the next page. If
 	// this field is omitted, there are no subsequent dashboards.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listDashboardsResponseToPb(st *ListDashboardsResponse) (*listDashboardsResponsePb, error) {
@@ -4746,10 +4108,7 @@ func listDashboardsResponseToPb(st *ListDashboardsResponse) (*listDashboardsResp
 	}
 	pb.Dashboards = dashboardsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4796,20 +4155,17 @@ func listDashboardsResponseFromPb(pb *listDashboardsResponsePb) (*ListDashboards
 	st := &ListDashboardsResponse{}
 
 	var dashboardsField []Dashboard
-	for _, item := range pb.Dashboards {
-		itemField, err := dashboardFromPb(&item)
+	for _, itemPb := range pb.Dashboards {
+		item, err := dashboardFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			dashboardsField = append(dashboardsField, *itemField)
+		if item != nil {
+			dashboardsField = append(dashboardsField, *item)
 		}
 	}
 	st.Dashboards = dashboardsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4826,14 +4182,17 @@ func (st listDashboardsResponsePb) MarshalJSON() ([]byte, error) {
 // List dashboard schedules
 type ListSchedulesRequest struct {
 	// UUID identifying the dashboard to which the schedules belongs.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 	// The number of schedules to return per page.
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// A page token, received from a previous `ListSchedules` call. Use this to
 	// retrieve the subsequent page.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listSchedulesRequestToPb(st *ListSchedulesRequest) (*listSchedulesRequestPb, error) {
@@ -4841,20 +4200,11 @@ func listSchedulesRequestToPb(st *ListSchedulesRequest) (*listSchedulesRequestPb
 		return nil, nil
 	}
 	pb := &listSchedulesRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4902,18 +4252,9 @@ func listSchedulesRequestFromPb(pb *listSchedulesRequestPb) (*ListSchedulesReque
 		return nil, nil
 	}
 	st := &ListSchedulesRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.DashboardId = pb.DashboardId
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4931,11 +4272,13 @@ type ListSchedulesResponse struct {
 	// A token that can be used as a `page_token` in subsequent requests to
 	// retrieve the next page of results. If this field is omitted, there are no
 	// subsequent schedules.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'schedules'
 	Schedules []Schedule
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listSchedulesResponseToPb(st *ListSchedulesResponse) (*listSchedulesResponsePb, error) {
@@ -4943,10 +4286,7 @@ func listSchedulesResponseToPb(st *ListSchedulesResponse) (*listSchedulesRespons
 		return nil, nil
 	}
 	pb := &listSchedulesResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var schedulesPb []schedulePb
 	for _, item := range st.Schedules {
@@ -5005,19 +4345,16 @@ func listSchedulesResponseFromPb(pb *listSchedulesResponsePb) (*ListSchedulesRes
 		return nil, nil
 	}
 	st := &ListSchedulesResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var schedulesField []Schedule
-	for _, item := range pb.Schedules {
-		itemField, err := scheduleFromPb(&item)
+	for _, itemPb := range pb.Schedules {
+		item, err := scheduleFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			schedulesField = append(schedulesField, *itemField)
+		if item != nil {
+			schedulesField = append(schedulesField, *item)
 		}
 	}
 	st.Schedules = schedulesField
@@ -5037,16 +4374,20 @@ func (st listSchedulesResponsePb) MarshalJSON() ([]byte, error) {
 // List schedule subscriptions
 type ListSubscriptionsRequest struct {
 	// UUID identifying the dashboard which the subscriptions belongs.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 	// The number of subscriptions to return per page.
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// A page token, received from a previous `ListSubscriptions` call. Use this
 	// to retrieve the subsequent page.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// UUID identifying the schedule which the subscriptions belongs.
-	ScheduleId string
+	// Wire name: 'schedule_id'
+	ScheduleId string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listSubscriptionsRequestToPb(st *ListSubscriptionsRequest) (*listSubscriptionsRequestPb, error) {
@@ -5054,25 +4395,13 @@ func listSubscriptionsRequestToPb(st *ListSubscriptionsRequest) (*listSubscripti
 		return nil, nil
 	}
 	pb := &listSubscriptionsRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	scheduleIdPb := &st.ScheduleId
-	if scheduleIdPb != nil {
-		pb.ScheduleId = *scheduleIdPb
-	}
+	pb.ScheduleId = st.ScheduleId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5122,22 +4451,10 @@ func listSubscriptionsRequestFromPb(pb *listSubscriptionsRequestPb) (*ListSubscr
 		return nil, nil
 	}
 	st := &ListSubscriptionsRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	scheduleIdField := &pb.ScheduleId
-	if scheduleIdField != nil {
-		st.ScheduleId = *scheduleIdField
-	}
+	st.DashboardId = pb.DashboardId
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+	st.ScheduleId = pb.ScheduleId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5155,11 +4472,13 @@ type ListSubscriptionsResponse struct {
 	// A token that can be used as a `page_token` in subsequent requests to
 	// retrieve the next page of results. If this field is omitted, there are no
 	// subsequent subscriptions.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'subscriptions'
 	Subscriptions []Subscription
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listSubscriptionsResponseToPb(st *ListSubscriptionsResponse) (*listSubscriptionsResponsePb, error) {
@@ -5167,10 +4486,7 @@ func listSubscriptionsResponseToPb(st *ListSubscriptionsResponse) (*listSubscrip
 		return nil, nil
 	}
 	pb := &listSubscriptionsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var subscriptionsPb []subscriptionPb
 	for _, item := range st.Subscriptions {
@@ -5229,19 +4545,16 @@ func listSubscriptionsResponseFromPb(pb *listSubscriptionsResponsePb) (*ListSubs
 		return nil, nil
 	}
 	st := &ListSubscriptionsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var subscriptionsField []Subscription
-	for _, item := range pb.Subscriptions {
-		itemField, err := subscriptionFromPb(&item)
+	for _, itemPb := range pb.Subscriptions {
+		item, err := subscriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			subscriptionsField = append(subscriptionsField, *itemField)
+		if item != nil {
+			subscriptionsField = append(subscriptionsField, *item)
 		}
 	}
 	st.Subscriptions = subscriptionsField
@@ -5259,11 +4572,14 @@ func (st listSubscriptionsResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type MessageError struct {
+
+	// Wire name: 'error'
 	Error string
 
+	// Wire name: 'type'
 	Type MessageErrorType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func messageErrorToPb(st *MessageError) (*messageErrorPb, error) {
@@ -5271,15 +4587,9 @@ func messageErrorToPb(st *MessageError) (*messageErrorPb, error) {
 		return nil, nil
 	}
 	pb := &messageErrorPb{}
-	errorPb := &st.Error
-	if errorPb != nil {
-		pb.Error = *errorPb
-	}
+	pb.Error = st.Error
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5323,14 +4633,8 @@ func messageErrorFromPb(pb *messageErrorPb) (*MessageError, error) {
 		return nil, nil
 	}
 	st := &MessageError{}
-	errorField := &pb.Error
-	if errorField != nil {
-		st.Error = *errorField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.Error = pb.Error
+	st.Type = pb.Type
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5572,18 +4876,22 @@ func messageStatusFromPb(pb *messageStatusPb) (*MessageStatus, error) {
 
 type MigrateDashboardRequest struct {
 	// Display name for the new Lakeview dashboard.
+	// Wire name: 'display_name'
 	DisplayName string
 	// The workspace path of the folder to contain the migrated Lakeview
 	// dashboard.
+	// Wire name: 'parent_path'
 	ParentPath string
 	// UUID of the dashboard to be migrated.
+	// Wire name: 'source_dashboard_id'
 	SourceDashboardId string
 	// Flag to indicate if mustache parameter syntax ({{ param }}) should be
 	// auto-updated to named syntax (:param) when converting datasets in the
 	// dashboard.
+	// Wire name: 'update_parameter_syntax'
 	UpdateParameterSyntax bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func migrateDashboardRequestToPb(st *MigrateDashboardRequest) (*migrateDashboardRequestPb, error) {
@@ -5591,25 +4899,13 @@ func migrateDashboardRequestToPb(st *MigrateDashboardRequest) (*migrateDashboard
 		return nil, nil
 	}
 	pb := &migrateDashboardRequestPb{}
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	parentPathPb := &st.ParentPath
-	if parentPathPb != nil {
-		pb.ParentPath = *parentPathPb
-	}
+	pb.ParentPath = st.ParentPath
 
-	sourceDashboardIdPb := &st.SourceDashboardId
-	if sourceDashboardIdPb != nil {
-		pb.SourceDashboardId = *sourceDashboardIdPb
-	}
+	pb.SourceDashboardId = st.SourceDashboardId
 
-	updateParameterSyntaxPb := &st.UpdateParameterSyntax
-	if updateParameterSyntaxPb != nil {
-		pb.UpdateParameterSyntax = *updateParameterSyntaxPb
-	}
+	pb.UpdateParameterSyntax = st.UpdateParameterSyntax
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5661,22 +4957,10 @@ func migrateDashboardRequestFromPb(pb *migrateDashboardRequestPb) (*MigrateDashb
 		return nil, nil
 	}
 	st := &MigrateDashboardRequest{}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	parentPathField := &pb.ParentPath
-	if parentPathField != nil {
-		st.ParentPath = *parentPathField
-	}
-	sourceDashboardIdField := &pb.SourceDashboardId
-	if sourceDashboardIdField != nil {
-		st.SourceDashboardId = *sourceDashboardIdField
-	}
-	updateParameterSyntaxField := &pb.UpdateParameterSyntax
-	if updateParameterSyntaxField != nil {
-		st.UpdateParameterSyntax = *updateParameterSyntaxField
-	}
+	st.DisplayName = pb.DisplayName
+	st.ParentPath = pb.ParentPath
+	st.SourceDashboardId = pb.SourceDashboardId
+	st.UpdateParameterSyntax = pb.UpdateParameterSyntax
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5693,6 +4977,7 @@ func (st migrateDashboardRequestPb) MarshalJSON() ([]byte, error) {
 type PendingStatus struct {
 	// The token to poll for result asynchronously Example:
 	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	// Wire name: 'data_token'
 	DataToken string
 }
 
@@ -5701,10 +4986,7 @@ func pendingStatusToPb(st *PendingStatus) (*pendingStatusPb, error) {
 		return nil, nil
 	}
 	pb := &pendingStatusPb{}
-	dataTokenPb := &st.DataToken
-	if dataTokenPb != nil {
-		pb.DataToken = *dataTokenPb
-	}
+	pb.DataToken = st.DataToken
 
 	return pb, nil
 }
@@ -5745,22 +5027,23 @@ func pendingStatusFromPb(pb *pendingStatusPb) (*PendingStatus, error) {
 		return nil, nil
 	}
 	st := &PendingStatus{}
-	dataTokenField := &pb.DataToken
-	if dataTokenField != nil {
-		st.DataToken = *dataTokenField
-	}
+	st.DataToken = pb.DataToken
 
 	return st, nil
 }
 
 // Poll the results for the a query for a published, embedded dashboard
 type PollPublishedQueryStatusRequest struct {
-	DashboardName string
 
-	DashboardRevisionId string
+	// Wire name: 'dashboard_name'
+	DashboardName string `tf:"-"`
+
+	// Wire name: 'dashboard_revision_id'
+	DashboardRevisionId string `tf:"-"`
 	// Example:
 	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
-	Tokens []string
+	// Wire name: 'tokens'
+	Tokens []string `tf:"-"`
 }
 
 func pollPublishedQueryStatusRequestToPb(st *PollPublishedQueryStatusRequest) (*pollPublishedQueryStatusRequestPb, error) {
@@ -5768,24 +5051,11 @@ func pollPublishedQueryStatusRequestToPb(st *PollPublishedQueryStatusRequest) (*
 		return nil, nil
 	}
 	pb := &pollPublishedQueryStatusRequestPb{}
-	dashboardNamePb := &st.DashboardName
-	if dashboardNamePb != nil {
-		pb.DashboardName = *dashboardNamePb
-	}
+	pb.DashboardName = st.DashboardName
 
-	dashboardRevisionIdPb := &st.DashboardRevisionId
-	if dashboardRevisionIdPb != nil {
-		pb.DashboardRevisionId = *dashboardRevisionIdPb
-	}
+	pb.DashboardRevisionId = st.DashboardRevisionId
 
-	var tokensPb []string
-	for _, item := range st.Tokens {
-		itemPb := &item
-		if itemPb != nil {
-			tokensPb = append(tokensPb, *itemPb)
-		}
-	}
-	pb.Tokens = tokensPb
+	pb.Tokens = st.Tokens
 
 	return pb, nil
 }
@@ -5829,28 +5099,16 @@ func pollPublishedQueryStatusRequestFromPb(pb *pollPublishedQueryStatusRequestPb
 		return nil, nil
 	}
 	st := &PollPublishedQueryStatusRequest{}
-	dashboardNameField := &pb.DashboardName
-	if dashboardNameField != nil {
-		st.DashboardName = *dashboardNameField
-	}
-	dashboardRevisionIdField := &pb.DashboardRevisionId
-	if dashboardRevisionIdField != nil {
-		st.DashboardRevisionId = *dashboardRevisionIdField
-	}
-
-	var tokensField []string
-	for _, item := range pb.Tokens {
-		itemField := &item
-		if itemField != nil {
-			tokensField = append(tokensField, *itemField)
-		}
-	}
-	st.Tokens = tokensField
+	st.DashboardName = pb.DashboardName
+	st.DashboardRevisionId = pb.DashboardRevisionId
+	st.Tokens = pb.Tokens
 
 	return st, nil
 }
 
 type PollQueryStatusResponse struct {
+
+	// Wire name: 'data'
 	Data []PollQueryStatusResponseData
 }
 
@@ -5911,13 +5169,13 @@ func pollQueryStatusResponseFromPb(pb *pollQueryStatusResponsePb) (*PollQuerySta
 	st := &PollQueryStatusResponse{}
 
 	var dataField []PollQueryStatusResponseData
-	for _, item := range pb.Data {
-		itemField, err := pollQueryStatusResponseDataFromPb(&item)
+	for _, itemPb := range pb.Data {
+		item, err := pollQueryStatusResponseDataFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			dataField = append(dataField, *itemField)
+		if item != nil {
+			dataField = append(dataField, *item)
 		}
 	}
 	st.Data = dataField
@@ -5926,6 +5184,8 @@ func pollQueryStatusResponseFromPb(pb *pollQueryStatusResponsePb) (*PollQuerySta
 }
 
 type PollQueryStatusResponseData struct {
+
+	// Wire name: 'status'
 	Status QueryResponseStatus
 }
 
@@ -5992,16 +5252,19 @@ func pollQueryStatusResponseDataFromPb(pb *pollQueryStatusResponseDataPb) (*Poll
 
 type PublishRequest struct {
 	// UUID identifying the dashboard to be published.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 	// Flag to indicate if the publisher's credentials should be embedded in the
 	// published dashboard. These embedded credentials will be used to execute
 	// the published dashboard's queries.
+	// Wire name: 'embed_credentials'
 	EmbedCredentials bool
 	// The ID of the warehouse that can be used to override the warehouse which
 	// was set in the draft.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func publishRequestToPb(st *PublishRequest) (*publishRequestPb, error) {
@@ -6009,20 +5272,11 @@ func publishRequestToPb(st *PublishRequest) (*publishRequestPb, error) {
 		return nil, nil
 	}
 	pb := &publishRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	embedCredentialsPb := &st.EmbedCredentials
-	if embedCredentialsPb != nil {
-		pb.EmbedCredentials = *embedCredentialsPb
-	}
+	pb.EmbedCredentials = st.EmbedCredentials
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6072,18 +5326,9 @@ func publishRequestFromPb(pb *publishRequestPb) (*PublishRequest, error) {
 		return nil, nil
 	}
 	st := &PublishRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	embedCredentialsField := &pb.EmbedCredentials
-	if embedCredentialsField != nil {
-		st.EmbedCredentials = *embedCredentialsField
-	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.DashboardId = pb.DashboardId
+	st.EmbedCredentials = pb.EmbedCredentials
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6099,15 +5344,19 @@ func (st publishRequestPb) MarshalJSON() ([]byte, error) {
 
 type PublishedDashboard struct {
 	// The display name of the published dashboard.
+	// Wire name: 'display_name'
 	DisplayName string
 	// Indicates whether credentials are embedded in the published dashboard.
+	// Wire name: 'embed_credentials'
 	EmbedCredentials bool
 	// The timestamp of when the published dashboard was last revised.
+	// Wire name: 'revision_create_time'
 	RevisionCreateTime string
 	// The warehouse ID used to run the published dashboard.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func publishedDashboardToPb(st *PublishedDashboard) (*publishedDashboardPb, error) {
@@ -6115,25 +5364,13 @@ func publishedDashboardToPb(st *PublishedDashboard) (*publishedDashboardPb, erro
 		return nil, nil
 	}
 	pb := &publishedDashboardPb{}
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	embedCredentialsPb := &st.EmbedCredentials
-	if embedCredentialsPb != nil {
-		pb.EmbedCredentials = *embedCredentialsPb
-	}
+	pb.EmbedCredentials = st.EmbedCredentials
 
-	revisionCreateTimePb := &st.RevisionCreateTime
-	if revisionCreateTimePb != nil {
-		pb.RevisionCreateTime = *revisionCreateTimePb
-	}
+	pb.RevisionCreateTime = st.RevisionCreateTime
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6182,22 +5419,10 @@ func publishedDashboardFromPb(pb *publishedDashboardPb) (*PublishedDashboard, er
 		return nil, nil
 	}
 	st := &PublishedDashboard{}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	embedCredentialsField := &pb.EmbedCredentials
-	if embedCredentialsField != nil {
-		st.EmbedCredentials = *embedCredentialsField
-	}
-	revisionCreateTimeField := &pb.RevisionCreateTime
-	if revisionCreateTimeField != nil {
-		st.RevisionCreateTime = *revisionCreateTimeField
-	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.DisplayName = pb.DisplayName
+	st.EmbedCredentials = pb.EmbedCredentials
+	st.RevisionCreateTime = pb.RevisionCreateTime
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6214,21 +5439,26 @@ func (st publishedDashboardPb) MarshalJSON() ([]byte, error) {
 type QueryResponseStatus struct {
 	// Represents an empty message, similar to google.protobuf.Empty, which is
 	// not available in the firm right now.
+	// Wire name: 'canceled'
 	Canceled *Empty
 	// Represents an empty message, similar to google.protobuf.Empty, which is
 	// not available in the firm right now.
+	// Wire name: 'closed'
 	Closed *Empty
 
+	// Wire name: 'pending'
 	Pending *PendingStatus
 	// The statement id in format(01eef5da-c56e-1f36-bafa-21906587d6ba) The
 	// statement_id should be identical to data_token in SuccessStatus and
 	// PendingStatus. This field is created for audit logging purpose to record
 	// the statement_id of all QueryResponseStatus.
+	// Wire name: 'statement_id'
 	StatementId string
 
+	// Wire name: 'success'
 	Success *SuccessStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryResponseStatusToPb(st *QueryResponseStatus) (*queryResponseStatusPb, error) {
@@ -6260,10 +5490,7 @@ func queryResponseStatusToPb(st *QueryResponseStatus) (*queryResponseStatusPb, e
 		pb.Pending = pendingPb
 	}
 
-	statementIdPb := &st.StatementId
-	if statementIdPb != nil {
-		pb.StatementId = *statementIdPb
-	}
+	pb.StatementId = st.StatementId
 
 	successPb, err := successStatusToPb(st.Success)
 	if err != nil {
@@ -6348,10 +5575,7 @@ func queryResponseStatusFromPb(pb *queryResponseStatusPb) (*QueryResponseStatus,
 	if pendingField != nil {
 		st.Pending = pendingField
 	}
-	statementIdField := &pb.StatementId
-	if statementIdField != nil {
-		st.StatementId = *statementIdField
-	}
+	st.StatementId = pb.StatementId
 	successField, err := successStatusFromPb(pb.Success)
 	if err != nil {
 		return nil, err
@@ -6374,15 +5598,18 @@ func (st queryResponseStatusPb) MarshalJSON() ([]byte, error) {
 
 type Result struct {
 	// If result is truncated
+	// Wire name: 'is_truncated'
 	IsTruncated bool
 	// Row count of the result
+	// Wire name: 'row_count'
 	RowCount int64
 	// Statement Execution API statement id. Use [Get status, manifest, and
 	// result first chunk](:method:statementexecution/getstatement) to get the
 	// full result data.
+	// Wire name: 'statement_id'
 	StatementId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func resultToPb(st *Result) (*resultPb, error) {
@@ -6390,20 +5617,11 @@ func resultToPb(st *Result) (*resultPb, error) {
 		return nil, nil
 	}
 	pb := &resultPb{}
-	isTruncatedPb := &st.IsTruncated
-	if isTruncatedPb != nil {
-		pb.IsTruncated = *isTruncatedPb
-	}
+	pb.IsTruncated = st.IsTruncated
 
-	rowCountPb := &st.RowCount
-	if rowCountPb != nil {
-		pb.RowCount = *rowCountPb
-	}
+	pb.RowCount = st.RowCount
 
-	statementIdPb := &st.StatementId
-	if statementIdPb != nil {
-		pb.StatementId = *statementIdPb
-	}
+	pb.StatementId = st.StatementId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6452,18 +5670,9 @@ func resultFromPb(pb *resultPb) (*Result, error) {
 		return nil, nil
 	}
 	st := &Result{}
-	isTruncatedField := &pb.IsTruncated
-	if isTruncatedField != nil {
-		st.IsTruncated = *isTruncatedField
-	}
-	rowCountField := &pb.RowCount
-	if rowCountField != nil {
-		st.RowCount = *rowCountField
-	}
-	statementIdField := &pb.StatementId
-	if statementIdField != nil {
-		st.StatementId = *statementIdField
-	}
+	st.IsTruncated = pb.IsTruncated
+	st.RowCount = pb.RowCount
+	st.StatementId = pb.StatementId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6479,28 +5688,37 @@ func (st resultPb) MarshalJSON() ([]byte, error) {
 
 type Schedule struct {
 	// A timestamp indicating when the schedule was created.
+	// Wire name: 'create_time'
 	CreateTime string
 	// The cron expression describing the frequency of the periodic refresh for
 	// this schedule.
+	// Wire name: 'cron_schedule'
 	CronSchedule CronSchedule
 	// UUID identifying the dashboard to which the schedule belongs.
+	// Wire name: 'dashboard_id'
 	DashboardId string
 	// The display name for schedule.
+	// Wire name: 'display_name'
 	DisplayName string
 	// The etag for the schedule. Must be left empty on create, must be provided
 	// on updates to ensure that the schedule has not been modified since the
 	// last read, and can be optionally provided on delete.
+	// Wire name: 'etag'
 	Etag string
 	// The status indicates whether this schedule is paused or not.
+	// Wire name: 'pause_status'
 	PauseStatus SchedulePauseStatus
 	// UUID identifying the schedule.
+	// Wire name: 'schedule_id'
 	ScheduleId string
 	// A timestamp indicating when the schedule was last updated.
+	// Wire name: 'update_time'
 	UpdateTime string
 	// The warehouse id to run the dashboard with for the schedule.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func scheduleToPb(st *Schedule) (*schedulePb, error) {
@@ -6508,10 +5726,7 @@ func scheduleToPb(st *Schedule) (*schedulePb, error) {
 		return nil, nil
 	}
 	pb := &schedulePb{}
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
 	cronSchedulePb, err := cronScheduleToPb(&st.CronSchedule)
 	if err != nil {
@@ -6521,40 +5736,19 @@ func scheduleToPb(st *Schedule) (*schedulePb, error) {
 		pb.CronSchedule = *cronSchedulePb
 	}
 
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	pauseStatusPb := &st.PauseStatus
-	if pauseStatusPb != nil {
-		pb.PauseStatus = *pauseStatusPb
-	}
+	pb.PauseStatus = st.PauseStatus
 
-	scheduleIdPb := &st.ScheduleId
-	if scheduleIdPb != nil {
-		pb.ScheduleId = *scheduleIdPb
-	}
+	pb.ScheduleId = st.ScheduleId
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6616,10 +5810,7 @@ func scheduleFromPb(pb *schedulePb) (*Schedule, error) {
 		return nil, nil
 	}
 	st := &Schedule{}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
+	st.CreateTime = pb.CreateTime
 	cronScheduleField, err := cronScheduleFromPb(&pb.CronSchedule)
 	if err != nil {
 		return nil, err
@@ -6627,34 +5818,13 @@ func scheduleFromPb(pb *schedulePb) (*Schedule, error) {
 	if cronScheduleField != nil {
 		st.CronSchedule = *cronScheduleField
 	}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	pauseStatusField := &pb.PauseStatus
-	if pauseStatusField != nil {
-		st.PauseStatus = *pauseStatusField
-	}
-	scheduleIdField := &pb.ScheduleId
-	if scheduleIdField != nil {
-		st.ScheduleId = *scheduleIdField
-	}
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.DashboardId = pb.DashboardId
+	st.DisplayName = pb.DisplayName
+	st.Etag = pb.Etag
+	st.PauseStatus = pb.PauseStatus
+	st.ScheduleId = pb.ScheduleId
+	st.UpdateTime = pb.UpdateTime
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6715,9 +5885,11 @@ func schedulePauseStatusFromPb(pb *schedulePauseStatusPb) (*SchedulePauseStatus,
 type Subscriber struct {
 	// The destination to receive the subscription email. This parameter is
 	// mutually exclusive with `user_subscriber`.
+	// Wire name: 'destination_subscriber'
 	DestinationSubscriber *SubscriptionSubscriberDestination
 	// The user to receive the subscription email. This parameter is mutually
 	// exclusive with `destination_subscriber`.
+	// Wire name: 'user_subscriber'
 	UserSubscriber *SubscriptionSubscriberUser
 }
 
@@ -6804,27 +5976,35 @@ func subscriberFromPb(pb *subscriberPb) (*Subscriber, error) {
 
 type Subscription struct {
 	// A timestamp indicating when the subscription was created.
+	// Wire name: 'create_time'
 	CreateTime string
 	// UserId of the user who adds subscribers (users or notification
 	// destinations) to the dashboard's schedule.
+	// Wire name: 'created_by_user_id'
 	CreatedByUserId int64
 	// UUID identifying the dashboard to which the subscription belongs.
+	// Wire name: 'dashboard_id'
 	DashboardId string
 	// The etag for the subscription. Must be left empty on create, can be
 	// optionally provided on delete to ensure that the subscription has not
 	// been deleted since the last read.
+	// Wire name: 'etag'
 	Etag string
 	// UUID identifying the schedule to which the subscription belongs.
+	// Wire name: 'schedule_id'
 	ScheduleId string
 	// Subscriber details for users and destinations to be added as subscribers
 	// to the schedule.
+	// Wire name: 'subscriber'
 	Subscriber Subscriber
 	// UUID identifying the subscription.
+	// Wire name: 'subscription_id'
 	SubscriptionId string
 	// A timestamp indicating when the subscription was last updated.
+	// Wire name: 'update_time'
 	UpdateTime string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func subscriptionToPb(st *Subscription) (*subscriptionPb, error) {
@@ -6832,30 +6012,15 @@ func subscriptionToPb(st *Subscription) (*subscriptionPb, error) {
 		return nil, nil
 	}
 	pb := &subscriptionPb{}
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	createdByUserIdPb := &st.CreatedByUserId
-	if createdByUserIdPb != nil {
-		pb.CreatedByUserId = *createdByUserIdPb
-	}
+	pb.CreatedByUserId = st.CreatedByUserId
 
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	scheduleIdPb := &st.ScheduleId
-	if scheduleIdPb != nil {
-		pb.ScheduleId = *scheduleIdPb
-	}
+	pb.ScheduleId = st.ScheduleId
 
 	subscriberPb, err := subscriberToPb(&st.Subscriber)
 	if err != nil {
@@ -6865,15 +6030,9 @@ func subscriptionToPb(st *Subscription) (*subscriptionPb, error) {
 		pb.Subscriber = *subscriberPb
 	}
 
-	subscriptionIdPb := &st.SubscriptionId
-	if subscriptionIdPb != nil {
-		pb.SubscriptionId = *subscriptionIdPb
-	}
+	pb.SubscriptionId = st.SubscriptionId
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6934,26 +6093,11 @@ func subscriptionFromPb(pb *subscriptionPb) (*Subscription, error) {
 		return nil, nil
 	}
 	st := &Subscription{}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	createdByUserIdField := &pb.CreatedByUserId
-	if createdByUserIdField != nil {
-		st.CreatedByUserId = *createdByUserIdField
-	}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	scheduleIdField := &pb.ScheduleId
-	if scheduleIdField != nil {
-		st.ScheduleId = *scheduleIdField
-	}
+	st.CreateTime = pb.CreateTime
+	st.CreatedByUserId = pb.CreatedByUserId
+	st.DashboardId = pb.DashboardId
+	st.Etag = pb.Etag
+	st.ScheduleId = pb.ScheduleId
 	subscriberField, err := subscriberFromPb(&pb.Subscriber)
 	if err != nil {
 		return nil, err
@@ -6961,14 +6105,8 @@ func subscriptionFromPb(pb *subscriptionPb) (*Subscription, error) {
 	if subscriberField != nil {
 		st.Subscriber = *subscriberField
 	}
-	subscriptionIdField := &pb.SubscriptionId
-	if subscriptionIdField != nil {
-		st.SubscriptionId = *subscriptionIdField
-	}
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
+	st.SubscriptionId = pb.SubscriptionId
+	st.UpdateTime = pb.UpdateTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6985,6 +6123,7 @@ func (st subscriptionPb) MarshalJSON() ([]byte, error) {
 type SubscriptionSubscriberDestination struct {
 	// The canonical identifier of the destination to receive email
 	// notification.
+	// Wire name: 'destination_id'
 	DestinationId string
 }
 
@@ -6993,10 +6132,7 @@ func subscriptionSubscriberDestinationToPb(st *SubscriptionSubscriberDestination
 		return nil, nil
 	}
 	pb := &subscriptionSubscriberDestinationPb{}
-	destinationIdPb := &st.DestinationId
-	if destinationIdPb != nil {
-		pb.DestinationId = *destinationIdPb
-	}
+	pb.DestinationId = st.DestinationId
 
 	return pb, nil
 }
@@ -7037,16 +6173,14 @@ func subscriptionSubscriberDestinationFromPb(pb *subscriptionSubscriberDestinati
 		return nil, nil
 	}
 	st := &SubscriptionSubscriberDestination{}
-	destinationIdField := &pb.DestinationId
-	if destinationIdField != nil {
-		st.DestinationId = *destinationIdField
-	}
+	st.DestinationId = pb.DestinationId
 
 	return st, nil
 }
 
 type SubscriptionSubscriberUser struct {
 	// UserId of the subscriber.
+	// Wire name: 'user_id'
 	UserId int64
 }
 
@@ -7055,10 +6189,7 @@ func subscriptionSubscriberUserToPb(st *SubscriptionSubscriberUser) (*subscripti
 		return nil, nil
 	}
 	pb := &subscriptionSubscriberUserPb{}
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	return pb, nil
 }
@@ -7098,10 +6229,7 @@ func subscriptionSubscriberUserFromPb(pb *subscriptionSubscriberUserPb) (*Subscr
 		return nil, nil
 	}
 	st := &SubscriptionSubscriberUser{}
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.UserId = pb.UserId
 
 	return st, nil
 }
@@ -7109,11 +6237,13 @@ func subscriptionSubscriberUserFromPb(pb *subscriptionSubscriberUserPb) (*Subscr
 type SuccessStatus struct {
 	// The token to poll for result asynchronously Example:
 	// EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+	// Wire name: 'data_token'
 	DataToken string
 	// Whether the query result is truncated (either by byte limit or row limit)
+	// Wire name: 'truncated'
 	Truncated bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func successStatusToPb(st *SuccessStatus) (*successStatusPb, error) {
@@ -7121,15 +6251,9 @@ func successStatusToPb(st *SuccessStatus) (*successStatusPb, error) {
 		return nil, nil
 	}
 	pb := &successStatusPb{}
-	dataTokenPb := &st.DataToken
-	if dataTokenPb != nil {
-		pb.DataToken = *dataTokenPb
-	}
+	pb.DataToken = st.DataToken
 
-	truncatedPb := &st.Truncated
-	if truncatedPb != nil {
-		pb.Truncated = *truncatedPb
-	}
+	pb.Truncated = st.Truncated
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7175,14 +6299,8 @@ func successStatusFromPb(pb *successStatusPb) (*SuccessStatus, error) {
 		return nil, nil
 	}
 	st := &SuccessStatus{}
-	dataTokenField := &pb.DataToken
-	if dataTokenField != nil {
-		st.DataToken = *dataTokenField
-	}
-	truncatedField := &pb.Truncated
-	if truncatedField != nil {
-		st.Truncated = *truncatedField
-	}
+	st.DataToken = pb.DataToken
+	st.Truncated = pb.Truncated
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7198,11 +6316,13 @@ func (st successStatusPb) MarshalJSON() ([]byte, error) {
 
 type TextAttachment struct {
 	// AI generated message
+	// Wire name: 'content'
 	Content string
 
+	// Wire name: 'id'
 	Id string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func textAttachmentToPb(st *TextAttachment) (*textAttachmentPb, error) {
@@ -7210,15 +6330,9 @@ func textAttachmentToPb(st *TextAttachment) (*textAttachmentPb, error) {
 		return nil, nil
 	}
 	pb := &textAttachmentPb{}
-	contentPb := &st.Content
-	if contentPb != nil {
-		pb.Content = *contentPb
-	}
+	pb.Content = st.Content
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7263,14 +6377,8 @@ func textAttachmentFromPb(pb *textAttachmentPb) (*TextAttachment, error) {
 		return nil, nil
 	}
 	st := &TextAttachment{}
-	contentField := &pb.Content
-	if contentField != nil {
-		st.Content = *contentField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Content = pb.Content
+	st.Id = pb.Id
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7287,7 +6395,8 @@ func (st textAttachmentPb) MarshalJSON() ([]byte, error) {
 // Trash dashboard
 type TrashDashboardRequest struct {
 	// UUID identifying the dashboard.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 }
 
 func trashDashboardRequestToPb(st *TrashDashboardRequest) (*trashDashboardRequestPb, error) {
@@ -7295,10 +6404,7 @@ func trashDashboardRequestToPb(st *TrashDashboardRequest) (*trashDashboardReques
 		return nil, nil
 	}
 	pb := &trashDashboardRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	return pb, nil
 }
@@ -7338,10 +6444,7 @@ func trashDashboardRequestFromPb(pb *trashDashboardRequestPb) (*TrashDashboardRe
 		return nil, nil
 	}
 	st := &TrashDashboardRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 
 	return st, nil
 }
@@ -7398,7 +6501,8 @@ func trashDashboardResponseFromPb(pb *trashDashboardResponsePb) (*TrashDashboard
 // Unpublish dashboard
 type UnpublishDashboardRequest struct {
 	// UUID identifying the published dashboard.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 }
 
 func unpublishDashboardRequestToPb(st *UnpublishDashboardRequest) (*unpublishDashboardRequestPb, error) {
@@ -7406,10 +6510,7 @@ func unpublishDashboardRequestToPb(st *UnpublishDashboardRequest) (*unpublishDas
 		return nil, nil
 	}
 	pb := &unpublishDashboardRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	return pb, nil
 }
@@ -7449,10 +6550,7 @@ func unpublishDashboardRequestFromPb(pb *unpublishDashboardRequestPb) (*Unpublis
 		return nil, nil
 	}
 	st := &UnpublishDashboardRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 
 	return st, nil
 }
@@ -7508,9 +6606,12 @@ func unpublishDashboardResponseFromPb(pb *unpublishDashboardResponsePb) (*Unpubl
 
 // Update dashboard
 type UpdateDashboardRequest struct {
+
+	// Wire name: 'dashboard'
 	Dashboard Dashboard
 	// UUID identifying the dashboard.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 }
 
 func updateDashboardRequestToPb(st *UpdateDashboardRequest) (*updateDashboardRequestPb, error) {
@@ -7526,10 +6627,7 @@ func updateDashboardRequestToPb(st *UpdateDashboardRequest) (*updateDashboardReq
 		pb.Dashboard = *dashboardPb
 	}
 
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	return pb, nil
 }
@@ -7577,10 +6675,7 @@ func updateDashboardRequestFromPb(pb *updateDashboardRequestPb) (*UpdateDashboar
 	if dashboardField != nil {
 		st.Dashboard = *dashboardField
 	}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 
 	return st, nil
 }
@@ -7588,11 +6683,14 @@ func updateDashboardRequestFromPb(pb *updateDashboardRequestPb) (*UpdateDashboar
 // Update dashboard schedule
 type UpdateScheduleRequest struct {
 	// UUID identifying the dashboard to which the schedule belongs.
-	DashboardId string
+	// Wire name: 'dashboard_id'
+	DashboardId string `tf:"-"`
 
+	// Wire name: 'schedule'
 	Schedule Schedule
 	// UUID identifying the schedule.
-	ScheduleId string
+	// Wire name: 'schedule_id'
+	ScheduleId string `tf:"-"`
 }
 
 func updateScheduleRequestToPb(st *UpdateScheduleRequest) (*updateScheduleRequestPb, error) {
@@ -7600,10 +6698,7 @@ func updateScheduleRequestToPb(st *UpdateScheduleRequest) (*updateScheduleReques
 		return nil, nil
 	}
 	pb := &updateScheduleRequestPb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	schedulePb, err := scheduleToPb(&st.Schedule)
 	if err != nil {
@@ -7613,10 +6708,7 @@ func updateScheduleRequestToPb(st *UpdateScheduleRequest) (*updateScheduleReques
 		pb.Schedule = *schedulePb
 	}
 
-	scheduleIdPb := &st.ScheduleId
-	if scheduleIdPb != nil {
-		pb.ScheduleId = *scheduleIdPb
-	}
+	pb.ScheduleId = st.ScheduleId
 
 	return pb, nil
 }
@@ -7660,10 +6752,7 @@ func updateScheduleRequestFromPb(pb *updateScheduleRequestPb) (*UpdateScheduleRe
 		return nil, nil
 	}
 	st := &UpdateScheduleRequest{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 	scheduleField, err := scheduleFromPb(&pb.Schedule)
 	if err != nil {
 		return nil, err
@@ -7671,10 +6760,61 @@ func updateScheduleRequestFromPb(pb *updateScheduleRequestPb) (*UpdateScheduleRe
 	if scheduleField != nil {
 		st.Schedule = *scheduleField
 	}
-	scheduleIdField := &pb.ScheduleId
-	if scheduleIdField != nil {
-		st.ScheduleId = *scheduleIdField
-	}
+	st.ScheduleId = pb.ScheduleId
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

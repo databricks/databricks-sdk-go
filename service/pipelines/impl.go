@@ -30,15 +30,22 @@ func (a *pipelinesImpl) Create(ctx context.Context, request CreatePipeline) (*Cr
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createPipelineResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createPipelineResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createPipelineResponseFromPb(&createPipelineResponsePb)
+	resp, err := createPipelineResponseFromPb(&createPipelineResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -55,7 +62,15 @@ func (a *pipelinesImpl) Delete(ctx context.Context, request DeletePipelineReques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deletePipelineResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deletePipelineResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -75,15 +90,22 @@ func (a *pipelinesImpl) Get(ctx context.Context, request GetPipelineRequest) (*G
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getPipelineResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getPipelineResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getPipelineResponseFromPb(&getPipelineResponsePb)
+	resp, err := getPipelineResponseFromPb(&getPipelineResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -100,15 +122,22 @@ func (a *pipelinesImpl) GetPermissionLevels(ctx context.Context, request GetPipe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getPipelinePermissionLevelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getPipelinePermissionLevelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getPipelinePermissionLevelsResponseFromPb(&getPipelinePermissionLevelsResponsePb)
+	resp, err := getPipelinePermissionLevelsResponseFromPb(&getPipelinePermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -125,15 +154,22 @@ func (a *pipelinesImpl) GetPermissions(ctx context.Context, request GetPipelineP
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &pipelinePermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&pipelinePermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := pipelinePermissionsFromPb(&pipelinePermissionsPb)
+	resp, err := pipelinePermissionsFromPb(&pipelinePermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -150,15 +186,22 @@ func (a *pipelinesImpl) GetUpdate(ctx context.Context, request GetUpdateRequest)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getUpdateResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getUpdateResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getUpdateResponseFromPb(&getUpdateResponsePb)
+	resp, err := getUpdateResponseFromPb(&getUpdateResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -195,7 +238,8 @@ func (a *pipelinesImpl) ListPipelineEvents(ctx context.Context, request ListPipe
 // Retrieves events for a pipeline.
 func (a *pipelinesImpl) ListPipelineEventsAll(ctx context.Context, request ListPipelineEventsRequest) ([]PipelineEvent, error) {
 	iterator := a.ListPipelineEvents(ctx, request)
-	return listing.ToSlice[PipelineEvent](ctx, iterator)
+	return listing.ToSliceN[PipelineEvent, int](ctx, iterator, request.MaxResults)
+
 }
 
 func (a *pipelinesImpl) internalListPipelineEvents(ctx context.Context, request ListPipelineEventsRequest) (*ListPipelineEventsResponse, error) {
@@ -210,15 +254,22 @@ func (a *pipelinesImpl) internalListPipelineEvents(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listPipelineEventsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listPipelineEventsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listPipelineEventsResponseFromPb(&listPipelineEventsResponsePb)
+	resp, err := listPipelineEventsResponseFromPb(&listPipelineEventsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -255,7 +306,8 @@ func (a *pipelinesImpl) ListPipelines(ctx context.Context, request ListPipelines
 // Lists pipelines defined in the Delta Live Tables system.
 func (a *pipelinesImpl) ListPipelinesAll(ctx context.Context, request ListPipelinesRequest) ([]PipelineStateInfo, error) {
 	iterator := a.ListPipelines(ctx, request)
-	return listing.ToSlice[PipelineStateInfo](ctx, iterator)
+	return listing.ToSliceN[PipelineStateInfo, int](ctx, iterator, request.MaxResults)
+
 }
 
 func (a *pipelinesImpl) internalListPipelines(ctx context.Context, request ListPipelinesRequest) (*ListPipelinesResponse, error) {
@@ -270,15 +322,22 @@ func (a *pipelinesImpl) internalListPipelines(ctx context.Context, request ListP
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listPipelinesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listPipelinesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listPipelinesResponseFromPb(&listPipelinesResponsePb)
+	resp, err := listPipelinesResponseFromPb(&listPipelinesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -295,15 +354,22 @@ func (a *pipelinesImpl) ListUpdates(ctx context.Context, request ListUpdatesRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listUpdatesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listUpdatesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listUpdatesResponseFromPb(&listUpdatesResponsePb)
+	resp, err := listUpdatesResponseFromPb(&listUpdatesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -321,15 +387,22 @@ func (a *pipelinesImpl) SetPermissions(ctx context.Context, request PipelinePerm
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &pipelinePermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&pipelinePermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := pipelinePermissionsFromPb(&pipelinePermissionsPb)
+	resp, err := pipelinePermissionsFromPb(&pipelinePermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -347,15 +420,22 @@ func (a *pipelinesImpl) StartUpdate(ctx context.Context, request StartUpdate) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &startUpdateResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&startUpdateResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := startUpdateResponseFromPb(&startUpdateResponsePb)
+	resp, err := startUpdateResponseFromPb(&startUpdateResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -372,7 +452,15 @@ func (a *pipelinesImpl) Stop(ctx context.Context, request StopRequest) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &stopPipelineResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&stopPipelineResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -393,7 +481,15 @@ func (a *pipelinesImpl) Update(ctx context.Context, request EditPipeline) error 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &editPipelineResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&editPipelineResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -414,15 +510,22 @@ func (a *pipelinesImpl) UpdatePermissions(ctx context.Context, request PipelineP
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &pipelinePermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&pipelinePermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := pipelinePermissionsFromPb(&pipelinePermissionsPb)
+	resp, err := pipelinePermissionsFromPb(&pipelinePermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }

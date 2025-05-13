@@ -11,80 +11,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type ColumnInfo struct {
 	// Name of the column.
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func columnInfoToPb(st *ColumnInfo) (*columnInfoPb, error) {
@@ -92,10 +24,7 @@ func columnInfoToPb(st *ColumnInfo) (*columnInfoPb, error) {
 		return nil, nil
 	}
 	pb := &columnInfoPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -138,10 +67,7 @@ func columnInfoFromPb(pb *columnInfoPb) (*ColumnInfo, error) {
 		return nil, nil
 	}
 	st := &ColumnInfo{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -157,13 +83,16 @@ func (st columnInfoPb) MarshalJSON() ([]byte, error) {
 
 type CreateEndpoint struct {
 	// The budget policy id to be applied
+	// Wire name: 'budget_policy_id'
 	BudgetPolicyId string
 	// Type of endpoint
+	// Wire name: 'endpoint_type'
 	EndpointType EndpointType
 	// Name of the vector search endpoint
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createEndpointToPb(st *CreateEndpoint) (*createEndpointPb, error) {
@@ -171,20 +100,11 @@ func createEndpointToPb(st *CreateEndpoint) (*createEndpointPb, error) {
 		return nil, nil
 	}
 	pb := &createEndpointPb{}
-	budgetPolicyIdPb := &st.BudgetPolicyId
-	if budgetPolicyIdPb != nil {
-		pb.BudgetPolicyId = *budgetPolicyIdPb
-	}
+	pb.BudgetPolicyId = st.BudgetPolicyId
 
-	endpointTypePb := &st.EndpointType
-	if endpointTypePb != nil {
-		pb.EndpointType = *endpointTypePb
-	}
+	pb.EndpointType = st.EndpointType
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -231,18 +151,9 @@ func createEndpointFromPb(pb *createEndpointPb) (*CreateEndpoint, error) {
 		return nil, nil
 	}
 	st := &CreateEndpoint{}
-	budgetPolicyIdField := &pb.BudgetPolicyId
-	if budgetPolicyIdField != nil {
-		st.BudgetPolicyId = *budgetPolicyIdField
-	}
-	endpointTypeField := &pb.EndpointType
-	if endpointTypeField != nil {
-		st.EndpointType = *endpointTypeField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.BudgetPolicyId = pb.BudgetPolicyId
+	st.EndpointType = pb.EndpointType
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -259,11 +170,14 @@ func (st createEndpointPb) MarshalJSON() ([]byte, error) {
 type CreateVectorIndexRequest struct {
 	// Specification for Delta Sync Index. Required if `index_type` is
 	// `DELTA_SYNC`.
+	// Wire name: 'delta_sync_index_spec'
 	DeltaSyncIndexSpec *DeltaSyncVectorIndexSpecRequest
 	// Specification for Direct Vector Access Index. Required if `index_type` is
 	// `DIRECT_ACCESS`.
+	// Wire name: 'direct_access_index_spec'
 	DirectAccessIndexSpec *DirectAccessVectorIndexSpec
 	// Name of the endpoint to be used for serving the index
+	// Wire name: 'endpoint_name'
 	EndpointName string
 	// There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that
 	// automatically syncs with a source Delta Table, automatically and
@@ -271,10 +185,13 @@ type CreateVectorIndexRequest struct {
 	// Table changes. - `DIRECT_ACCESS`: An index that supports direct read and
 	// write of vectors and metadata through our REST and SDK APIs. With this
 	// model, the user manages index updates.
+	// Wire name: 'index_type'
 	IndexType VectorIndexType
 	// Name of the index
+	// Wire name: 'name'
 	Name string
 	// Primary key of the index
+	// Wire name: 'primary_key'
 	PrimaryKey string
 }
 
@@ -299,25 +216,13 @@ func createVectorIndexRequestToPb(st *CreateVectorIndexRequest) (*createVectorIn
 		pb.DirectAccessIndexSpec = directAccessIndexSpecPb
 	}
 
-	endpointNamePb := &st.EndpointName
-	if endpointNamePb != nil {
-		pb.EndpointName = *endpointNamePb
-	}
+	pb.EndpointName = st.EndpointName
 
-	indexTypePb := &st.IndexType
-	if indexTypePb != nil {
-		pb.IndexType = *indexTypePb
-	}
+	pb.IndexType = st.IndexType
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	primaryKeyPb := &st.PrimaryKey
-	if primaryKeyPb != nil {
-		pb.PrimaryKey = *primaryKeyPb
-	}
+	pb.PrimaryKey = st.PrimaryKey
 
 	return pb, nil
 }
@@ -388,33 +293,23 @@ func createVectorIndexRequestFromPb(pb *createVectorIndexRequestPb) (*CreateVect
 	if directAccessIndexSpecField != nil {
 		st.DirectAccessIndexSpec = directAccessIndexSpecField
 	}
-	endpointNameField := &pb.EndpointName
-	if endpointNameField != nil {
-		st.EndpointName = *endpointNameField
-	}
-	indexTypeField := &pb.IndexType
-	if indexTypeField != nil {
-		st.IndexType = *indexTypeField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	primaryKeyField := &pb.PrimaryKey
-	if primaryKeyField != nil {
-		st.PrimaryKey = *primaryKeyField
-	}
+	st.EndpointName = pb.EndpointName
+	st.IndexType = pb.IndexType
+	st.Name = pb.Name
+	st.PrimaryKey = pb.PrimaryKey
 
 	return st, nil
 }
 
 type CustomTag struct {
 	// Key field for a vector search endpoint tag.
+	// Wire name: 'key'
 	Key string
 	// [Optional] Value field for a vector search endpoint tag.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func customTagToPb(st *CustomTag) (*customTagPb, error) {
@@ -422,15 +317,9 @@ func customTagToPb(st *CustomTag) (*customTagPb, error) {
 		return nil, nil
 	}
 	pb := &customTagPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -475,14 +364,8 @@ func customTagFromPb(pb *customTagPb) (*CustomTag, error) {
 		return nil, nil
 	}
 	st := &CustomTag{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -498,11 +381,13 @@ func (st customTagPb) MarshalJSON() ([]byte, error) {
 
 type DeleteDataResult struct {
 	// List of primary keys for rows that failed to process.
+	// Wire name: 'failed_primary_keys'
 	FailedPrimaryKeys []string
 	// Count of successfully processed rows.
+	// Wire name: 'success_row_count'
 	SuccessRowCount int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteDataResultToPb(st *DeleteDataResult) (*deleteDataResultPb, error) {
@@ -510,20 +395,9 @@ func deleteDataResultToPb(st *DeleteDataResult) (*deleteDataResultPb, error) {
 		return nil, nil
 	}
 	pb := &deleteDataResultPb{}
+	pb.FailedPrimaryKeys = st.FailedPrimaryKeys
 
-	var failedPrimaryKeysPb []string
-	for _, item := range st.FailedPrimaryKeys {
-		itemPb := &item
-		if itemPb != nil {
-			failedPrimaryKeysPb = append(failedPrimaryKeysPb, *itemPb)
-		}
-	}
-	pb.FailedPrimaryKeys = failedPrimaryKeysPb
-
-	successRowCountPb := &st.SuccessRowCount
-	if successRowCountPb != nil {
-		pb.SuccessRowCount = *successRowCountPb
-	}
+	pb.SuccessRowCount = st.SuccessRowCount
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -568,19 +442,8 @@ func deleteDataResultFromPb(pb *deleteDataResultPb) (*DeleteDataResult, error) {
 		return nil, nil
 	}
 	st := &DeleteDataResult{}
-
-	var failedPrimaryKeysField []string
-	for _, item := range pb.FailedPrimaryKeys {
-		itemField := &item
-		if itemField != nil {
-			failedPrimaryKeysField = append(failedPrimaryKeysField, *itemField)
-		}
-	}
-	st.FailedPrimaryKeys = failedPrimaryKeysField
-	successRowCountField := &pb.SuccessRowCount
-	if successRowCountField != nil {
-		st.SuccessRowCount = *successRowCountField
-	}
+	st.FailedPrimaryKeys = pb.FailedPrimaryKeys
+	st.SuccessRowCount = pb.SuccessRowCount
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -644,9 +507,11 @@ func deleteDataStatusFromPb(pb *deleteDataStatusPb) (*DeleteDataStatus, error) {
 type DeleteDataVectorIndexRequest struct {
 	// Name of the vector index where data is to be deleted. Must be a Direct
 	// Vector Access Index.
-	IndexName string
+	// Wire name: 'index_name'
+	IndexName string `tf:"-"`
 	// List of primary keys for the data to be deleted.
-	PrimaryKeys []string
+	// Wire name: 'primary_keys'
+	PrimaryKeys []string `tf:"-"`
 }
 
 func deleteDataVectorIndexRequestToPb(st *DeleteDataVectorIndexRequest) (*deleteDataVectorIndexRequestPb, error) {
@@ -654,19 +519,9 @@ func deleteDataVectorIndexRequestToPb(st *DeleteDataVectorIndexRequest) (*delete
 		return nil, nil
 	}
 	pb := &deleteDataVectorIndexRequestPb{}
-	indexNamePb := &st.IndexName
-	if indexNamePb != nil {
-		pb.IndexName = *indexNamePb
-	}
+	pb.IndexName = st.IndexName
 
-	var primaryKeysPb []string
-	for _, item := range st.PrimaryKeys {
-		itemPb := &item
-		if itemPb != nil {
-			primaryKeysPb = append(primaryKeysPb, *itemPb)
-		}
-	}
-	pb.PrimaryKeys = primaryKeysPb
+	pb.PrimaryKeys = st.PrimaryKeys
 
 	return pb, nil
 }
@@ -709,27 +564,18 @@ func deleteDataVectorIndexRequestFromPb(pb *deleteDataVectorIndexRequestPb) (*De
 		return nil, nil
 	}
 	st := &DeleteDataVectorIndexRequest{}
-	indexNameField := &pb.IndexName
-	if indexNameField != nil {
-		st.IndexName = *indexNameField
-	}
-
-	var primaryKeysField []string
-	for _, item := range pb.PrimaryKeys {
-		itemField := &item
-		if itemField != nil {
-			primaryKeysField = append(primaryKeysField, *itemField)
-		}
-	}
-	st.PrimaryKeys = primaryKeysField
+	st.IndexName = pb.IndexName
+	st.PrimaryKeys = pb.PrimaryKeys
 
 	return st, nil
 }
 
 type DeleteDataVectorIndexResponse struct {
 	// Result of the upsert or delete operation.
+	// Wire name: 'result'
 	Result *DeleteDataResult
 	// Status of the delete operation.
+	// Wire name: 'status'
 	Status DeleteDataStatus
 }
 
@@ -746,10 +592,7 @@ func deleteDataVectorIndexResponseToPb(st *DeleteDataVectorIndexResponse) (*dele
 		pb.Result = resultPb
 	}
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	return pb, nil
 }
@@ -798,10 +641,7 @@ func deleteDataVectorIndexResponseFromPb(pb *deleteDataVectorIndexResponsePb) (*
 	if resultField != nil {
 		st.Result = resultField
 	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.Status = pb.Status
 
 	return st, nil
 }
@@ -809,7 +649,8 @@ func deleteDataVectorIndexResponseFromPb(pb *deleteDataVectorIndexResponsePb) (*
 // Delete an endpoint
 type DeleteEndpointRequest struct {
 	// Name of the vector search endpoint
-	EndpointName string
+	// Wire name: 'endpoint_name'
+	EndpointName string `tf:"-"`
 }
 
 func deleteEndpointRequestToPb(st *DeleteEndpointRequest) (*deleteEndpointRequestPb, error) {
@@ -817,10 +658,7 @@ func deleteEndpointRequestToPb(st *DeleteEndpointRequest) (*deleteEndpointReques
 		return nil, nil
 	}
 	pb := &deleteEndpointRequestPb{}
-	endpointNamePb := &st.EndpointName
-	if endpointNamePb != nil {
-		pb.EndpointName = *endpointNamePb
-	}
+	pb.EndpointName = st.EndpointName
 
 	return pb, nil
 }
@@ -860,10 +698,7 @@ func deleteEndpointRequestFromPb(pb *deleteEndpointRequestPb) (*DeleteEndpointRe
 		return nil, nil
 	}
 	st := &DeleteEndpointRequest{}
-	endpointNameField := &pb.EndpointName
-	if endpointNameField != nil {
-		st.EndpointName = *endpointNameField
-	}
+	st.EndpointName = pb.EndpointName
 
 	return st, nil
 }
@@ -920,7 +755,8 @@ func deleteEndpointResponseFromPb(pb *deleteEndpointResponsePb) (*DeleteEndpoint
 // Delete an index
 type DeleteIndexRequest struct {
 	// Name of the index
-	IndexName string
+	// Wire name: 'index_name'
+	IndexName string `tf:"-"`
 }
 
 func deleteIndexRequestToPb(st *DeleteIndexRequest) (*deleteIndexRequestPb, error) {
@@ -928,10 +764,7 @@ func deleteIndexRequestToPb(st *DeleteIndexRequest) (*deleteIndexRequestPb, erro
 		return nil, nil
 	}
 	pb := &deleteIndexRequestPb{}
-	indexNamePb := &st.IndexName
-	if indexNamePb != nil {
-		pb.IndexName = *indexNamePb
-	}
+	pb.IndexName = st.IndexName
 
 	return pb, nil
 }
@@ -971,10 +804,7 @@ func deleteIndexRequestFromPb(pb *deleteIndexRequestPb) (*DeleteIndexRequest, er
 		return nil, nil
 	}
 	st := &DeleteIndexRequest{}
-	indexNameField := &pb.IndexName
-	if indexNameField != nil {
-		st.IndexName = *indexNameField
-	}
+	st.IndexName = pb.IndexName
 
 	return st, nil
 }
@@ -1033,13 +863,17 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	// this field blank, all columns from the source table are synced with the
 	// index. The primary key column and embedding source column or embedding
 	// vector column are always synced.
+	// Wire name: 'columns_to_sync'
 	ColumnsToSync []string
 	// The columns that contain the embedding source.
+	// Wire name: 'embedding_source_columns'
 	EmbeddingSourceColumns []EmbeddingSourceColumn
 	// The columns that contain the embedding vectors.
+	// Wire name: 'embedding_vector_columns'
 	EmbeddingVectorColumns []EmbeddingVectorColumn
 	// [Optional] Name of the Delta table to sync the vector index contents and
 	// computed embeddings to.
+	// Wire name: 'embedding_writeback_table'
 	EmbeddingWritebackTable string
 	// Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the
 	// triggered execution mode, the system stops processing after successfully
@@ -1048,11 +882,13 @@ type DeltaSyncVectorIndexSpecRequest struct {
 	// `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline
 	// processes new data as it arrives in the source table to keep vector index
 	// fresh.
+	// Wire name: 'pipeline_type'
 	PipelineType PipelineType
 	// The name of the source table.
+	// Wire name: 'source_table'
 	SourceTable string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deltaSyncVectorIndexSpecRequestToPb(st *DeltaSyncVectorIndexSpecRequest) (*deltaSyncVectorIndexSpecRequestPb, error) {
@@ -1060,15 +896,7 @@ func deltaSyncVectorIndexSpecRequestToPb(st *DeltaSyncVectorIndexSpecRequest) (*
 		return nil, nil
 	}
 	pb := &deltaSyncVectorIndexSpecRequestPb{}
-
-	var columnsToSyncPb []string
-	for _, item := range st.ColumnsToSync {
-		itemPb := &item
-		if itemPb != nil {
-			columnsToSyncPb = append(columnsToSyncPb, *itemPb)
-		}
-	}
-	pb.ColumnsToSync = columnsToSyncPb
+	pb.ColumnsToSync = st.ColumnsToSync
 
 	var embeddingSourceColumnsPb []embeddingSourceColumnPb
 	for _, item := range st.EmbeddingSourceColumns {
@@ -1094,20 +922,11 @@ func deltaSyncVectorIndexSpecRequestToPb(st *DeltaSyncVectorIndexSpecRequest) (*
 	}
 	pb.EmbeddingVectorColumns = embeddingVectorColumnsPb
 
-	embeddingWritebackTablePb := &st.EmbeddingWritebackTable
-	if embeddingWritebackTablePb != nil {
-		pb.EmbeddingWritebackTable = *embeddingWritebackTablePb
-	}
+	pb.EmbeddingWritebackTable = st.EmbeddingWritebackTable
 
-	pipelineTypePb := &st.PipelineType
-	if pipelineTypePb != nil {
-		pb.PipelineType = *pipelineTypePb
-	}
+	pb.PipelineType = st.PipelineType
 
-	sourceTablePb := &st.SourceTable
-	if sourceTablePb != nil {
-		pb.SourceTable = *sourceTablePb
-	}
+	pb.SourceTable = st.SourceTable
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1170,51 +989,34 @@ func deltaSyncVectorIndexSpecRequestFromPb(pb *deltaSyncVectorIndexSpecRequestPb
 		return nil, nil
 	}
 	st := &DeltaSyncVectorIndexSpecRequest{}
-
-	var columnsToSyncField []string
-	for _, item := range pb.ColumnsToSync {
-		itemField := &item
-		if itemField != nil {
-			columnsToSyncField = append(columnsToSyncField, *itemField)
-		}
-	}
-	st.ColumnsToSync = columnsToSyncField
+	st.ColumnsToSync = pb.ColumnsToSync
 
 	var embeddingSourceColumnsField []EmbeddingSourceColumn
-	for _, item := range pb.EmbeddingSourceColumns {
-		itemField, err := embeddingSourceColumnFromPb(&item)
+	for _, itemPb := range pb.EmbeddingSourceColumns {
+		item, err := embeddingSourceColumnFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			embeddingSourceColumnsField = append(embeddingSourceColumnsField, *itemField)
+		if item != nil {
+			embeddingSourceColumnsField = append(embeddingSourceColumnsField, *item)
 		}
 	}
 	st.EmbeddingSourceColumns = embeddingSourceColumnsField
 
 	var embeddingVectorColumnsField []EmbeddingVectorColumn
-	for _, item := range pb.EmbeddingVectorColumns {
-		itemField, err := embeddingVectorColumnFromPb(&item)
+	for _, itemPb := range pb.EmbeddingVectorColumns {
+		item, err := embeddingVectorColumnFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			embeddingVectorColumnsField = append(embeddingVectorColumnsField, *itemField)
+		if item != nil {
+			embeddingVectorColumnsField = append(embeddingVectorColumnsField, *item)
 		}
 	}
 	st.EmbeddingVectorColumns = embeddingVectorColumnsField
-	embeddingWritebackTableField := &pb.EmbeddingWritebackTable
-	if embeddingWritebackTableField != nil {
-		st.EmbeddingWritebackTable = *embeddingWritebackTableField
-	}
-	pipelineTypeField := &pb.PipelineType
-	if pipelineTypeField != nil {
-		st.PipelineType = *pipelineTypeField
-	}
-	sourceTableField := &pb.SourceTable
-	if sourceTableField != nil {
-		st.SourceTable = *sourceTableField
-	}
+	st.EmbeddingWritebackTable = pb.EmbeddingWritebackTable
+	st.PipelineType = pb.PipelineType
+	st.SourceTable = pb.SourceTable
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1230,13 +1032,17 @@ func (st deltaSyncVectorIndexSpecRequestPb) MarshalJSON() ([]byte, error) {
 
 type DeltaSyncVectorIndexSpecResponse struct {
 	// The columns that contain the embedding source.
+	// Wire name: 'embedding_source_columns'
 	EmbeddingSourceColumns []EmbeddingSourceColumn
 	// The columns that contain the embedding vectors.
+	// Wire name: 'embedding_vector_columns'
 	EmbeddingVectorColumns []EmbeddingVectorColumn
 	// [Optional] Name of the Delta table to sync the vector index contents and
 	// computed embeddings to.
+	// Wire name: 'embedding_writeback_table'
 	EmbeddingWritebackTable string
 	// The ID of the pipeline that is used to sync the index.
+	// Wire name: 'pipeline_id'
 	PipelineId string
 	// Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the
 	// triggered execution mode, the system stops processing after successfully
@@ -1245,11 +1051,13 @@ type DeltaSyncVectorIndexSpecResponse struct {
 	// `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline
 	// processes new data as it arrives in the source table to keep vector index
 	// fresh.
+	// Wire name: 'pipeline_type'
 	PipelineType PipelineType
 	// The name of the source table.
+	// Wire name: 'source_table'
 	SourceTable string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deltaSyncVectorIndexSpecResponseToPb(st *DeltaSyncVectorIndexSpecResponse) (*deltaSyncVectorIndexSpecResponsePb, error) {
@@ -1282,25 +1090,13 @@ func deltaSyncVectorIndexSpecResponseToPb(st *DeltaSyncVectorIndexSpecResponse) 
 	}
 	pb.EmbeddingVectorColumns = embeddingVectorColumnsPb
 
-	embeddingWritebackTablePb := &st.EmbeddingWritebackTable
-	if embeddingWritebackTablePb != nil {
-		pb.EmbeddingWritebackTable = *embeddingWritebackTablePb
-	}
+	pb.EmbeddingWritebackTable = st.EmbeddingWritebackTable
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
-	pipelineTypePb := &st.PipelineType
-	if pipelineTypePb != nil {
-		pb.PipelineType = *pipelineTypePb
-	}
+	pb.PipelineType = st.PipelineType
 
-	sourceTablePb := &st.SourceTable
-	if sourceTablePb != nil {
-		pb.SourceTable = *sourceTablePb
-	}
+	pb.SourceTable = st.SourceTable
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1362,44 +1158,32 @@ func deltaSyncVectorIndexSpecResponseFromPb(pb *deltaSyncVectorIndexSpecResponse
 	st := &DeltaSyncVectorIndexSpecResponse{}
 
 	var embeddingSourceColumnsField []EmbeddingSourceColumn
-	for _, item := range pb.EmbeddingSourceColumns {
-		itemField, err := embeddingSourceColumnFromPb(&item)
+	for _, itemPb := range pb.EmbeddingSourceColumns {
+		item, err := embeddingSourceColumnFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			embeddingSourceColumnsField = append(embeddingSourceColumnsField, *itemField)
+		if item != nil {
+			embeddingSourceColumnsField = append(embeddingSourceColumnsField, *item)
 		}
 	}
 	st.EmbeddingSourceColumns = embeddingSourceColumnsField
 
 	var embeddingVectorColumnsField []EmbeddingVectorColumn
-	for _, item := range pb.EmbeddingVectorColumns {
-		itemField, err := embeddingVectorColumnFromPb(&item)
+	for _, itemPb := range pb.EmbeddingVectorColumns {
+		item, err := embeddingVectorColumnFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			embeddingVectorColumnsField = append(embeddingVectorColumnsField, *itemField)
+		if item != nil {
+			embeddingVectorColumnsField = append(embeddingVectorColumnsField, *item)
 		}
 	}
 	st.EmbeddingVectorColumns = embeddingVectorColumnsField
-	embeddingWritebackTableField := &pb.EmbeddingWritebackTable
-	if embeddingWritebackTableField != nil {
-		st.EmbeddingWritebackTable = *embeddingWritebackTableField
-	}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
-	pipelineTypeField := &pb.PipelineType
-	if pipelineTypeField != nil {
-		st.PipelineType = *pipelineTypeField
-	}
-	sourceTableField := &pb.SourceTable
-	if sourceTableField != nil {
-		st.SourceTable = *sourceTableField
-	}
+	st.EmbeddingWritebackTable = pb.EmbeddingWritebackTable
+	st.PipelineId = pb.PipelineId
+	st.PipelineType = pb.PipelineType
+	st.SourceTable = pb.SourceTable
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1416,16 +1200,19 @@ func (st deltaSyncVectorIndexSpecResponsePb) MarshalJSON() ([]byte, error) {
 type DirectAccessVectorIndexSpec struct {
 	// The columns that contain the embedding source. The format should be
 	// array[double].
+	// Wire name: 'embedding_source_columns'
 	EmbeddingSourceColumns []EmbeddingSourceColumn
 	// The columns that contain the embedding vectors. The format should be
 	// array[double].
+	// Wire name: 'embedding_vector_columns'
 	EmbeddingVectorColumns []EmbeddingVectorColumn
 	// The schema of the index in JSON format. Supported types are `integer`,
 	// `long`, `float`, `double`, `boolean`, `string`, `date`, `timestamp`.
 	// Supported types for vector column: `array<float>`, `array<double>`,`.
+	// Wire name: 'schema_json'
 	SchemaJson string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func directAccessVectorIndexSpecToPb(st *DirectAccessVectorIndexSpec) (*directAccessVectorIndexSpecPb, error) {
@@ -1458,10 +1245,7 @@ func directAccessVectorIndexSpecToPb(st *DirectAccessVectorIndexSpec) (*directAc
 	}
 	pb.EmbeddingVectorColumns = embeddingVectorColumnsPb
 
-	schemaJsonPb := &st.SchemaJson
-	if schemaJsonPb != nil {
-		pb.SchemaJson = *schemaJsonPb
-	}
+	pb.SchemaJson = st.SchemaJson
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1514,32 +1298,29 @@ func directAccessVectorIndexSpecFromPb(pb *directAccessVectorIndexSpecPb) (*Dire
 	st := &DirectAccessVectorIndexSpec{}
 
 	var embeddingSourceColumnsField []EmbeddingSourceColumn
-	for _, item := range pb.EmbeddingSourceColumns {
-		itemField, err := embeddingSourceColumnFromPb(&item)
+	for _, itemPb := range pb.EmbeddingSourceColumns {
+		item, err := embeddingSourceColumnFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			embeddingSourceColumnsField = append(embeddingSourceColumnsField, *itemField)
+		if item != nil {
+			embeddingSourceColumnsField = append(embeddingSourceColumnsField, *item)
 		}
 	}
 	st.EmbeddingSourceColumns = embeddingSourceColumnsField
 
 	var embeddingVectorColumnsField []EmbeddingVectorColumn
-	for _, item := range pb.EmbeddingVectorColumns {
-		itemField, err := embeddingVectorColumnFromPb(&item)
+	for _, itemPb := range pb.EmbeddingVectorColumns {
+		item, err := embeddingVectorColumnFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			embeddingVectorColumnsField = append(embeddingVectorColumnsField, *itemField)
+		if item != nil {
+			embeddingVectorColumnsField = append(embeddingVectorColumnsField, *item)
 		}
 	}
 	st.EmbeddingVectorColumns = embeddingVectorColumnsField
-	schemaJsonField := &pb.SchemaJson
-	if schemaJsonField != nil {
-		st.SchemaJson = *schemaJsonField
-	}
+	st.SchemaJson = pb.SchemaJson
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1555,11 +1336,13 @@ func (st directAccessVectorIndexSpecPb) MarshalJSON() ([]byte, error) {
 
 type EmbeddingSourceColumn struct {
 	// Name of the embedding model endpoint
+	// Wire name: 'embedding_model_endpoint_name'
 	EmbeddingModelEndpointName string
 	// Name of the column
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func embeddingSourceColumnToPb(st *EmbeddingSourceColumn) (*embeddingSourceColumnPb, error) {
@@ -1567,15 +1350,9 @@ func embeddingSourceColumnToPb(st *EmbeddingSourceColumn) (*embeddingSourceColum
 		return nil, nil
 	}
 	pb := &embeddingSourceColumnPb{}
-	embeddingModelEndpointNamePb := &st.EmbeddingModelEndpointName
-	if embeddingModelEndpointNamePb != nil {
-		pb.EmbeddingModelEndpointName = *embeddingModelEndpointNamePb
-	}
+	pb.EmbeddingModelEndpointName = st.EmbeddingModelEndpointName
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1620,14 +1397,8 @@ func embeddingSourceColumnFromPb(pb *embeddingSourceColumnPb) (*EmbeddingSourceC
 		return nil, nil
 	}
 	st := &EmbeddingSourceColumn{}
-	embeddingModelEndpointNameField := &pb.EmbeddingModelEndpointName
-	if embeddingModelEndpointNameField != nil {
-		st.EmbeddingModelEndpointName = *embeddingModelEndpointNameField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.EmbeddingModelEndpointName = pb.EmbeddingModelEndpointName
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1643,11 +1414,13 @@ func (st embeddingSourceColumnPb) MarshalJSON() ([]byte, error) {
 
 type EmbeddingVectorColumn struct {
 	// Dimension of the embedding vector
+	// Wire name: 'embedding_dimension'
 	EmbeddingDimension int
 	// Name of the column
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func embeddingVectorColumnToPb(st *EmbeddingVectorColumn) (*embeddingVectorColumnPb, error) {
@@ -1655,15 +1428,9 @@ func embeddingVectorColumnToPb(st *EmbeddingVectorColumn) (*embeddingVectorColum
 		return nil, nil
 	}
 	pb := &embeddingVectorColumnPb{}
-	embeddingDimensionPb := &st.EmbeddingDimension
-	if embeddingDimensionPb != nil {
-		pb.EmbeddingDimension = *embeddingDimensionPb
-	}
+	pb.EmbeddingDimension = st.EmbeddingDimension
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1708,14 +1475,8 @@ func embeddingVectorColumnFromPb(pb *embeddingVectorColumnPb) (*EmbeddingVectorC
 		return nil, nil
 	}
 	st := &EmbeddingVectorColumn{}
-	embeddingDimensionField := &pb.EmbeddingDimension
-	if embeddingDimensionField != nil {
-		st.EmbeddingDimension = *embeddingDimensionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.EmbeddingDimension = pb.EmbeddingDimension
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1731,29 +1492,40 @@ func (st embeddingVectorColumnPb) MarshalJSON() ([]byte, error) {
 
 type EndpointInfo struct {
 	// Timestamp of endpoint creation
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 	// Creator of the endpoint
+	// Wire name: 'creator'
 	Creator string
 	// The custom tags assigned to the endpoint
+	// Wire name: 'custom_tags'
 	CustomTags []CustomTag
 	// The budget policy id applied to the endpoint
+	// Wire name: 'effective_budget_policy_id'
 	EffectiveBudgetPolicyId string
 	// Current status of the endpoint
+	// Wire name: 'endpoint_status'
 	EndpointStatus *EndpointStatus
 	// Type of endpoint
+	// Wire name: 'endpoint_type'
 	EndpointType EndpointType
 	// Unique identifier of the endpoint
+	// Wire name: 'id'
 	Id string
 	// Timestamp of last update to the endpoint
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// User who last updated the endpoint
+	// Wire name: 'last_updated_user'
 	LastUpdatedUser string
 	// Name of the vector search endpoint
+	// Wire name: 'name'
 	Name string
 	// Number of indexes on the endpoint
+	// Wire name: 'num_indexes'
 	NumIndexes int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
@@ -1761,15 +1533,9 @@ func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
 		return nil, nil
 	}
 	pb := &endpointInfoPb{}
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	creatorPb := &st.Creator
-	if creatorPb != nil {
-		pb.Creator = *creatorPb
-	}
+	pb.Creator = st.Creator
 
 	var customTagsPb []customTagPb
 	for _, item := range st.CustomTags {
@@ -1783,10 +1549,7 @@ func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
 	}
 	pb.CustomTags = customTagsPb
 
-	effectiveBudgetPolicyIdPb := &st.EffectiveBudgetPolicyId
-	if effectiveBudgetPolicyIdPb != nil {
-		pb.EffectiveBudgetPolicyId = *effectiveBudgetPolicyIdPb
-	}
+	pb.EffectiveBudgetPolicyId = st.EffectiveBudgetPolicyId
 
 	endpointStatusPb, err := endpointStatusToPb(st.EndpointStatus)
 	if err != nil {
@@ -1796,35 +1559,17 @@ func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
 		pb.EndpointStatus = endpointStatusPb
 	}
 
-	endpointTypePb := &st.EndpointType
-	if endpointTypePb != nil {
-		pb.EndpointType = *endpointTypePb
-	}
+	pb.EndpointType = st.EndpointType
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
-	lastUpdatedUserPb := &st.LastUpdatedUser
-	if lastUpdatedUserPb != nil {
-		pb.LastUpdatedUser = *lastUpdatedUserPb
-	}
+	pb.LastUpdatedUser = st.LastUpdatedUser
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	numIndexesPb := &st.NumIndexes
-	if numIndexesPb != nil {
-		pb.NumIndexes = *numIndexesPb
-	}
+	pb.NumIndexes = st.NumIndexes
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1887,30 +1632,21 @@ func endpointInfoFromPb(pb *endpointInfoPb) (*EndpointInfo, error) {
 		return nil, nil
 	}
 	st := &EndpointInfo{}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	creatorField := &pb.Creator
-	if creatorField != nil {
-		st.Creator = *creatorField
-	}
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.Creator = pb.Creator
 
 	var customTagsField []CustomTag
-	for _, item := range pb.CustomTags {
-		itemField, err := customTagFromPb(&item)
+	for _, itemPb := range pb.CustomTags {
+		item, err := customTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			customTagsField = append(customTagsField, *itemField)
+		if item != nil {
+			customTagsField = append(customTagsField, *item)
 		}
 	}
 	st.CustomTags = customTagsField
-	effectiveBudgetPolicyIdField := &pb.EffectiveBudgetPolicyId
-	if effectiveBudgetPolicyIdField != nil {
-		st.EffectiveBudgetPolicyId = *effectiveBudgetPolicyIdField
-	}
+	st.EffectiveBudgetPolicyId = pb.EffectiveBudgetPolicyId
 	endpointStatusField, err := endpointStatusFromPb(pb.EndpointStatus)
 	if err != nil {
 		return nil, err
@@ -1918,30 +1654,12 @@ func endpointInfoFromPb(pb *endpointInfoPb) (*EndpointInfo, error) {
 	if endpointStatusField != nil {
 		st.EndpointStatus = endpointStatusField
 	}
-	endpointTypeField := &pb.EndpointType
-	if endpointTypeField != nil {
-		st.EndpointType = *endpointTypeField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
-	lastUpdatedUserField := &pb.LastUpdatedUser
-	if lastUpdatedUserField != nil {
-		st.LastUpdatedUser = *lastUpdatedUserField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	numIndexesField := &pb.NumIndexes
-	if numIndexesField != nil {
-		st.NumIndexes = *numIndexesField
-	}
+	st.EndpointType = pb.EndpointType
+	st.Id = pb.Id
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
+	st.LastUpdatedUser = pb.LastUpdatedUser
+	st.Name = pb.Name
+	st.NumIndexes = pb.NumIndexes
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1958,11 +1676,13 @@ func (st endpointInfoPb) MarshalJSON() ([]byte, error) {
 // Status information of an endpoint
 type EndpointStatus struct {
 	// Additional status message
+	// Wire name: 'message'
 	Message string
 	// Current state of the endpoint
+	// Wire name: 'state'
 	State EndpointStatusState
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func endpointStatusToPb(st *EndpointStatus) (*endpointStatusPb, error) {
@@ -1970,15 +1690,9 @@ func endpointStatusToPb(st *EndpointStatus) (*endpointStatusPb, error) {
 		return nil, nil
 	}
 	pb := &endpointStatusPb{}
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2023,14 +1737,8 @@ func endpointStatusFromPb(pb *endpointStatusPb) (*EndpointStatus, error) {
 		return nil, nil
 	}
 	st := &EndpointStatus{}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.Message = pb.Message
+	st.State = pb.State
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2137,7 +1845,8 @@ func endpointTypeFromPb(pb *endpointTypePb) (*EndpointType, error) {
 // Get an endpoint
 type GetEndpointRequest struct {
 	// Name of the endpoint
-	EndpointName string
+	// Wire name: 'endpoint_name'
+	EndpointName string `tf:"-"`
 }
 
 func getEndpointRequestToPb(st *GetEndpointRequest) (*getEndpointRequestPb, error) {
@@ -2145,10 +1854,7 @@ func getEndpointRequestToPb(st *GetEndpointRequest) (*getEndpointRequestPb, erro
 		return nil, nil
 	}
 	pb := &getEndpointRequestPb{}
-	endpointNamePb := &st.EndpointName
-	if endpointNamePb != nil {
-		pb.EndpointName = *endpointNamePb
-	}
+	pb.EndpointName = st.EndpointName
 
 	return pb, nil
 }
@@ -2188,10 +1894,7 @@ func getEndpointRequestFromPb(pb *getEndpointRequestPb) (*GetEndpointRequest, er
 		return nil, nil
 	}
 	st := &GetEndpointRequest{}
-	endpointNameField := &pb.EndpointName
-	if endpointNameField != nil {
-		st.EndpointName = *endpointNameField
-	}
+	st.EndpointName = pb.EndpointName
 
 	return st, nil
 }
@@ -2199,7 +1902,8 @@ func getEndpointRequestFromPb(pb *getEndpointRequestPb) (*GetEndpointRequest, er
 // Get an index
 type GetIndexRequest struct {
 	// Name of the index
-	IndexName string
+	// Wire name: 'index_name'
+	IndexName string `tf:"-"`
 }
 
 func getIndexRequestToPb(st *GetIndexRequest) (*getIndexRequestPb, error) {
@@ -2207,10 +1911,7 @@ func getIndexRequestToPb(st *GetIndexRequest) (*getIndexRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getIndexRequestPb{}
-	indexNamePb := &st.IndexName
-	if indexNamePb != nil {
-		pb.IndexName = *indexNamePb
-	}
+	pb.IndexName = st.IndexName
 
 	return pb, nil
 }
@@ -2250,22 +1951,21 @@ func getIndexRequestFromPb(pb *getIndexRequestPb) (*GetIndexRequest, error) {
 		return nil, nil
 	}
 	st := &GetIndexRequest{}
-	indexNameField := &pb.IndexName
-	if indexNameField != nil {
-		st.IndexName = *indexNameField
-	}
+	st.IndexName = pb.IndexName
 
 	return st, nil
 }
 
 type ListEndpointResponse struct {
 	// An array of Endpoint objects
+	// Wire name: 'endpoints'
 	Endpoints []EndpointInfo
 	// A token that can be used to get the next page of results. If not present,
 	// there are no more results to show.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listEndpointResponseToPb(st *ListEndpointResponse) (*listEndpointResponsePb, error) {
@@ -2286,10 +1986,7 @@ func listEndpointResponseToPb(st *ListEndpointResponse) (*listEndpointResponsePb
 	}
 	pb.Endpoints = endpointsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2337,20 +2034,17 @@ func listEndpointResponseFromPb(pb *listEndpointResponsePb) (*ListEndpointRespon
 	st := &ListEndpointResponse{}
 
 	var endpointsField []EndpointInfo
-	for _, item := range pb.Endpoints {
-		itemField, err := endpointInfoFromPb(&item)
+	for _, itemPb := range pb.Endpoints {
+		item, err := endpointInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			endpointsField = append(endpointsField, *itemField)
+		if item != nil {
+			endpointsField = append(endpointsField, *item)
 		}
 	}
 	st.Endpoints = endpointsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2367,9 +2061,10 @@ func (st listEndpointResponsePb) MarshalJSON() ([]byte, error) {
 // List all endpoints
 type ListEndpointsRequest struct {
 	// Token for pagination
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listEndpointsRequestToPb(st *ListEndpointsRequest) (*listEndpointsRequestPb, error) {
@@ -2377,10 +2072,7 @@ func listEndpointsRequestToPb(st *ListEndpointsRequest) (*listEndpointsRequestPb
 		return nil, nil
 	}
 	pb := &listEndpointsRequestPb{}
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2423,10 +2115,7 @@ func listEndpointsRequestFromPb(pb *listEndpointsRequestPb) (*ListEndpointsReque
 		return nil, nil
 	}
 	st := &ListEndpointsRequest{}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2443,11 +2132,13 @@ func (st listEndpointsRequestPb) MarshalJSON() ([]byte, error) {
 // List indexes
 type ListIndexesRequest struct {
 	// Name of the endpoint
-	EndpointName string
+	// Wire name: 'endpoint_name'
+	EndpointName string `tf:"-"`
 	// Token for pagination
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listIndexesRequestToPb(st *ListIndexesRequest) (*listIndexesRequestPb, error) {
@@ -2455,15 +2146,9 @@ func listIndexesRequestToPb(st *ListIndexesRequest) (*listIndexesRequestPb, erro
 		return nil, nil
 	}
 	pb := &listIndexesRequestPb{}
-	endpointNamePb := &st.EndpointName
-	if endpointNamePb != nil {
-		pb.EndpointName = *endpointNamePb
-	}
+	pb.EndpointName = st.EndpointName
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2508,14 +2193,8 @@ func listIndexesRequestFromPb(pb *listIndexesRequestPb) (*ListIndexesRequest, er
 		return nil, nil
 	}
 	st := &ListIndexesRequest{}
-	endpointNameField := &pb.EndpointName
-	if endpointNameField != nil {
-		st.EndpointName = *endpointNameField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.EndpointName = pb.EndpointName
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2536,6 +2215,7 @@ func (st listIndexesRequestPb) MarshalJSON() ([]byte, error) {
 // The JSON representation for `ListValue` is JSON array.
 type ListValue struct {
 	// Repeated field of dynamically typed values.
+	// Wire name: 'values'
 	Values []Value
 }
 
@@ -2597,13 +2277,13 @@ func listValueFromPb(pb *listValuePb) (*ListValue, error) {
 	st := &ListValue{}
 
 	var valuesField []Value
-	for _, item := range pb.Values {
-		itemField, err := valueFromPb(&item)
+	for _, itemPb := range pb.Values {
+		item, err := valueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			valuesField = append(valuesField, *itemField)
+		if item != nil {
+			valuesField = append(valuesField, *item)
 		}
 	}
 	st.Values = valuesField
@@ -2614,11 +2294,13 @@ func listValueFromPb(pb *listValuePb) (*ListValue, error) {
 type ListVectorIndexesResponse struct {
 	// A token that can be used to get the next page of results. If not present,
 	// there are no more results to show.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'vector_indexes'
 	VectorIndexes []MiniVectorIndex
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listVectorIndexesResponseToPb(st *ListVectorIndexesResponse) (*listVectorIndexesResponsePb, error) {
@@ -2626,10 +2308,7 @@ func listVectorIndexesResponseToPb(st *ListVectorIndexesResponse) (*listVectorIn
 		return nil, nil
 	}
 	pb := &listVectorIndexesResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var vectorIndexesPb []miniVectorIndexPb
 	for _, item := range st.VectorIndexes {
@@ -2687,19 +2366,16 @@ func listVectorIndexesResponseFromPb(pb *listVectorIndexesResponsePb) (*ListVect
 		return nil, nil
 	}
 	st := &ListVectorIndexesResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var vectorIndexesField []MiniVectorIndex
-	for _, item := range pb.VectorIndexes {
-		itemField, err := miniVectorIndexFromPb(&item)
+	for _, itemPb := range pb.VectorIndexes {
+		item, err := miniVectorIndexFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			vectorIndexesField = append(vectorIndexesField, *itemField)
+		if item != nil {
+			vectorIndexesField = append(vectorIndexesField, *item)
 		}
 	}
 	st.VectorIndexes = vectorIndexesField
@@ -2719,11 +2395,13 @@ func (st listVectorIndexesResponsePb) MarshalJSON() ([]byte, error) {
 // Key-value pair.
 type MapStringValueEntry struct {
 	// Column name.
+	// Wire name: 'key'
 	Key string
 	// Column value, nullable.
+	// Wire name: 'value'
 	Value *Value
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func mapStringValueEntryToPb(st *MapStringValueEntry) (*mapStringValueEntryPb, error) {
@@ -2731,10 +2409,7 @@ func mapStringValueEntryToPb(st *MapStringValueEntry) (*mapStringValueEntryPb, e
 		return nil, nil
 	}
 	pb := &mapStringValueEntryPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
 	valuePb, err := valueToPb(st.Value)
 	if err != nil {
@@ -2787,10 +2462,7 @@ func mapStringValueEntryFromPb(pb *mapStringValueEntryPb) (*MapStringValueEntry,
 		return nil, nil
 	}
 	st := &MapStringValueEntry{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
+	st.Key = pb.Key
 	valueField, err := valueFromPb(pb.Value)
 	if err != nil {
 		return nil, err
@@ -2813,8 +2485,10 @@ func (st mapStringValueEntryPb) MarshalJSON() ([]byte, error) {
 
 type MiniVectorIndex struct {
 	// The user who created the index.
+	// Wire name: 'creator'
 	Creator string
 	// Name of the endpoint associated with the index
+	// Wire name: 'endpoint_name'
 	EndpointName string
 	// There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that
 	// automatically syncs with a source Delta Table, automatically and
@@ -2822,13 +2496,16 @@ type MiniVectorIndex struct {
 	// Table changes. - `DIRECT_ACCESS`: An index that supports direct read and
 	// write of vectors and metadata through our REST and SDK APIs. With this
 	// model, the user manages index updates.
+	// Wire name: 'index_type'
 	IndexType VectorIndexType
 	// Name of the index
+	// Wire name: 'name'
 	Name string
 	// Primary key of the index
+	// Wire name: 'primary_key'
 	PrimaryKey string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func miniVectorIndexToPb(st *MiniVectorIndex) (*miniVectorIndexPb, error) {
@@ -2836,30 +2513,15 @@ func miniVectorIndexToPb(st *MiniVectorIndex) (*miniVectorIndexPb, error) {
 		return nil, nil
 	}
 	pb := &miniVectorIndexPb{}
-	creatorPb := &st.Creator
-	if creatorPb != nil {
-		pb.Creator = *creatorPb
-	}
+	pb.Creator = st.Creator
 
-	endpointNamePb := &st.EndpointName
-	if endpointNamePb != nil {
-		pb.EndpointName = *endpointNamePb
-	}
+	pb.EndpointName = st.EndpointName
 
-	indexTypePb := &st.IndexType
-	if indexTypePb != nil {
-		pb.IndexType = *indexTypePb
-	}
+	pb.IndexType = st.IndexType
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	primaryKeyPb := &st.PrimaryKey
-	if primaryKeyPb != nil {
-		pb.PrimaryKey = *primaryKeyPb
-	}
+	pb.PrimaryKey = st.PrimaryKey
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2915,26 +2577,11 @@ func miniVectorIndexFromPb(pb *miniVectorIndexPb) (*MiniVectorIndex, error) {
 		return nil, nil
 	}
 	st := &MiniVectorIndex{}
-	creatorField := &pb.Creator
-	if creatorField != nil {
-		st.Creator = *creatorField
-	}
-	endpointNameField := &pb.EndpointName
-	if endpointNameField != nil {
-		st.EndpointName = *endpointNameField
-	}
-	indexTypeField := &pb.IndexType
-	if indexTypeField != nil {
-		st.IndexType = *indexTypeField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	primaryKeyField := &pb.PrimaryKey
-	if primaryKeyField != nil {
-		st.PrimaryKey = *primaryKeyField
-	}
+	st.Creator = pb.Creator
+	st.EndpointName = pb.EndpointName
+	st.IndexType = pb.IndexType
+	st.Name = pb.Name
+	st.PrimaryKey = pb.PrimaryKey
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2950,9 +2597,11 @@ func (st miniVectorIndexPb) MarshalJSON() ([]byte, error) {
 
 type PatchEndpointBudgetPolicyRequest struct {
 	// The budget policy id to be applied
+	// Wire name: 'budget_policy_id'
 	BudgetPolicyId string
 	// Name of the vector search endpoint
-	EndpointName string
+	// Wire name: 'endpoint_name'
+	EndpointName string `tf:"-"`
 }
 
 func patchEndpointBudgetPolicyRequestToPb(st *PatchEndpointBudgetPolicyRequest) (*patchEndpointBudgetPolicyRequestPb, error) {
@@ -2960,15 +2609,9 @@ func patchEndpointBudgetPolicyRequestToPb(st *PatchEndpointBudgetPolicyRequest) 
 		return nil, nil
 	}
 	pb := &patchEndpointBudgetPolicyRequestPb{}
-	budgetPolicyIdPb := &st.BudgetPolicyId
-	if budgetPolicyIdPb != nil {
-		pb.BudgetPolicyId = *budgetPolicyIdPb
-	}
+	pb.BudgetPolicyId = st.BudgetPolicyId
 
-	endpointNamePb := &st.EndpointName
-	if endpointNamePb != nil {
-		pb.EndpointName = *endpointNamePb
-	}
+	pb.EndpointName = st.EndpointName
 
 	return pb, nil
 }
@@ -3010,23 +2653,18 @@ func patchEndpointBudgetPolicyRequestFromPb(pb *patchEndpointBudgetPolicyRequest
 		return nil, nil
 	}
 	st := &PatchEndpointBudgetPolicyRequest{}
-	budgetPolicyIdField := &pb.BudgetPolicyId
-	if budgetPolicyIdField != nil {
-		st.BudgetPolicyId = *budgetPolicyIdField
-	}
-	endpointNameField := &pb.EndpointName
-	if endpointNameField != nil {
-		st.EndpointName = *endpointNameField
-	}
+	st.BudgetPolicyId = pb.BudgetPolicyId
+	st.EndpointName = pb.EndpointName
 
 	return st, nil
 }
 
 type PatchEndpointBudgetPolicyResponse struct {
 	// The budget policy applied to the vector search endpoint.
+	// Wire name: 'effective_budget_policy_id'
 	EffectiveBudgetPolicyId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func patchEndpointBudgetPolicyResponseToPb(st *PatchEndpointBudgetPolicyResponse) (*patchEndpointBudgetPolicyResponsePb, error) {
@@ -3034,10 +2672,7 @@ func patchEndpointBudgetPolicyResponseToPb(st *PatchEndpointBudgetPolicyResponse
 		return nil, nil
 	}
 	pb := &patchEndpointBudgetPolicyResponsePb{}
-	effectiveBudgetPolicyIdPb := &st.EffectiveBudgetPolicyId
-	if effectiveBudgetPolicyIdPb != nil {
-		pb.EffectiveBudgetPolicyId = *effectiveBudgetPolicyIdPb
-	}
+	pb.EffectiveBudgetPolicyId = st.EffectiveBudgetPolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3080,10 +2715,7 @@ func patchEndpointBudgetPolicyResponseFromPb(pb *patchEndpointBudgetPolicyRespon
 		return nil, nil
 	}
 	st := &PatchEndpointBudgetPolicyResponse{}
-	effectiveBudgetPolicyIdField := &pb.EffectiveBudgetPolicyId
-	if effectiveBudgetPolicyIdField != nil {
-		st.EffectiveBudgetPolicyId = *effectiveBudgetPolicyIdField
-	}
+	st.EffectiveBudgetPolicyId = pb.EffectiveBudgetPolicyId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3156,14 +2788,17 @@ func pipelineTypeFromPb(pb *pipelineTypePb) (*PipelineType, error) {
 // Request payload for getting next page of results.
 type QueryVectorIndexNextPageRequest struct {
 	// Name of the endpoint.
+	// Wire name: 'endpoint_name'
 	EndpointName string
 	// Name of the vector index to query.
-	IndexName string
+	// Wire name: 'index_name'
+	IndexName string `tf:"-"`
 	// Page token returned from previous `QueryVectorIndex` or
 	// `QueryVectorIndexNextPage` API.
+	// Wire name: 'page_token'
 	PageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryVectorIndexNextPageRequestToPb(st *QueryVectorIndexNextPageRequest) (*queryVectorIndexNextPageRequestPb, error) {
@@ -3171,20 +2806,11 @@ func queryVectorIndexNextPageRequestToPb(st *QueryVectorIndexNextPageRequest) (*
 		return nil, nil
 	}
 	pb := &queryVectorIndexNextPageRequestPb{}
-	endpointNamePb := &st.EndpointName
-	if endpointNamePb != nil {
-		pb.EndpointName = *endpointNamePb
-	}
+	pb.EndpointName = st.EndpointName
 
-	indexNamePb := &st.IndexName
-	if indexNamePb != nil {
-		pb.IndexName = *indexNamePb
-	}
+	pb.IndexName = st.IndexName
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3232,18 +2858,9 @@ func queryVectorIndexNextPageRequestFromPb(pb *queryVectorIndexNextPageRequestPb
 		return nil, nil
 	}
 	st := &QueryVectorIndexNextPageRequest{}
-	endpointNameField := &pb.EndpointName
-	if endpointNameField != nil {
-		st.EndpointName = *endpointNameField
-	}
-	indexNameField := &pb.IndexName
-	if indexNameField != nil {
-		st.IndexName = *indexNameField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.EndpointName = pb.EndpointName
+	st.IndexName = pb.IndexName
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3259,8 +2876,10 @@ func (st queryVectorIndexNextPageRequestPb) MarshalJSON() ([]byte, error) {
 
 type QueryVectorIndexRequest struct {
 	// List of column names to include in the response.
+	// Wire name: 'columns'
 	Columns []string
 	// Column names used to retrieve data to send to the reranker.
+	// Wire name: 'columns_to_rerank'
 	ColumnsToRerank []string
 	// JSON string representing query filters.
 	//
@@ -3270,22 +2889,29 @@ type QueryVectorIndexRequest struct {
 	// id greater than 5. - `{"id <=": 5}`: Filter for id less than equal to 5.
 	// - `{"id >=": 5}`: Filter for id greater than equal to 5. - `{"id": 5}`:
 	// Filter for id equal to 5.
+	// Wire name: 'filters_json'
 	FiltersJson string
 	// Name of the vector index to query.
-	IndexName string
+	// Wire name: 'index_name'
+	IndexName string `tf:"-"`
 	// Number of results to return. Defaults to 10.
+	// Wire name: 'num_results'
 	NumResults int
 	// Query text. Required for Delta Sync Index using model endpoint.
+	// Wire name: 'query_text'
 	QueryText string
 	// The query type to use. Choices are `ANN` and `HYBRID`. Defaults to `ANN`.
+	// Wire name: 'query_type'
 	QueryType string
 	// Query vector. Required for Direct Vector Access Index and Delta Sync
 	// Index using self-managed vectors.
+	// Wire name: 'query_vector'
 	QueryVector []float64
 	// Threshold for the approximate nearest neighbor search. Defaults to 0.0.
+	// Wire name: 'score_threshold'
 	ScoreThreshold float64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryVectorIndexRequestToPb(st *QueryVectorIndexRequest) (*queryVectorIndexRequestPb, error) {
@@ -3293,63 +2919,23 @@ func queryVectorIndexRequestToPb(st *QueryVectorIndexRequest) (*queryVectorIndex
 		return nil, nil
 	}
 	pb := &queryVectorIndexRequestPb{}
+	pb.Columns = st.Columns
 
-	var columnsPb []string
-	for _, item := range st.Columns {
-		itemPb := &item
-		if itemPb != nil {
-			columnsPb = append(columnsPb, *itemPb)
-		}
-	}
-	pb.Columns = columnsPb
+	pb.ColumnsToRerank = st.ColumnsToRerank
 
-	var columnsToRerankPb []string
-	for _, item := range st.ColumnsToRerank {
-		itemPb := &item
-		if itemPb != nil {
-			columnsToRerankPb = append(columnsToRerankPb, *itemPb)
-		}
-	}
-	pb.ColumnsToRerank = columnsToRerankPb
+	pb.FiltersJson = st.FiltersJson
 
-	filtersJsonPb := &st.FiltersJson
-	if filtersJsonPb != nil {
-		pb.FiltersJson = *filtersJsonPb
-	}
+	pb.IndexName = st.IndexName
 
-	indexNamePb := &st.IndexName
-	if indexNamePb != nil {
-		pb.IndexName = *indexNamePb
-	}
+	pb.NumResults = st.NumResults
 
-	numResultsPb := &st.NumResults
-	if numResultsPb != nil {
-		pb.NumResults = *numResultsPb
-	}
+	pb.QueryText = st.QueryText
 
-	queryTextPb := &st.QueryText
-	if queryTextPb != nil {
-		pb.QueryText = *queryTextPb
-	}
+	pb.QueryType = st.QueryType
 
-	queryTypePb := &st.QueryType
-	if queryTypePb != nil {
-		pb.QueryType = *queryTypePb
-	}
+	pb.QueryVector = st.QueryVector
 
-	var queryVectorPb []float64
-	for _, item := range st.QueryVector {
-		itemPb := &item
-		if itemPb != nil {
-			queryVectorPb = append(queryVectorPb, *itemPb)
-		}
-	}
-	pb.QueryVector = queryVectorPb
-
-	scoreThresholdPb := &st.ScoreThreshold
-	if scoreThresholdPb != nil {
-		pb.ScoreThreshold = *scoreThresholdPb
-	}
+	pb.ScoreThreshold = st.ScoreThreshold
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3416,57 +3002,15 @@ func queryVectorIndexRequestFromPb(pb *queryVectorIndexRequestPb) (*QueryVectorI
 		return nil, nil
 	}
 	st := &QueryVectorIndexRequest{}
-
-	var columnsField []string
-	for _, item := range pb.Columns {
-		itemField := &item
-		if itemField != nil {
-			columnsField = append(columnsField, *itemField)
-		}
-	}
-	st.Columns = columnsField
-
-	var columnsToRerankField []string
-	for _, item := range pb.ColumnsToRerank {
-		itemField := &item
-		if itemField != nil {
-			columnsToRerankField = append(columnsToRerankField, *itemField)
-		}
-	}
-	st.ColumnsToRerank = columnsToRerankField
-	filtersJsonField := &pb.FiltersJson
-	if filtersJsonField != nil {
-		st.FiltersJson = *filtersJsonField
-	}
-	indexNameField := &pb.IndexName
-	if indexNameField != nil {
-		st.IndexName = *indexNameField
-	}
-	numResultsField := &pb.NumResults
-	if numResultsField != nil {
-		st.NumResults = *numResultsField
-	}
-	queryTextField := &pb.QueryText
-	if queryTextField != nil {
-		st.QueryText = *queryTextField
-	}
-	queryTypeField := &pb.QueryType
-	if queryTypeField != nil {
-		st.QueryType = *queryTypeField
-	}
-
-	var queryVectorField []float64
-	for _, item := range pb.QueryVector {
-		itemField := &item
-		if itemField != nil {
-			queryVectorField = append(queryVectorField, *itemField)
-		}
-	}
-	st.QueryVector = queryVectorField
-	scoreThresholdField := &pb.ScoreThreshold
-	if scoreThresholdField != nil {
-		st.ScoreThreshold = *scoreThresholdField
-	}
+	st.Columns = pb.Columns
+	st.ColumnsToRerank = pb.ColumnsToRerank
+	st.FiltersJson = pb.FiltersJson
+	st.IndexName = pb.IndexName
+	st.NumResults = pb.NumResults
+	st.QueryText = pb.QueryText
+	st.QueryType = pb.QueryType
+	st.QueryVector = pb.QueryVector
+	st.ScoreThreshold = pb.ScoreThreshold
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3482,16 +3026,19 @@ func (st queryVectorIndexRequestPb) MarshalJSON() ([]byte, error) {
 
 type QueryVectorIndexResponse struct {
 	// Metadata about the result set.
+	// Wire name: 'manifest'
 	Manifest *ResultManifest
 	// [Optional] Token that can be used in `QueryVectorIndexNextPage` API to
 	// get next page of results. If more than 1000 results satisfy the query,
 	// they are returned in groups of 1000. Empty value means no more results.
 	// The maximum number of results that can be returned is 10,000.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// Data returned in the query result.
+	// Wire name: 'result'
 	Result *ResultData
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryVectorIndexResponseToPb(st *QueryVectorIndexResponse) (*queryVectorIndexResponsePb, error) {
@@ -3507,10 +3054,7 @@ func queryVectorIndexResponseToPb(st *QueryVectorIndexResponse) (*queryVectorInd
 		pb.Manifest = manifestPb
 	}
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	resultPb, err := resultDataToPb(st.Result)
 	if err != nil {
@@ -3575,10 +3119,7 @@ func queryVectorIndexResponseFromPb(pb *queryVectorIndexResponsePb) (*QueryVecto
 	if manifestField != nil {
 		st.Manifest = manifestField
 	}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 	resultField, err := resultDataFromPb(pb.Result)
 	if err != nil {
 		return nil, err
@@ -3602,11 +3143,13 @@ func (st queryVectorIndexResponsePb) MarshalJSON() ([]byte, error) {
 // Data returned in the query result.
 type ResultData struct {
 	// Data rows returned in the query.
+	// Wire name: 'data_array'
 	DataArray []ListValue
 	// Number of rows in the result set.
+	// Wire name: 'row_count'
 	RowCount int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func resultDataToPb(st *ResultData) (*resultDataPb, error) {
@@ -3627,10 +3170,7 @@ func resultDataToPb(st *ResultData) (*resultDataPb, error) {
 	}
 	pb.DataArray = dataArrayPb
 
-	rowCountPb := &st.RowCount
-	if rowCountPb != nil {
-		pb.RowCount = *rowCountPb
-	}
+	pb.RowCount = st.RowCount
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3677,20 +3217,17 @@ func resultDataFromPb(pb *resultDataPb) (*ResultData, error) {
 	st := &ResultData{}
 
 	var dataArrayField []ListValue
-	for _, item := range pb.DataArray {
-		itemField, err := listValueFromPb(&item)
+	for _, itemPb := range pb.DataArray {
+		item, err := listValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			dataArrayField = append(dataArrayField, *itemField)
+		if item != nil {
+			dataArrayField = append(dataArrayField, *item)
 		}
 	}
 	st.DataArray = dataArrayField
-	rowCountField := &pb.RowCount
-	if rowCountField != nil {
-		st.RowCount = *rowCountField
-	}
+	st.RowCount = pb.RowCount
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3707,11 +3244,13 @@ func (st resultDataPb) MarshalJSON() ([]byte, error) {
 // Metadata about the result set.
 type ResultManifest struct {
 	// Number of columns in the result set.
+	// Wire name: 'column_count'
 	ColumnCount int
 	// Information about each column in the result set.
+	// Wire name: 'columns'
 	Columns []ColumnInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func resultManifestToPb(st *ResultManifest) (*resultManifestPb, error) {
@@ -3719,10 +3258,7 @@ func resultManifestToPb(st *ResultManifest) (*resultManifestPb, error) {
 		return nil, nil
 	}
 	pb := &resultManifestPb{}
-	columnCountPb := &st.ColumnCount
-	if columnCountPb != nil {
-		pb.ColumnCount = *columnCountPb
-	}
+	pb.ColumnCount = st.ColumnCount
 
 	var columnsPb []columnInfoPb
 	for _, item := range st.Columns {
@@ -3779,19 +3315,16 @@ func resultManifestFromPb(pb *resultManifestPb) (*ResultManifest, error) {
 		return nil, nil
 	}
 	st := &ResultManifest{}
-	columnCountField := &pb.ColumnCount
-	if columnCountField != nil {
-		st.ColumnCount = *columnCountField
-	}
+	st.ColumnCount = pb.ColumnCount
 
 	var columnsField []ColumnInfo
-	for _, item := range pb.Columns {
-		itemField, err := columnInfoFromPb(&item)
+	for _, itemPb := range pb.Columns {
+		item, err := columnInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			columnsField = append(columnsField, *itemField)
+		if item != nil {
+			columnsField = append(columnsField, *item)
 		}
 	}
 	st.Columns = columnsField
@@ -3810,13 +3343,16 @@ func (st resultManifestPb) MarshalJSON() ([]byte, error) {
 
 type ScanVectorIndexRequest struct {
 	// Name of the vector index to scan.
-	IndexName string
+	// Wire name: 'index_name'
+	IndexName string `tf:"-"`
 	// Primary key of the last entry returned in the previous scan.
+	// Wire name: 'last_primary_key'
 	LastPrimaryKey string
 	// Number of results to return. Defaults to 10.
+	// Wire name: 'num_results'
 	NumResults int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func scanVectorIndexRequestToPb(st *ScanVectorIndexRequest) (*scanVectorIndexRequestPb, error) {
@@ -3824,20 +3360,11 @@ func scanVectorIndexRequestToPb(st *ScanVectorIndexRequest) (*scanVectorIndexReq
 		return nil, nil
 	}
 	pb := &scanVectorIndexRequestPb{}
-	indexNamePb := &st.IndexName
-	if indexNamePb != nil {
-		pb.IndexName = *indexNamePb
-	}
+	pb.IndexName = st.IndexName
 
-	lastPrimaryKeyPb := &st.LastPrimaryKey
-	if lastPrimaryKeyPb != nil {
-		pb.LastPrimaryKey = *lastPrimaryKeyPb
-	}
+	pb.LastPrimaryKey = st.LastPrimaryKey
 
-	numResultsPb := &st.NumResults
-	if numResultsPb != nil {
-		pb.NumResults = *numResultsPb
-	}
+	pb.NumResults = st.NumResults
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3884,18 +3411,9 @@ func scanVectorIndexRequestFromPb(pb *scanVectorIndexRequestPb) (*ScanVectorInde
 		return nil, nil
 	}
 	st := &ScanVectorIndexRequest{}
-	indexNameField := &pb.IndexName
-	if indexNameField != nil {
-		st.IndexName = *indexNameField
-	}
-	lastPrimaryKeyField := &pb.LastPrimaryKey
-	if lastPrimaryKeyField != nil {
-		st.LastPrimaryKey = *lastPrimaryKeyField
-	}
-	numResultsField := &pb.NumResults
-	if numResultsField != nil {
-		st.NumResults = *numResultsField
-	}
+	st.IndexName = pb.IndexName
+	st.LastPrimaryKey = pb.LastPrimaryKey
+	st.NumResults = pb.NumResults
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3912,11 +3430,13 @@ func (st scanVectorIndexRequestPb) MarshalJSON() ([]byte, error) {
 // Response to a scan vector index request.
 type ScanVectorIndexResponse struct {
 	// List of data entries
+	// Wire name: 'data'
 	Data []Struct
 	// Primary key of the last entry.
+	// Wire name: 'last_primary_key'
 	LastPrimaryKey string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func scanVectorIndexResponseToPb(st *ScanVectorIndexResponse) (*scanVectorIndexResponsePb, error) {
@@ -3937,10 +3457,7 @@ func scanVectorIndexResponseToPb(st *ScanVectorIndexResponse) (*scanVectorIndexR
 	}
 	pb.Data = dataPb
 
-	lastPrimaryKeyPb := &st.LastPrimaryKey
-	if lastPrimaryKeyPb != nil {
-		pb.LastPrimaryKey = *lastPrimaryKeyPb
-	}
+	pb.LastPrimaryKey = st.LastPrimaryKey
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3987,20 +3504,17 @@ func scanVectorIndexResponseFromPb(pb *scanVectorIndexResponsePb) (*ScanVectorIn
 	st := &ScanVectorIndexResponse{}
 
 	var dataField []Struct
-	for _, item := range pb.Data {
-		itemField, err := structFromPb(&item)
+	for _, itemPb := range pb.Data {
+		item, err := structFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			dataField = append(dataField, *itemField)
+		if item != nil {
+			dataField = append(dataField, *item)
 		}
 	}
 	st.Data = dataField
-	lastPrimaryKeyField := &pb.LastPrimaryKey
-	if lastPrimaryKeyField != nil {
-		st.LastPrimaryKey = *lastPrimaryKeyField
-	}
+	st.LastPrimaryKey = pb.LastPrimaryKey
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4025,6 +3539,7 @@ func (st scanVectorIndexResponsePb) MarshalJSON() ([]byte, error) {
 // The JSON representation for `Struct` is JSON object.
 type Struct struct {
 	// Data entry, corresponding to a row in a vector index.
+	// Wire name: 'fields'
 	Fields []MapStringValueEntry
 }
 
@@ -4086,13 +3601,13 @@ func structFromPb(pb *structPb) (*Struct, error) {
 	st := &Struct{}
 
 	var fieldsField []MapStringValueEntry
-	for _, item := range pb.Fields {
-		itemField, err := mapStringValueEntryFromPb(&item)
+	for _, itemPb := range pb.Fields {
+		item, err := mapStringValueEntryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			fieldsField = append(fieldsField, *itemField)
+		if item != nil {
+			fieldsField = append(fieldsField, *item)
 		}
 	}
 	st.Fields = fieldsField
@@ -4103,7 +3618,8 @@ func structFromPb(pb *structPb) (*Struct, error) {
 // Synchronize an index
 type SyncIndexRequest struct {
 	// Name of the vector index to synchronize. Must be a Delta Sync Index.
-	IndexName string
+	// Wire name: 'index_name'
+	IndexName string `tf:"-"`
 }
 
 func syncIndexRequestToPb(st *SyncIndexRequest) (*syncIndexRequestPb, error) {
@@ -4111,10 +3627,7 @@ func syncIndexRequestToPb(st *SyncIndexRequest) (*syncIndexRequestPb, error) {
 		return nil, nil
 	}
 	pb := &syncIndexRequestPb{}
-	indexNamePb := &st.IndexName
-	if indexNamePb != nil {
-		pb.IndexName = *indexNamePb
-	}
+	pb.IndexName = st.IndexName
 
 	return pb, nil
 }
@@ -4154,10 +3667,7 @@ func syncIndexRequestFromPb(pb *syncIndexRequestPb) (*SyncIndexRequest, error) {
 		return nil, nil
 	}
 	st := &SyncIndexRequest{}
-	indexNameField := &pb.IndexName
-	if indexNameField != nil {
-		st.IndexName = *indexNameField
-	}
+	st.IndexName = pb.IndexName
 
 	return st, nil
 }
@@ -4213,9 +3723,11 @@ func syncIndexResponseFromPb(pb *syncIndexResponsePb) (*SyncIndexResponse, error
 
 type UpdateEndpointCustomTagsRequest struct {
 	// The new custom tags for the vector search endpoint
+	// Wire name: 'custom_tags'
 	CustomTags []CustomTag
 	// Name of the vector search endpoint
-	EndpointName string
+	// Wire name: 'endpoint_name'
+	EndpointName string `tf:"-"`
 }
 
 func updateEndpointCustomTagsRequestToPb(st *UpdateEndpointCustomTagsRequest) (*updateEndpointCustomTagsRequestPb, error) {
@@ -4236,10 +3748,7 @@ func updateEndpointCustomTagsRequestToPb(st *UpdateEndpointCustomTagsRequest) (*
 	}
 	pb.CustomTags = customTagsPb
 
-	endpointNamePb := &st.EndpointName
-	if endpointNamePb != nil {
-		pb.EndpointName = *endpointNamePb
-	}
+	pb.EndpointName = st.EndpointName
 
 	return pb, nil
 }
@@ -4283,31 +3792,30 @@ func updateEndpointCustomTagsRequestFromPb(pb *updateEndpointCustomTagsRequestPb
 	st := &UpdateEndpointCustomTagsRequest{}
 
 	var customTagsField []CustomTag
-	for _, item := range pb.CustomTags {
-		itemField, err := customTagFromPb(&item)
+	for _, itemPb := range pb.CustomTags {
+		item, err := customTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			customTagsField = append(customTagsField, *itemField)
+		if item != nil {
+			customTagsField = append(customTagsField, *item)
 		}
 	}
 	st.CustomTags = customTagsField
-	endpointNameField := &pb.EndpointName
-	if endpointNameField != nil {
-		st.EndpointName = *endpointNameField
-	}
+	st.EndpointName = pb.EndpointName
 
 	return st, nil
 }
 
 type UpdateEndpointCustomTagsResponse struct {
 	// All the custom tags that are applied to the vector search endpoint.
+	// Wire name: 'custom_tags'
 	CustomTags []CustomTag
 	// The name of the vector search endpoint whose custom tags were updated.
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateEndpointCustomTagsResponseToPb(st *UpdateEndpointCustomTagsResponse) (*updateEndpointCustomTagsResponsePb, error) {
@@ -4328,10 +3836,7 @@ func updateEndpointCustomTagsResponseToPb(st *UpdateEndpointCustomTagsResponse) 
 	}
 	pb.CustomTags = customTagsPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4378,20 +3883,17 @@ func updateEndpointCustomTagsResponseFromPb(pb *updateEndpointCustomTagsResponse
 	st := &UpdateEndpointCustomTagsResponse{}
 
 	var customTagsField []CustomTag
-	for _, item := range pb.CustomTags {
-		itemField, err := customTagFromPb(&item)
+	for _, itemPb := range pb.CustomTags {
+		item, err := customTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			customTagsField = append(customTagsField, *itemField)
+		if item != nil {
+			customTagsField = append(customTagsField, *item)
 		}
 	}
 	st.CustomTags = customTagsField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4407,11 +3909,13 @@ func (st updateEndpointCustomTagsResponsePb) MarshalJSON() ([]byte, error) {
 
 type UpsertDataResult struct {
 	// List of primary keys for rows that failed to process.
+	// Wire name: 'failed_primary_keys'
 	FailedPrimaryKeys []string
 	// Count of successfully processed rows.
+	// Wire name: 'success_row_count'
 	SuccessRowCount int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func upsertDataResultToPb(st *UpsertDataResult) (*upsertDataResultPb, error) {
@@ -4419,20 +3923,9 @@ func upsertDataResultToPb(st *UpsertDataResult) (*upsertDataResultPb, error) {
 		return nil, nil
 	}
 	pb := &upsertDataResultPb{}
+	pb.FailedPrimaryKeys = st.FailedPrimaryKeys
 
-	var failedPrimaryKeysPb []string
-	for _, item := range st.FailedPrimaryKeys {
-		itemPb := &item
-		if itemPb != nil {
-			failedPrimaryKeysPb = append(failedPrimaryKeysPb, *itemPb)
-		}
-	}
-	pb.FailedPrimaryKeys = failedPrimaryKeysPb
-
-	successRowCountPb := &st.SuccessRowCount
-	if successRowCountPb != nil {
-		pb.SuccessRowCount = *successRowCountPb
-	}
+	pb.SuccessRowCount = st.SuccessRowCount
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4477,19 +3970,8 @@ func upsertDataResultFromPb(pb *upsertDataResultPb) (*UpsertDataResult, error) {
 		return nil, nil
 	}
 	st := &UpsertDataResult{}
-
-	var failedPrimaryKeysField []string
-	for _, item := range pb.FailedPrimaryKeys {
-		itemField := &item
-		if itemField != nil {
-			failedPrimaryKeysField = append(failedPrimaryKeysField, *itemField)
-		}
-	}
-	st.FailedPrimaryKeys = failedPrimaryKeysField
-	successRowCountField := &pb.SuccessRowCount
-	if successRowCountField != nil {
-		st.SuccessRowCount = *successRowCountField
-	}
+	st.FailedPrimaryKeys = pb.FailedPrimaryKeys
+	st.SuccessRowCount = pb.SuccessRowCount
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4552,8 +4034,10 @@ func upsertDataStatusFromPb(pb *upsertDataStatusPb) (*UpsertDataStatus, error) {
 type UpsertDataVectorIndexRequest struct {
 	// Name of the vector index where data is to be upserted. Must be a Direct
 	// Vector Access Index.
-	IndexName string
+	// Wire name: 'index_name'
+	IndexName string `tf:"-"`
 	// JSON string representing the data to be upserted.
+	// Wire name: 'inputs_json'
 	InputsJson string
 }
 
@@ -4562,15 +4046,9 @@ func upsertDataVectorIndexRequestToPb(st *UpsertDataVectorIndexRequest) (*upsert
 		return nil, nil
 	}
 	pb := &upsertDataVectorIndexRequestPb{}
-	indexNamePb := &st.IndexName
-	if indexNamePb != nil {
-		pb.IndexName = *indexNamePb
-	}
+	pb.IndexName = st.IndexName
 
-	inputsJsonPb := &st.InputsJson
-	if inputsJsonPb != nil {
-		pb.InputsJson = *inputsJsonPb
-	}
+	pb.InputsJson = st.InputsJson
 
 	return pb, nil
 }
@@ -4613,22 +4091,18 @@ func upsertDataVectorIndexRequestFromPb(pb *upsertDataVectorIndexRequestPb) (*Up
 		return nil, nil
 	}
 	st := &UpsertDataVectorIndexRequest{}
-	indexNameField := &pb.IndexName
-	if indexNameField != nil {
-		st.IndexName = *indexNameField
-	}
-	inputsJsonField := &pb.InputsJson
-	if inputsJsonField != nil {
-		st.InputsJson = *inputsJsonField
-	}
+	st.IndexName = pb.IndexName
+	st.InputsJson = pb.InputsJson
 
 	return st, nil
 }
 
 type UpsertDataVectorIndexResponse struct {
 	// Result of the upsert or delete operation.
+	// Wire name: 'result'
 	Result *UpsertDataResult
 	// Status of the upsert operation.
+	// Wire name: 'status'
 	Status UpsertDataStatus
 }
 
@@ -4645,10 +4119,7 @@ func upsertDataVectorIndexResponseToPb(st *UpsertDataVectorIndexResponse) (*upse
 		pb.Result = resultPb
 	}
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	return pb, nil
 }
@@ -4697,25 +4168,27 @@ func upsertDataVectorIndexResponseFromPb(pb *upsertDataVectorIndexResponsePb) (*
 	if resultField != nil {
 		st.Result = resultField
 	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.Status = pb.Status
 
 	return st, nil
 }
 
 type Value struct {
+
+	// Wire name: 'bool_value'
 	BoolValue bool
 	// copied from proto3 / Google Well Known Types, source:
 	// https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
 	// `ListValue` is a wrapper around a repeated field of values.
 	//
 	// The JSON representation for `ListValue` is JSON array.
+	// Wire name: 'list_value'
 	ListValue *ListValue
 
+	// Wire name: 'number_value'
 	NumberValue float64
 
+	// Wire name: 'string_value'
 	StringValue string
 	// copied from proto3 / Google Well Known Types, source:
 	// https://github.com/protocolbuffers/protobuf/blob/450d24ca820750c5db5112a6f0b0c2efb9758021/src/google/protobuf/struct.proto
@@ -4727,9 +4200,10 @@ type Value struct {
 	// language.
 	//
 	// The JSON representation for `Struct` is JSON object.
+	// Wire name: 'struct_value'
 	StructValue *Struct
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func valueToPb(st *Value) (*valuePb, error) {
@@ -4737,10 +4211,7 @@ func valueToPb(st *Value) (*valuePb, error) {
 		return nil, nil
 	}
 	pb := &valuePb{}
-	boolValuePb := &st.BoolValue
-	if boolValuePb != nil {
-		pb.BoolValue = *boolValuePb
-	}
+	pb.BoolValue = st.BoolValue
 
 	listValuePb, err := listValueToPb(st.ListValue)
 	if err != nil {
@@ -4750,15 +4221,9 @@ func valueToPb(st *Value) (*valuePb, error) {
 		pb.ListValue = listValuePb
 	}
 
-	numberValuePb := &st.NumberValue
-	if numberValuePb != nil {
-		pb.NumberValue = *numberValuePb
-	}
+	pb.NumberValue = st.NumberValue
 
-	stringValuePb := &st.StringValue
-	if stringValuePb != nil {
-		pb.StringValue = *stringValuePb
-	}
+	pb.StringValue = st.StringValue
 
 	structValuePb, err := structToPb(st.StructValue)
 	if err != nil {
@@ -4829,10 +4294,7 @@ func valueFromPb(pb *valuePb) (*Value, error) {
 		return nil, nil
 	}
 	st := &Value{}
-	boolValueField := &pb.BoolValue
-	if boolValueField != nil {
-		st.BoolValue = *boolValueField
-	}
+	st.BoolValue = pb.BoolValue
 	listValueField, err := listValueFromPb(pb.ListValue)
 	if err != nil {
 		return nil, err
@@ -4840,14 +4302,8 @@ func valueFromPb(pb *valuePb) (*Value, error) {
 	if listValueField != nil {
 		st.ListValue = listValueField
 	}
-	numberValueField := &pb.NumberValue
-	if numberValueField != nil {
-		st.NumberValue = *numberValueField
-	}
-	stringValueField := &pb.StringValue
-	if stringValueField != nil {
-		st.StringValue = *stringValueField
-	}
+	st.NumberValue = pb.NumberValue
+	st.StringValue = pb.StringValue
 	structValueField, err := structFromPb(pb.StructValue)
 	if err != nil {
 		return nil, err
@@ -4870,12 +4326,16 @@ func (st valuePb) MarshalJSON() ([]byte, error) {
 
 type VectorIndex struct {
 	// The user who created the index.
+	// Wire name: 'creator'
 	Creator string
 
+	// Wire name: 'delta_sync_index_spec'
 	DeltaSyncIndexSpec *DeltaSyncVectorIndexSpecResponse
 
+	// Wire name: 'direct_access_index_spec'
 	DirectAccessIndexSpec *DirectAccessVectorIndexSpec
 	// Name of the endpoint associated with the index
+	// Wire name: 'endpoint_name'
 	EndpointName string
 	// There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that
 	// automatically syncs with a source Delta Table, automatically and
@@ -4883,15 +4343,19 @@ type VectorIndex struct {
 	// Table changes. - `DIRECT_ACCESS`: An index that supports direct read and
 	// write of vectors and metadata through our REST and SDK APIs. With this
 	// model, the user manages index updates.
+	// Wire name: 'index_type'
 	IndexType VectorIndexType
 	// Name of the index
+	// Wire name: 'name'
 	Name string
 	// Primary key of the index
+	// Wire name: 'primary_key'
 	PrimaryKey string
 
+	// Wire name: 'status'
 	Status *VectorIndexStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func vectorIndexToPb(st *VectorIndex) (*vectorIndexPb, error) {
@@ -4899,10 +4363,7 @@ func vectorIndexToPb(st *VectorIndex) (*vectorIndexPb, error) {
 		return nil, nil
 	}
 	pb := &vectorIndexPb{}
-	creatorPb := &st.Creator
-	if creatorPb != nil {
-		pb.Creator = *creatorPb
-	}
+	pb.Creator = st.Creator
 
 	deltaSyncIndexSpecPb, err := deltaSyncVectorIndexSpecResponseToPb(st.DeltaSyncIndexSpec)
 	if err != nil {
@@ -4920,25 +4381,13 @@ func vectorIndexToPb(st *VectorIndex) (*vectorIndexPb, error) {
 		pb.DirectAccessIndexSpec = directAccessIndexSpecPb
 	}
 
-	endpointNamePb := &st.EndpointName
-	if endpointNamePb != nil {
-		pb.EndpointName = *endpointNamePb
-	}
+	pb.EndpointName = st.EndpointName
 
-	indexTypePb := &st.IndexType
-	if indexTypePb != nil {
-		pb.IndexType = *indexTypePb
-	}
+	pb.IndexType = st.IndexType
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	primaryKeyPb := &st.PrimaryKey
-	if primaryKeyPb != nil {
-		pb.PrimaryKey = *primaryKeyPb
-	}
+	pb.PrimaryKey = st.PrimaryKey
 
 	statusPb, err := vectorIndexStatusToPb(st.Status)
 	if err != nil {
@@ -5008,10 +4457,7 @@ func vectorIndexFromPb(pb *vectorIndexPb) (*VectorIndex, error) {
 		return nil, nil
 	}
 	st := &VectorIndex{}
-	creatorField := &pb.Creator
-	if creatorField != nil {
-		st.Creator = *creatorField
-	}
+	st.Creator = pb.Creator
 	deltaSyncIndexSpecField, err := deltaSyncVectorIndexSpecResponseFromPb(pb.DeltaSyncIndexSpec)
 	if err != nil {
 		return nil, err
@@ -5026,22 +4472,10 @@ func vectorIndexFromPb(pb *vectorIndexPb) (*VectorIndex, error) {
 	if directAccessIndexSpecField != nil {
 		st.DirectAccessIndexSpec = directAccessIndexSpecField
 	}
-	endpointNameField := &pb.EndpointName
-	if endpointNameField != nil {
-		st.EndpointName = *endpointNameField
-	}
-	indexTypeField := &pb.IndexType
-	if indexTypeField != nil {
-		st.IndexType = *indexTypeField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	primaryKeyField := &pb.PrimaryKey
-	if primaryKeyField != nil {
-		st.PrimaryKey = *primaryKeyField
-	}
+	st.EndpointName = pb.EndpointName
+	st.IndexType = pb.IndexType
+	st.Name = pb.Name
+	st.PrimaryKey = pb.PrimaryKey
 	statusField, err := vectorIndexStatusFromPb(pb.Status)
 	if err != nil {
 		return nil, err
@@ -5064,15 +4498,19 @@ func (st vectorIndexPb) MarshalJSON() ([]byte, error) {
 
 type VectorIndexStatus struct {
 	// Index API Url to be used to perform operations on the index
+	// Wire name: 'index_url'
 	IndexUrl string
 	// Number of rows indexed
+	// Wire name: 'indexed_row_count'
 	IndexedRowCount int64
 	// Message associated with the index status
+	// Wire name: 'message'
 	Message string
 	// Whether the index is ready for search
+	// Wire name: 'ready'
 	Ready bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func vectorIndexStatusToPb(st *VectorIndexStatus) (*vectorIndexStatusPb, error) {
@@ -5080,25 +4518,13 @@ func vectorIndexStatusToPb(st *VectorIndexStatus) (*vectorIndexStatusPb, error) 
 		return nil, nil
 	}
 	pb := &vectorIndexStatusPb{}
-	indexUrlPb := &st.IndexUrl
-	if indexUrlPb != nil {
-		pb.IndexUrl = *indexUrlPb
-	}
+	pb.IndexUrl = st.IndexUrl
 
-	indexedRowCountPb := &st.IndexedRowCount
-	if indexedRowCountPb != nil {
-		pb.IndexedRowCount = *indexedRowCountPb
-	}
+	pb.IndexedRowCount = st.IndexedRowCount
 
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
-	readyPb := &st.Ready
-	if readyPb != nil {
-		pb.Ready = *readyPb
-	}
+	pb.Ready = st.Ready
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5147,22 +4573,10 @@ func vectorIndexStatusFromPb(pb *vectorIndexStatusPb) (*VectorIndexStatus, error
 		return nil, nil
 	}
 	st := &VectorIndexStatus{}
-	indexUrlField := &pb.IndexUrl
-	if indexUrlField != nil {
-		st.IndexUrl = *indexUrlField
-	}
-	indexedRowCountField := &pb.IndexedRowCount
-	if indexedRowCountField != nil {
-		st.IndexedRowCount = *indexedRowCountField
-	}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
-	readyField := &pb.Ready
-	if readyField != nil {
-		st.Ready = *readyField
-	}
+	st.IndexUrl = pb.IndexUrl
+	st.IndexedRowCount = pb.IndexedRowCount
+	st.Message = pb.Message
+	st.Ready = pb.Ready
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5229,4 +4643,58 @@ func vectorIndexTypeFromPb(pb *vectorIndexTypePb) (*VectorIndexType, error) {
 	}
 	st := VectorIndexType(*pb)
 	return &st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

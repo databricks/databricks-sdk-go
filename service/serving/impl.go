@@ -33,15 +33,22 @@ func (a *servingEndpointsImpl) BuildLogs(ctx context.Context, request BuildLogsR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &buildLogsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&buildLogsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := buildLogsResponseFromPb(&buildLogsResponsePb)
+	resp, err := buildLogsResponseFromPb(&buildLogsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -59,15 +66,22 @@ func (a *servingEndpointsImpl) Create(ctx context.Context, request CreateServing
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &servingEndpointDetailedPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&servingEndpointDetailedPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := servingEndpointDetailedFromPb(&servingEndpointDetailedPb)
+	resp, err := servingEndpointDetailedFromPb(&servingEndpointDetailedPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -83,7 +97,15 @@ func (a *servingEndpointsImpl) Delete(ctx context.Context, request DeleteServing
 	path := fmt.Sprintf("/api/2.0/serving-endpoints/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -103,15 +125,22 @@ func (a *servingEndpointsImpl) ExportMetrics(ctx context.Context, request Export
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &exportMetricsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&exportMetricsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := exportMetricsResponseFromPb(&exportMetricsResponsePb)
+	resp, err := exportMetricsResponseFromPb(&exportMetricsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -128,15 +157,22 @@ func (a *servingEndpointsImpl) Get(ctx context.Context, request GetServingEndpoi
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &servingEndpointDetailedPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&servingEndpointDetailedPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := servingEndpointDetailedFromPb(&servingEndpointDetailedPb)
+	resp, err := servingEndpointDetailedFromPb(&servingEndpointDetailedPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -153,15 +189,22 @@ func (a *servingEndpointsImpl) GetOpenApi(ctx context.Context, request GetOpenAp
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getOpenApiResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getOpenApiResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getOpenApiResponseFromPb(&getOpenApiResponsePb)
+	resp, err := getOpenApiResponseFromPb(&getOpenApiResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -178,15 +221,22 @@ func (a *servingEndpointsImpl) GetPermissionLevels(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getServingEndpointPermissionLevelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getServingEndpointPermissionLevelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getServingEndpointPermissionLevelsResponseFromPb(&getServingEndpointPermissionLevelsResponsePb)
+	resp, err := getServingEndpointPermissionLevelsResponseFromPb(&getServingEndpointPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -203,15 +253,22 @@ func (a *servingEndpointsImpl) GetPermissions(ctx context.Context, request GetSe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &servingEndpointPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&servingEndpointPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := servingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
+	resp, err := servingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -229,15 +286,22 @@ func (a *servingEndpointsImpl) HttpRequest(ctx context.Context, request External
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &httpRequestResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&httpRequestResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := httpRequestResponseFromPb(&httpRequestResponsePb)
+	resp, err := httpRequestResponseFromPb(&httpRequestResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -275,15 +339,22 @@ func (a *servingEndpointsImpl) internalList(ctx context.Context) (*ListEndpoints
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listEndpointsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listEndpointsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listEndpointsResponseFromPb(&listEndpointsResponsePb)
+	resp, err := listEndpointsResponseFromPb(&listEndpointsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -300,15 +371,22 @@ func (a *servingEndpointsImpl) Logs(ctx context.Context, request LogsRequest) (*
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &serverLogsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&serverLogsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := serverLogsResponseFromPb(&serverLogsResponsePb)
+	resp, err := serverLogsResponseFromPb(&serverLogsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -326,15 +404,22 @@ func (a *servingEndpointsImpl) Patch(ctx context.Context, request PatchServingEn
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &endpointTagsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&endpointTagsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := endpointTagsFromPb(&endpointTagsPb)
+	resp, err := endpointTagsFromPb(&endpointTagsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -352,15 +437,22 @@ func (a *servingEndpointsImpl) Put(ctx context.Context, request PutRequest) (*Pu
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &putResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&putResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := putResponseFromPb(&putResponsePb)
+	resp, err := putResponseFromPb(&putResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -378,15 +470,22 @@ func (a *servingEndpointsImpl) PutAiGateway(ctx context.Context, request PutAiGa
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &putAiGatewayResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&putAiGatewayResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := putAiGatewayResponseFromPb(&putAiGatewayResponsePb)
+	resp, err := putAiGatewayResponseFromPb(&putAiGatewayResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -404,15 +503,22 @@ func (a *servingEndpointsImpl) Query(ctx context.Context, request QueryEndpointI
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &queryEndpointResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&queryEndpointResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := queryEndpointResponseFromPb(&queryEndpointResponsePb)
+	resp, err := queryEndpointResponseFromPb(&queryEndpointResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -430,15 +536,22 @@ func (a *servingEndpointsImpl) SetPermissions(ctx context.Context, request Servi
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &servingEndpointPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&servingEndpointPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := servingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
+	resp, err := servingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -456,15 +569,22 @@ func (a *servingEndpointsImpl) UpdateConfig(ctx context.Context, request Endpoin
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &servingEndpointDetailedPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&servingEndpointDetailedPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := servingEndpointDetailedFromPb(&servingEndpointDetailedPb)
+	resp, err := servingEndpointDetailedFromPb(&servingEndpointDetailedPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -482,15 +602,22 @@ func (a *servingEndpointsImpl) UpdatePermissions(ctx context.Context, request Se
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &servingEndpointPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&servingEndpointPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := servingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
+	resp, err := servingEndpointPermissionsFromPb(&servingEndpointPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -554,11 +681,10 @@ func (a *servingEndpointsDataPlaneImpl) Query(ctx context.Context, request Query
 	if err != nil {
 		return nil, err
 	}
-	respField, err := queryEndpointResponseFromPb(&queryEndpointResponsePb)
+	resp, err := queryEndpointResponseFromPb(&queryEndpointResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }

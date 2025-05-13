@@ -12,80 +12,13 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type AddBlock struct {
 	// The base64-encoded data to append to the stream. This has a limit of 1
 	// MB.
+	// Wire name: 'data'
 	Data string
 	// The handle on an open stream.
+	// Wire name: 'handle'
 	Handle int64
 }
 
@@ -94,15 +27,9 @@ func addBlockToPb(st *AddBlock) (*addBlockPb, error) {
 		return nil, nil
 	}
 	pb := &addBlockPb{}
-	dataPb := &st.Data
-	if dataPb != nil {
-		pb.Data = *dataPb
-	}
+	pb.Data = st.Data
 
-	handlePb := &st.Handle
-	if handlePb != nil {
-		pb.Handle = *handlePb
-	}
+	pb.Handle = st.Handle
 
 	return pb, nil
 }
@@ -145,14 +72,8 @@ func addBlockFromPb(pb *addBlockPb) (*AddBlock, error) {
 		return nil, nil
 	}
 	st := &AddBlock{}
-	dataField := &pb.Data
-	if dataField != nil {
-		st.Data = *dataField
-	}
-	handleField := &pb.Handle
-	if handleField != nil {
-		st.Handle = *handleField
-	}
+	st.Data = pb.Data
+	st.Handle = pb.Handle
 
 	return st, nil
 }
@@ -208,6 +129,7 @@ func addBlockResponseFromPb(pb *addBlockResponsePb) (*AddBlockResponse, error) {
 
 type Close struct {
 	// The handle on an open stream.
+	// Wire name: 'handle'
 	Handle int64
 }
 
@@ -216,10 +138,7 @@ func closeToPb(st *Close) (*closePb, error) {
 		return nil, nil
 	}
 	pb := &closePb{}
-	handlePb := &st.Handle
-	if handlePb != nil {
-		pb.Handle = *handlePb
-	}
+	pb.Handle = st.Handle
 
 	return pb, nil
 }
@@ -259,10 +178,7 @@ func closeFromPb(pb *closePb) (*Close, error) {
 		return nil, nil
 	}
 	st := &Close{}
-	handleField := &pb.Handle
-	if handleField != nil {
-		st.Handle = *handleField
-	}
+	st.Handle = pb.Handle
 
 	return st, nil
 }
@@ -318,11 +234,13 @@ func closeResponseFromPb(pb *closeResponsePb) (*CloseResponse, error) {
 
 type Create struct {
 	// The flag that specifies whether to overwrite existing file/files.
+	// Wire name: 'overwrite'
 	Overwrite bool
 	// The path of the new file. The path should be the absolute DBFS path.
+	// Wire name: 'path'
 	Path string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createToPb(st *Create) (*createPb, error) {
@@ -330,15 +248,9 @@ func createToPb(st *Create) (*createPb, error) {
 		return nil, nil
 	}
 	pb := &createPb{}
-	overwritePb := &st.Overwrite
-	if overwritePb != nil {
-		pb.Overwrite = *overwritePb
-	}
+	pb.Overwrite = st.Overwrite
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -383,14 +295,8 @@ func createFromPb(pb *createPb) (*Create, error) {
 		return nil, nil
 	}
 	st := &Create{}
-	overwriteField := &pb.Overwrite
-	if overwriteField != nil {
-		st.Overwrite = *overwriteField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Overwrite = pb.Overwrite
+	st.Path = pb.Path
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -407,7 +313,8 @@ func (st createPb) MarshalJSON() ([]byte, error) {
 // Create a directory
 type CreateDirectoryRequest struct {
 	// The absolute path of a directory.
-	DirectoryPath string
+	// Wire name: 'directory_path'
+	DirectoryPath string `tf:"-"`
 }
 
 func createDirectoryRequestToPb(st *CreateDirectoryRequest) (*createDirectoryRequestPb, error) {
@@ -415,10 +322,7 @@ func createDirectoryRequestToPb(st *CreateDirectoryRequest) (*createDirectoryReq
 		return nil, nil
 	}
 	pb := &createDirectoryRequestPb{}
-	directoryPathPb := &st.DirectoryPath
-	if directoryPathPb != nil {
-		pb.DirectoryPath = *directoryPathPb
-	}
+	pb.DirectoryPath = st.DirectoryPath
 
 	return pb, nil
 }
@@ -458,10 +362,7 @@ func createDirectoryRequestFromPb(pb *createDirectoryRequestPb) (*CreateDirector
 		return nil, nil
 	}
 	st := &CreateDirectoryRequest{}
-	directoryPathField := &pb.DirectoryPath
-	if directoryPathField != nil {
-		st.DirectoryPath = *directoryPathField
-	}
+	st.DirectoryPath = pb.DirectoryPath
 
 	return st, nil
 }
@@ -518,9 +419,10 @@ func createDirectoryResponseFromPb(pb *createDirectoryResponsePb) (*CreateDirect
 type CreateResponse struct {
 	// Handle which should subsequently be passed into the AddBlock and Close
 	// calls when writing to a file through a stream.
+	// Wire name: 'handle'
 	Handle int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createResponseToPb(st *CreateResponse) (*createResponsePb, error) {
@@ -528,10 +430,7 @@ func createResponseToPb(st *CreateResponse) (*createResponsePb, error) {
 		return nil, nil
 	}
 	pb := &createResponsePb{}
-	handlePb := &st.Handle
-	if handlePb != nil {
-		pb.Handle = *handlePb
-	}
+	pb.Handle = st.Handle
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -575,10 +474,7 @@ func createResponseFromPb(pb *createResponsePb) (*CreateResponse, error) {
 		return nil, nil
 	}
 	st := &CreateResponse{}
-	handleField := &pb.Handle
-	if handleField != nil {
-		st.Handle = *handleField
-	}
+	st.Handle = pb.Handle
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -595,12 +491,14 @@ func (st createResponsePb) MarshalJSON() ([]byte, error) {
 type Delete struct {
 	// The path of the file or directory to delete. The path should be the
 	// absolute DBFS path.
+	// Wire name: 'path'
 	Path string
 	// Whether or not to recursively delete the directory's contents. Deleting
 	// empty directories can be done without providing the recursive flag.
+	// Wire name: 'recursive'
 	Recursive bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteToPb(st *Delete) (*deletePb, error) {
@@ -608,15 +506,9 @@ func deleteToPb(st *Delete) (*deletePb, error) {
 		return nil, nil
 	}
 	pb := &deletePb{}
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	recursivePb := &st.Recursive
-	if recursivePb != nil {
-		pb.Recursive = *recursivePb
-	}
+	pb.Recursive = st.Recursive
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -663,14 +555,8 @@ func deleteFromPb(pb *deletePb) (*Delete, error) {
 		return nil, nil
 	}
 	st := &Delete{}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	recursiveField := &pb.Recursive
-	if recursiveField != nil {
-		st.Recursive = *recursiveField
-	}
+	st.Path = pb.Path
+	st.Recursive = pb.Recursive
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -687,7 +573,8 @@ func (st deletePb) MarshalJSON() ([]byte, error) {
 // Delete a directory
 type DeleteDirectoryRequest struct {
 	// The absolute path of a directory.
-	DirectoryPath string
+	// Wire name: 'directory_path'
+	DirectoryPath string `tf:"-"`
 }
 
 func deleteDirectoryRequestToPb(st *DeleteDirectoryRequest) (*deleteDirectoryRequestPb, error) {
@@ -695,10 +582,7 @@ func deleteDirectoryRequestToPb(st *DeleteDirectoryRequest) (*deleteDirectoryReq
 		return nil, nil
 	}
 	pb := &deleteDirectoryRequestPb{}
-	directoryPathPb := &st.DirectoryPath
-	if directoryPathPb != nil {
-		pb.DirectoryPath = *directoryPathPb
-	}
+	pb.DirectoryPath = st.DirectoryPath
 
 	return pb, nil
 }
@@ -738,10 +622,7 @@ func deleteDirectoryRequestFromPb(pb *deleteDirectoryRequestPb) (*DeleteDirector
 		return nil, nil
 	}
 	st := &DeleteDirectoryRequest{}
-	directoryPathField := &pb.DirectoryPath
-	if directoryPathField != nil {
-		st.DirectoryPath = *directoryPathField
-	}
+	st.DirectoryPath = pb.DirectoryPath
 
 	return st, nil
 }
@@ -798,7 +679,8 @@ func deleteDirectoryResponseFromPb(pb *deleteDirectoryResponsePb) (*DeleteDirect
 // Delete a file
 type DeleteFileRequest struct {
 	// The absolute path of the file.
-	FilePath string
+	// Wire name: 'file_path'
+	FilePath string `tf:"-"`
 }
 
 func deleteFileRequestToPb(st *DeleteFileRequest) (*deleteFileRequestPb, error) {
@@ -806,10 +688,7 @@ func deleteFileRequestToPb(st *DeleteFileRequest) (*deleteFileRequestPb, error) 
 		return nil, nil
 	}
 	pb := &deleteFileRequestPb{}
-	filePathPb := &st.FilePath
-	if filePathPb != nil {
-		pb.FilePath = *filePathPb
-	}
+	pb.FilePath = st.FilePath
 
 	return pb, nil
 }
@@ -849,10 +728,7 @@ func deleteFileRequestFromPb(pb *deleteFileRequestPb) (*DeleteFileRequest, error
 		return nil, nil
 	}
 	st := &DeleteFileRequest{}
-	filePathField := &pb.FilePath
-	if filePathField != nil {
-		st.FilePath = *filePathField
-	}
+	st.FilePath = pb.FilePath
 
 	return st, nil
 }
@@ -908,18 +784,23 @@ func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
 
 type DirectoryEntry struct {
 	// The length of the file in bytes. This field is omitted for directories.
+	// Wire name: 'file_size'
 	FileSize int64
 	// True if the path is a directory.
+	// Wire name: 'is_directory'
 	IsDirectory bool
 	// Last modification time of given file in milliseconds since unix epoch.
+	// Wire name: 'last_modified'
 	LastModified int64
 	// The name of the file or directory. This is the last component of the
 	// path.
+	// Wire name: 'name'
 	Name string
 	// The absolute path of the file or directory.
+	// Wire name: 'path'
 	Path string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func directoryEntryToPb(st *DirectoryEntry) (*directoryEntryPb, error) {
@@ -927,30 +808,15 @@ func directoryEntryToPb(st *DirectoryEntry) (*directoryEntryPb, error) {
 		return nil, nil
 	}
 	pb := &directoryEntryPb{}
-	fileSizePb := &st.FileSize
-	if fileSizePb != nil {
-		pb.FileSize = *fileSizePb
-	}
+	pb.FileSize = st.FileSize
 
-	isDirectoryPb := &st.IsDirectory
-	if isDirectoryPb != nil {
-		pb.IsDirectory = *isDirectoryPb
-	}
+	pb.IsDirectory = st.IsDirectory
 
-	lastModifiedPb := &st.LastModified
-	if lastModifiedPb != nil {
-		pb.LastModified = *lastModifiedPb
-	}
+	pb.LastModified = st.LastModified
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1002,26 +868,11 @@ func directoryEntryFromPb(pb *directoryEntryPb) (*DirectoryEntry, error) {
 		return nil, nil
 	}
 	st := &DirectoryEntry{}
-	fileSizeField := &pb.FileSize
-	if fileSizeField != nil {
-		st.FileSize = *fileSizeField
-	}
-	isDirectoryField := &pb.IsDirectory
-	if isDirectoryField != nil {
-		st.IsDirectory = *isDirectoryField
-	}
-	lastModifiedField := &pb.LastModified
-	if lastModifiedField != nil {
-		st.LastModified = *lastModifiedField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.FileSize = pb.FileSize
+	st.IsDirectory = pb.IsDirectory
+	st.LastModified = pb.LastModified
+	st.Name = pb.Name
+	st.Path = pb.Path
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1038,7 +889,8 @@ func (st directoryEntryPb) MarshalJSON() ([]byte, error) {
 // Download a file
 type DownloadRequest struct {
 	// The absolute path of the file.
-	FilePath string
+	// Wire name: 'file_path'
+	FilePath string `tf:"-"`
 }
 
 func downloadRequestToPb(st *DownloadRequest) (*downloadRequestPb, error) {
@@ -1046,10 +898,7 @@ func downloadRequestToPb(st *DownloadRequest) (*downloadRequestPb, error) {
 		return nil, nil
 	}
 	pb := &downloadRequestPb{}
-	filePathPb := &st.FilePath
-	if filePathPb != nil {
-		pb.FilePath = *filePathPb
-	}
+	pb.FilePath = st.FilePath
 
 	return pb, nil
 }
@@ -1089,25 +938,26 @@ func downloadRequestFromPb(pb *downloadRequestPb) (*DownloadRequest, error) {
 		return nil, nil
 	}
 	st := &DownloadRequest{}
-	filePathField := &pb.FilePath
-	if filePathField != nil {
-		st.FilePath = *filePathField
-	}
+	st.FilePath = pb.FilePath
 
 	return st, nil
 }
 
 type DownloadResponse struct {
 	// The length of the HTTP response body in bytes.
-	ContentLength int64
+	// Wire name: 'content-length'
+	ContentLength int64 `tf:"-"`
 
-	ContentType string
+	// Wire name: 'content-type'
+	ContentType string `tf:"-"`
 
-	Contents io.ReadCloser
+	// Wire name: 'contents'
+	Contents io.ReadCloser `tf:"-"`
 	// The last modified time of the file in HTTP-date (RFC 7231) format.
-	LastModified string
+	// Wire name: 'last-modified'
+	LastModified string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func downloadResponseToPb(st *DownloadResponse) (*downloadResponsePb, error) {
@@ -1115,25 +965,13 @@ func downloadResponseToPb(st *DownloadResponse) (*downloadResponsePb, error) {
 		return nil, nil
 	}
 	pb := &downloadResponsePb{}
-	contentLengthPb := &st.ContentLength
-	if contentLengthPb != nil {
-		pb.ContentLength = *contentLengthPb
-	}
+	pb.ContentLength = st.ContentLength
 
-	contentTypePb := &st.ContentType
-	if contentTypePb != nil {
-		pb.ContentType = *contentTypePb
-	}
+	pb.ContentType = st.ContentType
 
-	contentsPb := &st.Contents
-	if contentsPb != nil {
-		pb.Contents = *contentsPb
-	}
+	pb.Contents = st.Contents
 
-	lastModifiedPb := &st.LastModified
-	if lastModifiedPb != nil {
-		pb.LastModified = *lastModifiedPb
-	}
+	pb.LastModified = st.LastModified
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1182,22 +1020,10 @@ func downloadResponseFromPb(pb *downloadResponsePb) (*DownloadResponse, error) {
 		return nil, nil
 	}
 	st := &DownloadResponse{}
-	contentLengthField := &pb.ContentLength
-	if contentLengthField != nil {
-		st.ContentLength = *contentLengthField
-	}
-	contentTypeField := &pb.ContentType
-	if contentTypeField != nil {
-		st.ContentType = *contentTypeField
-	}
-	contentsField := &pb.Contents
-	if contentsField != nil {
-		st.Contents = *contentsField
-	}
-	lastModifiedField := &pb.LastModified
-	if lastModifiedField != nil {
-		st.LastModified = *lastModifiedField
-	}
+	st.ContentLength = pb.ContentLength
+	st.ContentType = pb.ContentType
+	st.Contents = pb.Contents
+	st.LastModified = pb.LastModified
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1213,15 +1039,19 @@ func (st downloadResponsePb) MarshalJSON() ([]byte, error) {
 
 type FileInfo struct {
 	// The length of the file in bytes. This field is omitted for directories.
+	// Wire name: 'file_size'
 	FileSize int64
 	// True if the path is a directory.
+	// Wire name: 'is_dir'
 	IsDir bool
 	// Last modification time of given file in milliseconds since epoch.
+	// Wire name: 'modification_time'
 	ModificationTime int64
 	// The absolute path of the file or directory.
+	// Wire name: 'path'
 	Path string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
@@ -1229,25 +1059,13 @@ func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
 		return nil, nil
 	}
 	pb := &fileInfoPb{}
-	fileSizePb := &st.FileSize
-	if fileSizePb != nil {
-		pb.FileSize = *fileSizePb
-	}
+	pb.FileSize = st.FileSize
 
-	isDirPb := &st.IsDir
-	if isDirPb != nil {
-		pb.IsDir = *isDirPb
-	}
+	pb.IsDir = st.IsDir
 
-	modificationTimePb := &st.ModificationTime
-	if modificationTimePb != nil {
-		pb.ModificationTime = *modificationTimePb
-	}
+	pb.ModificationTime = st.ModificationTime
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1296,22 +1114,10 @@ func fileInfoFromPb(pb *fileInfoPb) (*FileInfo, error) {
 		return nil, nil
 	}
 	st := &FileInfo{}
-	fileSizeField := &pb.FileSize
-	if fileSizeField != nil {
-		st.FileSize = *fileSizeField
-	}
-	isDirField := &pb.IsDir
-	if isDirField != nil {
-		st.IsDir = *isDirField
-	}
-	modificationTimeField := &pb.ModificationTime
-	if modificationTimeField != nil {
-		st.ModificationTime = *modificationTimeField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.FileSize = pb.FileSize
+	st.IsDir = pb.IsDir
+	st.ModificationTime = pb.ModificationTime
+	st.Path = pb.Path
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1328,7 +1134,8 @@ func (st fileInfoPb) MarshalJSON() ([]byte, error) {
 // Get directory metadata
 type GetDirectoryMetadataRequest struct {
 	// The absolute path of a directory.
-	DirectoryPath string
+	// Wire name: 'directory_path'
+	DirectoryPath string `tf:"-"`
 }
 
 func getDirectoryMetadataRequestToPb(st *GetDirectoryMetadataRequest) (*getDirectoryMetadataRequestPb, error) {
@@ -1336,10 +1143,7 @@ func getDirectoryMetadataRequestToPb(st *GetDirectoryMetadataRequest) (*getDirec
 		return nil, nil
 	}
 	pb := &getDirectoryMetadataRequestPb{}
-	directoryPathPb := &st.DirectoryPath
-	if directoryPathPb != nil {
-		pb.DirectoryPath = *directoryPathPb
-	}
+	pb.DirectoryPath = st.DirectoryPath
 
 	return pb, nil
 }
@@ -1379,10 +1183,7 @@ func getDirectoryMetadataRequestFromPb(pb *getDirectoryMetadataRequestPb) (*GetD
 		return nil, nil
 	}
 	st := &GetDirectoryMetadataRequest{}
-	directoryPathField := &pb.DirectoryPath
-	if directoryPathField != nil {
-		st.DirectoryPath = *directoryPathField
-	}
+	st.DirectoryPath = pb.DirectoryPath
 
 	return st, nil
 }
@@ -1439,7 +1240,8 @@ func getDirectoryMetadataResponseFromPb(pb *getDirectoryMetadataResponsePb) (*Ge
 // Get file metadata
 type GetMetadataRequest struct {
 	// The absolute path of the file.
-	FilePath string
+	// Wire name: 'file_path'
+	FilePath string `tf:"-"`
 }
 
 func getMetadataRequestToPb(st *GetMetadataRequest) (*getMetadataRequestPb, error) {
@@ -1447,10 +1249,7 @@ func getMetadataRequestToPb(st *GetMetadataRequest) (*getMetadataRequestPb, erro
 		return nil, nil
 	}
 	pb := &getMetadataRequestPb{}
-	filePathPb := &st.FilePath
-	if filePathPb != nil {
-		pb.FilePath = *filePathPb
-	}
+	pb.FilePath = st.FilePath
 
 	return pb, nil
 }
@@ -1490,23 +1289,23 @@ func getMetadataRequestFromPb(pb *getMetadataRequestPb) (*GetMetadataRequest, er
 		return nil, nil
 	}
 	st := &GetMetadataRequest{}
-	filePathField := &pb.FilePath
-	if filePathField != nil {
-		st.FilePath = *filePathField
-	}
+	st.FilePath = pb.FilePath
 
 	return st, nil
 }
 
 type GetMetadataResponse struct {
 	// The length of the HTTP response body in bytes.
-	ContentLength int64
+	// Wire name: 'content-length'
+	ContentLength int64 `tf:"-"`
 
-	ContentType string
+	// Wire name: 'content-type'
+	ContentType string `tf:"-"`
 	// The last modified time of the file in HTTP-date (RFC 7231) format.
-	LastModified string
+	// Wire name: 'last-modified'
+	LastModified string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getMetadataResponseToPb(st *GetMetadataResponse) (*getMetadataResponsePb, error) {
@@ -1514,20 +1313,11 @@ func getMetadataResponseToPb(st *GetMetadataResponse) (*getMetadataResponsePb, e
 		return nil, nil
 	}
 	pb := &getMetadataResponsePb{}
-	contentLengthPb := &st.ContentLength
-	if contentLengthPb != nil {
-		pb.ContentLength = *contentLengthPb
-	}
+	pb.ContentLength = st.ContentLength
 
-	contentTypePb := &st.ContentType
-	if contentTypePb != nil {
-		pb.ContentType = *contentTypePb
-	}
+	pb.ContentType = st.ContentType
 
-	lastModifiedPb := &st.LastModified
-	if lastModifiedPb != nil {
-		pb.LastModified = *lastModifiedPb
-	}
+	pb.LastModified = st.LastModified
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1574,18 +1364,9 @@ func getMetadataResponseFromPb(pb *getMetadataResponsePb) (*GetMetadataResponse,
 		return nil, nil
 	}
 	st := &GetMetadataResponse{}
-	contentLengthField := &pb.ContentLength
-	if contentLengthField != nil {
-		st.ContentLength = *contentLengthField
-	}
-	contentTypeField := &pb.ContentType
-	if contentTypeField != nil {
-		st.ContentType = *contentTypeField
-	}
-	lastModifiedField := &pb.LastModified
-	if lastModifiedField != nil {
-		st.LastModified = *lastModifiedField
-	}
+	st.ContentLength = pb.ContentLength
+	st.ContentType = pb.ContentType
+	st.LastModified = pb.LastModified
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1603,7 +1384,8 @@ func (st getMetadataResponsePb) MarshalJSON() ([]byte, error) {
 type GetStatusRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
-	Path string
+	// Wire name: 'path'
+	Path string `tf:"-"`
 }
 
 func getStatusRequestToPb(st *GetStatusRequest) (*getStatusRequestPb, error) {
@@ -1611,10 +1393,7 @@ func getStatusRequestToPb(st *GetStatusRequest) (*getStatusRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getStatusRequestPb{}
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	return pb, nil
 }
@@ -1655,10 +1434,7 @@ func getStatusRequestFromPb(pb *getStatusRequestPb) (*GetStatusRequest, error) {
 		return nil, nil
 	}
 	st := &GetStatusRequest{}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Path = pb.Path
 
 	return st, nil
 }
@@ -1667,7 +1443,8 @@ func getStatusRequestFromPb(pb *getStatusRequestPb) (*GetStatusRequest, error) {
 type ListDbfsRequest struct {
 	// The path of the file or directory. The path should be the absolute DBFS
 	// path.
-	Path string
+	// Wire name: 'path'
+	Path string `tf:"-"`
 }
 
 func listDbfsRequestToPb(st *ListDbfsRequest) (*listDbfsRequestPb, error) {
@@ -1675,10 +1452,7 @@ func listDbfsRequestToPb(st *ListDbfsRequest) (*listDbfsRequestPb, error) {
 		return nil, nil
 	}
 	pb := &listDbfsRequestPb{}
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	return pb, nil
 }
@@ -1719,10 +1493,7 @@ func listDbfsRequestFromPb(pb *listDbfsRequestPb) (*ListDbfsRequest, error) {
 		return nil, nil
 	}
 	st := &ListDbfsRequest{}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Path = pb.Path
 
 	return st, nil
 }
@@ -1730,7 +1501,8 @@ func listDbfsRequestFromPb(pb *listDbfsRequestPb) (*ListDbfsRequest, error) {
 // List directory contents
 type ListDirectoryContentsRequest struct {
 	// The absolute path of a directory.
-	DirectoryPath string
+	// Wire name: 'directory_path'
+	DirectoryPath string `tf:"-"`
 	// The maximum number of directory entries to return. The response may
 	// contain fewer entries. If the response contains a `next_page_token`,
 	// there may be more entries, even if fewer than `page_size` entries are in
@@ -1741,7 +1513,8 @@ type ListDirectoryContentsRequest struct {
 	//
 	// If unspecified, at most 1000 directory entries will be returned. The
 	// maximum value is 1000. Values above 1000 will be coerced to 1000.
-	PageSize int64
+	// Wire name: 'page_size'
+	PageSize int64 `tf:"-"`
 	// An opaque page token which was the `next_page_token` in the response of
 	// the previous request to list the contents of this directory. Provide this
 	// token to retrieve the next page of directory entries. When providing a
@@ -1750,9 +1523,10 @@ type ListDirectoryContentsRequest struct {
 	// necessary to continue requesting pages of entries until the response
 	// contains no `next_page_token`. Note that the number of entries returned
 	// must not be used to determine when the listing is complete.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listDirectoryContentsRequestToPb(st *ListDirectoryContentsRequest) (*listDirectoryContentsRequestPb, error) {
@@ -1760,20 +1534,11 @@ func listDirectoryContentsRequestToPb(st *ListDirectoryContentsRequest) (*listDi
 		return nil, nil
 	}
 	pb := &listDirectoryContentsRequestPb{}
-	directoryPathPb := &st.DirectoryPath
-	if directoryPathPb != nil {
-		pb.DirectoryPath = *directoryPathPb
-	}
+	pb.DirectoryPath = st.DirectoryPath
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1836,18 +1601,9 @@ func listDirectoryContentsRequestFromPb(pb *listDirectoryContentsRequestPb) (*Li
 		return nil, nil
 	}
 	st := &ListDirectoryContentsRequest{}
-	directoryPathField := &pb.DirectoryPath
-	if directoryPathField != nil {
-		st.DirectoryPath = *directoryPathField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.DirectoryPath = pb.DirectoryPath
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1863,11 +1619,13 @@ func (st listDirectoryContentsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListDirectoryResponse struct {
 	// Array of DirectoryEntry.
+	// Wire name: 'contents'
 	Contents []DirectoryEntry
 	// A token, which can be sent as `page_token` to retrieve the next page.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listDirectoryResponseToPb(st *ListDirectoryResponse) (*listDirectoryResponsePb, error) {
@@ -1888,10 +1646,7 @@ func listDirectoryResponseToPb(st *ListDirectoryResponse) (*listDirectoryRespons
 	}
 	pb.Contents = contentsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1938,20 +1693,17 @@ func listDirectoryResponseFromPb(pb *listDirectoryResponsePb) (*ListDirectoryRes
 	st := &ListDirectoryResponse{}
 
 	var contentsField []DirectoryEntry
-	for _, item := range pb.Contents {
-		itemField, err := directoryEntryFromPb(&item)
+	for _, itemPb := range pb.Contents {
+		item, err := directoryEntryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			contentsField = append(contentsField, *itemField)
+		if item != nil {
+			contentsField = append(contentsField, *item)
 		}
 	}
 	st.Contents = contentsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1968,6 +1720,7 @@ func (st listDirectoryResponsePb) MarshalJSON() ([]byte, error) {
 type ListStatusResponse struct {
 	// A list of FileInfo's that describe contents of directory or file. See
 	// example above.
+	// Wire name: 'files'
 	Files []FileInfo
 }
 
@@ -2030,13 +1783,13 @@ func listStatusResponseFromPb(pb *listStatusResponsePb) (*ListStatusResponse, er
 	st := &ListStatusResponse{}
 
 	var filesField []FileInfo
-	for _, item := range pb.Files {
-		itemField, err := fileInfoFromPb(&item)
+	for _, itemPb := range pb.Files {
+		item, err := fileInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			filesField = append(filesField, *itemField)
+		if item != nil {
+			filesField = append(filesField, *item)
 		}
 	}
 	st.Files = filesField
@@ -2046,6 +1799,7 @@ func listStatusResponseFromPb(pb *listStatusResponsePb) (*ListStatusResponse, er
 
 type MkDirs struct {
 	// The path of the new directory. The path should be the absolute DBFS path.
+	// Wire name: 'path'
 	Path string
 }
 
@@ -2054,10 +1808,7 @@ func mkDirsToPb(st *MkDirs) (*mkDirsPb, error) {
 		return nil, nil
 	}
 	pb := &mkDirsPb{}
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	return pb, nil
 }
@@ -2097,10 +1848,7 @@ func mkDirsFromPb(pb *mkDirsPb) (*MkDirs, error) {
 		return nil, nil
 	}
 	st := &MkDirs{}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Path = pb.Path
 
 	return st, nil
 }
@@ -2157,9 +1905,11 @@ func mkDirsResponseFromPb(pb *mkDirsResponsePb) (*MkDirsResponse, error) {
 type Move struct {
 	// The destination path of the file or directory. The path should be the
 	// absolute DBFS path.
+	// Wire name: 'destination_path'
 	DestinationPath string
 	// The source path of the file or directory. The path should be the absolute
 	// DBFS path.
+	// Wire name: 'source_path'
 	SourcePath string
 }
 
@@ -2168,15 +1918,9 @@ func moveToPb(st *Move) (*movePb, error) {
 		return nil, nil
 	}
 	pb := &movePb{}
-	destinationPathPb := &st.DestinationPath
-	if destinationPathPb != nil {
-		pb.DestinationPath = *destinationPathPb
-	}
+	pb.DestinationPath = st.DestinationPath
 
-	sourcePathPb := &st.SourcePath
-	if sourcePathPb != nil {
-		pb.SourcePath = *sourcePathPb
-	}
+	pb.SourcePath = st.SourcePath
 
 	return pb, nil
 }
@@ -2220,14 +1964,8 @@ func moveFromPb(pb *movePb) (*Move, error) {
 		return nil, nil
 	}
 	st := &Move{}
-	destinationPathField := &pb.DestinationPath
-	if destinationPathField != nil {
-		st.DestinationPath = *destinationPathField
-	}
-	sourcePathField := &pb.SourcePath
-	if sourcePathField != nil {
-		st.SourcePath = *sourcePathField
-	}
+	st.DestinationPath = pb.DestinationPath
+	st.SourcePath = pb.SourcePath
 
 	return st, nil
 }
@@ -2283,13 +2021,16 @@ func moveResponseFromPb(pb *moveResponsePb) (*MoveResponse, error) {
 
 type Put struct {
 	// This parameter might be absent, and instead a posted file will be used.
+	// Wire name: 'contents'
 	Contents string
 	// The flag that specifies whether to overwrite existing file/files.
+	// Wire name: 'overwrite'
 	Overwrite bool
 	// The path of the new file. The path should be the absolute DBFS path.
+	// Wire name: 'path'
 	Path string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func putToPb(st *Put) (*putPb, error) {
@@ -2297,20 +2038,11 @@ func putToPb(st *Put) (*putPb, error) {
 		return nil, nil
 	}
 	pb := &putPb{}
-	contentsPb := &st.Contents
-	if contentsPb != nil {
-		pb.Contents = *contentsPb
-	}
+	pb.Contents = st.Contents
 
-	overwritePb := &st.Overwrite
-	if overwritePb != nil {
-		pb.Overwrite = *overwritePb
-	}
+	pb.Overwrite = st.Overwrite
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2357,18 +2089,9 @@ func putFromPb(pb *putPb) (*Put, error) {
 		return nil, nil
 	}
 	st := &Put{}
-	contentsField := &pb.Contents
-	if contentsField != nil {
-		st.Contents = *contentsField
-	}
-	overwriteField := &pb.Overwrite
-	if overwriteField != nil {
-		st.Overwrite = *overwriteField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Contents = pb.Contents
+	st.Overwrite = pb.Overwrite
+	st.Path = pb.Path
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2435,13 +2158,16 @@ func putResponseFromPb(pb *putResponsePb) (*PutResponse, error) {
 type ReadDbfsRequest struct {
 	// The number of bytes to read starting from the offset. This has a limit of
 	// 1 MB, and a default value of 0.5 MB.
-	Length int64
+	// Wire name: 'length'
+	Length int64 `tf:"-"`
 	// The offset to read from in bytes.
-	Offset int64
+	// Wire name: 'offset'
+	Offset int64 `tf:"-"`
 	// The path of the file to read. The path should be the absolute DBFS path.
-	Path string
+	// Wire name: 'path'
+	Path string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func readDbfsRequestToPb(st *ReadDbfsRequest) (*readDbfsRequestPb, error) {
@@ -2449,20 +2175,11 @@ func readDbfsRequestToPb(st *ReadDbfsRequest) (*readDbfsRequestPb, error) {
 		return nil, nil
 	}
 	pb := &readDbfsRequestPb{}
-	lengthPb := &st.Length
-	if lengthPb != nil {
-		pb.Length = *lengthPb
-	}
+	pb.Length = st.Length
 
-	offsetPb := &st.Offset
-	if offsetPb != nil {
-		pb.Offset = *offsetPb
-	}
+	pb.Offset = st.Offset
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2510,18 +2227,9 @@ func readDbfsRequestFromPb(pb *readDbfsRequestPb) (*ReadDbfsRequest, error) {
 		return nil, nil
 	}
 	st := &ReadDbfsRequest{}
-	lengthField := &pb.Length
-	if lengthField != nil {
-		st.Length = *lengthField
-	}
-	offsetField := &pb.Offset
-	if offsetField != nil {
-		st.Offset = *offsetField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Length = pb.Length
+	st.Offset = pb.Offset
+	st.Path = pb.Path
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2539,11 +2247,13 @@ type ReadResponse struct {
 	// The number of bytes read (could be less than ``length`` if we hit end of
 	// file). This refers to number of bytes read in unencoded version (response
 	// data is base64-encoded).
+	// Wire name: 'bytes_read'
 	BytesRead int64
 	// The base64-encoded contents of the file read.
+	// Wire name: 'data'
 	Data string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func readResponseToPb(st *ReadResponse) (*readResponsePb, error) {
@@ -2551,15 +2261,9 @@ func readResponseToPb(st *ReadResponse) (*readResponsePb, error) {
 		return nil, nil
 	}
 	pb := &readResponsePb{}
-	bytesReadPb := &st.BytesRead
-	if bytesReadPb != nil {
-		pb.BytesRead = *bytesReadPb
-	}
+	pb.BytesRead = st.BytesRead
 
-	dataPb := &st.Data
-	if dataPb != nil {
-		pb.Data = *dataPb
-	}
+	pb.Data = st.Data
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2606,14 +2310,8 @@ func readResponseFromPb(pb *readResponsePb) (*ReadResponse, error) {
 		return nil, nil
 	}
 	st := &ReadResponse{}
-	bytesReadField := &pb.BytesRead
-	if bytesReadField != nil {
-		st.BytesRead = *bytesReadField
-	}
-	dataField := &pb.Data
-	if dataField != nil {
-		st.Data = *dataField
-	}
+	st.BytesRead = pb.BytesRead
+	st.Data = pb.Data
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2629,14 +2327,17 @@ func (st readResponsePb) MarshalJSON() ([]byte, error) {
 
 // Upload a file
 type UploadRequest struct {
-	Contents io.ReadCloser
-	// The absolute path of the file.
-	FilePath string
-	// If true or unspecified, an existing file will be overwritten. If false,
-	// an error will be returned if the path points to an existing file.
-	Overwrite bool
 
-	ForceSendFields []string
+	// Wire name: 'contents'
+	Contents io.ReadCloser `tf:"-"`
+	// The absolute path of the file.
+	// Wire name: 'file_path'
+	FilePath string `tf:"-"`
+	// If true, an existing file will be overwritten.
+	// Wire name: 'overwrite'
+	Overwrite bool `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func uploadRequestToPb(st *UploadRequest) (*uploadRequestPb, error) {
@@ -2644,20 +2345,11 @@ func uploadRequestToPb(st *UploadRequest) (*uploadRequestPb, error) {
 		return nil, nil
 	}
 	pb := &uploadRequestPb{}
-	contentsPb := &st.Contents
-	if contentsPb != nil {
-		pb.Contents = *contentsPb
-	}
+	pb.Contents = st.Contents
 
-	filePathPb := &st.FilePath
-	if filePathPb != nil {
-		pb.FilePath = *filePathPb
-	}
+	pb.FilePath = st.FilePath
 
-	overwritePb := &st.Overwrite
-	if overwritePb != nil {
-		pb.Overwrite = *overwritePb
-	}
+	pb.Overwrite = st.Overwrite
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2692,8 +2384,7 @@ type uploadRequestPb struct {
 	Contents io.ReadCloser `json:"-"`
 	// The absolute path of the file.
 	FilePath string `json:"-" url:"-"`
-	// If true or unspecified, an existing file will be overwritten. If false,
-	// an error will be returned if the path points to an existing file.
+	// If true, an existing file will be overwritten.
 	Overwrite bool `json:"-" url:"overwrite,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2704,18 +2395,9 @@ func uploadRequestFromPb(pb *uploadRequestPb) (*UploadRequest, error) {
 		return nil, nil
 	}
 	st := &UploadRequest{}
-	contentsField := &pb.Contents
-	if contentsField != nil {
-		st.Contents = *contentsField
-	}
-	filePathField := &pb.FilePath
-	if filePathField != nil {
-		st.FilePath = *filePathField
-	}
-	overwriteField := &pb.Overwrite
-	if overwriteField != nil {
-		st.Overwrite = *overwriteField
-	}
+	st.Contents = pb.Contents
+	st.FilePath = pb.FilePath
+	st.Overwrite = pb.Overwrite
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2776,4 +2458,58 @@ func uploadResponseFromPb(pb *uploadResponsePb) (*UploadResponse, error) {
 	st := &UploadResponse{}
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

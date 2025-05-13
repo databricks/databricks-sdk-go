@@ -11,75 +11,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type AddInstanceProfile struct {
 	// The AWS IAM role ARN of the role associated with the instance profile.
 	// This field is required if your role name and instance profile name do not
@@ -89,15 +20,18 @@ type AddInstanceProfile struct {
 	// Otherwise, this field is optional.
 	//
 	// [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
+	// Wire name: 'iam_role_arn'
 	IamRoleArn string
 	// The AWS ARN of the instance profile to register with Databricks. This
 	// field is required.
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// Boolean flag indicating whether the instance profile should only be used
 	// in credential passthrough scenarios. If true, it means the instance
 	// profile contains an meta IAM role which could assume a wide range of
 	// roles. Therefore it should always be used with authorization. This field
 	// is optional, the default value is `false`.
+	// Wire name: 'is_meta_instance_profile'
 	IsMetaInstanceProfile bool
 	// By default, Databricks validates that it has sufficient permissions to
 	// launch instances with the instance profile. This validation uses AWS
@@ -106,9 +40,10 @@ type AddInstanceProfile struct {
 	// “Your requested instance type is not supported in your requested
 	// availability zone”), you can pass this flag to skip the validation and
 	// forcibly add the instance profile.
+	// Wire name: 'skip_validation'
 	SkipValidation bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func addInstanceProfileToPb(st *AddInstanceProfile) (*addInstanceProfilePb, error) {
@@ -116,25 +51,13 @@ func addInstanceProfileToPb(st *AddInstanceProfile) (*addInstanceProfilePb, erro
 		return nil, nil
 	}
 	pb := &addInstanceProfilePb{}
-	iamRoleArnPb := &st.IamRoleArn
-	if iamRoleArnPb != nil {
-		pb.IamRoleArn = *iamRoleArnPb
-	}
+	pb.IamRoleArn = st.IamRoleArn
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	isMetaInstanceProfilePb := &st.IsMetaInstanceProfile
-	if isMetaInstanceProfilePb != nil {
-		pb.IsMetaInstanceProfile = *isMetaInstanceProfilePb
-	}
+	pb.IsMetaInstanceProfile = st.IsMetaInstanceProfile
 
-	skipValidationPb := &st.SkipValidation
-	if skipValidationPb != nil {
-		pb.SkipValidation = *skipValidationPb
-	}
+	pb.SkipValidation = st.SkipValidation
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -201,22 +124,10 @@ func addInstanceProfileFromPb(pb *addInstanceProfilePb) (*AddInstanceProfile, er
 		return nil, nil
 	}
 	st := &AddInstanceProfile{}
-	iamRoleArnField := &pb.IamRoleArn
-	if iamRoleArnField != nil {
-		st.IamRoleArn = *iamRoleArnField
-	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	isMetaInstanceProfileField := &pb.IsMetaInstanceProfile
-	if isMetaInstanceProfileField != nil {
-		st.IsMetaInstanceProfile = *isMetaInstanceProfileField
-	}
-	skipValidationField := &pb.SkipValidation
-	if skipValidationField != nil {
-		st.SkipValidation = *skipValidationField
-	}
+	st.IamRoleArn = pb.IamRoleArn
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.IsMetaInstanceProfile = pb.IsMetaInstanceProfile
+	st.SkipValidation = pb.SkipValidation
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -283,6 +194,7 @@ func addResponseFromPb(pb *addResponsePb) (*AddResponse, error) {
 type Adlsgen2Info struct {
 	// abfss destination, e.g.
 	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`.
+	// Wire name: 'destination'
 	Destination string
 }
 
@@ -291,10 +203,7 @@ func adlsgen2InfoToPb(st *Adlsgen2Info) (*adlsgen2InfoPb, error) {
 		return nil, nil
 	}
 	pb := &adlsgen2InfoPb{}
-	destinationPb := &st.Destination
-	if destinationPb != nil {
-		pb.Destination = *destinationPb
-	}
+	pb.Destination = st.Destination
 
 	return pb, nil
 }
@@ -335,10 +244,7 @@ func adlsgen2InfoFromPb(pb *adlsgen2InfoPb) (*Adlsgen2Info, error) {
 		return nil, nil
 	}
 	st := &Adlsgen2Info{}
-	destinationField := &pb.Destination
-	if destinationField != nil {
-		st.Destination = *destinationField
-	}
+	st.Destination = pb.Destination
 
 	return st, nil
 }
@@ -347,13 +253,15 @@ type AutoScale struct {
 	// The maximum number of workers to which the cluster can scale up when
 	// overloaded. Note that `max_workers` must be strictly greater than
 	// `min_workers`.
+	// Wire name: 'max_workers'
 	MaxWorkers int
 	// The minimum number of workers to which the cluster can scale down when
 	// underutilized. It is also the initial number of workers the cluster will
 	// have after creation.
+	// Wire name: 'min_workers'
 	MinWorkers int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func autoScaleToPb(st *AutoScale) (*autoScalePb, error) {
@@ -361,15 +269,9 @@ func autoScaleToPb(st *AutoScale) (*autoScalePb, error) {
 		return nil, nil
 	}
 	pb := &autoScalePb{}
-	maxWorkersPb := &st.MaxWorkers
-	if maxWorkersPb != nil {
-		pb.MaxWorkers = *maxWorkersPb
-	}
+	pb.MaxWorkers = st.MaxWorkers
 
-	minWorkersPb := &st.MinWorkers
-	if minWorkersPb != nil {
-		pb.MinWorkers = *minWorkersPb
-	}
+	pb.MinWorkers = st.MinWorkers
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -418,14 +320,8 @@ func autoScaleFromPb(pb *autoScalePb) (*AutoScale, error) {
 		return nil, nil
 	}
 	st := &AutoScale{}
-	maxWorkersField := &pb.MaxWorkers
-	if maxWorkersField != nil {
-		st.MaxWorkers = *maxWorkersField
-	}
-	minWorkersField := &pb.MinWorkers
-	if minWorkersField != nil {
-		st.MinWorkers = *minWorkersField
-	}
+	st.MaxWorkers = pb.MaxWorkers
+	st.MinWorkers = pb.MinWorkers
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -447,6 +343,7 @@ type AwsAttributes struct {
 	//
 	// Note: If `first_on_demand` is zero, this availability type will be used
 	// for the entire cluster.
+	// Wire name: 'availability'
 	Availability AwsAvailability
 	// The number of volumes launched for each instance. Users can choose up to
 	// 10 volumes. This feature is only enabled for supported node types. Legacy
@@ -464,20 +361,25 @@ type AwsAttributes struct {
 	//
 	// Please note that if EBS volumes are specified, then the Spark
 	// configuration `spark.local.dir` will be overridden.
+	// Wire name: 'ebs_volume_count'
 	EbsVolumeCount int
 	// If using gp3 volumes, what IOPS to use for the disk. If this is not set,
 	// the maximum performance of a gp2 volume with the same volume size will be
 	// used.
+	// Wire name: 'ebs_volume_iops'
 	EbsVolumeIops int
 	// The size of each EBS volume (in GiB) launched for each instance. For
 	// general purpose SSD, this value must be within the range 100 - 4096. For
 	// throughput optimized HDD, this value must be within the range 500 - 4096.
+	// Wire name: 'ebs_volume_size'
 	EbsVolumeSize int
 	// If using gp3 volumes, what throughput to use for the disk. If this is not
 	// set, the maximum performance of a gp2 volume with the same volume size
 	// will be used.
+	// Wire name: 'ebs_volume_throughput'
 	EbsVolumeThroughput int
 	// The type of EBS volumes that will be launched with this cluster.
+	// Wire name: 'ebs_volume_type'
 	EbsVolumeType EbsVolumeType
 	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. If this value is greater than 0, the cluster driver
@@ -488,6 +390,7 @@ type AwsAttributes struct {
 	// instances and the remainder will be placed on `availability` instances.
 	// Note that this value does not affect cluster size and cannot currently be
 	// mutated over the lifetime of a cluster.
+	// Wire name: 'first_on_demand'
 	FirstOnDemand int
 	// Nodes for this cluster will only be placed on AWS instances with this
 	// instance profile. If ommitted, nodes will be placed on instances without
@@ -495,6 +398,7 @@ type AwsAttributes struct {
 	// added to the Databricks environment by an account administrator.
 	//
 	// This feature may only be available to certain customer plans.
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// The bid price for AWS spot instances, as a percentage of the
 	// corresponding instance type's on-demand price. For example, if this field
@@ -506,6 +410,7 @@ type AwsAttributes struct {
 	// instances whose bid price percentage matches this field will be
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
+	// Wire name: 'spot_bid_price_percent'
 	SpotBidPricePercent int
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west-2a". The provided
@@ -519,9 +424,10 @@ type AwsAttributes struct {
 	//
 	// The list of available zones as well as the default value can be found by
 	// using the `List Zones` method.
+	// Wire name: 'zone_id'
 	ZoneId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func AwsAttributesToPb(st *AwsAttributes) (*AwsAttributesPb, error) {
@@ -529,55 +435,25 @@ func AwsAttributesToPb(st *AwsAttributes) (*AwsAttributesPb, error) {
 		return nil, nil
 	}
 	pb := &AwsAttributesPb{}
-	availabilityPb := &st.Availability
-	if availabilityPb != nil {
-		pb.Availability = *availabilityPb
-	}
+	pb.Availability = st.Availability
 
-	ebsVolumeCountPb := &st.EbsVolumeCount
-	if ebsVolumeCountPb != nil {
-		pb.EbsVolumeCount = *ebsVolumeCountPb
-	}
+	pb.EbsVolumeCount = st.EbsVolumeCount
 
-	ebsVolumeIopsPb := &st.EbsVolumeIops
-	if ebsVolumeIopsPb != nil {
-		pb.EbsVolumeIops = *ebsVolumeIopsPb
-	}
+	pb.EbsVolumeIops = st.EbsVolumeIops
 
-	ebsVolumeSizePb := &st.EbsVolumeSize
-	if ebsVolumeSizePb != nil {
-		pb.EbsVolumeSize = *ebsVolumeSizePb
-	}
+	pb.EbsVolumeSize = st.EbsVolumeSize
 
-	ebsVolumeThroughputPb := &st.EbsVolumeThroughput
-	if ebsVolumeThroughputPb != nil {
-		pb.EbsVolumeThroughput = *ebsVolumeThroughputPb
-	}
+	pb.EbsVolumeThroughput = st.EbsVolumeThroughput
 
-	ebsVolumeTypePb := &st.EbsVolumeType
-	if ebsVolumeTypePb != nil {
-		pb.EbsVolumeType = *ebsVolumeTypePb
-	}
+	pb.EbsVolumeType = st.EbsVolumeType
 
-	firstOnDemandPb := &st.FirstOnDemand
-	if firstOnDemandPb != nil {
-		pb.FirstOnDemand = *firstOnDemandPb
-	}
+	pb.FirstOnDemand = st.FirstOnDemand
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	spotBidPricePercentPb := &st.SpotBidPricePercent
-	if spotBidPricePercentPb != nil {
-		pb.SpotBidPricePercent = *spotBidPricePercentPb
-	}
+	pb.SpotBidPricePercent = st.SpotBidPricePercent
 
-	zoneIdPb := &st.ZoneId
-	if zoneIdPb != nil {
-		pb.ZoneId = *zoneIdPb
-	}
+	pb.ZoneId = st.ZoneId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -696,46 +572,16 @@ func AwsAttributesFromPb(pb *AwsAttributesPb) (*AwsAttributes, error) {
 		return nil, nil
 	}
 	st := &AwsAttributes{}
-	availabilityField := &pb.Availability
-	if availabilityField != nil {
-		st.Availability = *availabilityField
-	}
-	ebsVolumeCountField := &pb.EbsVolumeCount
-	if ebsVolumeCountField != nil {
-		st.EbsVolumeCount = *ebsVolumeCountField
-	}
-	ebsVolumeIopsField := &pb.EbsVolumeIops
-	if ebsVolumeIopsField != nil {
-		st.EbsVolumeIops = *ebsVolumeIopsField
-	}
-	ebsVolumeSizeField := &pb.EbsVolumeSize
-	if ebsVolumeSizeField != nil {
-		st.EbsVolumeSize = *ebsVolumeSizeField
-	}
-	ebsVolumeThroughputField := &pb.EbsVolumeThroughput
-	if ebsVolumeThroughputField != nil {
-		st.EbsVolumeThroughput = *ebsVolumeThroughputField
-	}
-	ebsVolumeTypeField := &pb.EbsVolumeType
-	if ebsVolumeTypeField != nil {
-		st.EbsVolumeType = *ebsVolumeTypeField
-	}
-	firstOnDemandField := &pb.FirstOnDemand
-	if firstOnDemandField != nil {
-		st.FirstOnDemand = *firstOnDemandField
-	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	spotBidPricePercentField := &pb.SpotBidPricePercent
-	if spotBidPricePercentField != nil {
-		st.SpotBidPricePercent = *spotBidPricePercentField
-	}
-	zoneIdField := &pb.ZoneId
-	if zoneIdField != nil {
-		st.ZoneId = *zoneIdField
-	}
+	st.Availability = pb.Availability
+	st.EbsVolumeCount = pb.EbsVolumeCount
+	st.EbsVolumeIops = pb.EbsVolumeIops
+	st.EbsVolumeSize = pb.EbsVolumeSize
+	st.EbsVolumeThroughput = pb.EbsVolumeThroughput
+	st.EbsVolumeType = pb.EbsVolumeType
+	st.FirstOnDemand = pb.FirstOnDemand
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.SpotBidPricePercent = pb.SpotBidPricePercent
+	st.ZoneId = pb.ZoneId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -805,6 +651,7 @@ type AzureAttributes struct {
 	// Availability type used for all subsequent nodes past the
 	// `first_on_demand` ones. Note: If `first_on_demand` is zero, this
 	// availability type will be used for the entire cluster.
+	// Wire name: 'availability'
 	Availability AzureAvailability
 	// The first `first_on_demand` nodes of the cluster will be placed on
 	// on-demand instances. This value should be greater than 0, to make sure
@@ -815,17 +662,20 @@ type AzureAttributes struct {
 	// instances and the remainder will be placed on `availability` instances.
 	// Note that this value does not affect cluster size and cannot currently be
 	// mutated over the lifetime of a cluster.
+	// Wire name: 'first_on_demand'
 	FirstOnDemand int
 	// Defines values necessary to configure and run Azure Log Analytics agent
+	// Wire name: 'log_analytics_info'
 	LogAnalyticsInfo *LogAnalyticsInfo
 	// The max bid price to be used for Azure spot instances. The Max price for
 	// the bid cannot be higher than the on-demand price of the instance. If not
 	// specified, the default value is -1, which specifies that the instance
 	// cannot be evicted on the basis of price, and only on the basis of
 	// availability. Further, the value should > 0 or -1.
+	// Wire name: 'spot_bid_max_price'
 	SpotBidMaxPrice float64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func AzureAttributesToPb(st *AzureAttributes) (*AzureAttributesPb, error) {
@@ -833,15 +683,9 @@ func AzureAttributesToPb(st *AzureAttributes) (*AzureAttributesPb, error) {
 		return nil, nil
 	}
 	pb := &AzureAttributesPb{}
-	availabilityPb := &st.Availability
-	if availabilityPb != nil {
-		pb.Availability = *availabilityPb
-	}
+	pb.Availability = st.Availability
 
-	firstOnDemandPb := &st.FirstOnDemand
-	if firstOnDemandPb != nil {
-		pb.FirstOnDemand = *firstOnDemandPb
-	}
+	pb.FirstOnDemand = st.FirstOnDemand
 
 	logAnalyticsInfoPb, err := logAnalyticsInfoToPb(st.LogAnalyticsInfo)
 	if err != nil {
@@ -851,10 +695,7 @@ func AzureAttributesToPb(st *AzureAttributes) (*AzureAttributesPb, error) {
 		pb.LogAnalyticsInfo = logAnalyticsInfoPb
 	}
 
-	spotBidMaxPricePb := &st.SpotBidMaxPrice
-	if spotBidMaxPricePb != nil {
-		pb.SpotBidMaxPrice = *spotBidMaxPricePb
-	}
+	pb.SpotBidMaxPrice = st.SpotBidMaxPrice
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -917,14 +758,8 @@ func AzureAttributesFromPb(pb *AzureAttributesPb) (*AzureAttributes, error) {
 		return nil, nil
 	}
 	st := &AzureAttributes{}
-	availabilityField := &pb.Availability
-	if availabilityField != nil {
-		st.Availability = *availabilityField
-	}
-	firstOnDemandField := &pb.FirstOnDemand
-	if firstOnDemandField != nil {
-		st.FirstOnDemand = *firstOnDemandField
-	}
+	st.Availability = pb.Availability
+	st.FirstOnDemand = pb.FirstOnDemand
 	logAnalyticsInfoField, err := logAnalyticsInfoFromPb(pb.LogAnalyticsInfo)
 	if err != nil {
 		return nil, err
@@ -932,10 +767,7 @@ func AzureAttributesFromPb(pb *AzureAttributesPb) (*AzureAttributes, error) {
 	if logAnalyticsInfoField != nil {
 		st.LogAnalyticsInfo = logAnalyticsInfoField
 	}
-	spotBidMaxPriceField := &pb.SpotBidMaxPrice
-	if spotBidMaxPriceField != nil {
-		st.SpotBidMaxPrice = *spotBidMaxPriceField
-	}
+	st.SpotBidMaxPrice = pb.SpotBidMaxPrice
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -999,13 +831,17 @@ func azureAvailabilityFromPb(pb *azureAvailabilityPb) (*AzureAvailability, error
 }
 
 type CancelCommand struct {
+
+	// Wire name: 'clusterId'
 	ClusterId string
 
+	// Wire name: 'commandId'
 	CommandId string
 
+	// Wire name: 'contextId'
 	ContextId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cancelCommandToPb(st *CancelCommand) (*cancelCommandPb, error) {
@@ -1013,20 +849,11 @@ func cancelCommandToPb(st *CancelCommand) (*cancelCommandPb, error) {
 		return nil, nil
 	}
 	pb := &cancelCommandPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	commandIdPb := &st.CommandId
-	if commandIdPb != nil {
-		pb.CommandId = *commandIdPb
-	}
+	pb.CommandId = st.CommandId
 
-	contextIdPb := &st.ContextId
-	if contextIdPb != nil {
-		pb.ContextId = *contextIdPb
-	}
+	pb.ContextId = st.ContextId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1072,18 +899,9 @@ func cancelCommandFromPb(pb *cancelCommandPb) (*CancelCommand, error) {
 		return nil, nil
 	}
 	st := &CancelCommand{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	commandIdField := &pb.CommandId
-	if commandIdField != nil {
-		st.CommandId = *commandIdField
-	}
-	contextIdField := &pb.ContextId
-	if contextIdField != nil {
-		st.ContextId = *contextIdField
-	}
+	st.ClusterId = pb.ClusterId
+	st.CommandId = pb.CommandId
+	st.ContextId = pb.ContextId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1147,8 +965,11 @@ func cancelResponseFromPb(pb *cancelResponsePb) (*CancelResponse, error) {
 }
 
 type ChangeClusterOwner struct {
+
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// New owner of the cluster_id after this RPC.
+	// Wire name: 'owner_username'
 	OwnerUsername string
 }
 
@@ -1157,15 +978,9 @@ func changeClusterOwnerToPb(st *ChangeClusterOwner) (*changeClusterOwnerPb, erro
 		return nil, nil
 	}
 	pb := &changeClusterOwnerPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	ownerUsernamePb := &st.OwnerUsername
-	if ownerUsernamePb != nil {
-		pb.OwnerUsername = *ownerUsernamePb
-	}
+	pb.OwnerUsername = st.OwnerUsername
 
 	return pb, nil
 }
@@ -1206,14 +1021,8 @@ func changeClusterOwnerFromPb(pb *changeClusterOwnerPb) (*ChangeClusterOwner, er
 		return nil, nil
 	}
 	st := &ChangeClusterOwner{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	ownerUsernameField := &pb.OwnerUsername
-	if ownerUsernameField != nil {
-		st.OwnerUsername = *ownerUsernameField
-	}
+	st.ClusterId = pb.ClusterId
+	st.OwnerUsername = pb.OwnerUsername
 
 	return st, nil
 }
@@ -1269,11 +1078,13 @@ func changeClusterOwnerResponseFromPb(pb *changeClusterOwnerResponsePb) (*Change
 
 type ClientsTypes struct {
 	// With jobs set, the cluster can be used for jobs
+	// Wire name: 'jobs'
 	Jobs bool
 	// With notebooks set, this cluster can be used for notebooks
+	// Wire name: 'notebooks'
 	Notebooks bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clientsTypesToPb(st *ClientsTypes) (*clientsTypesPb, error) {
@@ -1281,15 +1092,9 @@ func clientsTypesToPb(st *ClientsTypes) (*clientsTypesPb, error) {
 		return nil, nil
 	}
 	pb := &clientsTypesPb{}
-	jobsPb := &st.Jobs
-	if jobsPb != nil {
-		pb.Jobs = *jobsPb
-	}
+	pb.Jobs = st.Jobs
 
-	notebooksPb := &st.Notebooks
-	if notebooksPb != nil {
-		pb.Notebooks = *notebooksPb
-	}
+	pb.Notebooks = st.Notebooks
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1334,14 +1139,8 @@ func clientsTypesFromPb(pb *clientsTypesPb) (*ClientsTypes, error) {
 		return nil, nil
 	}
 	st := &ClientsTypes{}
-	jobsField := &pb.Jobs
-	if jobsField != nil {
-		st.Jobs = *jobsField
-	}
-	notebooksField := &pb.Notebooks
-	if notebooksField != nil {
-		st.Notebooks = *notebooksField
-	}
+	st.Jobs = pb.Jobs
+	st.Notebooks = pb.Notebooks
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1357,6 +1156,7 @@ func (st clientsTypesPb) MarshalJSON() ([]byte, error) {
 
 type CloneCluster struct {
 	// The cluster that is being cloned.
+	// Wire name: 'source_cluster_id'
 	SourceClusterId string
 }
 
@@ -1365,10 +1165,7 @@ func cloneClusterToPb(st *CloneCluster) (*cloneClusterPb, error) {
 		return nil, nil
 	}
 	pb := &cloneClusterPb{}
-	sourceClusterIdPb := &st.SourceClusterId
-	if sourceClusterIdPb != nil {
-		pb.SourceClusterId = *sourceClusterIdPb
-	}
+	pb.SourceClusterId = st.SourceClusterId
 
 	return pb, nil
 }
@@ -1408,16 +1205,14 @@ func cloneClusterFromPb(pb *cloneClusterPb) (*CloneCluster, error) {
 		return nil, nil
 	}
 	st := &CloneCluster{}
-	sourceClusterIdField := &pb.SourceClusterId
-	if sourceClusterIdField != nil {
-		st.SourceClusterId = *sourceClusterIdField
-	}
+	st.SourceClusterId = pb.SourceClusterId
 
 	return st, nil
 }
 
 type CloudProviderNodeInfo struct {
 	// Status as reported by the cloud provider
+	// Wire name: 'status'
 	Status []CloudProviderNodeStatus
 }
 
@@ -1426,15 +1221,7 @@ func cloudProviderNodeInfoToPb(st *CloudProviderNodeInfo) (*cloudProviderNodeInf
 		return nil, nil
 	}
 	pb := &cloudProviderNodeInfoPb{}
-
-	var statusPb []CloudProviderNodeStatus
-	for _, item := range st.Status {
-		itemPb := &item
-		if itemPb != nil {
-			statusPb = append(statusPb, *itemPb)
-		}
-	}
-	pb.Status = statusPb
+	pb.Status = st.Status
 
 	return pb, nil
 }
@@ -1474,15 +1261,7 @@ func cloudProviderNodeInfoFromPb(pb *cloudProviderNodeInfoPb) (*CloudProviderNod
 		return nil, nil
 	}
 	st := &CloudProviderNodeInfo{}
-
-	var statusField []CloudProviderNodeStatus
-	for _, item := range pb.Status {
-		itemField := &item
-		if itemField != nil {
-			statusField = append(statusField, *itemField)
-		}
-	}
-	st.Status = statusField
+	st.Status = pb.Status
 
 	return st, nil
 }
@@ -1533,15 +1312,19 @@ func cloudProviderNodeStatusFromPb(pb *cloudProviderNodeStatusPb) (*CloudProvide
 
 type ClusterAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ClusterPermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterAccessControlRequestToPb(st *ClusterAccessControlRequest) (*clusterAccessControlRequestPb, error) {
@@ -1549,25 +1332,13 @@ func clusterAccessControlRequestToPb(st *ClusterAccessControlRequest) (*clusterA
 		return nil, nil
 	}
 	pb := &clusterAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1616,22 +1387,10 @@ func clusterAccessControlRequestFromPb(pb *clusterAccessControlRequestPb) (*Clus
 		return nil, nil
 	}
 	st := &ClusterAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1647,17 +1406,22 @@ func (st clusterAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type ClusterAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []ClusterPermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterAccessControlResponseToPb(st *ClusterAccessControlResponse) (*clusterAccessControlResponsePb, error) {
@@ -1678,25 +1442,13 @@ func clusterAccessControlResponseToPb(st *ClusterAccessControlResponse) (*cluste
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1749,32 +1501,20 @@ func clusterAccessControlResponseFromPb(pb *clusterAccessControlResponsePb) (*Cl
 	st := &ClusterAccessControlResponse{}
 
 	var allPermissionsField []ClusterPermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := clusterPermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := clusterPermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1796,12 +1536,15 @@ type ClusterAttributes struct {
 	// terminated. If specified, the threshold must be between 10 and 10000
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
+	// Wire name: 'autotermination_minutes'
 	AutoterminationMinutes int
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'aws_attributes'
 	AwsAttributes *AwsAttributes
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'azure_attributes'
 	AzureAttributes *AzureAttributes
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
@@ -1810,9 +1553,11 @@ type ClusterAttributes struct {
 	// destination every `5 mins`. The destination of driver logs is
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
+	// Wire name: 'cluster_log_conf'
 	ClusterLogConf *ClusterLogConf
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
+	// Wire name: 'cluster_name'
 	ClusterName string
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -1822,6 +1567,7 @@ type ClusterAttributes struct {
 	//
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
@@ -1852,12 +1598,15 @@ type ClusterAttributes struct {
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
+	// Wire name: 'data_security_mode'
 	DataSecurityMode DataSecurityMode
 	// Custom docker image BYOC
+	// Wire name: 'docker_image'
 	DockerImage *DockerImage
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
+	// Wire name: 'driver_instance_pool_id'
 	DriverInstancePoolId string
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
@@ -1867,28 +1616,35 @@ type ClusterAttributes struct {
 	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
+	// Wire name: 'driver_node_type_id'
 	DriverNodeTypeId string
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
+	// Wire name: 'enable_elastic_disk'
 	EnableElasticDisk bool
 	// Whether to enable LUKS on cluster VMs' local disks
+	// Wire name: 'enable_local_disk_encryption'
 	EnableLocalDiskEncryption bool
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'gcp_attributes'
 	GcpAttributes *GcpAttributes
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
+	// Wire name: 'init_scripts'
 	InitScripts []InitScriptInfo
 	// The optional ID of the instance pool to which the cluster belongs.
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
+	// Wire name: 'is_single_node'
 	IsSingleNode bool
 	// The kind of compute described by this compute specification.
 	//
@@ -1907,14 +1663,17 @@ type ClusterAttributes struct {
 	// CLASSIC_PREVIEW`.
 	//
 	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// Wire name: 'kind'
 	Kind Kind
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 	// The ID of the cluster policy used to create the cluster if applicable.
+	// Wire name: 'policy_id'
 	PolicyId string
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
@@ -1924,14 +1683,17 @@ type ClusterAttributes struct {
 	//
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
+	// Wire name: 'runtime_engine'
 	RuntimeEngine RuntimeEngine
 	// Single user name if data_security_mode is `SINGLE_USER`
+	// Wire name: 'single_user_name'
 	SingleUserName string
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
+	// Wire name: 'spark_conf'
 	SparkConf map[string]string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
@@ -1946,25 +1708,30 @@ type ClusterAttributes struct {
 	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	// Wire name: 'spark_env_vars'
 	SparkEnvVars map[string]string
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
+	// Wire name: 'spark_version'
 	SparkVersion string
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	// Wire name: 'ssh_public_keys'
 	SshPublicKeys []string
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
+	// Wire name: 'use_ml_runtime'
 	UseMlRuntime bool
 	// Cluster Attributes showing for clusters workload types.
+	// Wire name: 'workload_type'
 	WorkloadType *WorkloadType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterAttributesToPb(st *ClusterAttributes) (*clusterAttributesPb, error) {
@@ -1972,10 +1739,7 @@ func clusterAttributesToPb(st *ClusterAttributes) (*clusterAttributesPb, error) 
 		return nil, nil
 	}
 	pb := &clusterAttributesPb{}
-	autoterminationMinutesPb := &st.AutoterminationMinutes
-	if autoterminationMinutesPb != nil {
-		pb.AutoterminationMinutes = *autoterminationMinutesPb
-	}
+	pb.AutoterminationMinutes = st.AutoterminationMinutes
 
 	awsAttributesPb, err := AwsAttributesToPb(st.AwsAttributes)
 	if err != nil {
@@ -2001,24 +1765,11 @@ func clusterAttributesToPb(st *ClusterAttributes) (*clusterAttributesPb, error) 
 		pb.ClusterLogConf = clusterLogConfPb
 	}
 
-	clusterNamePb := &st.ClusterName
-	if clusterNamePb != nil {
-		pb.ClusterName = *clusterNamePb
-	}
+	pb.ClusterName = st.ClusterName
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	dataSecurityModePb := &st.DataSecurityMode
-	if dataSecurityModePb != nil {
-		pb.DataSecurityMode = *dataSecurityModePb
-	}
+	pb.DataSecurityMode = st.DataSecurityMode
 
 	dockerImagePb, err := dockerImageToPb(st.DockerImage)
 	if err != nil {
@@ -2028,25 +1779,13 @@ func clusterAttributesToPb(st *ClusterAttributes) (*clusterAttributesPb, error) 
 		pb.DockerImage = dockerImagePb
 	}
 
-	driverInstancePoolIdPb := &st.DriverInstancePoolId
-	if driverInstancePoolIdPb != nil {
-		pb.DriverInstancePoolId = *driverInstancePoolIdPb
-	}
+	pb.DriverInstancePoolId = st.DriverInstancePoolId
 
-	driverNodeTypeIdPb := &st.DriverNodeTypeId
-	if driverNodeTypeIdPb != nil {
-		pb.DriverNodeTypeId = *driverNodeTypeIdPb
-	}
+	pb.DriverNodeTypeId = st.DriverNodeTypeId
 
-	enableElasticDiskPb := &st.EnableElasticDisk
-	if enableElasticDiskPb != nil {
-		pb.EnableElasticDisk = *enableElasticDiskPb
-	}
+	pb.EnableElasticDisk = st.EnableElasticDisk
 
-	enableLocalDiskEncryptionPb := &st.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionPb != nil {
-		pb.EnableLocalDiskEncryption = *enableLocalDiskEncryptionPb
-	}
+	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
 
 	gcpAttributesPb, err := GcpAttributesToPb(st.GcpAttributes)
 	if err != nil {
@@ -2068,77 +1807,29 @@ func clusterAttributesToPb(st *ClusterAttributes) (*clusterAttributesPb, error) 
 	}
 	pb.InitScripts = initScriptsPb
 
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
-	isSingleNodePb := &st.IsSingleNode
-	if isSingleNodePb != nil {
-		pb.IsSingleNode = *isSingleNodePb
-	}
+	pb.IsSingleNode = st.IsSingleNode
 
-	kindPb := &st.Kind
-	if kindPb != nil {
-		pb.Kind = *kindPb
-	}
+	pb.Kind = st.Kind
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	runtimeEnginePb := &st.RuntimeEngine
-	if runtimeEnginePb != nil {
-		pb.RuntimeEngine = *runtimeEnginePb
-	}
+	pb.RuntimeEngine = st.RuntimeEngine
 
-	singleUserNamePb := &st.SingleUserName
-	if singleUserNamePb != nil {
-		pb.SingleUserName = *singleUserNamePb
-	}
+	pb.SingleUserName = st.SingleUserName
 
-	sparkConfPb := map[string]string{}
-	for k, v := range st.SparkConf {
-		itemPb := &v
-		if itemPb != nil {
-			sparkConfPb[k] = *itemPb
-		}
-	}
-	pb.SparkConf = sparkConfPb
+	pb.SparkConf = st.SparkConf
 
-	sparkEnvVarsPb := map[string]string{}
-	for k, v := range st.SparkEnvVars {
-		itemPb := &v
-		if itemPb != nil {
-			sparkEnvVarsPb[k] = *itemPb
-		}
-	}
-	pb.SparkEnvVars = sparkEnvVarsPb
+	pb.SparkEnvVars = st.SparkEnvVars
 
-	sparkVersionPb := &st.SparkVersion
-	if sparkVersionPb != nil {
-		pb.SparkVersion = *sparkVersionPb
-	}
+	pb.SparkVersion = st.SparkVersion
 
-	var sshPublicKeysPb []string
-	for _, item := range st.SshPublicKeys {
-		itemPb := &item
-		if itemPb != nil {
-			sshPublicKeysPb = append(sshPublicKeysPb, *itemPb)
-		}
-	}
-	pb.SshPublicKeys = sshPublicKeysPb
+	pb.SshPublicKeys = st.SshPublicKeys
 
-	useMlRuntimePb := &st.UseMlRuntime
-	if useMlRuntimePb != nil {
-		pb.UseMlRuntime = *useMlRuntimePb
-	}
+	pb.UseMlRuntime = st.UseMlRuntime
 
 	workloadTypePb, err := workloadTypeToPb(st.WorkloadType)
 	if err != nil {
@@ -2359,10 +2050,7 @@ func clusterAttributesFromPb(pb *clusterAttributesPb) (*ClusterAttributes, error
 		return nil, nil
 	}
 	st := &ClusterAttributes{}
-	autoterminationMinutesField := &pb.AutoterminationMinutes
-	if autoterminationMinutesField != nil {
-		st.AutoterminationMinutes = *autoterminationMinutesField
-	}
+	st.AutoterminationMinutes = pb.AutoterminationMinutes
 	awsAttributesField, err := AwsAttributesFromPb(pb.AwsAttributes)
 	if err != nil {
 		return nil, err
@@ -2384,23 +2072,9 @@ func clusterAttributesFromPb(pb *clusterAttributesPb) (*ClusterAttributes, error
 	if clusterLogConfField != nil {
 		st.ClusterLogConf = clusterLogConfField
 	}
-	clusterNameField := &pb.ClusterName
-	if clusterNameField != nil {
-		st.ClusterName = *clusterNameField
-	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-	dataSecurityModeField := &pb.DataSecurityMode
-	if dataSecurityModeField != nil {
-		st.DataSecurityMode = *dataSecurityModeField
-	}
+	st.ClusterName = pb.ClusterName
+	st.CustomTags = pb.CustomTags
+	st.DataSecurityMode = pb.DataSecurityMode
 	dockerImageField, err := dockerImageFromPb(pb.DockerImage)
 	if err != nil {
 		return nil, err
@@ -2408,22 +2082,10 @@ func clusterAttributesFromPb(pb *clusterAttributesPb) (*ClusterAttributes, error
 	if dockerImageField != nil {
 		st.DockerImage = dockerImageField
 	}
-	driverInstancePoolIdField := &pb.DriverInstancePoolId
-	if driverInstancePoolIdField != nil {
-		st.DriverInstancePoolId = *driverInstancePoolIdField
-	}
-	driverNodeTypeIdField := &pb.DriverNodeTypeId
-	if driverNodeTypeIdField != nil {
-		st.DriverNodeTypeId = *driverNodeTypeIdField
-	}
-	enableElasticDiskField := &pb.EnableElasticDisk
-	if enableElasticDiskField != nil {
-		st.EnableElasticDisk = *enableElasticDiskField
-	}
-	enableLocalDiskEncryptionField := &pb.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionField != nil {
-		st.EnableLocalDiskEncryption = *enableLocalDiskEncryptionField
-	}
+	st.DriverInstancePoolId = pb.DriverInstancePoolId
+	st.DriverNodeTypeId = pb.DriverNodeTypeId
+	st.EnableElasticDisk = pb.EnableElasticDisk
+	st.EnableLocalDiskEncryption = pb.EnableLocalDiskEncryption
 	gcpAttributesField, err := GcpAttributesFromPb(pb.GcpAttributes)
 	if err != nil {
 		return nil, err
@@ -2433,79 +2095,28 @@ func clusterAttributesFromPb(pb *clusterAttributesPb) (*ClusterAttributes, error
 	}
 
 	var initScriptsField []InitScriptInfo
-	for _, item := range pb.InitScripts {
-		itemField, err := InitScriptInfoFromPb(&item)
+	for _, itemPb := range pb.InitScripts {
+		item, err := InitScriptInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			initScriptsField = append(initScriptsField, *itemField)
+		if item != nil {
+			initScriptsField = append(initScriptsField, *item)
 		}
 	}
 	st.InitScripts = initScriptsField
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
-	isSingleNodeField := &pb.IsSingleNode
-	if isSingleNodeField != nil {
-		st.IsSingleNode = *isSingleNodeField
-	}
-	kindField := &pb.Kind
-	if kindField != nil {
-		st.Kind = *kindField
-	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	runtimeEngineField := &pb.RuntimeEngine
-	if runtimeEngineField != nil {
-		st.RuntimeEngine = *runtimeEngineField
-	}
-	singleUserNameField := &pb.SingleUserName
-	if singleUserNameField != nil {
-		st.SingleUserName = *singleUserNameField
-	}
-
-	sparkConfField := map[string]string{}
-	for k, v := range pb.SparkConf {
-		itemField := &v
-		if itemField != nil {
-			sparkConfField[k] = *itemField
-		}
-	}
-	st.SparkConf = sparkConfField
-
-	sparkEnvVarsField := map[string]string{}
-	for k, v := range pb.SparkEnvVars {
-		itemField := &v
-		if itemField != nil {
-			sparkEnvVarsField[k] = *itemField
-		}
-	}
-	st.SparkEnvVars = sparkEnvVarsField
-	sparkVersionField := &pb.SparkVersion
-	if sparkVersionField != nil {
-		st.SparkVersion = *sparkVersionField
-	}
-
-	var sshPublicKeysField []string
-	for _, item := range pb.SshPublicKeys {
-		itemField := &item
-		if itemField != nil {
-			sshPublicKeysField = append(sshPublicKeysField, *itemField)
-		}
-	}
-	st.SshPublicKeys = sshPublicKeysField
-	useMlRuntimeField := &pb.UseMlRuntime
-	if useMlRuntimeField != nil {
-		st.UseMlRuntime = *useMlRuntimeField
-	}
+	st.InstancePoolId = pb.InstancePoolId
+	st.IsSingleNode = pb.IsSingleNode
+	st.Kind = pb.Kind
+	st.NodeTypeId = pb.NodeTypeId
+	st.PolicyId = pb.PolicyId
+	st.RuntimeEngine = pb.RuntimeEngine
+	st.SingleUserName = pb.SingleUserName
+	st.SparkConf = pb.SparkConf
+	st.SparkEnvVars = pb.SparkEnvVars
+	st.SparkVersion = pb.SparkVersion
+	st.SshPublicKeys = pb.SshPublicKeys
+	st.UseMlRuntime = pb.UseMlRuntime
 	workloadTypeField, err := workloadTypeFromPb(pb.WorkloadType)
 	if err != nil {
 		return nil, err
@@ -2528,17 +2139,20 @@ func (st clusterAttributesPb) MarshalJSON() ([]byte, error) {
 
 type ClusterCompliance struct {
 	// Canonical unique identifier for a cluster.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// Whether this cluster is in compliance with the latest version of its
 	// policy.
+	// Wire name: 'is_compliant'
 	IsCompliant bool
 	// An object containing key-value mappings representing the first 200 policy
 	// validation errors. The keys indicate the path where the policy validation
 	// error is occurring. The values indicate an error message describing the
 	// policy validation error.
+	// Wire name: 'violations'
 	Violations map[string]string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterComplianceToPb(st *ClusterCompliance) (*clusterCompliancePb, error) {
@@ -2546,24 +2160,11 @@ func clusterComplianceToPb(st *ClusterCompliance) (*clusterCompliancePb, error) 
 		return nil, nil
 	}
 	pb := &clusterCompliancePb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	isCompliantPb := &st.IsCompliant
-	if isCompliantPb != nil {
-		pb.IsCompliant = *isCompliantPb
-	}
+	pb.IsCompliant = st.IsCompliant
 
-	violationsPb := map[string]string{}
-	for k, v := range st.Violations {
-		itemPb := &v
-		if itemPb != nil {
-			violationsPb[k] = *itemPb
-		}
-	}
-	pb.Violations = violationsPb
+	pb.Violations = st.Violations
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2614,23 +2215,9 @@ func clusterComplianceFromPb(pb *clusterCompliancePb) (*ClusterCompliance, error
 		return nil, nil
 	}
 	st := &ClusterCompliance{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	isCompliantField := &pb.IsCompliant
-	if isCompliantField != nil {
-		st.IsCompliant = *isCompliantField
-	}
-
-	violationsField := map[string]string{}
-	for k, v := range pb.Violations {
-		itemField := &v
-		if itemField != nil {
-			violationsField[k] = *itemField
-		}
-	}
-	st.Violations = violationsField
+	st.ClusterId = pb.ClusterId
+	st.IsCompliant = pb.IsCompliant
+	st.Violations = pb.Violations
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2649,25 +2236,31 @@ type ClusterDetails struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
+	// Wire name: 'autoscale'
 	Autoscale *AutoScale
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
 	// terminated. If specified, the threshold must be between 10 and 10000
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
+	// Wire name: 'autotermination_minutes'
 	AutoterminationMinutes int
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'aws_attributes'
 	AwsAttributes *AwsAttributes
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'azure_attributes'
 	AzureAttributes *AzureAttributes
 	// Number of CPU cores available for this cluster. Note that this can be
 	// fractional, e.g. 7.5 cores, since certain node types are configured to
 	// share cores between Spark nodes on the same instance.
+	// Wire name: 'cluster_cores'
 	ClusterCores float64
 	// Canonical identifier for the cluster. This id is retained during cluster
 	// restarts and resizes, while each new cluster has a globally unique id.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
@@ -2676,19 +2269,25 @@ type ClusterDetails struct {
 	// destination every `5 mins`. The destination of driver logs is
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
+	// Wire name: 'cluster_log_conf'
 	ClusterLogConf *ClusterLogConf
 	// Cluster log delivery status.
+	// Wire name: 'cluster_log_status'
 	ClusterLogStatus *LogSyncStatus
 	// Total amount of cluster memory, in megabytes
+	// Wire name: 'cluster_memory_mb'
 	ClusterMemoryMb int64
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
+	// Wire name: 'cluster_name'
 	ClusterName string
 	// Determines whether the cluster was created by a user through the UI,
 	// created by the Databricks Jobs Scheduler, or through an API request.
+	// Wire name: 'cluster_source'
 	ClusterSource ClusterSource
 	// Creator user name. The field won't be included in the response if the
 	// user has already been deleted.
+	// Wire name: 'creator_user_name'
 	CreatorUserName string
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -2698,6 +2297,7 @@ type ClusterDetails struct {
 	//
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
@@ -2728,6 +2328,7 @@ type ClusterDetails struct {
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
+	// Wire name: 'data_security_mode'
 	DataSecurityMode DataSecurityMode
 	// Tags that are added by Databricks regardless of any `custom_tags`,
 	// including:
@@ -2741,16 +2342,20 @@ type ClusterDetails struct {
 	// - ClusterId: <id_of_cluster>
 	//
 	// - Name: <Databricks internal use>
+	// Wire name: 'default_tags'
 	DefaultTags map[string]string
 	// Custom docker image BYOC
+	// Wire name: 'docker_image'
 	DockerImage *DockerImage
 	// Node on which the Spark driver resides. The driver node contains the
 	// Spark master and the Databricks application that manages the per-notebook
 	// Spark REPLs.
+	// Wire name: 'driver'
 	Driver *SparkNode
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
+	// Wire name: 'driver_instance_pool_id'
 	DriverInstancePoolId string
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
@@ -2760,33 +2365,42 @@ type ClusterDetails struct {
 	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
+	// Wire name: 'driver_node_type_id'
 	DriverNodeTypeId string
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
+	// Wire name: 'enable_elastic_disk'
 	EnableElasticDisk bool
 	// Whether to enable LUKS on cluster VMs' local disks
+	// Wire name: 'enable_local_disk_encryption'
 	EnableLocalDiskEncryption bool
 	// Nodes on which the Spark executors reside.
+	// Wire name: 'executors'
 	Executors []SparkNode
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'gcp_attributes'
 	GcpAttributes *GcpAttributes
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
+	// Wire name: 'init_scripts'
 	InitScripts []InitScriptInfo
 	// The optional ID of the instance pool to which the cluster belongs.
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
+	// Wire name: 'is_single_node'
 	IsSingleNode bool
 	// Port on which Spark JDBC server is listening, in the driver nod. No
 	// service will be listeningon on this port in executor nodes.
+	// Wire name: 'jdbc_port'
 	JdbcPort int
 	// The kind of compute described by this compute specification.
 	//
@@ -2805,17 +2419,21 @@ type ClusterDetails struct {
 	// CLASSIC_PREVIEW`.
 	//
 	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// Wire name: 'kind'
 	Kind Kind
 	// the timestamp that the cluster was started/restarted
+	// Wire name: 'last_restarted_time'
 	LastRestartedTime int64
 	// Time when the cluster driver last lost its state (due to a restart or
 	// driver failure).
+	// Wire name: 'last_state_loss_time'
 	LastStateLossTime int64
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
@@ -2827,8 +2445,10 @@ type ClusterDetails struct {
 	// field will immediately be updated to reflect the target size of 10
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
+	// Wire name: 'num_workers'
 	NumWorkers int
 	// The ID of the cluster policy used to create the cluster if applicable.
+	// Wire name: 'policy_id'
 	PolicyId string
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
@@ -2838,18 +2458,22 @@ type ClusterDetails struct {
 	//
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
+	// Wire name: 'runtime_engine'
 	RuntimeEngine RuntimeEngine
 	// Single user name if data_security_mode is `SINGLE_USER`
+	// Wire name: 'single_user_name'
 	SingleUserName string
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
+	// Wire name: 'spark_conf'
 	SparkConf map[string]string
 	// A canonical SparkContext identifier. This value *does* change when the
 	// Spark driver restarts. The pair `(cluster_id, spark_context_id)` is a
 	// globally unique identifier over all Spark contexts.
+	// Wire name: 'spark_context_id'
 	SparkContextId int64
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
@@ -2864,43 +2488,54 @@ type ClusterDetails struct {
 	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	// Wire name: 'spark_env_vars'
 	SparkEnvVars map[string]string
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
+	// Wire name: 'spark_version'
 	SparkVersion string
 	// The spec contains a snapshot of the latest user specified settings that
 	// were used to create/edit the cluster. Note: not included in the response
 	// of the ListClusters API.
+	// Wire name: 'spec'
 	Spec *ClusterSpec
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	// Wire name: 'ssh_public_keys'
 	SshPublicKeys []string
 	// Time (in epoch milliseconds) when the cluster creation request was
 	// received (when the cluster entered a `PENDING` state).
+	// Wire name: 'start_time'
 	StartTime int64
 	// Current state of the cluster.
+	// Wire name: 'state'
 	State State
 	// A message associated with the most recent state transition (e.g., the
 	// reason why the cluster entered a `TERMINATED` state).
+	// Wire name: 'state_message'
 	StateMessage string
 	// Time (in epoch milliseconds) when the cluster was terminated, if
 	// applicable.
+	// Wire name: 'terminated_time'
 	TerminatedTime int64
 	// Information about why the cluster was terminated. This field only appears
 	// when the cluster is in a `TERMINATING` or `TERMINATED` state.
+	// Wire name: 'termination_reason'
 	TerminationReason *TerminationReason
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
+	// Wire name: 'use_ml_runtime'
 	UseMlRuntime bool
 	// Cluster Attributes showing for clusters workload types.
+	// Wire name: 'workload_type'
 	WorkloadType *WorkloadType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterDetailsToPb(st *ClusterDetails) (*clusterDetailsPb, error) {
@@ -2916,10 +2551,7 @@ func clusterDetailsToPb(st *ClusterDetails) (*clusterDetailsPb, error) {
 		pb.Autoscale = autoscalePb
 	}
 
-	autoterminationMinutesPb := &st.AutoterminationMinutes
-	if autoterminationMinutesPb != nil {
-		pb.AutoterminationMinutes = *autoterminationMinutesPb
-	}
+	pb.AutoterminationMinutes = st.AutoterminationMinutes
 
 	awsAttributesPb, err := AwsAttributesToPb(st.AwsAttributes)
 	if err != nil {
@@ -2937,15 +2569,9 @@ func clusterDetailsToPb(st *ClusterDetails) (*clusterDetailsPb, error) {
 		pb.AzureAttributes = azureAttributesPb
 	}
 
-	clusterCoresPb := &st.ClusterCores
-	if clusterCoresPb != nil {
-		pb.ClusterCores = *clusterCoresPb
-	}
+	pb.ClusterCores = st.ClusterCores
 
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	clusterLogConfPb, err := ClusterLogConfToPb(st.ClusterLogConf)
 	if err != nil {
@@ -2963,48 +2589,19 @@ func clusterDetailsToPb(st *ClusterDetails) (*clusterDetailsPb, error) {
 		pb.ClusterLogStatus = clusterLogStatusPb
 	}
 
-	clusterMemoryMbPb := &st.ClusterMemoryMb
-	if clusterMemoryMbPb != nil {
-		pb.ClusterMemoryMb = *clusterMemoryMbPb
-	}
+	pb.ClusterMemoryMb = st.ClusterMemoryMb
 
-	clusterNamePb := &st.ClusterName
-	if clusterNamePb != nil {
-		pb.ClusterName = *clusterNamePb
-	}
+	pb.ClusterName = st.ClusterName
 
-	clusterSourcePb := &st.ClusterSource
-	if clusterSourcePb != nil {
-		pb.ClusterSource = *clusterSourcePb
-	}
+	pb.ClusterSource = st.ClusterSource
 
-	creatorUserNamePb := &st.CreatorUserName
-	if creatorUserNamePb != nil {
-		pb.CreatorUserName = *creatorUserNamePb
-	}
+	pb.CreatorUserName = st.CreatorUserName
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	dataSecurityModePb := &st.DataSecurityMode
-	if dataSecurityModePb != nil {
-		pb.DataSecurityMode = *dataSecurityModePb
-	}
+	pb.DataSecurityMode = st.DataSecurityMode
 
-	defaultTagsPb := map[string]string{}
-	for k, v := range st.DefaultTags {
-		itemPb := &v
-		if itemPb != nil {
-			defaultTagsPb[k] = *itemPb
-		}
-	}
-	pb.DefaultTags = defaultTagsPb
+	pb.DefaultTags = st.DefaultTags
 
 	dockerImagePb, err := dockerImageToPb(st.DockerImage)
 	if err != nil {
@@ -3022,25 +2619,13 @@ func clusterDetailsToPb(st *ClusterDetails) (*clusterDetailsPb, error) {
 		pb.Driver = driverPb
 	}
 
-	driverInstancePoolIdPb := &st.DriverInstancePoolId
-	if driverInstancePoolIdPb != nil {
-		pb.DriverInstancePoolId = *driverInstancePoolIdPb
-	}
+	pb.DriverInstancePoolId = st.DriverInstancePoolId
 
-	driverNodeTypeIdPb := &st.DriverNodeTypeId
-	if driverNodeTypeIdPb != nil {
-		pb.DriverNodeTypeId = *driverNodeTypeIdPb
-	}
+	pb.DriverNodeTypeId = st.DriverNodeTypeId
 
-	enableElasticDiskPb := &st.EnableElasticDisk
-	if enableElasticDiskPb != nil {
-		pb.EnableElasticDisk = *enableElasticDiskPb
-	}
+	pb.EnableElasticDisk = st.EnableElasticDisk
 
-	enableLocalDiskEncryptionPb := &st.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionPb != nil {
-		pb.EnableLocalDiskEncryption = *enableLocalDiskEncryptionPb
-	}
+	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
 
 	var executorsPb []sparkNodePb
 	for _, item := range st.Executors {
@@ -3074,88 +2659,35 @@ func clusterDetailsToPb(st *ClusterDetails) (*clusterDetailsPb, error) {
 	}
 	pb.InitScripts = initScriptsPb
 
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
-	isSingleNodePb := &st.IsSingleNode
-	if isSingleNodePb != nil {
-		pb.IsSingleNode = *isSingleNodePb
-	}
+	pb.IsSingleNode = st.IsSingleNode
 
-	jdbcPortPb := &st.JdbcPort
-	if jdbcPortPb != nil {
-		pb.JdbcPort = *jdbcPortPb
-	}
+	pb.JdbcPort = st.JdbcPort
 
-	kindPb := &st.Kind
-	if kindPb != nil {
-		pb.Kind = *kindPb
-	}
+	pb.Kind = st.Kind
 
-	lastRestartedTimePb := &st.LastRestartedTime
-	if lastRestartedTimePb != nil {
-		pb.LastRestartedTime = *lastRestartedTimePb
-	}
+	pb.LastRestartedTime = st.LastRestartedTime
 
-	lastStateLossTimePb := &st.LastStateLossTime
-	if lastStateLossTimePb != nil {
-		pb.LastStateLossTime = *lastStateLossTimePb
-	}
+	pb.LastStateLossTime = st.LastStateLossTime
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
-	numWorkersPb := &st.NumWorkers
-	if numWorkersPb != nil {
-		pb.NumWorkers = *numWorkersPb
-	}
+	pb.NumWorkers = st.NumWorkers
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	runtimeEnginePb := &st.RuntimeEngine
-	if runtimeEnginePb != nil {
-		pb.RuntimeEngine = *runtimeEnginePb
-	}
+	pb.RuntimeEngine = st.RuntimeEngine
 
-	singleUserNamePb := &st.SingleUserName
-	if singleUserNamePb != nil {
-		pb.SingleUserName = *singleUserNamePb
-	}
+	pb.SingleUserName = st.SingleUserName
 
-	sparkConfPb := map[string]string{}
-	for k, v := range st.SparkConf {
-		itemPb := &v
-		if itemPb != nil {
-			sparkConfPb[k] = *itemPb
-		}
-	}
-	pb.SparkConf = sparkConfPb
+	pb.SparkConf = st.SparkConf
 
-	sparkContextIdPb := &st.SparkContextId
-	if sparkContextIdPb != nil {
-		pb.SparkContextId = *sparkContextIdPb
-	}
+	pb.SparkContextId = st.SparkContextId
 
-	sparkEnvVarsPb := map[string]string{}
-	for k, v := range st.SparkEnvVars {
-		itemPb := &v
-		if itemPb != nil {
-			sparkEnvVarsPb[k] = *itemPb
-		}
-	}
-	pb.SparkEnvVars = sparkEnvVarsPb
+	pb.SparkEnvVars = st.SparkEnvVars
 
-	sparkVersionPb := &st.SparkVersion
-	if sparkVersionPb != nil {
-		pb.SparkVersion = *sparkVersionPb
-	}
+	pb.SparkVersion = st.SparkVersion
 
 	specPb, err := ClusterSpecToPb(st.Spec)
 	if err != nil {
@@ -3165,34 +2697,15 @@ func clusterDetailsToPb(st *ClusterDetails) (*clusterDetailsPb, error) {
 		pb.Spec = specPb
 	}
 
-	var sshPublicKeysPb []string
-	for _, item := range st.SshPublicKeys {
-		itemPb := &item
-		if itemPb != nil {
-			sshPublicKeysPb = append(sshPublicKeysPb, *itemPb)
-		}
-	}
-	pb.SshPublicKeys = sshPublicKeysPb
+	pb.SshPublicKeys = st.SshPublicKeys
 
-	startTimePb := &st.StartTime
-	if startTimePb != nil {
-		pb.StartTime = *startTimePb
-	}
+	pb.StartTime = st.StartTime
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
-	stateMessagePb := &st.StateMessage
-	if stateMessagePb != nil {
-		pb.StateMessage = *stateMessagePb
-	}
+	pb.StateMessage = st.StateMessage
 
-	terminatedTimePb := &st.TerminatedTime
-	if terminatedTimePb != nil {
-		pb.TerminatedTime = *terminatedTimePb
-	}
+	pb.TerminatedTime = st.TerminatedTime
 
 	terminationReasonPb, err := terminationReasonToPb(st.TerminationReason)
 	if err != nil {
@@ -3202,10 +2715,7 @@ func clusterDetailsToPb(st *ClusterDetails) (*clusterDetailsPb, error) {
 		pb.TerminationReason = terminationReasonPb
 	}
 
-	useMlRuntimePb := &st.UseMlRuntime
-	if useMlRuntimePb != nil {
-		pb.UseMlRuntime = *useMlRuntimePb
-	}
+	pb.UseMlRuntime = st.UseMlRuntime
 
 	workloadTypePb, err := workloadTypeToPb(st.WorkloadType)
 	if err != nil {
@@ -3514,10 +3024,7 @@ func clusterDetailsFromPb(pb *clusterDetailsPb) (*ClusterDetails, error) {
 	if autoscaleField != nil {
 		st.Autoscale = autoscaleField
 	}
-	autoterminationMinutesField := &pb.AutoterminationMinutes
-	if autoterminationMinutesField != nil {
-		st.AutoterminationMinutes = *autoterminationMinutesField
-	}
+	st.AutoterminationMinutes = pb.AutoterminationMinutes
 	awsAttributesField, err := AwsAttributesFromPb(pb.AwsAttributes)
 	if err != nil {
 		return nil, err
@@ -3532,14 +3039,8 @@ func clusterDetailsFromPb(pb *clusterDetailsPb) (*ClusterDetails, error) {
 	if azureAttributesField != nil {
 		st.AzureAttributes = azureAttributesField
 	}
-	clusterCoresField := &pb.ClusterCores
-	if clusterCoresField != nil {
-		st.ClusterCores = *clusterCoresField
-	}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterCores = pb.ClusterCores
+	st.ClusterId = pb.ClusterId
 	clusterLogConfField, err := ClusterLogConfFromPb(pb.ClusterLogConf)
 	if err != nil {
 		return nil, err
@@ -3554,44 +3055,13 @@ func clusterDetailsFromPb(pb *clusterDetailsPb) (*ClusterDetails, error) {
 	if clusterLogStatusField != nil {
 		st.ClusterLogStatus = clusterLogStatusField
 	}
-	clusterMemoryMbField := &pb.ClusterMemoryMb
-	if clusterMemoryMbField != nil {
-		st.ClusterMemoryMb = *clusterMemoryMbField
-	}
-	clusterNameField := &pb.ClusterName
-	if clusterNameField != nil {
-		st.ClusterName = *clusterNameField
-	}
-	clusterSourceField := &pb.ClusterSource
-	if clusterSourceField != nil {
-		st.ClusterSource = *clusterSourceField
-	}
-	creatorUserNameField := &pb.CreatorUserName
-	if creatorUserNameField != nil {
-		st.CreatorUserName = *creatorUserNameField
-	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-	dataSecurityModeField := &pb.DataSecurityMode
-	if dataSecurityModeField != nil {
-		st.DataSecurityMode = *dataSecurityModeField
-	}
-
-	defaultTagsField := map[string]string{}
-	for k, v := range pb.DefaultTags {
-		itemField := &v
-		if itemField != nil {
-			defaultTagsField[k] = *itemField
-		}
-	}
-	st.DefaultTags = defaultTagsField
+	st.ClusterMemoryMb = pb.ClusterMemoryMb
+	st.ClusterName = pb.ClusterName
+	st.ClusterSource = pb.ClusterSource
+	st.CreatorUserName = pb.CreatorUserName
+	st.CustomTags = pb.CustomTags
+	st.DataSecurityMode = pb.DataSecurityMode
+	st.DefaultTags = pb.DefaultTags
 	dockerImageField, err := dockerImageFromPb(pb.DockerImage)
 	if err != nil {
 		return nil, err
@@ -3606,31 +3076,19 @@ func clusterDetailsFromPb(pb *clusterDetailsPb) (*ClusterDetails, error) {
 	if driverField != nil {
 		st.Driver = driverField
 	}
-	driverInstancePoolIdField := &pb.DriverInstancePoolId
-	if driverInstancePoolIdField != nil {
-		st.DriverInstancePoolId = *driverInstancePoolIdField
-	}
-	driverNodeTypeIdField := &pb.DriverNodeTypeId
-	if driverNodeTypeIdField != nil {
-		st.DriverNodeTypeId = *driverNodeTypeIdField
-	}
-	enableElasticDiskField := &pb.EnableElasticDisk
-	if enableElasticDiskField != nil {
-		st.EnableElasticDisk = *enableElasticDiskField
-	}
-	enableLocalDiskEncryptionField := &pb.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionField != nil {
-		st.EnableLocalDiskEncryption = *enableLocalDiskEncryptionField
-	}
+	st.DriverInstancePoolId = pb.DriverInstancePoolId
+	st.DriverNodeTypeId = pb.DriverNodeTypeId
+	st.EnableElasticDisk = pb.EnableElasticDisk
+	st.EnableLocalDiskEncryption = pb.EnableLocalDiskEncryption
 
 	var executorsField []SparkNode
-	for _, item := range pb.Executors {
-		itemField, err := sparkNodeFromPb(&item)
+	for _, itemPb := range pb.Executors {
+		item, err := sparkNodeFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			executorsField = append(executorsField, *itemField)
+		if item != nil {
+			executorsField = append(executorsField, *item)
 		}
 	}
 	st.Executors = executorsField
@@ -3643,86 +3101,31 @@ func clusterDetailsFromPb(pb *clusterDetailsPb) (*ClusterDetails, error) {
 	}
 
 	var initScriptsField []InitScriptInfo
-	for _, item := range pb.InitScripts {
-		itemField, err := InitScriptInfoFromPb(&item)
+	for _, itemPb := range pb.InitScripts {
+		item, err := InitScriptInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			initScriptsField = append(initScriptsField, *itemField)
+		if item != nil {
+			initScriptsField = append(initScriptsField, *item)
 		}
 	}
 	st.InitScripts = initScriptsField
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
-	isSingleNodeField := &pb.IsSingleNode
-	if isSingleNodeField != nil {
-		st.IsSingleNode = *isSingleNodeField
-	}
-	jdbcPortField := &pb.JdbcPort
-	if jdbcPortField != nil {
-		st.JdbcPort = *jdbcPortField
-	}
-	kindField := &pb.Kind
-	if kindField != nil {
-		st.Kind = *kindField
-	}
-	lastRestartedTimeField := &pb.LastRestartedTime
-	if lastRestartedTimeField != nil {
-		st.LastRestartedTime = *lastRestartedTimeField
-	}
-	lastStateLossTimeField := &pb.LastStateLossTime
-	if lastStateLossTimeField != nil {
-		st.LastStateLossTime = *lastStateLossTimeField
-	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
-	numWorkersField := &pb.NumWorkers
-	if numWorkersField != nil {
-		st.NumWorkers = *numWorkersField
-	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	runtimeEngineField := &pb.RuntimeEngine
-	if runtimeEngineField != nil {
-		st.RuntimeEngine = *runtimeEngineField
-	}
-	singleUserNameField := &pb.SingleUserName
-	if singleUserNameField != nil {
-		st.SingleUserName = *singleUserNameField
-	}
-
-	sparkConfField := map[string]string{}
-	for k, v := range pb.SparkConf {
-		itemField := &v
-		if itemField != nil {
-			sparkConfField[k] = *itemField
-		}
-	}
-	st.SparkConf = sparkConfField
-	sparkContextIdField := &pb.SparkContextId
-	if sparkContextIdField != nil {
-		st.SparkContextId = *sparkContextIdField
-	}
-
-	sparkEnvVarsField := map[string]string{}
-	for k, v := range pb.SparkEnvVars {
-		itemField := &v
-		if itemField != nil {
-			sparkEnvVarsField[k] = *itemField
-		}
-	}
-	st.SparkEnvVars = sparkEnvVarsField
-	sparkVersionField := &pb.SparkVersion
-	if sparkVersionField != nil {
-		st.SparkVersion = *sparkVersionField
-	}
+	st.InstancePoolId = pb.InstancePoolId
+	st.IsSingleNode = pb.IsSingleNode
+	st.JdbcPort = pb.JdbcPort
+	st.Kind = pb.Kind
+	st.LastRestartedTime = pb.LastRestartedTime
+	st.LastStateLossTime = pb.LastStateLossTime
+	st.NodeTypeId = pb.NodeTypeId
+	st.NumWorkers = pb.NumWorkers
+	st.PolicyId = pb.PolicyId
+	st.RuntimeEngine = pb.RuntimeEngine
+	st.SingleUserName = pb.SingleUserName
+	st.SparkConf = pb.SparkConf
+	st.SparkContextId = pb.SparkContextId
+	st.SparkEnvVars = pb.SparkEnvVars
+	st.SparkVersion = pb.SparkVersion
 	specField, err := ClusterSpecFromPb(pb.Spec)
 	if err != nil {
 		return nil, err
@@ -3730,31 +3133,11 @@ func clusterDetailsFromPb(pb *clusterDetailsPb) (*ClusterDetails, error) {
 	if specField != nil {
 		st.Spec = specField
 	}
-
-	var sshPublicKeysField []string
-	for _, item := range pb.SshPublicKeys {
-		itemField := &item
-		if itemField != nil {
-			sshPublicKeysField = append(sshPublicKeysField, *itemField)
-		}
-	}
-	st.SshPublicKeys = sshPublicKeysField
-	startTimeField := &pb.StartTime
-	if startTimeField != nil {
-		st.StartTime = *startTimeField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
-	stateMessageField := &pb.StateMessage
-	if stateMessageField != nil {
-		st.StateMessage = *stateMessageField
-	}
-	terminatedTimeField := &pb.TerminatedTime
-	if terminatedTimeField != nil {
-		st.TerminatedTime = *terminatedTimeField
-	}
+	st.SshPublicKeys = pb.SshPublicKeys
+	st.StartTime = pb.StartTime
+	st.State = pb.State
+	st.StateMessage = pb.StateMessage
+	st.TerminatedTime = pb.TerminatedTime
 	terminationReasonField, err := terminationReasonFromPb(pb.TerminationReason)
 	if err != nil {
 		return nil, err
@@ -3762,10 +3145,7 @@ func clusterDetailsFromPb(pb *clusterDetailsPb) (*ClusterDetails, error) {
 	if terminationReasonField != nil {
 		st.TerminationReason = terminationReasonField
 	}
-	useMlRuntimeField := &pb.UseMlRuntime
-	if useMlRuntimeField != nil {
-		st.UseMlRuntime = *useMlRuntimeField
-	}
+	st.UseMlRuntime = pb.UseMlRuntime
 	workloadTypeField, err := workloadTypeFromPb(pb.WorkloadType)
 	if err != nil {
 		return nil, err
@@ -3787,19 +3167,25 @@ func (st clusterDetailsPb) MarshalJSON() ([]byte, error) {
 }
 
 type ClusterEvent struct {
+
+	// Wire name: 'cluster_id'
 	ClusterId string
 
+	// Wire name: 'data_plane_event_details'
 	DataPlaneEventDetails *DataPlaneEventDetails
 
+	// Wire name: 'details'
 	Details *EventDetails
 	// The timestamp when the event occurred, stored as the number of
 	// milliseconds since the Unix epoch. If not provided, this will be assigned
 	// by the Timeline service.
+	// Wire name: 'timestamp'
 	Timestamp int64
 
+	// Wire name: 'type'
 	Type EventType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterEventToPb(st *ClusterEvent) (*clusterEventPb, error) {
@@ -3807,10 +3193,7 @@ func clusterEventToPb(st *ClusterEvent) (*clusterEventPb, error) {
 		return nil, nil
 	}
 	pb := &clusterEventPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	dataPlaneEventDetailsPb, err := dataPlaneEventDetailsToPb(st.DataPlaneEventDetails)
 	if err != nil {
@@ -3828,15 +3211,9 @@ func clusterEventToPb(st *ClusterEvent) (*clusterEventPb, error) {
 		pb.Details = detailsPb
 	}
 
-	timestampPb := &st.Timestamp
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3888,10 +3265,7 @@ func clusterEventFromPb(pb *clusterEventPb) (*ClusterEvent, error) {
 		return nil, nil
 	}
 	st := &ClusterEvent{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 	dataPlaneEventDetailsField, err := dataPlaneEventDetailsFromPb(pb.DataPlaneEventDetails)
 	if err != nil {
 		return nil, err
@@ -3906,14 +3280,8 @@ func clusterEventFromPb(pb *clusterEventPb) (*ClusterEvent, error) {
 	if detailsField != nil {
 		st.Details = detailsField
 	}
-	timestampField := &pb.Timestamp
-	if timestampField != nil {
-		st.Timestamp = *timestampField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.Timestamp = pb.Timestamp
+	st.Type = pb.Type
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3929,11 +3297,13 @@ func (st clusterEventPb) MarshalJSON() ([]byte, error) {
 
 type ClusterLibraryStatuses struct {
 	// Unique identifier for the cluster.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// Status of all libraries on the cluster.
+	// Wire name: 'library_statuses'
 	LibraryStatuses []LibraryFullStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterLibraryStatusesToPb(st *ClusterLibraryStatuses) (*clusterLibraryStatusesPb, error) {
@@ -3941,10 +3311,7 @@ func clusterLibraryStatusesToPb(st *ClusterLibraryStatuses) (*clusterLibraryStat
 		return nil, nil
 	}
 	pb := &clusterLibraryStatusesPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	var libraryStatusesPb []libraryFullStatusPb
 	for _, item := range st.LibraryStatuses {
@@ -4001,19 +3368,16 @@ func clusterLibraryStatusesFromPb(pb *clusterLibraryStatusesPb) (*ClusterLibrary
 		return nil, nil
 	}
 	st := &ClusterLibraryStatuses{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	var libraryStatusesField []LibraryFullStatus
-	for _, item := range pb.LibraryStatuses {
-		itemField, err := libraryFullStatusFromPb(&item)
+	for _, itemPb := range pb.LibraryStatuses {
+		item, err := libraryFullStatusFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			libraryStatusesField = append(libraryStatusesField, *itemField)
+		if item != nil {
+			libraryStatusesField = append(libraryStatusesField, *item)
 		}
 	}
 	st.LibraryStatuses = libraryStatusesField
@@ -4034,15 +3398,18 @@ func (st clusterLibraryStatusesPb) MarshalJSON() ([]byte, error) {
 type ClusterLogConf struct {
 	// destination needs to be provided. e.g. `{ "dbfs" : { "destination" :
 	// "dbfs:/home/cluster_log" } }`
+	// Wire name: 'dbfs'
 	Dbfs *DbfsStorageInfo
 	// destination and either the region or endpoint need to be provided. e.g.
 	// `{ "s3": { "destination" : "s3://cluster_log_bucket/prefix", "region" :
 	// "us-west-2" } }` Cluster iam role is used to access s3, please make sure
 	// the cluster iam role in `instance_profile_arn` has permission to write
 	// data to the s3 destination.
+	// Wire name: 's3'
 	S3 *S3StorageInfo
 	// destination needs to be provided, e.g. `{ "volumes": { "destination":
 	// "/Volumes/catalog/schema/volume/cluster_log" } }`
+	// Wire name: 'volumes'
 	Volumes *VolumesStorageInfo
 }
 
@@ -4149,13 +3516,17 @@ func ClusterLogConfFromPb(pb *ClusterLogConfPb) (*ClusterLogConf, error) {
 }
 
 type ClusterPermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ClusterPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterPermissionToPb(st *ClusterPermission) (*clusterPermissionPb, error) {
@@ -4163,24 +3534,11 @@ func clusterPermissionToPb(st *ClusterPermission) (*clusterPermissionPb, error) 
 		return nil, nil
 	}
 	pb := &clusterPermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4226,23 +3584,9 @@ func clusterPermissionFromPb(pb *clusterPermissionPb) (*ClusterPermission, error
 		return nil, nil
 	}
 	st := &ClusterPermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4304,13 +3648,17 @@ func clusterPermissionLevelFromPb(pb *clusterPermissionLevelPb) (*ClusterPermiss
 }
 
 type ClusterPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []ClusterAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterPermissionsToPb(st *ClusterPermissions) (*clusterPermissionsPb, error) {
@@ -4331,15 +3679,9 @@ func clusterPermissionsToPb(st *ClusterPermissions) (*clusterPermissionsPb, erro
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4387,24 +3729,18 @@ func clusterPermissionsFromPb(pb *clusterPermissionsPb) (*ClusterPermissions, er
 	st := &ClusterPermissions{}
 
 	var accessControlListField []ClusterAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := clusterAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := clusterAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4419,11 +3755,14 @@ func (st clusterPermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type ClusterPermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ClusterPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterPermissionsDescriptionToPb(st *ClusterPermissionsDescription) (*clusterPermissionsDescriptionPb, error) {
@@ -4431,15 +3770,9 @@ func clusterPermissionsDescriptionToPb(st *ClusterPermissionsDescription) (*clus
 		return nil, nil
 	}
 	pb := &clusterPermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4483,14 +3816,8 @@ func clusterPermissionsDescriptionFromPb(pb *clusterPermissionsDescriptionPb) (*
 		return nil, nil
 	}
 	st := &ClusterPermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4505,9 +3832,12 @@ func (st clusterPermissionsDescriptionPb) MarshalJSON() ([]byte, error) {
 }
 
 type ClusterPermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []ClusterAccessControlRequest
 	// The cluster for which to get or manage permissions.
-	ClusterId string
+	// Wire name: 'cluster_id'
+	ClusterId string `tf:"-"`
 }
 
 func clusterPermissionsRequestToPb(st *ClusterPermissionsRequest) (*clusterPermissionsRequestPb, error) {
@@ -4528,10 +3858,7 @@ func clusterPermissionsRequestToPb(st *ClusterPermissionsRequest) (*clusterPermi
 	}
 	pb.AccessControlList = accessControlListPb
 
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	return pb, nil
 }
@@ -4574,35 +3901,36 @@ func clusterPermissionsRequestFromPb(pb *clusterPermissionsRequestPb) (*ClusterP
 	st := &ClusterPermissionsRequest{}
 
 	var accessControlListField []ClusterAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := clusterAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := clusterAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	return st, nil
 }
 
 type ClusterPolicyAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ClusterPolicyPermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterPolicyAccessControlRequestToPb(st *ClusterPolicyAccessControlRequest) (*clusterPolicyAccessControlRequestPb, error) {
@@ -4610,25 +3938,13 @@ func clusterPolicyAccessControlRequestToPb(st *ClusterPolicyAccessControlRequest
 		return nil, nil
 	}
 	pb := &clusterPolicyAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4677,22 +3993,10 @@ func clusterPolicyAccessControlRequestFromPb(pb *clusterPolicyAccessControlReque
 		return nil, nil
 	}
 	st := &ClusterPolicyAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4708,17 +4012,22 @@ func (st clusterPolicyAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type ClusterPolicyAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []ClusterPolicyPermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterPolicyAccessControlResponseToPb(st *ClusterPolicyAccessControlResponse) (*clusterPolicyAccessControlResponsePb, error) {
@@ -4739,25 +4048,13 @@ func clusterPolicyAccessControlResponseToPb(st *ClusterPolicyAccessControlRespon
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4810,32 +4107,20 @@ func clusterPolicyAccessControlResponseFromPb(pb *clusterPolicyAccessControlResp
 	st := &ClusterPolicyAccessControlResponse{}
 
 	var allPermissionsField []ClusterPolicyPermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := clusterPolicyPermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := clusterPolicyPermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4850,13 +4135,17 @@ func (st clusterPolicyAccessControlResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type ClusterPolicyPermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ClusterPolicyPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterPolicyPermissionToPb(st *ClusterPolicyPermission) (*clusterPolicyPermissionPb, error) {
@@ -4864,24 +4153,11 @@ func clusterPolicyPermissionToPb(st *ClusterPolicyPermission) (*clusterPolicyPer
 		return nil, nil
 	}
 	pb := &clusterPolicyPermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4927,23 +4203,9 @@ func clusterPolicyPermissionFromPb(pb *clusterPolicyPermissionPb) (*ClusterPolic
 		return nil, nil
 	}
 	st := &ClusterPolicyPermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5001,13 +4263,17 @@ func clusterPolicyPermissionLevelFromPb(pb *clusterPolicyPermissionLevelPb) (*Cl
 }
 
 type ClusterPolicyPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []ClusterPolicyAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterPolicyPermissionsToPb(st *ClusterPolicyPermissions) (*clusterPolicyPermissionsPb, error) {
@@ -5028,15 +4294,9 @@ func clusterPolicyPermissionsToPb(st *ClusterPolicyPermissions) (*clusterPolicyP
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5084,24 +4344,18 @@ func clusterPolicyPermissionsFromPb(pb *clusterPolicyPermissionsPb) (*ClusterPol
 	st := &ClusterPolicyPermissions{}
 
 	var accessControlListField []ClusterPolicyAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := clusterPolicyAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := clusterPolicyAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5116,11 +4370,14 @@ func (st clusterPolicyPermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type ClusterPolicyPermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ClusterPolicyPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterPolicyPermissionsDescriptionToPb(st *ClusterPolicyPermissionsDescription) (*clusterPolicyPermissionsDescriptionPb, error) {
@@ -5128,15 +4385,9 @@ func clusterPolicyPermissionsDescriptionToPb(st *ClusterPolicyPermissionsDescrip
 		return nil, nil
 	}
 	pb := &clusterPolicyPermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5180,14 +4431,8 @@ func clusterPolicyPermissionsDescriptionFromPb(pb *clusterPolicyPermissionsDescr
 		return nil, nil
 	}
 	st := &ClusterPolicyPermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5202,9 +4447,12 @@ func (st clusterPolicyPermissionsDescriptionPb) MarshalJSON() ([]byte, error) {
 }
 
 type ClusterPolicyPermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []ClusterPolicyAccessControlRequest
 	// The cluster policy for which to get or manage permissions.
-	ClusterPolicyId string
+	// Wire name: 'cluster_policy_id'
+	ClusterPolicyId string `tf:"-"`
 }
 
 func clusterPolicyPermissionsRequestToPb(st *ClusterPolicyPermissionsRequest) (*clusterPolicyPermissionsRequestPb, error) {
@@ -5225,10 +4473,7 @@ func clusterPolicyPermissionsRequestToPb(st *ClusterPolicyPermissionsRequest) (*
 	}
 	pb.AccessControlList = accessControlListPb
 
-	clusterPolicyIdPb := &st.ClusterPolicyId
-	if clusterPolicyIdPb != nil {
-		pb.ClusterPolicyId = *clusterPolicyIdPb
-	}
+	pb.ClusterPolicyId = st.ClusterPolicyId
 
 	return pb, nil
 }
@@ -5271,20 +4516,17 @@ func clusterPolicyPermissionsRequestFromPb(pb *clusterPolicyPermissionsRequestPb
 	st := &ClusterPolicyPermissionsRequest{}
 
 	var accessControlListField []ClusterPolicyAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := clusterPolicyAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := clusterPolicyAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	clusterPolicyIdField := &pb.ClusterPolicyId
-	if clusterPolicyIdField != nil {
-		st.ClusterPolicyId = *clusterPolicyIdField
-	}
+	st.ClusterPolicyId = pb.ClusterPolicyId
 
 	return st, nil
 }
@@ -5293,19 +4535,22 @@ func clusterPolicyPermissionsRequestFromPb(pb *clusterPolicyPermissionsRequestPb
 // become compliant with its policy.
 type ClusterSettingsChange struct {
 	// The field where this change would be made.
+	// Wire name: 'field'
 	Field string
 	// The new value of this field after enforcing policy compliance (either a
 	// number, a boolean, or a string) converted to a string. This is intended
 	// to be read by a human. The typed new value of this field can be retrieved
 	// by reading the settings field in the API response.
+	// Wire name: 'new_value'
 	NewValue string
 	// The previous value of this field before enforcing policy compliance
 	// (either a number, a boolean, or a string) converted to a string. This is
 	// intended to be read by a human. The type of the field can be retrieved by
 	// reading the settings field in the API response.
+	// Wire name: 'previous_value'
 	PreviousValue string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterSettingsChangeToPb(st *ClusterSettingsChange) (*clusterSettingsChangePb, error) {
@@ -5313,20 +4558,11 @@ func clusterSettingsChangeToPb(st *ClusterSettingsChange) (*clusterSettingsChang
 		return nil, nil
 	}
 	pb := &clusterSettingsChangePb{}
-	fieldPb := &st.Field
-	if fieldPb != nil {
-		pb.Field = *fieldPb
-	}
+	pb.Field = st.Field
 
-	newValuePb := &st.NewValue
-	if newValuePb != nil {
-		pb.NewValue = *newValuePb
-	}
+	pb.NewValue = st.NewValue
 
-	previousValuePb := &st.PreviousValue
-	if previousValuePb != nil {
-		pb.PreviousValue = *previousValuePb
-	}
+	pb.PreviousValue = st.PreviousValue
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5379,18 +4615,9 @@ func clusterSettingsChangeFromPb(pb *clusterSettingsChangePb) (*ClusterSettingsC
 		return nil, nil
 	}
 	st := &ClusterSettingsChange{}
-	fieldField := &pb.Field
-	if fieldField != nil {
-		st.Field = *fieldField
-	}
-	newValueField := &pb.NewValue
-	if newValueField != nil {
-		st.NewValue = *newValueField
-	}
-	previousValueField := &pb.PreviousValue
-	if previousValueField != nil {
-		st.PreviousValue = *previousValueField
-	}
+	st.Field = pb.Field
+	st.NewValue = pb.NewValue
+	st.PreviousValue = pb.PreviousValue
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5408,6 +4635,7 @@ type ClusterSize struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
+	// Wire name: 'autoscale'
 	Autoscale *AutoScale
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
@@ -5419,9 +4647,10 @@ type ClusterSize struct {
 	// field will immediately be updated to reflect the target size of 10
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
+	// Wire name: 'num_workers'
 	NumWorkers int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterSizeToPb(st *ClusterSize) (*clusterSizePb, error) {
@@ -5437,10 +4666,7 @@ func clusterSizeToPb(st *ClusterSize) (*clusterSizePb, error) {
 		pb.Autoscale = autoscalePb
 	}
 
-	numWorkersPb := &st.NumWorkers
-	if numWorkersPb != nil {
-		pb.NumWorkers = *numWorkersPb
-	}
+	pb.NumWorkers = st.NumWorkers
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5503,10 +4729,7 @@ func clusterSizeFromPb(pb *clusterSizePb) (*ClusterSize, error) {
 	if autoscaleField != nil {
 		st.Autoscale = autoscaleField
 	}
-	numWorkersField := &pb.NumWorkers
-	if numWorkersField != nil {
-		st.NumWorkers = *numWorkersField
-	}
+	st.NumWorkers = pb.NumWorkers
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5583,22 +4806,27 @@ type ClusterSpec struct {
 	// When set to true, fixed and default values from the policy will be used
 	// for fields that are omitted. When set to false, only fixed values from
 	// the policy will be applied.
+	// Wire name: 'apply_policy_default_values'
 	ApplyPolicyDefaultValues bool
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
+	// Wire name: 'autoscale'
 	Autoscale *AutoScale
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
 	// terminated. If specified, the threshold must be between 10 and 10000
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
+	// Wire name: 'autotermination_minutes'
 	AutoterminationMinutes int
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'aws_attributes'
 	AwsAttributes *AwsAttributes
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'azure_attributes'
 	AzureAttributes *AzureAttributes
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
@@ -5607,9 +4835,11 @@ type ClusterSpec struct {
 	// destination every `5 mins`. The destination of driver logs is
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
+	// Wire name: 'cluster_log_conf'
 	ClusterLogConf *ClusterLogConf
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
+	// Wire name: 'cluster_name'
 	ClusterName string
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -5619,6 +4849,7 @@ type ClusterSpec struct {
 	//
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
@@ -5649,12 +4880,15 @@ type ClusterSpec struct {
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
+	// Wire name: 'data_security_mode'
 	DataSecurityMode DataSecurityMode
 	// Custom docker image BYOC
+	// Wire name: 'docker_image'
 	DockerImage *DockerImage
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
+	// Wire name: 'driver_instance_pool_id'
 	DriverInstancePoolId string
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
@@ -5664,28 +4898,35 @@ type ClusterSpec struct {
 	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
+	// Wire name: 'driver_node_type_id'
 	DriverNodeTypeId string
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
+	// Wire name: 'enable_elastic_disk'
 	EnableElasticDisk bool
 	// Whether to enable LUKS on cluster VMs' local disks
+	// Wire name: 'enable_local_disk_encryption'
 	EnableLocalDiskEncryption bool
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'gcp_attributes'
 	GcpAttributes *GcpAttributes
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
+	// Wire name: 'init_scripts'
 	InitScripts []InitScriptInfo
 	// The optional ID of the instance pool to which the cluster belongs.
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
+	// Wire name: 'is_single_node'
 	IsSingleNode bool
 	// The kind of compute described by this compute specification.
 	//
@@ -5704,12 +4945,14 @@ type ClusterSpec struct {
 	// CLASSIC_PREVIEW`.
 	//
 	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// Wire name: 'kind'
 	Kind Kind
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
@@ -5721,8 +4964,10 @@ type ClusterSpec struct {
 	// field will immediately be updated to reflect the target size of 10
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
+	// Wire name: 'num_workers'
 	NumWorkers int
 	// The ID of the cluster policy used to create the cluster if applicable.
+	// Wire name: 'policy_id'
 	PolicyId string
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
@@ -5732,14 +4977,17 @@ type ClusterSpec struct {
 	//
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
+	// Wire name: 'runtime_engine'
 	RuntimeEngine RuntimeEngine
 	// Single user name if data_security_mode is `SINGLE_USER`
+	// Wire name: 'single_user_name'
 	SingleUserName string
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
+	// Wire name: 'spark_conf'
 	SparkConf map[string]string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
@@ -5754,25 +5002,30 @@ type ClusterSpec struct {
 	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	// Wire name: 'spark_env_vars'
 	SparkEnvVars map[string]string
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
+	// Wire name: 'spark_version'
 	SparkVersion string
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	// Wire name: 'ssh_public_keys'
 	SshPublicKeys []string
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
+	// Wire name: 'use_ml_runtime'
 	UseMlRuntime bool
 	// Cluster Attributes showing for clusters workload types.
+	// Wire name: 'workload_type'
 	WorkloadType *WorkloadType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func ClusterSpecToPb(st *ClusterSpec) (*ClusterSpecPb, error) {
@@ -5780,10 +5033,7 @@ func ClusterSpecToPb(st *ClusterSpec) (*ClusterSpecPb, error) {
 		return nil, nil
 	}
 	pb := &ClusterSpecPb{}
-	applyPolicyDefaultValuesPb := &st.ApplyPolicyDefaultValues
-	if applyPolicyDefaultValuesPb != nil {
-		pb.ApplyPolicyDefaultValues = *applyPolicyDefaultValuesPb
-	}
+	pb.ApplyPolicyDefaultValues = st.ApplyPolicyDefaultValues
 
 	autoscalePb, err := autoScaleToPb(st.Autoscale)
 	if err != nil {
@@ -5793,10 +5043,7 @@ func ClusterSpecToPb(st *ClusterSpec) (*ClusterSpecPb, error) {
 		pb.Autoscale = autoscalePb
 	}
 
-	autoterminationMinutesPb := &st.AutoterminationMinutes
-	if autoterminationMinutesPb != nil {
-		pb.AutoterminationMinutes = *autoterminationMinutesPb
-	}
+	pb.AutoterminationMinutes = st.AutoterminationMinutes
 
 	awsAttributesPb, err := AwsAttributesToPb(st.AwsAttributes)
 	if err != nil {
@@ -5822,24 +5069,11 @@ func ClusterSpecToPb(st *ClusterSpec) (*ClusterSpecPb, error) {
 		pb.ClusterLogConf = clusterLogConfPb
 	}
 
-	clusterNamePb := &st.ClusterName
-	if clusterNamePb != nil {
-		pb.ClusterName = *clusterNamePb
-	}
+	pb.ClusterName = st.ClusterName
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	dataSecurityModePb := &st.DataSecurityMode
-	if dataSecurityModePb != nil {
-		pb.DataSecurityMode = *dataSecurityModePb
-	}
+	pb.DataSecurityMode = st.DataSecurityMode
 
 	dockerImagePb, err := dockerImageToPb(st.DockerImage)
 	if err != nil {
@@ -5849,25 +5083,13 @@ func ClusterSpecToPb(st *ClusterSpec) (*ClusterSpecPb, error) {
 		pb.DockerImage = dockerImagePb
 	}
 
-	driverInstancePoolIdPb := &st.DriverInstancePoolId
-	if driverInstancePoolIdPb != nil {
-		pb.DriverInstancePoolId = *driverInstancePoolIdPb
-	}
+	pb.DriverInstancePoolId = st.DriverInstancePoolId
 
-	driverNodeTypeIdPb := &st.DriverNodeTypeId
-	if driverNodeTypeIdPb != nil {
-		pb.DriverNodeTypeId = *driverNodeTypeIdPb
-	}
+	pb.DriverNodeTypeId = st.DriverNodeTypeId
 
-	enableElasticDiskPb := &st.EnableElasticDisk
-	if enableElasticDiskPb != nil {
-		pb.EnableElasticDisk = *enableElasticDiskPb
-	}
+	pb.EnableElasticDisk = st.EnableElasticDisk
 
-	enableLocalDiskEncryptionPb := &st.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionPb != nil {
-		pb.EnableLocalDiskEncryption = *enableLocalDiskEncryptionPb
-	}
+	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
 
 	gcpAttributesPb, err := GcpAttributesToPb(st.GcpAttributes)
 	if err != nil {
@@ -5889,82 +5111,31 @@ func ClusterSpecToPb(st *ClusterSpec) (*ClusterSpecPb, error) {
 	}
 	pb.InitScripts = initScriptsPb
 
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
-	isSingleNodePb := &st.IsSingleNode
-	if isSingleNodePb != nil {
-		pb.IsSingleNode = *isSingleNodePb
-	}
+	pb.IsSingleNode = st.IsSingleNode
 
-	kindPb := &st.Kind
-	if kindPb != nil {
-		pb.Kind = *kindPb
-	}
+	pb.Kind = st.Kind
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
-	numWorkersPb := &st.NumWorkers
-	if numWorkersPb != nil {
-		pb.NumWorkers = *numWorkersPb
-	}
+	pb.NumWorkers = st.NumWorkers
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	runtimeEnginePb := &st.RuntimeEngine
-	if runtimeEnginePb != nil {
-		pb.RuntimeEngine = *runtimeEnginePb
-	}
+	pb.RuntimeEngine = st.RuntimeEngine
 
-	singleUserNamePb := &st.SingleUserName
-	if singleUserNamePb != nil {
-		pb.SingleUserName = *singleUserNamePb
-	}
+	pb.SingleUserName = st.SingleUserName
 
-	sparkConfPb := map[string]string{}
-	for k, v := range st.SparkConf {
-		itemPb := &v
-		if itemPb != nil {
-			sparkConfPb[k] = *itemPb
-		}
-	}
-	pb.SparkConf = sparkConfPb
+	pb.SparkConf = st.SparkConf
 
-	sparkEnvVarsPb := map[string]string{}
-	for k, v := range st.SparkEnvVars {
-		itemPb := &v
-		if itemPb != nil {
-			sparkEnvVarsPb[k] = *itemPb
-		}
-	}
-	pb.SparkEnvVars = sparkEnvVarsPb
+	pb.SparkEnvVars = st.SparkEnvVars
 
-	sparkVersionPb := &st.SparkVersion
-	if sparkVersionPb != nil {
-		pb.SparkVersion = *sparkVersionPb
-	}
+	pb.SparkVersion = st.SparkVersion
 
-	var sshPublicKeysPb []string
-	for _, item := range st.SshPublicKeys {
-		itemPb := &item
-		if itemPb != nil {
-			sshPublicKeysPb = append(sshPublicKeysPb, *itemPb)
-		}
-	}
-	pb.SshPublicKeys = sshPublicKeysPb
+	pb.SshPublicKeys = st.SshPublicKeys
 
-	useMlRuntimePb := &st.UseMlRuntime
-	if useMlRuntimePb != nil {
-		pb.UseMlRuntime = *useMlRuntimePb
-	}
+	pb.UseMlRuntime = st.UseMlRuntime
 
 	workloadTypePb, err := workloadTypeToPb(st.WorkloadType)
 	if err != nil {
@@ -6204,10 +5375,7 @@ func ClusterSpecFromPb(pb *ClusterSpecPb) (*ClusterSpec, error) {
 		return nil, nil
 	}
 	st := &ClusterSpec{}
-	applyPolicyDefaultValuesField := &pb.ApplyPolicyDefaultValues
-	if applyPolicyDefaultValuesField != nil {
-		st.ApplyPolicyDefaultValues = *applyPolicyDefaultValuesField
-	}
+	st.ApplyPolicyDefaultValues = pb.ApplyPolicyDefaultValues
 	autoscaleField, err := autoScaleFromPb(pb.Autoscale)
 	if err != nil {
 		return nil, err
@@ -6215,10 +5383,7 @@ func ClusterSpecFromPb(pb *ClusterSpecPb) (*ClusterSpec, error) {
 	if autoscaleField != nil {
 		st.Autoscale = autoscaleField
 	}
-	autoterminationMinutesField := &pb.AutoterminationMinutes
-	if autoterminationMinutesField != nil {
-		st.AutoterminationMinutes = *autoterminationMinutesField
-	}
+	st.AutoterminationMinutes = pb.AutoterminationMinutes
 	awsAttributesField, err := AwsAttributesFromPb(pb.AwsAttributes)
 	if err != nil {
 		return nil, err
@@ -6240,23 +5405,9 @@ func ClusterSpecFromPb(pb *ClusterSpecPb) (*ClusterSpec, error) {
 	if clusterLogConfField != nil {
 		st.ClusterLogConf = clusterLogConfField
 	}
-	clusterNameField := &pb.ClusterName
-	if clusterNameField != nil {
-		st.ClusterName = *clusterNameField
-	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-	dataSecurityModeField := &pb.DataSecurityMode
-	if dataSecurityModeField != nil {
-		st.DataSecurityMode = *dataSecurityModeField
-	}
+	st.ClusterName = pb.ClusterName
+	st.CustomTags = pb.CustomTags
+	st.DataSecurityMode = pb.DataSecurityMode
 	dockerImageField, err := dockerImageFromPb(pb.DockerImage)
 	if err != nil {
 		return nil, err
@@ -6264,22 +5415,10 @@ func ClusterSpecFromPb(pb *ClusterSpecPb) (*ClusterSpec, error) {
 	if dockerImageField != nil {
 		st.DockerImage = dockerImageField
 	}
-	driverInstancePoolIdField := &pb.DriverInstancePoolId
-	if driverInstancePoolIdField != nil {
-		st.DriverInstancePoolId = *driverInstancePoolIdField
-	}
-	driverNodeTypeIdField := &pb.DriverNodeTypeId
-	if driverNodeTypeIdField != nil {
-		st.DriverNodeTypeId = *driverNodeTypeIdField
-	}
-	enableElasticDiskField := &pb.EnableElasticDisk
-	if enableElasticDiskField != nil {
-		st.EnableElasticDisk = *enableElasticDiskField
-	}
-	enableLocalDiskEncryptionField := &pb.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionField != nil {
-		st.EnableLocalDiskEncryption = *enableLocalDiskEncryptionField
-	}
+	st.DriverInstancePoolId = pb.DriverInstancePoolId
+	st.DriverNodeTypeId = pb.DriverNodeTypeId
+	st.EnableElasticDisk = pb.EnableElasticDisk
+	st.EnableLocalDiskEncryption = pb.EnableLocalDiskEncryption
 	gcpAttributesField, err := GcpAttributesFromPb(pb.GcpAttributes)
 	if err != nil {
 		return nil, err
@@ -6289,83 +5428,29 @@ func ClusterSpecFromPb(pb *ClusterSpecPb) (*ClusterSpec, error) {
 	}
 
 	var initScriptsField []InitScriptInfo
-	for _, item := range pb.InitScripts {
-		itemField, err := InitScriptInfoFromPb(&item)
+	for _, itemPb := range pb.InitScripts {
+		item, err := InitScriptInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			initScriptsField = append(initScriptsField, *itemField)
+		if item != nil {
+			initScriptsField = append(initScriptsField, *item)
 		}
 	}
 	st.InitScripts = initScriptsField
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
-	isSingleNodeField := &pb.IsSingleNode
-	if isSingleNodeField != nil {
-		st.IsSingleNode = *isSingleNodeField
-	}
-	kindField := &pb.Kind
-	if kindField != nil {
-		st.Kind = *kindField
-	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
-	numWorkersField := &pb.NumWorkers
-	if numWorkersField != nil {
-		st.NumWorkers = *numWorkersField
-	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	runtimeEngineField := &pb.RuntimeEngine
-	if runtimeEngineField != nil {
-		st.RuntimeEngine = *runtimeEngineField
-	}
-	singleUserNameField := &pb.SingleUserName
-	if singleUserNameField != nil {
-		st.SingleUserName = *singleUserNameField
-	}
-
-	sparkConfField := map[string]string{}
-	for k, v := range pb.SparkConf {
-		itemField := &v
-		if itemField != nil {
-			sparkConfField[k] = *itemField
-		}
-	}
-	st.SparkConf = sparkConfField
-
-	sparkEnvVarsField := map[string]string{}
-	for k, v := range pb.SparkEnvVars {
-		itemField := &v
-		if itemField != nil {
-			sparkEnvVarsField[k] = *itemField
-		}
-	}
-	st.SparkEnvVars = sparkEnvVarsField
-	sparkVersionField := &pb.SparkVersion
-	if sparkVersionField != nil {
-		st.SparkVersion = *sparkVersionField
-	}
-
-	var sshPublicKeysField []string
-	for _, item := range pb.SshPublicKeys {
-		itemField := &item
-		if itemField != nil {
-			sshPublicKeysField = append(sshPublicKeysField, *itemField)
-		}
-	}
-	st.SshPublicKeys = sshPublicKeysField
-	useMlRuntimeField := &pb.UseMlRuntime
-	if useMlRuntimeField != nil {
-		st.UseMlRuntime = *useMlRuntimeField
-	}
+	st.InstancePoolId = pb.InstancePoolId
+	st.IsSingleNode = pb.IsSingleNode
+	st.Kind = pb.Kind
+	st.NodeTypeId = pb.NodeTypeId
+	st.NumWorkers = pb.NumWorkers
+	st.PolicyId = pb.PolicyId
+	st.RuntimeEngine = pb.RuntimeEngine
+	st.SingleUserName = pb.SingleUserName
+	st.SparkConf = pb.SparkConf
+	st.SparkEnvVars = pb.SparkEnvVars
+	st.SparkVersion = pb.SparkVersion
+	st.SshPublicKeys = pb.SshPublicKeys
+	st.UseMlRuntime = pb.UseMlRuntime
 	workloadTypeField, err := workloadTypeFromPb(pb.WorkloadType)
 	if err != nil {
 		return nil, err
@@ -6389,7 +5474,8 @@ func (st ClusterSpecPb) MarshalJSON() ([]byte, error) {
 // Get status
 type ClusterStatus struct {
 	// Unique identifier of the cluster whose status should be retrieved.
-	ClusterId string
+	// Wire name: 'cluster_id'
+	ClusterId string `tf:"-"`
 }
 
 func clusterStatusToPb(st *ClusterStatus) (*clusterStatusPb, error) {
@@ -6397,10 +5483,7 @@ func clusterStatusToPb(st *ClusterStatus) (*clusterStatusPb, error) {
 		return nil, nil
 	}
 	pb := &clusterStatusPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	return pb, nil
 }
@@ -6440,25 +5523,26 @@ func clusterStatusFromPb(pb *clusterStatusPb) (*ClusterStatus, error) {
 		return nil, nil
 	}
 	st := &ClusterStatus{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	return st, nil
 }
 
 type Command struct {
 	// Running cluster id
+	// Wire name: 'clusterId'
 	ClusterId string
 	// Executable code
+	// Wire name: 'command'
 	Command string
 	// Running context id
+	// Wire name: 'contextId'
 	ContextId string
 
+	// Wire name: 'language'
 	Language Language
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func commandToPb(st *Command) (*commandPb, error) {
@@ -6466,25 +5550,13 @@ func commandToPb(st *Command) (*commandPb, error) {
 		return nil, nil
 	}
 	pb := &commandPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	commandPb := &st.Command
-	if commandPb != nil {
-		pb.Command = *commandPb
-	}
+	pb.Command = st.Command
 
-	contextIdPb := &st.ContextId
-	if contextIdPb != nil {
-		pb.ContextId = *contextIdPb
-	}
+	pb.ContextId = st.ContextId
 
-	languagePb := &st.Language
-	if languagePb != nil {
-		pb.Language = *languagePb
-	}
+	pb.Language = st.Language
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6533,22 +5605,10 @@ func commandFromPb(pb *commandPb) (*Command, error) {
 		return nil, nil
 	}
 	st := &Command{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	commandField := &pb.Command
-	if commandField != nil {
-		st.Command = *commandField
-	}
-	contextIdField := &pb.ContextId
-	if contextIdField != nil {
-		st.ContextId = *contextIdField
-	}
-	languageField := &pb.Language
-	if languageField != nil {
-		st.Language = *languageField
-	}
+	st.ClusterId = pb.ClusterId
+	st.Command = pb.Command
+	st.ContextId = pb.ContextId
+	st.Language = pb.Language
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6616,11 +5676,15 @@ func commandStatusFromPb(pb *commandStatusPb) (*CommandStatus, error) {
 
 // Get command info
 type CommandStatusRequest struct {
-	ClusterId string
 
-	CommandId string
+	// Wire name: 'clusterId'
+	ClusterId string `tf:"-"`
 
-	ContextId string
+	// Wire name: 'commandId'
+	CommandId string `tf:"-"`
+
+	// Wire name: 'contextId'
+	ContextId string `tf:"-"`
 }
 
 func commandStatusRequestToPb(st *CommandStatusRequest) (*commandStatusRequestPb, error) {
@@ -6628,20 +5692,11 @@ func commandStatusRequestToPb(st *CommandStatusRequest) (*commandStatusRequestPb
 		return nil, nil
 	}
 	pb := &commandStatusRequestPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	commandIdPb := &st.CommandId
-	if commandIdPb != nil {
-		pb.CommandId = *commandIdPb
-	}
+	pb.CommandId = st.CommandId
 
-	contextIdPb := &st.ContextId
-	if contextIdPb != nil {
-		pb.ContextId = *contextIdPb
-	}
+	pb.ContextId = st.ContextId
 
 	return pb, nil
 }
@@ -6684,30 +5739,25 @@ func commandStatusRequestFromPb(pb *commandStatusRequestPb) (*CommandStatusReque
 		return nil, nil
 	}
 	st := &CommandStatusRequest{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	commandIdField := &pb.CommandId
-	if commandIdField != nil {
-		st.CommandId = *commandIdField
-	}
-	contextIdField := &pb.ContextId
-	if contextIdField != nil {
-		st.ContextId = *contextIdField
-	}
+	st.ClusterId = pb.ClusterId
+	st.CommandId = pb.CommandId
+	st.ContextId = pb.ContextId
 
 	return st, nil
 }
 
 type CommandStatusResponse struct {
+
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'results'
 	Results *Results
 
+	// Wire name: 'status'
 	Status CommandStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func commandStatusResponseToPb(st *CommandStatusResponse) (*commandStatusResponsePb, error) {
@@ -6715,10 +5765,7 @@ func commandStatusResponseToPb(st *CommandStatusResponse) (*commandStatusRespons
 		return nil, nil
 	}
 	pb := &commandStatusResponsePb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	resultsPb, err := resultsToPb(st.Results)
 	if err != nil {
@@ -6728,10 +5775,7 @@ func commandStatusResponseToPb(st *CommandStatusResponse) (*commandStatusRespons
 		pb.Results = resultsPb
 	}
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6777,10 +5821,7 @@ func commandStatusResponseFromPb(pb *commandStatusResponsePb) (*CommandStatusRes
 		return nil, nil
 	}
 	st := &CommandStatusResponse{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	resultsField, err := resultsFromPb(pb.Results)
 	if err != nil {
 		return nil, err
@@ -6788,10 +5829,7 @@ func commandStatusResponseFromPb(pb *commandStatusResponsePb) (*CommandStatusRes
 	if resultsField != nil {
 		st.Results = resultsField
 	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.Status = pb.Status
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6853,9 +5891,12 @@ func contextStatusFromPb(pb *contextStatusPb) (*ContextStatus, error) {
 
 // Get status
 type ContextStatusRequest struct {
-	ClusterId string
 
-	ContextId string
+	// Wire name: 'clusterId'
+	ClusterId string `tf:"-"`
+
+	// Wire name: 'contextId'
+	ContextId string `tf:"-"`
 }
 
 func contextStatusRequestToPb(st *ContextStatusRequest) (*contextStatusRequestPb, error) {
@@ -6863,15 +5904,9 @@ func contextStatusRequestToPb(st *ContextStatusRequest) (*contextStatusRequestPb
 		return nil, nil
 	}
 	pb := &contextStatusRequestPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	contextIdPb := &st.ContextId
-	if contextIdPb != nil {
-		pb.ContextId = *contextIdPb
-	}
+	pb.ContextId = st.ContextId
 
 	return pb, nil
 }
@@ -6912,24 +5947,21 @@ func contextStatusRequestFromPb(pb *contextStatusRequestPb) (*ContextStatusReque
 		return nil, nil
 	}
 	st := &ContextStatusRequest{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	contextIdField := &pb.ContextId
-	if contextIdField != nil {
-		st.ContextId = *contextIdField
-	}
+	st.ClusterId = pb.ClusterId
+	st.ContextId = pb.ContextId
 
 	return st, nil
 }
 
 type ContextStatusResponse struct {
+
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'status'
 	Status ContextStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func contextStatusResponseToPb(st *ContextStatusResponse) (*contextStatusResponsePb, error) {
@@ -6937,15 +5969,9 @@ func contextStatusResponseToPb(st *ContextStatusResponse) (*contextStatusRespons
 		return nil, nil
 	}
 	pb := &contextStatusResponsePb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6989,14 +6015,8 @@ func contextStatusResponseFromPb(pb *contextStatusResponsePb) (*ContextStatusRes
 		return nil, nil
 	}
 	st := &ContextStatusResponse{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.Id = pb.Id
+	st.Status = pb.Status
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7014,25 +6034,31 @@ type CreateCluster struct {
 	// When set to true, fixed and default values from the policy will be used
 	// for fields that are omitted. When set to false, only fixed values from
 	// the policy will be applied.
+	// Wire name: 'apply_policy_default_values'
 	ApplyPolicyDefaultValues bool
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
+	// Wire name: 'autoscale'
 	Autoscale *AutoScale
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
 	// terminated. If specified, the threshold must be between 10 and 10000
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
+	// Wire name: 'autotermination_minutes'
 	AutoterminationMinutes int
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'aws_attributes'
 	AwsAttributes *AwsAttributes
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'azure_attributes'
 	AzureAttributes *AzureAttributes
 	// When specified, this clones libraries from a source cluster during the
 	// creation of a new cluster.
+	// Wire name: 'clone_from'
 	CloneFrom *CloneCluster
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
@@ -7041,9 +6067,11 @@ type CreateCluster struct {
 	// destination every `5 mins`. The destination of driver logs is
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
+	// Wire name: 'cluster_log_conf'
 	ClusterLogConf *ClusterLogConf
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
+	// Wire name: 'cluster_name'
 	ClusterName string
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -7053,6 +6081,7 @@ type CreateCluster struct {
 	//
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
@@ -7083,12 +6112,15 @@ type CreateCluster struct {
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
+	// Wire name: 'data_security_mode'
 	DataSecurityMode DataSecurityMode
 	// Custom docker image BYOC
+	// Wire name: 'docker_image'
 	DockerImage *DockerImage
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
+	// Wire name: 'driver_instance_pool_id'
 	DriverInstancePoolId string
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
@@ -7098,28 +6130,35 @@ type CreateCluster struct {
 	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
+	// Wire name: 'driver_node_type_id'
 	DriverNodeTypeId string
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
+	// Wire name: 'enable_elastic_disk'
 	EnableElasticDisk bool
 	// Whether to enable LUKS on cluster VMs' local disks
+	// Wire name: 'enable_local_disk_encryption'
 	EnableLocalDiskEncryption bool
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'gcp_attributes'
 	GcpAttributes *GcpAttributes
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
+	// Wire name: 'init_scripts'
 	InitScripts []InitScriptInfo
 	// The optional ID of the instance pool to which the cluster belongs.
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
+	// Wire name: 'is_single_node'
 	IsSingleNode bool
 	// The kind of compute described by this compute specification.
 	//
@@ -7138,12 +6177,14 @@ type CreateCluster struct {
 	// CLASSIC_PREVIEW`.
 	//
 	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// Wire name: 'kind'
 	Kind Kind
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
@@ -7155,8 +6196,10 @@ type CreateCluster struct {
 	// field will immediately be updated to reflect the target size of 10
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
+	// Wire name: 'num_workers'
 	NumWorkers int
 	// The ID of the cluster policy used to create the cluster if applicable.
+	// Wire name: 'policy_id'
 	PolicyId string
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
@@ -7166,14 +6209,17 @@ type CreateCluster struct {
 	//
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
+	// Wire name: 'runtime_engine'
 	RuntimeEngine RuntimeEngine
 	// Single user name if data_security_mode is `SINGLE_USER`
+	// Wire name: 'single_user_name'
 	SingleUserName string
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
+	// Wire name: 'spark_conf'
 	SparkConf map[string]string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
@@ -7188,25 +6234,30 @@ type CreateCluster struct {
 	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	// Wire name: 'spark_env_vars'
 	SparkEnvVars map[string]string
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
+	// Wire name: 'spark_version'
 	SparkVersion string
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	// Wire name: 'ssh_public_keys'
 	SshPublicKeys []string
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
+	// Wire name: 'use_ml_runtime'
 	UseMlRuntime bool
 	// Cluster Attributes showing for clusters workload types.
+	// Wire name: 'workload_type'
 	WorkloadType *WorkloadType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createClusterToPb(st *CreateCluster) (*createClusterPb, error) {
@@ -7214,10 +6265,7 @@ func createClusterToPb(st *CreateCluster) (*createClusterPb, error) {
 		return nil, nil
 	}
 	pb := &createClusterPb{}
-	applyPolicyDefaultValuesPb := &st.ApplyPolicyDefaultValues
-	if applyPolicyDefaultValuesPb != nil {
-		pb.ApplyPolicyDefaultValues = *applyPolicyDefaultValuesPb
-	}
+	pb.ApplyPolicyDefaultValues = st.ApplyPolicyDefaultValues
 
 	autoscalePb, err := autoScaleToPb(st.Autoscale)
 	if err != nil {
@@ -7227,10 +6275,7 @@ func createClusterToPb(st *CreateCluster) (*createClusterPb, error) {
 		pb.Autoscale = autoscalePb
 	}
 
-	autoterminationMinutesPb := &st.AutoterminationMinutes
-	if autoterminationMinutesPb != nil {
-		pb.AutoterminationMinutes = *autoterminationMinutesPb
-	}
+	pb.AutoterminationMinutes = st.AutoterminationMinutes
 
 	awsAttributesPb, err := AwsAttributesToPb(st.AwsAttributes)
 	if err != nil {
@@ -7264,24 +6309,11 @@ func createClusterToPb(st *CreateCluster) (*createClusterPb, error) {
 		pb.ClusterLogConf = clusterLogConfPb
 	}
 
-	clusterNamePb := &st.ClusterName
-	if clusterNamePb != nil {
-		pb.ClusterName = *clusterNamePb
-	}
+	pb.ClusterName = st.ClusterName
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	dataSecurityModePb := &st.DataSecurityMode
-	if dataSecurityModePb != nil {
-		pb.DataSecurityMode = *dataSecurityModePb
-	}
+	pb.DataSecurityMode = st.DataSecurityMode
 
 	dockerImagePb, err := dockerImageToPb(st.DockerImage)
 	if err != nil {
@@ -7291,25 +6323,13 @@ func createClusterToPb(st *CreateCluster) (*createClusterPb, error) {
 		pb.DockerImage = dockerImagePb
 	}
 
-	driverInstancePoolIdPb := &st.DriverInstancePoolId
-	if driverInstancePoolIdPb != nil {
-		pb.DriverInstancePoolId = *driverInstancePoolIdPb
-	}
+	pb.DriverInstancePoolId = st.DriverInstancePoolId
 
-	driverNodeTypeIdPb := &st.DriverNodeTypeId
-	if driverNodeTypeIdPb != nil {
-		pb.DriverNodeTypeId = *driverNodeTypeIdPb
-	}
+	pb.DriverNodeTypeId = st.DriverNodeTypeId
 
-	enableElasticDiskPb := &st.EnableElasticDisk
-	if enableElasticDiskPb != nil {
-		pb.EnableElasticDisk = *enableElasticDiskPb
-	}
+	pb.EnableElasticDisk = st.EnableElasticDisk
 
-	enableLocalDiskEncryptionPb := &st.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionPb != nil {
-		pb.EnableLocalDiskEncryption = *enableLocalDiskEncryptionPb
-	}
+	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
 
 	gcpAttributesPb, err := GcpAttributesToPb(st.GcpAttributes)
 	if err != nil {
@@ -7331,82 +6351,31 @@ func createClusterToPb(st *CreateCluster) (*createClusterPb, error) {
 	}
 	pb.InitScripts = initScriptsPb
 
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
-	isSingleNodePb := &st.IsSingleNode
-	if isSingleNodePb != nil {
-		pb.IsSingleNode = *isSingleNodePb
-	}
+	pb.IsSingleNode = st.IsSingleNode
 
-	kindPb := &st.Kind
-	if kindPb != nil {
-		pb.Kind = *kindPb
-	}
+	pb.Kind = st.Kind
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
-	numWorkersPb := &st.NumWorkers
-	if numWorkersPb != nil {
-		pb.NumWorkers = *numWorkersPb
-	}
+	pb.NumWorkers = st.NumWorkers
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	runtimeEnginePb := &st.RuntimeEngine
-	if runtimeEnginePb != nil {
-		pb.RuntimeEngine = *runtimeEnginePb
-	}
+	pb.RuntimeEngine = st.RuntimeEngine
 
-	singleUserNamePb := &st.SingleUserName
-	if singleUserNamePb != nil {
-		pb.SingleUserName = *singleUserNamePb
-	}
+	pb.SingleUserName = st.SingleUserName
 
-	sparkConfPb := map[string]string{}
-	for k, v := range st.SparkConf {
-		itemPb := &v
-		if itemPb != nil {
-			sparkConfPb[k] = *itemPb
-		}
-	}
-	pb.SparkConf = sparkConfPb
+	pb.SparkConf = st.SparkConf
 
-	sparkEnvVarsPb := map[string]string{}
-	for k, v := range st.SparkEnvVars {
-		itemPb := &v
-		if itemPb != nil {
-			sparkEnvVarsPb[k] = *itemPb
-		}
-	}
-	pb.SparkEnvVars = sparkEnvVarsPb
+	pb.SparkEnvVars = st.SparkEnvVars
 
-	sparkVersionPb := &st.SparkVersion
-	if sparkVersionPb != nil {
-		pb.SparkVersion = *sparkVersionPb
-	}
+	pb.SparkVersion = st.SparkVersion
 
-	var sshPublicKeysPb []string
-	for _, item := range st.SshPublicKeys {
-		itemPb := &item
-		if itemPb != nil {
-			sshPublicKeysPb = append(sshPublicKeysPb, *itemPb)
-		}
-	}
-	pb.SshPublicKeys = sshPublicKeysPb
+	pb.SshPublicKeys = st.SshPublicKeys
 
-	useMlRuntimePb := &st.UseMlRuntime
-	if useMlRuntimePb != nil {
-		pb.UseMlRuntime = *useMlRuntimePb
-	}
+	pb.UseMlRuntime = st.UseMlRuntime
 
 	workloadTypePb, err := workloadTypeToPb(st.WorkloadType)
 	if err != nil {
@@ -7649,10 +6618,7 @@ func createClusterFromPb(pb *createClusterPb) (*CreateCluster, error) {
 		return nil, nil
 	}
 	st := &CreateCluster{}
-	applyPolicyDefaultValuesField := &pb.ApplyPolicyDefaultValues
-	if applyPolicyDefaultValuesField != nil {
-		st.ApplyPolicyDefaultValues = *applyPolicyDefaultValuesField
-	}
+	st.ApplyPolicyDefaultValues = pb.ApplyPolicyDefaultValues
 	autoscaleField, err := autoScaleFromPb(pb.Autoscale)
 	if err != nil {
 		return nil, err
@@ -7660,10 +6626,7 @@ func createClusterFromPb(pb *createClusterPb) (*CreateCluster, error) {
 	if autoscaleField != nil {
 		st.Autoscale = autoscaleField
 	}
-	autoterminationMinutesField := &pb.AutoterminationMinutes
-	if autoterminationMinutesField != nil {
-		st.AutoterminationMinutes = *autoterminationMinutesField
-	}
+	st.AutoterminationMinutes = pb.AutoterminationMinutes
 	awsAttributesField, err := AwsAttributesFromPb(pb.AwsAttributes)
 	if err != nil {
 		return nil, err
@@ -7692,23 +6655,9 @@ func createClusterFromPb(pb *createClusterPb) (*CreateCluster, error) {
 	if clusterLogConfField != nil {
 		st.ClusterLogConf = clusterLogConfField
 	}
-	clusterNameField := &pb.ClusterName
-	if clusterNameField != nil {
-		st.ClusterName = *clusterNameField
-	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-	dataSecurityModeField := &pb.DataSecurityMode
-	if dataSecurityModeField != nil {
-		st.DataSecurityMode = *dataSecurityModeField
-	}
+	st.ClusterName = pb.ClusterName
+	st.CustomTags = pb.CustomTags
+	st.DataSecurityMode = pb.DataSecurityMode
 	dockerImageField, err := dockerImageFromPb(pb.DockerImage)
 	if err != nil {
 		return nil, err
@@ -7716,22 +6665,10 @@ func createClusterFromPb(pb *createClusterPb) (*CreateCluster, error) {
 	if dockerImageField != nil {
 		st.DockerImage = dockerImageField
 	}
-	driverInstancePoolIdField := &pb.DriverInstancePoolId
-	if driverInstancePoolIdField != nil {
-		st.DriverInstancePoolId = *driverInstancePoolIdField
-	}
-	driverNodeTypeIdField := &pb.DriverNodeTypeId
-	if driverNodeTypeIdField != nil {
-		st.DriverNodeTypeId = *driverNodeTypeIdField
-	}
-	enableElasticDiskField := &pb.EnableElasticDisk
-	if enableElasticDiskField != nil {
-		st.EnableElasticDisk = *enableElasticDiskField
-	}
-	enableLocalDiskEncryptionField := &pb.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionField != nil {
-		st.EnableLocalDiskEncryption = *enableLocalDiskEncryptionField
-	}
+	st.DriverInstancePoolId = pb.DriverInstancePoolId
+	st.DriverNodeTypeId = pb.DriverNodeTypeId
+	st.EnableElasticDisk = pb.EnableElasticDisk
+	st.EnableLocalDiskEncryption = pb.EnableLocalDiskEncryption
 	gcpAttributesField, err := GcpAttributesFromPb(pb.GcpAttributes)
 	if err != nil {
 		return nil, err
@@ -7741,83 +6678,29 @@ func createClusterFromPb(pb *createClusterPb) (*CreateCluster, error) {
 	}
 
 	var initScriptsField []InitScriptInfo
-	for _, item := range pb.InitScripts {
-		itemField, err := InitScriptInfoFromPb(&item)
+	for _, itemPb := range pb.InitScripts {
+		item, err := InitScriptInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			initScriptsField = append(initScriptsField, *itemField)
+		if item != nil {
+			initScriptsField = append(initScriptsField, *item)
 		}
 	}
 	st.InitScripts = initScriptsField
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
-	isSingleNodeField := &pb.IsSingleNode
-	if isSingleNodeField != nil {
-		st.IsSingleNode = *isSingleNodeField
-	}
-	kindField := &pb.Kind
-	if kindField != nil {
-		st.Kind = *kindField
-	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
-	numWorkersField := &pb.NumWorkers
-	if numWorkersField != nil {
-		st.NumWorkers = *numWorkersField
-	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	runtimeEngineField := &pb.RuntimeEngine
-	if runtimeEngineField != nil {
-		st.RuntimeEngine = *runtimeEngineField
-	}
-	singleUserNameField := &pb.SingleUserName
-	if singleUserNameField != nil {
-		st.SingleUserName = *singleUserNameField
-	}
-
-	sparkConfField := map[string]string{}
-	for k, v := range pb.SparkConf {
-		itemField := &v
-		if itemField != nil {
-			sparkConfField[k] = *itemField
-		}
-	}
-	st.SparkConf = sparkConfField
-
-	sparkEnvVarsField := map[string]string{}
-	for k, v := range pb.SparkEnvVars {
-		itemField := &v
-		if itemField != nil {
-			sparkEnvVarsField[k] = *itemField
-		}
-	}
-	st.SparkEnvVars = sparkEnvVarsField
-	sparkVersionField := &pb.SparkVersion
-	if sparkVersionField != nil {
-		st.SparkVersion = *sparkVersionField
-	}
-
-	var sshPublicKeysField []string
-	for _, item := range pb.SshPublicKeys {
-		itemField := &item
-		if itemField != nil {
-			sshPublicKeysField = append(sshPublicKeysField, *itemField)
-		}
-	}
-	st.SshPublicKeys = sshPublicKeysField
-	useMlRuntimeField := &pb.UseMlRuntime
-	if useMlRuntimeField != nil {
-		st.UseMlRuntime = *useMlRuntimeField
-	}
+	st.InstancePoolId = pb.InstancePoolId
+	st.IsSingleNode = pb.IsSingleNode
+	st.Kind = pb.Kind
+	st.NodeTypeId = pb.NodeTypeId
+	st.NumWorkers = pb.NumWorkers
+	st.PolicyId = pb.PolicyId
+	st.RuntimeEngine = pb.RuntimeEngine
+	st.SingleUserName = pb.SingleUserName
+	st.SparkConf = pb.SparkConf
+	st.SparkEnvVars = pb.SparkEnvVars
+	st.SparkVersion = pb.SparkVersion
+	st.SshPublicKeys = pb.SshPublicKeys
+	st.UseMlRuntime = pb.UseMlRuntime
 	workloadTypeField, err := workloadTypeFromPb(pb.WorkloadType)
 	if err != nil {
 		return nil, err
@@ -7839,9 +6722,11 @@ func (st createClusterPb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateClusterResponse struct {
+
+	// Wire name: 'cluster_id'
 	ClusterId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createClusterResponseToPb(st *CreateClusterResponse) (*createClusterResponsePb, error) {
@@ -7849,10 +6734,7 @@ func createClusterResponseToPb(st *CreateClusterResponse) (*createClusterRespons
 		return nil, nil
 	}
 	pb := &createClusterResponsePb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7894,10 +6776,7 @@ func createClusterResponseFromPb(pb *createClusterResponsePb) (*CreateClusterRes
 		return nil, nil
 	}
 	st := &CreateClusterResponse{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7913,11 +6792,13 @@ func (st createClusterResponsePb) MarshalJSON() ([]byte, error) {
 
 type CreateContext struct {
 	// Running cluster id
+	// Wire name: 'clusterId'
 	ClusterId string
 
+	// Wire name: 'language'
 	Language Language
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createContextToPb(st *CreateContext) (*createContextPb, error) {
@@ -7925,15 +6806,9 @@ func createContextToPb(st *CreateContext) (*createContextPb, error) {
 		return nil, nil
 	}
 	pb := &createContextPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	languagePb := &st.Language
-	if languagePb != nil {
-		pb.Language = *languagePb
-	}
+	pb.Language = st.Language
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7978,14 +6853,8 @@ func createContextFromPb(pb *createContextPb) (*CreateContext, error) {
 		return nil, nil
 	}
 	st := &CreateContext{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	languageField := &pb.Language
-	if languageField != nil {
-		st.Language = *languageField
-	}
+	st.ClusterId = pb.ClusterId
+	st.Language = pb.Language
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8002,27 +6871,33 @@ func (st createContextPb) MarshalJSON() ([]byte, error) {
 type CreateInstancePool struct {
 	// Attributes related to instance pools running on Amazon Web Services. If
 	// not specified at pool creation, a set of default values will be used.
+	// Wire name: 'aws_attributes'
 	AwsAttributes *InstancePoolAwsAttributes
 	// Attributes related to instance pools running on Azure. If not specified
 	// at pool creation, a set of default values will be used.
+	// Wire name: 'azure_attributes'
 	AzureAttributes *InstancePoolAzureAttributes
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
+	// Wire name: 'disk_spec'
 	DiskSpec *DiskSpec
 	// Autoscaling Local Storage: when enabled, this instances in this pool will
 	// dynamically acquire additional disk space when its Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
 	// permissions to function correctly - refer to the User Guide for more
 	// details.
+	// Wire name: 'enable_elastic_disk'
 	EnableElasticDisk bool
 	// Attributes related to instance pools running on Google Cloud Platform. If
 	// not specified at pool creation, a set of default values will be used.
+	// Wire name: 'gcp_attributes'
 	GcpAttributes *InstancePoolGcpAttributes
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
@@ -8031,31 +6906,38 @@ type CreateInstancePool struct {
 	// threshold must be between 0 and 10000 minutes. Users can also set this
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
+	// Wire name: 'idle_instance_autotermination_minutes'
 	IdleInstanceAutoterminationMinutes int
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
+	// Wire name: 'instance_pool_name'
 	InstancePoolName string
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
 	// further instance provisioning will fail during upsize requests.
+	// Wire name: 'max_capacity'
 	MaxCapacity int
 	// Minimum number of idle instances to keep in the instance pool
+	// Wire name: 'min_idle_instances'
 	MinIdleInstances int
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 	// Custom Docker Image BYOC
+	// Wire name: 'preloaded_docker_images'
 	PreloadedDockerImages []DockerImage
 	// A list containing at most one preloaded Spark image version for the pool.
 	// Pool-backed clusters started with the preloaded Spark version will start
 	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
+	// Wire name: 'preloaded_spark_versions'
 	PreloadedSparkVersions []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createInstancePoolToPb(st *CreateInstancePool) (*createInstancePoolPb, error) {
@@ -8079,14 +6961,7 @@ func createInstancePoolToPb(st *CreateInstancePool) (*createInstancePoolPb, erro
 		pb.AzureAttributes = azureAttributesPb
 	}
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
 	diskSpecPb, err := diskSpecToPb(st.DiskSpec)
 	if err != nil {
@@ -8096,10 +6971,7 @@ func createInstancePoolToPb(st *CreateInstancePool) (*createInstancePoolPb, erro
 		pb.DiskSpec = diskSpecPb
 	}
 
-	enableElasticDiskPb := &st.EnableElasticDisk
-	if enableElasticDiskPb != nil {
-		pb.EnableElasticDisk = *enableElasticDiskPb
-	}
+	pb.EnableElasticDisk = st.EnableElasticDisk
 
 	gcpAttributesPb, err := instancePoolGcpAttributesToPb(st.GcpAttributes)
 	if err != nil {
@@ -8109,30 +6981,15 @@ func createInstancePoolToPb(st *CreateInstancePool) (*createInstancePoolPb, erro
 		pb.GcpAttributes = gcpAttributesPb
 	}
 
-	idleInstanceAutoterminationMinutesPb := &st.IdleInstanceAutoterminationMinutes
-	if idleInstanceAutoterminationMinutesPb != nil {
-		pb.IdleInstanceAutoterminationMinutes = *idleInstanceAutoterminationMinutesPb
-	}
+	pb.IdleInstanceAutoterminationMinutes = st.IdleInstanceAutoterminationMinutes
 
-	instancePoolNamePb := &st.InstancePoolName
-	if instancePoolNamePb != nil {
-		pb.InstancePoolName = *instancePoolNamePb
-	}
+	pb.InstancePoolName = st.InstancePoolName
 
-	maxCapacityPb := &st.MaxCapacity
-	if maxCapacityPb != nil {
-		pb.MaxCapacity = *maxCapacityPb
-	}
+	pb.MaxCapacity = st.MaxCapacity
 
-	minIdleInstancesPb := &st.MinIdleInstances
-	if minIdleInstancesPb != nil {
-		pb.MinIdleInstances = *minIdleInstancesPb
-	}
+	pb.MinIdleInstances = st.MinIdleInstances
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
 	var preloadedDockerImagesPb []dockerImagePb
 	for _, item := range st.PreloadedDockerImages {
@@ -8146,14 +7003,7 @@ func createInstancePoolToPb(st *CreateInstancePool) (*createInstancePoolPb, erro
 	}
 	pb.PreloadedDockerImages = preloadedDockerImagesPb
 
-	var preloadedSparkVersionsPb []string
-	for _, item := range st.PreloadedSparkVersions {
-		itemPb := &item
-		if itemPb != nil {
-			preloadedSparkVersionsPb = append(preloadedSparkVersionsPb, *itemPb)
-		}
-	}
-	pb.PreloadedSparkVersions = preloadedSparkVersionsPb
+	pb.PreloadedSparkVersions = st.PreloadedSparkVersions
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8262,15 +7112,7 @@ func createInstancePoolFromPb(pb *createInstancePoolPb) (*CreateInstancePool, er
 	if azureAttributesField != nil {
 		st.AzureAttributes = azureAttributesField
 	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
+	st.CustomTags = pb.CustomTags
 	diskSpecField, err := diskSpecFromPb(pb.DiskSpec)
 	if err != nil {
 		return nil, err
@@ -8278,10 +7120,7 @@ func createInstancePoolFromPb(pb *createInstancePoolPb) (*CreateInstancePool, er
 	if diskSpecField != nil {
 		st.DiskSpec = diskSpecField
 	}
-	enableElasticDiskField := &pb.EnableElasticDisk
-	if enableElasticDiskField != nil {
-		st.EnableElasticDisk = *enableElasticDiskField
-	}
+	st.EnableElasticDisk = pb.EnableElasticDisk
 	gcpAttributesField, err := instancePoolGcpAttributesFromPb(pb.GcpAttributes)
 	if err != nil {
 		return nil, err
@@ -8289,47 +7128,24 @@ func createInstancePoolFromPb(pb *createInstancePoolPb) (*CreateInstancePool, er
 	if gcpAttributesField != nil {
 		st.GcpAttributes = gcpAttributesField
 	}
-	idleInstanceAutoterminationMinutesField := &pb.IdleInstanceAutoterminationMinutes
-	if idleInstanceAutoterminationMinutesField != nil {
-		st.IdleInstanceAutoterminationMinutes = *idleInstanceAutoterminationMinutesField
-	}
-	instancePoolNameField := &pb.InstancePoolName
-	if instancePoolNameField != nil {
-		st.InstancePoolName = *instancePoolNameField
-	}
-	maxCapacityField := &pb.MaxCapacity
-	if maxCapacityField != nil {
-		st.MaxCapacity = *maxCapacityField
-	}
-	minIdleInstancesField := &pb.MinIdleInstances
-	if minIdleInstancesField != nil {
-		st.MinIdleInstances = *minIdleInstancesField
-	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
+	st.IdleInstanceAutoterminationMinutes = pb.IdleInstanceAutoterminationMinutes
+	st.InstancePoolName = pb.InstancePoolName
+	st.MaxCapacity = pb.MaxCapacity
+	st.MinIdleInstances = pb.MinIdleInstances
+	st.NodeTypeId = pb.NodeTypeId
 
 	var preloadedDockerImagesField []DockerImage
-	for _, item := range pb.PreloadedDockerImages {
-		itemField, err := dockerImageFromPb(&item)
+	for _, itemPb := range pb.PreloadedDockerImages {
+		item, err := dockerImageFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			preloadedDockerImagesField = append(preloadedDockerImagesField, *itemField)
+		if item != nil {
+			preloadedDockerImagesField = append(preloadedDockerImagesField, *item)
 		}
 	}
 	st.PreloadedDockerImages = preloadedDockerImagesField
-
-	var preloadedSparkVersionsField []string
-	for _, item := range pb.PreloadedSparkVersions {
-		itemField := &item
-		if itemField != nil {
-			preloadedSparkVersionsField = append(preloadedSparkVersionsField, *itemField)
-		}
-	}
-	st.PreloadedSparkVersions = preloadedSparkVersionsField
+	st.PreloadedSparkVersions = pb.PreloadedSparkVersions
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8345,9 +7161,10 @@ func (st createInstancePoolPb) MarshalJSON() ([]byte, error) {
 
 type CreateInstancePoolResponse struct {
 	// The ID of the created instance pool.
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createInstancePoolResponseToPb(st *CreateInstancePoolResponse) (*createInstancePoolResponsePb, error) {
@@ -8355,10 +7172,7 @@ func createInstancePoolResponseToPb(st *CreateInstancePoolResponse) (*createInst
 		return nil, nil
 	}
 	pb := &createInstancePoolResponsePb{}
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8401,10 +7215,7 @@ func createInstancePoolResponseFromPb(pb *createInstancePoolResponsePb) (*Create
 		return nil, nil
 	}
 	st := &CreateInstancePoolResponse{}
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
+	st.InstancePoolId = pb.InstancePoolId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8423,17 +7234,22 @@ type CreatePolicy struct {
 	// Definition Language].
 	//
 	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
+	// Wire name: 'definition'
 	Definition string
 	// Additional human-readable description of the cluster policy.
+	// Wire name: 'description'
 	Description string
 	// A list of libraries to be installed on the next cluster restart that uses
 	// this policy. The maximum number of libraries is 500.
+	// Wire name: 'libraries'
 	Libraries []Library
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.
+	// Wire name: 'max_clusters_per_user'
 	MaxClustersPerUser int64
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
+	// Wire name: 'name'
 	Name string
 	// Policy definition JSON document expressed in [Databricks Policy
 	// Definition Language]. The JSON document must be passed as a string and
@@ -8444,6 +7260,7 @@ type CreatePolicy struct {
 	// policy definition.
 	//
 	// [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
+	// Wire name: 'policy_family_definition_overrides'
 	PolicyFamilyDefinitionOverrides string
 	// ID of the policy family. The cluster policy's policy definition inherits
 	// the policy family's policy definition.
@@ -8451,9 +7268,10 @@ type CreatePolicy struct {
 	// Cannot be used with `definition`. Use
 	// `policy_family_definition_overrides` instead to customize the policy
 	// definition.
+	// Wire name: 'policy_family_id'
 	PolicyFamilyId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createPolicyToPb(st *CreatePolicy) (*createPolicyPb, error) {
@@ -8461,15 +7279,9 @@ func createPolicyToPb(st *CreatePolicy) (*createPolicyPb, error) {
 		return nil, nil
 	}
 	pb := &createPolicyPb{}
-	definitionPb := &st.Definition
-	if definitionPb != nil {
-		pb.Definition = *definitionPb
-	}
+	pb.Definition = st.Definition
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
 	var librariesPb []LibraryPb
 	for _, item := range st.Libraries {
@@ -8483,25 +7295,13 @@ func createPolicyToPb(st *CreatePolicy) (*createPolicyPb, error) {
 	}
 	pb.Libraries = librariesPb
 
-	maxClustersPerUserPb := &st.MaxClustersPerUser
-	if maxClustersPerUserPb != nil {
-		pb.MaxClustersPerUser = *maxClustersPerUserPb
-	}
+	pb.MaxClustersPerUser = st.MaxClustersPerUser
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	policyFamilyDefinitionOverridesPb := &st.PolicyFamilyDefinitionOverrides
-	if policyFamilyDefinitionOverridesPb != nil {
-		pb.PolicyFamilyDefinitionOverrides = *policyFamilyDefinitionOverridesPb
-	}
+	pb.PolicyFamilyDefinitionOverrides = st.PolicyFamilyDefinitionOverrides
 
-	policyFamilyIdPb := &st.PolicyFamilyId
-	if policyFamilyIdPb != nil {
-		pb.PolicyFamilyId = *policyFamilyIdPb
-	}
+	pb.PolicyFamilyId = st.PolicyFamilyId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8575,42 +7375,24 @@ func createPolicyFromPb(pb *createPolicyPb) (*CreatePolicy, error) {
 		return nil, nil
 	}
 	st := &CreatePolicy{}
-	definitionField := &pb.Definition
-	if definitionField != nil {
-		st.Definition = *definitionField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
+	st.Definition = pb.Definition
+	st.Description = pb.Description
 
 	var librariesField []Library
-	for _, item := range pb.Libraries {
-		itemField, err := LibraryFromPb(&item)
+	for _, itemPb := range pb.Libraries {
+		item, err := LibraryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			librariesField = append(librariesField, *itemField)
+		if item != nil {
+			librariesField = append(librariesField, *item)
 		}
 	}
 	st.Libraries = librariesField
-	maxClustersPerUserField := &pb.MaxClustersPerUser
-	if maxClustersPerUserField != nil {
-		st.MaxClustersPerUser = *maxClustersPerUserField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	policyFamilyDefinitionOverridesField := &pb.PolicyFamilyDefinitionOverrides
-	if policyFamilyDefinitionOverridesField != nil {
-		st.PolicyFamilyDefinitionOverrides = *policyFamilyDefinitionOverridesField
-	}
-	policyFamilyIdField := &pb.PolicyFamilyId
-	if policyFamilyIdField != nil {
-		st.PolicyFamilyId = *policyFamilyIdField
-	}
+	st.MaxClustersPerUser = pb.MaxClustersPerUser
+	st.Name = pb.Name
+	st.PolicyFamilyDefinitionOverrides = pb.PolicyFamilyDefinitionOverrides
+	st.PolicyFamilyId = pb.PolicyFamilyId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8626,9 +7408,10 @@ func (st createPolicyPb) MarshalJSON() ([]byte, error) {
 
 type CreatePolicyResponse struct {
 	// Canonical unique identifier for the cluster policy.
+	// Wire name: 'policy_id'
 	PolicyId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createPolicyResponseToPb(st *CreatePolicyResponse) (*createPolicyResponsePb, error) {
@@ -8636,10 +7419,7 @@ func createPolicyResponseToPb(st *CreatePolicyResponse) (*createPolicyResponsePb
 		return nil, nil
 	}
 	pb := &createPolicyResponsePb{}
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8682,10 +7462,7 @@ func createPolicyResponseFromPb(pb *createPolicyResponsePb) (*CreatePolicyRespon
 		return nil, nil
 	}
 	st := &CreatePolicyResponse{}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.PolicyId = pb.PolicyId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8701,9 +7478,10 @@ func (st createPolicyResponsePb) MarshalJSON() ([]byte, error) {
 
 type CreateResponse struct {
 	// The global init script ID.
+	// Wire name: 'script_id'
 	ScriptId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createResponseToPb(st *CreateResponse) (*createResponsePb, error) {
@@ -8711,10 +7489,7 @@ func createResponseToPb(st *CreateResponse) (*createResponsePb, error) {
 		return nil, nil
 	}
 	pb := &createResponsePb{}
-	scriptIdPb := &st.ScriptId
-	if scriptIdPb != nil {
-		pb.ScriptId = *scriptIdPb
-	}
+	pb.ScriptId = st.ScriptId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8757,10 +7532,7 @@ func createResponseFromPb(pb *createResponsePb) (*CreateResponse, error) {
 		return nil, nil
 	}
 	st := &CreateResponse{}
-	scriptIdField := &pb.ScriptId
-	if scriptIdField != nil {
-		st.ScriptId = *scriptIdField
-	}
+	st.ScriptId = pb.ScriptId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8775,9 +7547,11 @@ func (st createResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type Created struct {
+
+	// Wire name: 'id'
 	Id string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createdToPb(st *Created) (*createdPb, error) {
@@ -8785,10 +7559,7 @@ func createdToPb(st *Created) (*createdPb, error) {
 		return nil, nil
 	}
 	pb := &createdPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8830,10 +7601,7 @@ func createdFromPb(pb *createdPb) (*Created, error) {
 		return nil, nil
 	}
 	st := &Created{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8855,15 +7623,17 @@ type CustomPolicyTag struct {
 	// - Follows the regex pattern defined in
 	// cluster-common/conf/src/ClusterTagConstraints.scala
 	// (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L17)
+	// Wire name: 'key'
 	Key string
 	// The value of the tag.
 	//
 	// - Follows the regex pattern defined in
 	// cluster-common/conf/src/ClusterTagConstraints.scala
 	// (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L24)
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func CustomPolicyTagToPb(st *CustomPolicyTag) (*CustomPolicyTagPb, error) {
@@ -8871,15 +7641,9 @@ func CustomPolicyTagToPb(st *CustomPolicyTag) (*CustomPolicyTagPb, error) {
 		return nil, nil
 	}
 	pb := &CustomPolicyTagPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8934,14 +7698,8 @@ func CustomPolicyTagFromPb(pb *CustomPolicyTagPb) (*CustomPolicyTag, error) {
 		return nil, nil
 	}
 	st := &CustomPolicyTag{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8956,15 +7714,20 @@ func (st CustomPolicyTagPb) MarshalJSON() ([]byte, error) {
 }
 
 type DataPlaneEventDetails struct {
+
+	// Wire name: 'event_type'
 	EventType DataPlaneEventDetailsEventType
 
+	// Wire name: 'executor_failures'
 	ExecutorFailures int
 
+	// Wire name: 'host_id'
 	HostId string
 
+	// Wire name: 'timestamp'
 	Timestamp int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dataPlaneEventDetailsToPb(st *DataPlaneEventDetails) (*dataPlaneEventDetailsPb, error) {
@@ -8972,25 +7735,13 @@ func dataPlaneEventDetailsToPb(st *DataPlaneEventDetails) (*dataPlaneEventDetail
 		return nil, nil
 	}
 	pb := &dataPlaneEventDetailsPb{}
-	eventTypePb := &st.EventType
-	if eventTypePb != nil {
-		pb.EventType = *eventTypePb
-	}
+	pb.EventType = st.EventType
 
-	executorFailuresPb := &st.ExecutorFailures
-	if executorFailuresPb != nil {
-		pb.ExecutorFailures = *executorFailuresPb
-	}
+	pb.ExecutorFailures = st.ExecutorFailures
 
-	hostIdPb := &st.HostId
-	if hostIdPb != nil {
-		pb.HostId = *hostIdPb
-	}
+	pb.HostId = st.HostId
 
-	timestampPb := &st.Timestamp
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9038,22 +7789,10 @@ func dataPlaneEventDetailsFromPb(pb *dataPlaneEventDetailsPb) (*DataPlaneEventDe
 		return nil, nil
 	}
 	st := &DataPlaneEventDetails{}
-	eventTypeField := &pb.EventType
-	if eventTypeField != nil {
-		st.EventType = *eventTypeField
-	}
-	executorFailuresField := &pb.ExecutorFailures
-	if executorFailuresField != nil {
-		st.ExecutorFailures = *executorFailuresField
-	}
-	hostIdField := &pb.HostId
-	if hostIdField != nil {
-		st.HostId = *hostIdField
-	}
-	timestampField := &pb.Timestamp
-	if timestampField != nil {
-		st.Timestamp = *timestampField
-	}
+	st.EventType = pb.EventType
+	st.ExecutorFailures = pb.ExecutorFailures
+	st.HostId = pb.HostId
+	st.Timestamp = pb.Timestamp
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9222,6 +7961,7 @@ func dataSecurityModeFromPb(pb *dataSecurityModePb) (*DataSecurityMode, error) {
 // A storage location in DBFS
 type DbfsStorageInfo struct {
 	// dbfs destination, e.g. `dbfs:/my/path`
+	// Wire name: 'destination'
 	Destination string
 }
 
@@ -9230,10 +7970,7 @@ func dbfsStorageInfoToPb(st *DbfsStorageInfo) (*dbfsStorageInfoPb, error) {
 		return nil, nil
 	}
 	pb := &dbfsStorageInfoPb{}
-	destinationPb := &st.Destination
-	if destinationPb != nil {
-		pb.Destination = *destinationPb
-	}
+	pb.Destination = st.Destination
 
 	return pb, nil
 }
@@ -9273,16 +8010,14 @@ func dbfsStorageInfoFromPb(pb *dbfsStorageInfoPb) (*DbfsStorageInfo, error) {
 		return nil, nil
 	}
 	st := &DbfsStorageInfo{}
-	destinationField := &pb.Destination
-	if destinationField != nil {
-		st.Destination = *destinationField
-	}
+	st.Destination = pb.Destination
 
 	return st, nil
 }
 
 type DeleteCluster struct {
 	// The cluster to be terminated.
+	// Wire name: 'cluster_id'
 	ClusterId string
 }
 
@@ -9291,10 +8026,7 @@ func deleteClusterToPb(st *DeleteCluster) (*deleteClusterPb, error) {
 		return nil, nil
 	}
 	pb := &deleteClusterPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	return pb, nil
 }
@@ -9334,10 +8066,7 @@ func deleteClusterFromPb(pb *deleteClusterPb) (*DeleteCluster, error) {
 		return nil, nil
 	}
 	st := &DeleteCluster{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	return st, nil
 }
@@ -9394,7 +8123,8 @@ func deleteClusterResponseFromPb(pb *deleteClusterResponsePb) (*DeleteClusterRes
 // Delete init script
 type DeleteGlobalInitScriptRequest struct {
 	// The ID of the global init script.
-	ScriptId string
+	// Wire name: 'script_id'
+	ScriptId string `tf:"-"`
 }
 
 func deleteGlobalInitScriptRequestToPb(st *DeleteGlobalInitScriptRequest) (*deleteGlobalInitScriptRequestPb, error) {
@@ -9402,10 +8132,7 @@ func deleteGlobalInitScriptRequestToPb(st *DeleteGlobalInitScriptRequest) (*dele
 		return nil, nil
 	}
 	pb := &deleteGlobalInitScriptRequestPb{}
-	scriptIdPb := &st.ScriptId
-	if scriptIdPb != nil {
-		pb.ScriptId = *scriptIdPb
-	}
+	pb.ScriptId = st.ScriptId
 
 	return pb, nil
 }
@@ -9445,16 +8172,14 @@ func deleteGlobalInitScriptRequestFromPb(pb *deleteGlobalInitScriptRequestPb) (*
 		return nil, nil
 	}
 	st := &DeleteGlobalInitScriptRequest{}
-	scriptIdField := &pb.ScriptId
-	if scriptIdField != nil {
-		st.ScriptId = *scriptIdField
-	}
+	st.ScriptId = pb.ScriptId
 
 	return st, nil
 }
 
 type DeleteInstancePool struct {
 	// The instance pool to be terminated.
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 }
 
@@ -9463,10 +8188,7 @@ func deleteInstancePoolToPb(st *DeleteInstancePool) (*deleteInstancePoolPb, erro
 		return nil, nil
 	}
 	pb := &deleteInstancePoolPb{}
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
 	return pb, nil
 }
@@ -9506,10 +8228,7 @@ func deleteInstancePoolFromPb(pb *deleteInstancePoolPb) (*DeleteInstancePool, er
 		return nil, nil
 	}
 	st := &DeleteInstancePool{}
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
+	st.InstancePoolId = pb.InstancePoolId
 
 	return st, nil
 }
@@ -9565,6 +8284,7 @@ func deleteInstancePoolResponseFromPb(pb *deleteInstancePoolResponsePb) (*Delete
 
 type DeletePolicy struct {
 	// The ID of the policy to delete.
+	// Wire name: 'policy_id'
 	PolicyId string
 }
 
@@ -9573,10 +8293,7 @@ func deletePolicyToPb(st *DeletePolicy) (*deletePolicyPb, error) {
 		return nil, nil
 	}
 	pb := &deletePolicyPb{}
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	return pb, nil
 }
@@ -9616,10 +8333,7 @@ func deletePolicyFromPb(pb *deletePolicyPb) (*DeletePolicy, error) {
 		return nil, nil
 	}
 	st := &DeletePolicy{}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.PolicyId = pb.PolicyId
 
 	return st, nil
 }
@@ -9723,8 +8437,11 @@ func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
 }
 
 type DestroyContext struct {
+
+	// Wire name: 'clusterId'
 	ClusterId string
 
+	// Wire name: 'contextId'
 	ContextId string
 }
 
@@ -9733,15 +8450,9 @@ func destroyContextToPb(st *DestroyContext) (*destroyContextPb, error) {
 		return nil, nil
 	}
 	pb := &destroyContextPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	contextIdPb := &st.ContextId
-	if contextIdPb != nil {
-		pb.ContextId = *contextIdPb
-	}
+	pb.ContextId = st.ContextId
 
 	return pb, nil
 }
@@ -9782,14 +8493,8 @@ func destroyContextFromPb(pb *destroyContextPb) (*DestroyContext, error) {
 		return nil, nil
 	}
 	st := &DestroyContext{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	contextIdField := &pb.ContextId
-	if contextIdField != nil {
-		st.ContextId = *contextIdField
-	}
+	st.ClusterId = pb.ClusterId
+	st.ContextId = pb.ContextId
 
 	return st, nil
 }
@@ -9864,8 +8569,10 @@ type DiskSpec struct {
 	//
 	// Disks will be mounted at: - For AWS: `/ebs0`, `/ebs1`, and etc. - For
 	// Azure: `/remote_volume0`, `/remote_volume1`, and etc.
+	// Wire name: 'disk_count'
 	DiskCount int
 
+	// Wire name: 'disk_iops'
 	DiskIops int
 	// The size of each disk (in GiB) launched for each instance. Values must
 	// fall into the supported range for a particular instance type.
@@ -9875,13 +8582,16 @@ type DiskSpec struct {
 	//
 	// For Azure: - Premium LRS (SSD): 1 - 1023 GiB - Standard LRS (HDD): 1-
 	// 1023 GiB
+	// Wire name: 'disk_size'
 	DiskSize int
 
+	// Wire name: 'disk_throughput'
 	DiskThroughput int
 	// The type of disks that will be launched with this cluster.
+	// Wire name: 'disk_type'
 	DiskType *DiskType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func diskSpecToPb(st *DiskSpec) (*diskSpecPb, error) {
@@ -9889,25 +8599,13 @@ func diskSpecToPb(st *DiskSpec) (*diskSpecPb, error) {
 		return nil, nil
 	}
 	pb := &diskSpecPb{}
-	diskCountPb := &st.DiskCount
-	if diskCountPb != nil {
-		pb.DiskCount = *diskCountPb
-	}
+	pb.DiskCount = st.DiskCount
 
-	diskIopsPb := &st.DiskIops
-	if diskIopsPb != nil {
-		pb.DiskIops = *diskIopsPb
-	}
+	pb.DiskIops = st.DiskIops
 
-	diskSizePb := &st.DiskSize
-	if diskSizePb != nil {
-		pb.DiskSize = *diskSizePb
-	}
+	pb.DiskSize = st.DiskSize
 
-	diskThroughputPb := &st.DiskThroughput
-	if diskThroughputPb != nil {
-		pb.DiskThroughput = *diskThroughputPb
-	}
+	pb.DiskThroughput = st.DiskThroughput
 
 	diskTypePb, err := diskTypeToPb(st.DiskType)
 	if err != nil {
@@ -9988,22 +8686,10 @@ func diskSpecFromPb(pb *diskSpecPb) (*DiskSpec, error) {
 		return nil, nil
 	}
 	st := &DiskSpec{}
-	diskCountField := &pb.DiskCount
-	if diskCountField != nil {
-		st.DiskCount = *diskCountField
-	}
-	diskIopsField := &pb.DiskIops
-	if diskIopsField != nil {
-		st.DiskIops = *diskIopsField
-	}
-	diskSizeField := &pb.DiskSize
-	if diskSizeField != nil {
-		st.DiskSize = *diskSizeField
-	}
-	diskThroughputField := &pb.DiskThroughput
-	if diskThroughputField != nil {
-		st.DiskThroughput = *diskThroughputField
-	}
+	st.DiskCount = pb.DiskCount
+	st.DiskIops = pb.DiskIops
+	st.DiskSize = pb.DiskSize
+	st.DiskThroughput = pb.DiskThroughput
 	diskTypeField, err := diskTypeFromPb(pb.DiskType)
 	if err != nil {
 		return nil, err
@@ -10028,9 +8714,11 @@ func (st diskSpecPb) MarshalJSON() ([]byte, error) {
 type DiskType struct {
 	// All Azure Disk types that Databricks supports. See
 	// https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks
+	// Wire name: 'azure_disk_volume_type'
 	AzureDiskVolumeType DiskTypeAzureDiskVolumeType
 	// All EBS volume types that Databricks supports. See
 	// https://aws.amazon.com/ebs/details/ for details.
+	// Wire name: 'ebs_volume_type'
 	EbsVolumeType DiskTypeEbsVolumeType
 }
 
@@ -10039,15 +8727,9 @@ func diskTypeToPb(st *DiskType) (*diskTypePb, error) {
 		return nil, nil
 	}
 	pb := &diskTypePb{}
-	azureDiskVolumeTypePb := &st.AzureDiskVolumeType
-	if azureDiskVolumeTypePb != nil {
-		pb.AzureDiskVolumeType = *azureDiskVolumeTypePb
-	}
+	pb.AzureDiskVolumeType = st.AzureDiskVolumeType
 
-	ebsVolumeTypePb := &st.EbsVolumeType
-	if ebsVolumeTypePb != nil {
-		pb.EbsVolumeType = *ebsVolumeTypePb
-	}
+	pb.EbsVolumeType = st.EbsVolumeType
 
 	return pb, nil
 }
@@ -10091,14 +8773,8 @@ func diskTypeFromPb(pb *diskTypePb) (*DiskType, error) {
 		return nil, nil
 	}
 	st := &DiskType{}
-	azureDiskVolumeTypeField := &pb.AzureDiskVolumeType
-	if azureDiskVolumeTypeField != nil {
-		st.AzureDiskVolumeType = *azureDiskVolumeTypeField
-	}
-	ebsVolumeTypeField := &pb.EbsVolumeType
-	if ebsVolumeTypeField != nil {
-		st.EbsVolumeType = *ebsVolumeTypeField
-	}
+	st.AzureDiskVolumeType = pb.AzureDiskVolumeType
+	st.EbsVolumeType = pb.EbsVolumeType
 
 	return st, nil
 }
@@ -10197,11 +8873,13 @@ func diskTypeEbsVolumeTypeFromPb(pb *diskTypeEbsVolumeTypePb) (*DiskTypeEbsVolum
 
 type DockerBasicAuth struct {
 	// Password of the user
+	// Wire name: 'password'
 	Password string
 	// Name of the user
+	// Wire name: 'username'
 	Username string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dockerBasicAuthToPb(st *DockerBasicAuth) (*dockerBasicAuthPb, error) {
@@ -10209,15 +8887,9 @@ func dockerBasicAuthToPb(st *DockerBasicAuth) (*dockerBasicAuthPb, error) {
 		return nil, nil
 	}
 	pb := &dockerBasicAuthPb{}
-	passwordPb := &st.Password
-	if passwordPb != nil {
-		pb.Password = *passwordPb
-	}
+	pb.Password = st.Password
 
-	usernamePb := &st.Username
-	if usernamePb != nil {
-		pb.Username = *usernamePb
-	}
+	pb.Username = st.Username
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10262,14 +8934,8 @@ func dockerBasicAuthFromPb(pb *dockerBasicAuthPb) (*DockerBasicAuth, error) {
 		return nil, nil
 	}
 	st := &DockerBasicAuth{}
-	passwordField := &pb.Password
-	if passwordField != nil {
-		st.Password = *passwordField
-	}
-	usernameField := &pb.Username
-	if usernameField != nil {
-		st.Username = *usernameField
-	}
+	st.Password = pb.Password
+	st.Username = pb.Username
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10285,11 +8951,13 @@ func (st dockerBasicAuthPb) MarshalJSON() ([]byte, error) {
 
 type DockerImage struct {
 	// Basic auth with username and password
+	// Wire name: 'basic_auth'
 	BasicAuth *DockerBasicAuth
 	// URL of the docker image.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dockerImageToPb(st *DockerImage) (*dockerImagePb, error) {
@@ -10305,10 +8973,7 @@ func dockerImageToPb(st *DockerImage) (*dockerImagePb, error) {
 		pb.BasicAuth = basicAuthPb
 	}
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10360,10 +9025,7 @@ func dockerImageFromPb(pb *dockerImagePb) (*DockerImage, error) {
 	if basicAuthField != nil {
 		st.BasicAuth = basicAuthField
 	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10427,24 +9089,30 @@ type EditCluster struct {
 	// When set to true, fixed and default values from the policy will be used
 	// for fields that are omitted. When set to false, only fixed values from
 	// the policy will be applied.
+	// Wire name: 'apply_policy_default_values'
 	ApplyPolicyDefaultValues bool
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
+	// Wire name: 'autoscale'
 	Autoscale *AutoScale
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
 	// terminated. If specified, the threshold must be between 10 and 10000
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
+	// Wire name: 'autotermination_minutes'
 	AutoterminationMinutes int
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'aws_attributes'
 	AwsAttributes *AwsAttributes
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'azure_attributes'
 	AzureAttributes *AzureAttributes
 	// ID of the cluster
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
@@ -10453,9 +9121,11 @@ type EditCluster struct {
 	// destination every `5 mins`. The destination of driver logs is
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
+	// Wire name: 'cluster_log_conf'
 	ClusterLogConf *ClusterLogConf
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
+	// Wire name: 'cluster_name'
 	ClusterName string
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -10465,6 +9135,7 @@ type EditCluster struct {
 	//
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
@@ -10495,12 +9166,15 @@ type EditCluster struct {
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
+	// Wire name: 'data_security_mode'
 	DataSecurityMode DataSecurityMode
 	// Custom docker image BYOC
+	// Wire name: 'docker_image'
 	DockerImage *DockerImage
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
+	// Wire name: 'driver_instance_pool_id'
 	DriverInstancePoolId string
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
@@ -10510,28 +9184,35 @@ type EditCluster struct {
 	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
+	// Wire name: 'driver_node_type_id'
 	DriverNodeTypeId string
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
+	// Wire name: 'enable_elastic_disk'
 	EnableElasticDisk bool
 	// Whether to enable LUKS on cluster VMs' local disks
+	// Wire name: 'enable_local_disk_encryption'
 	EnableLocalDiskEncryption bool
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'gcp_attributes'
 	GcpAttributes *GcpAttributes
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
+	// Wire name: 'init_scripts'
 	InitScripts []InitScriptInfo
 	// The optional ID of the instance pool to which the cluster belongs.
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
+	// Wire name: 'is_single_node'
 	IsSingleNode bool
 	// The kind of compute described by this compute specification.
 	//
@@ -10550,12 +9231,14 @@ type EditCluster struct {
 	// CLASSIC_PREVIEW`.
 	//
 	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// Wire name: 'kind'
 	Kind Kind
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
@@ -10567,8 +9250,10 @@ type EditCluster struct {
 	// field will immediately be updated to reflect the target size of 10
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
+	// Wire name: 'num_workers'
 	NumWorkers int
 	// The ID of the cluster policy used to create the cluster if applicable.
+	// Wire name: 'policy_id'
 	PolicyId string
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
@@ -10578,14 +9263,17 @@ type EditCluster struct {
 	//
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
+	// Wire name: 'runtime_engine'
 	RuntimeEngine RuntimeEngine
 	// Single user name if data_security_mode is `SINGLE_USER`
+	// Wire name: 'single_user_name'
 	SingleUserName string
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
+	// Wire name: 'spark_conf'
 	SparkConf map[string]string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
@@ -10600,25 +9288,30 @@ type EditCluster struct {
 	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	// Wire name: 'spark_env_vars'
 	SparkEnvVars map[string]string
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
+	// Wire name: 'spark_version'
 	SparkVersion string
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	// Wire name: 'ssh_public_keys'
 	SshPublicKeys []string
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
+	// Wire name: 'use_ml_runtime'
 	UseMlRuntime bool
 	// Cluster Attributes showing for clusters workload types.
+	// Wire name: 'workload_type'
 	WorkloadType *WorkloadType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func editClusterToPb(st *EditCluster) (*editClusterPb, error) {
@@ -10626,10 +9319,7 @@ func editClusterToPb(st *EditCluster) (*editClusterPb, error) {
 		return nil, nil
 	}
 	pb := &editClusterPb{}
-	applyPolicyDefaultValuesPb := &st.ApplyPolicyDefaultValues
-	if applyPolicyDefaultValuesPb != nil {
-		pb.ApplyPolicyDefaultValues = *applyPolicyDefaultValuesPb
-	}
+	pb.ApplyPolicyDefaultValues = st.ApplyPolicyDefaultValues
 
 	autoscalePb, err := autoScaleToPb(st.Autoscale)
 	if err != nil {
@@ -10639,10 +9329,7 @@ func editClusterToPb(st *EditCluster) (*editClusterPb, error) {
 		pb.Autoscale = autoscalePb
 	}
 
-	autoterminationMinutesPb := &st.AutoterminationMinutes
-	if autoterminationMinutesPb != nil {
-		pb.AutoterminationMinutes = *autoterminationMinutesPb
-	}
+	pb.AutoterminationMinutes = st.AutoterminationMinutes
 
 	awsAttributesPb, err := AwsAttributesToPb(st.AwsAttributes)
 	if err != nil {
@@ -10660,10 +9347,7 @@ func editClusterToPb(st *EditCluster) (*editClusterPb, error) {
 		pb.AzureAttributes = azureAttributesPb
 	}
 
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	clusterLogConfPb, err := ClusterLogConfToPb(st.ClusterLogConf)
 	if err != nil {
@@ -10673,24 +9357,11 @@ func editClusterToPb(st *EditCluster) (*editClusterPb, error) {
 		pb.ClusterLogConf = clusterLogConfPb
 	}
 
-	clusterNamePb := &st.ClusterName
-	if clusterNamePb != nil {
-		pb.ClusterName = *clusterNamePb
-	}
+	pb.ClusterName = st.ClusterName
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	dataSecurityModePb := &st.DataSecurityMode
-	if dataSecurityModePb != nil {
-		pb.DataSecurityMode = *dataSecurityModePb
-	}
+	pb.DataSecurityMode = st.DataSecurityMode
 
 	dockerImagePb, err := dockerImageToPb(st.DockerImage)
 	if err != nil {
@@ -10700,25 +9371,13 @@ func editClusterToPb(st *EditCluster) (*editClusterPb, error) {
 		pb.DockerImage = dockerImagePb
 	}
 
-	driverInstancePoolIdPb := &st.DriverInstancePoolId
-	if driverInstancePoolIdPb != nil {
-		pb.DriverInstancePoolId = *driverInstancePoolIdPb
-	}
+	pb.DriverInstancePoolId = st.DriverInstancePoolId
 
-	driverNodeTypeIdPb := &st.DriverNodeTypeId
-	if driverNodeTypeIdPb != nil {
-		pb.DriverNodeTypeId = *driverNodeTypeIdPb
-	}
+	pb.DriverNodeTypeId = st.DriverNodeTypeId
 
-	enableElasticDiskPb := &st.EnableElasticDisk
-	if enableElasticDiskPb != nil {
-		pb.EnableElasticDisk = *enableElasticDiskPb
-	}
+	pb.EnableElasticDisk = st.EnableElasticDisk
 
-	enableLocalDiskEncryptionPb := &st.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionPb != nil {
-		pb.EnableLocalDiskEncryption = *enableLocalDiskEncryptionPb
-	}
+	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
 
 	gcpAttributesPb, err := GcpAttributesToPb(st.GcpAttributes)
 	if err != nil {
@@ -10740,82 +9399,31 @@ func editClusterToPb(st *EditCluster) (*editClusterPb, error) {
 	}
 	pb.InitScripts = initScriptsPb
 
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
-	isSingleNodePb := &st.IsSingleNode
-	if isSingleNodePb != nil {
-		pb.IsSingleNode = *isSingleNodePb
-	}
+	pb.IsSingleNode = st.IsSingleNode
 
-	kindPb := &st.Kind
-	if kindPb != nil {
-		pb.Kind = *kindPb
-	}
+	pb.Kind = st.Kind
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
-	numWorkersPb := &st.NumWorkers
-	if numWorkersPb != nil {
-		pb.NumWorkers = *numWorkersPb
-	}
+	pb.NumWorkers = st.NumWorkers
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	runtimeEnginePb := &st.RuntimeEngine
-	if runtimeEnginePb != nil {
-		pb.RuntimeEngine = *runtimeEnginePb
-	}
+	pb.RuntimeEngine = st.RuntimeEngine
 
-	singleUserNamePb := &st.SingleUserName
-	if singleUserNamePb != nil {
-		pb.SingleUserName = *singleUserNamePb
-	}
+	pb.SingleUserName = st.SingleUserName
 
-	sparkConfPb := map[string]string{}
-	for k, v := range st.SparkConf {
-		itemPb := &v
-		if itemPb != nil {
-			sparkConfPb[k] = *itemPb
-		}
-	}
-	pb.SparkConf = sparkConfPb
+	pb.SparkConf = st.SparkConf
 
-	sparkEnvVarsPb := map[string]string{}
-	for k, v := range st.SparkEnvVars {
-		itemPb := &v
-		if itemPb != nil {
-			sparkEnvVarsPb[k] = *itemPb
-		}
-	}
-	pb.SparkEnvVars = sparkEnvVarsPb
+	pb.SparkEnvVars = st.SparkEnvVars
 
-	sparkVersionPb := &st.SparkVersion
-	if sparkVersionPb != nil {
-		pb.SparkVersion = *sparkVersionPb
-	}
+	pb.SparkVersion = st.SparkVersion
 
-	var sshPublicKeysPb []string
-	for _, item := range st.SshPublicKeys {
-		itemPb := &item
-		if itemPb != nil {
-			sshPublicKeysPb = append(sshPublicKeysPb, *itemPb)
-		}
-	}
-	pb.SshPublicKeys = sshPublicKeysPb
+	pb.SshPublicKeys = st.SshPublicKeys
 
-	useMlRuntimePb := &st.UseMlRuntime
-	if useMlRuntimePb != nil {
-		pb.UseMlRuntime = *useMlRuntimePb
-	}
+	pb.UseMlRuntime = st.UseMlRuntime
 
 	workloadTypePb, err := workloadTypeToPb(st.WorkloadType)
 	if err != nil {
@@ -11057,10 +9665,7 @@ func editClusterFromPb(pb *editClusterPb) (*EditCluster, error) {
 		return nil, nil
 	}
 	st := &EditCluster{}
-	applyPolicyDefaultValuesField := &pb.ApplyPolicyDefaultValues
-	if applyPolicyDefaultValuesField != nil {
-		st.ApplyPolicyDefaultValues = *applyPolicyDefaultValuesField
-	}
+	st.ApplyPolicyDefaultValues = pb.ApplyPolicyDefaultValues
 	autoscaleField, err := autoScaleFromPb(pb.Autoscale)
 	if err != nil {
 		return nil, err
@@ -11068,10 +9673,7 @@ func editClusterFromPb(pb *editClusterPb) (*EditCluster, error) {
 	if autoscaleField != nil {
 		st.Autoscale = autoscaleField
 	}
-	autoterminationMinutesField := &pb.AutoterminationMinutes
-	if autoterminationMinutesField != nil {
-		st.AutoterminationMinutes = *autoterminationMinutesField
-	}
+	st.AutoterminationMinutes = pb.AutoterminationMinutes
 	awsAttributesField, err := AwsAttributesFromPb(pb.AwsAttributes)
 	if err != nil {
 		return nil, err
@@ -11086,10 +9688,7 @@ func editClusterFromPb(pb *editClusterPb) (*EditCluster, error) {
 	if azureAttributesField != nil {
 		st.AzureAttributes = azureAttributesField
 	}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 	clusterLogConfField, err := ClusterLogConfFromPb(pb.ClusterLogConf)
 	if err != nil {
 		return nil, err
@@ -11097,23 +9696,9 @@ func editClusterFromPb(pb *editClusterPb) (*EditCluster, error) {
 	if clusterLogConfField != nil {
 		st.ClusterLogConf = clusterLogConfField
 	}
-	clusterNameField := &pb.ClusterName
-	if clusterNameField != nil {
-		st.ClusterName = *clusterNameField
-	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-	dataSecurityModeField := &pb.DataSecurityMode
-	if dataSecurityModeField != nil {
-		st.DataSecurityMode = *dataSecurityModeField
-	}
+	st.ClusterName = pb.ClusterName
+	st.CustomTags = pb.CustomTags
+	st.DataSecurityMode = pb.DataSecurityMode
 	dockerImageField, err := dockerImageFromPb(pb.DockerImage)
 	if err != nil {
 		return nil, err
@@ -11121,22 +9706,10 @@ func editClusterFromPb(pb *editClusterPb) (*EditCluster, error) {
 	if dockerImageField != nil {
 		st.DockerImage = dockerImageField
 	}
-	driverInstancePoolIdField := &pb.DriverInstancePoolId
-	if driverInstancePoolIdField != nil {
-		st.DriverInstancePoolId = *driverInstancePoolIdField
-	}
-	driverNodeTypeIdField := &pb.DriverNodeTypeId
-	if driverNodeTypeIdField != nil {
-		st.DriverNodeTypeId = *driverNodeTypeIdField
-	}
-	enableElasticDiskField := &pb.EnableElasticDisk
-	if enableElasticDiskField != nil {
-		st.EnableElasticDisk = *enableElasticDiskField
-	}
-	enableLocalDiskEncryptionField := &pb.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionField != nil {
-		st.EnableLocalDiskEncryption = *enableLocalDiskEncryptionField
-	}
+	st.DriverInstancePoolId = pb.DriverInstancePoolId
+	st.DriverNodeTypeId = pb.DriverNodeTypeId
+	st.EnableElasticDisk = pb.EnableElasticDisk
+	st.EnableLocalDiskEncryption = pb.EnableLocalDiskEncryption
 	gcpAttributesField, err := GcpAttributesFromPb(pb.GcpAttributes)
 	if err != nil {
 		return nil, err
@@ -11146,83 +9719,29 @@ func editClusterFromPb(pb *editClusterPb) (*EditCluster, error) {
 	}
 
 	var initScriptsField []InitScriptInfo
-	for _, item := range pb.InitScripts {
-		itemField, err := InitScriptInfoFromPb(&item)
+	for _, itemPb := range pb.InitScripts {
+		item, err := InitScriptInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			initScriptsField = append(initScriptsField, *itemField)
+		if item != nil {
+			initScriptsField = append(initScriptsField, *item)
 		}
 	}
 	st.InitScripts = initScriptsField
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
-	isSingleNodeField := &pb.IsSingleNode
-	if isSingleNodeField != nil {
-		st.IsSingleNode = *isSingleNodeField
-	}
-	kindField := &pb.Kind
-	if kindField != nil {
-		st.Kind = *kindField
-	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
-	numWorkersField := &pb.NumWorkers
-	if numWorkersField != nil {
-		st.NumWorkers = *numWorkersField
-	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	runtimeEngineField := &pb.RuntimeEngine
-	if runtimeEngineField != nil {
-		st.RuntimeEngine = *runtimeEngineField
-	}
-	singleUserNameField := &pb.SingleUserName
-	if singleUserNameField != nil {
-		st.SingleUserName = *singleUserNameField
-	}
-
-	sparkConfField := map[string]string{}
-	for k, v := range pb.SparkConf {
-		itemField := &v
-		if itemField != nil {
-			sparkConfField[k] = *itemField
-		}
-	}
-	st.SparkConf = sparkConfField
-
-	sparkEnvVarsField := map[string]string{}
-	for k, v := range pb.SparkEnvVars {
-		itemField := &v
-		if itemField != nil {
-			sparkEnvVarsField[k] = *itemField
-		}
-	}
-	st.SparkEnvVars = sparkEnvVarsField
-	sparkVersionField := &pb.SparkVersion
-	if sparkVersionField != nil {
-		st.SparkVersion = *sparkVersionField
-	}
-
-	var sshPublicKeysField []string
-	for _, item := range pb.SshPublicKeys {
-		itemField := &item
-		if itemField != nil {
-			sshPublicKeysField = append(sshPublicKeysField, *itemField)
-		}
-	}
-	st.SshPublicKeys = sshPublicKeysField
-	useMlRuntimeField := &pb.UseMlRuntime
-	if useMlRuntimeField != nil {
-		st.UseMlRuntime = *useMlRuntimeField
-	}
+	st.InstancePoolId = pb.InstancePoolId
+	st.IsSingleNode = pb.IsSingleNode
+	st.Kind = pb.Kind
+	st.NodeTypeId = pb.NodeTypeId
+	st.NumWorkers = pb.NumWorkers
+	st.PolicyId = pb.PolicyId
+	st.RuntimeEngine = pb.RuntimeEngine
+	st.SingleUserName = pb.SingleUserName
+	st.SparkConf = pb.SparkConf
+	st.SparkEnvVars = pb.SparkEnvVars
+	st.SparkVersion = pb.SparkVersion
+	st.SshPublicKeys = pb.SshPublicKeys
+	st.UseMlRuntime = pb.UseMlRuntime
 	workloadTypeField, err := workloadTypeFromPb(pb.WorkloadType)
 	if err != nil {
 		return nil, err
@@ -11298,6 +9817,7 @@ type EditInstancePool struct {
 	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
@@ -11306,30 +9826,37 @@ type EditInstancePool struct {
 	// threshold must be between 0 and 10000 minutes. Users can also set this
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
+	// Wire name: 'idle_instance_autotermination_minutes'
 	IdleInstanceAutoterminationMinutes int
 	// Instance pool ID
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
+	// Wire name: 'instance_pool_name'
 	InstancePoolName string
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
 	// further instance provisioning will fail during upsize requests.
+	// Wire name: 'max_capacity'
 	MaxCapacity int
 	// Minimum number of idle instances to keep in the instance pool
+	// Wire name: 'min_idle_instances'
 	MinIdleInstances int
 	// For Fleet-pool V2, this object contains the information about the
 	// alternate node type ids to use when attempting to launch a cluster if the
 	// node type id is not available.
+	// Wire name: 'node_type_flexibility'
 	NodeTypeFlexibility *NodeTypeFlexibility
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func editInstancePoolToPb(st *EditInstancePool) (*editInstancePoolPb, error) {
@@ -11337,40 +9864,17 @@ func editInstancePoolToPb(st *EditInstancePool) (*editInstancePoolPb, error) {
 		return nil, nil
 	}
 	pb := &editInstancePoolPb{}
+	pb.CustomTags = st.CustomTags
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.IdleInstanceAutoterminationMinutes = st.IdleInstanceAutoterminationMinutes
 
-	idleInstanceAutoterminationMinutesPb := &st.IdleInstanceAutoterminationMinutes
-	if idleInstanceAutoterminationMinutesPb != nil {
-		pb.IdleInstanceAutoterminationMinutes = *idleInstanceAutoterminationMinutesPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolName = st.InstancePoolName
 
-	instancePoolNamePb := &st.InstancePoolName
-	if instancePoolNamePb != nil {
-		pb.InstancePoolName = *instancePoolNamePb
-	}
+	pb.MaxCapacity = st.MaxCapacity
 
-	maxCapacityPb := &st.MaxCapacity
-	if maxCapacityPb != nil {
-		pb.MaxCapacity = *maxCapacityPb
-	}
-
-	minIdleInstancesPb := &st.MinIdleInstances
-	if minIdleInstancesPb != nil {
-		pb.MinIdleInstances = *minIdleInstancesPb
-	}
+	pb.MinIdleInstances = st.MinIdleInstances
 
 	nodeTypeFlexibilityPb, err := nodeTypeFlexibilityToPb(st.NodeTypeFlexibility)
 	if err != nil {
@@ -11380,10 +9884,7 @@ func editInstancePoolToPb(st *EditInstancePool) (*editInstancePoolPb, error) {
 		pb.NodeTypeFlexibility = nodeTypeFlexibilityPb
 	}
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11459,35 +9960,12 @@ func editInstancePoolFromPb(pb *editInstancePoolPb) (*EditInstancePool, error) {
 		return nil, nil
 	}
 	st := &EditInstancePool{}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-	idleInstanceAutoterminationMinutesField := &pb.IdleInstanceAutoterminationMinutes
-	if idleInstanceAutoterminationMinutesField != nil {
-		st.IdleInstanceAutoterminationMinutes = *idleInstanceAutoterminationMinutesField
-	}
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
-	instancePoolNameField := &pb.InstancePoolName
-	if instancePoolNameField != nil {
-		st.InstancePoolName = *instancePoolNameField
-	}
-	maxCapacityField := &pb.MaxCapacity
-	if maxCapacityField != nil {
-		st.MaxCapacity = *maxCapacityField
-	}
-	minIdleInstancesField := &pb.MinIdleInstances
-	if minIdleInstancesField != nil {
-		st.MinIdleInstances = *minIdleInstancesField
-	}
+	st.CustomTags = pb.CustomTags
+	st.IdleInstanceAutoterminationMinutes = pb.IdleInstanceAutoterminationMinutes
+	st.InstancePoolId = pb.InstancePoolId
+	st.InstancePoolName = pb.InstancePoolName
+	st.MaxCapacity = pb.MaxCapacity
+	st.MinIdleInstances = pb.MinIdleInstances
 	nodeTypeFlexibilityField, err := nodeTypeFlexibilityFromPb(pb.NodeTypeFlexibility)
 	if err != nil {
 		return nil, err
@@ -11495,10 +9973,7 @@ func editInstancePoolFromPb(pb *editInstancePoolPb) (*EditInstancePool, error) {
 	if nodeTypeFlexibilityField != nil {
 		st.NodeTypeFlexibility = nodeTypeFlexibilityField
 	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
+	st.NodeTypeId = pb.NodeTypeId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11566,17 +10041,22 @@ type EditPolicy struct {
 	// Definition Language].
 	//
 	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
+	// Wire name: 'definition'
 	Definition string
 	// Additional human-readable description of the cluster policy.
+	// Wire name: 'description'
 	Description string
 	// A list of libraries to be installed on the next cluster restart that uses
 	// this policy. The maximum number of libraries is 500.
+	// Wire name: 'libraries'
 	Libraries []Library
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.
+	// Wire name: 'max_clusters_per_user'
 	MaxClustersPerUser int64
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
+	// Wire name: 'name'
 	Name string
 	// Policy definition JSON document expressed in [Databricks Policy
 	// Definition Language]. The JSON document must be passed as a string and
@@ -11587,6 +10067,7 @@ type EditPolicy struct {
 	// policy definition.
 	//
 	// [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
+	// Wire name: 'policy_family_definition_overrides'
 	PolicyFamilyDefinitionOverrides string
 	// ID of the policy family. The cluster policy's policy definition inherits
 	// the policy family's policy definition.
@@ -11594,11 +10075,13 @@ type EditPolicy struct {
 	// Cannot be used with `definition`. Use
 	// `policy_family_definition_overrides` instead to customize the policy
 	// definition.
+	// Wire name: 'policy_family_id'
 	PolicyFamilyId string
 	// The ID of the policy to update.
+	// Wire name: 'policy_id'
 	PolicyId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func editPolicyToPb(st *EditPolicy) (*editPolicyPb, error) {
@@ -11606,15 +10089,9 @@ func editPolicyToPb(st *EditPolicy) (*editPolicyPb, error) {
 		return nil, nil
 	}
 	pb := &editPolicyPb{}
-	definitionPb := &st.Definition
-	if definitionPb != nil {
-		pb.Definition = *definitionPb
-	}
+	pb.Definition = st.Definition
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
 	var librariesPb []LibraryPb
 	for _, item := range st.Libraries {
@@ -11628,30 +10105,15 @@ func editPolicyToPb(st *EditPolicy) (*editPolicyPb, error) {
 	}
 	pb.Libraries = librariesPb
 
-	maxClustersPerUserPb := &st.MaxClustersPerUser
-	if maxClustersPerUserPb != nil {
-		pb.MaxClustersPerUser = *maxClustersPerUserPb
-	}
+	pb.MaxClustersPerUser = st.MaxClustersPerUser
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	policyFamilyDefinitionOverridesPb := &st.PolicyFamilyDefinitionOverrides
-	if policyFamilyDefinitionOverridesPb != nil {
-		pb.PolicyFamilyDefinitionOverrides = *policyFamilyDefinitionOverridesPb
-	}
+	pb.PolicyFamilyDefinitionOverrides = st.PolicyFamilyDefinitionOverrides
 
-	policyFamilyIdPb := &st.PolicyFamilyId
-	if policyFamilyIdPb != nil {
-		pb.PolicyFamilyId = *policyFamilyIdPb
-	}
+	pb.PolicyFamilyId = st.PolicyFamilyId
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11727,46 +10189,25 @@ func editPolicyFromPb(pb *editPolicyPb) (*EditPolicy, error) {
 		return nil, nil
 	}
 	st := &EditPolicy{}
-	definitionField := &pb.Definition
-	if definitionField != nil {
-		st.Definition = *definitionField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
+	st.Definition = pb.Definition
+	st.Description = pb.Description
 
 	var librariesField []Library
-	for _, item := range pb.Libraries {
-		itemField, err := LibraryFromPb(&item)
+	for _, itemPb := range pb.Libraries {
+		item, err := LibraryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			librariesField = append(librariesField, *itemField)
+		if item != nil {
+			librariesField = append(librariesField, *item)
 		}
 	}
 	st.Libraries = librariesField
-	maxClustersPerUserField := &pb.MaxClustersPerUser
-	if maxClustersPerUserField != nil {
-		st.MaxClustersPerUser = *maxClustersPerUserField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	policyFamilyDefinitionOverridesField := &pb.PolicyFamilyDefinitionOverrides
-	if policyFamilyDefinitionOverridesField != nil {
-		st.PolicyFamilyDefinitionOverrides = *policyFamilyDefinitionOverridesField
-	}
-	policyFamilyIdField := &pb.PolicyFamilyId
-	if policyFamilyIdField != nil {
-		st.PolicyFamilyId = *policyFamilyIdField
-	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.MaxClustersPerUser = pb.MaxClustersPerUser
+	st.Name = pb.Name
+	st.PolicyFamilyDefinitionOverrides = pb.PolicyFamilyDefinitionOverrides
+	st.PolicyFamilyId = pb.PolicyFamilyId
+	st.PolicyId = pb.PolicyId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11880,12 +10321,14 @@ func editResponseFromPb(pb *editResponsePb) (*EditResponse, error) {
 
 type EnforceClusterComplianceRequest struct {
 	// The ID of the cluster you want to enforce policy compliance on.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// If set, previews the changes that would be made to a cluster to enforce
 	// compliance but does not update the cluster.
+	// Wire name: 'validate_only'
 	ValidateOnly bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func enforceClusterComplianceRequestToPb(st *EnforceClusterComplianceRequest) (*enforceClusterComplianceRequestPb, error) {
@@ -11893,15 +10336,9 @@ func enforceClusterComplianceRequestToPb(st *EnforceClusterComplianceRequest) (*
 		return nil, nil
 	}
 	pb := &enforceClusterComplianceRequestPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	validateOnlyPb := &st.ValidateOnly
-	if validateOnlyPb != nil {
-		pb.ValidateOnly = *validateOnlyPb
-	}
+	pb.ValidateOnly = st.ValidateOnly
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11947,14 +10384,8 @@ func enforceClusterComplianceRequestFromPb(pb *enforceClusterComplianceRequestPb
 		return nil, nil
 	}
 	st := &EnforceClusterComplianceRequest{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	validateOnlyField := &pb.ValidateOnly
-	if validateOnlyField != nil {
-		st.ValidateOnly = *validateOnlyField
-	}
+	st.ClusterId = pb.ClusterId
+	st.ValidateOnly = pb.ValidateOnly
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11971,12 +10402,14 @@ func (st enforceClusterComplianceRequestPb) MarshalJSON() ([]byte, error) {
 type EnforceClusterComplianceResponse struct {
 	// A list of changes that have been made to the cluster settings for the
 	// cluster to become compliant with its policy.
+	// Wire name: 'changes'
 	Changes []ClusterSettingsChange
 	// Whether any changes have been made to the cluster settings for the
 	// cluster to become compliant with its policy.
+	// Wire name: 'has_changes'
 	HasChanges bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func enforceClusterComplianceResponseToPb(st *EnforceClusterComplianceResponse) (*enforceClusterComplianceResponsePb, error) {
@@ -11997,10 +10430,7 @@ func enforceClusterComplianceResponseToPb(st *EnforceClusterComplianceResponse) 
 	}
 	pb.Changes = changesPb
 
-	hasChangesPb := &st.HasChanges
-	if hasChangesPb != nil {
-		pb.HasChanges = *hasChangesPb
-	}
+	pb.HasChanges = st.HasChanges
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12049,20 +10479,17 @@ func enforceClusterComplianceResponseFromPb(pb *enforceClusterComplianceResponse
 	st := &EnforceClusterComplianceResponse{}
 
 	var changesField []ClusterSettingsChange
-	for _, item := range pb.Changes {
-		itemField, err := clusterSettingsChangeFromPb(&item)
+	for _, itemPb := range pb.Changes {
+		item, err := clusterSettingsChangeFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			changesField = append(changesField, *itemField)
+		if item != nil {
+			changesField = append(changesField, *item)
 		}
 	}
 	st.Changes = changesField
-	hasChangesField := &pb.HasChanges
-	if hasChangesField != nil {
-		st.HasChanges = *hasChangesField
-	}
+	st.HasChanges = pb.HasChanges
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12087,6 +10514,7 @@ type Environment struct {
 	// environment of the runtime. Each client comes with a specific set of
 	// pre-installed libraries. The version is a string, consisting of the major
 	// client version.
+	// Wire name: 'client'
 	Client string
 	// List of pip dependencies, as supported by the version of pip in this
 	// environment. Each dependency is a pip requirement file line
@@ -12094,9 +10522,11 @@ type Environment struct {
 	// dependency could be <requirement specifier>, <archive url/path>, <local
 	// project path>(WSFS or Volumes in Databricks), <vcs project url> E.g.
 	// dependencies: ["foo==0.0.1", "-r /Workspace/test/requirements.txt"]
+	// Wire name: 'dependencies'
 	Dependencies []string
 	// List of jar dependencies, should be string representing volume paths. For
 	// example: `/Volumes/path/to/test.jar`.
+	// Wire name: 'jar_dependencies'
 	JarDependencies []string
 }
 
@@ -12105,28 +10535,11 @@ func EnvironmentToPb(st *Environment) (*EnvironmentPb, error) {
 		return nil, nil
 	}
 	pb := &EnvironmentPb{}
-	clientPb := &st.Client
-	if clientPb != nil {
-		pb.Client = *clientPb
-	}
+	pb.Client = st.Client
 
-	var dependenciesPb []string
-	for _, item := range st.Dependencies {
-		itemPb := &item
-		if itemPb != nil {
-			dependenciesPb = append(dependenciesPb, *itemPb)
-		}
-	}
-	pb.Dependencies = dependenciesPb
+	pb.Dependencies = st.Dependencies
 
-	var jarDependenciesPb []string
-	for _, item := range st.JarDependencies {
-		itemPb := &item
-		if itemPb != nil {
-			jarDependenciesPb = append(jarDependenciesPb, *itemPb)
-		}
-	}
-	pb.JarDependencies = jarDependenciesPb
+	pb.JarDependencies = st.JarDependencies
 
 	return pb, nil
 }
@@ -12179,28 +10592,9 @@ func EnvironmentFromPb(pb *EnvironmentPb) (*Environment, error) {
 		return nil, nil
 	}
 	st := &Environment{}
-	clientField := &pb.Client
-	if clientField != nil {
-		st.Client = *clientField
-	}
-
-	var dependenciesField []string
-	for _, item := range pb.Dependencies {
-		itemField := &item
-		if itemField != nil {
-			dependenciesField = append(dependenciesField, *itemField)
-		}
-	}
-	st.Dependencies = dependenciesField
-
-	var jarDependenciesField []string
-	for _, item := range pb.JarDependencies {
-		itemField := &item
-		if itemField != nil {
-			jarDependenciesField = append(jarDependenciesField, *itemField)
-		}
-	}
-	st.JarDependencies = jarDependenciesField
+	st.Client = pb.Client
+	st.Dependencies = pb.Dependencies
+	st.JarDependencies = pb.JarDependencies
 
 	return st, nil
 }
@@ -12208,54 +10602,74 @@ func EnvironmentFromPb(pb *EnvironmentPb) (*Environment, error) {
 type EventDetails struct {
 	// * For created clusters, the attributes of the cluster. * For edited
 	// clusters, the new attributes of the cluster.
+	// Wire name: 'attributes'
 	Attributes *ClusterAttributes
 	// The cause of a change in target size.
+	// Wire name: 'cause'
 	Cause EventDetailsCause
 	// The actual cluster size that was set in the cluster creation or edit.
+	// Wire name: 'cluster_size'
 	ClusterSize *ClusterSize
 	// The current number of vCPUs in the cluster.
+	// Wire name: 'current_num_vcpus'
 	CurrentNumVcpus int
 	// The current number of nodes in the cluster.
+	// Wire name: 'current_num_workers'
 	CurrentNumWorkers int
 
+	// Wire name: 'did_not_expand_reason'
 	DidNotExpandReason string
 	// Current disk size in bytes
+	// Wire name: 'disk_size'
 	DiskSize int64
 	// More details about the change in driver's state
+	// Wire name: 'driver_state_message'
 	DriverStateMessage string
 	// Whether or not a blocklisted node should be terminated. For
 	// ClusterEventType NODE_BLACKLISTED.
+	// Wire name: 'enable_termination_for_node_blocklisted'
 	EnableTerminationForNodeBlocklisted bool
 
+	// Wire name: 'free_space'
 	FreeSpace int64
 	// List of global and cluster init scripts associated with this cluster
 	// event.
+	// Wire name: 'init_scripts'
 	InitScripts *InitScriptEventDetails
 	// Instance Id where the event originated from
+	// Wire name: 'instance_id'
 	InstanceId string
 	// Unique identifier of the specific job run associated with this cluster
 	// event * For clusters created for jobs, this will be the same as the
 	// cluster name
+	// Wire name: 'job_run_name'
 	JobRunName string
 	// The cluster attributes before a cluster was edited.
+	// Wire name: 'previous_attributes'
 	PreviousAttributes *ClusterAttributes
 	// The size of the cluster before an edit or resize.
+	// Wire name: 'previous_cluster_size'
 	PreviousClusterSize *ClusterSize
 	// Previous disk size in bytes
+	// Wire name: 'previous_disk_size'
 	PreviousDiskSize int64
 	// A termination reason: * On a TERMINATED event, this is the reason of the
 	// termination. * On a RESIZE_COMPLETE event, this indicates the reason that
 	// we failed to acquire some nodes.
+	// Wire name: 'reason'
 	Reason *TerminationReason
 	// The targeted number of vCPUs in the cluster.
+	// Wire name: 'target_num_vcpus'
 	TargetNumVcpus int
 	// The targeted number of nodes in the cluster.
+	// Wire name: 'target_num_workers'
 	TargetNumWorkers int
 	// The user that caused the event to occur. (Empty if it was done by the
 	// control plane.)
+	// Wire name: 'user'
 	User string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func eventDetailsToPb(st *EventDetails) (*eventDetailsPb, error) {
@@ -12271,10 +10685,7 @@ func eventDetailsToPb(st *EventDetails) (*eventDetailsPb, error) {
 		pb.Attributes = attributesPb
 	}
 
-	causePb := &st.Cause
-	if causePb != nil {
-		pb.Cause = *causePb
-	}
+	pb.Cause = st.Cause
 
 	clusterSizePb, err := clusterSizeToPb(st.ClusterSize)
 	if err != nil {
@@ -12284,40 +10695,19 @@ func eventDetailsToPb(st *EventDetails) (*eventDetailsPb, error) {
 		pb.ClusterSize = clusterSizePb
 	}
 
-	currentNumVcpusPb := &st.CurrentNumVcpus
-	if currentNumVcpusPb != nil {
-		pb.CurrentNumVcpus = *currentNumVcpusPb
-	}
+	pb.CurrentNumVcpus = st.CurrentNumVcpus
 
-	currentNumWorkersPb := &st.CurrentNumWorkers
-	if currentNumWorkersPb != nil {
-		pb.CurrentNumWorkers = *currentNumWorkersPb
-	}
+	pb.CurrentNumWorkers = st.CurrentNumWorkers
 
-	didNotExpandReasonPb := &st.DidNotExpandReason
-	if didNotExpandReasonPb != nil {
-		pb.DidNotExpandReason = *didNotExpandReasonPb
-	}
+	pb.DidNotExpandReason = st.DidNotExpandReason
 
-	diskSizePb := &st.DiskSize
-	if diskSizePb != nil {
-		pb.DiskSize = *diskSizePb
-	}
+	pb.DiskSize = st.DiskSize
 
-	driverStateMessagePb := &st.DriverStateMessage
-	if driverStateMessagePb != nil {
-		pb.DriverStateMessage = *driverStateMessagePb
-	}
+	pb.DriverStateMessage = st.DriverStateMessage
 
-	enableTerminationForNodeBlocklistedPb := &st.EnableTerminationForNodeBlocklisted
-	if enableTerminationForNodeBlocklistedPb != nil {
-		pb.EnableTerminationForNodeBlocklisted = *enableTerminationForNodeBlocklistedPb
-	}
+	pb.EnableTerminationForNodeBlocklisted = st.EnableTerminationForNodeBlocklisted
 
-	freeSpacePb := &st.FreeSpace
-	if freeSpacePb != nil {
-		pb.FreeSpace = *freeSpacePb
-	}
+	pb.FreeSpace = st.FreeSpace
 
 	initScriptsPb, err := initScriptEventDetailsToPb(st.InitScripts)
 	if err != nil {
@@ -12327,15 +10717,9 @@ func eventDetailsToPb(st *EventDetails) (*eventDetailsPb, error) {
 		pb.InitScripts = initScriptsPb
 	}
 
-	instanceIdPb := &st.InstanceId
-	if instanceIdPb != nil {
-		pb.InstanceId = *instanceIdPb
-	}
+	pb.InstanceId = st.InstanceId
 
-	jobRunNamePb := &st.JobRunName
-	if jobRunNamePb != nil {
-		pb.JobRunName = *jobRunNamePb
-	}
+	pb.JobRunName = st.JobRunName
 
 	previousAttributesPb, err := clusterAttributesToPb(st.PreviousAttributes)
 	if err != nil {
@@ -12353,10 +10737,7 @@ func eventDetailsToPb(st *EventDetails) (*eventDetailsPb, error) {
 		pb.PreviousClusterSize = previousClusterSizePb
 	}
 
-	previousDiskSizePb := &st.PreviousDiskSize
-	if previousDiskSizePb != nil {
-		pb.PreviousDiskSize = *previousDiskSizePb
-	}
+	pb.PreviousDiskSize = st.PreviousDiskSize
 
 	reasonPb, err := terminationReasonToPb(st.Reason)
 	if err != nil {
@@ -12366,20 +10747,11 @@ func eventDetailsToPb(st *EventDetails) (*eventDetailsPb, error) {
 		pb.Reason = reasonPb
 	}
 
-	targetNumVcpusPb := &st.TargetNumVcpus
-	if targetNumVcpusPb != nil {
-		pb.TargetNumVcpus = *targetNumVcpusPb
-	}
+	pb.TargetNumVcpus = st.TargetNumVcpus
 
-	targetNumWorkersPb := &st.TargetNumWorkers
-	if targetNumWorkersPb != nil {
-		pb.TargetNumWorkers = *targetNumWorkersPb
-	}
+	pb.TargetNumWorkers = st.TargetNumWorkers
 
-	userPb := &st.User
-	if userPb != nil {
-		pb.User = *userPb
-	}
+	pb.User = st.User
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12475,10 +10847,7 @@ func eventDetailsFromPb(pb *eventDetailsPb) (*EventDetails, error) {
 	if attributesField != nil {
 		st.Attributes = attributesField
 	}
-	causeField := &pb.Cause
-	if causeField != nil {
-		st.Cause = *causeField
-	}
+	st.Cause = pb.Cause
 	clusterSizeField, err := clusterSizeFromPb(pb.ClusterSize)
 	if err != nil {
 		return nil, err
@@ -12486,34 +10855,13 @@ func eventDetailsFromPb(pb *eventDetailsPb) (*EventDetails, error) {
 	if clusterSizeField != nil {
 		st.ClusterSize = clusterSizeField
 	}
-	currentNumVcpusField := &pb.CurrentNumVcpus
-	if currentNumVcpusField != nil {
-		st.CurrentNumVcpus = *currentNumVcpusField
-	}
-	currentNumWorkersField := &pb.CurrentNumWorkers
-	if currentNumWorkersField != nil {
-		st.CurrentNumWorkers = *currentNumWorkersField
-	}
-	didNotExpandReasonField := &pb.DidNotExpandReason
-	if didNotExpandReasonField != nil {
-		st.DidNotExpandReason = *didNotExpandReasonField
-	}
-	diskSizeField := &pb.DiskSize
-	if diskSizeField != nil {
-		st.DiskSize = *diskSizeField
-	}
-	driverStateMessageField := &pb.DriverStateMessage
-	if driverStateMessageField != nil {
-		st.DriverStateMessage = *driverStateMessageField
-	}
-	enableTerminationForNodeBlocklistedField := &pb.EnableTerminationForNodeBlocklisted
-	if enableTerminationForNodeBlocklistedField != nil {
-		st.EnableTerminationForNodeBlocklisted = *enableTerminationForNodeBlocklistedField
-	}
-	freeSpaceField := &pb.FreeSpace
-	if freeSpaceField != nil {
-		st.FreeSpace = *freeSpaceField
-	}
+	st.CurrentNumVcpus = pb.CurrentNumVcpus
+	st.CurrentNumWorkers = pb.CurrentNumWorkers
+	st.DidNotExpandReason = pb.DidNotExpandReason
+	st.DiskSize = pb.DiskSize
+	st.DriverStateMessage = pb.DriverStateMessage
+	st.EnableTerminationForNodeBlocklisted = pb.EnableTerminationForNodeBlocklisted
+	st.FreeSpace = pb.FreeSpace
 	initScriptsField, err := initScriptEventDetailsFromPb(pb.InitScripts)
 	if err != nil {
 		return nil, err
@@ -12521,14 +10869,8 @@ func eventDetailsFromPb(pb *eventDetailsPb) (*EventDetails, error) {
 	if initScriptsField != nil {
 		st.InitScripts = initScriptsField
 	}
-	instanceIdField := &pb.InstanceId
-	if instanceIdField != nil {
-		st.InstanceId = *instanceIdField
-	}
-	jobRunNameField := &pb.JobRunName
-	if jobRunNameField != nil {
-		st.JobRunName = *jobRunNameField
-	}
+	st.InstanceId = pb.InstanceId
+	st.JobRunName = pb.JobRunName
 	previousAttributesField, err := clusterAttributesFromPb(pb.PreviousAttributes)
 	if err != nil {
 		return nil, err
@@ -12543,10 +10885,7 @@ func eventDetailsFromPb(pb *eventDetailsPb) (*EventDetails, error) {
 	if previousClusterSizeField != nil {
 		st.PreviousClusterSize = previousClusterSizeField
 	}
-	previousDiskSizeField := &pb.PreviousDiskSize
-	if previousDiskSizeField != nil {
-		st.PreviousDiskSize = *previousDiskSizeField
-	}
+	st.PreviousDiskSize = pb.PreviousDiskSize
 	reasonField, err := terminationReasonFromPb(pb.Reason)
 	if err != nil {
 		return nil, err
@@ -12554,18 +10893,9 @@ func eventDetailsFromPb(pb *eventDetailsPb) (*EventDetails, error) {
 	if reasonField != nil {
 		st.Reason = reasonField
 	}
-	targetNumVcpusField := &pb.TargetNumVcpus
-	if targetNumVcpusField != nil {
-		st.TargetNumVcpus = *targetNumVcpusField
-	}
-	targetNumWorkersField := &pb.TargetNumWorkers
-	if targetNumWorkersField != nil {
-		st.TargetNumWorkers = *targetNumWorkersField
-	}
-	userField := &pb.User
-	if userField != nil {
-		st.User = *userField
-	}
+	st.TargetNumVcpus = pb.TargetNumVcpus
+	st.TargetNumWorkers = pb.TargetNumWorkers
+	st.User = pb.User
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12731,13 +11061,16 @@ type GcpAttributes struct {
 	// This field determines whether the spark executors will be scheduled to
 	// run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback
 	// to on-demand VMs if the former is unavailable.
+	// Wire name: 'availability'
 	Availability GcpAvailability
 	// Boot disk size in GB
+	// Wire name: 'boot_disk_size'
 	BootDiskSize int
 	// If provided, the cluster will impersonate the google service account when
 	// accessing gcloud services (like GCS). The google service account must
 	// have previously been added to the Databricks environment by an account
 	// administrator.
+	// Wire name: 'google_service_account'
 	GoogleServiceAccount string
 	// If provided, each node (workers and driver) in the cluster will have this
 	// number of local SSDs attached. Each local SSD is 375GB in size. Refer to
@@ -12745,11 +11078,13 @@ type GcpAttributes struct {
 	// instance type.
 	//
 	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
+	// Wire name: 'local_ssd_count'
 	LocalSsdCount int
 	// This field determines whether the spark executors will be scheduled to
 	// run on preemptible VMs (when set to true) versus standard compute engine
 	// VMs (when set to false; default). Note: Soon to be deprecated, use the
 	// 'availability' field instead.
+	// Wire name: 'use_preemptible_executors'
 	UsePreemptibleExecutors bool
 	// Identifier for the availability zone in which the cluster resides. This
 	// can be one of the following: - "HA" => High availability, spread nodes
@@ -12758,9 +11093,10 @@ type GcpAttributes struct {
 	// on. - A GCP availability zone => Pick One of the available zones for
 	// (machine type + region) from
 	// https://cloud.google.com/compute/docs/regions-zones.
+	// Wire name: 'zone_id'
 	ZoneId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func GcpAttributesToPb(st *GcpAttributes) (*GcpAttributesPb, error) {
@@ -12768,35 +11104,17 @@ func GcpAttributesToPb(st *GcpAttributes) (*GcpAttributesPb, error) {
 		return nil, nil
 	}
 	pb := &GcpAttributesPb{}
-	availabilityPb := &st.Availability
-	if availabilityPb != nil {
-		pb.Availability = *availabilityPb
-	}
+	pb.Availability = st.Availability
 
-	bootDiskSizePb := &st.BootDiskSize
-	if bootDiskSizePb != nil {
-		pb.BootDiskSize = *bootDiskSizePb
-	}
+	pb.BootDiskSize = st.BootDiskSize
 
-	googleServiceAccountPb := &st.GoogleServiceAccount
-	if googleServiceAccountPb != nil {
-		pb.GoogleServiceAccount = *googleServiceAccountPb
-	}
+	pb.GoogleServiceAccount = st.GoogleServiceAccount
 
-	localSsdCountPb := &st.LocalSsdCount
-	if localSsdCountPb != nil {
-		pb.LocalSsdCount = *localSsdCountPb
-	}
+	pb.LocalSsdCount = st.LocalSsdCount
 
-	usePreemptibleExecutorsPb := &st.UsePreemptibleExecutors
-	if usePreemptibleExecutorsPb != nil {
-		pb.UsePreemptibleExecutors = *usePreemptibleExecutorsPb
-	}
+	pb.UsePreemptibleExecutors = st.UsePreemptibleExecutors
 
-	zoneIdPb := &st.ZoneId
-	if zoneIdPb != nil {
-		pb.ZoneId = *zoneIdPb
-	}
+	pb.ZoneId = st.ZoneId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12868,30 +11186,12 @@ func GcpAttributesFromPb(pb *GcpAttributesPb) (*GcpAttributes, error) {
 		return nil, nil
 	}
 	st := &GcpAttributes{}
-	availabilityField := &pb.Availability
-	if availabilityField != nil {
-		st.Availability = *availabilityField
-	}
-	bootDiskSizeField := &pb.BootDiskSize
-	if bootDiskSizeField != nil {
-		st.BootDiskSize = *bootDiskSizeField
-	}
-	googleServiceAccountField := &pb.GoogleServiceAccount
-	if googleServiceAccountField != nil {
-		st.GoogleServiceAccount = *googleServiceAccountField
-	}
-	localSsdCountField := &pb.LocalSsdCount
-	if localSsdCountField != nil {
-		st.LocalSsdCount = *localSsdCountField
-	}
-	usePreemptibleExecutorsField := &pb.UsePreemptibleExecutors
-	if usePreemptibleExecutorsField != nil {
-		st.UsePreemptibleExecutors = *usePreemptibleExecutorsField
-	}
-	zoneIdField := &pb.ZoneId
-	if zoneIdField != nil {
-		st.ZoneId = *zoneIdField
-	}
+	st.Availability = pb.Availability
+	st.BootDiskSize = pb.BootDiskSize
+	st.GoogleServiceAccount = pb.GoogleServiceAccount
+	st.LocalSsdCount = pb.LocalSsdCount
+	st.UsePreemptibleExecutors = pb.UsePreemptibleExecutors
+	st.ZoneId = pb.ZoneId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12957,6 +11257,7 @@ func gcpAvailabilityFromPb(pb *gcpAvailabilityPb) (*GcpAvailability, error) {
 // A storage location in Google Cloud Platform's GCS
 type GcsStorageInfo struct {
 	// GCS destination/URI, e.g. `gs://my-bucket/some-prefix`
+	// Wire name: 'destination'
 	Destination string
 }
 
@@ -12965,10 +11266,7 @@ func gcsStorageInfoToPb(st *GcsStorageInfo) (*gcsStorageInfoPb, error) {
 		return nil, nil
 	}
 	pb := &gcsStorageInfoPb{}
-	destinationPb := &st.Destination
-	if destinationPb != nil {
-		pb.Destination = *destinationPb
-	}
+	pb.Destination = st.Destination
 
 	return pb, nil
 }
@@ -13008,10 +11306,7 @@ func gcsStorageInfoFromPb(pb *gcsStorageInfoPb) (*GcsStorageInfo, error) {
 		return nil, nil
 	}
 	st := &GcsStorageInfo{}
-	destinationField := &pb.Destination
-	if destinationField != nil {
-		st.Destination = *destinationField
-	}
+	st.Destination = pb.Destination
 
 	return st, nil
 }
@@ -13019,7 +11314,8 @@ func gcsStorageInfoFromPb(pb *gcsStorageInfoPb) (*GcsStorageInfo, error) {
 // Get cluster policy compliance
 type GetClusterComplianceRequest struct {
 	// The ID of the cluster to get the compliance status
-	ClusterId string
+	// Wire name: 'cluster_id'
+	ClusterId string `tf:"-"`
 }
 
 func getClusterComplianceRequestToPb(st *GetClusterComplianceRequest) (*getClusterComplianceRequestPb, error) {
@@ -13027,10 +11323,7 @@ func getClusterComplianceRequestToPb(st *GetClusterComplianceRequest) (*getClust
 		return nil, nil
 	}
 	pb := &getClusterComplianceRequestPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	return pb, nil
 }
@@ -13070,10 +11363,7 @@ func getClusterComplianceRequestFromPb(pb *getClusterComplianceRequestPb) (*GetC
 		return nil, nil
 	}
 	st := &GetClusterComplianceRequest{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	return st, nil
 }
@@ -13082,14 +11372,16 @@ type GetClusterComplianceResponse struct {
 	// Whether the cluster is compliant with its policy or not. Clusters could
 	// be out of compliance if the policy was updated after the cluster was last
 	// edited.
+	// Wire name: 'is_compliant'
 	IsCompliant bool
 	// An object containing key-value mappings representing the first 200 policy
 	// validation errors. The keys indicate the path where the policy validation
 	// error is occurring. The values indicate an error message describing the
 	// policy validation error.
+	// Wire name: 'violations'
 	Violations map[string]string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getClusterComplianceResponseToPb(st *GetClusterComplianceResponse) (*getClusterComplianceResponsePb, error) {
@@ -13097,19 +11389,9 @@ func getClusterComplianceResponseToPb(st *GetClusterComplianceResponse) (*getClu
 		return nil, nil
 	}
 	pb := &getClusterComplianceResponsePb{}
-	isCompliantPb := &st.IsCompliant
-	if isCompliantPb != nil {
-		pb.IsCompliant = *isCompliantPb
-	}
+	pb.IsCompliant = st.IsCompliant
 
-	violationsPb := map[string]string{}
-	for k, v := range st.Violations {
-		itemPb := &v
-		if itemPb != nil {
-			violationsPb[k] = *itemPb
-		}
-	}
-	pb.Violations = violationsPb
+	pb.Violations = st.Violations
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13159,19 +11441,8 @@ func getClusterComplianceResponseFromPb(pb *getClusterComplianceResponsePb) (*Ge
 		return nil, nil
 	}
 	st := &GetClusterComplianceResponse{}
-	isCompliantField := &pb.IsCompliant
-	if isCompliantField != nil {
-		st.IsCompliant = *isCompliantField
-	}
-
-	violationsField := map[string]string{}
-	for k, v := range pb.Violations {
-		itemField := &v
-		if itemField != nil {
-			violationsField[k] = *itemField
-		}
-	}
-	st.Violations = violationsField
+	st.IsCompliant = pb.IsCompliant
+	st.Violations = pb.Violations
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13188,7 +11459,8 @@ func (st getClusterComplianceResponsePb) MarshalJSON() ([]byte, error) {
 // Get cluster permission levels
 type GetClusterPermissionLevelsRequest struct {
 	// The cluster for which to get or manage permissions.
-	ClusterId string
+	// Wire name: 'cluster_id'
+	ClusterId string `tf:"-"`
 }
 
 func getClusterPermissionLevelsRequestToPb(st *GetClusterPermissionLevelsRequest) (*getClusterPermissionLevelsRequestPb, error) {
@@ -13196,10 +11468,7 @@ func getClusterPermissionLevelsRequestToPb(st *GetClusterPermissionLevelsRequest
 		return nil, nil
 	}
 	pb := &getClusterPermissionLevelsRequestPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	return pb, nil
 }
@@ -13239,16 +11508,14 @@ func getClusterPermissionLevelsRequestFromPb(pb *getClusterPermissionLevelsReque
 		return nil, nil
 	}
 	st := &GetClusterPermissionLevelsRequest{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	return st, nil
 }
 
 type GetClusterPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []ClusterPermissionsDescription
 }
 
@@ -13310,13 +11577,13 @@ func getClusterPermissionLevelsResponseFromPb(pb *getClusterPermissionLevelsResp
 	st := &GetClusterPermissionLevelsResponse{}
 
 	var permissionLevelsField []ClusterPermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := clusterPermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := clusterPermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -13327,7 +11594,8 @@ func getClusterPermissionLevelsResponseFromPb(pb *getClusterPermissionLevelsResp
 // Get cluster permissions
 type GetClusterPermissionsRequest struct {
 	// The cluster for which to get or manage permissions.
-	ClusterId string
+	// Wire name: 'cluster_id'
+	ClusterId string `tf:"-"`
 }
 
 func getClusterPermissionsRequestToPb(st *GetClusterPermissionsRequest) (*getClusterPermissionsRequestPb, error) {
@@ -13335,10 +11603,7 @@ func getClusterPermissionsRequestToPb(st *GetClusterPermissionsRequest) (*getClu
 		return nil, nil
 	}
 	pb := &getClusterPermissionsRequestPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	return pb, nil
 }
@@ -13378,10 +11643,7 @@ func getClusterPermissionsRequestFromPb(pb *getClusterPermissionsRequestPb) (*Ge
 		return nil, nil
 	}
 	st := &GetClusterPermissionsRequest{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	return st, nil
 }
@@ -13389,7 +11651,8 @@ func getClusterPermissionsRequestFromPb(pb *getClusterPermissionsRequestPb) (*Ge
 // Get cluster policy permission levels
 type GetClusterPolicyPermissionLevelsRequest struct {
 	// The cluster policy for which to get or manage permissions.
-	ClusterPolicyId string
+	// Wire name: 'cluster_policy_id'
+	ClusterPolicyId string `tf:"-"`
 }
 
 func getClusterPolicyPermissionLevelsRequestToPb(st *GetClusterPolicyPermissionLevelsRequest) (*getClusterPolicyPermissionLevelsRequestPb, error) {
@@ -13397,10 +11660,7 @@ func getClusterPolicyPermissionLevelsRequestToPb(st *GetClusterPolicyPermissionL
 		return nil, nil
 	}
 	pb := &getClusterPolicyPermissionLevelsRequestPb{}
-	clusterPolicyIdPb := &st.ClusterPolicyId
-	if clusterPolicyIdPb != nil {
-		pb.ClusterPolicyId = *clusterPolicyIdPb
-	}
+	pb.ClusterPolicyId = st.ClusterPolicyId
 
 	return pb, nil
 }
@@ -13440,16 +11700,14 @@ func getClusterPolicyPermissionLevelsRequestFromPb(pb *getClusterPolicyPermissio
 		return nil, nil
 	}
 	st := &GetClusterPolicyPermissionLevelsRequest{}
-	clusterPolicyIdField := &pb.ClusterPolicyId
-	if clusterPolicyIdField != nil {
-		st.ClusterPolicyId = *clusterPolicyIdField
-	}
+	st.ClusterPolicyId = pb.ClusterPolicyId
 
 	return st, nil
 }
 
 type GetClusterPolicyPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []ClusterPolicyPermissionsDescription
 }
 
@@ -13511,13 +11769,13 @@ func getClusterPolicyPermissionLevelsResponseFromPb(pb *getClusterPolicyPermissi
 	st := &GetClusterPolicyPermissionLevelsResponse{}
 
 	var permissionLevelsField []ClusterPolicyPermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := clusterPolicyPermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := clusterPolicyPermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -13528,7 +11786,8 @@ func getClusterPolicyPermissionLevelsResponseFromPb(pb *getClusterPolicyPermissi
 // Get cluster policy permissions
 type GetClusterPolicyPermissionsRequest struct {
 	// The cluster policy for which to get or manage permissions.
-	ClusterPolicyId string
+	// Wire name: 'cluster_policy_id'
+	ClusterPolicyId string `tf:"-"`
 }
 
 func getClusterPolicyPermissionsRequestToPb(st *GetClusterPolicyPermissionsRequest) (*getClusterPolicyPermissionsRequestPb, error) {
@@ -13536,10 +11795,7 @@ func getClusterPolicyPermissionsRequestToPb(st *GetClusterPolicyPermissionsReque
 		return nil, nil
 	}
 	pb := &getClusterPolicyPermissionsRequestPb{}
-	clusterPolicyIdPb := &st.ClusterPolicyId
-	if clusterPolicyIdPb != nil {
-		pb.ClusterPolicyId = *clusterPolicyIdPb
-	}
+	pb.ClusterPolicyId = st.ClusterPolicyId
 
 	return pb, nil
 }
@@ -13579,10 +11835,7 @@ func getClusterPolicyPermissionsRequestFromPb(pb *getClusterPolicyPermissionsReq
 		return nil, nil
 	}
 	st := &GetClusterPolicyPermissionsRequest{}
-	clusterPolicyIdField := &pb.ClusterPolicyId
-	if clusterPolicyIdField != nil {
-		st.ClusterPolicyId = *clusterPolicyIdField
-	}
+	st.ClusterPolicyId = pb.ClusterPolicyId
 
 	return st, nil
 }
@@ -13590,7 +11843,8 @@ func getClusterPolicyPermissionsRequestFromPb(pb *getClusterPolicyPermissionsReq
 // Get a cluster policy
 type GetClusterPolicyRequest struct {
 	// Canonical unique identifier for the Cluster Policy.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 }
 
 func getClusterPolicyRequestToPb(st *GetClusterPolicyRequest) (*getClusterPolicyRequestPb, error) {
@@ -13598,10 +11852,7 @@ func getClusterPolicyRequestToPb(st *GetClusterPolicyRequest) (*getClusterPolicy
 		return nil, nil
 	}
 	pb := &getClusterPolicyRequestPb{}
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	return pb, nil
 }
@@ -13641,10 +11892,7 @@ func getClusterPolicyRequestFromPb(pb *getClusterPolicyRequestPb) (*GetClusterPo
 		return nil, nil
 	}
 	st := &GetClusterPolicyRequest{}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.PolicyId = pb.PolicyId
 
 	return st, nil
 }
@@ -13652,7 +11900,8 @@ func getClusterPolicyRequestFromPb(pb *getClusterPolicyRequestPb) (*GetClusterPo
 // Get cluster info
 type GetClusterRequest struct {
 	// The cluster about which to retrieve information.
-	ClusterId string
+	// Wire name: 'cluster_id'
+	ClusterId string `tf:"-"`
 }
 
 func getClusterRequestToPb(st *GetClusterRequest) (*getClusterRequestPb, error) {
@@ -13660,10 +11909,7 @@ func getClusterRequestToPb(st *GetClusterRequest) (*getClusterRequestPb, error) 
 		return nil, nil
 	}
 	pb := &getClusterRequestPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	return pb, nil
 }
@@ -13703,51 +11949,57 @@ func getClusterRequestFromPb(pb *getClusterRequestPb) (*GetClusterRequest, error
 		return nil, nil
 	}
 	st := &GetClusterRequest{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	return st, nil
 }
 
 type GetEvents struct {
 	// The ID of the cluster to retrieve events about.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// The end time in epoch milliseconds. If empty, returns events up to the
 	// current time.
+	// Wire name: 'end_time'
 	EndTime int64
 	// An optional set of event types to filter on. If empty, all event types
 	// are returned.
+	// Wire name: 'event_types'
 	EventTypes []EventType
 	// Deprecated: use page_token in combination with page_size instead.
 	//
 	// The maximum number of events to include in a page of events. Defaults to
 	// 50, and maximum allowed value is 500.
+	// Wire name: 'limit'
 	Limit int64
 	// Deprecated: use page_token in combination with page_size instead.
 	//
 	// The offset in the result set. Defaults to 0 (no offset). When an offset
 	// is specified and the results are requested in descending order, the
 	// end_time field is required.
+	// Wire name: 'offset'
 	Offset int64
 	// The order to list events in; either "ASC" or "DESC". Defaults to "DESC".
+	// Wire name: 'order'
 	Order GetEventsOrder
 	// The maximum number of events to include in a page of events. The server
 	// may further constrain the maximum number of results returned in a single
 	// page. If the page_size is empty or 0, the server will decide the number
 	// of results to be returned. The field has to be in the range [0,500]. If
 	// the value is outside the range, the server enforces 0 or 500.
+	// Wire name: 'page_size'
 	PageSize int
 	// Use next_page_token or prev_page_token returned from the previous request
 	// to list the next or previous page of events respectively. If page_token
 	// is empty, the first page is returned.
+	// Wire name: 'page_token'
 	PageToken string
 	// The start time in epoch milliseconds. If empty, returns events starting
 	// from the beginning of time.
+	// Wire name: 'start_time'
 	StartTime int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getEventsToPb(st *GetEvents) (*getEventsPb, error) {
@@ -13755,54 +12007,23 @@ func getEventsToPb(st *GetEvents) (*getEventsPb, error) {
 		return nil, nil
 	}
 	pb := &getEventsPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	endTimePb := &st.EndTime
-	if endTimePb != nil {
-		pb.EndTime = *endTimePb
-	}
+	pb.EndTime = st.EndTime
 
-	var eventTypesPb []EventType
-	for _, item := range st.EventTypes {
-		itemPb := &item
-		if itemPb != nil {
-			eventTypesPb = append(eventTypesPb, *itemPb)
-		}
-	}
-	pb.EventTypes = eventTypesPb
+	pb.EventTypes = st.EventTypes
 
-	limitPb := &st.Limit
-	if limitPb != nil {
-		pb.Limit = *limitPb
-	}
+	pb.Limit = st.Limit
 
-	offsetPb := &st.Offset
-	if offsetPb != nil {
-		pb.Offset = *offsetPb
-	}
+	pb.Offset = st.Offset
 
-	orderPb := &st.Order
-	if orderPb != nil {
-		pb.Order = *orderPb
-	}
+	pb.Order = st.Order
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	startTimePb := &st.StartTime
-	if startTimePb != nil {
-		pb.StartTime = *startTimePb
-	}
+	pb.StartTime = st.StartTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13877,47 +12098,15 @@ func getEventsFromPb(pb *getEventsPb) (*GetEvents, error) {
 		return nil, nil
 	}
 	st := &GetEvents{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	endTimeField := &pb.EndTime
-	if endTimeField != nil {
-		st.EndTime = *endTimeField
-	}
-
-	var eventTypesField []EventType
-	for _, item := range pb.EventTypes {
-		itemField := &item
-		if itemField != nil {
-			eventTypesField = append(eventTypesField, *itemField)
-		}
-	}
-	st.EventTypes = eventTypesField
-	limitField := &pb.Limit
-	if limitField != nil {
-		st.Limit = *limitField
-	}
-	offsetField := &pb.Offset
-	if offsetField != nil {
-		st.Offset = *offsetField
-	}
-	orderField := &pb.Order
-	if orderField != nil {
-		st.Order = *orderField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	startTimeField := &pb.StartTime
-	if startTimeField != nil {
-		st.StartTime = *startTimeField
-	}
+	st.ClusterId = pb.ClusterId
+	st.EndTime = pb.EndTime
+	st.EventTypes = pb.EventTypes
+	st.Limit = pb.Limit
+	st.Offset = pb.Offset
+	st.Order = pb.Order
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+	st.StartTime = pb.StartTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13976,27 +12165,33 @@ func getEventsOrderFromPb(pb *getEventsOrderPb) (*GetEventsOrder, error) {
 }
 
 type GetEventsResponse struct {
+
+	// Wire name: 'events'
 	Events []ClusterEvent
 	// Deprecated: use next_page_token or prev_page_token instead.
 	//
 	// The parameters required to retrieve the next page of events. Omitted if
 	// there are no more events to read.
+	// Wire name: 'next_page'
 	NextPage *GetEvents
 	// This field represents the pagination token to retrieve the next page of
 	// results. If the value is "", it means no further results for the request.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// This field represents the pagination token to retrieve the previous page
 	// of results. If the value is "", it means no further results for the
 	// request.
+	// Wire name: 'prev_page_token'
 	PrevPageToken string
 	// Deprecated: Returns 0 when request uses page_token. Will start returning
 	// zero when request uses offset/limit soon.
 	//
 	// The total number of events filtered by the start_time, end_time, and
 	// event_types.
+	// Wire name: 'total_count'
 	TotalCount int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getEventsResponseToPb(st *GetEventsResponse) (*getEventsResponsePb, error) {
@@ -14025,20 +12220,11 @@ func getEventsResponseToPb(st *GetEventsResponse) (*getEventsResponsePb, error) 
 		pb.NextPage = nextPagePb
 	}
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
-	prevPageTokenPb := &st.PrevPageToken
-	if prevPageTokenPb != nil {
-		pb.PrevPageToken = *prevPageTokenPb
-	}
+	pb.PrevPageToken = st.PrevPageToken
 
-	totalCountPb := &st.TotalCount
-	if totalCountPb != nil {
-		pb.TotalCount = *totalCountPb
-	}
+	pb.TotalCount = st.TotalCount
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14100,13 +12286,13 @@ func getEventsResponseFromPb(pb *getEventsResponsePb) (*GetEventsResponse, error
 	st := &GetEventsResponse{}
 
 	var eventsField []ClusterEvent
-	for _, item := range pb.Events {
-		itemField, err := clusterEventFromPb(&item)
+	for _, itemPb := range pb.Events {
+		item, err := clusterEventFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			eventsField = append(eventsField, *itemField)
+		if item != nil {
+			eventsField = append(eventsField, *item)
 		}
 	}
 	st.Events = eventsField
@@ -14117,18 +12303,9 @@ func getEventsResponseFromPb(pb *getEventsResponsePb) (*GetEventsResponse, error
 	if nextPageField != nil {
 		st.NextPage = nextPageField
 	}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
-	prevPageTokenField := &pb.PrevPageToken
-	if prevPageTokenField != nil {
-		st.PrevPageToken = *prevPageTokenField
-	}
-	totalCountField := &pb.TotalCount
-	if totalCountField != nil {
-		st.TotalCount = *totalCountField
-	}
+	st.NextPageToken = pb.NextPageToken
+	st.PrevPageToken = pb.PrevPageToken
+	st.TotalCount = pb.TotalCount
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14145,7 +12322,8 @@ func (st getEventsResponsePb) MarshalJSON() ([]byte, error) {
 // Get an init script
 type GetGlobalInitScriptRequest struct {
 	// The ID of the global init script.
-	ScriptId string
+	// Wire name: 'script_id'
+	ScriptId string `tf:"-"`
 }
 
 func getGlobalInitScriptRequestToPb(st *GetGlobalInitScriptRequest) (*getGlobalInitScriptRequestPb, error) {
@@ -14153,10 +12331,7 @@ func getGlobalInitScriptRequestToPb(st *GetGlobalInitScriptRequest) (*getGlobalI
 		return nil, nil
 	}
 	pb := &getGlobalInitScriptRequestPb{}
-	scriptIdPb := &st.ScriptId
-	if scriptIdPb != nil {
-		pb.ScriptId = *scriptIdPb
-	}
+	pb.ScriptId = st.ScriptId
 
 	return pb, nil
 }
@@ -14196,10 +12371,7 @@ func getGlobalInitScriptRequestFromPb(pb *getGlobalInitScriptRequestPb) (*GetGlo
 		return nil, nil
 	}
 	st := &GetGlobalInitScriptRequest{}
-	scriptIdField := &pb.ScriptId
-	if scriptIdField != nil {
-		st.ScriptId = *scriptIdField
-	}
+	st.ScriptId = pb.ScriptId
 
 	return st, nil
 }
@@ -14207,15 +12379,18 @@ func getGlobalInitScriptRequestFromPb(pb *getGlobalInitScriptRequestPb) (*GetGlo
 type GetInstancePool struct {
 	// Attributes related to instance pools running on Amazon Web Services. If
 	// not specified at pool creation, a set of default values will be used.
+	// Wire name: 'aws_attributes'
 	AwsAttributes *InstancePoolAwsAttributes
 	// Attributes related to instance pools running on Azure. If not specified
 	// at pool creation, a set of default values will be used.
+	// Wire name: 'azure_attributes'
 	AzureAttributes *InstancePoolAzureAttributes
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including:
@@ -14227,18 +12402,22 @@ type GetInstancePool struct {
 	// - InstancePoolName: <name_of_pool>
 	//
 	// - InstancePoolId: <id_of_pool>
+	// Wire name: 'default_tags'
 	DefaultTags map[string]string
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
+	// Wire name: 'disk_spec'
 	DiskSpec *DiskSpec
 	// Autoscaling Local Storage: when enabled, this instances in this pool will
 	// dynamically acquire additional disk space when its Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
 	// permissions to function correctly - refer to the User Guide for more
 	// details.
+	// Wire name: 'enable_elastic_disk'
 	EnableElasticDisk bool
 	// Attributes related to instance pools running on Google Cloud Platform. If
 	// not specified at pool creation, a set of default values will be used.
+	// Wire name: 'gcp_attributes'
 	GcpAttributes *InstancePoolGcpAttributes
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
@@ -14247,43 +12426,55 @@ type GetInstancePool struct {
 	// threshold must be between 0 and 10000 minutes. Users can also set this
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
+	// Wire name: 'idle_instance_autotermination_minutes'
 	IdleInstanceAutoterminationMinutes int
 	// Canonical unique identifier for the pool.
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
+	// Wire name: 'instance_pool_name'
 	InstancePoolName string
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
 	// further instance provisioning will fail during upsize requests.
+	// Wire name: 'max_capacity'
 	MaxCapacity int
 	// Minimum number of idle instances to keep in the instance pool
+	// Wire name: 'min_idle_instances'
 	MinIdleInstances int
 	// For Fleet-pool V2, this object contains the information about the
 	// alternate node type ids to use when attempting to launch a cluster if the
 	// node type id is not available.
+	// Wire name: 'node_type_flexibility'
 	NodeTypeFlexibility *NodeTypeFlexibility
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 	// Custom Docker Image BYOC
+	// Wire name: 'preloaded_docker_images'
 	PreloadedDockerImages []DockerImage
 	// A list containing at most one preloaded Spark image version for the pool.
 	// Pool-backed clusters started with the preloaded Spark version will start
 	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
+	// Wire name: 'preloaded_spark_versions'
 	PreloadedSparkVersions []string
 	// Current state of the instance pool.
+	// Wire name: 'state'
 	State InstancePoolState
 	// Usage statistics about the instance pool.
+	// Wire name: 'stats'
 	Stats *InstancePoolStats
 	// Status of failed pending instances in the pool.
+	// Wire name: 'status'
 	Status *InstancePoolStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getInstancePoolToPb(st *GetInstancePool) (*getInstancePoolPb, error) {
@@ -14307,23 +12498,9 @@ func getInstancePoolToPb(st *GetInstancePool) (*getInstancePoolPb, error) {
 		pb.AzureAttributes = azureAttributesPb
 	}
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	defaultTagsPb := map[string]string{}
-	for k, v := range st.DefaultTags {
-		itemPb := &v
-		if itemPb != nil {
-			defaultTagsPb[k] = *itemPb
-		}
-	}
-	pb.DefaultTags = defaultTagsPb
+	pb.DefaultTags = st.DefaultTags
 
 	diskSpecPb, err := diskSpecToPb(st.DiskSpec)
 	if err != nil {
@@ -14333,10 +12510,7 @@ func getInstancePoolToPb(st *GetInstancePool) (*getInstancePoolPb, error) {
 		pb.DiskSpec = diskSpecPb
 	}
 
-	enableElasticDiskPb := &st.EnableElasticDisk
-	if enableElasticDiskPb != nil {
-		pb.EnableElasticDisk = *enableElasticDiskPb
-	}
+	pb.EnableElasticDisk = st.EnableElasticDisk
 
 	gcpAttributesPb, err := instancePoolGcpAttributesToPb(st.GcpAttributes)
 	if err != nil {
@@ -14346,30 +12520,15 @@ func getInstancePoolToPb(st *GetInstancePool) (*getInstancePoolPb, error) {
 		pb.GcpAttributes = gcpAttributesPb
 	}
 
-	idleInstanceAutoterminationMinutesPb := &st.IdleInstanceAutoterminationMinutes
-	if idleInstanceAutoterminationMinutesPb != nil {
-		pb.IdleInstanceAutoterminationMinutes = *idleInstanceAutoterminationMinutesPb
-	}
+	pb.IdleInstanceAutoterminationMinutes = st.IdleInstanceAutoterminationMinutes
 
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
-	instancePoolNamePb := &st.InstancePoolName
-	if instancePoolNamePb != nil {
-		pb.InstancePoolName = *instancePoolNamePb
-	}
+	pb.InstancePoolName = st.InstancePoolName
 
-	maxCapacityPb := &st.MaxCapacity
-	if maxCapacityPb != nil {
-		pb.MaxCapacity = *maxCapacityPb
-	}
+	pb.MaxCapacity = st.MaxCapacity
 
-	minIdleInstancesPb := &st.MinIdleInstances
-	if minIdleInstancesPb != nil {
-		pb.MinIdleInstances = *minIdleInstancesPb
-	}
+	pb.MinIdleInstances = st.MinIdleInstances
 
 	nodeTypeFlexibilityPb, err := nodeTypeFlexibilityToPb(st.NodeTypeFlexibility)
 	if err != nil {
@@ -14379,10 +12538,7 @@ func getInstancePoolToPb(st *GetInstancePool) (*getInstancePoolPb, error) {
 		pb.NodeTypeFlexibility = nodeTypeFlexibilityPb
 	}
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
 	var preloadedDockerImagesPb []dockerImagePb
 	for _, item := range st.PreloadedDockerImages {
@@ -14396,19 +12552,9 @@ func getInstancePoolToPb(st *GetInstancePool) (*getInstancePoolPb, error) {
 	}
 	pb.PreloadedDockerImages = preloadedDockerImagesPb
 
-	var preloadedSparkVersionsPb []string
-	for _, item := range st.PreloadedSparkVersions {
-		itemPb := &item
-		if itemPb != nil {
-			preloadedSparkVersionsPb = append(preloadedSparkVersionsPb, *itemPb)
-		}
-	}
-	pb.PreloadedSparkVersions = preloadedSparkVersionsPb
+	pb.PreloadedSparkVersions = st.PreloadedSparkVersions
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	statsPb, err := instancePoolStatsToPb(st.Stats)
 	if err != nil {
@@ -14556,24 +12702,8 @@ func getInstancePoolFromPb(pb *getInstancePoolPb) (*GetInstancePool, error) {
 	if azureAttributesField != nil {
 		st.AzureAttributes = azureAttributesField
 	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-
-	defaultTagsField := map[string]string{}
-	for k, v := range pb.DefaultTags {
-		itemField := &v
-		if itemField != nil {
-			defaultTagsField[k] = *itemField
-		}
-	}
-	st.DefaultTags = defaultTagsField
+	st.CustomTags = pb.CustomTags
+	st.DefaultTags = pb.DefaultTags
 	diskSpecField, err := diskSpecFromPb(pb.DiskSpec)
 	if err != nil {
 		return nil, err
@@ -14581,10 +12711,7 @@ func getInstancePoolFromPb(pb *getInstancePoolPb) (*GetInstancePool, error) {
 	if diskSpecField != nil {
 		st.DiskSpec = diskSpecField
 	}
-	enableElasticDiskField := &pb.EnableElasticDisk
-	if enableElasticDiskField != nil {
-		st.EnableElasticDisk = *enableElasticDiskField
-	}
+	st.EnableElasticDisk = pb.EnableElasticDisk
 	gcpAttributesField, err := instancePoolGcpAttributesFromPb(pb.GcpAttributes)
 	if err != nil {
 		return nil, err
@@ -14592,26 +12719,11 @@ func getInstancePoolFromPb(pb *getInstancePoolPb) (*GetInstancePool, error) {
 	if gcpAttributesField != nil {
 		st.GcpAttributes = gcpAttributesField
 	}
-	idleInstanceAutoterminationMinutesField := &pb.IdleInstanceAutoterminationMinutes
-	if idleInstanceAutoterminationMinutesField != nil {
-		st.IdleInstanceAutoterminationMinutes = *idleInstanceAutoterminationMinutesField
-	}
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
-	instancePoolNameField := &pb.InstancePoolName
-	if instancePoolNameField != nil {
-		st.InstancePoolName = *instancePoolNameField
-	}
-	maxCapacityField := &pb.MaxCapacity
-	if maxCapacityField != nil {
-		st.MaxCapacity = *maxCapacityField
-	}
-	minIdleInstancesField := &pb.MinIdleInstances
-	if minIdleInstancesField != nil {
-		st.MinIdleInstances = *minIdleInstancesField
-	}
+	st.IdleInstanceAutoterminationMinutes = pb.IdleInstanceAutoterminationMinutes
+	st.InstancePoolId = pb.InstancePoolId
+	st.InstancePoolName = pb.InstancePoolName
+	st.MaxCapacity = pb.MaxCapacity
+	st.MinIdleInstances = pb.MinIdleInstances
 	nodeTypeFlexibilityField, err := nodeTypeFlexibilityFromPb(pb.NodeTypeFlexibility)
 	if err != nil {
 		return nil, err
@@ -14619,35 +12731,21 @@ func getInstancePoolFromPb(pb *getInstancePoolPb) (*GetInstancePool, error) {
 	if nodeTypeFlexibilityField != nil {
 		st.NodeTypeFlexibility = nodeTypeFlexibilityField
 	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
+	st.NodeTypeId = pb.NodeTypeId
 
 	var preloadedDockerImagesField []DockerImage
-	for _, item := range pb.PreloadedDockerImages {
-		itemField, err := dockerImageFromPb(&item)
+	for _, itemPb := range pb.PreloadedDockerImages {
+		item, err := dockerImageFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			preloadedDockerImagesField = append(preloadedDockerImagesField, *itemField)
+		if item != nil {
+			preloadedDockerImagesField = append(preloadedDockerImagesField, *item)
 		}
 	}
 	st.PreloadedDockerImages = preloadedDockerImagesField
-
-	var preloadedSparkVersionsField []string
-	for _, item := range pb.PreloadedSparkVersions {
-		itemField := &item
-		if itemField != nil {
-			preloadedSparkVersionsField = append(preloadedSparkVersionsField, *itemField)
-		}
-	}
-	st.PreloadedSparkVersions = preloadedSparkVersionsField
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.PreloadedSparkVersions = pb.PreloadedSparkVersions
+	st.State = pb.State
 	statsField, err := instancePoolStatsFromPb(pb.Stats)
 	if err != nil {
 		return nil, err
@@ -14678,7 +12776,8 @@ func (st getInstancePoolPb) MarshalJSON() ([]byte, error) {
 // Get instance pool permission levels
 type GetInstancePoolPermissionLevelsRequest struct {
 	// The instance pool for which to get or manage permissions.
-	InstancePoolId string
+	// Wire name: 'instance_pool_id'
+	InstancePoolId string `tf:"-"`
 }
 
 func getInstancePoolPermissionLevelsRequestToPb(st *GetInstancePoolPermissionLevelsRequest) (*getInstancePoolPermissionLevelsRequestPb, error) {
@@ -14686,10 +12785,7 @@ func getInstancePoolPermissionLevelsRequestToPb(st *GetInstancePoolPermissionLev
 		return nil, nil
 	}
 	pb := &getInstancePoolPermissionLevelsRequestPb{}
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
 	return pb, nil
 }
@@ -14729,16 +12825,14 @@ func getInstancePoolPermissionLevelsRequestFromPb(pb *getInstancePoolPermissionL
 		return nil, nil
 	}
 	st := &GetInstancePoolPermissionLevelsRequest{}
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
+	st.InstancePoolId = pb.InstancePoolId
 
 	return st, nil
 }
 
 type GetInstancePoolPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []InstancePoolPermissionsDescription
 }
 
@@ -14800,13 +12894,13 @@ func getInstancePoolPermissionLevelsResponseFromPb(pb *getInstancePoolPermission
 	st := &GetInstancePoolPermissionLevelsResponse{}
 
 	var permissionLevelsField []InstancePoolPermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := instancePoolPermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := instancePoolPermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -14817,7 +12911,8 @@ func getInstancePoolPermissionLevelsResponseFromPb(pb *getInstancePoolPermission
 // Get instance pool permissions
 type GetInstancePoolPermissionsRequest struct {
 	// The instance pool for which to get or manage permissions.
-	InstancePoolId string
+	// Wire name: 'instance_pool_id'
+	InstancePoolId string `tf:"-"`
 }
 
 func getInstancePoolPermissionsRequestToPb(st *GetInstancePoolPermissionsRequest) (*getInstancePoolPermissionsRequestPb, error) {
@@ -14825,10 +12920,7 @@ func getInstancePoolPermissionsRequestToPb(st *GetInstancePoolPermissionsRequest
 		return nil, nil
 	}
 	pb := &getInstancePoolPermissionsRequestPb{}
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
 	return pb, nil
 }
@@ -14868,10 +12960,7 @@ func getInstancePoolPermissionsRequestFromPb(pb *getInstancePoolPermissionsReque
 		return nil, nil
 	}
 	st := &GetInstancePoolPermissionsRequest{}
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
+	st.InstancePoolId = pb.InstancePoolId
 
 	return st, nil
 }
@@ -14879,7 +12968,8 @@ func getInstancePoolPermissionsRequestFromPb(pb *getInstancePoolPermissionsReque
 // Get instance pool information
 type GetInstancePoolRequest struct {
 	// The canonical unique identifier for the instance pool.
-	InstancePoolId string
+	// Wire name: 'instance_pool_id'
+	InstancePoolId string `tf:"-"`
 }
 
 func getInstancePoolRequestToPb(st *GetInstancePoolRequest) (*getInstancePoolRequestPb, error) {
@@ -14887,10 +12977,7 @@ func getInstancePoolRequestToPb(st *GetInstancePoolRequest) (*getInstancePoolReq
 		return nil, nil
 	}
 	pb := &getInstancePoolRequestPb{}
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
 	return pb, nil
 }
@@ -14930,10 +13017,7 @@ func getInstancePoolRequestFromPb(pb *getInstancePoolRequestPb) (*GetInstancePoo
 		return nil, nil
 	}
 	st := &GetInstancePoolRequest{}
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
+	st.InstancePoolId = pb.InstancePoolId
 
 	return st, nil
 }
@@ -14941,12 +13025,14 @@ func getInstancePoolRequestFromPb(pb *getInstancePoolRequestPb) (*GetInstancePoo
 // Get policy family information
 type GetPolicyFamilyRequest struct {
 	// The family ID about which to retrieve information.
-	PolicyFamilyId string
+	// Wire name: 'policy_family_id'
+	PolicyFamilyId string `tf:"-"`
 	// The version number for the family to fetch. Defaults to the latest
 	// version.
-	Version int64
+	// Wire name: 'version'
+	Version int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getPolicyFamilyRequestToPb(st *GetPolicyFamilyRequest) (*getPolicyFamilyRequestPb, error) {
@@ -14954,15 +13040,9 @@ func getPolicyFamilyRequestToPb(st *GetPolicyFamilyRequest) (*getPolicyFamilyReq
 		return nil, nil
 	}
 	pb := &getPolicyFamilyRequestPb{}
-	policyFamilyIdPb := &st.PolicyFamilyId
-	if policyFamilyIdPb != nil {
-		pb.PolicyFamilyId = *policyFamilyIdPb
-	}
+	pb.PolicyFamilyId = st.PolicyFamilyId
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15008,14 +13088,8 @@ func getPolicyFamilyRequestFromPb(pb *getPolicyFamilyRequestPb) (*GetPolicyFamil
 		return nil, nil
 	}
 	st := &GetPolicyFamilyRequest{}
-	policyFamilyIdField := &pb.PolicyFamilyId
-	if policyFamilyIdField != nil {
-		st.PolicyFamilyId = *policyFamilyIdField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.PolicyFamilyId = pb.PolicyFamilyId
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15031,6 +13105,7 @@ func (st getPolicyFamilyRequestPb) MarshalJSON() ([]byte, error) {
 
 type GetSparkVersionsResponse struct {
 	// All the available Spark versions.
+	// Wire name: 'versions'
 	Versions []SparkVersion
 }
 
@@ -15092,13 +13167,13 @@ func getSparkVersionsResponseFromPb(pb *getSparkVersionsResponsePb) (*GetSparkVe
 	st := &GetSparkVersionsResponse{}
 
 	var versionsField []SparkVersion
-	for _, item := range pb.Versions {
-		itemField, err := sparkVersionFromPb(&item)
+	for _, itemPb := range pb.Versions {
+		item, err := sparkVersionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			versionsField = append(versionsField, *itemField)
+		if item != nil {
+			versionsField = append(versionsField, *item)
 		}
 	}
 	st.Versions = versionsField
@@ -15108,8 +13183,10 @@ func getSparkVersionsResponseFromPb(pb *getSparkVersionsResponsePb) (*GetSparkVe
 
 type GlobalInitScriptCreateRequest struct {
 	// Specifies whether the script is enabled. The script runs only if enabled.
+	// Wire name: 'enabled'
 	Enabled bool
 	// The name of the script
+	// Wire name: 'name'
 	Name string
 	// The position of a global init script, where 0 represents the first script
 	// to run, 1 is the second script to run, in ascending order.
@@ -15122,11 +13199,13 @@ type GlobalInitScriptCreateRequest struct {
 	// position. If an explicit position value conflicts with an existing script
 	// value, your request succeeds, but the original script at that position
 	// and all later scripts have their positions incremented by 1.
+	// Wire name: 'position'
 	Position int
 	// The Base64-encoded content of the script.
+	// Wire name: 'script'
 	Script string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func globalInitScriptCreateRequestToPb(st *GlobalInitScriptCreateRequest) (*globalInitScriptCreateRequestPb, error) {
@@ -15134,25 +13213,13 @@ func globalInitScriptCreateRequestToPb(st *GlobalInitScriptCreateRequest) (*glob
 		return nil, nil
 	}
 	pb := &globalInitScriptCreateRequestPb{}
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	positionPb := &st.Position
-	if positionPb != nil {
-		pb.Position = *positionPb
-	}
+	pb.Position = st.Position
 
-	scriptPb := &st.Script
-	if scriptPb != nil {
-		pb.Script = *scriptPb
-	}
+	pb.Script = st.Script
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15211,22 +13278,10 @@ func globalInitScriptCreateRequestFromPb(pb *globalInitScriptCreateRequestPb) (*
 		return nil, nil
 	}
 	st := &GlobalInitScriptCreateRequest{}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	positionField := &pb.Position
-	if positionField != nil {
-		st.Position = *positionField
-	}
-	scriptField := &pb.Script
-	if scriptField != nil {
-		st.Script = *scriptField
-	}
+	st.Enabled = pb.Enabled
+	st.Name = pb.Name
+	st.Position = pb.Position
+	st.Script = pb.Script
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15243,25 +13298,33 @@ func (st globalInitScriptCreateRequestPb) MarshalJSON() ([]byte, error) {
 type GlobalInitScriptDetails struct {
 	// Time when the script was created, represented as a Unix timestamp in
 	// milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int
 	// The username of the user who created the script.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Specifies whether the script is enabled. The script runs only if enabled.
+	// Wire name: 'enabled'
 	Enabled bool
 	// The name of the script
+	// Wire name: 'name'
 	Name string
 	// The position of a script, where 0 represents the first script to run, 1
 	// is the second script to run, in ascending order.
+	// Wire name: 'position'
 	Position int
 	// The global init script ID.
+	// Wire name: 'script_id'
 	ScriptId string
 	// Time when the script was updated, represented as a Unix timestamp in
 	// milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int
 	// The username of the user who last updated the script
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func globalInitScriptDetailsToPb(st *GlobalInitScriptDetails) (*globalInitScriptDetailsPb, error) {
@@ -15269,45 +13332,21 @@ func globalInitScriptDetailsToPb(st *GlobalInitScriptDetails) (*globalInitScript
 		return nil, nil
 	}
 	pb := &globalInitScriptDetailsPb{}
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	positionPb := &st.Position
-	if positionPb != nil {
-		pb.Position = *positionPb
-	}
+	pb.Position = st.Position
 
-	scriptIdPb := &st.ScriptId
-	if scriptIdPb != nil {
-		pb.ScriptId = *scriptIdPb
-	}
+	pb.ScriptId = st.ScriptId
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15367,38 +13406,14 @@ func globalInitScriptDetailsFromPb(pb *globalInitScriptDetailsPb) (*GlobalInitSc
 		return nil, nil
 	}
 	st := &GlobalInitScriptDetails{}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	positionField := &pb.Position
-	if positionField != nil {
-		st.Position = *positionField
-	}
-	scriptIdField := &pb.ScriptId
-	if scriptIdField != nil {
-		st.ScriptId = *scriptIdField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.Enabled = pb.Enabled
+	st.Name = pb.Name
+	st.Position = pb.Position
+	st.ScriptId = pb.ScriptId
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15415,27 +13430,36 @@ func (st globalInitScriptDetailsPb) MarshalJSON() ([]byte, error) {
 type GlobalInitScriptDetailsWithContent struct {
 	// Time when the script was created, represented as a Unix timestamp in
 	// milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int
 	// The username of the user who created the script.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Specifies whether the script is enabled. The script runs only if enabled.
+	// Wire name: 'enabled'
 	Enabled bool
 	// The name of the script
+	// Wire name: 'name'
 	Name string
 	// The position of a script, where 0 represents the first script to run, 1
 	// is the second script to run, in ascending order.
+	// Wire name: 'position'
 	Position int
 	// The Base64-encoded content of the script.
+	// Wire name: 'script'
 	Script string
 	// The global init script ID.
+	// Wire name: 'script_id'
 	ScriptId string
 	// Time when the script was updated, represented as a Unix timestamp in
 	// milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int
 	// The username of the user who last updated the script
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func globalInitScriptDetailsWithContentToPb(st *GlobalInitScriptDetailsWithContent) (*globalInitScriptDetailsWithContentPb, error) {
@@ -15443,50 +13467,23 @@ func globalInitScriptDetailsWithContentToPb(st *GlobalInitScriptDetailsWithConte
 		return nil, nil
 	}
 	pb := &globalInitScriptDetailsWithContentPb{}
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	positionPb := &st.Position
-	if positionPb != nil {
-		pb.Position = *positionPb
-	}
+	pb.Position = st.Position
 
-	scriptPb := &st.Script
-	if scriptPb != nil {
-		pb.Script = *scriptPb
-	}
+	pb.Script = st.Script
 
-	scriptIdPb := &st.ScriptId
-	if scriptIdPb != nil {
-		pb.ScriptId = *scriptIdPb
-	}
+	pb.ScriptId = st.ScriptId
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15548,42 +13545,15 @@ func globalInitScriptDetailsWithContentFromPb(pb *globalInitScriptDetailsWithCon
 		return nil, nil
 	}
 	st := &GlobalInitScriptDetailsWithContent{}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	positionField := &pb.Position
-	if positionField != nil {
-		st.Position = *positionField
-	}
-	scriptField := &pb.Script
-	if scriptField != nil {
-		st.Script = *scriptField
-	}
-	scriptIdField := &pb.ScriptId
-	if scriptIdField != nil {
-		st.ScriptId = *scriptIdField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.Enabled = pb.Enabled
+	st.Name = pb.Name
+	st.Position = pb.Position
+	st.Script = pb.Script
+	st.ScriptId = pb.ScriptId
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15599,8 +13569,10 @@ func (st globalInitScriptDetailsWithContentPb) MarshalJSON() ([]byte, error) {
 
 type GlobalInitScriptUpdateRequest struct {
 	// Specifies whether the script is enabled. The script runs only if enabled.
+	// Wire name: 'enabled'
 	Enabled bool
 	// The name of the script
+	// Wire name: 'name'
 	Name string
 	// The position of a script, where 0 represents the first script to run, 1
 	// is the second script to run, in ascending order. To move the script to
@@ -15614,13 +13586,16 @@ type GlobalInitScriptUpdateRequest struct {
 	// If an explicit position value conflicts with an existing script, your
 	// request succeeds, but the original script at that position and all later
 	// scripts have their positions incremented by 1.
+	// Wire name: 'position'
 	Position int
 	// The Base64-encoded content of the script.
+	// Wire name: 'script'
 	Script string
 	// The ID of the global init script.
-	ScriptId string
+	// Wire name: 'script_id'
+	ScriptId string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func globalInitScriptUpdateRequestToPb(st *GlobalInitScriptUpdateRequest) (*globalInitScriptUpdateRequestPb, error) {
@@ -15628,30 +13603,15 @@ func globalInitScriptUpdateRequestToPb(st *GlobalInitScriptUpdateRequest) (*glob
 		return nil, nil
 	}
 	pb := &globalInitScriptUpdateRequestPb{}
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	positionPb := &st.Position
-	if positionPb != nil {
-		pb.Position = *positionPb
-	}
+	pb.Position = st.Position
 
-	scriptPb := &st.Script
-	if scriptPb != nil {
-		pb.Script = *scriptPb
-	}
+	pb.Script = st.Script
 
-	scriptIdPb := &st.ScriptId
-	if scriptIdPb != nil {
-		pb.ScriptId = *scriptIdPb
-	}
+	pb.ScriptId = st.ScriptId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15713,26 +13673,11 @@ func globalInitScriptUpdateRequestFromPb(pb *globalInitScriptUpdateRequestPb) (*
 		return nil, nil
 	}
 	st := &GlobalInitScriptUpdateRequest{}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	positionField := &pb.Position
-	if positionField != nil {
-		st.Position = *positionField
-	}
-	scriptField := &pb.Script
-	if scriptField != nil {
-		st.Script = *scriptField
-	}
-	scriptIdField := &pb.ScriptId
-	if scriptIdField != nil {
-		st.ScriptId = *scriptIdField
-	}
+	st.Enabled = pb.Enabled
+	st.Name = pb.Name
+	st.Position = pb.Position
+	st.Script = pb.Script
+	st.ScriptId = pb.ScriptId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15748,8 +13693,10 @@ func (st globalInitScriptUpdateRequestPb) MarshalJSON() ([]byte, error) {
 
 type InitScriptEventDetails struct {
 	// The cluster scoped init scripts associated with this cluster event.
+	// Wire name: 'cluster'
 	Cluster []InitScriptInfoAndExecutionDetails
 	// The global init scripts associated with this cluster event.
+	// Wire name: 'global'
 	Global []InitScriptInfoAndExecutionDetails
 	// The private ip of the node we are reporting init script execution details
 	// for (we will select the execution details from only one node rather than
@@ -15757,9 +13704,10 @@ type InitScriptEventDetails struct {
 	// details small)
 	//
 	// This should only be defined for the INIT_SCRIPTS_FINISHED event
+	// Wire name: 'reported_for_node'
 	ReportedForNode string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func initScriptEventDetailsToPb(st *InitScriptEventDetails) (*initScriptEventDetailsPb, error) {
@@ -15792,10 +13740,7 @@ func initScriptEventDetailsToPb(st *InitScriptEventDetails) (*initScriptEventDet
 	}
 	pb.Global = globalPb
 
-	reportedForNodePb := &st.ReportedForNode
-	if reportedForNodePb != nil {
-		pb.ReportedForNode = *reportedForNodePb
-	}
+	pb.ReportedForNode = st.ReportedForNode
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15849,32 +13794,29 @@ func initScriptEventDetailsFromPb(pb *initScriptEventDetailsPb) (*InitScriptEven
 	st := &InitScriptEventDetails{}
 
 	var clusterField []InitScriptInfoAndExecutionDetails
-	for _, item := range pb.Cluster {
-		itemField, err := initScriptInfoAndExecutionDetailsFromPb(&item)
+	for _, itemPb := range pb.Cluster {
+		item, err := initScriptInfoAndExecutionDetailsFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			clusterField = append(clusterField, *itemField)
+		if item != nil {
+			clusterField = append(clusterField, *item)
 		}
 	}
 	st.Cluster = clusterField
 
 	var globalField []InitScriptInfoAndExecutionDetails
-	for _, item := range pb.Global {
-		itemField, err := initScriptInfoAndExecutionDetailsFromPb(&item)
+	for _, itemPb := range pb.Global {
+		item, err := initScriptInfoAndExecutionDetailsFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			globalField = append(globalField, *itemField)
+		if item != nil {
+			globalField = append(globalField, *item)
 		}
 	}
 	st.Global = globalField
-	reportedForNodeField := &pb.ReportedForNode
-	if reportedForNodeField != nil {
-		st.ReportedForNode = *reportedForNodeField
-	}
+	st.ReportedForNode = pb.ReportedForNode
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15947,27 +13889,34 @@ func initScriptExecutionDetailsInitScriptExecutionStatusFromPb(pb *initScriptExe
 type InitScriptInfo struct {
 	// destination needs to be provided, e.g.
 	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`
+	// Wire name: 'abfss'
 	Abfss *Adlsgen2Info
 	// destination needs to be provided. e.g. `{ "dbfs": { "destination" :
 	// "dbfs:/home/cluster_log" } }`
+	// Wire name: 'dbfs'
 	Dbfs *DbfsStorageInfo
 	// destination needs to be provided, e.g. `{ "file": { "destination":
 	// "file:/my/local/file.sh" } }`
+	// Wire name: 'file'
 	File *LocalFileInfo
 	// destination needs to be provided, e.g. `{ "gcs": { "destination":
 	// "gs://my-bucket/file.sh" } }`
+	// Wire name: 'gcs'
 	Gcs *GcsStorageInfo
 	// destination and either the region or endpoint need to be provided. e.g.
 	// `{ \"s3\": { \"destination\": \"s3://cluster_log_bucket/prefix\",
 	// \"region\": \"us-west-2\" } }` Cluster iam role is used to access s3,
 	// please make sure the cluster iam role in `instance_profile_arn` has
 	// permission to write data to the s3 destination.
+	// Wire name: 's3'
 	S3 *S3StorageInfo
 	// destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\"
 	// : \"/Volumes/my-init.sh\" } }`
+	// Wire name: 'volumes'
 	Volumes *VolumesStorageInfo
 	// destination needs to be provided, e.g. `{ "workspace": { "destination":
 	// "/cluster-init-scripts/setup-datadog.sh" } }`
+	// Wire name: 'workspace'
 	Workspace *WorkspaceStorageInfo
 }
 
@@ -16148,38 +14097,48 @@ func InitScriptInfoFromPb(pb *InitScriptInfoPb) (*InitScriptInfo, error) {
 type InitScriptInfoAndExecutionDetails struct {
 	// destination needs to be provided, e.g.
 	// `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`
+	// Wire name: 'abfss'
 	Abfss *Adlsgen2Info
 	// destination needs to be provided. e.g. `{ "dbfs": { "destination" :
 	// "dbfs:/home/cluster_log" } }`
+	// Wire name: 'dbfs'
 	Dbfs *DbfsStorageInfo
 	// Additional details regarding errors (such as a file not found message if
 	// the status is FAILED_FETCH). This field should only be used to provide
 	// *additional* information to the status field, not duplicate it.
+	// Wire name: 'error_message'
 	ErrorMessage string
 	// The number duration of the script execution in seconds
+	// Wire name: 'execution_duration_seconds'
 	ExecutionDurationSeconds int
 	// destination needs to be provided, e.g. `{ "file": { "destination":
 	// "file:/my/local/file.sh" } }`
+	// Wire name: 'file'
 	File *LocalFileInfo
 	// destination needs to be provided, e.g. `{ "gcs": { "destination":
 	// "gs://my-bucket/file.sh" } }`
+	// Wire name: 'gcs'
 	Gcs *GcsStorageInfo
 	// destination and either the region or endpoint need to be provided. e.g.
 	// `{ \"s3\": { \"destination\": \"s3://cluster_log_bucket/prefix\",
 	// \"region\": \"us-west-2\" } }` Cluster iam role is used to access s3,
 	// please make sure the cluster iam role in `instance_profile_arn` has
 	// permission to write data to the s3 destination.
+	// Wire name: 's3'
 	S3 *S3StorageInfo
 	// The current status of the script
+	// Wire name: 'status'
 	Status InitScriptExecutionDetailsInitScriptExecutionStatus
 	// destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\"
 	// : \"/Volumes/my-init.sh\" } }`
+	// Wire name: 'volumes'
 	Volumes *VolumesStorageInfo
 	// destination needs to be provided, e.g. `{ "workspace": { "destination":
 	// "/cluster-init-scripts/setup-datadog.sh" } }`
+	// Wire name: 'workspace'
 	Workspace *WorkspaceStorageInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func initScriptInfoAndExecutionDetailsToPb(st *InitScriptInfoAndExecutionDetails) (*initScriptInfoAndExecutionDetailsPb, error) {
@@ -16203,15 +14162,9 @@ func initScriptInfoAndExecutionDetailsToPb(st *InitScriptInfoAndExecutionDetails
 		pb.Dbfs = dbfsPb
 	}
 
-	errorMessagePb := &st.ErrorMessage
-	if errorMessagePb != nil {
-		pb.ErrorMessage = *errorMessagePb
-	}
+	pb.ErrorMessage = st.ErrorMessage
 
-	executionDurationSecondsPb := &st.ExecutionDurationSeconds
-	if executionDurationSecondsPb != nil {
-		pb.ExecutionDurationSeconds = *executionDurationSecondsPb
-	}
+	pb.ExecutionDurationSeconds = st.ExecutionDurationSeconds
 
 	filePb, err := localFileInfoToPb(st.File)
 	if err != nil {
@@ -16237,10 +14190,7 @@ func initScriptInfoAndExecutionDetailsToPb(st *InitScriptInfoAndExecutionDetails
 		pb.S3 = s3Pb
 	}
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	volumesPb, err := volumesStorageInfoToPb(st.Volumes)
 	if err != nil {
@@ -16343,14 +14293,8 @@ func initScriptInfoAndExecutionDetailsFromPb(pb *initScriptInfoAndExecutionDetai
 	if dbfsField != nil {
 		st.Dbfs = dbfsField
 	}
-	errorMessageField := &pb.ErrorMessage
-	if errorMessageField != nil {
-		st.ErrorMessage = *errorMessageField
-	}
-	executionDurationSecondsField := &pb.ExecutionDurationSeconds
-	if executionDurationSecondsField != nil {
-		st.ExecutionDurationSeconds = *executionDurationSecondsField
-	}
+	st.ErrorMessage = pb.ErrorMessage
+	st.ExecutionDurationSeconds = pb.ExecutionDurationSeconds
 	fileField, err := localFileInfoFromPb(pb.File)
 	if err != nil {
 		return nil, err
@@ -16372,10 +14316,7 @@ func initScriptInfoAndExecutionDetailsFromPb(pb *initScriptInfoAndExecutionDetai
 	if s3Field != nil {
 		st.S3 = s3Field
 	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.Status = pb.Status
 	volumesField, err := volumesStorageInfoFromPb(pb.Volumes)
 	if err != nil {
 		return nil, err
@@ -16405,8 +14346,10 @@ func (st initScriptInfoAndExecutionDetailsPb) MarshalJSON() ([]byte, error) {
 
 type InstallLibraries struct {
 	// Unique identifier for the cluster on which to install these libraries.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// The libraries to install.
+	// Wire name: 'libraries'
 	Libraries []Library
 }
 
@@ -16415,10 +14358,7 @@ func installLibrariesToPb(st *InstallLibraries) (*installLibrariesPb, error) {
 		return nil, nil
 	}
 	pb := &installLibrariesPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	var librariesPb []LibraryPb
 	for _, item := range st.Libraries {
@@ -16472,19 +14412,16 @@ func installLibrariesFromPb(pb *installLibrariesPb) (*InstallLibraries, error) {
 		return nil, nil
 	}
 	st := &InstallLibraries{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	var librariesField []Library
-	for _, item := range pb.Libraries {
-		itemField, err := LibraryFromPb(&item)
+	for _, itemPb := range pb.Libraries {
+		item, err := LibraryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			librariesField = append(librariesField, *itemField)
+		if item != nil {
+			librariesField = append(librariesField, *item)
 		}
 	}
 	st.Libraries = librariesField
@@ -16543,15 +14480,19 @@ func installLibrariesResponseFromPb(pb *installLibrariesResponsePb) (*InstallLib
 
 type InstancePoolAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel InstancePoolPermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func instancePoolAccessControlRequestToPb(st *InstancePoolAccessControlRequest) (*instancePoolAccessControlRequestPb, error) {
@@ -16559,25 +14500,13 @@ func instancePoolAccessControlRequestToPb(st *InstancePoolAccessControlRequest) 
 		return nil, nil
 	}
 	pb := &instancePoolAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16626,22 +14555,10 @@ func instancePoolAccessControlRequestFromPb(pb *instancePoolAccessControlRequest
 		return nil, nil
 	}
 	st := &InstancePoolAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16657,17 +14574,22 @@ func (st instancePoolAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type InstancePoolAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []InstancePoolPermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func instancePoolAccessControlResponseToPb(st *InstancePoolAccessControlResponse) (*instancePoolAccessControlResponsePb, error) {
@@ -16688,25 +14610,13 @@ func instancePoolAccessControlResponseToPb(st *InstancePoolAccessControlResponse
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16759,32 +14669,20 @@ func instancePoolAccessControlResponseFromPb(pb *instancePoolAccessControlRespon
 	st := &InstancePoolAccessControlResponse{}
 
 	var allPermissionsField []InstancePoolPermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := instancePoolPermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := instancePoolPermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16801,15 +14699,18 @@ func (st instancePoolAccessControlResponsePb) MarshalJSON() ([]byte, error) {
 type InstancePoolAndStats struct {
 	// Attributes related to instance pools running on Amazon Web Services. If
 	// not specified at pool creation, a set of default values will be used.
+	// Wire name: 'aws_attributes'
 	AwsAttributes *InstancePoolAwsAttributes
 	// Attributes related to instance pools running on Azure. If not specified
 	// at pool creation, a set of default values will be used.
+	// Wire name: 'azure_attributes'
 	AzureAttributes *InstancePoolAzureAttributes
 	// Additional tags for pool resources. Databricks will tag all pool
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
 	// addition to `default_tags`. Notes:
 	//
 	// - Currently, Databricks allows at most 45 custom tags
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// Tags that are added by Databricks regardless of any ``custom_tags``,
 	// including:
@@ -16821,18 +14722,22 @@ type InstancePoolAndStats struct {
 	// - InstancePoolName: <name_of_pool>
 	//
 	// - InstancePoolId: <id_of_pool>
+	// Wire name: 'default_tags'
 	DefaultTags map[string]string
 	// Defines the specification of the disks that will be attached to all spark
 	// containers.
+	// Wire name: 'disk_spec'
 	DiskSpec *DiskSpec
 	// Autoscaling Local Storage: when enabled, this instances in this pool will
 	// dynamically acquire additional disk space when its Spark workers are
 	// running low on disk space. In AWS, this feature requires specific AWS
 	// permissions to function correctly - refer to the User Guide for more
 	// details.
+	// Wire name: 'enable_elastic_disk'
 	EnableElasticDisk bool
 	// Attributes related to instance pools running on Google Cloud Platform. If
 	// not specified at pool creation, a set of default values will be used.
+	// Wire name: 'gcp_attributes'
 	GcpAttributes *InstancePoolGcpAttributes
 	// Automatically terminates the extra instances in the pool cache after they
 	// are inactive for this time in minutes if min_idle_instances requirement
@@ -16841,43 +14746,55 @@ type InstancePoolAndStats struct {
 	// threshold must be between 0 and 10000 minutes. Users can also set this
 	// value to 0 to instantly remove idle instances from the cache if min cache
 	// size could still hold.
+	// Wire name: 'idle_instance_autotermination_minutes'
 	IdleInstanceAutoterminationMinutes int
 	// Canonical unique identifier for the pool.
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 	// Pool name requested by the user. Pool name must be unique. Length must be
 	// between 1 and 100 characters.
+	// Wire name: 'instance_pool_name'
 	InstancePoolName string
 	// Maximum number of outstanding instances to keep in the pool, including
 	// both instances used by clusters and idle instances. Clusters that require
 	// further instance provisioning will fail during upsize requests.
+	// Wire name: 'max_capacity'
 	MaxCapacity int
 	// Minimum number of idle instances to keep in the instance pool
+	// Wire name: 'min_idle_instances'
 	MinIdleInstances int
 	// For Fleet-pool V2, this object contains the information about the
 	// alternate node type ids to use when attempting to launch a cluster if the
 	// node type id is not available.
+	// Wire name: 'node_type_flexibility'
 	NodeTypeFlexibility *NodeTypeFlexibility
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 	// Custom Docker Image BYOC
+	// Wire name: 'preloaded_docker_images'
 	PreloadedDockerImages []DockerImage
 	// A list containing at most one preloaded Spark image version for the pool.
 	// Pool-backed clusters started with the preloaded Spark version will start
 	// faster. A list of available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
+	// Wire name: 'preloaded_spark_versions'
 	PreloadedSparkVersions []string
 	// Current state of the instance pool.
+	// Wire name: 'state'
 	State InstancePoolState
 	// Usage statistics about the instance pool.
+	// Wire name: 'stats'
 	Stats *InstancePoolStats
 	// Status of failed pending instances in the pool.
+	// Wire name: 'status'
 	Status *InstancePoolStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func instancePoolAndStatsToPb(st *InstancePoolAndStats) (*instancePoolAndStatsPb, error) {
@@ -16901,23 +14818,9 @@ func instancePoolAndStatsToPb(st *InstancePoolAndStats) (*instancePoolAndStatsPb
 		pb.AzureAttributes = azureAttributesPb
 	}
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	defaultTagsPb := map[string]string{}
-	for k, v := range st.DefaultTags {
-		itemPb := &v
-		if itemPb != nil {
-			defaultTagsPb[k] = *itemPb
-		}
-	}
-	pb.DefaultTags = defaultTagsPb
+	pb.DefaultTags = st.DefaultTags
 
 	diskSpecPb, err := diskSpecToPb(st.DiskSpec)
 	if err != nil {
@@ -16927,10 +14830,7 @@ func instancePoolAndStatsToPb(st *InstancePoolAndStats) (*instancePoolAndStatsPb
 		pb.DiskSpec = diskSpecPb
 	}
 
-	enableElasticDiskPb := &st.EnableElasticDisk
-	if enableElasticDiskPb != nil {
-		pb.EnableElasticDisk = *enableElasticDiskPb
-	}
+	pb.EnableElasticDisk = st.EnableElasticDisk
 
 	gcpAttributesPb, err := instancePoolGcpAttributesToPb(st.GcpAttributes)
 	if err != nil {
@@ -16940,30 +14840,15 @@ func instancePoolAndStatsToPb(st *InstancePoolAndStats) (*instancePoolAndStatsPb
 		pb.GcpAttributes = gcpAttributesPb
 	}
 
-	idleInstanceAutoterminationMinutesPb := &st.IdleInstanceAutoterminationMinutes
-	if idleInstanceAutoterminationMinutesPb != nil {
-		pb.IdleInstanceAutoterminationMinutes = *idleInstanceAutoterminationMinutesPb
-	}
+	pb.IdleInstanceAutoterminationMinutes = st.IdleInstanceAutoterminationMinutes
 
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
-	instancePoolNamePb := &st.InstancePoolName
-	if instancePoolNamePb != nil {
-		pb.InstancePoolName = *instancePoolNamePb
-	}
+	pb.InstancePoolName = st.InstancePoolName
 
-	maxCapacityPb := &st.MaxCapacity
-	if maxCapacityPb != nil {
-		pb.MaxCapacity = *maxCapacityPb
-	}
+	pb.MaxCapacity = st.MaxCapacity
 
-	minIdleInstancesPb := &st.MinIdleInstances
-	if minIdleInstancesPb != nil {
-		pb.MinIdleInstances = *minIdleInstancesPb
-	}
+	pb.MinIdleInstances = st.MinIdleInstances
 
 	nodeTypeFlexibilityPb, err := nodeTypeFlexibilityToPb(st.NodeTypeFlexibility)
 	if err != nil {
@@ -16973,10 +14858,7 @@ func instancePoolAndStatsToPb(st *InstancePoolAndStats) (*instancePoolAndStatsPb
 		pb.NodeTypeFlexibility = nodeTypeFlexibilityPb
 	}
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
 	var preloadedDockerImagesPb []dockerImagePb
 	for _, item := range st.PreloadedDockerImages {
@@ -16990,19 +14872,9 @@ func instancePoolAndStatsToPb(st *InstancePoolAndStats) (*instancePoolAndStatsPb
 	}
 	pb.PreloadedDockerImages = preloadedDockerImagesPb
 
-	var preloadedSparkVersionsPb []string
-	for _, item := range st.PreloadedSparkVersions {
-		itemPb := &item
-		if itemPb != nil {
-			preloadedSparkVersionsPb = append(preloadedSparkVersionsPb, *itemPb)
-		}
-	}
-	pb.PreloadedSparkVersions = preloadedSparkVersionsPb
+	pb.PreloadedSparkVersions = st.PreloadedSparkVersions
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	statsPb, err := instancePoolStatsToPb(st.Stats)
 	if err != nil {
@@ -17150,24 +15022,8 @@ func instancePoolAndStatsFromPb(pb *instancePoolAndStatsPb) (*InstancePoolAndSta
 	if azureAttributesField != nil {
 		st.AzureAttributes = azureAttributesField
 	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-
-	defaultTagsField := map[string]string{}
-	for k, v := range pb.DefaultTags {
-		itemField := &v
-		if itemField != nil {
-			defaultTagsField[k] = *itemField
-		}
-	}
-	st.DefaultTags = defaultTagsField
+	st.CustomTags = pb.CustomTags
+	st.DefaultTags = pb.DefaultTags
 	diskSpecField, err := diskSpecFromPb(pb.DiskSpec)
 	if err != nil {
 		return nil, err
@@ -17175,10 +15031,7 @@ func instancePoolAndStatsFromPb(pb *instancePoolAndStatsPb) (*InstancePoolAndSta
 	if diskSpecField != nil {
 		st.DiskSpec = diskSpecField
 	}
-	enableElasticDiskField := &pb.EnableElasticDisk
-	if enableElasticDiskField != nil {
-		st.EnableElasticDisk = *enableElasticDiskField
-	}
+	st.EnableElasticDisk = pb.EnableElasticDisk
 	gcpAttributesField, err := instancePoolGcpAttributesFromPb(pb.GcpAttributes)
 	if err != nil {
 		return nil, err
@@ -17186,26 +15039,11 @@ func instancePoolAndStatsFromPb(pb *instancePoolAndStatsPb) (*InstancePoolAndSta
 	if gcpAttributesField != nil {
 		st.GcpAttributes = gcpAttributesField
 	}
-	idleInstanceAutoterminationMinutesField := &pb.IdleInstanceAutoterminationMinutes
-	if idleInstanceAutoterminationMinutesField != nil {
-		st.IdleInstanceAutoterminationMinutes = *idleInstanceAutoterminationMinutesField
-	}
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
-	instancePoolNameField := &pb.InstancePoolName
-	if instancePoolNameField != nil {
-		st.InstancePoolName = *instancePoolNameField
-	}
-	maxCapacityField := &pb.MaxCapacity
-	if maxCapacityField != nil {
-		st.MaxCapacity = *maxCapacityField
-	}
-	minIdleInstancesField := &pb.MinIdleInstances
-	if minIdleInstancesField != nil {
-		st.MinIdleInstances = *minIdleInstancesField
-	}
+	st.IdleInstanceAutoterminationMinutes = pb.IdleInstanceAutoterminationMinutes
+	st.InstancePoolId = pb.InstancePoolId
+	st.InstancePoolName = pb.InstancePoolName
+	st.MaxCapacity = pb.MaxCapacity
+	st.MinIdleInstances = pb.MinIdleInstances
 	nodeTypeFlexibilityField, err := nodeTypeFlexibilityFromPb(pb.NodeTypeFlexibility)
 	if err != nil {
 		return nil, err
@@ -17213,35 +15051,21 @@ func instancePoolAndStatsFromPb(pb *instancePoolAndStatsPb) (*InstancePoolAndSta
 	if nodeTypeFlexibilityField != nil {
 		st.NodeTypeFlexibility = nodeTypeFlexibilityField
 	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
+	st.NodeTypeId = pb.NodeTypeId
 
 	var preloadedDockerImagesField []DockerImage
-	for _, item := range pb.PreloadedDockerImages {
-		itemField, err := dockerImageFromPb(&item)
+	for _, itemPb := range pb.PreloadedDockerImages {
+		item, err := dockerImageFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			preloadedDockerImagesField = append(preloadedDockerImagesField, *itemField)
+		if item != nil {
+			preloadedDockerImagesField = append(preloadedDockerImagesField, *item)
 		}
 	}
 	st.PreloadedDockerImages = preloadedDockerImagesField
-
-	var preloadedSparkVersionsField []string
-	for _, item := range pb.PreloadedSparkVersions {
-		itemField := &item
-		if itemField != nil {
-			preloadedSparkVersionsField = append(preloadedSparkVersionsField, *itemField)
-		}
-	}
-	st.PreloadedSparkVersions = preloadedSparkVersionsField
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.PreloadedSparkVersions = pb.PreloadedSparkVersions
+	st.State = pb.State
 	statsField, err := instancePoolStatsFromPb(pb.Stats)
 	if err != nil {
 		return nil, err
@@ -17273,6 +15097,7 @@ func (st instancePoolAndStatsPb) MarshalJSON() ([]byte, error) {
 // Services.
 type InstancePoolAwsAttributes struct {
 	// Availability type used for the spot nodes.
+	// Wire name: 'availability'
 	Availability InstancePoolAwsAttributesAvailability
 	// Calculates the bid price for AWS spot instances, as a percentage of the
 	// corresponding instance type's on-demand price. For example, if this field
@@ -17284,6 +15109,7 @@ type InstancePoolAwsAttributes struct {
 	// instances whose bid price percentage matches this field will be
 	// considered. Note that, for safety, we enforce this field to be no more
 	// than 10000.
+	// Wire name: 'spot_bid_price_percent'
 	SpotBidPricePercent int
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west-2a". The provided
@@ -17293,9 +15119,10 @@ type InstancePoolAwsAttributes struct {
 	// optional field at cluster creation, and if not specified, a default zone
 	// will be used. The list of available zones as well as the default value
 	// can be found by using the `List Zones` method.
+	// Wire name: 'zone_id'
 	ZoneId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func instancePoolAwsAttributesToPb(st *InstancePoolAwsAttributes) (*instancePoolAwsAttributesPb, error) {
@@ -17303,20 +15130,11 @@ func instancePoolAwsAttributesToPb(st *InstancePoolAwsAttributes) (*instancePool
 		return nil, nil
 	}
 	pb := &instancePoolAwsAttributesPb{}
-	availabilityPb := &st.Availability
-	if availabilityPb != nil {
-		pb.Availability = *availabilityPb
-	}
+	pb.Availability = st.Availability
 
-	spotBidPricePercentPb := &st.SpotBidPricePercent
-	if spotBidPricePercentPb != nil {
-		pb.SpotBidPricePercent = *spotBidPricePercentPb
-	}
+	pb.SpotBidPricePercent = st.SpotBidPricePercent
 
-	zoneIdPb := &st.ZoneId
-	if zoneIdPb != nil {
-		pb.ZoneId = *zoneIdPb
-	}
+	pb.ZoneId = st.ZoneId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17379,18 +15197,9 @@ func instancePoolAwsAttributesFromPb(pb *instancePoolAwsAttributesPb) (*Instance
 		return nil, nil
 	}
 	st := &InstancePoolAwsAttributes{}
-	availabilityField := &pb.Availability
-	if availabilityField != nil {
-		st.Availability = *availabilityField
-	}
-	spotBidPricePercentField := &pb.SpotBidPricePercent
-	if spotBidPricePercentField != nil {
-		st.SpotBidPricePercent = *spotBidPricePercentField
-	}
-	zoneIdField := &pb.ZoneId
-	if zoneIdField != nil {
-		st.ZoneId = *zoneIdField
-	}
+	st.Availability = pb.Availability
+	st.SpotBidPricePercent = pb.SpotBidPricePercent
+	st.ZoneId = pb.ZoneId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17453,6 +15262,7 @@ func instancePoolAwsAttributesAvailabilityFromPb(pb *instancePoolAwsAttributesAv
 // Attributes set during instance pool creation which are related to Azure.
 type InstancePoolAzureAttributes struct {
 	// Availability type used for the spot nodes.
+	// Wire name: 'availability'
 	Availability InstancePoolAzureAttributesAvailability
 	// With variable pricing, you have option to set a max price, in US dollars
 	// (USD) For example, the value 2 would be a max price of $2.00 USD per
@@ -17460,9 +15270,10 @@ type InstancePoolAzureAttributes struct {
 	// price. The price for the VM will be the current price for spot or the
 	// price for a standard VM, which ever is less, as long as there is capacity
 	// and quota available.
+	// Wire name: 'spot_bid_max_price'
 	SpotBidMaxPrice float64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func instancePoolAzureAttributesToPb(st *InstancePoolAzureAttributes) (*instancePoolAzureAttributesPb, error) {
@@ -17470,15 +15281,9 @@ func instancePoolAzureAttributesToPb(st *InstancePoolAzureAttributes) (*instance
 		return nil, nil
 	}
 	pb := &instancePoolAzureAttributesPb{}
-	availabilityPb := &st.Availability
-	if availabilityPb != nil {
-		pb.Availability = *availabilityPb
-	}
+	pb.Availability = st.Availability
 
-	spotBidMaxPricePb := &st.SpotBidMaxPrice
-	if spotBidMaxPricePb != nil {
-		pb.SpotBidMaxPrice = *spotBidMaxPricePb
-	}
+	pb.SpotBidMaxPrice = st.SpotBidMaxPrice
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17528,14 +15333,8 @@ func instancePoolAzureAttributesFromPb(pb *instancePoolAzureAttributesPb) (*Inst
 		return nil, nil
 	}
 	st := &InstancePoolAzureAttributes{}
-	availabilityField := &pb.Availability
-	if availabilityField != nil {
-		st.Availability = *availabilityField
-	}
-	spotBidMaxPriceField := &pb.SpotBidMaxPrice
-	if spotBidMaxPriceField != nil {
-		st.SpotBidMaxPrice = *spotBidMaxPriceField
-	}
+	st.Availability = pb.Availability
+	st.SpotBidMaxPrice = pb.SpotBidMaxPrice
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17600,6 +15399,7 @@ type InstancePoolGcpAttributes struct {
 	// This field determines whether the instance pool will contain preemptible
 	// VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs
 	// if the former is unavailable.
+	// Wire name: 'gcp_availability'
 	GcpAvailability GcpAvailability
 	// If provided, each node in the instance pool will have this number of
 	// local SSDs attached. Each local SSD is 375GB in size. Refer to [GCP
@@ -17607,6 +15407,7 @@ type InstancePoolGcpAttributes struct {
 	// type.
 	//
 	// [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds
+	// Wire name: 'local_ssd_count'
 	LocalSsdCount int
 	// Identifier for the availability zone/datacenter in which the cluster
 	// resides. This string will be of a form like "us-west1-a". The provided
@@ -17624,9 +15425,10 @@ type InstancePoolGcpAttributes struct {
 	//
 	// If empty, Databricks picks an availability zone to schedule the cluster
 	// on.
+	// Wire name: 'zone_id'
 	ZoneId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func instancePoolGcpAttributesToPb(st *InstancePoolGcpAttributes) (*instancePoolGcpAttributesPb, error) {
@@ -17634,20 +15436,11 @@ func instancePoolGcpAttributesToPb(st *InstancePoolGcpAttributes) (*instancePool
 		return nil, nil
 	}
 	pb := &instancePoolGcpAttributesPb{}
-	gcpAvailabilityPb := &st.GcpAvailability
-	if gcpAvailabilityPb != nil {
-		pb.GcpAvailability = *gcpAvailabilityPb
-	}
+	pb.GcpAvailability = st.GcpAvailability
 
-	localSsdCountPb := &st.LocalSsdCount
-	if localSsdCountPb != nil {
-		pb.LocalSsdCount = *localSsdCountPb
-	}
+	pb.LocalSsdCount = st.LocalSsdCount
 
-	zoneIdPb := &st.ZoneId
-	if zoneIdPb != nil {
-		pb.ZoneId = *zoneIdPb
-	}
+	pb.ZoneId = st.ZoneId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17716,18 +15509,9 @@ func instancePoolGcpAttributesFromPb(pb *instancePoolGcpAttributesPb) (*Instance
 		return nil, nil
 	}
 	st := &InstancePoolGcpAttributes{}
-	gcpAvailabilityField := &pb.GcpAvailability
-	if gcpAvailabilityField != nil {
-		st.GcpAvailability = *gcpAvailabilityField
-	}
-	localSsdCountField := &pb.LocalSsdCount
-	if localSsdCountField != nil {
-		st.LocalSsdCount = *localSsdCountField
-	}
-	zoneIdField := &pb.ZoneId
-	if zoneIdField != nil {
-		st.ZoneId = *zoneIdField
-	}
+	st.GcpAvailability = pb.GcpAvailability
+	st.LocalSsdCount = pb.LocalSsdCount
+	st.ZoneId = pb.ZoneId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17742,13 +15526,17 @@ func (st instancePoolGcpAttributesPb) MarshalJSON() ([]byte, error) {
 }
 
 type InstancePoolPermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel InstancePoolPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func instancePoolPermissionToPb(st *InstancePoolPermission) (*instancePoolPermissionPb, error) {
@@ -17756,24 +15544,11 @@ func instancePoolPermissionToPb(st *InstancePoolPermission) (*instancePoolPermis
 		return nil, nil
 	}
 	pb := &instancePoolPermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17819,23 +15594,9 @@ func instancePoolPermissionFromPb(pb *instancePoolPermissionPb) (*InstancePoolPe
 		return nil, nil
 	}
 	st := &InstancePoolPermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17895,13 +15656,17 @@ func instancePoolPermissionLevelFromPb(pb *instancePoolPermissionLevelPb) (*Inst
 }
 
 type InstancePoolPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []InstancePoolAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func instancePoolPermissionsToPb(st *InstancePoolPermissions) (*instancePoolPermissionsPb, error) {
@@ -17922,15 +15687,9 @@ func instancePoolPermissionsToPb(st *InstancePoolPermissions) (*instancePoolPerm
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17978,24 +15737,18 @@ func instancePoolPermissionsFromPb(pb *instancePoolPermissionsPb) (*InstancePool
 	st := &InstancePoolPermissions{}
 
 	var accessControlListField []InstancePoolAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := instancePoolAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := instancePoolAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -18010,11 +15763,14 @@ func (st instancePoolPermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type InstancePoolPermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel InstancePoolPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func instancePoolPermissionsDescriptionToPb(st *InstancePoolPermissionsDescription) (*instancePoolPermissionsDescriptionPb, error) {
@@ -18022,15 +15778,9 @@ func instancePoolPermissionsDescriptionToPb(st *InstancePoolPermissionsDescripti
 		return nil, nil
 	}
 	pb := &instancePoolPermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18074,14 +15824,8 @@ func instancePoolPermissionsDescriptionFromPb(pb *instancePoolPermissionsDescrip
 		return nil, nil
 	}
 	st := &InstancePoolPermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -18096,9 +15840,12 @@ func (st instancePoolPermissionsDescriptionPb) MarshalJSON() ([]byte, error) {
 }
 
 type InstancePoolPermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []InstancePoolAccessControlRequest
 	// The instance pool for which to get or manage permissions.
-	InstancePoolId string
+	// Wire name: 'instance_pool_id'
+	InstancePoolId string `tf:"-"`
 }
 
 func instancePoolPermissionsRequestToPb(st *InstancePoolPermissionsRequest) (*instancePoolPermissionsRequestPb, error) {
@@ -18119,10 +15866,7 @@ func instancePoolPermissionsRequestToPb(st *InstancePoolPermissionsRequest) (*in
 	}
 	pb.AccessControlList = accessControlListPb
 
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
 	return pb, nil
 }
@@ -18165,20 +15909,17 @@ func instancePoolPermissionsRequestFromPb(pb *instancePoolPermissionsRequestPb) 
 	st := &InstancePoolPermissionsRequest{}
 
 	var accessControlListField []InstancePoolAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := instancePoolAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := instancePoolAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
+	st.InstancePoolId = pb.InstancePoolId
 
 	return st, nil
 }
@@ -18236,15 +15977,19 @@ func instancePoolStateFromPb(pb *instancePoolStatePb) (*InstancePoolState, error
 
 type InstancePoolStats struct {
 	// Number of active instances in the pool that are NOT part of a cluster.
+	// Wire name: 'idle_count'
 	IdleCount int
 	// Number of pending instances in the pool that are NOT part of a cluster.
+	// Wire name: 'pending_idle_count'
 	PendingIdleCount int
 	// Number of pending instances in the pool that are part of a cluster.
+	// Wire name: 'pending_used_count'
 	PendingUsedCount int
 	// Number of active instances in the pool that are part of a cluster.
+	// Wire name: 'used_count'
 	UsedCount int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func instancePoolStatsToPb(st *InstancePoolStats) (*instancePoolStatsPb, error) {
@@ -18252,25 +15997,13 @@ func instancePoolStatsToPb(st *InstancePoolStats) (*instancePoolStatsPb, error) 
 		return nil, nil
 	}
 	pb := &instancePoolStatsPb{}
-	idleCountPb := &st.IdleCount
-	if idleCountPb != nil {
-		pb.IdleCount = *idleCountPb
-	}
+	pb.IdleCount = st.IdleCount
 
-	pendingIdleCountPb := &st.PendingIdleCount
-	if pendingIdleCountPb != nil {
-		pb.PendingIdleCount = *pendingIdleCountPb
-	}
+	pb.PendingIdleCount = st.PendingIdleCount
 
-	pendingUsedCountPb := &st.PendingUsedCount
-	if pendingUsedCountPb != nil {
-		pb.PendingUsedCount = *pendingUsedCountPb
-	}
+	pb.PendingUsedCount = st.PendingUsedCount
 
-	usedCountPb := &st.UsedCount
-	if usedCountPb != nil {
-		pb.UsedCount = *usedCountPb
-	}
+	pb.UsedCount = st.UsedCount
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18319,22 +16052,10 @@ func instancePoolStatsFromPb(pb *instancePoolStatsPb) (*InstancePoolStats, error
 		return nil, nil
 	}
 	st := &InstancePoolStats{}
-	idleCountField := &pb.IdleCount
-	if idleCountField != nil {
-		st.IdleCount = *idleCountField
-	}
-	pendingIdleCountField := &pb.PendingIdleCount
-	if pendingIdleCountField != nil {
-		st.PendingIdleCount = *pendingIdleCountField
-	}
-	pendingUsedCountField := &pb.PendingUsedCount
-	if pendingUsedCountField != nil {
-		st.PendingUsedCount = *pendingUsedCountField
-	}
-	usedCountField := &pb.UsedCount
-	if usedCountField != nil {
-		st.UsedCount = *usedCountField
-	}
+	st.IdleCount = pb.IdleCount
+	st.PendingIdleCount = pb.PendingIdleCount
+	st.PendingUsedCount = pb.PendingUsedCount
+	st.UsedCount = pb.UsedCount
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -18353,6 +16074,7 @@ type InstancePoolStatus struct {
 	// pending_instance_errors follows FIFO with maximum length of the min_idle
 	// of the pool. The pending_instance_errors is emptied once the number of
 	// exiting available instances reaches the min_idle of the pool.
+	// Wire name: 'pending_instance_errors'
 	PendingInstanceErrors []PendingInstanceError
 }
 
@@ -18417,13 +16139,13 @@ func instancePoolStatusFromPb(pb *instancePoolStatusPb) (*InstancePoolStatus, er
 	st := &InstancePoolStatus{}
 
 	var pendingInstanceErrorsField []PendingInstanceError
-	for _, item := range pb.PendingInstanceErrors {
-		itemField, err := pendingInstanceErrorFromPb(&item)
+	for _, itemPb := range pb.PendingInstanceErrors {
+		item, err := pendingInstanceErrorFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			pendingInstanceErrorsField = append(pendingInstanceErrorsField, *itemField)
+		if item != nil {
+			pendingInstanceErrorsField = append(pendingInstanceErrorsField, *item)
 		}
 	}
 	st.PendingInstanceErrors = pendingInstanceErrorsField
@@ -18440,18 +16162,21 @@ type InstanceProfile struct {
 	// Otherwise, this field is optional.
 	//
 	// [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html
+	// Wire name: 'iam_role_arn'
 	IamRoleArn string
 	// The AWS ARN of the instance profile to register with Databricks. This
 	// field is required.
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// Boolean flag indicating whether the instance profile should only be used
 	// in credential passthrough scenarios. If true, it means the instance
 	// profile contains an meta IAM role which could assume a wide range of
 	// roles. Therefore it should always be used with authorization. This field
 	// is optional, the default value is `false`.
+	// Wire name: 'is_meta_instance_profile'
 	IsMetaInstanceProfile bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func instanceProfileToPb(st *InstanceProfile) (*instanceProfilePb, error) {
@@ -18459,20 +16184,11 @@ func instanceProfileToPb(st *InstanceProfile) (*instanceProfilePb, error) {
 		return nil, nil
 	}
 	pb := &instanceProfilePb{}
-	iamRoleArnPb := &st.IamRoleArn
-	if iamRoleArnPb != nil {
-		pb.IamRoleArn = *iamRoleArnPb
-	}
+	pb.IamRoleArn = st.IamRoleArn
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	isMetaInstanceProfilePb := &st.IsMetaInstanceProfile
-	if isMetaInstanceProfilePb != nil {
-		pb.IsMetaInstanceProfile = *isMetaInstanceProfilePb
-	}
+	pb.IsMetaInstanceProfile = st.IsMetaInstanceProfile
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18531,18 +16247,9 @@ func instanceProfileFromPb(pb *instanceProfilePb) (*InstanceProfile, error) {
 		return nil, nil
 	}
 	st := &InstanceProfile{}
-	iamRoleArnField := &pb.IamRoleArn
-	if iamRoleArnField != nil {
-		st.IamRoleArn = *iamRoleArnField
-	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	isMetaInstanceProfileField := &pb.IsMetaInstanceProfile
-	if isMetaInstanceProfileField != nil {
-		st.IsMetaInstanceProfile = *isMetaInstanceProfileField
-	}
+	st.IamRoleArn = pb.IamRoleArn
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.IsMetaInstanceProfile = pb.IsMetaInstanceProfile
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -18663,10 +16370,12 @@ func languageFromPb(pb *languagePb) (*Language, error) {
 
 type Library struct {
 	// Specification of a CRAN library to be installed as part of the library
+	// Wire name: 'cran'
 	Cran *RCranLibrary
 	// Deprecated. URI of the egg library to install. Installing Python egg
 	// files is deprecated and is not supported in Databricks Runtime 14.0 and
 	// above.
+	// Wire name: 'egg'
 	Egg string
 	// URI of the JAR library to install. Supported URIs include Workspace
 	// paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "jar":
@@ -18675,17 +16384,21 @@ type Library struct {
 	// "s3://my-bucket/library.jar" }`. If S3 is used, please make sure the
 	// cluster has read access on the library. You may need to launch the
 	// cluster with an IAM role to access the S3 URI.
+	// Wire name: 'jar'
 	Jar string
 	// Specification of a maven library to be installed. For example: `{
 	// "coordinates": "org.jsoup:jsoup:1.7.2" }`
+	// Wire name: 'maven'
 	Maven *MavenLibrary
 	// Specification of a PyPi library to be installed. For example: `{
 	// "package": "simplejson" }`
+	// Wire name: 'pypi'
 	Pypi *PythonPyPiLibrary
 	// URI of the requirements.txt file to install. Only Workspace paths and
 	// Unity Catalog Volumes paths are supported. For example: `{
 	// "requirements": "/Workspace/path/to/requirements.txt" }` or `{
 	// "requirements" : "/Volumes/path/to/requirements.txt" }`
+	// Wire name: 'requirements'
 	Requirements string
 	// URI of the wheel library to install. Supported URIs include Workspace
 	// paths, Unity Catalog Volumes paths, and S3 URIs. For example: `{ "whl":
@@ -18694,9 +16407,10 @@ type Library struct {
 	// "s3://my-bucket/library.whl" }`. If S3 is used, please make sure the
 	// cluster has read access on the library. You may need to launch the
 	// cluster with an IAM role to access the S3 URI.
+	// Wire name: 'whl'
 	Whl string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func LibraryToPb(st *Library) (*LibraryPb, error) {
@@ -18712,15 +16426,9 @@ func LibraryToPb(st *Library) (*LibraryPb, error) {
 		pb.Cran = cranPb
 	}
 
-	eggPb := &st.Egg
-	if eggPb != nil {
-		pb.Egg = *eggPb
-	}
+	pb.Egg = st.Egg
 
-	jarPb := &st.Jar
-	if jarPb != nil {
-		pb.Jar = *jarPb
-	}
+	pb.Jar = st.Jar
 
 	mavenPb, err := MavenLibraryToPb(st.Maven)
 	if err != nil {
@@ -18738,15 +16446,9 @@ func LibraryToPb(st *Library) (*LibraryPb, error) {
 		pb.Pypi = pypiPb
 	}
 
-	requirementsPb := &st.Requirements
-	if requirementsPb != nil {
-		pb.Requirements = *requirementsPb
-	}
+	pb.Requirements = st.Requirements
 
-	whlPb := &st.Whl
-	if whlPb != nil {
-		pb.Whl = *whlPb
-	}
+	pb.Whl = st.Whl
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18827,14 +16529,8 @@ func LibraryFromPb(pb *LibraryPb) (*Library, error) {
 	if cranField != nil {
 		st.Cran = cranField
 	}
-	eggField := &pb.Egg
-	if eggField != nil {
-		st.Egg = *eggField
-	}
-	jarField := &pb.Jar
-	if jarField != nil {
-		st.Jar = *jarField
-	}
+	st.Egg = pb.Egg
+	st.Jar = pb.Jar
 	mavenField, err := MavenLibraryFromPb(pb.Maven)
 	if err != nil {
 		return nil, err
@@ -18849,14 +16545,8 @@ func LibraryFromPb(pb *LibraryPb) (*Library, error) {
 	if pypiField != nil {
 		st.Pypi = pypiField
 	}
-	requirementsField := &pb.Requirements
-	if requirementsField != nil {
-		st.Requirements = *requirementsField
-	}
-	whlField := &pb.Whl
-	if whlField != nil {
-		st.Whl = *whlField
-	}
+	st.Requirements = pb.Requirements
+	st.Whl = pb.Whl
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -18874,16 +16564,20 @@ func (st LibraryPb) MarshalJSON() ([]byte, error) {
 type LibraryFullStatus struct {
 	// Whether the library was set to be installed on all clusters via the
 	// libraries UI.
+	// Wire name: 'is_library_for_all_clusters'
 	IsLibraryForAllClusters bool
 	// Unique identifier for the library.
+	// Wire name: 'library'
 	Library *Library
 	// All the info and warning messages that have occurred so far for this
 	// library.
+	// Wire name: 'messages'
 	Messages []string
 	// Status of installing the library on the cluster.
+	// Wire name: 'status'
 	Status LibraryInstallStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func libraryFullStatusToPb(st *LibraryFullStatus) (*libraryFullStatusPb, error) {
@@ -18891,10 +16585,7 @@ func libraryFullStatusToPb(st *LibraryFullStatus) (*libraryFullStatusPb, error) 
 		return nil, nil
 	}
 	pb := &libraryFullStatusPb{}
-	isLibraryForAllClustersPb := &st.IsLibraryForAllClusters
-	if isLibraryForAllClustersPb != nil {
-		pb.IsLibraryForAllClusters = *isLibraryForAllClustersPb
-	}
+	pb.IsLibraryForAllClusters = st.IsLibraryForAllClusters
 
 	libraryPb, err := LibraryToPb(st.Library)
 	if err != nil {
@@ -18904,19 +16595,9 @@ func libraryFullStatusToPb(st *LibraryFullStatus) (*libraryFullStatusPb, error) 
 		pb.Library = libraryPb
 	}
 
-	var messagesPb []string
-	for _, item := range st.Messages {
-		itemPb := &item
-		if itemPb != nil {
-			messagesPb = append(messagesPb, *itemPb)
-		}
-	}
-	pb.Messages = messagesPb
+	pb.Messages = st.Messages
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18967,10 +16648,7 @@ func libraryFullStatusFromPb(pb *libraryFullStatusPb) (*LibraryFullStatus, error
 		return nil, nil
 	}
 	st := &LibraryFullStatus{}
-	isLibraryForAllClustersField := &pb.IsLibraryForAllClusters
-	if isLibraryForAllClustersField != nil {
-		st.IsLibraryForAllClusters = *isLibraryForAllClustersField
-	}
+	st.IsLibraryForAllClusters = pb.IsLibraryForAllClusters
 	libraryField, err := LibraryFromPb(pb.Library)
 	if err != nil {
 		return nil, err
@@ -18978,19 +16656,8 @@ func libraryFullStatusFromPb(pb *libraryFullStatusPb) (*LibraryFullStatus, error
 	if libraryField != nil {
 		st.Library = libraryField
 	}
-
-	var messagesField []string
-	for _, item := range pb.Messages {
-		itemField := &item
-		if itemField != nil {
-			messagesField = append(messagesField, *itemField)
-		}
-	}
-	st.Messages = messagesField
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.Messages = pb.Messages
+	st.Status = pb.Status
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -19063,6 +16730,7 @@ func libraryInstallStatusFromPb(pb *libraryInstallStatusPb) (*LibraryInstallStat
 
 type ListAllClusterLibraryStatusesResponse struct {
 	// A list of cluster statuses.
+	// Wire name: 'statuses'
 	Statuses []ClusterLibraryStatuses
 }
 
@@ -19124,13 +16792,13 @@ func listAllClusterLibraryStatusesResponseFromPb(pb *listAllClusterLibraryStatus
 	st := &ListAllClusterLibraryStatusesResponse{}
 
 	var statusesField []ClusterLibraryStatuses
-	for _, item := range pb.Statuses {
-		itemField, err := clusterLibraryStatusesFromPb(&item)
+	for _, itemPb := range pb.Statuses {
+		item, err := clusterLibraryStatusesFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			statusesField = append(statusesField, *itemField)
+		if item != nil {
+			statusesField = append(statusesField, *item)
 		}
 	}
 	st.Statuses = statusesField
@@ -19141,11 +16809,13 @@ func listAllClusterLibraryStatusesResponseFromPb(pb *listAllClusterLibraryStatus
 type ListAvailableZonesResponse struct {
 	// The availability zone if no ``zone_id`` is provided in the cluster
 	// creation request.
+	// Wire name: 'default_zone'
 	DefaultZone string
 	// The list of available zones (e.g., ['us-west-2c', 'us-east-2']).
+	// Wire name: 'zones'
 	Zones []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAvailableZonesResponseToPb(st *ListAvailableZonesResponse) (*listAvailableZonesResponsePb, error) {
@@ -19153,19 +16823,9 @@ func listAvailableZonesResponseToPb(st *ListAvailableZonesResponse) (*listAvaila
 		return nil, nil
 	}
 	pb := &listAvailableZonesResponsePb{}
-	defaultZonePb := &st.DefaultZone
-	if defaultZonePb != nil {
-		pb.DefaultZone = *defaultZonePb
-	}
+	pb.DefaultZone = st.DefaultZone
 
-	var zonesPb []string
-	for _, item := range st.Zones {
-		itemPb := &item
-		if itemPb != nil {
-			zonesPb = append(zonesPb, *itemPb)
-		}
-	}
-	pb.Zones = zonesPb
+	pb.Zones = st.Zones
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -19211,19 +16871,8 @@ func listAvailableZonesResponseFromPb(pb *listAvailableZonesResponsePb) (*ListAv
 		return nil, nil
 	}
 	st := &ListAvailableZonesResponse{}
-	defaultZoneField := &pb.DefaultZone
-	if defaultZoneField != nil {
-		st.DefaultZone = *defaultZoneField
-	}
-
-	var zonesField []string
-	for _, item := range pb.Zones {
-		itemField := &item
-		if itemField != nil {
-			zonesField = append(zonesField, *itemField)
-		}
-	}
-	st.Zones = zonesField
+	st.DefaultZone = pb.DefaultZone
+	st.Zones = pb.Zones
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -19242,14 +16891,17 @@ type ListClusterCompliancesRequest struct {
 	// Use this field to specify the maximum number of results to be returned by
 	// the server. The server may further constrain the maximum number of
 	// results returned in a single page.
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// A page token that can be used to navigate to the next page or previous
 	// page as returned by `next_page_token` or `prev_page_token`.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Canonical unique identifier for the cluster policy.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listClusterCompliancesRequestToPb(st *ListClusterCompliancesRequest) (*listClusterCompliancesRequestPb, error) {
@@ -19257,20 +16909,11 @@ func listClusterCompliancesRequestToPb(st *ListClusterCompliancesRequest) (*list
 		return nil, nil
 	}
 	pb := &listClusterCompliancesRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -19320,18 +16963,9 @@ func listClusterCompliancesRequestFromPb(pb *listClusterCompliancesRequestPb) (*
 		return nil, nil
 	}
 	st := &ListClusterCompliancesRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+	st.PolicyId = pb.PolicyId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -19347,16 +16981,19 @@ func (st listClusterCompliancesRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListClusterCompliancesResponse struct {
 	// A list of clusters and their policy compliance statuses.
+	// Wire name: 'clusters'
 	Clusters []ClusterCompliance
 	// This field represents the pagination token to retrieve the next page of
 	// results. If the value is "", it means no further results for the request.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// This field represents the pagination token to retrieve the previous page
 	// of results. If the value is "", it means no further results for the
 	// request.
+	// Wire name: 'prev_page_token'
 	PrevPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listClusterCompliancesResponseToPb(st *ListClusterCompliancesResponse) (*listClusterCompliancesResponsePb, error) {
@@ -19377,15 +17014,9 @@ func listClusterCompliancesResponseToPb(st *ListClusterCompliancesResponse) (*li
 	}
 	pb.Clusters = clustersPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
-	prevPageTokenPb := &st.PrevPageToken
-	if prevPageTokenPb != nil {
-		pb.PrevPageToken = *prevPageTokenPb
-	}
+	pb.PrevPageToken = st.PrevPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -19437,24 +17068,18 @@ func listClusterCompliancesResponseFromPb(pb *listClusterCompliancesResponsePb) 
 	st := &ListClusterCompliancesResponse{}
 
 	var clustersField []ClusterCompliance
-	for _, item := range pb.Clusters {
-		itemField, err := clusterComplianceFromPb(&item)
+	for _, itemPb := range pb.Clusters {
+		item, err := clusterComplianceFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			clustersField = append(clustersField, *itemField)
+		if item != nil {
+			clustersField = append(clustersField, *item)
 		}
 	}
 	st.Clusters = clustersField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
-	prevPageTokenField := &pb.PrevPageToken
-	if prevPageTokenField != nil {
-		st.PrevPageToken = *prevPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
+	st.PrevPageToken = pb.PrevPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -19473,10 +17098,12 @@ type ListClusterPoliciesRequest struct {
 	// The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort
 	// result list by policy creation time. * `POLICY_NAME` - Sort result list
 	// by policy name.
-	SortColumn ListSortColumn
+	// Wire name: 'sort_column'
+	SortColumn ListSortColumn `tf:"-"`
 	// The order in which the policies get listed. * `DESC` - Sort result list
 	// in descending order. * `ASC` - Sort result list in ascending order.
-	SortOrder ListSortOrder
+	// Wire name: 'sort_order'
+	SortOrder ListSortOrder `tf:"-"`
 }
 
 func listClusterPoliciesRequestToPb(st *ListClusterPoliciesRequest) (*listClusterPoliciesRequestPb, error) {
@@ -19484,15 +17111,9 @@ func listClusterPoliciesRequestToPb(st *ListClusterPoliciesRequest) (*listCluste
 		return nil, nil
 	}
 	pb := &listClusterPoliciesRequestPb{}
-	sortColumnPb := &st.SortColumn
-	if sortColumnPb != nil {
-		pb.SortColumn = *sortColumnPb
-	}
+	pb.SortColumn = st.SortColumn
 
-	sortOrderPb := &st.SortOrder
-	if sortOrderPb != nil {
-		pb.SortOrder = *sortOrderPb
-	}
+	pb.SortOrder = st.SortOrder
 
 	return pb, nil
 }
@@ -19537,29 +17158,27 @@ func listClusterPoliciesRequestFromPb(pb *listClusterPoliciesRequestPb) (*ListCl
 		return nil, nil
 	}
 	st := &ListClusterPoliciesRequest{}
-	sortColumnField := &pb.SortColumn
-	if sortColumnField != nil {
-		st.SortColumn = *sortColumnField
-	}
-	sortOrderField := &pb.SortOrder
-	if sortOrderField != nil {
-		st.SortOrder = *sortOrderField
-	}
+	st.SortColumn = pb.SortColumn
+	st.SortOrder = pb.SortOrder
 
 	return st, nil
 }
 
 type ListClustersFilterBy struct {
 	// The source of cluster creation.
+	// Wire name: 'cluster_sources'
 	ClusterSources []ClusterSource
 	// The current state of the clusters.
+	// Wire name: 'cluster_states'
 	ClusterStates []State
 	// Whether the clusters are pinned or not.
+	// Wire name: 'is_pinned'
 	IsPinned bool
 	// The ID of the cluster policy used to create the cluster if applicable.
+	// Wire name: 'policy_id'
 	PolicyId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listClustersFilterByToPb(st *ListClustersFilterBy) (*listClustersFilterByPb, error) {
@@ -19567,34 +17186,13 @@ func listClustersFilterByToPb(st *ListClustersFilterBy) (*listClustersFilterByPb
 		return nil, nil
 	}
 	pb := &listClustersFilterByPb{}
+	pb.ClusterSources = st.ClusterSources
 
-	var clusterSourcesPb []ClusterSource
-	for _, item := range st.ClusterSources {
-		itemPb := &item
-		if itemPb != nil {
-			clusterSourcesPb = append(clusterSourcesPb, *itemPb)
-		}
-	}
-	pb.ClusterSources = clusterSourcesPb
+	pb.ClusterStates = st.ClusterStates
 
-	var clusterStatesPb []State
-	for _, item := range st.ClusterStates {
-		itemPb := &item
-		if itemPb != nil {
-			clusterStatesPb = append(clusterStatesPb, *itemPb)
-		}
-	}
-	pb.ClusterStates = clusterStatesPb
+	pb.IsPinned = st.IsPinned
 
-	isPinnedPb := &st.IsPinned
-	if isPinnedPb != nil {
-		pb.IsPinned = *isPinnedPb
-	}
-
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -19643,32 +17241,10 @@ func listClustersFilterByFromPb(pb *listClustersFilterByPb) (*ListClustersFilter
 		return nil, nil
 	}
 	st := &ListClustersFilterBy{}
-
-	var clusterSourcesField []ClusterSource
-	for _, item := range pb.ClusterSources {
-		itemField := &item
-		if itemField != nil {
-			clusterSourcesField = append(clusterSourcesField, *itemField)
-		}
-	}
-	st.ClusterSources = clusterSourcesField
-
-	var clusterStatesField []State
-	for _, item := range pb.ClusterStates {
-		itemField := &item
-		if itemField != nil {
-			clusterStatesField = append(clusterStatesField, *itemField)
-		}
-	}
-	st.ClusterStates = clusterStatesField
-	isPinnedField := &pb.IsPinned
-	if isPinnedField != nil {
-		st.IsPinned = *isPinnedField
-	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.ClusterSources = pb.ClusterSources
+	st.ClusterStates = pb.ClusterStates
+	st.IsPinned = pb.IsPinned
+	st.PolicyId = pb.PolicyId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -19685,18 +17261,22 @@ func (st listClustersFilterByPb) MarshalJSON() ([]byte, error) {
 // List clusters
 type ListClustersRequest struct {
 	// Filters to apply to the list of clusters.
-	FilterBy *ListClustersFilterBy
+	// Wire name: 'filter_by'
+	FilterBy *ListClustersFilterBy `tf:"-"`
 	// Use this field to specify the maximum number of results to be returned by
 	// the server. The server may further constrain the maximum number of
 	// results returned in a single page.
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// Use next_page_token or prev_page_token returned from the previous request
 	// to list the next or previous page of clusters respectively.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Sort the list of clusters by a specific criteria.
-	SortBy *ListClustersSortBy
+	// Wire name: 'sort_by'
+	SortBy *ListClustersSortBy `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listClustersRequestToPb(st *ListClustersRequest) (*listClustersRequestPb, error) {
@@ -19712,15 +17292,9 @@ func listClustersRequestToPb(st *ListClustersRequest) (*listClustersRequestPb, e
 		pb.FilterBy = filterByPb
 	}
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	sortByPb, err := listClustersSortByToPb(st.SortBy)
 	if err != nil {
@@ -19787,14 +17361,8 @@ func listClustersRequestFromPb(pb *listClustersRequestPb) (*ListClustersRequest,
 	if filterByField != nil {
 		st.FilterBy = filterByField
 	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 	sortByField, err := listClustersSortByFromPb(pb.SortBy)
 	if err != nil {
 		return nil, err
@@ -19816,16 +17384,20 @@ func (st listClustersRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListClustersResponse struct {
+
+	// Wire name: 'clusters'
 	Clusters []ClusterDetails
 	// This field represents the pagination token to retrieve the next page of
 	// results. If the value is "", it means no further results for the request.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// This field represents the pagination token to retrieve the previous page
 	// of results. If the value is "", it means no further results for the
 	// request.
+	// Wire name: 'prev_page_token'
 	PrevPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listClustersResponseToPb(st *ListClustersResponse) (*listClustersResponsePb, error) {
@@ -19846,15 +17418,9 @@ func listClustersResponseToPb(st *ListClustersResponse) (*listClustersResponsePb
 	}
 	pb.Clusters = clustersPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
-	prevPageTokenPb := &st.PrevPageToken
-	if prevPageTokenPb != nil {
-		pb.PrevPageToken = *prevPageTokenPb
-	}
+	pb.PrevPageToken = st.PrevPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -19905,24 +17471,18 @@ func listClustersResponseFromPb(pb *listClustersResponsePb) (*ListClustersRespon
 	st := &ListClustersResponse{}
 
 	var clustersField []ClusterDetails
-	for _, item := range pb.Clusters {
-		itemField, err := clusterDetailsFromPb(&item)
+	for _, itemPb := range pb.Clusters {
+		item, err := clusterDetailsFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			clustersField = append(clustersField, *itemField)
+		if item != nil {
+			clustersField = append(clustersField, *item)
 		}
 	}
 	st.Clusters = clustersField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
-	prevPageTokenField := &pb.PrevPageToken
-	if prevPageTokenField != nil {
-		st.PrevPageToken = *prevPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
+	st.PrevPageToken = pb.PrevPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -19938,10 +17498,12 @@ func (st listClustersResponsePb) MarshalJSON() ([]byte, error) {
 
 type ListClustersSortBy struct {
 	// The direction to sort by.
+	// Wire name: 'direction'
 	Direction ListClustersSortByDirection
 	// The sorting criteria. By default, clusters are sorted by 3 columns from
 	// highest to lowest precedence: cluster state, pinned or unpinned, then
 	// cluster name.
+	// Wire name: 'field'
 	Field ListClustersSortByField
 }
 
@@ -19950,15 +17512,9 @@ func listClustersSortByToPb(st *ListClustersSortBy) (*listClustersSortByPb, erro
 		return nil, nil
 	}
 	pb := &listClustersSortByPb{}
-	directionPb := &st.Direction
-	if directionPb != nil {
-		pb.Direction = *directionPb
-	}
+	pb.Direction = st.Direction
 
-	fieldPb := &st.Field
-	if fieldPb != nil {
-		pb.Field = *fieldPb
-	}
+	pb.Field = st.Field
 
 	return pb, nil
 }
@@ -20002,14 +17558,8 @@ func listClustersSortByFromPb(pb *listClustersSortByPb) (*ListClustersSortBy, er
 		return nil, nil
 	}
 	st := &ListClustersSortBy{}
-	directionField := &pb.Direction
-	if directionField != nil {
-		st.Direction = *directionField
-	}
-	fieldField := &pb.Field
-	if fieldField != nil {
-		st.Field = *fieldField
-	}
+	st.Direction = pb.Direction
+	st.Field = pb.Field
 
 	return st, nil
 }
@@ -20103,6 +17653,8 @@ func listClustersSortByFieldFromPb(pb *listClustersSortByFieldPb) (*ListClusters
 }
 
 type ListGlobalInitScriptsResponse struct {
+
+	// Wire name: 'scripts'
 	Scripts []GlobalInitScriptDetails
 }
 
@@ -20163,13 +17715,13 @@ func listGlobalInitScriptsResponseFromPb(pb *listGlobalInitScriptsResponsePb) (*
 	st := &ListGlobalInitScriptsResponse{}
 
 	var scriptsField []GlobalInitScriptDetails
-	for _, item := range pb.Scripts {
-		itemField, err := globalInitScriptDetailsFromPb(&item)
+	for _, itemPb := range pb.Scripts {
+		item, err := globalInitScriptDetailsFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			scriptsField = append(scriptsField, *itemField)
+		if item != nil {
+			scriptsField = append(scriptsField, *item)
 		}
 	}
 	st.Scripts = scriptsField
@@ -20178,6 +17730,8 @@ func listGlobalInitScriptsResponseFromPb(pb *listGlobalInitScriptsResponsePb) (*
 }
 
 type ListInstancePools struct {
+
+	// Wire name: 'instance_pools'
 	InstancePools []InstancePoolAndStats
 }
 
@@ -20238,13 +17792,13 @@ func listInstancePoolsFromPb(pb *listInstancePoolsPb) (*ListInstancePools, error
 	st := &ListInstancePools{}
 
 	var instancePoolsField []InstancePoolAndStats
-	for _, item := range pb.InstancePools {
-		itemField, err := instancePoolAndStatsFromPb(&item)
+	for _, itemPb := range pb.InstancePools {
+		item, err := instancePoolAndStatsFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			instancePoolsField = append(instancePoolsField, *itemField)
+		if item != nil {
+			instancePoolsField = append(instancePoolsField, *item)
 		}
 	}
 	st.InstancePools = instancePoolsField
@@ -20254,6 +17808,7 @@ func listInstancePoolsFromPb(pb *listInstancePoolsPb) (*ListInstancePools, error
 
 type ListInstanceProfilesResponse struct {
 	// A list of instance profiles that the user can access.
+	// Wire name: 'instance_profiles'
 	InstanceProfiles []InstanceProfile
 }
 
@@ -20315,13 +17870,13 @@ func listInstanceProfilesResponseFromPb(pb *listInstanceProfilesResponsePb) (*Li
 	st := &ListInstanceProfilesResponse{}
 
 	var instanceProfilesField []InstanceProfile
-	for _, item := range pb.InstanceProfiles {
-		itemField, err := instanceProfileFromPb(&item)
+	for _, itemPb := range pb.InstanceProfiles {
+		item, err := instanceProfileFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			instanceProfilesField = append(instanceProfilesField, *itemField)
+		if item != nil {
+			instanceProfilesField = append(instanceProfilesField, *item)
 		}
 	}
 	st.InstanceProfiles = instanceProfilesField
@@ -20331,6 +17886,7 @@ func listInstanceProfilesResponseFromPb(pb *listInstanceProfilesResponsePb) (*Li
 
 type ListNodeTypesResponse struct {
 	// The list of available Spark node types.
+	// Wire name: 'node_types'
 	NodeTypes []NodeType
 }
 
@@ -20392,13 +17948,13 @@ func listNodeTypesResponseFromPb(pb *listNodeTypesResponsePb) (*ListNodeTypesRes
 	st := &ListNodeTypesResponse{}
 
 	var nodeTypesField []NodeType
-	for _, item := range pb.NodeTypes {
-		itemField, err := nodeTypeFromPb(&item)
+	for _, itemPb := range pb.NodeTypes {
+		item, err := nodeTypeFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			nodeTypesField = append(nodeTypesField, *itemField)
+		if item != nil {
+			nodeTypesField = append(nodeTypesField, *item)
 		}
 	}
 	st.NodeTypes = nodeTypesField
@@ -20408,6 +17964,7 @@ func listNodeTypesResponseFromPb(pb *listNodeTypesResponsePb) (*ListNodeTypesRes
 
 type ListPoliciesResponse struct {
 	// List of policies.
+	// Wire name: 'policies'
 	Policies []Policy
 }
 
@@ -20469,13 +18026,13 @@ func listPoliciesResponseFromPb(pb *listPoliciesResponsePb) (*ListPoliciesRespon
 	st := &ListPoliciesResponse{}
 
 	var policiesField []Policy
-	for _, item := range pb.Policies {
-		itemField, err := policyFromPb(&item)
+	for _, itemPb := range pb.Policies {
+		item, err := policyFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			policiesField = append(policiesField, *itemField)
+		if item != nil {
+			policiesField = append(policiesField, *item)
 		}
 	}
 	st.Policies = policiesField
@@ -20486,11 +18043,13 @@ func listPoliciesResponseFromPb(pb *listPoliciesResponsePb) (*ListPoliciesRespon
 // List policy families
 type ListPolicyFamiliesRequest struct {
 	// Maximum number of policy families to return.
-	MaxResults int64
+	// Wire name: 'max_results'
+	MaxResults int64 `tf:"-"`
 	// A token that can be used to get the next page of results.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listPolicyFamiliesRequestToPb(st *ListPolicyFamiliesRequest) (*listPolicyFamiliesRequestPb, error) {
@@ -20498,15 +18057,9 @@ func listPolicyFamiliesRequestToPb(st *ListPolicyFamiliesRequest) (*listPolicyFa
 		return nil, nil
 	}
 	pb := &listPolicyFamiliesRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -20551,14 +18104,8 @@ func listPolicyFamiliesRequestFromPb(pb *listPolicyFamiliesRequestPb) (*ListPoli
 		return nil, nil
 	}
 	st := &ListPolicyFamiliesRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -20575,11 +18122,13 @@ func (st listPolicyFamiliesRequestPb) MarshalJSON() ([]byte, error) {
 type ListPolicyFamiliesResponse struct {
 	// A token that can be used to get the next page of results. If not present,
 	// there are no more results to show.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// List of policy families.
+	// Wire name: 'policy_families'
 	PolicyFamilies []PolicyFamily
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listPolicyFamiliesResponseToPb(st *ListPolicyFamiliesResponse) (*listPolicyFamiliesResponsePb, error) {
@@ -20587,10 +18136,7 @@ func listPolicyFamiliesResponseToPb(st *ListPolicyFamiliesResponse) (*listPolicy
 		return nil, nil
 	}
 	pb := &listPolicyFamiliesResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var policyFamiliesPb []policyFamilyPb
 	for _, item := range st.PolicyFamilies {
@@ -20648,19 +18194,16 @@ func listPolicyFamiliesResponseFromPb(pb *listPolicyFamiliesResponsePb) (*ListPo
 		return nil, nil
 	}
 	st := &ListPolicyFamiliesResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var policyFamiliesField []PolicyFamily
-	for _, item := range pb.PolicyFamilies {
-		itemField, err := policyFamilyFromPb(&item)
+	for _, itemPb := range pb.PolicyFamilies {
+		item, err := policyFamilyFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			policyFamiliesField = append(policyFamiliesField, *itemField)
+		if item != nil {
+			policyFamiliesField = append(policyFamiliesField, *item)
 		}
 	}
 	st.PolicyFamilies = policyFamiliesField
@@ -20767,6 +18310,7 @@ func listSortOrderFromPb(pb *listSortOrderPb) (*ListSortOrder, error) {
 
 type LocalFileInfo struct {
 	// local file destination, e.g. `file:/my/local/file.sh`
+	// Wire name: 'destination'
 	Destination string
 }
 
@@ -20775,10 +18319,7 @@ func localFileInfoToPb(st *LocalFileInfo) (*localFileInfoPb, error) {
 		return nil, nil
 	}
 	pb := &localFileInfoPb{}
-	destinationPb := &st.Destination
-	if destinationPb != nil {
-		pb.Destination = *destinationPb
-	}
+	pb.Destination = st.Destination
 
 	return pb, nil
 }
@@ -20818,20 +18359,20 @@ func localFileInfoFromPb(pb *localFileInfoPb) (*LocalFileInfo, error) {
 		return nil, nil
 	}
 	st := &LocalFileInfo{}
-	destinationField := &pb.Destination
-	if destinationField != nil {
-		st.Destination = *destinationField
-	}
+	st.Destination = pb.Destination
 
 	return st, nil
 }
 
 type LogAnalyticsInfo struct {
+
+	// Wire name: 'log_analytics_primary_key'
 	LogAnalyticsPrimaryKey string
 
+	// Wire name: 'log_analytics_workspace_id'
 	LogAnalyticsWorkspaceId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func logAnalyticsInfoToPb(st *LogAnalyticsInfo) (*logAnalyticsInfoPb, error) {
@@ -20839,15 +18380,9 @@ func logAnalyticsInfoToPb(st *LogAnalyticsInfo) (*logAnalyticsInfoPb, error) {
 		return nil, nil
 	}
 	pb := &logAnalyticsInfoPb{}
-	logAnalyticsPrimaryKeyPb := &st.LogAnalyticsPrimaryKey
-	if logAnalyticsPrimaryKeyPb != nil {
-		pb.LogAnalyticsPrimaryKey = *logAnalyticsPrimaryKeyPb
-	}
+	pb.LogAnalyticsPrimaryKey = st.LogAnalyticsPrimaryKey
 
-	logAnalyticsWorkspaceIdPb := &st.LogAnalyticsWorkspaceId
-	if logAnalyticsWorkspaceIdPb != nil {
-		pb.LogAnalyticsWorkspaceId = *logAnalyticsWorkspaceIdPb
-	}
+	pb.LogAnalyticsWorkspaceId = st.LogAnalyticsWorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -20891,14 +18426,8 @@ func logAnalyticsInfoFromPb(pb *logAnalyticsInfoPb) (*LogAnalyticsInfo, error) {
 		return nil, nil
 	}
 	st := &LogAnalyticsInfo{}
-	logAnalyticsPrimaryKeyField := &pb.LogAnalyticsPrimaryKey
-	if logAnalyticsPrimaryKeyField != nil {
-		st.LogAnalyticsPrimaryKey = *logAnalyticsPrimaryKeyField
-	}
-	logAnalyticsWorkspaceIdField := &pb.LogAnalyticsWorkspaceId
-	if logAnalyticsWorkspaceIdField != nil {
-		st.LogAnalyticsWorkspaceId = *logAnalyticsWorkspaceIdField
-	}
+	st.LogAnalyticsPrimaryKey = pb.LogAnalyticsPrimaryKey
+	st.LogAnalyticsWorkspaceId = pb.LogAnalyticsWorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -20916,12 +18445,14 @@ func (st logAnalyticsInfoPb) MarshalJSON() ([]byte, error) {
 type LogSyncStatus struct {
 	// The timestamp of last attempt. If the last attempt fails,
 	// `last_exception` will contain the exception in the last attempt.
+	// Wire name: 'last_attempted'
 	LastAttempted int64
 	// The exception thrown in the last attempt, it would be null (omitted in
 	// the response) if there is no exception in last attempted.
+	// Wire name: 'last_exception'
 	LastException string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func logSyncStatusToPb(st *LogSyncStatus) (*logSyncStatusPb, error) {
@@ -20929,15 +18460,9 @@ func logSyncStatusToPb(st *LogSyncStatus) (*logSyncStatusPb, error) {
 		return nil, nil
 	}
 	pb := &logSyncStatusPb{}
-	lastAttemptedPb := &st.LastAttempted
-	if lastAttemptedPb != nil {
-		pb.LastAttempted = *lastAttemptedPb
-	}
+	pb.LastAttempted = st.LastAttempted
 
-	lastExceptionPb := &st.LastException
-	if lastExceptionPb != nil {
-		pb.LastException = *lastExceptionPb
-	}
+	pb.LastException = st.LastException
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -20984,14 +18509,8 @@ func logSyncStatusFromPb(pb *logSyncStatusPb) (*LogSyncStatus, error) {
 		return nil, nil
 	}
 	st := &LogSyncStatus{}
-	lastAttemptedField := &pb.LastAttempted
-	if lastAttemptedField != nil {
-		st.LastAttempted = *lastAttemptedField
-	}
-	lastExceptionField := &pb.LastException
-	if lastExceptionField != nil {
-		st.LastException = *lastExceptionField
-	}
+	st.LastAttempted = pb.LastAttempted
+	st.LastException = pb.LastException
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -21025,18 +18544,21 @@ func mapAnyFromPb(stPb *mapAnyPb) (*MapAny, error) {
 
 type MavenLibrary struct {
 	// Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
+	// Wire name: 'coordinates'
 	Coordinates string
 	// List of dependences to exclude. For example: `["slf4j:slf4j",
 	// "*:hadoop-client"]`.
 	//
 	// Maven dependency exclusions:
 	// https://maven.apache.org/guides/introduction/introduction-to-optional-and-excludes-dependencies.html.
+	// Wire name: 'exclusions'
 	Exclusions []string
 	// Maven repo to install the Maven package from. If omitted, both Maven
 	// Central Repository and Spark Packages are searched.
+	// Wire name: 'repo'
 	Repo string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func MavenLibraryToPb(st *MavenLibrary) (*MavenLibraryPb, error) {
@@ -21044,24 +18566,11 @@ func MavenLibraryToPb(st *MavenLibrary) (*MavenLibraryPb, error) {
 		return nil, nil
 	}
 	pb := &MavenLibraryPb{}
-	coordinatesPb := &st.Coordinates
-	if coordinatesPb != nil {
-		pb.Coordinates = *coordinatesPb
-	}
+	pb.Coordinates = st.Coordinates
 
-	var exclusionsPb []string
-	for _, item := range st.Exclusions {
-		itemPb := &item
-		if itemPb != nil {
-			exclusionsPb = append(exclusionsPb, *itemPb)
-		}
-	}
-	pb.Exclusions = exclusionsPb
+	pb.Exclusions = st.Exclusions
 
-	repoPb := &st.Repo
-	if repoPb != nil {
-		pb.Repo = *repoPb
-	}
+	pb.Repo = st.Repo
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -21113,23 +18622,9 @@ func MavenLibraryFromPb(pb *MavenLibraryPb) (*MavenLibrary, error) {
 		return nil, nil
 	}
 	st := &MavenLibrary{}
-	coordinatesField := &pb.Coordinates
-	if coordinatesField != nil {
-		st.Coordinates = *coordinatesField
-	}
-
-	var exclusionsField []string
-	for _, item := range pb.Exclusions {
-		itemField := &item
-		if itemField != nil {
-			exclusionsField = append(exclusionsField, *itemField)
-		}
-	}
-	st.Exclusions = exclusionsField
-	repoField := &pb.Repo
-	if repoField != nil {
-		st.Repo = *repoField
-	}
+	st.Coordinates = pb.Coordinates
+	st.Exclusions = pb.Exclusions
+	st.Repo = pb.Repo
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -21148,19 +18643,24 @@ func (st MavenLibraryPb) MarshalJSON() ([]byte, error) {
 // case we want to send it over the wire in the future (which is likely)
 type NodeInstanceType struct {
 	// Unique identifier across instance types
+	// Wire name: 'instance_type_id'
 	InstanceTypeId string
 	// Size of the individual local disks attached to this instance (i.e. per
 	// local disk).
+	// Wire name: 'local_disk_size_gb'
 	LocalDiskSizeGb int
 	// Number of local disks that are present on this instance.
+	// Wire name: 'local_disks'
 	LocalDisks int
 	// Size of the individual local nvme disks attached to this instance (i.e.
 	// per local disk).
+	// Wire name: 'local_nvme_disk_size_gb'
 	LocalNvmeDiskSizeGb int
 	// Number of local nvme disks that are present on this instance.
+	// Wire name: 'local_nvme_disks'
 	LocalNvmeDisks int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func nodeInstanceTypeToPb(st *NodeInstanceType) (*nodeInstanceTypePb, error) {
@@ -21168,30 +18668,15 @@ func nodeInstanceTypeToPb(st *NodeInstanceType) (*nodeInstanceTypePb, error) {
 		return nil, nil
 	}
 	pb := &nodeInstanceTypePb{}
-	instanceTypeIdPb := &st.InstanceTypeId
-	if instanceTypeIdPb != nil {
-		pb.InstanceTypeId = *instanceTypeIdPb
-	}
+	pb.InstanceTypeId = st.InstanceTypeId
 
-	localDiskSizeGbPb := &st.LocalDiskSizeGb
-	if localDiskSizeGbPb != nil {
-		pb.LocalDiskSizeGb = *localDiskSizeGbPb
-	}
+	pb.LocalDiskSizeGb = st.LocalDiskSizeGb
 
-	localDisksPb := &st.LocalDisks
-	if localDisksPb != nil {
-		pb.LocalDisks = *localDisksPb
-	}
+	pb.LocalDisks = st.LocalDisks
 
-	localNvmeDiskSizeGbPb := &st.LocalNvmeDiskSizeGb
-	if localNvmeDiskSizeGbPb != nil {
-		pb.LocalNvmeDiskSizeGb = *localNvmeDiskSizeGbPb
-	}
+	pb.LocalNvmeDiskSizeGb = st.LocalNvmeDiskSizeGb
 
-	localNvmeDisksPb := &st.LocalNvmeDisks
-	if localNvmeDisksPb != nil {
-		pb.LocalNvmeDisks = *localNvmeDisksPb
-	}
+	pb.LocalNvmeDisks = st.LocalNvmeDisks
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -21244,26 +18729,11 @@ func nodeInstanceTypeFromPb(pb *nodeInstanceTypePb) (*NodeInstanceType, error) {
 		return nil, nil
 	}
 	st := &NodeInstanceType{}
-	instanceTypeIdField := &pb.InstanceTypeId
-	if instanceTypeIdField != nil {
-		st.InstanceTypeId = *instanceTypeIdField
-	}
-	localDiskSizeGbField := &pb.LocalDiskSizeGb
-	if localDiskSizeGbField != nil {
-		st.LocalDiskSizeGb = *localDiskSizeGbField
-	}
-	localDisksField := &pb.LocalDisks
-	if localDisksField != nil {
-		st.LocalDisks = *localDisksField
-	}
-	localNvmeDiskSizeGbField := &pb.LocalNvmeDiskSizeGb
-	if localNvmeDiskSizeGbField != nil {
-		st.LocalNvmeDiskSizeGb = *localNvmeDiskSizeGbField
-	}
-	localNvmeDisksField := &pb.LocalNvmeDisks
-	if localNvmeDisksField != nil {
-		st.LocalNvmeDisks = *localNvmeDisksField
-	}
+	st.InstanceTypeId = pb.InstanceTypeId
+	st.LocalDiskSizeGb = pb.LocalDiskSizeGb
+	st.LocalDisks = pb.LocalDisks
+	st.LocalNvmeDiskSizeGb = pb.LocalNvmeDiskSizeGb
+	st.LocalNvmeDisks = pb.LocalNvmeDisks
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -21282,55 +18752,75 @@ func (st nodeInstanceTypePb) MarshalJSON() ([]byte, error) {
 type NodeType struct {
 	// A descriptive category for this node type. Examples include "Memory
 	// Optimized" and "Compute Optimized".
+	// Wire name: 'category'
 	Category string
 	// A string description associated with this node type, e.g., "r3.xlarge".
+	// Wire name: 'description'
 	Description string
 	// An optional hint at the display order of node types in the UI. Within a
 	// node type category, lowest numbers come first.
+	// Wire name: 'display_order'
 	DisplayOrder int
 	// An identifier for the type of hardware that this node runs on, e.g.,
 	// "r3.2xlarge" in AWS.
+	// Wire name: 'instance_type_id'
 	InstanceTypeId string
 	// Whether the node type is deprecated. Non-deprecated node types offer
 	// greater performance.
+	// Wire name: 'is_deprecated'
 	IsDeprecated bool
 	// AWS specific, whether this instance supports encryption in transit, used
 	// for hipaa and pci workloads.
+	// Wire name: 'is_encrypted_in_transit'
 	IsEncryptedInTransit bool
 	// Whether this is an Arm-based instance.
+	// Wire name: 'is_graviton'
 	IsGraviton bool
 	// Whether this node is hidden from presentation in the UI.
+	// Wire name: 'is_hidden'
 	IsHidden bool
 	// Whether this node comes with IO cache enabled by default.
+	// Wire name: 'is_io_cache_enabled'
 	IsIoCacheEnabled bool
 	// Memory (in MB) available for this node type.
+	// Wire name: 'memory_mb'
 	MemoryMb int
 	// A collection of node type info reported by the cloud provider
+	// Wire name: 'node_info'
 	NodeInfo *CloudProviderNodeInfo
 	// The NodeInstanceType object corresponding to instance_type_id
+	// Wire name: 'node_instance_type'
 	NodeInstanceType *NodeInstanceType
 	// Unique identifier for this node type.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 	// Number of CPU cores available for this node type. Note that this can be
 	// fractional, e.g., 2.5 cores, if the the number of cores on a machine
 	// instance is not divisible by the number of Spark nodes on that machine.
+	// Wire name: 'num_cores'
 	NumCores float64
 	// Number of GPUs available for this node type.
+	// Wire name: 'num_gpus'
 	NumGpus int
 
+	// Wire name: 'photon_driver_capable'
 	PhotonDriverCapable bool
 
+	// Wire name: 'photon_worker_capable'
 	PhotonWorkerCapable bool
 	// Whether this node type support cluster tags.
+	// Wire name: 'support_cluster_tags'
 	SupportClusterTags bool
 	// Whether this node type support EBS volumes. EBS volumes is disabled for
 	// node types that we could place multiple corresponding containers on the
 	// same hosting instance.
+	// Wire name: 'support_ebs_volumes'
 	SupportEbsVolumes bool
 	// Whether this node type supports port forwarding.
+	// Wire name: 'support_port_forwarding'
 	SupportPortForwarding bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func nodeTypeToPb(st *NodeType) (*nodeTypePb, error) {
@@ -21338,55 +18828,25 @@ func nodeTypeToPb(st *NodeType) (*nodeTypePb, error) {
 		return nil, nil
 	}
 	pb := &nodeTypePb{}
-	categoryPb := &st.Category
-	if categoryPb != nil {
-		pb.Category = *categoryPb
-	}
+	pb.Category = st.Category
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	displayOrderPb := &st.DisplayOrder
-	if displayOrderPb != nil {
-		pb.DisplayOrder = *displayOrderPb
-	}
+	pb.DisplayOrder = st.DisplayOrder
 
-	instanceTypeIdPb := &st.InstanceTypeId
-	if instanceTypeIdPb != nil {
-		pb.InstanceTypeId = *instanceTypeIdPb
-	}
+	pb.InstanceTypeId = st.InstanceTypeId
 
-	isDeprecatedPb := &st.IsDeprecated
-	if isDeprecatedPb != nil {
-		pb.IsDeprecated = *isDeprecatedPb
-	}
+	pb.IsDeprecated = st.IsDeprecated
 
-	isEncryptedInTransitPb := &st.IsEncryptedInTransit
-	if isEncryptedInTransitPb != nil {
-		pb.IsEncryptedInTransit = *isEncryptedInTransitPb
-	}
+	pb.IsEncryptedInTransit = st.IsEncryptedInTransit
 
-	isGravitonPb := &st.IsGraviton
-	if isGravitonPb != nil {
-		pb.IsGraviton = *isGravitonPb
-	}
+	pb.IsGraviton = st.IsGraviton
 
-	isHiddenPb := &st.IsHidden
-	if isHiddenPb != nil {
-		pb.IsHidden = *isHiddenPb
-	}
+	pb.IsHidden = st.IsHidden
 
-	isIoCacheEnabledPb := &st.IsIoCacheEnabled
-	if isIoCacheEnabledPb != nil {
-		pb.IsIoCacheEnabled = *isIoCacheEnabledPb
-	}
+	pb.IsIoCacheEnabled = st.IsIoCacheEnabled
 
-	memoryMbPb := &st.MemoryMb
-	if memoryMbPb != nil {
-		pb.MemoryMb = *memoryMbPb
-	}
+	pb.MemoryMb = st.MemoryMb
 
 	nodeInfoPb, err := cloudProviderNodeInfoToPb(st.NodeInfo)
 	if err != nil {
@@ -21404,45 +18864,21 @@ func nodeTypeToPb(st *NodeType) (*nodeTypePb, error) {
 		pb.NodeInstanceType = nodeInstanceTypePb
 	}
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
-	numCoresPb := &st.NumCores
-	if numCoresPb != nil {
-		pb.NumCores = *numCoresPb
-	}
+	pb.NumCores = st.NumCores
 
-	numGpusPb := &st.NumGpus
-	if numGpusPb != nil {
-		pb.NumGpus = *numGpusPb
-	}
+	pb.NumGpus = st.NumGpus
 
-	photonDriverCapablePb := &st.PhotonDriverCapable
-	if photonDriverCapablePb != nil {
-		pb.PhotonDriverCapable = *photonDriverCapablePb
-	}
+	pb.PhotonDriverCapable = st.PhotonDriverCapable
 
-	photonWorkerCapablePb := &st.PhotonWorkerCapable
-	if photonWorkerCapablePb != nil {
-		pb.PhotonWorkerCapable = *photonWorkerCapablePb
-	}
+	pb.PhotonWorkerCapable = st.PhotonWorkerCapable
 
-	supportClusterTagsPb := &st.SupportClusterTags
-	if supportClusterTagsPb != nil {
-		pb.SupportClusterTags = *supportClusterTagsPb
-	}
+	pb.SupportClusterTags = st.SupportClusterTags
 
-	supportEbsVolumesPb := &st.SupportEbsVolumes
-	if supportEbsVolumesPb != nil {
-		pb.SupportEbsVolumes = *supportEbsVolumesPb
-	}
+	pb.SupportEbsVolumes = st.SupportEbsVolumes
 
-	supportPortForwardingPb := &st.SupportPortForwarding
-	if supportPortForwardingPb != nil {
-		pb.SupportPortForwarding = *supportPortForwardingPb
-	}
+	pb.SupportPortForwarding = st.SupportPortForwarding
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -21532,46 +18968,16 @@ func nodeTypeFromPb(pb *nodeTypePb) (*NodeType, error) {
 		return nil, nil
 	}
 	st := &NodeType{}
-	categoryField := &pb.Category
-	if categoryField != nil {
-		st.Category = *categoryField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	displayOrderField := &pb.DisplayOrder
-	if displayOrderField != nil {
-		st.DisplayOrder = *displayOrderField
-	}
-	instanceTypeIdField := &pb.InstanceTypeId
-	if instanceTypeIdField != nil {
-		st.InstanceTypeId = *instanceTypeIdField
-	}
-	isDeprecatedField := &pb.IsDeprecated
-	if isDeprecatedField != nil {
-		st.IsDeprecated = *isDeprecatedField
-	}
-	isEncryptedInTransitField := &pb.IsEncryptedInTransit
-	if isEncryptedInTransitField != nil {
-		st.IsEncryptedInTransit = *isEncryptedInTransitField
-	}
-	isGravitonField := &pb.IsGraviton
-	if isGravitonField != nil {
-		st.IsGraviton = *isGravitonField
-	}
-	isHiddenField := &pb.IsHidden
-	if isHiddenField != nil {
-		st.IsHidden = *isHiddenField
-	}
-	isIoCacheEnabledField := &pb.IsIoCacheEnabled
-	if isIoCacheEnabledField != nil {
-		st.IsIoCacheEnabled = *isIoCacheEnabledField
-	}
-	memoryMbField := &pb.MemoryMb
-	if memoryMbField != nil {
-		st.MemoryMb = *memoryMbField
-	}
+	st.Category = pb.Category
+	st.Description = pb.Description
+	st.DisplayOrder = pb.DisplayOrder
+	st.InstanceTypeId = pb.InstanceTypeId
+	st.IsDeprecated = pb.IsDeprecated
+	st.IsEncryptedInTransit = pb.IsEncryptedInTransit
+	st.IsGraviton = pb.IsGraviton
+	st.IsHidden = pb.IsHidden
+	st.IsIoCacheEnabled = pb.IsIoCacheEnabled
+	st.MemoryMb = pb.MemoryMb
 	nodeInfoField, err := cloudProviderNodeInfoFromPb(pb.NodeInfo)
 	if err != nil {
 		return nil, err
@@ -21586,38 +18992,14 @@ func nodeTypeFromPb(pb *nodeTypePb) (*NodeType, error) {
 	if nodeInstanceTypeField != nil {
 		st.NodeInstanceType = nodeInstanceTypeField
 	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
-	numCoresField := &pb.NumCores
-	if numCoresField != nil {
-		st.NumCores = *numCoresField
-	}
-	numGpusField := &pb.NumGpus
-	if numGpusField != nil {
-		st.NumGpus = *numGpusField
-	}
-	photonDriverCapableField := &pb.PhotonDriverCapable
-	if photonDriverCapableField != nil {
-		st.PhotonDriverCapable = *photonDriverCapableField
-	}
-	photonWorkerCapableField := &pb.PhotonWorkerCapable
-	if photonWorkerCapableField != nil {
-		st.PhotonWorkerCapable = *photonWorkerCapableField
-	}
-	supportClusterTagsField := &pb.SupportClusterTags
-	if supportClusterTagsField != nil {
-		st.SupportClusterTags = *supportClusterTagsField
-	}
-	supportEbsVolumesField := &pb.SupportEbsVolumes
-	if supportEbsVolumesField != nil {
-		st.SupportEbsVolumes = *supportEbsVolumesField
-	}
-	supportPortForwardingField := &pb.SupportPortForwarding
-	if supportPortForwardingField != nil {
-		st.SupportPortForwarding = *supportPortForwardingField
-	}
+	st.NodeTypeId = pb.NodeTypeId
+	st.NumCores = pb.NumCores
+	st.NumGpus = pb.NumGpus
+	st.PhotonDriverCapable = pb.PhotonDriverCapable
+	st.PhotonWorkerCapable = pb.PhotonWorkerCapable
+	st.SupportClusterTags = pb.SupportClusterTags
+	st.SupportEbsVolumes = pb.SupportEbsVolumes
+	st.SupportPortForwarding = pb.SupportPortForwarding
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -21685,11 +19067,14 @@ func nodeTypeFlexibilityFromPb(pb *nodeTypeFlexibilityPb) (*NodeTypeFlexibility,
 
 // Error message of a failed pending instances
 type PendingInstanceError struct {
+
+	// Wire name: 'instance_id'
 	InstanceId string
 
+	// Wire name: 'message'
 	Message string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pendingInstanceErrorToPb(st *PendingInstanceError) (*pendingInstanceErrorPb, error) {
@@ -21697,15 +19082,9 @@ func pendingInstanceErrorToPb(st *PendingInstanceError) (*pendingInstanceErrorPb
 		return nil, nil
 	}
 	pb := &pendingInstanceErrorPb{}
-	instanceIdPb := &st.InstanceId
-	if instanceIdPb != nil {
-		pb.InstanceId = *instanceIdPb
-	}
+	pb.InstanceId = st.InstanceId
 
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -21749,14 +19128,8 @@ func pendingInstanceErrorFromPb(pb *pendingInstanceErrorPb) (*PendingInstanceErr
 		return nil, nil
 	}
 	st := &PendingInstanceError{}
-	instanceIdField := &pb.InstanceId
-	if instanceIdField != nil {
-		st.InstanceId = *instanceIdField
-	}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
+	st.InstanceId = pb.InstanceId
+	st.Message = pb.Message
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -21772,6 +19145,7 @@ func (st pendingInstanceErrorPb) MarshalJSON() ([]byte, error) {
 
 type PermanentDeleteCluster struct {
 	// The cluster to be deleted.
+	// Wire name: 'cluster_id'
 	ClusterId string
 }
 
@@ -21780,10 +19154,7 @@ func permanentDeleteClusterToPb(st *PermanentDeleteCluster) (*permanentDeleteClu
 		return nil, nil
 	}
 	pb := &permanentDeleteClusterPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	return pb, nil
 }
@@ -21823,10 +19194,7 @@ func permanentDeleteClusterFromPb(pb *permanentDeleteClusterPb) (*PermanentDelet
 		return nil, nil
 	}
 	st := &PermanentDeleteCluster{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	return st, nil
 }
@@ -21881,6 +19249,8 @@ func permanentDeleteClusterResponseFromPb(pb *permanentDeleteClusterResponsePb) 
 }
 
 type PinCluster struct {
+
+	// Wire name: 'cluster_id'
 	ClusterId string
 }
 
@@ -21889,10 +19259,7 @@ func pinClusterToPb(st *PinCluster) (*pinClusterPb, error) {
 		return nil, nil
 	}
 	pb := &pinClusterPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	return pb, nil
 }
@@ -21931,10 +19298,7 @@ func pinClusterFromPb(pb *pinClusterPb) (*PinCluster, error) {
 		return nil, nil
 	}
 	st := &PinCluster{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	return st, nil
 }
@@ -21992,29 +19356,37 @@ func pinClusterResponseFromPb(pb *pinClusterResponsePb) (*PinClusterResponse, er
 type Policy struct {
 	// Creation time. The timestamp (in millisecond) when this Cluster Policy
 	// was created.
+	// Wire name: 'created_at_timestamp'
 	CreatedAtTimestamp int64
 	// Creator user name. The field won't be included in the response if the
 	// user has already been deleted.
+	// Wire name: 'creator_user_name'
 	CreatorUserName string
 	// Policy definition document expressed in [Databricks Cluster Policy
 	// Definition Language].
 	//
 	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
+	// Wire name: 'definition'
 	Definition string
 	// Additional human-readable description of the cluster policy.
+	// Wire name: 'description'
 	Description string
 	// If true, policy is a default policy created and managed by Databricks.
 	// Default policies cannot be deleted, and their policy families cannot be
 	// changed.
+	// Wire name: 'is_default'
 	IsDefault bool
 	// A list of libraries to be installed on the next cluster restart that uses
 	// this policy. The maximum number of libraries is 500.
+	// Wire name: 'libraries'
 	Libraries []Library
 	// Max number of clusters per user that can be active using this policy. If
 	// not present, there is no max limit.
+	// Wire name: 'max_clusters_per_user'
 	MaxClustersPerUser int64
 	// Cluster Policy name requested by the user. This has to be unique. Length
 	// must be between 1 and 100 characters.
+	// Wire name: 'name'
 	Name string
 	// Policy definition JSON document expressed in [Databricks Policy
 	// Definition Language]. The JSON document must be passed as a string and
@@ -22025,6 +19397,7 @@ type Policy struct {
 	// policy definition.
 	//
 	// [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
+	// Wire name: 'policy_family_definition_overrides'
 	PolicyFamilyDefinitionOverrides string
 	// ID of the policy family. The cluster policy's policy definition inherits
 	// the policy family's policy definition.
@@ -22032,11 +19405,13 @@ type Policy struct {
 	// Cannot be used with `definition`. Use
 	// `policy_family_definition_overrides` instead to customize the policy
 	// definition.
+	// Wire name: 'policy_family_id'
 	PolicyFamilyId string
 	// Canonical unique identifier for the Cluster Policy.
+	// Wire name: 'policy_id'
 	PolicyId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func policyToPb(st *Policy) (*policyPb, error) {
@@ -22044,30 +19419,15 @@ func policyToPb(st *Policy) (*policyPb, error) {
 		return nil, nil
 	}
 	pb := &policyPb{}
-	createdAtTimestampPb := &st.CreatedAtTimestamp
-	if createdAtTimestampPb != nil {
-		pb.CreatedAtTimestamp = *createdAtTimestampPb
-	}
+	pb.CreatedAtTimestamp = st.CreatedAtTimestamp
 
-	creatorUserNamePb := &st.CreatorUserName
-	if creatorUserNamePb != nil {
-		pb.CreatorUserName = *creatorUserNamePb
-	}
+	pb.CreatorUserName = st.CreatorUserName
 
-	definitionPb := &st.Definition
-	if definitionPb != nil {
-		pb.Definition = *definitionPb
-	}
+	pb.Definition = st.Definition
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	isDefaultPb := &st.IsDefault
-	if isDefaultPb != nil {
-		pb.IsDefault = *isDefaultPb
-	}
+	pb.IsDefault = st.IsDefault
 
 	var librariesPb []LibraryPb
 	for _, item := range st.Libraries {
@@ -22081,30 +19441,15 @@ func policyToPb(st *Policy) (*policyPb, error) {
 	}
 	pb.Libraries = librariesPb
 
-	maxClustersPerUserPb := &st.MaxClustersPerUser
-	if maxClustersPerUserPb != nil {
-		pb.MaxClustersPerUser = *maxClustersPerUserPb
-	}
+	pb.MaxClustersPerUser = st.MaxClustersPerUser
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	policyFamilyDefinitionOverridesPb := &st.PolicyFamilyDefinitionOverrides
-	if policyFamilyDefinitionOverridesPb != nil {
-		pb.PolicyFamilyDefinitionOverrides = *policyFamilyDefinitionOverridesPb
-	}
+	pb.PolicyFamilyDefinitionOverrides = st.PolicyFamilyDefinitionOverrides
 
-	policyFamilyIdPb := &st.PolicyFamilyId
-	if policyFamilyIdPb != nil {
-		pb.PolicyFamilyId = *policyFamilyIdPb
-	}
+	pb.PolicyFamilyId = st.PolicyFamilyId
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22190,58 +19535,28 @@ func policyFromPb(pb *policyPb) (*Policy, error) {
 		return nil, nil
 	}
 	st := &Policy{}
-	createdAtTimestampField := &pb.CreatedAtTimestamp
-	if createdAtTimestampField != nil {
-		st.CreatedAtTimestamp = *createdAtTimestampField
-	}
-	creatorUserNameField := &pb.CreatorUserName
-	if creatorUserNameField != nil {
-		st.CreatorUserName = *creatorUserNameField
-	}
-	definitionField := &pb.Definition
-	if definitionField != nil {
-		st.Definition = *definitionField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	isDefaultField := &pb.IsDefault
-	if isDefaultField != nil {
-		st.IsDefault = *isDefaultField
-	}
+	st.CreatedAtTimestamp = pb.CreatedAtTimestamp
+	st.CreatorUserName = pb.CreatorUserName
+	st.Definition = pb.Definition
+	st.Description = pb.Description
+	st.IsDefault = pb.IsDefault
 
 	var librariesField []Library
-	for _, item := range pb.Libraries {
-		itemField, err := LibraryFromPb(&item)
+	for _, itemPb := range pb.Libraries {
+		item, err := LibraryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			librariesField = append(librariesField, *itemField)
+		if item != nil {
+			librariesField = append(librariesField, *item)
 		}
 	}
 	st.Libraries = librariesField
-	maxClustersPerUserField := &pb.MaxClustersPerUser
-	if maxClustersPerUserField != nil {
-		st.MaxClustersPerUser = *maxClustersPerUserField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	policyFamilyDefinitionOverridesField := &pb.PolicyFamilyDefinitionOverrides
-	if policyFamilyDefinitionOverridesField != nil {
-		st.PolicyFamilyDefinitionOverrides = *policyFamilyDefinitionOverridesField
-	}
-	policyFamilyIdField := &pb.PolicyFamilyId
-	if policyFamilyIdField != nil {
-		st.PolicyFamilyId = *policyFamilyIdField
-	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.MaxClustersPerUser = pb.MaxClustersPerUser
+	st.Name = pb.Name
+	st.PolicyFamilyDefinitionOverrides = pb.PolicyFamilyDefinitionOverrides
+	st.PolicyFamilyId = pb.PolicyFamilyId
+	st.PolicyId = pb.PolicyId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22260,15 +19575,19 @@ type PolicyFamily struct {
 	// Definition Language].
 	//
 	// [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
+	// Wire name: 'definition'
 	Definition string
 	// Human-readable description of the purpose of the policy family.
+	// Wire name: 'description'
 	Description string
 	// Name of the policy family.
+	// Wire name: 'name'
 	Name string
 	// Unique identifier for the policy family.
+	// Wire name: 'policy_family_id'
 	PolicyFamilyId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func policyFamilyToPb(st *PolicyFamily) (*policyFamilyPb, error) {
@@ -22276,25 +19595,13 @@ func policyFamilyToPb(st *PolicyFamily) (*policyFamilyPb, error) {
 		return nil, nil
 	}
 	pb := &policyFamilyPb{}
-	definitionPb := &st.Definition
-	if definitionPb != nil {
-		pb.Definition = *definitionPb
-	}
+	pb.Definition = st.Definition
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	policyFamilyIdPb := &st.PolicyFamilyId
-	if policyFamilyIdPb != nil {
-		pb.PolicyFamilyId = *policyFamilyIdPb
-	}
+	pb.PolicyFamilyId = st.PolicyFamilyId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22346,22 +19653,10 @@ func policyFamilyFromPb(pb *policyFamilyPb) (*PolicyFamily, error) {
 		return nil, nil
 	}
 	st := &PolicyFamily{}
-	definitionField := &pb.Definition
-	if definitionField != nil {
-		st.Definition = *definitionField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	policyFamilyIdField := &pb.PolicyFamilyId
-	if policyFamilyIdField != nil {
-		st.PolicyFamilyId = *policyFamilyIdField
-	}
+	st.Definition = pb.Definition
+	st.Description = pb.Description
+	st.Name = pb.Name
+	st.PolicyFamilyId = pb.PolicyFamilyId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22379,12 +19674,14 @@ type PythonPyPiLibrary struct {
 	// The name of the pypi package to install. An optional exact version
 	// specification is also supported. Examples: "simplejson" and
 	// "simplejson==3.8.0".
+	// Wire name: 'package'
 	Package string
 	// The repository where the package can be found. If not specified, the
 	// default pip index is used.
+	// Wire name: 'repo'
 	Repo string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pythonPyPiLibraryToPb(st *PythonPyPiLibrary) (*pythonPyPiLibraryPb, error) {
@@ -22392,15 +19689,9 @@ func pythonPyPiLibraryToPb(st *PythonPyPiLibrary) (*pythonPyPiLibraryPb, error) 
 		return nil, nil
 	}
 	pb := &pythonPyPiLibraryPb{}
-	packagePb := &st.Package
-	if packagePb != nil {
-		pb.Package = *packagePb
-	}
+	pb.Package = st.Package
 
-	repoPb := &st.Repo
-	if repoPb != nil {
-		pb.Repo = *repoPb
-	}
+	pb.Repo = st.Repo
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22448,14 +19739,8 @@ func pythonPyPiLibraryFromPb(pb *pythonPyPiLibraryPb) (*PythonPyPiLibrary, error
 		return nil, nil
 	}
 	st := &PythonPyPiLibrary{}
-	packageField := &pb.Package
-	if packageField != nil {
-		st.Package = *packageField
-	}
-	repoField := &pb.Repo
-	if repoField != nil {
-		st.Repo = *repoField
-	}
+	st.Package = pb.Package
+	st.Repo = pb.Repo
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22471,12 +19756,14 @@ func (st pythonPyPiLibraryPb) MarshalJSON() ([]byte, error) {
 
 type RCranLibrary struct {
 	// The name of the CRAN package to install.
+	// Wire name: 'package'
 	Package string
 	// The repository where the package can be found. If not specified, the
 	// default CRAN repo is used.
+	// Wire name: 'repo'
 	Repo string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func rCranLibraryToPb(st *RCranLibrary) (*rCranLibraryPb, error) {
@@ -22484,15 +19771,9 @@ func rCranLibraryToPb(st *RCranLibrary) (*rCranLibraryPb, error) {
 		return nil, nil
 	}
 	pb := &rCranLibraryPb{}
-	packagePb := &st.Package
-	if packagePb != nil {
-		pb.Package = *packagePb
-	}
+	pb.Package = st.Package
 
-	repoPb := &st.Repo
-	if repoPb != nil {
-		pb.Repo = *repoPb
-	}
+	pb.Repo = st.Repo
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22538,14 +19819,8 @@ func rCranLibraryFromPb(pb *rCranLibraryPb) (*RCranLibrary, error) {
 		return nil, nil
 	}
 	st := &RCranLibrary{}
-	packageField := &pb.Package
-	if packageField != nil {
-		st.Package = *packageField
-	}
-	repoField := &pb.Repo
-	if repoField != nil {
-		st.Repo = *repoField
-	}
+	st.Package = pb.Package
+	st.Repo = pb.Repo
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22561,6 +19836,7 @@ func (st rCranLibraryPb) MarshalJSON() ([]byte, error) {
 
 type RemoveInstanceProfile struct {
 	// The ARN of the instance profile to remove. This field is required.
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 }
 
@@ -22569,10 +19845,7 @@ func removeInstanceProfileToPb(st *RemoveInstanceProfile) (*removeInstanceProfil
 		return nil, nil
 	}
 	pb := &removeInstanceProfilePb{}
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
 	return pb, nil
 }
@@ -22612,10 +19885,7 @@ func removeInstanceProfileFromPb(pb *removeInstanceProfilePb) (*RemoveInstancePr
 		return nil, nil
 	}
 	st := &RemoveInstanceProfile{}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
+	st.InstanceProfileArn = pb.InstanceProfileArn
 
 	return st, nil
 }
@@ -22673,8 +19943,10 @@ type ResizeCluster struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
+	// Wire name: 'autoscale'
 	Autoscale *AutoScale
 	// The cluster to be resized.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
@@ -22686,9 +19958,10 @@ type ResizeCluster struct {
 	// field will immediately be updated to reflect the target size of 10
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
+	// Wire name: 'num_workers'
 	NumWorkers int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func resizeClusterToPb(st *ResizeCluster) (*resizeClusterPb, error) {
@@ -22704,15 +19977,9 @@ func resizeClusterToPb(st *ResizeCluster) (*resizeClusterPb, error) {
 		pb.Autoscale = autoscalePb
 	}
 
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	numWorkersPb := &st.NumWorkers
-	if numWorkersPb != nil {
-		pb.NumWorkers = *numWorkersPb
-	}
+	pb.NumWorkers = st.NumWorkers
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22777,14 +20044,8 @@ func resizeClusterFromPb(pb *resizeClusterPb) (*ResizeCluster, error) {
 	if autoscaleField != nil {
 		st.Autoscale = autoscaleField
 	}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	numWorkersField := &pb.NumWorkers
-	if numWorkersField != nil {
-		st.NumWorkers = *numWorkersField
-	}
+	st.ClusterId = pb.ClusterId
+	st.NumWorkers = pb.NumWorkers
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22849,11 +20110,13 @@ func resizeClusterResponseFromPb(pb *resizeClusterResponsePb) (*ResizeClusterRes
 
 type RestartCluster struct {
 	// The cluster to be started.
+	// Wire name: 'cluster_id'
 	ClusterId string
 
+	// Wire name: 'restart_user'
 	RestartUser string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func restartClusterToPb(st *RestartCluster) (*restartClusterPb, error) {
@@ -22861,15 +20124,9 @@ func restartClusterToPb(st *RestartCluster) (*restartClusterPb, error) {
 		return nil, nil
 	}
 	pb := &restartClusterPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	restartUserPb := &st.RestartUser
-	if restartUserPb != nil {
-		pb.RestartUser = *restartUserPb
-	}
+	pb.RestartUser = st.RestartUser
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22914,14 +20171,8 @@ func restartClusterFromPb(pb *restartClusterPb) (*RestartCluster, error) {
 		return nil, nil
 	}
 	st := &RestartCluster{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	restartUserField := &pb.RestartUser
-	if restartUserField != nil {
-		st.RestartUser = *restartUserField
-	}
+	st.ClusterId = pb.ClusterId
+	st.RestartUser = pb.RestartUser
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23036,28 +20287,38 @@ func resultTypeFromPb(pb *resultTypePb) (*ResultType, error) {
 
 type Results struct {
 	// The cause of the error
+	// Wire name: 'cause'
 	Cause string
 
+	// Wire name: 'data'
 	Data any
 	// The image filename
+	// Wire name: 'fileName'
 	FileName string
 
+	// Wire name: 'fileNames'
 	FileNames []string
 	// true if a JSON schema is returned instead of a string representation of
 	// the Hive type.
+	// Wire name: 'isJsonSchema'
 	IsJsonSchema bool
 	// internal field used by SDK
+	// Wire name: 'pos'
 	Pos int
 
+	// Wire name: 'resultType'
 	ResultType ResultType
 	// The table schema
+	// Wire name: 'schema'
 	Schema []map[string]any
 	// The summary of the error
+	// Wire name: 'summary'
 	Summary string
 	// true if partial results are returned.
+	// Wire name: 'truncated'
 	Truncated bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func resultsToPb(st *Results) (*resultsPb, error) {
@@ -23065,63 +20326,25 @@ func resultsToPb(st *Results) (*resultsPb, error) {
 		return nil, nil
 	}
 	pb := &resultsPb{}
-	causePb := &st.Cause
-	if causePb != nil {
-		pb.Cause = *causePb
-	}
+	pb.Cause = st.Cause
 
-	dataPb := &st.Data
-	if dataPb != nil {
-		pb.Data = *dataPb
-	}
+	pb.Data = st.Data
 
-	fileNamePb := &st.FileName
-	if fileNamePb != nil {
-		pb.FileName = *fileNamePb
-	}
+	pb.FileName = st.FileName
 
-	var fileNamesPb []string
-	for _, item := range st.FileNames {
-		itemPb := &item
-		if itemPb != nil {
-			fileNamesPb = append(fileNamesPb, *itemPb)
-		}
-	}
-	pb.FileNames = fileNamesPb
+	pb.FileNames = st.FileNames
 
-	isJsonSchemaPb := &st.IsJsonSchema
-	if isJsonSchemaPb != nil {
-		pb.IsJsonSchema = *isJsonSchemaPb
-	}
+	pb.IsJsonSchema = st.IsJsonSchema
 
-	posPb := &st.Pos
-	if posPb != nil {
-		pb.Pos = *posPb
-	}
+	pb.Pos = st.Pos
 
-	resultTypePb := &st.ResultType
-	if resultTypePb != nil {
-		pb.ResultType = *resultTypePb
-	}
+	pb.ResultType = st.ResultType
 
-	var schemaPb []map[string]any
-	for _, item := range st.Schema {
-		itemPb := &item
-		if itemPb != nil {
-			schemaPb = append(schemaPb, *itemPb)
-		}
-	}
-	pb.Schema = schemaPb
+	pb.Schema = st.Schema
 
-	summaryPb := &st.Summary
-	if summaryPb != nil {
-		pb.Summary = *summaryPb
-	}
+	pb.Summary = st.Summary
 
-	truncatedPb := &st.Truncated
-	if truncatedPb != nil {
-		pb.Truncated = *truncatedPb
-	}
+	pb.Truncated = st.Truncated
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23183,56 +20406,16 @@ func resultsFromPb(pb *resultsPb) (*Results, error) {
 		return nil, nil
 	}
 	st := &Results{}
-	causeField := &pb.Cause
-	if causeField != nil {
-		st.Cause = *causeField
-	}
-	dataField := &pb.Data
-	if dataField != nil {
-		st.Data = *dataField
-	}
-	fileNameField := &pb.FileName
-	if fileNameField != nil {
-		st.FileName = *fileNameField
-	}
-
-	var fileNamesField []string
-	for _, item := range pb.FileNames {
-		itemField := &item
-		if itemField != nil {
-			fileNamesField = append(fileNamesField, *itemField)
-		}
-	}
-	st.FileNames = fileNamesField
-	isJsonSchemaField := &pb.IsJsonSchema
-	if isJsonSchemaField != nil {
-		st.IsJsonSchema = *isJsonSchemaField
-	}
-	posField := &pb.Pos
-	if posField != nil {
-		st.Pos = *posField
-	}
-	resultTypeField := &pb.ResultType
-	if resultTypeField != nil {
-		st.ResultType = *resultTypeField
-	}
-
-	var schemaField []map[string]any
-	for _, item := range pb.Schema {
-		itemField := &item
-		if itemField != nil {
-			schemaField = append(schemaField, *itemField)
-		}
-	}
-	st.Schema = schemaField
-	summaryField := &pb.Summary
-	if summaryField != nil {
-		st.Summary = *summaryField
-	}
-	truncatedField := &pb.Truncated
-	if truncatedField != nil {
-		st.Truncated = *truncatedField
-	}
+	st.Cause = pb.Cause
+	st.Data = pb.Data
+	st.FileName = pb.FileName
+	st.FileNames = pb.FileNames
+	st.IsJsonSchema = pb.IsJsonSchema
+	st.Pos = pb.Pos
+	st.ResultType = pb.ResultType
+	st.Schema = pb.Schema
+	st.Summary = pb.Summary
+	st.Truncated = pb.Truncated
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23303,29 +20486,36 @@ type S3StorageInfo struct {
 	// controls. If you are using cross account role for writing data, you may
 	// want to set `bucket-owner-full-control` to make bucket owner able to read
 	// the logs.
+	// Wire name: 'canned_acl'
 	CannedAcl string
 	// S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be
 	// delivered using cluster iam role, please make sure you set cluster iam
 	// role and the role has write access to the destination. Please also note
 	// that you cannot use AWS keys to deliver logs.
+	// Wire name: 'destination'
 	Destination string
 	// (Optional) Flag to enable server side encryption, `false` by default.
+	// Wire name: 'enable_encryption'
 	EnableEncryption bool
 	// (Optional) The encryption type, it could be `sse-s3` or `sse-kms`. It
 	// will be used only when encryption is enabled and the default type is
 	// `sse-s3`.
+	// Wire name: 'encryption_type'
 	EncryptionType string
 	// S3 endpoint, e.g. `https://s3-us-west-2.amazonaws.com`. Either region or
 	// endpoint needs to be set. If both are set, endpoint will be used.
+	// Wire name: 'endpoint'
 	Endpoint string
 	// (Optional) Kms key which will be used if encryption is enabled and
 	// encryption type is set to `sse-kms`.
+	// Wire name: 'kms_key'
 	KmsKey string
 	// S3 region, e.g. `us-west-2`. Either region or endpoint needs to be set.
 	// If both are set, endpoint will be used.
+	// Wire name: 'region'
 	Region string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func s3StorageInfoToPb(st *S3StorageInfo) (*s3StorageInfoPb, error) {
@@ -23333,40 +20523,19 @@ func s3StorageInfoToPb(st *S3StorageInfo) (*s3StorageInfoPb, error) {
 		return nil, nil
 	}
 	pb := &s3StorageInfoPb{}
-	cannedAclPb := &st.CannedAcl
-	if cannedAclPb != nil {
-		pb.CannedAcl = *cannedAclPb
-	}
+	pb.CannedAcl = st.CannedAcl
 
-	destinationPb := &st.Destination
-	if destinationPb != nil {
-		pb.Destination = *destinationPb
-	}
+	pb.Destination = st.Destination
 
-	enableEncryptionPb := &st.EnableEncryption
-	if enableEncryptionPb != nil {
-		pb.EnableEncryption = *enableEncryptionPb
-	}
+	pb.EnableEncryption = st.EnableEncryption
 
-	encryptionTypePb := &st.EncryptionType
-	if encryptionTypePb != nil {
-		pb.EncryptionType = *encryptionTypePb
-	}
+	pb.EncryptionType = st.EncryptionType
 
-	endpointPb := &st.Endpoint
-	if endpointPb != nil {
-		pb.Endpoint = *endpointPb
-	}
+	pb.Endpoint = st.Endpoint
 
-	kmsKeyPb := &st.KmsKey
-	if kmsKeyPb != nil {
-		pb.KmsKey = *kmsKeyPb
-	}
+	pb.KmsKey = st.KmsKey
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23437,34 +20606,13 @@ func s3StorageInfoFromPb(pb *s3StorageInfoPb) (*S3StorageInfo, error) {
 		return nil, nil
 	}
 	st := &S3StorageInfo{}
-	cannedAclField := &pb.CannedAcl
-	if cannedAclField != nil {
-		st.CannedAcl = *cannedAclField
-	}
-	destinationField := &pb.Destination
-	if destinationField != nil {
-		st.Destination = *destinationField
-	}
-	enableEncryptionField := &pb.EnableEncryption
-	if enableEncryptionField != nil {
-		st.EnableEncryption = *enableEncryptionField
-	}
-	encryptionTypeField := &pb.EncryptionType
-	if encryptionTypeField != nil {
-		st.EncryptionType = *encryptionTypeField
-	}
-	endpointField := &pb.Endpoint
-	if endpointField != nil {
-		st.Endpoint = *endpointField
-	}
-	kmsKeyField := &pb.KmsKey
-	if kmsKeyField != nil {
-		st.KmsKey = *kmsKeyField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
+	st.CannedAcl = pb.CannedAcl
+	st.Destination = pb.Destination
+	st.EnableEncryption = pb.EnableEncryption
+	st.EncryptionType = pb.EncryptionType
+	st.Endpoint = pb.Endpoint
+	st.KmsKey = pb.KmsKey
+	st.Region = pb.Region
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23481,25 +20629,32 @@ func (st s3StorageInfoPb) MarshalJSON() ([]byte, error) {
 // Describes a specific Spark driver or executor.
 type SparkNode struct {
 	// The private IP address of the host instance.
+	// Wire name: 'host_private_ip'
 	HostPrivateIp string
 	// Globally unique identifier for the host instance from the cloud provider.
+	// Wire name: 'instance_id'
 	InstanceId string
 	// Attributes specific to AWS for a Spark node.
+	// Wire name: 'node_aws_attributes'
 	NodeAwsAttributes *SparkNodeAwsAttributes
 	// Globally unique identifier for this node.
+	// Wire name: 'node_id'
 	NodeId string
 	// Private IP address (typically a 10.x.x.x address) of the Spark node. Note
 	// that this is different from the private IP address of the host instance.
+	// Wire name: 'private_ip'
 	PrivateIp string
 	// Public DNS address of this node. This address can be used to access the
 	// Spark JDBC server on the driver node. To communicate with the JDBC
 	// server, traffic must be manually authorized by adding security group
 	// rules to the "worker-unmanaged" security group via the AWS console.
+	// Wire name: 'public_dns'
 	PublicDns string
 	// The timestamp (in millisecond) when the Spark node is launched.
+	// Wire name: 'start_timestamp'
 	StartTimestamp int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func sparkNodeToPb(st *SparkNode) (*sparkNodePb, error) {
@@ -23507,15 +20662,9 @@ func sparkNodeToPb(st *SparkNode) (*sparkNodePb, error) {
 		return nil, nil
 	}
 	pb := &sparkNodePb{}
-	hostPrivateIpPb := &st.HostPrivateIp
-	if hostPrivateIpPb != nil {
-		pb.HostPrivateIp = *hostPrivateIpPb
-	}
+	pb.HostPrivateIp = st.HostPrivateIp
 
-	instanceIdPb := &st.InstanceId
-	if instanceIdPb != nil {
-		pb.InstanceId = *instanceIdPb
-	}
+	pb.InstanceId = st.InstanceId
 
 	nodeAwsAttributesPb, err := sparkNodeAwsAttributesToPb(st.NodeAwsAttributes)
 	if err != nil {
@@ -23525,25 +20674,13 @@ func sparkNodeToPb(st *SparkNode) (*sparkNodePb, error) {
 		pb.NodeAwsAttributes = nodeAwsAttributesPb
 	}
 
-	nodeIdPb := &st.NodeId
-	if nodeIdPb != nil {
-		pb.NodeId = *nodeIdPb
-	}
+	pb.NodeId = st.NodeId
 
-	privateIpPb := &st.PrivateIp
-	if privateIpPb != nil {
-		pb.PrivateIp = *privateIpPb
-	}
+	pb.PrivateIp = st.PrivateIp
 
-	publicDnsPb := &st.PublicDns
-	if publicDnsPb != nil {
-		pb.PublicDns = *publicDnsPb
-	}
+	pb.PublicDns = st.PublicDns
 
-	startTimestampPb := &st.StartTimestamp
-	if startTimestampPb != nil {
-		pb.StartTimestamp = *startTimestampPb
-	}
+	pb.StartTimestamp = st.StartTimestamp
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23602,14 +20739,8 @@ func sparkNodeFromPb(pb *sparkNodePb) (*SparkNode, error) {
 		return nil, nil
 	}
 	st := &SparkNode{}
-	hostPrivateIpField := &pb.HostPrivateIp
-	if hostPrivateIpField != nil {
-		st.HostPrivateIp = *hostPrivateIpField
-	}
-	instanceIdField := &pb.InstanceId
-	if instanceIdField != nil {
-		st.InstanceId = *instanceIdField
-	}
+	st.HostPrivateIp = pb.HostPrivateIp
+	st.InstanceId = pb.InstanceId
 	nodeAwsAttributesField, err := sparkNodeAwsAttributesFromPb(pb.NodeAwsAttributes)
 	if err != nil {
 		return nil, err
@@ -23617,22 +20748,10 @@ func sparkNodeFromPb(pb *sparkNodePb) (*SparkNode, error) {
 	if nodeAwsAttributesField != nil {
 		st.NodeAwsAttributes = nodeAwsAttributesField
 	}
-	nodeIdField := &pb.NodeId
-	if nodeIdField != nil {
-		st.NodeId = *nodeIdField
-	}
-	privateIpField := &pb.PrivateIp
-	if privateIpField != nil {
-		st.PrivateIp = *privateIpField
-	}
-	publicDnsField := &pb.PublicDns
-	if publicDnsField != nil {
-		st.PublicDns = *publicDnsField
-	}
-	startTimestampField := &pb.StartTimestamp
-	if startTimestampField != nil {
-		st.StartTimestamp = *startTimestampField
-	}
+	st.NodeId = pb.NodeId
+	st.PrivateIp = pb.PrivateIp
+	st.PublicDns = pb.PublicDns
+	st.StartTimestamp = pb.StartTimestamp
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23649,9 +20768,10 @@ func (st sparkNodePb) MarshalJSON() ([]byte, error) {
 // Attributes specific to AWS for a Spark node.
 type SparkNodeAwsAttributes struct {
 	// Whether this node is on an Amazon spot instance.
+	// Wire name: 'is_spot'
 	IsSpot bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func sparkNodeAwsAttributesToPb(st *SparkNodeAwsAttributes) (*sparkNodeAwsAttributesPb, error) {
@@ -23659,10 +20779,7 @@ func sparkNodeAwsAttributesToPb(st *SparkNodeAwsAttributes) (*sparkNodeAwsAttrib
 		return nil, nil
 	}
 	pb := &sparkNodeAwsAttributesPb{}
-	isSpotPb := &st.IsSpot
-	if isSpotPb != nil {
-		pb.IsSpot = *isSpotPb
-	}
+	pb.IsSpot = st.IsSpot
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23705,10 +20822,7 @@ func sparkNodeAwsAttributesFromPb(pb *sparkNodeAwsAttributesPb) (*SparkNodeAwsAt
 		return nil, nil
 	}
 	st := &SparkNodeAwsAttributes{}
-	isSpotField := &pb.IsSpot
-	if isSpotField != nil {
-		st.IsSpot = *isSpotField
-	}
+	st.IsSpot = pb.IsSpot
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23728,11 +20842,13 @@ type SparkVersion struct {
 	// Note that the exact Spark version may change over time for a "wildcard"
 	// version (i.e., "2.1.x-scala2.11" is a "wildcard" version) with minor bug
 	// fixes.
+	// Wire name: 'key'
 	Key string
 	// A descriptive name for this Spark version, for example "Spark 2.1".
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func sparkVersionToPb(st *SparkVersion) (*sparkVersionPb, error) {
@@ -23740,15 +20856,9 @@ func sparkVersionToPb(st *SparkVersion) (*sparkVersionPb, error) {
 		return nil, nil
 	}
 	pb := &sparkVersionPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23797,14 +20907,8 @@ func sparkVersionFromPb(pb *sparkVersionPb) (*SparkVersion, error) {
 		return nil, nil
 	}
 	st := &SparkVersion{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Key = pb.Key
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23820,6 +20924,7 @@ func (st sparkVersionPb) MarshalJSON() ([]byte, error) {
 
 type StartCluster struct {
 	// The cluster to be started.
+	// Wire name: 'cluster_id'
 	ClusterId string
 }
 
@@ -23828,10 +20933,7 @@ func startClusterToPb(st *StartCluster) (*startClusterPb, error) {
 		return nil, nil
 	}
 	pb := &startClusterPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	return pb, nil
 }
@@ -23871,10 +20973,7 @@ func startClusterFromPb(pb *startClusterPb) (*StartCluster, error) {
 		return nil, nil
 	}
 	st := &StartCluster{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	return st, nil
 }
@@ -23993,11 +21092,14 @@ func stateFromPb(pb *statePb) (*State, error) {
 
 type TerminationReason struct {
 	// status code indicating why the cluster was terminated
+	// Wire name: 'code'
 	Code TerminationReasonCode
 	// list of parameters that provide additional information about why the
 	// cluster was terminated
+	// Wire name: 'parameters'
 	Parameters map[string]string
 	// type of the termination
+	// Wire name: 'type'
 	Type TerminationReasonType
 }
 
@@ -24006,24 +21108,11 @@ func terminationReasonToPb(st *TerminationReason) (*terminationReasonPb, error) 
 		return nil, nil
 	}
 	pb := &terminationReasonPb{}
-	codePb := &st.Code
-	if codePb != nil {
-		pb.Code = *codePb
-	}
+	pb.Code = st.Code
 
-	parametersPb := map[string]string{}
-	for k, v := range st.Parameters {
-		itemPb := &v
-		if itemPb != nil {
-			parametersPb[k] = *itemPb
-		}
-	}
-	pb.Parameters = parametersPb
+	pb.Parameters = st.Parameters
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	return pb, nil
 }
@@ -24068,23 +21157,9 @@ func terminationReasonFromPb(pb *terminationReasonPb) (*TerminationReason, error
 		return nil, nil
 	}
 	st := &TerminationReason{}
-	codeField := &pb.Code
-	if codeField != nil {
-		st.Code = *codeField
-	}
-
-	parametersField := map[string]string{}
-	for k, v := range pb.Parameters {
-		itemField := &v
-		if itemField != nil {
-			parametersField[k] = *itemField
-		}
-	}
-	st.Parameters = parametersField
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.Code = pb.Code
+	st.Parameters = pb.Parameters
+	st.Type = pb.Type
 
 	return st, nil
 }
@@ -24509,8 +21584,10 @@ func terminationReasonTypeFromPb(pb *terminationReasonTypePb) (*TerminationReaso
 
 type UninstallLibraries struct {
 	// Unique identifier for the cluster on which to uninstall these libraries.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// The libraries to uninstall.
+	// Wire name: 'libraries'
 	Libraries []Library
 }
 
@@ -24519,10 +21596,7 @@ func uninstallLibrariesToPb(st *UninstallLibraries) (*uninstallLibrariesPb, erro
 		return nil, nil
 	}
 	pb := &uninstallLibrariesPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	var librariesPb []LibraryPb
 	for _, item := range st.Libraries {
@@ -24576,19 +21650,16 @@ func uninstallLibrariesFromPb(pb *uninstallLibrariesPb) (*UninstallLibraries, er
 		return nil, nil
 	}
 	st := &UninstallLibraries{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	var librariesField []Library
-	for _, item := range pb.Libraries {
-		itemField, err := LibraryFromPb(&item)
+	for _, itemPb := range pb.Libraries {
+		item, err := LibraryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			librariesField = append(librariesField, *itemField)
+		if item != nil {
+			librariesField = append(librariesField, *item)
 		}
 	}
 	st.Libraries = librariesField
@@ -24646,6 +21717,8 @@ func uninstallLibrariesResponseFromPb(pb *uninstallLibrariesResponsePb) (*Uninst
 }
 
 type UnpinCluster struct {
+
+	// Wire name: 'cluster_id'
 	ClusterId string
 }
 
@@ -24654,10 +21727,7 @@ func unpinClusterToPb(st *UnpinCluster) (*unpinClusterPb, error) {
 		return nil, nil
 	}
 	pb := &unpinClusterPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	return pb, nil
 }
@@ -24696,10 +21766,7 @@ func unpinClusterFromPb(pb *unpinClusterPb) (*UnpinCluster, error) {
 		return nil, nil
 	}
 	st := &UnpinCluster{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.ClusterId = pb.ClusterId
 
 	return st, nil
 }
@@ -24755,8 +21822,10 @@ func unpinClusterResponseFromPb(pb *unpinClusterResponsePb) (*UnpinClusterRespon
 
 type UpdateCluster struct {
 	// The cluster to be updated.
+	// Wire name: 'cluster'
 	Cluster *UpdateClusterResource
 	// ID of the cluster.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// Used to specify which cluster attributes and size fields to update. See
 	// https://google.aip.dev/161 for more details.
@@ -24772,6 +21841,7 @@ type UpdateCluster struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'update_mask'
 	UpdateMask string
 }
 
@@ -24788,15 +21858,9 @@ func updateClusterToPb(st *UpdateCluster) (*updateClusterPb, error) {
 		pb.Cluster = clusterPb
 	}
 
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	updateMaskPb := &st.UpdateMask
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
 }
@@ -24860,14 +21924,8 @@ func updateClusterFromPb(pb *updateClusterPb) (*UpdateCluster, error) {
 	if clusterField != nil {
 		st.Cluster = clusterField
 	}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	updateMaskField := &pb.UpdateMask
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.ClusterId = pb.ClusterId
+	st.UpdateMask = pb.UpdateMask
 
 	return st, nil
 }
@@ -24876,18 +21934,22 @@ type UpdateClusterResource struct {
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
+	// Wire name: 'autoscale'
 	Autoscale *AutoScale
 	// Automatically terminates the cluster after it is inactive for this time
 	// in minutes. If not set, this cluster will not be automatically
 	// terminated. If specified, the threshold must be between 10 and 10000
 	// minutes. Users can also set this value to 0 to explicitly disable
 	// automatic termination.
+	// Wire name: 'autotermination_minutes'
 	AutoterminationMinutes int
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'aws_attributes'
 	AwsAttributes *AwsAttributes
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'azure_attributes'
 	AzureAttributes *AzureAttributes
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Three kinds of destinations (DBFS, S3 and Unity Catalog
@@ -24896,9 +21958,11 @@ type UpdateClusterResource struct {
 	// destination every `5 mins`. The destination of driver logs is
 	// `$destination/$clusterId/driver`, while the destination of executor logs
 	// is `$destination/$clusterId/executor`.
+	// Wire name: 'cluster_log_conf'
 	ClusterLogConf *ClusterLogConf
 	// Cluster name requested by the user. This doesn't have to be unique. If
 	// not specified at creation, the cluster name will be an empty string.
+	// Wire name: 'cluster_name'
 	ClusterName string
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -24908,6 +21972,7 @@ type UpdateClusterResource struct {
 	//
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// Data security mode decides what data governance model to use when
 	// accessing data from a cluster.
@@ -24938,12 +22003,15 @@ type UpdateClusterResource struct {
 	// `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
 	// Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This
 	// mode provides a way that doesn’t have UC nor passthrough enabled.
+	// Wire name: 'data_security_mode'
 	DataSecurityMode DataSecurityMode
 	// Custom docker image BYOC
+	// Wire name: 'docker_image'
 	DockerImage *DockerImage
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
+	// Wire name: 'driver_instance_pool_id'
 	DriverInstancePoolId string
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
@@ -24953,28 +22021,35 @@ type UpdateClusterResource struct {
 	// virtual_cluster_size is set. If both driver_node_type_id, node_type_id,
 	// and virtual_cluster_size are specified, driver_node_type_id and
 	// node_type_id take precedence.
+	// Wire name: 'driver_node_type_id'
 	DriverNodeTypeId string
 	// Autoscaling Local Storage: when enabled, this cluster will dynamically
 	// acquire additional disk space when its Spark workers are running low on
 	// disk space. This feature requires specific AWS permissions to function
 	// correctly - refer to the User Guide for more details.
+	// Wire name: 'enable_elastic_disk'
 	EnableElasticDisk bool
 	// Whether to enable LUKS on cluster VMs' local disks
+	// Wire name: 'enable_local_disk_encryption'
 	EnableLocalDiskEncryption bool
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'gcp_attributes'
 	GcpAttributes *GcpAttributes
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
+	// Wire name: 'init_scripts'
 	InitScripts []InitScriptInfo
 	// The optional ID of the instance pool to which the cluster belongs.
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// When set to true, Databricks will automatically set single node related
 	// `custom_tags`, `spark_conf`, and `num_workers`
+	// Wire name: 'is_single_node'
 	IsSingleNode bool
 	// The kind of compute described by this compute specification.
 	//
@@ -24993,12 +22068,14 @@ type UpdateClusterResource struct {
 	// CLASSIC_PREVIEW`.
 	//
 	// [simple form]: https://docs.databricks.com/compute/simple-form.html
+	// Wire name: 'kind'
 	Kind Kind
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
@@ -25010,8 +22087,10 @@ type UpdateClusterResource struct {
 	// field will immediately be updated to reflect the target size of 10
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
+	// Wire name: 'num_workers'
 	NumWorkers int
 	// The ID of the cluster policy used to create the cluster if applicable.
+	// Wire name: 'policy_id'
 	PolicyId string
 	// Determines the cluster's runtime engine, either standard or Photon.
 	//
@@ -25021,14 +22100,17 @@ type UpdateClusterResource struct {
 	//
 	// If left unspecified, the runtime engine defaults to standard unless the
 	// spark_version contains -photon-, in which case Photon will be used.
+	// Wire name: 'runtime_engine'
 	RuntimeEngine RuntimeEngine
 	// Single user name if data_security_mode is `SINGLE_USER`
+	// Wire name: 'single_user_name'
 	SingleUserName string
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. Users can also pass in a string of extra
 	// JVM options to the driver and the executors via
 	// `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions`
 	// respectively.
+	// Wire name: 'spark_conf'
 	SparkConf map[string]string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
@@ -25043,25 +22125,30 @@ type UpdateClusterResource struct {
 	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	// Wire name: 'spark_env_vars'
 	SparkEnvVars map[string]string
 	// The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of
 	// available Spark versions can be retrieved by using the
 	// :method:clusters/sparkVersions API call.
+	// Wire name: 'spark_version'
 	SparkVersion string
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	// Wire name: 'ssh_public_keys'
 	SshPublicKeys []string
 	// This field can only be used when `kind = CLASSIC_PREVIEW`.
 	//
 	// `effective_spark_version` is determined by `spark_version` (DBR release),
 	// this field `use_ml_runtime`, and whether `node_type_id` is gpu node or
 	// not.
+	// Wire name: 'use_ml_runtime'
 	UseMlRuntime bool
 	// Cluster Attributes showing for clusters workload types.
+	// Wire name: 'workload_type'
 	WorkloadType *WorkloadType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateClusterResourceToPb(st *UpdateClusterResource) (*updateClusterResourcePb, error) {
@@ -25077,10 +22164,7 @@ func updateClusterResourceToPb(st *UpdateClusterResource) (*updateClusterResourc
 		pb.Autoscale = autoscalePb
 	}
 
-	autoterminationMinutesPb := &st.AutoterminationMinutes
-	if autoterminationMinutesPb != nil {
-		pb.AutoterminationMinutes = *autoterminationMinutesPb
-	}
+	pb.AutoterminationMinutes = st.AutoterminationMinutes
 
 	awsAttributesPb, err := AwsAttributesToPb(st.AwsAttributes)
 	if err != nil {
@@ -25106,24 +22190,11 @@ func updateClusterResourceToPb(st *UpdateClusterResource) (*updateClusterResourc
 		pb.ClusterLogConf = clusterLogConfPb
 	}
 
-	clusterNamePb := &st.ClusterName
-	if clusterNamePb != nil {
-		pb.ClusterName = *clusterNamePb
-	}
+	pb.ClusterName = st.ClusterName
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	dataSecurityModePb := &st.DataSecurityMode
-	if dataSecurityModePb != nil {
-		pb.DataSecurityMode = *dataSecurityModePb
-	}
+	pb.DataSecurityMode = st.DataSecurityMode
 
 	dockerImagePb, err := dockerImageToPb(st.DockerImage)
 	if err != nil {
@@ -25133,25 +22204,13 @@ func updateClusterResourceToPb(st *UpdateClusterResource) (*updateClusterResourc
 		pb.DockerImage = dockerImagePb
 	}
 
-	driverInstancePoolIdPb := &st.DriverInstancePoolId
-	if driverInstancePoolIdPb != nil {
-		pb.DriverInstancePoolId = *driverInstancePoolIdPb
-	}
+	pb.DriverInstancePoolId = st.DriverInstancePoolId
 
-	driverNodeTypeIdPb := &st.DriverNodeTypeId
-	if driverNodeTypeIdPb != nil {
-		pb.DriverNodeTypeId = *driverNodeTypeIdPb
-	}
+	pb.DriverNodeTypeId = st.DriverNodeTypeId
 
-	enableElasticDiskPb := &st.EnableElasticDisk
-	if enableElasticDiskPb != nil {
-		pb.EnableElasticDisk = *enableElasticDiskPb
-	}
+	pb.EnableElasticDisk = st.EnableElasticDisk
 
-	enableLocalDiskEncryptionPb := &st.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionPb != nil {
-		pb.EnableLocalDiskEncryption = *enableLocalDiskEncryptionPb
-	}
+	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
 
 	gcpAttributesPb, err := GcpAttributesToPb(st.GcpAttributes)
 	if err != nil {
@@ -25173,82 +22232,31 @@ func updateClusterResourceToPb(st *UpdateClusterResource) (*updateClusterResourc
 	}
 	pb.InitScripts = initScriptsPb
 
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
-	isSingleNodePb := &st.IsSingleNode
-	if isSingleNodePb != nil {
-		pb.IsSingleNode = *isSingleNodePb
-	}
+	pb.IsSingleNode = st.IsSingleNode
 
-	kindPb := &st.Kind
-	if kindPb != nil {
-		pb.Kind = *kindPb
-	}
+	pb.Kind = st.Kind
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
-	numWorkersPb := &st.NumWorkers
-	if numWorkersPb != nil {
-		pb.NumWorkers = *numWorkersPb
-	}
+	pb.NumWorkers = st.NumWorkers
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	runtimeEnginePb := &st.RuntimeEngine
-	if runtimeEnginePb != nil {
-		pb.RuntimeEngine = *runtimeEnginePb
-	}
+	pb.RuntimeEngine = st.RuntimeEngine
 
-	singleUserNamePb := &st.SingleUserName
-	if singleUserNamePb != nil {
-		pb.SingleUserName = *singleUserNamePb
-	}
+	pb.SingleUserName = st.SingleUserName
 
-	sparkConfPb := map[string]string{}
-	for k, v := range st.SparkConf {
-		itemPb := &v
-		if itemPb != nil {
-			sparkConfPb[k] = *itemPb
-		}
-	}
-	pb.SparkConf = sparkConfPb
+	pb.SparkConf = st.SparkConf
 
-	sparkEnvVarsPb := map[string]string{}
-	for k, v := range st.SparkEnvVars {
-		itemPb := &v
-		if itemPb != nil {
-			sparkEnvVarsPb[k] = *itemPb
-		}
-	}
-	pb.SparkEnvVars = sparkEnvVarsPb
+	pb.SparkEnvVars = st.SparkEnvVars
 
-	sparkVersionPb := &st.SparkVersion
-	if sparkVersionPb != nil {
-		pb.SparkVersion = *sparkVersionPb
-	}
+	pb.SparkVersion = st.SparkVersion
 
-	var sshPublicKeysPb []string
-	for _, item := range st.SshPublicKeys {
-		itemPb := &item
-		if itemPb != nil {
-			sshPublicKeysPb = append(sshPublicKeysPb, *itemPb)
-		}
-	}
-	pb.SshPublicKeys = sshPublicKeysPb
+	pb.SshPublicKeys = st.SshPublicKeys
 
-	useMlRuntimePb := &st.UseMlRuntime
-	if useMlRuntimePb != nil {
-		pb.UseMlRuntime = *useMlRuntimePb
-	}
+	pb.UseMlRuntime = st.UseMlRuntime
 
 	workloadTypePb, err := workloadTypeToPb(st.WorkloadType)
 	if err != nil {
@@ -25491,10 +22499,7 @@ func updateClusterResourceFromPb(pb *updateClusterResourcePb) (*UpdateClusterRes
 	if autoscaleField != nil {
 		st.Autoscale = autoscaleField
 	}
-	autoterminationMinutesField := &pb.AutoterminationMinutes
-	if autoterminationMinutesField != nil {
-		st.AutoterminationMinutes = *autoterminationMinutesField
-	}
+	st.AutoterminationMinutes = pb.AutoterminationMinutes
 	awsAttributesField, err := AwsAttributesFromPb(pb.AwsAttributes)
 	if err != nil {
 		return nil, err
@@ -25516,23 +22521,9 @@ func updateClusterResourceFromPb(pb *updateClusterResourcePb) (*UpdateClusterRes
 	if clusterLogConfField != nil {
 		st.ClusterLogConf = clusterLogConfField
 	}
-	clusterNameField := &pb.ClusterName
-	if clusterNameField != nil {
-		st.ClusterName = *clusterNameField
-	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-	dataSecurityModeField := &pb.DataSecurityMode
-	if dataSecurityModeField != nil {
-		st.DataSecurityMode = *dataSecurityModeField
-	}
+	st.ClusterName = pb.ClusterName
+	st.CustomTags = pb.CustomTags
+	st.DataSecurityMode = pb.DataSecurityMode
 	dockerImageField, err := dockerImageFromPb(pb.DockerImage)
 	if err != nil {
 		return nil, err
@@ -25540,22 +22531,10 @@ func updateClusterResourceFromPb(pb *updateClusterResourcePb) (*UpdateClusterRes
 	if dockerImageField != nil {
 		st.DockerImage = dockerImageField
 	}
-	driverInstancePoolIdField := &pb.DriverInstancePoolId
-	if driverInstancePoolIdField != nil {
-		st.DriverInstancePoolId = *driverInstancePoolIdField
-	}
-	driverNodeTypeIdField := &pb.DriverNodeTypeId
-	if driverNodeTypeIdField != nil {
-		st.DriverNodeTypeId = *driverNodeTypeIdField
-	}
-	enableElasticDiskField := &pb.EnableElasticDisk
-	if enableElasticDiskField != nil {
-		st.EnableElasticDisk = *enableElasticDiskField
-	}
-	enableLocalDiskEncryptionField := &pb.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionField != nil {
-		st.EnableLocalDiskEncryption = *enableLocalDiskEncryptionField
-	}
+	st.DriverInstancePoolId = pb.DriverInstancePoolId
+	st.DriverNodeTypeId = pb.DriverNodeTypeId
+	st.EnableElasticDisk = pb.EnableElasticDisk
+	st.EnableLocalDiskEncryption = pb.EnableLocalDiskEncryption
 	gcpAttributesField, err := GcpAttributesFromPb(pb.GcpAttributes)
 	if err != nil {
 		return nil, err
@@ -25565,83 +22544,29 @@ func updateClusterResourceFromPb(pb *updateClusterResourcePb) (*UpdateClusterRes
 	}
 
 	var initScriptsField []InitScriptInfo
-	for _, item := range pb.InitScripts {
-		itemField, err := InitScriptInfoFromPb(&item)
+	for _, itemPb := range pb.InitScripts {
+		item, err := InitScriptInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			initScriptsField = append(initScriptsField, *itemField)
+		if item != nil {
+			initScriptsField = append(initScriptsField, *item)
 		}
 	}
 	st.InitScripts = initScriptsField
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
-	isSingleNodeField := &pb.IsSingleNode
-	if isSingleNodeField != nil {
-		st.IsSingleNode = *isSingleNodeField
-	}
-	kindField := &pb.Kind
-	if kindField != nil {
-		st.Kind = *kindField
-	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
-	numWorkersField := &pb.NumWorkers
-	if numWorkersField != nil {
-		st.NumWorkers = *numWorkersField
-	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	runtimeEngineField := &pb.RuntimeEngine
-	if runtimeEngineField != nil {
-		st.RuntimeEngine = *runtimeEngineField
-	}
-	singleUserNameField := &pb.SingleUserName
-	if singleUserNameField != nil {
-		st.SingleUserName = *singleUserNameField
-	}
-
-	sparkConfField := map[string]string{}
-	for k, v := range pb.SparkConf {
-		itemField := &v
-		if itemField != nil {
-			sparkConfField[k] = *itemField
-		}
-	}
-	st.SparkConf = sparkConfField
-
-	sparkEnvVarsField := map[string]string{}
-	for k, v := range pb.SparkEnvVars {
-		itemField := &v
-		if itemField != nil {
-			sparkEnvVarsField[k] = *itemField
-		}
-	}
-	st.SparkEnvVars = sparkEnvVarsField
-	sparkVersionField := &pb.SparkVersion
-	if sparkVersionField != nil {
-		st.SparkVersion = *sparkVersionField
-	}
-
-	var sshPublicKeysField []string
-	for _, item := range pb.SshPublicKeys {
-		itemField := &item
-		if itemField != nil {
-			sshPublicKeysField = append(sshPublicKeysField, *itemField)
-		}
-	}
-	st.SshPublicKeys = sshPublicKeysField
-	useMlRuntimeField := &pb.UseMlRuntime
-	if useMlRuntimeField != nil {
-		st.UseMlRuntime = *useMlRuntimeField
-	}
+	st.InstancePoolId = pb.InstancePoolId
+	st.IsSingleNode = pb.IsSingleNode
+	st.Kind = pb.Kind
+	st.NodeTypeId = pb.NodeTypeId
+	st.NumWorkers = pb.NumWorkers
+	st.PolicyId = pb.PolicyId
+	st.RuntimeEngine = pb.RuntimeEngine
+	st.SingleUserName = pb.SingleUserName
+	st.SparkConf = pb.SparkConf
+	st.SparkEnvVars = pb.SparkEnvVars
+	st.SparkVersion = pb.SparkVersion
+	st.SshPublicKeys = pb.SshPublicKeys
+	st.UseMlRuntime = pb.UseMlRuntime
 	workloadTypeField, err := workloadTypeFromPb(pb.WorkloadType)
 	if err != nil {
 		return nil, err
@@ -25765,6 +22690,7 @@ type VolumesStorageInfo struct {
 	// UC Volumes destination, e.g.
 	// `/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh` or
 	// `dbfs:/Volumes/catalog/schema/vol1/init-scripts/setup-datadog.sh`
+	// Wire name: 'destination'
 	Destination string
 }
 
@@ -25773,10 +22699,7 @@ func volumesStorageInfoToPb(st *VolumesStorageInfo) (*volumesStorageInfoPb, erro
 		return nil, nil
 	}
 	pb := &volumesStorageInfoPb{}
-	destinationPb := &st.Destination
-	if destinationPb != nil {
-		pb.Destination = *destinationPb
-	}
+	pb.Destination = st.Destination
 
 	return pb, nil
 }
@@ -25818,10 +22741,7 @@ func volumesStorageInfoFromPb(pb *volumesStorageInfoPb) (*VolumesStorageInfo, er
 		return nil, nil
 	}
 	st := &VolumesStorageInfo{}
-	destinationField := &pb.Destination
-	if destinationField != nil {
-		st.Destination = *destinationField
-	}
+	st.Destination = pb.Destination
 
 	return st, nil
 }
@@ -25829,6 +22749,7 @@ func volumesStorageInfoFromPb(pb *volumesStorageInfoPb) (*VolumesStorageInfo, er
 // Cluster Attributes showing for clusters workload types.
 type WorkloadType struct {
 	// defined what type of clients can use the cluster. E.g. Notebooks, Jobs
+	// Wire name: 'clients'
 	Clients ClientsTypes
 }
 
@@ -25897,6 +22818,7 @@ func workloadTypeFromPb(pb *workloadTypePb) (*WorkloadType, error) {
 // A storage location in Workspace Filesystem (WSFS)
 type WorkspaceStorageInfo struct {
 	// wsfs destination, e.g. `workspace:/cluster-init-scripts/setup-datadog.sh`
+	// Wire name: 'destination'
 	Destination string
 }
 
@@ -25905,10 +22827,7 @@ func workspaceStorageInfoToPb(st *WorkspaceStorageInfo) (*workspaceStorageInfoPb
 		return nil, nil
 	}
 	pb := &workspaceStorageInfoPb{}
-	destinationPb := &st.Destination
-	if destinationPb != nil {
-		pb.Destination = *destinationPb
-	}
+	pb.Destination = st.Destination
 
 	return pb, nil
 }
@@ -25948,10 +22867,61 @@ func workspaceStorageInfoFromPb(pb *workspaceStorageInfoPb) (*WorkspaceStorageIn
 		return nil, nil
 	}
 	st := &WorkspaceStorageInfo{}
-	destinationField := &pb.Destination
-	if destinationField != nil {
-		st.Destination = *destinationField
-	}
+	st.Destination = pb.Destination
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

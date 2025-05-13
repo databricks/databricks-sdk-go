@@ -30,15 +30,22 @@ func (a *experimentsImpl) CreateExperiment(ctx context.Context, request CreateEx
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createExperimentResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createExperimentResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createExperimentResponseFromPb(&createExperimentResponsePb)
+	resp, err := createExperimentResponseFromPb(&createExperimentResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -56,15 +63,22 @@ func (a *experimentsImpl) CreateRun(ctx context.Context, request CreateRun) (*Cr
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createRunResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createRunResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createRunResponseFromPb(&createRunResponsePb)
+	resp, err := createRunResponseFromPb(&createRunResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -82,7 +96,15 @@ func (a *experimentsImpl) DeleteExperiment(ctx context.Context, request DeleteEx
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &deleteExperimentResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteExperimentResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -103,7 +125,15 @@ func (a *experimentsImpl) DeleteRun(ctx context.Context, request DeleteRun) erro
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &deleteRunResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteRunResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -124,15 +154,22 @@ func (a *experimentsImpl) DeleteRuns(ctx context.Context, request DeleteRuns) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &deleteRunsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteRunsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := deleteRunsResponseFromPb(&deleteRunsResponsePb)
+	resp, err := deleteRunsResponseFromPb(&deleteRunsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -150,7 +187,15 @@ func (a *experimentsImpl) DeleteTag(ctx context.Context, request DeleteTag) erro
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &deleteTagResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteTagResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -170,15 +215,22 @@ func (a *experimentsImpl) GetByName(ctx context.Context, request GetByNameReques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getExperimentByNameResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getExperimentByNameResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getExperimentByNameResponseFromPb(&getExperimentByNameResponsePb)
+	resp, err := getExperimentByNameResponseFromPb(&getExperimentByNameResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -195,15 +247,22 @@ func (a *experimentsImpl) GetCredentialsForTraceDataDownload(ctx context.Context
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getCredentialsForTraceDataDownloadResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getCredentialsForTraceDataDownloadResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getCredentialsForTraceDataDownloadResponseFromPb(&getCredentialsForTraceDataDownloadResponsePb)
+	resp, err := getCredentialsForTraceDataDownloadResponseFromPb(&getCredentialsForTraceDataDownloadResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -220,15 +279,22 @@ func (a *experimentsImpl) GetCredentialsForTraceDataUpload(ctx context.Context, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getCredentialsForTraceDataUploadResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getCredentialsForTraceDataUploadResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getCredentialsForTraceDataUploadResponseFromPb(&getCredentialsForTraceDataUploadResponsePb)
+	resp, err := getCredentialsForTraceDataUploadResponseFromPb(&getCredentialsForTraceDataUploadResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -245,15 +311,22 @@ func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperime
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getExperimentResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getExperimentResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getExperimentResponseFromPb(&getExperimentResponsePb)
+	resp, err := getExperimentResponseFromPb(&getExperimentResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -305,15 +378,22 @@ func (a *experimentsImpl) internalGetHistory(ctx context.Context, request GetHis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getMetricHistoryResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getMetricHistoryResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getMetricHistoryResponseFromPb(&getMetricHistoryResponsePb)
+	resp, err := getMetricHistoryResponseFromPb(&getMetricHistoryResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -330,15 +410,22 @@ func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetEx
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getExperimentPermissionLevelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getExperimentPermissionLevelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getExperimentPermissionLevelsResponseFromPb(&getExperimentPermissionLevelsResponsePb)
+	resp, err := getExperimentPermissionLevelsResponseFromPb(&getExperimentPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -355,15 +442,22 @@ func (a *experimentsImpl) GetPermissions(ctx context.Context, request GetExperim
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &experimentPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&experimentPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := experimentPermissionsFromPb(&experimentPermissionsPb)
+	resp, err := experimentPermissionsFromPb(&experimentPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -380,15 +474,22 @@ func (a *experimentsImpl) GetRun(ctx context.Context, request GetRunRequest) (*G
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getRunResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getRunResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getRunResponseFromPb(&getRunResponsePb)
+	resp, err := getRunResponseFromPb(&getRunResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -450,15 +551,22 @@ func (a *experimentsImpl) internalListArtifacts(ctx context.Context, request Lis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listArtifactsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listArtifactsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listArtifactsResponseFromPb(&listArtifactsResponsePb)
+	resp, err := listArtifactsResponseFromPb(&listArtifactsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -510,15 +618,22 @@ func (a *experimentsImpl) internalListExperiments(ctx context.Context, request L
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listExperimentsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listExperimentsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listExperimentsResponseFromPb(&listExperimentsResponsePb)
+	resp, err := listExperimentsResponseFromPb(&listExperimentsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -536,7 +651,15 @@ func (a *experimentsImpl) LogBatch(ctx context.Context, request LogBatch) error 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &logBatchResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&logBatchResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -557,7 +680,15 @@ func (a *experimentsImpl) LogInputs(ctx context.Context, request LogInputs) erro
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &logInputsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&logInputsResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -578,7 +709,15 @@ func (a *experimentsImpl) LogMetric(ctx context.Context, request LogMetric) erro
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &logMetricResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&logMetricResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -599,7 +738,15 @@ func (a *experimentsImpl) LogModel(ctx context.Context, request LogModel) error 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &logModelResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&logModelResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -620,7 +767,15 @@ func (a *experimentsImpl) LogParam(ctx context.Context, request LogParam) error 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &logParamResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&logParamResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -641,7 +796,15 @@ func (a *experimentsImpl) RestoreExperiment(ctx context.Context, request Restore
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &restoreExperimentResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&restoreExperimentResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -662,7 +825,15 @@ func (a *experimentsImpl) RestoreRun(ctx context.Context, request RestoreRun) er
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &restoreRunResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&restoreRunResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -683,15 +854,22 @@ func (a *experimentsImpl) RestoreRuns(ctx context.Context, request RestoreRuns) 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &restoreRunsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&restoreRunsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := restoreRunsResponseFromPb(&restoreRunsResponsePb)
+	resp, err := restoreRunsResponseFromPb(&restoreRunsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -744,15 +922,22 @@ func (a *experimentsImpl) internalSearchExperiments(ctx context.Context, request
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &searchExperimentsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&searchExperimentsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := searchExperimentsResponseFromPb(&searchExperimentsResponsePb)
+	resp, err := searchExperimentsResponseFromPb(&searchExperimentsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -809,15 +994,22 @@ func (a *experimentsImpl) internalSearchRuns(ctx context.Context, request Search
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &searchRunsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&searchRunsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := searchRunsResponseFromPb(&searchRunsResponsePb)
+	resp, err := searchRunsResponseFromPb(&searchRunsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -835,7 +1027,15 @@ func (a *experimentsImpl) SetExperimentTag(ctx context.Context, request SetExper
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &setExperimentTagResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&setExperimentTagResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -856,15 +1056,22 @@ func (a *experimentsImpl) SetPermissions(ctx context.Context, request Experiment
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &experimentPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&experimentPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := experimentPermissionsFromPb(&experimentPermissionsPb)
+	resp, err := experimentPermissionsFromPb(&experimentPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -882,7 +1089,15 @@ func (a *experimentsImpl) SetTag(ctx context.Context, request SetTag) error {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &setTagResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&setTagResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -903,7 +1118,15 @@ func (a *experimentsImpl) UpdateExperiment(ctx context.Context, request UpdateEx
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &updateExperimentResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateExperimentResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -924,15 +1147,22 @@ func (a *experimentsImpl) UpdatePermissions(ctx context.Context, request Experim
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &experimentPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&experimentPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := experimentPermissionsFromPb(&experimentPermissionsPb)
+	resp, err := experimentPermissionsFromPb(&experimentPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -950,15 +1180,22 @@ func (a *experimentsImpl) UpdateRun(ctx context.Context, request UpdateRun) (*Up
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &updateRunResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateRunResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := updateRunResponseFromPb(&updateRunResponsePb)
+	resp, err := updateRunResponseFromPb(&updateRunResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -981,15 +1218,22 @@ func (a *forecastingImpl) CreateExperiment(ctx context.Context, request CreateFo
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createForecastingExperimentResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createForecastingExperimentResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createForecastingExperimentResponseFromPb(&createForecastingExperimentResponsePb)
+	resp, err := createForecastingExperimentResponseFromPb(&createForecastingExperimentResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1006,15 +1250,22 @@ func (a *forecastingImpl) GetExperiment(ctx context.Context, request GetForecast
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &forecastingExperimentPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&forecastingExperimentPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := forecastingExperimentFromPb(&forecastingExperimentPb)
+	resp, err := forecastingExperimentFromPb(&forecastingExperimentPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1037,15 +1288,22 @@ func (a *modelRegistryImpl) ApproveTransitionRequest(ctx context.Context, reques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &approveTransitionRequestResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&approveTransitionRequestResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := approveTransitionRequestResponseFromPb(&approveTransitionRequestResponsePb)
+	resp, err := approveTransitionRequestResponseFromPb(&approveTransitionRequestResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1063,15 +1321,22 @@ func (a *modelRegistryImpl) CreateComment(ctx context.Context, request CreateCom
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createCommentResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createCommentResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createCommentResponseFromPb(&createCommentResponsePb)
+	resp, err := createCommentResponseFromPb(&createCommentResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1089,15 +1354,22 @@ func (a *modelRegistryImpl) CreateModel(ctx context.Context, request CreateModel
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createModelResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createModelResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createModelResponseFromPb(&createModelResponsePb)
+	resp, err := createModelResponseFromPb(&createModelResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1115,15 +1387,22 @@ func (a *modelRegistryImpl) CreateModelVersion(ctx context.Context, request Crea
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createModelVersionResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createModelVersionResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createModelVersionResponseFromPb(&createModelVersionResponsePb)
+	resp, err := createModelVersionResponseFromPb(&createModelVersionResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1141,15 +1420,22 @@ func (a *modelRegistryImpl) CreateTransitionRequest(ctx context.Context, request
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createTransitionRequestResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createTransitionRequestResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createTransitionRequestResponseFromPb(&createTransitionRequestResponsePb)
+	resp, err := createTransitionRequestResponseFromPb(&createTransitionRequestResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1167,15 +1453,22 @@ func (a *modelRegistryImpl) CreateWebhook(ctx context.Context, request CreateReg
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createWebhookResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createWebhookResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createWebhookResponseFromPb(&createWebhookResponsePb)
+	resp, err := createWebhookResponseFromPb(&createWebhookResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1192,7 +1485,15 @@ func (a *modelRegistryImpl) DeleteComment(ctx context.Context, request DeleteCom
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteCommentResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteCommentResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1212,7 +1513,15 @@ func (a *modelRegistryImpl) DeleteModel(ctx context.Context, request DeleteModel
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteModelResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteModelResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1232,7 +1541,15 @@ func (a *modelRegistryImpl) DeleteModelTag(ctx context.Context, request DeleteMo
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteModelTagResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteModelTagResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1252,7 +1569,15 @@ func (a *modelRegistryImpl) DeleteModelVersion(ctx context.Context, request Dele
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteModelVersionResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteModelVersionResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1272,7 +1597,15 @@ func (a *modelRegistryImpl) DeleteModelVersionTag(ctx context.Context, request D
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteModelVersionTagResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteModelVersionTagResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1292,7 +1625,15 @@ func (a *modelRegistryImpl) DeleteTransitionRequest(ctx context.Context, request
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteTransitionRequestResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteTransitionRequestResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1312,7 +1653,15 @@ func (a *modelRegistryImpl) DeleteWebhook(ctx context.Context, request DeleteWeb
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteWebhookResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteWebhookResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1362,15 +1711,22 @@ func (a *modelRegistryImpl) internalGetLatestVersions(ctx context.Context, reque
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &getLatestVersionsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getLatestVersionsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getLatestVersionsResponseFromPb(&getLatestVersionsResponsePb)
+	resp, err := getLatestVersionsResponseFromPb(&getLatestVersionsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1387,15 +1743,22 @@ func (a *modelRegistryImpl) GetModel(ctx context.Context, request GetModelReques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getModelResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getModelResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getModelResponseFromPb(&getModelResponsePb)
+	resp, err := getModelResponseFromPb(&getModelResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1412,15 +1775,22 @@ func (a *modelRegistryImpl) GetModelVersion(ctx context.Context, request GetMode
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getModelVersionResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getModelVersionResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getModelVersionResponseFromPb(&getModelVersionResponsePb)
+	resp, err := getModelVersionResponseFromPb(&getModelVersionResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1437,15 +1807,22 @@ func (a *modelRegistryImpl) GetModelVersionDownloadUri(ctx context.Context, requ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getModelVersionDownloadUriResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getModelVersionDownloadUriResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getModelVersionDownloadUriResponseFromPb(&getModelVersionDownloadUriResponsePb)
+	resp, err := getModelVersionDownloadUriResponseFromPb(&getModelVersionDownloadUriResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1462,15 +1839,22 @@ func (a *modelRegistryImpl) GetPermissionLevels(ctx context.Context, request Get
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getRegisteredModelPermissionLevelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getRegisteredModelPermissionLevelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getRegisteredModelPermissionLevelsResponseFromPb(&getRegisteredModelPermissionLevelsResponsePb)
+	resp, err := getRegisteredModelPermissionLevelsResponseFromPb(&getRegisteredModelPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1487,15 +1871,22 @@ func (a *modelRegistryImpl) GetPermissions(ctx context.Context, request GetRegis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &registeredModelPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&registeredModelPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := registeredModelPermissionsFromPb(&registeredModelPermissionsPb)
+	resp, err := registeredModelPermissionsFromPb(&registeredModelPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1550,15 +1941,22 @@ func (a *modelRegistryImpl) internalListModels(ctx context.Context, request List
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listModelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listModelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listModelsResponseFromPb(&listModelsResponsePb)
+	resp, err := listModelsResponseFromPb(&listModelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1604,15 +2002,22 @@ func (a *modelRegistryImpl) internalListTransitionRequests(ctx context.Context, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listTransitionRequestsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listTransitionRequestsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listTransitionRequestsResponseFromPb(&listTransitionRequestsResponsePb)
+	resp, err := listTransitionRequestsResponseFromPb(&listTransitionRequestsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1668,15 +2073,22 @@ func (a *modelRegistryImpl) internalListWebhooks(ctx context.Context, request Li
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listRegistryWebhooksPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listRegistryWebhooksPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listRegistryWebhooksFromPb(&listRegistryWebhooksPb)
+	resp, err := listRegistryWebhooksFromPb(&listRegistryWebhooksPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1694,15 +2106,22 @@ func (a *modelRegistryImpl) RejectTransitionRequest(ctx context.Context, request
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &rejectTransitionRequestResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&rejectTransitionRequestResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := rejectTransitionRequestResponseFromPb(&rejectTransitionRequestResponsePb)
+	resp, err := rejectTransitionRequestResponseFromPb(&rejectTransitionRequestResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1720,15 +2139,22 @@ func (a *modelRegistryImpl) RenameModel(ctx context.Context, request RenameModel
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &renameModelResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&renameModelResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := renameModelResponseFromPb(&renameModelResponsePb)
+	resp, err := renameModelResponseFromPb(&renameModelResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1781,15 +2207,22 @@ func (a *modelRegistryImpl) internalSearchModelVersions(ctx context.Context, req
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &searchModelVersionsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&searchModelVersionsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := searchModelVersionsResponseFromPb(&searchModelVersionsResponsePb)
+	resp, err := searchModelVersionsResponseFromPb(&searchModelVersionsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1842,15 +2275,22 @@ func (a *modelRegistryImpl) internalSearchModels(ctx context.Context, request Se
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &searchModelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&searchModelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := searchModelsResponseFromPb(&searchModelsResponsePb)
+	resp, err := searchModelsResponseFromPb(&searchModelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1868,7 +2308,15 @@ func (a *modelRegistryImpl) SetModelTag(ctx context.Context, request SetModelTag
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &setModelTagResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&setModelTagResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1889,7 +2337,15 @@ func (a *modelRegistryImpl) SetModelVersionTag(ctx context.Context, request SetM
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &setModelVersionTagResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&setModelVersionTagResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1910,15 +2366,22 @@ func (a *modelRegistryImpl) SetPermissions(ctx context.Context, request Register
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &registeredModelPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&registeredModelPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := registeredModelPermissionsFromPb(&registeredModelPermissionsPb)
+	resp, err := registeredModelPermissionsFromPb(&registeredModelPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1936,15 +2399,22 @@ func (a *modelRegistryImpl) TestRegistryWebhook(ctx context.Context, request Tes
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &testRegistryWebhookResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&testRegistryWebhookResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := testRegistryWebhookResponseFromPb(&testRegistryWebhookResponsePb)
+	resp, err := testRegistryWebhookResponseFromPb(&testRegistryWebhookResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1962,15 +2432,22 @@ func (a *modelRegistryImpl) TransitionStage(ctx context.Context, request Transit
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &transitionStageResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&transitionStageResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := transitionStageResponseFromPb(&transitionStageResponsePb)
+	resp, err := transitionStageResponseFromPb(&transitionStageResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1988,15 +2465,22 @@ func (a *modelRegistryImpl) UpdateComment(ctx context.Context, request UpdateCom
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updateCommentResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateCommentResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := updateCommentResponseFromPb(&updateCommentResponsePb)
+	resp, err := updateCommentResponseFromPb(&updateCommentResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2014,7 +2498,15 @@ func (a *modelRegistryImpl) UpdateModel(ctx context.Context, request UpdateModel
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updateModelResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateModelResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2035,7 +2527,15 @@ func (a *modelRegistryImpl) UpdateModelVersion(ctx context.Context, request Upda
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updateModelVersionResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateModelVersionResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2056,15 +2556,22 @@ func (a *modelRegistryImpl) UpdatePermissions(ctx context.Context, request Regis
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &registeredModelPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&registeredModelPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := registeredModelPermissionsFromPb(&registeredModelPermissionsPb)
+	resp, err := registeredModelPermissionsFromPb(&registeredModelPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2082,7 +2589,15 @@ func (a *modelRegistryImpl) UpdateWebhook(ctx context.Context, request UpdateReg
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updateWebhookResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateWebhookResponsePb,
+	)
 	if err != nil {
 		return err
 	}

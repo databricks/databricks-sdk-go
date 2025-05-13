@@ -13,84 +13,18 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type ActionConfiguration struct {
 	// Databricks action configuration ID.
+	// Wire name: 'action_configuration_id'
 	ActionConfigurationId string
 	// The type of the action.
+	// Wire name: 'action_type'
 	ActionType ActionConfigurationType
 	// Target for the action. For example, an email address.
+	// Wire name: 'target'
 	Target string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func actionConfigurationToPb(st *ActionConfiguration) (*actionConfigurationPb, error) {
@@ -98,20 +32,11 @@ func actionConfigurationToPb(st *ActionConfiguration) (*actionConfigurationPb, e
 		return nil, nil
 	}
 	pb := &actionConfigurationPb{}
-	actionConfigurationIdPb := &st.ActionConfigurationId
-	if actionConfigurationIdPb != nil {
-		pb.ActionConfigurationId = *actionConfigurationIdPb
-	}
+	pb.ActionConfigurationId = st.ActionConfigurationId
 
-	actionTypePb := &st.ActionType
-	if actionTypePb != nil {
-		pb.ActionType = *actionTypePb
-	}
+	pb.ActionType = st.ActionType
 
-	targetPb := &st.Target
-	if targetPb != nil {
-		pb.Target = *targetPb
-	}
+	pb.Target = st.Target
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -158,18 +83,9 @@ func actionConfigurationFromPb(pb *actionConfigurationPb) (*ActionConfiguration,
 		return nil, nil
 	}
 	st := &ActionConfiguration{}
-	actionConfigurationIdField := &pb.ActionConfigurationId
-	if actionConfigurationIdField != nil {
-		st.ActionConfigurationId = *actionConfigurationIdField
-	}
-	actionTypeField := &pb.ActionType
-	if actionTypeField != nil {
-		st.ActionType = *actionTypeField
-	}
-	targetField := &pb.Target
-	if targetField != nil {
-		st.Target = *targetField
-	}
+	st.ActionConfigurationId = pb.ActionConfigurationId
+	st.ActionType = pb.ActionType
+	st.Target = pb.Target
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -228,22 +144,28 @@ func actionConfigurationTypeFromPb(pb *actionConfigurationTypePb) (*ActionConfig
 type AlertConfiguration struct {
 	// Configured actions for this alert. These define what happens when an
 	// alert enters a triggered state.
+	// Wire name: 'action_configurations'
 	ActionConfigurations []ActionConfiguration
 	// Databricks alert configuration ID.
+	// Wire name: 'alert_configuration_id'
 	AlertConfigurationId string
 	// The threshold for the budget alert to determine if it is in a triggered
 	// state. The number is evaluated based on `quantity_type`.
+	// Wire name: 'quantity_threshold'
 	QuantityThreshold string
 	// The way to calculate cost for this budget alert. This is what
 	// `quantity_threshold` is measured in.
+	// Wire name: 'quantity_type'
 	QuantityType AlertConfigurationQuantityType
 	// The time window of usage data for the budget.
+	// Wire name: 'time_period'
 	TimePeriod AlertConfigurationTimePeriod
 	// The evaluation method to determine when this budget alert is in a
 	// triggered state.
+	// Wire name: 'trigger_type'
 	TriggerType AlertConfigurationTriggerType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func alertConfigurationToPb(st *AlertConfiguration) (*alertConfigurationPb, error) {
@@ -264,30 +186,15 @@ func alertConfigurationToPb(st *AlertConfiguration) (*alertConfigurationPb, erro
 	}
 	pb.ActionConfigurations = actionConfigurationsPb
 
-	alertConfigurationIdPb := &st.AlertConfigurationId
-	if alertConfigurationIdPb != nil {
-		pb.AlertConfigurationId = *alertConfigurationIdPb
-	}
+	pb.AlertConfigurationId = st.AlertConfigurationId
 
-	quantityThresholdPb := &st.QuantityThreshold
-	if quantityThresholdPb != nil {
-		pb.QuantityThreshold = *quantityThresholdPb
-	}
+	pb.QuantityThreshold = st.QuantityThreshold
 
-	quantityTypePb := &st.QuantityType
-	if quantityTypePb != nil {
-		pb.QuantityType = *quantityTypePb
-	}
+	pb.QuantityType = st.QuantityType
 
-	timePeriodPb := &st.TimePeriod
-	if timePeriodPb != nil {
-		pb.TimePeriod = *timePeriodPb
-	}
+	pb.TimePeriod = st.TimePeriod
 
-	triggerTypePb := &st.TriggerType
-	if triggerTypePb != nil {
-		pb.TriggerType = *triggerTypePb
-	}
+	pb.TriggerType = st.TriggerType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -346,36 +253,21 @@ func alertConfigurationFromPb(pb *alertConfigurationPb) (*AlertConfiguration, er
 	st := &AlertConfiguration{}
 
 	var actionConfigurationsField []ActionConfiguration
-	for _, item := range pb.ActionConfigurations {
-		itemField, err := actionConfigurationFromPb(&item)
+	for _, itemPb := range pb.ActionConfigurations {
+		item, err := actionConfigurationFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			actionConfigurationsField = append(actionConfigurationsField, *itemField)
+		if item != nil {
+			actionConfigurationsField = append(actionConfigurationsField, *item)
 		}
 	}
 	st.ActionConfigurations = actionConfigurationsField
-	alertConfigurationIdField := &pb.AlertConfigurationId
-	if alertConfigurationIdField != nil {
-		st.AlertConfigurationId = *alertConfigurationIdField
-	}
-	quantityThresholdField := &pb.QuantityThreshold
-	if quantityThresholdField != nil {
-		st.QuantityThreshold = *quantityThresholdField
-	}
-	quantityTypeField := &pb.QuantityType
-	if quantityTypeField != nil {
-		st.QuantityType = *quantityTypeField
-	}
-	timePeriodField := &pb.TimePeriod
-	if timePeriodField != nil {
-		st.TimePeriod = *timePeriodField
-	}
-	triggerTypeField := &pb.TriggerType
-	if triggerTypeField != nil {
-		st.TriggerType = *triggerTypeField
-	}
+	st.AlertConfigurationId = pb.AlertConfigurationId
+	st.QuantityThreshold = pb.QuantityThreshold
+	st.QuantityType = pb.QuantityType
+	st.TimePeriod = pb.TimePeriod
+	st.TriggerType = pb.TriggerType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -517,25 +409,32 @@ func alertConfigurationTriggerTypeFromPb(pb *alertConfigurationTriggerTypePb) (*
 
 type BudgetConfiguration struct {
 	// Databricks account ID.
+	// Wire name: 'account_id'
 	AccountId string
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
+	// Wire name: 'alert_configurations'
 	AlertConfigurations []AlertConfiguration
 	// Databricks budget configuration ID.
+	// Wire name: 'budget_configuration_id'
 	BudgetConfigurationId string
 	// Creation time of this budget configuration.
+	// Wire name: 'create_time'
 	CreateTime int64
 	// Human-readable name of budget configuration. Max Length: 128
+	// Wire name: 'display_name'
 	DisplayName string
 	// Configured filters for this budget. These are applied to your account's
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
+	// Wire name: 'filter'
 	Filter *BudgetConfigurationFilter
 	// Update time of this budget configuration.
+	// Wire name: 'update_time'
 	UpdateTime int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func budgetConfigurationToPb(st *BudgetConfiguration) (*budgetConfigurationPb, error) {
@@ -543,10 +442,7 @@ func budgetConfigurationToPb(st *BudgetConfiguration) (*budgetConfigurationPb, e
 		return nil, nil
 	}
 	pb := &budgetConfigurationPb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
 	var alertConfigurationsPb []alertConfigurationPb
 	for _, item := range st.AlertConfigurations {
@@ -560,20 +456,11 @@ func budgetConfigurationToPb(st *BudgetConfiguration) (*budgetConfigurationPb, e
 	}
 	pb.AlertConfigurations = alertConfigurationsPb
 
-	budgetConfigurationIdPb := &st.BudgetConfigurationId
-	if budgetConfigurationIdPb != nil {
-		pb.BudgetConfigurationId = *budgetConfigurationIdPb
-	}
+	pb.BudgetConfigurationId = st.BudgetConfigurationId
 
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
 	filterPb, err := budgetConfigurationFilterToPb(st.Filter)
 	if err != nil {
@@ -583,10 +470,7 @@ func budgetConfigurationToPb(st *BudgetConfiguration) (*budgetConfigurationPb, e
 		pb.Filter = filterPb
 	}
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -645,34 +529,22 @@ func budgetConfigurationFromPb(pb *budgetConfigurationPb) (*BudgetConfiguration,
 		return nil, nil
 	}
 	st := &BudgetConfiguration{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
+	st.AccountId = pb.AccountId
 
 	var alertConfigurationsField []AlertConfiguration
-	for _, item := range pb.AlertConfigurations {
-		itemField, err := alertConfigurationFromPb(&item)
+	for _, itemPb := range pb.AlertConfigurations {
+		item, err := alertConfigurationFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			alertConfigurationsField = append(alertConfigurationsField, *itemField)
+		if item != nil {
+			alertConfigurationsField = append(alertConfigurationsField, *item)
 		}
 	}
 	st.AlertConfigurations = alertConfigurationsField
-	budgetConfigurationIdField := &pb.BudgetConfigurationId
-	if budgetConfigurationIdField != nil {
-		st.BudgetConfigurationId = *budgetConfigurationIdField
-	}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
+	st.BudgetConfigurationId = pb.BudgetConfigurationId
+	st.CreateTime = pb.CreateTime
+	st.DisplayName = pb.DisplayName
 	filterField, err := budgetConfigurationFilterFromPb(pb.Filter)
 	if err != nil {
 		return nil, err
@@ -680,10 +552,7 @@ func budgetConfigurationFromPb(pb *budgetConfigurationPb) (*BudgetConfiguration,
 	if filterField != nil {
 		st.Filter = filterField
 	}
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
+	st.UpdateTime = pb.UpdateTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -701,8 +570,10 @@ type BudgetConfigurationFilter struct {
 	// A list of tag keys and values that will limit the budget to usage that
 	// includes those specific custom tags. Tags are case-sensitive and should
 	// be entered exactly as they appear in your usage data.
+	// Wire name: 'tags'
 	Tags []BudgetConfigurationFilterTagClause
 	// If provided, usage must match with the provided Databricks workspace IDs.
+	// Wire name: 'workspace_id'
 	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause
 }
 
@@ -776,13 +647,13 @@ func budgetConfigurationFilterFromPb(pb *budgetConfigurationFilterPb) (*BudgetCo
 	st := &BudgetConfigurationFilter{}
 
 	var tagsField []BudgetConfigurationFilterTagClause
-	for _, item := range pb.Tags {
-		itemField, err := budgetConfigurationFilterTagClauseFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := budgetConfigurationFilterTagClauseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -798,8 +669,11 @@ func budgetConfigurationFilterFromPb(pb *budgetConfigurationFilterPb) (*BudgetCo
 }
 
 type BudgetConfigurationFilterClause struct {
+
+	// Wire name: 'operator'
 	Operator BudgetConfigurationFilterOperator
 
+	// Wire name: 'values'
 	Values []string
 }
 
@@ -808,19 +682,9 @@ func budgetConfigurationFilterClauseToPb(st *BudgetConfigurationFilterClause) (*
 		return nil, nil
 	}
 	pb := &budgetConfigurationFilterClausePb{}
-	operatorPb := &st.Operator
-	if operatorPb != nil {
-		pb.Operator = *operatorPb
-	}
+	pb.Operator = st.Operator
 
-	var valuesPb []string
-	for _, item := range st.Values {
-		itemPb := &item
-		if itemPb != nil {
-			valuesPb = append(valuesPb, *itemPb)
-		}
-	}
-	pb.Values = valuesPb
+	pb.Values = st.Values
 
 	return pb, nil
 }
@@ -861,19 +725,8 @@ func budgetConfigurationFilterClauseFromPb(pb *budgetConfigurationFilterClausePb
 		return nil, nil
 	}
 	st := &BudgetConfigurationFilterClause{}
-	operatorField := &pb.Operator
-	if operatorField != nil {
-		st.Operator = *operatorField
-	}
-
-	var valuesField []string
-	for _, item := range pb.Values {
-		itemField := &item
-		if itemField != nil {
-			valuesField = append(valuesField, *itemField)
-		}
-	}
-	st.Values = valuesField
+	st.Operator = pb.Operator
+	st.Values = pb.Values
 
 	return st, nil
 }
@@ -921,11 +774,14 @@ func budgetConfigurationFilterOperatorFromPb(pb *budgetConfigurationFilterOperat
 }
 
 type BudgetConfigurationFilterTagClause struct {
+
+	// Wire name: 'key'
 	Key string
 
+	// Wire name: 'value'
 	Value *BudgetConfigurationFilterClause
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func budgetConfigurationFilterTagClauseToPb(st *BudgetConfigurationFilterTagClause) (*budgetConfigurationFilterTagClausePb, error) {
@@ -933,10 +789,7 @@ func budgetConfigurationFilterTagClauseToPb(st *BudgetConfigurationFilterTagClau
 		return nil, nil
 	}
 	pb := &budgetConfigurationFilterTagClausePb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
 	valuePb, err := budgetConfigurationFilterClauseToPb(st.Value)
 	if err != nil {
@@ -988,10 +841,7 @@ func budgetConfigurationFilterTagClauseFromPb(pb *budgetConfigurationFilterTagCl
 		return nil, nil
 	}
 	st := &BudgetConfigurationFilterTagClause{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
+	st.Key = pb.Key
 	valueField, err := budgetConfigurationFilterClauseFromPb(pb.Value)
 	if err != nil {
 		return nil, err
@@ -1013,8 +863,11 @@ func (st budgetConfigurationFilterTagClausePb) MarshalJSON() ([]byte, error) {
 }
 
 type BudgetConfigurationFilterWorkspaceIdClause struct {
+
+	// Wire name: 'operator'
 	Operator BudgetConfigurationFilterOperator
 
+	// Wire name: 'values'
 	Values []int64
 }
 
@@ -1023,19 +876,9 @@ func budgetConfigurationFilterWorkspaceIdClauseToPb(st *BudgetConfigurationFilte
 		return nil, nil
 	}
 	pb := &budgetConfigurationFilterWorkspaceIdClausePb{}
-	operatorPb := &st.Operator
-	if operatorPb != nil {
-		pb.Operator = *operatorPb
-	}
+	pb.Operator = st.Operator
 
-	var valuesPb []int64
-	for _, item := range st.Values {
-		itemPb := &item
-		if itemPb != nil {
-			valuesPb = append(valuesPb, *itemPb)
-		}
-	}
-	pb.Values = valuesPb
+	pb.Values = st.Values
 
 	return pb, nil
 }
@@ -1076,19 +919,8 @@ func budgetConfigurationFilterWorkspaceIdClauseFromPb(pb *budgetConfigurationFil
 		return nil, nil
 	}
 	st := &BudgetConfigurationFilterWorkspaceIdClause{}
-	operatorField := &pb.Operator
-	if operatorField != nil {
-		st.Operator = *operatorField
-	}
-
-	var valuesField []int64
-	for _, item := range pb.Values {
-		itemField := &item
-		if itemField != nil {
-			valuesField = append(valuesField, *itemField)
-		}
-	}
-	st.Values = valuesField
+	st.Operator = pb.Operator
+	st.Values = pb.Values
 
 	return st, nil
 }
@@ -1098,19 +930,23 @@ type BudgetPolicy struct {
 	// List of workspaces that this budget policy will be exclusively bound to.
 	// An empty binding implies that this budget policy is open to any workspace
 	// in the account.
+	// Wire name: 'binding_workspace_ids'
 	BindingWorkspaceIds []int64
 	// A list of tags defined by the customer. At most 20 entries are allowed
 	// per policy.
+	// Wire name: 'custom_tags'
 	CustomTags []compute.CustomPolicyTag
 	// The Id of the policy. This field is generated by Databricks and globally
 	// unique.
+	// Wire name: 'policy_id'
 	PolicyId string
 	// The name of the policy. - Must be unique among active policies. - Can
 	// contain only characters from the ISO 8859-1 (latin1) set. - Can't start
 	// with reserved keywords such as `databricks:default-policy`.
+	// Wire name: 'policy_name'
 	PolicyName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func budgetPolicyToPb(st *BudgetPolicy) (*budgetPolicyPb, error) {
@@ -1118,15 +954,7 @@ func budgetPolicyToPb(st *BudgetPolicy) (*budgetPolicyPb, error) {
 		return nil, nil
 	}
 	pb := &budgetPolicyPb{}
-
-	var bindingWorkspaceIdsPb []int64
-	for _, item := range st.BindingWorkspaceIds {
-		itemPb := &item
-		if itemPb != nil {
-			bindingWorkspaceIdsPb = append(bindingWorkspaceIdsPb, *itemPb)
-		}
-	}
-	pb.BindingWorkspaceIds = bindingWorkspaceIdsPb
+	pb.BindingWorkspaceIds = st.BindingWorkspaceIds
 
 	var customTagsPb []compute.CustomPolicyTagPb
 	for _, item := range st.CustomTags {
@@ -1140,15 +968,9 @@ func budgetPolicyToPb(st *BudgetPolicy) (*budgetPolicyPb, error) {
 	}
 	pb.CustomTags = customTagsPb
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	policyNamePb := &st.PolicyName
-	if policyNamePb != nil {
-		pb.PolicyName = *policyNamePb
-	}
+	pb.PolicyName = st.PolicyName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1203,35 +1025,21 @@ func budgetPolicyFromPb(pb *budgetPolicyPb) (*BudgetPolicy, error) {
 		return nil, nil
 	}
 	st := &BudgetPolicy{}
-
-	var bindingWorkspaceIdsField []int64
-	for _, item := range pb.BindingWorkspaceIds {
-		itemField := &item
-		if itemField != nil {
-			bindingWorkspaceIdsField = append(bindingWorkspaceIdsField, *itemField)
-		}
-	}
-	st.BindingWorkspaceIds = bindingWorkspaceIdsField
+	st.BindingWorkspaceIds = pb.BindingWorkspaceIds
 
 	var customTagsField []compute.CustomPolicyTag
-	for _, item := range pb.CustomTags {
-		itemField, err := compute.CustomPolicyTagFromPb(&item)
+	for _, itemPb := range pb.CustomTags {
+		item, err := compute.CustomPolicyTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			customTagsField = append(customTagsField, *itemField)
+		if item != nil {
+			customTagsField = append(customTagsField, *item)
 		}
 	}
 	st.CustomTags = customTagsField
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	policyNameField := &pb.PolicyName
-	if policyNameField != nil {
-		st.PolicyName = *policyNameField
-	}
+	st.PolicyId = pb.PolicyId
+	st.PolicyName = pb.PolicyName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1249,12 +1057,14 @@ type CreateBillingUsageDashboardRequest struct {
 	// Workspace level usage dashboard shows usage data for the specified
 	// workspace ID. Global level usage dashboard shows usage data for all
 	// workspaces in the account.
+	// Wire name: 'dashboard_type'
 	DashboardType UsageDashboardType
 	// The workspace ID of the workspace in which the usage dashboard is
 	// created.
+	// Wire name: 'workspace_id'
 	WorkspaceId int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createBillingUsageDashboardRequestToPb(st *CreateBillingUsageDashboardRequest) (*createBillingUsageDashboardRequestPb, error) {
@@ -1262,15 +1072,9 @@ func createBillingUsageDashboardRequestToPb(st *CreateBillingUsageDashboardReque
 		return nil, nil
 	}
 	pb := &createBillingUsageDashboardRequestPb{}
-	dashboardTypePb := &st.DashboardType
-	if dashboardTypePb != nil {
-		pb.DashboardType = *dashboardTypePb
-	}
+	pb.DashboardType = st.DashboardType
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1318,14 +1122,8 @@ func createBillingUsageDashboardRequestFromPb(pb *createBillingUsageDashboardReq
 		return nil, nil
 	}
 	st := &CreateBillingUsageDashboardRequest{}
-	dashboardTypeField := &pb.DashboardType
-	if dashboardTypeField != nil {
-		st.DashboardType = *dashboardTypeField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.DashboardType = pb.DashboardType
+	st.WorkspaceId = pb.WorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1341,9 +1139,10 @@ func (st createBillingUsageDashboardRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateBillingUsageDashboardResponse struct {
 	// The unique id of the usage dashboard.
+	// Wire name: 'dashboard_id'
 	DashboardId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createBillingUsageDashboardResponseToPb(st *CreateBillingUsageDashboardResponse) (*createBillingUsageDashboardResponsePb, error) {
@@ -1351,10 +1150,7 @@ func createBillingUsageDashboardResponseToPb(st *CreateBillingUsageDashboardResp
 		return nil, nil
 	}
 	pb := &createBillingUsageDashboardResponsePb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1397,10 +1193,7 @@ func createBillingUsageDashboardResponseFromPb(pb *createBillingUsageDashboardRe
 		return nil, nil
 	}
 	st := &CreateBillingUsageDashboardResponse{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1416,19 +1209,23 @@ func (st createBillingUsageDashboardResponsePb) MarshalJSON() ([]byte, error) {
 
 type CreateBudgetConfigurationBudget struct {
 	// Databricks account ID.
+	// Wire name: 'account_id'
 	AccountId string
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
+	// Wire name: 'alert_configurations'
 	AlertConfigurations []CreateBudgetConfigurationBudgetAlertConfigurations
 	// Human-readable name of budget configuration. Max Length: 128
+	// Wire name: 'display_name'
 	DisplayName string
 	// Configured filters for this budget. These are applied to your account's
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
+	// Wire name: 'filter'
 	Filter *BudgetConfigurationFilter
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createBudgetConfigurationBudgetToPb(st *CreateBudgetConfigurationBudget) (*createBudgetConfigurationBudgetPb, error) {
@@ -1436,10 +1233,7 @@ func createBudgetConfigurationBudgetToPb(st *CreateBudgetConfigurationBudget) (*
 		return nil, nil
 	}
 	pb := &createBudgetConfigurationBudgetPb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
 	var alertConfigurationsPb []createBudgetConfigurationBudgetAlertConfigurationsPb
 	for _, item := range st.AlertConfigurations {
@@ -1453,10 +1247,7 @@ func createBudgetConfigurationBudgetToPb(st *CreateBudgetConfigurationBudget) (*
 	}
 	pb.AlertConfigurations = alertConfigurationsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
 	filterPb, err := budgetConfigurationFilterToPb(st.Filter)
 	if err != nil {
@@ -1517,26 +1308,20 @@ func createBudgetConfigurationBudgetFromPb(pb *createBudgetConfigurationBudgetPb
 		return nil, nil
 	}
 	st := &CreateBudgetConfigurationBudget{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
+	st.AccountId = pb.AccountId
 
 	var alertConfigurationsField []CreateBudgetConfigurationBudgetAlertConfigurations
-	for _, item := range pb.AlertConfigurations {
-		itemField, err := createBudgetConfigurationBudgetAlertConfigurationsFromPb(&item)
+	for _, itemPb := range pb.AlertConfigurations {
+		item, err := createBudgetConfigurationBudgetAlertConfigurationsFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			alertConfigurationsField = append(alertConfigurationsField, *itemField)
+		if item != nil {
+			alertConfigurationsField = append(alertConfigurationsField, *item)
 		}
 	}
 	st.AlertConfigurations = alertConfigurationsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
+	st.DisplayName = pb.DisplayName
 	filterField, err := budgetConfigurationFilterFromPb(pb.Filter)
 	if err != nil {
 		return nil, err
@@ -1559,11 +1344,13 @@ func (st createBudgetConfigurationBudgetPb) MarshalJSON() ([]byte, error) {
 
 type CreateBudgetConfigurationBudgetActionConfigurations struct {
 	// The type of the action.
+	// Wire name: 'action_type'
 	ActionType ActionConfigurationType
 	// Target for the action. For example, an email address.
+	// Wire name: 'target'
 	Target string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createBudgetConfigurationBudgetActionConfigurationsToPb(st *CreateBudgetConfigurationBudgetActionConfigurations) (*createBudgetConfigurationBudgetActionConfigurationsPb, error) {
@@ -1571,15 +1358,9 @@ func createBudgetConfigurationBudgetActionConfigurationsToPb(st *CreateBudgetCon
 		return nil, nil
 	}
 	pb := &createBudgetConfigurationBudgetActionConfigurationsPb{}
-	actionTypePb := &st.ActionType
-	if actionTypePb != nil {
-		pb.ActionType = *actionTypePb
-	}
+	pb.ActionType = st.ActionType
 
-	targetPb := &st.Target
-	if targetPb != nil {
-		pb.Target = *targetPb
-	}
+	pb.Target = st.Target
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1624,14 +1405,8 @@ func createBudgetConfigurationBudgetActionConfigurationsFromPb(pb *createBudgetC
 		return nil, nil
 	}
 	st := &CreateBudgetConfigurationBudgetActionConfigurations{}
-	actionTypeField := &pb.ActionType
-	if actionTypeField != nil {
-		st.ActionType = *actionTypeField
-	}
-	targetField := &pb.Target
-	if targetField != nil {
-		st.Target = *targetField
-	}
+	st.ActionType = pb.ActionType
+	st.Target = pb.Target
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1648,20 +1423,25 @@ func (st createBudgetConfigurationBudgetActionConfigurationsPb) MarshalJSON() ([
 type CreateBudgetConfigurationBudgetAlertConfigurations struct {
 	// Configured actions for this alert. These define what happens when an
 	// alert enters a triggered state.
+	// Wire name: 'action_configurations'
 	ActionConfigurations []CreateBudgetConfigurationBudgetActionConfigurations
 	// The threshold for the budget alert to determine if it is in a triggered
 	// state. The number is evaluated based on `quantity_type`.
+	// Wire name: 'quantity_threshold'
 	QuantityThreshold string
 	// The way to calculate cost for this budget alert. This is what
 	// `quantity_threshold` is measured in.
+	// Wire name: 'quantity_type'
 	QuantityType AlertConfigurationQuantityType
 	// The time window of usage data for the budget.
+	// Wire name: 'time_period'
 	TimePeriod AlertConfigurationTimePeriod
 	// The evaluation method to determine when this budget alert is in a
 	// triggered state.
+	// Wire name: 'trigger_type'
 	TriggerType AlertConfigurationTriggerType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createBudgetConfigurationBudgetAlertConfigurationsToPb(st *CreateBudgetConfigurationBudgetAlertConfigurations) (*createBudgetConfigurationBudgetAlertConfigurationsPb, error) {
@@ -1682,25 +1462,13 @@ func createBudgetConfigurationBudgetAlertConfigurationsToPb(st *CreateBudgetConf
 	}
 	pb.ActionConfigurations = actionConfigurationsPb
 
-	quantityThresholdPb := &st.QuantityThreshold
-	if quantityThresholdPb != nil {
-		pb.QuantityThreshold = *quantityThresholdPb
-	}
+	pb.QuantityThreshold = st.QuantityThreshold
 
-	quantityTypePb := &st.QuantityType
-	if quantityTypePb != nil {
-		pb.QuantityType = *quantityTypePb
-	}
+	pb.QuantityType = st.QuantityType
 
-	timePeriodPb := &st.TimePeriod
-	if timePeriodPb != nil {
-		pb.TimePeriod = *timePeriodPb
-	}
+	pb.TimePeriod = st.TimePeriod
 
-	triggerTypePb := &st.TriggerType
-	if triggerTypePb != nil {
-		pb.TriggerType = *triggerTypePb
-	}
+	pb.TriggerType = st.TriggerType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1757,32 +1525,20 @@ func createBudgetConfigurationBudgetAlertConfigurationsFromPb(pb *createBudgetCo
 	st := &CreateBudgetConfigurationBudgetAlertConfigurations{}
 
 	var actionConfigurationsField []CreateBudgetConfigurationBudgetActionConfigurations
-	for _, item := range pb.ActionConfigurations {
-		itemField, err := createBudgetConfigurationBudgetActionConfigurationsFromPb(&item)
+	for _, itemPb := range pb.ActionConfigurations {
+		item, err := createBudgetConfigurationBudgetActionConfigurationsFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			actionConfigurationsField = append(actionConfigurationsField, *itemField)
+		if item != nil {
+			actionConfigurationsField = append(actionConfigurationsField, *item)
 		}
 	}
 	st.ActionConfigurations = actionConfigurationsField
-	quantityThresholdField := &pb.QuantityThreshold
-	if quantityThresholdField != nil {
-		st.QuantityThreshold = *quantityThresholdField
-	}
-	quantityTypeField := &pb.QuantityType
-	if quantityTypeField != nil {
-		st.QuantityType = *quantityTypeField
-	}
-	timePeriodField := &pb.TimePeriod
-	if timePeriodField != nil {
-		st.TimePeriod = *timePeriodField
-	}
-	triggerTypeField := &pb.TriggerType
-	if triggerTypeField != nil {
-		st.TriggerType = *triggerTypeField
-	}
+	st.QuantityThreshold = pb.QuantityThreshold
+	st.QuantityType = pb.QuantityType
+	st.TimePeriod = pb.TimePeriod
+	st.TriggerType = pb.TriggerType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1798,6 +1554,7 @@ func (st createBudgetConfigurationBudgetAlertConfigurationsPb) MarshalJSON() ([]
 
 type CreateBudgetConfigurationRequest struct {
 	// Properties of the new budget configuration.
+	// Wire name: 'budget'
 	Budget CreateBudgetConfigurationBudget
 }
 
@@ -1865,6 +1622,7 @@ func createBudgetConfigurationRequestFromPb(pb *createBudgetConfigurationRequest
 
 type CreateBudgetConfigurationResponse struct {
 	// The created budget configuration.
+	// Wire name: 'budget'
 	Budget *BudgetConfiguration
 }
 
@@ -1935,13 +1693,15 @@ type CreateBudgetPolicyRequest struct {
 	// The policy to create. `policy_id` needs to be empty as it will be
 	// generated `policy_name` must be provided, custom_tags may need to be
 	// provided depending on the cloud provider. All other fields are optional.
+	// Wire name: 'policy'
 	Policy *BudgetPolicy
 	// A unique identifier for this request. Restricted to 36 ASCII characters.
 	// A random UUID is recommended. This request is only idempotent if a
 	// `request_id` is provided.
+	// Wire name: 'request_id'
 	RequestId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createBudgetPolicyRequestToPb(st *CreateBudgetPolicyRequest) (*createBudgetPolicyRequestPb, error) {
@@ -1957,10 +1717,7 @@ func createBudgetPolicyRequestToPb(st *CreateBudgetPolicyRequest) (*createBudget
 		pb.Policy = policyPb
 	}
 
-	requestIdPb := &st.RequestId
-	if requestIdPb != nil {
-		pb.RequestId = *requestIdPb
-	}
+	pb.RequestId = st.RequestId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2016,10 +1773,7 @@ func createBudgetPolicyRequestFromPb(pb *createBudgetPolicyRequestPb) (*CreateBu
 	if policyField != nil {
 		st.Policy = policyField
 	}
-	requestIdField := &pb.RequestId
-	if requestIdField != nil {
-		st.RequestId = *requestIdField
-	}
+	st.RequestId = pb.RequestId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2036,22 +1790,26 @@ func (st createBudgetPolicyRequestPb) MarshalJSON() ([]byte, error) {
 type CreateLogDeliveryConfigurationParams struct {
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
+	// Wire name: 'config_name'
 	ConfigName string
 	// The ID for a method:credentials/create that represents the AWS IAM role
 	// with policy and trust relationship as described in the main billable
 	// usage documentation page. See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	// Wire name: 'credentials_id'
 	CredentialsId string
 	// The optional delivery path prefix within Amazon S3 storage. Defaults to
 	// empty, which means that logs are delivered to the root of the bucket.
 	// This must be a valid S3 object key. This must not start or end with a
 	// slash character.
+	// Wire name: 'delivery_path_prefix'
 	DeliveryPathPrefix string
 	// This field applies only if `log_type` is `BILLABLE_USAGE`. This is the
 	// optional start month and year for delivery, specified in `YYYY-MM`
 	// format. Defaults to current year and month. `BILLABLE_USAGE` logs are not
 	// available for usage before March 2019 (`2019-03`).
+	// Wire name: 'delivery_start_time'
 	DeliveryStartTime string
 	// Log delivery type. Supported values are:
 	//
@@ -2065,6 +1823,7 @@ type CreateLogDeliveryConfigurationParams struct {
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	// Wire name: 'log_type'
 	LogType LogType
 	// The file type of log delivery.
 	//
@@ -2076,18 +1835,21 @@ type CreateLogDeliveryConfigurationParams struct {
 	//
 	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+	// Wire name: 'output_format'
 	OutputFormat OutputFormat
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
+	// Wire name: 'status'
 	Status LogDeliveryConfigStatus
 	// The ID for a method:storage/create that represents the S3 bucket with
 	// bucket policy as described in the main billable usage documentation page.
 	// See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	// Wire name: 'storage_configuration_id'
 	StorageConfigurationId string
 	// Optional filter that specifies workspace IDs to deliver logs for. By
 	// default the workspace filter is empty and log delivery applies at the
@@ -2102,9 +1864,10 @@ type CreateLogDeliveryConfigurationParams struct {
 	// delivery won't include account level logs. For some types of Databricks
 	// deployments there is only one workspace per account ID, so this field is
 	// unnecessary.
+	// Wire name: 'workspace_ids_filter'
 	WorkspaceIdsFilter []int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createLogDeliveryConfigurationParamsToPb(st *CreateLogDeliveryConfigurationParams) (*createLogDeliveryConfigurationParamsPb, error) {
@@ -2112,54 +1875,23 @@ func createLogDeliveryConfigurationParamsToPb(st *CreateLogDeliveryConfiguration
 		return nil, nil
 	}
 	pb := &createLogDeliveryConfigurationParamsPb{}
-	configNamePb := &st.ConfigName
-	if configNamePb != nil {
-		pb.ConfigName = *configNamePb
-	}
+	pb.ConfigName = st.ConfigName
 
-	credentialsIdPb := &st.CredentialsId
-	if credentialsIdPb != nil {
-		pb.CredentialsId = *credentialsIdPb
-	}
+	pb.CredentialsId = st.CredentialsId
 
-	deliveryPathPrefixPb := &st.DeliveryPathPrefix
-	if deliveryPathPrefixPb != nil {
-		pb.DeliveryPathPrefix = *deliveryPathPrefixPb
-	}
+	pb.DeliveryPathPrefix = st.DeliveryPathPrefix
 
-	deliveryStartTimePb := &st.DeliveryStartTime
-	if deliveryStartTimePb != nil {
-		pb.DeliveryStartTime = *deliveryStartTimePb
-	}
+	pb.DeliveryStartTime = st.DeliveryStartTime
 
-	logTypePb := &st.LogType
-	if logTypePb != nil {
-		pb.LogType = *logTypePb
-	}
+	pb.LogType = st.LogType
 
-	outputFormatPb := &st.OutputFormat
-	if outputFormatPb != nil {
-		pb.OutputFormat = *outputFormatPb
-	}
+	pb.OutputFormat = st.OutputFormat
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	storageConfigurationIdPb := &st.StorageConfigurationId
-	if storageConfigurationIdPb != nil {
-		pb.StorageConfigurationId = *storageConfigurationIdPb
-	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
 
-	var workspaceIdsFilterPb []int64
-	for _, item := range st.WorkspaceIdsFilter {
-		itemPb := &item
-		if itemPb != nil {
-			workspaceIdsFilterPb = append(workspaceIdsFilterPb, *itemPb)
-		}
-	}
-	pb.WorkspaceIdsFilter = workspaceIdsFilterPb
+	pb.WorkspaceIdsFilter = st.WorkspaceIdsFilter
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2269,47 +2001,15 @@ func createLogDeliveryConfigurationParamsFromPb(pb *createLogDeliveryConfigurati
 		return nil, nil
 	}
 	st := &CreateLogDeliveryConfigurationParams{}
-	configNameField := &pb.ConfigName
-	if configNameField != nil {
-		st.ConfigName = *configNameField
-	}
-	credentialsIdField := &pb.CredentialsId
-	if credentialsIdField != nil {
-		st.CredentialsId = *credentialsIdField
-	}
-	deliveryPathPrefixField := &pb.DeliveryPathPrefix
-	if deliveryPathPrefixField != nil {
-		st.DeliveryPathPrefix = *deliveryPathPrefixField
-	}
-	deliveryStartTimeField := &pb.DeliveryStartTime
-	if deliveryStartTimeField != nil {
-		st.DeliveryStartTime = *deliveryStartTimeField
-	}
-	logTypeField := &pb.LogType
-	if logTypeField != nil {
-		st.LogType = *logTypeField
-	}
-	outputFormatField := &pb.OutputFormat
-	if outputFormatField != nil {
-		st.OutputFormat = *outputFormatField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	storageConfigurationIdField := &pb.StorageConfigurationId
-	if storageConfigurationIdField != nil {
-		st.StorageConfigurationId = *storageConfigurationIdField
-	}
-
-	var workspaceIdsFilterField []int64
-	for _, item := range pb.WorkspaceIdsFilter {
-		itemField := &item
-		if itemField != nil {
-			workspaceIdsFilterField = append(workspaceIdsFilterField, *itemField)
-		}
-	}
-	st.WorkspaceIdsFilter = workspaceIdsFilterField
+	st.ConfigName = pb.ConfigName
+	st.CredentialsId = pb.CredentialsId
+	st.DeliveryPathPrefix = pb.DeliveryPathPrefix
+	st.DeliveryStartTime = pb.DeliveryStartTime
+	st.LogType = pb.LogType
+	st.OutputFormat = pb.OutputFormat
+	st.Status = pb.Status
+	st.StorageConfigurationId = pb.StorageConfigurationId
+	st.WorkspaceIdsFilter = pb.WorkspaceIdsFilter
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2326,7 +2026,8 @@ func (st createLogDeliveryConfigurationParamsPb) MarshalJSON() ([]byte, error) {
 // Delete budget
 type DeleteBudgetConfigurationRequest struct {
 	// The Databricks budget configuration ID.
-	BudgetId string
+	// Wire name: 'budget_id'
+	BudgetId string `tf:"-"`
 }
 
 func deleteBudgetConfigurationRequestToPb(st *DeleteBudgetConfigurationRequest) (*deleteBudgetConfigurationRequestPb, error) {
@@ -2334,10 +2035,7 @@ func deleteBudgetConfigurationRequestToPb(st *DeleteBudgetConfigurationRequest) 
 		return nil, nil
 	}
 	pb := &deleteBudgetConfigurationRequestPb{}
-	budgetIdPb := &st.BudgetId
-	if budgetIdPb != nil {
-		pb.BudgetId = *budgetIdPb
-	}
+	pb.BudgetId = st.BudgetId
 
 	return pb, nil
 }
@@ -2377,10 +2075,7 @@ func deleteBudgetConfigurationRequestFromPb(pb *deleteBudgetConfigurationRequest
 		return nil, nil
 	}
 	st := &DeleteBudgetConfigurationRequest{}
-	budgetIdField := &pb.BudgetId
-	if budgetIdField != nil {
-		st.BudgetId = *budgetIdField
-	}
+	st.BudgetId = pb.BudgetId
 
 	return st, nil
 }
@@ -2437,7 +2132,8 @@ func deleteBudgetConfigurationResponseFromPb(pb *deleteBudgetConfigurationRespon
 // Delete a budget policy
 type DeleteBudgetPolicyRequest struct {
 	// The Id of the policy.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 }
 
 func deleteBudgetPolicyRequestToPb(st *DeleteBudgetPolicyRequest) (*deleteBudgetPolicyRequestPb, error) {
@@ -2445,10 +2141,7 @@ func deleteBudgetPolicyRequestToPb(st *DeleteBudgetPolicyRequest) (*deleteBudget
 		return nil, nil
 	}
 	pb := &deleteBudgetPolicyRequestPb{}
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	return pb, nil
 }
@@ -2488,10 +2181,7 @@ func deleteBudgetPolicyRequestFromPb(pb *deleteBudgetPolicyRequestPb) (*DeleteBu
 		return nil, nil
 	}
 	st := &DeleteBudgetPolicyRequest{}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.PolicyId = pb.PolicyId
 
 	return st, nil
 }
@@ -2616,16 +2306,19 @@ func deliveryStatusFromPb(pb *deliveryStatusPb) (*DeliveryStatus, error) {
 type DownloadRequest struct {
 	// Format: `YYYY-MM`. Last month to return billable usage logs for. This
 	// field is required.
-	EndMonth string
+	// Wire name: 'end_month'
+	EndMonth string `tf:"-"`
 	// Specify whether to include personally identifiable information in the
 	// billable usage logs, for example the email addresses of cluster creators.
 	// Handle this information with care. Defaults to false.
-	PersonalData bool
+	// Wire name: 'personal_data'
+	PersonalData bool `tf:"-"`
 	// Format: `YYYY-MM`. First month to return billable usage logs for. This
 	// field is required.
-	StartMonth string
+	// Wire name: 'start_month'
+	StartMonth string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func downloadRequestToPb(st *DownloadRequest) (*downloadRequestPb, error) {
@@ -2633,20 +2326,11 @@ func downloadRequestToPb(st *DownloadRequest) (*downloadRequestPb, error) {
 		return nil, nil
 	}
 	pb := &downloadRequestPb{}
-	endMonthPb := &st.EndMonth
-	if endMonthPb != nil {
-		pb.EndMonth = *endMonthPb
-	}
+	pb.EndMonth = st.EndMonth
 
-	personalDataPb := &st.PersonalData
-	if personalDataPb != nil {
-		pb.PersonalData = *personalDataPb
-	}
+	pb.PersonalData = st.PersonalData
 
-	startMonthPb := &st.StartMonth
-	if startMonthPb != nil {
-		pb.StartMonth = *startMonthPb
-	}
+	pb.StartMonth = st.StartMonth
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2697,18 +2381,9 @@ func downloadRequestFromPb(pb *downloadRequestPb) (*DownloadRequest, error) {
 		return nil, nil
 	}
 	st := &DownloadRequest{}
-	endMonthField := &pb.EndMonth
-	if endMonthField != nil {
-		st.EndMonth = *endMonthField
-	}
-	personalDataField := &pb.PersonalData
-	if personalDataField != nil {
-		st.PersonalData = *personalDataField
-	}
-	startMonthField := &pb.StartMonth
-	if startMonthField != nil {
-		st.StartMonth = *startMonthField
-	}
+	st.EndMonth = pb.EndMonth
+	st.PersonalData = pb.PersonalData
+	st.StartMonth = pb.StartMonth
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2723,7 +2398,9 @@ func (st downloadRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type DownloadResponse struct {
-	Contents io.ReadCloser
+
+	// Wire name: 'contents'
+	Contents io.ReadCloser `tf:"-"`
 }
 
 func downloadResponseToPb(st *DownloadResponse) (*downloadResponsePb, error) {
@@ -2731,10 +2408,7 @@ func downloadResponseToPb(st *DownloadResponse) (*downloadResponsePb, error) {
 		return nil, nil
 	}
 	pb := &downloadResponsePb{}
-	contentsPb := &st.Contents
-	if contentsPb != nil {
-		pb.Contents = *contentsPb
-	}
+	pb.Contents = st.Contents
 
 	return pb, nil
 }
@@ -2773,10 +2447,7 @@ func downloadResponseFromPb(pb *downloadResponsePb) (*DownloadResponse, error) {
 		return nil, nil
 	}
 	st := &DownloadResponse{}
-	contentsField := &pb.Contents
-	if contentsField != nil {
-		st.Contents = *contentsField
-	}
+	st.Contents = pb.Contents
 
 	return st, nil
 }
@@ -2786,15 +2457,18 @@ func downloadResponseFromPb(pb *downloadResponsePb) (*DownloadResponse, error) {
 type Filter struct {
 	// The policy creator user id to be filtered on. If unspecified, all
 	// policies will be returned.
+	// Wire name: 'creator_user_id'
 	CreatorUserId int64
 	// The policy creator user name to be filtered on. If unspecified, all
 	// policies will be returned.
+	// Wire name: 'creator_user_name'
 	CreatorUserName string
 	// The partial name of policies to be filtered on. If unspecified, all
 	// policies will be returned.
+	// Wire name: 'policy_name'
 	PolicyName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func filterToPb(st *Filter) (*filterPb, error) {
@@ -2802,20 +2476,11 @@ func filterToPb(st *Filter) (*filterPb, error) {
 		return nil, nil
 	}
 	pb := &filterPb{}
-	creatorUserIdPb := &st.CreatorUserId
-	if creatorUserIdPb != nil {
-		pb.CreatorUserId = *creatorUserIdPb
-	}
+	pb.CreatorUserId = st.CreatorUserId
 
-	creatorUserNamePb := &st.CreatorUserName
-	if creatorUserNamePb != nil {
-		pb.CreatorUserName = *creatorUserNamePb
-	}
+	pb.CreatorUserName = st.CreatorUserName
 
-	policyNamePb := &st.PolicyName
-	if policyNamePb != nil {
-		pb.PolicyName = *policyNamePb
-	}
+	pb.PolicyName = st.PolicyName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2865,18 +2530,9 @@ func filterFromPb(pb *filterPb) (*Filter, error) {
 		return nil, nil
 	}
 	st := &Filter{}
-	creatorUserIdField := &pb.CreatorUserId
-	if creatorUserIdField != nil {
-		st.CreatorUserId = *creatorUserIdField
-	}
-	creatorUserNameField := &pb.CreatorUserName
-	if creatorUserNameField != nil {
-		st.CreatorUserName = *creatorUserNameField
-	}
-	policyNameField := &pb.PolicyName
-	if policyNameField != nil {
-		st.PolicyName = *policyNameField
-	}
+	st.CreatorUserId = pb.CreatorUserId
+	st.CreatorUserName = pb.CreatorUserName
+	st.PolicyName = pb.PolicyName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2895,12 +2551,14 @@ type GetBillingUsageDashboardRequest struct {
 	// Workspace level usage dashboard shows usage data for the specified
 	// workspace ID. Global level usage dashboard shows usage data for all
 	// workspaces in the account.
-	DashboardType UsageDashboardType
+	// Wire name: 'dashboard_type'
+	DashboardType UsageDashboardType `tf:"-"`
 	// The workspace ID of the workspace in which the usage dashboard is
 	// created.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getBillingUsageDashboardRequestToPb(st *GetBillingUsageDashboardRequest) (*getBillingUsageDashboardRequestPb, error) {
@@ -2908,15 +2566,9 @@ func getBillingUsageDashboardRequestToPb(st *GetBillingUsageDashboardRequest) (*
 		return nil, nil
 	}
 	pb := &getBillingUsageDashboardRequestPb{}
-	dashboardTypePb := &st.DashboardType
-	if dashboardTypePb != nil {
-		pb.DashboardType = *dashboardTypePb
-	}
+	pb.DashboardType = st.DashboardType
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2964,14 +2616,8 @@ func getBillingUsageDashboardRequestFromPb(pb *getBillingUsageDashboardRequestPb
 		return nil, nil
 	}
 	st := &GetBillingUsageDashboardRequest{}
-	dashboardTypeField := &pb.DashboardType
-	if dashboardTypeField != nil {
-		st.DashboardType = *dashboardTypeField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.DashboardType = pb.DashboardType
+	st.WorkspaceId = pb.WorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2987,11 +2633,13 @@ func (st getBillingUsageDashboardRequestPb) MarshalJSON() ([]byte, error) {
 
 type GetBillingUsageDashboardResponse struct {
 	// The unique id of the usage dashboard.
+	// Wire name: 'dashboard_id'
 	DashboardId string
 	// The URL of the usage dashboard.
+	// Wire name: 'dashboard_url'
 	DashboardUrl string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getBillingUsageDashboardResponseToPb(st *GetBillingUsageDashboardResponse) (*getBillingUsageDashboardResponsePb, error) {
@@ -2999,15 +2647,9 @@ func getBillingUsageDashboardResponseToPb(st *GetBillingUsageDashboardResponse) 
 		return nil, nil
 	}
 	pb := &getBillingUsageDashboardResponsePb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	dashboardUrlPb := &st.DashboardUrl
-	if dashboardUrlPb != nil {
-		pb.DashboardUrl = *dashboardUrlPb
-	}
+	pb.DashboardUrl = st.DashboardUrl
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3052,14 +2694,8 @@ func getBillingUsageDashboardResponseFromPb(pb *getBillingUsageDashboardResponse
 		return nil, nil
 	}
 	st := &GetBillingUsageDashboardResponse{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	dashboardUrlField := &pb.DashboardUrl
-	if dashboardUrlField != nil {
-		st.DashboardUrl = *dashboardUrlField
-	}
+	st.DashboardId = pb.DashboardId
+	st.DashboardUrl = pb.DashboardUrl
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3076,7 +2712,8 @@ func (st getBillingUsageDashboardResponsePb) MarshalJSON() ([]byte, error) {
 // Get budget
 type GetBudgetConfigurationRequest struct {
 	// The budget configuration ID
-	BudgetId string
+	// Wire name: 'budget_id'
+	BudgetId string `tf:"-"`
 }
 
 func getBudgetConfigurationRequestToPb(st *GetBudgetConfigurationRequest) (*getBudgetConfigurationRequestPb, error) {
@@ -3084,10 +2721,7 @@ func getBudgetConfigurationRequestToPb(st *GetBudgetConfigurationRequest) (*getB
 		return nil, nil
 	}
 	pb := &getBudgetConfigurationRequestPb{}
-	budgetIdPb := &st.BudgetId
-	if budgetIdPb != nil {
-		pb.BudgetId = *budgetIdPb
-	}
+	pb.BudgetId = st.BudgetId
 
 	return pb, nil
 }
@@ -3127,15 +2761,14 @@ func getBudgetConfigurationRequestFromPb(pb *getBudgetConfigurationRequestPb) (*
 		return nil, nil
 	}
 	st := &GetBudgetConfigurationRequest{}
-	budgetIdField := &pb.BudgetId
-	if budgetIdField != nil {
-		st.BudgetId = *budgetIdField
-	}
+	st.BudgetId = pb.BudgetId
 
 	return st, nil
 }
 
 type GetBudgetConfigurationResponse struct {
+
+	// Wire name: 'budget'
 	Budget *BudgetConfiguration
 }
 
@@ -3203,7 +2836,8 @@ func getBudgetConfigurationResponseFromPb(pb *getBudgetConfigurationResponsePb) 
 // Get a budget policy
 type GetBudgetPolicyRequest struct {
 	// The Id of the policy.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 }
 
 func getBudgetPolicyRequestToPb(st *GetBudgetPolicyRequest) (*getBudgetPolicyRequestPb, error) {
@@ -3211,10 +2845,7 @@ func getBudgetPolicyRequestToPb(st *GetBudgetPolicyRequest) (*getBudgetPolicyReq
 		return nil, nil
 	}
 	pb := &getBudgetPolicyRequestPb{}
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	return pb, nil
 }
@@ -3254,10 +2885,7 @@ func getBudgetPolicyRequestFromPb(pb *getBudgetPolicyRequestPb) (*GetBudgetPolic
 		return nil, nil
 	}
 	st := &GetBudgetPolicyRequest{}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.PolicyId = pb.PolicyId
 
 	return st, nil
 }
@@ -3265,7 +2893,8 @@ func getBudgetPolicyRequestFromPb(pb *getBudgetPolicyRequestPb) (*GetBudgetPolic
 // Get log delivery configuration
 type GetLogDeliveryRequest struct {
 	// Databricks log delivery configuration ID
-	LogDeliveryConfigurationId string
+	// Wire name: 'log_delivery_configuration_id'
+	LogDeliveryConfigurationId string `tf:"-"`
 }
 
 func getLogDeliveryRequestToPb(st *GetLogDeliveryRequest) (*getLogDeliveryRequestPb, error) {
@@ -3273,10 +2902,7 @@ func getLogDeliveryRequestToPb(st *GetLogDeliveryRequest) (*getLogDeliveryReques
 		return nil, nil
 	}
 	pb := &getLogDeliveryRequestPb{}
-	logDeliveryConfigurationIdPb := &st.LogDeliveryConfigurationId
-	if logDeliveryConfigurationIdPb != nil {
-		pb.LogDeliveryConfigurationId = *logDeliveryConfigurationIdPb
-	}
+	pb.LogDeliveryConfigurationId = st.LogDeliveryConfigurationId
 
 	return pb, nil
 }
@@ -3316,10 +2942,7 @@ func getLogDeliveryRequestFromPb(pb *getLogDeliveryRequestPb) (*GetLogDeliveryRe
 		return nil, nil
 	}
 	st := &GetLogDeliveryRequest{}
-	logDeliveryConfigurationIdField := &pb.LogDeliveryConfigurationId
-	if logDeliveryConfigurationIdField != nil {
-		st.LogDeliveryConfigurationId = *logDeliveryConfigurationIdField
-	}
+	st.LogDeliveryConfigurationId = pb.LogDeliveryConfigurationId
 
 	return st, nil
 }
@@ -3380,9 +3003,10 @@ type ListBudgetConfigurationsRequest struct {
 	// A page token received from a previous get all budget configurations call.
 	// This token can be used to retrieve the subsequent page. Requests first
 	// page if absent.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listBudgetConfigurationsRequestToPb(st *ListBudgetConfigurationsRequest) (*listBudgetConfigurationsRequestPb, error) {
@@ -3390,10 +3014,7 @@ func listBudgetConfigurationsRequestToPb(st *ListBudgetConfigurationsRequest) (*
 		return nil, nil
 	}
 	pb := &listBudgetConfigurationsRequestPb{}
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3438,10 +3059,7 @@ func listBudgetConfigurationsRequestFromPb(pb *listBudgetConfigurationsRequestPb
 		return nil, nil
 	}
 	st := &ListBudgetConfigurationsRequest{}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3456,12 +3074,15 @@ func (st listBudgetConfigurationsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListBudgetConfigurationsResponse struct {
+
+	// Wire name: 'budgets'
 	Budgets []BudgetConfiguration
 	// Token which can be sent as `page_token` to retrieve the next page of
 	// results. If this field is omitted, there are no subsequent budgets.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listBudgetConfigurationsResponseToPb(st *ListBudgetConfigurationsResponse) (*listBudgetConfigurationsResponsePb, error) {
@@ -3482,10 +3103,7 @@ func listBudgetConfigurationsResponseToPb(st *ListBudgetConfigurationsResponse) 
 	}
 	pb.Budgets = budgetsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3532,20 +3150,17 @@ func listBudgetConfigurationsResponseFromPb(pb *listBudgetConfigurationsResponse
 	st := &ListBudgetConfigurationsResponse{}
 
 	var budgetsField []BudgetConfiguration
-	for _, item := range pb.Budgets {
-		itemField, err := budgetConfigurationFromPb(&item)
+	for _, itemPb := range pb.Budgets {
+		item, err := budgetConfigurationFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			budgetsField = append(budgetsField, *itemField)
+		if item != nil {
+			budgetsField = append(budgetsField, *item)
 		}
 	}
 	st.Budgets = budgetsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3562,11 +3177,13 @@ func (st listBudgetConfigurationsResponsePb) MarshalJSON() ([]byte, error) {
 // List policies
 type ListBudgetPoliciesRequest struct {
 	// A filter to apply to the list of policies.
-	FilterBy *Filter
+	// Wire name: 'filter_by'
+	FilterBy *Filter `tf:"-"`
 	// The maximum number of budget policies to return. If unspecified, at most
 	// 100 budget policies will be returned. The maximum value is 1000; values
 	// above 1000 will be coerced to 1000.
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// A page token, received from a previous `ListServerlessPolicies` call.
 	// Provide this to retrieve the subsequent page. If unspecified, the first
 	// page will be returned.
@@ -3574,11 +3191,13 @@ type ListBudgetPoliciesRequest struct {
 	// When paginating, all other parameters provided to
 	// `ListServerlessPoliciesRequest` must match the call that provided the
 	// page token.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The sort specification.
-	SortSpec *SortSpec
+	// Wire name: 'sort_spec'
+	SortSpec *SortSpec `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listBudgetPoliciesRequestToPb(st *ListBudgetPoliciesRequest) (*listBudgetPoliciesRequestPb, error) {
@@ -3594,15 +3213,9 @@ func listBudgetPoliciesRequestToPb(st *ListBudgetPoliciesRequest) (*listBudgetPo
 		pb.FilterBy = filterByPb
 	}
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	sortSpecPb, err := sortSpecToPb(st.SortSpec)
 	if err != nil {
@@ -3674,14 +3287,8 @@ func listBudgetPoliciesRequestFromPb(pb *listBudgetPoliciesRequestPb) (*ListBudg
 	if filterByField != nil {
 		st.FilterBy = filterByField
 	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 	sortSpecField, err := sortSpecFromPb(pb.SortSpec)
 	if err != nil {
 		return nil, err
@@ -3706,14 +3313,17 @@ func (st listBudgetPoliciesRequestPb) MarshalJSON() ([]byte, error) {
 type ListBudgetPoliciesResponse struct {
 	// A token that can be sent as `page_token` to retrieve the next page. If
 	// this field is omitted, there are no subsequent pages.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'policies'
 	Policies []BudgetPolicy
 	// A token that can be sent as `page_token` to retrieve the previous page.
 	// In this field is omitted, there are no previous pages.
+	// Wire name: 'previous_page_token'
 	PreviousPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listBudgetPoliciesResponseToPb(st *ListBudgetPoliciesResponse) (*listBudgetPoliciesResponsePb, error) {
@@ -3721,10 +3331,7 @@ func listBudgetPoliciesResponseToPb(st *ListBudgetPoliciesResponse) (*listBudget
 		return nil, nil
 	}
 	pb := &listBudgetPoliciesResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var policiesPb []budgetPolicyPb
 	for _, item := range st.Policies {
@@ -3738,10 +3345,7 @@ func listBudgetPoliciesResponseToPb(st *ListBudgetPoliciesResponse) (*listBudget
 	}
 	pb.Policies = policiesPb
 
-	previousPageTokenPb := &st.PreviousPageToken
-	if previousPageTokenPb != nil {
-		pb.PreviousPageToken = *previousPageTokenPb
-	}
+	pb.PreviousPageToken = st.PreviousPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3790,26 +3394,20 @@ func listBudgetPoliciesResponseFromPb(pb *listBudgetPoliciesResponsePb) (*ListBu
 		return nil, nil
 	}
 	st := &ListBudgetPoliciesResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var policiesField []BudgetPolicy
-	for _, item := range pb.Policies {
-		itemField, err := budgetPolicyFromPb(&item)
+	for _, itemPb := range pb.Policies {
+		item, err := budgetPolicyFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			policiesField = append(policiesField, *itemField)
+		if item != nil {
+			policiesField = append(policiesField, *item)
 		}
 	}
 	st.Policies = policiesField
-	previousPageTokenField := &pb.PreviousPageToken
-	if previousPageTokenField != nil {
-		st.PreviousPageToken = *previousPageTokenField
-	}
+	st.PreviousPageToken = pb.PreviousPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3826,13 +3424,16 @@ func (st listBudgetPoliciesResponsePb) MarshalJSON() ([]byte, error) {
 // Get all log delivery configurations
 type ListLogDeliveryRequest struct {
 	// Filter by credential configuration ID.
-	CredentialsId string
+	// Wire name: 'credentials_id'
+	CredentialsId string `tf:"-"`
 	// Filter by status `ENABLED` or `DISABLED`.
-	Status LogDeliveryConfigStatus
+	// Wire name: 'status'
+	Status LogDeliveryConfigStatus `tf:"-"`
 	// Filter by storage configuration ID.
-	StorageConfigurationId string
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listLogDeliveryRequestToPb(st *ListLogDeliveryRequest) (*listLogDeliveryRequestPb, error) {
@@ -3840,20 +3441,11 @@ func listLogDeliveryRequestToPb(st *ListLogDeliveryRequest) (*listLogDeliveryReq
 		return nil, nil
 	}
 	pb := &listLogDeliveryRequestPb{}
-	credentialsIdPb := &st.CredentialsId
-	if credentialsIdPb != nil {
-		pb.CredentialsId = *credentialsIdPb
-	}
+	pb.CredentialsId = st.CredentialsId
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	storageConfigurationIdPb := &st.StorageConfigurationId
-	if storageConfigurationIdPb != nil {
-		pb.StorageConfigurationId = *storageConfigurationIdPb
-	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3900,18 +3492,9 @@ func listLogDeliveryRequestFromPb(pb *listLogDeliveryRequestPb) (*ListLogDeliver
 		return nil, nil
 	}
 	st := &ListLogDeliveryRequest{}
-	credentialsIdField := &pb.CredentialsId
-	if credentialsIdField != nil {
-		st.CredentialsId = *credentialsIdField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	storageConfigurationIdField := &pb.StorageConfigurationId
-	if storageConfigurationIdField != nil {
-		st.StorageConfigurationId = *storageConfigurationIdField
-	}
+	st.CredentialsId = pb.CredentialsId
+	st.Status = pb.Status
+	st.StorageConfigurationId = pb.StorageConfigurationId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3976,32 +3559,40 @@ func logDeliveryConfigStatusFromPb(pb *logDeliveryConfigStatusPb) (*LogDeliveryC
 
 type LogDeliveryConfiguration struct {
 	// The Databricks account ID that hosts the log delivery configuration.
+	// Wire name: 'account_id'
 	AccountId string
 	// Databricks log delivery configuration ID.
+	// Wire name: 'config_id'
 	ConfigId string
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
+	// Wire name: 'config_name'
 	ConfigName string
 	// Time in epoch milliseconds when the log delivery configuration was
 	// created.
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// The ID for a method:credentials/create that represents the AWS IAM role
 	// with policy and trust relationship as described in the main billable
 	// usage documentation page. See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	// Wire name: 'credentials_id'
 	CredentialsId string
 	// The optional delivery path prefix within Amazon S3 storage. Defaults to
 	// empty, which means that logs are delivered to the root of the bucket.
 	// This must be a valid S3 object key. This must not start or end with a
 	// slash character.
+	// Wire name: 'delivery_path_prefix'
 	DeliveryPathPrefix string
 	// This field applies only if `log_type` is `BILLABLE_USAGE`. This is the
 	// optional start month and year for delivery, specified in `YYYY-MM`
 	// format. Defaults to current year and month. `BILLABLE_USAGE` logs are not
 	// available for usage before March 2019 (`2019-03`).
+	// Wire name: 'delivery_start_time'
 	DeliveryStartTime string
 	// Databricks log delivery status.
+	// Wire name: 'log_delivery_status'
 	LogDeliveryStatus *LogDeliveryStatus
 	// Log delivery type. Supported values are:
 	//
@@ -4015,6 +3606,7 @@ type LogDeliveryConfiguration struct {
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	// Wire name: 'log_type'
 	LogType LogType
 	// The file type of log delivery.
 	//
@@ -4026,21 +3618,25 @@ type LogDeliveryConfiguration struct {
 	//
 	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+	// Wire name: 'output_format'
 	OutputFormat OutputFormat
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
+	// Wire name: 'status'
 	Status LogDeliveryConfigStatus
 	// The ID for a method:storage/create that represents the S3 bucket with
 	// bucket policy as described in the main billable usage documentation page.
 	// See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+	// Wire name: 'storage_configuration_id'
 	StorageConfigurationId string
 	// Time in epoch milliseconds when the log delivery configuration was
 	// updated.
+	// Wire name: 'update_time'
 	UpdateTime int64
 	// Optional filter that specifies workspace IDs to deliver logs for. By
 	// default the workspace filter is empty and log delivery applies at the
@@ -4055,9 +3651,10 @@ type LogDeliveryConfiguration struct {
 	// delivery won't include account level logs. For some types of Databricks
 	// deployments there is only one workspace per account ID, so this field is
 	// unnecessary.
+	// Wire name: 'workspace_ids_filter'
 	WorkspaceIdsFilter []int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func logDeliveryConfigurationToPb(st *LogDeliveryConfiguration) (*logDeliveryConfigurationPb, error) {
@@ -4065,40 +3662,19 @@ func logDeliveryConfigurationToPb(st *LogDeliveryConfiguration) (*logDeliveryCon
 		return nil, nil
 	}
 	pb := &logDeliveryConfigurationPb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
-	configIdPb := &st.ConfigId
-	if configIdPb != nil {
-		pb.ConfigId = *configIdPb
-	}
+	pb.ConfigId = st.ConfigId
 
-	configNamePb := &st.ConfigName
-	if configNamePb != nil {
-		pb.ConfigName = *configNamePb
-	}
+	pb.ConfigName = st.ConfigName
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
-	credentialsIdPb := &st.CredentialsId
-	if credentialsIdPb != nil {
-		pb.CredentialsId = *credentialsIdPb
-	}
+	pb.CredentialsId = st.CredentialsId
 
-	deliveryPathPrefixPb := &st.DeliveryPathPrefix
-	if deliveryPathPrefixPb != nil {
-		pb.DeliveryPathPrefix = *deliveryPathPrefixPb
-	}
+	pb.DeliveryPathPrefix = st.DeliveryPathPrefix
 
-	deliveryStartTimePb := &st.DeliveryStartTime
-	if deliveryStartTimePb != nil {
-		pb.DeliveryStartTime = *deliveryStartTimePb
-	}
+	pb.DeliveryStartTime = st.DeliveryStartTime
 
 	logDeliveryStatusPb, err := logDeliveryStatusToPb(st.LogDeliveryStatus)
 	if err != nil {
@@ -4108,39 +3684,17 @@ func logDeliveryConfigurationToPb(st *LogDeliveryConfiguration) (*logDeliveryCon
 		pb.LogDeliveryStatus = logDeliveryStatusPb
 	}
 
-	logTypePb := &st.LogType
-	if logTypePb != nil {
-		pb.LogType = *logTypePb
-	}
+	pb.LogType = st.LogType
 
-	outputFormatPb := &st.OutputFormat
-	if outputFormatPb != nil {
-		pb.OutputFormat = *outputFormatPb
-	}
+	pb.OutputFormat = st.OutputFormat
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	storageConfigurationIdPb := &st.StorageConfigurationId
-	if storageConfigurationIdPb != nil {
-		pb.StorageConfigurationId = *storageConfigurationIdPb
-	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
-	var workspaceIdsFilterPb []int64
-	for _, item := range st.WorkspaceIdsFilter {
-		itemPb := &item
-		if itemPb != nil {
-			workspaceIdsFilterPb = append(workspaceIdsFilterPb, *itemPb)
-		}
-	}
-	pb.WorkspaceIdsFilter = workspaceIdsFilterPb
+	pb.WorkspaceIdsFilter = st.WorkspaceIdsFilter
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4262,34 +3816,13 @@ func logDeliveryConfigurationFromPb(pb *logDeliveryConfigurationPb) (*LogDeliver
 		return nil, nil
 	}
 	st := &LogDeliveryConfiguration{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
-	configIdField := &pb.ConfigId
-	if configIdField != nil {
-		st.ConfigId = *configIdField
-	}
-	configNameField := &pb.ConfigName
-	if configNameField != nil {
-		st.ConfigName = *configNameField
-	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
-	credentialsIdField := &pb.CredentialsId
-	if credentialsIdField != nil {
-		st.CredentialsId = *credentialsIdField
-	}
-	deliveryPathPrefixField := &pb.DeliveryPathPrefix
-	if deliveryPathPrefixField != nil {
-		st.DeliveryPathPrefix = *deliveryPathPrefixField
-	}
-	deliveryStartTimeField := &pb.DeliveryStartTime
-	if deliveryStartTimeField != nil {
-		st.DeliveryStartTime = *deliveryStartTimeField
-	}
+	st.AccountId = pb.AccountId
+	st.ConfigId = pb.ConfigId
+	st.ConfigName = pb.ConfigName
+	st.CreationTime = pb.CreationTime
+	st.CredentialsId = pb.CredentialsId
+	st.DeliveryPathPrefix = pb.DeliveryPathPrefix
+	st.DeliveryStartTime = pb.DeliveryStartTime
 	logDeliveryStatusField, err := logDeliveryStatusFromPb(pb.LogDeliveryStatus)
 	if err != nil {
 		return nil, err
@@ -4297,35 +3830,12 @@ func logDeliveryConfigurationFromPb(pb *logDeliveryConfigurationPb) (*LogDeliver
 	if logDeliveryStatusField != nil {
 		st.LogDeliveryStatus = logDeliveryStatusField
 	}
-	logTypeField := &pb.LogType
-	if logTypeField != nil {
-		st.LogType = *logTypeField
-	}
-	outputFormatField := &pb.OutputFormat
-	if outputFormatField != nil {
-		st.OutputFormat = *outputFormatField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	storageConfigurationIdField := &pb.StorageConfigurationId
-	if storageConfigurationIdField != nil {
-		st.StorageConfigurationId = *storageConfigurationIdField
-	}
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
-
-	var workspaceIdsFilterField []int64
-	for _, item := range pb.WorkspaceIdsFilter {
-		itemField := &item
-		if itemField != nil {
-			workspaceIdsFilterField = append(workspaceIdsFilterField, *itemField)
-		}
-	}
-	st.WorkspaceIdsFilter = workspaceIdsFilterField
+	st.LogType = pb.LogType
+	st.OutputFormat = pb.OutputFormat
+	st.Status = pb.Status
+	st.StorageConfigurationId = pb.StorageConfigurationId
+	st.UpdateTime = pb.UpdateTime
+	st.WorkspaceIdsFilter = pb.WorkspaceIdsFilter
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4342,12 +3852,15 @@ func (st logDeliveryConfigurationPb) MarshalJSON() ([]byte, error) {
 // Databricks log delivery status.
 type LogDeliveryStatus struct {
 	// The UTC time for the latest log delivery attempt.
+	// Wire name: 'last_attempt_time'
 	LastAttemptTime string
 	// The UTC time for the latest successful log delivery.
+	// Wire name: 'last_successful_attempt_time'
 	LastSuccessfulAttemptTime string
 	// Informative message about the latest log delivery attempt. If the log
 	// delivery fails with USER_FAILURE, error details will be provided for
 	// fixing misconfigurations in cloud permissions.
+	// Wire name: 'message'
 	Message string
 	// The status string for log delivery. Possible values are: * `CREATED`:
 	// There were no log delivery attempts since the config was created. *
@@ -4359,9 +3872,10 @@ type LogDeliveryStatus struct {
 	// `NOT_FOUND`: The log delivery status as the configuration has been
 	// disabled since the release of this feature or there are no workspaces in
 	// the account.
+	// Wire name: 'status'
 	Status DeliveryStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func logDeliveryStatusToPb(st *LogDeliveryStatus) (*logDeliveryStatusPb, error) {
@@ -4369,25 +3883,13 @@ func logDeliveryStatusToPb(st *LogDeliveryStatus) (*logDeliveryStatusPb, error) 
 		return nil, nil
 	}
 	pb := &logDeliveryStatusPb{}
-	lastAttemptTimePb := &st.LastAttemptTime
-	if lastAttemptTimePb != nil {
-		pb.LastAttemptTime = *lastAttemptTimePb
-	}
+	pb.LastAttemptTime = st.LastAttemptTime
 
-	lastSuccessfulAttemptTimePb := &st.LastSuccessfulAttemptTime
-	if lastSuccessfulAttemptTimePb != nil {
-		pb.LastSuccessfulAttemptTime = *lastSuccessfulAttemptTimePb
-	}
+	pb.LastSuccessfulAttemptTime = st.LastSuccessfulAttemptTime
 
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4447,22 +3949,10 @@ func logDeliveryStatusFromPb(pb *logDeliveryStatusPb) (*LogDeliveryStatus, error
 		return nil, nil
 	}
 	st := &LogDeliveryStatus{}
-	lastAttemptTimeField := &pb.LastAttemptTime
-	if lastAttemptTimeField != nil {
-		st.LastAttemptTime = *lastAttemptTimeField
-	}
-	lastSuccessfulAttemptTimeField := &pb.LastSuccessfulAttemptTime
-	if lastSuccessfulAttemptTimeField != nil {
-		st.LastSuccessfulAttemptTime = *lastSuccessfulAttemptTimeField
-	}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.LastAttemptTime = pb.LastAttemptTime
+	st.LastSuccessfulAttemptTime = pb.LastSuccessfulAttemptTime
+	st.Message = pb.Message
+	st.Status = pb.Status
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4637,11 +4127,13 @@ func patchStatusResponseFromPb(pb *patchStatusResponsePb) (*PatchStatusResponse,
 
 type SortSpec struct {
 	// Whether to sort in descending order.
+	// Wire name: 'descending'
 	Descending bool
 	// The filed to sort by
+	// Wire name: 'field'
 	Field SortSpecField
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func sortSpecToPb(st *SortSpec) (*sortSpecPb, error) {
@@ -4649,15 +4141,9 @@ func sortSpecToPb(st *SortSpec) (*sortSpecPb, error) {
 		return nil, nil
 	}
 	pb := &sortSpecPb{}
-	descendingPb := &st.Descending
-	if descendingPb != nil {
-		pb.Descending = *descendingPb
-	}
+	pb.Descending = st.Descending
 
-	fieldPb := &st.Field
-	if fieldPb != nil {
-		pb.Field = *fieldPb
-	}
+	pb.Field = st.Field
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4702,14 +4188,8 @@ func sortSpecFromPb(pb *sortSpecPb) (*SortSpec, error) {
 		return nil, nil
 	}
 	st := &SortSpec{}
-	descendingField := &pb.Descending
-	if descendingField != nil {
-		st.Descending = *descendingField
-	}
-	fieldField := &pb.Field
-	if fieldField != nil {
-		st.Field = *fieldField
-	}
+	st.Descending = pb.Descending
+	st.Field = pb.Field
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4767,21 +4247,26 @@ func sortSpecFieldFromPb(pb *sortSpecFieldPb) (*SortSpecField, error) {
 
 type UpdateBudgetConfigurationBudget struct {
 	// Databricks account ID.
+	// Wire name: 'account_id'
 	AccountId string
 	// Alerts to configure when this budget is in a triggered state. Budgets
 	// must have exactly one alert configuration.
+	// Wire name: 'alert_configurations'
 	AlertConfigurations []AlertConfiguration
 	// Databricks budget configuration ID.
+	// Wire name: 'budget_configuration_id'
 	BudgetConfigurationId string
 	// Human-readable name of budget configuration. Max Length: 128
+	// Wire name: 'display_name'
 	DisplayName string
 	// Configured filters for this budget. These are applied to your account's
 	// usage to limit the scope of what is considered for this budget. Leave
 	// empty to include all usage for this account. All provided filters must be
 	// matched for usage to be included.
+	// Wire name: 'filter'
 	Filter *BudgetConfigurationFilter
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateBudgetConfigurationBudgetToPb(st *UpdateBudgetConfigurationBudget) (*updateBudgetConfigurationBudgetPb, error) {
@@ -4789,10 +4274,7 @@ func updateBudgetConfigurationBudgetToPb(st *UpdateBudgetConfigurationBudget) (*
 		return nil, nil
 	}
 	pb := &updateBudgetConfigurationBudgetPb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
 	var alertConfigurationsPb []alertConfigurationPb
 	for _, item := range st.AlertConfigurations {
@@ -4806,15 +4288,9 @@ func updateBudgetConfigurationBudgetToPb(st *UpdateBudgetConfigurationBudget) (*
 	}
 	pb.AlertConfigurations = alertConfigurationsPb
 
-	budgetConfigurationIdPb := &st.BudgetConfigurationId
-	if budgetConfigurationIdPb != nil {
-		pb.BudgetConfigurationId = *budgetConfigurationIdPb
-	}
+	pb.BudgetConfigurationId = st.BudgetConfigurationId
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
 	filterPb, err := budgetConfigurationFilterToPb(st.Filter)
 	if err != nil {
@@ -4877,30 +4353,21 @@ func updateBudgetConfigurationBudgetFromPb(pb *updateBudgetConfigurationBudgetPb
 		return nil, nil
 	}
 	st := &UpdateBudgetConfigurationBudget{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
+	st.AccountId = pb.AccountId
 
 	var alertConfigurationsField []AlertConfiguration
-	for _, item := range pb.AlertConfigurations {
-		itemField, err := alertConfigurationFromPb(&item)
+	for _, itemPb := range pb.AlertConfigurations {
+		item, err := alertConfigurationFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			alertConfigurationsField = append(alertConfigurationsField, *itemField)
+		if item != nil {
+			alertConfigurationsField = append(alertConfigurationsField, *item)
 		}
 	}
 	st.AlertConfigurations = alertConfigurationsField
-	budgetConfigurationIdField := &pb.BudgetConfigurationId
-	if budgetConfigurationIdField != nil {
-		st.BudgetConfigurationId = *budgetConfigurationIdField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
+	st.BudgetConfigurationId = pb.BudgetConfigurationId
+	st.DisplayName = pb.DisplayName
 	filterField, err := budgetConfigurationFilterFromPb(pb.Filter)
 	if err != nil {
 		return nil, err
@@ -4924,9 +4391,11 @@ func (st updateBudgetConfigurationBudgetPb) MarshalJSON() ([]byte, error) {
 type UpdateBudgetConfigurationRequest struct {
 	// The updated budget. This will overwrite the budget specified by the
 	// budget ID.
+	// Wire name: 'budget'
 	Budget UpdateBudgetConfigurationBudget
 	// The Databricks budget configuration ID.
-	BudgetId string
+	// Wire name: 'budget_id'
+	BudgetId string `tf:"-"`
 }
 
 func updateBudgetConfigurationRequestToPb(st *UpdateBudgetConfigurationRequest) (*updateBudgetConfigurationRequestPb, error) {
@@ -4942,10 +4411,7 @@ func updateBudgetConfigurationRequestToPb(st *UpdateBudgetConfigurationRequest) 
 		pb.Budget = *budgetPb
 	}
 
-	budgetIdPb := &st.BudgetId
-	if budgetIdPb != nil {
-		pb.BudgetId = *budgetIdPb
-	}
+	pb.BudgetId = st.BudgetId
 
 	return pb, nil
 }
@@ -4995,16 +4461,14 @@ func updateBudgetConfigurationRequestFromPb(pb *updateBudgetConfigurationRequest
 	if budgetField != nil {
 		st.Budget = *budgetField
 	}
-	budgetIdField := &pb.BudgetId
-	if budgetIdField != nil {
-		st.BudgetId = *budgetIdField
-	}
+	st.BudgetId = pb.BudgetId
 
 	return st, nil
 }
 
 type UpdateBudgetConfigurationResponse struct {
 	// The updated budget.
+	// Wire name: 'budget'
 	Budget *BudgetConfiguration
 }
 
@@ -5074,12 +4538,15 @@ func updateBudgetConfigurationResponseFromPb(pb *updateBudgetConfigurationRespon
 type UpdateBudgetPolicyRequest struct {
 	// DEPRECATED. This is redundant field as LimitConfig is part of the
 	// BudgetPolicy
-	LimitConfig *LimitConfig
+	// Wire name: 'limit_config'
+	LimitConfig *LimitConfig `tf:"-"`
 	// Contains the BudgetPolicy details.
+	// Wire name: 'policy'
 	Policy BudgetPolicy
 	// The Id of the policy. This field is generated by Databricks and globally
 	// unique.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 }
 
 func updateBudgetPolicyRequestToPb(st *UpdateBudgetPolicyRequest) (*updateBudgetPolicyRequestPb, error) {
@@ -5103,10 +4570,7 @@ func updateBudgetPolicyRequestToPb(st *UpdateBudgetPolicyRequest) (*updateBudget
 		pb.Policy = *policyPb
 	}
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	return pb, nil
 }
@@ -5166,22 +4630,21 @@ func updateBudgetPolicyRequestFromPb(pb *updateBudgetPolicyRequestPb) (*UpdateBu
 	if policyField != nil {
 		st.Policy = *policyField
 	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.PolicyId = pb.PolicyId
 
 	return st, nil
 }
 
 type UpdateLogDeliveryConfigurationStatusRequest struct {
 	// Databricks log delivery configuration ID
-	LogDeliveryConfigurationId string
+	// Wire name: 'log_delivery_configuration_id'
+	LogDeliveryConfigurationId string `tf:"-"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
 	// Deletion of a configuration is not supported, so disable a log delivery
 	// configuration that is no longer needed.
+	// Wire name: 'status'
 	Status LogDeliveryConfigStatus
 }
 
@@ -5190,15 +4653,9 @@ func updateLogDeliveryConfigurationStatusRequestToPb(st *UpdateLogDeliveryConfig
 		return nil, nil
 	}
 	pb := &updateLogDeliveryConfigurationStatusRequestPb{}
-	logDeliveryConfigurationIdPb := &st.LogDeliveryConfigurationId
-	if logDeliveryConfigurationIdPb != nil {
-		pb.LogDeliveryConfigurationId = *logDeliveryConfigurationIdPb
-	}
+	pb.LogDeliveryConfigurationId = st.LogDeliveryConfigurationId
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	return pb, nil
 }
@@ -5244,14 +4701,8 @@ func updateLogDeliveryConfigurationStatusRequestFromPb(pb *updateLogDeliveryConf
 		return nil, nil
 	}
 	st := &UpdateLogDeliveryConfigurationStatusRequest{}
-	logDeliveryConfigurationIdField := &pb.LogDeliveryConfigurationId
-	if logDeliveryConfigurationIdField != nil {
-		st.LogDeliveryConfigurationId = *logDeliveryConfigurationIdField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.LogDeliveryConfigurationId = pb.LogDeliveryConfigurationId
+	st.Status = pb.Status
 
 	return st, nil
 }
@@ -5301,6 +4752,8 @@ func usageDashboardTypeFromPb(pb *usageDashboardTypePb) (*UsageDashboardType, er
 }
 
 type WrappedCreateLogDeliveryConfiguration struct {
+
+	// Wire name: 'log_delivery_configuration'
 	LogDeliveryConfiguration *CreateLogDeliveryConfigurationParams
 }
 
@@ -5366,6 +4819,8 @@ func wrappedCreateLogDeliveryConfigurationFromPb(pb *wrappedCreateLogDeliveryCon
 }
 
 type WrappedLogDeliveryConfiguration struct {
+
+	// Wire name: 'log_delivery_configuration'
 	LogDeliveryConfiguration *LogDeliveryConfiguration
 }
 
@@ -5431,6 +4886,8 @@ func wrappedLogDeliveryConfigurationFromPb(pb *wrappedLogDeliveryConfigurationPb
 }
 
 type WrappedLogDeliveryConfigurations struct {
+
+	// Wire name: 'log_delivery_configurations'
 	LogDeliveryConfigurations []LogDeliveryConfiguration
 }
 
@@ -5491,16 +4948,70 @@ func wrappedLogDeliveryConfigurationsFromPb(pb *wrappedLogDeliveryConfigurations
 	st := &WrappedLogDeliveryConfigurations{}
 
 	var logDeliveryConfigurationsField []LogDeliveryConfiguration
-	for _, item := range pb.LogDeliveryConfigurations {
-		itemField, err := logDeliveryConfigurationFromPb(&item)
+	for _, itemPb := range pb.LogDeliveryConfigurations {
+		item, err := logDeliveryConfigurationFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			logDeliveryConfigurationsField = append(logDeliveryConfigurationsField, *itemField)
+		if item != nil {
+			logDeliveryConfigurationsField = append(logDeliveryConfigurationsField, *item)
 		}
 	}
 	st.LogDeliveryConfigurations = logDeliveryConfigurationsField
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

@@ -34,15 +34,22 @@ func (a *accountFederationPolicyImpl) Create(ctx context.Context, request Create
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).Policy, &federationPolicyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Policy,
+		&federationPolicyPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := federationPolicyFromPb(&federationPolicyPb)
+	resp, err := federationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -59,7 +66,15 @@ func (a *accountFederationPolicyImpl) Delete(ctx context.Context, request Delete
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -79,15 +94,22 @@ func (a *accountFederationPolicyImpl) Get(ctx context.Context, request GetAccoun
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &federationPolicyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&federationPolicyPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := federationPolicyFromPb(&federationPolicyPb)
+	resp, err := federationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -135,15 +157,22 @@ func (a *accountFederationPolicyImpl) internalList(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listFederationPoliciesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listFederationPoliciesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listFederationPoliciesResponseFromPb(&listFederationPoliciesResponsePb)
+	resp, err := listFederationPoliciesResponseFromPb(&listFederationPoliciesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -164,15 +193,22 @@ func (a *accountFederationPolicyImpl) Update(ctx context.Context, request Update
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb).Policy, &federationPolicyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Policy,
+		&federationPolicyPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := federationPolicyFromPb(&federationPolicyPb)
+	resp, err := federationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -195,15 +231,22 @@ func (a *customAppIntegrationImpl) Create(ctx context.Context, request CreateCus
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createCustomAppIntegrationOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createCustomAppIntegrationOutputPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createCustomAppIntegrationOutputFromPb(&createCustomAppIntegrationOutputPb)
+	resp, err := createCustomAppIntegrationOutputFromPb(&createCustomAppIntegrationOutputPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -220,7 +263,15 @@ func (a *customAppIntegrationImpl) Delete(ctx context.Context, request DeleteCus
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteCustomAppIntegrationOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteCustomAppIntegrationOutputPb,
+	)
 	if err != nil {
 		return err
 	}
@@ -240,15 +291,22 @@ func (a *customAppIntegrationImpl) Get(ctx context.Context, request GetCustomApp
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getCustomAppIntegrationOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getCustomAppIntegrationOutputPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getCustomAppIntegrationOutputFromPb(&getCustomAppIntegrationOutputPb)
+	resp, err := getCustomAppIntegrationOutputFromPb(&getCustomAppIntegrationOutputPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -302,15 +360,22 @@ func (a *customAppIntegrationImpl) internalList(ctx context.Context, request Lis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getCustomAppIntegrationsOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getCustomAppIntegrationsOutputPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getCustomAppIntegrationsOutputFromPb(&getCustomAppIntegrationsOutputPb)
+	resp, err := getCustomAppIntegrationsOutputFromPb(&getCustomAppIntegrationsOutputPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -328,7 +393,15 @@ func (a *customAppIntegrationImpl) Update(ctx context.Context, request UpdateCus
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updateCustomAppIntegrationOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateCustomAppIntegrationOutputPb,
+	)
 	if err != nil {
 		return err
 	}
@@ -388,15 +461,22 @@ func (a *oAuthPublishedAppsImpl) internalList(ctx context.Context, request ListO
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getPublishedAppsOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getPublishedAppsOutputPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getPublishedAppsOutputFromPb(&getPublishedAppsOutputPb)
+	resp, err := getPublishedAppsOutputFromPb(&getPublishedAppsOutputPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -419,15 +499,22 @@ func (a *publishedAppIntegrationImpl) Create(ctx context.Context, request Create
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createPublishedAppIntegrationOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createPublishedAppIntegrationOutputPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createPublishedAppIntegrationOutputFromPb(&createPublishedAppIntegrationOutputPb)
+	resp, err := createPublishedAppIntegrationOutputFromPb(&createPublishedAppIntegrationOutputPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -444,7 +531,15 @@ func (a *publishedAppIntegrationImpl) Delete(ctx context.Context, request Delete
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deletePublishedAppIntegrationOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deletePublishedAppIntegrationOutputPb,
+	)
 	if err != nil {
 		return err
 	}
@@ -464,15 +559,22 @@ func (a *publishedAppIntegrationImpl) Get(ctx context.Context, request GetPublis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getPublishedAppIntegrationOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getPublishedAppIntegrationOutputPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getPublishedAppIntegrationOutputFromPb(&getPublishedAppIntegrationOutputPb)
+	resp, err := getPublishedAppIntegrationOutputFromPb(&getPublishedAppIntegrationOutputPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -526,15 +628,22 @@ func (a *publishedAppIntegrationImpl) internalList(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getPublishedAppIntegrationsOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getPublishedAppIntegrationsOutputPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getPublishedAppIntegrationsOutputFromPb(&getPublishedAppIntegrationsOutputPb)
+	resp, err := getPublishedAppIntegrationsOutputFromPb(&getPublishedAppIntegrationsOutputPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -552,7 +661,15 @@ func (a *publishedAppIntegrationImpl) Update(ctx context.Context, request Update
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updatePublishedAppIntegrationOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updatePublishedAppIntegrationOutputPb,
+	)
 	if err != nil {
 		return err
 	}
@@ -581,15 +698,22 @@ func (a *servicePrincipalFederationPolicyImpl) Create(ctx context.Context, reque
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).Policy, &federationPolicyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Policy,
+		&federationPolicyPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := federationPolicyFromPb(&federationPolicyPb)
+	resp, err := federationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -606,7 +730,15 @@ func (a *servicePrincipalFederationPolicyImpl) Delete(ctx context.Context, reque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -626,15 +758,22 @@ func (a *servicePrincipalFederationPolicyImpl) Get(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &federationPolicyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&federationPolicyPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := federationPolicyFromPb(&federationPolicyPb)
+	resp, err := federationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -682,15 +821,22 @@ func (a *servicePrincipalFederationPolicyImpl) internalList(ctx context.Context,
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listFederationPoliciesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listFederationPoliciesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listFederationPoliciesResponseFromPb(&listFederationPoliciesResponsePb)
+	resp, err := listFederationPoliciesResponseFromPb(&listFederationPoliciesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -711,15 +857,22 @@ func (a *servicePrincipalFederationPolicyImpl) Update(ctx context.Context, reque
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb).Policy, &federationPolicyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Policy,
+		&federationPolicyPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := federationPolicyFromPb(&federationPolicyPb)
+	resp, err := federationPolicyFromPb(&federationPolicyPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -742,15 +895,22 @@ func (a *servicePrincipalSecretsImpl) Create(ctx context.Context, request Create
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createServicePrincipalSecretResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createServicePrincipalSecretResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createServicePrincipalSecretResponseFromPb(&createServicePrincipalSecretResponsePb)
+	resp, err := createServicePrincipalSecretResponseFromPb(&createServicePrincipalSecretResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -766,7 +926,15 @@ func (a *servicePrincipalSecretsImpl) Delete(ctx context.Context, request Delete
 	path := fmt.Sprintf("/api/2.0/accounts/%v/servicePrincipals/%v/credentials/secrets/%v", a.client.ConfiguredAccountID(), requestPb.ServicePrincipalId, requestPb.SecretId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -825,15 +993,22 @@ func (a *servicePrincipalSecretsImpl) internalList(ctx context.Context, request 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listServicePrincipalSecretsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listServicePrincipalSecretsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listServicePrincipalSecretsResponseFromPb(&listServicePrincipalSecretsResponsePb)
+	resp, err := listServicePrincipalSecretsResponseFromPb(&listServicePrincipalSecretsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }

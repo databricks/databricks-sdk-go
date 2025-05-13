@@ -30,15 +30,22 @@ func (a *accountIpAccessListsImpl) Create(ctx context.Context, request CreateIpA
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createIpAccessListResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createIpAccessListResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createIpAccessListResponseFromPb(&createIpAccessListResponsePb)
+	resp, err := createIpAccessListResponseFromPb(&createIpAccessListResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -54,7 +61,15 @@ func (a *accountIpAccessListsImpl) Delete(ctx context.Context, request DeleteAcc
 	path := fmt.Sprintf("/api/2.0/accounts/%v/ip-access-lists/%v", a.client.ConfiguredAccountID(), requestPb.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -74,15 +89,22 @@ func (a *accountIpAccessListsImpl) Get(ctx context.Context, request GetAccountIp
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getIpAccessListResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getIpAccessListResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getIpAccessListResponseFromPb(&getIpAccessListResponsePb)
+	resp, err := getIpAccessListResponseFromPb(&getIpAccessListResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -124,15 +146,22 @@ func (a *accountIpAccessListsImpl) internalList(ctx context.Context) (*GetIpAcce
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getIpAccessListsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&getIpAccessListsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getIpAccessListsResponseFromPb(&getIpAccessListsResponsePb)
+	resp, err := getIpAccessListsResponseFromPb(&getIpAccessListsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -149,7 +178,15 @@ func (a *accountIpAccessListsImpl) Replace(ctx context.Context, request ReplaceI
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &replaceResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&replaceResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -169,7 +206,15 @@ func (a *accountIpAccessListsImpl) Update(ctx context.Context, request UpdateIpA
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updateResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -199,15 +244,22 @@ func (a *aibiDashboardEmbeddingAccessPolicyImpl) Delete(ctx context.Context, req
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteAibiDashboardEmbeddingAccessPolicySettingResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteAibiDashboardEmbeddingAccessPolicySettingResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := deleteAibiDashboardEmbeddingAccessPolicySettingResponseFromPb(&deleteAibiDashboardEmbeddingAccessPolicySettingResponsePb)
+	resp, err := deleteAibiDashboardEmbeddingAccessPolicySettingResponseFromPb(&deleteAibiDashboardEmbeddingAccessPolicySettingResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -224,15 +276,22 @@ func (a *aibiDashboardEmbeddingAccessPolicyImpl) Get(ctx context.Context, reques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &aibiDashboardEmbeddingAccessPolicySettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&aibiDashboardEmbeddingAccessPolicySettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := aibiDashboardEmbeddingAccessPolicySettingFromPb(&aibiDashboardEmbeddingAccessPolicySettingPb)
+	resp, err := aibiDashboardEmbeddingAccessPolicySettingFromPb(&aibiDashboardEmbeddingAccessPolicySettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -250,15 +309,22 @@ func (a *aibiDashboardEmbeddingAccessPolicyImpl) Update(ctx context.Context, req
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &aibiDashboardEmbeddingAccessPolicySettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&aibiDashboardEmbeddingAccessPolicySettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := aibiDashboardEmbeddingAccessPolicySettingFromPb(&aibiDashboardEmbeddingAccessPolicySettingPb)
+	resp, err := aibiDashboardEmbeddingAccessPolicySettingFromPb(&aibiDashboardEmbeddingAccessPolicySettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -280,15 +346,22 @@ func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Delete(ctx context.Context, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := deleteAibiDashboardEmbeddingApprovedDomainsSettingResponseFromPb(&deleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb)
+	resp, err := deleteAibiDashboardEmbeddingApprovedDomainsSettingResponseFromPb(&deleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -305,15 +378,22 @@ func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Get(ctx context.Context, req
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &aibiDashboardEmbeddingApprovedDomainsSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&aibiDashboardEmbeddingApprovedDomainsSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := aibiDashboardEmbeddingApprovedDomainsSettingFromPb(&aibiDashboardEmbeddingApprovedDomainsSettingPb)
+	resp, err := aibiDashboardEmbeddingApprovedDomainsSettingFromPb(&aibiDashboardEmbeddingApprovedDomainsSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -331,15 +411,22 @@ func (a *aibiDashboardEmbeddingApprovedDomainsImpl) Update(ctx context.Context, 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &aibiDashboardEmbeddingApprovedDomainsSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&aibiDashboardEmbeddingApprovedDomainsSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := aibiDashboardEmbeddingApprovedDomainsSettingFromPb(&aibiDashboardEmbeddingApprovedDomainsSettingPb)
+	resp, err := aibiDashboardEmbeddingApprovedDomainsSettingFromPb(&aibiDashboardEmbeddingApprovedDomainsSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -361,15 +448,22 @@ func (a *automaticClusterUpdateImpl) Get(ctx context.Context, request GetAutomat
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &automaticClusterUpdateSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&automaticClusterUpdateSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := automaticClusterUpdateSettingFromPb(&automaticClusterUpdateSettingPb)
+	resp, err := automaticClusterUpdateSettingFromPb(&automaticClusterUpdateSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -387,15 +481,22 @@ func (a *automaticClusterUpdateImpl) Update(ctx context.Context, request UpdateA
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &automaticClusterUpdateSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&automaticClusterUpdateSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := automaticClusterUpdateSettingFromPb(&automaticClusterUpdateSettingPb)
+	resp, err := automaticClusterUpdateSettingFromPb(&automaticClusterUpdateSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -417,15 +518,22 @@ func (a *complianceSecurityProfileImpl) Get(ctx context.Context, request GetComp
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &complianceSecurityProfileSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&complianceSecurityProfileSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := complianceSecurityProfileSettingFromPb(&complianceSecurityProfileSettingPb)
+	resp, err := complianceSecurityProfileSettingFromPb(&complianceSecurityProfileSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -443,15 +551,22 @@ func (a *complianceSecurityProfileImpl) Update(ctx context.Context, request Upda
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &complianceSecurityProfileSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&complianceSecurityProfileSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := complianceSecurityProfileSettingFromPb(&complianceSecurityProfileSettingPb)
+	resp, err := complianceSecurityProfileSettingFromPb(&complianceSecurityProfileSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -474,15 +589,22 @@ func (a *credentialsManagerImpl) ExchangeToken(ctx context.Context, request Exch
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &exchangeTokenResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&exchangeTokenResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := exchangeTokenResponseFromPb(&exchangeTokenResponsePb)
+	resp, err := exchangeTokenResponseFromPb(&exchangeTokenResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -504,15 +626,22 @@ func (a *cspEnablementAccountImpl) Get(ctx context.Context, request GetCspEnable
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &cspEnablementAccountSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&cspEnablementAccountSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := cspEnablementAccountSettingFromPb(&cspEnablementAccountSettingPb)
+	resp, err := cspEnablementAccountSettingFromPb(&cspEnablementAccountSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -530,15 +659,22 @@ func (a *cspEnablementAccountImpl) Update(ctx context.Context, request UpdateCsp
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &cspEnablementAccountSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&cspEnablementAccountSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := cspEnablementAccountSettingFromPb(&cspEnablementAccountSettingPb)
+	resp, err := cspEnablementAccountSettingFromPb(&cspEnablementAccountSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -560,15 +696,22 @@ func (a *defaultNamespaceImpl) Delete(ctx context.Context, request DeleteDefault
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteDefaultNamespaceSettingResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteDefaultNamespaceSettingResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := deleteDefaultNamespaceSettingResponseFromPb(&deleteDefaultNamespaceSettingResponsePb)
+	resp, err := deleteDefaultNamespaceSettingResponseFromPb(&deleteDefaultNamespaceSettingResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -585,15 +728,22 @@ func (a *defaultNamespaceImpl) Get(ctx context.Context, request GetDefaultNamesp
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &defaultNamespaceSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&defaultNamespaceSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := defaultNamespaceSettingFromPb(&defaultNamespaceSettingPb)
+	resp, err := defaultNamespaceSettingFromPb(&defaultNamespaceSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -611,15 +761,22 @@ func (a *defaultNamespaceImpl) Update(ctx context.Context, request UpdateDefault
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &defaultNamespaceSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&defaultNamespaceSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := defaultNamespaceSettingFromPb(&defaultNamespaceSettingPb)
+	resp, err := defaultNamespaceSettingFromPb(&defaultNamespaceSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -641,15 +798,22 @@ func (a *disableLegacyAccessImpl) Delete(ctx context.Context, request DeleteDisa
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteDisableLegacyAccessResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteDisableLegacyAccessResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := deleteDisableLegacyAccessResponseFromPb(&deleteDisableLegacyAccessResponsePb)
+	resp, err := deleteDisableLegacyAccessResponseFromPb(&deleteDisableLegacyAccessResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -666,15 +830,22 @@ func (a *disableLegacyAccessImpl) Get(ctx context.Context, request GetDisableLeg
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &disableLegacyAccessPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&disableLegacyAccessPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := disableLegacyAccessFromPb(&disableLegacyAccessPb)
+	resp, err := disableLegacyAccessFromPb(&disableLegacyAccessPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -692,15 +863,22 @@ func (a *disableLegacyAccessImpl) Update(ctx context.Context, request UpdateDisa
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &disableLegacyAccessPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&disableLegacyAccessPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := disableLegacyAccessFromPb(&disableLegacyAccessPb)
+	resp, err := disableLegacyAccessFromPb(&disableLegacyAccessPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -722,15 +900,22 @@ func (a *disableLegacyDbfsImpl) Delete(ctx context.Context, request DeleteDisabl
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteDisableLegacyDbfsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteDisableLegacyDbfsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := deleteDisableLegacyDbfsResponseFromPb(&deleteDisableLegacyDbfsResponsePb)
+	resp, err := deleteDisableLegacyDbfsResponseFromPb(&deleteDisableLegacyDbfsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -747,15 +932,22 @@ func (a *disableLegacyDbfsImpl) Get(ctx context.Context, request GetDisableLegac
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &disableLegacyDbfsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&disableLegacyDbfsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := disableLegacyDbfsFromPb(&disableLegacyDbfsPb)
+	resp, err := disableLegacyDbfsFromPb(&disableLegacyDbfsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -773,15 +965,22 @@ func (a *disableLegacyDbfsImpl) Update(ctx context.Context, request UpdateDisabl
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &disableLegacyDbfsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&disableLegacyDbfsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := disableLegacyDbfsFromPb(&disableLegacyDbfsPb)
+	resp, err := disableLegacyDbfsFromPb(&disableLegacyDbfsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -803,15 +1002,22 @@ func (a *disableLegacyFeaturesImpl) Delete(ctx context.Context, request DeleteDi
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteDisableLegacyFeaturesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteDisableLegacyFeaturesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := deleteDisableLegacyFeaturesResponseFromPb(&deleteDisableLegacyFeaturesResponsePb)
+	resp, err := deleteDisableLegacyFeaturesResponseFromPb(&deleteDisableLegacyFeaturesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -828,15 +1034,22 @@ func (a *disableLegacyFeaturesImpl) Get(ctx context.Context, request GetDisableL
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &disableLegacyFeaturesPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&disableLegacyFeaturesPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := disableLegacyFeaturesFromPb(&disableLegacyFeaturesPb)
+	resp, err := disableLegacyFeaturesFromPb(&disableLegacyFeaturesPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -854,15 +1067,22 @@ func (a *disableLegacyFeaturesImpl) Update(ctx context.Context, request UpdateDi
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &disableLegacyFeaturesPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&disableLegacyFeaturesPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := disableLegacyFeaturesFromPb(&disableLegacyFeaturesPb)
+	resp, err := disableLegacyFeaturesFromPb(&disableLegacyFeaturesPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -879,15 +1099,22 @@ func (a *enableExportNotebookImpl) GetEnableExportNotebook(ctx context.Context) 
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableExportNotebookPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&enableExportNotebookPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := enableExportNotebookFromPb(&enableExportNotebookPb)
+	resp, err := enableExportNotebookFromPb(&enableExportNotebookPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -905,15 +1132,22 @@ func (a *enableExportNotebookImpl) PatchEnableExportNotebook(ctx context.Context
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &enableExportNotebookPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&enableExportNotebookPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := enableExportNotebookFromPb(&enableExportNotebookPb)
+	resp, err := enableExportNotebookFromPb(&enableExportNotebookPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -935,15 +1169,22 @@ func (a *enableIpAccessListsImpl) Delete(ctx context.Context, request DeleteAcco
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteAccountIpAccessEnableResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteAccountIpAccessEnableResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := deleteAccountIpAccessEnableResponseFromPb(&deleteAccountIpAccessEnableResponsePb)
+	resp, err := deleteAccountIpAccessEnableResponseFromPb(&deleteAccountIpAccessEnableResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -960,15 +1201,22 @@ func (a *enableIpAccessListsImpl) Get(ctx context.Context, request GetAccountIpA
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &accountIpAccessEnablePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&accountIpAccessEnablePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := accountIpAccessEnableFromPb(&accountIpAccessEnablePb)
+	resp, err := accountIpAccessEnableFromPb(&accountIpAccessEnablePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -986,15 +1234,22 @@ func (a *enableIpAccessListsImpl) Update(ctx context.Context, request UpdateAcco
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &accountIpAccessEnablePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&accountIpAccessEnablePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := accountIpAccessEnableFromPb(&accountIpAccessEnablePb)
+	resp, err := accountIpAccessEnableFromPb(&accountIpAccessEnablePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1011,15 +1266,22 @@ func (a *enableNotebookTableClipboardImpl) GetEnableNotebookTableClipboard(ctx c
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableNotebookTableClipboardPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&enableNotebookTableClipboardPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := enableNotebookTableClipboardFromPb(&enableNotebookTableClipboardPb)
+	resp, err := enableNotebookTableClipboardFromPb(&enableNotebookTableClipboardPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1037,15 +1299,22 @@ func (a *enableNotebookTableClipboardImpl) PatchEnableNotebookTableClipboard(ctx
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &enableNotebookTableClipboardPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&enableNotebookTableClipboardPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := enableNotebookTableClipboardFromPb(&enableNotebookTableClipboardPb)
+	resp, err := enableNotebookTableClipboardFromPb(&enableNotebookTableClipboardPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1062,15 +1331,22 @@ func (a *enableResultsDownloadingImpl) GetEnableResultsDownloading(ctx context.C
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableResultsDownloadingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&enableResultsDownloadingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := enableResultsDownloadingFromPb(&enableResultsDownloadingPb)
+	resp, err := enableResultsDownloadingFromPb(&enableResultsDownloadingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1088,15 +1364,22 @@ func (a *enableResultsDownloadingImpl) PatchEnableResultsDownloading(ctx context
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &enableResultsDownloadingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&enableResultsDownloadingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := enableResultsDownloadingFromPb(&enableResultsDownloadingPb)
+	resp, err := enableResultsDownloadingFromPb(&enableResultsDownloadingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1118,15 +1401,22 @@ func (a *enhancedSecurityMonitoringImpl) Get(ctx context.Context, request GetEnh
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &enhancedSecurityMonitoringSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&enhancedSecurityMonitoringSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := enhancedSecurityMonitoringSettingFromPb(&enhancedSecurityMonitoringSettingPb)
+	resp, err := enhancedSecurityMonitoringSettingFromPb(&enhancedSecurityMonitoringSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1144,15 +1434,22 @@ func (a *enhancedSecurityMonitoringImpl) Update(ctx context.Context, request Upd
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &enhancedSecurityMonitoringSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&enhancedSecurityMonitoringSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := enhancedSecurityMonitoringSettingFromPb(&enhancedSecurityMonitoringSettingPb)
+	resp, err := enhancedSecurityMonitoringSettingFromPb(&enhancedSecurityMonitoringSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1174,15 +1471,22 @@ func (a *esmEnablementAccountImpl) Get(ctx context.Context, request GetEsmEnable
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &esmEnablementAccountSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&esmEnablementAccountSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := esmEnablementAccountSettingFromPb(&esmEnablementAccountSettingPb)
+	resp, err := esmEnablementAccountSettingFromPb(&esmEnablementAccountSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1200,15 +1504,22 @@ func (a *esmEnablementAccountImpl) Update(ctx context.Context, request UpdateEsm
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &esmEnablementAccountSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&esmEnablementAccountSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := esmEnablementAccountSettingFromPb(&esmEnablementAccountSettingPb)
+	resp, err := esmEnablementAccountSettingFromPb(&esmEnablementAccountSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1231,15 +1542,22 @@ func (a *ipAccessListsImpl) Create(ctx context.Context, request CreateIpAccessLi
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createIpAccessListResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createIpAccessListResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createIpAccessListResponseFromPb(&createIpAccessListResponsePb)
+	resp, err := createIpAccessListResponseFromPb(&createIpAccessListResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1255,7 +1573,15 @@ func (a *ipAccessListsImpl) Delete(ctx context.Context, request DeleteIpAccessLi
 	path := fmt.Sprintf("/api/2.0/ip-access-lists/%v", requestPb.IpAccessListId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1275,15 +1601,22 @@ func (a *ipAccessListsImpl) Get(ctx context.Context, request GetIpAccessListRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &fetchIpAccessListResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&fetchIpAccessListResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := fetchIpAccessListResponseFromPb(&fetchIpAccessListResponsePb)
+	resp, err := fetchIpAccessListResponseFromPb(&fetchIpAccessListResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1325,15 +1658,22 @@ func (a *ipAccessListsImpl) internalList(ctx context.Context) (*ListIpAccessList
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listIpAccessListResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listIpAccessListResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listIpAccessListResponseFromPb(&listIpAccessListResponsePb)
+	resp, err := listIpAccessListResponseFromPb(&listIpAccessListResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1350,7 +1690,15 @@ func (a *ipAccessListsImpl) Replace(ctx context.Context, request ReplaceIpAccess
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &replaceResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&replaceResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1370,7 +1718,15 @@ func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessLi
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updateResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1396,15 +1752,22 @@ func (a *networkConnectivityImpl) CreateNetworkConnectivityConfiguration(ctx con
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).NetworkConnectivityConfig, &networkConnectivityConfigurationPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).NetworkConnectivityConfig,
+		&networkConnectivityConfigurationPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := networkConnectivityConfigurationFromPb(&networkConnectivityConfigurationPb)
+	resp, err := networkConnectivityConfigurationFromPb(&networkConnectivityConfigurationPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1422,15 +1785,22 @@ func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context,
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).PrivateEndpointRule, &nccAzurePrivateEndpointRulePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).PrivateEndpointRule,
+		&nccAzurePrivateEndpointRulePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := nccAzurePrivateEndpointRuleFromPb(&nccAzurePrivateEndpointRulePb)
+	resp, err := nccAzurePrivateEndpointRuleFromPb(&nccAzurePrivateEndpointRulePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1447,7 +1817,15 @@ func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx con
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteNetworkConnectivityConfigurationResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteNetworkConnectivityConfigurationResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1467,15 +1845,22 @@ func (a *networkConnectivityImpl) DeletePrivateEndpointRule(ctx context.Context,
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &nccAzurePrivateEndpointRulePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&nccAzurePrivateEndpointRulePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := nccAzurePrivateEndpointRuleFromPb(&nccAzurePrivateEndpointRulePb)
+	resp, err := nccAzurePrivateEndpointRuleFromPb(&nccAzurePrivateEndpointRulePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1492,15 +1877,22 @@ func (a *networkConnectivityImpl) GetNetworkConnectivityConfiguration(ctx contex
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &networkConnectivityConfigurationPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&networkConnectivityConfigurationPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := networkConnectivityConfigurationFromPb(&networkConnectivityConfigurationPb)
+	resp, err := networkConnectivityConfigurationFromPb(&networkConnectivityConfigurationPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1517,15 +1909,22 @@ func (a *networkConnectivityImpl) GetPrivateEndpointRule(ctx context.Context, re
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &nccAzurePrivateEndpointRulePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&nccAzurePrivateEndpointRulePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := nccAzurePrivateEndpointRuleFromPb(&nccAzurePrivateEndpointRulePb)
+	resp, err := nccAzurePrivateEndpointRuleFromPb(&nccAzurePrivateEndpointRulePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1577,15 +1976,22 @@ func (a *networkConnectivityImpl) internalListNetworkConnectivityConfigurations(
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listNetworkConnectivityConfigurationsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listNetworkConnectivityConfigurationsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listNetworkConnectivityConfigurationsResponseFromPb(&listNetworkConnectivityConfigurationsResponsePb)
+	resp, err := listNetworkConnectivityConfigurationsResponseFromPb(&listNetworkConnectivityConfigurationsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1637,15 +2043,22 @@ func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.C
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listNccAzurePrivateEndpointRulesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listNccAzurePrivateEndpointRulesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listNccAzurePrivateEndpointRulesResponseFromPb(&listNccAzurePrivateEndpointRulesResponsePb)
+	resp, err := listNccAzurePrivateEndpointRulesResponseFromPb(&listNccAzurePrivateEndpointRulesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1666,15 +2079,22 @@ func (a *networkConnectivityImpl) UpdateNccAzurePrivateEndpointRulePublic(ctx co
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb).PrivateEndpointRule, &nccAzurePrivateEndpointRulePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).PrivateEndpointRule,
+		&nccAzurePrivateEndpointRulePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := nccAzurePrivateEndpointRuleFromPb(&nccAzurePrivateEndpointRulePb)
+	resp, err := nccAzurePrivateEndpointRuleFromPb(&nccAzurePrivateEndpointRulePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1697,15 +2117,22 @@ func (a *notificationDestinationsImpl) Create(ctx context.Context, request Creat
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &notificationDestinationPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&notificationDestinationPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := notificationDestinationFromPb(&notificationDestinationPb)
+	resp, err := notificationDestinationFromPb(&notificationDestinationPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1722,7 +2149,15 @@ func (a *notificationDestinationsImpl) Delete(ctx context.Context, request Delet
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &emptyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&emptyPb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1742,15 +2177,22 @@ func (a *notificationDestinationsImpl) Get(ctx context.Context, request GetNotif
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &notificationDestinationPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&notificationDestinationPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := notificationDestinationFromPb(&notificationDestinationPb)
+	resp, err := notificationDestinationFromPb(&notificationDestinationPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1802,15 +2244,22 @@ func (a *notificationDestinationsImpl) internalList(ctx context.Context, request
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listNotificationDestinationsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listNotificationDestinationsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listNotificationDestinationsResponseFromPb(&listNotificationDestinationsResponsePb)
+	resp, err := listNotificationDestinationsResponseFromPb(&listNotificationDestinationsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1828,15 +2277,22 @@ func (a *notificationDestinationsImpl) Update(ctx context.Context, request Updat
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &notificationDestinationPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&notificationDestinationPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := notificationDestinationFromPb(&notificationDestinationPb)
+	resp, err := notificationDestinationFromPb(&notificationDestinationPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1858,15 +2314,22 @@ func (a *personalComputeImpl) Delete(ctx context.Context, request DeletePersonal
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deletePersonalComputeSettingResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deletePersonalComputeSettingResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := deletePersonalComputeSettingResponseFromPb(&deletePersonalComputeSettingResponsePb)
+	resp, err := deletePersonalComputeSettingResponseFromPb(&deletePersonalComputeSettingResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1883,15 +2346,22 @@ func (a *personalComputeImpl) Get(ctx context.Context, request GetPersonalComput
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &personalComputeSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&personalComputeSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := personalComputeSettingFromPb(&personalComputeSettingPb)
+	resp, err := personalComputeSettingFromPb(&personalComputeSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1909,15 +2379,22 @@ func (a *personalComputeImpl) Update(ctx context.Context, request UpdatePersonal
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &personalComputeSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&personalComputeSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := personalComputeSettingFromPb(&personalComputeSettingPb)
+	resp, err := personalComputeSettingFromPb(&personalComputeSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1939,15 +2416,22 @@ func (a *restrictWorkspaceAdminsImpl) Delete(ctx context.Context, request Delete
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteRestrictWorkspaceAdminsSettingResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteRestrictWorkspaceAdminsSettingResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := deleteRestrictWorkspaceAdminsSettingResponseFromPb(&deleteRestrictWorkspaceAdminsSettingResponsePb)
+	resp, err := deleteRestrictWorkspaceAdminsSettingResponseFromPb(&deleteRestrictWorkspaceAdminsSettingResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1964,15 +2448,22 @@ func (a *restrictWorkspaceAdminsImpl) Get(ctx context.Context, request GetRestri
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &restrictWorkspaceAdminsSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&restrictWorkspaceAdminsSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := restrictWorkspaceAdminsSettingFromPb(&restrictWorkspaceAdminsSettingPb)
+	resp, err := restrictWorkspaceAdminsSettingFromPb(&restrictWorkspaceAdminsSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1990,15 +2481,22 @@ func (a *restrictWorkspaceAdminsImpl) Update(ctx context.Context, request Update
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &restrictWorkspaceAdminsSettingPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&restrictWorkspaceAdminsSettingPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := restrictWorkspaceAdminsSettingFromPb(&restrictWorkspaceAdminsSettingPb)
+	resp, err := restrictWorkspaceAdminsSettingFromPb(&restrictWorkspaceAdminsSettingPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2026,15 +2524,22 @@ func (a *tokenManagementImpl) CreateOboToken(ctx context.Context, request Create
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createOboTokenResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createOboTokenResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createOboTokenResponseFromPb(&createOboTokenResponsePb)
+	resp, err := createOboTokenResponseFromPb(&createOboTokenResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2050,7 +2555,15 @@ func (a *tokenManagementImpl) Delete(ctx context.Context, request DeleteTokenMan
 	path := fmt.Sprintf("/api/2.0/token-management/tokens/%v", requestPb.TokenId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2070,15 +2583,22 @@ func (a *tokenManagementImpl) Get(ctx context.Context, request GetTokenManagemen
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getTokenResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getTokenResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getTokenResponseFromPb(&getTokenResponsePb)
+	resp, err := getTokenResponseFromPb(&getTokenResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2090,15 +2610,22 @@ func (a *tokenManagementImpl) GetPermissionLevels(ctx context.Context) (*GetToke
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getTokenPermissionLevelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&getTokenPermissionLevelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getTokenPermissionLevelsResponseFromPb(&getTokenPermissionLevelsResponsePb)
+	resp, err := getTokenPermissionLevelsResponseFromPb(&getTokenPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2110,15 +2637,22 @@ func (a *tokenManagementImpl) GetPermissions(ctx context.Context) (*TokenPermiss
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &tokenPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&tokenPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := tokenPermissionsFromPb(&tokenPermissionsPb)
+	resp, err := tokenPermissionsFromPb(&tokenPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2164,15 +2698,22 @@ func (a *tokenManagementImpl) internalList(ctx context.Context, request ListToke
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listTokensResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listTokensResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listTokensResponseFromPb(&listTokensResponsePb)
+	resp, err := listTokensResponseFromPb(&listTokensResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2190,15 +2731,22 @@ func (a *tokenManagementImpl) SetPermissions(ctx context.Context, request TokenP
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &tokenPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&tokenPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := tokenPermissionsFromPb(&tokenPermissionsPb)
+	resp, err := tokenPermissionsFromPb(&tokenPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2216,15 +2764,22 @@ func (a *tokenManagementImpl) UpdatePermissions(ctx context.Context, request Tok
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &tokenPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&tokenPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := tokenPermissionsFromPb(&tokenPermissionsPb)
+	resp, err := tokenPermissionsFromPb(&tokenPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2247,15 +2802,22 @@ func (a *tokensImpl) Create(ctx context.Context, request CreateTokenRequest) (*C
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createTokenResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createTokenResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createTokenResponseFromPb(&createTokenResponsePb)
+	resp, err := createTokenResponseFromPb(&createTokenResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2273,7 +2835,15 @@ func (a *tokensImpl) Delete(ctx context.Context, request RevokeTokenRequest) err
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &revokeTokenResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&revokeTokenResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2318,15 +2888,22 @@ func (a *tokensImpl) internalList(ctx context.Context) (*ListPublicTokensRespons
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listPublicTokensResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listPublicTokensResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listPublicTokensResponseFromPb(&listPublicTokensResponsePb)
+	resp, err := listPublicTokensResponseFromPb(&listPublicTokensResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2348,17 +2925,19 @@ func (a *workspaceConfImpl) GetStatus(ctx context.Context, request GetStatusRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &workspaceConfPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&workspaceConfPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	resp := &map[string]string{}
-	for k, v := range workspaceConfPb {
-		itemField := &v
-		if itemField != nil {
-			(*resp)[k] = *itemField
-		}
-	}
+	resp := &workspaceConfPb
 
 	return resp, err
 }
@@ -2375,7 +2954,15 @@ func (a *workspaceConfImpl) SetStatus(ctx context.Context, request WorkspaceConf
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &setStatusResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&setStatusResponsePb,
+	)
 	if err != nil {
 		return err
 	}

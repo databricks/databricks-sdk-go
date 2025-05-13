@@ -30,15 +30,22 @@ func (a *cleanRoomAssetsImpl) Create(ctx context.Context, request CreateCleanRoo
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).Asset, &cleanRoomAssetPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Asset,
+		&cleanRoomAssetPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := cleanRoomAssetFromPb(&cleanRoomAssetPb)
+	resp, err := cleanRoomAssetFromPb(&cleanRoomAssetPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -55,7 +62,15 @@ func (a *cleanRoomAssetsImpl) Delete(ctx context.Context, request DeleteCleanRoo
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteCleanRoomAssetResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteCleanRoomAssetResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -75,15 +90,22 @@ func (a *cleanRoomAssetsImpl) Get(ctx context.Context, request GetCleanRoomAsset
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &cleanRoomAssetPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&cleanRoomAssetPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := cleanRoomAssetFromPb(&cleanRoomAssetPb)
+	resp, err := cleanRoomAssetFromPb(&cleanRoomAssetPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -131,15 +153,22 @@ func (a *cleanRoomAssetsImpl) internalList(ctx context.Context, request ListClea
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listCleanRoomAssetsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listCleanRoomAssetsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listCleanRoomAssetsResponseFromPb(&listCleanRoomAssetsResponsePb)
+	resp, err := listCleanRoomAssetsResponseFromPb(&listCleanRoomAssetsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -157,15 +186,22 @@ func (a *cleanRoomAssetsImpl) Update(ctx context.Context, request UpdateCleanRoo
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb).Asset, &cleanRoomAssetPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Asset,
+		&cleanRoomAssetPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := cleanRoomAssetFromPb(&cleanRoomAssetPb)
+	resp, err := cleanRoomAssetFromPb(&cleanRoomAssetPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -222,15 +258,22 @@ func (a *cleanRoomTaskRunsImpl) internalList(ctx context.Context, request ListCl
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listCleanRoomNotebookTaskRunsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listCleanRoomNotebookTaskRunsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listCleanRoomNotebookTaskRunsResponseFromPb(&listCleanRoomNotebookTaskRunsResponsePb)
+	resp, err := listCleanRoomNotebookTaskRunsResponseFromPb(&listCleanRoomNotebookTaskRunsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -253,15 +296,22 @@ func (a *cleanRoomsImpl) Create(ctx context.Context, request CreateCleanRoomRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).CleanRoom, &cleanRoomPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).CleanRoom,
+		&cleanRoomPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := cleanRoomFromPb(&cleanRoomPb)
+	resp, err := cleanRoomFromPb(&cleanRoomPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -279,15 +329,22 @@ func (a *cleanRoomsImpl) CreateOutputCatalog(ctx context.Context, request Create
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).OutputCatalog, &createCleanRoomOutputCatalogResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).OutputCatalog,
+		&createCleanRoomOutputCatalogResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createCleanRoomOutputCatalogResponseFromPb(&createCleanRoomOutputCatalogResponsePb)
+	resp, err := createCleanRoomOutputCatalogResponseFromPb(&createCleanRoomOutputCatalogResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -304,7 +361,15 @@ func (a *cleanRoomsImpl) Delete(ctx context.Context, request DeleteCleanRoomRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -324,15 +389,22 @@ func (a *cleanRoomsImpl) Get(ctx context.Context, request GetCleanRoomRequest) (
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &cleanRoomPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&cleanRoomPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := cleanRoomFromPb(&cleanRoomPb)
+	resp, err := cleanRoomFromPb(&cleanRoomPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -386,15 +458,22 @@ func (a *cleanRoomsImpl) internalList(ctx context.Context, request ListCleanRoom
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listCleanRoomsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listCleanRoomsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listCleanRoomsResponseFromPb(&listCleanRoomsResponsePb)
+	resp, err := listCleanRoomsResponseFromPb(&listCleanRoomsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -412,15 +491,22 @@ func (a *cleanRoomsImpl) Update(ctx context.Context, request UpdateCleanRoomRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &cleanRoomPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&cleanRoomPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := cleanRoomFromPb(&cleanRoomPb)
+	resp, err := cleanRoomFromPb(&cleanRoomPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }

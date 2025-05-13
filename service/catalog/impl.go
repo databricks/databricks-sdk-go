@@ -30,7 +30,15 @@ func (a *accountMetastoreAssignmentsImpl) Create(ctx context.Context, request Ac
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -50,7 +58,15 @@ func (a *accountMetastoreAssignmentsImpl) Delete(ctx context.Context, request De
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -70,15 +86,22 @@ func (a *accountMetastoreAssignmentsImpl) Get(ctx context.Context, request GetAc
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &accountsMetastoreAssignmentPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&accountsMetastoreAssignmentPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := accountsMetastoreAssignmentFromPb(&accountsMetastoreAssignmentPb)
+	resp, err := accountsMetastoreAssignmentFromPb(&accountsMetastoreAssignmentPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -126,15 +149,22 @@ func (a *accountMetastoreAssignmentsImpl) internalList(ctx context.Context, requ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listAccountMetastoreAssignmentsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listAccountMetastoreAssignmentsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listAccountMetastoreAssignmentsResponseFromPb(&listAccountMetastoreAssignmentsResponsePb)
+	resp, err := listAccountMetastoreAssignmentsResponseFromPb(&listAccountMetastoreAssignmentsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -152,7 +182,15 @@ func (a *accountMetastoreAssignmentsImpl) Update(ctx context.Context, request Ac
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &updateResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -178,15 +216,22 @@ func (a *accountMetastoresImpl) Create(ctx context.Context, request AccountsCrea
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &accountsMetastoreInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&accountsMetastoreInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := accountsMetastoreInfoFromPb(&accountsMetastoreInfoPb)
+	resp, err := accountsMetastoreInfoFromPb(&accountsMetastoreInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -203,7 +248,15 @@ func (a *accountMetastoresImpl) Delete(ctx context.Context, request DeleteAccoun
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -223,15 +276,22 @@ func (a *accountMetastoresImpl) Get(ctx context.Context, request GetAccountMetas
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &accountsMetastoreInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&accountsMetastoreInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := accountsMetastoreInfoFromPb(&accountsMetastoreInfoPb)
+	resp, err := accountsMetastoreInfoFromPb(&accountsMetastoreInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -273,15 +333,22 @@ func (a *accountMetastoresImpl) internalList(ctx context.Context) (*ListMetastor
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listMetastoresResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listMetastoresResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listMetastoresResponseFromPb(&listMetastoresResponsePb)
+	resp, err := listMetastoresResponseFromPb(&listMetastoresResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -299,15 +366,22 @@ func (a *accountMetastoresImpl) Update(ctx context.Context, request AccountsUpda
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &accountsMetastoreInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&accountsMetastoreInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := accountsMetastoreInfoFromPb(&accountsMetastoreInfoPb)
+	resp, err := accountsMetastoreInfoFromPb(&accountsMetastoreInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -330,15 +404,22 @@ func (a *accountStorageCredentialsImpl) Create(ctx context.Context, request Acco
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &accountsStorageCredentialInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&accountsStorageCredentialInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := accountsStorageCredentialInfoFromPb(&accountsStorageCredentialInfoPb)
+	resp, err := accountsStorageCredentialInfoFromPb(&accountsStorageCredentialInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -355,7 +436,15 @@ func (a *accountStorageCredentialsImpl) Delete(ctx context.Context, request Dele
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -375,15 +464,22 @@ func (a *accountStorageCredentialsImpl) Get(ctx context.Context, request GetAcco
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &accountsStorageCredentialInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&accountsStorageCredentialInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := accountsStorageCredentialInfoFromPb(&accountsStorageCredentialInfoPb)
+	resp, err := accountsStorageCredentialInfoFromPb(&accountsStorageCredentialInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -431,15 +527,22 @@ func (a *accountStorageCredentialsImpl) internalList(ctx context.Context, reques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listAccountStorageCredentialsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listAccountStorageCredentialsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listAccountStorageCredentialsResponseFromPb(&listAccountStorageCredentialsResponsePb)
+	resp, err := listAccountStorageCredentialsResponseFromPb(&listAccountStorageCredentialsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -457,15 +560,22 @@ func (a *accountStorageCredentialsImpl) Update(ctx context.Context, request Acco
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &accountsStorageCredentialInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&accountsStorageCredentialInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := accountsStorageCredentialInfoFromPb(&accountsStorageCredentialInfoPb)
+	resp, err := accountsStorageCredentialInfoFromPb(&accountsStorageCredentialInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -487,15 +597,22 @@ func (a *artifactAllowlistsImpl) Get(ctx context.Context, request GetArtifactAll
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &artifactAllowlistInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&artifactAllowlistInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := artifactAllowlistInfoFromPb(&artifactAllowlistInfoPb)
+	resp, err := artifactAllowlistInfoFromPb(&artifactAllowlistInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -513,15 +630,22 @@ func (a *artifactAllowlistsImpl) Update(ctx context.Context, request SetArtifact
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &artifactAllowlistInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&artifactAllowlistInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := artifactAllowlistInfoFromPb(&artifactAllowlistInfoPb)
+	resp, err := artifactAllowlistInfoFromPb(&artifactAllowlistInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -544,15 +668,22 @@ func (a *catalogsImpl) Create(ctx context.Context, request CreateCatalog) (*Cata
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &catalogInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&catalogInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := catalogInfoFromPb(&catalogInfoPb)
+	resp, err := catalogInfoFromPb(&catalogInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -569,7 +700,15 @@ func (a *catalogsImpl) Delete(ctx context.Context, request DeleteCatalogRequest)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -589,15 +728,22 @@ func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*Cat
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &catalogInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&catalogInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := catalogInfoFromPb(&catalogInfoPb)
+	resp, err := catalogInfoFromPb(&catalogInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -659,15 +805,22 @@ func (a *catalogsImpl) internalList(ctx context.Context, request ListCatalogsReq
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listCatalogsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listCatalogsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listCatalogsResponseFromPb(&listCatalogsResponsePb)
+	resp, err := listCatalogsResponseFromPb(&listCatalogsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -685,15 +838,22 @@ func (a *catalogsImpl) Update(ctx context.Context, request UpdateCatalog) (*Cata
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &catalogInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&catalogInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := catalogInfoFromPb(&catalogInfoPb)
+	resp, err := catalogInfoFromPb(&catalogInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -716,15 +876,22 @@ func (a *connectionsImpl) Create(ctx context.Context, request CreateConnection) 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &connectionInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&connectionInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := connectionInfoFromPb(&connectionInfoPb)
+	resp, err := connectionInfoFromPb(&connectionInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -741,7 +908,15 @@ func (a *connectionsImpl) Delete(ctx context.Context, request DeleteConnectionRe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -761,15 +936,22 @@ func (a *connectionsImpl) Get(ctx context.Context, request GetConnectionRequest)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &connectionInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&connectionInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := connectionInfoFromPb(&connectionInfoPb)
+	resp, err := connectionInfoFromPb(&connectionInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -823,15 +1005,22 @@ func (a *connectionsImpl) internalList(ctx context.Context, request ListConnecti
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listConnectionsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listConnectionsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listConnectionsResponseFromPb(&listConnectionsResponsePb)
+	resp, err := listConnectionsResponseFromPb(&listConnectionsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -849,15 +1038,22 @@ func (a *connectionsImpl) Update(ctx context.Context, request UpdateConnection) 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &connectionInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&connectionInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := connectionInfoFromPb(&connectionInfoPb)
+	resp, err := connectionInfoFromPb(&connectionInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -880,15 +1076,22 @@ func (a *credentialsImpl) CreateCredential(ctx context.Context, request CreateCr
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &credentialInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&credentialInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := credentialInfoFromPb(&credentialInfoPb)
+	resp, err := credentialInfoFromPb(&credentialInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -905,7 +1108,15 @@ func (a *credentialsImpl) DeleteCredential(ctx context.Context, request DeleteCr
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteCredentialResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteCredentialResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -926,15 +1137,22 @@ func (a *credentialsImpl) GenerateTemporaryServiceCredential(ctx context.Context
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &temporaryCredentialsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&temporaryCredentialsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := temporaryCredentialsFromPb(&temporaryCredentialsPb)
+	resp, err := temporaryCredentialsFromPb(&temporaryCredentialsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -951,15 +1169,22 @@ func (a *credentialsImpl) GetCredential(ctx context.Context, request GetCredenti
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &credentialInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&credentialInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := credentialInfoFromPb(&credentialInfoPb)
+	resp, err := credentialInfoFromPb(&credentialInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1021,15 +1246,22 @@ func (a *credentialsImpl) internalListCredentials(ctx context.Context, request L
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listCredentialsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listCredentialsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listCredentialsResponseFromPb(&listCredentialsResponsePb)
+	resp, err := listCredentialsResponseFromPb(&listCredentialsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1047,15 +1279,22 @@ func (a *credentialsImpl) UpdateCredential(ctx context.Context, request UpdateCr
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &credentialInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&credentialInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := credentialInfoFromPb(&credentialInfoPb)
+	resp, err := credentialInfoFromPb(&credentialInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1073,15 +1312,22 @@ func (a *credentialsImpl) ValidateCredential(ctx context.Context, request Valida
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &validateCredentialResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&validateCredentialResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := validateCredentialResponseFromPb(&validateCredentialResponsePb)
+	resp, err := validateCredentialResponseFromPb(&validateCredentialResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1104,15 +1350,22 @@ func (a *externalLocationsImpl) Create(ctx context.Context, request CreateExtern
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &externalLocationInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&externalLocationInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := externalLocationInfoFromPb(&externalLocationInfoPb)
+	resp, err := externalLocationInfoFromPb(&externalLocationInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1129,7 +1382,15 @@ func (a *externalLocationsImpl) Delete(ctx context.Context, request DeleteExtern
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1149,15 +1410,22 @@ func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLoca
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &externalLocationInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&externalLocationInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := externalLocationInfoFromPb(&externalLocationInfoPb)
+	resp, err := externalLocationInfoFromPb(&externalLocationInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1219,15 +1487,22 @@ func (a *externalLocationsImpl) internalList(ctx context.Context, request ListEx
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listExternalLocationsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listExternalLocationsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listExternalLocationsResponseFromPb(&listExternalLocationsResponsePb)
+	resp, err := listExternalLocationsResponseFromPb(&listExternalLocationsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1245,15 +1520,22 @@ func (a *externalLocationsImpl) Update(ctx context.Context, request UpdateExtern
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &externalLocationInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&externalLocationInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := externalLocationInfoFromPb(&externalLocationInfoPb)
+	resp, err := externalLocationInfoFromPb(&externalLocationInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1276,15 +1558,22 @@ func (a *functionsImpl) Create(ctx context.Context, request CreateFunctionReques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &functionInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&functionInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := functionInfoFromPb(&functionInfoPb)
+	resp, err := functionInfoFromPb(&functionInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1301,7 +1590,15 @@ func (a *functionsImpl) Delete(ctx context.Context, request DeleteFunctionReques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1321,15 +1618,22 @@ func (a *functionsImpl) Get(ctx context.Context, request GetFunctionRequest) (*F
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &functionInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&functionInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := functionInfoFromPb(&functionInfoPb)
+	resp, err := functionInfoFromPb(&functionInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1393,15 +1697,22 @@ func (a *functionsImpl) internalList(ctx context.Context, request ListFunctionsR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listFunctionsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listFunctionsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listFunctionsResponseFromPb(&listFunctionsResponsePb)
+	resp, err := listFunctionsResponseFromPb(&listFunctionsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1419,15 +1730,22 @@ func (a *functionsImpl) Update(ctx context.Context, request UpdateFunction) (*Fu
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &functionInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&functionInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := functionInfoFromPb(&functionInfoPb)
+	resp, err := functionInfoFromPb(&functionInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1449,15 +1767,22 @@ func (a *grantsImpl) Get(ctx context.Context, request GetGrantRequest) (*Permiss
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &permissionsListPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&permissionsListPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := permissionsListFromPb(&permissionsListPb)
+	resp, err := permissionsListFromPb(&permissionsListPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1474,15 +1799,22 @@ func (a *grantsImpl) GetEffective(ctx context.Context, request GetEffectiveReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &effectivePermissionsListPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&effectivePermissionsListPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := effectivePermissionsListFromPb(&effectivePermissionsListPb)
+	resp, err := effectivePermissionsListFromPb(&effectivePermissionsListPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1500,15 +1832,22 @@ func (a *grantsImpl) Update(ctx context.Context, request UpdatePermissions) (*Pe
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &permissionsListPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&permissionsListPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := permissionsListFromPb(&permissionsListPb)
+	resp, err := permissionsListFromPb(&permissionsListPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1531,7 +1870,15 @@ func (a *metastoresImpl) Assign(ctx context.Context, request CreateMetastoreAssi
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &assignResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&assignResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1552,15 +1899,22 @@ func (a *metastoresImpl) Create(ctx context.Context, request CreateMetastore) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &metastoreInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&metastoreInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := metastoreInfoFromPb(&metastoreInfoPb)
+	resp, err := metastoreInfoFromPb(&metastoreInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1572,15 +1926,22 @@ func (a *metastoresImpl) Current(ctx context.Context) (*MetastoreAssignment, err
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &metastoreAssignmentPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&metastoreAssignmentPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := metastoreAssignmentFromPb(&metastoreAssignmentPb)
+	resp, err := metastoreAssignmentFromPb(&metastoreAssignmentPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1597,7 +1958,15 @@ func (a *metastoresImpl) Delete(ctx context.Context, request DeleteMetastoreRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1617,15 +1986,22 @@ func (a *metastoresImpl) Get(ctx context.Context, request GetMetastoreRequest) (
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &metastoreInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&metastoreInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := metastoreInfoFromPb(&metastoreInfoPb)
+	resp, err := metastoreInfoFromPb(&metastoreInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1671,15 +2047,22 @@ func (a *metastoresImpl) internalList(ctx context.Context) (*ListMetastoresRespo
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listMetastoresResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listMetastoresResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listMetastoresResponseFromPb(&listMetastoresResponsePb)
+	resp, err := listMetastoresResponseFromPb(&listMetastoresResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1691,15 +2074,22 @@ func (a *metastoresImpl) Summary(ctx context.Context) (*GetMetastoreSummaryRespo
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getMetastoreSummaryResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&getMetastoreSummaryResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getMetastoreSummaryResponseFromPb(&getMetastoreSummaryResponsePb)
+	resp, err := getMetastoreSummaryResponseFromPb(&getMetastoreSummaryResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1716,7 +2106,15 @@ func (a *metastoresImpl) Unassign(ctx context.Context, request UnassignRequest) 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &unassignResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&unassignResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1737,15 +2135,22 @@ func (a *metastoresImpl) Update(ctx context.Context, request UpdateMetastore) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &metastoreInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&metastoreInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := metastoreInfoFromPb(&metastoreInfoPb)
+	resp, err := metastoreInfoFromPb(&metastoreInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1763,7 +2168,15 @@ func (a *metastoresImpl) UpdateAssignment(ctx context.Context, request UpdateMet
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updateAssignmentResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateAssignmentResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1787,7 +2200,15 @@ func (a *modelVersionsImpl) Delete(ctx context.Context, request DeleteModelVersi
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/versions/%v", requestPb.FullName, requestPb.Version)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1807,15 +2228,22 @@ func (a *modelVersionsImpl) Get(ctx context.Context, request GetModelVersionRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &modelVersionInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&modelVersionInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := modelVersionInfoFromPb(&modelVersionInfoPb)
+	resp, err := modelVersionInfoFromPb(&modelVersionInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1832,15 +2260,22 @@ func (a *modelVersionsImpl) GetByAlias(ctx context.Context, request GetByAliasRe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &modelVersionInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&modelVersionInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := modelVersionInfoFromPb(&modelVersionInfoPb)
+	resp, err := modelVersionInfoFromPb(&modelVersionInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1916,15 +2351,22 @@ func (a *modelVersionsImpl) internalList(ctx context.Context, request ListModelV
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listModelVersionsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listModelVersionsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listModelVersionsResponseFromPb(&listModelVersionsResponsePb)
+	resp, err := listModelVersionsResponseFromPb(&listModelVersionsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1942,15 +2384,22 @@ func (a *modelVersionsImpl) Update(ctx context.Context, request UpdateModelVersi
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &modelVersionInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&modelVersionInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := modelVersionInfoFromPb(&modelVersionInfoPb)
+	resp, err := modelVersionInfoFromPb(&modelVersionInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1973,15 +2422,22 @@ func (a *onlineTablesImpl) Create(ctx context.Context, request CreateOnlineTable
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).Table, &onlineTablePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Table,
+		&onlineTablePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := onlineTableFromPb(&onlineTablePb)
+	resp, err := onlineTableFromPb(&onlineTablePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1998,7 +2454,15 @@ func (a *onlineTablesImpl) Delete(ctx context.Context, request DeleteOnlineTable
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2018,15 +2482,22 @@ func (a *onlineTablesImpl) Get(ctx context.Context, request GetOnlineTableReques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &onlineTablePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&onlineTablePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := onlineTableFromPb(&onlineTablePb)
+	resp, err := onlineTableFromPb(&onlineTablePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2047,7 +2518,15 @@ func (a *qualityMonitorsImpl) CancelRefresh(ctx context.Context, request CancelR
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor/refreshes/%v/cancel", requestPb.TableName, requestPb.RefreshId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &cancelRefreshResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&cancelRefreshResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2068,15 +2547,22 @@ func (a *qualityMonitorsImpl) Create(ctx context.Context, request CreateMonitor)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &monitorInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&monitorInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := monitorInfoFromPb(&monitorInfoPb)
+	resp, err := monitorInfoFromPb(&monitorInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2092,7 +2578,15 @@ func (a *qualityMonitorsImpl) Delete(ctx context.Context, request DeleteQualityM
 	path := fmt.Sprintf("/api/2.1/unity-catalog/tables/%v/monitor", requestPb.TableName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2112,15 +2606,22 @@ func (a *qualityMonitorsImpl) Get(ctx context.Context, request GetQualityMonitor
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &monitorInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&monitorInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := monitorInfoFromPb(&monitorInfoPb)
+	resp, err := monitorInfoFromPb(&monitorInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2137,15 +2638,22 @@ func (a *qualityMonitorsImpl) GetRefresh(ctx context.Context, request GetRefresh
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &monitorRefreshInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&monitorRefreshInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := monitorRefreshInfoFromPb(&monitorRefreshInfoPb)
+	resp, err := monitorRefreshInfoFromPb(&monitorRefreshInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2162,15 +2670,22 @@ func (a *qualityMonitorsImpl) ListRefreshes(ctx context.Context, request ListRef
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &monitorRefreshListResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&monitorRefreshListResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := monitorRefreshListResponseFromPb(&monitorRefreshListResponsePb)
+	resp, err := monitorRefreshListResponseFromPb(&monitorRefreshListResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2188,15 +2703,22 @@ func (a *qualityMonitorsImpl) RegenerateDashboard(ctx context.Context, request R
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &regenerateDashboardResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&regenerateDashboardResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := regenerateDashboardResponseFromPb(&regenerateDashboardResponsePb)
+	resp, err := regenerateDashboardResponseFromPb(&regenerateDashboardResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2213,15 +2735,22 @@ func (a *qualityMonitorsImpl) RunRefresh(ctx context.Context, request RunRefresh
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &monitorRefreshInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&monitorRefreshInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := monitorRefreshInfoFromPb(&monitorRefreshInfoPb)
+	resp, err := monitorRefreshInfoFromPb(&monitorRefreshInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2239,15 +2768,22 @@ func (a *qualityMonitorsImpl) Update(ctx context.Context, request UpdateMonitor)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &monitorInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&monitorInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := monitorInfoFromPb(&monitorInfoPb)
+	resp, err := monitorInfoFromPb(&monitorInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2270,15 +2806,22 @@ func (a *registeredModelsImpl) Create(ctx context.Context, request CreateRegiste
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &registeredModelInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&registeredModelInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := registeredModelInfoFromPb(&registeredModelInfoPb)
+	resp, err := registeredModelInfoFromPb(&registeredModelInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2294,7 +2837,15 @@ func (a *registeredModelsImpl) Delete(ctx context.Context, request DeleteRegiste
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v", requestPb.FullName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2313,7 +2864,15 @@ func (a *registeredModelsImpl) DeleteAlias(ctx context.Context, request DeleteAl
 	path := fmt.Sprintf("/api/2.1/unity-catalog/models/%v/aliases/%v", requestPb.FullName, requestPb.Alias)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteAliasResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteAliasResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2333,15 +2892,22 @@ func (a *registeredModelsImpl) Get(ctx context.Context, request GetRegisteredMod
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &registeredModelInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&registeredModelInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := registeredModelInfoFromPb(&registeredModelInfoPb)
+	resp, err := registeredModelInfoFromPb(&registeredModelInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2415,15 +2981,22 @@ func (a *registeredModelsImpl) internalList(ctx context.Context, request ListReg
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listRegisteredModelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listRegisteredModelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listRegisteredModelsResponseFromPb(&listRegisteredModelsResponsePb)
+	resp, err := listRegisteredModelsResponseFromPb(&listRegisteredModelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2441,15 +3014,22 @@ func (a *registeredModelsImpl) SetAlias(ctx context.Context, request SetRegister
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &registeredModelAliasPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&registeredModelAliasPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := registeredModelAliasFromPb(&registeredModelAliasPb)
+	resp, err := registeredModelAliasFromPb(&registeredModelAliasPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2467,15 +3047,22 @@ func (a *registeredModelsImpl) Update(ctx context.Context, request UpdateRegiste
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &registeredModelInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&registeredModelInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := registeredModelInfoFromPb(&registeredModelInfoPb)
+	resp, err := registeredModelInfoFromPb(&registeredModelInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2497,15 +3084,22 @@ func (a *resourceQuotasImpl) GetQuota(ctx context.Context, request GetQuotaReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getQuotaResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getQuotaResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getQuotaResponseFromPb(&getQuotaResponsePb)
+	resp, err := getQuotaResponseFromPb(&getQuotaResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2561,15 +3155,22 @@ func (a *resourceQuotasImpl) internalListQuotas(ctx context.Context, request Lis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listQuotasResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listQuotasResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listQuotasResponseFromPb(&listQuotasResponsePb)
+	resp, err := listQuotasResponseFromPb(&listQuotasResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2592,15 +3193,22 @@ func (a *schemasImpl) Create(ctx context.Context, request CreateSchema) (*Schema
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &schemaInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&schemaInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := schemaInfoFromPb(&schemaInfoPb)
+	resp, err := schemaInfoFromPb(&schemaInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2617,7 +3225,15 @@ func (a *schemasImpl) Delete(ctx context.Context, request DeleteSchemaRequest) e
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2637,15 +3253,22 @@ func (a *schemasImpl) Get(ctx context.Context, request GetSchemaRequest) (*Schem
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &schemaInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&schemaInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := schemaInfoFromPb(&schemaInfoPb)
+	resp, err := schemaInfoFromPb(&schemaInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2707,15 +3330,22 @@ func (a *schemasImpl) internalList(ctx context.Context, request ListSchemasReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listSchemasResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listSchemasResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listSchemasResponseFromPb(&listSchemasResponsePb)
+	resp, err := listSchemasResponseFromPb(&listSchemasResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2733,15 +3363,22 @@ func (a *schemasImpl) Update(ctx context.Context, request UpdateSchema) (*Schema
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &schemaInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&schemaInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := schemaInfoFromPb(&schemaInfoPb)
+	resp, err := schemaInfoFromPb(&schemaInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2764,15 +3401,22 @@ func (a *storageCredentialsImpl) Create(ctx context.Context, request CreateStora
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &storageCredentialInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&storageCredentialInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := storageCredentialInfoFromPb(&storageCredentialInfoPb)
+	resp, err := storageCredentialInfoFromPb(&storageCredentialInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2789,7 +3433,15 @@ func (a *storageCredentialsImpl) Delete(ctx context.Context, request DeleteStora
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2809,15 +3461,22 @@ func (a *storageCredentialsImpl) Get(ctx context.Context, request GetStorageCred
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &storageCredentialInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&storageCredentialInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := storageCredentialInfoFromPb(&storageCredentialInfoPb)
+	resp, err := storageCredentialInfoFromPb(&storageCredentialInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2879,15 +3538,22 @@ func (a *storageCredentialsImpl) internalList(ctx context.Context, request ListS
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listStorageCredentialsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listStorageCredentialsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listStorageCredentialsResponseFromPb(&listStorageCredentialsResponsePb)
+	resp, err := listStorageCredentialsResponseFromPb(&listStorageCredentialsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2905,15 +3571,22 @@ func (a *storageCredentialsImpl) Update(ctx context.Context, request UpdateStora
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &storageCredentialInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&storageCredentialInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := storageCredentialInfoFromPb(&storageCredentialInfoPb)
+	resp, err := storageCredentialInfoFromPb(&storageCredentialInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2931,15 +3604,22 @@ func (a *storageCredentialsImpl) Validate(ctx context.Context, request ValidateS
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &validateStorageCredentialResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&validateStorageCredentialResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := validateStorageCredentialResponseFromPb(&validateStorageCredentialResponsePb)
+	resp, err := validateStorageCredentialResponseFromPb(&validateStorageCredentialResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -2961,7 +3641,15 @@ func (a *systemSchemasImpl) Disable(ctx context.Context, request DisableRequest)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &disableResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&disableResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -2981,7 +3669,15 @@ func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) e
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, nil, &enableResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&enableResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -3040,15 +3736,22 @@ func (a *systemSchemasImpl) internalList(ctx context.Context, request ListSystem
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listSystemSchemasResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listSystemSchemasResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listSystemSchemasResponseFromPb(&listSystemSchemasResponsePb)
+	resp, err := listSystemSchemasResponseFromPb(&listSystemSchemasResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3071,15 +3774,22 @@ func (a *tableConstraintsImpl) Create(ctx context.Context, request CreateTableCo
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &tableConstraintPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&tableConstraintPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := tableConstraintFromPb(&tableConstraintPb)
+	resp, err := tableConstraintFromPb(&tableConstraintPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3096,7 +3806,15 @@ func (a *tableConstraintsImpl) Delete(ctx context.Context, request DeleteTableCo
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -3121,7 +3839,15 @@ func (a *tablesImpl) Delete(ctx context.Context, request DeleteTableRequest) err
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -3141,15 +3867,22 @@ func (a *tablesImpl) Exists(ctx context.Context, request ExistsRequest) (*TableE
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &tableExistsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&tableExistsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := tableExistsResponseFromPb(&tableExistsResponsePb)
+	resp, err := tableExistsResponseFromPb(&tableExistsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3166,15 +3899,22 @@ func (a *tablesImpl) Get(ctx context.Context, request GetTableRequest) (*TableIn
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &tableInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&tableInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := tableInfoFromPb(&tableInfoPb)
+	resp, err := tableInfoFromPb(&tableInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3238,15 +3978,22 @@ func (a *tablesImpl) internalList(ctx context.Context, request ListTablesRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listTablesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listTablesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listTablesResponseFromPb(&listTablesResponsePb)
+	resp, err := listTablesResponseFromPb(&listTablesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3320,15 +4067,22 @@ func (a *tablesImpl) internalListSummaries(ctx context.Context, request ListSumm
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listTableSummariesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listTableSummariesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listTableSummariesResponseFromPb(&listTableSummariesResponsePb)
+	resp, err := listTableSummariesResponseFromPb(&listTableSummariesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3346,7 +4100,15 @@ func (a *tablesImpl) Update(ctx context.Context, request UpdateTableRequest) err
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updateResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -3372,15 +4134,22 @@ func (a *temporaryTableCredentialsImpl) GenerateTemporaryTableCredentials(ctx co
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &generateTemporaryTableCredentialResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&generateTemporaryTableCredentialResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := generateTemporaryTableCredentialResponseFromPb(&generateTemporaryTableCredentialResponsePb)
+	resp, err := generateTemporaryTableCredentialResponseFromPb(&generateTemporaryTableCredentialResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3403,15 +4172,22 @@ func (a *volumesImpl) Create(ctx context.Context, request CreateVolumeRequestCon
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &volumeInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&volumeInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := volumeInfoFromPb(&volumeInfoPb)
+	resp, err := volumeInfoFromPb(&volumeInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3427,7 +4203,15 @@ func (a *volumesImpl) Delete(ctx context.Context, request DeleteVolumeRequest) e
 	path := fmt.Sprintf("/api/2.1/unity-catalog/volumes/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -3502,15 +4286,22 @@ func (a *volumesImpl) internalList(ctx context.Context, request ListVolumesReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listVolumesResponseContentPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listVolumesResponseContentPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listVolumesResponseContentFromPb(&listVolumesResponseContentPb)
+	resp, err := listVolumesResponseContentFromPb(&listVolumesResponseContentPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3527,15 +4318,22 @@ func (a *volumesImpl) Read(ctx context.Context, request ReadVolumeRequest) (*Vol
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &volumeInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&volumeInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := volumeInfoFromPb(&volumeInfoPb)
+	resp, err := volumeInfoFromPb(&volumeInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3553,15 +4351,22 @@ func (a *volumesImpl) Update(ctx context.Context, request UpdateVolumeRequestCon
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &volumeInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&volumeInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := volumeInfoFromPb(&volumeInfoPb)
+	resp, err := volumeInfoFromPb(&volumeInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3583,15 +4388,22 @@ func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBin
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &currentWorkspaceBindingsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&currentWorkspaceBindingsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := currentWorkspaceBindingsFromPb(&currentWorkspaceBindingsPb)
+	resp, err := currentWorkspaceBindingsFromPb(&currentWorkspaceBindingsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3645,15 +4457,22 @@ func (a *workspaceBindingsImpl) internalGetBindings(ctx context.Context, request
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &workspaceBindingsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&workspaceBindingsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := workspaceBindingsResponseFromPb(&workspaceBindingsResponsePb)
+	resp, err := workspaceBindingsResponseFromPb(&workspaceBindingsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3671,15 +4490,22 @@ func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorksp
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &currentWorkspaceBindingsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&currentWorkspaceBindingsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := currentWorkspaceBindingsFromPb(&currentWorkspaceBindingsPb)
+	resp, err := currentWorkspaceBindingsFromPb(&currentWorkspaceBindingsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -3697,15 +4523,22 @@ func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request Upda
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &workspaceBindingsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&workspaceBindingsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := workspaceBindingsResponseFromPb(&workspaceBindingsResponsePb)
+	resp, err := workspaceBindingsResponseFromPb(&workspaceBindingsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }

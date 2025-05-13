@@ -34,15 +34,22 @@ func (a *appsImpl) Create(ctx context.Context, request CreateAppRequest) (*App, 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).App, &appPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).App,
+		&appPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := appFromPb(&appPb)
+	resp, err := appFromPb(&appPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -59,15 +66,22 @@ func (a *appsImpl) Delete(ctx context.Context, request DeleteAppRequest) (*App, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &appPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&appPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := appFromPb(&appPb)
+	resp, err := appFromPb(&appPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -85,15 +99,22 @@ func (a *appsImpl) Deploy(ctx context.Context, request CreateAppDeploymentReques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb).AppDeployment, &appDeploymentPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).AppDeployment,
+		&appDeploymentPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := appDeploymentFromPb(&appDeploymentPb)
+	resp, err := appDeploymentFromPb(&appDeploymentPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -110,15 +131,22 @@ func (a *appsImpl) Get(ctx context.Context, request GetAppRequest) (*App, error)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &appPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&appPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := appFromPb(&appPb)
+	resp, err := appFromPb(&appPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -135,15 +163,22 @@ func (a *appsImpl) GetDeployment(ctx context.Context, request GetAppDeploymentRe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &appDeploymentPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&appDeploymentPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := appDeploymentFromPb(&appDeploymentPb)
+	resp, err := appDeploymentFromPb(&appDeploymentPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -160,15 +195,22 @@ func (a *appsImpl) GetPermissionLevels(ctx context.Context, request GetAppPermis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getAppPermissionLevelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getAppPermissionLevelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getAppPermissionLevelsResponseFromPb(&getAppPermissionLevelsResponsePb)
+	resp, err := getAppPermissionLevelsResponseFromPb(&getAppPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -185,15 +227,22 @@ func (a *appsImpl) GetPermissions(ctx context.Context, request GetAppPermissions
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &appPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&appPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := appPermissionsFromPb(&appPermissionsPb)
+	resp, err := appPermissionsFromPb(&appPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -245,15 +294,22 @@ func (a *appsImpl) internalList(ctx context.Context, request ListAppsRequest) (*
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listAppsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listAppsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listAppsResponseFromPb(&listAppsResponsePb)
+	resp, err := listAppsResponseFromPb(&listAppsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -305,15 +361,22 @@ func (a *appsImpl) internalListDeployments(ctx context.Context, request ListAppD
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listAppDeploymentsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listAppDeploymentsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listAppDeploymentsResponseFromPb(&listAppDeploymentsResponsePb)
+	resp, err := listAppDeploymentsResponseFromPb(&listAppDeploymentsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -331,15 +394,22 @@ func (a *appsImpl) SetPermissions(ctx context.Context, request AppPermissionsReq
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &appPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&appPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := appPermissionsFromPb(&appPermissionsPb)
+	resp, err := appPermissionsFromPb(&appPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -357,15 +427,22 @@ func (a *appsImpl) Start(ctx context.Context, request StartAppRequest) (*App, er
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &appPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&appPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := appFromPb(&appPb)
+	resp, err := appFromPb(&appPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -383,15 +460,22 @@ func (a *appsImpl) Stop(ctx context.Context, request StopAppRequest) (*App, erro
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &appPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&appPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := appFromPb(&appPb)
+	resp, err := appFromPb(&appPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -409,15 +493,22 @@ func (a *appsImpl) Update(ctx context.Context, request UpdateAppRequest) (*App, 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb).App, &appPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).App,
+		&appPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := appFromPb(&appPb)
+	resp, err := appFromPb(&appPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -435,15 +526,22 @@ func (a *appsImpl) UpdatePermissions(ctx context.Context, request AppPermissions
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &appPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&appPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := appPermissionsFromPb(&appPermissionsPb)
+	resp, err := appPermissionsFromPb(&appPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }

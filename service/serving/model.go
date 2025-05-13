@@ -12,88 +12,21 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type Ai21LabsConfig struct {
 	// The Databricks secret key reference for an AI21 Labs API key. If you
 	// prefer to paste your API key directly, see `ai21labs_api_key_plaintext`.
 	// You must provide an API key using one of the following fields:
 	// `ai21labs_api_key` or `ai21labs_api_key_plaintext`.
+	// Wire name: 'ai21labs_api_key'
 	Ai21labsApiKey string
 	// An AI21 Labs API key provided as a plaintext string. If you prefer to
 	// reference your key using Databricks Secrets, see `ai21labs_api_key`. You
 	// must provide an API key using one of the following fields:
 	// `ai21labs_api_key` or `ai21labs_api_key_plaintext`.
+	// Wire name: 'ai21labs_api_key_plaintext'
 	Ai21labsApiKeyPlaintext string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func ai21LabsConfigToPb(st *Ai21LabsConfig) (*ai21LabsConfigPb, error) {
@@ -101,15 +34,9 @@ func ai21LabsConfigToPb(st *Ai21LabsConfig) (*ai21LabsConfigPb, error) {
 		return nil, nil
 	}
 	pb := &ai21LabsConfigPb{}
-	ai21labsApiKeyPb := &st.Ai21labsApiKey
-	if ai21labsApiKeyPb != nil {
-		pb.Ai21labsApiKey = *ai21labsApiKeyPb
-	}
+	pb.Ai21labsApiKey = st.Ai21labsApiKey
 
-	ai21labsApiKeyPlaintextPb := &st.Ai21labsApiKeyPlaintext
-	if ai21labsApiKeyPlaintextPb != nil {
-		pb.Ai21labsApiKeyPlaintext = *ai21labsApiKeyPlaintextPb
-	}
+	pb.Ai21labsApiKeyPlaintext = st.Ai21labsApiKeyPlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -160,14 +87,8 @@ func ai21LabsConfigFromPb(pb *ai21LabsConfigPb) (*Ai21LabsConfig, error) {
 		return nil, nil
 	}
 	st := &Ai21LabsConfig{}
-	ai21labsApiKeyField := &pb.Ai21labsApiKey
-	if ai21labsApiKeyField != nil {
-		st.Ai21labsApiKey = *ai21labsApiKeyField
-	}
-	ai21labsApiKeyPlaintextField := &pb.Ai21labsApiKeyPlaintext
-	if ai21labsApiKeyPlaintextField != nil {
-		st.Ai21labsApiKeyPlaintext = *ai21labsApiKeyPlaintextField
-	}
+	st.Ai21labsApiKey = pb.Ai21labsApiKey
+	st.Ai21labsApiKeyPlaintext = pb.Ai21labsApiKeyPlaintext
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -185,19 +106,24 @@ type AiGatewayConfig struct {
 	// Configuration for traffic fallback which auto fallbacks to other served
 	// entities if the request to a served entity fails with certain error
 	// codes, to increase availability.
+	// Wire name: 'fallback_config'
 	FallbackConfig *FallbackConfig
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
+	// Wire name: 'guardrails'
 	Guardrails *AiGatewayGuardrails
 	// Configuration for payload logging using inference tables. Use these
 	// tables to monitor and audit data being sent to and received from model
 	// APIs and to improve model quality.
+	// Wire name: 'inference_table_config'
 	InferenceTableConfig *AiGatewayInferenceTableConfig
 	// Configuration for rate limits which can be set to limit endpoint traffic.
+	// Wire name: 'rate_limits'
 	RateLimits []AiGatewayRateLimit
 	// Configuration to enable usage tracking using system tables. These tables
 	// allow you to monitor operational usage on endpoints and their associated
 	// costs.
+	// Wire name: 'usage_tracking_config'
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig
 }
 
@@ -326,13 +252,13 @@ func aiGatewayConfigFromPb(pb *aiGatewayConfigPb) (*AiGatewayConfig, error) {
 	}
 
 	var rateLimitsField []AiGatewayRateLimit
-	for _, item := range pb.RateLimits {
-		itemField, err := aiGatewayRateLimitFromPb(&item)
+	for _, itemPb := range pb.RateLimits {
+		item, err := aiGatewayRateLimitFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			rateLimitsField = append(rateLimitsField, *itemField)
+		if item != nil {
+			rateLimitsField = append(rateLimitsField, *item)
 		}
 	}
 	st.RateLimits = rateLimitsField
@@ -350,16 +276,20 @@ func aiGatewayConfigFromPb(pb *aiGatewayConfigPb) (*AiGatewayConfig, error) {
 type AiGatewayGuardrailParameters struct {
 	// List of invalid keywords. AI guardrail uses keyword or string matching to
 	// decide if the keyword exists in the request or response content.
+	// Wire name: 'invalid_keywords'
 	InvalidKeywords []string
 	// Configuration for guardrail PII filter.
+	// Wire name: 'pii'
 	Pii *AiGatewayGuardrailPiiBehavior
 	// Indicates whether the safety filter is enabled.
+	// Wire name: 'safety'
 	Safety bool
 	// The list of allowed topics. Given a chat request, this guardrail flags
 	// the request if its topic is not in the allowed topics.
+	// Wire name: 'valid_topics'
 	ValidTopics []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func aiGatewayGuardrailParametersToPb(st *AiGatewayGuardrailParameters) (*aiGatewayGuardrailParametersPb, error) {
@@ -367,15 +297,7 @@ func aiGatewayGuardrailParametersToPb(st *AiGatewayGuardrailParameters) (*aiGate
 		return nil, nil
 	}
 	pb := &aiGatewayGuardrailParametersPb{}
-
-	var invalidKeywordsPb []string
-	for _, item := range st.InvalidKeywords {
-		itemPb := &item
-		if itemPb != nil {
-			invalidKeywordsPb = append(invalidKeywordsPb, *itemPb)
-		}
-	}
-	pb.InvalidKeywords = invalidKeywordsPb
+	pb.InvalidKeywords = st.InvalidKeywords
 
 	piiPb, err := aiGatewayGuardrailPiiBehaviorToPb(st.Pii)
 	if err != nil {
@@ -385,19 +307,9 @@ func aiGatewayGuardrailParametersToPb(st *AiGatewayGuardrailParameters) (*aiGate
 		pb.Pii = piiPb
 	}
 
-	safetyPb := &st.Safety
-	if safetyPb != nil {
-		pb.Safety = *safetyPb
-	}
+	pb.Safety = st.Safety
 
-	var validTopicsPb []string
-	for _, item := range st.ValidTopics {
-		itemPb := &item
-		if itemPb != nil {
-			validTopicsPb = append(validTopicsPb, *itemPb)
-		}
-	}
-	pb.ValidTopics = validTopicsPb
+	pb.ValidTopics = st.ValidTopics
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -448,15 +360,7 @@ func aiGatewayGuardrailParametersFromPb(pb *aiGatewayGuardrailParametersPb) (*Ai
 		return nil, nil
 	}
 	st := &AiGatewayGuardrailParameters{}
-
-	var invalidKeywordsField []string
-	for _, item := range pb.InvalidKeywords {
-		itemField := &item
-		if itemField != nil {
-			invalidKeywordsField = append(invalidKeywordsField, *itemField)
-		}
-	}
-	st.InvalidKeywords = invalidKeywordsField
+	st.InvalidKeywords = pb.InvalidKeywords
 	piiField, err := aiGatewayGuardrailPiiBehaviorFromPb(pb.Pii)
 	if err != nil {
 		return nil, err
@@ -464,19 +368,8 @@ func aiGatewayGuardrailParametersFromPb(pb *aiGatewayGuardrailParametersPb) (*Ai
 	if piiField != nil {
 		st.Pii = piiField
 	}
-	safetyField := &pb.Safety
-	if safetyField != nil {
-		st.Safety = *safetyField
-	}
-
-	var validTopicsField []string
-	for _, item := range pb.ValidTopics {
-		itemField := &item
-		if itemField != nil {
-			validTopicsField = append(validTopicsField, *itemField)
-		}
-	}
-	st.ValidTopics = validTopicsField
+	st.Safety = pb.Safety
+	st.ValidTopics = pb.ValidTopics
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -492,6 +385,7 @@ func (st aiGatewayGuardrailParametersPb) MarshalJSON() ([]byte, error) {
 
 type AiGatewayGuardrailPiiBehavior struct {
 	// Configuration for input guardrail filters.
+	// Wire name: 'behavior'
 	Behavior AiGatewayGuardrailPiiBehaviorBehavior
 }
 
@@ -500,10 +394,7 @@ func aiGatewayGuardrailPiiBehaviorToPb(st *AiGatewayGuardrailPiiBehavior) (*aiGa
 		return nil, nil
 	}
 	pb := &aiGatewayGuardrailPiiBehaviorPb{}
-	behaviorPb := &st.Behavior
-	if behaviorPb != nil {
-		pb.Behavior = *behaviorPb
-	}
+	pb.Behavior = st.Behavior
 
 	return pb, nil
 }
@@ -543,10 +434,7 @@ func aiGatewayGuardrailPiiBehaviorFromPb(pb *aiGatewayGuardrailPiiBehaviorPb) (*
 		return nil, nil
 	}
 	st := &AiGatewayGuardrailPiiBehavior{}
-	behaviorField := &pb.Behavior
-	if behaviorField != nil {
-		st.Behavior = *behaviorField
-	}
+	st.Behavior = pb.Behavior
 
 	return st, nil
 }
@@ -597,8 +485,10 @@ func aiGatewayGuardrailPiiBehaviorBehaviorFromPb(pb *aiGatewayGuardrailPiiBehavi
 
 type AiGatewayGuardrails struct {
 	// Configuration for input guardrail filters.
+	// Wire name: 'input'
 	Input *AiGatewayGuardrailParameters
 	// Configuration for output guardrail filters.
+	// Wire name: 'output'
 	Output *AiGatewayGuardrailParameters
 }
 
@@ -685,18 +575,22 @@ type AiGatewayInferenceTableConfig struct {
 	// The name of the catalog in Unity Catalog. Required when enabling
 	// inference tables. NOTE: On update, you have to disable inference table
 	// first in order to change the catalog name.
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// Indicates whether the inference table is enabled.
+	// Wire name: 'enabled'
 	Enabled bool
 	// The name of the schema in Unity Catalog. Required when enabling inference
 	// tables. NOTE: On update, you have to disable inference table first in
 	// order to change the schema name.
+	// Wire name: 'schema_name'
 	SchemaName string
 	// The prefix of the table in Unity Catalog. NOTE: On update, you have to
 	// disable inference table first in order to change the prefix name.
+	// Wire name: 'table_name_prefix'
 	TableNamePrefix string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func aiGatewayInferenceTableConfigToPb(st *AiGatewayInferenceTableConfig) (*aiGatewayInferenceTableConfigPb, error) {
@@ -704,25 +598,13 @@ func aiGatewayInferenceTableConfigToPb(st *AiGatewayInferenceTableConfig) (*aiGa
 		return nil, nil
 	}
 	pb := &aiGatewayInferenceTableConfigPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
-	tableNamePrefixPb := &st.TableNamePrefix
-	if tableNamePrefixPb != nil {
-		pb.TableNamePrefix = *tableNamePrefixPb
-	}
+	pb.TableNamePrefix = st.TableNamePrefix
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -776,22 +658,10 @@ func aiGatewayInferenceTableConfigFromPb(pb *aiGatewayInferenceTableConfigPb) (*
 		return nil, nil
 	}
 	st := &AiGatewayInferenceTableConfig{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
-	tableNamePrefixField := &pb.TableNamePrefix
-	if tableNamePrefixField != nil {
-		st.TableNamePrefix = *tableNamePrefixField
-	}
+	st.CatalogName = pb.CatalogName
+	st.Enabled = pb.Enabled
+	st.SchemaName = pb.SchemaName
+	st.TableNamePrefix = pb.TableNamePrefix
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -808,12 +678,15 @@ func (st aiGatewayInferenceTableConfigPb) MarshalJSON() ([]byte, error) {
 type AiGatewayRateLimit struct {
 	// Used to specify how many calls are allowed for a key within the
 	// renewal_period.
+	// Wire name: 'calls'
 	Calls int64
 	// Key field for a rate limit. Currently, only 'user' and 'endpoint' are
 	// supported, with 'endpoint' being the default if not specified.
+	// Wire name: 'key'
 	Key AiGatewayRateLimitKey
 	// Renewal period field for a rate limit. Currently, only 'minute' is
 	// supported.
+	// Wire name: 'renewal_period'
 	RenewalPeriod AiGatewayRateLimitRenewalPeriod
 }
 
@@ -822,20 +695,11 @@ func aiGatewayRateLimitToPb(st *AiGatewayRateLimit) (*aiGatewayRateLimitPb, erro
 		return nil, nil
 	}
 	pb := &aiGatewayRateLimitPb{}
-	callsPb := &st.Calls
-	if callsPb != nil {
-		pb.Calls = *callsPb
-	}
+	pb.Calls = st.Calls
 
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	renewalPeriodPb := &st.RenewalPeriod
-	if renewalPeriodPb != nil {
-		pb.RenewalPeriod = *renewalPeriodPb
-	}
+	pb.RenewalPeriod = st.RenewalPeriod
 
 	return pb, nil
 }
@@ -882,18 +746,9 @@ func aiGatewayRateLimitFromPb(pb *aiGatewayRateLimitPb) (*AiGatewayRateLimit, er
 		return nil, nil
 	}
 	st := &AiGatewayRateLimit{}
-	callsField := &pb.Calls
-	if callsField != nil {
-		st.Calls = *callsField
-	}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	renewalPeriodField := &pb.RenewalPeriod
-	if renewalPeriodField != nil {
-		st.RenewalPeriod = *renewalPeriodField
-	}
+	st.Calls = pb.Calls
+	st.Key = pb.Key
+	st.RenewalPeriod = pb.RenewalPeriod
 
 	return st, nil
 }
@@ -986,9 +841,10 @@ func aiGatewayRateLimitRenewalPeriodFromPb(pb *aiGatewayRateLimitRenewalPeriodPb
 
 type AiGatewayUsageTrackingConfig struct {
 	// Whether to enable usage tracking.
+	// Wire name: 'enabled'
 	Enabled bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func aiGatewayUsageTrackingConfigToPb(st *AiGatewayUsageTrackingConfig) (*aiGatewayUsageTrackingConfigPb, error) {
@@ -996,10 +852,7 @@ func aiGatewayUsageTrackingConfigToPb(st *AiGatewayUsageTrackingConfig) (*aiGate
 		return nil, nil
 	}
 	pb := &aiGatewayUsageTrackingConfigPb{}
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1042,10 +895,7 @@ func aiGatewayUsageTrackingConfigFromPb(pb *aiGatewayUsageTrackingConfigPb) (*Ai
 		return nil, nil
 	}
 	st := &AiGatewayUsageTrackingConfig{}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
+	st.Enabled = pb.Enabled
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1065,14 +915,17 @@ type AmazonBedrockConfig struct {
 	// your API key directly, see `aws_access_key_id_plaintext`. You must
 	// provide an API key using one of the following fields: `aws_access_key_id`
 	// or `aws_access_key_id_plaintext`.
+	// Wire name: 'aws_access_key_id'
 	AwsAccessKeyId string
 	// An AWS access key ID with permissions to interact with Bedrock services
 	// provided as a plaintext string. If you prefer to reference your key using
 	// Databricks Secrets, see `aws_access_key_id`. You must provide an API key
 	// using one of the following fields: `aws_access_key_id` or
 	// `aws_access_key_id_plaintext`.
+	// Wire name: 'aws_access_key_id_plaintext'
 	AwsAccessKeyIdPlaintext string
 	// The AWS region to use. Bedrock has to be enabled there.
+	// Wire name: 'aws_region'
 	AwsRegion string
 	// The Databricks secret key reference for an AWS secret access key paired
 	// with the access key ID, with permissions to interact with Bedrock
@@ -1080,6 +933,7 @@ type AmazonBedrockConfig struct {
 	// `aws_secret_access_key_plaintext`. You must provide an API key using one
 	// of the following fields: `aws_secret_access_key` or
 	// `aws_secret_access_key_plaintext`.
+	// Wire name: 'aws_secret_access_key'
 	AwsSecretAccessKey string
 	// An AWS secret access key paired with the access key ID, with permissions
 	// to interact with Bedrock services provided as a plaintext string. If you
@@ -1087,18 +941,21 @@ type AmazonBedrockConfig struct {
 	// `aws_secret_access_key`. You must provide an API key using one of the
 	// following fields: `aws_secret_access_key` or
 	// `aws_secret_access_key_plaintext`.
+	// Wire name: 'aws_secret_access_key_plaintext'
 	AwsSecretAccessKeyPlaintext string
 	// The underlying provider in Amazon Bedrock. Supported values (case
 	// insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
+	// Wire name: 'bedrock_provider'
 	BedrockProvider AmazonBedrockConfigBedrockProvider
 	// ARN of the instance profile that the external model will use to access
 	// AWS resources. You must authenticate using an instance profile or access
 	// keys. If you prefer to authenticate using access keys, see
 	// `aws_access_key_id`, `aws_access_key_id_plaintext`,
 	// `aws_secret_access_key` and `aws_secret_access_key_plaintext`.
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func amazonBedrockConfigToPb(st *AmazonBedrockConfig) (*amazonBedrockConfigPb, error) {
@@ -1106,40 +963,19 @@ func amazonBedrockConfigToPb(st *AmazonBedrockConfig) (*amazonBedrockConfigPb, e
 		return nil, nil
 	}
 	pb := &amazonBedrockConfigPb{}
-	awsAccessKeyIdPb := &st.AwsAccessKeyId
-	if awsAccessKeyIdPb != nil {
-		pb.AwsAccessKeyId = *awsAccessKeyIdPb
-	}
+	pb.AwsAccessKeyId = st.AwsAccessKeyId
 
-	awsAccessKeyIdPlaintextPb := &st.AwsAccessKeyIdPlaintext
-	if awsAccessKeyIdPlaintextPb != nil {
-		pb.AwsAccessKeyIdPlaintext = *awsAccessKeyIdPlaintextPb
-	}
+	pb.AwsAccessKeyIdPlaintext = st.AwsAccessKeyIdPlaintext
 
-	awsRegionPb := &st.AwsRegion
-	if awsRegionPb != nil {
-		pb.AwsRegion = *awsRegionPb
-	}
+	pb.AwsRegion = st.AwsRegion
 
-	awsSecretAccessKeyPb := &st.AwsSecretAccessKey
-	if awsSecretAccessKeyPb != nil {
-		pb.AwsSecretAccessKey = *awsSecretAccessKeyPb
-	}
+	pb.AwsSecretAccessKey = st.AwsSecretAccessKey
 
-	awsSecretAccessKeyPlaintextPb := &st.AwsSecretAccessKeyPlaintext
-	if awsSecretAccessKeyPlaintextPb != nil {
-		pb.AwsSecretAccessKeyPlaintext = *awsSecretAccessKeyPlaintextPb
-	}
+	pb.AwsSecretAccessKeyPlaintext = st.AwsSecretAccessKeyPlaintext
 
-	bedrockProviderPb := &st.BedrockProvider
-	if bedrockProviderPb != nil {
-		pb.BedrockProvider = *bedrockProviderPb
-	}
+	pb.BedrockProvider = st.BedrockProvider
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1217,34 +1053,13 @@ func amazonBedrockConfigFromPb(pb *amazonBedrockConfigPb) (*AmazonBedrockConfig,
 		return nil, nil
 	}
 	st := &AmazonBedrockConfig{}
-	awsAccessKeyIdField := &pb.AwsAccessKeyId
-	if awsAccessKeyIdField != nil {
-		st.AwsAccessKeyId = *awsAccessKeyIdField
-	}
-	awsAccessKeyIdPlaintextField := &pb.AwsAccessKeyIdPlaintext
-	if awsAccessKeyIdPlaintextField != nil {
-		st.AwsAccessKeyIdPlaintext = *awsAccessKeyIdPlaintextField
-	}
-	awsRegionField := &pb.AwsRegion
-	if awsRegionField != nil {
-		st.AwsRegion = *awsRegionField
-	}
-	awsSecretAccessKeyField := &pb.AwsSecretAccessKey
-	if awsSecretAccessKeyField != nil {
-		st.AwsSecretAccessKey = *awsSecretAccessKeyField
-	}
-	awsSecretAccessKeyPlaintextField := &pb.AwsSecretAccessKeyPlaintext
-	if awsSecretAccessKeyPlaintextField != nil {
-		st.AwsSecretAccessKeyPlaintext = *awsSecretAccessKeyPlaintextField
-	}
-	bedrockProviderField := &pb.BedrockProvider
-	if bedrockProviderField != nil {
-		st.BedrockProvider = *bedrockProviderField
-	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
+	st.AwsAccessKeyId = pb.AwsAccessKeyId
+	st.AwsAccessKeyIdPlaintext = pb.AwsAccessKeyIdPlaintext
+	st.AwsRegion = pb.AwsRegion
+	st.AwsSecretAccessKey = pb.AwsSecretAccessKey
+	st.AwsSecretAccessKeyPlaintext = pb.AwsSecretAccessKeyPlaintext
+	st.BedrockProvider = pb.BedrockProvider
+	st.InstanceProfileArn = pb.InstanceProfileArn
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1311,14 +1126,16 @@ type AnthropicConfig struct {
 	// prefer to paste your API key directly, see `anthropic_api_key_plaintext`.
 	// You must provide an API key using one of the following fields:
 	// `anthropic_api_key` or `anthropic_api_key_plaintext`.
+	// Wire name: 'anthropic_api_key'
 	AnthropicApiKey string
 	// The Anthropic API key provided as a plaintext string. If you prefer to
 	// reference your key using Databricks Secrets, see `anthropic_api_key`. You
 	// must provide an API key using one of the following fields:
 	// `anthropic_api_key` or `anthropic_api_key_plaintext`.
+	// Wire name: 'anthropic_api_key_plaintext'
 	AnthropicApiKeyPlaintext string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func anthropicConfigToPb(st *AnthropicConfig) (*anthropicConfigPb, error) {
@@ -1326,15 +1143,9 @@ func anthropicConfigToPb(st *AnthropicConfig) (*anthropicConfigPb, error) {
 		return nil, nil
 	}
 	pb := &anthropicConfigPb{}
-	anthropicApiKeyPb := &st.AnthropicApiKey
-	if anthropicApiKeyPb != nil {
-		pb.AnthropicApiKey = *anthropicApiKeyPb
-	}
+	pb.AnthropicApiKey = st.AnthropicApiKey
 
-	anthropicApiKeyPlaintextPb := &st.AnthropicApiKeyPlaintext
-	if anthropicApiKeyPlaintextPb != nil {
-		pb.AnthropicApiKeyPlaintext = *anthropicApiKeyPlaintextPb
-	}
+	pb.AnthropicApiKeyPlaintext = st.AnthropicApiKeyPlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1385,14 +1196,8 @@ func anthropicConfigFromPb(pb *anthropicConfigPb) (*AnthropicConfig, error) {
 		return nil, nil
 	}
 	st := &AnthropicConfig{}
-	anthropicApiKeyField := &pb.AnthropicApiKey
-	if anthropicApiKeyField != nil {
-		st.AnthropicApiKey = *anthropicApiKeyField
-	}
-	anthropicApiKeyPlaintextField := &pb.AnthropicApiKeyPlaintext
-	if anthropicApiKeyPlaintextField != nil {
-		st.AnthropicApiKeyPlaintext = *anthropicApiKeyPlaintextField
-	}
+	st.AnthropicApiKey = pb.AnthropicApiKey
+	st.AnthropicApiKeyPlaintext = pb.AnthropicApiKeyPlaintext
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1408,15 +1213,18 @@ func (st anthropicConfigPb) MarshalJSON() ([]byte, error) {
 
 type ApiKeyAuth struct {
 	// The name of the API key parameter used for authentication.
+	// Wire name: 'key'
 	Key string
 	// The Databricks secret key reference for an API Key. If you prefer to
 	// paste your token directly, see `value_plaintext`.
+	// Wire name: 'value'
 	Value string
 	// The API Key provided as a plaintext string. If you prefer to reference
 	// your token using Databricks Secrets, see `value`.
+	// Wire name: 'value_plaintext'
 	ValuePlaintext string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func apiKeyAuthToPb(st *ApiKeyAuth) (*apiKeyAuthPb, error) {
@@ -1424,20 +1232,11 @@ func apiKeyAuthToPb(st *ApiKeyAuth) (*apiKeyAuthPb, error) {
 		return nil, nil
 	}
 	pb := &apiKeyAuthPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
-	valuePlaintextPb := &st.ValuePlaintext
-	if valuePlaintextPb != nil {
-		pb.ValuePlaintext = *valuePlaintextPb
-	}
+	pb.ValuePlaintext = st.ValuePlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1486,18 +1285,9 @@ func apiKeyAuthFromPb(pb *apiKeyAuthPb) (*ApiKeyAuth, error) {
 		return nil, nil
 	}
 	st := &ApiKeyAuth{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
-	valuePlaintextField := &pb.ValuePlaintext
-	if valuePlaintextField != nil {
-		st.ValuePlaintext = *valuePlaintextField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
+	st.ValuePlaintext = pb.ValuePlaintext
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1514,17 +1304,21 @@ func (st apiKeyAuthPb) MarshalJSON() ([]byte, error) {
 type AutoCaptureConfigInput struct {
 	// The name of the catalog in Unity Catalog. NOTE: On update, you cannot
 	// change the catalog name if the inference table is already enabled.
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// Indicates whether the inference table is enabled.
+	// Wire name: 'enabled'
 	Enabled bool
 	// The name of the schema in Unity Catalog. NOTE: On update, you cannot
 	// change the schema name if the inference table is already enabled.
+	// Wire name: 'schema_name'
 	SchemaName string
 	// The prefix of the table in Unity Catalog. NOTE: On update, you cannot
 	// change the prefix name if the inference table is already enabled.
+	// Wire name: 'table_name_prefix'
 	TableNamePrefix string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func autoCaptureConfigInputToPb(st *AutoCaptureConfigInput) (*autoCaptureConfigInputPb, error) {
@@ -1532,25 +1326,13 @@ func autoCaptureConfigInputToPb(st *AutoCaptureConfigInput) (*autoCaptureConfigI
 		return nil, nil
 	}
 	pb := &autoCaptureConfigInputPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
-	tableNamePrefixPb := &st.TableNamePrefix
-	if tableNamePrefixPb != nil {
-		pb.TableNamePrefix = *tableNamePrefixPb
-	}
+	pb.TableNamePrefix = st.TableNamePrefix
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1602,22 +1384,10 @@ func autoCaptureConfigInputFromPb(pb *autoCaptureConfigInputPb) (*AutoCaptureCon
 		return nil, nil
 	}
 	st := &AutoCaptureConfigInput{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
-	tableNamePrefixField := &pb.TableNamePrefix
-	if tableNamePrefixField != nil {
-		st.TableNamePrefix = *tableNamePrefixField
-	}
+	st.CatalogName = pb.CatalogName
+	st.Enabled = pb.Enabled
+	st.SchemaName = pb.SchemaName
+	st.TableNamePrefix = pb.TableNamePrefix
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1634,19 +1404,24 @@ func (st autoCaptureConfigInputPb) MarshalJSON() ([]byte, error) {
 type AutoCaptureConfigOutput struct {
 	// The name of the catalog in Unity Catalog. NOTE: On update, you cannot
 	// change the catalog name if the inference table is already enabled.
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// Indicates whether the inference table is enabled.
+	// Wire name: 'enabled'
 	Enabled bool
 	// The name of the schema in Unity Catalog. NOTE: On update, you cannot
 	// change the schema name if the inference table is already enabled.
+	// Wire name: 'schema_name'
 	SchemaName string
 
+	// Wire name: 'state'
 	State *AutoCaptureState
 	// The prefix of the table in Unity Catalog. NOTE: On update, you cannot
 	// change the prefix name if the inference table is already enabled.
+	// Wire name: 'table_name_prefix'
 	TableNamePrefix string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func autoCaptureConfigOutputToPb(st *AutoCaptureConfigOutput) (*autoCaptureConfigOutputPb, error) {
@@ -1654,20 +1429,11 @@ func autoCaptureConfigOutputToPb(st *AutoCaptureConfigOutput) (*autoCaptureConfi
 		return nil, nil
 	}
 	pb := &autoCaptureConfigOutputPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
 	statePb, err := autoCaptureStateToPb(st.State)
 	if err != nil {
@@ -1677,10 +1443,7 @@ func autoCaptureConfigOutputToPb(st *AutoCaptureConfigOutput) (*autoCaptureConfi
 		pb.State = statePb
 	}
 
-	tableNamePrefixPb := &st.TableNamePrefix
-	if tableNamePrefixPb != nil {
-		pb.TableNamePrefix = *tableNamePrefixPb
-	}
+	pb.TableNamePrefix = st.TableNamePrefix
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1734,18 +1497,9 @@ func autoCaptureConfigOutputFromPb(pb *autoCaptureConfigOutputPb) (*AutoCaptureC
 		return nil, nil
 	}
 	st := &AutoCaptureConfigOutput{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
+	st.CatalogName = pb.CatalogName
+	st.Enabled = pb.Enabled
+	st.SchemaName = pb.SchemaName
 	stateField, err := autoCaptureStateFromPb(pb.State)
 	if err != nil {
 		return nil, err
@@ -1753,10 +1507,7 @@ func autoCaptureConfigOutputFromPb(pb *autoCaptureConfigOutputPb) (*AutoCaptureC
 	if stateField != nil {
 		st.State = stateField
 	}
-	tableNamePrefixField := &pb.TableNamePrefix
-	if tableNamePrefixField != nil {
-		st.TableNamePrefix = *tableNamePrefixField
-	}
+	st.TableNamePrefix = pb.TableNamePrefix
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1771,6 +1522,8 @@ func (st autoCaptureConfigOutputPb) MarshalJSON() ([]byte, error) {
 }
 
 type AutoCaptureState struct {
+
+	// Wire name: 'payload_table'
 	PayloadTable *PayloadTable
 }
 
@@ -1838,12 +1591,14 @@ func autoCaptureStateFromPb(pb *autoCaptureStatePb) (*AutoCaptureState, error) {
 type BearerTokenAuth struct {
 	// The Databricks secret key reference for a token. If you prefer to paste
 	// your token directly, see `token_plaintext`.
+	// Wire name: 'token'
 	Token string
 	// The token provided as a plaintext string. If you prefer to reference your
 	// token using Databricks Secrets, see `token`.
+	// Wire name: 'token_plaintext'
 	TokenPlaintext string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func bearerTokenAuthToPb(st *BearerTokenAuth) (*bearerTokenAuthPb, error) {
@@ -1851,15 +1606,9 @@ func bearerTokenAuthToPb(st *BearerTokenAuth) (*bearerTokenAuthPb, error) {
 		return nil, nil
 	}
 	pb := &bearerTokenAuthPb{}
-	tokenPb := &st.Token
-	if tokenPb != nil {
-		pb.Token = *tokenPb
-	}
+	pb.Token = st.Token
 
-	tokenPlaintextPb := &st.TokenPlaintext
-	if tokenPlaintextPb != nil {
-		pb.TokenPlaintext = *tokenPlaintextPb
-	}
+	pb.TokenPlaintext = st.TokenPlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1906,14 +1655,8 @@ func bearerTokenAuthFromPb(pb *bearerTokenAuthPb) (*BearerTokenAuth, error) {
 		return nil, nil
 	}
 	st := &BearerTokenAuth{}
-	tokenField := &pb.Token
-	if tokenField != nil {
-		st.Token = *tokenField
-	}
-	tokenPlaintextField := &pb.TokenPlaintext
-	if tokenPlaintextField != nil {
-		st.TokenPlaintext = *tokenPlaintextField
-	}
+	st.Token = pb.Token
+	st.TokenPlaintext = pb.TokenPlaintext
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1931,10 +1674,12 @@ func (st bearerTokenAuthPb) MarshalJSON() ([]byte, error) {
 type BuildLogsRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The name of the served model that build logs will be retrieved for. This
 	// field is required.
-	ServedModelName string
+	// Wire name: 'served_model_name'
+	ServedModelName string `tf:"-"`
 }
 
 func buildLogsRequestToPb(st *BuildLogsRequest) (*buildLogsRequestPb, error) {
@@ -1942,15 +1687,9 @@ func buildLogsRequestToPb(st *BuildLogsRequest) (*buildLogsRequestPb, error) {
 		return nil, nil
 	}
 	pb := &buildLogsRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	servedModelNamePb := &st.ServedModelName
-	if servedModelNamePb != nil {
-		pb.ServedModelName = *servedModelNamePb
-	}
+	pb.ServedModelName = st.ServedModelName
 
 	return pb, nil
 }
@@ -1994,20 +1733,15 @@ func buildLogsRequestFromPb(pb *buildLogsRequestPb) (*BuildLogsRequest, error) {
 		return nil, nil
 	}
 	st := &BuildLogsRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	servedModelNameField := &pb.ServedModelName
-	if servedModelNameField != nil {
-		st.ServedModelName = *servedModelNameField
-	}
+	st.Name = pb.Name
+	st.ServedModelName = pb.ServedModelName
 
 	return st, nil
 }
 
 type BuildLogsResponse struct {
 	// The logs associated with building the served entity's environment.
+	// Wire name: 'logs'
 	Logs string
 }
 
@@ -2016,10 +1750,7 @@ func buildLogsResponseToPb(st *BuildLogsResponse) (*buildLogsResponsePb, error) 
 		return nil, nil
 	}
 	pb := &buildLogsResponsePb{}
-	logsPb := &st.Logs
-	if logsPb != nil {
-		pb.Logs = *logsPb
-	}
+	pb.Logs = st.Logs
 
 	return pb, nil
 }
@@ -2059,21 +1790,20 @@ func buildLogsResponseFromPb(pb *buildLogsResponsePb) (*BuildLogsResponse, error
 		return nil, nil
 	}
 	st := &BuildLogsResponse{}
-	logsField := &pb.Logs
-	if logsField != nil {
-		st.Logs = *logsField
-	}
+	st.Logs = pb.Logs
 
 	return st, nil
 }
 
 type ChatMessage struct {
 	// The content of the message.
+	// Wire name: 'content'
 	Content string
 	// The role of the message. One of [system, user, assistant].
+	// Wire name: 'role'
 	Role ChatMessageRole
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func chatMessageToPb(st *ChatMessage) (*chatMessagePb, error) {
@@ -2081,15 +1811,9 @@ func chatMessageToPb(st *ChatMessage) (*chatMessagePb, error) {
 		return nil, nil
 	}
 	pb := &chatMessagePb{}
-	contentPb := &st.Content
-	if contentPb != nil {
-		pb.Content = *contentPb
-	}
+	pb.Content = st.Content
 
-	rolePb := &st.Role
-	if rolePb != nil {
-		pb.Role = *rolePb
-	}
+	pb.Role = st.Role
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2134,14 +1858,8 @@ func chatMessageFromPb(pb *chatMessagePb) (*ChatMessage, error) {
 		return nil, nil
 	}
 	st := &ChatMessage{}
-	contentField := &pb.Content
-	if contentField != nil {
-		st.Content = *contentField
-	}
-	roleField := &pb.Role
-	if roleField != nil {
-		st.Role = *roleField
-	}
+	st.Content = pb.Content
+	st.Role = pb.Role
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2205,19 +1923,22 @@ func chatMessageRoleFromPb(pb *chatMessageRolePb) (*ChatMessageRole, error) {
 type CohereConfig struct {
 	// This is an optional field to provide a customized base URL for the Cohere
 	// API. If left unspecified, the standard Cohere base URL is used.
+	// Wire name: 'cohere_api_base'
 	CohereApiBase string
 	// The Databricks secret key reference for a Cohere API key. If you prefer
 	// to paste your API key directly, see `cohere_api_key_plaintext`. You must
 	// provide an API key using one of the following fields: `cohere_api_key` or
 	// `cohere_api_key_plaintext`.
+	// Wire name: 'cohere_api_key'
 	CohereApiKey string
 	// The Cohere API key provided as a plaintext string. If you prefer to
 	// reference your key using Databricks Secrets, see `cohere_api_key`. You
 	// must provide an API key using one of the following fields:
 	// `cohere_api_key` or `cohere_api_key_plaintext`.
+	// Wire name: 'cohere_api_key_plaintext'
 	CohereApiKeyPlaintext string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cohereConfigToPb(st *CohereConfig) (*cohereConfigPb, error) {
@@ -2225,20 +1946,11 @@ func cohereConfigToPb(st *CohereConfig) (*cohereConfigPb, error) {
 		return nil, nil
 	}
 	pb := &cohereConfigPb{}
-	cohereApiBasePb := &st.CohereApiBase
-	if cohereApiBasePb != nil {
-		pb.CohereApiBase = *cohereApiBasePb
-	}
+	pb.CohereApiBase = st.CohereApiBase
 
-	cohereApiKeyPb := &st.CohereApiKey
-	if cohereApiKeyPb != nil {
-		pb.CohereApiKey = *cohereApiKeyPb
-	}
+	pb.CohereApiKey = st.CohereApiKey
 
-	cohereApiKeyPlaintextPb := &st.CohereApiKeyPlaintext
-	if cohereApiKeyPlaintextPb != nil {
-		pb.CohereApiKeyPlaintext = *cohereApiKeyPlaintextPb
-	}
+	pb.CohereApiKeyPlaintext = st.CohereApiKeyPlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2292,18 +2004,9 @@ func cohereConfigFromPb(pb *cohereConfigPb) (*CohereConfig, error) {
 		return nil, nil
 	}
 	st := &CohereConfig{}
-	cohereApiBaseField := &pb.CohereApiBase
-	if cohereApiBaseField != nil {
-		st.CohereApiBase = *cohereApiBaseField
-	}
-	cohereApiKeyField := &pb.CohereApiKey
-	if cohereApiKeyField != nil {
-		st.CohereApiKey = *cohereApiKeyField
-	}
-	cohereApiKeyPlaintextField := &pb.CohereApiKeyPlaintext
-	if cohereApiKeyPlaintextField != nil {
-		st.CohereApiKeyPlaintext = *cohereApiKeyPlaintextField
-	}
+	st.CohereApiBase = pb.CohereApiBase
+	st.CohereApiKey = pb.CohereApiKey
+	st.CohereApiKeyPlaintext = pb.CohereApiKeyPlaintext
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2321,25 +2024,32 @@ type CreateServingEndpoint struct {
 	// The AI Gateway configuration for the serving endpoint. NOTE: External
 	// model, provisioned throughput, and pay-per-token endpoints are fully
 	// supported; agent endpoints currently only support inference tables.
+	// Wire name: 'ai_gateway'
 	AiGateway *AiGatewayConfig
 	// The budget policy to be applied to the serving endpoint.
+	// Wire name: 'budget_policy_id'
 	BudgetPolicyId string
 	// The core config of the serving endpoint.
+	// Wire name: 'config'
 	Config *EndpointCoreConfigInput
 	// The name of the serving endpoint. This field is required and must be
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
+	// Wire name: 'name'
 	Name string
 	// Rate limits to be applied to the serving endpoint. NOTE: this field is
 	// deprecated, please use AI Gateway to manage rate limits.
+	// Wire name: 'rate_limits'
 	RateLimits []RateLimit
 	// Enable route optimization for the serving endpoint.
+	// Wire name: 'route_optimized'
 	RouteOptimized bool
 	// Tags to be attached to the serving endpoint and automatically propagated
 	// to billing logs.
+	// Wire name: 'tags'
 	Tags []EndpointTag
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createServingEndpointToPb(st *CreateServingEndpoint) (*createServingEndpointPb, error) {
@@ -2355,10 +2065,7 @@ func createServingEndpointToPb(st *CreateServingEndpoint) (*createServingEndpoin
 		pb.AiGateway = aiGatewayPb
 	}
 
-	budgetPolicyIdPb := &st.BudgetPolicyId
-	if budgetPolicyIdPb != nil {
-		pb.BudgetPolicyId = *budgetPolicyIdPb
-	}
+	pb.BudgetPolicyId = st.BudgetPolicyId
 
 	configPb, err := endpointCoreConfigInputToPb(st.Config)
 	if err != nil {
@@ -2368,10 +2075,7 @@ func createServingEndpointToPb(st *CreateServingEndpoint) (*createServingEndpoin
 		pb.Config = configPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var rateLimitsPb []rateLimitPb
 	for _, item := range st.RateLimits {
@@ -2385,10 +2089,7 @@ func createServingEndpointToPb(st *CreateServingEndpoint) (*createServingEndpoin
 	}
 	pb.RateLimits = rateLimitsPb
 
-	routeOptimizedPb := &st.RouteOptimized
-	if routeOptimizedPb != nil {
-		pb.RouteOptimized = *routeOptimizedPb
-	}
+	pb.RouteOptimized = st.RouteOptimized
 
 	var tagsPb []endpointTagPb
 	for _, item := range st.Tags {
@@ -2468,10 +2169,7 @@ func createServingEndpointFromPb(pb *createServingEndpointPb) (*CreateServingEnd
 	if aiGatewayField != nil {
 		st.AiGateway = aiGatewayField
 	}
-	budgetPolicyIdField := &pb.BudgetPolicyId
-	if budgetPolicyIdField != nil {
-		st.BudgetPolicyId = *budgetPolicyIdField
-	}
+	st.BudgetPolicyId = pb.BudgetPolicyId
 	configField, err := endpointCoreConfigInputFromPb(pb.Config)
 	if err != nil {
 		return nil, err
@@ -2479,35 +2177,29 @@ func createServingEndpointFromPb(pb *createServingEndpointPb) (*CreateServingEnd
 	if configField != nil {
 		st.Config = configField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	var rateLimitsField []RateLimit
-	for _, item := range pb.RateLimits {
-		itemField, err := rateLimitFromPb(&item)
+	for _, itemPb := range pb.RateLimits {
+		item, err := rateLimitFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			rateLimitsField = append(rateLimitsField, *itemField)
+		if item != nil {
+			rateLimitsField = append(rateLimitsField, *item)
 		}
 	}
 	st.RateLimits = rateLimitsField
-	routeOptimizedField := &pb.RouteOptimized
-	if routeOptimizedField != nil {
-		st.RouteOptimized = *routeOptimizedField
-	}
+	st.RouteOptimized = pb.RouteOptimized
 
 	var tagsField []EndpointTag
-	for _, item := range pb.Tags {
-		itemField, err := endpointTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := endpointTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -2528,11 +2220,14 @@ func (st createServingEndpointPb) MarshalJSON() ([]byte, error) {
 type CustomProviderConfig struct {
 	// This is a field to provide API key authentication for the custom provider
 	// API. You can only specify one authentication method.
+	// Wire name: 'api_key_auth'
 	ApiKeyAuth *ApiKeyAuth
 	// This is a field to provide bearer token authentication for the custom
 	// provider API. You can only specify one authentication method.
+	// Wire name: 'bearer_token_auth'
 	BearerTokenAuth *BearerTokenAuth
 	// This is a field to provide the URL of the custom provider API.
+	// Wire name: 'custom_provider_url'
 	CustomProviderUrl string
 }
 
@@ -2557,10 +2252,7 @@ func customProviderConfigToPb(st *CustomProviderConfig) (*customProviderConfigPb
 		pb.BearerTokenAuth = bearerTokenAuthPb
 	}
 
-	customProviderUrlPb := &st.CustomProviderUrl
-	if customProviderUrlPb != nil {
-		pb.CustomProviderUrl = *customProviderUrlPb
-	}
+	pb.CustomProviderUrl = st.CustomProviderUrl
 
 	return pb, nil
 }
@@ -2620,10 +2312,7 @@ func customProviderConfigFromPb(pb *customProviderConfigPb) (*CustomProviderConf
 	if bearerTokenAuthField != nil {
 		st.BearerTokenAuth = bearerTokenAuthField
 	}
-	customProviderUrlField := &pb.CustomProviderUrl
-	if customProviderUrlField != nil {
-		st.CustomProviderUrl = *customProviderUrlField
-	}
+	st.CustomProviderUrl = pb.CustomProviderUrl
 
 	return st, nil
 }
@@ -2631,11 +2320,13 @@ func customProviderConfigFromPb(pb *customProviderConfigPb) (*CustomProviderConf
 // Details necessary to query this object's API through the DataPlane APIs.
 type DataPlaneInfo struct {
 	// Authorization details as a string.
+	// Wire name: 'authorization_details'
 	AuthorizationDetails string
 	// The URL of the endpoint for this operation in the dataplane.
+	// Wire name: 'endpoint_url'
 	EndpointUrl string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dataPlaneInfoToPb(st *DataPlaneInfo) (*dataPlaneInfoPb, error) {
@@ -2643,15 +2334,9 @@ func dataPlaneInfoToPb(st *DataPlaneInfo) (*dataPlaneInfoPb, error) {
 		return nil, nil
 	}
 	pb := &dataPlaneInfoPb{}
-	authorizationDetailsPb := &st.AuthorizationDetails
-	if authorizationDetailsPb != nil {
-		pb.AuthorizationDetails = *authorizationDetailsPb
-	}
+	pb.AuthorizationDetails = st.AuthorizationDetails
 
-	endpointUrlPb := &st.EndpointUrl
-	if endpointUrlPb != nil {
-		pb.EndpointUrl = *endpointUrlPb
-	}
+	pb.EndpointUrl = st.EndpointUrl
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2696,14 +2381,8 @@ func dataPlaneInfoFromPb(pb *dataPlaneInfoPb) (*DataPlaneInfo, error) {
 		return nil, nil
 	}
 	st := &DataPlaneInfo{}
-	authorizationDetailsField := &pb.AuthorizationDetails
-	if authorizationDetailsField != nil {
-		st.AuthorizationDetails = *authorizationDetailsField
-	}
-	endpointUrlField := &pb.EndpointUrl
-	if endpointUrlField != nil {
-		st.EndpointUrl = *endpointUrlField
-	}
+	st.AuthorizationDetails = pb.AuthorizationDetails
+	st.EndpointUrl = pb.EndpointUrl
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2724,6 +2403,7 @@ type DatabricksModelServingConfig struct {
 	// to paste your API key directly, see `databricks_api_token_plaintext`. You
 	// must provide an API key using one of the following fields:
 	// `databricks_api_token` or `databricks_api_token_plaintext`.
+	// Wire name: 'databricks_api_token'
 	DatabricksApiToken string
 	// The Databricks API token that corresponds to a user or service principal
 	// with Can Query access to the model serving endpoint pointed to by this
@@ -2731,12 +2411,14 @@ type DatabricksModelServingConfig struct {
 	// your key using Databricks Secrets, see `databricks_api_token`. You must
 	// provide an API key using one of the following fields:
 	// `databricks_api_token` or `databricks_api_token_plaintext`.
+	// Wire name: 'databricks_api_token_plaintext'
 	DatabricksApiTokenPlaintext string
 	// The URL of the Databricks workspace containing the model serving endpoint
 	// pointed to by this external model.
+	// Wire name: 'databricks_workspace_url'
 	DatabricksWorkspaceUrl string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func databricksModelServingConfigToPb(st *DatabricksModelServingConfig) (*databricksModelServingConfigPb, error) {
@@ -2744,20 +2426,11 @@ func databricksModelServingConfigToPb(st *DatabricksModelServingConfig) (*databr
 		return nil, nil
 	}
 	pb := &databricksModelServingConfigPb{}
-	databricksApiTokenPb := &st.DatabricksApiToken
-	if databricksApiTokenPb != nil {
-		pb.DatabricksApiToken = *databricksApiTokenPb
-	}
+	pb.DatabricksApiToken = st.DatabricksApiToken
 
-	databricksApiTokenPlaintextPb := &st.DatabricksApiTokenPlaintext
-	if databricksApiTokenPlaintextPb != nil {
-		pb.DatabricksApiTokenPlaintext = *databricksApiTokenPlaintextPb
-	}
+	pb.DatabricksApiTokenPlaintext = st.DatabricksApiTokenPlaintext
 
-	databricksWorkspaceUrlPb := &st.DatabricksWorkspaceUrl
-	if databricksWorkspaceUrlPb != nil {
-		pb.DatabricksWorkspaceUrl = *databricksWorkspaceUrlPb
-	}
+	pb.DatabricksWorkspaceUrl = st.DatabricksWorkspaceUrl
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2815,18 +2488,9 @@ func databricksModelServingConfigFromPb(pb *databricksModelServingConfigPb) (*Da
 		return nil, nil
 	}
 	st := &DatabricksModelServingConfig{}
-	databricksApiTokenField := &pb.DatabricksApiToken
-	if databricksApiTokenField != nil {
-		st.DatabricksApiToken = *databricksApiTokenField
-	}
-	databricksApiTokenPlaintextField := &pb.DatabricksApiTokenPlaintext
-	if databricksApiTokenPlaintextField != nil {
-		st.DatabricksApiTokenPlaintext = *databricksApiTokenPlaintextField
-	}
-	databricksWorkspaceUrlField := &pb.DatabricksWorkspaceUrl
-	if databricksWorkspaceUrlField != nil {
-		st.DatabricksWorkspaceUrl = *databricksWorkspaceUrlField
-	}
+	st.DatabricksApiToken = pb.DatabricksApiToken
+	st.DatabricksApiTokenPlaintext = pb.DatabricksApiTokenPlaintext
+	st.DatabricksWorkspaceUrl = pb.DatabricksWorkspaceUrl
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2841,10 +2505,14 @@ func (st databricksModelServingConfigPb) MarshalJSON() ([]byte, error) {
 }
 
 type DataframeSplitInput struct {
+
+	// Wire name: 'columns'
 	Columns []any
 
+	// Wire name: 'data'
 	Data []any
 
+	// Wire name: 'index'
 	Index []int
 }
 
@@ -2853,33 +2521,11 @@ func dataframeSplitInputToPb(st *DataframeSplitInput) (*dataframeSplitInputPb, e
 		return nil, nil
 	}
 	pb := &dataframeSplitInputPb{}
+	pb.Columns = st.Columns
 
-	var columnsPb []any
-	for _, item := range st.Columns {
-		itemPb := &item
-		if itemPb != nil {
-			columnsPb = append(columnsPb, *itemPb)
-		}
-	}
-	pb.Columns = columnsPb
+	pb.Data = st.Data
 
-	var dataPb []any
-	for _, item := range st.Data {
-		itemPb := &item
-		if itemPb != nil {
-			dataPb = append(dataPb, *itemPb)
-		}
-	}
-	pb.Data = dataPb
-
-	var indexPb []int
-	for _, item := range st.Index {
-		itemPb := &item
-		if itemPb != nil {
-			indexPb = append(indexPb, *itemPb)
-		}
-	}
-	pb.Index = indexPb
+	pb.Index = st.Index
 
 	return pb, nil
 }
@@ -2922,33 +2568,9 @@ func dataframeSplitInputFromPb(pb *dataframeSplitInputPb) (*DataframeSplitInput,
 		return nil, nil
 	}
 	st := &DataframeSplitInput{}
-
-	var columnsField []any
-	for _, item := range pb.Columns {
-		itemField := &item
-		if itemField != nil {
-			columnsField = append(columnsField, *itemField)
-		}
-	}
-	st.Columns = columnsField
-
-	var dataField []any
-	for _, item := range pb.Data {
-		itemField := &item
-		if itemField != nil {
-			dataField = append(dataField, *itemField)
-		}
-	}
-	st.Data = dataField
-
-	var indexField []int
-	for _, item := range pb.Index {
-		itemField := &item
-		if itemField != nil {
-			indexField = append(indexField, *itemField)
-		}
-	}
-	st.Index = indexField
+	st.Columns = pb.Columns
+	st.Data = pb.Data
+	st.Index = pb.Index
 
 	return st, nil
 }
@@ -3004,7 +2626,9 @@ func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
 
 // Delete a serving endpoint
 type DeleteServingEndpointRequest struct {
-	Name string
+
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func deleteServingEndpointRequestToPb(st *DeleteServingEndpointRequest) (*deleteServingEndpointRequestPb, error) {
@@ -3012,10 +2636,7 @@ func deleteServingEndpointRequestToPb(st *DeleteServingEndpointRequest) (*delete
 		return nil, nil
 	}
 	pb := &deleteServingEndpointRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -3054,22 +2675,23 @@ func deleteServingEndpointRequestFromPb(pb *deleteServingEndpointRequestPb) (*De
 		return nil, nil
 	}
 	st := &DeleteServingEndpointRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
 
 type EmbeddingsV1ResponseEmbeddingElement struct {
+
+	// Wire name: 'embedding'
 	Embedding []float64
 	// The index of the embedding in the response.
+	// Wire name: 'index'
 	Index int
 	// This will always be 'embedding'.
+	// Wire name: 'object'
 	Object EmbeddingsV1ResponseEmbeddingElementObject
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func embeddingsV1ResponseEmbeddingElementToPb(st *EmbeddingsV1ResponseEmbeddingElement) (*embeddingsV1ResponseEmbeddingElementPb, error) {
@@ -3077,25 +2699,11 @@ func embeddingsV1ResponseEmbeddingElementToPb(st *EmbeddingsV1ResponseEmbeddingE
 		return nil, nil
 	}
 	pb := &embeddingsV1ResponseEmbeddingElementPb{}
+	pb.Embedding = st.Embedding
 
-	var embeddingPb []float64
-	for _, item := range st.Embedding {
-		itemPb := &item
-		if itemPb != nil {
-			embeddingPb = append(embeddingPb, *itemPb)
-		}
-	}
-	pb.Embedding = embeddingPb
+	pb.Index = st.Index
 
-	indexPb := &st.Index
-	if indexPb != nil {
-		pb.Index = *indexPb
-	}
-
-	objectPb := &st.Object
-	if objectPb != nil {
-		pb.Object = *objectPb
-	}
+	pb.Object = st.Object
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3141,23 +2749,9 @@ func embeddingsV1ResponseEmbeddingElementFromPb(pb *embeddingsV1ResponseEmbeddin
 		return nil, nil
 	}
 	st := &EmbeddingsV1ResponseEmbeddingElement{}
-
-	var embeddingField []float64
-	for _, item := range pb.Embedding {
-		itemField := &item
-		if itemField != nil {
-			embeddingField = append(embeddingField, *itemField)
-		}
-	}
-	st.Embedding = embeddingField
-	indexField := &pb.Index
-	if indexField != nil {
-		st.Index = *indexField
-	}
-	objectField := &pb.Object
-	if objectField != nil {
-		st.Object = *objectField
-	}
+	st.Embedding = pb.Embedding
+	st.Index = pb.Index
+	st.Object = pb.Object
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3220,15 +2814,20 @@ type EndpointCoreConfigInput struct {
 	// new provisioned throughput endpoints, or updating existing provisioned
 	// throughput endpoints that never have inference table configured; in these
 	// cases please use AI Gateway to manage inference tables.
+	// Wire name: 'auto_capture_config'
 	AutoCaptureConfig *AutoCaptureConfigInput
 	// The name of the serving endpoint to update. This field is required.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The list of served entities under the serving endpoint config.
+	// Wire name: 'served_entities'
 	ServedEntities []ServedEntityInput
 	// (Deprecated, use served_entities instead) The list of served models under
 	// the serving endpoint config.
+	// Wire name: 'served_models'
 	ServedModels []ServedModelInput
 	// The traffic configuration associated with the serving endpoint config.
+	// Wire name: 'traffic_config'
 	TrafficConfig *TrafficConfig
 }
 
@@ -3245,10 +2844,7 @@ func endpointCoreConfigInputToPb(st *EndpointCoreConfigInput) (*endpointCoreConf
 		pb.AutoCaptureConfig = autoCaptureConfigPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var servedEntitiesPb []servedEntityInputPb
 	for _, item := range st.ServedEntities {
@@ -3340,31 +2936,28 @@ func endpointCoreConfigInputFromPb(pb *endpointCoreConfigInputPb) (*EndpointCore
 	if autoCaptureConfigField != nil {
 		st.AutoCaptureConfig = autoCaptureConfigField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	var servedEntitiesField []ServedEntityInput
-	for _, item := range pb.ServedEntities {
-		itemField, err := servedEntityInputFromPb(&item)
+	for _, itemPb := range pb.ServedEntities {
+		item, err := servedEntityInputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			servedEntitiesField = append(servedEntitiesField, *itemField)
+		if item != nil {
+			servedEntitiesField = append(servedEntitiesField, *item)
 		}
 	}
 	st.ServedEntities = servedEntitiesField
 
 	var servedModelsField []ServedModelInput
-	for _, item := range pb.ServedModels {
-		itemField, err := servedModelInputFromPb(&item)
+	for _, itemPb := range pb.ServedModels {
+		item, err := servedModelInputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			servedModelsField = append(servedModelsField, *itemField)
+		if item != nil {
+			servedModelsField = append(servedModelsField, *item)
 		}
 	}
 	st.ServedModels = servedModelsField
@@ -3385,18 +2978,23 @@ type EndpointCoreConfigOutput struct {
 	// new provisioned throughput endpoints, or updating existing provisioned
 	// throughput endpoints that never have inference table configured; in these
 	// cases please use AI Gateway to manage inference tables.
+	// Wire name: 'auto_capture_config'
 	AutoCaptureConfig *AutoCaptureConfigOutput
 	// The config version that the serving endpoint is currently serving.
+	// Wire name: 'config_version'
 	ConfigVersion int64
 	// The list of served entities under the serving endpoint config.
+	// Wire name: 'served_entities'
 	ServedEntities []ServedEntityOutput
 	// (Deprecated, use served_entities instead) The list of served models under
 	// the serving endpoint config.
+	// Wire name: 'served_models'
 	ServedModels []ServedModelOutput
 	// The traffic configuration associated with the serving endpoint config.
+	// Wire name: 'traffic_config'
 	TrafficConfig *TrafficConfig
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func endpointCoreConfigOutputToPb(st *EndpointCoreConfigOutput) (*endpointCoreConfigOutputPb, error) {
@@ -3412,10 +3010,7 @@ func endpointCoreConfigOutputToPb(st *EndpointCoreConfigOutput) (*endpointCoreCo
 		pb.AutoCaptureConfig = autoCaptureConfigPb
 	}
 
-	configVersionPb := &st.ConfigVersion
-	if configVersionPb != nil {
-		pb.ConfigVersion = *configVersionPb
-	}
+	pb.ConfigVersion = st.ConfigVersion
 
 	var servedEntitiesPb []servedEntityOutputPb
 	for _, item := range st.ServedEntities {
@@ -3510,31 +3105,28 @@ func endpointCoreConfigOutputFromPb(pb *endpointCoreConfigOutputPb) (*EndpointCo
 	if autoCaptureConfigField != nil {
 		st.AutoCaptureConfig = autoCaptureConfigField
 	}
-	configVersionField := &pb.ConfigVersion
-	if configVersionField != nil {
-		st.ConfigVersion = *configVersionField
-	}
+	st.ConfigVersion = pb.ConfigVersion
 
 	var servedEntitiesField []ServedEntityOutput
-	for _, item := range pb.ServedEntities {
-		itemField, err := servedEntityOutputFromPb(&item)
+	for _, itemPb := range pb.ServedEntities {
+		item, err := servedEntityOutputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			servedEntitiesField = append(servedEntitiesField, *itemField)
+		if item != nil {
+			servedEntitiesField = append(servedEntitiesField, *item)
 		}
 	}
 	st.ServedEntities = servedEntitiesField
 
 	var servedModelsField []ServedModelOutput
-	for _, item := range pb.ServedModels {
-		itemField, err := servedModelOutputFromPb(&item)
+	for _, itemPb := range pb.ServedModels {
+		item, err := servedModelOutputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			servedModelsField = append(servedModelsField, *itemField)
+		if item != nil {
+			servedModelsField = append(servedModelsField, *item)
 		}
 	}
 	st.ServedModels = servedModelsField
@@ -3560,9 +3152,11 @@ func (st endpointCoreConfigOutputPb) MarshalJSON() ([]byte, error) {
 
 type EndpointCoreConfigSummary struct {
 	// The list of served entities under the serving endpoint config.
+	// Wire name: 'served_entities'
 	ServedEntities []ServedEntitySpec
 	// (Deprecated, use served_entities instead) The list of served models under
 	// the serving endpoint config.
+	// Wire name: 'served_models'
 	ServedModels []ServedModelSpec
 }
 
@@ -3639,25 +3233,25 @@ func endpointCoreConfigSummaryFromPb(pb *endpointCoreConfigSummaryPb) (*Endpoint
 	st := &EndpointCoreConfigSummary{}
 
 	var servedEntitiesField []ServedEntitySpec
-	for _, item := range pb.ServedEntities {
-		itemField, err := servedEntitySpecFromPb(&item)
+	for _, itemPb := range pb.ServedEntities {
+		item, err := servedEntitySpecFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			servedEntitiesField = append(servedEntitiesField, *itemField)
+		if item != nil {
+			servedEntitiesField = append(servedEntitiesField, *item)
 		}
 	}
 	st.ServedEntities = servedEntitiesField
 
 	var servedModelsField []ServedModelSpec
-	for _, item := range pb.ServedModels {
-		itemField, err := servedModelSpecFromPb(&item)
+	for _, itemPb := range pb.ServedModels {
+		item, err := servedModelSpecFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			servedModelsField = append(servedModelsField, *itemField)
+		if item != nil {
+			servedModelsField = append(servedModelsField, *item)
 		}
 	}
 	st.ServedModels = servedModelsField
@@ -3671,22 +3265,28 @@ type EndpointPendingConfig struct {
 	// new provisioned throughput endpoints, or updating existing provisioned
 	// throughput endpoints that never have inference table configured; in these
 	// cases please use AI Gateway to manage inference tables.
+	// Wire name: 'auto_capture_config'
 	AutoCaptureConfig *AutoCaptureConfigOutput
 	// The config version that the serving endpoint is currently serving.
+	// Wire name: 'config_version'
 	ConfigVersion int
 	// The list of served entities belonging to the last issued update to the
 	// serving endpoint.
+	// Wire name: 'served_entities'
 	ServedEntities []ServedEntityOutput
 	// (Deprecated, use served_entities instead) The list of served models
 	// belonging to the last issued update to the serving endpoint.
+	// Wire name: 'served_models'
 	ServedModels []ServedModelOutput
 	// The timestamp when the update to the pending config started.
+	// Wire name: 'start_time'
 	StartTime int64
 	// The traffic config defining how invocations to the serving endpoint
 	// should be routed.
+	// Wire name: 'traffic_config'
 	TrafficConfig *TrafficConfig
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func endpointPendingConfigToPb(st *EndpointPendingConfig) (*endpointPendingConfigPb, error) {
@@ -3702,10 +3302,7 @@ func endpointPendingConfigToPb(st *EndpointPendingConfig) (*endpointPendingConfi
 		pb.AutoCaptureConfig = autoCaptureConfigPb
 	}
 
-	configVersionPb := &st.ConfigVersion
-	if configVersionPb != nil {
-		pb.ConfigVersion = *configVersionPb
-	}
+	pb.ConfigVersion = st.ConfigVersion
 
 	var servedEntitiesPb []servedEntityOutputPb
 	for _, item := range st.ServedEntities {
@@ -3731,10 +3328,7 @@ func endpointPendingConfigToPb(st *EndpointPendingConfig) (*endpointPendingConfi
 	}
 	pb.ServedModels = servedModelsPb
 
-	startTimePb := &st.StartTime
-	if startTimePb != nil {
-		pb.StartTime = *startTimePb
-	}
+	pb.StartTime = st.StartTime
 
 	trafficConfigPb, err := trafficConfigToPb(st.TrafficConfig)
 	if err != nil {
@@ -3809,38 +3403,32 @@ func endpointPendingConfigFromPb(pb *endpointPendingConfigPb) (*EndpointPendingC
 	if autoCaptureConfigField != nil {
 		st.AutoCaptureConfig = autoCaptureConfigField
 	}
-	configVersionField := &pb.ConfigVersion
-	if configVersionField != nil {
-		st.ConfigVersion = *configVersionField
-	}
+	st.ConfigVersion = pb.ConfigVersion
 
 	var servedEntitiesField []ServedEntityOutput
-	for _, item := range pb.ServedEntities {
-		itemField, err := servedEntityOutputFromPb(&item)
+	for _, itemPb := range pb.ServedEntities {
+		item, err := servedEntityOutputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			servedEntitiesField = append(servedEntitiesField, *itemField)
+		if item != nil {
+			servedEntitiesField = append(servedEntitiesField, *item)
 		}
 	}
 	st.ServedEntities = servedEntitiesField
 
 	var servedModelsField []ServedModelOutput
-	for _, item := range pb.ServedModels {
-		itemField, err := servedModelOutputFromPb(&item)
+	for _, itemPb := range pb.ServedModels {
+		item, err := servedModelOutputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			servedModelsField = append(servedModelsField, *itemField)
+		if item != nil {
+			servedModelsField = append(servedModelsField, *item)
 		}
 	}
 	st.ServedModels = servedModelsField
-	startTimeField := &pb.StartTime
-	if startTimeField != nil {
-		st.StartTime = *startTimeField
-	}
+	st.StartTime = pb.StartTime
 	trafficConfigField, err := trafficConfigFromPb(pb.TrafficConfig)
 	if err != nil {
 		return nil, err
@@ -3867,11 +3455,13 @@ type EndpointState struct {
 	// update in progress. Note that if the endpoint's config_update state value
 	// is IN_PROGRESS, another update can not be made until the update completes
 	// or fails.
+	// Wire name: 'config_update'
 	ConfigUpdate EndpointStateConfigUpdate
 	// The state of an endpoint, indicating whether or not the endpoint is
 	// queryable. An endpoint is READY if all of the served entities in its
 	// active configuration are ready. If any of the actively served entities
 	// are in a non-ready state, the endpoint state will be NOT_READY.
+	// Wire name: 'ready'
 	Ready EndpointStateReady
 }
 
@@ -3880,15 +3470,9 @@ func endpointStateToPb(st *EndpointState) (*endpointStatePb, error) {
 		return nil, nil
 	}
 	pb := &endpointStatePb{}
-	configUpdatePb := &st.ConfigUpdate
-	if configUpdatePb != nil {
-		pb.ConfigUpdate = *configUpdatePb
-	}
+	pb.ConfigUpdate = st.ConfigUpdate
 
-	readyPb := &st.Ready
-	if readyPb != nil {
-		pb.Ready = *readyPb
-	}
+	pb.Ready = st.Ready
 
 	return pb, nil
 }
@@ -3937,14 +3521,8 @@ func endpointStateFromPb(pb *endpointStatePb) (*EndpointState, error) {
 		return nil, nil
 	}
 	st := &EndpointState{}
-	configUpdateField := &pb.ConfigUpdate
-	if configUpdateField != nil {
-		st.ConfigUpdate = *configUpdateField
-	}
-	readyField := &pb.Ready
-	if readyField != nil {
-		st.Ready = *readyField
-	}
+	st.ConfigUpdate = pb.ConfigUpdate
+	st.Ready = pb.Ready
 
 	return st, nil
 }
@@ -4043,11 +3621,13 @@ func endpointStateReadyFromPb(pb *endpointStateReadyPb) (*EndpointStateReady, er
 
 type EndpointTag struct {
 	// Key field for a serving endpoint tag.
+	// Wire name: 'key'
 	Key string
 	// Optional value field for a serving endpoint tag.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func endpointTagToPb(st *EndpointTag) (*endpointTagPb, error) {
@@ -4055,15 +3635,9 @@ func endpointTagToPb(st *EndpointTag) (*endpointTagPb, error) {
 		return nil, nil
 	}
 	pb := &endpointTagPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4108,14 +3682,8 @@ func endpointTagFromPb(pb *endpointTagPb) (*EndpointTag, error) {
 		return nil, nil
 	}
 	st := &EndpointTag{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4130,6 +3698,8 @@ func (st endpointTagPb) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointTags struct {
+
+	// Wire name: 'tags'
 	Tags []EndpointTag
 }
 
@@ -4190,13 +3760,13 @@ func endpointTagsFromPb(pb *endpointTagsPb) (*EndpointTags, error) {
 	st := &EndpointTags{}
 
 	var tagsField []EndpointTag
-	for _, item := range pb.Tags {
-		itemField, err := endpointTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := endpointTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -4208,7 +3778,8 @@ func endpointTagsFromPb(pb *endpointTagsPb) (*EndpointTags, error) {
 type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
 	// required.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func exportMetricsRequestToPb(st *ExportMetricsRequest) (*exportMetricsRequestPb, error) {
@@ -4216,10 +3787,7 @@ func exportMetricsRequestToPb(st *ExportMetricsRequest) (*exportMetricsRequestPb
 		return nil, nil
 	}
 	pb := &exportMetricsRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -4260,16 +3828,15 @@ func exportMetricsRequestFromPb(pb *exportMetricsRequestPb) (*ExportMetricsReque
 		return nil, nil
 	}
 	st := &ExportMetricsRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
 
 type ExportMetricsResponse struct {
-	Contents io.ReadCloser
+
+	// Wire name: 'contents'
+	Contents io.ReadCloser `tf:"-"`
 }
 
 func exportMetricsResponseToPb(st *ExportMetricsResponse) (*exportMetricsResponsePb, error) {
@@ -4277,10 +3844,7 @@ func exportMetricsResponseToPb(st *ExportMetricsResponse) (*exportMetricsRespons
 		return nil, nil
 	}
 	pb := &exportMetricsResponsePb{}
-	contentsPb := &st.Contents
-	if contentsPb != nil {
-		pb.Contents = *contentsPb
-	}
+	pb.Contents = st.Contents
 
 	return pb, nil
 }
@@ -4319,10 +3883,7 @@ func exportMetricsResponseFromPb(pb *exportMetricsResponsePb) (*ExportMetricsRes
 		return nil, nil
 	}
 	st := &ExportMetricsResponse{}
-	contentsField := &pb.Contents
-	if contentsField != nil {
-		st.Contents = *contentsField
-	}
+	st.Contents = pb.Contents
 
 	return st, nil
 }
@@ -4331,20 +3892,26 @@ func exportMetricsResponseFromPb(pb *exportMetricsResponsePb) (*ExportMetricsRes
 type ExternalFunctionRequest struct {
 	// The connection name to use. This is required to identify the external
 	// connection.
+	// Wire name: 'connection_name'
 	ConnectionName string
 	// Additional headers for the request. If not provided, only auth headers
 	// from connections would be passed.
+	// Wire name: 'headers'
 	Headers string
 	// The JSON payload to send in the request body.
+	// Wire name: 'json'
 	Json string
 	// The HTTP method to use (e.g., 'GET', 'POST').
+	// Wire name: 'method'
 	Method ExternalFunctionRequestHttpMethod
 	// Query parameters for the request.
+	// Wire name: 'params'
 	Params string
 	// The relative path for the API endpoint. This is required.
+	// Wire name: 'path'
 	Path string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func externalFunctionRequestToPb(st *ExternalFunctionRequest) (*externalFunctionRequestPb, error) {
@@ -4352,35 +3919,17 @@ func externalFunctionRequestToPb(st *ExternalFunctionRequest) (*externalFunction
 		return nil, nil
 	}
 	pb := &externalFunctionRequestPb{}
-	connectionNamePb := &st.ConnectionName
-	if connectionNamePb != nil {
-		pb.ConnectionName = *connectionNamePb
-	}
+	pb.ConnectionName = st.ConnectionName
 
-	headersPb := &st.Headers
-	if headersPb != nil {
-		pb.Headers = *headersPb
-	}
+	pb.Headers = st.Headers
 
-	jsonPb := &st.Json
-	if jsonPb != nil {
-		pb.Json = *jsonPb
-	}
+	pb.Json = st.Json
 
-	methodPb := &st.Method
-	if methodPb != nil {
-		pb.Method = *methodPb
-	}
+	pb.Method = st.Method
 
-	paramsPb := &st.Params
-	if paramsPb != nil {
-		pb.Params = *paramsPb
-	}
+	pb.Params = st.Params
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4435,30 +3984,12 @@ func externalFunctionRequestFromPb(pb *externalFunctionRequestPb) (*ExternalFunc
 		return nil, nil
 	}
 	st := &ExternalFunctionRequest{}
-	connectionNameField := &pb.ConnectionName
-	if connectionNameField != nil {
-		st.ConnectionName = *connectionNameField
-	}
-	headersField := &pb.Headers
-	if headersField != nil {
-		st.Headers = *headersField
-	}
-	jsonField := &pb.Json
-	if jsonField != nil {
-		st.Json = *jsonField
-	}
-	methodField := &pb.Method
-	if methodField != nil {
-		st.Method = *methodField
-	}
-	paramsField := &pb.Params
-	if paramsField != nil {
-		st.Params = *paramsField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.ConnectionName = pb.ConnectionName
+	st.Headers = pb.Headers
+	st.Json = pb.Json
+	st.Method = pb.Method
+	st.Params = pb.Params
+	st.Path = pb.Path
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4524,33 +4055,45 @@ func externalFunctionRequestHttpMethodFromPb(pb *externalFunctionRequestHttpMeth
 
 type ExternalModel struct {
 	// AI21Labs Config. Only required if the provider is 'ai21labs'.
+	// Wire name: 'ai21labs_config'
 	Ai21labsConfig *Ai21LabsConfig
 	// Amazon Bedrock Config. Only required if the provider is 'amazon-bedrock'.
+	// Wire name: 'amazon_bedrock_config'
 	AmazonBedrockConfig *AmazonBedrockConfig
 	// Anthropic Config. Only required if the provider is 'anthropic'.
+	// Wire name: 'anthropic_config'
 	AnthropicConfig *AnthropicConfig
 	// Cohere Config. Only required if the provider is 'cohere'.
+	// Wire name: 'cohere_config'
 	CohereConfig *CohereConfig
 	// Custom Provider Config. Only required if the provider is 'custom'.
+	// Wire name: 'custom_provider_config'
 	CustomProviderConfig *CustomProviderConfig
 	// Databricks Model Serving Config. Only required if the provider is
 	// 'databricks-model-serving'.
+	// Wire name: 'databricks_model_serving_config'
 	DatabricksModelServingConfig *DatabricksModelServingConfig
 	// Google Cloud Vertex AI Config. Only required if the provider is
 	// 'google-cloud-vertex-ai'.
+	// Wire name: 'google_cloud_vertex_ai_config'
 	GoogleCloudVertexAiConfig *GoogleCloudVertexAiConfig
 	// The name of the external model.
+	// Wire name: 'name'
 	Name string
 	// OpenAI Config. Only required if the provider is 'openai'.
+	// Wire name: 'openai_config'
 	OpenaiConfig *OpenAiConfig
 	// PaLM Config. Only required if the provider is 'palm'.
+	// Wire name: 'palm_config'
 	PalmConfig *PaLmConfig
 	// The name of the provider for the external model. Currently, the supported
 	// providers are 'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere',
 	// 'databricks-model-serving', 'google-cloud-vertex-ai', 'openai', 'palm',
 	// and 'custom'.
+	// Wire name: 'provider'
 	Provider ExternalModelProvider
 	// The task type of the external model.
+	// Wire name: 'task'
 	Task string
 }
 
@@ -4615,10 +4158,7 @@ func externalModelToPb(st *ExternalModel) (*externalModelPb, error) {
 		pb.GoogleCloudVertexAiConfig = googleCloudVertexAiConfigPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	openaiConfigPb, err := openAiConfigToPb(st.OpenaiConfig)
 	if err != nil {
@@ -4636,15 +4176,9 @@ func externalModelToPb(st *ExternalModel) (*externalModelPb, error) {
 		pb.PalmConfig = palmConfigPb
 	}
 
-	providerPb := &st.Provider
-	if providerPb != nil {
-		pb.Provider = *providerPb
-	}
+	pb.Provider = st.Provider
 
-	taskPb := &st.Task
-	if taskPb != nil {
-		pb.Task = *taskPb
-	}
+	pb.Task = st.Task
 
 	return pb, nil
 }
@@ -4760,10 +4294,7 @@ func externalModelFromPb(pb *externalModelPb) (*ExternalModel, error) {
 	if googleCloudVertexAiConfigField != nil {
 		st.GoogleCloudVertexAiConfig = googleCloudVertexAiConfigField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 	openaiConfigField, err := openAiConfigFromPb(pb.OpenaiConfig)
 	if err != nil {
 		return nil, err
@@ -4778,14 +4309,8 @@ func externalModelFromPb(pb *externalModelPb) (*ExternalModel, error) {
 	if palmConfigField != nil {
 		st.PalmConfig = palmConfigField
 	}
-	providerField := &pb.Provider
-	if providerField != nil {
-		st.Provider = *providerField
-	}
-	taskField := &pb.Task
-	if taskField != nil {
-		st.Task = *taskField
-	}
+	st.Provider = pb.Provider
+	st.Task = pb.Task
 
 	return st, nil
 }
@@ -4850,13 +4375,16 @@ func externalModelProviderFromPb(pb *externalModelProviderPb) (*ExternalModelPro
 
 type ExternalModelUsageElement struct {
 	// The number of tokens in the chat/completions response.
+	// Wire name: 'completion_tokens'
 	CompletionTokens int
 	// The number of tokens in the prompt.
+	// Wire name: 'prompt_tokens'
 	PromptTokens int
 	// The total number of tokens in the prompt and response.
+	// Wire name: 'total_tokens'
 	TotalTokens int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func externalModelUsageElementToPb(st *ExternalModelUsageElement) (*externalModelUsageElementPb, error) {
@@ -4864,20 +4392,11 @@ func externalModelUsageElementToPb(st *ExternalModelUsageElement) (*externalMode
 		return nil, nil
 	}
 	pb := &externalModelUsageElementPb{}
-	completionTokensPb := &st.CompletionTokens
-	if completionTokensPb != nil {
-		pb.CompletionTokens = *completionTokensPb
-	}
+	pb.CompletionTokens = st.CompletionTokens
 
-	promptTokensPb := &st.PromptTokens
-	if promptTokensPb != nil {
-		pb.PromptTokens = *promptTokensPb
-	}
+	pb.PromptTokens = st.PromptTokens
 
-	totalTokensPb := &st.TotalTokens
-	if totalTokensPb != nil {
-		pb.TotalTokens = *totalTokensPb
-	}
+	pb.TotalTokens = st.TotalTokens
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4924,18 +4443,9 @@ func externalModelUsageElementFromPb(pb *externalModelUsageElementPb) (*External
 		return nil, nil
 	}
 	st := &ExternalModelUsageElement{}
-	completionTokensField := &pb.CompletionTokens
-	if completionTokensField != nil {
-		st.CompletionTokens = *completionTokensField
-	}
-	promptTokensField := &pb.PromptTokens
-	if promptTokensField != nil {
-		st.PromptTokens = *promptTokensField
-	}
-	totalTokensField := &pb.TotalTokens
-	if totalTokensField != nil {
-		st.TotalTokens = *totalTokensField
-	}
+	st.CompletionTokens = pb.CompletionTokens
+	st.PromptTokens = pb.PromptTokens
+	st.TotalTokens = pb.TotalTokens
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4956,6 +4466,7 @@ type FallbackConfig struct {
 	// same endpoint, following the order of served entity list, until a
 	// successful response is returned. If all attempts fail, return the last
 	// response with the error code.
+	// Wire name: 'enabled'
 	Enabled bool
 }
 
@@ -4964,10 +4475,7 @@ func fallbackConfigToPb(st *FallbackConfig) (*fallbackConfigPb, error) {
 		return nil, nil
 	}
 	pb := &fallbackConfigPb{}
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
 	return pb, nil
 }
@@ -5012,10 +4520,7 @@ func fallbackConfigFromPb(pb *fallbackConfigPb) (*FallbackConfig, error) {
 		return nil, nil
 	}
 	st := &FallbackConfig{}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
+	st.Enabled = pb.Enabled
 
 	return st, nil
 }
@@ -5023,15 +4528,20 @@ func fallbackConfigFromPb(pb *fallbackConfigPb) (*FallbackConfig, error) {
 // All fields are not sensitive as they are hard-coded in the system and made
 // available to customers.
 type FoundationModel struct {
+
+	// Wire name: 'description'
 	Description string
 
+	// Wire name: 'display_name'
 	DisplayName string
 
+	// Wire name: 'docs'
 	Docs string
 
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func foundationModelToPb(st *FoundationModel) (*foundationModelPb, error) {
@@ -5039,25 +4549,13 @@ func foundationModelToPb(st *FoundationModel) (*foundationModelPb, error) {
 		return nil, nil
 	}
 	pb := &foundationModelPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	docsPb := &st.Docs
-	if docsPb != nil {
-		pb.Docs = *docsPb
-	}
+	pb.Docs = st.Docs
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5105,22 +4603,10 @@ func foundationModelFromPb(pb *foundationModelPb) (*FoundationModel, error) {
 		return nil, nil
 	}
 	st := &FoundationModel{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	docsField := &pb.Docs
-	if docsField != nil {
-		st.Docs = *docsField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Description = pb.Description
+	st.DisplayName = pb.DisplayName
+	st.Docs = pb.Docs
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5138,7 +4624,8 @@ func (st foundationModelPb) MarshalJSON() ([]byte, error) {
 type GetOpenApiRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func getOpenApiRequestToPb(st *GetOpenApiRequest) (*getOpenApiRequestPb, error) {
@@ -5146,10 +4633,7 @@ func getOpenApiRequestToPb(st *GetOpenApiRequest) (*getOpenApiRequestPb, error) 
 		return nil, nil
 	}
 	pb := &getOpenApiRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -5190,16 +4674,15 @@ func getOpenApiRequestFromPb(pb *getOpenApiRequestPb) (*GetOpenApiRequest, error
 		return nil, nil
 	}
 	st := &GetOpenApiRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
 
 type GetOpenApiResponse struct {
-	Contents io.ReadCloser
+
+	// Wire name: 'contents'
+	Contents io.ReadCloser `tf:"-"`
 }
 
 func getOpenApiResponseToPb(st *GetOpenApiResponse) (*getOpenApiResponsePb, error) {
@@ -5207,10 +4690,7 @@ func getOpenApiResponseToPb(st *GetOpenApiResponse) (*getOpenApiResponsePb, erro
 		return nil, nil
 	}
 	pb := &getOpenApiResponsePb{}
-	contentsPb := &st.Contents
-	if contentsPb != nil {
-		pb.Contents = *contentsPb
-	}
+	pb.Contents = st.Contents
 
 	return pb, nil
 }
@@ -5249,10 +4729,7 @@ func getOpenApiResponseFromPb(pb *getOpenApiResponsePb) (*GetOpenApiResponse, er
 		return nil, nil
 	}
 	st := &GetOpenApiResponse{}
-	contentsField := &pb.Contents
-	if contentsField != nil {
-		st.Contents = *contentsField
-	}
+	st.Contents = pb.Contents
 
 	return st, nil
 }
@@ -5260,7 +4737,8 @@ func getOpenApiResponseFromPb(pb *getOpenApiResponsePb) (*GetOpenApiResponse, er
 // Get serving endpoint permission levels
 type GetServingEndpointPermissionLevelsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
-	ServingEndpointId string
+	// Wire name: 'serving_endpoint_id'
+	ServingEndpointId string `tf:"-"`
 }
 
 func getServingEndpointPermissionLevelsRequestToPb(st *GetServingEndpointPermissionLevelsRequest) (*getServingEndpointPermissionLevelsRequestPb, error) {
@@ -5268,10 +4746,7 @@ func getServingEndpointPermissionLevelsRequestToPb(st *GetServingEndpointPermiss
 		return nil, nil
 	}
 	pb := &getServingEndpointPermissionLevelsRequestPb{}
-	servingEndpointIdPb := &st.ServingEndpointId
-	if servingEndpointIdPb != nil {
-		pb.ServingEndpointId = *servingEndpointIdPb
-	}
+	pb.ServingEndpointId = st.ServingEndpointId
 
 	return pb, nil
 }
@@ -5311,16 +4786,14 @@ func getServingEndpointPermissionLevelsRequestFromPb(pb *getServingEndpointPermi
 		return nil, nil
 	}
 	st := &GetServingEndpointPermissionLevelsRequest{}
-	servingEndpointIdField := &pb.ServingEndpointId
-	if servingEndpointIdField != nil {
-		st.ServingEndpointId = *servingEndpointIdField
-	}
+	st.ServingEndpointId = pb.ServingEndpointId
 
 	return st, nil
 }
 
 type GetServingEndpointPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []ServingEndpointPermissionsDescription
 }
 
@@ -5382,13 +4855,13 @@ func getServingEndpointPermissionLevelsResponseFromPb(pb *getServingEndpointPerm
 	st := &GetServingEndpointPermissionLevelsResponse{}
 
 	var permissionLevelsField []ServingEndpointPermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := servingEndpointPermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := servingEndpointPermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -5399,7 +4872,8 @@ func getServingEndpointPermissionLevelsResponseFromPb(pb *getServingEndpointPerm
 // Get serving endpoint permissions
 type GetServingEndpointPermissionsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
-	ServingEndpointId string
+	// Wire name: 'serving_endpoint_id'
+	ServingEndpointId string `tf:"-"`
 }
 
 func getServingEndpointPermissionsRequestToPb(st *GetServingEndpointPermissionsRequest) (*getServingEndpointPermissionsRequestPb, error) {
@@ -5407,10 +4881,7 @@ func getServingEndpointPermissionsRequestToPb(st *GetServingEndpointPermissionsR
 		return nil, nil
 	}
 	pb := &getServingEndpointPermissionsRequestPb{}
-	servingEndpointIdPb := &st.ServingEndpointId
-	if servingEndpointIdPb != nil {
-		pb.ServingEndpointId = *servingEndpointIdPb
-	}
+	pb.ServingEndpointId = st.ServingEndpointId
 
 	return pb, nil
 }
@@ -5450,10 +4921,7 @@ func getServingEndpointPermissionsRequestFromPb(pb *getServingEndpointPermission
 		return nil, nil
 	}
 	st := &GetServingEndpointPermissionsRequest{}
-	servingEndpointIdField := &pb.ServingEndpointId
-	if servingEndpointIdField != nil {
-		st.ServingEndpointId = *servingEndpointIdField
-	}
+	st.ServingEndpointId = pb.ServingEndpointId
 
 	return st, nil
 }
@@ -5461,7 +4929,8 @@ func getServingEndpointPermissionsRequestFromPb(pb *getServingEndpointPermission
 // Get a single serving endpoint
 type GetServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func getServingEndpointRequestToPb(st *GetServingEndpointRequest) (*getServingEndpointRequestPb, error) {
@@ -5469,10 +4938,7 @@ func getServingEndpointRequestToPb(st *GetServingEndpointRequest) (*getServingEn
 		return nil, nil
 	}
 	pb := &getServingEndpointRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -5512,10 +4978,7 @@ func getServingEndpointRequestFromPb(pb *getServingEndpointRequestPb) (*GetServi
 		return nil, nil
 	}
 	st := &GetServingEndpointRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -5530,6 +4993,7 @@ type GoogleCloudVertexAiConfig struct {
 	//
 	// [Best practices for managing service account keys]:
 	// https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys
+	// Wire name: 'private_key'
 	PrivateKey string
 	// The private key for the service account which has access to the Google
 	// Cloud Vertex AI Service provided as a plaintext secret. See [Best
@@ -5540,9 +5004,11 @@ type GoogleCloudVertexAiConfig struct {
 	//
 	// [Best practices for managing service account keys]:
 	// https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys
+	// Wire name: 'private_key_plaintext'
 	PrivateKeyPlaintext string
 	// This is the Google Cloud project id that the service account is
 	// associated with.
+	// Wire name: 'project_id'
 	ProjectId string
 	// This is the region for the Google Cloud Vertex AI Service. See [supported
 	// regions] for more details. Some models are only available in specific
@@ -5550,9 +5016,10 @@ type GoogleCloudVertexAiConfig struct {
 	//
 	// [supported regions]:
 	// https://cloud.google.com/vertex-ai/docs/general/locations
+	// Wire name: 'region'
 	Region string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func googleCloudVertexAiConfigToPb(st *GoogleCloudVertexAiConfig) (*googleCloudVertexAiConfigPb, error) {
@@ -5560,25 +5027,13 @@ func googleCloudVertexAiConfigToPb(st *GoogleCloudVertexAiConfig) (*googleCloudV
 		return nil, nil
 	}
 	pb := &googleCloudVertexAiConfigPb{}
-	privateKeyPb := &st.PrivateKey
-	if privateKeyPb != nil {
-		pb.PrivateKey = *privateKeyPb
-	}
+	pb.PrivateKey = st.PrivateKey
 
-	privateKeyPlaintextPb := &st.PrivateKeyPlaintext
-	if privateKeyPlaintextPb != nil {
-		pb.PrivateKeyPlaintext = *privateKeyPlaintextPb
-	}
+	pb.PrivateKeyPlaintext = st.PrivateKeyPlaintext
 
-	projectIdPb := &st.ProjectId
-	if projectIdPb != nil {
-		pb.ProjectId = *projectIdPb
-	}
+	pb.ProjectId = st.ProjectId
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5649,22 +5104,10 @@ func googleCloudVertexAiConfigFromPb(pb *googleCloudVertexAiConfigPb) (*GoogleCl
 		return nil, nil
 	}
 	st := &GoogleCloudVertexAiConfig{}
-	privateKeyField := &pb.PrivateKey
-	if privateKeyField != nil {
-		st.PrivateKey = *privateKeyField
-	}
-	privateKeyPlaintextField := &pb.PrivateKeyPlaintext
-	if privateKeyPlaintextField != nil {
-		st.PrivateKeyPlaintext = *privateKeyPlaintextField
-	}
-	projectIdField := &pb.ProjectId
-	if projectIdField != nil {
-		st.ProjectId = *projectIdField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
+	st.PrivateKey = pb.PrivateKey
+	st.PrivateKeyPlaintext = pb.PrivateKeyPlaintext
+	st.ProjectId = pb.ProjectId
+	st.Region = pb.Region
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5679,7 +5122,9 @@ func (st googleCloudVertexAiConfigPb) MarshalJSON() ([]byte, error) {
 }
 
 type HttpRequestResponse struct {
-	Contents io.ReadCloser
+
+	// Wire name: 'contents'
+	Contents io.ReadCloser `tf:"-"`
 }
 
 func httpRequestResponseToPb(st *HttpRequestResponse) (*httpRequestResponsePb, error) {
@@ -5687,10 +5132,7 @@ func httpRequestResponseToPb(st *HttpRequestResponse) (*httpRequestResponsePb, e
 		return nil, nil
 	}
 	pb := &httpRequestResponsePb{}
-	contentsPb := &st.Contents
-	if contentsPb != nil {
-		pb.Contents = *contentsPb
-	}
+	pb.Contents = st.Contents
 
 	return pb, nil
 }
@@ -5729,16 +5171,14 @@ func httpRequestResponseFromPb(pb *httpRequestResponsePb) (*HttpRequestResponse,
 		return nil, nil
 	}
 	st := &HttpRequestResponse{}
-	contentsField := &pb.Contents
-	if contentsField != nil {
-		st.Contents = *contentsField
-	}
+	st.Contents = pb.Contents
 
 	return st, nil
 }
 
 type ListEndpointsResponse struct {
 	// The list of endpoints.
+	// Wire name: 'endpoints'
 	Endpoints []ServingEndpoint
 }
 
@@ -5800,13 +5240,13 @@ func listEndpointsResponseFromPb(pb *listEndpointsResponsePb) (*ListEndpointsRes
 	st := &ListEndpointsResponse{}
 
 	var endpointsField []ServingEndpoint
-	for _, item := range pb.Endpoints {
-		itemField, err := servingEndpointFromPb(&item)
+	for _, itemPb := range pb.Endpoints {
+		item, err := servingEndpointFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			endpointsField = append(endpointsField, *itemField)
+		if item != nil {
+			endpointsField = append(endpointsField, *item)
 		}
 	}
 	st.Endpoints = endpointsField
@@ -5818,10 +5258,12 @@ func listEndpointsResponseFromPb(pb *listEndpointsResponsePb) (*ListEndpointsRes
 type LogsRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The name of the served model that logs will be retrieved for. This field
 	// is required.
-	ServedModelName string
+	// Wire name: 'served_model_name'
+	ServedModelName string `tf:"-"`
 }
 
 func logsRequestToPb(st *LogsRequest) (*logsRequestPb, error) {
@@ -5829,15 +5271,9 @@ func logsRequestToPb(st *LogsRequest) (*logsRequestPb, error) {
 		return nil, nil
 	}
 	pb := &logsRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	servedModelNamePb := &st.ServedModelName
-	if servedModelNamePb != nil {
-		pb.ServedModelName = *servedModelNamePb
-	}
+	pb.ServedModelName = st.ServedModelName
 
 	return pb, nil
 }
@@ -5881,14 +5317,8 @@ func logsRequestFromPb(pb *logsRequestPb) (*LogsRequest, error) {
 		return nil, nil
 	}
 	st := &LogsRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	servedModelNameField := &pb.ServedModelName
-	if servedModelNameField != nil {
-		st.ServedModelName = *servedModelNameField
-	}
+	st.Name = pb.Name
+	st.ServedModelName = pb.ServedModelName
 
 	return st, nil
 }
@@ -5897,6 +5327,7 @@ func logsRequestFromPb(pb *logsRequestPb) (*LogsRequest, error) {
 // model through Data Plane APIs.
 type ModelDataPlaneInfo struct {
 	// Information required to query DataPlane API 'query' endpoint.
+	// Wire name: 'query_info'
 	QueryInfo *DataPlaneInfo
 }
 
@@ -5966,6 +5397,7 @@ func modelDataPlaneInfoFromPb(pb *modelDataPlaneInfoPb) (*ModelDataPlaneInfo, er
 type OpenAiConfig struct {
 	// This field is only required for Azure AD OpenAI and is the Microsoft
 	// Entra Client ID.
+	// Wire name: 'microsoft_entra_client_id'
 	MicrosoftEntraClientId string
 	// The Databricks secret key reference for a client secret used for
 	// Microsoft Entra ID authentication. If you prefer to paste your client
@@ -5973,50 +5405,60 @@ type OpenAiConfig struct {
 	// provide an API key using one of the following fields:
 	// `microsoft_entra_client_secret` or
 	// `microsoft_entra_client_secret_plaintext`.
+	// Wire name: 'microsoft_entra_client_secret'
 	MicrosoftEntraClientSecret string
 	// The client secret used for Microsoft Entra ID authentication provided as
 	// a plaintext string. If you prefer to reference your key using Databricks
 	// Secrets, see `microsoft_entra_client_secret`. You must provide an API key
 	// using one of the following fields: `microsoft_entra_client_secret` or
 	// `microsoft_entra_client_secret_plaintext`.
+	// Wire name: 'microsoft_entra_client_secret_plaintext'
 	MicrosoftEntraClientSecretPlaintext string
 	// This field is only required for Azure AD OpenAI and is the Microsoft
 	// Entra Tenant ID.
+	// Wire name: 'microsoft_entra_tenant_id'
 	MicrosoftEntraTenantId string
 	// This is a field to provide a customized base URl for the OpenAI API. For
 	// Azure OpenAI, this field is required, and is the base URL for the Azure
 	// OpenAI API service provided by Azure. For other OpenAI API types, this
 	// field is optional, and if left unspecified, the standard OpenAI base URL
 	// is used.
+	// Wire name: 'openai_api_base'
 	OpenaiApiBase string
 	// The Databricks secret key reference for an OpenAI API key using the
 	// OpenAI or Azure service. If you prefer to paste your API key directly,
 	// see `openai_api_key_plaintext`. You must provide an API key using one of
 	// the following fields: `openai_api_key` or `openai_api_key_plaintext`.
+	// Wire name: 'openai_api_key'
 	OpenaiApiKey string
 	// The OpenAI API key using the OpenAI or Azure service provided as a
 	// plaintext string. If you prefer to reference your key using Databricks
 	// Secrets, see `openai_api_key`. You must provide an API key using one of
 	// the following fields: `openai_api_key` or `openai_api_key_plaintext`.
+	// Wire name: 'openai_api_key_plaintext'
 	OpenaiApiKeyPlaintext string
 	// This is an optional field to specify the type of OpenAI API to use. For
 	// Azure OpenAI, this field is required, and adjust this parameter to
 	// represent the preferred security access validation protocol. For access
 	// token validation, use azure. For authentication using Azure Active
 	// Directory (Azure AD) use, azuread.
+	// Wire name: 'openai_api_type'
 	OpenaiApiType string
 	// This is an optional field to specify the OpenAI API version. For Azure
 	// OpenAI, this field is required, and is the version of the Azure OpenAI
 	// service to utilize, specified by a date.
+	// Wire name: 'openai_api_version'
 	OpenaiApiVersion string
 	// This field is only required for Azure OpenAI and is the name of the
 	// deployment resource for the Azure OpenAI service.
+	// Wire name: 'openai_deployment_name'
 	OpenaiDeploymentName string
 	// This is an optional field to specify the organization in OpenAI or Azure
 	// OpenAI.
+	// Wire name: 'openai_organization'
 	OpenaiOrganization string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func openAiConfigToPb(st *OpenAiConfig) (*openAiConfigPb, error) {
@@ -6024,60 +5466,27 @@ func openAiConfigToPb(st *OpenAiConfig) (*openAiConfigPb, error) {
 		return nil, nil
 	}
 	pb := &openAiConfigPb{}
-	microsoftEntraClientIdPb := &st.MicrosoftEntraClientId
-	if microsoftEntraClientIdPb != nil {
-		pb.MicrosoftEntraClientId = *microsoftEntraClientIdPb
-	}
+	pb.MicrosoftEntraClientId = st.MicrosoftEntraClientId
 
-	microsoftEntraClientSecretPb := &st.MicrosoftEntraClientSecret
-	if microsoftEntraClientSecretPb != nil {
-		pb.MicrosoftEntraClientSecret = *microsoftEntraClientSecretPb
-	}
+	pb.MicrosoftEntraClientSecret = st.MicrosoftEntraClientSecret
 
-	microsoftEntraClientSecretPlaintextPb := &st.MicrosoftEntraClientSecretPlaintext
-	if microsoftEntraClientSecretPlaintextPb != nil {
-		pb.MicrosoftEntraClientSecretPlaintext = *microsoftEntraClientSecretPlaintextPb
-	}
+	pb.MicrosoftEntraClientSecretPlaintext = st.MicrosoftEntraClientSecretPlaintext
 
-	microsoftEntraTenantIdPb := &st.MicrosoftEntraTenantId
-	if microsoftEntraTenantIdPb != nil {
-		pb.MicrosoftEntraTenantId = *microsoftEntraTenantIdPb
-	}
+	pb.MicrosoftEntraTenantId = st.MicrosoftEntraTenantId
 
-	openaiApiBasePb := &st.OpenaiApiBase
-	if openaiApiBasePb != nil {
-		pb.OpenaiApiBase = *openaiApiBasePb
-	}
+	pb.OpenaiApiBase = st.OpenaiApiBase
 
-	openaiApiKeyPb := &st.OpenaiApiKey
-	if openaiApiKeyPb != nil {
-		pb.OpenaiApiKey = *openaiApiKeyPb
-	}
+	pb.OpenaiApiKey = st.OpenaiApiKey
 
-	openaiApiKeyPlaintextPb := &st.OpenaiApiKeyPlaintext
-	if openaiApiKeyPlaintextPb != nil {
-		pb.OpenaiApiKeyPlaintext = *openaiApiKeyPlaintextPb
-	}
+	pb.OpenaiApiKeyPlaintext = st.OpenaiApiKeyPlaintext
 
-	openaiApiTypePb := &st.OpenaiApiType
-	if openaiApiTypePb != nil {
-		pb.OpenaiApiType = *openaiApiTypePb
-	}
+	pb.OpenaiApiType = st.OpenaiApiType
 
-	openaiApiVersionPb := &st.OpenaiApiVersion
-	if openaiApiVersionPb != nil {
-		pb.OpenaiApiVersion = *openaiApiVersionPb
-	}
+	pb.OpenaiApiVersion = st.OpenaiApiVersion
 
-	openaiDeploymentNamePb := &st.OpenaiDeploymentName
-	if openaiDeploymentNamePb != nil {
-		pb.OpenaiDeploymentName = *openaiDeploymentNamePb
-	}
+	pb.OpenaiDeploymentName = st.OpenaiDeploymentName
 
-	openaiOrganizationPb := &st.OpenaiOrganization
-	if openaiOrganizationPb != nil {
-		pb.OpenaiOrganization = *openaiOrganizationPb
-	}
+	pb.OpenaiOrganization = st.OpenaiOrganization
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6169,50 +5578,17 @@ func openAiConfigFromPb(pb *openAiConfigPb) (*OpenAiConfig, error) {
 		return nil, nil
 	}
 	st := &OpenAiConfig{}
-	microsoftEntraClientIdField := &pb.MicrosoftEntraClientId
-	if microsoftEntraClientIdField != nil {
-		st.MicrosoftEntraClientId = *microsoftEntraClientIdField
-	}
-	microsoftEntraClientSecretField := &pb.MicrosoftEntraClientSecret
-	if microsoftEntraClientSecretField != nil {
-		st.MicrosoftEntraClientSecret = *microsoftEntraClientSecretField
-	}
-	microsoftEntraClientSecretPlaintextField := &pb.MicrosoftEntraClientSecretPlaintext
-	if microsoftEntraClientSecretPlaintextField != nil {
-		st.MicrosoftEntraClientSecretPlaintext = *microsoftEntraClientSecretPlaintextField
-	}
-	microsoftEntraTenantIdField := &pb.MicrosoftEntraTenantId
-	if microsoftEntraTenantIdField != nil {
-		st.MicrosoftEntraTenantId = *microsoftEntraTenantIdField
-	}
-	openaiApiBaseField := &pb.OpenaiApiBase
-	if openaiApiBaseField != nil {
-		st.OpenaiApiBase = *openaiApiBaseField
-	}
-	openaiApiKeyField := &pb.OpenaiApiKey
-	if openaiApiKeyField != nil {
-		st.OpenaiApiKey = *openaiApiKeyField
-	}
-	openaiApiKeyPlaintextField := &pb.OpenaiApiKeyPlaintext
-	if openaiApiKeyPlaintextField != nil {
-		st.OpenaiApiKeyPlaintext = *openaiApiKeyPlaintextField
-	}
-	openaiApiTypeField := &pb.OpenaiApiType
-	if openaiApiTypeField != nil {
-		st.OpenaiApiType = *openaiApiTypeField
-	}
-	openaiApiVersionField := &pb.OpenaiApiVersion
-	if openaiApiVersionField != nil {
-		st.OpenaiApiVersion = *openaiApiVersionField
-	}
-	openaiDeploymentNameField := &pb.OpenaiDeploymentName
-	if openaiDeploymentNameField != nil {
-		st.OpenaiDeploymentName = *openaiDeploymentNameField
-	}
-	openaiOrganizationField := &pb.OpenaiOrganization
-	if openaiOrganizationField != nil {
-		st.OpenaiOrganization = *openaiOrganizationField
-	}
+	st.MicrosoftEntraClientId = pb.MicrosoftEntraClientId
+	st.MicrosoftEntraClientSecret = pb.MicrosoftEntraClientSecret
+	st.MicrosoftEntraClientSecretPlaintext = pb.MicrosoftEntraClientSecretPlaintext
+	st.MicrosoftEntraTenantId = pb.MicrosoftEntraTenantId
+	st.OpenaiApiBase = pb.OpenaiApiBase
+	st.OpenaiApiKey = pb.OpenaiApiKey
+	st.OpenaiApiKeyPlaintext = pb.OpenaiApiKeyPlaintext
+	st.OpenaiApiType = pb.OpenaiApiType
+	st.OpenaiApiVersion = pb.OpenaiApiVersion
+	st.OpenaiDeploymentName = pb.OpenaiDeploymentName
+	st.OpenaiOrganization = pb.OpenaiOrganization
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6231,14 +5607,16 @@ type PaLmConfig struct {
 	// paste your API key directly, see `palm_api_key_plaintext`. You must
 	// provide an API key using one of the following fields: `palm_api_key` or
 	// `palm_api_key_plaintext`.
+	// Wire name: 'palm_api_key'
 	PalmApiKey string
 	// The PaLM API key provided as a plaintext string. If you prefer to
 	// reference your key using Databricks Secrets, see `palm_api_key`. You must
 	// provide an API key using one of the following fields: `palm_api_key` or
 	// `palm_api_key_plaintext`.
+	// Wire name: 'palm_api_key_plaintext'
 	PalmApiKeyPlaintext string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func paLmConfigToPb(st *PaLmConfig) (*paLmConfigPb, error) {
@@ -6246,15 +5624,9 @@ func paLmConfigToPb(st *PaLmConfig) (*paLmConfigPb, error) {
 		return nil, nil
 	}
 	pb := &paLmConfigPb{}
-	palmApiKeyPb := &st.PalmApiKey
-	if palmApiKeyPb != nil {
-		pb.PalmApiKey = *palmApiKeyPb
-	}
+	pb.PalmApiKey = st.PalmApiKey
 
-	palmApiKeyPlaintextPb := &st.PalmApiKeyPlaintext
-	if palmApiKeyPlaintextPb != nil {
-		pb.PalmApiKeyPlaintext = *palmApiKeyPlaintextPb
-	}
+	pb.PalmApiKeyPlaintext = st.PalmApiKeyPlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6305,14 +5677,8 @@ func paLmConfigFromPb(pb *paLmConfigPb) (*PaLmConfig, error) {
 		return nil, nil
 	}
 	st := &PaLmConfig{}
-	palmApiKeyField := &pb.PalmApiKey
-	if palmApiKeyField != nil {
-		st.PalmApiKey = *palmApiKeyField
-	}
-	palmApiKeyPlaintextField := &pb.PalmApiKeyPlaintext
-	if palmApiKeyPlaintextField != nil {
-		st.PalmApiKeyPlaintext = *palmApiKeyPlaintextField
-	}
+	st.PalmApiKey = pb.PalmApiKey
+	st.PalmApiKeyPlaintext = pb.PalmApiKeyPlaintext
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6328,12 +5694,15 @@ func (st paLmConfigPb) MarshalJSON() ([]byte, error) {
 
 type PatchServingEndpointTags struct {
 	// List of endpoint tags to add
+	// Wire name: 'add_tags'
 	AddTags []EndpointTag
 	// List of tag keys to delete
+	// Wire name: 'delete_tags'
 	DeleteTags []string
 	// The name of the serving endpoint who's tags to patch. This field is
 	// required.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func patchServingEndpointTagsToPb(st *PatchServingEndpointTags) (*patchServingEndpointTagsPb, error) {
@@ -6354,19 +5723,9 @@ func patchServingEndpointTagsToPb(st *PatchServingEndpointTags) (*patchServingEn
 	}
 	pb.AddTags = addTagsPb
 
-	var deleteTagsPb []string
-	for _, item := range st.DeleteTags {
-		itemPb := &item
-		if itemPb != nil {
-			deleteTagsPb = append(deleteTagsPb, *itemPb)
-		}
-	}
-	pb.DeleteTags = deleteTagsPb
+	pb.DeleteTags = st.DeleteTags
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -6413,41 +5772,34 @@ func patchServingEndpointTagsFromPb(pb *patchServingEndpointTagsPb) (*PatchServi
 	st := &PatchServingEndpointTags{}
 
 	var addTagsField []EndpointTag
-	for _, item := range pb.AddTags {
-		itemField, err := endpointTagFromPb(&item)
+	for _, itemPb := range pb.AddTags {
+		item, err := endpointTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			addTagsField = append(addTagsField, *itemField)
+		if item != nil {
+			addTagsField = append(addTagsField, *item)
 		}
 	}
 	st.AddTags = addTagsField
-
-	var deleteTagsField []string
-	for _, item := range pb.DeleteTags {
-		itemField := &item
-		if itemField != nil {
-			deleteTagsField = append(deleteTagsField, *itemField)
-		}
-	}
-	st.DeleteTags = deleteTagsField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.DeleteTags = pb.DeleteTags
+	st.Name = pb.Name
 
 	return st, nil
 }
 
 type PayloadTable struct {
+
+	// Wire name: 'name'
 	Name string
 
+	// Wire name: 'status'
 	Status string
 
+	// Wire name: 'status_message'
 	StatusMessage string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func payloadTableToPb(st *PayloadTable) (*payloadTablePb, error) {
@@ -6455,20 +5807,11 @@ func payloadTableToPb(st *PayloadTable) (*payloadTablePb, error) {
 		return nil, nil
 	}
 	pb := &payloadTablePb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	statusMessagePb := &st.StatusMessage
-	if statusMessagePb != nil {
-		pb.StatusMessage = *statusMessagePb
-	}
+	pb.StatusMessage = st.StatusMessage
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6514,18 +5857,9 @@ func payloadTableFromPb(pb *payloadTablePb) (*PayloadTable, error) {
 		return nil, nil
 	}
 	st := &PayloadTable{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	statusMessageField := &pb.StatusMessage
-	if statusMessageField != nil {
-		st.StatusMessage = *statusMessageField
-	}
+	st.Name = pb.Name
+	st.Status = pb.Status
+	st.StatusMessage = pb.StatusMessage
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6543,22 +5877,28 @@ type PutAiGatewayRequest struct {
 	// Configuration for traffic fallback which auto fallbacks to other served
 	// entities if the request to a served entity fails with certain error
 	// codes, to increase availability.
+	// Wire name: 'fallback_config'
 	FallbackConfig *FallbackConfig
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
+	// Wire name: 'guardrails'
 	Guardrails *AiGatewayGuardrails
 	// Configuration for payload logging using inference tables. Use these
 	// tables to monitor and audit data being sent to and received from model
 	// APIs and to improve model quality.
+	// Wire name: 'inference_table_config'
 	InferenceTableConfig *AiGatewayInferenceTableConfig
 	// The name of the serving endpoint whose AI Gateway is being updated. This
 	// field is required.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Configuration for rate limits which can be set to limit endpoint traffic.
+	// Wire name: 'rate_limits'
 	RateLimits []AiGatewayRateLimit
 	// Configuration to enable usage tracking using system tables. These tables
 	// allow you to monitor operational usage on endpoints and their associated
 	// costs.
+	// Wire name: 'usage_tracking_config'
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig
 }
 
@@ -6591,10 +5931,7 @@ func putAiGatewayRequestToPb(st *PutAiGatewayRequest) (*putAiGatewayRequestPb, e
 		pb.InferenceTableConfig = inferenceTableConfigPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var rateLimitsPb []aiGatewayRateLimitPb
 	for _, item := range st.RateLimits {
@@ -6693,19 +6030,16 @@ func putAiGatewayRequestFromPb(pb *putAiGatewayRequestPb) (*PutAiGatewayRequest,
 	if inferenceTableConfigField != nil {
 		st.InferenceTableConfig = inferenceTableConfigField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	var rateLimitsField []AiGatewayRateLimit
-	for _, item := range pb.RateLimits {
-		itemField, err := aiGatewayRateLimitFromPb(&item)
+	for _, itemPb := range pb.RateLimits {
+		item, err := aiGatewayRateLimitFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			rateLimitsField = append(rateLimitsField, *itemField)
+		if item != nil {
+			rateLimitsField = append(rateLimitsField, *item)
 		}
 	}
 	st.RateLimits = rateLimitsField
@@ -6724,19 +6058,24 @@ type PutAiGatewayResponse struct {
 	// Configuration for traffic fallback which auto fallbacks to other served
 	// entities if the request to a served entity fails with certain error
 	// codes, to increase availability.
+	// Wire name: 'fallback_config'
 	FallbackConfig *FallbackConfig
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
+	// Wire name: 'guardrails'
 	Guardrails *AiGatewayGuardrails
 	// Configuration for payload logging using inference tables. Use these
 	// tables to monitor and audit data being sent to and received from model
 	// APIs and to improve model quality.
+	// Wire name: 'inference_table_config'
 	InferenceTableConfig *AiGatewayInferenceTableConfig
 	// Configuration for rate limits which can be set to limit endpoint traffic.
+	// Wire name: 'rate_limits'
 	RateLimits []AiGatewayRateLimit
 	// Configuration to enable usage tracking using system tables. These tables
 	// allow you to monitor operational usage on endpoints and their associated
 	// costs.
+	// Wire name: 'usage_tracking_config'
 	UsageTrackingConfig *AiGatewayUsageTrackingConfig
 }
 
@@ -6865,13 +6204,13 @@ func putAiGatewayResponseFromPb(pb *putAiGatewayResponsePb) (*PutAiGatewayRespon
 	}
 
 	var rateLimitsField []AiGatewayRateLimit
-	for _, item := range pb.RateLimits {
-		itemField, err := aiGatewayRateLimitFromPb(&item)
+	for _, itemPb := range pb.RateLimits {
+		item, err := aiGatewayRateLimitFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			rateLimitsField = append(rateLimitsField, *itemField)
+		if item != nil {
+			rateLimitsField = append(rateLimitsField, *item)
 		}
 	}
 	st.RateLimits = rateLimitsField
@@ -6889,8 +6228,10 @@ func putAiGatewayResponseFromPb(pb *putAiGatewayResponsePb) (*PutAiGatewayRespon
 type PutRequest struct {
 	// The name of the serving endpoint whose rate limits are being updated.
 	// This field is required.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The list of endpoint rate limits.
+	// Wire name: 'rate_limits'
 	RateLimits []RateLimit
 }
 
@@ -6899,10 +6240,7 @@ func putRequestToPb(st *PutRequest) (*putRequestPb, error) {
 		return nil, nil
 	}
 	pb := &putRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var rateLimitsPb []rateLimitPb
 	for _, item := range st.RateLimits {
@@ -6957,19 +6295,16 @@ func putRequestFromPb(pb *putRequestPb) (*PutRequest, error) {
 		return nil, nil
 	}
 	st := &PutRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	var rateLimitsField []RateLimit
-	for _, item := range pb.RateLimits {
-		itemField, err := rateLimitFromPb(&item)
+	for _, itemPb := range pb.RateLimits {
+		item, err := rateLimitFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			rateLimitsField = append(rateLimitsField, *itemField)
+		if item != nil {
+			rateLimitsField = append(rateLimitsField, *item)
 		}
 	}
 	st.RateLimits = rateLimitsField
@@ -6979,6 +6314,7 @@ func putRequestFromPb(pb *putRequestPb) (*PutRequest, error) {
 
 type PutResponse struct {
 	// The list of endpoint rate limits.
+	// Wire name: 'rate_limits'
 	RateLimits []RateLimit
 }
 
@@ -7040,13 +6376,13 @@ func putResponseFromPb(pb *putResponsePb) (*PutResponse, error) {
 	st := &PutResponse{}
 
 	var rateLimitsField []RateLimit
-	for _, item := range pb.RateLimits {
-		itemField, err := rateLimitFromPb(&item)
+	for _, itemPb := range pb.RateLimits {
+		item, err := rateLimitFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			rateLimitsField = append(rateLimitsField, *itemField)
+		if item != nil {
+			rateLimitsField = append(rateLimitsField, *item)
 		}
 	}
 	st.RateLimits = rateLimitsField
@@ -7056,56 +6392,70 @@ func putResponseFromPb(pb *putResponsePb) (*PutResponse, error) {
 
 type QueryEndpointInput struct {
 	// Pandas Dataframe input in the records orientation.
+	// Wire name: 'dataframe_records'
 	DataframeRecords []any
 	// Pandas Dataframe input in the split orientation.
+	// Wire name: 'dataframe_split'
 	DataframeSplit *DataframeSplitInput
 	// The extra parameters field used ONLY for __completions, chat,__ and
 	// __embeddings external & foundation model__ serving endpoints. This is a
 	// map of strings and should only be used with other external/foundation
 	// model query fields.
+	// Wire name: 'extra_params'
 	ExtraParams map[string]string
 	// The input string (or array of strings) field used ONLY for __embeddings
 	// external & foundation model__ serving endpoints and is the only field
 	// (along with extra_params if needed) used by embeddings queries.
+	// Wire name: 'input'
 	Input any
 	// Tensor-based input in columnar format.
+	// Wire name: 'inputs'
 	Inputs any
 	// Tensor-based input in row format.
+	// Wire name: 'instances'
 	Instances []any
 	// The max tokens field used ONLY for __completions__ and __chat external &
 	// foundation model__ serving endpoints. This is an integer and should only
 	// be used with other chat/completions query fields.
+	// Wire name: 'max_tokens'
 	MaxTokens int
 	// The messages field used ONLY for __chat external & foundation model__
 	// serving endpoints. This is a map of strings and should only be used with
 	// other chat query fields.
+	// Wire name: 'messages'
 	Messages []ChatMessage
 	// The n (number of candidates) field used ONLY for __completions__ and
 	// __chat external & foundation model__ serving endpoints. This is an
 	// integer between 1 and 5 with a default of 1 and should only be used with
 	// other chat/completions query fields.
+	// Wire name: 'n'
 	N int
 	// The name of the serving endpoint. This field is required.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The prompt string (or array of strings) field used ONLY for __completions
 	// external & foundation model__ serving endpoints and should only be used
 	// with other completions query fields.
+	// Wire name: 'prompt'
 	Prompt any
 	// The stop sequences field used ONLY for __completions__ and __chat
 	// external & foundation model__ serving endpoints. This is a list of
 	// strings and should only be used with other chat/completions query fields.
+	// Wire name: 'stop'
 	Stop []string
 	// The stream field used ONLY for __completions__ and __chat external &
 	// foundation model__ serving endpoints. This is a boolean defaulting to
 	// false and should only be used with other chat/completions query fields.
+	// Wire name: 'stream'
 	Stream bool
 	// The temperature field used ONLY for __completions__ and __chat external &
 	// foundation model__ serving endpoints. This is a float between 0.0 and 2.0
 	// with a default of 1.0 and should only be used with other chat/completions
 	// query fields.
+	// Wire name: 'temperature'
 	Temperature float64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryEndpointInputToPb(st *QueryEndpointInput) (*queryEndpointInputPb, error) {
@@ -7113,15 +6463,7 @@ func queryEndpointInputToPb(st *QueryEndpointInput) (*queryEndpointInputPb, erro
 		return nil, nil
 	}
 	pb := &queryEndpointInputPb{}
-
-	var dataframeRecordsPb []any
-	for _, item := range st.DataframeRecords {
-		itemPb := &item
-		if itemPb != nil {
-			dataframeRecordsPb = append(dataframeRecordsPb, *itemPb)
-		}
-	}
-	pb.DataframeRecords = dataframeRecordsPb
+	pb.DataframeRecords = st.DataframeRecords
 
 	dataframeSplitPb, err := dataframeSplitInputToPb(st.DataframeSplit)
 	if err != nil {
@@ -7131,38 +6473,15 @@ func queryEndpointInputToPb(st *QueryEndpointInput) (*queryEndpointInputPb, erro
 		pb.DataframeSplit = dataframeSplitPb
 	}
 
-	extraParamsPb := map[string]string{}
-	for k, v := range st.ExtraParams {
-		itemPb := &v
-		if itemPb != nil {
-			extraParamsPb[k] = *itemPb
-		}
-	}
-	pb.ExtraParams = extraParamsPb
+	pb.ExtraParams = st.ExtraParams
 
-	inputPb := &st.Input
-	if inputPb != nil {
-		pb.Input = *inputPb
-	}
+	pb.Input = st.Input
 
-	inputsPb := &st.Inputs
-	if inputsPb != nil {
-		pb.Inputs = *inputsPb
-	}
+	pb.Inputs = st.Inputs
 
-	var instancesPb []any
-	for _, item := range st.Instances {
-		itemPb := &item
-		if itemPb != nil {
-			instancesPb = append(instancesPb, *itemPb)
-		}
-	}
-	pb.Instances = instancesPb
+	pb.Instances = st.Instances
 
-	maxTokensPb := &st.MaxTokens
-	if maxTokensPb != nil {
-		pb.MaxTokens = *maxTokensPb
-	}
+	pb.MaxTokens = st.MaxTokens
 
 	var messagesPb []chatMessagePb
 	for _, item := range st.Messages {
@@ -7176,39 +6495,17 @@ func queryEndpointInputToPb(st *QueryEndpointInput) (*queryEndpointInputPb, erro
 	}
 	pb.Messages = messagesPb
 
-	nPb := &st.N
-	if nPb != nil {
-		pb.N = *nPb
-	}
+	pb.N = st.N
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	promptPb := &st.Prompt
-	if promptPb != nil {
-		pb.Prompt = *promptPb
-	}
+	pb.Prompt = st.Prompt
 
-	var stopPb []string
-	for _, item := range st.Stop {
-		itemPb := &item
-		if itemPb != nil {
-			stopPb = append(stopPb, *itemPb)
-		}
-	}
-	pb.Stop = stopPb
+	pb.Stop = st.Stop
 
-	streamPb := &st.Stream
-	if streamPb != nil {
-		pb.Stream = *streamPb
-	}
+	pb.Stream = st.Stream
 
-	temperaturePb := &st.Temperature
-	if temperaturePb != nil {
-		pb.Temperature = *temperaturePb
-	}
+	pb.Temperature = st.Temperature
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7298,15 +6595,7 @@ func queryEndpointInputFromPb(pb *queryEndpointInputPb) (*QueryEndpointInput, er
 		return nil, nil
 	}
 	st := &QueryEndpointInput{}
-
-	var dataframeRecordsField []any
-	for _, item := range pb.DataframeRecords {
-		itemField := &item
-		if itemField != nil {
-			dataframeRecordsField = append(dataframeRecordsField, *itemField)
-		}
-	}
-	st.DataframeRecords = dataframeRecordsField
+	st.DataframeRecords = pb.DataframeRecords
 	dataframeSplitField, err := dataframeSplitInputFromPb(pb.DataframeSplit)
 	if err != nil {
 		return nil, err
@@ -7314,77 +6603,29 @@ func queryEndpointInputFromPb(pb *queryEndpointInputPb) (*QueryEndpointInput, er
 	if dataframeSplitField != nil {
 		st.DataframeSplit = dataframeSplitField
 	}
-
-	extraParamsField := map[string]string{}
-	for k, v := range pb.ExtraParams {
-		itemField := &v
-		if itemField != nil {
-			extraParamsField[k] = *itemField
-		}
-	}
-	st.ExtraParams = extraParamsField
-	inputField := &pb.Input
-	if inputField != nil {
-		st.Input = *inputField
-	}
-	inputsField := &pb.Inputs
-	if inputsField != nil {
-		st.Inputs = *inputsField
-	}
-
-	var instancesField []any
-	for _, item := range pb.Instances {
-		itemField := &item
-		if itemField != nil {
-			instancesField = append(instancesField, *itemField)
-		}
-	}
-	st.Instances = instancesField
-	maxTokensField := &pb.MaxTokens
-	if maxTokensField != nil {
-		st.MaxTokens = *maxTokensField
-	}
+	st.ExtraParams = pb.ExtraParams
+	st.Input = pb.Input
+	st.Inputs = pb.Inputs
+	st.Instances = pb.Instances
+	st.MaxTokens = pb.MaxTokens
 
 	var messagesField []ChatMessage
-	for _, item := range pb.Messages {
-		itemField, err := chatMessageFromPb(&item)
+	for _, itemPb := range pb.Messages {
+		item, err := chatMessageFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			messagesField = append(messagesField, *itemField)
+		if item != nil {
+			messagesField = append(messagesField, *item)
 		}
 	}
 	st.Messages = messagesField
-	nField := &pb.N
-	if nField != nil {
-		st.N = *nField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	promptField := &pb.Prompt
-	if promptField != nil {
-		st.Prompt = *promptField
-	}
-
-	var stopField []string
-	for _, item := range pb.Stop {
-		itemField := &item
-		if itemField != nil {
-			stopField = append(stopField, *itemField)
-		}
-	}
-	st.Stop = stopField
-	streamField := &pb.Stream
-	if streamField != nil {
-		st.Stream = *streamField
-	}
-	temperatureField := &pb.Temperature
-	if temperatureField != nil {
-		st.Temperature = *temperatureField
-	}
+	st.N = pb.N
+	st.Name = pb.Name
+	st.Prompt = pb.Prompt
+	st.Stop = pb.Stop
+	st.Stream = pb.Stream
+	st.Temperature = pb.Temperature
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7401,34 +6642,43 @@ func (st queryEndpointInputPb) MarshalJSON() ([]byte, error) {
 type QueryEndpointResponse struct {
 	// The list of choices returned by the __chat or completions
 	// external/foundation model__ serving endpoint.
+	// Wire name: 'choices'
 	Choices []V1ResponseChoiceElement
 	// The timestamp in seconds when the query was created in Unix time returned
 	// by a __completions or chat external/foundation model__ serving endpoint.
+	// Wire name: 'created'
 	Created int64
 	// The list of the embeddings returned by the __embeddings
 	// external/foundation model__ serving endpoint.
+	// Wire name: 'data'
 	Data []EmbeddingsV1ResponseEmbeddingElement
 	// The ID of the query that may be returned by a __completions or chat
 	// external/foundation model__ serving endpoint.
+	// Wire name: 'id'
 	Id string
 	// The name of the __external/foundation model__ used for querying. This is
 	// the name of the model that was specified in the endpoint config.
+	// Wire name: 'model'
 	Model string
 	// The type of object returned by the __external/foundation model__ serving
 	// endpoint, one of [text_completion, chat.completion, list (of
 	// embeddings)].
+	// Wire name: 'object'
 	Object QueryEndpointResponseObject
 	// The predictions returned by the serving endpoint.
+	// Wire name: 'predictions'
 	Predictions []any
 	// The name of the served model that served the request. This is useful when
 	// there are multiple models behind the same endpoint with traffic split.
-	ServedModelName string
+	// Wire name: 'served-model-name'
+	ServedModelName string `tf:"-"`
 	// The usage object that may be returned by the __external/foundation
 	// model__ serving endpoint. This contains information about the number of
 	// tokens used in the prompt and response.
+	// Wire name: 'usage'
 	Usage *ExternalModelUsageElement
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func queryEndpointResponseToPb(st *QueryEndpointResponse) (*queryEndpointResponsePb, error) {
@@ -7449,10 +6699,7 @@ func queryEndpointResponseToPb(st *QueryEndpointResponse) (*queryEndpointRespons
 	}
 	pb.Choices = choicesPb
 
-	createdPb := &st.Created
-	if createdPb != nil {
-		pb.Created = *createdPb
-	}
+	pb.Created = st.Created
 
 	var dataPb []embeddingsV1ResponseEmbeddingElementPb
 	for _, item := range st.Data {
@@ -7466,34 +6713,15 @@ func queryEndpointResponseToPb(st *QueryEndpointResponse) (*queryEndpointRespons
 	}
 	pb.Data = dataPb
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	modelPb := &st.Model
-	if modelPb != nil {
-		pb.Model = *modelPb
-	}
+	pb.Model = st.Model
 
-	objectPb := &st.Object
-	if objectPb != nil {
-		pb.Object = *objectPb
-	}
+	pb.Object = st.Object
 
-	var predictionsPb []any
-	for _, item := range st.Predictions {
-		itemPb := &item
-		if itemPb != nil {
-			predictionsPb = append(predictionsPb, *itemPb)
-		}
-	}
-	pb.Predictions = predictionsPb
+	pb.Predictions = st.Predictions
 
-	servedModelNamePb := &st.ServedModelName
-	if servedModelNamePb != nil {
-		pb.ServedModelName = *servedModelNamePb
-	}
+	pb.ServedModelName = st.ServedModelName
 
 	usagePb, err := externalModelUsageElementToPb(st.Usage)
 	if err != nil {
@@ -7572,57 +6800,34 @@ func queryEndpointResponseFromPb(pb *queryEndpointResponsePb) (*QueryEndpointRes
 	st := &QueryEndpointResponse{}
 
 	var choicesField []V1ResponseChoiceElement
-	for _, item := range pb.Choices {
-		itemField, err := v1ResponseChoiceElementFromPb(&item)
+	for _, itemPb := range pb.Choices {
+		item, err := v1ResponseChoiceElementFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			choicesField = append(choicesField, *itemField)
+		if item != nil {
+			choicesField = append(choicesField, *item)
 		}
 	}
 	st.Choices = choicesField
-	createdField := &pb.Created
-	if createdField != nil {
-		st.Created = *createdField
-	}
+	st.Created = pb.Created
 
 	var dataField []EmbeddingsV1ResponseEmbeddingElement
-	for _, item := range pb.Data {
-		itemField, err := embeddingsV1ResponseEmbeddingElementFromPb(&item)
+	for _, itemPb := range pb.Data {
+		item, err := embeddingsV1ResponseEmbeddingElementFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			dataField = append(dataField, *itemField)
+		if item != nil {
+			dataField = append(dataField, *item)
 		}
 	}
 	st.Data = dataField
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	modelField := &pb.Model
-	if modelField != nil {
-		st.Model = *modelField
-	}
-	objectField := &pb.Object
-	if objectField != nil {
-		st.Object = *objectField
-	}
-
-	var predictionsField []any
-	for _, item := range pb.Predictions {
-		itemField := &item
-		if itemField != nil {
-			predictionsField = append(predictionsField, *itemField)
-		}
-	}
-	st.Predictions = predictionsField
-	servedModelNameField := &pb.ServedModelName
-	if servedModelNameField != nil {
-		st.ServedModelName = *servedModelNameField
-	}
+	st.Id = pb.Id
+	st.Model = pb.Model
+	st.Object = pb.Object
+	st.Predictions = pb.Predictions
+	st.ServedModelName = pb.ServedModelName
 	usageField, err := externalModelUsageElementFromPb(pb.Usage)
 	if err != nil {
 		return nil, err
@@ -7694,13 +6899,16 @@ func queryEndpointResponseObjectFromPb(pb *queryEndpointResponseObjectPb) (*Quer
 type RateLimit struct {
 	// Used to specify how many calls are allowed for a key within the
 	// renewal_period.
+	// Wire name: 'calls'
 	Calls int64
 	// Key field for a serving endpoint rate limit. Currently, only 'user' and
 	// 'endpoint' are supported, with 'endpoint' being the default if not
 	// specified.
+	// Wire name: 'key'
 	Key RateLimitKey
 	// Renewal period field for a serving endpoint rate limit. Currently, only
 	// 'minute' is supported.
+	// Wire name: 'renewal_period'
 	RenewalPeriod RateLimitRenewalPeriod
 }
 
@@ -7709,20 +6917,11 @@ func rateLimitToPb(st *RateLimit) (*rateLimitPb, error) {
 		return nil, nil
 	}
 	pb := &rateLimitPb{}
-	callsPb := &st.Calls
-	if callsPb != nil {
-		pb.Calls = *callsPb
-	}
+	pb.Calls = st.Calls
 
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	renewalPeriodPb := &st.RenewalPeriod
-	if renewalPeriodPb != nil {
-		pb.RenewalPeriod = *renewalPeriodPb
-	}
+	pb.RenewalPeriod = st.RenewalPeriod
 
 	return pb, nil
 }
@@ -7770,18 +6969,9 @@ func rateLimitFromPb(pb *rateLimitPb) (*RateLimit, error) {
 		return nil, nil
 	}
 	st := &RateLimit{}
-	callsField := &pb.Calls
-	if callsField != nil {
-		st.Calls = *callsField
-	}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	renewalPeriodField := &pb.RenewalPeriod
-	if renewalPeriodField != nil {
-		st.RenewalPeriod = *renewalPeriodField
-	}
+	st.Calls = pb.Calls
+	st.Key = pb.Key
+	st.RenewalPeriod = pb.RenewalPeriod
 
 	return st, nil
 }
@@ -7874,9 +7064,11 @@ func rateLimitRenewalPeriodFromPb(pb *rateLimitRenewalPeriodPb) (*RateLimitRenew
 
 type Route struct {
 	// The name of the served model this route configures traffic for.
+	// Wire name: 'served_model_name'
 	ServedModelName string
 	// The percentage of endpoint traffic to send to this route. It must be an
 	// integer between 0 and 100 inclusive.
+	// Wire name: 'traffic_percentage'
 	TrafficPercentage int
 }
 
@@ -7885,15 +7077,9 @@ func routeToPb(st *Route) (*routePb, error) {
 		return nil, nil
 	}
 	pb := &routePb{}
-	servedModelNamePb := &st.ServedModelName
-	if servedModelNamePb != nil {
-		pb.ServedModelName = *servedModelNamePb
-	}
+	pb.ServedModelName = st.ServedModelName
 
-	trafficPercentagePb := &st.TrafficPercentage
-	if trafficPercentagePb != nil {
-		pb.TrafficPercentage = *trafficPercentagePb
-	}
+	pb.TrafficPercentage = st.TrafficPercentage
 
 	return pb, nil
 }
@@ -7936,14 +7122,8 @@ func routeFromPb(pb *routePb) (*Route, error) {
 		return nil, nil
 	}
 	st := &Route{}
-	servedModelNameField := &pb.ServedModelName
-	if servedModelNameField != nil {
-		st.ServedModelName = *servedModelNameField
-	}
-	trafficPercentageField := &pb.TrafficPercentage
-	if trafficPercentageField != nil {
-		st.TrafficPercentage = *trafficPercentageField
-	}
+	st.ServedModelName = pb.ServedModelName
+	st.TrafficPercentage = pb.TrafficPercentage
 
 	return st, nil
 }
@@ -7954,8 +7134,10 @@ type ServedEntityInput struct {
 	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full
 	// name of the object should be given in the form of
 	// **catalog_name.schema_name.model_name**.
+	// Wire name: 'entity_name'
 	EntityName string
 
+	// Wire name: 'entity_version'
 	EntityVersion string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs used for serving this entity. Note: this is an
@@ -7963,6 +7145,7 @@ type ServedEntityInput struct {
 	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
+	// Wire name: 'environment_vars'
 	EnvironmentVars map[string]string
 	// The external model to be served. NOTE: Only one of external_model and
 	// (entity_name, entity_version, workload_size, workload_type, and
@@ -7972,22 +7155,28 @@ type ServedEntityInput struct {
 	// endpoint without external_model. If the endpoint is created without
 	// external_model, users cannot update it to add external_model later. The
 	// task type of all external models within an endpoint must be the same.
+	// Wire name: 'external_model'
 	ExternalModel *ExternalModel
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// The maximum tokens per second that the endpoint can scale up to.
+	// Wire name: 'max_provisioned_throughput'
 	MaxProvisionedThroughput int
 	// The minimum tokens per second that the endpoint can scale down to.
+	// Wire name: 'min_provisioned_throughput'
 	MinProvisionedThroughput int
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
 	// underscores. If not specified for an external model, this field defaults
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
+	// Wire name: 'name'
 	Name string
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
+	// Wire name: 'scale_to_zero_enabled'
 	ScaleToZeroEnabled bool
 	// The workload size of the served entity. The workload size corresponds to
 	// a range of provisioned concurrency that the compute autoscales between. A
@@ -7997,6 +7186,7 @@ type ServedEntityInput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
+	// Wire name: 'workload_size'
 	WorkloadSize string
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -8005,9 +7195,10 @@ type ServedEntityInput struct {
 	// available [GPU types].
 	//
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
+	// Wire name: 'workload_type'
 	WorkloadType ServingModelWorkloadType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servedEntityInputToPb(st *ServedEntityInput) (*servedEntityInputPb, error) {
@@ -8015,24 +7206,11 @@ func servedEntityInputToPb(st *ServedEntityInput) (*servedEntityInputPb, error) 
 		return nil, nil
 	}
 	pb := &servedEntityInputPb{}
-	entityNamePb := &st.EntityName
-	if entityNamePb != nil {
-		pb.EntityName = *entityNamePb
-	}
+	pb.EntityName = st.EntityName
 
-	entityVersionPb := &st.EntityVersion
-	if entityVersionPb != nil {
-		pb.EntityVersion = *entityVersionPb
-	}
+	pb.EntityVersion = st.EntityVersion
 
-	environmentVarsPb := map[string]string{}
-	for k, v := range st.EnvironmentVars {
-		itemPb := &v
-		if itemPb != nil {
-			environmentVarsPb[k] = *itemPb
-		}
-	}
-	pb.EnvironmentVars = environmentVarsPb
+	pb.EnvironmentVars = st.EnvironmentVars
 
 	externalModelPb, err := externalModelToPb(st.ExternalModel)
 	if err != nil {
@@ -8042,40 +7220,19 @@ func servedEntityInputToPb(st *ServedEntityInput) (*servedEntityInputPb, error) 
 		pb.ExternalModel = externalModelPb
 	}
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	maxProvisionedThroughputPb := &st.MaxProvisionedThroughput
-	if maxProvisionedThroughputPb != nil {
-		pb.MaxProvisionedThroughput = *maxProvisionedThroughputPb
-	}
+	pb.MaxProvisionedThroughput = st.MaxProvisionedThroughput
 
-	minProvisionedThroughputPb := &st.MinProvisionedThroughput
-	if minProvisionedThroughputPb != nil {
-		pb.MinProvisionedThroughput = *minProvisionedThroughputPb
-	}
+	pb.MinProvisionedThroughput = st.MinProvisionedThroughput
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	scaleToZeroEnabledPb := &st.ScaleToZeroEnabled
-	if scaleToZeroEnabledPb != nil {
-		pb.ScaleToZeroEnabled = *scaleToZeroEnabledPb
-	}
+	pb.ScaleToZeroEnabled = st.ScaleToZeroEnabled
 
-	workloadSizePb := &st.WorkloadSize
-	if workloadSizePb != nil {
-		pb.WorkloadSize = *workloadSizePb
-	}
+	pb.WorkloadSize = st.WorkloadSize
 
-	workloadTypePb := &st.WorkloadType
-	if workloadTypePb != nil {
-		pb.WorkloadType = *workloadTypePb
-	}
+	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8173,23 +7330,9 @@ func servedEntityInputFromPb(pb *servedEntityInputPb) (*ServedEntityInput, error
 		return nil, nil
 	}
 	st := &ServedEntityInput{}
-	entityNameField := &pb.EntityName
-	if entityNameField != nil {
-		st.EntityName = *entityNameField
-	}
-	entityVersionField := &pb.EntityVersion
-	if entityVersionField != nil {
-		st.EntityVersion = *entityVersionField
-	}
-
-	environmentVarsField := map[string]string{}
-	for k, v := range pb.EnvironmentVars {
-		itemField := &v
-		if itemField != nil {
-			environmentVarsField[k] = *itemField
-		}
-	}
-	st.EnvironmentVars = environmentVarsField
+	st.EntityName = pb.EntityName
+	st.EntityVersion = pb.EntityVersion
+	st.EnvironmentVars = pb.EnvironmentVars
 	externalModelField, err := externalModelFromPb(pb.ExternalModel)
 	if err != nil {
 		return nil, err
@@ -8197,34 +7340,13 @@ func servedEntityInputFromPb(pb *servedEntityInputPb) (*ServedEntityInput, error
 	if externalModelField != nil {
 		st.ExternalModel = externalModelField
 	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	maxProvisionedThroughputField := &pb.MaxProvisionedThroughput
-	if maxProvisionedThroughputField != nil {
-		st.MaxProvisionedThroughput = *maxProvisionedThroughputField
-	}
-	minProvisionedThroughputField := &pb.MinProvisionedThroughput
-	if minProvisionedThroughputField != nil {
-		st.MinProvisionedThroughput = *minProvisionedThroughputField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	scaleToZeroEnabledField := &pb.ScaleToZeroEnabled
-	if scaleToZeroEnabledField != nil {
-		st.ScaleToZeroEnabled = *scaleToZeroEnabledField
-	}
-	workloadSizeField := &pb.WorkloadSize
-	if workloadSizeField != nil {
-		st.WorkloadSize = *workloadSizeField
-	}
-	workloadTypeField := &pb.WorkloadType
-	if workloadTypeField != nil {
-		st.WorkloadType = *workloadTypeField
-	}
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.MaxProvisionedThroughput = pb.MaxProvisionedThroughput
+	st.MinProvisionedThroughput = pb.MinProvisionedThroughput
+	st.Name = pb.Name
+	st.ScaleToZeroEnabled = pb.ScaleToZeroEnabled
+	st.WorkloadSize = pb.WorkloadSize
+	st.WorkloadType = pb.WorkloadType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8239,16 +7361,21 @@ func (st servedEntityInputPb) MarshalJSON() ([]byte, error) {
 }
 
 type ServedEntityOutput struct {
+
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 
+	// Wire name: 'creator'
 	Creator string
 	// The name of the entity to be served. The entity may be a model in the
 	// Databricks Model Registry, a model in the Unity Catalog (UC), or a
 	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full
 	// name of the object should be given in the form of
 	// **catalog_name.schema_name.model_name**.
+	// Wire name: 'entity_name'
 	EntityName string
 
+	// Wire name: 'entity_version'
 	EntityVersion string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs used for serving this entity. Note: this is an
@@ -8256,6 +7383,7 @@ type ServedEntityOutput struct {
 	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
+	// Wire name: 'environment_vars'
 	EnvironmentVars map[string]string
 	// The external model to be served. NOTE: Only one of external_model and
 	// (entity_name, entity_version, workload_size, workload_type, and
@@ -8265,27 +7393,35 @@ type ServedEntityOutput struct {
 	// endpoint without external_model. If the endpoint is created without
 	// external_model, users cannot update it to add external_model later. The
 	// task type of all external models within an endpoint must be the same.
+	// Wire name: 'external_model'
 	ExternalModel *ExternalModel
 	// All fields are not sensitive as they are hard-coded in the system and
 	// made available to customers.
+	// Wire name: 'foundation_model'
 	FoundationModel *FoundationModel
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// The maximum tokens per second that the endpoint can scale up to.
+	// Wire name: 'max_provisioned_throughput'
 	MaxProvisionedThroughput int
 	// The minimum tokens per second that the endpoint can scale down to.
+	// Wire name: 'min_provisioned_throughput'
 	MinProvisionedThroughput int
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
 	// underscores. If not specified for an external model, this field defaults
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
+	// Wire name: 'name'
 	Name string
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
+	// Wire name: 'scale_to_zero_enabled'
 	ScaleToZeroEnabled bool
 
+	// Wire name: 'state'
 	State *ServedModelState
 	// The workload size of the served entity. The workload size corresponds to
 	// a range of provisioned concurrency that the compute autoscales between. A
@@ -8295,6 +7431,7 @@ type ServedEntityOutput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
+	// Wire name: 'workload_size'
 	WorkloadSize string
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -8303,9 +7440,10 @@ type ServedEntityOutput struct {
 	// available [GPU types].
 	//
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
+	// Wire name: 'workload_type'
 	WorkloadType ServingModelWorkloadType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servedEntityOutputToPb(st *ServedEntityOutput) (*servedEntityOutputPb, error) {
@@ -8313,34 +7451,15 @@ func servedEntityOutputToPb(st *ServedEntityOutput) (*servedEntityOutputPb, erro
 		return nil, nil
 	}
 	pb := &servedEntityOutputPb{}
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	creatorPb := &st.Creator
-	if creatorPb != nil {
-		pb.Creator = *creatorPb
-	}
+	pb.Creator = st.Creator
 
-	entityNamePb := &st.EntityName
-	if entityNamePb != nil {
-		pb.EntityName = *entityNamePb
-	}
+	pb.EntityName = st.EntityName
 
-	entityVersionPb := &st.EntityVersion
-	if entityVersionPb != nil {
-		pb.EntityVersion = *entityVersionPb
-	}
+	pb.EntityVersion = st.EntityVersion
 
-	environmentVarsPb := map[string]string{}
-	for k, v := range st.EnvironmentVars {
-		itemPb := &v
-		if itemPb != nil {
-			environmentVarsPb[k] = *itemPb
-		}
-	}
-	pb.EnvironmentVars = environmentVarsPb
+	pb.EnvironmentVars = st.EnvironmentVars
 
 	externalModelPb, err := externalModelToPb(st.ExternalModel)
 	if err != nil {
@@ -8358,30 +7477,15 @@ func servedEntityOutputToPb(st *ServedEntityOutput) (*servedEntityOutputPb, erro
 		pb.FoundationModel = foundationModelPb
 	}
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	maxProvisionedThroughputPb := &st.MaxProvisionedThroughput
-	if maxProvisionedThroughputPb != nil {
-		pb.MaxProvisionedThroughput = *maxProvisionedThroughputPb
-	}
+	pb.MaxProvisionedThroughput = st.MaxProvisionedThroughput
 
-	minProvisionedThroughputPb := &st.MinProvisionedThroughput
-	if minProvisionedThroughputPb != nil {
-		pb.MinProvisionedThroughput = *minProvisionedThroughputPb
-	}
+	pb.MinProvisionedThroughput = st.MinProvisionedThroughput
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	scaleToZeroEnabledPb := &st.ScaleToZeroEnabled
-	if scaleToZeroEnabledPb != nil {
-		pb.ScaleToZeroEnabled = *scaleToZeroEnabledPb
-	}
+	pb.ScaleToZeroEnabled = st.ScaleToZeroEnabled
 
 	statePb, err := servedModelStateToPb(st.State)
 	if err != nil {
@@ -8391,15 +7495,9 @@ func servedEntityOutputToPb(st *ServedEntityOutput) (*servedEntityOutputPb, erro
 		pb.State = statePb
 	}
 
-	workloadSizePb := &st.WorkloadSize
-	if workloadSizePb != nil {
-		pb.WorkloadSize = *workloadSizePb
-	}
+	pb.WorkloadSize = st.WorkloadSize
 
-	workloadTypePb := &st.WorkloadType
-	if workloadTypePb != nil {
-		pb.WorkloadType = *workloadTypePb
-	}
+	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8505,31 +7603,11 @@ func servedEntityOutputFromPb(pb *servedEntityOutputPb) (*ServedEntityOutput, er
 		return nil, nil
 	}
 	st := &ServedEntityOutput{}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	creatorField := &pb.Creator
-	if creatorField != nil {
-		st.Creator = *creatorField
-	}
-	entityNameField := &pb.EntityName
-	if entityNameField != nil {
-		st.EntityName = *entityNameField
-	}
-	entityVersionField := &pb.EntityVersion
-	if entityVersionField != nil {
-		st.EntityVersion = *entityVersionField
-	}
-
-	environmentVarsField := map[string]string{}
-	for k, v := range pb.EnvironmentVars {
-		itemField := &v
-		if itemField != nil {
-			environmentVarsField[k] = *itemField
-		}
-	}
-	st.EnvironmentVars = environmentVarsField
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.Creator = pb.Creator
+	st.EntityName = pb.EntityName
+	st.EntityVersion = pb.EntityVersion
+	st.EnvironmentVars = pb.EnvironmentVars
 	externalModelField, err := externalModelFromPb(pb.ExternalModel)
 	if err != nil {
 		return nil, err
@@ -8544,26 +7622,11 @@ func servedEntityOutputFromPb(pb *servedEntityOutputPb) (*ServedEntityOutput, er
 	if foundationModelField != nil {
 		st.FoundationModel = foundationModelField
 	}
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	maxProvisionedThroughputField := &pb.MaxProvisionedThroughput
-	if maxProvisionedThroughputField != nil {
-		st.MaxProvisionedThroughput = *maxProvisionedThroughputField
-	}
-	minProvisionedThroughputField := &pb.MinProvisionedThroughput
-	if minProvisionedThroughputField != nil {
-		st.MinProvisionedThroughput = *minProvisionedThroughputField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	scaleToZeroEnabledField := &pb.ScaleToZeroEnabled
-	if scaleToZeroEnabledField != nil {
-		st.ScaleToZeroEnabled = *scaleToZeroEnabledField
-	}
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.MaxProvisionedThroughput = pb.MaxProvisionedThroughput
+	st.MinProvisionedThroughput = pb.MinProvisionedThroughput
+	st.Name = pb.Name
+	st.ScaleToZeroEnabled = pb.ScaleToZeroEnabled
 	stateField, err := servedModelStateFromPb(pb.State)
 	if err != nil {
 		return nil, err
@@ -8571,14 +7634,8 @@ func servedEntityOutputFromPb(pb *servedEntityOutputPb) (*ServedEntityOutput, er
 	if stateField != nil {
 		st.State = stateField
 	}
-	workloadSizeField := &pb.WorkloadSize
-	if workloadSizeField != nil {
-		st.WorkloadSize = *workloadSizeField
-	}
-	workloadTypeField := &pb.WorkloadType
-	if workloadTypeField != nil {
-		st.WorkloadType = *workloadTypeField
-	}
+	st.WorkloadSize = pb.WorkloadSize
+	st.WorkloadType = pb.WorkloadType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8593,18 +7650,24 @@ func (st servedEntityOutputPb) MarshalJSON() ([]byte, error) {
 }
 
 type ServedEntitySpec struct {
+
+	// Wire name: 'entity_name'
 	EntityName string
 
+	// Wire name: 'entity_version'
 	EntityVersion string
 
+	// Wire name: 'external_model'
 	ExternalModel *ExternalModel
 	// All fields are not sensitive as they are hard-coded in the system and
 	// made available to customers.
+	// Wire name: 'foundation_model'
 	FoundationModel *FoundationModel
 
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servedEntitySpecToPb(st *ServedEntitySpec) (*servedEntitySpecPb, error) {
@@ -8612,15 +7675,9 @@ func servedEntitySpecToPb(st *ServedEntitySpec) (*servedEntitySpecPb, error) {
 		return nil, nil
 	}
 	pb := &servedEntitySpecPb{}
-	entityNamePb := &st.EntityName
-	if entityNamePb != nil {
-		pb.EntityName = *entityNamePb
-	}
+	pb.EntityName = st.EntityName
 
-	entityVersionPb := &st.EntityVersion
-	if entityVersionPb != nil {
-		pb.EntityVersion = *entityVersionPb
-	}
+	pb.EntityVersion = st.EntityVersion
 
 	externalModelPb, err := externalModelToPb(st.ExternalModel)
 	if err != nil {
@@ -8638,10 +7695,7 @@ func servedEntitySpecToPb(st *ServedEntitySpec) (*servedEntitySpecPb, error) {
 		pb.FoundationModel = foundationModelPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8692,14 +7746,8 @@ func servedEntitySpecFromPb(pb *servedEntitySpecPb) (*ServedEntitySpec, error) {
 		return nil, nil
 	}
 	st := &ServedEntitySpec{}
-	entityNameField := &pb.EntityName
-	if entityNameField != nil {
-		st.EntityName = *entityNameField
-	}
-	entityVersionField := &pb.EntityVersion
-	if entityVersionField != nil {
-		st.EntityVersion = *entityVersionField
-	}
+	st.EntityName = pb.EntityName
+	st.EntityVersion = pb.EntityVersion
 	externalModelField, err := externalModelFromPb(pb.ExternalModel)
 	if err != nil {
 		return nil, err
@@ -8714,10 +7762,7 @@ func servedEntitySpecFromPb(pb *servedEntitySpecPb) (*ServedEntitySpec, error) {
 	if foundationModelField != nil {
 		st.FoundationModel = foundationModelField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8738,26 +7783,34 @@ type ServedModelInput struct {
 	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
+	// Wire name: 'environment_vars'
 	EnvironmentVars map[string]string
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 	// The maximum tokens per second that the endpoint can scale up to.
+	// Wire name: 'max_provisioned_throughput'
 	MaxProvisionedThroughput int
 	// The minimum tokens per second that the endpoint can scale down to.
+	// Wire name: 'min_provisioned_throughput'
 	MinProvisionedThroughput int
 
+	// Wire name: 'model_name'
 	ModelName string
 
+	// Wire name: 'model_version'
 	ModelVersion string
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
 	// underscores. If not specified for an external model, this field defaults
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
+	// Wire name: 'name'
 	Name string
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
+	// Wire name: 'scale_to_zero_enabled'
 	ScaleToZeroEnabled bool
 	// The workload size of the served entity. The workload size corresponds to
 	// a range of provisioned concurrency that the compute autoscales between. A
@@ -8767,6 +7820,7 @@ type ServedModelInput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
+	// Wire name: 'workload_size'
 	WorkloadSize string
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -8775,9 +7829,10 @@ type ServedModelInput struct {
 	// available [GPU types].
 	//
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
+	// Wire name: 'workload_type'
 	WorkloadType ServedModelInputWorkloadType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servedModelInputToPb(st *ServedModelInput) (*servedModelInputPb, error) {
@@ -8785,60 +7840,25 @@ func servedModelInputToPb(st *ServedModelInput) (*servedModelInputPb, error) {
 		return nil, nil
 	}
 	pb := &servedModelInputPb{}
+	pb.EnvironmentVars = st.EnvironmentVars
 
-	environmentVarsPb := map[string]string{}
-	for k, v := range st.EnvironmentVars {
-		itemPb := &v
-		if itemPb != nil {
-			environmentVarsPb[k] = *itemPb
-		}
-	}
-	pb.EnvironmentVars = environmentVarsPb
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.MaxProvisionedThroughput = st.MaxProvisionedThroughput
 
-	maxProvisionedThroughputPb := &st.MaxProvisionedThroughput
-	if maxProvisionedThroughputPb != nil {
-		pb.MaxProvisionedThroughput = *maxProvisionedThroughputPb
-	}
+	pb.MinProvisionedThroughput = st.MinProvisionedThroughput
 
-	minProvisionedThroughputPb := &st.MinProvisionedThroughput
-	if minProvisionedThroughputPb != nil {
-		pb.MinProvisionedThroughput = *minProvisionedThroughputPb
-	}
+	pb.ModelName = st.ModelName
 
-	modelNamePb := &st.ModelName
-	if modelNamePb != nil {
-		pb.ModelName = *modelNamePb
-	}
+	pb.ModelVersion = st.ModelVersion
 
-	modelVersionPb := &st.ModelVersion
-	if modelVersionPb != nil {
-		pb.ModelVersion = *modelVersionPb
-	}
+	pb.Name = st.Name
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.ScaleToZeroEnabled = st.ScaleToZeroEnabled
 
-	scaleToZeroEnabledPb := &st.ScaleToZeroEnabled
-	if scaleToZeroEnabledPb != nil {
-		pb.ScaleToZeroEnabled = *scaleToZeroEnabledPb
-	}
+	pb.WorkloadSize = st.WorkloadSize
 
-	workloadSizePb := &st.WorkloadSize
-	if workloadSizePb != nil {
-		pb.WorkloadSize = *workloadSizePb
-	}
-
-	workloadTypePb := &st.WorkloadType
-	if workloadTypePb != nil {
-		pb.WorkloadType = *workloadTypePb
-	}
+	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8923,51 +7943,16 @@ func servedModelInputFromPb(pb *servedModelInputPb) (*ServedModelInput, error) {
 		return nil, nil
 	}
 	st := &ServedModelInput{}
-
-	environmentVarsField := map[string]string{}
-	for k, v := range pb.EnvironmentVars {
-		itemField := &v
-		if itemField != nil {
-			environmentVarsField[k] = *itemField
-		}
-	}
-	st.EnvironmentVars = environmentVarsField
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	maxProvisionedThroughputField := &pb.MaxProvisionedThroughput
-	if maxProvisionedThroughputField != nil {
-		st.MaxProvisionedThroughput = *maxProvisionedThroughputField
-	}
-	minProvisionedThroughputField := &pb.MinProvisionedThroughput
-	if minProvisionedThroughputField != nil {
-		st.MinProvisionedThroughput = *minProvisionedThroughputField
-	}
-	modelNameField := &pb.ModelName
-	if modelNameField != nil {
-		st.ModelName = *modelNameField
-	}
-	modelVersionField := &pb.ModelVersion
-	if modelVersionField != nil {
-		st.ModelVersion = *modelVersionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	scaleToZeroEnabledField := &pb.ScaleToZeroEnabled
-	if scaleToZeroEnabledField != nil {
-		st.ScaleToZeroEnabled = *scaleToZeroEnabledField
-	}
-	workloadSizeField := &pb.WorkloadSize
-	if workloadSizeField != nil {
-		st.WorkloadSize = *workloadSizeField
-	}
-	workloadTypeField := &pb.WorkloadType
-	if workloadTypeField != nil {
-		st.WorkloadType = *workloadTypeField
-	}
+	st.EnvironmentVars = pb.EnvironmentVars
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.MaxProvisionedThroughput = pb.MaxProvisionedThroughput
+	st.MinProvisionedThroughput = pb.MinProvisionedThroughput
+	st.ModelName = pb.ModelName
+	st.ModelVersion = pb.ModelVersion
+	st.Name = pb.Name
+	st.ScaleToZeroEnabled = pb.ScaleToZeroEnabled
+	st.WorkloadSize = pb.WorkloadSize
+	st.WorkloadType = pb.WorkloadType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9034,8 +8019,11 @@ func servedModelInputWorkloadTypeFromPb(pb *servedModelInputWorkloadTypePb) (*Se
 }
 
 type ServedModelOutput struct {
+
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 
+	// Wire name: 'creator'
 	Creator string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs used for serving this entity. Note: this is an
@@ -9043,24 +8031,31 @@ type ServedModelOutput struct {
 	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
+	// Wire name: 'environment_vars'
 	EnvironmentVars map[string]string
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
+	// Wire name: 'instance_profile_arn'
 	InstanceProfileArn string
 
+	// Wire name: 'model_name'
 	ModelName string
 
+	// Wire name: 'model_version'
 	ModelVersion string
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
 	// underscores. If not specified for an external model, this field defaults
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
+	// Wire name: 'name'
 	Name string
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
+	// Wire name: 'scale_to_zero_enabled'
 	ScaleToZeroEnabled bool
 
+	// Wire name: 'state'
 	State *ServedModelState
 	// The workload size of the served entity. The workload size corresponds to
 	// a range of provisioned concurrency that the compute autoscales between. A
@@ -9070,6 +8065,7 @@ type ServedModelOutput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
+	// Wire name: 'workload_size'
 	WorkloadSize string
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -9078,9 +8074,10 @@ type ServedModelOutput struct {
 	// available [GPU types].
 	//
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
+	// Wire name: 'workload_type'
 	WorkloadType ServingModelWorkloadType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servedModelOutputToPb(st *ServedModelOutput) (*servedModelOutputPb, error) {
@@ -9088,49 +8085,21 @@ func servedModelOutputToPb(st *ServedModelOutput) (*servedModelOutputPb, error) 
 		return nil, nil
 	}
 	pb := &servedModelOutputPb{}
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	creatorPb := &st.Creator
-	if creatorPb != nil {
-		pb.Creator = *creatorPb
-	}
+	pb.Creator = st.Creator
 
-	environmentVarsPb := map[string]string{}
-	for k, v := range st.EnvironmentVars {
-		itemPb := &v
-		if itemPb != nil {
-			environmentVarsPb[k] = *itemPb
-		}
-	}
-	pb.EnvironmentVars = environmentVarsPb
+	pb.EnvironmentVars = st.EnvironmentVars
 
-	instanceProfileArnPb := &st.InstanceProfileArn
-	if instanceProfileArnPb != nil {
-		pb.InstanceProfileArn = *instanceProfileArnPb
-	}
+	pb.InstanceProfileArn = st.InstanceProfileArn
 
-	modelNamePb := &st.ModelName
-	if modelNamePb != nil {
-		pb.ModelName = *modelNamePb
-	}
+	pb.ModelName = st.ModelName
 
-	modelVersionPb := &st.ModelVersion
-	if modelVersionPb != nil {
-		pb.ModelVersion = *modelVersionPb
-	}
+	pb.ModelVersion = st.ModelVersion
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	scaleToZeroEnabledPb := &st.ScaleToZeroEnabled
-	if scaleToZeroEnabledPb != nil {
-		pb.ScaleToZeroEnabled = *scaleToZeroEnabledPb
-	}
+	pb.ScaleToZeroEnabled = st.ScaleToZeroEnabled
 
 	statePb, err := servedModelStateToPb(st.State)
 	if err != nil {
@@ -9140,15 +8109,9 @@ func servedModelOutputToPb(st *ServedModelOutput) (*servedModelOutputPb, error) 
 		pb.State = statePb
 	}
 
-	workloadSizePb := &st.WorkloadSize
-	if workloadSizePb != nil {
-		pb.WorkloadSize = *workloadSizePb
-	}
+	pb.WorkloadSize = st.WorkloadSize
 
-	workloadTypePb := &st.WorkloadType
-	if workloadTypePb != nil {
-		pb.WorkloadType = *workloadTypePb
-	}
+	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9234,43 +8197,14 @@ func servedModelOutputFromPb(pb *servedModelOutputPb) (*ServedModelOutput, error
 		return nil, nil
 	}
 	st := &ServedModelOutput{}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	creatorField := &pb.Creator
-	if creatorField != nil {
-		st.Creator = *creatorField
-	}
-
-	environmentVarsField := map[string]string{}
-	for k, v := range pb.EnvironmentVars {
-		itemField := &v
-		if itemField != nil {
-			environmentVarsField[k] = *itemField
-		}
-	}
-	st.EnvironmentVars = environmentVarsField
-	instanceProfileArnField := &pb.InstanceProfileArn
-	if instanceProfileArnField != nil {
-		st.InstanceProfileArn = *instanceProfileArnField
-	}
-	modelNameField := &pb.ModelName
-	if modelNameField != nil {
-		st.ModelName = *modelNameField
-	}
-	modelVersionField := &pb.ModelVersion
-	if modelVersionField != nil {
-		st.ModelVersion = *modelVersionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	scaleToZeroEnabledField := &pb.ScaleToZeroEnabled
-	if scaleToZeroEnabledField != nil {
-		st.ScaleToZeroEnabled = *scaleToZeroEnabledField
-	}
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.Creator = pb.Creator
+	st.EnvironmentVars = pb.EnvironmentVars
+	st.InstanceProfileArn = pb.InstanceProfileArn
+	st.ModelName = pb.ModelName
+	st.ModelVersion = pb.ModelVersion
+	st.Name = pb.Name
+	st.ScaleToZeroEnabled = pb.ScaleToZeroEnabled
 	stateField, err := servedModelStateFromPb(pb.State)
 	if err != nil {
 		return nil, err
@@ -9278,14 +8212,8 @@ func servedModelOutputFromPb(pb *servedModelOutputPb) (*ServedModelOutput, error
 	if stateField != nil {
 		st.State = stateField
 	}
-	workloadSizeField := &pb.WorkloadSize
-	if workloadSizeField != nil {
-		st.WorkloadSize = *workloadSizeField
-	}
-	workloadTypeField := &pb.WorkloadType
-	if workloadTypeField != nil {
-		st.WorkloadType = *workloadTypeField
-	}
+	st.WorkloadSize = pb.WorkloadSize
+	st.WorkloadType = pb.WorkloadType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9301,13 +8229,16 @@ func (st servedModelOutputPb) MarshalJSON() ([]byte, error) {
 
 type ServedModelSpec struct {
 	// Only one of model_name and entity_name should be populated
+	// Wire name: 'model_name'
 	ModelName string
 	// Only one of model_version and entity_version should be populated
+	// Wire name: 'model_version'
 	ModelVersion string
 
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servedModelSpecToPb(st *ServedModelSpec) (*servedModelSpecPb, error) {
@@ -9315,20 +8246,11 @@ func servedModelSpecToPb(st *ServedModelSpec) (*servedModelSpecPb, error) {
 		return nil, nil
 	}
 	pb := &servedModelSpecPb{}
-	modelNamePb := &st.ModelName
-	if modelNamePb != nil {
-		pb.ModelName = *modelNamePb
-	}
+	pb.ModelName = st.ModelName
 
-	modelVersionPb := &st.ModelVersion
-	if modelVersionPb != nil {
-		pb.ModelVersion = *modelVersionPb
-	}
+	pb.ModelVersion = st.ModelVersion
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9375,18 +8297,9 @@ func servedModelSpecFromPb(pb *servedModelSpecPb) (*ServedModelSpec, error) {
 		return nil, nil
 	}
 	st := &ServedModelSpec{}
-	modelNameField := &pb.ModelName
-	if modelNameField != nil {
-		st.ModelName = *modelNameField
-	}
-	modelVersionField := &pb.ModelVersion
-	if modelVersionField != nil {
-		st.ModelVersion = *modelVersionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.ModelName = pb.ModelName
+	st.ModelVersion = pb.ModelVersion
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9401,11 +8314,14 @@ func (st servedModelSpecPb) MarshalJSON() ([]byte, error) {
 }
 
 type ServedModelState struct {
+
+	// Wire name: 'deployment'
 	Deployment ServedModelStateDeployment
 
+	// Wire name: 'deployment_state_message'
 	DeploymentStateMessage string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servedModelStateToPb(st *ServedModelState) (*servedModelStatePb, error) {
@@ -9413,15 +8329,9 @@ func servedModelStateToPb(st *ServedModelState) (*servedModelStatePb, error) {
 		return nil, nil
 	}
 	pb := &servedModelStatePb{}
-	deploymentPb := &st.Deployment
-	if deploymentPb != nil {
-		pb.Deployment = *deploymentPb
-	}
+	pb.Deployment = st.Deployment
 
-	deploymentStateMessagePb := &st.DeploymentStateMessage
-	if deploymentStateMessagePb != nil {
-		pb.DeploymentStateMessage = *deploymentStateMessagePb
-	}
+	pb.DeploymentStateMessage = st.DeploymentStateMessage
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9465,14 +8375,8 @@ func servedModelStateFromPb(pb *servedModelStatePb) (*ServedModelState, error) {
 		return nil, nil
 	}
 	st := &ServedModelState{}
-	deploymentField := &pb.Deployment
-	if deploymentField != nil {
-		st.Deployment = *deploymentField
-	}
-	deploymentStateMessageField := &pb.DeploymentStateMessage
-	if deploymentStateMessageField != nil {
-		st.DeploymentStateMessage = *deploymentStateMessageField
-	}
+	st.Deployment = pb.Deployment
+	st.DeploymentStateMessage = pb.DeploymentStateMessage
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9539,6 +8443,7 @@ func servedModelStateDeploymentFromPb(pb *servedModelStateDeploymentPb) (*Served
 type ServerLogsResponse struct {
 	// The most recent log lines of the model server processing invocation
 	// requests.
+	// Wire name: 'logs'
 	Logs string
 }
 
@@ -9547,10 +8452,7 @@ func serverLogsResponseToPb(st *ServerLogsResponse) (*serverLogsResponsePb, erro
 		return nil, nil
 	}
 	pb := &serverLogsResponsePb{}
-	logsPb := &st.Logs
-	if logsPb != nil {
-		pb.Logs = *logsPb
-	}
+	pb.Logs = st.Logs
 
 	return pb, nil
 }
@@ -9591,10 +8493,7 @@ func serverLogsResponseFromPb(pb *serverLogsResponsePb) (*ServerLogsResponse, er
 		return nil, nil
 	}
 	st := &ServerLogsResponse{}
-	logsField := &pb.Logs
-	if logsField != nil {
-		st.Logs = *logsField
-	}
+	st.Logs = pb.Logs
 
 	return st, nil
 }
@@ -9603,30 +8502,41 @@ type ServingEndpoint struct {
 	// The AI Gateway configuration for the serving endpoint. NOTE: External
 	// model, provisioned throughput, and pay-per-token endpoints are fully
 	// supported; agent endpoints currently only support inference tables.
+	// Wire name: 'ai_gateway'
 	AiGateway *AiGatewayConfig
 	// The budget policy associated with the endpoint.
+	// Wire name: 'budget_policy_id'
 	BudgetPolicyId string
 	// The config that is currently being served by the endpoint.
+	// Wire name: 'config'
 	Config *EndpointCoreConfigSummary
 	// The timestamp when the endpoint was created in Unix time.
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 	// The email of the user who created the serving endpoint.
+	// Wire name: 'creator'
 	Creator string
 	// System-generated ID of the endpoint, included to be used by the
 	// Permissions API.
+	// Wire name: 'id'
 	Id string
 	// The timestamp when the endpoint was last updated by a user in Unix time.
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// The name of the serving endpoint.
+	// Wire name: 'name'
 	Name string
 	// Information corresponding to the state of the serving endpoint.
+	// Wire name: 'state'
 	State *EndpointState
 	// Tags attached to the serving endpoint.
+	// Wire name: 'tags'
 	Tags []EndpointTag
 	// The task type of the serving endpoint.
+	// Wire name: 'task'
 	Task string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servingEndpointToPb(st *ServingEndpoint) (*servingEndpointPb, error) {
@@ -9642,10 +8552,7 @@ func servingEndpointToPb(st *ServingEndpoint) (*servingEndpointPb, error) {
 		pb.AiGateway = aiGatewayPb
 	}
 
-	budgetPolicyIdPb := &st.BudgetPolicyId
-	if budgetPolicyIdPb != nil {
-		pb.BudgetPolicyId = *budgetPolicyIdPb
-	}
+	pb.BudgetPolicyId = st.BudgetPolicyId
 
 	configPb, err := endpointCoreConfigSummaryToPb(st.Config)
 	if err != nil {
@@ -9655,30 +8562,15 @@ func servingEndpointToPb(st *ServingEndpoint) (*servingEndpointPb, error) {
 		pb.Config = configPb
 	}
 
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	creatorPb := &st.Creator
-	if creatorPb != nil {
-		pb.Creator = *creatorPb
-	}
+	pb.Creator = st.Creator
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	statePb, err := endpointStateToPb(st.State)
 	if err != nil {
@@ -9700,10 +8592,7 @@ func servingEndpointToPb(st *ServingEndpoint) (*servingEndpointPb, error) {
 	}
 	pb.Tags = tagsPb
 
-	taskPb := &st.Task
-	if taskPb != nil {
-		pb.Task = *taskPb
-	}
+	pb.Task = st.Task
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9776,10 +8665,7 @@ func servingEndpointFromPb(pb *servingEndpointPb) (*ServingEndpoint, error) {
 	if aiGatewayField != nil {
 		st.AiGateway = aiGatewayField
 	}
-	budgetPolicyIdField := &pb.BudgetPolicyId
-	if budgetPolicyIdField != nil {
-		st.BudgetPolicyId = *budgetPolicyIdField
-	}
+	st.BudgetPolicyId = pb.BudgetPolicyId
 	configField, err := endpointCoreConfigSummaryFromPb(pb.Config)
 	if err != nil {
 		return nil, err
@@ -9787,26 +8673,11 @@ func servingEndpointFromPb(pb *servingEndpointPb) (*ServingEndpoint, error) {
 	if configField != nil {
 		st.Config = configField
 	}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	creatorField := &pb.Creator
-	if creatorField != nil {
-		st.Creator = *creatorField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.Creator = pb.Creator
+	st.Id = pb.Id
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
+	st.Name = pb.Name
 	stateField, err := endpointStateFromPb(pb.State)
 	if err != nil {
 		return nil, err
@@ -9816,20 +8687,17 @@ func servingEndpointFromPb(pb *servingEndpointPb) (*ServingEndpoint, error) {
 	}
 
 	var tagsField []EndpointTag
-	for _, item := range pb.Tags {
-		itemField, err := endpointTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := endpointTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
-	taskField := &pb.Task
-	if taskField != nil {
-		st.Task = *taskField
-	}
+	st.Task = pb.Task
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9845,15 +8713,19 @@ func (st servingEndpointPb) MarshalJSON() ([]byte, error) {
 
 type ServingEndpointAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ServingEndpointPermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servingEndpointAccessControlRequestToPb(st *ServingEndpointAccessControlRequest) (*servingEndpointAccessControlRequestPb, error) {
@@ -9861,25 +8733,13 @@ func servingEndpointAccessControlRequestToPb(st *ServingEndpointAccessControlReq
 		return nil, nil
 	}
 	pb := &servingEndpointAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9928,22 +8788,10 @@ func servingEndpointAccessControlRequestFromPb(pb *servingEndpointAccessControlR
 		return nil, nil
 	}
 	st := &ServingEndpointAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9959,17 +8807,22 @@ func (st servingEndpointAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type ServingEndpointAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []ServingEndpointPermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servingEndpointAccessControlResponseToPb(st *ServingEndpointAccessControlResponse) (*servingEndpointAccessControlResponsePb, error) {
@@ -9990,25 +8843,13 @@ func servingEndpointAccessControlResponseToPb(st *ServingEndpointAccessControlRe
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10061,32 +8902,20 @@ func servingEndpointAccessControlResponseFromPb(pb *servingEndpointAccessControl
 	st := &ServingEndpointAccessControlResponse{}
 
 	var allPermissionsField []ServingEndpointPermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := servingEndpointPermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := servingEndpointPermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10104,41 +8933,57 @@ type ServingEndpointDetailed struct {
 	// The AI Gateway configuration for the serving endpoint. NOTE: External
 	// model, provisioned throughput, and pay-per-token endpoints are fully
 	// supported; agent endpoints currently only support inference tables.
+	// Wire name: 'ai_gateway'
 	AiGateway *AiGatewayConfig
 	// The budget policy associated with the endpoint.
+	// Wire name: 'budget_policy_id'
 	BudgetPolicyId string
 	// The config that is currently being served by the endpoint.
+	// Wire name: 'config'
 	Config *EndpointCoreConfigOutput
 	// The timestamp when the endpoint was created in Unix time.
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 	// The email of the user who created the serving endpoint.
+	// Wire name: 'creator'
 	Creator string
 	// Information required to query DataPlane APIs.
+	// Wire name: 'data_plane_info'
 	DataPlaneInfo *ModelDataPlaneInfo
 	// Endpoint invocation url if route optimization is enabled for endpoint
+	// Wire name: 'endpoint_url'
 	EndpointUrl string
 	// System-generated ID of the endpoint. This is used to refer to the
 	// endpoint in the Permissions API
+	// Wire name: 'id'
 	Id string
 	// The timestamp when the endpoint was last updated by a user in Unix time.
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// The name of the serving endpoint.
+	// Wire name: 'name'
 	Name string
 	// The config that the endpoint is attempting to update to.
+	// Wire name: 'pending_config'
 	PendingConfig *EndpointPendingConfig
 	// The permission level of the principal making the request.
+	// Wire name: 'permission_level'
 	PermissionLevel ServingEndpointDetailedPermissionLevel
 	// Boolean representing if route optimization has been enabled for the
 	// endpoint
+	// Wire name: 'route_optimized'
 	RouteOptimized bool
 	// Information corresponding to the state of the serving endpoint.
+	// Wire name: 'state'
 	State *EndpointState
 	// Tags attached to the serving endpoint.
+	// Wire name: 'tags'
 	Tags []EndpointTag
 	// The task type of the serving endpoint.
+	// Wire name: 'task'
 	Task string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servingEndpointDetailedToPb(st *ServingEndpointDetailed) (*servingEndpointDetailedPb, error) {
@@ -10154,10 +8999,7 @@ func servingEndpointDetailedToPb(st *ServingEndpointDetailed) (*servingEndpointD
 		pb.AiGateway = aiGatewayPb
 	}
 
-	budgetPolicyIdPb := &st.BudgetPolicyId
-	if budgetPolicyIdPb != nil {
-		pb.BudgetPolicyId = *budgetPolicyIdPb
-	}
+	pb.BudgetPolicyId = st.BudgetPolicyId
 
 	configPb, err := endpointCoreConfigOutputToPb(st.Config)
 	if err != nil {
@@ -10167,15 +9009,9 @@ func servingEndpointDetailedToPb(st *ServingEndpointDetailed) (*servingEndpointD
 		pb.Config = configPb
 	}
 
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	creatorPb := &st.Creator
-	if creatorPb != nil {
-		pb.Creator = *creatorPb
-	}
+	pb.Creator = st.Creator
 
 	dataPlaneInfoPb, err := modelDataPlaneInfoToPb(st.DataPlaneInfo)
 	if err != nil {
@@ -10185,25 +9021,13 @@ func servingEndpointDetailedToPb(st *ServingEndpointDetailed) (*servingEndpointD
 		pb.DataPlaneInfo = dataPlaneInfoPb
 	}
 
-	endpointUrlPb := &st.EndpointUrl
-	if endpointUrlPb != nil {
-		pb.EndpointUrl = *endpointUrlPb
-	}
+	pb.EndpointUrl = st.EndpointUrl
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pendingConfigPb, err := endpointPendingConfigToPb(st.PendingConfig)
 	if err != nil {
@@ -10213,15 +9037,9 @@ func servingEndpointDetailedToPb(st *ServingEndpointDetailed) (*servingEndpointD
 		pb.PendingConfig = pendingConfigPb
 	}
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	routeOptimizedPb := &st.RouteOptimized
-	if routeOptimizedPb != nil {
-		pb.RouteOptimized = *routeOptimizedPb
-	}
+	pb.RouteOptimized = st.RouteOptimized
 
 	statePb, err := endpointStateToPb(st.State)
 	if err != nil {
@@ -10243,10 +9061,7 @@ func servingEndpointDetailedToPb(st *ServingEndpointDetailed) (*servingEndpointD
 	}
 	pb.Tags = tagsPb
 
-	taskPb := &st.Task
-	if taskPb != nil {
-		pb.Task = *taskPb
-	}
+	pb.Task = st.Task
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10330,10 +9145,7 @@ func servingEndpointDetailedFromPb(pb *servingEndpointDetailedPb) (*ServingEndpo
 	if aiGatewayField != nil {
 		st.AiGateway = aiGatewayField
 	}
-	budgetPolicyIdField := &pb.BudgetPolicyId
-	if budgetPolicyIdField != nil {
-		st.BudgetPolicyId = *budgetPolicyIdField
-	}
+	st.BudgetPolicyId = pb.BudgetPolicyId
 	configField, err := endpointCoreConfigOutputFromPb(pb.Config)
 	if err != nil {
 		return nil, err
@@ -10341,14 +9153,8 @@ func servingEndpointDetailedFromPb(pb *servingEndpointDetailedPb) (*ServingEndpo
 	if configField != nil {
 		st.Config = configField
 	}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	creatorField := &pb.Creator
-	if creatorField != nil {
-		st.Creator = *creatorField
-	}
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.Creator = pb.Creator
 	dataPlaneInfoField, err := modelDataPlaneInfoFromPb(pb.DataPlaneInfo)
 	if err != nil {
 		return nil, err
@@ -10356,22 +9162,10 @@ func servingEndpointDetailedFromPb(pb *servingEndpointDetailedPb) (*ServingEndpo
 	if dataPlaneInfoField != nil {
 		st.DataPlaneInfo = dataPlaneInfoField
 	}
-	endpointUrlField := &pb.EndpointUrl
-	if endpointUrlField != nil {
-		st.EndpointUrl = *endpointUrlField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.EndpointUrl = pb.EndpointUrl
+	st.Id = pb.Id
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
+	st.Name = pb.Name
 	pendingConfigField, err := endpointPendingConfigFromPb(pb.PendingConfig)
 	if err != nil {
 		return nil, err
@@ -10379,14 +9173,8 @@ func servingEndpointDetailedFromPb(pb *servingEndpointDetailedPb) (*ServingEndpo
 	if pendingConfigField != nil {
 		st.PendingConfig = pendingConfigField
 	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	routeOptimizedField := &pb.RouteOptimized
-	if routeOptimizedField != nil {
-		st.RouteOptimized = *routeOptimizedField
-	}
+	st.PermissionLevel = pb.PermissionLevel
+	st.RouteOptimized = pb.RouteOptimized
 	stateField, err := endpointStateFromPb(pb.State)
 	if err != nil {
 		return nil, err
@@ -10396,20 +9184,17 @@ func servingEndpointDetailedFromPb(pb *servingEndpointDetailedPb) (*ServingEndpo
 	}
 
 	var tagsField []EndpointTag
-	for _, item := range pb.Tags {
-		itemField, err := endpointTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := endpointTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
-	taskField := &pb.Task
-	if taskField != nil {
-		st.Task = *taskField
-	}
+	st.Task = pb.Task
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10470,13 +9255,17 @@ func servingEndpointDetailedPermissionLevelFromPb(pb *servingEndpointDetailedPer
 }
 
 type ServingEndpointPermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ServingEndpointPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servingEndpointPermissionToPb(st *ServingEndpointPermission) (*servingEndpointPermissionPb, error) {
@@ -10484,24 +9273,11 @@ func servingEndpointPermissionToPb(st *ServingEndpointPermission) (*servingEndpo
 		return nil, nil
 	}
 	pb := &servingEndpointPermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10547,23 +9323,9 @@ func servingEndpointPermissionFromPb(pb *servingEndpointPermissionPb) (*ServingE
 		return nil, nil
 	}
 	st := &ServingEndpointPermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10625,13 +9387,17 @@ func servingEndpointPermissionLevelFromPb(pb *servingEndpointPermissionLevelPb) 
 }
 
 type ServingEndpointPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []ServingEndpointAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servingEndpointPermissionsToPb(st *ServingEndpointPermissions) (*servingEndpointPermissionsPb, error) {
@@ -10652,15 +9418,9 @@ func servingEndpointPermissionsToPb(st *ServingEndpointPermissions) (*servingEnd
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10708,24 +9468,18 @@ func servingEndpointPermissionsFromPb(pb *servingEndpointPermissionsPb) (*Servin
 	st := &ServingEndpointPermissions{}
 
 	var accessControlListField []ServingEndpointAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := servingEndpointAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := servingEndpointAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10740,11 +9494,14 @@ func (st servingEndpointPermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type ServingEndpointPermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ServingEndpointPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servingEndpointPermissionsDescriptionToPb(st *ServingEndpointPermissionsDescription) (*servingEndpointPermissionsDescriptionPb, error) {
@@ -10752,15 +9509,9 @@ func servingEndpointPermissionsDescriptionToPb(st *ServingEndpointPermissionsDes
 		return nil, nil
 	}
 	pb := &servingEndpointPermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10804,14 +9555,8 @@ func servingEndpointPermissionsDescriptionFromPb(pb *servingEndpointPermissionsD
 		return nil, nil
 	}
 	st := &ServingEndpointPermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10826,9 +9571,12 @@ func (st servingEndpointPermissionsDescriptionPb) MarshalJSON() ([]byte, error) 
 }
 
 type ServingEndpointPermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []ServingEndpointAccessControlRequest
 	// The serving endpoint for which to get or manage permissions.
-	ServingEndpointId string
+	// Wire name: 'serving_endpoint_id'
+	ServingEndpointId string `tf:"-"`
 }
 
 func servingEndpointPermissionsRequestToPb(st *ServingEndpointPermissionsRequest) (*servingEndpointPermissionsRequestPb, error) {
@@ -10849,10 +9597,7 @@ func servingEndpointPermissionsRequestToPb(st *ServingEndpointPermissionsRequest
 	}
 	pb.AccessControlList = accessControlListPb
 
-	servingEndpointIdPb := &st.ServingEndpointId
-	if servingEndpointIdPb != nil {
-		pb.ServingEndpointId = *servingEndpointIdPb
-	}
+	pb.ServingEndpointId = st.ServingEndpointId
 
 	return pb, nil
 }
@@ -10895,20 +9640,17 @@ func servingEndpointPermissionsRequestFromPb(pb *servingEndpointPermissionsReque
 	st := &ServingEndpointPermissionsRequest{}
 
 	var accessControlListField []ServingEndpointAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := servingEndpointAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := servingEndpointAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	servingEndpointIdField := &pb.ServingEndpointId
-	if servingEndpointIdField != nil {
-		st.ServingEndpointId = *servingEndpointIdField
-	}
+	st.ServingEndpointId = pb.ServingEndpointId
 
 	return st, nil
 }
@@ -10967,6 +9709,7 @@ func servingModelWorkloadTypeFromPb(pb *servingModelWorkloadTypePb) (*ServingMod
 
 type TrafficConfig struct {
 	// The list of routes that define traffic to each served entity.
+	// Wire name: 'routes'
 	Routes []Route
 }
 
@@ -11028,13 +9771,13 @@ func trafficConfigFromPb(pb *trafficConfigPb) (*TrafficConfig, error) {
 	st := &TrafficConfig{}
 
 	var routesField []Route
-	for _, item := range pb.Routes {
-		itemField, err := routeFromPb(&item)
+	for _, itemPb := range pb.Routes {
+		item, err := routeFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			routesField = append(routesField, *itemField)
+		if item != nil {
+			routesField = append(routesField, *item)
 		}
 	}
 	st.Routes = routesField
@@ -11044,17 +9787,22 @@ func trafficConfigFromPb(pb *trafficConfigPb) (*TrafficConfig, error) {
 
 type V1ResponseChoiceElement struct {
 	// The finish reason returned by the endpoint.
+	// Wire name: 'finishReason'
 	FinishReason string
 	// The index of the choice in the __chat or completions__ response.
+	// Wire name: 'index'
 	Index int
 	// The logprobs returned only by the __completions__ endpoint.
+	// Wire name: 'logprobs'
 	Logprobs int
 	// The message response from the __chat__ endpoint.
+	// Wire name: 'message'
 	Message *ChatMessage
 	// The text response from the __completions__ endpoint.
+	// Wire name: 'text'
 	Text string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func v1ResponseChoiceElementToPb(st *V1ResponseChoiceElement) (*v1ResponseChoiceElementPb, error) {
@@ -11062,20 +9810,11 @@ func v1ResponseChoiceElementToPb(st *V1ResponseChoiceElement) (*v1ResponseChoice
 		return nil, nil
 	}
 	pb := &v1ResponseChoiceElementPb{}
-	finishReasonPb := &st.FinishReason
-	if finishReasonPb != nil {
-		pb.FinishReason = *finishReasonPb
-	}
+	pb.FinishReason = st.FinishReason
 
-	indexPb := &st.Index
-	if indexPb != nil {
-		pb.Index = *indexPb
-	}
+	pb.Index = st.Index
 
-	logprobsPb := &st.Logprobs
-	if logprobsPb != nil {
-		pb.Logprobs = *logprobsPb
-	}
+	pb.Logprobs = st.Logprobs
 
 	messagePb, err := chatMessageToPb(st.Message)
 	if err != nil {
@@ -11085,10 +9824,7 @@ func v1ResponseChoiceElementToPb(st *V1ResponseChoiceElement) (*v1ResponseChoice
 		pb.Message = messagePb
 	}
 
-	textPb := &st.Text
-	if textPb != nil {
-		pb.Text = *textPb
-	}
+	pb.Text = st.Text
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11139,18 +9875,9 @@ func v1ResponseChoiceElementFromPb(pb *v1ResponseChoiceElementPb) (*V1ResponseCh
 		return nil, nil
 	}
 	st := &V1ResponseChoiceElement{}
-	finishReasonField := &pb.FinishReason
-	if finishReasonField != nil {
-		st.FinishReason = *finishReasonField
-	}
-	indexField := &pb.Index
-	if indexField != nil {
-		st.Index = *indexField
-	}
-	logprobsField := &pb.Logprobs
-	if logprobsField != nil {
-		st.Logprobs = *logprobsField
-	}
+	st.FinishReason = pb.FinishReason
+	st.Index = pb.Index
+	st.Logprobs = pb.Logprobs
 	messageField, err := chatMessageFromPb(pb.Message)
 	if err != nil {
 		return nil, err
@@ -11158,10 +9885,7 @@ func v1ResponseChoiceElementFromPb(pb *v1ResponseChoiceElementPb) (*V1ResponseCh
 	if messageField != nil {
 		st.Message = messageField
 	}
-	textField := &pb.Text
-	if textField != nil {
-		st.Text = *textField
-	}
+	st.Text = pb.Text
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11173,4 +9897,58 @@ func (st *v1ResponseChoiceElementPb) UnmarshalJSON(b []byte) error {
 
 func (st v1ResponseChoiceElementPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

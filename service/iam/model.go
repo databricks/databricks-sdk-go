@@ -11,86 +11,21 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type AccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel PermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func accessControlRequestToPb(st *AccessControlRequest) (*accessControlRequestPb, error) {
@@ -98,25 +33,13 @@ func accessControlRequestToPb(st *AccessControlRequest) (*accessControlRequestPb
 		return nil, nil
 	}
 	pb := &accessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -165,22 +88,10 @@ func accessControlRequestFromPb(pb *accessControlRequestPb) (*AccessControlReque
 		return nil, nil
 	}
 	st := &AccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -196,17 +107,22 @@ func (st accessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type AccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []Permission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func accessControlResponseToPb(st *AccessControlResponse) (*accessControlResponsePb, error) {
@@ -227,25 +143,13 @@ func accessControlResponseToPb(st *AccessControlResponse) (*accessControlRespons
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -298,32 +202,20 @@ func accessControlResponseFromPb(pb *accessControlResponsePb) (*AccessControlRes
 	st := &AccessControlResponse{}
 
 	var allPermissionsField []Permission
-	for _, item := range pb.AllPermissions {
-		itemField, err := permissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := permissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -341,9 +233,11 @@ func (st accessControlResponsePb) MarshalJSON() ([]byte, error) {
 // principal group can be a principal of a permission set assignment but an
 // actor is always a user or a service principal
 type Actor struct {
+
+	// Wire name: 'actor_id'
 	ActorId int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func actorToPb(st *Actor) (*actorPb, error) {
@@ -351,10 +245,7 @@ func actorToPb(st *Actor) (*actorPb, error) {
 		return nil, nil
 	}
 	pb := &actorPb{}
-	actorIdPb := &st.ActorId
-	if actorIdPb != nil {
-		pb.ActorId = *actorIdPb
-	}
+	pb.ActorId = st.ActorId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -396,10 +287,7 @@ func actorFromPb(pb *actorPb) (*Actor, error) {
 		return nil, nil
 	}
 	st := &Actor{}
-	actorIdField := &pb.ActorId
-	if actorIdField != nil {
-		st.ActorId = *actorIdField
-	}
+	st.ActorId = pb.ActorId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -415,20 +303,27 @@ func (st actorPb) MarshalJSON() ([]byte, error) {
 
 // Check access policy to a resource
 type CheckPolicyRequest struct {
-	Actor Actor
 
-	AuthzIdentity RequestAuthzIdentity
+	// Wire name: 'actor'
+	Actor Actor `tf:"-"`
 
-	ConsistencyToken ConsistencyToken
+	// Wire name: 'authz_identity'
+	AuthzIdentity RequestAuthzIdentity `tf:"-"`
 
-	Permission string
+	// Wire name: 'consistency_token'
+	ConsistencyToken ConsistencyToken `tf:"-"`
+
+	// Wire name: 'permission'
+	Permission string `tf:"-"`
 	// Ex: (servicePrincipal/use,
 	// accounts/<account-id>/servicePrincipals/<sp-id>) Ex:
 	// (servicePrincipal.ruleSet/update,
 	// accounts/<account-id>/servicePrincipals/<sp-id>/ruleSets/default)
-	Resource string
+	// Wire name: 'resource'
+	Resource string `tf:"-"`
 
-	ResourceInfo *ResourceInfo
+	// Wire name: 'resource_info'
+	ResourceInfo *ResourceInfo `tf:"-"`
 }
 
 func checkPolicyRequestToPb(st *CheckPolicyRequest) (*checkPolicyRequestPb, error) {
@@ -444,10 +339,7 @@ func checkPolicyRequestToPb(st *CheckPolicyRequest) (*checkPolicyRequestPb, erro
 		pb.Actor = *actorPb
 	}
 
-	authzIdentityPb := &st.AuthzIdentity
-	if authzIdentityPb != nil {
-		pb.AuthzIdentity = *authzIdentityPb
-	}
+	pb.AuthzIdentity = st.AuthzIdentity
 
 	consistencyTokenPb, err := consistencyTokenToPb(&st.ConsistencyToken)
 	if err != nil {
@@ -457,15 +349,9 @@ func checkPolicyRequestToPb(st *CheckPolicyRequest) (*checkPolicyRequestPb, erro
 		pb.ConsistencyToken = *consistencyTokenPb
 	}
 
-	permissionPb := &st.Permission
-	if permissionPb != nil {
-		pb.Permission = *permissionPb
-	}
+	pb.Permission = st.Permission
 
-	resourcePb := &st.Resource
-	if resourcePb != nil {
-		pb.Resource = *resourcePb
-	}
+	pb.Resource = st.Resource
 
 	resourceInfoPb, err := resourceInfoToPb(st.ResourceInfo)
 	if err != nil {
@@ -532,10 +418,7 @@ func checkPolicyRequestFromPb(pb *checkPolicyRequestPb) (*CheckPolicyRequest, er
 	if actorField != nil {
 		st.Actor = *actorField
 	}
-	authzIdentityField := &pb.AuthzIdentity
-	if authzIdentityField != nil {
-		st.AuthzIdentity = *authzIdentityField
-	}
+	st.AuthzIdentity = pb.AuthzIdentity
 	consistencyTokenField, err := consistencyTokenFromPb(&pb.ConsistencyToken)
 	if err != nil {
 		return nil, err
@@ -543,14 +426,8 @@ func checkPolicyRequestFromPb(pb *checkPolicyRequestPb) (*CheckPolicyRequest, er
 	if consistencyTokenField != nil {
 		st.ConsistencyToken = *consistencyTokenField
 	}
-	permissionField := &pb.Permission
-	if permissionField != nil {
-		st.Permission = *permissionField
-	}
-	resourceField := &pb.Resource
-	if resourceField != nil {
-		st.Resource = *resourceField
-	}
+	st.Permission = pb.Permission
+	st.Resource = pb.Resource
 	resourceInfoField, err := resourceInfoFromPb(pb.ResourceInfo)
 	if err != nil {
 		return nil, err
@@ -563,11 +440,14 @@ func checkPolicyRequestFromPb(pb *checkPolicyRequestPb) (*CheckPolicyRequest, er
 }
 
 type CheckPolicyResponse struct {
+
+	// Wire name: 'consistency_token'
 	ConsistencyToken ConsistencyToken
 
+	// Wire name: 'is_permitted'
 	IsPermitted bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func checkPolicyResponseToPb(st *CheckPolicyResponse) (*checkPolicyResponsePb, error) {
@@ -583,10 +463,7 @@ func checkPolicyResponseToPb(st *CheckPolicyResponse) (*checkPolicyResponsePb, e
 		pb.ConsistencyToken = *consistencyTokenPb
 	}
 
-	isPermittedPb := &st.IsPermitted
-	if isPermittedPb != nil {
-		pb.IsPermitted = *isPermittedPb
-	}
+	pb.IsPermitted = st.IsPermitted
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -637,10 +514,7 @@ func checkPolicyResponseFromPb(pb *checkPolicyResponsePb) (*CheckPolicyResponse,
 	if consistencyTokenField != nil {
 		st.ConsistencyToken = *consistencyTokenField
 	}
-	isPermittedField := &pb.IsPermitted
-	if isPermittedField != nil {
-		st.IsPermitted = *isPermittedField
-	}
+	st.IsPermitted = pb.IsPermitted
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -655,17 +529,23 @@ func (st checkPolicyResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type ComplexValue struct {
+
+	// Wire name: 'display'
 	Display string
 
+	// Wire name: 'primary'
 	Primary bool
 
+	// Wire name: '$ref'
 	Ref string
 
+	// Wire name: 'type'
 	Type string
 
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func complexValueToPb(st *ComplexValue) (*complexValuePb, error) {
@@ -673,30 +553,15 @@ func complexValueToPb(st *ComplexValue) (*complexValuePb, error) {
 		return nil, nil
 	}
 	pb := &complexValuePb{}
-	displayPb := &st.Display
-	if displayPb != nil {
-		pb.Display = *displayPb
-	}
+	pb.Display = st.Display
 
-	primaryPb := &st.Primary
-	if primaryPb != nil {
-		pb.Primary = *primaryPb
-	}
+	pb.Primary = st.Primary
 
-	refPb := &st.Ref
-	if refPb != nil {
-		pb.Ref = *refPb
-	}
+	pb.Ref = st.Ref
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -746,26 +611,11 @@ func complexValueFromPb(pb *complexValuePb) (*ComplexValue, error) {
 		return nil, nil
 	}
 	st := &ComplexValue{}
-	displayField := &pb.Display
-	if displayField != nil {
-		st.Display = *displayField
-	}
-	primaryField := &pb.Primary
-	if primaryField != nil {
-		st.Primary = *primaryField
-	}
-	refField := &pb.Ref
-	if refField != nil {
-		st.Ref = *refField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Display = pb.Display
+	st.Primary = pb.Primary
+	st.Ref = pb.Ref
+	st.Type = pb.Type
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -780,6 +630,8 @@ func (st complexValuePb) MarshalJSON() ([]byte, error) {
 }
 
 type ConsistencyToken struct {
+
+	// Wire name: 'value'
 	Value string
 }
 
@@ -788,10 +640,7 @@ func consistencyTokenToPb(st *ConsistencyToken) (*consistencyTokenPb, error) {
 		return nil, nil
 	}
 	pb := &consistencyTokenPb{}
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	return pb, nil
 }
@@ -830,10 +679,7 @@ func consistencyTokenFromPb(pb *consistencyTokenPb) (*ConsistencyToken, error) {
 		return nil, nil
 	}
 	st := &ConsistencyToken{}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Value = pb.Value
 
 	return st, nil
 }
@@ -841,7 +687,8 @@ func consistencyTokenFromPb(pb *consistencyTokenPb) (*ConsistencyToken, error) {
 // Delete a group.
 type DeleteAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteAccountGroupRequestToPb(st *DeleteAccountGroupRequest) (*deleteAccountGroupRequestPb, error) {
@@ -849,10 +696,7 @@ func deleteAccountGroupRequestToPb(st *DeleteAccountGroupRequest) (*deleteAccoun
 		return nil, nil
 	}
 	pb := &deleteAccountGroupRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -892,10 +736,7 @@ func deleteAccountGroupRequestFromPb(pb *deleteAccountGroupRequestPb) (*DeleteAc
 		return nil, nil
 	}
 	st := &DeleteAccountGroupRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -903,7 +744,8 @@ func deleteAccountGroupRequestFromPb(pb *deleteAccountGroupRequestPb) (*DeleteAc
 // Delete a service principal.
 type DeleteAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteAccountServicePrincipalRequestToPb(st *DeleteAccountServicePrincipalRequest) (*deleteAccountServicePrincipalRequestPb, error) {
@@ -911,10 +753,7 @@ func deleteAccountServicePrincipalRequestToPb(st *DeleteAccountServicePrincipalR
 		return nil, nil
 	}
 	pb := &deleteAccountServicePrincipalRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -954,10 +793,7 @@ func deleteAccountServicePrincipalRequestFromPb(pb *deleteAccountServicePrincipa
 		return nil, nil
 	}
 	st := &DeleteAccountServicePrincipalRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -965,7 +801,8 @@ func deleteAccountServicePrincipalRequestFromPb(pb *deleteAccountServicePrincipa
 // Delete a user.
 type DeleteAccountUserRequest struct {
 	// Unique ID for a user in the Databricks account.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteAccountUserRequestToPb(st *DeleteAccountUserRequest) (*deleteAccountUserRequestPb, error) {
@@ -973,10 +810,7 @@ func deleteAccountUserRequestToPb(st *DeleteAccountUserRequest) (*deleteAccountU
 		return nil, nil
 	}
 	pb := &deleteAccountUserRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -1016,10 +850,7 @@ func deleteAccountUserRequestFromPb(pb *deleteAccountUserRequestPb) (*DeleteAcco
 		return nil, nil
 	}
 	st := &DeleteAccountUserRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -1027,7 +858,8 @@ func deleteAccountUserRequestFromPb(pb *deleteAccountUserRequestPb) (*DeleteAcco
 // Delete a group.
 type DeleteGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteGroupRequestToPb(st *DeleteGroupRequest) (*deleteGroupRequestPb, error) {
@@ -1035,10 +867,7 @@ func deleteGroupRequestToPb(st *DeleteGroupRequest) (*deleteGroupRequestPb, erro
 		return nil, nil
 	}
 	pb := &deleteGroupRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -1078,10 +907,7 @@ func deleteGroupRequestFromPb(pb *deleteGroupRequestPb) (*DeleteGroupRequest, er
 		return nil, nil
 	}
 	st := &DeleteGroupRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -1138,7 +964,8 @@ func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
 // Delete a service principal.
 type DeleteServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteServicePrincipalRequestToPb(st *DeleteServicePrincipalRequest) (*deleteServicePrincipalRequestPb, error) {
@@ -1146,10 +973,7 @@ func deleteServicePrincipalRequestToPb(st *DeleteServicePrincipalRequest) (*dele
 		return nil, nil
 	}
 	pb := &deleteServicePrincipalRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -1189,10 +1013,7 @@ func deleteServicePrincipalRequestFromPb(pb *deleteServicePrincipalRequestPb) (*
 		return nil, nil
 	}
 	st := &DeleteServicePrincipalRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -1200,7 +1021,8 @@ func deleteServicePrincipalRequestFromPb(pb *deleteServicePrincipalRequestPb) (*
 // Delete a user.
 type DeleteUserRequest struct {
 	// Unique ID for a user in the Databricks workspace.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteUserRequestToPb(st *DeleteUserRequest) (*deleteUserRequestPb, error) {
@@ -1208,10 +1030,7 @@ func deleteUserRequestToPb(st *DeleteUserRequest) (*deleteUserRequestPb, error) 
 		return nil, nil
 	}
 	pb := &deleteUserRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -1251,10 +1070,7 @@ func deleteUserRequestFromPb(pb *deleteUserRequestPb) (*DeleteUserRequest, error
 		return nil, nil
 	}
 	st := &DeleteUserRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -1262,9 +1078,11 @@ func deleteUserRequestFromPb(pb *deleteUserRequestPb) (*DeleteUserRequest, error
 // Delete permissions assignment
 type DeleteWorkspaceAssignmentRequest struct {
 	// The ID of the user, service principal, or group.
-	PrincipalId int64
+	// Wire name: 'principal_id'
+	PrincipalId int64 `tf:"-"`
 	// The workspace ID for the account.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func deleteWorkspaceAssignmentRequestToPb(st *DeleteWorkspaceAssignmentRequest) (*deleteWorkspaceAssignmentRequestPb, error) {
@@ -1272,15 +1090,9 @@ func deleteWorkspaceAssignmentRequestToPb(st *DeleteWorkspaceAssignmentRequest) 
 		return nil, nil
 	}
 	pb := &deleteWorkspaceAssignmentRequestPb{}
-	principalIdPb := &st.PrincipalId
-	if principalIdPb != nil {
-		pb.PrincipalId = *principalIdPb
-	}
+	pb.PrincipalId = st.PrincipalId
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -1322,14 +1134,8 @@ func deleteWorkspaceAssignmentRequestFromPb(pb *deleteWorkspaceAssignmentRequest
 		return nil, nil
 	}
 	st := &DeleteWorkspaceAssignmentRequest{}
-	principalIdField := &pb.PrincipalId
-	if principalIdField != nil {
-		st.PrincipalId = *principalIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.PrincipalId = pb.PrincipalId
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
@@ -1386,7 +1192,8 @@ func deleteWorkspacePermissionAssignmentResponseFromPb(pb *deleteWorkspacePermis
 // Get group details.
 type GetAccountGroupRequest struct {
 	// Unique ID for a group in the Databricks account.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getAccountGroupRequestToPb(st *GetAccountGroupRequest) (*getAccountGroupRequestPb, error) {
@@ -1394,10 +1201,7 @@ func getAccountGroupRequestToPb(st *GetAccountGroupRequest) (*getAccountGroupReq
 		return nil, nil
 	}
 	pb := &getAccountGroupRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -1437,10 +1241,7 @@ func getAccountGroupRequestFromPb(pb *getAccountGroupRequestPb) (*GetAccountGrou
 		return nil, nil
 	}
 	st := &GetAccountGroupRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -1448,7 +1249,8 @@ func getAccountGroupRequestFromPb(pb *getAccountGroupRequestPb) (*GetAccountGrou
 // Get service principal details.
 type GetAccountServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks account.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getAccountServicePrincipalRequestToPb(st *GetAccountServicePrincipalRequest) (*getAccountServicePrincipalRequestPb, error) {
@@ -1456,10 +1258,7 @@ func getAccountServicePrincipalRequestToPb(st *GetAccountServicePrincipalRequest
 		return nil, nil
 	}
 	pb := &getAccountServicePrincipalRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -1499,10 +1298,7 @@ func getAccountServicePrincipalRequestFromPb(pb *getAccountServicePrincipalReque
 		return nil, nil
 	}
 	st := &GetAccountServicePrincipalRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -1510,11 +1306,14 @@ func getAccountServicePrincipalRequestFromPb(pb *getAccountServicePrincipalReque
 // Get user details.
 type GetAccountUserRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string
+	// Wire name: 'attributes'
+	Attributes string `tf:"-"`
 	// Desired number of results per page. Default is 10000.
-	Count int
+	// Wire name: 'count'
+	Count int `tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string
+	// Wire name: 'excludedAttributes'
+	ExcludedAttributes string `tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -1522,18 +1321,23 @@ type GetAccountUserRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// Unique ID for a user in the Databricks account.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string
+	// Wire name: 'sortBy'
+	SortBy string `tf:"-"`
 	// The order to sort the results.
-	SortOrder GetSortOrder
+	// Wire name: 'sortOrder'
+	SortOrder GetSortOrder `tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int
+	// Wire name: 'startIndex'
+	StartIndex int `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getAccountUserRequestToPb(st *GetAccountUserRequest) (*getAccountUserRequestPb, error) {
@@ -1541,45 +1345,21 @@ func getAccountUserRequestToPb(st *GetAccountUserRequest) (*getAccountUserReques
 		return nil, nil
 	}
 	pb := &getAccountUserRequestPb{}
-	attributesPb := &st.Attributes
-	if attributesPb != nil {
-		pb.Attributes = *attributesPb
-	}
+	pb.Attributes = st.Attributes
 
-	countPb := &st.Count
-	if countPb != nil {
-		pb.Count = *countPb
-	}
+	pb.Count = st.Count
 
-	excludedAttributesPb := &st.ExcludedAttributes
-	if excludedAttributesPb != nil {
-		pb.ExcludedAttributes = *excludedAttributesPb
-	}
+	pb.ExcludedAttributes = st.ExcludedAttributes
 
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	sortByPb := &st.SortBy
-	if sortByPb != nil {
-		pb.SortBy = *sortByPb
-	}
+	pb.SortBy = st.SortBy
 
-	sortOrderPb := &st.SortOrder
-	if sortOrderPb != nil {
-		pb.SortOrder = *sortOrderPb
-	}
+	pb.SortOrder = st.SortOrder
 
-	startIndexPb := &st.StartIndex
-	if startIndexPb != nil {
-		pb.StartIndex = *startIndexPb
-	}
+	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1643,38 +1423,14 @@ func getAccountUserRequestFromPb(pb *getAccountUserRequestPb) (*GetAccountUserRe
 		return nil, nil
 	}
 	st := &GetAccountUserRequest{}
-	attributesField := &pb.Attributes
-	if attributesField != nil {
-		st.Attributes = *attributesField
-	}
-	countField := &pb.Count
-	if countField != nil {
-		st.Count = *countField
-	}
-	excludedAttributesField := &pb.ExcludedAttributes
-	if excludedAttributesField != nil {
-		st.ExcludedAttributes = *excludedAttributesField
-	}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	sortByField := &pb.SortBy
-	if sortByField != nil {
-		st.SortBy = *sortByField
-	}
-	sortOrderField := &pb.SortOrder
-	if sortOrderField != nil {
-		st.SortOrder = *sortOrderField
-	}
-	startIndexField := &pb.StartIndex
-	if startIndexField != nil {
-		st.StartIndex = *startIndexField
-	}
+	st.Attributes = pb.Attributes
+	st.Count = pb.Count
+	st.ExcludedAttributes = pb.ExcludedAttributes
+	st.Filter = pb.Filter
+	st.Id = pb.Id
+	st.SortBy = pb.SortBy
+	st.SortOrder = pb.SortOrder
+	st.StartIndex = pb.StartIndex
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1691,7 +1447,8 @@ func (st getAccountUserRequestPb) MarshalJSON() ([]byte, error) {
 // Get assignable roles for a resource
 type GetAssignableRolesForResourceRequest struct {
 	// The resource name for which assignable roles will be listed.
-	Resource string
+	// Wire name: 'resource'
+	Resource string `tf:"-"`
 }
 
 func getAssignableRolesForResourceRequestToPb(st *GetAssignableRolesForResourceRequest) (*getAssignableRolesForResourceRequestPb, error) {
@@ -1699,10 +1456,7 @@ func getAssignableRolesForResourceRequestToPb(st *GetAssignableRolesForResourceR
 		return nil, nil
 	}
 	pb := &getAssignableRolesForResourceRequestPb{}
-	resourcePb := &st.Resource
-	if resourcePb != nil {
-		pb.Resource = *resourcePb
-	}
+	pb.Resource = st.Resource
 
 	return pb, nil
 }
@@ -1742,15 +1496,14 @@ func getAssignableRolesForResourceRequestFromPb(pb *getAssignableRolesForResourc
 		return nil, nil
 	}
 	st := &GetAssignableRolesForResourceRequest{}
-	resourceField := &pb.Resource
-	if resourceField != nil {
-		st.Resource = *resourceField
-	}
+	st.Resource = pb.Resource
 
 	return st, nil
 }
 
 type GetAssignableRolesForResourceResponse struct {
+
+	// Wire name: 'roles'
 	Roles []Role
 }
 
@@ -1811,13 +1564,13 @@ func getAssignableRolesForResourceResponseFromPb(pb *getAssignableRolesForResour
 	st := &GetAssignableRolesForResourceResponse{}
 
 	var rolesField []Role
-	for _, item := range pb.Roles {
-		itemField, err := roleFromPb(&item)
+	for _, itemPb := range pb.Roles {
+		item, err := roleFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			rolesField = append(rolesField, *itemField)
+		if item != nil {
+			rolesField = append(rolesField, *item)
 		}
 	}
 	st.Roles = rolesField
@@ -1828,7 +1581,8 @@ func getAssignableRolesForResourceResponseFromPb(pb *getAssignableRolesForResour
 // Get group details.
 type GetGroupRequest struct {
 	// Unique ID for a group in the Databricks workspace.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getGroupRequestToPb(st *GetGroupRequest) (*getGroupRequestPb, error) {
@@ -1836,10 +1590,7 @@ func getGroupRequestToPb(st *GetGroupRequest) (*getGroupRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getGroupRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -1879,16 +1630,14 @@ func getGroupRequestFromPb(pb *getGroupRequestPb) (*GetGroupRequest, error) {
 		return nil, nil
 	}
 	st := &GetGroupRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type GetPasswordPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []PasswordPermissionsDescription
 }
 
@@ -1950,13 +1699,13 @@ func getPasswordPermissionLevelsResponseFromPb(pb *getPasswordPermissionLevelsRe
 	st := &GetPasswordPermissionLevelsResponse{}
 
 	var permissionLevelsField []PasswordPermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := passwordPermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := passwordPermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -1967,9 +1716,11 @@ func getPasswordPermissionLevelsResponseFromPb(pb *getPasswordPermissionLevelsRe
 // Get object permission levels
 type GetPermissionLevelsRequest struct {
 	// <needs content>
-	RequestObjectId string
+	// Wire name: 'request_object_id'
+	RequestObjectId string `tf:"-"`
 	// <needs content>
-	RequestObjectType string
+	// Wire name: 'request_object_type'
+	RequestObjectType string `tf:"-"`
 }
 
 func getPermissionLevelsRequestToPb(st *GetPermissionLevelsRequest) (*getPermissionLevelsRequestPb, error) {
@@ -1977,15 +1728,9 @@ func getPermissionLevelsRequestToPb(st *GetPermissionLevelsRequest) (*getPermiss
 		return nil, nil
 	}
 	pb := &getPermissionLevelsRequestPb{}
-	requestObjectIdPb := &st.RequestObjectId
-	if requestObjectIdPb != nil {
-		pb.RequestObjectId = *requestObjectIdPb
-	}
+	pb.RequestObjectId = st.RequestObjectId
 
-	requestObjectTypePb := &st.RequestObjectType
-	if requestObjectTypePb != nil {
-		pb.RequestObjectType = *requestObjectTypePb
-	}
+	pb.RequestObjectType = st.RequestObjectType
 
 	return pb, nil
 }
@@ -2027,20 +1772,15 @@ func getPermissionLevelsRequestFromPb(pb *getPermissionLevelsRequestPb) (*GetPer
 		return nil, nil
 	}
 	st := &GetPermissionLevelsRequest{}
-	requestObjectIdField := &pb.RequestObjectId
-	if requestObjectIdField != nil {
-		st.RequestObjectId = *requestObjectIdField
-	}
-	requestObjectTypeField := &pb.RequestObjectType
-	if requestObjectTypeField != nil {
-		st.RequestObjectType = *requestObjectTypeField
-	}
+	st.RequestObjectId = pb.RequestObjectId
+	st.RequestObjectType = pb.RequestObjectType
 
 	return st, nil
 }
 
 type GetPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []PermissionsDescription
 }
 
@@ -2102,13 +1842,13 @@ func getPermissionLevelsResponseFromPb(pb *getPermissionLevelsResponsePb) (*GetP
 	st := &GetPermissionLevelsResponse{}
 
 	var permissionLevelsField []PermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := permissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := permissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -2119,13 +1859,15 @@ func getPermissionLevelsResponseFromPb(pb *getPermissionLevelsResponsePb) (*GetP
 // Get object permissions
 type GetPermissionRequest struct {
 	// The id of the request object.
-	RequestObjectId string
+	// Wire name: 'request_object_id'
+	RequestObjectId string `tf:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
 	// directories, experiments, files, instance-pools, jobs, notebooks,
 	// pipelines, queries, registered-models, repos, serving-endpoints, or
 	// warehouses.
-	RequestObjectType string
+	// Wire name: 'request_object_type'
+	RequestObjectType string `tf:"-"`
 }
 
 func getPermissionRequestToPb(st *GetPermissionRequest) (*getPermissionRequestPb, error) {
@@ -2133,15 +1875,9 @@ func getPermissionRequestToPb(st *GetPermissionRequest) (*getPermissionRequestPb
 		return nil, nil
 	}
 	pb := &getPermissionRequestPb{}
-	requestObjectIdPb := &st.RequestObjectId
-	if requestObjectIdPb != nil {
-		pb.RequestObjectId = *requestObjectIdPb
-	}
+	pb.RequestObjectId = st.RequestObjectId
 
-	requestObjectTypePb := &st.RequestObjectType
-	if requestObjectTypePb != nil {
-		pb.RequestObjectType = *requestObjectTypePb
-	}
+	pb.RequestObjectType = st.RequestObjectType
 
 	return pb, nil
 }
@@ -2187,14 +1923,8 @@ func getPermissionRequestFromPb(pb *getPermissionRequestPb) (*GetPermissionReque
 		return nil, nil
 	}
 	st := &GetPermissionRequest{}
-	requestObjectIdField := &pb.RequestObjectId
-	if requestObjectIdField != nil {
-		st.RequestObjectId = *requestObjectIdField
-	}
-	requestObjectTypeField := &pb.RequestObjectType
-	if requestObjectTypeField != nil {
-		st.RequestObjectType = *requestObjectTypeField
-	}
+	st.RequestObjectId = pb.RequestObjectId
+	st.RequestObjectType = pb.RequestObjectType
 
 	return st, nil
 }
@@ -2209,9 +1939,11 @@ type GetRuleSetRequest struct {
 	// avoid race conditions that is get an etag from a GET rule set request,
 	// and pass it with the PUT update request to identify the rule set version
 	// you are updating.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 	// The ruleset name associated with the request.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func getRuleSetRequestToPb(st *GetRuleSetRequest) (*getRuleSetRequestPb, error) {
@@ -2219,15 +1951,9 @@ func getRuleSetRequestToPb(st *GetRuleSetRequest) (*getRuleSetRequestPb, error) 
 		return nil, nil
 	}
 	pb := &getRuleSetRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -2276,14 +2002,8 @@ func getRuleSetRequestFromPb(pb *getRuleSetRequestPb) (*GetRuleSetRequest, error
 		return nil, nil
 	}
 	st := &GetRuleSetRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Etag = pb.Etag
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -2291,7 +2011,8 @@ func getRuleSetRequestFromPb(pb *getRuleSetRequestPb) (*GetRuleSetRequest, error
 // Get service principal details.
 type GetServicePrincipalRequest struct {
 	// Unique ID for a service principal in the Databricks workspace.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getServicePrincipalRequestToPb(st *GetServicePrincipalRequest) (*getServicePrincipalRequestPb, error) {
@@ -2299,10 +2020,7 @@ func getServicePrincipalRequestToPb(st *GetServicePrincipalRequest) (*getService
 		return nil, nil
 	}
 	pb := &getServicePrincipalRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -2342,10 +2060,7 @@ func getServicePrincipalRequestFromPb(pb *getServicePrincipalRequestPb) (*GetSer
 		return nil, nil
 	}
 	st := &GetServicePrincipalRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -2397,11 +2112,14 @@ func getSortOrderFromPb(pb *getSortOrderPb) (*GetSortOrder, error) {
 // Get user details.
 type GetUserRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string
+	// Wire name: 'attributes'
+	Attributes string `tf:"-"`
 	// Desired number of results per page.
-	Count int
+	// Wire name: 'count'
+	Count int `tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string
+	// Wire name: 'excludedAttributes'
+	ExcludedAttributes string `tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -2409,18 +2127,23 @@ type GetUserRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// Unique ID for a user in the Databricks workspace.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string
+	// Wire name: 'sortBy'
+	SortBy string `tf:"-"`
 	// The order to sort the results.
-	SortOrder GetSortOrder
+	// Wire name: 'sortOrder'
+	SortOrder GetSortOrder `tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int
+	// Wire name: 'startIndex'
+	StartIndex int `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getUserRequestToPb(st *GetUserRequest) (*getUserRequestPb, error) {
@@ -2428,45 +2151,21 @@ func getUserRequestToPb(st *GetUserRequest) (*getUserRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getUserRequestPb{}
-	attributesPb := &st.Attributes
-	if attributesPb != nil {
-		pb.Attributes = *attributesPb
-	}
+	pb.Attributes = st.Attributes
 
-	countPb := &st.Count
-	if countPb != nil {
-		pb.Count = *countPb
-	}
+	pb.Count = st.Count
 
-	excludedAttributesPb := &st.ExcludedAttributes
-	if excludedAttributesPb != nil {
-		pb.ExcludedAttributes = *excludedAttributesPb
-	}
+	pb.ExcludedAttributes = st.ExcludedAttributes
 
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	sortByPb := &st.SortBy
-	if sortByPb != nil {
-		pb.SortBy = *sortByPb
-	}
+	pb.SortBy = st.SortBy
 
-	sortOrderPb := &st.SortOrder
-	if sortOrderPb != nil {
-		pb.SortOrder = *sortOrderPb
-	}
+	pb.SortOrder = st.SortOrder
 
-	startIndexPb := &st.StartIndex
-	if startIndexPb != nil {
-		pb.StartIndex = *startIndexPb
-	}
+	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2530,38 +2229,14 @@ func getUserRequestFromPb(pb *getUserRequestPb) (*GetUserRequest, error) {
 		return nil, nil
 	}
 	st := &GetUserRequest{}
-	attributesField := &pb.Attributes
-	if attributesField != nil {
-		st.Attributes = *attributesField
-	}
-	countField := &pb.Count
-	if countField != nil {
-		st.Count = *countField
-	}
-	excludedAttributesField := &pb.ExcludedAttributes
-	if excludedAttributesField != nil {
-		st.ExcludedAttributes = *excludedAttributesField
-	}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	sortByField := &pb.SortBy
-	if sortByField != nil {
-		st.SortBy = *sortByField
-	}
-	sortOrderField := &pb.SortOrder
-	if sortOrderField != nil {
-		st.SortOrder = *sortOrderField
-	}
-	startIndexField := &pb.StartIndex
-	if startIndexField != nil {
-		st.StartIndex = *startIndexField
-	}
+	st.Attributes = pb.Attributes
+	st.Count = pb.Count
+	st.ExcludedAttributes = pb.ExcludedAttributes
+	st.Filter = pb.Filter
+	st.Id = pb.Id
+	st.SortBy = pb.SortBy
+	st.SortOrder = pb.SortOrder
+	st.StartIndex = pb.StartIndex
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2578,7 +2253,8 @@ func (st getUserRequestPb) MarshalJSON() ([]byte, error) {
 // List workspace permissions
 type GetWorkspaceAssignmentRequest struct {
 	// The workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func getWorkspaceAssignmentRequestToPb(st *GetWorkspaceAssignmentRequest) (*getWorkspaceAssignmentRequestPb, error) {
@@ -2586,10 +2262,7 @@ func getWorkspaceAssignmentRequestToPb(st *GetWorkspaceAssignmentRequest) (*getW
 		return nil, nil
 	}
 	pb := &getWorkspaceAssignmentRequestPb{}
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -2629,18 +2302,17 @@ func getWorkspaceAssignmentRequestFromPb(pb *getWorkspaceAssignmentRequestPb) (*
 		return nil, nil
 	}
 	st := &GetWorkspaceAssignmentRequest{}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
 
 type GrantRule struct {
 	// Principals this grant rule applies to.
+	// Wire name: 'principals'
 	Principals []string
 	// Role that is assigned to the list of principals.
+	// Wire name: 'role'
 	Role string
 }
 
@@ -2649,20 +2321,9 @@ func grantRuleToPb(st *GrantRule) (*grantRulePb, error) {
 		return nil, nil
 	}
 	pb := &grantRulePb{}
+	pb.Principals = st.Principals
 
-	var principalsPb []string
-	for _, item := range st.Principals {
-		itemPb := &item
-		if itemPb != nil {
-			principalsPb = append(principalsPb, *itemPb)
-		}
-	}
-	pb.Principals = principalsPb
-
-	rolePb := &st.Role
-	if rolePb != nil {
-		pb.Role = *rolePb
-	}
+	pb.Role = st.Role
 
 	return pb, nil
 }
@@ -2704,47 +2365,45 @@ func grantRuleFromPb(pb *grantRulePb) (*GrantRule, error) {
 		return nil, nil
 	}
 	st := &GrantRule{}
-
-	var principalsField []string
-	for _, item := range pb.Principals {
-		itemField := &item
-		if itemField != nil {
-			principalsField = append(principalsField, *itemField)
-		}
-	}
-	st.Principals = principalsField
-	roleField := &pb.Role
-	if roleField != nil {
-		st.Role = *roleField
-	}
+	st.Principals = pb.Principals
+	st.Role = pb.Role
 
 	return st, nil
 }
 
 type Group struct {
 	// String that represents a human-readable group name
+	// Wire name: 'displayName'
 	DisplayName string
 	// Entitlements assigned to the group. See [assigning entitlements] for a
 	// full list of supported values.
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+	// Wire name: 'entitlements'
 	Entitlements []ComplexValue
 
+	// Wire name: 'externalId'
 	ExternalId string
 
+	// Wire name: 'groups'
 	Groups []ComplexValue
 	// Databricks group ID
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'members'
 	Members []ComplexValue
 	// Container for the group identifier. Workspace local versus account.
+	// Wire name: 'meta'
 	Meta *ResourceMeta
 	// Corresponds to AWS instance profile/arn role.
+	// Wire name: 'roles'
 	Roles []ComplexValue
 	// The schema of the group.
+	// Wire name: 'schemas'
 	Schemas []GroupSchema
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func groupToPb(st *Group) (*groupPb, error) {
@@ -2752,10 +2411,7 @@ func groupToPb(st *Group) (*groupPb, error) {
 		return nil, nil
 	}
 	pb := &groupPb{}
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
 	var entitlementsPb []complexValuePb
 	for _, item := range st.Entitlements {
@@ -2769,10 +2425,7 @@ func groupToPb(st *Group) (*groupPb, error) {
 	}
 	pb.Entitlements = entitlementsPb
 
-	externalIdPb := &st.ExternalId
-	if externalIdPb != nil {
-		pb.ExternalId = *externalIdPb
-	}
+	pb.ExternalId = st.ExternalId
 
 	var groupsPb []complexValuePb
 	for _, item := range st.Groups {
@@ -2786,10 +2439,7 @@ func groupToPb(st *Group) (*groupPb, error) {
 	}
 	pb.Groups = groupsPb
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	var membersPb []complexValuePb
 	for _, item := range st.Members {
@@ -2823,14 +2473,7 @@ func groupToPb(st *Group) (*groupPb, error) {
 	}
 	pb.Roles = rolesPb
 
-	var schemasPb []GroupSchema
-	for _, item := range st.Schemas {
-		itemPb := &item
-		if itemPb != nil {
-			schemasPb = append(schemasPb, *itemPb)
-		}
-	}
-	pb.Schemas = schemasPb
+	pb.Schemas = st.Schemas
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2892,51 +2535,42 @@ func groupFromPb(pb *groupPb) (*Group, error) {
 		return nil, nil
 	}
 	st := &Group{}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
+	st.DisplayName = pb.DisplayName
 
 	var entitlementsField []ComplexValue
-	for _, item := range pb.Entitlements {
-		itemField, err := complexValueFromPb(&item)
+	for _, itemPb := range pb.Entitlements {
+		item, err := complexValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			entitlementsField = append(entitlementsField, *itemField)
+		if item != nil {
+			entitlementsField = append(entitlementsField, *item)
 		}
 	}
 	st.Entitlements = entitlementsField
-	externalIdField := &pb.ExternalId
-	if externalIdField != nil {
-		st.ExternalId = *externalIdField
-	}
+	st.ExternalId = pb.ExternalId
 
 	var groupsField []ComplexValue
-	for _, item := range pb.Groups {
-		itemField, err := complexValueFromPb(&item)
+	for _, itemPb := range pb.Groups {
+		item, err := complexValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			groupsField = append(groupsField, *itemField)
+		if item != nil {
+			groupsField = append(groupsField, *item)
 		}
 	}
 	st.Groups = groupsField
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	var membersField []ComplexValue
-	for _, item := range pb.Members {
-		itemField, err := complexValueFromPb(&item)
+	for _, itemPb := range pb.Members {
+		item, err := complexValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			membersField = append(membersField, *itemField)
+		if item != nil {
+			membersField = append(membersField, *item)
 		}
 	}
 	st.Members = membersField
@@ -2949,25 +2583,17 @@ func groupFromPb(pb *groupPb) (*Group, error) {
 	}
 
 	var rolesField []ComplexValue
-	for _, item := range pb.Roles {
-		itemField, err := complexValueFromPb(&item)
+	for _, itemPb := range pb.Roles {
+		item, err := complexValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			rolesField = append(rolesField, *itemField)
+		if item != nil {
+			rolesField = append(rolesField, *item)
 		}
 	}
 	st.Roles = rolesField
-
-	var schemasField []GroupSchema
-	for _, item := range pb.Schemas {
-		itemField := &item
-		if itemField != nil {
-			schemasField = append(schemasField, *itemField)
-		}
-	}
-	st.Schemas = schemasField
+	st.Schemas = pb.Schemas
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3026,11 +2652,14 @@ func groupSchemaFromPb(pb *groupSchemaPb) (*GroupSchema, error) {
 // List group details.
 type ListAccountGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string
+	// Wire name: 'attributes'
+	Attributes string `tf:"-"`
 	// Desired number of results per page. Default is 10000.
-	Count int64
+	// Wire name: 'count'
+	Count int64 `tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string
+	// Wire name: 'excludedAttributes'
+	ExcludedAttributes string `tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -3038,15 +2667,19 @@ type ListAccountGroupsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// Attribute to sort the results.
-	SortBy string
+	// Wire name: 'sortBy'
+	SortBy string `tf:"-"`
 	// The order to sort the results.
-	SortOrder ListSortOrder
+	// Wire name: 'sortOrder'
+	SortOrder ListSortOrder `tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64
+	// Wire name: 'startIndex'
+	StartIndex int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAccountGroupsRequestToPb(st *ListAccountGroupsRequest) (*listAccountGroupsRequestPb, error) {
@@ -3054,40 +2687,19 @@ func listAccountGroupsRequestToPb(st *ListAccountGroupsRequest) (*listAccountGro
 		return nil, nil
 	}
 	pb := &listAccountGroupsRequestPb{}
-	attributesPb := &st.Attributes
-	if attributesPb != nil {
-		pb.Attributes = *attributesPb
-	}
+	pb.Attributes = st.Attributes
 
-	countPb := &st.Count
-	if countPb != nil {
-		pb.Count = *countPb
-	}
+	pb.Count = st.Count
 
-	excludedAttributesPb := &st.ExcludedAttributes
-	if excludedAttributesPb != nil {
-		pb.ExcludedAttributes = *excludedAttributesPb
-	}
+	pb.ExcludedAttributes = st.ExcludedAttributes
 
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	sortByPb := &st.SortBy
-	if sortByPb != nil {
-		pb.SortBy = *sortByPb
-	}
+	pb.SortBy = st.SortBy
 
-	sortOrderPb := &st.SortOrder
-	if sortOrderPb != nil {
-		pb.SortOrder = *sortOrderPb
-	}
+	pb.SortOrder = st.SortOrder
 
-	startIndexPb := &st.StartIndex
-	if startIndexPb != nil {
-		pb.StartIndex = *startIndexPb
-	}
+	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3148,34 +2760,13 @@ func listAccountGroupsRequestFromPb(pb *listAccountGroupsRequestPb) (*ListAccoun
 		return nil, nil
 	}
 	st := &ListAccountGroupsRequest{}
-	attributesField := &pb.Attributes
-	if attributesField != nil {
-		st.Attributes = *attributesField
-	}
-	countField := &pb.Count
-	if countField != nil {
-		st.Count = *countField
-	}
-	excludedAttributesField := &pb.ExcludedAttributes
-	if excludedAttributesField != nil {
-		st.ExcludedAttributes = *excludedAttributesField
-	}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	sortByField := &pb.SortBy
-	if sortByField != nil {
-		st.SortBy = *sortByField
-	}
-	sortOrderField := &pb.SortOrder
-	if sortOrderField != nil {
-		st.SortOrder = *sortOrderField
-	}
-	startIndexField := &pb.StartIndex
-	if startIndexField != nil {
-		st.StartIndex = *startIndexField
-	}
+	st.Attributes = pb.Attributes
+	st.Count = pb.Count
+	st.ExcludedAttributes = pb.ExcludedAttributes
+	st.Filter = pb.Filter
+	st.SortBy = pb.SortBy
+	st.SortOrder = pb.SortOrder
+	st.StartIndex = pb.StartIndex
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3192,11 +2783,14 @@ func (st listAccountGroupsRequestPb) MarshalJSON() ([]byte, error) {
 // List service principals.
 type ListAccountServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string
+	// Wire name: 'attributes'
+	Attributes string `tf:"-"`
 	// Desired number of results per page. Default is 10000.
-	Count int64
+	// Wire name: 'count'
+	Count int64 `tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string
+	// Wire name: 'excludedAttributes'
+	ExcludedAttributes string `tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -3204,15 +2798,19 @@ type ListAccountServicePrincipalsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// Attribute to sort the results.
-	SortBy string
+	// Wire name: 'sortBy'
+	SortBy string `tf:"-"`
 	// The order to sort the results.
-	SortOrder ListSortOrder
+	// Wire name: 'sortOrder'
+	SortOrder ListSortOrder `tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64
+	// Wire name: 'startIndex'
+	StartIndex int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAccountServicePrincipalsRequestToPb(st *ListAccountServicePrincipalsRequest) (*listAccountServicePrincipalsRequestPb, error) {
@@ -3220,40 +2818,19 @@ func listAccountServicePrincipalsRequestToPb(st *ListAccountServicePrincipalsReq
 		return nil, nil
 	}
 	pb := &listAccountServicePrincipalsRequestPb{}
-	attributesPb := &st.Attributes
-	if attributesPb != nil {
-		pb.Attributes = *attributesPb
-	}
+	pb.Attributes = st.Attributes
 
-	countPb := &st.Count
-	if countPb != nil {
-		pb.Count = *countPb
-	}
+	pb.Count = st.Count
 
-	excludedAttributesPb := &st.ExcludedAttributes
-	if excludedAttributesPb != nil {
-		pb.ExcludedAttributes = *excludedAttributesPb
-	}
+	pb.ExcludedAttributes = st.ExcludedAttributes
 
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	sortByPb := &st.SortBy
-	if sortByPb != nil {
-		pb.SortBy = *sortByPb
-	}
+	pb.SortBy = st.SortBy
 
-	sortOrderPb := &st.SortOrder
-	if sortOrderPb != nil {
-		pb.SortOrder = *sortOrderPb
-	}
+	pb.SortOrder = st.SortOrder
 
-	startIndexPb := &st.StartIndex
-	if startIndexPb != nil {
-		pb.StartIndex = *startIndexPb
-	}
+	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3314,34 +2891,13 @@ func listAccountServicePrincipalsRequestFromPb(pb *listAccountServicePrincipalsR
 		return nil, nil
 	}
 	st := &ListAccountServicePrincipalsRequest{}
-	attributesField := &pb.Attributes
-	if attributesField != nil {
-		st.Attributes = *attributesField
-	}
-	countField := &pb.Count
-	if countField != nil {
-		st.Count = *countField
-	}
-	excludedAttributesField := &pb.ExcludedAttributes
-	if excludedAttributesField != nil {
-		st.ExcludedAttributes = *excludedAttributesField
-	}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	sortByField := &pb.SortBy
-	if sortByField != nil {
-		st.SortBy = *sortByField
-	}
-	sortOrderField := &pb.SortOrder
-	if sortOrderField != nil {
-		st.SortOrder = *sortOrderField
-	}
-	startIndexField := &pb.StartIndex
-	if startIndexField != nil {
-		st.StartIndex = *startIndexField
-	}
+	st.Attributes = pb.Attributes
+	st.Count = pb.Count
+	st.ExcludedAttributes = pb.ExcludedAttributes
+	st.Filter = pb.Filter
+	st.SortBy = pb.SortBy
+	st.SortOrder = pb.SortOrder
+	st.StartIndex = pb.StartIndex
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3358,11 +2914,14 @@ func (st listAccountServicePrincipalsRequestPb) MarshalJSON() ([]byte, error) {
 // List users.
 type ListAccountUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string
+	// Wire name: 'attributes'
+	Attributes string `tf:"-"`
 	// Desired number of results per page. Default is 10000.
-	Count int64
+	// Wire name: 'count'
+	Count int64 `tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string
+	// Wire name: 'excludedAttributes'
+	ExcludedAttributes string `tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -3370,16 +2929,20 @@ type ListAccountUsersRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string
+	// Wire name: 'sortBy'
+	SortBy string `tf:"-"`
 	// The order to sort the results.
-	SortOrder ListSortOrder
+	// Wire name: 'sortOrder'
+	SortOrder ListSortOrder `tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64
+	// Wire name: 'startIndex'
+	StartIndex int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAccountUsersRequestToPb(st *ListAccountUsersRequest) (*listAccountUsersRequestPb, error) {
@@ -3387,40 +2950,19 @@ func listAccountUsersRequestToPb(st *ListAccountUsersRequest) (*listAccountUsers
 		return nil, nil
 	}
 	pb := &listAccountUsersRequestPb{}
-	attributesPb := &st.Attributes
-	if attributesPb != nil {
-		pb.Attributes = *attributesPb
-	}
+	pb.Attributes = st.Attributes
 
-	countPb := &st.Count
-	if countPb != nil {
-		pb.Count = *countPb
-	}
+	pb.Count = st.Count
 
-	excludedAttributesPb := &st.ExcludedAttributes
-	if excludedAttributesPb != nil {
-		pb.ExcludedAttributes = *excludedAttributesPb
-	}
+	pb.ExcludedAttributes = st.ExcludedAttributes
 
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	sortByPb := &st.SortBy
-	if sortByPb != nil {
-		pb.SortBy = *sortByPb
-	}
+	pb.SortBy = st.SortBy
 
-	sortOrderPb := &st.SortOrder
-	if sortOrderPb != nil {
-		pb.SortOrder = *sortOrderPb
-	}
+	pb.SortOrder = st.SortOrder
 
-	startIndexPb := &st.StartIndex
-	if startIndexPb != nil {
-		pb.StartIndex = *startIndexPb
-	}
+	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3482,34 +3024,13 @@ func listAccountUsersRequestFromPb(pb *listAccountUsersRequestPb) (*ListAccountU
 		return nil, nil
 	}
 	st := &ListAccountUsersRequest{}
-	attributesField := &pb.Attributes
-	if attributesField != nil {
-		st.Attributes = *attributesField
-	}
-	countField := &pb.Count
-	if countField != nil {
-		st.Count = *countField
-	}
-	excludedAttributesField := &pb.ExcludedAttributes
-	if excludedAttributesField != nil {
-		st.ExcludedAttributes = *excludedAttributesField
-	}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	sortByField := &pb.SortBy
-	if sortByField != nil {
-		st.SortBy = *sortByField
-	}
-	sortOrderField := &pb.SortOrder
-	if sortOrderField != nil {
-		st.SortOrder = *sortOrderField
-	}
-	startIndexField := &pb.StartIndex
-	if startIndexField != nil {
-		st.StartIndex = *startIndexField
-	}
+	st.Attributes = pb.Attributes
+	st.Count = pb.Count
+	st.ExcludedAttributes = pb.ExcludedAttributes
+	st.Filter = pb.Filter
+	st.SortBy = pb.SortBy
+	st.SortOrder = pb.SortOrder
+	st.StartIndex = pb.StartIndex
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3526,11 +3047,14 @@ func (st listAccountUsersRequestPb) MarshalJSON() ([]byte, error) {
 // List group details.
 type ListGroupsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string
+	// Wire name: 'attributes'
+	Attributes string `tf:"-"`
 	// Desired number of results per page.
-	Count int64
+	// Wire name: 'count'
+	Count int64 `tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string
+	// Wire name: 'excludedAttributes'
+	ExcludedAttributes string `tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -3538,15 +3062,19 @@ type ListGroupsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// Attribute to sort the results.
-	SortBy string
+	// Wire name: 'sortBy'
+	SortBy string `tf:"-"`
 	// The order to sort the results.
-	SortOrder ListSortOrder
+	// Wire name: 'sortOrder'
+	SortOrder ListSortOrder `tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64
+	// Wire name: 'startIndex'
+	StartIndex int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listGroupsRequestToPb(st *ListGroupsRequest) (*listGroupsRequestPb, error) {
@@ -3554,40 +3082,19 @@ func listGroupsRequestToPb(st *ListGroupsRequest) (*listGroupsRequestPb, error) 
 		return nil, nil
 	}
 	pb := &listGroupsRequestPb{}
-	attributesPb := &st.Attributes
-	if attributesPb != nil {
-		pb.Attributes = *attributesPb
-	}
+	pb.Attributes = st.Attributes
 
-	countPb := &st.Count
-	if countPb != nil {
-		pb.Count = *countPb
-	}
+	pb.Count = st.Count
 
-	excludedAttributesPb := &st.ExcludedAttributes
-	if excludedAttributesPb != nil {
-		pb.ExcludedAttributes = *excludedAttributesPb
-	}
+	pb.ExcludedAttributes = st.ExcludedAttributes
 
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	sortByPb := &st.SortBy
-	if sortByPb != nil {
-		pb.SortBy = *sortByPb
-	}
+	pb.SortBy = st.SortBy
 
-	sortOrderPb := &st.SortOrder
-	if sortOrderPb != nil {
-		pb.SortOrder = *sortOrderPb
-	}
+	pb.SortOrder = st.SortOrder
 
-	startIndexPb := &st.StartIndex
-	if startIndexPb != nil {
-		pb.StartIndex = *startIndexPb
-	}
+	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3648,34 +3155,13 @@ func listGroupsRequestFromPb(pb *listGroupsRequestPb) (*ListGroupsRequest, error
 		return nil, nil
 	}
 	st := &ListGroupsRequest{}
-	attributesField := &pb.Attributes
-	if attributesField != nil {
-		st.Attributes = *attributesField
-	}
-	countField := &pb.Count
-	if countField != nil {
-		st.Count = *countField
-	}
-	excludedAttributesField := &pb.ExcludedAttributes
-	if excludedAttributesField != nil {
-		st.ExcludedAttributes = *excludedAttributesField
-	}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	sortByField := &pb.SortBy
-	if sortByField != nil {
-		st.SortBy = *sortByField
-	}
-	sortOrderField := &pb.SortOrder
-	if sortOrderField != nil {
-		st.SortOrder = *sortOrderField
-	}
-	startIndexField := &pb.StartIndex
-	if startIndexField != nil {
-		st.StartIndex = *startIndexField
-	}
+	st.Attributes = pb.Attributes
+	st.Count = pb.Count
+	st.ExcludedAttributes = pb.ExcludedAttributes
+	st.Filter = pb.Filter
+	st.SortBy = pb.SortBy
+	st.SortOrder = pb.SortOrder
+	st.StartIndex = pb.StartIndex
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3691,18 +3177,23 @@ func (st listGroupsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListGroupsResponse struct {
 	// Total results returned in the response.
+	// Wire name: 'itemsPerPage'
 	ItemsPerPage int64
 	// User objects returned in the response.
+	// Wire name: 'Resources'
 	Resources []Group
 	// The schema of the service principal.
+	// Wire name: 'schemas'
 	Schemas []ListResponseSchema
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
+	// Wire name: 'startIndex'
 	StartIndex int64
 	// Total results that match the request filters.
+	// Wire name: 'totalResults'
 	TotalResults int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listGroupsResponseToPb(st *ListGroupsResponse) (*listGroupsResponsePb, error) {
@@ -3710,10 +3201,7 @@ func listGroupsResponseToPb(st *ListGroupsResponse) (*listGroupsResponsePb, erro
 		return nil, nil
 	}
 	pb := &listGroupsResponsePb{}
-	itemsPerPagePb := &st.ItemsPerPage
-	if itemsPerPagePb != nil {
-		pb.ItemsPerPage = *itemsPerPagePb
-	}
+	pb.ItemsPerPage = st.ItemsPerPage
 
 	var resourcesPb []groupPb
 	for _, item := range st.Resources {
@@ -3727,24 +3215,11 @@ func listGroupsResponseToPb(st *ListGroupsResponse) (*listGroupsResponsePb, erro
 	}
 	pb.Resources = resourcesPb
 
-	var schemasPb []ListResponseSchema
-	for _, item := range st.Schemas {
-		itemPb := &item
-		if itemPb != nil {
-			schemasPb = append(schemasPb, *itemPb)
-		}
-	}
-	pb.Schemas = schemasPb
+	pb.Schemas = st.Schemas
 
-	startIndexPb := &st.StartIndex
-	if startIndexPb != nil {
-		pb.StartIndex = *startIndexPb
-	}
+	pb.StartIndex = st.StartIndex
 
-	totalResultsPb := &st.TotalResults
-	if totalResultsPb != nil {
-		pb.TotalResults = *totalResultsPb
-	}
+	pb.TotalResults = st.TotalResults
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3796,39 +3271,22 @@ func listGroupsResponseFromPb(pb *listGroupsResponsePb) (*ListGroupsResponse, er
 		return nil, nil
 	}
 	st := &ListGroupsResponse{}
-	itemsPerPageField := &pb.ItemsPerPage
-	if itemsPerPageField != nil {
-		st.ItemsPerPage = *itemsPerPageField
-	}
+	st.ItemsPerPage = pb.ItemsPerPage
 
 	var resourcesField []Group
-	for _, item := range pb.Resources {
-		itemField, err := groupFromPb(&item)
+	for _, itemPb := range pb.Resources {
+		item, err := groupFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resourcesField = append(resourcesField, *itemField)
+		if item != nil {
+			resourcesField = append(resourcesField, *item)
 		}
 	}
 	st.Resources = resourcesField
-
-	var schemasField []ListResponseSchema
-	for _, item := range pb.Schemas {
-		itemField := &item
-		if itemField != nil {
-			schemasField = append(schemasField, *itemField)
-		}
-	}
-	st.Schemas = schemasField
-	startIndexField := &pb.StartIndex
-	if startIndexField != nil {
-		st.StartIndex = *startIndexField
-	}
-	totalResultsField := &pb.TotalResults
-	if totalResultsField != nil {
-		st.TotalResults = *totalResultsField
-	}
+	st.Schemas = pb.Schemas
+	st.StartIndex = pb.StartIndex
+	st.TotalResults = pb.TotalResults
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3886,18 +3344,23 @@ func listResponseSchemaFromPb(pb *listResponseSchemaPb) (*ListResponseSchema, er
 
 type ListServicePrincipalResponse struct {
 	// Total results returned in the response.
+	// Wire name: 'itemsPerPage'
 	ItemsPerPage int64
 	// User objects returned in the response.
+	// Wire name: 'Resources'
 	Resources []ServicePrincipal
 	// The schema of the List response.
+	// Wire name: 'schemas'
 	Schemas []ListResponseSchema
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
+	// Wire name: 'startIndex'
 	StartIndex int64
 	// Total results that match the request filters.
+	// Wire name: 'totalResults'
 	TotalResults int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listServicePrincipalResponseToPb(st *ListServicePrincipalResponse) (*listServicePrincipalResponsePb, error) {
@@ -3905,10 +3368,7 @@ func listServicePrincipalResponseToPb(st *ListServicePrincipalResponse) (*listSe
 		return nil, nil
 	}
 	pb := &listServicePrincipalResponsePb{}
-	itemsPerPagePb := &st.ItemsPerPage
-	if itemsPerPagePb != nil {
-		pb.ItemsPerPage = *itemsPerPagePb
-	}
+	pb.ItemsPerPage = st.ItemsPerPage
 
 	var resourcesPb []servicePrincipalPb
 	for _, item := range st.Resources {
@@ -3922,24 +3382,11 @@ func listServicePrincipalResponseToPb(st *ListServicePrincipalResponse) (*listSe
 	}
 	pb.Resources = resourcesPb
 
-	var schemasPb []ListResponseSchema
-	for _, item := range st.Schemas {
-		itemPb := &item
-		if itemPb != nil {
-			schemasPb = append(schemasPb, *itemPb)
-		}
-	}
-	pb.Schemas = schemasPb
+	pb.Schemas = st.Schemas
 
-	startIndexPb := &st.StartIndex
-	if startIndexPb != nil {
-		pb.StartIndex = *startIndexPb
-	}
+	pb.StartIndex = st.StartIndex
 
-	totalResultsPb := &st.TotalResults
-	if totalResultsPb != nil {
-		pb.TotalResults = *totalResultsPb
-	}
+	pb.TotalResults = st.TotalResults
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3991,39 +3438,22 @@ func listServicePrincipalResponseFromPb(pb *listServicePrincipalResponsePb) (*Li
 		return nil, nil
 	}
 	st := &ListServicePrincipalResponse{}
-	itemsPerPageField := &pb.ItemsPerPage
-	if itemsPerPageField != nil {
-		st.ItemsPerPage = *itemsPerPageField
-	}
+	st.ItemsPerPage = pb.ItemsPerPage
 
 	var resourcesField []ServicePrincipal
-	for _, item := range pb.Resources {
-		itemField, err := servicePrincipalFromPb(&item)
+	for _, itemPb := range pb.Resources {
+		item, err := servicePrincipalFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resourcesField = append(resourcesField, *itemField)
+		if item != nil {
+			resourcesField = append(resourcesField, *item)
 		}
 	}
 	st.Resources = resourcesField
-
-	var schemasField []ListResponseSchema
-	for _, item := range pb.Schemas {
-		itemField := &item
-		if itemField != nil {
-			schemasField = append(schemasField, *itemField)
-		}
-	}
-	st.Schemas = schemasField
-	startIndexField := &pb.StartIndex
-	if startIndexField != nil {
-		st.StartIndex = *startIndexField
-	}
-	totalResultsField := &pb.TotalResults
-	if totalResultsField != nil {
-		st.TotalResults = *totalResultsField
-	}
+	st.Schemas = pb.Schemas
+	st.StartIndex = pb.StartIndex
+	st.TotalResults = pb.TotalResults
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4040,11 +3470,14 @@ func (st listServicePrincipalResponsePb) MarshalJSON() ([]byte, error) {
 // List service principals.
 type ListServicePrincipalsRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string
+	// Wire name: 'attributes'
+	Attributes string `tf:"-"`
 	// Desired number of results per page.
-	Count int64
+	// Wire name: 'count'
+	Count int64 `tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string
+	// Wire name: 'excludedAttributes'
+	ExcludedAttributes string `tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -4052,15 +3485,19 @@ type ListServicePrincipalsRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// Attribute to sort the results.
-	SortBy string
+	// Wire name: 'sortBy'
+	SortBy string `tf:"-"`
 	// The order to sort the results.
-	SortOrder ListSortOrder
+	// Wire name: 'sortOrder'
+	SortOrder ListSortOrder `tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64
+	// Wire name: 'startIndex'
+	StartIndex int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listServicePrincipalsRequestToPb(st *ListServicePrincipalsRequest) (*listServicePrincipalsRequestPb, error) {
@@ -4068,40 +3505,19 @@ func listServicePrincipalsRequestToPb(st *ListServicePrincipalsRequest) (*listSe
 		return nil, nil
 	}
 	pb := &listServicePrincipalsRequestPb{}
-	attributesPb := &st.Attributes
-	if attributesPb != nil {
-		pb.Attributes = *attributesPb
-	}
+	pb.Attributes = st.Attributes
 
-	countPb := &st.Count
-	if countPb != nil {
-		pb.Count = *countPb
-	}
+	pb.Count = st.Count
 
-	excludedAttributesPb := &st.ExcludedAttributes
-	if excludedAttributesPb != nil {
-		pb.ExcludedAttributes = *excludedAttributesPb
-	}
+	pb.ExcludedAttributes = st.ExcludedAttributes
 
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	sortByPb := &st.SortBy
-	if sortByPb != nil {
-		pb.SortBy = *sortByPb
-	}
+	pb.SortBy = st.SortBy
 
-	sortOrderPb := &st.SortOrder
-	if sortOrderPb != nil {
-		pb.SortOrder = *sortOrderPb
-	}
+	pb.SortOrder = st.SortOrder
 
-	startIndexPb := &st.StartIndex
-	if startIndexPb != nil {
-		pb.StartIndex = *startIndexPb
-	}
+	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4162,34 +3578,13 @@ func listServicePrincipalsRequestFromPb(pb *listServicePrincipalsRequestPb) (*Li
 		return nil, nil
 	}
 	st := &ListServicePrincipalsRequest{}
-	attributesField := &pb.Attributes
-	if attributesField != nil {
-		st.Attributes = *attributesField
-	}
-	countField := &pb.Count
-	if countField != nil {
-		st.Count = *countField
-	}
-	excludedAttributesField := &pb.ExcludedAttributes
-	if excludedAttributesField != nil {
-		st.ExcludedAttributes = *excludedAttributesField
-	}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	sortByField := &pb.SortBy
-	if sortByField != nil {
-		st.SortBy = *sortByField
-	}
-	sortOrderField := &pb.SortOrder
-	if sortOrderField != nil {
-		st.SortOrder = *sortOrderField
-	}
-	startIndexField := &pb.StartIndex
-	if startIndexField != nil {
-		st.StartIndex = *startIndexField
-	}
+	st.Attributes = pb.Attributes
+	st.Count = pb.Count
+	st.ExcludedAttributes = pb.ExcludedAttributes
+	st.Filter = pb.Filter
+	st.SortBy = pb.SortBy
+	st.SortOrder = pb.SortOrder
+	st.StartIndex = pb.StartIndex
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4250,11 +3645,14 @@ func listSortOrderFromPb(pb *listSortOrderPb) (*ListSortOrder, error) {
 // List users.
 type ListUsersRequest struct {
 	// Comma-separated list of attributes to return in response.
-	Attributes string
+	// Wire name: 'attributes'
+	Attributes string `tf:"-"`
 	// Desired number of results per page.
-	Count int64
+	// Wire name: 'count'
+	Count int64 `tf:"-"`
 	// Comma-separated list of attributes to exclude in response.
-	ExcludedAttributes string
+	// Wire name: 'excludedAttributes'
+	ExcludedAttributes string `tf:"-"`
 	// Query by which the results have to be filtered. Supported operators are
 	// equals(`eq`), contains(`co`), starts with(`sw`) and not equals(`ne`).
 	// Additionally, simple expressions can be formed using logical operators -
@@ -4262,16 +3660,20 @@ type ListUsersRequest struct {
 	// support simple expressions.
 	//
 	// [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// Attribute to sort the results. Multi-part paths are supported. For
 	// example, `userName`, `name.givenName`, and `emails`.
-	SortBy string
+	// Wire name: 'sortBy'
+	SortBy string `tf:"-"`
 	// The order to sort the results.
-	SortOrder ListSortOrder
+	// Wire name: 'sortOrder'
+	SortOrder ListSortOrder `tf:"-"`
 	// Specifies the index of the first result. First item is number 1.
-	StartIndex int64
+	// Wire name: 'startIndex'
+	StartIndex int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listUsersRequestToPb(st *ListUsersRequest) (*listUsersRequestPb, error) {
@@ -4279,40 +3681,19 @@ func listUsersRequestToPb(st *ListUsersRequest) (*listUsersRequestPb, error) {
 		return nil, nil
 	}
 	pb := &listUsersRequestPb{}
-	attributesPb := &st.Attributes
-	if attributesPb != nil {
-		pb.Attributes = *attributesPb
-	}
+	pb.Attributes = st.Attributes
 
-	countPb := &st.Count
-	if countPb != nil {
-		pb.Count = *countPb
-	}
+	pb.Count = st.Count
 
-	excludedAttributesPb := &st.ExcludedAttributes
-	if excludedAttributesPb != nil {
-		pb.ExcludedAttributes = *excludedAttributesPb
-	}
+	pb.ExcludedAttributes = st.ExcludedAttributes
 
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	sortByPb := &st.SortBy
-	if sortByPb != nil {
-		pb.SortBy = *sortByPb
-	}
+	pb.SortBy = st.SortBy
 
-	sortOrderPb := &st.SortOrder
-	if sortOrderPb != nil {
-		pb.SortOrder = *sortOrderPb
-	}
+	pb.SortOrder = st.SortOrder
 
-	startIndexPb := &st.StartIndex
-	if startIndexPb != nil {
-		pb.StartIndex = *startIndexPb
-	}
+	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4374,34 +3755,13 @@ func listUsersRequestFromPb(pb *listUsersRequestPb) (*ListUsersRequest, error) {
 		return nil, nil
 	}
 	st := &ListUsersRequest{}
-	attributesField := &pb.Attributes
-	if attributesField != nil {
-		st.Attributes = *attributesField
-	}
-	countField := &pb.Count
-	if countField != nil {
-		st.Count = *countField
-	}
-	excludedAttributesField := &pb.ExcludedAttributes
-	if excludedAttributesField != nil {
-		st.ExcludedAttributes = *excludedAttributesField
-	}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	sortByField := &pb.SortBy
-	if sortByField != nil {
-		st.SortBy = *sortByField
-	}
-	sortOrderField := &pb.SortOrder
-	if sortOrderField != nil {
-		st.SortOrder = *sortOrderField
-	}
-	startIndexField := &pb.StartIndex
-	if startIndexField != nil {
-		st.StartIndex = *startIndexField
-	}
+	st.Attributes = pb.Attributes
+	st.Count = pb.Count
+	st.ExcludedAttributes = pb.ExcludedAttributes
+	st.Filter = pb.Filter
+	st.SortBy = pb.SortBy
+	st.SortOrder = pb.SortOrder
+	st.StartIndex = pb.StartIndex
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4417,18 +3777,23 @@ func (st listUsersRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListUsersResponse struct {
 	// Total results returned in the response.
+	// Wire name: 'itemsPerPage'
 	ItemsPerPage int64
 	// User objects returned in the response.
+	// Wire name: 'Resources'
 	Resources []User
 	// The schema of the List response.
+	// Wire name: 'schemas'
 	Schemas []ListResponseSchema
 	// Starting index of all the results that matched the request filters. First
 	// item is number 1.
+	// Wire name: 'startIndex'
 	StartIndex int64
 	// Total results that match the request filters.
+	// Wire name: 'totalResults'
 	TotalResults int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listUsersResponseToPb(st *ListUsersResponse) (*listUsersResponsePb, error) {
@@ -4436,10 +3801,7 @@ func listUsersResponseToPb(st *ListUsersResponse) (*listUsersResponsePb, error) 
 		return nil, nil
 	}
 	pb := &listUsersResponsePb{}
-	itemsPerPagePb := &st.ItemsPerPage
-	if itemsPerPagePb != nil {
-		pb.ItemsPerPage = *itemsPerPagePb
-	}
+	pb.ItemsPerPage = st.ItemsPerPage
 
 	var resourcesPb []userPb
 	for _, item := range st.Resources {
@@ -4453,24 +3815,11 @@ func listUsersResponseToPb(st *ListUsersResponse) (*listUsersResponsePb, error) 
 	}
 	pb.Resources = resourcesPb
 
-	var schemasPb []ListResponseSchema
-	for _, item := range st.Schemas {
-		itemPb := &item
-		if itemPb != nil {
-			schemasPb = append(schemasPb, *itemPb)
-		}
-	}
-	pb.Schemas = schemasPb
+	pb.Schemas = st.Schemas
 
-	startIndexPb := &st.StartIndex
-	if startIndexPb != nil {
-		pb.StartIndex = *startIndexPb
-	}
+	pb.StartIndex = st.StartIndex
 
-	totalResultsPb := &st.TotalResults
-	if totalResultsPb != nil {
-		pb.TotalResults = *totalResultsPb
-	}
+	pb.TotalResults = st.TotalResults
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4522,39 +3871,22 @@ func listUsersResponseFromPb(pb *listUsersResponsePb) (*ListUsersResponse, error
 		return nil, nil
 	}
 	st := &ListUsersResponse{}
-	itemsPerPageField := &pb.ItemsPerPage
-	if itemsPerPageField != nil {
-		st.ItemsPerPage = *itemsPerPageField
-	}
+	st.ItemsPerPage = pb.ItemsPerPage
 
 	var resourcesField []User
-	for _, item := range pb.Resources {
-		itemField, err := userFromPb(&item)
+	for _, itemPb := range pb.Resources {
+		item, err := userFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resourcesField = append(resourcesField, *itemField)
+		if item != nil {
+			resourcesField = append(resourcesField, *item)
 		}
 	}
 	st.Resources = resourcesField
-
-	var schemasField []ListResponseSchema
-	for _, item := range pb.Schemas {
-		itemField := &item
-		if itemField != nil {
-			schemasField = append(schemasField, *itemField)
-		}
-	}
-	st.Schemas = schemasField
-	startIndexField := &pb.StartIndex
-	if startIndexField != nil {
-		st.StartIndex = *startIndexField
-	}
-	totalResultsField := &pb.TotalResults
-	if totalResultsField != nil {
-		st.TotalResults = *totalResultsField
-	}
+	st.Schemas = pb.Schemas
+	st.StartIndex = pb.StartIndex
+	st.TotalResults = pb.TotalResults
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4571,7 +3903,8 @@ func (st listUsersResponsePb) MarshalJSON() ([]byte, error) {
 // Get permission assignments
 type ListWorkspaceAssignmentRequest struct {
 	// The workspace ID for the account.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func listWorkspaceAssignmentRequestToPb(st *ListWorkspaceAssignmentRequest) (*listWorkspaceAssignmentRequestPb, error) {
@@ -4579,10 +3912,7 @@ func listWorkspaceAssignmentRequestToPb(st *ListWorkspaceAssignmentRequest) (*li
 		return nil, nil
 	}
 	pb := &listWorkspaceAssignmentRequestPb{}
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -4622,26 +3952,27 @@ func listWorkspaceAssignmentRequestFromPb(pb *listWorkspaceAssignmentRequestPb) 
 		return nil, nil
 	}
 	st := &ListWorkspaceAssignmentRequest{}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
 
 type MigratePermissionsRequest struct {
 	// The name of the workspace group that permissions will be migrated from.
+	// Wire name: 'from_workspace_group_name'
 	FromWorkspaceGroupName string
 	// The maximum number of permissions that will be migrated.
+	// Wire name: 'size'
 	Size int
 	// The name of the account group that permissions will be migrated to.
+	// Wire name: 'to_account_group_name'
 	ToAccountGroupName string
 	// WorkspaceId of the associated workspace where the permission migration
 	// will occur.
+	// Wire name: 'workspace_id'
 	WorkspaceId int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func migratePermissionsRequestToPb(st *MigratePermissionsRequest) (*migratePermissionsRequestPb, error) {
@@ -4649,25 +3980,13 @@ func migratePermissionsRequestToPb(st *MigratePermissionsRequest) (*migratePermi
 		return nil, nil
 	}
 	pb := &migratePermissionsRequestPb{}
-	fromWorkspaceGroupNamePb := &st.FromWorkspaceGroupName
-	if fromWorkspaceGroupNamePb != nil {
-		pb.FromWorkspaceGroupName = *fromWorkspaceGroupNamePb
-	}
+	pb.FromWorkspaceGroupName = st.FromWorkspaceGroupName
 
-	sizePb := &st.Size
-	if sizePb != nil {
-		pb.Size = *sizePb
-	}
+	pb.Size = st.Size
 
-	toAccountGroupNamePb := &st.ToAccountGroupName
-	if toAccountGroupNamePb != nil {
-		pb.ToAccountGroupName = *toAccountGroupNamePb
-	}
+	pb.ToAccountGroupName = st.ToAccountGroupName
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4717,22 +4036,10 @@ func migratePermissionsRequestFromPb(pb *migratePermissionsRequestPb) (*MigrateP
 		return nil, nil
 	}
 	st := &MigratePermissionsRequest{}
-	fromWorkspaceGroupNameField := &pb.FromWorkspaceGroupName
-	if fromWorkspaceGroupNameField != nil {
-		st.FromWorkspaceGroupName = *fromWorkspaceGroupNameField
-	}
-	sizeField := &pb.Size
-	if sizeField != nil {
-		st.Size = *sizeField
-	}
-	toAccountGroupNameField := &pb.ToAccountGroupName
-	if toAccountGroupNameField != nil {
-		st.ToAccountGroupName = *toAccountGroupNameField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.FromWorkspaceGroupName = pb.FromWorkspaceGroupName
+	st.Size = pb.Size
+	st.ToAccountGroupName = pb.ToAccountGroupName
+	st.WorkspaceId = pb.WorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4748,9 +4055,10 @@ func (st migratePermissionsRequestPb) MarshalJSON() ([]byte, error) {
 
 type MigratePermissionsResponse struct {
 	// Number of permissions migrated.
+	// Wire name: 'permissions_migrated'
 	PermissionsMigrated int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func migratePermissionsResponseToPb(st *MigratePermissionsResponse) (*migratePermissionsResponsePb, error) {
@@ -4758,10 +4066,7 @@ func migratePermissionsResponseToPb(st *MigratePermissionsResponse) (*migratePer
 		return nil, nil
 	}
 	pb := &migratePermissionsResponsePb{}
-	permissionsMigratedPb := &st.PermissionsMigrated
-	if permissionsMigratedPb != nil {
-		pb.PermissionsMigrated = *permissionsMigratedPb
-	}
+	pb.PermissionsMigrated = st.PermissionsMigrated
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4804,10 +4109,7 @@ func migratePermissionsResponseFromPb(pb *migratePermissionsResponsePb) (*Migrat
 		return nil, nil
 	}
 	st := &MigratePermissionsResponse{}
-	permissionsMigratedField := &pb.PermissionsMigrated
-	if permissionsMigratedField != nil {
-		st.PermissionsMigrated = *permissionsMigratedField
-	}
+	st.PermissionsMigrated = pb.PermissionsMigrated
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4823,11 +4125,13 @@ func (st migratePermissionsResponsePb) MarshalJSON() ([]byte, error) {
 
 type Name struct {
 	// Family name of the Databricks user.
+	// Wire name: 'familyName'
 	FamilyName string
 	// Given name of the Databricks user.
+	// Wire name: 'givenName'
 	GivenName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func nameToPb(st *Name) (*namePb, error) {
@@ -4835,15 +4139,9 @@ func nameToPb(st *Name) (*namePb, error) {
 		return nil, nil
 	}
 	pb := &namePb{}
-	familyNamePb := &st.FamilyName
-	if familyNamePb != nil {
-		pb.FamilyName = *familyNamePb
-	}
+	pb.FamilyName = st.FamilyName
 
-	givenNamePb := &st.GivenName
-	if givenNamePb != nil {
-		pb.GivenName = *givenNamePb
-	}
+	pb.GivenName = st.GivenName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4888,14 +4186,8 @@ func nameFromPb(pb *namePb) (*Name, error) {
 		return nil, nil
 	}
 	st := &Name{}
-	familyNameField := &pb.FamilyName
-	if familyNameField != nil {
-		st.FamilyName = *familyNameField
-	}
-	givenNameField := &pb.GivenName
-	if givenNameField != nil {
-		st.GivenName = *givenNameField
-	}
+	st.FamilyName = pb.FamilyName
+	st.GivenName = pb.GivenName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4910,13 +4202,17 @@ func (st namePb) MarshalJSON() ([]byte, error) {
 }
 
 type ObjectPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []AccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func objectPermissionsToPb(st *ObjectPermissions) (*objectPermissionsPb, error) {
@@ -4937,15 +4233,9 @@ func objectPermissionsToPb(st *ObjectPermissions) (*objectPermissionsPb, error) 
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4993,24 +4283,18 @@ func objectPermissionsFromPb(pb *objectPermissionsPb) (*ObjectPermissions, error
 	st := &ObjectPermissions{}
 
 	var accessControlListField []AccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := accessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := accessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5026,11 +4310,14 @@ func (st objectPermissionsPb) MarshalJSON() ([]byte, error) {
 
 type PartialUpdate struct {
 	// Unique ID in the Databricks workspace.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 
+	// Wire name: 'Operations'
 	Operations []Patch
 	// The schema of the patch request. Must be
 	// ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+	// Wire name: 'schemas'
 	Schemas []PatchSchema
 }
 
@@ -5039,10 +4326,7 @@ func partialUpdateToPb(st *PartialUpdate) (*partialUpdatePb, error) {
 		return nil, nil
 	}
 	pb := &partialUpdatePb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	var operationsPb []patchPb
 	for _, item := range st.Operations {
@@ -5056,14 +4340,7 @@ func partialUpdateToPb(st *PartialUpdate) (*partialUpdatePb, error) {
 	}
 	pb.Operations = operationsPb
 
-	var schemasPb []PatchSchema
-	for _, item := range st.Schemas {
-		itemPb := &item
-		if itemPb != nil {
-			schemasPb = append(schemasPb, *itemPb)
-		}
-	}
-	pb.Schemas = schemasPb
+	pb.Schemas = st.Schemas
 
 	return pb, nil
 }
@@ -5108,46 +4385,39 @@ func partialUpdateFromPb(pb *partialUpdatePb) (*PartialUpdate, error) {
 		return nil, nil
 	}
 	st := &PartialUpdate{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	var operationsField []Patch
-	for _, item := range pb.Operations {
-		itemField, err := patchFromPb(&item)
+	for _, itemPb := range pb.Operations {
+		item, err := patchFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			operationsField = append(operationsField, *itemField)
+		if item != nil {
+			operationsField = append(operationsField, *item)
 		}
 	}
 	st.Operations = operationsField
-
-	var schemasField []PatchSchema
-	for _, item := range pb.Schemas {
-		itemField := &item
-		if itemField != nil {
-			schemasField = append(schemasField, *itemField)
-		}
-	}
-	st.Schemas = schemasField
+	st.Schemas = pb.Schemas
 
 	return st, nil
 }
 
 type PasswordAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel PasswordPermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func passwordAccessControlRequestToPb(st *PasswordAccessControlRequest) (*passwordAccessControlRequestPb, error) {
@@ -5155,25 +4425,13 @@ func passwordAccessControlRequestToPb(st *PasswordAccessControlRequest) (*passwo
 		return nil, nil
 	}
 	pb := &passwordAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5222,22 +4480,10 @@ func passwordAccessControlRequestFromPb(pb *passwordAccessControlRequestPb) (*Pa
 		return nil, nil
 	}
 	st := &PasswordAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5253,17 +4499,22 @@ func (st passwordAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type PasswordAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []PasswordPermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func passwordAccessControlResponseToPb(st *PasswordAccessControlResponse) (*passwordAccessControlResponsePb, error) {
@@ -5284,25 +4535,13 @@ func passwordAccessControlResponseToPb(st *PasswordAccessControlResponse) (*pass
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5355,32 +4594,20 @@ func passwordAccessControlResponseFromPb(pb *passwordAccessControlResponsePb) (*
 	st := &PasswordAccessControlResponse{}
 
 	var allPermissionsField []PasswordPermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := passwordPermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := passwordPermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5395,13 +4622,17 @@ func (st passwordAccessControlResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type PasswordPermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel PasswordPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func passwordPermissionToPb(st *PasswordPermission) (*passwordPermissionPb, error) {
@@ -5409,24 +4640,11 @@ func passwordPermissionToPb(st *PasswordPermission) (*passwordPermissionPb, erro
 		return nil, nil
 	}
 	pb := &passwordPermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5472,23 +4690,9 @@ func passwordPermissionFromPb(pb *passwordPermissionPb) (*PasswordPermission, er
 		return nil, nil
 	}
 	st := &PasswordPermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5546,13 +4750,17 @@ func passwordPermissionLevelFromPb(pb *passwordPermissionLevelPb) (*PasswordPerm
 }
 
 type PasswordPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []PasswordAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func passwordPermissionsToPb(st *PasswordPermissions) (*passwordPermissionsPb, error) {
@@ -5573,15 +4781,9 @@ func passwordPermissionsToPb(st *PasswordPermissions) (*passwordPermissionsPb, e
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5629,24 +4831,18 @@ func passwordPermissionsFromPb(pb *passwordPermissionsPb) (*PasswordPermissions,
 	st := &PasswordPermissions{}
 
 	var accessControlListField []PasswordAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := passwordAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := passwordAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5661,11 +4857,14 @@ func (st passwordPermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type PasswordPermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel PasswordPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func passwordPermissionsDescriptionToPb(st *PasswordPermissionsDescription) (*passwordPermissionsDescriptionPb, error) {
@@ -5673,15 +4872,9 @@ func passwordPermissionsDescriptionToPb(st *PasswordPermissionsDescription) (*pa
 		return nil, nil
 	}
 	pb := &passwordPermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5725,14 +4918,8 @@ func passwordPermissionsDescriptionFromPb(pb *passwordPermissionsDescriptionPb) 
 		return nil, nil
 	}
 	st := &PasswordPermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5747,6 +4934,8 @@ func (st passwordPermissionsDescriptionPb) MarshalJSON() ([]byte, error) {
 }
 
 type PasswordPermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []PasswordAccessControlRequest
 }
 
@@ -5807,13 +4996,13 @@ func passwordPermissionsRequestFromPb(pb *passwordPermissionsRequestPb) (*Passwo
 	st := &PasswordPermissionsRequest{}
 
 	var accessControlListField []PasswordAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := passwordAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := passwordAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
@@ -5823,13 +5012,16 @@ func passwordPermissionsRequestFromPb(pb *passwordPermissionsRequestPb) (*Passwo
 
 type Patch struct {
 	// Type of patch operation.
+	// Wire name: 'op'
 	Op PatchOp
 	// Selection of patch operation
+	// Wire name: 'path'
 	Path string
 	// Value to modify
+	// Wire name: 'value'
 	Value any
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func patchToPb(st *Patch) (*patchPb, error) {
@@ -5837,20 +5029,11 @@ func patchToPb(st *Patch) (*patchPb, error) {
 		return nil, nil
 	}
 	pb := &patchPb{}
-	opPb := &st.Op
-	if opPb != nil {
-		pb.Op = *opPb
-	}
+	pb.Op = st.Op
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5897,18 +5080,9 @@ func patchFromPb(pb *patchPb) (*Patch, error) {
 		return nil, nil
 	}
 	st := &Patch{}
-	opField := &pb.Op
-	if opField != nil {
-		st.Op = *opField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Op = pb.Op
+	st.Path = pb.Path
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6061,13 +5235,17 @@ func patchSchemaFromPb(pb *patchSchemaPb) (*PatchSchema, error) {
 }
 
 type Permission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel PermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func permissionToPb(st *Permission) (*permissionPb, error) {
@@ -6075,24 +5253,11 @@ func permissionToPb(st *Permission) (*permissionPb, error) {
 		return nil, nil
 	}
 	pb := &permissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6138,23 +5303,9 @@ func permissionFromPb(pb *permissionPb) (*Permission, error) {
 		return nil, nil
 	}
 	st := &Permission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6172,13 +5323,16 @@ func (st permissionPb) MarshalJSON() ([]byte, error) {
 // contains some info for user consumption.
 type PermissionAssignment struct {
 	// Error response associated with a workspace permission assignment, if any.
+	// Wire name: 'error'
 	Error string
 	// The permissions level of the principal.
+	// Wire name: 'permissions'
 	Permissions []WorkspacePermission
 	// Information about the principal assigned to the workspace.
+	// Wire name: 'principal'
 	Principal *PrincipalOutput
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func permissionAssignmentToPb(st *PermissionAssignment) (*permissionAssignmentPb, error) {
@@ -6186,19 +5340,9 @@ func permissionAssignmentToPb(st *PermissionAssignment) (*permissionAssignmentPb
 		return nil, nil
 	}
 	pb := &permissionAssignmentPb{}
-	errorPb := &st.Error
-	if errorPb != nil {
-		pb.Error = *errorPb
-	}
+	pb.Error = st.Error
 
-	var permissionsPb []WorkspacePermission
-	for _, item := range st.Permissions {
-		itemPb := &item
-		if itemPb != nil {
-			permissionsPb = append(permissionsPb, *itemPb)
-		}
-	}
-	pb.Permissions = permissionsPb
+	pb.Permissions = st.Permissions
 
 	principalPb, err := principalOutputToPb(st.Principal)
 	if err != nil {
@@ -6253,19 +5397,8 @@ func permissionAssignmentFromPb(pb *permissionAssignmentPb) (*PermissionAssignme
 		return nil, nil
 	}
 	st := &PermissionAssignment{}
-	errorField := &pb.Error
-	if errorField != nil {
-		st.Error = *errorField
-	}
-
-	var permissionsField []WorkspacePermission
-	for _, item := range pb.Permissions {
-		itemField := &item
-		if itemField != nil {
-			permissionsField = append(permissionsField, *itemField)
-		}
-	}
-	st.Permissions = permissionsField
+	st.Error = pb.Error
+	st.Permissions = pb.Permissions
 	principalField, err := principalOutputFromPb(pb.Principal)
 	if err != nil {
 		return nil, err
@@ -6288,6 +5421,7 @@ func (st permissionAssignmentPb) MarshalJSON() ([]byte, error) {
 
 type PermissionAssignments struct {
 	// Array of permissions assignments defined for a workspace.
+	// Wire name: 'permission_assignments'
 	PermissionAssignments []PermissionAssignment
 }
 
@@ -6349,13 +5483,13 @@ func permissionAssignmentsFromPb(pb *permissionAssignmentsPb) (*PermissionAssign
 	st := &PermissionAssignments{}
 
 	var permissionAssignmentsField []PermissionAssignment
-	for _, item := range pb.PermissionAssignments {
-		itemField, err := permissionAssignmentFromPb(&item)
+	for _, itemPb := range pb.PermissionAssignments {
+		item, err := permissionAssignmentFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionAssignmentsField = append(permissionAssignmentsField, *itemField)
+		if item != nil {
+			permissionAssignmentsField = append(permissionAssignmentsField, *item)
 		}
 	}
 	st.PermissionAssignments = permissionAssignmentsField
@@ -6440,11 +5574,13 @@ func permissionLevelFromPb(pb *permissionLevelPb) (*PermissionLevel, error) {
 
 type PermissionOutput struct {
 	// The results of a permissions query.
+	// Wire name: 'description'
 	Description string
 
+	// Wire name: 'permission_level'
 	PermissionLevel WorkspacePermission
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func permissionOutputToPb(st *PermissionOutput) (*permissionOutputPb, error) {
@@ -6452,15 +5588,9 @@ func permissionOutputToPb(st *PermissionOutput) (*permissionOutputPb, error) {
 		return nil, nil
 	}
 	pb := &permissionOutputPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6505,14 +5635,8 @@ func permissionOutputFromPb(pb *permissionOutputPb) (*PermissionOutput, error) {
 		return nil, nil
 	}
 	st := &PermissionOutput{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6527,11 +5651,14 @@ func (st permissionOutputPb) MarshalJSON() ([]byte, error) {
 }
 
 type PermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel PermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func permissionsDescriptionToPb(st *PermissionsDescription) (*permissionsDescriptionPb, error) {
@@ -6539,15 +5666,9 @@ func permissionsDescriptionToPb(st *PermissionsDescription) (*permissionsDescrip
 		return nil, nil
 	}
 	pb := &permissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6591,14 +5712,8 @@ func permissionsDescriptionFromPb(pb *permissionsDescriptionPb) (*PermissionsDes
 		return nil, nil
 	}
 	st := &PermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6613,15 +5728,19 @@ func (st permissionsDescriptionPb) MarshalJSON() ([]byte, error) {
 }
 
 type PermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []AccessControlRequest
 	// The id of the request object.
-	RequestObjectId string
+	// Wire name: 'request_object_id'
+	RequestObjectId string `tf:"-"`
 	// The type of the request object. Can be one of the following: alerts,
 	// authorization, clusters, cluster-policies, dashboards, dbsql-dashboards,
 	// directories, experiments, files, instance-pools, jobs, notebooks,
 	// pipelines, queries, registered-models, repos, serving-endpoints, or
 	// warehouses.
-	RequestObjectType string
+	// Wire name: 'request_object_type'
+	RequestObjectType string `tf:"-"`
 }
 
 func permissionsRequestToPb(st *PermissionsRequest) (*permissionsRequestPb, error) {
@@ -6642,15 +5761,9 @@ func permissionsRequestToPb(st *PermissionsRequest) (*permissionsRequestPb, erro
 	}
 	pb.AccessControlList = accessControlListPb
 
-	requestObjectIdPb := &st.RequestObjectId
-	if requestObjectIdPb != nil {
-		pb.RequestObjectId = *requestObjectIdPb
-	}
+	pb.RequestObjectId = st.RequestObjectId
 
-	requestObjectTypePb := &st.RequestObjectType
-	if requestObjectTypePb != nil {
-		pb.RequestObjectType = *requestObjectTypePb
-	}
+	pb.RequestObjectType = st.RequestObjectType
 
 	return pb, nil
 }
@@ -6699,24 +5812,18 @@ func permissionsRequestFromPb(pb *permissionsRequestPb) (*PermissionsRequest, er
 	st := &PermissionsRequest{}
 
 	var accessControlListField []AccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := accessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := accessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	requestObjectIdField := &pb.RequestObjectId
-	if requestObjectIdField != nil {
-		st.RequestObjectId = *requestObjectIdField
-	}
-	requestObjectTypeField := &pb.RequestObjectType
-	if requestObjectTypeField != nil {
-		st.RequestObjectType = *requestObjectTypeField
-	}
+	st.RequestObjectId = pb.RequestObjectId
+	st.RequestObjectType = pb.RequestObjectType
 
 	return st, nil
 }
@@ -6724,18 +5831,23 @@ func permissionsRequestFromPb(pb *permissionsRequestPb) (*PermissionsRequest, er
 // Information about the principal assigned to the workspace.
 type PrincipalOutput struct {
 	// The display name of the principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// The group name of the group. Present only if the principal is a group.
+	// Wire name: 'group_name'
 	GroupName string
 	// The unique, opaque id of the principal.
+	// Wire name: 'principal_id'
 	PrincipalId int64
 	// The name of the service principal. Present only if the principal is a
 	// service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// The username of the user. Present only if the principal is a user.
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func principalOutputToPb(st *PrincipalOutput) (*principalOutputPb, error) {
@@ -6743,30 +5855,15 @@ func principalOutputToPb(st *PrincipalOutput) (*principalOutputPb, error) {
 		return nil, nil
 	}
 	pb := &principalOutputPb{}
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	principalIdPb := &st.PrincipalId
-	if principalIdPb != nil {
-		pb.PrincipalId = *principalIdPb
-	}
+	pb.PrincipalId = st.PrincipalId
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6818,26 +5915,11 @@ func principalOutputFromPb(pb *principalOutputPb) (*PrincipalOutput, error) {
 		return nil, nil
 	}
 	st := &PrincipalOutput{}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	principalIdField := &pb.PrincipalId
-	if principalIdField != nil {
-		st.PrincipalId = *principalIdField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.PrincipalId = pb.PrincipalId
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6899,14 +5981,17 @@ func requestAuthzIdentityFromPb(pb *requestAuthzIdentityPb) (*RequestAuthzIdenti
 
 type ResourceInfo struct {
 	// Id of the current resource.
+	// Wire name: 'id'
 	Id string
 	// The legacy acl path of the current resource.
+	// Wire name: 'legacy_acl_path'
 	LegacyAclPath string
 	// Parent resource info for the current resource. The parent may have
 	// another parent.
+	// Wire name: 'parent_resource_info'
 	ParentResourceInfo *ResourceInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func resourceInfoToPb(st *ResourceInfo) (*resourceInfoPb, error) {
@@ -6914,15 +5999,9 @@ func resourceInfoToPb(st *ResourceInfo) (*resourceInfoPb, error) {
 		return nil, nil
 	}
 	pb := &resourceInfoPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	legacyAclPathPb := &st.LegacyAclPath
-	if legacyAclPathPb != nil {
-		pb.LegacyAclPath = *legacyAclPathPb
-	}
+	pb.LegacyAclPath = st.LegacyAclPath
 
 	parentResourceInfoPb, err := resourceInfoToPb(st.ParentResourceInfo)
 	if err != nil {
@@ -6978,14 +6057,8 @@ func resourceInfoFromPb(pb *resourceInfoPb) (*ResourceInfo, error) {
 		return nil, nil
 	}
 	st := &ResourceInfo{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	legacyAclPathField := &pb.LegacyAclPath
-	if legacyAclPathField != nil {
-		st.LegacyAclPath = *legacyAclPathField
-	}
+	st.Id = pb.Id
+	st.LegacyAclPath = pb.LegacyAclPath
 	parentResourceInfoField, err := resourceInfoFromPb(pb.ParentResourceInfo)
 	if err != nil {
 		return nil, err
@@ -7009,9 +6082,10 @@ func (st resourceInfoPb) MarshalJSON() ([]byte, error) {
 type ResourceMeta struct {
 	// Identifier for group type. Can be local workspace group
 	// (`WorkspaceGroup`) or account group (`Group`).
+	// Wire name: 'resourceType'
 	ResourceType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func resourceMetaToPb(st *ResourceMeta) (*resourceMetaPb, error) {
@@ -7019,10 +6093,7 @@ func resourceMetaToPb(st *ResourceMeta) (*resourceMetaPb, error) {
 		return nil, nil
 	}
 	pb := &resourceMetaPb{}
-	resourceTypePb := &st.ResourceType
-	if resourceTypePb != nil {
-		pb.ResourceType = *resourceTypePb
-	}
+	pb.ResourceType = st.ResourceType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7066,10 +6137,7 @@ func resourceMetaFromPb(pb *resourceMetaPb) (*ResourceMeta, error) {
 		return nil, nil
 	}
 	st := &ResourceMeta{}
-	resourceTypeField := &pb.ResourceType
-	if resourceTypeField != nil {
-		st.ResourceType = *resourceTypeField
-	}
+	st.ResourceType = pb.ResourceType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7085,6 +6153,7 @@ func (st resourceMetaPb) MarshalJSON() ([]byte, error) {
 
 type Role struct {
 	// Role to assign to a principal or a list of principals on a resource.
+	// Wire name: 'name'
 	Name string
 }
 
@@ -7093,10 +6162,7 @@ func roleToPb(st *Role) (*rolePb, error) {
 		return nil, nil
 	}
 	pb := &rolePb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -7136,23 +6202,23 @@ func roleFromPb(pb *rolePb) (*Role, error) {
 		return nil, nil
 	}
 	st := &Role{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
 
 type RuleSetResponse struct {
 	// Identifies the version of the rule set returned.
+	// Wire name: 'etag'
 	Etag string
 
+	// Wire name: 'grant_rules'
 	GrantRules []GrantRule
 	// Name of the rule set.
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func ruleSetResponseToPb(st *RuleSetResponse) (*ruleSetResponsePb, error) {
@@ -7160,10 +6226,7 @@ func ruleSetResponseToPb(st *RuleSetResponse) (*ruleSetResponsePb, error) {
 		return nil, nil
 	}
 	pb := &ruleSetResponsePb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	var grantRulesPb []grantRulePb
 	for _, item := range st.GrantRules {
@@ -7177,10 +6240,7 @@ func ruleSetResponseToPb(st *RuleSetResponse) (*ruleSetResponsePb, error) {
 	}
 	pb.GrantRules = grantRulesPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7227,26 +6287,20 @@ func ruleSetResponseFromPb(pb *ruleSetResponsePb) (*RuleSetResponse, error) {
 		return nil, nil
 	}
 	st := &RuleSetResponse{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	var grantRulesField []GrantRule
-	for _, item := range pb.GrantRules {
-		itemField, err := grantRuleFromPb(&item)
+	for _, itemPb := range pb.GrantRules {
+		item, err := grantRuleFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			grantRulesField = append(grantRulesField, *itemField)
+		if item != nil {
+			grantRulesField = append(grantRulesField, *item)
 		}
 	}
 	st.GrantRules = grantRulesField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7264,10 +6318,13 @@ type RuleSetUpdateRequest struct {
 	// The expected etag of the rule set to update. The update will fail if the
 	// value does not match the value that is stored in account access control
 	// service.
+	// Wire name: 'etag'
 	Etag string
 
+	// Wire name: 'grant_rules'
 	GrantRules []GrantRule
 	// Name of the rule set.
+	// Wire name: 'name'
 	Name string
 }
 
@@ -7276,10 +6333,7 @@ func ruleSetUpdateRequestToPb(st *RuleSetUpdateRequest) (*ruleSetUpdateRequestPb
 		return nil, nil
 	}
 	pb := &ruleSetUpdateRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	var grantRulesPb []grantRulePb
 	for _, item := range st.GrantRules {
@@ -7293,10 +6347,7 @@ func ruleSetUpdateRequestToPb(st *RuleSetUpdateRequest) (*ruleSetUpdateRequestPb
 	}
 	pb.GrantRules = grantRulesPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -7342,54 +6393,57 @@ func ruleSetUpdateRequestFromPb(pb *ruleSetUpdateRequestPb) (*RuleSetUpdateReque
 		return nil, nil
 	}
 	st := &RuleSetUpdateRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	var grantRulesField []GrantRule
-	for _, item := range pb.GrantRules {
-		itemField, err := grantRuleFromPb(&item)
+	for _, itemPb := range pb.GrantRules {
+		item, err := grantRuleFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			grantRulesField = append(grantRulesField, *itemField)
+		if item != nil {
+			grantRulesField = append(grantRulesField, *item)
 		}
 	}
 	st.GrantRules = grantRulesField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
 
 type ServicePrincipal struct {
 	// If this user is active
+	// Wire name: 'active'
 	Active bool
 	// UUID relating to the service principal
+	// Wire name: 'applicationId'
 	ApplicationId string
 	// String that represents a concatenation of given and family names.
+	// Wire name: 'displayName'
 	DisplayName string
 	// Entitlements assigned to the service principal. See [assigning
 	// entitlements] for a full list of supported values.
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+	// Wire name: 'entitlements'
 	Entitlements []ComplexValue
 
+	// Wire name: 'externalId'
 	ExternalId string
 
+	// Wire name: 'groups'
 	Groups []ComplexValue
 	// Databricks service principal ID.
+	// Wire name: 'id'
 	Id string
 	// Corresponds to AWS instance profile/arn role.
+	// Wire name: 'roles'
 	Roles []ComplexValue
 	// The schema of the List response.
+	// Wire name: 'schemas'
 	Schemas []ServicePrincipalSchema
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func servicePrincipalToPb(st *ServicePrincipal) (*servicePrincipalPb, error) {
@@ -7397,20 +6451,11 @@ func servicePrincipalToPb(st *ServicePrincipal) (*servicePrincipalPb, error) {
 		return nil, nil
 	}
 	pb := &servicePrincipalPb{}
-	activePb := &st.Active
-	if activePb != nil {
-		pb.Active = *activePb
-	}
+	pb.Active = st.Active
 
-	applicationIdPb := &st.ApplicationId
-	if applicationIdPb != nil {
-		pb.ApplicationId = *applicationIdPb
-	}
+	pb.ApplicationId = st.ApplicationId
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
 	var entitlementsPb []complexValuePb
 	for _, item := range st.Entitlements {
@@ -7424,10 +6469,7 @@ func servicePrincipalToPb(st *ServicePrincipal) (*servicePrincipalPb, error) {
 	}
 	pb.Entitlements = entitlementsPb
 
-	externalIdPb := &st.ExternalId
-	if externalIdPb != nil {
-		pb.ExternalId = *externalIdPb
-	}
+	pb.ExternalId = st.ExternalId
 
 	var groupsPb []complexValuePb
 	for _, item := range st.Groups {
@@ -7441,10 +6483,7 @@ func servicePrincipalToPb(st *ServicePrincipal) (*servicePrincipalPb, error) {
 	}
 	pb.Groups = groupsPb
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	var rolesPb []complexValuePb
 	for _, item := range st.Roles {
@@ -7458,14 +6497,7 @@ func servicePrincipalToPb(st *ServicePrincipal) (*servicePrincipalPb, error) {
 	}
 	pb.Roles = rolesPb
 
-	var schemasPb []ServicePrincipalSchema
-	for _, item := range st.Schemas {
-		itemPb := &item
-		if itemPb != nil {
-			schemasPb = append(schemasPb, *itemPb)
-		}
-	}
-	pb.Schemas = schemasPb
+	pb.Schemas = st.Schemas
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7527,71 +6559,48 @@ func servicePrincipalFromPb(pb *servicePrincipalPb) (*ServicePrincipal, error) {
 		return nil, nil
 	}
 	st := &ServicePrincipal{}
-	activeField := &pb.Active
-	if activeField != nil {
-		st.Active = *activeField
-	}
-	applicationIdField := &pb.ApplicationId
-	if applicationIdField != nil {
-		st.ApplicationId = *applicationIdField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
+	st.Active = pb.Active
+	st.ApplicationId = pb.ApplicationId
+	st.DisplayName = pb.DisplayName
 
 	var entitlementsField []ComplexValue
-	for _, item := range pb.Entitlements {
-		itemField, err := complexValueFromPb(&item)
+	for _, itemPb := range pb.Entitlements {
+		item, err := complexValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			entitlementsField = append(entitlementsField, *itemField)
+		if item != nil {
+			entitlementsField = append(entitlementsField, *item)
 		}
 	}
 	st.Entitlements = entitlementsField
-	externalIdField := &pb.ExternalId
-	if externalIdField != nil {
-		st.ExternalId = *externalIdField
-	}
+	st.ExternalId = pb.ExternalId
 
 	var groupsField []ComplexValue
-	for _, item := range pb.Groups {
-		itemField, err := complexValueFromPb(&item)
+	for _, itemPb := range pb.Groups {
+		item, err := complexValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			groupsField = append(groupsField, *itemField)
+		if item != nil {
+			groupsField = append(groupsField, *item)
 		}
 	}
 	st.Groups = groupsField
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	var rolesField []ComplexValue
-	for _, item := range pb.Roles {
-		itemField, err := complexValueFromPb(&item)
+	for _, itemPb := range pb.Roles {
+		item, err := complexValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			rolesField = append(rolesField, *itemField)
+		if item != nil {
+			rolesField = append(rolesField, *item)
 		}
 	}
 	st.Roles = rolesField
-
-	var schemasField []ServicePrincipalSchema
-	for _, item := range pb.Schemas {
-		itemField := &item
-		if itemField != nil {
-			schemasField = append(schemasField, *itemField)
-		}
-	}
-	st.Schemas = schemasField
+	st.Schemas = pb.Schemas
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7698,8 +6707,10 @@ func updateResponseFromPb(pb *updateResponsePb) (*UpdateResponse, error) {
 
 type UpdateRuleSetRequest struct {
 	// Name of the rule set.
+	// Wire name: 'name'
 	Name string
 
+	// Wire name: 'rule_set'
 	RuleSet RuleSetUpdateRequest
 }
 
@@ -7708,10 +6719,7 @@ func updateRuleSetRequestToPb(st *UpdateRuleSetRequest) (*updateRuleSetRequestPb
 		return nil, nil
 	}
 	pb := &updateRuleSetRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	ruleSetPb, err := ruleSetUpdateRequestToPb(&st.RuleSet)
 	if err != nil {
@@ -7761,10 +6769,7 @@ func updateRuleSetRequestFromPb(pb *updateRuleSetRequestPb) (*UpdateRuleSetReque
 		return nil, nil
 	}
 	st := &UpdateRuleSetRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 	ruleSetField, err := ruleSetUpdateRequestFromPb(&pb.RuleSet)
 	if err != nil {
 		return nil, err
@@ -7783,11 +6788,14 @@ type UpdateWorkspaceAssignments struct {
 	// that excluding this field, or providing unsupported values, will have the
 	// same effect as providing an empty list, which will result in the deletion
 	// of all permissions for the principal.
+	// Wire name: 'permissions'
 	Permissions []WorkspacePermission
 	// The ID of the user, service principal, or group.
-	PrincipalId int64
+	// Wire name: 'principal_id'
+	PrincipalId int64 `tf:"-"`
 	// The workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func updateWorkspaceAssignmentsToPb(st *UpdateWorkspaceAssignments) (*updateWorkspaceAssignmentsPb, error) {
@@ -7795,25 +6803,11 @@ func updateWorkspaceAssignmentsToPb(st *UpdateWorkspaceAssignments) (*updateWork
 		return nil, nil
 	}
 	pb := &updateWorkspaceAssignmentsPb{}
+	pb.Permissions = st.Permissions
 
-	var permissionsPb []WorkspacePermission
-	for _, item := range st.Permissions {
-		itemPb := &item
-		if itemPb != nil {
-			permissionsPb = append(permissionsPb, *itemPb)
-		}
-	}
-	pb.Permissions = permissionsPb
+	pb.PrincipalId = st.PrincipalId
 
-	principalIdPb := &st.PrincipalId
-	if principalIdPb != nil {
-		pb.PrincipalId = *principalIdPb
-	}
-
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -7862,29 +6856,16 @@ func updateWorkspaceAssignmentsFromPb(pb *updateWorkspaceAssignmentsPb) (*Update
 		return nil, nil
 	}
 	st := &UpdateWorkspaceAssignments{}
-
-	var permissionsField []WorkspacePermission
-	for _, item := range pb.Permissions {
-		itemField := &item
-		if itemField != nil {
-			permissionsField = append(permissionsField, *itemField)
-		}
-	}
-	st.Permissions = permissionsField
-	principalIdField := &pb.PrincipalId
-	if principalIdField != nil {
-		st.PrincipalId = *principalIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.Permissions = pb.Permissions
+	st.PrincipalId = pb.PrincipalId
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
 
 type User struct {
 	// If this user is active
+	// Wire name: 'active'
 	Active bool
 	// String that represents a concatenation of given and family names. For
 	// example `John Smith`. This field cannot be updated through the Workspace
@@ -7892,30 +6873,40 @@ type User struct {
 	// update `displayName`.
 	//
 	// [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
+	// Wire name: 'displayName'
 	DisplayName string
 	// All the emails associated with the Databricks user.
+	// Wire name: 'emails'
 	Emails []ComplexValue
 	// Entitlements assigned to the user. See [assigning entitlements] for a
 	// full list of supported values.
 	//
 	// [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
+	// Wire name: 'entitlements'
 	Entitlements []ComplexValue
 	// External ID is not currently supported. It is reserved for future use.
+	// Wire name: 'externalId'
 	ExternalId string
 
+	// Wire name: 'groups'
 	Groups []ComplexValue
 	// Databricks user ID.
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'name'
 	Name *Name
 	// Corresponds to AWS instance profile/arn role.
+	// Wire name: 'roles'
 	Roles []ComplexValue
 	// The schema of the user.
+	// Wire name: 'schemas'
 	Schemas []UserSchema
 	// Email address of the Databricks user.
+	// Wire name: 'userName'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func userToPb(st *User) (*userPb, error) {
@@ -7923,15 +6914,9 @@ func userToPb(st *User) (*userPb, error) {
 		return nil, nil
 	}
 	pb := &userPb{}
-	activePb := &st.Active
-	if activePb != nil {
-		pb.Active = *activePb
-	}
+	pb.Active = st.Active
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
 	var emailsPb []complexValuePb
 	for _, item := range st.Emails {
@@ -7957,10 +6942,7 @@ func userToPb(st *User) (*userPb, error) {
 	}
 	pb.Entitlements = entitlementsPb
 
-	externalIdPb := &st.ExternalId
-	if externalIdPb != nil {
-		pb.ExternalId = *externalIdPb
-	}
+	pb.ExternalId = st.ExternalId
 
 	var groupsPb []complexValuePb
 	for _, item := range st.Groups {
@@ -7974,10 +6956,7 @@ func userToPb(st *User) (*userPb, error) {
 	}
 	pb.Groups = groupsPb
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	namePb, err := nameToPb(st.Name)
 	if err != nil {
@@ -7999,19 +6978,9 @@ func userToPb(st *User) (*userPb, error) {
 	}
 	pb.Roles = rolesPb
 
-	var schemasPb []UserSchema
-	for _, item := range st.Schemas {
-		itemPb := &item
-		if itemPb != nil {
-			schemasPb = append(schemasPb, *itemPb)
-		}
-	}
-	pb.Schemas = schemasPb
+	pb.Schemas = st.Schemas
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8082,58 +7051,46 @@ func userFromPb(pb *userPb) (*User, error) {
 		return nil, nil
 	}
 	st := &User{}
-	activeField := &pb.Active
-	if activeField != nil {
-		st.Active = *activeField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
+	st.Active = pb.Active
+	st.DisplayName = pb.DisplayName
 
 	var emailsField []ComplexValue
-	for _, item := range pb.Emails {
-		itemField, err := complexValueFromPb(&item)
+	for _, itemPb := range pb.Emails {
+		item, err := complexValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			emailsField = append(emailsField, *itemField)
+		if item != nil {
+			emailsField = append(emailsField, *item)
 		}
 	}
 	st.Emails = emailsField
 
 	var entitlementsField []ComplexValue
-	for _, item := range pb.Entitlements {
-		itemField, err := complexValueFromPb(&item)
+	for _, itemPb := range pb.Entitlements {
+		item, err := complexValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			entitlementsField = append(entitlementsField, *itemField)
+		if item != nil {
+			entitlementsField = append(entitlementsField, *item)
 		}
 	}
 	st.Entitlements = entitlementsField
-	externalIdField := &pb.ExternalId
-	if externalIdField != nil {
-		st.ExternalId = *externalIdField
-	}
+	st.ExternalId = pb.ExternalId
 
 	var groupsField []ComplexValue
-	for _, item := range pb.Groups {
-		itemField, err := complexValueFromPb(&item)
+	for _, itemPb := range pb.Groups {
+		item, err := complexValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			groupsField = append(groupsField, *itemField)
+		if item != nil {
+			groupsField = append(groupsField, *item)
 		}
 	}
 	st.Groups = groupsField
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	nameField, err := nameFromPb(pb.Name)
 	if err != nil {
 		return nil, err
@@ -8143,29 +7100,18 @@ func userFromPb(pb *userPb) (*User, error) {
 	}
 
 	var rolesField []ComplexValue
-	for _, item := range pb.Roles {
-		itemField, err := complexValueFromPb(&item)
+	for _, itemPb := range pb.Roles {
+		item, err := complexValueFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			rolesField = append(rolesField, *itemField)
+		if item != nil {
+			rolesField = append(rolesField, *item)
 		}
 	}
 	st.Roles = rolesField
-
-	var schemasField []UserSchema
-	for _, item := range pb.Schemas {
-		itemField := &item
-		if itemField != nil {
-			schemasField = append(schemasField, *itemField)
-		}
-	}
-	st.Schemas = schemasField
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.Schemas = pb.Schemas
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8271,6 +7217,7 @@ func workspacePermissionFromPb(pb *workspacePermissionPb) (*WorkspacePermission,
 
 type WorkspacePermissions struct {
 	// Array of permissions defined for a workspace.
+	// Wire name: 'permissions'
 	Permissions []PermissionOutput
 }
 
@@ -8332,16 +7279,70 @@ func workspacePermissionsFromPb(pb *workspacePermissionsPb) (*WorkspacePermissio
 	st := &WorkspacePermissions{}
 
 	var permissionsField []PermissionOutput
-	for _, item := range pb.Permissions {
-		itemField, err := permissionOutputFromPb(&item)
+	for _, itemPb := range pb.Permissions {
+		item, err := permissionOutputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionsField = append(permissionsField, *itemField)
+		if item != nil {
+			permissionsField = append(permissionsField, *item)
 		}
 	}
 	st.Permissions = permissionsField
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

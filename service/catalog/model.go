@@ -11,76 +11,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type AccountsCreateMetastore struct {
+
+	// Wire name: 'metastore_info'
 	MetastoreInfo *CreateMetastore
 }
 
@@ -146,11 +79,15 @@ func accountsCreateMetastoreFromPb(pb *accountsCreateMetastorePb) (*AccountsCrea
 }
 
 type AccountsCreateMetastoreAssignment struct {
+
+	// Wire name: 'metastore_assignment'
 	MetastoreAssignment *CreateMetastoreAssignment
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func accountsCreateMetastoreAssignmentToPb(st *AccountsCreateMetastoreAssignment) (*accountsCreateMetastoreAssignmentPb, error) {
@@ -166,15 +103,9 @@ func accountsCreateMetastoreAssignmentToPb(st *AccountsCreateMetastoreAssignment
 		pb.MetastoreAssignment = metastoreAssignmentPb
 	}
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -224,22 +155,19 @@ func accountsCreateMetastoreAssignmentFromPb(pb *accountsCreateMetastoreAssignme
 	if metastoreAssignmentField != nil {
 		st.MetastoreAssignment = metastoreAssignmentField
 	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
 
 type AccountsCreateStorageCredential struct {
+
+	// Wire name: 'credential_info'
 	CredentialInfo *CreateStorageCredential
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 }
 
 func accountsCreateStorageCredentialToPb(st *AccountsCreateStorageCredential) (*accountsCreateStorageCredentialPb, error) {
@@ -255,10 +183,7 @@ func accountsCreateStorageCredentialToPb(st *AccountsCreateStorageCredential) (*
 		pb.CredentialInfo = credentialInfoPb
 	}
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
 	return pb, nil
 }
@@ -306,15 +231,14 @@ func accountsCreateStorageCredentialFromPb(pb *accountsCreateStorageCredentialPb
 	if credentialInfoField != nil {
 		st.CredentialInfo = credentialInfoField
 	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
+	st.MetastoreId = pb.MetastoreId
 
 	return st, nil
 }
 
 type AccountsMetastoreAssignment struct {
+
+	// Wire name: 'metastore_assignment'
 	MetastoreAssignment *MetastoreAssignment
 }
 
@@ -380,6 +304,8 @@ func accountsMetastoreAssignmentFromPb(pb *accountsMetastoreAssignmentPb) (*Acco
 }
 
 type AccountsMetastoreInfo struct {
+
+	// Wire name: 'metastore_info'
 	MetastoreInfo *MetastoreInfo
 }
 
@@ -445,6 +371,8 @@ func accountsMetastoreInfoFromPb(pb *accountsMetastoreInfoPb) (*AccountsMetastor
 }
 
 type AccountsStorageCredentialInfo struct {
+
+	// Wire name: 'credential_info'
 	CredentialInfo *StorageCredentialInfo
 }
 
@@ -511,8 +439,10 @@ func accountsStorageCredentialInfoFromPb(pb *accountsStorageCredentialInfoPb) (*
 
 type AccountsUpdateMetastore struct {
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 
+	// Wire name: 'metastore_info'
 	MetastoreInfo *UpdateMetastore
 }
 
@@ -521,10 +451,7 @@ func accountsUpdateMetastoreToPb(st *AccountsUpdateMetastore) (*accountsUpdateMe
 		return nil, nil
 	}
 	pb := &accountsUpdateMetastorePb{}
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
 	metastoreInfoPb, err := updateMetastoreToPb(st.MetastoreInfo)
 	if err != nil {
@@ -574,10 +501,7 @@ func accountsUpdateMetastoreFromPb(pb *accountsUpdateMetastorePb) (*AccountsUpda
 		return nil, nil
 	}
 	st := &AccountsUpdateMetastore{}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
+	st.MetastoreId = pb.MetastoreId
 	metastoreInfoField, err := updateMetastoreFromPb(pb.MetastoreInfo)
 	if err != nil {
 		return nil, err
@@ -590,11 +514,15 @@ func accountsUpdateMetastoreFromPb(pb *accountsUpdateMetastorePb) (*AccountsUpda
 }
 
 type AccountsUpdateMetastoreAssignment struct {
+
+	// Wire name: 'metastore_assignment'
 	MetastoreAssignment *UpdateMetastoreAssignment
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func accountsUpdateMetastoreAssignmentToPb(st *AccountsUpdateMetastoreAssignment) (*accountsUpdateMetastoreAssignmentPb, error) {
@@ -610,15 +538,9 @@ func accountsUpdateMetastoreAssignmentToPb(st *AccountsUpdateMetastoreAssignment
 		pb.MetastoreAssignment = metastoreAssignmentPb
 	}
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -668,24 +590,22 @@ func accountsUpdateMetastoreAssignmentFromPb(pb *accountsUpdateMetastoreAssignme
 	if metastoreAssignmentField != nil {
 		st.MetastoreAssignment = metastoreAssignmentField
 	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
 
 type AccountsUpdateStorageCredential struct {
+
+	// Wire name: 'credential_info'
 	CredentialInfo *UpdateStorageCredential
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Name of the storage credential.
-	StorageCredentialName string
+	// Wire name: 'storage_credential_name'
+	StorageCredentialName string `tf:"-"`
 }
 
 func accountsUpdateStorageCredentialToPb(st *AccountsUpdateStorageCredential) (*accountsUpdateStorageCredentialPb, error) {
@@ -701,15 +621,9 @@ func accountsUpdateStorageCredentialToPb(st *AccountsUpdateStorageCredential) (*
 		pb.CredentialInfo = credentialInfoPb
 	}
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	storageCredentialNamePb := &st.StorageCredentialName
-	if storageCredentialNamePb != nil {
-		pb.StorageCredentialName = *storageCredentialNamePb
-	}
+	pb.StorageCredentialName = st.StorageCredentialName
 
 	return pb, nil
 }
@@ -759,29 +673,27 @@ func accountsUpdateStorageCredentialFromPb(pb *accountsUpdateStorageCredentialPb
 	if credentialInfoField != nil {
 		st.CredentialInfo = credentialInfoField
 	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	storageCredentialNameField := &pb.StorageCredentialName
-	if storageCredentialNameField != nil {
-		st.StorageCredentialName = *storageCredentialNameField
-	}
+	st.MetastoreId = pb.MetastoreId
+	st.StorageCredentialName = pb.StorageCredentialName
 
 	return st, nil
 }
 
 type ArtifactAllowlistInfo struct {
 	// A list of allowed artifact match patterns.
+	// Wire name: 'artifact_matchers'
 	ArtifactMatchers []ArtifactMatcher
 	// Time at which this artifact allowlist was set, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of the user who set the artifact allowlist.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func artifactAllowlistInfoToPb(st *ArtifactAllowlistInfo) (*artifactAllowlistInfoPb, error) {
@@ -802,20 +714,11 @@ func artifactAllowlistInfoToPb(st *ArtifactAllowlistInfo) (*artifactAllowlistInf
 	}
 	pb.ArtifactMatchers = artifactMatchersPb
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -866,28 +769,19 @@ func artifactAllowlistInfoFromPb(pb *artifactAllowlistInfoPb) (*ArtifactAllowlis
 	st := &ArtifactAllowlistInfo{}
 
 	var artifactMatchersField []ArtifactMatcher
-	for _, item := range pb.ArtifactMatchers {
-		itemField, err := artifactMatcherFromPb(&item)
+	for _, itemPb := range pb.ArtifactMatchers {
+		item, err := artifactMatcherFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			artifactMatchersField = append(artifactMatchersField, *itemField)
+		if item != nil {
+			artifactMatchersField = append(artifactMatchersField, *item)
 		}
 	}
 	st.ArtifactMatchers = artifactMatchersField
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.MetastoreId = pb.MetastoreId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -903,8 +797,10 @@ func (st artifactAllowlistInfoPb) MarshalJSON() ([]byte, error) {
 
 type ArtifactMatcher struct {
 	// The artifact path or maven coordinate
+	// Wire name: 'artifact'
 	Artifact string
 	// The pattern matching type of the artifact
+	// Wire name: 'match_type'
 	MatchType MatchType
 }
 
@@ -913,15 +809,9 @@ func artifactMatcherToPb(st *ArtifactMatcher) (*artifactMatcherPb, error) {
 		return nil, nil
 	}
 	pb := &artifactMatcherPb{}
-	artifactPb := &st.Artifact
-	if artifactPb != nil {
-		pb.Artifact = *artifactPb
-	}
+	pb.Artifact = st.Artifact
 
-	matchTypePb := &st.MatchType
-	if matchTypePb != nil {
-		pb.MatchType = *matchTypePb
-	}
+	pb.MatchType = st.MatchType
 
 	return pb, nil
 }
@@ -963,14 +853,8 @@ func artifactMatcherFromPb(pb *artifactMatcherPb) (*ArtifactMatcher, error) {
 		return nil, nil
 	}
 	st := &ArtifactMatcher{}
-	artifactField := &pb.Artifact
-	if artifactField != nil {
-		st.Artifact = *artifactField
-	}
-	matchTypeField := &pb.MatchType
-	if matchTypeField != nil {
-		st.MatchType = *matchTypeField
-	}
+	st.Artifact = pb.Artifact
+	st.MatchType = pb.MatchType
 
 	return st, nil
 }
@@ -1075,17 +959,21 @@ func assignResponseFromPb(pb *assignResponsePb) (*AssignResponse, error) {
 // https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
 type AwsCredentials struct {
 	// The access key ID that identifies the temporary credentials.
+	// Wire name: 'access_key_id'
 	AccessKeyId string
 	// The Amazon Resource Name (ARN) of the S3 access point for temporary
 	// credentials related the external location.
+	// Wire name: 'access_point'
 	AccessPoint string
 	// The secret access key that can be used to sign AWS API requests.
+	// Wire name: 'secret_access_key'
 	SecretAccessKey string
 	// The token that users must pass to AWS API to use the temporary
 	// credentials.
+	// Wire name: 'session_token'
 	SessionToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func awsCredentialsToPb(st *AwsCredentials) (*awsCredentialsPb, error) {
@@ -1093,25 +981,13 @@ func awsCredentialsToPb(st *AwsCredentials) (*awsCredentialsPb, error) {
 		return nil, nil
 	}
 	pb := &awsCredentialsPb{}
-	accessKeyIdPb := &st.AccessKeyId
-	if accessKeyIdPb != nil {
-		pb.AccessKeyId = *accessKeyIdPb
-	}
+	pb.AccessKeyId = st.AccessKeyId
 
-	accessPointPb := &st.AccessPoint
-	if accessPointPb != nil {
-		pb.AccessPoint = *accessPointPb
-	}
+	pb.AccessPoint = st.AccessPoint
 
-	secretAccessKeyPb := &st.SecretAccessKey
-	if secretAccessKeyPb != nil {
-		pb.SecretAccessKey = *secretAccessKeyPb
-	}
+	pb.SecretAccessKey = st.SecretAccessKey
 
-	sessionTokenPb := &st.SessionToken
-	if sessionTokenPb != nil {
-		pb.SessionToken = *sessionTokenPb
-	}
+	pb.SessionToken = st.SessionToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1162,22 +1038,10 @@ func awsCredentialsFromPb(pb *awsCredentialsPb) (*AwsCredentials, error) {
 		return nil, nil
 	}
 	st := &AwsCredentials{}
-	accessKeyIdField := &pb.AccessKeyId
-	if accessKeyIdField != nil {
-		st.AccessKeyId = *accessKeyIdField
-	}
-	accessPointField := &pb.AccessPoint
-	if accessPointField != nil {
-		st.AccessPoint = *accessPointField
-	}
-	secretAccessKeyField := &pb.SecretAccessKey
-	if secretAccessKeyField != nil {
-		st.SecretAccessKey = *secretAccessKeyField
-	}
-	sessionTokenField := &pb.SessionToken
-	if sessionTokenField != nil {
-		st.SessionToken = *sessionTokenField
-	}
+	st.AccessKeyId = pb.AccessKeyId
+	st.AccessPoint = pb.AccessPoint
+	st.SecretAccessKey = pb.SecretAccessKey
+	st.SessionToken = pb.SessionToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1195,15 +1059,18 @@ func (st awsCredentialsPb) MarshalJSON() ([]byte, error) {
 type AwsIamRole struct {
 	// The external ID used in role assumption to prevent the confused deputy
 	// problem.
+	// Wire name: 'external_id'
 	ExternalId string
 	// The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary
 	// credentials.
+	// Wire name: 'role_arn'
 	RoleArn string
 	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
 	// This is the identity that is going to assume the AWS IAM role.
+	// Wire name: 'unity_catalog_iam_arn'
 	UnityCatalogIamArn string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func awsIamRoleToPb(st *AwsIamRole) (*awsIamRolePb, error) {
@@ -1211,20 +1078,11 @@ func awsIamRoleToPb(st *AwsIamRole) (*awsIamRolePb, error) {
 		return nil, nil
 	}
 	pb := &awsIamRolePb{}
-	externalIdPb := &st.ExternalId
-	if externalIdPb != nil {
-		pb.ExternalId = *externalIdPb
-	}
+	pb.ExternalId = st.ExternalId
 
-	roleArnPb := &st.RoleArn
-	if roleArnPb != nil {
-		pb.RoleArn = *roleArnPb
-	}
+	pb.RoleArn = st.RoleArn
 
-	unityCatalogIamArnPb := &st.UnityCatalogIamArn
-	if unityCatalogIamArnPb != nil {
-		pb.UnityCatalogIamArn = *unityCatalogIamArnPb
-	}
+	pb.UnityCatalogIamArn = st.UnityCatalogIamArn
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1274,18 +1132,9 @@ func awsIamRoleFromPb(pb *awsIamRolePb) (*AwsIamRole, error) {
 		return nil, nil
 	}
 	st := &AwsIamRole{}
-	externalIdField := &pb.ExternalId
-	if externalIdField != nil {
-		st.ExternalId = *externalIdField
-	}
-	roleArnField := &pb.RoleArn
-	if roleArnField != nil {
-		st.RoleArn = *roleArnField
-	}
-	unityCatalogIamArnField := &pb.UnityCatalogIamArn
-	if unityCatalogIamArnField != nil {
-		st.UnityCatalogIamArn = *unityCatalogIamArnField
-	}
+	st.ExternalId = pb.ExternalId
+	st.RoleArn = pb.RoleArn
+	st.UnityCatalogIamArn = pb.UnityCatalogIamArn
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1301,6 +1150,7 @@ func (st awsIamRolePb) MarshalJSON() ([]byte, error) {
 
 type AwsIamRoleRequest struct {
 	// The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
+	// Wire name: 'role_arn'
 	RoleArn string
 }
 
@@ -1309,10 +1159,7 @@ func awsIamRoleRequestToPb(st *AwsIamRoleRequest) (*awsIamRoleRequestPb, error) 
 		return nil, nil
 	}
 	pb := &awsIamRoleRequestPb{}
-	roleArnPb := &st.RoleArn
-	if roleArnPb != nil {
-		pb.RoleArn = *roleArnPb
-	}
+	pb.RoleArn = st.RoleArn
 
 	return pb, nil
 }
@@ -1352,10 +1199,7 @@ func awsIamRoleRequestFromPb(pb *awsIamRoleRequestPb) (*AwsIamRoleRequest, error
 		return nil, nil
 	}
 	st := &AwsIamRoleRequest{}
-	roleArnField := &pb.RoleArn
-	if roleArnField != nil {
-		st.RoleArn = *roleArnField
-	}
+	st.RoleArn = pb.RoleArn
 
 	return st, nil
 }
@@ -1363,14 +1207,17 @@ func awsIamRoleRequestFromPb(pb *awsIamRoleRequestPb) (*AwsIamRoleRequest, error
 type AwsIamRoleResponse struct {
 	// The external ID used in role assumption to prevent confused deputy
 	// problem..
+	// Wire name: 'external_id'
 	ExternalId string
 	// The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
+	// Wire name: 'role_arn'
 	RoleArn string
 	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
 	// This is the identity that is going to assume the AWS IAM role.
+	// Wire name: 'unity_catalog_iam_arn'
 	UnityCatalogIamArn string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func awsIamRoleResponseToPb(st *AwsIamRoleResponse) (*awsIamRoleResponsePb, error) {
@@ -1378,20 +1225,11 @@ func awsIamRoleResponseToPb(st *AwsIamRoleResponse) (*awsIamRoleResponsePb, erro
 		return nil, nil
 	}
 	pb := &awsIamRoleResponsePb{}
-	externalIdPb := &st.ExternalId
-	if externalIdPb != nil {
-		pb.ExternalId = *externalIdPb
-	}
+	pb.ExternalId = st.ExternalId
 
-	roleArnPb := &st.RoleArn
-	if roleArnPb != nil {
-		pb.RoleArn = *roleArnPb
-	}
+	pb.RoleArn = st.RoleArn
 
-	unityCatalogIamArnPb := &st.UnityCatalogIamArn
-	if unityCatalogIamArnPb != nil {
-		pb.UnityCatalogIamArn = *unityCatalogIamArnPb
-	}
+	pb.UnityCatalogIamArn = st.UnityCatalogIamArn
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1440,18 +1278,9 @@ func awsIamRoleResponseFromPb(pb *awsIamRoleResponsePb) (*AwsIamRoleResponse, er
 		return nil, nil
 	}
 	st := &AwsIamRoleResponse{}
-	externalIdField := &pb.ExternalId
-	if externalIdField != nil {
-		st.ExternalId = *externalIdField
-	}
-	roleArnField := &pb.RoleArn
-	if roleArnField != nil {
-		st.RoleArn = *roleArnField
-	}
-	unityCatalogIamArnField := &pb.UnityCatalogIamArn
-	if unityCatalogIamArnField != nil {
-		st.UnityCatalogIamArn = *unityCatalogIamArnField
-	}
+	st.ExternalId = pb.ExternalId
+	st.RoleArn = pb.RoleArn
+	st.UnityCatalogIamArn = pb.UnityCatalogIamArn
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1471,9 +1300,10 @@ func (st awsIamRoleResponsePb) MarshalJSON() ([]byte, error) {
 type AzureActiveDirectoryToken struct {
 	// Opaque token that contains claims that you can use in Azure Active
 	// Directory to access cloud services.
+	// Wire name: 'aad_token'
 	AadToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func azureActiveDirectoryTokenToPb(st *AzureActiveDirectoryToken) (*azureActiveDirectoryTokenPb, error) {
@@ -1481,10 +1311,7 @@ func azureActiveDirectoryTokenToPb(st *AzureActiveDirectoryToken) (*azureActiveD
 		return nil, nil
 	}
 	pb := &azureActiveDirectoryTokenPb{}
-	aadTokenPb := &st.AadToken
-	if aadTokenPb != nil {
-		pb.AadToken = *aadTokenPb
-	}
+	pb.AadToken = st.AadToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1528,10 +1355,7 @@ func azureActiveDirectoryTokenFromPb(pb *azureActiveDirectoryTokenPb) (*AzureAct
 		return nil, nil
 	}
 	st := &AzureActiveDirectoryToken{}
-	aadTokenField := &pb.AadToken
-	if aadTokenField != nil {
-		st.AadToken = *aadTokenField
-	}
+	st.AadToken = pb.AadToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1550,11 +1374,13 @@ type AzureManagedIdentity struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
 	// format
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
+	// Wire name: 'access_connector_id'
 	AccessConnectorId string
 	// The Databricks internal ID that represents this managed identity. This
 	// field is only used to persist the credential_id once it is fetched from
 	// the credentials manager - as we only use the protobuf serializer to store
 	// credentials, this ID gets persisted to the database. .
+	// Wire name: 'credential_id'
 	CredentialId string
 	// The Azure resource ID of the managed identity. Use the format,
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
@@ -1562,9 +1388,10 @@ type AzureManagedIdentity struct {
 	// identities, the access_connector_id is used to identify the identity. If
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// using the system-assigned identity.
+	// Wire name: 'managed_identity_id'
 	ManagedIdentityId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func azureManagedIdentityToPb(st *AzureManagedIdentity) (*azureManagedIdentityPb, error) {
@@ -1572,20 +1399,11 @@ func azureManagedIdentityToPb(st *AzureManagedIdentity) (*azureManagedIdentityPb
 		return nil, nil
 	}
 	pb := &azureManagedIdentityPb{}
-	accessConnectorIdPb := &st.AccessConnectorId
-	if accessConnectorIdPb != nil {
-		pb.AccessConnectorId = *accessConnectorIdPb
-	}
+	pb.AccessConnectorId = st.AccessConnectorId
 
-	credentialIdPb := &st.CredentialId
-	if credentialIdPb != nil {
-		pb.CredentialId = *credentialIdPb
-	}
+	pb.CredentialId = st.CredentialId
 
-	managedIdentityIdPb := &st.ManagedIdentityId
-	if managedIdentityIdPb != nil {
-		pb.ManagedIdentityId = *managedIdentityIdPb
-	}
+	pb.ManagedIdentityId = st.ManagedIdentityId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1642,18 +1460,9 @@ func azureManagedIdentityFromPb(pb *azureManagedIdentityPb) (*AzureManagedIdenti
 		return nil, nil
 	}
 	st := &AzureManagedIdentity{}
-	accessConnectorIdField := &pb.AccessConnectorId
-	if accessConnectorIdField != nil {
-		st.AccessConnectorId = *accessConnectorIdField
-	}
-	credentialIdField := &pb.CredentialId
-	if credentialIdField != nil {
-		st.CredentialId = *credentialIdField
-	}
-	managedIdentityIdField := &pb.ManagedIdentityId
-	if managedIdentityIdField != nil {
-		st.ManagedIdentityId = *managedIdentityIdField
-	}
+	st.AccessConnectorId = pb.AccessConnectorId
+	st.CredentialId = pb.CredentialId
+	st.ManagedIdentityId = pb.ManagedIdentityId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1671,6 +1480,7 @@ type AzureManagedIdentityRequest struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
 	// format
 	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}.
+	// Wire name: 'access_connector_id'
 	AccessConnectorId string
 	// The Azure resource ID of the managed identity. Use the format
 	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}.
@@ -1678,9 +1488,10 @@ type AzureManagedIdentityRequest struct {
 	// identities, the access_connector_id is used to identify the identity. If
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// for a system-assigned identity.
+	// Wire name: 'managed_identity_id'
 	ManagedIdentityId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func azureManagedIdentityRequestToPb(st *AzureManagedIdentityRequest) (*azureManagedIdentityRequestPb, error) {
@@ -1688,15 +1499,9 @@ func azureManagedIdentityRequestToPb(st *AzureManagedIdentityRequest) (*azureMan
 		return nil, nil
 	}
 	pb := &azureManagedIdentityRequestPb{}
-	accessConnectorIdPb := &st.AccessConnectorId
-	if accessConnectorIdPb != nil {
-		pb.AccessConnectorId = *accessConnectorIdPb
-	}
+	pb.AccessConnectorId = st.AccessConnectorId
 
-	managedIdentityIdPb := &st.ManagedIdentityId
-	if managedIdentityIdPb != nil {
-		pb.ManagedIdentityId = *managedIdentityIdPb
-	}
+	pb.ManagedIdentityId = st.ManagedIdentityId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1748,14 +1553,8 @@ func azureManagedIdentityRequestFromPb(pb *azureManagedIdentityRequestPb) (*Azur
 		return nil, nil
 	}
 	st := &AzureManagedIdentityRequest{}
-	accessConnectorIdField := &pb.AccessConnectorId
-	if accessConnectorIdField != nil {
-		st.AccessConnectorId = *accessConnectorIdField
-	}
-	managedIdentityIdField := &pb.ManagedIdentityId
-	if managedIdentityIdField != nil {
-		st.ManagedIdentityId = *managedIdentityIdField
-	}
+	st.AccessConnectorId = pb.AccessConnectorId
+	st.ManagedIdentityId = pb.ManagedIdentityId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1773,8 +1572,10 @@ type AzureManagedIdentityResponse struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
 	// format
 	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}.
+	// Wire name: 'access_connector_id'
 	AccessConnectorId string
 	// The Databricks internal ID that represents this managed identity.
+	// Wire name: 'credential_id'
 	CredentialId string
 	// The Azure resource ID of the managed identity. Use the format
 	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}.
@@ -1782,9 +1583,10 @@ type AzureManagedIdentityResponse struct {
 	// identities, the access_connector_id is used to identify the identity. If
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// for a system-assigned identity.
+	// Wire name: 'managed_identity_id'
 	ManagedIdentityId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func azureManagedIdentityResponseToPb(st *AzureManagedIdentityResponse) (*azureManagedIdentityResponsePb, error) {
@@ -1792,20 +1594,11 @@ func azureManagedIdentityResponseToPb(st *AzureManagedIdentityResponse) (*azureM
 		return nil, nil
 	}
 	pb := &azureManagedIdentityResponsePb{}
-	accessConnectorIdPb := &st.AccessConnectorId
-	if accessConnectorIdPb != nil {
-		pb.AccessConnectorId = *accessConnectorIdPb
-	}
+	pb.AccessConnectorId = st.AccessConnectorId
 
-	credentialIdPb := &st.CredentialId
-	if credentialIdPb != nil {
-		pb.CredentialId = *credentialIdPb
-	}
+	pb.CredentialId = st.CredentialId
 
-	managedIdentityIdPb := &st.ManagedIdentityId
-	if managedIdentityIdPb != nil {
-		pb.ManagedIdentityId = *managedIdentityIdPb
-	}
+	pb.ManagedIdentityId = st.ManagedIdentityId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1859,18 +1652,9 @@ func azureManagedIdentityResponseFromPb(pb *azureManagedIdentityResponsePb) (*Az
 		return nil, nil
 	}
 	st := &AzureManagedIdentityResponse{}
-	accessConnectorIdField := &pb.AccessConnectorId
-	if accessConnectorIdField != nil {
-		st.AccessConnectorId = *accessConnectorIdField
-	}
-	credentialIdField := &pb.CredentialId
-	if credentialIdField != nil {
-		st.CredentialId = *credentialIdField
-	}
-	managedIdentityIdField := &pb.ManagedIdentityId
-	if managedIdentityIdField != nil {
-		st.ManagedIdentityId = *managedIdentityIdField
-	}
+	st.AccessConnectorId = pb.AccessConnectorId
+	st.CredentialId = pb.CredentialId
+	st.ManagedIdentityId = pb.ManagedIdentityId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1889,11 +1673,14 @@ func (st azureManagedIdentityResponsePb) MarshalJSON() ([]byte, error) {
 type AzureServicePrincipal struct {
 	// The application ID of the application registration within the referenced
 	// AAD tenant.
+	// Wire name: 'application_id'
 	ApplicationId string
 	// The client secret generated for the above app ID in AAD.
+	// Wire name: 'client_secret'
 	ClientSecret string
 	// The directory ID corresponding to the Azure Active Directory (AAD) tenant
 	// of the application.
+	// Wire name: 'directory_id'
 	DirectoryId string
 }
 
@@ -1902,20 +1689,11 @@ func azureServicePrincipalToPb(st *AzureServicePrincipal) (*azureServicePrincipa
 		return nil, nil
 	}
 	pb := &azureServicePrincipalPb{}
-	applicationIdPb := &st.ApplicationId
-	if applicationIdPb != nil {
-		pb.ApplicationId = *applicationIdPb
-	}
+	pb.ApplicationId = st.ApplicationId
 
-	clientSecretPb := &st.ClientSecret
-	if clientSecretPb != nil {
-		pb.ClientSecret = *clientSecretPb
-	}
+	pb.ClientSecret = st.ClientSecret
 
-	directoryIdPb := &st.DirectoryId
-	if directoryIdPb != nil {
-		pb.DirectoryId = *directoryIdPb
-	}
+	pb.DirectoryId = st.DirectoryId
 
 	return pb, nil
 }
@@ -1961,18 +1739,9 @@ func azureServicePrincipalFromPb(pb *azureServicePrincipalPb) (*AzureServicePrin
 		return nil, nil
 	}
 	st := &AzureServicePrincipal{}
-	applicationIdField := &pb.ApplicationId
-	if applicationIdField != nil {
-		st.ApplicationId = *applicationIdField
-	}
-	clientSecretField := &pb.ClientSecret
-	if clientSecretField != nil {
-		st.ClientSecret = *clientSecretField
-	}
-	directoryIdField := &pb.DirectoryId
-	if directoryIdField != nil {
-		st.DirectoryId = *directoryIdField
-	}
+	st.ApplicationId = pb.ApplicationId
+	st.ClientSecret = pb.ClientSecret
+	st.DirectoryId = pb.DirectoryId
 
 	return st, nil
 }
@@ -1981,9 +1750,10 @@ func azureServicePrincipalFromPb(pb *azureServicePrincipalPb) (*AzureServicePrin
 // https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
 type AzureUserDelegationSas struct {
 	// The signed URI (SAS Token) used to access blob services for a given path
+	// Wire name: 'sas_token'
 	SasToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func azureUserDelegationSasToPb(st *AzureUserDelegationSas) (*azureUserDelegationSasPb, error) {
@@ -1991,10 +1761,7 @@ func azureUserDelegationSasToPb(st *AzureUserDelegationSas) (*azureUserDelegatio
 		return nil, nil
 	}
 	pb := &azureUserDelegationSasPb{}
-	sasTokenPb := &st.SasToken
-	if sasTokenPb != nil {
-		pb.SasToken = *sasTokenPb
-	}
+	pb.SasToken = st.SasToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2037,10 +1804,7 @@ func azureUserDelegationSasFromPb(pb *azureUserDelegationSasPb) (*AzureUserDeleg
 		return nil, nil
 	}
 	st := &AzureUserDelegationSas{}
-	sasTokenField := &pb.SasToken
-	if sasTokenField != nil {
-		st.SasToken = *sasTokenField
-	}
+	st.SasToken = pb.SasToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2057,9 +1821,11 @@ func (st azureUserDelegationSasPb) MarshalJSON() ([]byte, error) {
 // Cancel refresh
 type CancelRefreshRequest struct {
 	// ID of the refresh.
-	RefreshId string
+	// Wire name: 'refresh_id'
+	RefreshId string `tf:"-"`
 	// Full name of the table.
-	TableName string
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 }
 
 func cancelRefreshRequestToPb(st *CancelRefreshRequest) (*cancelRefreshRequestPb, error) {
@@ -2067,15 +1833,9 @@ func cancelRefreshRequestToPb(st *CancelRefreshRequest) (*cancelRefreshRequestPb
 		return nil, nil
 	}
 	pb := &cancelRefreshRequestPb{}
-	refreshIdPb := &st.RefreshId
-	if refreshIdPb != nil {
-		pb.RefreshId = *refreshIdPb
-	}
+	pb.RefreshId = st.RefreshId
 
-	tableNamePb := &st.TableName
-	if tableNamePb != nil {
-		pb.TableName = *tableNamePb
-	}
+	pb.TableName = st.TableName
 
 	return pb, nil
 }
@@ -2117,14 +1877,8 @@ func cancelRefreshRequestFromPb(pb *cancelRefreshRequestPb) (*CancelRefreshReque
 		return nil, nil
 	}
 	st := &CancelRefreshRequest{}
-	refreshIdField := &pb.RefreshId
-	if refreshIdField != nil {
-		st.RefreshId = *refreshIdField
-	}
-	tableNameField := &pb.TableName
-	if tableNameField != nil {
-		st.TableName = *tableNameField
-	}
+	st.RefreshId = pb.RefreshId
+	st.TableName = pb.TableName
 
 	return st, nil
 }
@@ -2182,58 +1936,81 @@ type CatalogInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool
 	// The type of the catalog.
+	// Wire name: 'catalog_type'
 	CatalogType CatalogType
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// The name of the connection to an external data source.
+	// Wire name: 'connection_name'
 	ConnectionName string
 	// Time at which this catalog was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of catalog creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 
+	// Wire name: 'effective_predictive_optimization_flag'
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
+	// Wire name: 'enable_predictive_optimization'
 	EnablePredictiveOptimization EnablePredictiveOptimization
 	// The full name of the catalog. Corresponds with the name field.
+	// Wire name: 'full_name'
 	FullName string
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
+	// Wire name: 'isolation_mode'
 	IsolationMode CatalogIsolationMode
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// Name of catalog.
+	// Wire name: 'name'
 	Name string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string
 	// Username of current owner of catalog.
+	// Wire name: 'owner'
 	Owner string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string
 	// The name of delta sharing provider.
 	//
 	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
+	// Wire name: 'provider_name'
 	ProviderName string
 	// Status of an asynchronously provisioned resource.
+	// Wire name: 'provisioning_info'
 	ProvisioningInfo *ProvisioningInfo
 
+	// Wire name: 'securable_type'
 	SecurableType string
 	// The name of the share under the share provider.
+	// Wire name: 'share_name'
 	ShareName string
 	// Storage Location URL (full path) for managed tables within catalog.
+	// Wire name: 'storage_location'
 	StorageLocation string
 	// Storage root URL for managed tables within catalog.
+	// Wire name: 'storage_root'
 	StorageRoot string
 	// Time at which this catalog was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of user who last modified catalog.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func catalogInfoToPb(st *CatalogInfo) (*catalogInfoPb, error) {
@@ -2241,35 +2018,17 @@ func catalogInfoToPb(st *CatalogInfo) (*catalogInfoPb, error) {
 		return nil, nil
 	}
 	pb := &catalogInfoPb{}
-	browseOnlyPb := &st.BrowseOnly
-	if browseOnlyPb != nil {
-		pb.BrowseOnly = *browseOnlyPb
-	}
+	pb.BrowseOnly = st.BrowseOnly
 
-	catalogTypePb := &st.CatalogType
-	if catalogTypePb != nil {
-		pb.CatalogType = *catalogTypePb
-	}
+	pb.CatalogType = st.CatalogType
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	connectionNamePb := &st.ConnectionName
-	if connectionNamePb != nil {
-		pb.ConnectionName = *connectionNamePb
-	}
+	pb.ConnectionName = st.ConnectionName
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
 	effectivePredictiveOptimizationFlagPb, err := effectivePredictiveOptimizationFlagToPb(st.EffectivePredictiveOptimizationFlag)
 	if err != nil {
@@ -2279,58 +2038,23 @@ func catalogInfoToPb(st *CatalogInfo) (*catalogInfoPb, error) {
 		pb.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagPb
 	}
 
-	enablePredictiveOptimizationPb := &st.EnablePredictiveOptimization
-	if enablePredictiveOptimizationPb != nil {
-		pb.EnablePredictiveOptimization = *enablePredictiveOptimizationPb
-	}
+	pb.EnablePredictiveOptimization = st.EnablePredictiveOptimization
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	isolationModePb := &st.IsolationMode
-	if isolationModePb != nil {
-		pb.IsolationMode = *isolationModePb
-	}
+	pb.IsolationMode = st.IsolationMode
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	optionsPb := map[string]string{}
-	for k, v := range st.Options {
-		itemPb := &v
-		if itemPb != nil {
-			optionsPb[k] = *itemPb
-		}
-	}
-	pb.Options = optionsPb
+	pb.Options = st.Options
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	propertiesPb := map[string]string{}
-	for k, v := range st.Properties {
-		itemPb := &v
-		if itemPb != nil {
-			propertiesPb[k] = *itemPb
-		}
-	}
-	pb.Properties = propertiesPb
+	pb.Properties = st.Properties
 
-	providerNamePb := &st.ProviderName
-	if providerNamePb != nil {
-		pb.ProviderName = *providerNamePb
-	}
+	pb.ProviderName = st.ProviderName
 
 	provisioningInfoPb, err := provisioningInfoToPb(st.ProvisioningInfo)
 	if err != nil {
@@ -2340,35 +2064,17 @@ func catalogInfoToPb(st *CatalogInfo) (*catalogInfoPb, error) {
 		pb.ProvisioningInfo = provisioningInfoPb
 	}
 
-	securableTypePb := &st.SecurableType
-	if securableTypePb != nil {
-		pb.SecurableType = *securableTypePb
-	}
+	pb.SecurableType = st.SecurableType
 
-	shareNamePb := &st.ShareName
-	if shareNamePb != nil {
-		pb.ShareName = *shareNamePb
-	}
+	pb.ShareName = st.ShareName
 
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
-	storageRootPb := &st.StorageRoot
-	if storageRootPb != nil {
-		pb.StorageRoot = *storageRootPb
-	}
+	pb.StorageRoot = st.StorageRoot
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2462,30 +2168,12 @@ func catalogInfoFromPb(pb *catalogInfoPb) (*CatalogInfo, error) {
 		return nil, nil
 	}
 	st := &CatalogInfo{}
-	browseOnlyField := &pb.BrowseOnly
-	if browseOnlyField != nil {
-		st.BrowseOnly = *browseOnlyField
-	}
-	catalogTypeField := &pb.CatalogType
-	if catalogTypeField != nil {
-		st.CatalogType = *catalogTypeField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	connectionNameField := &pb.ConnectionName
-	if connectionNameField != nil {
-		st.ConnectionName = *connectionNameField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogType = pb.CatalogType
+	st.Comment = pb.Comment
+	st.ConnectionName = pb.ConnectionName
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
 	effectivePredictiveOptimizationFlagField, err := effectivePredictiveOptimizationFlagFromPb(pb.EffectivePredictiveOptimizationFlag)
 	if err != nil {
 		return nil, err
@@ -2493,52 +2181,15 @@ func catalogInfoFromPb(pb *catalogInfoPb) (*CatalogInfo, error) {
 	if effectivePredictiveOptimizationFlagField != nil {
 		st.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagField
 	}
-	enablePredictiveOptimizationField := &pb.EnablePredictiveOptimization
-	if enablePredictiveOptimizationField != nil {
-		st.EnablePredictiveOptimization = *enablePredictiveOptimizationField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	isolationModeField := &pb.IsolationMode
-	if isolationModeField != nil {
-		st.IsolationMode = *isolationModeField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-
-	optionsField := map[string]string{}
-	for k, v := range pb.Options {
-		itemField := &v
-		if itemField != nil {
-			optionsField[k] = *itemField
-		}
-	}
-	st.Options = optionsField
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-
-	propertiesField := map[string]string{}
-	for k, v := range pb.Properties {
-		itemField := &v
-		if itemField != nil {
-			propertiesField[k] = *itemField
-		}
-	}
-	st.Properties = propertiesField
-	providerNameField := &pb.ProviderName
-	if providerNameField != nil {
-		st.ProviderName = *providerNameField
-	}
+	st.EnablePredictiveOptimization = pb.EnablePredictiveOptimization
+	st.FullName = pb.FullName
+	st.IsolationMode = pb.IsolationMode
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Options = pb.Options
+	st.Owner = pb.Owner
+	st.Properties = pb.Properties
+	st.ProviderName = pb.ProviderName
 	provisioningInfoField, err := provisioningInfoFromPb(pb.ProvisioningInfo)
 	if err != nil {
 		return nil, err
@@ -2546,30 +2197,12 @@ func catalogInfoFromPb(pb *catalogInfoPb) (*CatalogInfo, error) {
 	if provisioningInfoField != nil {
 		st.ProvisioningInfo = provisioningInfoField
 	}
-	securableTypeField := &pb.SecurableType
-	if securableTypeField != nil {
-		st.SecurableType = *securableTypeField
-	}
-	shareNameField := &pb.ShareName
-	if shareNameField != nil {
-		st.ShareName = *shareNameField
-	}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
-	storageRootField := &pb.StorageRoot
-	if storageRootField != nil {
-		st.StorageRoot = *storageRootField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.SecurableType = pb.SecurableType
+	st.ShareName = pb.ShareName
+	st.StorageLocation = pb.StorageLocation
+	st.StorageRoot = pb.StorageRoot
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2680,10 +2313,13 @@ func catalogTypeFromPb(pb *catalogTypePb) (*CatalogType, error) {
 
 type CloudflareApiToken struct {
 	// The Cloudflare access key id of the token.
+	// Wire name: 'access_key_id'
 	AccessKeyId string
 	// The account id associated with the API token.
+	// Wire name: 'account_id'
 	AccountId string
 	// The secret access token generated for the access key id
+	// Wire name: 'secret_access_key'
 	SecretAccessKey string
 }
 
@@ -2692,20 +2328,11 @@ func cloudflareApiTokenToPb(st *CloudflareApiToken) (*cloudflareApiTokenPb, erro
 		return nil, nil
 	}
 	pb := &cloudflareApiTokenPb{}
-	accessKeyIdPb := &st.AccessKeyId
-	if accessKeyIdPb != nil {
-		pb.AccessKeyId = *accessKeyIdPb
-	}
+	pb.AccessKeyId = st.AccessKeyId
 
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
-	secretAccessKeyPb := &st.SecretAccessKey
-	if secretAccessKeyPb != nil {
-		pb.SecretAccessKey = *secretAccessKeyPb
-	}
+	pb.SecretAccessKey = st.SecretAccessKey
 
 	return pb, nil
 }
@@ -2749,49 +2376,52 @@ func cloudflareApiTokenFromPb(pb *cloudflareApiTokenPb) (*CloudflareApiToken, er
 		return nil, nil
 	}
 	st := &CloudflareApiToken{}
-	accessKeyIdField := &pb.AccessKeyId
-	if accessKeyIdField != nil {
-		st.AccessKeyId = *accessKeyIdField
-	}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
-	secretAccessKeyField := &pb.SecretAccessKey
-	if secretAccessKeyField != nil {
-		st.SecretAccessKey = *secretAccessKeyField
-	}
+	st.AccessKeyId = pb.AccessKeyId
+	st.AccountId = pb.AccountId
+	st.SecretAccessKey = pb.SecretAccessKey
 
 	return st, nil
 }
 
 type ColumnInfo struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 
+	// Wire name: 'mask'
 	Mask *ColumnMask
 	// Name of Column.
+	// Wire name: 'name'
 	Name string
 	// Whether field may be Null (default: true).
+	// Wire name: 'nullable'
 	Nullable bool
 	// Partition index for column.
+	// Wire name: 'partition_index'
 	PartitionIndex int
 	// Ordinal position of column (starting at position 0).
+	// Wire name: 'position'
 	Position int
 	// Format of IntervalType.
+	// Wire name: 'type_interval_type'
 	TypeIntervalType string
 	// Full data type specification, JSON-serialized.
+	// Wire name: 'type_json'
 	TypeJson string
 
+	// Wire name: 'type_name'
 	TypeName ColumnTypeName
 	// Digits of precision; required for DecimalTypes.
+	// Wire name: 'type_precision'
 	TypePrecision int
 	// Digits to right of decimal; Required for DecimalTypes.
+	// Wire name: 'type_scale'
 	TypeScale int
 	// Full data type specification as SQL/catalogString text.
+	// Wire name: 'type_text'
 	TypeText string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func ColumnInfoToPb(st *ColumnInfo) (*ColumnInfoPb, error) {
@@ -2799,10 +2429,7 @@ func ColumnInfoToPb(st *ColumnInfo) (*ColumnInfoPb, error) {
 		return nil, nil
 	}
 	pb := &ColumnInfoPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
 	maskPb, err := columnMaskToPb(st.Mask)
 	if err != nil {
@@ -2812,55 +2439,25 @@ func ColumnInfoToPb(st *ColumnInfo) (*ColumnInfoPb, error) {
 		pb.Mask = maskPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	nullablePb := &st.Nullable
-	if nullablePb != nil {
-		pb.Nullable = *nullablePb
-	}
+	pb.Nullable = st.Nullable
 
-	partitionIndexPb := &st.PartitionIndex
-	if partitionIndexPb != nil {
-		pb.PartitionIndex = *partitionIndexPb
-	}
+	pb.PartitionIndex = st.PartitionIndex
 
-	positionPb := &st.Position
-	if positionPb != nil {
-		pb.Position = *positionPb
-	}
+	pb.Position = st.Position
 
-	typeIntervalTypePb := &st.TypeIntervalType
-	if typeIntervalTypePb != nil {
-		pb.TypeIntervalType = *typeIntervalTypePb
-	}
+	pb.TypeIntervalType = st.TypeIntervalType
 
-	typeJsonPb := &st.TypeJson
-	if typeJsonPb != nil {
-		pb.TypeJson = *typeJsonPb
-	}
+	pb.TypeJson = st.TypeJson
 
-	typeNamePb := &st.TypeName
-	if typeNamePb != nil {
-		pb.TypeName = *typeNamePb
-	}
+	pb.TypeName = st.TypeName
 
-	typePrecisionPb := &st.TypePrecision
-	if typePrecisionPb != nil {
-		pb.TypePrecision = *typePrecisionPb
-	}
+	pb.TypePrecision = st.TypePrecision
 
-	typeScalePb := &st.TypeScale
-	if typeScalePb != nil {
-		pb.TypeScale = *typeScalePb
-	}
+	pb.TypeScale = st.TypeScale
 
-	typeTextPb := &st.TypeText
-	if typeTextPb != nil {
-		pb.TypeText = *typeTextPb
-	}
+	pb.TypeText = st.TypeText
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2925,10 +2522,7 @@ func ColumnInfoFromPb(pb *ColumnInfoPb) (*ColumnInfo, error) {
 		return nil, nil
 	}
 	st := &ColumnInfo{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
+	st.Comment = pb.Comment
 	maskField, err := columnMaskFromPb(pb.Mask)
 	if err != nil {
 		return nil, err
@@ -2936,46 +2530,16 @@ func ColumnInfoFromPb(pb *ColumnInfoPb) (*ColumnInfo, error) {
 	if maskField != nil {
 		st.Mask = maskField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	nullableField := &pb.Nullable
-	if nullableField != nil {
-		st.Nullable = *nullableField
-	}
-	partitionIndexField := &pb.PartitionIndex
-	if partitionIndexField != nil {
-		st.PartitionIndex = *partitionIndexField
-	}
-	positionField := &pb.Position
-	if positionField != nil {
-		st.Position = *positionField
-	}
-	typeIntervalTypeField := &pb.TypeIntervalType
-	if typeIntervalTypeField != nil {
-		st.TypeIntervalType = *typeIntervalTypeField
-	}
-	typeJsonField := &pb.TypeJson
-	if typeJsonField != nil {
-		st.TypeJson = *typeJsonField
-	}
-	typeNameField := &pb.TypeName
-	if typeNameField != nil {
-		st.TypeName = *typeNameField
-	}
-	typePrecisionField := &pb.TypePrecision
-	if typePrecisionField != nil {
-		st.TypePrecision = *typePrecisionField
-	}
-	typeScaleField := &pb.TypeScale
-	if typeScaleField != nil {
-		st.TypeScale = *typeScaleField
-	}
-	typeTextField := &pb.TypeText
-	if typeTextField != nil {
-		st.TypeText = *typeTextField
-	}
+	st.Name = pb.Name
+	st.Nullable = pb.Nullable
+	st.PartitionIndex = pb.PartitionIndex
+	st.Position = pb.Position
+	st.TypeIntervalType = pb.TypeIntervalType
+	st.TypeJson = pb.TypeJson
+	st.TypeName = pb.TypeName
+	st.TypePrecision = pb.TypePrecision
+	st.TypeScale = pb.TypeScale
+	st.TypeText = pb.TypeText
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2991,14 +2555,16 @@ func (st ColumnInfoPb) MarshalJSON() ([]byte, error) {
 
 type ColumnMask struct {
 	// The full name of the column mask SQL UDF.
+	// Wire name: 'function_name'
 	FunctionName string
 	// The list of additional table columns to be passed as input to the column
 	// mask function. The first arg of the mask function should be of the type
 	// of the column being masked and the types of the rest of the args should
 	// match the types of columns in 'using_column_names'.
+	// Wire name: 'using_column_names'
 	UsingColumnNames []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func columnMaskToPb(st *ColumnMask) (*columnMaskPb, error) {
@@ -3006,19 +2572,9 @@ func columnMaskToPb(st *ColumnMask) (*columnMaskPb, error) {
 		return nil, nil
 	}
 	pb := &columnMaskPb{}
-	functionNamePb := &st.FunctionName
-	if functionNamePb != nil {
-		pb.FunctionName = *functionNamePb
-	}
+	pb.FunctionName = st.FunctionName
 
-	var usingColumnNamesPb []string
-	for _, item := range st.UsingColumnNames {
-		itemPb := &item
-		if itemPb != nil {
-			usingColumnNamesPb = append(usingColumnNamesPb, *itemPb)
-		}
-	}
-	pb.UsingColumnNames = usingColumnNamesPb
+	pb.UsingColumnNames = st.UsingColumnNames
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3066,19 +2622,8 @@ func columnMaskFromPb(pb *columnMaskPb) (*ColumnMask, error) {
 		return nil, nil
 	}
 	st := &ColumnMask{}
-	functionNameField := &pb.FunctionName
-	if functionNameField != nil {
-		st.FunctionName = *functionNameField
-	}
-
-	var usingColumnNamesField []string
-	for _, item := range pb.UsingColumnNames {
-		itemField := &item
-		if itemField != nil {
-			usingColumnNamesField = append(usingColumnNamesField, *itemField)
-		}
-	}
-	st.UsingColumnNames = usingColumnNamesField
+	st.FunctionName = pb.FunctionName
+	st.UsingColumnNames = pb.UsingColumnNames
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3182,44 +2727,62 @@ func columnTypeNameFromPb(pb *columnTypeNamePb) (*ColumnTypeName, error) {
 
 type ConnectionInfo struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Unique identifier of the Connection.
+	// Wire name: 'connection_id'
 	ConnectionId string
 	// The type of connection.
+	// Wire name: 'connection_type'
 	ConnectionType ConnectionType
 	// Time at which this connection was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of connection creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// The type of credential.
+	// Wire name: 'credential_type'
 	CredentialType CredentialType
 	// Full name of connection.
+	// Wire name: 'full_name'
 	FullName string
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// Name of the connection.
+	// Wire name: 'name'
 	Name string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string
 	// Username of current owner of the connection.
+	// Wire name: 'owner'
 	Owner string
 	// An object containing map of key-value properties attached to the
 	// connection.
+	// Wire name: 'properties'
 	Properties map[string]string
 	// Status of an asynchronously provisioned resource.
+	// Wire name: 'provisioning_info'
 	ProvisioningInfo *ProvisioningInfo
 	// If the connection is read only.
+	// Wire name: 'read_only'
 	ReadOnly bool
 
+	// Wire name: 'securable_type'
 	SecurableType string
 	// Time at which this connection was updated, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of user who last modified connection.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 	// URL of the remote data source, extracted from options.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func connectionInfoToPb(st *ConnectionInfo) (*connectionInfoPb, error) {
@@ -3227,73 +2790,29 @@ func connectionInfoToPb(st *ConnectionInfo) (*connectionInfoPb, error) {
 		return nil, nil
 	}
 	pb := &connectionInfoPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	connectionIdPb := &st.ConnectionId
-	if connectionIdPb != nil {
-		pb.ConnectionId = *connectionIdPb
-	}
+	pb.ConnectionId = st.ConnectionId
 
-	connectionTypePb := &st.ConnectionType
-	if connectionTypePb != nil {
-		pb.ConnectionType = *connectionTypePb
-	}
+	pb.ConnectionType = st.ConnectionType
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	credentialTypePb := &st.CredentialType
-	if credentialTypePb != nil {
-		pb.CredentialType = *credentialTypePb
-	}
+	pb.CredentialType = st.CredentialType
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	optionsPb := map[string]string{}
-	for k, v := range st.Options {
-		itemPb := &v
-		if itemPb != nil {
-			optionsPb[k] = *itemPb
-		}
-	}
-	pb.Options = optionsPb
+	pb.Options = st.Options
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	propertiesPb := map[string]string{}
-	for k, v := range st.Properties {
-		itemPb := &v
-		if itemPb != nil {
-			propertiesPb[k] = *itemPb
-		}
-	}
-	pb.Properties = propertiesPb
+	pb.Properties = st.Properties
 
 	provisioningInfoPb, err := provisioningInfoToPb(st.ProvisioningInfo)
 	if err != nil {
@@ -3303,30 +2822,15 @@ func connectionInfoToPb(st *ConnectionInfo) (*connectionInfoPb, error) {
 		pb.ProvisioningInfo = provisioningInfoPb
 	}
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	securableTypePb := &st.SecurableType
-	if securableTypePb != nil {
-		pb.SecurableType = *securableTypePb
-	}
+	pb.SecurableType = st.SecurableType
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3404,64 +2908,18 @@ func connectionInfoFromPb(pb *connectionInfoPb) (*ConnectionInfo, error) {
 		return nil, nil
 	}
 	st := &ConnectionInfo{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	connectionIdField := &pb.ConnectionId
-	if connectionIdField != nil {
-		st.ConnectionId = *connectionIdField
-	}
-	connectionTypeField := &pb.ConnectionType
-	if connectionTypeField != nil {
-		st.ConnectionType = *connectionTypeField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	credentialTypeField := &pb.CredentialType
-	if credentialTypeField != nil {
-		st.CredentialType = *credentialTypeField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-
-	optionsField := map[string]string{}
-	for k, v := range pb.Options {
-		itemField := &v
-		if itemField != nil {
-			optionsField[k] = *itemField
-		}
-	}
-	st.Options = optionsField
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-
-	propertiesField := map[string]string{}
-	for k, v := range pb.Properties {
-		itemField := &v
-		if itemField != nil {
-			propertiesField[k] = *itemField
-		}
-	}
-	st.Properties = propertiesField
+	st.Comment = pb.Comment
+	st.ConnectionId = pb.ConnectionId
+	st.ConnectionType = pb.ConnectionType
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.CredentialType = pb.CredentialType
+	st.FullName = pb.FullName
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Options = pb.Options
+	st.Owner = pb.Owner
+	st.Properties = pb.Properties
 	provisioningInfoField, err := provisioningInfoFromPb(pb.ProvisioningInfo)
 	if err != nil {
 		return nil, err
@@ -3469,26 +2927,11 @@ func connectionInfoFromPb(pb *connectionInfoPb) (*ConnectionInfo, error) {
 	if provisioningInfoField != nil {
 		st.ProvisioningInfo = provisioningInfoField
 	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	securableTypeField := &pb.SecurableType
-	if securableTypeField != nil {
-		st.SecurableType = *securableTypeField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.ReadOnly = pb.ReadOnly
+	st.SecurableType = pb.SecurableType
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3573,16 +3016,19 @@ func connectionTypeFromPb(pb *connectionTypePb) (*ConnectionType, error) {
 // ONLINE_CONTINUOUS_UPDATE or the ONLINE_UPDATING_PIPELINE_RESOURCES state.
 type ContinuousUpdateStatus struct {
 	// Progress of the initial data synchronization.
+	// Wire name: 'initial_pipeline_sync_progress'
 	InitialPipelineSyncProgress *PipelineProgress
 	// The last source table Delta version that was synced to the online table.
 	// Note that this Delta version may not be completely synced to the online
 	// table yet.
+	// Wire name: 'last_processed_commit_version'
 	LastProcessedCommitVersion int64
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table.
+	// Wire name: 'timestamp'
 	Timestamp string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func continuousUpdateStatusToPb(st *ContinuousUpdateStatus) (*continuousUpdateStatusPb, error) {
@@ -3598,15 +3044,9 @@ func continuousUpdateStatusToPb(st *ContinuousUpdateStatus) (*continuousUpdateSt
 		pb.InitialPipelineSyncProgress = initialPipelineSyncProgressPb
 	}
 
-	lastProcessedCommitVersionPb := &st.LastProcessedCommitVersion
-	if lastProcessedCommitVersionPb != nil {
-		pb.LastProcessedCommitVersion = *lastProcessedCommitVersionPb
-	}
+	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
 
-	timestampPb := &st.Timestamp
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3663,14 +3103,8 @@ func continuousUpdateStatusFromPb(pb *continuousUpdateStatusPb) (*ContinuousUpda
 	if initialPipelineSyncProgressField != nil {
 		st.InitialPipelineSyncProgress = initialPipelineSyncProgressField
 	}
-	lastProcessedCommitVersionField := &pb.LastProcessedCommitVersion
-	if lastProcessedCommitVersionField != nil {
-		st.LastProcessedCommitVersion = *lastProcessedCommitVersionField
-	}
-	timestampField := &pb.Timestamp
-	if timestampField != nil {
-		st.Timestamp = *timestampField
-	}
+	st.LastProcessedCommitVersion = pb.LastProcessedCommitVersion
+	st.Timestamp = pb.Timestamp
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3686,26 +3120,34 @@ func (st continuousUpdateStatusPb) MarshalJSON() ([]byte, error) {
 
 type CreateCatalog struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// The name of the connection to an external data source.
+	// Wire name: 'connection_name'
 	ConnectionName string
 	// Name of catalog.
+	// Wire name: 'name'
 	Name string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string
 	// The name of delta sharing provider.
 	//
 	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
+	// Wire name: 'provider_name'
 	ProviderName string
 	// The name of the share under the share provider.
+	// Wire name: 'share_name'
 	ShareName string
 	// Storage root URL for managed tables within catalog.
+	// Wire name: 'storage_root'
 	StorageRoot string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createCatalogToPb(st *CreateCatalog) (*createCatalogPb, error) {
@@ -3713,53 +3155,21 @@ func createCatalogToPb(st *CreateCatalog) (*createCatalogPb, error) {
 		return nil, nil
 	}
 	pb := &createCatalogPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	connectionNamePb := &st.ConnectionName
-	if connectionNamePb != nil {
-		pb.ConnectionName = *connectionNamePb
-	}
+	pb.ConnectionName = st.ConnectionName
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	optionsPb := map[string]string{}
-	for k, v := range st.Options {
-		itemPb := &v
-		if itemPb != nil {
-			optionsPb[k] = *itemPb
-		}
-	}
-	pb.Options = optionsPb
+	pb.Options = st.Options
 
-	propertiesPb := map[string]string{}
-	for k, v := range st.Properties {
-		itemPb := &v
-		if itemPb != nil {
-			propertiesPb[k] = *itemPb
-		}
-	}
-	pb.Properties = propertiesPb
+	pb.Properties = st.Properties
 
-	providerNamePb := &st.ProviderName
-	if providerNamePb != nil {
-		pb.ProviderName = *providerNamePb
-	}
+	pb.ProviderName = st.ProviderName
 
-	shareNamePb := &st.ShareName
-	if shareNamePb != nil {
-		pb.ShareName = *shareNamePb
-	}
+	pb.ShareName = st.ShareName
 
-	storageRootPb := &st.StorageRoot
-	if storageRootPb != nil {
-		pb.StorageRoot = *storageRootPb
-	}
+	pb.StorageRoot = st.StorageRoot
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3819,48 +3229,14 @@ func createCatalogFromPb(pb *createCatalogPb) (*CreateCatalog, error) {
 		return nil, nil
 	}
 	st := &CreateCatalog{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	connectionNameField := &pb.ConnectionName
-	if connectionNameField != nil {
-		st.ConnectionName = *connectionNameField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-
-	optionsField := map[string]string{}
-	for k, v := range pb.Options {
-		itemField := &v
-		if itemField != nil {
-			optionsField[k] = *itemField
-		}
-	}
-	st.Options = optionsField
-
-	propertiesField := map[string]string{}
-	for k, v := range pb.Properties {
-		itemField := &v
-		if itemField != nil {
-			propertiesField[k] = *itemField
-		}
-	}
-	st.Properties = propertiesField
-	providerNameField := &pb.ProviderName
-	if providerNameField != nil {
-		st.ProviderName = *providerNameField
-	}
-	shareNameField := &pb.ShareName
-	if shareNameField != nil {
-		st.ShareName = *shareNameField
-	}
-	storageRootField := &pb.StorageRoot
-	if storageRootField != nil {
-		st.StorageRoot = *storageRootField
-	}
+	st.Comment = pb.Comment
+	st.ConnectionName = pb.ConnectionName
+	st.Name = pb.Name
+	st.Options = pb.Options
+	st.Properties = pb.Properties
+	st.ProviderName = pb.ProviderName
+	st.ShareName = pb.ShareName
+	st.StorageRoot = pb.StorageRoot
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3876,20 +3252,26 @@ func (st createCatalogPb) MarshalJSON() ([]byte, error) {
 
 type CreateConnection struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// The type of connection.
+	// Wire name: 'connection_type'
 	ConnectionType ConnectionType
 	// Name of the connection.
+	// Wire name: 'name'
 	Name string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string
 	// An object containing map of key-value properties attached to the
 	// connection.
+	// Wire name: 'properties'
 	Properties map[string]string
 	// If the connection is read only.
+	// Wire name: 'read_only'
 	ReadOnly bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createConnectionToPb(st *CreateConnection) (*createConnectionPb, error) {
@@ -3897,43 +3279,17 @@ func createConnectionToPb(st *CreateConnection) (*createConnectionPb, error) {
 		return nil, nil
 	}
 	pb := &createConnectionPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	connectionTypePb := &st.ConnectionType
-	if connectionTypePb != nil {
-		pb.ConnectionType = *connectionTypePb
-	}
+	pb.ConnectionType = st.ConnectionType
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	optionsPb := map[string]string{}
-	for k, v := range st.Options {
-		itemPb := &v
-		if itemPb != nil {
-			optionsPb[k] = *itemPb
-		}
-	}
-	pb.Options = optionsPb
+	pb.Options = st.Options
 
-	propertiesPb := map[string]string{}
-	for k, v := range st.Properties {
-		itemPb := &v
-		if itemPb != nil {
-			propertiesPb[k] = *itemPb
-		}
-	}
-	pb.Properties = propertiesPb
+	pb.Properties = st.Properties
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3987,40 +3343,12 @@ func createConnectionFromPb(pb *createConnectionPb) (*CreateConnection, error) {
 		return nil, nil
 	}
 	st := &CreateConnection{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	connectionTypeField := &pb.ConnectionType
-	if connectionTypeField != nil {
-		st.ConnectionType = *connectionTypeField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-
-	optionsField := map[string]string{}
-	for k, v := range pb.Options {
-		itemField := &v
-		if itemField != nil {
-			optionsField[k] = *itemField
-		}
-	}
-	st.Options = optionsField
-
-	propertiesField := map[string]string{}
-	for k, v := range pb.Properties {
-		itemField := &v
-		if itemField != nil {
-			propertiesField[k] = *itemField
-		}
-	}
-	st.Properties = propertiesField
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
+	st.Comment = pb.Comment
+	st.ConnectionType = pb.ConnectionType
+	st.Name = pb.Name
+	st.Options = pb.Options
+	st.Properties = pb.Properties
+	st.ReadOnly = pb.ReadOnly
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4036,30 +3364,39 @@ func (st createConnectionPb) MarshalJSON() ([]byte, error) {
 
 type CreateCredentialRequest struct {
 	// The AWS IAM role configuration
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRole
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentity
 	// The Azure service principal configuration. Only applicable when purpose
 	// is **STORAGE**.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string
 	// GCP long-lived credential. Databricks-created Google Cloud Storage
 	// service account.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
+	// Wire name: 'name'
 	Name string
 	// Indicates the purpose of the credential.
+	// Wire name: 'purpose'
 	Purpose CredentialPurpose
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
+	// Wire name: 'read_only'
 	ReadOnly bool
 	// Optional. Supplying true to this argument skips validation of the created
 	// set of credentials.
+	// Wire name: 'skip_validation'
 	SkipValidation bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createCredentialRequestToPb(st *CreateCredentialRequest) (*createCredentialRequestPb, error) {
@@ -4091,10 +3428,7 @@ func createCredentialRequestToPb(st *CreateCredentialRequest) (*createCredential
 		pb.AzureServicePrincipal = azureServicePrincipalPb
 	}
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
 	databricksGcpServiceAccountPb, err := databricksGcpServiceAccountToPb(st.DatabricksGcpServiceAccount)
 	if err != nil {
@@ -4104,25 +3438,13 @@ func createCredentialRequestToPb(st *CreateCredentialRequest) (*createCredential
 		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	purposePb := &st.Purpose
-	if purposePb != nil {
-		pb.Purpose = *purposePb
-	}
+	pb.Purpose = st.Purpose
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	skipValidationPb := &st.SkipValidation
-	if skipValidationPb != nil {
-		pb.SkipValidation = *skipValidationPb
-	}
+	pb.SkipValidation = st.SkipValidation
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4207,10 +3529,7 @@ func createCredentialRequestFromPb(pb *createCredentialRequestPb) (*CreateCreden
 	if azureServicePrincipalField != nil {
 		st.AzureServicePrincipal = azureServicePrincipalField
 	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
+	st.Comment = pb.Comment
 	databricksGcpServiceAccountField, err := databricksGcpServiceAccountFromPb(pb.DatabricksGcpServiceAccount)
 	if err != nil {
 		return nil, err
@@ -4218,22 +3537,10 @@ func createCredentialRequestFromPb(pb *createCredentialRequestPb) (*CreateCreden
 	if databricksGcpServiceAccountField != nil {
 		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	purposeField := &pb.Purpose
-	if purposeField != nil {
-		st.Purpose = *purposeField
-	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	skipValidationField := &pb.SkipValidation
-	if skipValidationField != nil {
-		st.SkipValidation = *skipValidationField
-	}
+	st.Name = pb.Name
+	st.Purpose = pb.Purpose
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4249,28 +3556,37 @@ func (st createCredentialRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateExternalLocation struct {
 	// The AWS access point to use when accesing s3 for this external location.
+	// Wire name: 'access_point'
 	AccessPoint string
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Name of the storage credential used with this location.
+	// Wire name: 'credential_name'
 	CredentialName string
 	// Encryption options that apply to clients connecting to cloud storage.
+	// Wire name: 'encryption_details'
 	EncryptionDetails *EncryptionDetails
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
+	// Wire name: 'fallback'
 	Fallback bool
 	// Name of the external location.
+	// Wire name: 'name'
 	Name string
 	// Indicates whether the external location is read-only.
+	// Wire name: 'read_only'
 	ReadOnly bool
 	// Skips validation of the storage credential associated with the external
 	// location.
+	// Wire name: 'skip_validation'
 	SkipValidation bool
 	// Path URL of the external location.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createExternalLocationToPb(st *CreateExternalLocation) (*createExternalLocationPb, error) {
@@ -4278,20 +3594,11 @@ func createExternalLocationToPb(st *CreateExternalLocation) (*createExternalLoca
 		return nil, nil
 	}
 	pb := &createExternalLocationPb{}
-	accessPointPb := &st.AccessPoint
-	if accessPointPb != nil {
-		pb.AccessPoint = *accessPointPb
-	}
+	pb.AccessPoint = st.AccessPoint
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	credentialNamePb := &st.CredentialName
-	if credentialNamePb != nil {
-		pb.CredentialName = *credentialNamePb
-	}
+	pb.CredentialName = st.CredentialName
 
 	encryptionDetailsPb, err := encryptionDetailsToPb(st.EncryptionDetails)
 	if err != nil {
@@ -4301,30 +3608,15 @@ func createExternalLocationToPb(st *CreateExternalLocation) (*createExternalLoca
 		pb.EncryptionDetails = encryptionDetailsPb
 	}
 
-	fallbackPb := &st.Fallback
-	if fallbackPb != nil {
-		pb.Fallback = *fallbackPb
-	}
+	pb.Fallback = st.Fallback
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	skipValidationPb := &st.SkipValidation
-	if skipValidationPb != nil {
-		pb.SkipValidation = *skipValidationPb
-	}
+	pb.SkipValidation = st.SkipValidation
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4386,18 +3678,9 @@ func createExternalLocationFromPb(pb *createExternalLocationPb) (*CreateExternal
 		return nil, nil
 	}
 	st := &CreateExternalLocation{}
-	accessPointField := &pb.AccessPoint
-	if accessPointField != nil {
-		st.AccessPoint = *accessPointField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	credentialNameField := &pb.CredentialName
-	if credentialNameField != nil {
-		st.CredentialName = *credentialNameField
-	}
+	st.AccessPoint = pb.AccessPoint
+	st.Comment = pb.Comment
+	st.CredentialName = pb.CredentialName
 	encryptionDetailsField, err := encryptionDetailsFromPb(pb.EncryptionDetails)
 	if err != nil {
 		return nil, err
@@ -4405,26 +3688,11 @@ func createExternalLocationFromPb(pb *createExternalLocationPb) (*CreateExternal
 	if encryptionDetailsField != nil {
 		st.EncryptionDetails = encryptionDetailsField
 	}
-	fallbackField := &pb.Fallback
-	if fallbackField != nil {
-		st.Fallback = *fallbackField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	skipValidationField := &pb.SkipValidation
-	if skipValidationField != nil {
-		st.SkipValidation = *skipValidationField
-	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.Fallback = pb.Fallback
+	st.Name = pb.Name
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4440,53 +3708,74 @@ func (st createExternalLocationPb) MarshalJSON() ([]byte, error) {
 
 type CreateFunction struct {
 	// Name of parent catalog.
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Scalar function return data type.
+	// Wire name: 'data_type'
 	DataType ColumnTypeName
 	// External function language.
+	// Wire name: 'external_language'
 	ExternalLanguage string
 	// External function name.
+	// Wire name: 'external_name'
 	ExternalName string
 	// Pretty printed function data type.
+	// Wire name: 'full_data_type'
 	FullDataType string
 
+	// Wire name: 'input_params'
 	InputParams FunctionParameterInfos
 	// Whether the function is deterministic.
+	// Wire name: 'is_deterministic'
 	IsDeterministic bool
 	// Function null call.
+	// Wire name: 'is_null_call'
 	IsNullCall bool
 	// Name of function, relative to parent schema.
+	// Wire name: 'name'
 	Name string
 	// Function parameter style. **S** is the value for SQL.
+	// Wire name: 'parameter_style'
 	ParameterStyle CreateFunctionParameterStyle
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
+	// Wire name: 'properties'
 	Properties string
 	// Table function return parameters.
+	// Wire name: 'return_params'
 	ReturnParams *FunctionParameterInfos
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
 	// type is not supported), and the __sql_data_access__ field must be
 	// **NO_SQL**.
+	// Wire name: 'routine_body'
 	RoutineBody CreateFunctionRoutineBody
 	// Function body.
+	// Wire name: 'routine_definition'
 	RoutineDefinition string
 	// Function dependencies.
+	// Wire name: 'routine_dependencies'
 	RoutineDependencies *DependencyList
 	// Name of parent schema relative to its parent catalog.
+	// Wire name: 'schema_name'
 	SchemaName string
 	// Function security type.
+	// Wire name: 'security_type'
 	SecurityType CreateFunctionSecurityType
 	// Specific name of the function; Reserved for future use.
+	// Wire name: 'specific_name'
 	SpecificName string
 	// Function SQL data access.
+	// Wire name: 'sql_data_access'
 	SqlDataAccess CreateFunctionSqlDataAccess
 	// List of schemes whose objects can be referenced without qualification.
+	// Wire name: 'sql_path'
 	SqlPath string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createFunctionToPb(st *CreateFunction) (*createFunctionPb, error) {
@@ -4494,35 +3783,17 @@ func createFunctionToPb(st *CreateFunction) (*createFunctionPb, error) {
 		return nil, nil
 	}
 	pb := &createFunctionPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	dataTypePb := &st.DataType
-	if dataTypePb != nil {
-		pb.DataType = *dataTypePb
-	}
+	pb.DataType = st.DataType
 
-	externalLanguagePb := &st.ExternalLanguage
-	if externalLanguagePb != nil {
-		pb.ExternalLanguage = *externalLanguagePb
-	}
+	pb.ExternalLanguage = st.ExternalLanguage
 
-	externalNamePb := &st.ExternalName
-	if externalNamePb != nil {
-		pb.ExternalName = *externalNamePb
-	}
+	pb.ExternalName = st.ExternalName
 
-	fullDataTypePb := &st.FullDataType
-	if fullDataTypePb != nil {
-		pb.FullDataType = *fullDataTypePb
-	}
+	pb.FullDataType = st.FullDataType
 
 	inputParamsPb, err := functionParameterInfosToPb(&st.InputParams)
 	if err != nil {
@@ -4532,30 +3803,15 @@ func createFunctionToPb(st *CreateFunction) (*createFunctionPb, error) {
 		pb.InputParams = *inputParamsPb
 	}
 
-	isDeterministicPb := &st.IsDeterministic
-	if isDeterministicPb != nil {
-		pb.IsDeterministic = *isDeterministicPb
-	}
+	pb.IsDeterministic = st.IsDeterministic
 
-	isNullCallPb := &st.IsNullCall
-	if isNullCallPb != nil {
-		pb.IsNullCall = *isNullCallPb
-	}
+	pb.IsNullCall = st.IsNullCall
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	parameterStylePb := &st.ParameterStyle
-	if parameterStylePb != nil {
-		pb.ParameterStyle = *parameterStylePb
-	}
+	pb.ParameterStyle = st.ParameterStyle
 
-	propertiesPb := &st.Properties
-	if propertiesPb != nil {
-		pb.Properties = *propertiesPb
-	}
+	pb.Properties = st.Properties
 
 	returnParamsPb, err := functionParameterInfosToPb(st.ReturnParams)
 	if err != nil {
@@ -4565,15 +3821,9 @@ func createFunctionToPb(st *CreateFunction) (*createFunctionPb, error) {
 		pb.ReturnParams = returnParamsPb
 	}
 
-	routineBodyPb := &st.RoutineBody
-	if routineBodyPb != nil {
-		pb.RoutineBody = *routineBodyPb
-	}
+	pb.RoutineBody = st.RoutineBody
 
-	routineDefinitionPb := &st.RoutineDefinition
-	if routineDefinitionPb != nil {
-		pb.RoutineDefinition = *routineDefinitionPb
-	}
+	pb.RoutineDefinition = st.RoutineDefinition
 
 	routineDependenciesPb, err := dependencyListToPb(st.RoutineDependencies)
 	if err != nil {
@@ -4583,30 +3833,15 @@ func createFunctionToPb(st *CreateFunction) (*createFunctionPb, error) {
 		pb.RoutineDependencies = routineDependenciesPb
 	}
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
-	securityTypePb := &st.SecurityType
-	if securityTypePb != nil {
-		pb.SecurityType = *securityTypePb
-	}
+	pb.SecurityType = st.SecurityType
 
-	specificNamePb := &st.SpecificName
-	if specificNamePb != nil {
-		pb.SpecificName = *specificNamePb
-	}
+	pb.SpecificName = st.SpecificName
 
-	sqlDataAccessPb := &st.SqlDataAccess
-	if sqlDataAccessPb != nil {
-		pb.SqlDataAccess = *sqlDataAccessPb
-	}
+	pb.SqlDataAccess = st.SqlDataAccess
 
-	sqlPathPb := &st.SqlPath
-	if sqlPathPb != nil {
-		pb.SqlPath = *sqlPathPb
-	}
+	pb.SqlPath = st.SqlPath
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4693,30 +3928,12 @@ func createFunctionFromPb(pb *createFunctionPb) (*CreateFunction, error) {
 		return nil, nil
 	}
 	st := &CreateFunction{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	dataTypeField := &pb.DataType
-	if dataTypeField != nil {
-		st.DataType = *dataTypeField
-	}
-	externalLanguageField := &pb.ExternalLanguage
-	if externalLanguageField != nil {
-		st.ExternalLanguage = *externalLanguageField
-	}
-	externalNameField := &pb.ExternalName
-	if externalNameField != nil {
-		st.ExternalName = *externalNameField
-	}
-	fullDataTypeField := &pb.FullDataType
-	if fullDataTypeField != nil {
-		st.FullDataType = *fullDataTypeField
-	}
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.DataType = pb.DataType
+	st.ExternalLanguage = pb.ExternalLanguage
+	st.ExternalName = pb.ExternalName
+	st.FullDataType = pb.FullDataType
 	inputParamsField, err := functionParameterInfosFromPb(&pb.InputParams)
 	if err != nil {
 		return nil, err
@@ -4724,26 +3941,11 @@ func createFunctionFromPb(pb *createFunctionPb) (*CreateFunction, error) {
 	if inputParamsField != nil {
 		st.InputParams = *inputParamsField
 	}
-	isDeterministicField := &pb.IsDeterministic
-	if isDeterministicField != nil {
-		st.IsDeterministic = *isDeterministicField
-	}
-	isNullCallField := &pb.IsNullCall
-	if isNullCallField != nil {
-		st.IsNullCall = *isNullCallField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	parameterStyleField := &pb.ParameterStyle
-	if parameterStyleField != nil {
-		st.ParameterStyle = *parameterStyleField
-	}
-	propertiesField := &pb.Properties
-	if propertiesField != nil {
-		st.Properties = *propertiesField
-	}
+	st.IsDeterministic = pb.IsDeterministic
+	st.IsNullCall = pb.IsNullCall
+	st.Name = pb.Name
+	st.ParameterStyle = pb.ParameterStyle
+	st.Properties = pb.Properties
 	returnParamsField, err := functionParameterInfosFromPb(pb.ReturnParams)
 	if err != nil {
 		return nil, err
@@ -4751,14 +3953,8 @@ func createFunctionFromPb(pb *createFunctionPb) (*CreateFunction, error) {
 	if returnParamsField != nil {
 		st.ReturnParams = returnParamsField
 	}
-	routineBodyField := &pb.RoutineBody
-	if routineBodyField != nil {
-		st.RoutineBody = *routineBodyField
-	}
-	routineDefinitionField := &pb.RoutineDefinition
-	if routineDefinitionField != nil {
-		st.RoutineDefinition = *routineDefinitionField
-	}
+	st.RoutineBody = pb.RoutineBody
+	st.RoutineDefinition = pb.RoutineDefinition
 	routineDependenciesField, err := dependencyListFromPb(pb.RoutineDependencies)
 	if err != nil {
 		return nil, err
@@ -4766,26 +3962,11 @@ func createFunctionFromPb(pb *createFunctionPb) (*CreateFunction, error) {
 	if routineDependenciesField != nil {
 		st.RoutineDependencies = routineDependenciesField
 	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
-	securityTypeField := &pb.SecurityType
-	if securityTypeField != nil {
-		st.SecurityType = *securityTypeField
-	}
-	specificNameField := &pb.SpecificName
-	if specificNameField != nil {
-		st.SpecificName = *specificNameField
-	}
-	sqlDataAccessField := &pb.SqlDataAccess
-	if sqlDataAccessField != nil {
-		st.SqlDataAccess = *sqlDataAccessField
-	}
-	sqlPathField := &pb.SqlPath
-	if sqlPathField != nil {
-		st.SqlPath = *sqlPathField
-	}
+	st.SchemaName = pb.SchemaName
+	st.SecurityType = pb.SecurityType
+	st.SpecificName = pb.SpecificName
+	st.SqlDataAccess = pb.SqlDataAccess
+	st.SqlPath = pb.SqlPath
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4844,6 +4025,7 @@ func createFunctionParameterStyleFromPb(pb *createFunctionParameterStylePb) (*Cr
 
 type CreateFunctionRequest struct {
 	// Partial __FunctionInfo__ specifying the function to be created.
+	// Wire name: 'function_info'
 	FunctionInfo CreateFunction
 }
 
@@ -5049,16 +4231,19 @@ func createFunctionSqlDataAccessFromPb(pb *createFunctionSqlDataAccessPb) (*Crea
 
 type CreateMetastore struct {
 	// The user-specified name of the metastore.
+	// Wire name: 'name'
 	Name string
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
 	// The field can be omitted in the __workspace-level__ __API__ but not in
 	// the __account-level__ __API__. If this field is omitted, the region of
 	// the workspace receiving the request will be used.
+	// Wire name: 'region'
 	Region string
 	// The storage root URL for metastore
+	// Wire name: 'storage_root'
 	StorageRoot string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createMetastoreToPb(st *CreateMetastore) (*createMetastorePb, error) {
@@ -5066,20 +4251,11 @@ func createMetastoreToPb(st *CreateMetastore) (*createMetastorePb, error) {
 		return nil, nil
 	}
 	pb := &createMetastorePb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
-	storageRootPb := &st.StorageRoot
-	if storageRootPb != nil {
-		pb.StorageRoot = *storageRootPb
-	}
+	pb.StorageRoot = st.StorageRoot
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5129,18 +4305,9 @@ func createMetastoreFromPb(pb *createMetastorePb) (*CreateMetastore, error) {
 		return nil, nil
 	}
 	st := &CreateMetastore{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
-	storageRootField := &pb.StorageRoot
-	if storageRootField != nil {
-		st.StorageRoot = *storageRootField
-	}
+	st.Name = pb.Name
+	st.Region = pb.Region
+	st.StorageRoot = pb.StorageRoot
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5158,11 +4325,14 @@ type CreateMetastoreAssignment struct {
 	// The name of the default catalog in the metastore. This field is
 	// depracted. Please use "Default Namespace API" to configure the default
 	// catalog for a Databricks workspace.
+	// Wire name: 'default_catalog_name'
 	DefaultCatalogName string
 	// The unique ID of the metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// A workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func createMetastoreAssignmentToPb(st *CreateMetastoreAssignment) (*createMetastoreAssignmentPb, error) {
@@ -5170,20 +4340,11 @@ func createMetastoreAssignmentToPb(st *CreateMetastoreAssignment) (*createMetast
 		return nil, nil
 	}
 	pb := &createMetastoreAssignmentPb{}
-	defaultCatalogNamePb := &st.DefaultCatalogName
-	if defaultCatalogNamePb != nil {
-		pb.DefaultCatalogName = *defaultCatalogNamePb
-	}
+	pb.DefaultCatalogName = st.DefaultCatalogName
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -5229,63 +4390,68 @@ func createMetastoreAssignmentFromPb(pb *createMetastoreAssignmentPb) (*CreateMe
 		return nil, nil
 	}
 	st := &CreateMetastoreAssignment{}
-	defaultCatalogNameField := &pb.DefaultCatalogName
-	if defaultCatalogNameField != nil {
-		st.DefaultCatalogName = *defaultCatalogNameField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.DefaultCatalogName = pb.DefaultCatalogName
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
 
 type CreateMonitor struct {
 	// The directory to store monitoring assets (e.g. dashboard, metric tables).
+	// Wire name: 'assets_dir'
 	AssetsDir string
 	// Name of the baseline table from which drift metrics are computed from.
 	// Columns in the monitored table should also be present in the baseline
 	// table.
+	// Wire name: 'baseline_table_name'
 	BaselineTableName string
 	// Custom metrics to compute on the monitored table. These can be aggregate
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
+	// Wire name: 'custom_metrics'
 	CustomMetrics []MonitorMetric
 	// The data classification config for the monitor.
+	// Wire name: 'data_classification_config'
 	DataClassificationConfig *MonitorDataClassificationConfig
 	// Configuration for monitoring inference logs.
+	// Wire name: 'inference_log'
 	InferenceLog *MonitorInferenceLog
 	// The notification settings for the monitor.
+	// Wire name: 'notifications'
 	Notifications *MonitorNotifications
 	// Schema where output metric tables are created.
+	// Wire name: 'output_schema_name'
 	OutputSchemaName string
 	// The schedule for automatically updating and refreshing metric tables.
+	// Wire name: 'schedule'
 	Schedule *MonitorCronSchedule
 	// Whether to skip creating a default dashboard summarizing data quality
 	// metrics.
+	// Wire name: 'skip_builtin_dashboard'
 	SkipBuiltinDashboard bool
 	// List of column expressions to slice data with for targeted analysis. The
 	// data is grouped by each expression independently, resulting in a separate
 	// slice for each predicate and its complements. For high-cardinality
 	// columns, only the top 100 unique values by frequency will generate
 	// slices.
+	// Wire name: 'slicing_exprs'
 	SlicingExprs []string
 	// Configuration for monitoring snapshot tables.
+	// Wire name: 'snapshot'
 	Snapshot *MonitorSnapshot
 	// Full name of the table.
-	TableName string
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 	// Configuration for monitoring time series tables.
+	// Wire name: 'time_series'
 	TimeSeries *MonitorTimeSeries
 	// Optional argument to specify the warehouse for dashboard creation. If not
 	// specified, the first running warehouse will be used.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createMonitorToPb(st *CreateMonitor) (*createMonitorPb, error) {
@@ -5293,15 +4459,9 @@ func createMonitorToPb(st *CreateMonitor) (*createMonitorPb, error) {
 		return nil, nil
 	}
 	pb := &createMonitorPb{}
-	assetsDirPb := &st.AssetsDir
-	if assetsDirPb != nil {
-		pb.AssetsDir = *assetsDirPb
-	}
+	pb.AssetsDir = st.AssetsDir
 
-	baselineTableNamePb := &st.BaselineTableName
-	if baselineTableNamePb != nil {
-		pb.BaselineTableName = *baselineTableNamePb
-	}
+	pb.BaselineTableName = st.BaselineTableName
 
 	var customMetricsPb []monitorMetricPb
 	for _, item := range st.CustomMetrics {
@@ -5339,10 +4499,7 @@ func createMonitorToPb(st *CreateMonitor) (*createMonitorPb, error) {
 		pb.Notifications = notificationsPb
 	}
 
-	outputSchemaNamePb := &st.OutputSchemaName
-	if outputSchemaNamePb != nil {
-		pb.OutputSchemaName = *outputSchemaNamePb
-	}
+	pb.OutputSchemaName = st.OutputSchemaName
 
 	schedulePb, err := monitorCronScheduleToPb(st.Schedule)
 	if err != nil {
@@ -5352,19 +4509,9 @@ func createMonitorToPb(st *CreateMonitor) (*createMonitorPb, error) {
 		pb.Schedule = schedulePb
 	}
 
-	skipBuiltinDashboardPb := &st.SkipBuiltinDashboard
-	if skipBuiltinDashboardPb != nil {
-		pb.SkipBuiltinDashboard = *skipBuiltinDashboardPb
-	}
+	pb.SkipBuiltinDashboard = st.SkipBuiltinDashboard
 
-	var slicingExprsPb []string
-	for _, item := range st.SlicingExprs {
-		itemPb := &item
-		if itemPb != nil {
-			slicingExprsPb = append(slicingExprsPb, *itemPb)
-		}
-	}
-	pb.SlicingExprs = slicingExprsPb
+	pb.SlicingExprs = st.SlicingExprs
 
 	snapshotPb, err := monitorSnapshotToPb(st.Snapshot)
 	if err != nil {
@@ -5374,10 +4521,7 @@ func createMonitorToPb(st *CreateMonitor) (*createMonitorPb, error) {
 		pb.Snapshot = snapshotPb
 	}
 
-	tableNamePb := &st.TableName
-	if tableNamePb != nil {
-		pb.TableName = *tableNamePb
-	}
+	pb.TableName = st.TableName
 
 	timeSeriesPb, err := monitorTimeSeriesToPb(st.TimeSeries)
 	if err != nil {
@@ -5387,10 +4531,7 @@ func createMonitorToPb(st *CreateMonitor) (*createMonitorPb, error) {
 		pb.TimeSeries = timeSeriesPb
 	}
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5469,23 +4610,17 @@ func createMonitorFromPb(pb *createMonitorPb) (*CreateMonitor, error) {
 		return nil, nil
 	}
 	st := &CreateMonitor{}
-	assetsDirField := &pb.AssetsDir
-	if assetsDirField != nil {
-		st.AssetsDir = *assetsDirField
-	}
-	baselineTableNameField := &pb.BaselineTableName
-	if baselineTableNameField != nil {
-		st.BaselineTableName = *baselineTableNameField
-	}
+	st.AssetsDir = pb.AssetsDir
+	st.BaselineTableName = pb.BaselineTableName
 
 	var customMetricsField []MonitorMetric
-	for _, item := range pb.CustomMetrics {
-		itemField, err := monitorMetricFromPb(&item)
+	for _, itemPb := range pb.CustomMetrics {
+		item, err := monitorMetricFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			customMetricsField = append(customMetricsField, *itemField)
+		if item != nil {
+			customMetricsField = append(customMetricsField, *item)
 		}
 	}
 	st.CustomMetrics = customMetricsField
@@ -5510,10 +4645,7 @@ func createMonitorFromPb(pb *createMonitorPb) (*CreateMonitor, error) {
 	if notificationsField != nil {
 		st.Notifications = notificationsField
 	}
-	outputSchemaNameField := &pb.OutputSchemaName
-	if outputSchemaNameField != nil {
-		st.OutputSchemaName = *outputSchemaNameField
-	}
+	st.OutputSchemaName = pb.OutputSchemaName
 	scheduleField, err := monitorCronScheduleFromPb(pb.Schedule)
 	if err != nil {
 		return nil, err
@@ -5521,19 +4653,8 @@ func createMonitorFromPb(pb *createMonitorPb) (*CreateMonitor, error) {
 	if scheduleField != nil {
 		st.Schedule = scheduleField
 	}
-	skipBuiltinDashboardField := &pb.SkipBuiltinDashboard
-	if skipBuiltinDashboardField != nil {
-		st.SkipBuiltinDashboard = *skipBuiltinDashboardField
-	}
-
-	var slicingExprsField []string
-	for _, item := range pb.SlicingExprs {
-		itemField := &item
-		if itemField != nil {
-			slicingExprsField = append(slicingExprsField, *itemField)
-		}
-	}
-	st.SlicingExprs = slicingExprsField
+	st.SkipBuiltinDashboard = pb.SkipBuiltinDashboard
+	st.SlicingExprs = pb.SlicingExprs
 	snapshotField, err := monitorSnapshotFromPb(pb.Snapshot)
 	if err != nil {
 		return nil, err
@@ -5541,10 +4662,7 @@ func createMonitorFromPb(pb *createMonitorPb) (*CreateMonitor, error) {
 	if snapshotField != nil {
 		st.Snapshot = snapshotField
 	}
-	tableNameField := &pb.TableName
-	if tableNameField != nil {
-		st.TableName = *tableNameField
-	}
+	st.TableName = pb.TableName
 	timeSeriesField, err := monitorTimeSeriesFromPb(pb.TimeSeries)
 	if err != nil {
 		return nil, err
@@ -5552,10 +4670,7 @@ func createMonitorFromPb(pb *createMonitorPb) (*CreateMonitor, error) {
 	if timeSeriesField != nil {
 		st.TimeSeries = timeSeriesField
 	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5572,6 +4687,7 @@ func (st createMonitorPb) MarshalJSON() ([]byte, error) {
 // Create an Online Table
 type CreateOnlineTableRequest struct {
 	// Online Table information.
+	// Wire name: 'table'
 	Table OnlineTable
 }
 
@@ -5639,18 +4755,23 @@ func createOnlineTableRequestFromPb(pb *createOnlineTableRequestPb) (*CreateOnli
 
 type CreateRegisteredModelRequest struct {
 	// The name of the catalog where the schema and the registered model reside
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// The comment attached to the registered model
+	// Wire name: 'comment'
 	Comment string
 	// The name of the registered model
+	// Wire name: 'name'
 	Name string
 	// The name of the schema where the registered model resides
+	// Wire name: 'schema_name'
 	SchemaName string
 	// The storage location on the cloud under which model version data files
 	// are stored
+	// Wire name: 'storage_location'
 	StorageLocation string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createRegisteredModelRequestToPb(st *CreateRegisteredModelRequest) (*createRegisteredModelRequestPb, error) {
@@ -5658,30 +4779,15 @@ func createRegisteredModelRequestToPb(st *CreateRegisteredModelRequest) (*create
 		return nil, nil
 	}
 	pb := &createRegisteredModelRequestPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5733,26 +4839,11 @@ func createRegisteredModelRequestFromPb(pb *createRegisteredModelRequestPb) (*Cr
 		return nil, nil
 	}
 	st := &CreateRegisteredModelRequest{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.SchemaName = pb.SchemaName
+	st.StorageLocation = pb.StorageLocation
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5817,17 +4908,22 @@ func createResponseFromPb(pb *createResponsePb) (*CreateResponse, error) {
 
 type CreateSchema struct {
 	// Name of parent catalog.
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Name of schema, relative to parent catalog.
+	// Wire name: 'name'
 	Name string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string
 	// Storage root URL for managed tables within schema.
+	// Wire name: 'storage_root'
 	StorageRoot string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createSchemaToPb(st *CreateSchema) (*createSchemaPb, error) {
@@ -5835,34 +4931,15 @@ func createSchemaToPb(st *CreateSchema) (*createSchemaPb, error) {
 		return nil, nil
 	}
 	pb := &createSchemaPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	propertiesPb := map[string]string{}
-	for k, v := range st.Properties {
-		itemPb := &v
-		if itemPb != nil {
-			propertiesPb[k] = *itemPb
-		}
-	}
-	pb.Properties = propertiesPb
+	pb.Properties = st.Properties
 
-	storageRootPb := &st.StorageRoot
-	if storageRootPb != nil {
-		pb.StorageRoot = *storageRootPb
-	}
+	pb.StorageRoot = st.StorageRoot
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5913,31 +4990,11 @@ func createSchemaFromPb(pb *createSchemaPb) (*CreateSchema, error) {
 		return nil, nil
 	}
 	st := &CreateSchema{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-
-	propertiesField := map[string]string{}
-	for k, v := range pb.Properties {
-		itemField := &v
-		if itemField != nil {
-			propertiesField[k] = *itemField
-		}
-	}
-	st.Properties = propertiesField
-	storageRootField := &pb.StorageRoot
-	if storageRootField != nil {
-		st.StorageRoot = *storageRootField
-	}
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.Properties = pb.Properties
+	st.StorageRoot = pb.StorageRoot
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5953,26 +5010,35 @@ func (st createSchemaPb) MarshalJSON() ([]byte, error) {
 
 type CreateStorageCredential struct {
 	// The AWS IAM role configuration.
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRoleRequest
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentityRequest
 	// The Azure service principal configuration.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal
 	// The Cloudflare API token configuration.
+	// Wire name: 'cloudflare_api_token'
 	CloudflareApiToken *CloudflareApiToken
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string
 	// The Databricks managed GCP service account configuration.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest
 	// The credential name. The name must be unique within the metastore.
+	// Wire name: 'name'
 	Name string
 	// Whether the storage credential is only usable for read operations.
+	// Wire name: 'read_only'
 	ReadOnly bool
 	// Supplying true to this argument skips validation of the created
 	// credential.
+	// Wire name: 'skip_validation'
 	SkipValidation bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createStorageCredentialToPb(st *CreateStorageCredential) (*createStorageCredentialPb, error) {
@@ -6012,10 +5078,7 @@ func createStorageCredentialToPb(st *CreateStorageCredential) (*createStorageCre
 		pb.CloudflareApiToken = cloudflareApiTokenPb
 	}
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
 	databricksGcpServiceAccountPb, err := databricksGcpServiceAccountRequestToPb(st.DatabricksGcpServiceAccount)
 	if err != nil {
@@ -6025,20 +5088,11 @@ func createStorageCredentialToPb(st *CreateStorageCredential) (*createStorageCre
 		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	skipValidationPb := &st.SkipValidation
-	if skipValidationPb != nil {
-		pb.SkipValidation = *skipValidationPb
-	}
+	pb.SkipValidation = st.SkipValidation
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6126,10 +5180,7 @@ func createStorageCredentialFromPb(pb *createStorageCredentialPb) (*CreateStorag
 	if cloudflareApiTokenField != nil {
 		st.CloudflareApiToken = cloudflareApiTokenField
 	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
+	st.Comment = pb.Comment
 	databricksGcpServiceAccountField, err := databricksGcpServiceAccountRequestFromPb(pb.DatabricksGcpServiceAccount)
 	if err != nil {
 		return nil, err
@@ -6137,18 +5188,9 @@ func createStorageCredentialFromPb(pb *createStorageCredentialPb) (*CreateStorag
 	if databricksGcpServiceAccountField != nil {
 		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	skipValidationField := &pb.SkipValidation
-	if skipValidationField != nil {
-		st.SkipValidation = *skipValidationField
-	}
+	st.Name = pb.Name
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6166,8 +5208,10 @@ type CreateTableConstraint struct {
 	// A table constraint, as defined by *one* of the following fields being
 	// set: __primary_key_constraint__, __foreign_key_constraint__,
 	// __named_table_constraint__.
+	// Wire name: 'constraint'
 	Constraint TableConstraint
 	// The full name of the table referenced by the constraint.
+	// Wire name: 'full_name_arg'
 	FullNameArg string
 }
 
@@ -6184,10 +5228,7 @@ func createTableConstraintToPb(st *CreateTableConstraint) (*createTableConstrain
 		pb.Constraint = *constraintPb
 	}
 
-	fullNameArgPb := &st.FullNameArg
-	if fullNameArgPb != nil {
-		pb.FullNameArg = *fullNameArgPb
-	}
+	pb.FullNameArg = st.FullNameArg
 
 	return pb, nil
 }
@@ -6238,24 +5279,26 @@ func createTableConstraintFromPb(pb *createTableConstraintPb) (*CreateTableConst
 	if constraintField != nil {
 		st.Constraint = *constraintField
 	}
-	fullNameArgField := &pb.FullNameArg
-	if fullNameArgField != nil {
-		st.FullNameArg = *fullNameArgField
-	}
+	st.FullNameArg = pb.FullNameArg
 
 	return st, nil
 }
 
 type CreateVolumeRequestContent struct {
 	// The name of the catalog where the schema and the volume are
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// The comment attached to the volume
+	// Wire name: 'comment'
 	Comment string
 	// The name of the volume
+	// Wire name: 'name'
 	Name string
 	// The name of the schema where the volume is
+	// Wire name: 'schema_name'
 	SchemaName string
 	// The storage location on the cloud
+	// Wire name: 'storage_location'
 	StorageLocation string
 	// The type of the volume. An external volume is located in the specified
 	// external location. A managed volume is located in the default location
@@ -6263,9 +5306,10 @@ type CreateVolumeRequestContent struct {
 	// Metastore. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
+	// Wire name: 'volume_type'
 	VolumeType VolumeType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createVolumeRequestContentToPb(st *CreateVolumeRequestContent) (*createVolumeRequestContentPb, error) {
@@ -6273,35 +5317,17 @@ func createVolumeRequestContentToPb(st *CreateVolumeRequestContent) (*createVolu
 		return nil, nil
 	}
 	pb := &createVolumeRequestContentPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
-	volumeTypePb := &st.VolumeType
-	if volumeTypePb != nil {
-		pb.VolumeType = *volumeTypePb
-	}
+	pb.VolumeType = st.VolumeType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6359,30 +5385,12 @@ func createVolumeRequestContentFromPb(pb *createVolumeRequestContentPb) (*Create
 		return nil, nil
 	}
 	st := &CreateVolumeRequestContent{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
-	volumeTypeField := &pb.VolumeType
-	if volumeTypeField != nil {
-		st.VolumeType = *volumeTypeField
-	}
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.SchemaName = pb.SchemaName
+	st.StorageLocation = pb.StorageLocation
+	st.VolumeType = pb.VolumeType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6398,49 +5406,67 @@ func (st createVolumeRequestContentPb) MarshalJSON() ([]byte, error) {
 
 type CredentialInfo struct {
 	// The AWS IAM role configuration
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRole
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentity
 	// The Azure service principal configuration. Only applicable when purpose
 	// is **STORAGE**.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string
 	// Time at which this credential was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of credential creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// GCP long-lived credential. Databricks-created Google Cloud Storage
 	// service account.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount
 	// The full name of the credential.
+	// Wire name: 'full_name'
 	FullName string
 	// The unique identifier of the credential.
+	// Wire name: 'id'
 	Id string
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode
 	// Unique identifier of the parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
+	// Wire name: 'name'
 	Name string
 	// Username of current owner of credential.
+	// Wire name: 'owner'
 	Owner string
 	// Indicates the purpose of the credential.
+	// Wire name: 'purpose'
 	Purpose CredentialPurpose
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
+	// Wire name: 'read_only'
 	ReadOnly bool
 	// Time at which this credential was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of user who last modified the credential.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 	// Whether this credential is the current metastore's root storage
 	// credential. Only applicable when purpose is **STORAGE**.
+	// Wire name: 'used_for_managed_storage'
 	UsedForManagedStorage bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func credentialInfoToPb(st *CredentialInfo) (*credentialInfoPb, error) {
@@ -6472,20 +5498,11 @@ func credentialInfoToPb(st *CredentialInfo) (*credentialInfoPb, error) {
 		pb.AzureServicePrincipal = azureServicePrincipalPb
 	}
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
 	databricksGcpServiceAccountPb, err := databricksGcpServiceAccountToPb(st.DatabricksGcpServiceAccount)
 	if err != nil {
@@ -6495,60 +5512,27 @@ func credentialInfoToPb(st *CredentialInfo) (*credentialInfoPb, error) {
 		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
 	}
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	isolationModePb := &st.IsolationMode
-	if isolationModePb != nil {
-		pb.IsolationMode = *isolationModePb
-	}
+	pb.IsolationMode = st.IsolationMode
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	purposePb := &st.Purpose
-	if purposePb != nil {
-		pb.Purpose = *purposePb
-	}
+	pb.Purpose = st.Purpose
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
-	usedForManagedStoragePb := &st.UsedForManagedStorage
-	if usedForManagedStoragePb != nil {
-		pb.UsedForManagedStorage = *usedForManagedStoragePb
-	}
+	pb.UsedForManagedStorage = st.UsedForManagedStorage
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6652,18 +5636,9 @@ func credentialInfoFromPb(pb *credentialInfoPb) (*CredentialInfo, error) {
 	if azureServicePrincipalField != nil {
 		st.AzureServicePrincipal = azureServicePrincipalField
 	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
 	databricksGcpServiceAccountField, err := databricksGcpServiceAccountFromPb(pb.DatabricksGcpServiceAccount)
 	if err != nil {
 		return nil, err
@@ -6671,50 +5646,17 @@ func credentialInfoFromPb(pb *credentialInfoPb) (*CredentialInfo, error) {
 	if databricksGcpServiceAccountField != nil {
 		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
 	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	isolationModeField := &pb.IsolationMode
-	if isolationModeField != nil {
-		st.IsolationMode = *isolationModeField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	purposeField := &pb.Purpose
-	if purposeField != nil {
-		st.Purpose = *purposeField
-	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
-	usedForManagedStorageField := &pb.UsedForManagedStorage
-	if usedForManagedStorageField != nil {
-		st.UsedForManagedStorage = *usedForManagedStorageField
-	}
+	st.FullName = pb.FullName
+	st.Id = pb.Id
+	st.IsolationMode = pb.IsolationMode
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.Purpose = pb.Purpose
+	st.ReadOnly = pb.ReadOnly
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.UsedForManagedStorage = pb.UsedForManagedStorage
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6819,11 +5761,13 @@ func credentialTypeFromPb(pb *credentialTypePb) (*CredentialType, error) {
 
 type CredentialValidationResult struct {
 	// Error message would exist when the result does not equal to **PASS**.
+	// Wire name: 'message'
 	Message string
 	// The results of the tested operation.
+	// Wire name: 'result'
 	Result ValidateCredentialResult
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func credentialValidationResultToPb(st *CredentialValidationResult) (*credentialValidationResultPb, error) {
@@ -6831,15 +5775,9 @@ func credentialValidationResultToPb(st *CredentialValidationResult) (*credential
 		return nil, nil
 	}
 	pb := &credentialValidationResultPb{}
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
-	resultPb := &st.Result
-	if resultPb != nil {
-		pb.Result = *resultPb
-	}
+	pb.Result = st.Result
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6884,14 +5822,8 @@ func credentialValidationResultFromPb(pb *credentialValidationResultPb) (*Creden
 		return nil, nil
 	}
 	st := &CredentialValidationResult{}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
-	resultField := &pb.Result
-	if resultField != nil {
-		st.Result = *resultField
-	}
+	st.Message = pb.Message
+	st.Result = pb.Result
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6908,6 +5840,7 @@ func (st credentialValidationResultPb) MarshalJSON() ([]byte, error) {
 // Currently assigned workspaces
 type CurrentWorkspaceBindings struct {
 	// A list of workspace IDs.
+	// Wire name: 'workspaces'
 	Workspaces []int64
 }
 
@@ -6916,15 +5849,7 @@ func currentWorkspaceBindingsToPb(st *CurrentWorkspaceBindings) (*currentWorkspa
 		return nil, nil
 	}
 	pb := &currentWorkspaceBindingsPb{}
-
-	var workspacesPb []int64
-	for _, item := range st.Workspaces {
-		itemPb := &item
-		if itemPb != nil {
-			workspacesPb = append(workspacesPb, *itemPb)
-		}
-	}
-	pb.Workspaces = workspacesPb
+	pb.Workspaces = st.Workspaces
 
 	return pb, nil
 }
@@ -6964,15 +5889,7 @@ func currentWorkspaceBindingsFromPb(pb *currentWorkspaceBindingsPb) (*CurrentWor
 		return nil, nil
 	}
 	st := &CurrentWorkspaceBindings{}
-
-	var workspacesField []int64
-	for _, item := range pb.Workspaces {
-		itemField := &item
-		if itemField != nil {
-			workspacesField = append(workspacesField, *itemField)
-		}
-	}
-	st.Workspaces = workspacesField
+	st.Workspaces = pb.Workspaces
 
 	return st, nil
 }
@@ -7071,13 +5988,16 @@ type DatabricksGcpServiceAccount struct {
 	// field is only used to persist the credential_id once it is fetched from
 	// the credentials manager - as we only use the protobuf serializer to store
 	// credentials, this ID gets persisted to the database
+	// Wire name: 'credential_id'
 	CredentialId string
 	// The email of the service account.
+	// Wire name: 'email'
 	Email string
 	// The ID that represents the private key for this Service Account
+	// Wire name: 'private_key_id'
 	PrivateKeyId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func databricksGcpServiceAccountToPb(st *DatabricksGcpServiceAccount) (*databricksGcpServiceAccountPb, error) {
@@ -7085,20 +6005,11 @@ func databricksGcpServiceAccountToPb(st *DatabricksGcpServiceAccount) (*databric
 		return nil, nil
 	}
 	pb := &databricksGcpServiceAccountPb{}
-	credentialIdPb := &st.CredentialId
-	if credentialIdPb != nil {
-		pb.CredentialId = *credentialIdPb
-	}
+	pb.CredentialId = st.CredentialId
 
-	emailPb := &st.Email
-	if emailPb != nil {
-		pb.Email = *emailPb
-	}
+	pb.Email = st.Email
 
-	privateKeyIdPb := &st.PrivateKeyId
-	if privateKeyIdPb != nil {
-		pb.PrivateKeyId = *privateKeyIdPb
-	}
+	pb.PrivateKeyId = st.PrivateKeyId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7148,18 +6059,9 @@ func databricksGcpServiceAccountFromPb(pb *databricksGcpServiceAccountPb) (*Data
 		return nil, nil
 	}
 	st := &DatabricksGcpServiceAccount{}
-	credentialIdField := &pb.CredentialId
-	if credentialIdField != nil {
-		st.CredentialId = *credentialIdField
-	}
-	emailField := &pb.Email
-	if emailField != nil {
-		st.Email = *emailField
-	}
-	privateKeyIdField := &pb.PrivateKeyId
-	if privateKeyIdField != nil {
-		st.PrivateKeyId = *privateKeyIdField
-	}
+	st.CredentialId = pb.CredentialId
+	st.Email = pb.Email
+	st.PrivateKeyId = pb.PrivateKeyId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7225,11 +6127,13 @@ func databricksGcpServiceAccountRequestFromPb(pb *databricksGcpServiceAccountReq
 type DatabricksGcpServiceAccountResponse struct {
 	// The Databricks internal ID that represents this service account. This is
 	// an output-only field.
+	// Wire name: 'credential_id'
 	CredentialId string
 	// The email of the service account. This is an output-only field.
+	// Wire name: 'email'
 	Email string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func databricksGcpServiceAccountResponseToPb(st *DatabricksGcpServiceAccountResponse) (*databricksGcpServiceAccountResponsePb, error) {
@@ -7237,15 +6141,9 @@ func databricksGcpServiceAccountResponseToPb(st *DatabricksGcpServiceAccountResp
 		return nil, nil
 	}
 	pb := &databricksGcpServiceAccountResponsePb{}
-	credentialIdPb := &st.CredentialId
-	if credentialIdPb != nil {
-		pb.CredentialId = *credentialIdPb
-	}
+	pb.CredentialId = st.CredentialId
 
-	emailPb := &st.Email
-	if emailPb != nil {
-		pb.Email = *emailPb
-	}
+	pb.Email = st.Email
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7291,14 +6189,8 @@ func databricksGcpServiceAccountResponseFromPb(pb *databricksGcpServiceAccountRe
 		return nil, nil
 	}
 	st := &DatabricksGcpServiceAccountResponse{}
-	credentialIdField := &pb.CredentialId
-	if credentialIdField != nil {
-		st.CredentialId = *credentialIdField
-	}
-	emailField := &pb.Email
-	if emailField != nil {
-		st.Email = *emailField
-	}
+	st.CredentialId = pb.CredentialId
+	st.Email = pb.Email
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7315,9 +6207,11 @@ func (st databricksGcpServiceAccountResponsePb) MarshalJSON() ([]byte, error) {
 // Delete a metastore assignment
 type DeleteAccountMetastoreAssignmentRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func deleteAccountMetastoreAssignmentRequestToPb(st *DeleteAccountMetastoreAssignmentRequest) (*deleteAccountMetastoreAssignmentRequestPb, error) {
@@ -7325,15 +6219,9 @@ func deleteAccountMetastoreAssignmentRequestToPb(st *DeleteAccountMetastoreAssig
 		return nil, nil
 	}
 	pb := &deleteAccountMetastoreAssignmentRequestPb{}
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -7375,14 +6263,8 @@ func deleteAccountMetastoreAssignmentRequestFromPb(pb *deleteAccountMetastoreAss
 		return nil, nil
 	}
 	st := &DeleteAccountMetastoreAssignmentRequest{}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
@@ -7390,11 +6272,13 @@ func deleteAccountMetastoreAssignmentRequestFromPb(pb *deleteAccountMetastoreAss
 // Delete a metastore
 type DeleteAccountMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
-	Force bool
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteAccountMetastoreRequestToPb(st *DeleteAccountMetastoreRequest) (*deleteAccountMetastoreRequestPb, error) {
@@ -7402,15 +6286,9 @@ func deleteAccountMetastoreRequestToPb(st *DeleteAccountMetastoreRequest) (*dele
 		return nil, nil
 	}
 	pb := &deleteAccountMetastoreRequestPb{}
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7455,14 +6333,8 @@ func deleteAccountMetastoreRequestFromPb(pb *deleteAccountMetastoreRequestPb) (*
 		return nil, nil
 	}
 	st := &DeleteAccountMetastoreRequest{}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
+	st.Force = pb.Force
+	st.MetastoreId = pb.MetastoreId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7480,13 +6352,16 @@ func (st deleteAccountMetastoreRequestPb) MarshalJSON() ([]byte, error) {
 type DeleteAccountStorageCredentialRequest struct {
 	// Force deletion even if the Storage Credential is not empty. Default is
 	// false.
-	Force bool
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Name of the storage credential.
-	StorageCredentialName string
+	// Wire name: 'storage_credential_name'
+	StorageCredentialName string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteAccountStorageCredentialRequestToPb(st *DeleteAccountStorageCredentialRequest) (*deleteAccountStorageCredentialRequestPb, error) {
@@ -7494,20 +6369,11 @@ func deleteAccountStorageCredentialRequestToPb(st *DeleteAccountStorageCredentia
 		return nil, nil
 	}
 	pb := &deleteAccountStorageCredentialRequestPb{}
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	storageCredentialNamePb := &st.StorageCredentialName
-	if storageCredentialNamePb != nil {
-		pb.StorageCredentialName = *storageCredentialNamePb
-	}
+	pb.StorageCredentialName = st.StorageCredentialName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7555,18 +6421,9 @@ func deleteAccountStorageCredentialRequestFromPb(pb *deleteAccountStorageCredent
 		return nil, nil
 	}
 	st := &DeleteAccountStorageCredentialRequest{}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	storageCredentialNameField := &pb.StorageCredentialName
-	if storageCredentialNameField != nil {
-		st.StorageCredentialName = *storageCredentialNameField
-	}
+	st.Force = pb.Force
+	st.MetastoreId = pb.MetastoreId
+	st.StorageCredentialName = pb.StorageCredentialName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7583,9 +6440,11 @@ func (st deleteAccountStorageCredentialRequestPb) MarshalJSON() ([]byte, error) 
 // Delete a Registered Model Alias
 type DeleteAliasRequest struct {
 	// The name of the alias
-	Alias string
+	// Wire name: 'alias'
+	Alias string `tf:"-"`
 	// The three-level (fully qualified) name of the registered model
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 }
 
 func deleteAliasRequestToPb(st *DeleteAliasRequest) (*deleteAliasRequestPb, error) {
@@ -7593,15 +6452,9 @@ func deleteAliasRequestToPb(st *DeleteAliasRequest) (*deleteAliasRequestPb, erro
 		return nil, nil
 	}
 	pb := &deleteAliasRequestPb{}
-	aliasPb := &st.Alias
-	if aliasPb != nil {
-		pb.Alias = *aliasPb
-	}
+	pb.Alias = st.Alias
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
 	return pb, nil
 }
@@ -7643,14 +6496,8 @@ func deleteAliasRequestFromPb(pb *deleteAliasRequestPb) (*DeleteAliasRequest, er
 		return nil, nil
 	}
 	st := &DeleteAliasRequest{}
-	aliasField := &pb.Alias
-	if aliasField != nil {
-		st.Alias = *aliasField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
+	st.Alias = pb.Alias
+	st.FullName = pb.FullName
 
 	return st, nil
 }
@@ -7707,11 +6554,13 @@ func deleteAliasResponseFromPb(pb *deleteAliasResponsePb) (*DeleteAliasResponse,
 // Delete a catalog
 type DeleteCatalogRequest struct {
 	// Force deletion even if the catalog is not empty.
-	Force bool
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// The name of the catalog.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteCatalogRequestToPb(st *DeleteCatalogRequest) (*deleteCatalogRequestPb, error) {
@@ -7719,15 +6568,9 @@ func deleteCatalogRequestToPb(st *DeleteCatalogRequest) (*deleteCatalogRequestPb
 		return nil, nil
 	}
 	pb := &deleteCatalogRequestPb{}
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7772,14 +6615,8 @@ func deleteCatalogRequestFromPb(pb *deleteCatalogRequestPb) (*DeleteCatalogReque
 		return nil, nil
 	}
 	st := &DeleteCatalogRequest{}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Force = pb.Force
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7796,7 +6633,8 @@ func (st deleteCatalogRequestPb) MarshalJSON() ([]byte, error) {
 // Delete a connection
 type DeleteConnectionRequest struct {
 	// The name of the connection to be deleted.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func deleteConnectionRequestToPb(st *DeleteConnectionRequest) (*deleteConnectionRequestPb, error) {
@@ -7804,10 +6642,7 @@ func deleteConnectionRequestToPb(st *DeleteConnectionRequest) (*deleteConnection
 		return nil, nil
 	}
 	pb := &deleteConnectionRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -7847,10 +6682,7 @@ func deleteConnectionRequestFromPb(pb *deleteConnectionRequestPb) (*DeleteConnec
 		return nil, nil
 	}
 	st := &DeleteConnectionRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -7860,11 +6692,13 @@ type DeleteCredentialRequest struct {
 	// Force an update even if there are dependent services (when purpose is
 	// **SERVICE**) or dependent external locations and external tables (when
 	// purpose is **STORAGE**).
-	Force bool
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Name of the credential.
-	NameArg string
+	// Wire name: 'name_arg'
+	NameArg string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteCredentialRequestToPb(st *DeleteCredentialRequest) (*deleteCredentialRequestPb, error) {
@@ -7872,15 +6706,9 @@ func deleteCredentialRequestToPb(st *DeleteCredentialRequest) (*deleteCredential
 		return nil, nil
 	}
 	pb := &deleteCredentialRequestPb{}
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	nameArgPb := &st.NameArg
-	if nameArgPb != nil {
-		pb.NameArg = *nameArgPb
-	}
+	pb.NameArg = st.NameArg
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7927,14 +6755,8 @@ func deleteCredentialRequestFromPb(pb *deleteCredentialRequestPb) (*DeleteCreden
 		return nil, nil
 	}
 	st := &DeleteCredentialRequest{}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	nameArgField := &pb.NameArg
-	if nameArgField != nil {
-		st.NameArg = *nameArgField
-	}
+	st.Force = pb.Force
+	st.NameArg = pb.NameArg
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8000,11 +6822,13 @@ func deleteCredentialResponseFromPb(pb *deleteCredentialResponsePb) (*DeleteCred
 // Delete an external location
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
-	Force bool
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Name of the external location.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteExternalLocationRequestToPb(st *DeleteExternalLocationRequest) (*deleteExternalLocationRequestPb, error) {
@@ -8012,15 +6836,9 @@ func deleteExternalLocationRequestToPb(st *DeleteExternalLocationRequest) (*dele
 		return nil, nil
 	}
 	pb := &deleteExternalLocationRequestPb{}
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8065,14 +6883,8 @@ func deleteExternalLocationRequestFromPb(pb *deleteExternalLocationRequestPb) (*
 		return nil, nil
 	}
 	st := &DeleteExternalLocationRequest{}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Force = pb.Force
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8089,12 +6901,14 @@ func (st deleteExternalLocationRequestPb) MarshalJSON() ([]byte, error) {
 // Delete a function
 type DeleteFunctionRequest struct {
 	// Force deletion even if the function is notempty.
-	Force bool
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteFunctionRequestToPb(st *DeleteFunctionRequest) (*deleteFunctionRequestPb, error) {
@@ -8102,15 +6916,9 @@ func deleteFunctionRequestToPb(st *DeleteFunctionRequest) (*deleteFunctionReques
 		return nil, nil
 	}
 	pb := &deleteFunctionRequestPb{}
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8156,14 +6964,8 @@ func deleteFunctionRequestFromPb(pb *deleteFunctionRequestPb) (*DeleteFunctionRe
 		return nil, nil
 	}
 	st := &DeleteFunctionRequest{}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Force = pb.Force
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8180,11 +6982,13 @@ func (st deleteFunctionRequestPb) MarshalJSON() ([]byte, error) {
 // Delete a metastore
 type DeleteMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
-	Force bool
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Unique ID of the metastore.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteMetastoreRequestToPb(st *DeleteMetastoreRequest) (*deleteMetastoreRequestPb, error) {
@@ -8192,15 +6996,9 @@ func deleteMetastoreRequestToPb(st *DeleteMetastoreRequest) (*deleteMetastoreReq
 		return nil, nil
 	}
 	pb := &deleteMetastoreRequestPb{}
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8245,14 +7043,8 @@ func deleteMetastoreRequestFromPb(pb *deleteMetastoreRequestPb) (*DeleteMetastor
 		return nil, nil
 	}
 	st := &DeleteMetastoreRequest{}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Force = pb.Force
+	st.Id = pb.Id
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8269,9 +7061,11 @@ func (st deleteMetastoreRequestPb) MarshalJSON() ([]byte, error) {
 // Delete a Model Version
 type DeleteModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// The integer version number of the model version
-	Version int
+	// Wire name: 'version'
+	Version int `tf:"-"`
 }
 
 func deleteModelVersionRequestToPb(st *DeleteModelVersionRequest) (*deleteModelVersionRequestPb, error) {
@@ -8279,15 +7073,9 @@ func deleteModelVersionRequestToPb(st *DeleteModelVersionRequest) (*deleteModelV
 		return nil, nil
 	}
 	pb := &deleteModelVersionRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	return pb, nil
 }
@@ -8329,14 +7117,8 @@ func deleteModelVersionRequestFromPb(pb *deleteModelVersionRequestPb) (*DeleteMo
 		return nil, nil
 	}
 	st := &DeleteModelVersionRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.FullName = pb.FullName
+	st.Version = pb.Version
 
 	return st, nil
 }
@@ -8344,7 +7126,8 @@ func deleteModelVersionRequestFromPb(pb *deleteModelVersionRequestPb) (*DeleteMo
 // Delete an Online Table
 type DeleteOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func deleteOnlineTableRequestToPb(st *DeleteOnlineTableRequest) (*deleteOnlineTableRequestPb, error) {
@@ -8352,10 +7135,7 @@ func deleteOnlineTableRequestToPb(st *DeleteOnlineTableRequest) (*deleteOnlineTa
 		return nil, nil
 	}
 	pb := &deleteOnlineTableRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -8395,10 +7175,7 @@ func deleteOnlineTableRequestFromPb(pb *deleteOnlineTableRequestPb) (*DeleteOnli
 		return nil, nil
 	}
 	st := &DeleteOnlineTableRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -8406,7 +7183,8 @@ func deleteOnlineTableRequestFromPb(pb *deleteOnlineTableRequestPb) (*DeleteOnli
 // Delete a table monitor
 type DeleteQualityMonitorRequest struct {
 	// Full name of the table.
-	TableName string
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 }
 
 func deleteQualityMonitorRequestToPb(st *DeleteQualityMonitorRequest) (*deleteQualityMonitorRequestPb, error) {
@@ -8414,10 +7192,7 @@ func deleteQualityMonitorRequestToPb(st *DeleteQualityMonitorRequest) (*deleteQu
 		return nil, nil
 	}
 	pb := &deleteQualityMonitorRequestPb{}
-	tableNamePb := &st.TableName
-	if tableNamePb != nil {
-		pb.TableName = *tableNamePb
-	}
+	pb.TableName = st.TableName
 
 	return pb, nil
 }
@@ -8457,10 +7232,7 @@ func deleteQualityMonitorRequestFromPb(pb *deleteQualityMonitorRequestPb) (*Dele
 		return nil, nil
 	}
 	st := &DeleteQualityMonitorRequest{}
-	tableNameField := &pb.TableName
-	if tableNameField != nil {
-		st.TableName = *tableNameField
-	}
+	st.TableName = pb.TableName
 
 	return st, nil
 }
@@ -8468,7 +7240,8 @@ func deleteQualityMonitorRequestFromPb(pb *deleteQualityMonitorRequestPb) (*Dele
 // Delete a Registered Model
 type DeleteRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 }
 
 func deleteRegisteredModelRequestToPb(st *DeleteRegisteredModelRequest) (*deleteRegisteredModelRequestPb, error) {
@@ -8476,10 +7249,7 @@ func deleteRegisteredModelRequestToPb(st *DeleteRegisteredModelRequest) (*delete
 		return nil, nil
 	}
 	pb := &deleteRegisteredModelRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
 	return pb, nil
 }
@@ -8519,10 +7289,7 @@ func deleteRegisteredModelRequestFromPb(pb *deleteRegisteredModelRequestPb) (*De
 		return nil, nil
 	}
 	st := &DeleteRegisteredModelRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
+	st.FullName = pb.FullName
 
 	return st, nil
 }
@@ -8579,11 +7346,13 @@ func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
 // Delete a schema
 type DeleteSchemaRequest struct {
 	// Force deletion even if the schema is not empty.
-	Force bool
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Full name of the schema.
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteSchemaRequestToPb(st *DeleteSchemaRequest) (*deleteSchemaRequestPb, error) {
@@ -8591,15 +7360,9 @@ func deleteSchemaRequestToPb(st *DeleteSchemaRequest) (*deleteSchemaRequestPb, e
 		return nil, nil
 	}
 	pb := &deleteSchemaRequestPb{}
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8644,14 +7407,8 @@ func deleteSchemaRequestFromPb(pb *deleteSchemaRequestPb) (*DeleteSchemaRequest,
 		return nil, nil
 	}
 	st := &DeleteSchemaRequest{}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
+	st.Force = pb.Force
+	st.FullName = pb.FullName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8669,11 +7426,13 @@ func (st deleteSchemaRequestPb) MarshalJSON() ([]byte, error) {
 type DeleteStorageCredentialRequest struct {
 	// Force deletion even if there are dependent external locations or external
 	// tables.
-	Force bool
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Name of the storage credential.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteStorageCredentialRequestToPb(st *DeleteStorageCredentialRequest) (*deleteStorageCredentialRequestPb, error) {
@@ -8681,15 +7440,9 @@ func deleteStorageCredentialRequestToPb(st *DeleteStorageCredentialRequest) (*de
 		return nil, nil
 	}
 	pb := &deleteStorageCredentialRequestPb{}
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8735,14 +7488,8 @@ func deleteStorageCredentialRequestFromPb(pb *deleteStorageCredentialRequestPb) 
 		return nil, nil
 	}
 	st := &DeleteStorageCredentialRequest{}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Force = pb.Force
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8761,11 +7508,14 @@ type DeleteTableConstraintRequest struct {
 	// If true, try deleting all child constraints of the current constraint. If
 	// false, reject this operation if the current constraint has any child
 	// constraints.
-	Cascade bool
+	// Wire name: 'cascade'
+	Cascade bool `tf:"-"`
 	// The name of the constraint to delete.
-	ConstraintName string
+	// Wire name: 'constraint_name'
+	ConstraintName string `tf:"-"`
 	// Full name of the table referenced by the constraint.
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 }
 
 func deleteTableConstraintRequestToPb(st *DeleteTableConstraintRequest) (*deleteTableConstraintRequestPb, error) {
@@ -8773,20 +7523,11 @@ func deleteTableConstraintRequestToPb(st *DeleteTableConstraintRequest) (*delete
 		return nil, nil
 	}
 	pb := &deleteTableConstraintRequestPb{}
-	cascadePb := &st.Cascade
-	if cascadePb != nil {
-		pb.Cascade = *cascadePb
-	}
+	pb.Cascade = st.Cascade
 
-	constraintNamePb := &st.ConstraintName
-	if constraintNamePb != nil {
-		pb.ConstraintName = *constraintNamePb
-	}
+	pb.ConstraintName = st.ConstraintName
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
 	return pb, nil
 }
@@ -8832,18 +7573,9 @@ func deleteTableConstraintRequestFromPb(pb *deleteTableConstraintRequestPb) (*De
 		return nil, nil
 	}
 	st := &DeleteTableConstraintRequest{}
-	cascadeField := &pb.Cascade
-	if cascadeField != nil {
-		st.Cascade = *cascadeField
-	}
-	constraintNameField := &pb.ConstraintName
-	if constraintNameField != nil {
-		st.ConstraintName = *constraintNameField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
+	st.Cascade = pb.Cascade
+	st.ConstraintName = pb.ConstraintName
+	st.FullName = pb.FullName
 
 	return st, nil
 }
@@ -8851,7 +7583,8 @@ func deleteTableConstraintRequestFromPb(pb *deleteTableConstraintRequestPb) (*De
 // Delete a table
 type DeleteTableRequest struct {
 	// Full name of the table.
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 }
 
 func deleteTableRequestToPb(st *DeleteTableRequest) (*deleteTableRequestPb, error) {
@@ -8859,10 +7592,7 @@ func deleteTableRequestToPb(st *DeleteTableRequest) (*deleteTableRequestPb, erro
 		return nil, nil
 	}
 	pb := &deleteTableRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
 	return pb, nil
 }
@@ -8902,10 +7632,7 @@ func deleteTableRequestFromPb(pb *deleteTableRequestPb) (*DeleteTableRequest, er
 		return nil, nil
 	}
 	st := &DeleteTableRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
+	st.FullName = pb.FullName
 
 	return st, nil
 }
@@ -8913,7 +7640,8 @@ func deleteTableRequestFromPb(pb *deleteTableRequestPb) (*DeleteTableRequest, er
 // Delete a Volume
 type DeleteVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func deleteVolumeRequestToPb(st *DeleteVolumeRequest) (*deleteVolumeRequestPb, error) {
@@ -8921,10 +7649,7 @@ func deleteVolumeRequestToPb(st *DeleteVolumeRequest) (*deleteVolumeRequestPb, e
 		return nil, nil
 	}
 	pb := &deleteVolumeRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -8964,10 +7689,7 @@ func deleteVolumeRequestFromPb(pb *deleteVolumeRequestPb) (*DeleteVolumeRequest,
 		return nil, nil
 	}
 	st := &DeleteVolumeRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -8977,6 +7699,7 @@ func deleteVolumeRequestFromPb(pb *deleteVolumeRequestPb) (*DeleteVolumeRequest,
 // __TableInfo.properties__.
 type DeltaRuntimePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'delta_runtime_properties'
 	DeltaRuntimeProperties map[string]string
 }
 
@@ -8985,15 +7708,7 @@ func deltaRuntimePropertiesKvPairsToPb(st *DeltaRuntimePropertiesKvPairs) (*delt
 		return nil, nil
 	}
 	pb := &deltaRuntimePropertiesKvPairsPb{}
-
-	deltaRuntimePropertiesPb := map[string]string{}
-	for k, v := range st.DeltaRuntimeProperties {
-		itemPb := &v
-		if itemPb != nil {
-			deltaRuntimePropertiesPb[k] = *itemPb
-		}
-	}
-	pb.DeltaRuntimeProperties = deltaRuntimePropertiesPb
+	pb.DeltaRuntimeProperties = st.DeltaRuntimeProperties
 
 	return pb, nil
 }
@@ -9033,15 +7748,7 @@ func deltaRuntimePropertiesKvPairsFromPb(pb *deltaRuntimePropertiesKvPairsPb) (*
 		return nil, nil
 	}
 	st := &DeltaRuntimePropertiesKvPairs{}
-
-	deltaRuntimePropertiesField := map[string]string{}
-	for k, v := range pb.DeltaRuntimeProperties {
-		itemField := &v
-		if itemField != nil {
-			deltaRuntimePropertiesField[k] = *itemField
-		}
-	}
-	st.DeltaRuntimeProperties = deltaRuntimePropertiesField
+	st.DeltaRuntimeProperties = pb.DeltaRuntimeProperties
 
 	return st, nil
 }
@@ -9050,8 +7757,10 @@ func deltaRuntimePropertiesKvPairsFromPb(pb *deltaRuntimePropertiesKvPairsPb) (*
 // field must be defined.
 type Dependency struct {
 	// A function that is dependent on a SQL object.
+	// Wire name: 'function'
 	Function *FunctionDependency
 	// A table that is dependent on a SQL object.
+	// Wire name: 'table'
 	Table *TableDependency
 }
 
@@ -9137,6 +7846,7 @@ func dependencyFromPb(pb *dependencyPb) (*Dependency, error) {
 // A list of dependencies.
 type DependencyList struct {
 	// Array of dependencies.
+	// Wire name: 'dependencies'
 	Dependencies []Dependency
 }
 
@@ -9198,13 +7908,13 @@ func dependencyListFromPb(pb *dependencyListPb) (*DependencyList, error) {
 	st := &DependencyList{}
 
 	var dependenciesField []Dependency
-	for _, item := range pb.Dependencies {
-		itemField, err := dependencyFromPb(&item)
+	for _, itemPb := range pb.Dependencies {
+		item, err := dependencyFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			dependenciesField = append(dependenciesField, *itemField)
+		if item != nil {
+			dependenciesField = append(dependenciesField, *item)
 		}
 	}
 	st.Dependencies = dependenciesField
@@ -9215,9 +7925,11 @@ func dependencyListFromPb(pb *dependencyListPb) (*DependencyList, error) {
 // Disable a system schema
 type DisableRequest struct {
 	// The metastore ID under which the system schema lives.
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Full name of the system schema.
-	SchemaName string
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
 }
 
 func disableRequestToPb(st *DisableRequest) (*disableRequestPb, error) {
@@ -9225,15 +7937,9 @@ func disableRequestToPb(st *DisableRequest) (*disableRequestPb, error) {
 		return nil, nil
 	}
 	pb := &disableRequestPb{}
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
 	return pb, nil
 }
@@ -9275,14 +7981,8 @@ func disableRequestFromPb(pb *disableRequestPb) (*DisableRequest, error) {
 		return nil, nil
 	}
 	st := &DisableRequest{}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
+	st.MetastoreId = pb.MetastoreId
+	st.SchemaName = pb.SchemaName
 
 	return st, nil
 }
@@ -9339,6 +8039,7 @@ func disableResponseFromPb(pb *disableResponsePb) (*DisableResponse, error) {
 type EffectivePermissionsList struct {
 	// The privileges conveyed to each principal (either directly or via
 	// inheritance)
+	// Wire name: 'privilege_assignments'
 	PrivilegeAssignments []EffectivePrivilegeAssignment
 }
 
@@ -9401,13 +8102,13 @@ func effectivePermissionsListFromPb(pb *effectivePermissionsListPb) (*EffectiveP
 	st := &EffectivePermissionsList{}
 
 	var privilegeAssignmentsField []EffectivePrivilegeAssignment
-	for _, item := range pb.PrivilegeAssignments {
-		itemField, err := effectivePrivilegeAssignmentFromPb(&item)
+	for _, itemPb := range pb.PrivilegeAssignments {
+		item, err := effectivePrivilegeAssignmentFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			privilegeAssignmentsField = append(privilegeAssignmentsField, *itemField)
+		if item != nil {
+			privilegeAssignmentsField = append(privilegeAssignmentsField, *item)
 		}
 	}
 	st.PrivilegeAssignments = privilegeAssignmentsField
@@ -9418,15 +8119,18 @@ func effectivePermissionsListFromPb(pb *effectivePermissionsListPb) (*EffectiveP
 type EffectivePredictiveOptimizationFlag struct {
 	// The name of the object from which the flag was inherited. If there was no
 	// inheritance, this field is left blank.
+	// Wire name: 'inherited_from_name'
 	InheritedFromName string
 	// The type of the object from which the flag was inherited. If there was no
 	// inheritance, this field is left blank.
+	// Wire name: 'inherited_from_type'
 	InheritedFromType EffectivePredictiveOptimizationFlagInheritedFromType
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
+	// Wire name: 'value'
 	Value EnablePredictiveOptimization
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func effectivePredictiveOptimizationFlagToPb(st *EffectivePredictiveOptimizationFlag) (*effectivePredictiveOptimizationFlagPb, error) {
@@ -9434,20 +8138,11 @@ func effectivePredictiveOptimizationFlagToPb(st *EffectivePredictiveOptimization
 		return nil, nil
 	}
 	pb := &effectivePredictiveOptimizationFlagPb{}
-	inheritedFromNamePb := &st.InheritedFromName
-	if inheritedFromNamePb != nil {
-		pb.InheritedFromName = *inheritedFromNamePb
-	}
+	pb.InheritedFromName = st.InheritedFromName
 
-	inheritedFromTypePb := &st.InheritedFromType
-	if inheritedFromTypePb != nil {
-		pb.InheritedFromType = *inheritedFromTypePb
-	}
+	pb.InheritedFromType = st.InheritedFromType
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9497,18 +8192,9 @@ func effectivePredictiveOptimizationFlagFromPb(pb *effectivePredictiveOptimizati
 		return nil, nil
 	}
 	st := &EffectivePredictiveOptimizationFlag{}
-	inheritedFromNameField := &pb.InheritedFromName
-	if inheritedFromNameField != nil {
-		st.InheritedFromName = *inheritedFromNameField
-	}
-	inheritedFromTypeField := &pb.InheritedFromType
-	if inheritedFromTypeField != nil {
-		st.InheritedFromType = *inheritedFromTypeField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.InheritedFromName = pb.InheritedFromName
+	st.InheritedFromType = pb.InheritedFromType
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9572,15 +8258,18 @@ type EffectivePrivilege struct {
 	// The full name of the object that conveys this privilege via inheritance.
 	// This field is omitted when privilege is not inherited (it's assigned to
 	// the securable itself).
+	// Wire name: 'inherited_from_name'
 	InheritedFromName string
 	// The type of the object that conveys this privilege via inheritance. This
 	// field is omitted when privilege is not inherited (it's assigned to the
 	// securable itself).
+	// Wire name: 'inherited_from_type'
 	InheritedFromType SecurableType
 	// The privilege assigned to the principal.
+	// Wire name: 'privilege'
 	Privilege Privilege
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func effectivePrivilegeToPb(st *EffectivePrivilege) (*effectivePrivilegePb, error) {
@@ -9588,20 +8277,11 @@ func effectivePrivilegeToPb(st *EffectivePrivilege) (*effectivePrivilegePb, erro
 		return nil, nil
 	}
 	pb := &effectivePrivilegePb{}
-	inheritedFromNamePb := &st.InheritedFromName
-	if inheritedFromNamePb != nil {
-		pb.InheritedFromName = *inheritedFromNamePb
-	}
+	pb.InheritedFromName = st.InheritedFromName
 
-	inheritedFromTypePb := &st.InheritedFromType
-	if inheritedFromTypePb != nil {
-		pb.InheritedFromType = *inheritedFromTypePb
-	}
+	pb.InheritedFromType = st.InheritedFromType
 
-	privilegePb := &st.Privilege
-	if privilegePb != nil {
-		pb.Privilege = *privilegePb
-	}
+	pb.Privilege = st.Privilege
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9652,18 +8332,9 @@ func effectivePrivilegeFromPb(pb *effectivePrivilegePb) (*EffectivePrivilege, er
 		return nil, nil
 	}
 	st := &EffectivePrivilege{}
-	inheritedFromNameField := &pb.InheritedFromName
-	if inheritedFromNameField != nil {
-		st.InheritedFromName = *inheritedFromNameField
-	}
-	inheritedFromTypeField := &pb.InheritedFromType
-	if inheritedFromTypeField != nil {
-		st.InheritedFromType = *inheritedFromTypeField
-	}
-	privilegeField := &pb.Privilege
-	if privilegeField != nil {
-		st.Privilege = *privilegeField
-	}
+	st.InheritedFromName = pb.InheritedFromName
+	st.InheritedFromType = pb.InheritedFromType
+	st.Privilege = pb.Privilege
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9679,12 +8350,14 @@ func (st effectivePrivilegePb) MarshalJSON() ([]byte, error) {
 
 type EffectivePrivilegeAssignment struct {
 	// The principal (user email address or group name).
+	// Wire name: 'principal'
 	Principal string
 	// The privileges conveyed to the principal (either directly or via
 	// inheritance).
+	// Wire name: 'privileges'
 	Privileges []EffectivePrivilege
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func effectivePrivilegeAssignmentToPb(st *EffectivePrivilegeAssignment) (*effectivePrivilegeAssignmentPb, error) {
@@ -9692,10 +8365,7 @@ func effectivePrivilegeAssignmentToPb(st *EffectivePrivilegeAssignment) (*effect
 		return nil, nil
 	}
 	pb := &effectivePrivilegeAssignmentPb{}
-	principalPb := &st.Principal
-	if principalPb != nil {
-		pb.Principal = *principalPb
-	}
+	pb.Principal = st.Principal
 
 	var privilegesPb []effectivePrivilegePb
 	for _, item := range st.Privileges {
@@ -9753,19 +8423,16 @@ func effectivePrivilegeAssignmentFromPb(pb *effectivePrivilegeAssignmentPb) (*Ef
 		return nil, nil
 	}
 	st := &EffectivePrivilegeAssignment{}
-	principalField := &pb.Principal
-	if principalField != nil {
-		st.Principal = *principalField
-	}
+	st.Principal = pb.Principal
 
 	var privilegesField []EffectivePrivilege
-	for _, item := range pb.Privileges {
-		itemField, err := effectivePrivilegeFromPb(&item)
+	for _, itemPb := range pb.Privileges {
+		item, err := effectivePrivilegeFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			privilegesField = append(privilegesField, *itemField)
+		if item != nil {
+			privilegesField = append(privilegesField, *item)
 		}
 	}
 	st.Privileges = privilegesField
@@ -9833,9 +8500,11 @@ func enablePredictiveOptimizationFromPb(pb *enablePredictiveOptimizationPb) (*En
 // Enable a system schema
 type EnableRequest struct {
 	// The metastore ID under which the system schema lives.
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Full name of the system schema.
-	SchemaName string
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
 }
 
 func enableRequestToPb(st *EnableRequest) (*enableRequestPb, error) {
@@ -9843,15 +8512,9 @@ func enableRequestToPb(st *EnableRequest) (*enableRequestPb, error) {
 		return nil, nil
 	}
 	pb := &enableRequestPb{}
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
 	return pb, nil
 }
@@ -9893,14 +8556,8 @@ func enableRequestFromPb(pb *enableRequestPb) (*EnableRequest, error) {
 		return nil, nil
 	}
 	st := &EnableRequest{}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
+	st.MetastoreId = pb.MetastoreId
+	st.SchemaName = pb.SchemaName
 
 	return st, nil
 }
@@ -9957,6 +8614,7 @@ func enableResponseFromPb(pb *enableResponsePb) (*EnableResponse, error) {
 // Encryption options that apply to clients connecting to cloud storage.
 type EncryptionDetails struct {
 	// Server-Side Encryption properties for clients communicating with AWS s3.
+	// Wire name: 'sse_encryption_details'
 	SseEncryptionDetails *SseEncryptionDetails
 }
 
@@ -10025,7 +8683,8 @@ func encryptionDetailsFromPb(pb *encryptionDetailsPb) (*EncryptionDetails, error
 // Get boolean reflecting if table exists
 type ExistsRequest struct {
 	// Full name of the table.
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 }
 
 func existsRequestToPb(st *ExistsRequest) (*existsRequestPb, error) {
@@ -10033,10 +8692,7 @@ func existsRequestToPb(st *ExistsRequest) (*existsRequestPb, error) {
 		return nil, nil
 	}
 	pb := &existsRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
 	return pb, nil
 }
@@ -10076,56 +8732,70 @@ func existsRequestFromPb(pb *existsRequestPb) (*ExistsRequest, error) {
 		return nil, nil
 	}
 	st := &ExistsRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
+	st.FullName = pb.FullName
 
 	return st, nil
 }
 
 type ExternalLocationInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
+	// Wire name: 'access_point'
 	AccessPoint string
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Time at which this external location was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of external location creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Unique ID of the location's storage credential.
+	// Wire name: 'credential_id'
 	CredentialId string
 	// Name of the storage credential used with this location.
+	// Wire name: 'credential_name'
 	CredentialName string
 	// Encryption options that apply to clients connecting to cloud storage.
+	// Wire name: 'encryption_details'
 	EncryptionDetails *EncryptionDetails
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
+	// Wire name: 'fallback'
 	Fallback bool
 
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode
 	// Unique identifier of metastore hosting the external location.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// Name of the external location.
+	// Wire name: 'name'
 	Name string
 	// The owner of the external location.
+	// Wire name: 'owner'
 	Owner string
 	// Indicates whether the external location is read-only.
+	// Wire name: 'read_only'
 	ReadOnly bool
 	// Time at which external location this was last modified, in epoch
 	// milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of user who last modified the external location.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 	// Path URL of the external location.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func externalLocationInfoToPb(st *ExternalLocationInfo) (*externalLocationInfoPb, error) {
@@ -10133,40 +8803,19 @@ func externalLocationInfoToPb(st *ExternalLocationInfo) (*externalLocationInfoPb
 		return nil, nil
 	}
 	pb := &externalLocationInfoPb{}
-	accessPointPb := &st.AccessPoint
-	if accessPointPb != nil {
-		pb.AccessPoint = *accessPointPb
-	}
+	pb.AccessPoint = st.AccessPoint
 
-	browseOnlyPb := &st.BrowseOnly
-	if browseOnlyPb != nil {
-		pb.BrowseOnly = *browseOnlyPb
-	}
+	pb.BrowseOnly = st.BrowseOnly
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	credentialIdPb := &st.CredentialId
-	if credentialIdPb != nil {
-		pb.CredentialId = *credentialIdPb
-	}
+	pb.CredentialId = st.CredentialId
 
-	credentialNamePb := &st.CredentialName
-	if credentialNamePb != nil {
-		pb.CredentialName = *credentialNamePb
-	}
+	pb.CredentialName = st.CredentialName
 
 	encryptionDetailsPb, err := encryptionDetailsToPb(st.EncryptionDetails)
 	if err != nil {
@@ -10176,50 +8825,23 @@ func externalLocationInfoToPb(st *ExternalLocationInfo) (*externalLocationInfoPb
 		pb.EncryptionDetails = encryptionDetailsPb
 	}
 
-	fallbackPb := &st.Fallback
-	if fallbackPb != nil {
-		pb.Fallback = *fallbackPb
-	}
+	pb.Fallback = st.Fallback
 
-	isolationModePb := &st.IsolationMode
-	if isolationModePb != nil {
-		pb.IsolationMode = *isolationModePb
-	}
+	pb.IsolationMode = st.IsolationMode
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10299,34 +8921,13 @@ func externalLocationInfoFromPb(pb *externalLocationInfoPb) (*ExternalLocationIn
 		return nil, nil
 	}
 	st := &ExternalLocationInfo{}
-	accessPointField := &pb.AccessPoint
-	if accessPointField != nil {
-		st.AccessPoint = *accessPointField
-	}
-	browseOnlyField := &pb.BrowseOnly
-	if browseOnlyField != nil {
-		st.BrowseOnly = *browseOnlyField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	credentialIdField := &pb.CredentialId
-	if credentialIdField != nil {
-		st.CredentialId = *credentialIdField
-	}
-	credentialNameField := &pb.CredentialName
-	if credentialNameField != nil {
-		st.CredentialName = *credentialNameField
-	}
+	st.AccessPoint = pb.AccessPoint
+	st.BrowseOnly = pb.BrowseOnly
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.CredentialId = pb.CredentialId
+	st.CredentialName = pb.CredentialName
 	encryptionDetailsField, err := encryptionDetailsFromPb(pb.EncryptionDetails)
 	if err != nil {
 		return nil, err
@@ -10334,42 +8935,15 @@ func externalLocationInfoFromPb(pb *externalLocationInfoPb) (*ExternalLocationIn
 	if encryptionDetailsField != nil {
 		st.EncryptionDetails = encryptionDetailsField
 	}
-	fallbackField := &pb.Fallback
-	if fallbackField != nil {
-		st.Fallback = *fallbackField
-	}
-	isolationModeField := &pb.IsolationMode
-	if isolationModeField != nil {
-		st.IsolationMode = *isolationModeField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.Fallback = pb.Fallback
+	st.IsolationMode = pb.IsolationMode
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.ReadOnly = pb.ReadOnly
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10390,13 +8964,15 @@ type FailedStatus struct {
 	// Note that this Delta version may only be partially synced to the online
 	// table. Only populated if the table is still online and available for
 	// serving.
+	// Wire name: 'last_processed_commit_version'
 	LastProcessedCommitVersion int64
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table. Only populated if the table is still online
 	// and available for serving.
-	Timestamp *time.Time
+	// Wire name: 'timestamp'
+	Timestamp string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func failedStatusToPb(st *FailedStatus) (*failedStatusPb, error) {
@@ -10404,18 +8980,9 @@ func failedStatusToPb(st *FailedStatus) (*failedStatusPb, error) {
 		return nil, nil
 	}
 	pb := &failedStatusPb{}
-	lastProcessedCommitVersionPb := &st.LastProcessedCommitVersion
-	if lastProcessedCommitVersionPb != nil {
-		pb.LastProcessedCommitVersion = *lastProcessedCommitVersionPb
-	}
+	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
 
-	timestampPb, err := timestampToPb(st.Timestamp)
-	if err != nil {
-		return nil, err
-	}
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10465,17 +9032,8 @@ func failedStatusFromPb(pb *failedStatusPb) (*FailedStatus, error) {
 		return nil, nil
 	}
 	st := &FailedStatus{}
-	lastProcessedCommitVersionField := &pb.LastProcessedCommitVersion
-	if lastProcessedCommitVersionField != nil {
-		st.LastProcessedCommitVersion = *lastProcessedCommitVersionField
-	}
-	timestampField, err := timestampFromPb(&pb.Timestamp)
-	if err != nil {
-		return nil, err
-	}
-	if timestampField != nil {
-		st.Timestamp = timestampField
-	}
+	st.LastProcessedCommitVersion = pb.LastProcessedCommitVersion
+	st.Timestamp = pb.Timestamp
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10491,12 +9049,16 @@ func (st failedStatusPb) MarshalJSON() ([]byte, error) {
 
 type ForeignKeyConstraint struct {
 	// Column names for this constraint.
+	// Wire name: 'child_columns'
 	ChildColumns []string
 	// The name of the constraint.
+	// Wire name: 'name'
 	Name string
 	// Column names for this constraint.
+	// Wire name: 'parent_columns'
 	ParentColumns []string
 	// The full name of the parent constraint.
+	// Wire name: 'parent_table'
 	ParentTable string
 }
 
@@ -10505,34 +9067,13 @@ func foreignKeyConstraintToPb(st *ForeignKeyConstraint) (*foreignKeyConstraintPb
 		return nil, nil
 	}
 	pb := &foreignKeyConstraintPb{}
+	pb.ChildColumns = st.ChildColumns
 
-	var childColumnsPb []string
-	for _, item := range st.ChildColumns {
-		itemPb := &item
-		if itemPb != nil {
-			childColumnsPb = append(childColumnsPb, *itemPb)
-		}
-	}
-	pb.ChildColumns = childColumnsPb
+	pb.Name = st.Name
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.ParentColumns = st.ParentColumns
 
-	var parentColumnsPb []string
-	for _, item := range st.ParentColumns {
-		itemPb := &item
-		if itemPb != nil {
-			parentColumnsPb = append(parentColumnsPb, *itemPb)
-		}
-	}
-	pb.ParentColumns = parentColumnsPb
-
-	parentTablePb := &st.ParentTable
-	if parentTablePb != nil {
-		pb.ParentTable = *parentTablePb
-	}
+	pb.ParentTable = st.ParentTable
 
 	return pb, nil
 }
@@ -10578,32 +9119,10 @@ func foreignKeyConstraintFromPb(pb *foreignKeyConstraintPb) (*ForeignKeyConstrai
 		return nil, nil
 	}
 	st := &ForeignKeyConstraint{}
-
-	var childColumnsField []string
-	for _, item := range pb.ChildColumns {
-		itemField := &item
-		if itemField != nil {
-			childColumnsField = append(childColumnsField, *itemField)
-		}
-	}
-	st.ChildColumns = childColumnsField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-
-	var parentColumnsField []string
-	for _, item := range pb.ParentColumns {
-		itemField := &item
-		if itemField != nil {
-			parentColumnsField = append(parentColumnsField, *itemField)
-		}
-	}
-	st.ParentColumns = parentColumnsField
-	parentTableField := &pb.ParentTable
-	if parentTableField != nil {
-		st.ParentTable = *parentTableField
-	}
+	st.ChildColumns = pb.ChildColumns
+	st.Name = pb.Name
+	st.ParentColumns = pb.ParentColumns
+	st.ParentTable = pb.ParentTable
 
 	return st, nil
 }
@@ -10612,6 +9131,7 @@ func foreignKeyConstraintFromPb(pb *foreignKeyConstraintPb) (*ForeignKeyConstrai
 type FunctionDependency struct {
 	// Full name of the dependent function, in the form of
 	// __catalog_name__.__schema_name__.__function_name__.
+	// Wire name: 'function_full_name'
 	FunctionFullName string
 }
 
@@ -10620,10 +9140,7 @@ func functionDependencyToPb(st *FunctionDependency) (*functionDependencyPb, erro
 		return nil, nil
 	}
 	pb := &functionDependencyPb{}
-	functionFullNamePb := &st.FunctionFullName
-	if functionFullNamePb != nil {
-		pb.FunctionFullName = *functionFullNamePb
-	}
+	pb.FunctionFullName = st.FunctionFullName
 
 	return pb, nil
 }
@@ -10664,10 +9181,7 @@ func functionDependencyFromPb(pb *functionDependencyPb) (*FunctionDependency, er
 		return nil, nil
 	}
 	st := &FunctionDependency{}
-	functionFullNameField := &pb.FunctionFullName
-	if functionFullNameField != nil {
-		st.FunctionFullName = *functionFullNameField
-	}
+	st.FunctionFullName = pb.FunctionFullName
 
 	return st, nil
 }
@@ -10676,72 +9190,102 @@ type FunctionInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool
 	// Name of parent catalog.
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Time at which this function was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of function creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Scalar function return data type.
+	// Wire name: 'data_type'
 	DataType ColumnTypeName
 	// External function language.
+	// Wire name: 'external_language'
 	ExternalLanguage string
 	// External function name.
+	// Wire name: 'external_name'
 	ExternalName string
 	// Pretty printed function data type.
+	// Wire name: 'full_data_type'
 	FullDataType string
 	// Full name of function, in form of
 	// __catalog_name__.__schema_name__.__function__name__
+	// Wire name: 'full_name'
 	FullName string
 	// Id of Function, relative to parent schema.
+	// Wire name: 'function_id'
 	FunctionId string
 
+	// Wire name: 'input_params'
 	InputParams *FunctionParameterInfos
 	// Whether the function is deterministic.
+	// Wire name: 'is_deterministic'
 	IsDeterministic bool
 	// Function null call.
+	// Wire name: 'is_null_call'
 	IsNullCall bool
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// Name of function, relative to parent schema.
+	// Wire name: 'name'
 	Name string
 	// Username of current owner of function.
+	// Wire name: 'owner'
 	Owner string
 	// Function parameter style. **S** is the value for SQL.
+	// Wire name: 'parameter_style'
 	ParameterStyle FunctionInfoParameterStyle
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
+	// Wire name: 'properties'
 	Properties string
 	// Table function return parameters.
+	// Wire name: 'return_params'
 	ReturnParams *FunctionParameterInfos
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
 	// type is not supported), and the __sql_data_access__ field must be
 	// **NO_SQL**.
+	// Wire name: 'routine_body'
 	RoutineBody FunctionInfoRoutineBody
 	// Function body.
+	// Wire name: 'routine_definition'
 	RoutineDefinition string
 	// Function dependencies.
+	// Wire name: 'routine_dependencies'
 	RoutineDependencies *DependencyList
 	// Name of parent schema relative to its parent catalog.
+	// Wire name: 'schema_name'
 	SchemaName string
 	// Function security type.
+	// Wire name: 'security_type'
 	SecurityType FunctionInfoSecurityType
 	// Specific name of the function; Reserved for future use.
+	// Wire name: 'specific_name'
 	SpecificName string
 	// Function SQL data access.
+	// Wire name: 'sql_data_access'
 	SqlDataAccess FunctionInfoSqlDataAccess
 	// List of schemes whose objects can be referenced without qualification.
+	// Wire name: 'sql_path'
 	SqlPath string
 	// Time at which this function was created, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of user who last modified function.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func functionInfoToPb(st *FunctionInfo) (*functionInfoPb, error) {
@@ -10749,60 +9293,27 @@ func functionInfoToPb(st *FunctionInfo) (*functionInfoPb, error) {
 		return nil, nil
 	}
 	pb := &functionInfoPb{}
-	browseOnlyPb := &st.BrowseOnly
-	if browseOnlyPb != nil {
-		pb.BrowseOnly = *browseOnlyPb
-	}
+	pb.BrowseOnly = st.BrowseOnly
 
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	dataTypePb := &st.DataType
-	if dataTypePb != nil {
-		pb.DataType = *dataTypePb
-	}
+	pb.DataType = st.DataType
 
-	externalLanguagePb := &st.ExternalLanguage
-	if externalLanguagePb != nil {
-		pb.ExternalLanguage = *externalLanguagePb
-	}
+	pb.ExternalLanguage = st.ExternalLanguage
 
-	externalNamePb := &st.ExternalName
-	if externalNamePb != nil {
-		pb.ExternalName = *externalNamePb
-	}
+	pb.ExternalName = st.ExternalName
 
-	fullDataTypePb := &st.FullDataType
-	if fullDataTypePb != nil {
-		pb.FullDataType = *fullDataTypePb
-	}
+	pb.FullDataType = st.FullDataType
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	functionIdPb := &st.FunctionId
-	if functionIdPb != nil {
-		pb.FunctionId = *functionIdPb
-	}
+	pb.FunctionId = st.FunctionId
 
 	inputParamsPb, err := functionParameterInfosToPb(st.InputParams)
 	if err != nil {
@@ -10812,40 +9323,19 @@ func functionInfoToPb(st *FunctionInfo) (*functionInfoPb, error) {
 		pb.InputParams = inputParamsPb
 	}
 
-	isDeterministicPb := &st.IsDeterministic
-	if isDeterministicPb != nil {
-		pb.IsDeterministic = *isDeterministicPb
-	}
+	pb.IsDeterministic = st.IsDeterministic
 
-	isNullCallPb := &st.IsNullCall
-	if isNullCallPb != nil {
-		pb.IsNullCall = *isNullCallPb
-	}
+	pb.IsNullCall = st.IsNullCall
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	parameterStylePb := &st.ParameterStyle
-	if parameterStylePb != nil {
-		pb.ParameterStyle = *parameterStylePb
-	}
+	pb.ParameterStyle = st.ParameterStyle
 
-	propertiesPb := &st.Properties
-	if propertiesPb != nil {
-		pb.Properties = *propertiesPb
-	}
+	pb.Properties = st.Properties
 
 	returnParamsPb, err := functionParameterInfosToPb(st.ReturnParams)
 	if err != nil {
@@ -10855,15 +9345,9 @@ func functionInfoToPb(st *FunctionInfo) (*functionInfoPb, error) {
 		pb.ReturnParams = returnParamsPb
 	}
 
-	routineBodyPb := &st.RoutineBody
-	if routineBodyPb != nil {
-		pb.RoutineBody = *routineBodyPb
-	}
+	pb.RoutineBody = st.RoutineBody
 
-	routineDefinitionPb := &st.RoutineDefinition
-	if routineDefinitionPb != nil {
-		pb.RoutineDefinition = *routineDefinitionPb
-	}
+	pb.RoutineDefinition = st.RoutineDefinition
 
 	routineDependenciesPb, err := dependencyListToPb(st.RoutineDependencies)
 	if err != nil {
@@ -10873,40 +9357,19 @@ func functionInfoToPb(st *FunctionInfo) (*functionInfoPb, error) {
 		pb.RoutineDependencies = routineDependenciesPb
 	}
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
-	securityTypePb := &st.SecurityType
-	if securityTypePb != nil {
-		pb.SecurityType = *securityTypePb
-	}
+	pb.SecurityType = st.SecurityType
 
-	specificNamePb := &st.SpecificName
-	if specificNamePb != nil {
-		pb.SpecificName = *specificNamePb
-	}
+	pb.SpecificName = st.SpecificName
 
-	sqlDataAccessPb := &st.SqlDataAccess
-	if sqlDataAccessPb != nil {
-		pb.SqlDataAccess = *sqlDataAccessPb
-	}
+	pb.SqlDataAccess = st.SqlDataAccess
 
-	sqlPathPb := &st.SqlPath
-	if sqlPathPb != nil {
-		pb.SqlPath = *sqlPathPb
-	}
+	pb.SqlPath = st.SqlPath
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11014,50 +9477,17 @@ func functionInfoFromPb(pb *functionInfoPb) (*FunctionInfo, error) {
 		return nil, nil
 	}
 	st := &FunctionInfo{}
-	browseOnlyField := &pb.BrowseOnly
-	if browseOnlyField != nil {
-		st.BrowseOnly = *browseOnlyField
-	}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	dataTypeField := &pb.DataType
-	if dataTypeField != nil {
-		st.DataType = *dataTypeField
-	}
-	externalLanguageField := &pb.ExternalLanguage
-	if externalLanguageField != nil {
-		st.ExternalLanguage = *externalLanguageField
-	}
-	externalNameField := &pb.ExternalName
-	if externalNameField != nil {
-		st.ExternalName = *externalNameField
-	}
-	fullDataTypeField := &pb.FullDataType
-	if fullDataTypeField != nil {
-		st.FullDataType = *fullDataTypeField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	functionIdField := &pb.FunctionId
-	if functionIdField != nil {
-		st.FunctionId = *functionIdField
-	}
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.DataType = pb.DataType
+	st.ExternalLanguage = pb.ExternalLanguage
+	st.ExternalName = pb.ExternalName
+	st.FullDataType = pb.FullDataType
+	st.FullName = pb.FullName
+	st.FunctionId = pb.FunctionId
 	inputParamsField, err := functionParameterInfosFromPb(pb.InputParams)
 	if err != nil {
 		return nil, err
@@ -11065,34 +9495,13 @@ func functionInfoFromPb(pb *functionInfoPb) (*FunctionInfo, error) {
 	if inputParamsField != nil {
 		st.InputParams = inputParamsField
 	}
-	isDeterministicField := &pb.IsDeterministic
-	if isDeterministicField != nil {
-		st.IsDeterministic = *isDeterministicField
-	}
-	isNullCallField := &pb.IsNullCall
-	if isNullCallField != nil {
-		st.IsNullCall = *isNullCallField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	parameterStyleField := &pb.ParameterStyle
-	if parameterStyleField != nil {
-		st.ParameterStyle = *parameterStyleField
-	}
-	propertiesField := &pb.Properties
-	if propertiesField != nil {
-		st.Properties = *propertiesField
-	}
+	st.IsDeterministic = pb.IsDeterministic
+	st.IsNullCall = pb.IsNullCall
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.ParameterStyle = pb.ParameterStyle
+	st.Properties = pb.Properties
 	returnParamsField, err := functionParameterInfosFromPb(pb.ReturnParams)
 	if err != nil {
 		return nil, err
@@ -11100,14 +9509,8 @@ func functionInfoFromPb(pb *functionInfoPb) (*FunctionInfo, error) {
 	if returnParamsField != nil {
 		st.ReturnParams = returnParamsField
 	}
-	routineBodyField := &pb.RoutineBody
-	if routineBodyField != nil {
-		st.RoutineBody = *routineBodyField
-	}
-	routineDefinitionField := &pb.RoutineDefinition
-	if routineDefinitionField != nil {
-		st.RoutineDefinition = *routineDefinitionField
-	}
+	st.RoutineBody = pb.RoutineBody
+	st.RoutineDefinition = pb.RoutineDefinition
 	routineDependenciesField, err := dependencyListFromPb(pb.RoutineDependencies)
 	if err != nil {
 		return nil, err
@@ -11115,34 +9518,13 @@ func functionInfoFromPb(pb *functionInfoPb) (*FunctionInfo, error) {
 	if routineDependenciesField != nil {
 		st.RoutineDependencies = routineDependenciesField
 	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
-	securityTypeField := &pb.SecurityType
-	if securityTypeField != nil {
-		st.SecurityType = *securityTypeField
-	}
-	specificNameField := &pb.SpecificName
-	if specificNameField != nil {
-		st.SpecificName = *specificNameField
-	}
-	sqlDataAccessField := &pb.SqlDataAccess
-	if sqlDataAccessField != nil {
-		st.SqlDataAccess = *sqlDataAccessField
-	}
-	sqlPathField := &pb.SqlPath
-	if sqlPathField != nil {
-		st.SqlPath = *sqlPathField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.SchemaName = pb.SchemaName
+	st.SecurityType = pb.SecurityType
+	st.SpecificName = pb.SpecificName
+	st.SqlDataAccess = pb.SqlDataAccess
+	st.SqlPath = pb.SqlPath
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11339,31 +9721,43 @@ func functionInfoSqlDataAccessFromPb(pb *functionInfoSqlDataAccessPb) (*Function
 
 type FunctionParameterInfo struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Name of parameter.
+	// Wire name: 'name'
 	Name string
 	// Default value of the parameter.
+	// Wire name: 'parameter_default'
 	ParameterDefault string
 	// The mode of the function parameter.
+	// Wire name: 'parameter_mode'
 	ParameterMode FunctionParameterMode
 	// The type of function parameter.
+	// Wire name: 'parameter_type'
 	ParameterType FunctionParameterType
 	// Ordinal position of column (starting at position 0).
+	// Wire name: 'position'
 	Position int
 	// Format of IntervalType.
+	// Wire name: 'type_interval_type'
 	TypeIntervalType string
 	// Full data type spec, JSON-serialized.
+	// Wire name: 'type_json'
 	TypeJson string
 
+	// Wire name: 'type_name'
 	TypeName ColumnTypeName
 	// Digits of precision; required on Create for DecimalTypes.
+	// Wire name: 'type_precision'
 	TypePrecision int
 	// Digits to right of decimal; Required on Create for DecimalTypes.
+	// Wire name: 'type_scale'
 	TypeScale int
 	// Full data type spec, SQL/catalogString text.
+	// Wire name: 'type_text'
 	TypeText string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func functionParameterInfoToPb(st *FunctionParameterInfo) (*functionParameterInfoPb, error) {
@@ -11371,65 +9765,29 @@ func functionParameterInfoToPb(st *FunctionParameterInfo) (*functionParameterInf
 		return nil, nil
 	}
 	pb := &functionParameterInfoPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	parameterDefaultPb := &st.ParameterDefault
-	if parameterDefaultPb != nil {
-		pb.ParameterDefault = *parameterDefaultPb
-	}
+	pb.ParameterDefault = st.ParameterDefault
 
-	parameterModePb := &st.ParameterMode
-	if parameterModePb != nil {
-		pb.ParameterMode = *parameterModePb
-	}
+	pb.ParameterMode = st.ParameterMode
 
-	parameterTypePb := &st.ParameterType
-	if parameterTypePb != nil {
-		pb.ParameterType = *parameterTypePb
-	}
+	pb.ParameterType = st.ParameterType
 
-	positionPb := &st.Position
-	if positionPb != nil {
-		pb.Position = *positionPb
-	}
+	pb.Position = st.Position
 
-	typeIntervalTypePb := &st.TypeIntervalType
-	if typeIntervalTypePb != nil {
-		pb.TypeIntervalType = *typeIntervalTypePb
-	}
+	pb.TypeIntervalType = st.TypeIntervalType
 
-	typeJsonPb := &st.TypeJson
-	if typeJsonPb != nil {
-		pb.TypeJson = *typeJsonPb
-	}
+	pb.TypeJson = st.TypeJson
 
-	typeNamePb := &st.TypeName
-	if typeNamePb != nil {
-		pb.TypeName = *typeNamePb
-	}
+	pb.TypeName = st.TypeName
 
-	typePrecisionPb := &st.TypePrecision
-	if typePrecisionPb != nil {
-		pb.TypePrecision = *typePrecisionPb
-	}
+	pb.TypePrecision = st.TypePrecision
 
-	typeScalePb := &st.TypeScale
-	if typeScalePb != nil {
-		pb.TypeScale = *typeScalePb
-	}
+	pb.TypeScale = st.TypeScale
 
-	typeTextPb := &st.TypeText
-	if typeTextPb != nil {
-		pb.TypeText = *typeTextPb
-	}
+	pb.TypeText = st.TypeText
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11494,54 +9852,18 @@ func functionParameterInfoFromPb(pb *functionParameterInfoPb) (*FunctionParamete
 		return nil, nil
 	}
 	st := &FunctionParameterInfo{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	parameterDefaultField := &pb.ParameterDefault
-	if parameterDefaultField != nil {
-		st.ParameterDefault = *parameterDefaultField
-	}
-	parameterModeField := &pb.ParameterMode
-	if parameterModeField != nil {
-		st.ParameterMode = *parameterModeField
-	}
-	parameterTypeField := &pb.ParameterType
-	if parameterTypeField != nil {
-		st.ParameterType = *parameterTypeField
-	}
-	positionField := &pb.Position
-	if positionField != nil {
-		st.Position = *positionField
-	}
-	typeIntervalTypeField := &pb.TypeIntervalType
-	if typeIntervalTypeField != nil {
-		st.TypeIntervalType = *typeIntervalTypeField
-	}
-	typeJsonField := &pb.TypeJson
-	if typeJsonField != nil {
-		st.TypeJson = *typeJsonField
-	}
-	typeNameField := &pb.TypeName
-	if typeNameField != nil {
-		st.TypeName = *typeNameField
-	}
-	typePrecisionField := &pb.TypePrecision
-	if typePrecisionField != nil {
-		st.TypePrecision = *typePrecisionField
-	}
-	typeScaleField := &pb.TypeScale
-	if typeScaleField != nil {
-		st.TypeScale = *typeScaleField
-	}
-	typeTextField := &pb.TypeText
-	if typeTextField != nil {
-		st.TypeText = *typeTextField
-	}
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.ParameterDefault = pb.ParameterDefault
+	st.ParameterMode = pb.ParameterMode
+	st.ParameterType = pb.ParameterType
+	st.Position = pb.Position
+	st.TypeIntervalType = pb.TypeIntervalType
+	st.TypeJson = pb.TypeJson
+	st.TypeName = pb.TypeName
+	st.TypePrecision = pb.TypePrecision
+	st.TypeScale = pb.TypeScale
+	st.TypeText = pb.TypeText
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11558,6 +9880,7 @@ func (st functionParameterInfoPb) MarshalJSON() ([]byte, error) {
 type FunctionParameterInfos struct {
 	// The array of __FunctionParameterInfo__ definitions of the function's
 	// parameters.
+	// Wire name: 'parameters'
 	Parameters []FunctionParameterInfo
 }
 
@@ -11620,13 +9943,13 @@ func functionParameterInfosFromPb(pb *functionParameterInfosPb) (*FunctionParame
 	st := &FunctionParameterInfos{}
 
 	var parametersField []FunctionParameterInfo
-	for _, item := range pb.Parameters {
-		itemField, err := functionParameterInfoFromPb(&item)
+	for _, itemPb := range pb.Parameters {
+		item, err := functionParameterInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			parametersField = append(parametersField, *itemField)
+		if item != nil {
+			parametersField = append(parametersField, *item)
 		}
 	}
 	st.Parameters = parametersField
@@ -11725,9 +10048,11 @@ func functionParameterTypeFromPb(pb *functionParameterTypePb) (*FunctionParamete
 // GCP temporary credentials for API authentication. Read more at
 // https://developers.google.com/identity/protocols/oauth2/service-account
 type GcpOauthToken struct {
+
+	// Wire name: 'oauth_token'
 	OauthToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func gcpOauthTokenToPb(st *GcpOauthToken) (*gcpOauthTokenPb, error) {
@@ -11735,10 +10060,7 @@ func gcpOauthTokenToPb(st *GcpOauthToken) (*gcpOauthTokenPb, error) {
 		return nil, nil
 	}
 	pb := &gcpOauthTokenPb{}
-	oauthTokenPb := &st.OauthToken
-	if oauthTokenPb != nil {
-		pb.OauthToken = *oauthTokenPb
-	}
+	pb.OauthToken = st.OauthToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11780,10 +10102,7 @@ func gcpOauthTokenFromPb(pb *gcpOauthTokenPb) (*GcpOauthToken, error) {
 		return nil, nil
 	}
 	st := &GcpOauthToken{}
-	oauthTokenField := &pb.OauthToken
-	if oauthTokenField != nil {
-		st.OauthToken = *oauthTokenField
-	}
+	st.OauthToken = pb.OauthToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11802,6 +10121,7 @@ type GenerateTemporaryServiceCredentialAzureOptions struct {
 	// The resources to which the temporary Azure credential should apply. These
 	// resources are the scopes that are passed to the token provider (see
 	// https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python)
+	// Wire name: 'resources'
 	Resources []string
 }
 
@@ -11810,15 +10130,7 @@ func generateTemporaryServiceCredentialAzureOptionsToPb(st *GenerateTemporarySer
 		return nil, nil
 	}
 	pb := &generateTemporaryServiceCredentialAzureOptionsPb{}
-
-	var resourcesPb []string
-	for _, item := range st.Resources {
-		itemPb := &item
-		if itemPb != nil {
-			resourcesPb = append(resourcesPb, *itemPb)
-		}
-	}
-	pb.Resources = resourcesPb
+	pb.Resources = st.Resources
 
 	return pb, nil
 }
@@ -11860,15 +10172,7 @@ func generateTemporaryServiceCredentialAzureOptionsFromPb(pb *generateTemporaryS
 		return nil, nil
 	}
 	st := &GenerateTemporaryServiceCredentialAzureOptions{}
-
-	var resourcesField []string
-	for _, item := range pb.Resources {
-		itemField := &item
-		if itemField != nil {
-			resourcesField = append(resourcesField, *itemField)
-		}
-	}
-	st.Resources = resourcesField
+	st.Resources = pb.Resources
 
 	return st, nil
 }
@@ -11878,6 +10182,7 @@ type GenerateTemporaryServiceCredentialGcpOptions struct {
 	// The scopes to which the temporary GCP credential should apply. These
 	// resources are the scopes that are passed to the token provider (see
 	// https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials)
+	// Wire name: 'scopes'
 	Scopes []string
 }
 
@@ -11886,15 +10191,7 @@ func generateTemporaryServiceCredentialGcpOptionsToPb(st *GenerateTemporaryServi
 		return nil, nil
 	}
 	pb := &generateTemporaryServiceCredentialGcpOptionsPb{}
-
-	var scopesPb []string
-	for _, item := range st.Scopes {
-		itemPb := &item
-		if itemPb != nil {
-			scopesPb = append(scopesPb, *itemPb)
-		}
-	}
-	pb.Scopes = scopesPb
+	pb.Scopes = st.Scopes
 
 	return pb, nil
 }
@@ -11936,26 +10233,21 @@ func generateTemporaryServiceCredentialGcpOptionsFromPb(pb *generateTemporarySer
 		return nil, nil
 	}
 	st := &GenerateTemporaryServiceCredentialGcpOptions{}
-
-	var scopesField []string
-	for _, item := range pb.Scopes {
-		itemField := &item
-		if itemField != nil {
-			scopesField = append(scopesField, *itemField)
-		}
-	}
-	st.Scopes = scopesField
+	st.Scopes = pb.Scopes
 
 	return st, nil
 }
 
 type GenerateTemporaryServiceCredentialRequest struct {
 	// The Azure cloud options to customize the requested temporary credential
+	// Wire name: 'azure_options'
 	AzureOptions *GenerateTemporaryServiceCredentialAzureOptions
 	// The name of the service credential used to generate a temporary
 	// credential
+	// Wire name: 'credential_name'
 	CredentialName string
 	// The GCP cloud options to customize the requested temporary credential
+	// Wire name: 'gcp_options'
 	GcpOptions *GenerateTemporaryServiceCredentialGcpOptions
 }
 
@@ -11972,10 +10264,7 @@ func generateTemporaryServiceCredentialRequestToPb(st *GenerateTemporaryServiceC
 		pb.AzureOptions = azureOptionsPb
 	}
 
-	credentialNamePb := &st.CredentialName
-	if credentialNamePb != nil {
-		pb.CredentialName = *credentialNamePb
-	}
+	pb.CredentialName = st.CredentialName
 
 	gcpOptionsPb, err := generateTemporaryServiceCredentialGcpOptionsToPb(st.GcpOptions)
 	if err != nil {
@@ -12035,10 +10324,7 @@ func generateTemporaryServiceCredentialRequestFromPb(pb *generateTemporaryServic
 	if azureOptionsField != nil {
 		st.AzureOptions = azureOptionsField
 	}
-	credentialNameField := &pb.CredentialName
-	if credentialNameField != nil {
-		st.CredentialName = *credentialNameField
-	}
+	st.CredentialName = pb.CredentialName
 	gcpOptionsField, err := generateTemporaryServiceCredentialGcpOptionsFromPb(pb.GcpOptions)
 	if err != nil {
 		return nil, err
@@ -12054,11 +10340,13 @@ type GenerateTemporaryTableCredentialRequest struct {
 	// The operation performed against the table data, either READ or
 	// READ_WRITE. If READ_WRITE is specified, the credentials returned will
 	// have write permissions, otherwise, it will be read only.
+	// Wire name: 'operation'
 	Operation TableOperation
 	// UUID of the table to read or write.
+	// Wire name: 'table_id'
 	TableId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func generateTemporaryTableCredentialRequestToPb(st *GenerateTemporaryTableCredentialRequest) (*generateTemporaryTableCredentialRequestPb, error) {
@@ -12066,15 +10354,9 @@ func generateTemporaryTableCredentialRequestToPb(st *GenerateTemporaryTableCrede
 		return nil, nil
 	}
 	pb := &generateTemporaryTableCredentialRequestPb{}
-	operationPb := &st.Operation
-	if operationPb != nil {
-		pb.Operation = *operationPb
-	}
+	pb.Operation = st.Operation
 
-	tableIdPb := &st.TableId
-	if tableIdPb != nil {
-		pb.TableId = *tableIdPb
-	}
+	pb.TableId = st.TableId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12121,14 +10403,8 @@ func generateTemporaryTableCredentialRequestFromPb(pb *generateTemporaryTableCre
 		return nil, nil
 	}
 	st := &GenerateTemporaryTableCredentialRequest{}
-	operationField := &pb.Operation
-	if operationField != nil {
-		st.Operation = *operationField
-	}
-	tableIdField := &pb.TableId
-	if tableIdField != nil {
-		st.TableId = *tableIdField
-	}
+	st.Operation = pb.Operation
+	st.TableId = pb.TableId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12145,27 +10421,34 @@ func (st generateTemporaryTableCredentialRequestPb) MarshalJSON() ([]byte, error
 type GenerateTemporaryTableCredentialResponse struct {
 	// AWS temporary credentials for API authentication. Read more at
 	// https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
+	// Wire name: 'aws_temp_credentials'
 	AwsTempCredentials *AwsCredentials
 	// Azure Active Directory token, essentially the Oauth token for Azure
 	// Service Principal or Managed Identity. Read more at
 	// https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token
+	// Wire name: 'azure_aad'
 	AzureAad *AzureActiveDirectoryToken
 	// Azure temporary credentials for API authentication. Read more at
 	// https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
+	// Wire name: 'azure_user_delegation_sas'
 	AzureUserDelegationSas *AzureUserDelegationSas
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
+	// Wire name: 'expiration_time'
 	ExpirationTime int64
 	// GCP temporary credentials for API authentication. Read more at
 	// https://developers.google.com/identity/protocols/oauth2/service-account
+	// Wire name: 'gcp_oauth_token'
 	GcpOauthToken *GcpOauthToken
 	// R2 temporary credentials for API authentication. Read more at
 	// https://developers.cloudflare.com/r2/api/s3/tokens/.
+	// Wire name: 'r2_temp_credentials'
 	R2TempCredentials *R2Credentials
 	// The URL of the storage path accessible by the temporary credential.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func generateTemporaryTableCredentialResponseToPb(st *GenerateTemporaryTableCredentialResponse) (*generateTemporaryTableCredentialResponsePb, error) {
@@ -12197,10 +10480,7 @@ func generateTemporaryTableCredentialResponseToPb(st *GenerateTemporaryTableCred
 		pb.AzureUserDelegationSas = azureUserDelegationSasPb
 	}
 
-	expirationTimePb := &st.ExpirationTime
-	if expirationTimePb != nil {
-		pb.ExpirationTime = *expirationTimePb
-	}
+	pb.ExpirationTime = st.ExpirationTime
 
 	gcpOauthTokenPb, err := gcpOauthTokenToPb(st.GcpOauthToken)
 	if err != nil {
@@ -12218,10 +10498,7 @@ func generateTemporaryTableCredentialResponseToPb(st *GenerateTemporaryTableCred
 		pb.R2TempCredentials = r2TempCredentialsPb
 	}
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12304,10 +10581,7 @@ func generateTemporaryTableCredentialResponseFromPb(pb *generateTemporaryTableCr
 	if azureUserDelegationSasField != nil {
 		st.AzureUserDelegationSas = azureUserDelegationSasField
 	}
-	expirationTimeField := &pb.ExpirationTime
-	if expirationTimeField != nil {
-		st.ExpirationTime = *expirationTimeField
-	}
+	st.ExpirationTime = pb.ExpirationTime
 	gcpOauthTokenField, err := gcpOauthTokenFromPb(pb.GcpOauthToken)
 	if err != nil {
 		return nil, err
@@ -12322,10 +10596,7 @@ func generateTemporaryTableCredentialResponseFromPb(pb *generateTemporaryTableCr
 	if r2TempCredentialsField != nil {
 		st.R2TempCredentials = r2TempCredentialsField
 	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12342,7 +10613,8 @@ func (st generateTemporaryTableCredentialResponsePb) MarshalJSON() ([]byte, erro
 // Gets the metastore assignment for a workspace
 type GetAccountMetastoreAssignmentRequest struct {
 	// Workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func getAccountMetastoreAssignmentRequestToPb(st *GetAccountMetastoreAssignmentRequest) (*getAccountMetastoreAssignmentRequestPb, error) {
@@ -12350,10 +10622,7 @@ func getAccountMetastoreAssignmentRequestToPb(st *GetAccountMetastoreAssignmentR
 		return nil, nil
 	}
 	pb := &getAccountMetastoreAssignmentRequestPb{}
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -12393,10 +10662,7 @@ func getAccountMetastoreAssignmentRequestFromPb(pb *getAccountMetastoreAssignmen
 		return nil, nil
 	}
 	st := &GetAccountMetastoreAssignmentRequest{}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
@@ -12404,7 +10670,8 @@ func getAccountMetastoreAssignmentRequestFromPb(pb *getAccountMetastoreAssignmen
 // Get a metastore
 type GetAccountMetastoreRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 }
 
 func getAccountMetastoreRequestToPb(st *GetAccountMetastoreRequest) (*getAccountMetastoreRequestPb, error) {
@@ -12412,10 +10679,7 @@ func getAccountMetastoreRequestToPb(st *GetAccountMetastoreRequest) (*getAccount
 		return nil, nil
 	}
 	pb := &getAccountMetastoreRequestPb{}
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
 	return pb, nil
 }
@@ -12455,10 +10719,7 @@ func getAccountMetastoreRequestFromPb(pb *getAccountMetastoreRequestPb) (*GetAcc
 		return nil, nil
 	}
 	st := &GetAccountMetastoreRequest{}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
+	st.MetastoreId = pb.MetastoreId
 
 	return st, nil
 }
@@ -12466,9 +10727,11 @@ func getAccountMetastoreRequestFromPb(pb *getAccountMetastoreRequestPb) (*GetAcc
 // Gets the named storage credential
 type GetAccountStorageCredentialRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Name of the storage credential.
-	StorageCredentialName string
+	// Wire name: 'storage_credential_name'
+	StorageCredentialName string `tf:"-"`
 }
 
 func getAccountStorageCredentialRequestToPb(st *GetAccountStorageCredentialRequest) (*getAccountStorageCredentialRequestPb, error) {
@@ -12476,15 +10739,9 @@ func getAccountStorageCredentialRequestToPb(st *GetAccountStorageCredentialReque
 		return nil, nil
 	}
 	pb := &getAccountStorageCredentialRequestPb{}
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	storageCredentialNamePb := &st.StorageCredentialName
-	if storageCredentialNamePb != nil {
-		pb.StorageCredentialName = *storageCredentialNamePb
-	}
+	pb.StorageCredentialName = st.StorageCredentialName
 
 	return pb, nil
 }
@@ -12526,14 +10783,8 @@ func getAccountStorageCredentialRequestFromPb(pb *getAccountStorageCredentialReq
 		return nil, nil
 	}
 	st := &GetAccountStorageCredentialRequest{}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	storageCredentialNameField := &pb.StorageCredentialName
-	if storageCredentialNameField != nil {
-		st.StorageCredentialName = *storageCredentialNameField
-	}
+	st.MetastoreId = pb.MetastoreId
+	st.StorageCredentialName = pb.StorageCredentialName
 
 	return st, nil
 }
@@ -12541,7 +10792,8 @@ func getAccountStorageCredentialRequestFromPb(pb *getAccountStorageCredentialReq
 // Get an artifact allowlist
 type GetArtifactAllowlistRequest struct {
 	// The artifact type of the allowlist.
-	ArtifactType ArtifactType
+	// Wire name: 'artifact_type'
+	ArtifactType ArtifactType `tf:"-"`
 }
 
 func getArtifactAllowlistRequestToPb(st *GetArtifactAllowlistRequest) (*getArtifactAllowlistRequestPb, error) {
@@ -12549,10 +10801,7 @@ func getArtifactAllowlistRequestToPb(st *GetArtifactAllowlistRequest) (*getArtif
 		return nil, nil
 	}
 	pb := &getArtifactAllowlistRequestPb{}
-	artifactTypePb := &st.ArtifactType
-	if artifactTypePb != nil {
-		pb.ArtifactType = *artifactTypePb
-	}
+	pb.ArtifactType = st.ArtifactType
 
 	return pb, nil
 }
@@ -12592,10 +10841,7 @@ func getArtifactAllowlistRequestFromPb(pb *getArtifactAllowlistRequestPb) (*GetA
 		return nil, nil
 	}
 	st := &GetArtifactAllowlistRequest{}
-	artifactTypeField := &pb.ArtifactType
-	if artifactTypeField != nil {
-		st.ArtifactType = *artifactTypeField
-	}
+	st.ArtifactType = pb.ArtifactType
 
 	return st, nil
 }
@@ -12608,15 +10854,19 @@ type GetBindingsRequest struct {
 	// server configured value; - When set to a value less than 0, an invalid
 	// parameter error is returned; - If not set, all the workspace bindings are
 	// returned (not recommended).
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The name of the securable.
-	SecurableName string
+	// Wire name: 'securable_name'
+	SecurableName string `tf:"-"`
 	// The type of the securable to bind to a workspace.
-	SecurableType GetBindingsSecurableType
+	// Wire name: 'securable_type'
+	SecurableType GetBindingsSecurableType `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getBindingsRequestToPb(st *GetBindingsRequest) (*getBindingsRequestPb, error) {
@@ -12624,25 +10874,13 @@ func getBindingsRequestToPb(st *GetBindingsRequest) (*getBindingsRequestPb, erro
 		return nil, nil
 	}
 	pb := &getBindingsRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	securableNamePb := &st.SecurableName
-	if securableNamePb != nil {
-		pb.SecurableName = *securableNamePb
-	}
+	pb.SecurableName = st.SecurableName
 
-	securableTypePb := &st.SecurableType
-	if securableTypePb != nil {
-		pb.SecurableType = *securableTypePb
-	}
+	pb.SecurableType = st.SecurableType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12696,22 +10934,10 @@ func getBindingsRequestFromPb(pb *getBindingsRequestPb) (*GetBindingsRequest, er
 		return nil, nil
 	}
 	st := &GetBindingsRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	securableNameField := &pb.SecurableName
-	if securableNameField != nil {
-		st.SecurableName = *securableNameField
-	}
-	securableTypeField := &pb.SecurableType
-	if securableTypeField != nil {
-		st.SecurableType = *securableTypeField
-	}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.SecurableName = pb.SecurableName
+	st.SecurableType = pb.SecurableType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12776,14 +11002,17 @@ func getBindingsSecurableTypeFromPb(pb *getBindingsSecurableTypePb) (*GetBinding
 // Get Model Version By Alias
 type GetByAliasRequest struct {
 	// The name of the alias
-	Alias string
+	// Wire name: 'alias'
+	Alias string `tf:"-"`
 	// The three-level (fully qualified) name of the registered model
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include aliases associated with the model version in the
 	// response
-	IncludeAliases bool
+	// Wire name: 'include_aliases'
+	IncludeAliases bool `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getByAliasRequestToPb(st *GetByAliasRequest) (*getByAliasRequestPb, error) {
@@ -12791,20 +11020,11 @@ func getByAliasRequestToPb(st *GetByAliasRequest) (*getByAliasRequestPb, error) 
 		return nil, nil
 	}
 	pb := &getByAliasRequestPb{}
-	aliasPb := &st.Alias
-	if aliasPb != nil {
-		pb.Alias = *aliasPb
-	}
+	pb.Alias = st.Alias
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	includeAliasesPb := &st.IncludeAliases
-	if includeAliasesPb != nil {
-		pb.IncludeAliases = *includeAliasesPb
-	}
+	pb.IncludeAliases = st.IncludeAliases
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12852,18 +11072,9 @@ func getByAliasRequestFromPb(pb *getByAliasRequestPb) (*GetByAliasRequest, error
 		return nil, nil
 	}
 	st := &GetByAliasRequest{}
-	aliasField := &pb.Alias
-	if aliasField != nil {
-		st.Alias = *aliasField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	includeAliasesField := &pb.IncludeAliases
-	if includeAliasesField != nil {
-		st.IncludeAliases = *includeAliasesField
-	}
+	st.Alias = pb.Alias
+	st.FullName = pb.FullName
+	st.IncludeAliases = pb.IncludeAliases
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12881,11 +11092,13 @@ func (st getByAliasRequestPb) MarshalJSON() ([]byte, error) {
 type GetCatalogRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// The name of the catalog.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getCatalogRequestToPb(st *GetCatalogRequest) (*getCatalogRequestPb, error) {
@@ -12893,15 +11106,9 @@ func getCatalogRequestToPb(st *GetCatalogRequest) (*getCatalogRequestPb, error) 
 		return nil, nil
 	}
 	pb := &getCatalogRequestPb{}
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12947,14 +11154,8 @@ func getCatalogRequestFromPb(pb *getCatalogRequestPb) (*GetCatalogRequest, error
 		return nil, nil
 	}
 	st := &GetCatalogRequest{}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12971,7 +11172,8 @@ func (st getCatalogRequestPb) MarshalJSON() ([]byte, error) {
 // Get a connection
 type GetConnectionRequest struct {
 	// Name of the connection.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func getConnectionRequestToPb(st *GetConnectionRequest) (*getConnectionRequestPb, error) {
@@ -12979,10 +11181,7 @@ func getConnectionRequestToPb(st *GetConnectionRequest) (*getConnectionRequestPb
 		return nil, nil
 	}
 	pb := &getConnectionRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -13022,10 +11221,7 @@ func getConnectionRequestFromPb(pb *getConnectionRequestPb) (*GetConnectionReque
 		return nil, nil
 	}
 	st := &GetConnectionRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -13033,7 +11229,8 @@ func getConnectionRequestFromPb(pb *getConnectionRequestPb) (*GetConnectionReque
 // Get a credential
 type GetCredentialRequest struct {
 	// Name of the credential.
-	NameArg string
+	// Wire name: 'name_arg'
+	NameArg string `tf:"-"`
 }
 
 func getCredentialRequestToPb(st *GetCredentialRequest) (*getCredentialRequestPb, error) {
@@ -13041,10 +11238,7 @@ func getCredentialRequestToPb(st *GetCredentialRequest) (*getCredentialRequestPb
 		return nil, nil
 	}
 	pb := &getCredentialRequestPb{}
-	nameArgPb := &st.NameArg
-	if nameArgPb != nil {
-		pb.NameArg = *nameArgPb
-	}
+	pb.NameArg = st.NameArg
 
 	return pb, nil
 }
@@ -13084,10 +11278,7 @@ func getCredentialRequestFromPb(pb *getCredentialRequestPb) (*GetCredentialReque
 		return nil, nil
 	}
 	st := &GetCredentialRequest{}
-	nameArgField := &pb.NameArg
-	if nameArgField != nil {
-		st.NameArg = *nameArgField
-	}
+	st.NameArg = pb.NameArg
 
 	return st, nil
 }
@@ -13095,14 +11286,17 @@ func getCredentialRequestFromPb(pb *getCredentialRequestPb) (*GetCredentialReque
 // Get effective permissions
 type GetEffectiveRequest struct {
 	// Full name of securable.
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// If provided, only the effective permissions for the specified principal
 	// (user or group) are returned.
-	Principal string
+	// Wire name: 'principal'
+	Principal string `tf:"-"`
 	// Type of securable.
-	SecurableType SecurableType
+	// Wire name: 'securable_type'
+	SecurableType SecurableType `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getEffectiveRequestToPb(st *GetEffectiveRequest) (*getEffectiveRequestPb, error) {
@@ -13110,20 +11304,11 @@ func getEffectiveRequestToPb(st *GetEffectiveRequest) (*getEffectiveRequestPb, e
 		return nil, nil
 	}
 	pb := &getEffectiveRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	principalPb := &st.Principal
-	if principalPb != nil {
-		pb.Principal = *principalPb
-	}
+	pb.Principal = st.Principal
 
-	securableTypePb := &st.SecurableType
-	if securableTypePb != nil {
-		pb.SecurableType = *securableTypePb
-	}
+	pb.SecurableType = st.SecurableType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13171,18 +11356,9 @@ func getEffectiveRequestFromPb(pb *getEffectiveRequestPb) (*GetEffectiveRequest,
 		return nil, nil
 	}
 	st := &GetEffectiveRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	principalField := &pb.Principal
-	if principalField != nil {
-		st.Principal = *principalField
-	}
-	securableTypeField := &pb.SecurableType
-	if securableTypeField != nil {
-		st.SecurableType = *securableTypeField
-	}
+	st.FullName = pb.FullName
+	st.Principal = pb.Principal
+	st.SecurableType = pb.SecurableType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13200,11 +11376,13 @@ func (st getEffectiveRequestPb) MarshalJSON() ([]byte, error) {
 type GetExternalLocationRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Name of the external location.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getExternalLocationRequestToPb(st *GetExternalLocationRequest) (*getExternalLocationRequestPb, error) {
@@ -13212,15 +11390,9 @@ func getExternalLocationRequestToPb(st *GetExternalLocationRequest) (*getExterna
 		return nil, nil
 	}
 	pb := &getExternalLocationRequestPb{}
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13266,14 +11438,8 @@ func getExternalLocationRequestFromPb(pb *getExternalLocationRequestPb) (*GetExt
 		return nil, nil
 	}
 	st := &GetExternalLocationRequest{}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13291,12 +11457,14 @@ func (st getExternalLocationRequestPb) MarshalJSON() ([]byte, error) {
 type GetFunctionRequest struct {
 	// Whether to include functions in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getFunctionRequestToPb(st *GetFunctionRequest) (*getFunctionRequestPb, error) {
@@ -13304,15 +11472,9 @@ func getFunctionRequestToPb(st *GetFunctionRequest) (*getFunctionRequestPb, erro
 		return nil, nil
 	}
 	pb := &getFunctionRequestPb{}
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13359,14 +11521,8 @@ func getFunctionRequestFromPb(pb *getFunctionRequestPb) (*GetFunctionRequest, er
 		return nil, nil
 	}
 	st := &GetFunctionRequest{}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13383,14 +11539,17 @@ func (st getFunctionRequestPb) MarshalJSON() ([]byte, error) {
 // Get permissions
 type GetGrantRequest struct {
 	// Full name of securable.
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// If provided, only the permissions for the specified principal (user or
 	// group) are returned.
-	Principal string
+	// Wire name: 'principal'
+	Principal string `tf:"-"`
 	// Type of securable.
-	SecurableType SecurableType
+	// Wire name: 'securable_type'
+	SecurableType SecurableType `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getGrantRequestToPb(st *GetGrantRequest) (*getGrantRequestPb, error) {
@@ -13398,20 +11557,11 @@ func getGrantRequestToPb(st *GetGrantRequest) (*getGrantRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getGrantRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	principalPb := &st.Principal
-	if principalPb != nil {
-		pb.Principal = *principalPb
-	}
+	pb.Principal = st.Principal
 
-	securableTypePb := &st.SecurableType
-	if securableTypePb != nil {
-		pb.SecurableType = *securableTypePb
-	}
+	pb.SecurableType = st.SecurableType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13459,18 +11609,9 @@ func getGrantRequestFromPb(pb *getGrantRequestPb) (*GetGrantRequest, error) {
 		return nil, nil
 	}
 	st := &GetGrantRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	principalField := &pb.Principal
-	if principalField != nil {
-		st.Principal = *principalField
-	}
-	securableTypeField := &pb.SecurableType
-	if securableTypeField != nil {
-		st.SecurableType = *securableTypeField
-	}
+	st.FullName = pb.FullName
+	st.Principal = pb.Principal
+	st.SecurableType = pb.SecurableType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13487,7 +11628,8 @@ func (st getGrantRequestPb) MarshalJSON() ([]byte, error) {
 // Get a metastore
 type GetMetastoreRequest struct {
 	// Unique ID of the metastore.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getMetastoreRequestToPb(st *GetMetastoreRequest) (*getMetastoreRequestPb, error) {
@@ -13495,10 +11637,7 @@ func getMetastoreRequestToPb(st *GetMetastoreRequest) (*getMetastoreRequestPb, e
 		return nil, nil
 	}
 	pb := &getMetastoreRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -13538,59 +11677,75 @@ func getMetastoreRequestFromPb(pb *getMetastoreRequestPb) (*GetMetastoreRequest,
 		return nil, nil
 	}
 	st := &GetMetastoreRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type GetMetastoreSummaryResponse struct {
 	// Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`).
+	// Wire name: 'cloud'
 	Cloud string
 	// Time at which this metastore was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of metastore creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Unique identifier of the metastore's (Default) Data Access Configuration.
+	// Wire name: 'default_data_access_config_id'
 	DefaultDataAccessConfigId string
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
+	// Wire name: 'delta_sharing_organization_name'
 	DeltaSharingOrganizationName string
 	// The lifetime of delta sharing recipient token in seconds.
+	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
 	DeltaSharingRecipientTokenLifetimeInSeconds int64
 	// The scope of Delta Sharing enabled for the metastore.
+	// Wire name: 'delta_sharing_scope'
 	DeltaSharingScope GetMetastoreSummaryResponseDeltaSharingScope
 	// Whether to allow non-DBR clients to directly access entities under the
 	// metastore.
+	// Wire name: 'external_access_enabled'
 	ExternalAccessEnabled bool
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
+	// Wire name: 'global_metastore_id'
 	GlobalMetastoreId string
 	// Unique identifier of metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// The user-specified name of the metastore.
+	// Wire name: 'name'
 	Name string
 	// The owner of the metastore.
+	// Wire name: 'owner'
 	Owner string
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
+	// Wire name: 'privilege_model_version'
 	PrivilegeModelVersion string
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+	// Wire name: 'region'
 	Region string
 	// The storage root URL for metastore
+	// Wire name: 'storage_root'
 	StorageRoot string
 	// UUID of storage credential to access the metastore storage_root.
+	// Wire name: 'storage_root_credential_id'
 	StorageRootCredentialId string
 	// Name of the storage credential to access the metastore storage_root.
+	// Wire name: 'storage_root_credential_name'
 	StorageRootCredentialName string
 	// Time at which the metastore was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of user who last modified the metastore.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getMetastoreSummaryResponseToPb(st *GetMetastoreSummaryResponse) (*getMetastoreSummaryResponsePb, error) {
@@ -13598,100 +11753,43 @@ func getMetastoreSummaryResponseToPb(st *GetMetastoreSummaryResponse) (*getMetas
 		return nil, nil
 	}
 	pb := &getMetastoreSummaryResponsePb{}
-	cloudPb := &st.Cloud
-	if cloudPb != nil {
-		pb.Cloud = *cloudPb
-	}
+	pb.Cloud = st.Cloud
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	defaultDataAccessConfigIdPb := &st.DefaultDataAccessConfigId
-	if defaultDataAccessConfigIdPb != nil {
-		pb.DefaultDataAccessConfigId = *defaultDataAccessConfigIdPb
-	}
+	pb.DefaultDataAccessConfigId = st.DefaultDataAccessConfigId
 
-	deltaSharingOrganizationNamePb := &st.DeltaSharingOrganizationName
-	if deltaSharingOrganizationNamePb != nil {
-		pb.DeltaSharingOrganizationName = *deltaSharingOrganizationNamePb
-	}
+	pb.DeltaSharingOrganizationName = st.DeltaSharingOrganizationName
 
-	deltaSharingRecipientTokenLifetimeInSecondsPb := &st.DeltaSharingRecipientTokenLifetimeInSeconds
-	if deltaSharingRecipientTokenLifetimeInSecondsPb != nil {
-		pb.DeltaSharingRecipientTokenLifetimeInSeconds = *deltaSharingRecipientTokenLifetimeInSecondsPb
-	}
+	pb.DeltaSharingRecipientTokenLifetimeInSeconds = st.DeltaSharingRecipientTokenLifetimeInSeconds
 
-	deltaSharingScopePb := &st.DeltaSharingScope
-	if deltaSharingScopePb != nil {
-		pb.DeltaSharingScope = *deltaSharingScopePb
-	}
+	pb.DeltaSharingScope = st.DeltaSharingScope
 
-	externalAccessEnabledPb := &st.ExternalAccessEnabled
-	if externalAccessEnabledPb != nil {
-		pb.ExternalAccessEnabled = *externalAccessEnabledPb
-	}
+	pb.ExternalAccessEnabled = st.ExternalAccessEnabled
 
-	globalMetastoreIdPb := &st.GlobalMetastoreId
-	if globalMetastoreIdPb != nil {
-		pb.GlobalMetastoreId = *globalMetastoreIdPb
-	}
+	pb.GlobalMetastoreId = st.GlobalMetastoreId
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	privilegeModelVersionPb := &st.PrivilegeModelVersion
-	if privilegeModelVersionPb != nil {
-		pb.PrivilegeModelVersion = *privilegeModelVersionPb
-	}
+	pb.PrivilegeModelVersion = st.PrivilegeModelVersion
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
-	storageRootPb := &st.StorageRoot
-	if storageRootPb != nil {
-		pb.StorageRoot = *storageRootPb
-	}
+	pb.StorageRoot = st.StorageRoot
 
-	storageRootCredentialIdPb := &st.StorageRootCredentialId
-	if storageRootCredentialIdPb != nil {
-		pb.StorageRootCredentialId = *storageRootCredentialIdPb
-	}
+	pb.StorageRootCredentialId = st.StorageRootCredentialId
 
-	storageRootCredentialNamePb := &st.StorageRootCredentialName
-	if storageRootCredentialNamePb != nil {
-		pb.StorageRootCredentialName = *storageRootCredentialNamePb
-	}
+	pb.StorageRootCredentialName = st.StorageRootCredentialName
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13774,82 +11872,25 @@ func getMetastoreSummaryResponseFromPb(pb *getMetastoreSummaryResponsePb) (*GetM
 		return nil, nil
 	}
 	st := &GetMetastoreSummaryResponse{}
-	cloudField := &pb.Cloud
-	if cloudField != nil {
-		st.Cloud = *cloudField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	defaultDataAccessConfigIdField := &pb.DefaultDataAccessConfigId
-	if defaultDataAccessConfigIdField != nil {
-		st.DefaultDataAccessConfigId = *defaultDataAccessConfigIdField
-	}
-	deltaSharingOrganizationNameField := &pb.DeltaSharingOrganizationName
-	if deltaSharingOrganizationNameField != nil {
-		st.DeltaSharingOrganizationName = *deltaSharingOrganizationNameField
-	}
-	deltaSharingRecipientTokenLifetimeInSecondsField := &pb.DeltaSharingRecipientTokenLifetimeInSeconds
-	if deltaSharingRecipientTokenLifetimeInSecondsField != nil {
-		st.DeltaSharingRecipientTokenLifetimeInSeconds = *deltaSharingRecipientTokenLifetimeInSecondsField
-	}
-	deltaSharingScopeField := &pb.DeltaSharingScope
-	if deltaSharingScopeField != nil {
-		st.DeltaSharingScope = *deltaSharingScopeField
-	}
-	externalAccessEnabledField := &pb.ExternalAccessEnabled
-	if externalAccessEnabledField != nil {
-		st.ExternalAccessEnabled = *externalAccessEnabledField
-	}
-	globalMetastoreIdField := &pb.GlobalMetastoreId
-	if globalMetastoreIdField != nil {
-		st.GlobalMetastoreId = *globalMetastoreIdField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	privilegeModelVersionField := &pb.PrivilegeModelVersion
-	if privilegeModelVersionField != nil {
-		st.PrivilegeModelVersion = *privilegeModelVersionField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
-	storageRootField := &pb.StorageRoot
-	if storageRootField != nil {
-		st.StorageRoot = *storageRootField
-	}
-	storageRootCredentialIdField := &pb.StorageRootCredentialId
-	if storageRootCredentialIdField != nil {
-		st.StorageRootCredentialId = *storageRootCredentialIdField
-	}
-	storageRootCredentialNameField := &pb.StorageRootCredentialName
-	if storageRootCredentialNameField != nil {
-		st.StorageRootCredentialName = *storageRootCredentialNameField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.Cloud = pb.Cloud
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.DefaultDataAccessConfigId = pb.DefaultDataAccessConfigId
+	st.DeltaSharingOrganizationName = pb.DeltaSharingOrganizationName
+	st.DeltaSharingRecipientTokenLifetimeInSeconds = pb.DeltaSharingRecipientTokenLifetimeInSeconds
+	st.DeltaSharingScope = pb.DeltaSharingScope
+	st.ExternalAccessEnabled = pb.ExternalAccessEnabled
+	st.GlobalMetastoreId = pb.GlobalMetastoreId
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.PrivilegeModelVersion = pb.PrivilegeModelVersion
+	st.Region = pb.Region
+	st.StorageRoot = pb.StorageRoot
+	st.StorageRootCredentialId = pb.StorageRootCredentialId
+	st.StorageRootCredentialName = pb.StorageRootCredentialName
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13911,17 +11952,21 @@ func getMetastoreSummaryResponseDeltaSharingScopeFromPb(pb *getMetastoreSummaryR
 // Get a Model Version
 type GetModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include aliases associated with the model version in the
 	// response
-	IncludeAliases bool
+	// Wire name: 'include_aliases'
+	IncludeAliases bool `tf:"-"`
 	// Whether to include model versions in the response for which the principal
 	// can only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// The integer version number of the model version
-	Version int
+	// Wire name: 'version'
+	Version int `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getModelVersionRequestToPb(st *GetModelVersionRequest) (*getModelVersionRequestPb, error) {
@@ -13929,25 +11974,13 @@ func getModelVersionRequestToPb(st *GetModelVersionRequest) (*getModelVersionReq
 		return nil, nil
 	}
 	pb := &getModelVersionRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	includeAliasesPb := &st.IncludeAliases
-	if includeAliasesPb != nil {
-		pb.IncludeAliases = *includeAliasesPb
-	}
+	pb.IncludeAliases = st.IncludeAliases
 
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13998,22 +12031,10 @@ func getModelVersionRequestFromPb(pb *getModelVersionRequestPb) (*GetModelVersio
 		return nil, nil
 	}
 	st := &GetModelVersionRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	includeAliasesField := &pb.IncludeAliases
-	if includeAliasesField != nil {
-		st.IncludeAliases = *includeAliasesField
-	}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.FullName = pb.FullName
+	st.IncludeAliases = pb.IncludeAliases
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14030,7 +12051,8 @@ func (st getModelVersionRequestPb) MarshalJSON() ([]byte, error) {
 // Get an Online Table
 type GetOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func getOnlineTableRequestToPb(st *GetOnlineTableRequest) (*getOnlineTableRequestPb, error) {
@@ -14038,10 +12060,7 @@ func getOnlineTableRequestToPb(st *GetOnlineTableRequest) (*getOnlineTableReques
 		return nil, nil
 	}
 	pb := &getOnlineTableRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -14081,10 +12100,7 @@ func getOnlineTableRequestFromPb(pb *getOnlineTableRequestPb) (*GetOnlineTableRe
 		return nil, nil
 	}
 	st := &GetOnlineTableRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -14092,7 +12108,8 @@ func getOnlineTableRequestFromPb(pb *getOnlineTableRequestPb) (*GetOnlineTableRe
 // Get a table monitor
 type GetQualityMonitorRequest struct {
 	// Full name of the table.
-	TableName string
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 }
 
 func getQualityMonitorRequestToPb(st *GetQualityMonitorRequest) (*getQualityMonitorRequestPb, error) {
@@ -14100,10 +12117,7 @@ func getQualityMonitorRequestToPb(st *GetQualityMonitorRequest) (*getQualityMoni
 		return nil, nil
 	}
 	pb := &getQualityMonitorRequestPb{}
-	tableNamePb := &st.TableName
-	if tableNamePb != nil {
-		pb.TableName = *tableNamePb
-	}
+	pb.TableName = st.TableName
 
 	return pb, nil
 }
@@ -14143,10 +12157,7 @@ func getQualityMonitorRequestFromPb(pb *getQualityMonitorRequestPb) (*GetQuality
 		return nil, nil
 	}
 	st := &GetQualityMonitorRequest{}
-	tableNameField := &pb.TableName
-	if tableNameField != nil {
-		st.TableName = *tableNameField
-	}
+	st.TableName = pb.TableName
 
 	return st, nil
 }
@@ -14155,12 +12166,15 @@ func getQualityMonitorRequestFromPb(pb *getQualityMonitorRequestPb) (*GetQuality
 type GetQuotaRequest struct {
 	// Full name of the parent resource. Provide the metastore ID if the parent
 	// is a metastore.
-	ParentFullName string
+	// Wire name: 'parent_full_name'
+	ParentFullName string `tf:"-"`
 	// Securable type of the quota parent.
-	ParentSecurableType string
+	// Wire name: 'parent_securable_type'
+	ParentSecurableType string `tf:"-"`
 	// Name of the quota. Follows the pattern of the quota type, with "-quota"
 	// added as a suffix.
-	QuotaName string
+	// Wire name: 'quota_name'
+	QuotaName string `tf:"-"`
 }
 
 func getQuotaRequestToPb(st *GetQuotaRequest) (*getQuotaRequestPb, error) {
@@ -14168,20 +12182,11 @@ func getQuotaRequestToPb(st *GetQuotaRequest) (*getQuotaRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getQuotaRequestPb{}
-	parentFullNamePb := &st.ParentFullName
-	if parentFullNamePb != nil {
-		pb.ParentFullName = *parentFullNamePb
-	}
+	pb.ParentFullName = st.ParentFullName
 
-	parentSecurableTypePb := &st.ParentSecurableType
-	if parentSecurableTypePb != nil {
-		pb.ParentSecurableType = *parentSecurableTypePb
-	}
+	pb.ParentSecurableType = st.ParentSecurableType
 
-	quotaNamePb := &st.QuotaName
-	if quotaNamePb != nil {
-		pb.QuotaName = *quotaNamePb
-	}
+	pb.QuotaName = st.QuotaName
 
 	return pb, nil
 }
@@ -14227,24 +12232,16 @@ func getQuotaRequestFromPb(pb *getQuotaRequestPb) (*GetQuotaRequest, error) {
 		return nil, nil
 	}
 	st := &GetQuotaRequest{}
-	parentFullNameField := &pb.ParentFullName
-	if parentFullNameField != nil {
-		st.ParentFullName = *parentFullNameField
-	}
-	parentSecurableTypeField := &pb.ParentSecurableType
-	if parentSecurableTypeField != nil {
-		st.ParentSecurableType = *parentSecurableTypeField
-	}
-	quotaNameField := &pb.QuotaName
-	if quotaNameField != nil {
-		st.QuotaName = *quotaNameField
-	}
+	st.ParentFullName = pb.ParentFullName
+	st.ParentSecurableType = pb.ParentSecurableType
+	st.QuotaName = pb.QuotaName
 
 	return st, nil
 }
 
 type GetQuotaResponse struct {
 	// The returned QuotaInfo.
+	// Wire name: 'quota_info'
 	QuotaInfo *QuotaInfo
 }
 
@@ -14313,9 +12310,11 @@ func getQuotaResponseFromPb(pb *getQuotaResponsePb) (*GetQuotaResponse, error) {
 // Get refresh
 type GetRefreshRequest struct {
 	// ID of the refresh.
-	RefreshId string
+	// Wire name: 'refresh_id'
+	RefreshId string `tf:"-"`
 	// Full name of the table.
-	TableName string
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 }
 
 func getRefreshRequestToPb(st *GetRefreshRequest) (*getRefreshRequestPb, error) {
@@ -14323,15 +12322,9 @@ func getRefreshRequestToPb(st *GetRefreshRequest) (*getRefreshRequestPb, error) 
 		return nil, nil
 	}
 	pb := &getRefreshRequestPb{}
-	refreshIdPb := &st.RefreshId
-	if refreshIdPb != nil {
-		pb.RefreshId = *refreshIdPb
-	}
+	pb.RefreshId = st.RefreshId
 
-	tableNamePb := &st.TableName
-	if tableNamePb != nil {
-		pb.TableName = *tableNamePb
-	}
+	pb.TableName = st.TableName
 
 	return pb, nil
 }
@@ -14373,14 +12366,8 @@ func getRefreshRequestFromPb(pb *getRefreshRequestPb) (*GetRefreshRequest, error
 		return nil, nil
 	}
 	st := &GetRefreshRequest{}
-	refreshIdField := &pb.RefreshId
-	if refreshIdField != nil {
-		st.RefreshId = *refreshIdField
-	}
-	tableNameField := &pb.TableName
-	if tableNameField != nil {
-		st.TableName = *tableNameField
-	}
+	st.RefreshId = pb.RefreshId
+	st.TableName = pb.TableName
 
 	return st, nil
 }
@@ -14388,14 +12375,17 @@ func getRefreshRequestFromPb(pb *getRefreshRequestPb) (*GetRefreshRequest, error
 // Get a Registered Model
 type GetRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include registered model aliases in the response
-	IncludeAliases bool
+	// Wire name: 'include_aliases'
+	IncludeAliases bool `tf:"-"`
 	// Whether to include registered models in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getRegisteredModelRequestToPb(st *GetRegisteredModelRequest) (*getRegisteredModelRequestPb, error) {
@@ -14403,20 +12393,11 @@ func getRegisteredModelRequestToPb(st *GetRegisteredModelRequest) (*getRegistere
 		return nil, nil
 	}
 	pb := &getRegisteredModelRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	includeAliasesPb := &st.IncludeAliases
-	if includeAliasesPb != nil {
-		pb.IncludeAliases = *includeAliasesPb
-	}
+	pb.IncludeAliases = st.IncludeAliases
 
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14464,18 +12445,9 @@ func getRegisteredModelRequestFromPb(pb *getRegisteredModelRequestPb) (*GetRegis
 		return nil, nil
 	}
 	st := &GetRegisteredModelRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	includeAliasesField := &pb.IncludeAliases
-	if includeAliasesField != nil {
-		st.IncludeAliases = *includeAliasesField
-	}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
+	st.FullName = pb.FullName
+	st.IncludeAliases = pb.IncludeAliases
+	st.IncludeBrowse = pb.IncludeBrowse
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14492,12 +12464,14 @@ func (st getRegisteredModelRequestPb) MarshalJSON() ([]byte, error) {
 // Get a schema
 type GetSchemaRequest struct {
 	// Full name of the schema.
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include schemas in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getSchemaRequestToPb(st *GetSchemaRequest) (*getSchemaRequestPb, error) {
@@ -14505,15 +12479,9 @@ func getSchemaRequestToPb(st *GetSchemaRequest) (*getSchemaRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getSchemaRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14559,14 +12527,8 @@ func getSchemaRequestFromPb(pb *getSchemaRequestPb) (*GetSchemaRequest, error) {
 		return nil, nil
 	}
 	st := &GetSchemaRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
+	st.FullName = pb.FullName
+	st.IncludeBrowse = pb.IncludeBrowse
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14583,7 +12545,8 @@ func (st getSchemaRequestPb) MarshalJSON() ([]byte, error) {
 // Get a credential
 type GetStorageCredentialRequest struct {
 	// Name of the storage credential.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func getStorageCredentialRequestToPb(st *GetStorageCredentialRequest) (*getStorageCredentialRequestPb, error) {
@@ -14591,10 +12554,7 @@ func getStorageCredentialRequestToPb(st *GetStorageCredentialRequest) (*getStora
 		return nil, nil
 	}
 	pb := &getStorageCredentialRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -14634,10 +12594,7 @@ func getStorageCredentialRequestFromPb(pb *getStorageCredentialRequestPb) (*GetS
 		return nil, nil
 	}
 	st := &GetStorageCredentialRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -14645,16 +12602,20 @@ func getStorageCredentialRequestFromPb(pb *getStorageCredentialRequestPb) (*GetS
 // Get a table
 type GetTableRequest struct {
 	// Full name of the table.
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include tables in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Whether delta metadata should be included in the response.
-	IncludeDeltaMetadata bool
+	// Wire name: 'include_delta_metadata'
+	IncludeDeltaMetadata bool `tf:"-"`
 	// Whether to include a manifest containing capabilities the table has.
-	IncludeManifestCapabilities bool
+	// Wire name: 'include_manifest_capabilities'
+	IncludeManifestCapabilities bool `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getTableRequestToPb(st *GetTableRequest) (*getTableRequestPb, error) {
@@ -14662,25 +12623,13 @@ func getTableRequestToPb(st *GetTableRequest) (*getTableRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getTableRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	includeDeltaMetadataPb := &st.IncludeDeltaMetadata
-	if includeDeltaMetadataPb != nil {
-		pb.IncludeDeltaMetadata = *includeDeltaMetadataPb
-	}
+	pb.IncludeDeltaMetadata = st.IncludeDeltaMetadata
 
-	includeManifestCapabilitiesPb := &st.IncludeManifestCapabilities
-	if includeManifestCapabilitiesPb != nil {
-		pb.IncludeManifestCapabilities = *includeManifestCapabilitiesPb
-	}
+	pb.IncludeManifestCapabilities = st.IncludeManifestCapabilities
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14730,22 +12679,10 @@ func getTableRequestFromPb(pb *getTableRequestPb) (*GetTableRequest, error) {
 		return nil, nil
 	}
 	st := &GetTableRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	includeDeltaMetadataField := &pb.IncludeDeltaMetadata
-	if includeDeltaMetadataField != nil {
-		st.IncludeDeltaMetadata = *includeDeltaMetadataField
-	}
-	includeManifestCapabilitiesField := &pb.IncludeManifestCapabilities
-	if includeManifestCapabilitiesField != nil {
-		st.IncludeManifestCapabilities = *includeManifestCapabilitiesField
-	}
+	st.FullName = pb.FullName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.IncludeDeltaMetadata = pb.IncludeDeltaMetadata
+	st.IncludeManifestCapabilities = pb.IncludeManifestCapabilities
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14762,7 +12699,8 @@ func (st getTableRequestPb) MarshalJSON() ([]byte, error) {
 // Get catalog workspace bindings
 type GetWorkspaceBindingRequest struct {
 	// The name of the catalog.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func getWorkspaceBindingRequestToPb(st *GetWorkspaceBindingRequest) (*getWorkspaceBindingRequestPb, error) {
@@ -14770,10 +12708,7 @@ func getWorkspaceBindingRequestToPb(st *GetWorkspaceBindingRequest) (*getWorkspa
 		return nil, nil
 	}
 	pb := &getWorkspaceBindingRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -14813,10 +12748,7 @@ func getWorkspaceBindingRequestFromPb(pb *getWorkspaceBindingRequestPb) (*GetWor
 		return nil, nil
 	}
 	st := &GetWorkspaceBindingRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -14868,7 +12800,8 @@ func isolationModeFromPb(pb *isolationModePb) (*IsolationMode, error) {
 // Get all workspaces assigned to a metastore
 type ListAccountMetastoreAssignmentsRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 }
 
 func listAccountMetastoreAssignmentsRequestToPb(st *ListAccountMetastoreAssignmentsRequest) (*listAccountMetastoreAssignmentsRequestPb, error) {
@@ -14876,10 +12809,7 @@ func listAccountMetastoreAssignmentsRequestToPb(st *ListAccountMetastoreAssignme
 		return nil, nil
 	}
 	pb := &listAccountMetastoreAssignmentsRequestPb{}
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
 	return pb, nil
 }
@@ -14919,16 +12849,15 @@ func listAccountMetastoreAssignmentsRequestFromPb(pb *listAccountMetastoreAssign
 		return nil, nil
 	}
 	st := &ListAccountMetastoreAssignmentsRequest{}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
+	st.MetastoreId = pb.MetastoreId
 
 	return st, nil
 }
 
 // The list of workspaces to which the given metastore is assigned.
 type ListAccountMetastoreAssignmentsResponse struct {
+
+	// Wire name: 'workspace_ids'
 	WorkspaceIds []int64
 }
 
@@ -14937,15 +12866,7 @@ func listAccountMetastoreAssignmentsResponseToPb(st *ListAccountMetastoreAssignm
 		return nil, nil
 	}
 	pb := &listAccountMetastoreAssignmentsResponsePb{}
-
-	var workspaceIdsPb []int64
-	for _, item := range st.WorkspaceIds {
-		itemPb := &item
-		if itemPb != nil {
-			workspaceIdsPb = append(workspaceIdsPb, *itemPb)
-		}
-	}
-	pb.WorkspaceIds = workspaceIdsPb
+	pb.WorkspaceIds = st.WorkspaceIds
 
 	return pb, nil
 }
@@ -14984,15 +12905,7 @@ func listAccountMetastoreAssignmentsResponseFromPb(pb *listAccountMetastoreAssig
 		return nil, nil
 	}
 	st := &ListAccountMetastoreAssignmentsResponse{}
-
-	var workspaceIdsField []int64
-	for _, item := range pb.WorkspaceIds {
-		itemField := &item
-		if itemField != nil {
-			workspaceIdsField = append(workspaceIdsField, *itemField)
-		}
-	}
-	st.WorkspaceIds = workspaceIdsField
+	st.WorkspaceIds = pb.WorkspaceIds
 
 	return st, nil
 }
@@ -15000,7 +12913,8 @@ func listAccountMetastoreAssignmentsResponseFromPb(pb *listAccountMetastoreAssig
 // Get all storage credentials assigned to a metastore
 type ListAccountStorageCredentialsRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 }
 
 func listAccountStorageCredentialsRequestToPb(st *ListAccountStorageCredentialsRequest) (*listAccountStorageCredentialsRequestPb, error) {
@@ -15008,10 +12922,7 @@ func listAccountStorageCredentialsRequestToPb(st *ListAccountStorageCredentialsR
 		return nil, nil
 	}
 	pb := &listAccountStorageCredentialsRequestPb{}
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
 	return pb, nil
 }
@@ -15051,16 +12962,14 @@ func listAccountStorageCredentialsRequestFromPb(pb *listAccountStorageCredential
 		return nil, nil
 	}
 	st := &ListAccountStorageCredentialsRequest{}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
+	st.MetastoreId = pb.MetastoreId
 
 	return st, nil
 }
 
 type ListAccountStorageCredentialsResponse struct {
 	// An array of metastore storage credentials.
+	// Wire name: 'storage_credentials'
 	StorageCredentials []StorageCredentialInfo
 }
 
@@ -15122,13 +13031,13 @@ func listAccountStorageCredentialsResponseFromPb(pb *listAccountStorageCredentia
 	st := &ListAccountStorageCredentialsResponse{}
 
 	var storageCredentialsField []StorageCredentialInfo
-	for _, item := range pb.StorageCredentials {
-		itemField, err := storageCredentialInfoFromPb(&item)
+	for _, itemPb := range pb.StorageCredentials {
+		item, err := storageCredentialInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			storageCredentialsField = append(storageCredentialsField, *itemField)
+		if item != nil {
+			storageCredentialsField = append(storageCredentialsField, *item)
 		}
 	}
 	st.StorageCredentials = storageCredentialsField
@@ -15140,7 +13049,8 @@ func listAccountStorageCredentialsResponseFromPb(pb *listAccountStorageCredentia
 type ListCatalogsRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of catalogs to return. - when set to 0, the page length is
 	// set to a server configured value (recommended); - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
@@ -15150,11 +13060,13 @@ type ListCatalogsRequest struct {
 	// the specified max_results size, even zero. The only definitive indication
 	// that no further catalogs can be fetched is when the next_page_token is
 	// unset from the response.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listCatalogsRequestToPb(st *ListCatalogsRequest) (*listCatalogsRequestPb, error) {
@@ -15162,20 +13074,11 @@ func listCatalogsRequestToPb(st *ListCatalogsRequest) (*listCatalogsRequestPb, e
 		return nil, nil
 	}
 	pb := &listCatalogsRequestPb{}
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15231,18 +13134,9 @@ func listCatalogsRequestFromPb(pb *listCatalogsRequestPb) (*ListCatalogsRequest,
 		return nil, nil
 	}
 	st := &ListCatalogsRequest{}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15258,13 +13152,15 @@ func (st listCatalogsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListCatalogsResponse struct {
 	// An array of catalog information objects.
+	// Wire name: 'catalogs'
 	Catalogs []CatalogInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listCatalogsResponseToPb(st *ListCatalogsResponse) (*listCatalogsResponsePb, error) {
@@ -15285,10 +13181,7 @@ func listCatalogsResponseToPb(st *ListCatalogsResponse) (*listCatalogsResponsePb
 	}
 	pb.Catalogs = catalogsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15337,20 +13230,17 @@ func listCatalogsResponseFromPb(pb *listCatalogsResponsePb) (*ListCatalogsRespon
 	st := &ListCatalogsResponse{}
 
 	var catalogsField []CatalogInfo
-	for _, item := range pb.Catalogs {
-		itemField, err := catalogInfoFromPb(&item)
+	for _, itemPb := range pb.Catalogs {
+		item, err := catalogInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			catalogsField = append(catalogsField, *itemField)
+		if item != nil {
+			catalogsField = append(catalogsField, *item)
 		}
 	}
 	st.Catalogs = catalogsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15372,11 +13262,13 @@ type ListConnectionsRequest struct {
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listConnectionsRequestToPb(st *ListConnectionsRequest) (*listConnectionsRequestPb, error) {
@@ -15384,15 +13276,9 @@ func listConnectionsRequestToPb(st *ListConnectionsRequest) (*listConnectionsReq
 		return nil, nil
 	}
 	pb := &listConnectionsRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15442,14 +13328,8 @@ func listConnectionsRequestFromPb(pb *listConnectionsRequestPb) (*ListConnection
 		return nil, nil
 	}
 	st := &ListConnectionsRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15465,13 +13345,15 @@ func (st listConnectionsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListConnectionsResponse struct {
 	// An array of connection information objects.
+	// Wire name: 'connections'
 	Connections []ConnectionInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listConnectionsResponseToPb(st *ListConnectionsResponse) (*listConnectionsResponsePb, error) {
@@ -15492,10 +13374,7 @@ func listConnectionsResponseToPb(st *ListConnectionsResponse) (*listConnectionsR
 	}
 	pb.Connections = connectionsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15544,20 +13423,17 @@ func listConnectionsResponseFromPb(pb *listConnectionsResponsePb) (*ListConnecti
 	st := &ListConnectionsResponse{}
 
 	var connectionsField []ConnectionInfo
-	for _, item := range pb.Connections {
-		itemField, err := connectionInfoFromPb(&item)
+	for _, itemPb := range pb.Connections {
+		item, err := connectionInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			connectionsField = append(connectionsField, *itemField)
+		if item != nil {
+			connectionsField = append(connectionsField, *item)
 		}
 	}
 	st.Connections = connectionsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15578,13 +13454,16 @@ type ListCredentialsRequest struct {
 	// is the minimum of this value and a server-configured value. - When set to
 	// 0, the page length is set to a server-configured value (recommended). -
 	// When set to a value less than 0, an invalid parameter error is returned.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque token to retrieve the next page of results.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Return only credentials for the specified purpose.
-	Purpose CredentialPurpose
+	// Wire name: 'purpose'
+	Purpose CredentialPurpose `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listCredentialsRequestToPb(st *ListCredentialsRequest) (*listCredentialsRequestPb, error) {
@@ -15592,20 +13471,11 @@ func listCredentialsRequestToPb(st *ListCredentialsRequest) (*listCredentialsReq
 		return nil, nil
 	}
 	pb := &listCredentialsRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	purposePb := &st.Purpose
-	if purposePb != nil {
-		pb.Purpose = *purposePb
-	}
+	pb.Purpose = st.Purpose
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15656,18 +13526,9 @@ func listCredentialsRequestFromPb(pb *listCredentialsRequestPb) (*ListCredential
 		return nil, nil
 	}
 	st := &ListCredentialsRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	purposeField := &pb.Purpose
-	if purposeField != nil {
-		st.Purpose = *purposeField
-	}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.Purpose = pb.Purpose
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15682,13 +13543,16 @@ func (st listCredentialsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListCredentialsResponse struct {
+
+	// Wire name: 'credentials'
 	Credentials []CredentialInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listCredentialsResponseToPb(st *ListCredentialsResponse) (*listCredentialsResponsePb, error) {
@@ -15709,10 +13573,7 @@ func listCredentialsResponseToPb(st *ListCredentialsResponse) (*listCredentialsR
 	}
 	pb.Credentials = credentialsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15760,20 +13621,17 @@ func listCredentialsResponseFromPb(pb *listCredentialsResponsePb) (*ListCredenti
 	st := &ListCredentialsResponse{}
 
 	var credentialsField []CredentialInfo
-	for _, item := range pb.Credentials {
-		itemField, err := credentialInfoFromPb(&item)
+	for _, itemPb := range pb.Credentials {
+		item, err := credentialInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			credentialsField = append(credentialsField, *itemField)
+		if item != nil {
+			credentialsField = append(credentialsField, *item)
 		}
 	}
 	st.Credentials = credentialsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15791,18 +13649,21 @@ func (st listCredentialsResponsePb) MarshalJSON() ([]byte, error) {
 type ListExternalLocationsRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of external locations to return. If not set, all the
 	// external locations are returned (not recommended). - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
 	// configured value; - when set to 0, the page length is set to a server
 	// configured value (recommended); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listExternalLocationsRequestToPb(st *ListExternalLocationsRequest) (*listExternalLocationsRequestPb, error) {
@@ -15810,20 +13671,11 @@ func listExternalLocationsRequestToPb(st *ListExternalLocationsRequest) (*listEx
 		return nil, nil
 	}
 	pb := &listExternalLocationsRequestPb{}
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15876,18 +13728,9 @@ func listExternalLocationsRequestFromPb(pb *listExternalLocationsRequestPb) (*Li
 		return nil, nil
 	}
 	st := &ListExternalLocationsRequest{}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15903,13 +13746,15 @@ func (st listExternalLocationsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListExternalLocationsResponse struct {
 	// An array of external locations.
+	// Wire name: 'external_locations'
 	ExternalLocations []ExternalLocationInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listExternalLocationsResponseToPb(st *ListExternalLocationsResponse) (*listExternalLocationsResponsePb, error) {
@@ -15930,10 +13775,7 @@ func listExternalLocationsResponseToPb(st *ListExternalLocationsResponse) (*list
 	}
 	pb.ExternalLocations = externalLocationsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15982,20 +13824,17 @@ func listExternalLocationsResponseFromPb(pb *listExternalLocationsResponsePb) (*
 	st := &ListExternalLocationsResponse{}
 
 	var externalLocationsField []ExternalLocationInfo
-	for _, item := range pb.ExternalLocations {
-		itemField, err := externalLocationInfoFromPb(&item)
+	for _, itemPb := range pb.ExternalLocations {
+		item, err := externalLocationInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			externalLocationsField = append(externalLocationsField, *itemField)
+		if item != nil {
+			externalLocationsField = append(externalLocationsField, *item)
 		}
 	}
 	st.ExternalLocations = externalLocationsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16012,23 +13851,28 @@ func (st listExternalLocationsResponsePb) MarshalJSON() ([]byte, error) {
 // List functions
 type ListFunctionsRequest struct {
 	// Name of parent catalog for functions of interest.
-	CatalogName string
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include functions in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of functions to return. If not set, all the functions are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Parent schema of functions.
-	SchemaName string
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listFunctionsRequestToPb(st *ListFunctionsRequest) (*listFunctionsRequestPb, error) {
@@ -16036,30 +13880,15 @@ func listFunctionsRequestToPb(st *ListFunctionsRequest) (*listFunctionsRequestPb
 		return nil, nil
 	}
 	pb := &listFunctionsRequestPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16116,26 +13945,11 @@ func listFunctionsRequestFromPb(pb *listFunctionsRequestPb) (*ListFunctionsReque
 		return nil, nil
 	}
 	st := &ListFunctionsRequest{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
+	st.CatalogName = pb.CatalogName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.SchemaName = pb.SchemaName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16151,13 +13965,15 @@ func (st listFunctionsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListFunctionsResponse struct {
 	// An array of function information objects.
+	// Wire name: 'functions'
 	Functions []FunctionInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listFunctionsResponseToPb(st *ListFunctionsResponse) (*listFunctionsResponsePb, error) {
@@ -16178,10 +13994,7 @@ func listFunctionsResponseToPb(st *ListFunctionsResponse) (*listFunctionsRespons
 	}
 	pb.Functions = functionsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16230,20 +14043,17 @@ func listFunctionsResponseFromPb(pb *listFunctionsResponsePb) (*ListFunctionsRes
 	st := &ListFunctionsResponse{}
 
 	var functionsField []FunctionInfo
-	for _, item := range pb.Functions {
-		itemField, err := functionInfoFromPb(&item)
+	for _, itemPb := range pb.Functions {
+		item, err := functionInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			functionsField = append(functionsField, *itemField)
+		if item != nil {
+			functionsField = append(functionsField, *item)
 		}
 	}
 	st.Functions = functionsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16259,6 +14069,7 @@ func (st listFunctionsResponsePb) MarshalJSON() ([]byte, error) {
 
 type ListMetastoresResponse struct {
 	// An array of metastore information objects.
+	// Wire name: 'metastores'
 	Metastores []MetastoreInfo
 }
 
@@ -16320,13 +14131,13 @@ func listMetastoresResponseFromPb(pb *listMetastoresResponsePb) (*ListMetastores
 	st := &ListMetastoresResponse{}
 
 	var metastoresField []MetastoreInfo
-	for _, item := range pb.Metastores {
-		itemField, err := metastoreInfoFromPb(&item)
+	for _, itemPb := range pb.Metastores {
+		item, err := metastoreInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			metastoresField = append(metastoresField, *itemField)
+		if item != nil {
+			metastoresField = append(metastoresField, *item)
 		}
 	}
 	st.Metastores = metastoresField
@@ -16338,10 +14149,12 @@ func listMetastoresResponseFromPb(pb *listMetastoresResponsePb) (*ListMetastores
 type ListModelVersionsRequest struct {
 	// The full three-level name of the registered model under which to list
 	// model versions
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include model versions in the response for which the principal
 	// can only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of model versions to return. If not set, the page length
 	// is set to a server configured value (100, as of 1/3/2024). - when set to
 	// a value greater than 0, the page length is the minimum of this value and
@@ -16349,11 +14162,13 @@ type ListModelVersionsRequest struct {
 	// page length is set to a server configured value (100, as of 1/3/2024)
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listModelVersionsRequestToPb(st *ListModelVersionsRequest) (*listModelVersionsRequestPb, error) {
@@ -16361,25 +14176,13 @@ func listModelVersionsRequestToPb(st *ListModelVersionsRequest) (*listModelVersi
 		return nil, nil
 	}
 	pb := &listModelVersionsRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16436,22 +14239,10 @@ func listModelVersionsRequestFromPb(pb *listModelVersionsRequestPb) (*ListModelV
 		return nil, nil
 	}
 	st := &ListModelVersionsRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.FullName = pb.FullName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16466,13 +14257,16 @@ func (st listModelVersionsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListModelVersionsResponse struct {
+
+	// Wire name: 'model_versions'
 	ModelVersions []ModelVersionInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listModelVersionsResponseToPb(st *ListModelVersionsResponse) (*listModelVersionsResponsePb, error) {
@@ -16493,10 +14287,7 @@ func listModelVersionsResponseToPb(st *ListModelVersionsResponse) (*listModelVer
 	}
 	pb.ModelVersions = modelVersionsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16544,20 +14335,17 @@ func listModelVersionsResponseFromPb(pb *listModelVersionsResponsePb) (*ListMode
 	st := &ListModelVersionsResponse{}
 
 	var modelVersionsField []ModelVersionInfo
-	for _, item := range pb.ModelVersions {
-		itemField, err := modelVersionInfoFromPb(&item)
+	for _, itemPb := range pb.ModelVersions {
+		item, err := modelVersionInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			modelVersionsField = append(modelVersionsField, *itemField)
+		if item != nil {
+			modelVersionsField = append(modelVersionsField, *item)
 		}
 	}
 	st.ModelVersions = modelVersionsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16574,11 +14362,13 @@ func (st listModelVersionsResponsePb) MarshalJSON() ([]byte, error) {
 // List all resource quotas under a metastore.
 type ListQuotasRequest struct {
 	// The number of quotas to return.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque token for the next page of results.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listQuotasRequestToPb(st *ListQuotasRequest) (*listQuotasRequestPb, error) {
@@ -16586,15 +14376,9 @@ func listQuotasRequestToPb(st *ListQuotasRequest) (*listQuotasRequestPb, error) 
 		return nil, nil
 	}
 	pb := &listQuotasRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16639,14 +14423,8 @@ func listQuotasRequestFromPb(pb *listQuotasRequestPb) (*ListQuotasRequest, error
 		return nil, nil
 	}
 	st := &ListQuotasRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16664,11 +14442,13 @@ type ListQuotasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// An array of returned QuotaInfos.
+	// Wire name: 'quotas'
 	Quotas []QuotaInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listQuotasResponseToPb(st *ListQuotasResponse) (*listQuotasResponsePb, error) {
@@ -16676,10 +14456,7 @@ func listQuotasResponseToPb(st *ListQuotasResponse) (*listQuotasResponsePb, erro
 		return nil, nil
 	}
 	pb := &listQuotasResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var quotasPb []quotaInfoPb
 	for _, item := range st.Quotas {
@@ -16738,19 +14515,16 @@ func listQuotasResponseFromPb(pb *listQuotasResponsePb) (*ListQuotasResponse, er
 		return nil, nil
 	}
 	st := &ListQuotasResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var quotasField []QuotaInfo
-	for _, item := range pb.Quotas {
-		itemField, err := quotaInfoFromPb(&item)
+	for _, itemPb := range pb.Quotas {
+		item, err := quotaInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			quotasField = append(quotasField, *itemField)
+		if item != nil {
+			quotasField = append(quotasField, *item)
 		}
 	}
 	st.Quotas = quotasField
@@ -16770,7 +14544,8 @@ func (st listQuotasResponsePb) MarshalJSON() ([]byte, error) {
 // List refreshes
 type ListRefreshesRequest struct {
 	// Full name of the table.
-	TableName string
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 }
 
 func listRefreshesRequestToPb(st *ListRefreshesRequest) (*listRefreshesRequestPb, error) {
@@ -16778,10 +14553,7 @@ func listRefreshesRequestToPb(st *ListRefreshesRequest) (*listRefreshesRequestPb
 		return nil, nil
 	}
 	pb := &listRefreshesRequestPb{}
-	tableNamePb := &st.TableName
-	if tableNamePb != nil {
-		pb.TableName = *tableNamePb
-	}
+	pb.TableName = st.TableName
 
 	return pb, nil
 }
@@ -16821,10 +14593,7 @@ func listRefreshesRequestFromPb(pb *listRefreshesRequestPb) (*ListRefreshesReque
 		return nil, nil
 	}
 	st := &ListRefreshesRequest{}
-	tableNameField := &pb.TableName
-	if tableNameField != nil {
-		st.TableName = *tableNameField
-	}
+	st.TableName = pb.TableName
 
 	return st, nil
 }
@@ -16833,10 +14602,12 @@ func listRefreshesRequestFromPb(pb *listRefreshesRequestPb) (*ListRefreshesReque
 type ListRegisteredModelsRequest struct {
 	// The identifier of the catalog under which to list registered models. If
 	// specified, schema_name must be specified.
-	CatalogName string
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include registered models in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Max number of registered models to return.
 	//
 	// If both catalog and schema are specified: - when max_results is not
@@ -16854,14 +14625,17 @@ type ListRegisteredModelsRequest struct {
 	// 4/2/2024); - when set to 0, the page length is set to a server configured
 	// value (100, as of 4/2/2024); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque token to send for the next page of results (pagination).
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The identifier of the schema under which to list registered models. If
 	// specified, catalog_name must be specified.
-	SchemaName string
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listRegisteredModelsRequestToPb(st *ListRegisteredModelsRequest) (*listRegisteredModelsRequestPb, error) {
@@ -16869,30 +14643,15 @@ func listRegisteredModelsRequestToPb(st *ListRegisteredModelsRequest) (*listRegi
 		return nil, nil
 	}
 	pb := &listRegisteredModelsRequestPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16962,26 +14721,11 @@ func listRegisteredModelsRequestFromPb(pb *listRegisteredModelsRequestPb) (*List
 		return nil, nil
 	}
 	st := &ListRegisteredModelsRequest{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
+	st.CatalogName = pb.CatalogName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.SchemaName = pb.SchemaName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16998,11 +14742,13 @@ func (st listRegisteredModelsRequestPb) MarshalJSON() ([]byte, error) {
 type ListRegisteredModelsResponse struct {
 	// Opaque token for pagination. Omitted if there are no more results.
 	// page_token should be set to this value for fetching the next page.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'registered_models'
 	RegisteredModels []RegisteredModelInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listRegisteredModelsResponseToPb(st *ListRegisteredModelsResponse) (*listRegisteredModelsResponsePb, error) {
@@ -17010,10 +14756,7 @@ func listRegisteredModelsResponseToPb(st *ListRegisteredModelsResponse) (*listRe
 		return nil, nil
 	}
 	pb := &listRegisteredModelsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var registeredModelsPb []registeredModelInfoPb
 	for _, item := range st.RegisteredModels {
@@ -17071,19 +14814,16 @@ func listRegisteredModelsResponseFromPb(pb *listRegisteredModelsResponsePb) (*Li
 		return nil, nil
 	}
 	st := &ListRegisteredModelsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var registeredModelsField []RegisteredModelInfo
-	for _, item := range pb.RegisteredModels {
-		itemField, err := registeredModelInfoFromPb(&item)
+	for _, itemPb := range pb.RegisteredModels {
+		item, err := registeredModelInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			registeredModelsField = append(registeredModelsField, *itemField)
+		if item != nil {
+			registeredModelsField = append(registeredModelsField, *item)
 		}
 	}
 	st.RegisteredModels = registeredModelsField
@@ -17103,21 +14843,25 @@ func (st listRegisteredModelsResponsePb) MarshalJSON() ([]byte, error) {
 // List schemas
 type ListSchemasRequest struct {
 	// Parent catalog for schemas of interest.
-	CatalogName string
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include schemas in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of schemas to return. If not set, all the schemas are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listSchemasRequestToPb(st *ListSchemasRequest) (*listSchemasRequestPb, error) {
@@ -17125,25 +14869,13 @@ func listSchemasRequestToPb(st *ListSchemasRequest) (*listSchemasRequestPb, erro
 		return nil, nil
 	}
 	pb := &listSchemasRequestPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17198,22 +14930,10 @@ func listSchemasRequestFromPb(pb *listSchemasRequestPb) (*ListSchemasRequest, er
 		return nil, nil
 	}
 	st := &ListSchemasRequest{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.CatalogName = pb.CatalogName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17231,11 +14951,13 @@ type ListSchemasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// An array of schema information objects.
+	// Wire name: 'schemas'
 	Schemas []SchemaInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listSchemasResponseToPb(st *ListSchemasResponse) (*listSchemasResponsePb, error) {
@@ -17243,10 +14965,7 @@ func listSchemasResponseToPb(st *ListSchemasResponse) (*listSchemasResponsePb, e
 		return nil, nil
 	}
 	pb := &listSchemasResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var schemasPb []schemaInfoPb
 	for _, item := range st.Schemas {
@@ -17305,19 +15024,16 @@ func listSchemasResponseFromPb(pb *listSchemasResponsePb) (*ListSchemasResponse,
 		return nil, nil
 	}
 	st := &ListSchemasResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var schemasField []SchemaInfo
-	for _, item := range pb.Schemas {
-		itemField, err := schemaInfoFromPb(&item)
+	for _, itemPb := range pb.Schemas {
+		item, err := schemaInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			schemasField = append(schemasField, *itemField)
+		if item != nil {
+			schemasField = append(schemasField, *item)
 		}
 	}
 	st.Schemas = schemasField
@@ -17342,11 +15058,13 @@ type ListStorageCredentialsRequest struct {
 	// configured value; - when set to 0, the page length is set to a server
 	// configured value (recommended); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listStorageCredentialsRequestToPb(st *ListStorageCredentialsRequest) (*listStorageCredentialsRequestPb, error) {
@@ -17354,15 +15072,9 @@ func listStorageCredentialsRequestToPb(st *ListStorageCredentialsRequest) (*list
 		return nil, nil
 	}
 	pb := &listStorageCredentialsRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17412,14 +15124,8 @@ func listStorageCredentialsRequestFromPb(pb *listStorageCredentialsRequestPb) (*
 		return nil, nil
 	}
 	st := &ListStorageCredentialsRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17437,11 +15143,13 @@ type ListStorageCredentialsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'storage_credentials'
 	StorageCredentials []StorageCredentialInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listStorageCredentialsResponseToPb(st *ListStorageCredentialsResponse) (*listStorageCredentialsResponsePb, error) {
@@ -17449,10 +15157,7 @@ func listStorageCredentialsResponseToPb(st *ListStorageCredentialsResponse) (*li
 		return nil, nil
 	}
 	pb := &listStorageCredentialsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var storageCredentialsPb []storageCredentialInfoPb
 	for _, item := range st.StorageCredentials {
@@ -17511,19 +15216,16 @@ func listStorageCredentialsResponseFromPb(pb *listStorageCredentialsResponsePb) 
 		return nil, nil
 	}
 	st := &ListStorageCredentialsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var storageCredentialsField []StorageCredentialInfo
-	for _, item := range pb.StorageCredentials {
-		itemField, err := storageCredentialInfoFromPb(&item)
+	for _, itemPb := range pb.StorageCredentials {
+		item, err := storageCredentialInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			storageCredentialsField = append(storageCredentialsField, *itemField)
+		if item != nil {
+			storageCredentialsField = append(storageCredentialsField, *item)
 		}
 	}
 	st.StorageCredentials = storageCredentialsField
@@ -17543,9 +15245,11 @@ func (st listStorageCredentialsResponsePb) MarshalJSON() ([]byte, error) {
 // List table summaries
 type ListSummariesRequest struct {
 	// Name of parent catalog for tables of interest.
-	CatalogName string
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include a manifest containing capabilities the table has.
-	IncludeManifestCapabilities bool
+	// Wire name: 'include_manifest_capabilities'
+	IncludeManifestCapabilities bool `tf:"-"`
 	// Maximum number of summaries for tables to return. If not set, the page
 	// length is set to a server configured value (10000, as of 1/5/2024). -
 	// when set to a value greater than 0, the page length is the minimum of
@@ -17553,17 +15257,21 @@ type ListSummariesRequest struct {
 	// set to 0, the page length is set to a server configured value (10000, as
 	// of 1/5/2024) (recommended); - when set to a value less than 0, an invalid
 	// parameter error is returned;
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// A sql LIKE pattern (% and _) for schema names. All schemas will be
 	// returned if not set or empty.
-	SchemaNamePattern string
+	// Wire name: 'schema_name_pattern'
+	SchemaNamePattern string `tf:"-"`
 	// A sql LIKE pattern (% and _) for table names. All tables will be returned
 	// if not set or empty.
-	TableNamePattern string
+	// Wire name: 'table_name_pattern'
+	TableNamePattern string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listSummariesRequestToPb(st *ListSummariesRequest) (*listSummariesRequestPb, error) {
@@ -17571,35 +15279,17 @@ func listSummariesRequestToPb(st *ListSummariesRequest) (*listSummariesRequestPb
 		return nil, nil
 	}
 	pb := &listSummariesRequestPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	includeManifestCapabilitiesPb := &st.IncludeManifestCapabilities
-	if includeManifestCapabilitiesPb != nil {
-		pb.IncludeManifestCapabilities = *includeManifestCapabilitiesPb
-	}
+	pb.IncludeManifestCapabilities = st.IncludeManifestCapabilities
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	schemaNamePatternPb := &st.SchemaNamePattern
-	if schemaNamePatternPb != nil {
-		pb.SchemaNamePattern = *schemaNamePatternPb
-	}
+	pb.SchemaNamePattern = st.SchemaNamePattern
 
-	tableNamePatternPb := &st.TableNamePattern
-	if tableNamePatternPb != nil {
-		pb.TableNamePattern = *tableNamePatternPb
-	}
+	pb.TableNamePattern = st.TableNamePattern
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17660,30 +15350,12 @@ func listSummariesRequestFromPb(pb *listSummariesRequestPb) (*ListSummariesReque
 		return nil, nil
 	}
 	st := &ListSummariesRequest{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	includeManifestCapabilitiesField := &pb.IncludeManifestCapabilities
-	if includeManifestCapabilitiesField != nil {
-		st.IncludeManifestCapabilities = *includeManifestCapabilitiesField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	schemaNamePatternField := &pb.SchemaNamePattern
-	if schemaNamePatternField != nil {
-		st.SchemaNamePattern = *schemaNamePatternField
-	}
-	tableNamePatternField := &pb.TableNamePattern
-	if tableNamePatternField != nil {
-		st.TableNamePattern = *tableNamePatternField
-	}
+	st.CatalogName = pb.CatalogName
+	st.IncludeManifestCapabilities = pb.IncludeManifestCapabilities
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.SchemaNamePattern = pb.SchemaNamePattern
+	st.TableNamePattern = pb.TableNamePattern
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17705,13 +15377,16 @@ type ListSystemSchemasRequest struct {
 	// configured value; - When set to a value less than 0, an invalid parameter
 	// error is returned; - If not set, all the schemas are returned (not
 	// recommended).
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// The ID for the metastore in which the system schema resides.
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listSystemSchemasRequestToPb(st *ListSystemSchemasRequest) (*listSystemSchemasRequestPb, error) {
@@ -17719,20 +15394,11 @@ func listSystemSchemasRequestToPb(st *ListSystemSchemasRequest) (*listSystemSche
 		return nil, nil
 	}
 	pb := &listSystemSchemasRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17784,18 +15450,9 @@ func listSystemSchemasRequestFromPb(pb *listSystemSchemasRequestPb) (*ListSystem
 		return nil, nil
 	}
 	st := &ListSystemSchemasRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.MaxResults = pb.MaxResults
+	st.MetastoreId = pb.MetastoreId
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17813,11 +15470,13 @@ type ListSystemSchemasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// An array of system schema information objects.
+	// Wire name: 'schemas'
 	Schemas []SystemSchemaInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listSystemSchemasResponseToPb(st *ListSystemSchemasResponse) (*listSystemSchemasResponsePb, error) {
@@ -17825,10 +15484,7 @@ func listSystemSchemasResponseToPb(st *ListSystemSchemasResponse) (*listSystemSc
 		return nil, nil
 	}
 	pb := &listSystemSchemasResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var schemasPb []systemSchemaInfoPb
 	for _, item := range st.Schemas {
@@ -17887,19 +15543,16 @@ func listSystemSchemasResponseFromPb(pb *listSystemSchemasResponsePb) (*ListSyst
 		return nil, nil
 	}
 	st := &ListSystemSchemasResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var schemasField []SystemSchemaInfo
-	for _, item := range pb.Schemas {
-		itemField, err := systemSchemaInfoFromPb(&item)
+	for _, itemPb := range pb.Schemas {
+		item, err := systemSchemaInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			schemasField = append(schemasField, *itemField)
+		if item != nil {
+			schemasField = append(schemasField, *item)
 		}
 	}
 	st.Schemas = schemasField
@@ -17920,11 +15573,13 @@ type ListTableSummariesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// List of table summaries.
+	// Wire name: 'tables'
 	Tables []TableSummary
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listTableSummariesResponseToPb(st *ListTableSummariesResponse) (*listTableSummariesResponsePb, error) {
@@ -17932,10 +15587,7 @@ func listTableSummariesResponseToPb(st *ListTableSummariesResponse) (*listTableS
 		return nil, nil
 	}
 	pb := &listTableSummariesResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var tablesPb []tableSummaryPb
 	for _, item := range st.Tables {
@@ -17994,19 +15646,16 @@ func listTableSummariesResponseFromPb(pb *listTableSummariesResponsePb) (*ListTa
 		return nil, nil
 	}
 	st := &ListTableSummariesResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var tablesField []TableSummary
-	for _, item := range pb.Tables {
-		itemField, err := tableSummaryFromPb(&item)
+	for _, itemPb := range pb.Tables {
+		item, err := tableSummaryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tablesField = append(tablesField, *itemField)
+		if item != nil {
+			tablesField = append(tablesField, *item)
 		}
 	}
 	st.Tables = tablesField
@@ -18026,34 +15675,44 @@ func (st listTableSummariesResponsePb) MarshalJSON() ([]byte, error) {
 // List tables
 type ListTablesRequest struct {
 	// Name of parent catalog for tables of interest.
-	CatalogName string
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include tables in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Whether delta metadata should be included in the response.
-	IncludeDeltaMetadata bool
+	// Wire name: 'include_delta_metadata'
+	IncludeDeltaMetadata bool `tf:"-"`
 	// Whether to include a manifest containing capabilities the table has.
-	IncludeManifestCapabilities bool
+	// Wire name: 'include_manifest_capabilities'
+	IncludeManifestCapabilities bool `tf:"-"`
 	// Maximum number of tables to return. If not set, all the tables are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Whether to omit the columns of the table from the response or not.
-	OmitColumns bool
+	// Wire name: 'omit_columns'
+	OmitColumns bool `tf:"-"`
 	// Whether to omit the properties of the table from the response or not.
-	OmitProperties bool
+	// Wire name: 'omit_properties'
+	OmitProperties bool `tf:"-"`
 	// Whether to omit the username of the table (e.g. owner, updated_by,
 	// created_by) from the response or not.
-	OmitUsername bool
+	// Wire name: 'omit_username'
+	OmitUsername bool `tf:"-"`
 	// Opaque token to send for the next page of results (pagination).
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Parent schema of tables.
-	SchemaName string
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listTablesRequestToPb(st *ListTablesRequest) (*listTablesRequestPb, error) {
@@ -18061,55 +15720,25 @@ func listTablesRequestToPb(st *ListTablesRequest) (*listTablesRequestPb, error) 
 		return nil, nil
 	}
 	pb := &listTablesRequestPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	includeDeltaMetadataPb := &st.IncludeDeltaMetadata
-	if includeDeltaMetadataPb != nil {
-		pb.IncludeDeltaMetadata = *includeDeltaMetadataPb
-	}
+	pb.IncludeDeltaMetadata = st.IncludeDeltaMetadata
 
-	includeManifestCapabilitiesPb := &st.IncludeManifestCapabilities
-	if includeManifestCapabilitiesPb != nil {
-		pb.IncludeManifestCapabilities = *includeManifestCapabilitiesPb
-	}
+	pb.IncludeManifestCapabilities = st.IncludeManifestCapabilities
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	omitColumnsPb := &st.OmitColumns
-	if omitColumnsPb != nil {
-		pb.OmitColumns = *omitColumnsPb
-	}
+	pb.OmitColumns = st.OmitColumns
 
-	omitPropertiesPb := &st.OmitProperties
-	if omitPropertiesPb != nil {
-		pb.OmitProperties = *omitPropertiesPb
-	}
+	pb.OmitProperties = st.OmitProperties
 
-	omitUsernamePb := &st.OmitUsername
-	if omitUsernamePb != nil {
-		pb.OmitUsername = *omitUsernamePb
-	}
+	pb.OmitUsername = st.OmitUsername
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18177,46 +15806,16 @@ func listTablesRequestFromPb(pb *listTablesRequestPb) (*ListTablesRequest, error
 		return nil, nil
 	}
 	st := &ListTablesRequest{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	includeDeltaMetadataField := &pb.IncludeDeltaMetadata
-	if includeDeltaMetadataField != nil {
-		st.IncludeDeltaMetadata = *includeDeltaMetadataField
-	}
-	includeManifestCapabilitiesField := &pb.IncludeManifestCapabilities
-	if includeManifestCapabilitiesField != nil {
-		st.IncludeManifestCapabilities = *includeManifestCapabilitiesField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	omitColumnsField := &pb.OmitColumns
-	if omitColumnsField != nil {
-		st.OmitColumns = *omitColumnsField
-	}
-	omitPropertiesField := &pb.OmitProperties
-	if omitPropertiesField != nil {
-		st.OmitProperties = *omitPropertiesField
-	}
-	omitUsernameField := &pb.OmitUsername
-	if omitUsernameField != nil {
-		st.OmitUsername = *omitUsernameField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
+	st.CatalogName = pb.CatalogName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.IncludeDeltaMetadata = pb.IncludeDeltaMetadata
+	st.IncludeManifestCapabilities = pb.IncludeManifestCapabilities
+	st.MaxResults = pb.MaxResults
+	st.OmitColumns = pb.OmitColumns
+	st.OmitProperties = pb.OmitProperties
+	st.OmitUsername = pb.OmitUsername
+	st.PageToken = pb.PageToken
+	st.SchemaName = pb.SchemaName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -18234,11 +15833,13 @@ type ListTablesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// An array of table information objects.
+	// Wire name: 'tables'
 	Tables []TableInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listTablesResponseToPb(st *ListTablesResponse) (*listTablesResponsePb, error) {
@@ -18246,10 +15847,7 @@ func listTablesResponseToPb(st *ListTablesResponse) (*listTablesResponsePb, erro
 		return nil, nil
 	}
 	pb := &listTablesResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var tablesPb []tableInfoPb
 	for _, item := range st.Tables {
@@ -18308,19 +15906,16 @@ func listTablesResponseFromPb(pb *listTablesResponsePb) (*ListTablesResponse, er
 		return nil, nil
 	}
 	st := &ListTablesResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var tablesField []TableInfo
-	for _, item := range pb.Tables {
-		itemField, err := tableInfoFromPb(&item)
+	for _, itemPb := range pb.Tables {
+		item, err := tableInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tablesField = append(tablesField, *itemField)
+		if item != nil {
+			tablesField = append(tablesField, *item)
 		}
 	}
 	st.Tables = tablesField
@@ -18340,10 +15935,12 @@ func (st listTablesResponsePb) MarshalJSON() ([]byte, error) {
 // List Volumes
 type ListVolumesRequest struct {
 	// The identifier of the catalog
-	CatalogName string
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include volumes in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of volumes to return (page length).
 	//
 	// If not set, the page length is set to a server configured value (10000,
@@ -18356,14 +15953,17 @@ type ListVolumesRequest struct {
 	// Note: this parameter controls only the maximum number of volumes to
 	// return. The actual number of volumes returned in a page may be smaller
 	// than this value, including 0, even if there are more pages.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque token returned by a previous request. It must be included in the
 	// request to retrieve the next page of results (pagination).
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The identifier of the schema
-	SchemaName string
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listVolumesRequestToPb(st *ListVolumesRequest) (*listVolumesRequestPb, error) {
@@ -18371,30 +15971,15 @@ func listVolumesRequestToPb(st *ListVolumesRequest) (*listVolumesRequestPb, erro
 		return nil, nil
 	}
 	pb := &listVolumesRequestPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18458,26 +16043,11 @@ func listVolumesRequestFromPb(pb *listVolumesRequestPb) (*ListVolumesRequest, er
 		return nil, nil
 	}
 	st := &ListVolumesRequest{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
+	st.CatalogName = pb.CatalogName
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.SchemaName = pb.SchemaName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -18495,11 +16065,13 @@ type ListVolumesResponseContent struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request to retrieve the next page of results.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'volumes'
 	Volumes []VolumeInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listVolumesResponseContentToPb(st *ListVolumesResponseContent) (*listVolumesResponseContentPb, error) {
@@ -18507,10 +16079,7 @@ func listVolumesResponseContentToPb(st *ListVolumesResponseContent) (*listVolume
 		return nil, nil
 	}
 	pb := &listVolumesResponseContentPb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var volumesPb []volumeInfoPb
 	for _, item := range st.Volumes {
@@ -18569,19 +16138,16 @@ func listVolumesResponseContentFromPb(pb *listVolumesResponseContentPb) (*ListVo
 		return nil, nil
 	}
 	st := &ListVolumesResponseContent{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var volumesField []VolumeInfo
-	for _, item := range pb.Volumes {
-		itemField, err := volumeInfoFromPb(&item)
+	for _, itemPb := range pb.Volumes {
+		item, err := volumeInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			volumesField = append(volumesField, *itemField)
+		if item != nil {
+			volumesField = append(volumesField, *item)
 		}
 	}
 	st.Volumes = volumesField
@@ -18643,13 +16209,16 @@ func matchTypeFromPb(pb *matchTypePb) (*MatchType, error) {
 
 type MetastoreAssignment struct {
 	// The name of the default catalog in the metastore.
+	// Wire name: 'default_catalog_name'
 	DefaultCatalogName string
 	// The unique ID of the metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// The unique ID of the Databricks workspace.
+	// Wire name: 'workspace_id'
 	WorkspaceId int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func metastoreAssignmentToPb(st *MetastoreAssignment) (*metastoreAssignmentPb, error) {
@@ -18657,20 +16226,11 @@ func metastoreAssignmentToPb(st *MetastoreAssignment) (*metastoreAssignmentPb, e
 		return nil, nil
 	}
 	pb := &metastoreAssignmentPb{}
-	defaultCatalogNamePb := &st.DefaultCatalogName
-	if defaultCatalogNamePb != nil {
-		pb.DefaultCatalogName = *defaultCatalogNamePb
-	}
+	pb.DefaultCatalogName = st.DefaultCatalogName
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18717,18 +16277,9 @@ func metastoreAssignmentFromPb(pb *metastoreAssignmentPb) (*MetastoreAssignment,
 		return nil, nil
 	}
 	st := &MetastoreAssignment{}
-	defaultCatalogNameField := &pb.DefaultCatalogName
-	if defaultCatalogNameField != nil {
-		st.DefaultCatalogName = *defaultCatalogNameField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.DefaultCatalogName = pb.DefaultCatalogName
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -18744,49 +16295,68 @@ func (st metastoreAssignmentPb) MarshalJSON() ([]byte, error) {
 
 type MetastoreInfo struct {
 	// Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`).
+	// Wire name: 'cloud'
 	Cloud string
 	// Time at which this metastore was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of metastore creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Unique identifier of the metastore's (Default) Data Access Configuration.
+	// Wire name: 'default_data_access_config_id'
 	DefaultDataAccessConfigId string
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
+	// Wire name: 'delta_sharing_organization_name'
 	DeltaSharingOrganizationName string
 	// The lifetime of delta sharing recipient token in seconds.
+	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
 	DeltaSharingRecipientTokenLifetimeInSeconds int64
 	// The scope of Delta Sharing enabled for the metastore.
+	// Wire name: 'delta_sharing_scope'
 	DeltaSharingScope MetastoreInfoDeltaSharingScope
 	// Whether to allow non-DBR clients to directly access entities under the
 	// metastore.
+	// Wire name: 'external_access_enabled'
 	ExternalAccessEnabled bool
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
+	// Wire name: 'global_metastore_id'
 	GlobalMetastoreId string
 	// Unique identifier of metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// The user-specified name of the metastore.
+	// Wire name: 'name'
 	Name string
 	// The owner of the metastore.
+	// Wire name: 'owner'
 	Owner string
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
+	// Wire name: 'privilege_model_version'
 	PrivilegeModelVersion string
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
+	// Wire name: 'region'
 	Region string
 	// The storage root URL for metastore
+	// Wire name: 'storage_root'
 	StorageRoot string
 	// UUID of storage credential to access the metastore storage_root.
+	// Wire name: 'storage_root_credential_id'
 	StorageRootCredentialId string
 	// Name of the storage credential to access the metastore storage_root.
+	// Wire name: 'storage_root_credential_name'
 	StorageRootCredentialName string
 	// Time at which the metastore was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of user who last modified the metastore.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func metastoreInfoToPb(st *MetastoreInfo) (*metastoreInfoPb, error) {
@@ -18794,100 +16364,43 @@ func metastoreInfoToPb(st *MetastoreInfo) (*metastoreInfoPb, error) {
 		return nil, nil
 	}
 	pb := &metastoreInfoPb{}
-	cloudPb := &st.Cloud
-	if cloudPb != nil {
-		pb.Cloud = *cloudPb
-	}
+	pb.Cloud = st.Cloud
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	defaultDataAccessConfigIdPb := &st.DefaultDataAccessConfigId
-	if defaultDataAccessConfigIdPb != nil {
-		pb.DefaultDataAccessConfigId = *defaultDataAccessConfigIdPb
-	}
+	pb.DefaultDataAccessConfigId = st.DefaultDataAccessConfigId
 
-	deltaSharingOrganizationNamePb := &st.DeltaSharingOrganizationName
-	if deltaSharingOrganizationNamePb != nil {
-		pb.DeltaSharingOrganizationName = *deltaSharingOrganizationNamePb
-	}
+	pb.DeltaSharingOrganizationName = st.DeltaSharingOrganizationName
 
-	deltaSharingRecipientTokenLifetimeInSecondsPb := &st.DeltaSharingRecipientTokenLifetimeInSeconds
-	if deltaSharingRecipientTokenLifetimeInSecondsPb != nil {
-		pb.DeltaSharingRecipientTokenLifetimeInSeconds = *deltaSharingRecipientTokenLifetimeInSecondsPb
-	}
+	pb.DeltaSharingRecipientTokenLifetimeInSeconds = st.DeltaSharingRecipientTokenLifetimeInSeconds
 
-	deltaSharingScopePb := &st.DeltaSharingScope
-	if deltaSharingScopePb != nil {
-		pb.DeltaSharingScope = *deltaSharingScopePb
-	}
+	pb.DeltaSharingScope = st.DeltaSharingScope
 
-	externalAccessEnabledPb := &st.ExternalAccessEnabled
-	if externalAccessEnabledPb != nil {
-		pb.ExternalAccessEnabled = *externalAccessEnabledPb
-	}
+	pb.ExternalAccessEnabled = st.ExternalAccessEnabled
 
-	globalMetastoreIdPb := &st.GlobalMetastoreId
-	if globalMetastoreIdPb != nil {
-		pb.GlobalMetastoreId = *globalMetastoreIdPb
-	}
+	pb.GlobalMetastoreId = st.GlobalMetastoreId
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	privilegeModelVersionPb := &st.PrivilegeModelVersion
-	if privilegeModelVersionPb != nil {
-		pb.PrivilegeModelVersion = *privilegeModelVersionPb
-	}
+	pb.PrivilegeModelVersion = st.PrivilegeModelVersion
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
-	storageRootPb := &st.StorageRoot
-	if storageRootPb != nil {
-		pb.StorageRoot = *storageRootPb
-	}
+	pb.StorageRoot = st.StorageRoot
 
-	storageRootCredentialIdPb := &st.StorageRootCredentialId
-	if storageRootCredentialIdPb != nil {
-		pb.StorageRootCredentialId = *storageRootCredentialIdPb
-	}
+	pb.StorageRootCredentialId = st.StorageRootCredentialId
 
-	storageRootCredentialNamePb := &st.StorageRootCredentialName
-	if storageRootCredentialNamePb != nil {
-		pb.StorageRootCredentialName = *storageRootCredentialNamePb
-	}
+	pb.StorageRootCredentialName = st.StorageRootCredentialName
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -18970,82 +16483,25 @@ func metastoreInfoFromPb(pb *metastoreInfoPb) (*MetastoreInfo, error) {
 		return nil, nil
 	}
 	st := &MetastoreInfo{}
-	cloudField := &pb.Cloud
-	if cloudField != nil {
-		st.Cloud = *cloudField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	defaultDataAccessConfigIdField := &pb.DefaultDataAccessConfigId
-	if defaultDataAccessConfigIdField != nil {
-		st.DefaultDataAccessConfigId = *defaultDataAccessConfigIdField
-	}
-	deltaSharingOrganizationNameField := &pb.DeltaSharingOrganizationName
-	if deltaSharingOrganizationNameField != nil {
-		st.DeltaSharingOrganizationName = *deltaSharingOrganizationNameField
-	}
-	deltaSharingRecipientTokenLifetimeInSecondsField := &pb.DeltaSharingRecipientTokenLifetimeInSeconds
-	if deltaSharingRecipientTokenLifetimeInSecondsField != nil {
-		st.DeltaSharingRecipientTokenLifetimeInSeconds = *deltaSharingRecipientTokenLifetimeInSecondsField
-	}
-	deltaSharingScopeField := &pb.DeltaSharingScope
-	if deltaSharingScopeField != nil {
-		st.DeltaSharingScope = *deltaSharingScopeField
-	}
-	externalAccessEnabledField := &pb.ExternalAccessEnabled
-	if externalAccessEnabledField != nil {
-		st.ExternalAccessEnabled = *externalAccessEnabledField
-	}
-	globalMetastoreIdField := &pb.GlobalMetastoreId
-	if globalMetastoreIdField != nil {
-		st.GlobalMetastoreId = *globalMetastoreIdField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	privilegeModelVersionField := &pb.PrivilegeModelVersion
-	if privilegeModelVersionField != nil {
-		st.PrivilegeModelVersion = *privilegeModelVersionField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
-	storageRootField := &pb.StorageRoot
-	if storageRootField != nil {
-		st.StorageRoot = *storageRootField
-	}
-	storageRootCredentialIdField := &pb.StorageRootCredentialId
-	if storageRootCredentialIdField != nil {
-		st.StorageRootCredentialId = *storageRootCredentialIdField
-	}
-	storageRootCredentialNameField := &pb.StorageRootCredentialName
-	if storageRootCredentialNameField != nil {
-		st.StorageRootCredentialName = *storageRootCredentialNameField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.Cloud = pb.Cloud
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.DefaultDataAccessConfigId = pb.DefaultDataAccessConfigId
+	st.DeltaSharingOrganizationName = pb.DeltaSharingOrganizationName
+	st.DeltaSharingRecipientTokenLifetimeInSeconds = pb.DeltaSharingRecipientTokenLifetimeInSeconds
+	st.DeltaSharingScope = pb.DeltaSharingScope
+	st.ExternalAccessEnabled = pb.ExternalAccessEnabled
+	st.GlobalMetastoreId = pb.GlobalMetastoreId
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.PrivilegeModelVersion = pb.PrivilegeModelVersion
+	st.Region = pb.Region
+	st.StorageRoot = pb.StorageRoot
+	st.StorageRootCredentialId = pb.StorageRootCredentialId
+	st.StorageRootCredentialName = pb.StorageRootCredentialName
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -19106,57 +16562,76 @@ func metastoreInfoDeltaSharingScopeFromPb(pb *metastoreInfoDeltaSharingScopePb) 
 
 type ModelVersionInfo struct {
 	// List of aliases associated with the model version
+	// Wire name: 'aliases'
 	Aliases []RegisteredModelAlias
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool
 	// The name of the catalog containing the model version
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// The comment attached to the model version
+	// Wire name: 'comment'
 	Comment string
 
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// The identifier of the user who created the model version
+	// Wire name: 'created_by'
 	CreatedBy string
 	// The unique identifier of the model version
+	// Wire name: 'id'
 	Id string
 	// The unique identifier of the metastore containing the model version
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// The name of the parent registered model of the model version, relative to
 	// parent schema
+	// Wire name: 'model_name'
 	ModelName string
 	// Model version dependencies, for feature-store packaged models
+	// Wire name: 'model_version_dependencies'
 	ModelVersionDependencies *DependencyList
 	// MLflow run ID used when creating the model version, if ``source`` was
 	// generated by an experiment run stored in an MLflow tracking server
+	// Wire name: 'run_id'
 	RunId string
 	// ID of the Databricks workspace containing the MLflow run that generated
 	// this model version, if applicable
+	// Wire name: 'run_workspace_id'
 	RunWorkspaceId int
 	// The name of the schema containing the model version, relative to parent
 	// catalog
+	// Wire name: 'schema_name'
 	SchemaName string
 	// URI indicating the location of the source artifacts (files) for the model
 	// version
+	// Wire name: 'source'
 	Source string
 	// Current status of the model version. Newly created model versions start
 	// in PENDING_REGISTRATION status, then move to READY status once the model
 	// version files are uploaded and the model version is finalized. Only model
 	// versions in READY status can be loaded for inference or served.
+	// Wire name: 'status'
 	Status ModelVersionInfoStatus
 	// The storage location on the cloud under which model version data files
 	// are stored
+	// Wire name: 'storage_location'
 	StorageLocation string
 
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// The identifier of the user who updated the model version last time
+	// Wire name: 'updated_by'
 	UpdatedBy string
 	// Integer model version number, used to reference the model version in API
 	// requests.
+	// Wire name: 'version'
 	Version int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func modelVersionInfoToPb(st *ModelVersionInfo) (*modelVersionInfoPb, error) {
@@ -19177,45 +16652,21 @@ func modelVersionInfoToPb(st *ModelVersionInfo) (*modelVersionInfoPb, error) {
 	}
 	pb.Aliases = aliasesPb
 
-	browseOnlyPb := &st.BrowseOnly
-	if browseOnlyPb != nil {
-		pb.BrowseOnly = *browseOnlyPb
-	}
+	pb.BrowseOnly = st.BrowseOnly
 
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	modelNamePb := &st.ModelName
-	if modelNamePb != nil {
-		pb.ModelName = *modelNamePb
-	}
+	pb.ModelName = st.ModelName
 
 	modelVersionDependenciesPb, err := dependencyListToPb(st.ModelVersionDependencies)
 	if err != nil {
@@ -19225,50 +16676,23 @@ func modelVersionInfoToPb(st *ModelVersionInfo) (*modelVersionInfoPb, error) {
 		pb.ModelVersionDependencies = modelVersionDependenciesPb
 	}
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runWorkspaceIdPb := &st.RunWorkspaceId
-	if runWorkspaceIdPb != nil {
-		pb.RunWorkspaceId = *runWorkspaceIdPb
-	}
+	pb.RunWorkspaceId = st.RunWorkspaceId
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
-	sourcePb := &st.Source
-	if sourcePb != nil {
-		pb.Source = *sourcePb
-	}
+	pb.Source = st.Source
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -19361,48 +16785,24 @@ func modelVersionInfoFromPb(pb *modelVersionInfoPb) (*ModelVersionInfo, error) {
 	st := &ModelVersionInfo{}
 
 	var aliasesField []RegisteredModelAlias
-	for _, item := range pb.Aliases {
-		itemField, err := registeredModelAliasFromPb(&item)
+	for _, itemPb := range pb.Aliases {
+		item, err := registeredModelAliasFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			aliasesField = append(aliasesField, *itemField)
+		if item != nil {
+			aliasesField = append(aliasesField, *item)
 		}
 	}
 	st.Aliases = aliasesField
-	browseOnlyField := &pb.BrowseOnly
-	if browseOnlyField != nil {
-		st.BrowseOnly = *browseOnlyField
-	}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	modelNameField := &pb.ModelName
-	if modelNameField != nil {
-		st.ModelName = *modelNameField
-	}
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.Id = pb.Id
+	st.MetastoreId = pb.MetastoreId
+	st.ModelName = pb.ModelName
 	modelVersionDependenciesField, err := dependencyListFromPb(pb.ModelVersionDependencies)
 	if err != nil {
 		return nil, err
@@ -19410,42 +16810,15 @@ func modelVersionInfoFromPb(pb *modelVersionInfoPb) (*ModelVersionInfo, error) {
 	if modelVersionDependenciesField != nil {
 		st.ModelVersionDependencies = modelVersionDependenciesField
 	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runWorkspaceIdField := &pb.RunWorkspaceId
-	if runWorkspaceIdField != nil {
-		st.RunWorkspaceId = *runWorkspaceIdField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
-	sourceField := &pb.Source
-	if sourceField != nil {
-		st.Source = *sourceField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.RunId = pb.RunId
+	st.RunWorkspaceId = pb.RunWorkspaceId
+	st.SchemaName = pb.SchemaName
+	st.Source = pb.Source
+	st.Status = pb.Status
+	st.StorageLocation = pb.StorageLocation
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -19511,13 +16884,16 @@ func modelVersionInfoStatusFromPb(pb *modelVersionInfoStatusPb) (*ModelVersionIn
 
 type MonitorCronSchedule struct {
 	// Read only field that indicates whether a schedule is paused or not.
+	// Wire name: 'pause_status'
 	PauseStatus MonitorCronSchedulePauseStatus
 	// The expression that determines when to run the monitor. See [examples].
 	//
 	// [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
+	// Wire name: 'quartz_cron_expression'
 	QuartzCronExpression string
 	// The timezone id (e.g., ``"PST"``) in which to evaluate the quartz
 	// expression.
+	// Wire name: 'timezone_id'
 	TimezoneId string
 }
 
@@ -19526,20 +16902,11 @@ func monitorCronScheduleToPb(st *MonitorCronSchedule) (*monitorCronSchedulePb, e
 		return nil, nil
 	}
 	pb := &monitorCronSchedulePb{}
-	pauseStatusPb := &st.PauseStatus
-	if pauseStatusPb != nil {
-		pb.PauseStatus = *pauseStatusPb
-	}
+	pb.PauseStatus = st.PauseStatus
 
-	quartzCronExpressionPb := &st.QuartzCronExpression
-	if quartzCronExpressionPb != nil {
-		pb.QuartzCronExpression = *quartzCronExpressionPb
-	}
+	pb.QuartzCronExpression = st.QuartzCronExpression
 
-	timezoneIdPb := &st.TimezoneId
-	if timezoneIdPb != nil {
-		pb.TimezoneId = *timezoneIdPb
-	}
+	pb.TimezoneId = st.TimezoneId
 
 	return pb, nil
 }
@@ -19586,18 +16953,9 @@ func monitorCronScheduleFromPb(pb *monitorCronSchedulePb) (*MonitorCronSchedule,
 		return nil, nil
 	}
 	st := &MonitorCronSchedule{}
-	pauseStatusField := &pb.PauseStatus
-	if pauseStatusField != nil {
-		st.PauseStatus = *pauseStatusField
-	}
-	quartzCronExpressionField := &pb.QuartzCronExpression
-	if quartzCronExpressionField != nil {
-		st.QuartzCronExpression = *quartzCronExpressionField
-	}
-	timezoneIdField := &pb.TimezoneId
-	if timezoneIdField != nil {
-		st.TimezoneId = *timezoneIdField
-	}
+	st.PauseStatus = pb.PauseStatus
+	st.QuartzCronExpression = pb.QuartzCronExpression
+	st.TimezoneId = pb.TimezoneId
 
 	return st, nil
 }
@@ -19649,9 +17007,10 @@ func monitorCronSchedulePauseStatusFromPb(pb *monitorCronSchedulePauseStatusPb) 
 
 type MonitorDataClassificationConfig struct {
 	// Whether data classification is enabled.
+	// Wire name: 'enabled'
 	Enabled bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func monitorDataClassificationConfigToPb(st *MonitorDataClassificationConfig) (*monitorDataClassificationConfigPb, error) {
@@ -19659,10 +17018,7 @@ func monitorDataClassificationConfigToPb(st *MonitorDataClassificationConfig) (*
 		return nil, nil
 	}
 	pb := &monitorDataClassificationConfigPb{}
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -19705,10 +17061,7 @@ func monitorDataClassificationConfigFromPb(pb *monitorDataClassificationConfigPb
 		return nil, nil
 	}
 	st := &MonitorDataClassificationConfig{}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
+	st.Enabled = pb.Enabled
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -19725,6 +17078,7 @@ func (st monitorDataClassificationConfigPb) MarshalJSON() ([]byte, error) {
 type MonitorDestination struct {
 	// The list of email addresses to send the notification to. A maximum of 5
 	// email addresses is supported.
+	// Wire name: 'email_addresses'
 	EmailAddresses []string
 }
 
@@ -19733,15 +17087,7 @@ func monitorDestinationToPb(st *MonitorDestination) (*monitorDestinationPb, erro
 		return nil, nil
 	}
 	pb := &monitorDestinationPb{}
-
-	var emailAddressesPb []string
-	for _, item := range st.EmailAddresses {
-		itemPb := &item
-		if itemPb != nil {
-			emailAddressesPb = append(emailAddressesPb, *itemPb)
-		}
-	}
-	pb.EmailAddresses = emailAddressesPb
+	pb.EmailAddresses = st.EmailAddresses
 
 	return pb, nil
 }
@@ -19782,15 +17128,7 @@ func monitorDestinationFromPb(pb *monitorDestinationPb) (*MonitorDestination, er
 		return nil, nil
 	}
 	st := &MonitorDestination{}
-
-	var emailAddressesField []string
-	for _, item := range pb.EmailAddresses {
-		itemField := &item
-		if itemField != nil {
-			emailAddressesField = append(emailAddressesField, *itemField)
-		}
-	}
-	st.EmailAddresses = emailAddressesField
+	st.EmailAddresses = pb.EmailAddresses
 
 	return st, nil
 }
@@ -19800,22 +17138,28 @@ type MonitorInferenceLog struct {
 	// timestamp. Currently the following static granularities are supported:
 	// {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``, ``"1 day"``, ``"<n>
 	// week(s)"``, ``"1 month"``, ``"1 year"``}.
+	// Wire name: 'granularities'
 	Granularities []string
 	// Optional column that contains the ground truth for the prediction.
+	// Wire name: 'label_col'
 	LabelCol string
 	// Column that contains the id of the model generating the predictions.
 	// Metrics will be computed per model id by default, and also across all
 	// model ids.
+	// Wire name: 'model_id_col'
 	ModelIdCol string
 	// Column that contains the output/prediction from the model.
+	// Wire name: 'prediction_col'
 	PredictionCol string
 	// Optional column that contains the prediction probabilities for each class
 	// in a classification problem type. The values in this column should be a
 	// map, mapping each class label to the prediction probability for a given
 	// sample. The map should be of PySpark MapType().
+	// Wire name: 'prediction_proba_col'
 	PredictionProbaCol string
 	// Problem type the model aims to solve. Determines the type of
 	// model-quality metrics that will be computed.
+	// Wire name: 'problem_type'
 	ProblemType MonitorInferenceLogProblemType
 	// Column that contains the timestamps of requests. The column must be one
 	// of the following: - A ``TimestampType`` column - A column whose values
@@ -19823,9 +17167,10 @@ type MonitorInferenceLog struct {
 	// [function].
 	//
 	// [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html
+	// Wire name: 'timestamp_col'
 	TimestampCol string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func monitorInferenceLogToPb(st *MonitorInferenceLog) (*monitorInferenceLogPb, error) {
@@ -19833,45 +17178,19 @@ func monitorInferenceLogToPb(st *MonitorInferenceLog) (*monitorInferenceLogPb, e
 		return nil, nil
 	}
 	pb := &monitorInferenceLogPb{}
+	pb.Granularities = st.Granularities
 
-	var granularitiesPb []string
-	for _, item := range st.Granularities {
-		itemPb := &item
-		if itemPb != nil {
-			granularitiesPb = append(granularitiesPb, *itemPb)
-		}
-	}
-	pb.Granularities = granularitiesPb
+	pb.LabelCol = st.LabelCol
 
-	labelColPb := &st.LabelCol
-	if labelColPb != nil {
-		pb.LabelCol = *labelColPb
-	}
+	pb.ModelIdCol = st.ModelIdCol
 
-	modelIdColPb := &st.ModelIdCol
-	if modelIdColPb != nil {
-		pb.ModelIdCol = *modelIdColPb
-	}
+	pb.PredictionCol = st.PredictionCol
 
-	predictionColPb := &st.PredictionCol
-	if predictionColPb != nil {
-		pb.PredictionCol = *predictionColPb
-	}
+	pb.PredictionProbaCol = st.PredictionProbaCol
 
-	predictionProbaColPb := &st.PredictionProbaCol
-	if predictionProbaColPb != nil {
-		pb.PredictionProbaCol = *predictionProbaColPb
-	}
+	pb.ProblemType = st.ProblemType
 
-	problemTypePb := &st.ProblemType
-	if problemTypePb != nil {
-		pb.ProblemType = *problemTypePb
-	}
-
-	timestampColPb := &st.TimestampCol
-	if timestampColPb != nil {
-		pb.TimestampCol = *timestampColPb
-	}
+	pb.TimestampCol = st.TimestampCol
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -19940,39 +17259,13 @@ func monitorInferenceLogFromPb(pb *monitorInferenceLogPb) (*MonitorInferenceLog,
 		return nil, nil
 	}
 	st := &MonitorInferenceLog{}
-
-	var granularitiesField []string
-	for _, item := range pb.Granularities {
-		itemField := &item
-		if itemField != nil {
-			granularitiesField = append(granularitiesField, *itemField)
-		}
-	}
-	st.Granularities = granularitiesField
-	labelColField := &pb.LabelCol
-	if labelColField != nil {
-		st.LabelCol = *labelColField
-	}
-	modelIdColField := &pb.ModelIdCol
-	if modelIdColField != nil {
-		st.ModelIdCol = *modelIdColField
-	}
-	predictionColField := &pb.PredictionCol
-	if predictionColField != nil {
-		st.PredictionCol = *predictionColField
-	}
-	predictionProbaColField := &pb.PredictionProbaCol
-	if predictionProbaColField != nil {
-		st.PredictionProbaCol = *predictionProbaColField
-	}
-	problemTypeField := &pb.ProblemType
-	if problemTypeField != nil {
-		st.ProblemType = *problemTypeField
-	}
-	timestampColField := &pb.TimestampCol
-	if timestampColField != nil {
-		st.TimestampCol = *timestampColField
-	}
+	st.Granularities = pb.Granularities
+	st.LabelCol = pb.LabelCol
+	st.ModelIdCol = pb.ModelIdCol
+	st.PredictionCol = pb.PredictionCol
+	st.PredictionProbaCol = pb.PredictionProbaCol
+	st.ProblemType = pb.ProblemType
+	st.TimestampCol = pb.TimestampCol
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -20034,56 +17327,74 @@ func monitorInferenceLogProblemTypeFromPb(pb *monitorInferenceLogProblemTypePb) 
 
 type MonitorInfo struct {
 	// The directory to store monitoring assets (e.g. dashboard, metric tables).
+	// Wire name: 'assets_dir'
 	AssetsDir string
 	// Name of the baseline table from which drift metrics are computed from.
 	// Columns in the monitored table should also be present in the baseline
 	// table.
+	// Wire name: 'baseline_table_name'
 	BaselineTableName string
 	// Custom metrics to compute on the monitored table. These can be aggregate
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
+	// Wire name: 'custom_metrics'
 	CustomMetrics []MonitorMetric
 	// Id of dashboard that visualizes the computed metrics. This can be empty
 	// if the monitor is in PENDING state.
+	// Wire name: 'dashboard_id'
 	DashboardId string
 	// The data classification config for the monitor.
+	// Wire name: 'data_classification_config'
 	DataClassificationConfig *MonitorDataClassificationConfig
 	// The full name of the drift metrics table. Format:
 	// __catalog_name__.__schema_name__.__table_name__.
+	// Wire name: 'drift_metrics_table_name'
 	DriftMetricsTableName string
 	// Configuration for monitoring inference logs.
+	// Wire name: 'inference_log'
 	InferenceLog *MonitorInferenceLog
 	// The latest failure message of the monitor (if any).
+	// Wire name: 'latest_monitor_failure_msg'
 	LatestMonitorFailureMsg string
 	// The version of the monitor config (e.g. 1,2,3). If negative, the monitor
 	// may be corrupted.
+	// Wire name: 'monitor_version'
 	MonitorVersion string
 	// The notification settings for the monitor.
+	// Wire name: 'notifications'
 	Notifications *MonitorNotifications
 	// Schema where output metric tables are created.
+	// Wire name: 'output_schema_name'
 	OutputSchemaName string
 	// The full name of the profile metrics table. Format:
 	// __catalog_name__.__schema_name__.__table_name__.
+	// Wire name: 'profile_metrics_table_name'
 	ProfileMetricsTableName string
 	// The schedule for automatically updating and refreshing metric tables.
+	// Wire name: 'schedule'
 	Schedule *MonitorCronSchedule
 	// List of column expressions to slice data with for targeted analysis. The
 	// data is grouped by each expression independently, resulting in a separate
 	// slice for each predicate and its complements. For high-cardinality
 	// columns, only the top 100 unique values by frequency will generate
 	// slices.
+	// Wire name: 'slicing_exprs'
 	SlicingExprs []string
 	// Configuration for monitoring snapshot tables.
+	// Wire name: 'snapshot'
 	Snapshot *MonitorSnapshot
 	// The status of the monitor.
+	// Wire name: 'status'
 	Status MonitorInfoStatus
 	// The full name of the table to monitor. Format:
 	// __catalog_name__.__schema_name__.__table_name__.
+	// Wire name: 'table_name'
 	TableName string
 	// Configuration for monitoring time series tables.
+	// Wire name: 'time_series'
 	TimeSeries *MonitorTimeSeries
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func monitorInfoToPb(st *MonitorInfo) (*monitorInfoPb, error) {
@@ -20091,15 +17402,9 @@ func monitorInfoToPb(st *MonitorInfo) (*monitorInfoPb, error) {
 		return nil, nil
 	}
 	pb := &monitorInfoPb{}
-	assetsDirPb := &st.AssetsDir
-	if assetsDirPb != nil {
-		pb.AssetsDir = *assetsDirPb
-	}
+	pb.AssetsDir = st.AssetsDir
 
-	baselineTableNamePb := &st.BaselineTableName
-	if baselineTableNamePb != nil {
-		pb.BaselineTableName = *baselineTableNamePb
-	}
+	pb.BaselineTableName = st.BaselineTableName
 
 	var customMetricsPb []monitorMetricPb
 	for _, item := range st.CustomMetrics {
@@ -20113,10 +17418,7 @@ func monitorInfoToPb(st *MonitorInfo) (*monitorInfoPb, error) {
 	}
 	pb.CustomMetrics = customMetricsPb
 
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	dataClassificationConfigPb, err := monitorDataClassificationConfigToPb(st.DataClassificationConfig)
 	if err != nil {
@@ -20126,10 +17428,7 @@ func monitorInfoToPb(st *MonitorInfo) (*monitorInfoPb, error) {
 		pb.DataClassificationConfig = dataClassificationConfigPb
 	}
 
-	driftMetricsTableNamePb := &st.DriftMetricsTableName
-	if driftMetricsTableNamePb != nil {
-		pb.DriftMetricsTableName = *driftMetricsTableNamePb
-	}
+	pb.DriftMetricsTableName = st.DriftMetricsTableName
 
 	inferenceLogPb, err := monitorInferenceLogToPb(st.InferenceLog)
 	if err != nil {
@@ -20139,15 +17438,9 @@ func monitorInfoToPb(st *MonitorInfo) (*monitorInfoPb, error) {
 		pb.InferenceLog = inferenceLogPb
 	}
 
-	latestMonitorFailureMsgPb := &st.LatestMonitorFailureMsg
-	if latestMonitorFailureMsgPb != nil {
-		pb.LatestMonitorFailureMsg = *latestMonitorFailureMsgPb
-	}
+	pb.LatestMonitorFailureMsg = st.LatestMonitorFailureMsg
 
-	monitorVersionPb := &st.MonitorVersion
-	if monitorVersionPb != nil {
-		pb.MonitorVersion = *monitorVersionPb
-	}
+	pb.MonitorVersion = st.MonitorVersion
 
 	notificationsPb, err := monitorNotificationsToPb(st.Notifications)
 	if err != nil {
@@ -20157,15 +17450,9 @@ func monitorInfoToPb(st *MonitorInfo) (*monitorInfoPb, error) {
 		pb.Notifications = notificationsPb
 	}
 
-	outputSchemaNamePb := &st.OutputSchemaName
-	if outputSchemaNamePb != nil {
-		pb.OutputSchemaName = *outputSchemaNamePb
-	}
+	pb.OutputSchemaName = st.OutputSchemaName
 
-	profileMetricsTableNamePb := &st.ProfileMetricsTableName
-	if profileMetricsTableNamePb != nil {
-		pb.ProfileMetricsTableName = *profileMetricsTableNamePb
-	}
+	pb.ProfileMetricsTableName = st.ProfileMetricsTableName
 
 	schedulePb, err := monitorCronScheduleToPb(st.Schedule)
 	if err != nil {
@@ -20175,14 +17462,7 @@ func monitorInfoToPb(st *MonitorInfo) (*monitorInfoPb, error) {
 		pb.Schedule = schedulePb
 	}
 
-	var slicingExprsPb []string
-	for _, item := range st.SlicingExprs {
-		itemPb := &item
-		if itemPb != nil {
-			slicingExprsPb = append(slicingExprsPb, *itemPb)
-		}
-	}
-	pb.SlicingExprs = slicingExprsPb
+	pb.SlicingExprs = st.SlicingExprs
 
 	snapshotPb, err := monitorSnapshotToPb(st.Snapshot)
 	if err != nil {
@@ -20192,15 +17472,9 @@ func monitorInfoToPb(st *MonitorInfo) (*monitorInfoPb, error) {
 		pb.Snapshot = snapshotPb
 	}
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	tableNamePb := &st.TableName
-	if tableNamePb != nil {
-		pb.TableName = *tableNamePb
-	}
+	pb.TableName = st.TableName
 
 	timeSeriesPb, err := monitorTimeSeriesToPb(st.TimeSeries)
 	if err != nil {
@@ -20298,30 +17572,21 @@ func monitorInfoFromPb(pb *monitorInfoPb) (*MonitorInfo, error) {
 		return nil, nil
 	}
 	st := &MonitorInfo{}
-	assetsDirField := &pb.AssetsDir
-	if assetsDirField != nil {
-		st.AssetsDir = *assetsDirField
-	}
-	baselineTableNameField := &pb.BaselineTableName
-	if baselineTableNameField != nil {
-		st.BaselineTableName = *baselineTableNameField
-	}
+	st.AssetsDir = pb.AssetsDir
+	st.BaselineTableName = pb.BaselineTableName
 
 	var customMetricsField []MonitorMetric
-	for _, item := range pb.CustomMetrics {
-		itemField, err := monitorMetricFromPb(&item)
+	for _, itemPb := range pb.CustomMetrics {
+		item, err := monitorMetricFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			customMetricsField = append(customMetricsField, *itemField)
+		if item != nil {
+			customMetricsField = append(customMetricsField, *item)
 		}
 	}
 	st.CustomMetrics = customMetricsField
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 	dataClassificationConfigField, err := monitorDataClassificationConfigFromPb(pb.DataClassificationConfig)
 	if err != nil {
 		return nil, err
@@ -20329,10 +17594,7 @@ func monitorInfoFromPb(pb *monitorInfoPb) (*MonitorInfo, error) {
 	if dataClassificationConfigField != nil {
 		st.DataClassificationConfig = dataClassificationConfigField
 	}
-	driftMetricsTableNameField := &pb.DriftMetricsTableName
-	if driftMetricsTableNameField != nil {
-		st.DriftMetricsTableName = *driftMetricsTableNameField
-	}
+	st.DriftMetricsTableName = pb.DriftMetricsTableName
 	inferenceLogField, err := monitorInferenceLogFromPb(pb.InferenceLog)
 	if err != nil {
 		return nil, err
@@ -20340,14 +17602,8 @@ func monitorInfoFromPb(pb *monitorInfoPb) (*MonitorInfo, error) {
 	if inferenceLogField != nil {
 		st.InferenceLog = inferenceLogField
 	}
-	latestMonitorFailureMsgField := &pb.LatestMonitorFailureMsg
-	if latestMonitorFailureMsgField != nil {
-		st.LatestMonitorFailureMsg = *latestMonitorFailureMsgField
-	}
-	monitorVersionField := &pb.MonitorVersion
-	if monitorVersionField != nil {
-		st.MonitorVersion = *monitorVersionField
-	}
+	st.LatestMonitorFailureMsg = pb.LatestMonitorFailureMsg
+	st.MonitorVersion = pb.MonitorVersion
 	notificationsField, err := monitorNotificationsFromPb(pb.Notifications)
 	if err != nil {
 		return nil, err
@@ -20355,14 +17611,8 @@ func monitorInfoFromPb(pb *monitorInfoPb) (*MonitorInfo, error) {
 	if notificationsField != nil {
 		st.Notifications = notificationsField
 	}
-	outputSchemaNameField := &pb.OutputSchemaName
-	if outputSchemaNameField != nil {
-		st.OutputSchemaName = *outputSchemaNameField
-	}
-	profileMetricsTableNameField := &pb.ProfileMetricsTableName
-	if profileMetricsTableNameField != nil {
-		st.ProfileMetricsTableName = *profileMetricsTableNameField
-	}
+	st.OutputSchemaName = pb.OutputSchemaName
+	st.ProfileMetricsTableName = pb.ProfileMetricsTableName
 	scheduleField, err := monitorCronScheduleFromPb(pb.Schedule)
 	if err != nil {
 		return nil, err
@@ -20370,15 +17620,7 @@ func monitorInfoFromPb(pb *monitorInfoPb) (*MonitorInfo, error) {
 	if scheduleField != nil {
 		st.Schedule = scheduleField
 	}
-
-	var slicingExprsField []string
-	for _, item := range pb.SlicingExprs {
-		itemField := &item
-		if itemField != nil {
-			slicingExprsField = append(slicingExprsField, *itemField)
-		}
-	}
-	st.SlicingExprs = slicingExprsField
+	st.SlicingExprs = pb.SlicingExprs
 	snapshotField, err := monitorSnapshotFromPb(pb.Snapshot)
 	if err != nil {
 		return nil, err
@@ -20386,14 +17628,8 @@ func monitorInfoFromPb(pb *monitorInfoPb) (*MonitorInfo, error) {
 	if snapshotField != nil {
 		st.Snapshot = snapshotField
 	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	tableNameField := &pb.TableName
-	if tableNameField != nil {
-		st.TableName = *tableNameField
-	}
+	st.Status = pb.Status
+	st.TableName = pb.TableName
 	timeSeriesField, err := monitorTimeSeriesFromPb(pb.TimeSeries)
 	if err != nil {
 		return nil, err
@@ -20470,14 +17706,18 @@ type MonitorMetric struct {
 	// metric. See [create metric definition].
 	//
 	// [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
+	// Wire name: 'definition'
 	Definition string
 	// A list of column names in the input table the metric should be computed
 	// for. Can use ``":table"`` to indicate that the metric needs information
 	// from multiple columns.
+	// Wire name: 'input_columns'
 	InputColumns []string
 	// Name of the metric in the output tables.
+	// Wire name: 'name'
 	Name string
 	// The output type of the custom metric.
+	// Wire name: 'output_data_type'
 	OutputDataType string
 	// Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``,
 	// ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The
@@ -20489,6 +17729,7 @@ type MonitorMetric struct {
 	// table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed
 	// aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously
 	// computed aggregate or derived metrics
+	// Wire name: 'type'
 	Type MonitorMetricType
 }
 
@@ -20497,34 +17738,15 @@ func monitorMetricToPb(st *MonitorMetric) (*monitorMetricPb, error) {
 		return nil, nil
 	}
 	pb := &monitorMetricPb{}
-	definitionPb := &st.Definition
-	if definitionPb != nil {
-		pb.Definition = *definitionPb
-	}
+	pb.Definition = st.Definition
 
-	var inputColumnsPb []string
-	for _, item := range st.InputColumns {
-		itemPb := &item
-		if itemPb != nil {
-			inputColumnsPb = append(inputColumnsPb, *itemPb)
-		}
-	}
-	pb.InputColumns = inputColumnsPb
+	pb.InputColumns = st.InputColumns
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	outputDataTypePb := &st.OutputDataType
-	if outputDataTypePb != nil {
-		pb.OutputDataType = *outputDataTypePb
-	}
+	pb.OutputDataType = st.OutputDataType
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	return pb, nil
 }
@@ -20586,31 +17808,11 @@ func monitorMetricFromPb(pb *monitorMetricPb) (*MonitorMetric, error) {
 		return nil, nil
 	}
 	st := &MonitorMetric{}
-	definitionField := &pb.Definition
-	if definitionField != nil {
-		st.Definition = *definitionField
-	}
-
-	var inputColumnsField []string
-	for _, item := range pb.InputColumns {
-		itemField := &item
-		if itemField != nil {
-			inputColumnsField = append(inputColumnsField, *itemField)
-		}
-	}
-	st.InputColumns = inputColumnsField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	outputDataTypeField := &pb.OutputDataType
-	if outputDataTypeField != nil {
-		st.OutputDataType = *outputDataTypeField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.Definition = pb.Definition
+	st.InputColumns = pb.InputColumns
+	st.Name = pb.Name
+	st.OutputDataType = pb.OutputDataType
+	st.Type = pb.Type
 
 	return st, nil
 }
@@ -20673,9 +17875,11 @@ func monitorMetricTypeFromPb(pb *monitorMetricTypePb) (*MonitorMetricType, error
 
 type MonitorNotifications struct {
 	// Who to send notifications to on monitor failure.
+	// Wire name: 'on_failure'
 	OnFailure *MonitorDestination
 	// Who to send notifications to when new data classification tags are
 	// detected.
+	// Wire name: 'on_new_classification_tag_detected'
 	OnNewClassificationTagDetected *MonitorDestination
 }
 
@@ -20762,21 +17966,27 @@ func monitorNotificationsFromPb(pb *monitorNotificationsPb) (*MonitorNotificatio
 type MonitorRefreshInfo struct {
 	// Time at which refresh operation completed (milliseconds since 1/1/1970
 	// UTC).
+	// Wire name: 'end_time_ms'
 	EndTimeMs int64
 	// An optional message to give insight into the current state of the job
 	// (e.g. FAILURE messages).
+	// Wire name: 'message'
 	Message string
 	// Unique id of the refresh operation.
+	// Wire name: 'refresh_id'
 	RefreshId int64
 	// Time at which refresh operation was initiated (milliseconds since
 	// 1/1/1970 UTC).
+	// Wire name: 'start_time_ms'
 	StartTimeMs int64
 	// The current state of the refresh.
+	// Wire name: 'state'
 	State MonitorRefreshInfoState
 	// The method by which the refresh was triggered.
+	// Wire name: 'trigger'
 	Trigger MonitorRefreshInfoTrigger
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func monitorRefreshInfoToPb(st *MonitorRefreshInfo) (*monitorRefreshInfoPb, error) {
@@ -20784,35 +17994,17 @@ func monitorRefreshInfoToPb(st *MonitorRefreshInfo) (*monitorRefreshInfoPb, erro
 		return nil, nil
 	}
 	pb := &monitorRefreshInfoPb{}
-	endTimeMsPb := &st.EndTimeMs
-	if endTimeMsPb != nil {
-		pb.EndTimeMs = *endTimeMsPb
-	}
+	pb.EndTimeMs = st.EndTimeMs
 
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
-	refreshIdPb := &st.RefreshId
-	if refreshIdPb != nil {
-		pb.RefreshId = *refreshIdPb
-	}
+	pb.RefreshId = st.RefreshId
 
-	startTimeMsPb := &st.StartTimeMs
-	if startTimeMsPb != nil {
-		pb.StartTimeMs = *startTimeMsPb
-	}
+	pb.StartTimeMs = st.StartTimeMs
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
-	triggerPb := &st.Trigger
-	if triggerPb != nil {
-		pb.Trigger = *triggerPb
-	}
+	pb.Trigger = st.Trigger
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -20868,30 +18060,12 @@ func monitorRefreshInfoFromPb(pb *monitorRefreshInfoPb) (*MonitorRefreshInfo, er
 		return nil, nil
 	}
 	st := &MonitorRefreshInfo{}
-	endTimeMsField := &pb.EndTimeMs
-	if endTimeMsField != nil {
-		st.EndTimeMs = *endTimeMsField
-	}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
-	refreshIdField := &pb.RefreshId
-	if refreshIdField != nil {
-		st.RefreshId = *refreshIdField
-	}
-	startTimeMsField := &pb.StartTimeMs
-	if startTimeMsField != nil {
-		st.StartTimeMs = *startTimeMsField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
-	triggerField := &pb.Trigger
-	if triggerField != nil {
-		st.Trigger = *triggerField
-	}
+	st.EndTimeMs = pb.EndTimeMs
+	st.Message = pb.Message
+	st.RefreshId = pb.RefreshId
+	st.StartTimeMs = pb.StartTimeMs
+	st.State = pb.State
+	st.Trigger = pb.Trigger
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -21003,6 +18177,7 @@ func monitorRefreshInfoTriggerFromPb(pb *monitorRefreshInfoTriggerPb) (*MonitorR
 
 type MonitorRefreshListResponse struct {
 	// List of refreshes.
+	// Wire name: 'refreshes'
 	Refreshes []MonitorRefreshInfo
 }
 
@@ -21064,13 +18239,13 @@ func monitorRefreshListResponseFromPb(pb *monitorRefreshListResponsePb) (*Monito
 	st := &MonitorRefreshListResponse{}
 
 	var refreshesField []MonitorRefreshInfo
-	for _, item := range pb.Refreshes {
-		itemField, err := monitorRefreshInfoFromPb(&item)
+	for _, itemPb := range pb.Refreshes {
+		item, err := monitorRefreshInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			refreshesField = append(refreshesField, *itemField)
+		if item != nil {
+			refreshesField = append(refreshesField, *item)
 		}
 	}
 	st.Refreshes = refreshesField
@@ -21132,6 +18307,7 @@ type MonitorTimeSeries struct {
 	// timestamp. Currently the following static granularities are supported:
 	// {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``, ``"1 day"``, ``"<n>
 	// week(s)"``, ``"1 month"``, ``"1 year"``}.
+	// Wire name: 'granularities'
 	Granularities []string
 	// Column that contains the timestamps of requests. The column must be one
 	// of the following: - A ``TimestampType`` column - A column whose values
@@ -21139,6 +18315,7 @@ type MonitorTimeSeries struct {
 	// [function].
 	//
 	// [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html
+	// Wire name: 'timestamp_col'
 	TimestampCol string
 }
 
@@ -21147,20 +18324,9 @@ func monitorTimeSeriesToPb(st *MonitorTimeSeries) (*monitorTimeSeriesPb, error) 
 		return nil, nil
 	}
 	pb := &monitorTimeSeriesPb{}
+	pb.Granularities = st.Granularities
 
-	var granularitiesPb []string
-	for _, item := range st.Granularities {
-		itemPb := &item
-		if itemPb != nil {
-			granularitiesPb = append(granularitiesPb, *itemPb)
-		}
-	}
-	pb.Granularities = granularitiesPb
-
-	timestampColPb := &st.TimestampCol
-	if timestampColPb != nil {
-		pb.TimestampCol = *timestampColPb
-	}
+	pb.TimestampCol = st.TimestampCol
 
 	return pb, nil
 }
@@ -21210,25 +18376,15 @@ func monitorTimeSeriesFromPb(pb *monitorTimeSeriesPb) (*MonitorTimeSeries, error
 		return nil, nil
 	}
 	st := &MonitorTimeSeries{}
-
-	var granularitiesField []string
-	for _, item := range pb.Granularities {
-		itemField := &item
-		if itemField != nil {
-			granularitiesField = append(granularitiesField, *itemField)
-		}
-	}
-	st.Granularities = granularitiesField
-	timestampColField := &pb.TimestampCol
-	if timestampColField != nil {
-		st.TimestampCol = *timestampColField
-	}
+	st.Granularities = pb.Granularities
+	st.TimestampCol = pb.TimestampCol
 
 	return st, nil
 }
 
 type NamedTableConstraint struct {
 	// The name of the constraint.
+	// Wire name: 'name'
 	Name string
 }
 
@@ -21237,10 +18393,7 @@ func namedTableConstraintToPb(st *NamedTableConstraint) (*namedTableConstraintPb
 		return nil, nil
 	}
 	pb := &namedTableConstraintPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -21280,10 +18433,7 @@ func namedTableConstraintFromPb(pb *namedTableConstraintPb) (*NamedTableConstrai
 		return nil, nil
 	}
 	st := &NamedTableConstraint{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -21291,20 +18441,25 @@ func namedTableConstraintFromPb(pb *namedTableConstraintPb) (*NamedTableConstrai
 // Online Table information.
 type OnlineTable struct {
 	// Full three-part (catalog, schema, table) name of the table.
+	// Wire name: 'name'
 	Name string
 	// Specification of the online table.
+	// Wire name: 'spec'
 	Spec *OnlineTableSpec
 	// Online Table data synchronization status
+	// Wire name: 'status'
 	Status *OnlineTableStatus
 	// Data serving REST API URL for this table
+	// Wire name: 'table_serving_url'
 	TableServingUrl string
 	// The provisioning state of the online table entity in Unity Catalog. This
 	// is distinct from the state of the data synchronization pipeline (i.e. the
 	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
 	// runs asynchronously).
+	// Wire name: 'unity_catalog_provisioning_state'
 	UnityCatalogProvisioningState ProvisioningInfoState
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func onlineTableToPb(st *OnlineTable) (*onlineTablePb, error) {
@@ -21312,10 +18467,7 @@ func onlineTableToPb(st *OnlineTable) (*onlineTablePb, error) {
 		return nil, nil
 	}
 	pb := &onlineTablePb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	specPb, err := onlineTableSpecToPb(st.Spec)
 	if err != nil {
@@ -21333,15 +18485,9 @@ func onlineTableToPb(st *OnlineTable) (*onlineTablePb, error) {
 		pb.Status = statusPb
 	}
 
-	tableServingUrlPb := &st.TableServingUrl
-	if tableServingUrlPb != nil {
-		pb.TableServingUrl = *tableServingUrlPb
-	}
+	pb.TableServingUrl = st.TableServingUrl
 
-	unityCatalogProvisioningStatePb := &st.UnityCatalogProvisioningState
-	if unityCatalogProvisioningStatePb != nil {
-		pb.UnityCatalogProvisioningState = *unityCatalogProvisioningStatePb
-	}
+	pb.UnityCatalogProvisioningState = st.UnityCatalogProvisioningState
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -21395,10 +18541,7 @@ func onlineTableFromPb(pb *onlineTablePb) (*OnlineTable, error) {
 		return nil, nil
 	}
 	st := &OnlineTable{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 	specField, err := onlineTableSpecFromPb(pb.Spec)
 	if err != nil {
 		return nil, err
@@ -21413,14 +18556,8 @@ func onlineTableFromPb(pb *onlineTablePb) (*OnlineTable, error) {
 	if statusField != nil {
 		st.Status = statusField
 	}
-	tableServingUrlField := &pb.TableServingUrl
-	if tableServingUrlField != nil {
-		st.TableServingUrl = *tableServingUrlField
-	}
-	unityCatalogProvisioningStateField := &pb.UnityCatalogProvisioningState
-	if unityCatalogProvisioningStateField != nil {
-		st.UnityCatalogProvisioningState = *unityCatalogProvisioningStateField
-	}
+	st.TableServingUrl = pb.TableServingUrl
+	st.UnityCatalogProvisioningState = pb.UnityCatalogProvisioningState
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -21443,24 +18580,31 @@ type OnlineTableSpec struct {
 	// the source table and there are no incremental updates. This mode is
 	// useful for syncing views or tables without CDFs to online tables. Note
 	// that the full-copy pipeline only supports "triggered" scheduling policy.
+	// Wire name: 'perform_full_copy'
 	PerformFullCopy bool
 	// ID of the associated pipeline. Generated by the server - cannot be set by
 	// the caller.
+	// Wire name: 'pipeline_id'
 	PipelineId string
 	// Primary Key columns to be used for data insert/update in the destination.
+	// Wire name: 'primary_key_columns'
 	PrimaryKeyColumns []string
 	// Pipeline runs continuously after generating the initial data.
+	// Wire name: 'run_continuously'
 	RunContinuously *OnlineTableSpecContinuousSchedulingPolicy
 	// Pipeline stops after generating the initial data and can be triggered
 	// later (manually, through a cron job or through data triggers)
+	// Wire name: 'run_triggered'
 	RunTriggered *OnlineTableSpecTriggeredSchedulingPolicy
 	// Three-part (catalog, schema, table) name of the source Delta table.
+	// Wire name: 'source_table_full_name'
 	SourceTableFullName string
 	// Time series key to deduplicate (tie-break) rows with the same primary
 	// key.
+	// Wire name: 'timeseries_key'
 	TimeseriesKey string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func onlineTableSpecToPb(st *OnlineTableSpec) (*onlineTableSpecPb, error) {
@@ -21468,24 +18612,11 @@ func onlineTableSpecToPb(st *OnlineTableSpec) (*onlineTableSpecPb, error) {
 		return nil, nil
 	}
 	pb := &onlineTableSpecPb{}
-	performFullCopyPb := &st.PerformFullCopy
-	if performFullCopyPb != nil {
-		pb.PerformFullCopy = *performFullCopyPb
-	}
+	pb.PerformFullCopy = st.PerformFullCopy
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
-	var primaryKeyColumnsPb []string
-	for _, item := range st.PrimaryKeyColumns {
-		itemPb := &item
-		if itemPb != nil {
-			primaryKeyColumnsPb = append(primaryKeyColumnsPb, *itemPb)
-		}
-	}
-	pb.PrimaryKeyColumns = primaryKeyColumnsPb
+	pb.PrimaryKeyColumns = st.PrimaryKeyColumns
 
 	runContinuouslyPb, err := onlineTableSpecContinuousSchedulingPolicyToPb(st.RunContinuously)
 	if err != nil {
@@ -21503,15 +18634,9 @@ func onlineTableSpecToPb(st *OnlineTableSpec) (*onlineTableSpecPb, error) {
 		pb.RunTriggered = runTriggeredPb
 	}
 
-	sourceTableFullNamePb := &st.SourceTableFullName
-	if sourceTableFullNamePb != nil {
-		pb.SourceTableFullName = *sourceTableFullNamePb
-	}
+	pb.SourceTableFullName = st.SourceTableFullName
 
-	timeseriesKeyPb := &st.TimeseriesKey
-	if timeseriesKeyPb != nil {
-		pb.TimeseriesKey = *timeseriesKeyPb
-	}
+	pb.TimeseriesKey = st.TimeseriesKey
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -21575,23 +18700,9 @@ func onlineTableSpecFromPb(pb *onlineTableSpecPb) (*OnlineTableSpec, error) {
 		return nil, nil
 	}
 	st := &OnlineTableSpec{}
-	performFullCopyField := &pb.PerformFullCopy
-	if performFullCopyField != nil {
-		st.PerformFullCopy = *performFullCopyField
-	}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
-
-	var primaryKeyColumnsField []string
-	for _, item := range pb.PrimaryKeyColumns {
-		itemField := &item
-		if itemField != nil {
-			primaryKeyColumnsField = append(primaryKeyColumnsField, *itemField)
-		}
-	}
-	st.PrimaryKeyColumns = primaryKeyColumnsField
+	st.PerformFullCopy = pb.PerformFullCopy
+	st.PipelineId = pb.PipelineId
+	st.PrimaryKeyColumns = pb.PrimaryKeyColumns
 	runContinuouslyField, err := onlineTableSpecContinuousSchedulingPolicyFromPb(pb.RunContinuously)
 	if err != nil {
 		return nil, err
@@ -21606,14 +18717,8 @@ func onlineTableSpecFromPb(pb *onlineTableSpecPb) (*OnlineTableSpec, error) {
 	if runTriggeredField != nil {
 		st.RunTriggered = runTriggeredField
 	}
-	sourceTableFullNameField := &pb.SourceTableFullName
-	if sourceTableFullNameField != nil {
-		st.SourceTableFullName = *sourceTableFullNameField
-	}
-	timeseriesKeyField := &pb.TimeseriesKey
-	if timeseriesKeyField != nil {
-		st.TimeseriesKey = *timeseriesKeyField
-	}
+	st.SourceTableFullName = pb.SourceTableFullName
+	st.TimeseriesKey = pb.TimeseriesKey
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -21792,23 +18897,29 @@ func onlineTableStateFromPb(pb *onlineTableStatePb) (*OnlineTableState, error) {
 type OnlineTableStatus struct {
 	// Detailed status of an online table. Shown if the online table is in the
 	// ONLINE_CONTINUOUS_UPDATE or the ONLINE_UPDATING_PIPELINE_RESOURCES state.
+	// Wire name: 'continuous_update_status'
 	ContinuousUpdateStatus *ContinuousUpdateStatus
 	// The state of the online table.
+	// Wire name: 'detailed_state'
 	DetailedState OnlineTableState
 	// Detailed status of an online table. Shown if the online table is in the
 	// OFFLINE_FAILED or the ONLINE_PIPELINE_FAILED state.
+	// Wire name: 'failed_status'
 	FailedStatus *FailedStatus
 	// A text description of the current state of the online table.
+	// Wire name: 'message'
 	Message string
 	// Detailed status of an online table. Shown if the online table is in the
 	// PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT
 	// state.
+	// Wire name: 'provisioning_status'
 	ProvisioningStatus *ProvisioningStatus
 	// Detailed status of an online table. Shown if the online table is in the
 	// ONLINE_TRIGGERED_UPDATE or the ONLINE_NO_PENDING_UPDATE state.
+	// Wire name: 'triggered_update_status'
 	TriggeredUpdateStatus *TriggeredUpdateStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func onlineTableStatusToPb(st *OnlineTableStatus) (*onlineTableStatusPb, error) {
@@ -21824,10 +18935,7 @@ func onlineTableStatusToPb(st *OnlineTableStatus) (*onlineTableStatusPb, error) 
 		pb.ContinuousUpdateStatus = continuousUpdateStatusPb
 	}
 
-	detailedStatePb := &st.DetailedState
-	if detailedStatePb != nil {
-		pb.DetailedState = *detailedStatePb
-	}
+	pb.DetailedState = st.DetailedState
 
 	failedStatusPb, err := failedStatusToPb(st.FailedStatus)
 	if err != nil {
@@ -21837,10 +18945,7 @@ func onlineTableStatusToPb(st *OnlineTableStatus) (*onlineTableStatusPb, error) 
 		pb.FailedStatus = failedStatusPb
 	}
 
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
 	provisioningStatusPb, err := provisioningStatusToPb(st.ProvisioningStatus)
 	if err != nil {
@@ -21921,10 +19026,7 @@ func onlineTableStatusFromPb(pb *onlineTableStatusPb) (*OnlineTableStatus, error
 	if continuousUpdateStatusField != nil {
 		st.ContinuousUpdateStatus = continuousUpdateStatusField
 	}
-	detailedStateField := &pb.DetailedState
-	if detailedStateField != nil {
-		st.DetailedState = *detailedStateField
-	}
+	st.DetailedState = pb.DetailedState
 	failedStatusField, err := failedStatusFromPb(pb.FailedStatus)
 	if err != nil {
 		return nil, err
@@ -21932,10 +19034,7 @@ func onlineTableStatusFromPb(pb *onlineTableStatusPb) (*OnlineTableStatus, error
 	if failedStatusField != nil {
 		st.FailedStatus = failedStatusField
 	}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
+	st.Message = pb.Message
 	provisioningStatusField, err := provisioningStatusFromPb(pb.ProvisioningStatus)
 	if err != nil {
 		return nil, err
@@ -21965,13 +19064,16 @@ func (st onlineTableStatusPb) MarshalJSON() ([]byte, error) {
 
 type PermissionsChange struct {
 	// The set of privileges to add.
+	// Wire name: 'add'
 	Add []Privilege
 	// The principal whose privileges we are changing.
+	// Wire name: 'principal'
 	Principal string
 	// The set of privileges to remove.
+	// Wire name: 'remove'
 	Remove []Privilege
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func permissionsChangeToPb(st *PermissionsChange) (*permissionsChangePb, error) {
@@ -21979,29 +19081,11 @@ func permissionsChangeToPb(st *PermissionsChange) (*permissionsChangePb, error) 
 		return nil, nil
 	}
 	pb := &permissionsChangePb{}
+	pb.Add = st.Add
 
-	var addPb []Privilege
-	for _, item := range st.Add {
-		itemPb := &item
-		if itemPb != nil {
-			addPb = append(addPb, *itemPb)
-		}
-	}
-	pb.Add = addPb
+	pb.Principal = st.Principal
 
-	principalPb := &st.Principal
-	if principalPb != nil {
-		pb.Principal = *principalPb
-	}
-
-	var removePb []Privilege
-	for _, item := range st.Remove {
-		itemPb := &item
-		if itemPb != nil {
-			removePb = append(removePb, *itemPb)
-		}
-	}
-	pb.Remove = removePb
+	pb.Remove = st.Remove
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22048,28 +19132,9 @@ func permissionsChangeFromPb(pb *permissionsChangePb) (*PermissionsChange, error
 		return nil, nil
 	}
 	st := &PermissionsChange{}
-
-	var addField []Privilege
-	for _, item := range pb.Add {
-		itemField := &item
-		if itemField != nil {
-			addField = append(addField, *itemField)
-		}
-	}
-	st.Add = addField
-	principalField := &pb.Principal
-	if principalField != nil {
-		st.Principal = *principalField
-	}
-
-	var removeField []Privilege
-	for _, item := range pb.Remove {
-		itemField := &item
-		if itemField != nil {
-			removeField = append(removeField, *itemField)
-		}
-	}
-	st.Remove = removeField
+	st.Add = pb.Add
+	st.Principal = pb.Principal
+	st.Remove = pb.Remove
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22085,6 +19150,7 @@ func (st permissionsChangePb) MarshalJSON() ([]byte, error) {
 
 type PermissionsList struct {
 	// The privileges assigned to each principal
+	// Wire name: 'privilege_assignments'
 	PrivilegeAssignments []PrivilegeAssignment
 }
 
@@ -22146,13 +19212,13 @@ func permissionsListFromPb(pb *permissionsListPb) (*PermissionsList, error) {
 	st := &PermissionsList{}
 
 	var privilegeAssignmentsField []PrivilegeAssignment
-	for _, item := range pb.PrivilegeAssignments {
-		itemField, err := privilegeAssignmentFromPb(&item)
+	for _, itemPb := range pb.PrivilegeAssignments {
+		item, err := privilegeAssignmentFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			privilegeAssignmentsField = append(privilegeAssignmentsField, *itemField)
+		if item != nil {
+			privilegeAssignmentsField = append(privilegeAssignmentsField, *item)
 		}
 	}
 	st.PrivilegeAssignments = privilegeAssignmentsField
@@ -22163,19 +19229,24 @@ func permissionsListFromPb(pb *permissionsListPb) (*PermissionsList, error) {
 // Progress information of the Online Table data synchronization pipeline.
 type PipelineProgress struct {
 	// The estimated time remaining to complete this update in seconds.
+	// Wire name: 'estimated_completion_time_seconds'
 	EstimatedCompletionTimeSeconds float64
 	// The source table Delta version that was last processed by the pipeline.
 	// The pipeline may not have completely processed this version yet.
+	// Wire name: 'latest_version_currently_processing'
 	LatestVersionCurrentlyProcessing int64
 	// The completion ratio of this update. This is a number between 0 and 1.
+	// Wire name: 'sync_progress_completion'
 	SyncProgressCompletion float64
 	// The number of rows that have been synced in this update.
+	// Wire name: 'synced_row_count'
 	SyncedRowCount int64
 	// The total number of rows that need to be synced in this update. This
 	// number may be an estimate.
+	// Wire name: 'total_row_count'
 	TotalRowCount int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelineProgressToPb(st *PipelineProgress) (*pipelineProgressPb, error) {
@@ -22183,30 +19254,15 @@ func pipelineProgressToPb(st *PipelineProgress) (*pipelineProgressPb, error) {
 		return nil, nil
 	}
 	pb := &pipelineProgressPb{}
-	estimatedCompletionTimeSecondsPb := &st.EstimatedCompletionTimeSeconds
-	if estimatedCompletionTimeSecondsPb != nil {
-		pb.EstimatedCompletionTimeSeconds = *estimatedCompletionTimeSecondsPb
-	}
+	pb.EstimatedCompletionTimeSeconds = st.EstimatedCompletionTimeSeconds
 
-	latestVersionCurrentlyProcessingPb := &st.LatestVersionCurrentlyProcessing
-	if latestVersionCurrentlyProcessingPb != nil {
-		pb.LatestVersionCurrentlyProcessing = *latestVersionCurrentlyProcessingPb
-	}
+	pb.LatestVersionCurrentlyProcessing = st.LatestVersionCurrentlyProcessing
 
-	syncProgressCompletionPb := &st.SyncProgressCompletion
-	if syncProgressCompletionPb != nil {
-		pb.SyncProgressCompletion = *syncProgressCompletionPb
-	}
+	pb.SyncProgressCompletion = st.SyncProgressCompletion
 
-	syncedRowCountPb := &st.SyncedRowCount
-	if syncedRowCountPb != nil {
-		pb.SyncedRowCount = *syncedRowCountPb
-	}
+	pb.SyncedRowCount = st.SyncedRowCount
 
-	totalRowCountPb := &st.TotalRowCount
-	if totalRowCountPb != nil {
-		pb.TotalRowCount = *totalRowCountPb
-	}
+	pb.TotalRowCount = st.TotalRowCount
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22259,26 +19315,11 @@ func pipelineProgressFromPb(pb *pipelineProgressPb) (*PipelineProgress, error) {
 		return nil, nil
 	}
 	st := &PipelineProgress{}
-	estimatedCompletionTimeSecondsField := &pb.EstimatedCompletionTimeSeconds
-	if estimatedCompletionTimeSecondsField != nil {
-		st.EstimatedCompletionTimeSeconds = *estimatedCompletionTimeSecondsField
-	}
-	latestVersionCurrentlyProcessingField := &pb.LatestVersionCurrentlyProcessing
-	if latestVersionCurrentlyProcessingField != nil {
-		st.LatestVersionCurrentlyProcessing = *latestVersionCurrentlyProcessingField
-	}
-	syncProgressCompletionField := &pb.SyncProgressCompletion
-	if syncProgressCompletionField != nil {
-		st.SyncProgressCompletion = *syncProgressCompletionField
-	}
-	syncedRowCountField := &pb.SyncedRowCount
-	if syncedRowCountField != nil {
-		st.SyncedRowCount = *syncedRowCountField
-	}
-	totalRowCountField := &pb.TotalRowCount
-	if totalRowCountField != nil {
-		st.TotalRowCount = *totalRowCountField
-	}
+	st.EstimatedCompletionTimeSeconds = pb.EstimatedCompletionTimeSeconds
+	st.LatestVersionCurrentlyProcessing = pb.LatestVersionCurrentlyProcessing
+	st.SyncProgressCompletion = pb.SyncProgressCompletion
+	st.SyncedRowCount = pb.SyncedRowCount
+	st.TotalRowCount = pb.TotalRowCount
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22294,8 +19335,10 @@ func (st pipelineProgressPb) MarshalJSON() ([]byte, error) {
 
 type PrimaryKeyConstraint struct {
 	// Column names for this constraint.
+	// Wire name: 'child_columns'
 	ChildColumns []string
 	// The name of the constraint.
+	// Wire name: 'name'
 	Name string
 }
 
@@ -22304,20 +19347,9 @@ func primaryKeyConstraintToPb(st *PrimaryKeyConstraint) (*primaryKeyConstraintPb
 		return nil, nil
 	}
 	pb := &primaryKeyConstraintPb{}
+	pb.ChildColumns = st.ChildColumns
 
-	var childColumnsPb []string
-	for _, item := range st.ChildColumns {
-		itemPb := &item
-		if itemPb != nil {
-			childColumnsPb = append(childColumnsPb, *itemPb)
-		}
-	}
-	pb.ChildColumns = childColumnsPb
-
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -22359,19 +19391,8 @@ func primaryKeyConstraintFromPb(pb *primaryKeyConstraintPb) (*PrimaryKeyConstrai
 		return nil, nil
 	}
 	st := &PrimaryKeyConstraint{}
-
-	var childColumnsField []string
-	for _, item := range pb.ChildColumns {
-		itemField := &item
-		if itemField != nil {
-			childColumnsField = append(childColumnsField, *itemField)
-		}
-	}
-	st.ChildColumns = childColumnsField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.ChildColumns = pb.ChildColumns
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -22516,11 +19537,13 @@ func privilegeFromPb(pb *privilegePb) (*Privilege, error) {
 
 type PrivilegeAssignment struct {
 	// The principal (user email address or group name).
+	// Wire name: 'principal'
 	Principal string
 	// The privileges assigned to the principal.
+	// Wire name: 'privileges'
 	Privileges []Privilege
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func privilegeAssignmentToPb(st *PrivilegeAssignment) (*privilegeAssignmentPb, error) {
@@ -22528,19 +19551,9 @@ func privilegeAssignmentToPb(st *PrivilegeAssignment) (*privilegeAssignmentPb, e
 		return nil, nil
 	}
 	pb := &privilegeAssignmentPb{}
-	principalPb := &st.Principal
-	if principalPb != nil {
-		pb.Principal = *principalPb
-	}
+	pb.Principal = st.Principal
 
-	var privilegesPb []Privilege
-	for _, item := range st.Privileges {
-		itemPb := &item
-		if itemPb != nil {
-			privilegesPb = append(privilegesPb, *itemPb)
-		}
-	}
-	pb.Privileges = privilegesPb
+	pb.Privileges = st.Privileges
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22585,19 +19598,8 @@ func privilegeAssignmentFromPb(pb *privilegeAssignmentPb) (*PrivilegeAssignment,
 		return nil, nil
 	}
 	st := &PrivilegeAssignment{}
-	principalField := &pb.Principal
-	if principalField != nil {
-		st.Principal = *principalField
-	}
-
-	var privilegesField []Privilege
-	for _, item := range pb.Privileges {
-		itemField := &item
-		if itemField != nil {
-			privilegesField = append(privilegesField, *itemField)
-		}
-	}
-	st.Privileges = privilegesField
+	st.Principal = pb.Principal
+	st.Privileges = pb.Privileges
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22633,6 +19635,8 @@ func propertiesKvPairsFromPb(stPb *propertiesKvPairsPb) (*PropertiesKvPairs, err
 
 // Status of an asynchronously provisioned resource.
 type ProvisioningInfo struct {
+
+	// Wire name: 'state'
 	State ProvisioningInfoState
 }
 
@@ -22641,10 +19645,7 @@ func provisioningInfoToPb(st *ProvisioningInfo) (*provisioningInfoPb, error) {
 		return nil, nil
 	}
 	pb := &provisioningInfoPb{}
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	return pb, nil
 }
@@ -22683,10 +19684,7 @@ func provisioningInfoFromPb(pb *provisioningInfoPb) (*ProvisioningInfo, error) {
 		return nil, nil
 	}
 	st := &ProvisioningInfo{}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.State = pb.State
 
 	return st, nil
 }
@@ -22748,6 +19746,7 @@ func provisioningInfoStateFromPb(pb *provisioningInfoStatePb) (*ProvisioningInfo
 type ProvisioningStatus struct {
 	// Details about initial data synchronization. Only populated when in the
 	// PROVISIONING_INITIAL_SNAPSHOT state.
+	// Wire name: 'initial_pipeline_sync_progress'
 	InitialPipelineSyncProgress *PipelineProgress
 }
 
@@ -22816,20 +19815,26 @@ func provisioningStatusFromPb(pb *provisioningStatusPb) (*ProvisioningStatus, er
 
 type QuotaInfo struct {
 	// The timestamp that indicates when the quota count was last updated.
+	// Wire name: 'last_refreshed_at'
 	LastRefreshedAt int64
 	// Name of the parent resource. Returns metastore ID if the parent is a
 	// metastore.
+	// Wire name: 'parent_full_name'
 	ParentFullName string
 	// The quota parent securable type.
+	// Wire name: 'parent_securable_type'
 	ParentSecurableType SecurableType
 	// The current usage of the resource quota.
+	// Wire name: 'quota_count'
 	QuotaCount int
 	// The current limit of the resource quota.
+	// Wire name: 'quota_limit'
 	QuotaLimit int
 	// The name of the quota.
+	// Wire name: 'quota_name'
 	QuotaName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func quotaInfoToPb(st *QuotaInfo) (*quotaInfoPb, error) {
@@ -22837,35 +19842,17 @@ func quotaInfoToPb(st *QuotaInfo) (*quotaInfoPb, error) {
 		return nil, nil
 	}
 	pb := &quotaInfoPb{}
-	lastRefreshedAtPb := &st.LastRefreshedAt
-	if lastRefreshedAtPb != nil {
-		pb.LastRefreshedAt = *lastRefreshedAtPb
-	}
+	pb.LastRefreshedAt = st.LastRefreshedAt
 
-	parentFullNamePb := &st.ParentFullName
-	if parentFullNamePb != nil {
-		pb.ParentFullName = *parentFullNamePb
-	}
+	pb.ParentFullName = st.ParentFullName
 
-	parentSecurableTypePb := &st.ParentSecurableType
-	if parentSecurableTypePb != nil {
-		pb.ParentSecurableType = *parentSecurableTypePb
-	}
+	pb.ParentSecurableType = st.ParentSecurableType
 
-	quotaCountPb := &st.QuotaCount
-	if quotaCountPb != nil {
-		pb.QuotaCount = *quotaCountPb
-	}
+	pb.QuotaCount = st.QuotaCount
 
-	quotaLimitPb := &st.QuotaLimit
-	if quotaLimitPb != nil {
-		pb.QuotaLimit = *quotaLimitPb
-	}
+	pb.QuotaLimit = st.QuotaLimit
 
-	quotaNamePb := &st.QuotaName
-	if quotaNamePb != nil {
-		pb.QuotaName = *quotaNamePb
-	}
+	pb.QuotaName = st.QuotaName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -22919,30 +19906,12 @@ func quotaInfoFromPb(pb *quotaInfoPb) (*QuotaInfo, error) {
 		return nil, nil
 	}
 	st := &QuotaInfo{}
-	lastRefreshedAtField := &pb.LastRefreshedAt
-	if lastRefreshedAtField != nil {
-		st.LastRefreshedAt = *lastRefreshedAtField
-	}
-	parentFullNameField := &pb.ParentFullName
-	if parentFullNameField != nil {
-		st.ParentFullName = *parentFullNameField
-	}
-	parentSecurableTypeField := &pb.ParentSecurableType
-	if parentSecurableTypeField != nil {
-		st.ParentSecurableType = *parentSecurableTypeField
-	}
-	quotaCountField := &pb.QuotaCount
-	if quotaCountField != nil {
-		st.QuotaCount = *quotaCountField
-	}
-	quotaLimitField := &pb.QuotaLimit
-	if quotaLimitField != nil {
-		st.QuotaLimit = *quotaLimitField
-	}
-	quotaNameField := &pb.QuotaName
-	if quotaNameField != nil {
-		st.QuotaName = *quotaNameField
-	}
+	st.LastRefreshedAt = pb.LastRefreshedAt
+	st.ParentFullName = pb.ParentFullName
+	st.ParentSecurableType = pb.ParentSecurableType
+	st.QuotaCount = pb.QuotaCount
+	st.QuotaLimit = pb.QuotaLimit
+	st.QuotaName = pb.QuotaName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -22960,13 +19929,16 @@ func (st quotaInfoPb) MarshalJSON() ([]byte, error) {
 // https://developers.cloudflare.com/r2/api/s3/tokens/.
 type R2Credentials struct {
 	// The access key ID that identifies the temporary credentials.
+	// Wire name: 'access_key_id'
 	AccessKeyId string
 	// The secret access key associated with the access key.
+	// Wire name: 'secret_access_key'
 	SecretAccessKey string
 	// The generated JWT that users must pass to use the temporary credentials.
+	// Wire name: 'session_token'
 	SessionToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func r2CredentialsToPb(st *R2Credentials) (*r2CredentialsPb, error) {
@@ -22974,20 +19946,11 @@ func r2CredentialsToPb(st *R2Credentials) (*r2CredentialsPb, error) {
 		return nil, nil
 	}
 	pb := &r2CredentialsPb{}
-	accessKeyIdPb := &st.AccessKeyId
-	if accessKeyIdPb != nil {
-		pb.AccessKeyId = *accessKeyIdPb
-	}
+	pb.AccessKeyId = st.AccessKeyId
 
-	secretAccessKeyPb := &st.SecretAccessKey
-	if secretAccessKeyPb != nil {
-		pb.SecretAccessKey = *secretAccessKeyPb
-	}
+	pb.SecretAccessKey = st.SecretAccessKey
 
-	sessionTokenPb := &st.SessionToken
-	if sessionTokenPb != nil {
-		pb.SessionToken = *sessionTokenPb
-	}
+	pb.SessionToken = st.SessionToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23034,18 +19997,9 @@ func r2CredentialsFromPb(pb *r2CredentialsPb) (*R2Credentials, error) {
 		return nil, nil
 	}
 	st := &R2Credentials{}
-	accessKeyIdField := &pb.AccessKeyId
-	if accessKeyIdField != nil {
-		st.AccessKeyId = *accessKeyIdField
-	}
-	secretAccessKeyField := &pb.SecretAccessKey
-	if secretAccessKeyField != nil {
-		st.SecretAccessKey = *secretAccessKeyField
-	}
-	sessionTokenField := &pb.SessionToken
-	if sessionTokenField != nil {
-		st.SessionToken = *sessionTokenField
-	}
+	st.AccessKeyId = pb.AccessKeyId
+	st.SecretAccessKey = pb.SecretAccessKey
+	st.SessionToken = pb.SessionToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23063,11 +20017,13 @@ func (st r2CredentialsPb) MarshalJSON() ([]byte, error) {
 type ReadVolumeRequest struct {
 	// Whether to include volumes in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// The three-level (fully qualified) name of the volume
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func readVolumeRequestToPb(st *ReadVolumeRequest) (*readVolumeRequestPb, error) {
@@ -23075,15 +20031,9 @@ func readVolumeRequestToPb(st *ReadVolumeRequest) (*readVolumeRequestPb, error) 
 		return nil, nil
 	}
 	pb := &readVolumeRequestPb{}
-	includeBrowsePb := &st.IncludeBrowse
-	if includeBrowsePb != nil {
-		pb.IncludeBrowse = *includeBrowsePb
-	}
+	pb.IncludeBrowse = st.IncludeBrowse
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23129,14 +20079,8 @@ func readVolumeRequestFromPb(pb *readVolumeRequestPb) (*ReadVolumeRequest, error
 		return nil, nil
 	}
 	st := &ReadVolumeRequest{}
-	includeBrowseField := &pb.IncludeBrowse
-	if includeBrowseField != nil {
-		st.IncludeBrowse = *includeBrowseField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.IncludeBrowse = pb.IncludeBrowse
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23152,12 +20096,14 @@ func (st readVolumeRequestPb) MarshalJSON() ([]byte, error) {
 
 type RegenerateDashboardRequest struct {
 	// Full name of the table.
-	TableName string
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 	// Optional argument to specify the warehouse for dashboard regeneration. If
 	// not specified, the first running warehouse will be used.
+	// Wire name: 'warehouse_id'
 	WarehouseId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func regenerateDashboardRequestToPb(st *RegenerateDashboardRequest) (*regenerateDashboardRequestPb, error) {
@@ -23165,15 +20111,9 @@ func regenerateDashboardRequestToPb(st *RegenerateDashboardRequest) (*regenerate
 		return nil, nil
 	}
 	pb := &regenerateDashboardRequestPb{}
-	tableNamePb := &st.TableName
-	if tableNamePb != nil {
-		pb.TableName = *tableNamePb
-	}
+	pb.TableName = st.TableName
 
-	warehouseIdPb := &st.WarehouseId
-	if warehouseIdPb != nil {
-		pb.WarehouseId = *warehouseIdPb
-	}
+	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23219,14 +20159,8 @@ func regenerateDashboardRequestFromPb(pb *regenerateDashboardRequestPb) (*Regene
 		return nil, nil
 	}
 	st := &RegenerateDashboardRequest{}
-	tableNameField := &pb.TableName
-	if tableNameField != nil {
-		st.TableName = *tableNameField
-	}
-	warehouseIdField := &pb.WarehouseId
-	if warehouseIdField != nil {
-		st.WarehouseId = *warehouseIdField
-	}
+	st.TableName = pb.TableName
+	st.WarehouseId = pb.WarehouseId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23242,11 +20176,13 @@ func (st regenerateDashboardRequestPb) MarshalJSON() ([]byte, error) {
 
 type RegenerateDashboardResponse struct {
 	// Id of the regenerated monitoring dashboard.
+	// Wire name: 'dashboard_id'
 	DashboardId string
 	// The directory where the regenerated dashboard is stored.
+	// Wire name: 'parent_folder'
 	ParentFolder string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func regenerateDashboardResponseToPb(st *RegenerateDashboardResponse) (*regenerateDashboardResponsePb, error) {
@@ -23254,15 +20190,9 @@ func regenerateDashboardResponseToPb(st *RegenerateDashboardResponse) (*regenera
 		return nil, nil
 	}
 	pb := &regenerateDashboardResponsePb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	parentFolderPb := &st.ParentFolder
-	if parentFolderPb != nil {
-		pb.ParentFolder = *parentFolderPb
-	}
+	pb.ParentFolder = st.ParentFolder
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23307,14 +20237,8 @@ func regenerateDashboardResponseFromPb(pb *regenerateDashboardResponsePb) (*Rege
 		return nil, nil
 	}
 	st := &RegenerateDashboardResponse{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	parentFolderField := &pb.ParentFolder
-	if parentFolderField != nil {
-		st.ParentFolder = *parentFolderField
-	}
+	st.DashboardId = pb.DashboardId
+	st.ParentFolder = pb.ParentFolder
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23331,11 +20255,13 @@ func (st regenerateDashboardResponsePb) MarshalJSON() ([]byte, error) {
 // Registered model alias.
 type RegisteredModelAlias struct {
 	// Name of the alias, e.g. 'champion' or 'latest_stable'
+	// Wire name: 'alias_name'
 	AliasName string
 	// Integer version number of the model version to which this alias points.
+	// Wire name: 'version_num'
 	VersionNum int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func registeredModelAliasToPb(st *RegisteredModelAlias) (*registeredModelAliasPb, error) {
@@ -23343,15 +20269,9 @@ func registeredModelAliasToPb(st *RegisteredModelAlias) (*registeredModelAliasPb
 		return nil, nil
 	}
 	pb := &registeredModelAliasPb{}
-	aliasNamePb := &st.AliasName
-	if aliasNamePb != nil {
-		pb.AliasName = *aliasNamePb
-	}
+	pb.AliasName = st.AliasName
 
-	versionNumPb := &st.VersionNum
-	if versionNumPb != nil {
-		pb.VersionNum = *versionNumPb
-	}
+	pb.VersionNum = st.VersionNum
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23396,14 +20316,8 @@ func registeredModelAliasFromPb(pb *registeredModelAliasPb) (*RegisteredModelAli
 		return nil, nil
 	}
 	st := &RegisteredModelAlias{}
-	aliasNameField := &pb.AliasName
-	if aliasNameField != nil {
-		st.AliasName = *aliasNameField
-	}
-	versionNumField := &pb.VersionNum
-	if versionNumField != nil {
-		st.VersionNum = *versionNumField
-	}
+	st.AliasName = pb.AliasName
+	st.VersionNum = pb.VersionNum
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23419,40 +20333,54 @@ func (st registeredModelAliasPb) MarshalJSON() ([]byte, error) {
 
 type RegisteredModelInfo struct {
 	// List of aliases associated with the registered model
+	// Wire name: 'aliases'
 	Aliases []RegisteredModelAlias
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool
 	// The name of the catalog where the schema and the registered model reside
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// The comment attached to the registered model
+	// Wire name: 'comment'
 	Comment string
 	// Creation timestamp of the registered model in milliseconds since the Unix
 	// epoch
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// The identifier of the user who created the registered model
+	// Wire name: 'created_by'
 	CreatedBy string
 	// The three-level (fully qualified) name of the registered model
+	// Wire name: 'full_name'
 	FullName string
 	// The unique identifier of the metastore
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// The name of the registered model
+	// Wire name: 'name'
 	Name string
 	// The identifier of the user who owns the registered model
+	// Wire name: 'owner'
 	Owner string
 	// The name of the schema where the registered model resides
+	// Wire name: 'schema_name'
 	SchemaName string
 	// The storage location on the cloud under which model version data files
 	// are stored
+	// Wire name: 'storage_location'
 	StorageLocation string
 	// Last-update timestamp of the registered model in milliseconds since the
 	// Unix epoch
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// The identifier of the user who updated the registered model last time
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func registeredModelInfoToPb(st *RegisteredModelInfo) (*registeredModelInfoPb, error) {
@@ -23473,70 +20401,31 @@ func registeredModelInfoToPb(st *RegisteredModelInfo) (*registeredModelInfoPb, e
 	}
 	pb.Aliases = aliasesPb
 
-	browseOnlyPb := &st.BrowseOnly
-	if browseOnlyPb != nil {
-		pb.BrowseOnly = *browseOnlyPb
-	}
+	pb.BrowseOnly = st.BrowseOnly
 
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23612,68 +20501,29 @@ func registeredModelInfoFromPb(pb *registeredModelInfoPb) (*RegisteredModelInfo,
 	st := &RegisteredModelInfo{}
 
 	var aliasesField []RegisteredModelAlias
-	for _, item := range pb.Aliases {
-		itemField, err := registeredModelAliasFromPb(&item)
+	for _, itemPb := range pb.Aliases {
+		item, err := registeredModelAliasFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			aliasesField = append(aliasesField, *itemField)
+		if item != nil {
+			aliasesField = append(aliasesField, *item)
 		}
 	}
 	st.Aliases = aliasesField
-	browseOnlyField := &pb.BrowseOnly
-	if browseOnlyField != nil {
-		st.BrowseOnly = *browseOnlyField
-	}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.FullName = pb.FullName
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.SchemaName = pb.SchemaName
+	st.StorageLocation = pb.StorageLocation
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -23690,7 +20540,8 @@ func (st registeredModelInfoPb) MarshalJSON() ([]byte, error) {
 // Queue a metric refresh for a monitor
 type RunRefreshRequest struct {
 	// Full name of the table.
-	TableName string
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 }
 
 func runRefreshRequestToPb(st *RunRefreshRequest) (*runRefreshRequestPb, error) {
@@ -23698,10 +20549,7 @@ func runRefreshRequestToPb(st *RunRefreshRequest) (*runRefreshRequestPb, error) 
 		return nil, nil
 	}
 	pb := &runRefreshRequestPb{}
-	tableNamePb := &st.TableName
-	if tableNamePb != nil {
-		pb.TableName = *tableNamePb
-	}
+	pb.TableName = st.TableName
 
 	return pb, nil
 }
@@ -23741,10 +20589,7 @@ func runRefreshRequestFromPb(pb *runRefreshRequestPb) (*RunRefreshRequest, error
 		return nil, nil
 	}
 	st := &RunRefreshRequest{}
-	tableNameField := &pb.TableName
-	if tableNameField != nil {
-		st.TableName = *tableNameField
-	}
+	st.TableName = pb.TableName
 
 	return st, nil
 }
@@ -23753,44 +20598,62 @@ type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool
 	// Name of parent catalog.
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// The type of the parent catalog.
+	// Wire name: 'catalog_type'
 	CatalogType string
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Time at which this schema was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of schema creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 
+	// Wire name: 'effective_predictive_optimization_flag'
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
+	// Wire name: 'enable_predictive_optimization'
 	EnablePredictiveOptimization EnablePredictiveOptimization
 	// Full name of schema, in form of __catalog_name__.__schema_name__.
+	// Wire name: 'full_name'
 	FullName string
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// Name of schema, relative to parent catalog.
+	// Wire name: 'name'
 	Name string
 	// Username of current owner of schema.
+	// Wire name: 'owner'
 	Owner string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string
 	// The unique identifier of the schema.
+	// Wire name: 'schema_id'
 	SchemaId string
 	// Storage location for managed tables within schema.
+	// Wire name: 'storage_location'
 	StorageLocation string
 	// Storage root URL for managed tables within schema.
+	// Wire name: 'storage_root'
 	StorageRoot string
 	// Time at which this schema was created, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of user who last modified schema.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func schemaInfoToPb(st *SchemaInfo) (*schemaInfoPb, error) {
@@ -23798,35 +20661,17 @@ func schemaInfoToPb(st *SchemaInfo) (*schemaInfoPb, error) {
 		return nil, nil
 	}
 	pb := &schemaInfoPb{}
-	browseOnlyPb := &st.BrowseOnly
-	if browseOnlyPb != nil {
-		pb.BrowseOnly = *browseOnlyPb
-	}
+	pb.BrowseOnly = st.BrowseOnly
 
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	catalogTypePb := &st.CatalogType
-	if catalogTypePb != nil {
-		pb.CatalogType = *catalogTypePb
-	}
+	pb.CatalogType = st.CatalogType
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
 	effectivePredictiveOptimizationFlagPb, err := effectivePredictiveOptimizationFlagToPb(st.EffectivePredictiveOptimizationFlag)
 	if err != nil {
@@ -23836,64 +20681,27 @@ func schemaInfoToPb(st *SchemaInfo) (*schemaInfoPb, error) {
 		pb.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagPb
 	}
 
-	enablePredictiveOptimizationPb := &st.EnablePredictiveOptimization
-	if enablePredictiveOptimizationPb != nil {
-		pb.EnablePredictiveOptimization = *enablePredictiveOptimizationPb
-	}
+	pb.EnablePredictiveOptimization = st.EnablePredictiveOptimization
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	propertiesPb := map[string]string{}
-	for k, v := range st.Properties {
-		itemPb := &v
-		if itemPb != nil {
-			propertiesPb[k] = *itemPb
-		}
-	}
-	pb.Properties = propertiesPb
+	pb.Properties = st.Properties
 
-	schemaIdPb := &st.SchemaId
-	if schemaIdPb != nil {
-		pb.SchemaId = *schemaIdPb
-	}
+	pb.SchemaId = st.SchemaId
 
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
-	storageRootPb := &st.StorageRoot
-	if storageRootPb != nil {
-		pb.StorageRoot = *storageRootPb
-	}
+	pb.StorageRoot = st.StorageRoot
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -23973,30 +20781,12 @@ func schemaInfoFromPb(pb *schemaInfoPb) (*SchemaInfo, error) {
 		return nil, nil
 	}
 	st := &SchemaInfo{}
-	browseOnlyField := &pb.BrowseOnly
-	if browseOnlyField != nil {
-		st.BrowseOnly = *browseOnlyField
-	}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	catalogTypeField := &pb.CatalogType
-	if catalogTypeField != nil {
-		st.CatalogType = *catalogTypeField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
+	st.CatalogType = pb.CatalogType
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
 	effectivePredictiveOptimizationFlagField, err := effectivePredictiveOptimizationFlagFromPb(pb.EffectivePredictiveOptimizationFlag)
 	if err != nil {
 		return nil, err
@@ -24004,55 +20794,17 @@ func schemaInfoFromPb(pb *schemaInfoPb) (*SchemaInfo, error) {
 	if effectivePredictiveOptimizationFlagField != nil {
 		st.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagField
 	}
-	enablePredictiveOptimizationField := &pb.EnablePredictiveOptimization
-	if enablePredictiveOptimizationField != nil {
-		st.EnablePredictiveOptimization = *enablePredictiveOptimizationField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-
-	propertiesField := map[string]string{}
-	for k, v := range pb.Properties {
-		itemField := &v
-		if itemField != nil {
-			propertiesField[k] = *itemField
-		}
-	}
-	st.Properties = propertiesField
-	schemaIdField := &pb.SchemaId
-	if schemaIdField != nil {
-		st.SchemaId = *schemaIdField
-	}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
-	storageRootField := &pb.StorageRoot
-	if storageRootField != nil {
-		st.StorageRoot = *storageRootField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.EnablePredictiveOptimization = pb.EnablePredictiveOptimization
+	st.FullName = pb.FullName
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.Properties = pb.Properties
+	st.SchemaId = pb.SchemaId
+	st.StorageLocation = pb.StorageLocation
+	st.StorageRoot = pb.StorageRoot
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -24179,17 +20931,22 @@ func securableTypeFromPb(pb *securableTypePb) (*SecurableType, error) {
 
 type SetArtifactAllowlist struct {
 	// A list of allowed artifact match patterns.
+	// Wire name: 'artifact_matchers'
 	ArtifactMatchers []ArtifactMatcher
 	// The artifact type of the allowlist.
-	ArtifactType ArtifactType
+	// Wire name: 'artifact_type'
+	ArtifactType ArtifactType `tf:"-"`
 	// Time at which this artifact allowlist was set, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of the user who set the artifact allowlist.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func setArtifactAllowlistToPb(st *SetArtifactAllowlist) (*setArtifactAllowlistPb, error) {
@@ -24210,25 +20967,13 @@ func setArtifactAllowlistToPb(st *SetArtifactAllowlist) (*setArtifactAllowlistPb
 	}
 	pb.ArtifactMatchers = artifactMatchersPb
 
-	artifactTypePb := &st.ArtifactType
-	if artifactTypePb != nil {
-		pb.ArtifactType = *artifactTypePb
-	}
+	pb.ArtifactType = st.ArtifactType
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -24281,32 +21026,20 @@ func setArtifactAllowlistFromPb(pb *setArtifactAllowlistPb) (*SetArtifactAllowli
 	st := &SetArtifactAllowlist{}
 
 	var artifactMatchersField []ArtifactMatcher
-	for _, item := range pb.ArtifactMatchers {
-		itemField, err := artifactMatcherFromPb(&item)
+	for _, itemPb := range pb.ArtifactMatchers {
+		item, err := artifactMatcherFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			artifactMatchersField = append(artifactMatchersField, *itemField)
+		if item != nil {
+			artifactMatchersField = append(artifactMatchersField, *item)
 		}
 	}
 	st.ArtifactMatchers = artifactMatchersField
-	artifactTypeField := &pb.ArtifactType
-	if artifactTypeField != nil {
-		st.ArtifactType = *artifactTypeField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
+	st.ArtifactType = pb.ArtifactType
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.MetastoreId = pb.MetastoreId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -24322,10 +21055,13 @@ func (st setArtifactAllowlistPb) MarshalJSON() ([]byte, error) {
 
 type SetRegisteredModelAliasRequest struct {
 	// The name of the alias
+	// Wire name: 'alias'
 	Alias string
 	// Full name of the registered model
+	// Wire name: 'full_name'
 	FullName string
 	// The version number of the model version to which the alias points
+	// Wire name: 'version_num'
 	VersionNum int
 }
 
@@ -24334,20 +21070,11 @@ func setRegisteredModelAliasRequestToPb(st *SetRegisteredModelAliasRequest) (*se
 		return nil, nil
 	}
 	pb := &setRegisteredModelAliasRequestPb{}
-	aliasPb := &st.Alias
-	if aliasPb != nil {
-		pb.Alias = *aliasPb
-	}
+	pb.Alias = st.Alias
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	versionNumPb := &st.VersionNum
-	if versionNumPb != nil {
-		pb.VersionNum = *versionNumPb
-	}
+	pb.VersionNum = st.VersionNum
 
 	return pb, nil
 }
@@ -24391,18 +21118,9 @@ func setRegisteredModelAliasRequestFromPb(pb *setRegisteredModelAliasRequestPb) 
 		return nil, nil
 	}
 	st := &SetRegisteredModelAliasRequest{}
-	aliasField := &pb.Alias
-	if aliasField != nil {
-		st.Alias = *aliasField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	versionNumField := &pb.VersionNum
-	if versionNumField != nil {
-		st.VersionNum = *versionNumField
-	}
+	st.Alias = pb.Alias
+	st.FullName = pb.FullName
+	st.VersionNum = pb.VersionNum
 
 	return st, nil
 }
@@ -24410,12 +21128,14 @@ func setRegisteredModelAliasRequestFromPb(pb *setRegisteredModelAliasRequestPb) 
 // Server-Side Encryption properties for clients communicating with AWS s3.
 type SseEncryptionDetails struct {
 	// The type of key encryption to use (affects headers from s3 client).
+	// Wire name: 'algorithm'
 	Algorithm SseEncryptionDetailsAlgorithm
 	// When algorithm is **AWS_SSE_KMS** this field specifies the ARN of the SSE
 	// key to use.
+	// Wire name: 'aws_kms_key_arn'
 	AwsKmsKeyArn string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func sseEncryptionDetailsToPb(st *SseEncryptionDetails) (*sseEncryptionDetailsPb, error) {
@@ -24423,15 +21143,9 @@ func sseEncryptionDetailsToPb(st *SseEncryptionDetails) (*sseEncryptionDetailsPb
 		return nil, nil
 	}
 	pb := &sseEncryptionDetailsPb{}
-	algorithmPb := &st.Algorithm
-	if algorithmPb != nil {
-		pb.Algorithm = *algorithmPb
-	}
+	pb.Algorithm = st.Algorithm
 
-	awsKmsKeyArnPb := &st.AwsKmsKeyArn
-	if awsKmsKeyArnPb != nil {
-		pb.AwsKmsKeyArn = *awsKmsKeyArnPb
-	}
+	pb.AwsKmsKeyArn = st.AwsKmsKeyArn
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -24477,14 +21191,8 @@ func sseEncryptionDetailsFromPb(pb *sseEncryptionDetailsPb) (*SseEncryptionDetai
 		return nil, nil
 	}
 	st := &SseEncryptionDetails{}
-	algorithmField := &pb.Algorithm
-	if algorithmField != nil {
-		st.Algorithm = *algorithmField
-	}
-	awsKmsKeyArnField := &pb.AwsKmsKeyArn
-	if awsKmsKeyArnField != nil {
-		st.AwsKmsKeyArn = *awsKmsKeyArnField
-	}
+	st.Algorithm = pb.Algorithm
+	st.AwsKmsKeyArn = pb.AwsKmsKeyArn
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -24545,44 +21253,62 @@ func sseEncryptionDetailsAlgorithmFromPb(pb *sseEncryptionDetailsAlgorithmPb) (*
 
 type StorageCredentialInfo struct {
 	// The AWS IAM role configuration.
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRoleResponse
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentityResponse
 	// The Azure service principal configuration.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal
 	// The Cloudflare API token configuration.
+	// Wire name: 'cloudflare_api_token'
 	CloudflareApiToken *CloudflareApiToken
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string
 	// Time at which this Credential was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of credential creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// The Databricks managed GCP service account configuration.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountResponse
 	// The full name of the credential.
+	// Wire name: 'full_name'
 	FullName string
 	// The unique identifier of the credential.
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// The credential name. The name must be unique within the metastore.
+	// Wire name: 'name'
 	Name string
 	// Username of current owner of credential.
+	// Wire name: 'owner'
 	Owner string
 	// Whether the storage credential is only usable for read operations.
+	// Wire name: 'read_only'
 	ReadOnly bool
 	// Time at which this credential was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of user who last modified the credential.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 	// Whether this credential is the current metastore's root storage
 	// credential.
+	// Wire name: 'used_for_managed_storage'
 	UsedForManagedStorage bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func storageCredentialInfoToPb(st *StorageCredentialInfo) (*storageCredentialInfoPb, error) {
@@ -24622,20 +21348,11 @@ func storageCredentialInfoToPb(st *StorageCredentialInfo) (*storageCredentialInf
 		pb.CloudflareApiToken = cloudflareApiTokenPb
 	}
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
 	databricksGcpServiceAccountPb, err := databricksGcpServiceAccountResponseToPb(st.DatabricksGcpServiceAccount)
 	if err != nil {
@@ -24645,55 +21362,25 @@ func storageCredentialInfoToPb(st *StorageCredentialInfo) (*storageCredentialInf
 		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
 	}
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	isolationModePb := &st.IsolationMode
-	if isolationModePb != nil {
-		pb.IsolationMode = *isolationModePb
-	}
+	pb.IsolationMode = st.IsolationMode
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
-	usedForManagedStoragePb := &st.UsedForManagedStorage
-	if usedForManagedStoragePb != nil {
-		pb.UsedForManagedStorage = *usedForManagedStoragePb
-	}
+	pb.UsedForManagedStorage = st.UsedForManagedStorage
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -24799,18 +21486,9 @@ func storageCredentialInfoFromPb(pb *storageCredentialInfoPb) (*StorageCredentia
 	if cloudflareApiTokenField != nil {
 		st.CloudflareApiToken = cloudflareApiTokenField
 	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
 	databricksGcpServiceAccountField, err := databricksGcpServiceAccountResponseFromPb(pb.DatabricksGcpServiceAccount)
 	if err != nil {
 		return nil, err
@@ -24818,46 +21496,16 @@ func storageCredentialInfoFromPb(pb *storageCredentialInfoPb) (*StorageCredentia
 	if databricksGcpServiceAccountField != nil {
 		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
 	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	isolationModeField := &pb.IsolationMode
-	if isolationModeField != nil {
-		st.IsolationMode = *isolationModeField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
-	usedForManagedStorageField := &pb.UsedForManagedStorage
-	if usedForManagedStorageField != nil {
-		st.UsedForManagedStorage = *usedForManagedStorageField
-	}
+	st.FullName = pb.FullName
+	st.Id = pb.Id
+	st.IsolationMode = pb.IsolationMode
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.ReadOnly = pb.ReadOnly
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.UsedForManagedStorage = pb.UsedForManagedStorage
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -24873,12 +21521,14 @@ func (st storageCredentialInfoPb) MarshalJSON() ([]byte, error) {
 
 type SystemSchemaInfo struct {
 	// Name of the system schema.
+	// Wire name: 'schema'
 	Schema string
 	// The current state of enablement for the system schema. An empty string
 	// means the system schema is available and ready for opt-in.
+	// Wire name: 'state'
 	State SystemSchemaInfoState
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func systemSchemaInfoToPb(st *SystemSchemaInfo) (*systemSchemaInfoPb, error) {
@@ -24886,15 +21536,9 @@ func systemSchemaInfoToPb(st *SystemSchemaInfo) (*systemSchemaInfoPb, error) {
 		return nil, nil
 	}
 	pb := &systemSchemaInfoPb{}
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -24940,14 +21584,8 @@ func systemSchemaInfoFromPb(pb *systemSchemaInfoPb) (*SystemSchemaInfo, error) {
 		return nil, nil
 	}
 	st := &SystemSchemaInfo{}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.Schema = pb.Schema
+	st.State = pb.State
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -25017,10 +21655,14 @@ func systemSchemaInfoStateFromPb(pb *systemSchemaInfoStatePb) (*SystemSchemaInfo
 // __primary_key_constraint__, __foreign_key_constraint__,
 // __named_table_constraint__.
 type TableConstraint struct {
+
+	// Wire name: 'foreign_key_constraint'
 	ForeignKeyConstraint *ForeignKeyConstraint
 
+	// Wire name: 'named_table_constraint'
 	NamedTableConstraint *NamedTableConstraint
 
+	// Wire name: 'primary_key_constraint'
 	PrimaryKeyConstraint *PrimaryKeyConstraint
 }
 
@@ -25123,6 +21765,7 @@ func tableConstraintFromPb(pb *tableConstraintPb) (*TableConstraint, error) {
 type TableDependency struct {
 	// Full name of the dependent table, in the form of
 	// __catalog_name__.__schema_name__.__table_name__.
+	// Wire name: 'table_full_name'
 	TableFullName string
 }
 
@@ -25131,10 +21774,7 @@ func tableDependencyToPb(st *TableDependency) (*tableDependencyPb, error) {
 		return nil, nil
 	}
 	pb := &tableDependencyPb{}
-	tableFullNamePb := &st.TableFullName
-	if tableFullNamePb != nil {
-		pb.TableFullName = *tableFullNamePb
-	}
+	pb.TableFullName = st.TableFullName
 
 	return pb, nil
 }
@@ -25175,19 +21815,17 @@ func tableDependencyFromPb(pb *tableDependencyPb) (*TableDependency, error) {
 		return nil, nil
 	}
 	st := &TableDependency{}
-	tableFullNameField := &pb.TableFullName
-	if tableFullNameField != nil {
-		st.TableFullName = *tableFullNameField
-	}
+	st.TableFullName = pb.TableFullName
 
 	return st, nil
 }
 
 type TableExistsResponse struct {
 	// Whether the table exists or not.
+	// Wire name: 'table_exists'
 	TableExists bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tableExistsResponseToPb(st *TableExistsResponse) (*tableExistsResponsePb, error) {
@@ -25195,10 +21833,7 @@ func tableExistsResponseToPb(st *TableExistsResponse) (*tableExistsResponsePb, e
 		return nil, nil
 	}
 	pb := &tableExistsResponsePb{}
-	tableExistsPb := &st.TableExists
-	if tableExistsPb != nil {
-		pb.TableExists = *tableExistsPb
-	}
+	pb.TableExists = st.TableExists
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -25241,10 +21876,7 @@ func tableExistsResponseFromPb(pb *tableExistsResponsePb) (*TableExistsResponse,
 		return nil, nil
 	}
 	st := &TableExistsResponse{}
-	tableExistsField := &pb.TableExists
-	if tableExistsField != nil {
-		st.TableExists = *tableExistsField
-	}
+	st.TableExists = pb.TableExists
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -25260,84 +21892,116 @@ func (st tableExistsResponsePb) MarshalJSON() ([]byte, error) {
 
 type TableInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
+	// Wire name: 'access_point'
 	AccessPoint string
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool
 	// Name of parent catalog.
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// The array of __ColumnInfo__ definitions of the table's columns.
+	// Wire name: 'columns'
 	Columns []ColumnInfo
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Time at which this table was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of table creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Unique ID of the Data Access Configuration to use with the table data.
+	// Wire name: 'data_access_configuration_id'
 	DataAccessConfigurationId string
 	// Data source format
+	// Wire name: 'data_source_format'
 	DataSourceFormat DataSourceFormat
 	// Time at which this table was deleted, in epoch milliseconds. Field is
 	// omitted if table is not deleted.
+	// Wire name: 'deleted_at'
 	DeletedAt int64
 	// Information pertaining to current state of the delta table.
+	// Wire name: 'delta_runtime_properties_kvpairs'
 	DeltaRuntimePropertiesKvpairs *DeltaRuntimePropertiesKvPairs
 
+	// Wire name: 'effective_predictive_optimization_flag'
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
+	// Wire name: 'enable_predictive_optimization'
 	EnablePredictiveOptimization EnablePredictiveOptimization
 	// Encryption options that apply to clients connecting to cloud storage.
+	// Wire name: 'encryption_details'
 	EncryptionDetails *EncryptionDetails
 	// Full name of table, in form of
 	// __catalog_name__.__schema_name__.__table_name__
+	// Wire name: 'full_name'
 	FullName string
 	// Unique identifier of parent metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// Name of table, relative to parent schema.
+	// Wire name: 'name'
 	Name string
 	// Username of current owner of table.
+	// Wire name: 'owner'
 	Owner string
 	// The pipeline ID of the table. Applicable for tables created by pipelines
 	// (Materialized View, Streaming Table, etc.).
+	// Wire name: 'pipeline_id'
 	PipelineId string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string
 
+	// Wire name: 'row_filter'
 	RowFilter *TableRowFilter
 	// Name of parent schema relative to its parent catalog.
+	// Wire name: 'schema_name'
 	SchemaName string
 	// List of schemes whose objects can be referenced without qualification.
+	// Wire name: 'sql_path'
 	SqlPath string
 	// Name of the storage credential, when a storage credential is configured
 	// for use with this table.
+	// Wire name: 'storage_credential_name'
 	StorageCredentialName string
 	// Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)
+	// Wire name: 'storage_location'
 	StorageLocation string
 	// List of table constraints. Note: this field is not set in the output of
 	// the __listTables__ API.
+	// Wire name: 'table_constraints'
 	TableConstraints []TableConstraint
 	// The unique identifier of the table.
+	// Wire name: 'table_id'
 	TableId string
 
+	// Wire name: 'table_type'
 	TableType TableType
 	// Time at which this table was last modified, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of user who last modified the table.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 	// View definition SQL (when __table_type__ is **VIEW**,
 	// **MATERIALIZED_VIEW**, or **STREAMING_TABLE**)
+	// Wire name: 'view_definition'
 	ViewDefinition string
 	// View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**,
 	// **STREAMING_TABLE**) - when DependencyList is None, the dependency is not
 	// provided; - when DependencyList is an empty list, the dependency is
 	// provided but is empty; - when DependencyList is not an empty list,
 	// dependencies are provided and recorded.
+	// Wire name: 'view_dependencies'
 	ViewDependencies *DependencyList
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tableInfoToPb(st *TableInfo) (*tableInfoPb, error) {
@@ -25345,20 +22009,11 @@ func tableInfoToPb(st *TableInfo) (*tableInfoPb, error) {
 		return nil, nil
 	}
 	pb := &tableInfoPb{}
-	accessPointPb := &st.AccessPoint
-	if accessPointPb != nil {
-		pb.AccessPoint = *accessPointPb
-	}
+	pb.AccessPoint = st.AccessPoint
 
-	browseOnlyPb := &st.BrowseOnly
-	if browseOnlyPb != nil {
-		pb.BrowseOnly = *browseOnlyPb
-	}
+	pb.BrowseOnly = st.BrowseOnly
 
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
 	var columnsPb []ColumnInfoPb
 	for _, item := range st.Columns {
@@ -25372,35 +22027,17 @@ func tableInfoToPb(st *TableInfo) (*tableInfoPb, error) {
 	}
 	pb.Columns = columnsPb
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	dataAccessConfigurationIdPb := &st.DataAccessConfigurationId
-	if dataAccessConfigurationIdPb != nil {
-		pb.DataAccessConfigurationId = *dataAccessConfigurationIdPb
-	}
+	pb.DataAccessConfigurationId = st.DataAccessConfigurationId
 
-	dataSourceFormatPb := &st.DataSourceFormat
-	if dataSourceFormatPb != nil {
-		pb.DataSourceFormat = *dataSourceFormatPb
-	}
+	pb.DataSourceFormat = st.DataSourceFormat
 
-	deletedAtPb := &st.DeletedAt
-	if deletedAtPb != nil {
-		pb.DeletedAt = *deletedAtPb
-	}
+	pb.DeletedAt = st.DeletedAt
 
 	deltaRuntimePropertiesKvpairsPb, err := deltaRuntimePropertiesKvPairsToPb(st.DeltaRuntimePropertiesKvpairs)
 	if err != nil {
@@ -25418,10 +22055,7 @@ func tableInfoToPb(st *TableInfo) (*tableInfoPb, error) {
 		pb.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagPb
 	}
 
-	enablePredictiveOptimizationPb := &st.EnablePredictiveOptimization
-	if enablePredictiveOptimizationPb != nil {
-		pb.EnablePredictiveOptimization = *enablePredictiveOptimizationPb
-	}
+	pb.EnablePredictiveOptimization = st.EnablePredictiveOptimization
 
 	encryptionDetailsPb, err := encryptionDetailsToPb(st.EncryptionDetails)
 	if err != nil {
@@ -25431,39 +22065,17 @@ func tableInfoToPb(st *TableInfo) (*tableInfoPb, error) {
 		pb.EncryptionDetails = encryptionDetailsPb
 	}
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
-	propertiesPb := map[string]string{}
-	for k, v := range st.Properties {
-		itemPb := &v
-		if itemPb != nil {
-			propertiesPb[k] = *itemPb
-		}
-	}
-	pb.Properties = propertiesPb
+	pb.Properties = st.Properties
 
 	rowFilterPb, err := tableRowFilterToPb(st.RowFilter)
 	if err != nil {
@@ -25473,25 +22085,13 @@ func tableInfoToPb(st *TableInfo) (*tableInfoPb, error) {
 		pb.RowFilter = rowFilterPb
 	}
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
-	sqlPathPb := &st.SqlPath
-	if sqlPathPb != nil {
-		pb.SqlPath = *sqlPathPb
-	}
+	pb.SqlPath = st.SqlPath
 
-	storageCredentialNamePb := &st.StorageCredentialName
-	if storageCredentialNamePb != nil {
-		pb.StorageCredentialName = *storageCredentialNamePb
-	}
+	pb.StorageCredentialName = st.StorageCredentialName
 
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
 	var tableConstraintsPb []tableConstraintPb
 	for _, item := range st.TableConstraints {
@@ -25505,30 +22105,15 @@ func tableInfoToPb(st *TableInfo) (*tableInfoPb, error) {
 	}
 	pb.TableConstraints = tableConstraintsPb
 
-	tableIdPb := &st.TableId
-	if tableIdPb != nil {
-		pb.TableId = *tableIdPb
-	}
+	pb.TableId = st.TableId
 
-	tableTypePb := &st.TableType
-	if tableTypePb != nil {
-		pb.TableType = *tableTypePb
-	}
+	pb.TableType = st.TableType
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
-	viewDefinitionPb := &st.ViewDefinition
-	if viewDefinitionPb != nil {
-		pb.ViewDefinition = *viewDefinitionPb
-	}
+	pb.ViewDefinition = st.ViewDefinition
 
 	viewDependenciesPb, err := dependencyListToPb(st.ViewDependencies)
 	if err != nil {
@@ -25654,54 +22239,27 @@ func tableInfoFromPb(pb *tableInfoPb) (*TableInfo, error) {
 		return nil, nil
 	}
 	st := &TableInfo{}
-	accessPointField := &pb.AccessPoint
-	if accessPointField != nil {
-		st.AccessPoint = *accessPointField
-	}
-	browseOnlyField := &pb.BrowseOnly
-	if browseOnlyField != nil {
-		st.BrowseOnly = *browseOnlyField
-	}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
+	st.AccessPoint = pb.AccessPoint
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
 
 	var columnsField []ColumnInfo
-	for _, item := range pb.Columns {
-		itemField, err := ColumnInfoFromPb(&item)
+	for _, itemPb := range pb.Columns {
+		item, err := ColumnInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			columnsField = append(columnsField, *itemField)
+		if item != nil {
+			columnsField = append(columnsField, *item)
 		}
 	}
 	st.Columns = columnsField
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	dataAccessConfigurationIdField := &pb.DataAccessConfigurationId
-	if dataAccessConfigurationIdField != nil {
-		st.DataAccessConfigurationId = *dataAccessConfigurationIdField
-	}
-	dataSourceFormatField := &pb.DataSourceFormat
-	if dataSourceFormatField != nil {
-		st.DataSourceFormat = *dataSourceFormatField
-	}
-	deletedAtField := &pb.DeletedAt
-	if deletedAtField != nil {
-		st.DeletedAt = *deletedAtField
-	}
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.DataAccessConfigurationId = pb.DataAccessConfigurationId
+	st.DataSourceFormat = pb.DataSourceFormat
+	st.DeletedAt = pb.DeletedAt
 	deltaRuntimePropertiesKvpairsField, err := deltaRuntimePropertiesKvPairsFromPb(pb.DeltaRuntimePropertiesKvpairs)
 	if err != nil {
 		return nil, err
@@ -25716,10 +22274,7 @@ func tableInfoFromPb(pb *tableInfoPb) (*TableInfo, error) {
 	if effectivePredictiveOptimizationFlagField != nil {
 		st.EffectivePredictiveOptimizationFlag = effectivePredictiveOptimizationFlagField
 	}
-	enablePredictiveOptimizationField := &pb.EnablePredictiveOptimization
-	if enablePredictiveOptimizationField != nil {
-		st.EnablePredictiveOptimization = *enablePredictiveOptimizationField
-	}
+	st.EnablePredictiveOptimization = pb.EnablePredictiveOptimization
 	encryptionDetailsField, err := encryptionDetailsFromPb(pb.EncryptionDetails)
 	if err != nil {
 		return nil, err
@@ -25727,35 +22282,12 @@ func tableInfoFromPb(pb *tableInfoPb) (*TableInfo, error) {
 	if encryptionDetailsField != nil {
 		st.EncryptionDetails = encryptionDetailsField
 	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
-
-	propertiesField := map[string]string{}
-	for k, v := range pb.Properties {
-		itemField := &v
-		if itemField != nil {
-			propertiesField[k] = *itemField
-		}
-	}
-	st.Properties = propertiesField
+	st.FullName = pb.FullName
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.PipelineId = pb.PipelineId
+	st.Properties = pb.Properties
 	rowFilterField, err := tableRowFilterFromPb(pb.RowFilter)
 	if err != nil {
 		return nil, err
@@ -25763,54 +22295,27 @@ func tableInfoFromPb(pb *tableInfoPb) (*TableInfo, error) {
 	if rowFilterField != nil {
 		st.RowFilter = rowFilterField
 	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
-	sqlPathField := &pb.SqlPath
-	if sqlPathField != nil {
-		st.SqlPath = *sqlPathField
-	}
-	storageCredentialNameField := &pb.StorageCredentialName
-	if storageCredentialNameField != nil {
-		st.StorageCredentialName = *storageCredentialNameField
-	}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
+	st.SchemaName = pb.SchemaName
+	st.SqlPath = pb.SqlPath
+	st.StorageCredentialName = pb.StorageCredentialName
+	st.StorageLocation = pb.StorageLocation
 
 	var tableConstraintsField []TableConstraint
-	for _, item := range pb.TableConstraints {
-		itemField, err := tableConstraintFromPb(&item)
+	for _, itemPb := range pb.TableConstraints {
+		item, err := tableConstraintFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tableConstraintsField = append(tableConstraintsField, *itemField)
+		if item != nil {
+			tableConstraintsField = append(tableConstraintsField, *item)
 		}
 	}
 	st.TableConstraints = tableConstraintsField
-	tableIdField := &pb.TableId
-	if tableIdField != nil {
-		st.TableId = *tableIdField
-	}
-	tableTypeField := &pb.TableType
-	if tableTypeField != nil {
-		st.TableType = *tableTypeField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
-	viewDefinitionField := &pb.ViewDefinition
-	if viewDefinitionField != nil {
-		st.ViewDefinition = *viewDefinitionField
-	}
+	st.TableId = pb.TableId
+	st.TableType = pb.TableType
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.ViewDefinition = pb.ViewDefinition
 	viewDependenciesField, err := dependencyListFromPb(pb.ViewDependencies)
 	if err != nil {
 		return nil, err
@@ -25877,10 +22382,12 @@ func tableOperationFromPb(pb *tableOperationPb) (*TableOperation, error) {
 
 type TableRowFilter struct {
 	// The full name of the row filter SQL UDF.
+	// Wire name: 'function_name'
 	FunctionName string
 	// The list of table columns to be passed as input to the row filter
 	// function. The column types should match the types of the filter function
 	// arguments.
+	// Wire name: 'input_column_names'
 	InputColumnNames []string
 }
 
@@ -25889,19 +22396,9 @@ func tableRowFilterToPb(st *TableRowFilter) (*tableRowFilterPb, error) {
 		return nil, nil
 	}
 	pb := &tableRowFilterPb{}
-	functionNamePb := &st.FunctionName
-	if functionNamePb != nil {
-		pb.FunctionName = *functionNamePb
-	}
+	pb.FunctionName = st.FunctionName
 
-	var inputColumnNamesPb []string
-	for _, item := range st.InputColumnNames {
-		itemPb := &item
-		if itemPb != nil {
-			inputColumnNamesPb = append(inputColumnNamesPb, *itemPb)
-		}
-	}
-	pb.InputColumnNames = inputColumnNamesPb
+	pb.InputColumnNames = st.InputColumnNames
 
 	return pb, nil
 }
@@ -25945,30 +22442,21 @@ func tableRowFilterFromPb(pb *tableRowFilterPb) (*TableRowFilter, error) {
 		return nil, nil
 	}
 	st := &TableRowFilter{}
-	functionNameField := &pb.FunctionName
-	if functionNameField != nil {
-		st.FunctionName = *functionNameField
-	}
-
-	var inputColumnNamesField []string
-	for _, item := range pb.InputColumnNames {
-		itemField := &item
-		if itemField != nil {
-			inputColumnNamesField = append(inputColumnNamesField, *itemField)
-		}
-	}
-	st.InputColumnNames = inputColumnNamesField
+	st.FunctionName = pb.FunctionName
+	st.InputColumnNames = pb.InputColumnNames
 
 	return st, nil
 }
 
 type TableSummary struct {
 	// The full name of the table.
+	// Wire name: 'full_name'
 	FullName string
 
+	// Wire name: 'table_type'
 	TableType TableType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tableSummaryToPb(st *TableSummary) (*tableSummaryPb, error) {
@@ -25976,15 +22464,9 @@ func tableSummaryToPb(st *TableSummary) (*tableSummaryPb, error) {
 		return nil, nil
 	}
 	pb := &tableSummaryPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	tableTypePb := &st.TableType
-	if tableTypePb != nil {
-		pb.TableType = *tableTypePb
-	}
+	pb.TableType = st.TableType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -26029,14 +22511,8 @@ func tableSummaryFromPb(pb *tableSummaryPb) (*TableSummary, error) {
 		return nil, nil
 	}
 	st := &TableSummary{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	tableTypeField := &pb.TableType
-	if tableTypeField != nil {
-		st.TableType = *tableTypeField
-	}
+	st.FullName = pb.FullName
+	st.TableType = pb.TableType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -26108,11 +22584,13 @@ func tableTypeFromPb(pb *tableTypePb) (*TableType, error) {
 
 type TagKeyValue struct {
 	// name of the tag
+	// Wire name: 'key'
 	Key string
 	// value of the tag associated with the key, could be optional
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func TagKeyValueToPb(st *TagKeyValue) (*TagKeyValuePb, error) {
@@ -26120,15 +22598,9 @@ func TagKeyValueToPb(st *TagKeyValue) (*TagKeyValuePb, error) {
 		return nil, nil
 	}
 	pb := &TagKeyValuePb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -26173,14 +22645,8 @@ func TagKeyValueFromPb(pb *TagKeyValuePb) (*TagKeyValue, error) {
 		return nil, nil
 	}
 	st := &TagKeyValue{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -26197,19 +22663,23 @@ func (st TagKeyValuePb) MarshalJSON() ([]byte, error) {
 type TemporaryCredentials struct {
 	// AWS temporary credentials for API authentication. Read more at
 	// https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
+	// Wire name: 'aws_temp_credentials'
 	AwsTempCredentials *AwsCredentials
 	// Azure Active Directory token, essentially the Oauth token for Azure
 	// Service Principal or Managed Identity. Read more at
 	// https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token
+	// Wire name: 'azure_aad'
 	AzureAad *AzureActiveDirectoryToken
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
+	// Wire name: 'expiration_time'
 	ExpirationTime int64
 	// GCP temporary credentials for API authentication. Read more at
 	// https://developers.google.com/identity/protocols/oauth2/service-account
+	// Wire name: 'gcp_oauth_token'
 	GcpOauthToken *GcpOauthToken
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func temporaryCredentialsToPb(st *TemporaryCredentials) (*temporaryCredentialsPb, error) {
@@ -26233,10 +22703,7 @@ func temporaryCredentialsToPb(st *TemporaryCredentials) (*temporaryCredentialsPb
 		pb.AzureAad = azureAadPb
 	}
 
-	expirationTimePb := &st.ExpirationTime
-	if expirationTimePb != nil {
-		pb.ExpirationTime = *expirationTimePb
-	}
+	pb.ExpirationTime = st.ExpirationTime
 
 	gcpOauthTokenPb, err := gcpOauthTokenToPb(st.GcpOauthToken)
 	if err != nil {
@@ -26312,10 +22779,7 @@ func temporaryCredentialsFromPb(pb *temporaryCredentialsPb) (*TemporaryCredentia
 	if azureAadField != nil {
 		st.AzureAad = azureAadField
 	}
-	expirationTimeField := &pb.ExpirationTime
-	if expirationTimeField != nil {
-		st.ExpirationTime = *expirationTimeField
-	}
+	st.ExpirationTime = pb.ExpirationTime
 	gcpOauthTokenField, err := gcpOauthTokenFromPb(pb.GcpOauthToken)
 	if err != nil {
 		return nil, err
@@ -26342,14 +22806,17 @@ type TriggeredUpdateStatus struct {
 	// The last source table Delta version that was synced to the online table.
 	// Note that this Delta version may not be completely synced to the online
 	// table yet.
+	// Wire name: 'last_processed_commit_version'
 	LastProcessedCommitVersion int64
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table.
+	// Wire name: 'timestamp'
 	Timestamp string
 	// Progress of the active data synchronization pipeline.
+	// Wire name: 'triggered_update_progress'
 	TriggeredUpdateProgress *PipelineProgress
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func triggeredUpdateStatusToPb(st *TriggeredUpdateStatus) (*triggeredUpdateStatusPb, error) {
@@ -26357,15 +22824,9 @@ func triggeredUpdateStatusToPb(st *TriggeredUpdateStatus) (*triggeredUpdateStatu
 		return nil, nil
 	}
 	pb := &triggeredUpdateStatusPb{}
-	lastProcessedCommitVersionPb := &st.LastProcessedCommitVersion
-	if lastProcessedCommitVersionPb != nil {
-		pb.LastProcessedCommitVersion = *lastProcessedCommitVersionPb
-	}
+	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
 
-	timestampPb := &st.Timestamp
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 
 	triggeredUpdateProgressPb, err := pipelineProgressToPb(st.TriggeredUpdateProgress)
 	if err != nil {
@@ -26423,14 +22884,8 @@ func triggeredUpdateStatusFromPb(pb *triggeredUpdateStatusPb) (*TriggeredUpdateS
 		return nil, nil
 	}
 	st := &TriggeredUpdateStatus{}
-	lastProcessedCommitVersionField := &pb.LastProcessedCommitVersion
-	if lastProcessedCommitVersionField != nil {
-		st.LastProcessedCommitVersion = *lastProcessedCommitVersionField
-	}
-	timestampField := &pb.Timestamp
-	if timestampField != nil {
-		st.Timestamp = *timestampField
-	}
+	st.LastProcessedCommitVersion = pb.LastProcessedCommitVersion
+	st.Timestamp = pb.Timestamp
 	triggeredUpdateProgressField, err := pipelineProgressFromPb(pb.TriggeredUpdateProgress)
 	if err != nil {
 		return nil, err
@@ -26454,9 +22909,11 @@ func (st triggeredUpdateStatusPb) MarshalJSON() ([]byte, error) {
 // Delete an assignment
 type UnassignRequest struct {
 	// Query for the ID of the metastore to delete.
-	MetastoreId string
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// A workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func unassignRequestToPb(st *UnassignRequest) (*unassignRequestPb, error) {
@@ -26464,15 +22921,9 @@ func unassignRequestToPb(st *UnassignRequest) (*unassignRequestPb, error) {
 		return nil, nil
 	}
 	pb := &unassignRequestPb{}
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -26514,14 +22965,8 @@ func unassignRequestFromPb(pb *unassignRequestPb) (*UnassignRequest, error) {
 		return nil, nil
 	}
 	st := &UnassignRequest{}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
@@ -26674,25 +23119,33 @@ func updateBindingsSecurableTypeFromPb(pb *updateBindingsSecurableTypePb) (*Upda
 
 type UpdateCatalog struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
+	// Wire name: 'enable_predictive_optimization'
 	EnablePredictiveOptimization EnablePredictiveOptimization
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
+	// Wire name: 'isolation_mode'
 	IsolationMode CatalogIsolationMode
 	// The name of the catalog.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the catalog.
+	// Wire name: 'new_name'
 	NewName string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string
 	// Username of current owner of catalog.
+	// Wire name: 'owner'
 	Owner string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateCatalogToPb(st *UpdateCatalog) (*updateCatalogPb, error) {
@@ -26700,53 +23153,21 @@ func updateCatalogToPb(st *UpdateCatalog) (*updateCatalogPb, error) {
 		return nil, nil
 	}
 	pb := &updateCatalogPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	enablePredictiveOptimizationPb := &st.EnablePredictiveOptimization
-	if enablePredictiveOptimizationPb != nil {
-		pb.EnablePredictiveOptimization = *enablePredictiveOptimizationPb
-	}
+	pb.EnablePredictiveOptimization = st.EnablePredictiveOptimization
 
-	isolationModePb := &st.IsolationMode
-	if isolationModePb != nil {
-		pb.IsolationMode = *isolationModePb
-	}
+	pb.IsolationMode = st.IsolationMode
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	optionsPb := map[string]string{}
-	for k, v := range st.Options {
-		itemPb := &v
-		if itemPb != nil {
-			optionsPb[k] = *itemPb
-		}
-	}
-	pb.Options = optionsPb
+	pb.Options = st.Options
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	propertiesPb := map[string]string{}
-	for k, v := range st.Properties {
-		itemPb := &v
-		if itemPb != nil {
-			propertiesPb[k] = *itemPb
-		}
-	}
-	pb.Properties = propertiesPb
+	pb.Properties = st.Properties
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -26805,48 +23226,14 @@ func updateCatalogFromPb(pb *updateCatalogPb) (*UpdateCatalog, error) {
 		return nil, nil
 	}
 	st := &UpdateCatalog{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	enablePredictiveOptimizationField := &pb.EnablePredictiveOptimization
-	if enablePredictiveOptimizationField != nil {
-		st.EnablePredictiveOptimization = *enablePredictiveOptimizationField
-	}
-	isolationModeField := &pb.IsolationMode
-	if isolationModeField != nil {
-		st.IsolationMode = *isolationModeField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-
-	optionsField := map[string]string{}
-	for k, v := range pb.Options {
-		itemField := &v
-		if itemField != nil {
-			optionsField[k] = *itemField
-		}
-	}
-	st.Options = optionsField
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-
-	propertiesField := map[string]string{}
-	for k, v := range pb.Properties {
-		itemField := &v
-		if itemField != nil {
-			propertiesField[k] = *itemField
-		}
-	}
-	st.Properties = propertiesField
+	st.Comment = pb.Comment
+	st.EnablePredictiveOptimization = pb.EnablePredictiveOptimization
+	st.IsolationMode = pb.IsolationMode
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Options = pb.Options
+	st.Owner = pb.Owner
+	st.Properties = pb.Properties
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -26862,15 +23249,19 @@ func (st updateCatalogPb) MarshalJSON() ([]byte, error) {
 
 type UpdateConnection struct {
 	// Name of the connection.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the connection.
+	// Wire name: 'new_name'
 	NewName string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'options'
 	Options map[string]string
 	// Username of current owner of the connection.
+	// Wire name: 'owner'
 	Owner string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateConnectionToPb(st *UpdateConnection) (*updateConnectionPb, error) {
@@ -26878,29 +23269,13 @@ func updateConnectionToPb(st *UpdateConnection) (*updateConnectionPb, error) {
 		return nil, nil
 	}
 	pb := &updateConnectionPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	optionsPb := map[string]string{}
-	for k, v := range st.Options {
-		itemPb := &v
-		if itemPb != nil {
-			optionsPb[k] = *itemPb
-		}
-	}
-	pb.Options = optionsPb
+	pb.Options = st.Options
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -26949,27 +23324,10 @@ func updateConnectionFromPb(pb *updateConnectionPb) (*UpdateConnection, error) {
 		return nil, nil
 	}
 	st := &UpdateConnection{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-
-	optionsField := map[string]string{}
-	for k, v := range pb.Options {
-		itemField := &v
-		if itemField != nil {
-			optionsField[k] = *itemField
-		}
-	}
-	st.Options = optionsField
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Options = pb.Options
+	st.Owner = pb.Owner
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -26985,38 +23343,50 @@ func (st updateConnectionPb) MarshalJSON() ([]byte, error) {
 
 type UpdateCredentialRequest struct {
 	// The AWS IAM role configuration
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRole
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentity
 	// The Azure service principal configuration. Only applicable when purpose
 	// is **STORAGE**.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string
 	// GCP long-lived credential. Databricks-created Google Cloud Storage
 	// service account.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount
 	// Force an update even if there are dependent services (when purpose is
 	// **SERVICE**) or dependent external locations and external tables (when
 	// purpose is **STORAGE**).
+	// Wire name: 'force'
 	Force bool
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode
 	// Name of the credential.
-	NameArg string
+	// Wire name: 'name_arg'
+	NameArg string `tf:"-"`
 	// New name of credential.
+	// Wire name: 'new_name'
 	NewName string
 	// Username of current owner of credential.
+	// Wire name: 'owner'
 	Owner string
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
+	// Wire name: 'read_only'
 	ReadOnly bool
 	// Supply true to this argument to skip validation of the updated
 	// credential.
+	// Wire name: 'skip_validation'
 	SkipValidation bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateCredentialRequestToPb(st *UpdateCredentialRequest) (*updateCredentialRequestPb, error) {
@@ -27048,10 +23418,7 @@ func updateCredentialRequestToPb(st *UpdateCredentialRequest) (*updateCredential
 		pb.AzureServicePrincipal = azureServicePrincipalPb
 	}
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
 	databricksGcpServiceAccountPb, err := databricksGcpServiceAccountToPb(st.DatabricksGcpServiceAccount)
 	if err != nil {
@@ -27061,40 +23428,19 @@ func updateCredentialRequestToPb(st *UpdateCredentialRequest) (*updateCredential
 		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
 	}
 
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	isolationModePb := &st.IsolationMode
-	if isolationModePb != nil {
-		pb.IsolationMode = *isolationModePb
-	}
+	pb.IsolationMode = st.IsolationMode
 
-	nameArgPb := &st.NameArg
-	if nameArgPb != nil {
-		pb.NameArg = *nameArgPb
-	}
+	pb.NameArg = st.NameArg
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	skipValidationPb := &st.SkipValidation
-	if skipValidationPb != nil {
-		pb.SkipValidation = *skipValidationPb
-	}
+	pb.SkipValidation = st.SkipValidation
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -27187,10 +23533,7 @@ func updateCredentialRequestFromPb(pb *updateCredentialRequestPb) (*UpdateCreden
 	if azureServicePrincipalField != nil {
 		st.AzureServicePrincipal = azureServicePrincipalField
 	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
+	st.Comment = pb.Comment
 	databricksGcpServiceAccountField, err := databricksGcpServiceAccountFromPb(pb.DatabricksGcpServiceAccount)
 	if err != nil {
 		return nil, err
@@ -27198,34 +23541,13 @@ func updateCredentialRequestFromPb(pb *updateCredentialRequestPb) (*UpdateCreden
 	if databricksGcpServiceAccountField != nil {
 		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
 	}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	isolationModeField := &pb.IsolationMode
-	if isolationModeField != nil {
-		st.IsolationMode = *isolationModeField
-	}
-	nameArgField := &pb.NameArg
-	if nameArgField != nil {
-		st.NameArg = *nameArgField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	skipValidationField := &pb.SkipValidation
-	if skipValidationField != nil {
-		st.SkipValidation = *skipValidationField
-	}
+	st.Force = pb.Force
+	st.IsolationMode = pb.IsolationMode
+	st.NameArg = pb.NameArg
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -27241,37 +23563,50 @@ func (st updateCredentialRequestPb) MarshalJSON() ([]byte, error) {
 
 type UpdateExternalLocation struct {
 	// The AWS access point to use when accesing s3 for this external location.
+	// Wire name: 'access_point'
 	AccessPoint string
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Name of the storage credential used with this location.
+	// Wire name: 'credential_name'
 	CredentialName string
 	// Encryption options that apply to clients connecting to cloud storage.
+	// Wire name: 'encryption_details'
 	EncryptionDetails *EncryptionDetails
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
+	// Wire name: 'fallback'
 	Fallback bool
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
+	// Wire name: 'force'
 	Force bool
 
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode
 	// Name of the external location.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the external location.
+	// Wire name: 'new_name'
 	NewName string
 	// The owner of the external location.
+	// Wire name: 'owner'
 	Owner string
 	// Indicates whether the external location is read-only.
+	// Wire name: 'read_only'
 	ReadOnly bool
 	// Skips validation of the storage credential associated with the external
 	// location.
+	// Wire name: 'skip_validation'
 	SkipValidation bool
 	// Path URL of the external location.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateExternalLocationToPb(st *UpdateExternalLocation) (*updateExternalLocationPb, error) {
@@ -27279,20 +23614,11 @@ func updateExternalLocationToPb(st *UpdateExternalLocation) (*updateExternalLoca
 		return nil, nil
 	}
 	pb := &updateExternalLocationPb{}
-	accessPointPb := &st.AccessPoint
-	if accessPointPb != nil {
-		pb.AccessPoint = *accessPointPb
-	}
+	pb.AccessPoint = st.AccessPoint
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	credentialNamePb := &st.CredentialName
-	if credentialNamePb != nil {
-		pb.CredentialName = *credentialNamePb
-	}
+	pb.CredentialName = st.CredentialName
 
 	encryptionDetailsPb, err := encryptionDetailsToPb(st.EncryptionDetails)
 	if err != nil {
@@ -27302,50 +23628,23 @@ func updateExternalLocationToPb(st *UpdateExternalLocation) (*updateExternalLoca
 		pb.EncryptionDetails = encryptionDetailsPb
 	}
 
-	fallbackPb := &st.Fallback
-	if fallbackPb != nil {
-		pb.Fallback = *fallbackPb
-	}
+	pb.Fallback = st.Fallback
 
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	isolationModePb := &st.IsolationMode
-	if isolationModePb != nil {
-		pb.IsolationMode = *isolationModePb
-	}
+	pb.IsolationMode = st.IsolationMode
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	skipValidationPb := &st.SkipValidation
-	if skipValidationPb != nil {
-		pb.SkipValidation = *skipValidationPb
-	}
+	pb.SkipValidation = st.SkipValidation
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -27416,18 +23715,9 @@ func updateExternalLocationFromPb(pb *updateExternalLocationPb) (*UpdateExternal
 		return nil, nil
 	}
 	st := &UpdateExternalLocation{}
-	accessPointField := &pb.AccessPoint
-	if accessPointField != nil {
-		st.AccessPoint = *accessPointField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	credentialNameField := &pb.CredentialName
-	if credentialNameField != nil {
-		st.CredentialName = *credentialNameField
-	}
+	st.AccessPoint = pb.AccessPoint
+	st.Comment = pb.Comment
+	st.CredentialName = pb.CredentialName
 	encryptionDetailsField, err := encryptionDetailsFromPb(pb.EncryptionDetails)
 	if err != nil {
 		return nil, err
@@ -27435,42 +23725,15 @@ func updateExternalLocationFromPb(pb *updateExternalLocationPb) (*UpdateExternal
 	if encryptionDetailsField != nil {
 		st.EncryptionDetails = encryptionDetailsField
 	}
-	fallbackField := &pb.Fallback
-	if fallbackField != nil {
-		st.Fallback = *fallbackField
-	}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	isolationModeField := &pb.IsolationMode
-	if isolationModeField != nil {
-		st.IsolationMode = *isolationModeField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	skipValidationField := &pb.SkipValidation
-	if skipValidationField != nil {
-		st.SkipValidation = *skipValidationField
-	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.Fallback = pb.Fallback
+	st.Force = pb.Force
+	st.IsolationMode = pb.IsolationMode
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -27487,11 +23750,13 @@ func (st updateExternalLocationPb) MarshalJSON() ([]byte, error) {
 type UpdateFunction struct {
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Username of current owner of function.
+	// Wire name: 'owner'
 	Owner string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateFunctionToPb(st *UpdateFunction) (*updateFunctionPb, error) {
@@ -27499,15 +23764,9 @@ func updateFunctionToPb(st *UpdateFunction) (*updateFunctionPb, error) {
 		return nil, nil
 	}
 	pb := &updateFunctionPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -27553,14 +23812,8 @@ func updateFunctionFromPb(pb *updateFunctionPb) (*UpdateFunction, error) {
 		return nil, nil
 	}
 	st := &UpdateFunction{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
+	st.Name = pb.Name
+	st.Owner = pb.Owner
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -27577,24 +23830,32 @@ func (st updateFunctionPb) MarshalJSON() ([]byte, error) {
 type UpdateMetastore struct {
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
+	// Wire name: 'delta_sharing_organization_name'
 	DeltaSharingOrganizationName string
 	// The lifetime of delta sharing recipient token in seconds.
+	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
 	DeltaSharingRecipientTokenLifetimeInSeconds int64
 	// The scope of Delta Sharing enabled for the metastore.
+	// Wire name: 'delta_sharing_scope'
 	DeltaSharingScope UpdateMetastoreDeltaSharingScope
 	// Unique ID of the metastore.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 	// New name for the metastore.
+	// Wire name: 'new_name'
 	NewName string
 	// The owner of the metastore.
+	// Wire name: 'owner'
 	Owner string
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
+	// Wire name: 'privilege_model_version'
 	PrivilegeModelVersion string
 	// UUID of storage credential to access the metastore storage_root.
+	// Wire name: 'storage_root_credential_id'
 	StorageRootCredentialId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateMetastoreToPb(st *UpdateMetastore) (*updateMetastorePb, error) {
@@ -27602,45 +23863,21 @@ func updateMetastoreToPb(st *UpdateMetastore) (*updateMetastorePb, error) {
 		return nil, nil
 	}
 	pb := &updateMetastorePb{}
-	deltaSharingOrganizationNamePb := &st.DeltaSharingOrganizationName
-	if deltaSharingOrganizationNamePb != nil {
-		pb.DeltaSharingOrganizationName = *deltaSharingOrganizationNamePb
-	}
+	pb.DeltaSharingOrganizationName = st.DeltaSharingOrganizationName
 
-	deltaSharingRecipientTokenLifetimeInSecondsPb := &st.DeltaSharingRecipientTokenLifetimeInSeconds
-	if deltaSharingRecipientTokenLifetimeInSecondsPb != nil {
-		pb.DeltaSharingRecipientTokenLifetimeInSeconds = *deltaSharingRecipientTokenLifetimeInSecondsPb
-	}
+	pb.DeltaSharingRecipientTokenLifetimeInSeconds = st.DeltaSharingRecipientTokenLifetimeInSeconds
 
-	deltaSharingScopePb := &st.DeltaSharingScope
-	if deltaSharingScopePb != nil {
-		pb.DeltaSharingScope = *deltaSharingScopePb
-	}
+	pb.DeltaSharingScope = st.DeltaSharingScope
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	privilegeModelVersionPb := &st.PrivilegeModelVersion
-	if privilegeModelVersionPb != nil {
-		pb.PrivilegeModelVersion = *privilegeModelVersionPb
-	}
+	pb.PrivilegeModelVersion = st.PrivilegeModelVersion
 
-	storageRootCredentialIdPb := &st.StorageRootCredentialId
-	if storageRootCredentialIdPb != nil {
-		pb.StorageRootCredentialId = *storageRootCredentialIdPb
-	}
+	pb.StorageRootCredentialId = st.StorageRootCredentialId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -27699,38 +23936,14 @@ func updateMetastoreFromPb(pb *updateMetastorePb) (*UpdateMetastore, error) {
 		return nil, nil
 	}
 	st := &UpdateMetastore{}
-	deltaSharingOrganizationNameField := &pb.DeltaSharingOrganizationName
-	if deltaSharingOrganizationNameField != nil {
-		st.DeltaSharingOrganizationName = *deltaSharingOrganizationNameField
-	}
-	deltaSharingRecipientTokenLifetimeInSecondsField := &pb.DeltaSharingRecipientTokenLifetimeInSeconds
-	if deltaSharingRecipientTokenLifetimeInSecondsField != nil {
-		st.DeltaSharingRecipientTokenLifetimeInSeconds = *deltaSharingRecipientTokenLifetimeInSecondsField
-	}
-	deltaSharingScopeField := &pb.DeltaSharingScope
-	if deltaSharingScopeField != nil {
-		st.DeltaSharingScope = *deltaSharingScopeField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	privilegeModelVersionField := &pb.PrivilegeModelVersion
-	if privilegeModelVersionField != nil {
-		st.PrivilegeModelVersion = *privilegeModelVersionField
-	}
-	storageRootCredentialIdField := &pb.StorageRootCredentialId
-	if storageRootCredentialIdField != nil {
-		st.StorageRootCredentialId = *storageRootCredentialIdField
-	}
+	st.DeltaSharingOrganizationName = pb.DeltaSharingOrganizationName
+	st.DeltaSharingRecipientTokenLifetimeInSeconds = pb.DeltaSharingRecipientTokenLifetimeInSeconds
+	st.DeltaSharingScope = pb.DeltaSharingScope
+	st.Id = pb.Id
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.PrivilegeModelVersion = pb.PrivilegeModelVersion
+	st.StorageRootCredentialId = pb.StorageRootCredentialId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -27748,13 +23961,16 @@ type UpdateMetastoreAssignment struct {
 	// The name of the default catalog in the metastore. This field is
 	// depracted. Please use "Default Namespace API" to configure the default
 	// catalog for a Databricks workspace.
+	// Wire name: 'default_catalog_name'
 	DefaultCatalogName string
 	// The unique ID of the metastore.
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// A workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateMetastoreAssignmentToPb(st *UpdateMetastoreAssignment) (*updateMetastoreAssignmentPb, error) {
@@ -27762,20 +23978,11 @@ func updateMetastoreAssignmentToPb(st *UpdateMetastoreAssignment) (*updateMetast
 		return nil, nil
 	}
 	pb := &updateMetastoreAssignmentPb{}
-	defaultCatalogNamePb := &st.DefaultCatalogName
-	if defaultCatalogNamePb != nil {
-		pb.DefaultCatalogName = *defaultCatalogNamePb
-	}
+	pb.DefaultCatalogName = st.DefaultCatalogName
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -27824,18 +24031,9 @@ func updateMetastoreAssignmentFromPb(pb *updateMetastoreAssignmentPb) (*UpdateMe
 		return nil, nil
 	}
 	st := &UpdateMetastoreAssignment{}
-	defaultCatalogNameField := &pb.DefaultCatalogName
-	if defaultCatalogNameField != nil {
-		st.DefaultCatalogName = *defaultCatalogNameField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.DefaultCatalogName = pb.DefaultCatalogName
+	st.MetastoreId = pb.MetastoreId
+	st.WorkspaceId = pb.WorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -27896,13 +24094,16 @@ func updateMetastoreDeltaSharingScopeFromPb(pb *updateMetastoreDeltaSharingScope
 
 type UpdateModelVersionRequest struct {
 	// The comment attached to the model version
+	// Wire name: 'comment'
 	Comment string
 	// The three-level (fully qualified) name of the model version
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// The integer version number of the model version
-	Version int
+	// Wire name: 'version'
+	Version int `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateModelVersionRequestToPb(st *UpdateModelVersionRequest) (*updateModelVersionRequestPb, error) {
@@ -27910,20 +24111,11 @@ func updateModelVersionRequestToPb(st *UpdateModelVersionRequest) (*updateModelV
 		return nil, nil
 	}
 	pb := &updateModelVersionRequestPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -27970,18 +24162,9 @@ func updateModelVersionRequestFromPb(pb *updateModelVersionRequestPb) (*UpdateMo
 		return nil, nil
 	}
 	st := &UpdateModelVersionRequest{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Comment = pb.Comment
+	st.FullName = pb.FullName
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -27999,38 +24182,50 @@ type UpdateMonitor struct {
 	// Name of the baseline table from which drift metrics are computed from.
 	// Columns in the monitored table should also be present in the baseline
 	// table.
+	// Wire name: 'baseline_table_name'
 	BaselineTableName string
 	// Custom metrics to compute on the monitored table. These can be aggregate
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
+	// Wire name: 'custom_metrics'
 	CustomMetrics []MonitorMetric
 	// Id of dashboard that visualizes the computed metrics. This can be empty
 	// if the monitor is in PENDING state.
+	// Wire name: 'dashboard_id'
 	DashboardId string
 	// The data classification config for the monitor.
+	// Wire name: 'data_classification_config'
 	DataClassificationConfig *MonitorDataClassificationConfig
 	// Configuration for monitoring inference logs.
+	// Wire name: 'inference_log'
 	InferenceLog *MonitorInferenceLog
 	// The notification settings for the monitor.
+	// Wire name: 'notifications'
 	Notifications *MonitorNotifications
 	// Schema where output metric tables are created.
+	// Wire name: 'output_schema_name'
 	OutputSchemaName string
 	// The schedule for automatically updating and refreshing metric tables.
+	// Wire name: 'schedule'
 	Schedule *MonitorCronSchedule
 	// List of column expressions to slice data with for targeted analysis. The
 	// data is grouped by each expression independently, resulting in a separate
 	// slice for each predicate and its complements. For high-cardinality
 	// columns, only the top 100 unique values by frequency will generate
 	// slices.
+	// Wire name: 'slicing_exprs'
 	SlicingExprs []string
 	// Configuration for monitoring snapshot tables.
+	// Wire name: 'snapshot'
 	Snapshot *MonitorSnapshot
 	// Full name of the table.
-	TableName string
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 	// Configuration for monitoring time series tables.
+	// Wire name: 'time_series'
 	TimeSeries *MonitorTimeSeries
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateMonitorToPb(st *UpdateMonitor) (*updateMonitorPb, error) {
@@ -28038,10 +24233,7 @@ func updateMonitorToPb(st *UpdateMonitor) (*updateMonitorPb, error) {
 		return nil, nil
 	}
 	pb := &updateMonitorPb{}
-	baselineTableNamePb := &st.BaselineTableName
-	if baselineTableNamePb != nil {
-		pb.BaselineTableName = *baselineTableNamePb
-	}
+	pb.BaselineTableName = st.BaselineTableName
 
 	var customMetricsPb []monitorMetricPb
 	for _, item := range st.CustomMetrics {
@@ -28055,10 +24247,7 @@ func updateMonitorToPb(st *UpdateMonitor) (*updateMonitorPb, error) {
 	}
 	pb.CustomMetrics = customMetricsPb
 
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
 	dataClassificationConfigPb, err := monitorDataClassificationConfigToPb(st.DataClassificationConfig)
 	if err != nil {
@@ -28084,10 +24273,7 @@ func updateMonitorToPb(st *UpdateMonitor) (*updateMonitorPb, error) {
 		pb.Notifications = notificationsPb
 	}
 
-	outputSchemaNamePb := &st.OutputSchemaName
-	if outputSchemaNamePb != nil {
-		pb.OutputSchemaName = *outputSchemaNamePb
-	}
+	pb.OutputSchemaName = st.OutputSchemaName
 
 	schedulePb, err := monitorCronScheduleToPb(st.Schedule)
 	if err != nil {
@@ -28097,14 +24283,7 @@ func updateMonitorToPb(st *UpdateMonitor) (*updateMonitorPb, error) {
 		pb.Schedule = schedulePb
 	}
 
-	var slicingExprsPb []string
-	for _, item := range st.SlicingExprs {
-		itemPb := &item
-		if itemPb != nil {
-			slicingExprsPb = append(slicingExprsPb, *itemPb)
-		}
-	}
-	pb.SlicingExprs = slicingExprsPb
+	pb.SlicingExprs = st.SlicingExprs
 
 	snapshotPb, err := monitorSnapshotToPb(st.Snapshot)
 	if err != nil {
@@ -28114,10 +24293,7 @@ func updateMonitorToPb(st *UpdateMonitor) (*updateMonitorPb, error) {
 		pb.Snapshot = snapshotPb
 	}
 
-	tableNamePb := &st.TableName
-	if tableNamePb != nil {
-		pb.TableName = *tableNamePb
-	}
+	pb.TableName = st.TableName
 
 	timeSeriesPb, err := monitorTimeSeriesToPb(st.TimeSeries)
 	if err != nil {
@@ -28199,26 +24375,20 @@ func updateMonitorFromPb(pb *updateMonitorPb) (*UpdateMonitor, error) {
 		return nil, nil
 	}
 	st := &UpdateMonitor{}
-	baselineTableNameField := &pb.BaselineTableName
-	if baselineTableNameField != nil {
-		st.BaselineTableName = *baselineTableNameField
-	}
+	st.BaselineTableName = pb.BaselineTableName
 
 	var customMetricsField []MonitorMetric
-	for _, item := range pb.CustomMetrics {
-		itemField, err := monitorMetricFromPb(&item)
+	for _, itemPb := range pb.CustomMetrics {
+		item, err := monitorMetricFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			customMetricsField = append(customMetricsField, *itemField)
+		if item != nil {
+			customMetricsField = append(customMetricsField, *item)
 		}
 	}
 	st.CustomMetrics = customMetricsField
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
+	st.DashboardId = pb.DashboardId
 	dataClassificationConfigField, err := monitorDataClassificationConfigFromPb(pb.DataClassificationConfig)
 	if err != nil {
 		return nil, err
@@ -28240,10 +24410,7 @@ func updateMonitorFromPb(pb *updateMonitorPb) (*UpdateMonitor, error) {
 	if notificationsField != nil {
 		st.Notifications = notificationsField
 	}
-	outputSchemaNameField := &pb.OutputSchemaName
-	if outputSchemaNameField != nil {
-		st.OutputSchemaName = *outputSchemaNameField
-	}
+	st.OutputSchemaName = pb.OutputSchemaName
 	scheduleField, err := monitorCronScheduleFromPb(pb.Schedule)
 	if err != nil {
 		return nil, err
@@ -28251,15 +24418,7 @@ func updateMonitorFromPb(pb *updateMonitorPb) (*UpdateMonitor, error) {
 	if scheduleField != nil {
 		st.Schedule = scheduleField
 	}
-
-	var slicingExprsField []string
-	for _, item := range pb.SlicingExprs {
-		itemField := &item
-		if itemField != nil {
-			slicingExprsField = append(slicingExprsField, *itemField)
-		}
-	}
-	st.SlicingExprs = slicingExprsField
+	st.SlicingExprs = pb.SlicingExprs
 	snapshotField, err := monitorSnapshotFromPb(pb.Snapshot)
 	if err != nil {
 		return nil, err
@@ -28267,10 +24426,7 @@ func updateMonitorFromPb(pb *updateMonitorPb) (*UpdateMonitor, error) {
 	if snapshotField != nil {
 		st.Snapshot = snapshotField
 	}
-	tableNameField := &pb.TableName
-	if tableNameField != nil {
-		st.TableName = *tableNameField
-	}
+	st.TableName = pb.TableName
 	timeSeriesField, err := monitorTimeSeriesFromPb(pb.TimeSeries)
 	if err != nil {
 		return nil, err
@@ -28293,11 +24449,14 @@ func (st updateMonitorPb) MarshalJSON() ([]byte, error) {
 
 type UpdatePermissions struct {
 	// Array of permissions change objects.
+	// Wire name: 'changes'
 	Changes []PermissionsChange
 	// Full name of securable.
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Type of securable.
-	SecurableType SecurableType
+	// Wire name: 'securable_type'
+	SecurableType SecurableType `tf:"-"`
 }
 
 func updatePermissionsToPb(st *UpdatePermissions) (*updatePermissionsPb, error) {
@@ -28318,15 +24477,9 @@ func updatePermissionsToPb(st *UpdatePermissions) (*updatePermissionsPb, error) 
 	}
 	pb.Changes = changesPb
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	securableTypePb := &st.SecurableType
-	if securableTypePb != nil {
-		pb.SecurableType = *securableTypePb
-	}
+	pb.SecurableType = st.SecurableType
 
 	return pb, nil
 }
@@ -28372,39 +24525,37 @@ func updatePermissionsFromPb(pb *updatePermissionsPb) (*UpdatePermissions, error
 	st := &UpdatePermissions{}
 
 	var changesField []PermissionsChange
-	for _, item := range pb.Changes {
-		itemField, err := permissionsChangeFromPb(&item)
+	for _, itemPb := range pb.Changes {
+		item, err := permissionsChangeFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			changesField = append(changesField, *itemField)
+		if item != nil {
+			changesField = append(changesField, *item)
 		}
 	}
 	st.Changes = changesField
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	securableTypeField := &pb.SecurableType
-	if securableTypeField != nil {
-		st.SecurableType = *securableTypeField
-	}
+	st.FullName = pb.FullName
+	st.SecurableType = pb.SecurableType
 
 	return st, nil
 }
 
 type UpdateRegisteredModelRequest struct {
 	// The comment attached to the registered model
+	// Wire name: 'comment'
 	Comment string
 	// The three-level (fully qualified) name of the registered model
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// New name for the registered model.
+	// Wire name: 'new_name'
 	NewName string
 	// The identifier of the user who owns the registered model
+	// Wire name: 'owner'
 	Owner string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateRegisteredModelRequestToPb(st *UpdateRegisteredModelRequest) (*updateRegisteredModelRequestPb, error) {
@@ -28412,25 +24563,13 @@ func updateRegisteredModelRequestToPb(st *UpdateRegisteredModelRequest) (*update
 		return nil, nil
 	}
 	pb := &updateRegisteredModelRequestPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -28479,22 +24618,10 @@ func updateRegisteredModelRequestFromPb(pb *updateRegisteredModelRequestPb) (*Up
 		return nil, nil
 	}
 	st := &UpdateRegisteredModelRequest{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
+	st.Comment = pb.Comment
+	st.FullName = pb.FullName
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -28559,20 +24686,26 @@ func updateResponseFromPb(pb *updateResponsePb) (*UpdateResponse, error) {
 
 type UpdateSchema struct {
 	// User-provided free-form text description.
+	// Wire name: 'comment'
 	Comment string
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
+	// Wire name: 'enable_predictive_optimization'
 	EnablePredictiveOptimization EnablePredictiveOptimization
 	// Full name of the schema.
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// New name for the schema.
+	// Wire name: 'new_name'
 	NewName string
 	// Username of current owner of schema.
+	// Wire name: 'owner'
 	Owner string
 	// A map of key-value properties attached to the securable.
+	// Wire name: 'properties'
 	Properties map[string]string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateSchemaToPb(st *UpdateSchema) (*updateSchemaPb, error) {
@@ -28580,39 +24713,17 @@ func updateSchemaToPb(st *UpdateSchema) (*updateSchemaPb, error) {
 		return nil, nil
 	}
 	pb := &updateSchemaPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	enablePredictiveOptimizationPb := &st.EnablePredictiveOptimization
-	if enablePredictiveOptimizationPb != nil {
-		pb.EnablePredictiveOptimization = *enablePredictiveOptimizationPb
-	}
+	pb.EnablePredictiveOptimization = st.EnablePredictiveOptimization
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	propertiesPb := map[string]string{}
-	for k, v := range st.Properties {
-		itemPb := &v
-		if itemPb != nil {
-			propertiesPb[k] = *itemPb
-		}
-	}
-	pb.Properties = propertiesPb
+	pb.Properties = st.Properties
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -28666,35 +24777,12 @@ func updateSchemaFromPb(pb *updateSchemaPb) (*UpdateSchema, error) {
 		return nil, nil
 	}
 	st := &UpdateSchema{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	enablePredictiveOptimizationField := &pb.EnablePredictiveOptimization
-	if enablePredictiveOptimizationField != nil {
-		st.EnablePredictiveOptimization = *enablePredictiveOptimizationField
-	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-
-	propertiesField := map[string]string{}
-	for k, v := range pb.Properties {
-		itemField := &v
-		if itemField != nil {
-			propertiesField[k] = *itemField
-		}
-	}
-	st.Properties = propertiesField
+	st.Comment = pb.Comment
+	st.EnablePredictiveOptimization = pb.EnablePredictiveOptimization
+	st.FullName = pb.FullName
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.Properties = pb.Properties
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -28710,35 +24798,48 @@ func (st updateSchemaPb) MarshalJSON() ([]byte, error) {
 
 type UpdateStorageCredential struct {
 	// The AWS IAM role configuration.
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRoleRequest
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentityResponse
 	// The Azure service principal configuration.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal
 	// The Cloudflare API token configuration.
+	// Wire name: 'cloudflare_api_token'
 	CloudflareApiToken *CloudflareApiToken
 	// Comment associated with the credential.
+	// Wire name: 'comment'
 	Comment string
 	// The Databricks managed GCP service account configuration.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest
 	// Force update even if there are dependent external locations or external
 	// tables.
+	// Wire name: 'force'
 	Force bool
 
+	// Wire name: 'isolation_mode'
 	IsolationMode IsolationMode
 	// Name of the storage credential.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the storage credential.
+	// Wire name: 'new_name'
 	NewName string
 	// Username of current owner of credential.
+	// Wire name: 'owner'
 	Owner string
 	// Whether the storage credential is only usable for read operations.
+	// Wire name: 'read_only'
 	ReadOnly bool
 	// Supplying true to this argument skips validation of the updated
 	// credential.
+	// Wire name: 'skip_validation'
 	SkipValidation bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateStorageCredentialToPb(st *UpdateStorageCredential) (*updateStorageCredentialPb, error) {
@@ -28778,10 +24879,7 @@ func updateStorageCredentialToPb(st *UpdateStorageCredential) (*updateStorageCre
 		pb.CloudflareApiToken = cloudflareApiTokenPb
 	}
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
 	databricksGcpServiceAccountPb, err := databricksGcpServiceAccountRequestToPb(st.DatabricksGcpServiceAccount)
 	if err != nil {
@@ -28791,40 +24889,19 @@ func updateStorageCredentialToPb(st *UpdateStorageCredential) (*updateStorageCre
 		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
 	}
 
-	forcePb := &st.Force
-	if forcePb != nil {
-		pb.Force = *forcePb
-	}
+	pb.Force = st.Force
 
-	isolationModePb := &st.IsolationMode
-	if isolationModePb != nil {
-		pb.IsolationMode = *isolationModePb
-	}
+	pb.IsolationMode = st.IsolationMode
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	skipValidationPb := &st.SkipValidation
-	if skipValidationPb != nil {
-		pb.SkipValidation = *skipValidationPb
-	}
+	pb.SkipValidation = st.SkipValidation
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -28921,10 +24998,7 @@ func updateStorageCredentialFromPb(pb *updateStorageCredentialPb) (*UpdateStorag
 	if cloudflareApiTokenField != nil {
 		st.CloudflareApiToken = cloudflareApiTokenField
 	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
+	st.Comment = pb.Comment
 	databricksGcpServiceAccountField, err := databricksGcpServiceAccountRequestFromPb(pb.DatabricksGcpServiceAccount)
 	if err != nil {
 		return nil, err
@@ -28932,34 +25006,13 @@ func updateStorageCredentialFromPb(pb *updateStorageCredentialPb) (*UpdateStorag
 	if databricksGcpServiceAccountField != nil {
 		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
 	}
-	forceField := &pb.Force
-	if forceField != nil {
-		st.Force = *forceField
-	}
-	isolationModeField := &pb.IsolationMode
-	if isolationModeField != nil {
-		st.IsolationMode = *isolationModeField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	skipValidationField := &pb.SkipValidation
-	if skipValidationField != nil {
-		st.SkipValidation = *skipValidationField
-	}
+	st.Force = pb.Force
+	st.IsolationMode = pb.IsolationMode
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
+	st.ReadOnly = pb.ReadOnly
+	st.SkipValidation = pb.SkipValidation
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -28976,11 +25029,13 @@ func (st updateStorageCredentialPb) MarshalJSON() ([]byte, error) {
 // Update a table owner.
 type UpdateTableRequest struct {
 	// Full name of the table.
-	FullName string
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 
+	// Wire name: 'owner'
 	Owner string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateTableRequestToPb(st *UpdateTableRequest) (*updateTableRequestPb, error) {
@@ -28988,15 +25043,9 @@ func updateTableRequestToPb(st *UpdateTableRequest) (*updateTableRequestPb, erro
 		return nil, nil
 	}
 	pb := &updateTableRequestPb{}
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -29041,14 +25090,8 @@ func updateTableRequestFromPb(pb *updateTableRequestPb) (*UpdateTableRequest, er
 		return nil, nil
 	}
 	st := &UpdateTableRequest{}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
+	st.FullName = pb.FullName
+	st.Owner = pb.Owner
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -29064,15 +25107,19 @@ func (st updateTableRequestPb) MarshalJSON() ([]byte, error) {
 
 type UpdateVolumeRequestContent struct {
 	// The comment attached to the volume
+	// Wire name: 'comment'
 	Comment string
 	// The three-level (fully qualified) name of the volume
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the volume.
+	// Wire name: 'new_name'
 	NewName string
 	// The identifier of the user who owns the volume
+	// Wire name: 'owner'
 	Owner string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateVolumeRequestContentToPb(st *UpdateVolumeRequestContent) (*updateVolumeRequestContentPb, error) {
@@ -29080,25 +25127,13 @@ func updateVolumeRequestContentToPb(st *UpdateVolumeRequestContent) (*updateVolu
 		return nil, nil
 	}
 	pb := &updateVolumeRequestContentPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -29147,22 +25182,10 @@ func updateVolumeRequestContentFromPb(pb *updateVolumeRequestContentPb) (*Update
 		return nil, nil
 	}
 	st := &UpdateVolumeRequestContent{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.NewName = pb.NewName
+	st.Owner = pb.Owner
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -29178,10 +25201,13 @@ func (st updateVolumeRequestContentPb) MarshalJSON() ([]byte, error) {
 
 type UpdateWorkspaceBindings struct {
 	// A list of workspace IDs.
+	// Wire name: 'assign_workspaces'
 	AssignWorkspaces []int64
 	// The name of the catalog.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// A list of workspace IDs.
+	// Wire name: 'unassign_workspaces'
 	UnassignWorkspaces []int64
 }
 
@@ -29190,29 +25216,11 @@ func updateWorkspaceBindingsToPb(st *UpdateWorkspaceBindings) (*updateWorkspaceB
 		return nil, nil
 	}
 	pb := &updateWorkspaceBindingsPb{}
+	pb.AssignWorkspaces = st.AssignWorkspaces
 
-	var assignWorkspacesPb []int64
-	for _, item := range st.AssignWorkspaces {
-		itemPb := &item
-		if itemPb != nil {
-			assignWorkspacesPb = append(assignWorkspacesPb, *itemPb)
-		}
-	}
-	pb.AssignWorkspaces = assignWorkspacesPb
+	pb.Name = st.Name
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
-
-	var unassignWorkspacesPb []int64
-	for _, item := range st.UnassignWorkspaces {
-		itemPb := &item
-		if itemPb != nil {
-			unassignWorkspacesPb = append(unassignWorkspacesPb, *itemPb)
-		}
-	}
-	pb.UnassignWorkspaces = unassignWorkspacesPb
+	pb.UnassignWorkspaces = st.UnassignWorkspaces
 
 	return pb, nil
 }
@@ -29256,41 +25264,26 @@ func updateWorkspaceBindingsFromPb(pb *updateWorkspaceBindingsPb) (*UpdateWorksp
 		return nil, nil
 	}
 	st := &UpdateWorkspaceBindings{}
-
-	var assignWorkspacesField []int64
-	for _, item := range pb.AssignWorkspaces {
-		itemField := &item
-		if itemField != nil {
-			assignWorkspacesField = append(assignWorkspacesField, *itemField)
-		}
-	}
-	st.AssignWorkspaces = assignWorkspacesField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-
-	var unassignWorkspacesField []int64
-	for _, item := range pb.UnassignWorkspaces {
-		itemField := &item
-		if itemField != nil {
-			unassignWorkspacesField = append(unassignWorkspacesField, *itemField)
-		}
-	}
-	st.UnassignWorkspaces = unassignWorkspacesField
+	st.AssignWorkspaces = pb.AssignWorkspaces
+	st.Name = pb.Name
+	st.UnassignWorkspaces = pb.UnassignWorkspaces
 
 	return st, nil
 }
 
 type UpdateWorkspaceBindingsParameters struct {
 	// List of workspace bindings
+	// Wire name: 'add'
 	Add []WorkspaceBinding
 	// List of workspace bindings
+	// Wire name: 'remove'
 	Remove []WorkspaceBinding
 	// The name of the securable.
-	SecurableName string
+	// Wire name: 'securable_name'
+	SecurableName string `tf:"-"`
 	// The type of the securable to bind to a workspace.
-	SecurableType UpdateBindingsSecurableType
+	// Wire name: 'securable_type'
+	SecurableType UpdateBindingsSecurableType `tf:"-"`
 }
 
 func updateWorkspaceBindingsParametersToPb(st *UpdateWorkspaceBindingsParameters) (*updateWorkspaceBindingsParametersPb, error) {
@@ -29323,15 +25316,9 @@ func updateWorkspaceBindingsParametersToPb(st *UpdateWorkspaceBindingsParameters
 	}
 	pb.Remove = removePb
 
-	securableNamePb := &st.SecurableName
-	if securableNamePb != nil {
-		pb.SecurableName = *securableNamePb
-	}
+	pb.SecurableName = st.SecurableName
 
-	securableTypePb := &st.SecurableType
-	if securableTypePb != nil {
-		pb.SecurableType = *securableTypePb
-	}
+	pb.SecurableType = st.SecurableType
 
 	return pb, nil
 }
@@ -29379,36 +25366,30 @@ func updateWorkspaceBindingsParametersFromPb(pb *updateWorkspaceBindingsParamete
 	st := &UpdateWorkspaceBindingsParameters{}
 
 	var addField []WorkspaceBinding
-	for _, item := range pb.Add {
-		itemField, err := workspaceBindingFromPb(&item)
+	for _, itemPb := range pb.Add {
+		item, err := workspaceBindingFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			addField = append(addField, *itemField)
+		if item != nil {
+			addField = append(addField, *item)
 		}
 	}
 	st.Add = addField
 
 	var removeField []WorkspaceBinding
-	for _, item := range pb.Remove {
-		itemField, err := workspaceBindingFromPb(&item)
+	for _, itemPb := range pb.Remove {
+		item, err := workspaceBindingFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			removeField = append(removeField, *itemField)
+		if item != nil {
+			removeField = append(removeField, *item)
 		}
 	}
 	st.Remove = removeField
-	securableNameField := &pb.SecurableName
-	if securableNameField != nil {
-		st.SecurableName = *securableNameField
-	}
-	securableTypeField := &pb.SecurableType
-	if securableTypeField != nil {
-		st.SecurableType = *securableTypeField
-	}
+	st.SecurableName = pb.SecurableName
+	st.SecurableType = pb.SecurableType
 
 	return st, nil
 }
@@ -29416,29 +25397,37 @@ func updateWorkspaceBindingsParametersFromPb(pb *updateWorkspaceBindingsParamete
 // Next ID: 17
 type ValidateCredentialRequest struct {
 	// The AWS IAM role configuration
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRole
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentity
 	// Required. The name of an existing credential or long-lived cloud
 	// credential to validate.
+	// Wire name: 'credential_name'
 	CredentialName string
 	// GCP long-lived credential. Databricks-created Google Cloud Storage
 	// service account.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount
 	// The name of an existing external location to validate. Only applicable
 	// for storage credentials (purpose is **STORAGE**.)
+	// Wire name: 'external_location_name'
 	ExternalLocationName string
 	// The purpose of the credential. This should only be used when the
 	// credential is specified.
+	// Wire name: 'purpose'
 	Purpose CredentialPurpose
 	// Whether the credential is only usable for read operations. Only
 	// applicable for storage credentials (purpose is **STORAGE**.)
+	// Wire name: 'read_only'
 	ReadOnly bool
 	// The external location url to validate. Only applicable when purpose is
 	// **STORAGE**.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func validateCredentialRequestToPb(st *ValidateCredentialRequest) (*validateCredentialRequestPb, error) {
@@ -29462,10 +25451,7 @@ func validateCredentialRequestToPb(st *ValidateCredentialRequest) (*validateCred
 		pb.AzureManagedIdentity = azureManagedIdentityPb
 	}
 
-	credentialNamePb := &st.CredentialName
-	if credentialNamePb != nil {
-		pb.CredentialName = *credentialNamePb
-	}
+	pb.CredentialName = st.CredentialName
 
 	databricksGcpServiceAccountPb, err := databricksGcpServiceAccountToPb(st.DatabricksGcpServiceAccount)
 	if err != nil {
@@ -29475,25 +25461,13 @@ func validateCredentialRequestToPb(st *ValidateCredentialRequest) (*validateCred
 		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
 	}
 
-	externalLocationNamePb := &st.ExternalLocationName
-	if externalLocationNamePb != nil {
-		pb.ExternalLocationName = *externalLocationNamePb
-	}
+	pb.ExternalLocationName = st.ExternalLocationName
 
-	purposePb := &st.Purpose
-	if purposePb != nil {
-		pb.Purpose = *purposePb
-	}
+	pb.Purpose = st.Purpose
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -29570,10 +25544,7 @@ func validateCredentialRequestFromPb(pb *validateCredentialRequestPb) (*Validate
 	if azureManagedIdentityField != nil {
 		st.AzureManagedIdentity = azureManagedIdentityField
 	}
-	credentialNameField := &pb.CredentialName
-	if credentialNameField != nil {
-		st.CredentialName = *credentialNameField
-	}
+	st.CredentialName = pb.CredentialName
 	databricksGcpServiceAccountField, err := databricksGcpServiceAccountFromPb(pb.DatabricksGcpServiceAccount)
 	if err != nil {
 		return nil, err
@@ -29581,22 +25552,10 @@ func validateCredentialRequestFromPb(pb *validateCredentialRequestPb) (*Validate
 	if databricksGcpServiceAccountField != nil {
 		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
 	}
-	externalLocationNameField := &pb.ExternalLocationName
-	if externalLocationNameField != nil {
-		st.ExternalLocationName = *externalLocationNameField
-	}
-	purposeField := &pb.Purpose
-	if purposeField != nil {
-		st.Purpose = *purposeField
-	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.ExternalLocationName = pb.ExternalLocationName
+	st.Purpose = pb.Purpose
+	st.ReadOnly = pb.ReadOnly
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -29613,11 +25572,13 @@ func (st validateCredentialRequestPb) MarshalJSON() ([]byte, error) {
 type ValidateCredentialResponse struct {
 	// Whether the tested location is a directory in cloud storage. Only
 	// applicable for when purpose is **STORAGE**.
+	// Wire name: 'isDir'
 	IsDir bool
 	// The results of the validation check.
+	// Wire name: 'results'
 	Results []CredentialValidationResult
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func validateCredentialResponseToPb(st *ValidateCredentialResponse) (*validateCredentialResponsePb, error) {
@@ -29625,10 +25586,7 @@ func validateCredentialResponseToPb(st *ValidateCredentialResponse) (*validateCr
 		return nil, nil
 	}
 	pb := &validateCredentialResponsePb{}
-	isDirPb := &st.IsDir
-	if isDirPb != nil {
-		pb.IsDir = *isDirPb
-	}
+	pb.IsDir = st.IsDir
 
 	var resultsPb []credentialValidationResultPb
 	for _, item := range st.Results {
@@ -29686,19 +25644,16 @@ func validateCredentialResponseFromPb(pb *validateCredentialResponsePb) (*Valida
 		return nil, nil
 	}
 	st := &ValidateCredentialResponse{}
-	isDirField := &pb.IsDir
-	if isDirField != nil {
-		st.IsDir = *isDirField
-	}
+	st.IsDir = pb.IsDir
 
 	var resultsField []CredentialValidationResult
-	for _, item := range pb.Results {
-		itemField, err := credentialValidationResultFromPb(&item)
+	for _, itemPb := range pb.Results {
+		item, err := credentialValidationResultFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resultsField = append(resultsField, *itemField)
+		if item != nil {
+			resultsField = append(resultsField, *item)
 		}
 	}
 	st.Results = resultsField
@@ -29764,25 +25719,34 @@ func validateCredentialResultFromPb(pb *validateCredentialResultPb) (*ValidateCr
 
 type ValidateStorageCredential struct {
 	// The AWS IAM role configuration.
+	// Wire name: 'aws_iam_role'
 	AwsIamRole *AwsIamRoleRequest
 	// The Azure managed identity configuration.
+	// Wire name: 'azure_managed_identity'
 	AzureManagedIdentity *AzureManagedIdentityRequest
 	// The Azure service principal configuration.
+	// Wire name: 'azure_service_principal'
 	AzureServicePrincipal *AzureServicePrincipal
 	// The Cloudflare API token configuration.
+	// Wire name: 'cloudflare_api_token'
 	CloudflareApiToken *CloudflareApiToken
 	// The Databricks created GCP service account configuration.
+	// Wire name: 'databricks_gcp_service_account'
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest
 	// The name of an existing external location to validate.
+	// Wire name: 'external_location_name'
 	ExternalLocationName string
 	// Whether the storage credential is only usable for read operations.
+	// Wire name: 'read_only'
 	ReadOnly bool
 	// The name of the storage credential to validate.
+	// Wire name: 'storage_credential_name'
 	StorageCredentialName string
 	// The external location url to validate.
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func validateStorageCredentialToPb(st *ValidateStorageCredential) (*validateStorageCredentialPb, error) {
@@ -29830,25 +25794,13 @@ func validateStorageCredentialToPb(st *ValidateStorageCredential) (*validateStor
 		pb.DatabricksGcpServiceAccount = databricksGcpServiceAccountPb
 	}
 
-	externalLocationNamePb := &st.ExternalLocationName
-	if externalLocationNamePb != nil {
-		pb.ExternalLocationName = *externalLocationNamePb
-	}
+	pb.ExternalLocationName = st.ExternalLocationName
 
-	readOnlyPb := &st.ReadOnly
-	if readOnlyPb != nil {
-		pb.ReadOnly = *readOnlyPb
-	}
+	pb.ReadOnly = st.ReadOnly
 
-	storageCredentialNamePb := &st.StorageCredentialName
-	if storageCredentialNamePb != nil {
-		pb.StorageCredentialName = *storageCredentialNamePb
-	}
+	pb.StorageCredentialName = st.StorageCredentialName
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -29942,22 +25894,10 @@ func validateStorageCredentialFromPb(pb *validateStorageCredentialPb) (*Validate
 	if databricksGcpServiceAccountField != nil {
 		st.DatabricksGcpServiceAccount = databricksGcpServiceAccountField
 	}
-	externalLocationNameField := &pb.ExternalLocationName
-	if externalLocationNameField != nil {
-		st.ExternalLocationName = *externalLocationNameField
-	}
-	readOnlyField := &pb.ReadOnly
-	if readOnlyField != nil {
-		st.ReadOnly = *readOnlyField
-	}
-	storageCredentialNameField := &pb.StorageCredentialName
-	if storageCredentialNameField != nil {
-		st.StorageCredentialName = *storageCredentialNameField
-	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.ExternalLocationName = pb.ExternalLocationName
+	st.ReadOnly = pb.ReadOnly
+	st.StorageCredentialName = pb.StorageCredentialName
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -29973,11 +25913,13 @@ func (st validateStorageCredentialPb) MarshalJSON() ([]byte, error) {
 
 type ValidateStorageCredentialResponse struct {
 	// Whether the tested location is a directory in cloud storage.
+	// Wire name: 'isDir'
 	IsDir bool
 	// The results of the validation check.
+	// Wire name: 'results'
 	Results []ValidationResult
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func validateStorageCredentialResponseToPb(st *ValidateStorageCredentialResponse) (*validateStorageCredentialResponsePb, error) {
@@ -29985,10 +25927,7 @@ func validateStorageCredentialResponseToPb(st *ValidateStorageCredentialResponse
 		return nil, nil
 	}
 	pb := &validateStorageCredentialResponsePb{}
-	isDirPb := &st.IsDir
-	if isDirPb != nil {
-		pb.IsDir = *isDirPb
-	}
+	pb.IsDir = st.IsDir
 
 	var resultsPb []validationResultPb
 	for _, item := range st.Results {
@@ -30045,19 +25984,16 @@ func validateStorageCredentialResponseFromPb(pb *validateStorageCredentialRespon
 		return nil, nil
 	}
 	st := &ValidateStorageCredentialResponse{}
-	isDirField := &pb.IsDir
-	if isDirField != nil {
-		st.IsDir = *isDirField
-	}
+	st.IsDir = pb.IsDir
 
 	var resultsField []ValidationResult
-	for _, item := range pb.Results {
-		itemField, err := validationResultFromPb(&item)
+	for _, itemPb := range pb.Results {
+		item, err := validationResultFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resultsField = append(resultsField, *itemField)
+		if item != nil {
+			resultsField = append(resultsField, *item)
 		}
 	}
 	st.Results = resultsField
@@ -30076,13 +26012,16 @@ func (st validateStorageCredentialResponsePb) MarshalJSON() ([]byte, error) {
 
 type ValidationResult struct {
 	// Error message would exist when the result does not equal to **PASS**.
+	// Wire name: 'message'
 	Message string
 	// The operation tested.
+	// Wire name: 'operation'
 	Operation ValidationResultOperation
 	// The results of the tested operation.
+	// Wire name: 'result'
 	Result ValidationResultResult
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func validationResultToPb(st *ValidationResult) (*validationResultPb, error) {
@@ -30090,20 +26029,11 @@ func validationResultToPb(st *ValidationResult) (*validationResultPb, error) {
 		return nil, nil
 	}
 	pb := &validationResultPb{}
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
-	operationPb := &st.Operation
-	if operationPb != nil {
-		pb.Operation = *operationPb
-	}
+	pb.Operation = st.Operation
 
-	resultPb := &st.Result
-	if resultPb != nil {
-		pb.Result = *resultPb
-	}
+	pb.Result = st.Result
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -30150,18 +26080,9 @@ func validationResultFromPb(pb *validationResultPb) (*ValidationResult, error) {
 		return nil, nil
 	}
 	st := &ValidationResult{}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
-	operationField := &pb.Operation
-	if operationField != nil {
-		st.Operation = *operationField
-	}
-	resultField := &pb.Result
-	if resultField != nil {
-		st.Result = *resultField
-	}
+	st.Message = pb.Message
+	st.Operation = pb.Operation
+	st.Result = pb.Result
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -30275,38 +26196,54 @@ func validationResultResultFromPb(pb *validationResultResultPb) (*ValidationResu
 
 type VolumeInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
+	// Wire name: 'access_point'
 	AccessPoint string
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
+	// Wire name: 'browse_only'
 	BrowseOnly bool
 	// The name of the catalog where the schema and the volume are
+	// Wire name: 'catalog_name'
 	CatalogName string
 	// The comment attached to the volume
+	// Wire name: 'comment'
 	Comment string
 
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// The identifier of the user who created the volume
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Encryption options that apply to clients connecting to cloud storage.
+	// Wire name: 'encryption_details'
 	EncryptionDetails *EncryptionDetails
 	// The three-level (fully qualified) name of the volume
+	// Wire name: 'full_name'
 	FullName string
 	// The unique identifier of the metastore
+	// Wire name: 'metastore_id'
 	MetastoreId string
 	// The name of the volume
+	// Wire name: 'name'
 	Name string
 	// The identifier of the user who owns the volume
+	// Wire name: 'owner'
 	Owner string
 	// The name of the schema where the volume is
+	// Wire name: 'schema_name'
 	SchemaName string
 	// The storage location on the cloud
+	// Wire name: 'storage_location'
 	StorageLocation string
 
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// The identifier of the user who updated the volume last time
+	// Wire name: 'updated_by'
 	UpdatedBy string
 	// The unique identifier of the volume
+	// Wire name: 'volume_id'
 	VolumeId string
 	// The type of the volume. An external volume is located in the specified
 	// external location. A managed volume is located in the default location
@@ -30314,9 +26251,10 @@ type VolumeInfo struct {
 	// Metastore. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
+	// Wire name: 'volume_type'
 	VolumeType VolumeType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func volumeInfoToPb(st *VolumeInfo) (*volumeInfoPb, error) {
@@ -30324,35 +26262,17 @@ func volumeInfoToPb(st *VolumeInfo) (*volumeInfoPb, error) {
 		return nil, nil
 	}
 	pb := &volumeInfoPb{}
-	accessPointPb := &st.AccessPoint
-	if accessPointPb != nil {
-		pb.AccessPoint = *accessPointPb
-	}
+	pb.AccessPoint = st.AccessPoint
 
-	browseOnlyPb := &st.BrowseOnly
-	if browseOnlyPb != nil {
-		pb.BrowseOnly = *browseOnlyPb
-	}
+	pb.BrowseOnly = st.BrowseOnly
 
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
 	encryptionDetailsPb, err := encryptionDetailsToPb(st.EncryptionDetails)
 	if err != nil {
@@ -30362,55 +26282,25 @@ func volumeInfoToPb(st *VolumeInfo) (*volumeInfoPb, error) {
 		pb.EncryptionDetails = encryptionDetailsPb
 	}
 
-	fullNamePb := &st.FullName
-	if fullNamePb != nil {
-		pb.FullName = *fullNamePb
-	}
+	pb.FullName = st.FullName
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	ownerPb := &st.Owner
-	if ownerPb != nil {
-		pb.Owner = *ownerPb
-	}
+	pb.Owner = st.Owner
 
-	schemaNamePb := &st.SchemaName
-	if schemaNamePb != nil {
-		pb.SchemaName = *schemaNamePb
-	}
+	pb.SchemaName = st.SchemaName
 
-	storageLocationPb := &st.StorageLocation
-	if storageLocationPb != nil {
-		pb.StorageLocation = *storageLocationPb
-	}
+	pb.StorageLocation = st.StorageLocation
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
-	volumeIdPb := &st.VolumeId
-	if volumeIdPb != nil {
-		pb.VolumeId = *volumeIdPb
-	}
+	pb.VolumeId = st.VolumeId
 
-	volumeTypePb := &st.VolumeType
-	if volumeTypePb != nil {
-		pb.VolumeType = *volumeTypePb
-	}
+	pb.VolumeType = st.VolumeType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -30492,30 +26382,12 @@ func volumeInfoFromPb(pb *volumeInfoPb) (*VolumeInfo, error) {
 		return nil, nil
 	}
 	st := &VolumeInfo{}
-	accessPointField := &pb.AccessPoint
-	if accessPointField != nil {
-		st.AccessPoint = *accessPointField
-	}
-	browseOnlyField := &pb.BrowseOnly
-	if browseOnlyField != nil {
-		st.BrowseOnly = *browseOnlyField
-	}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
+	st.AccessPoint = pb.AccessPoint
+	st.BrowseOnly = pb.BrowseOnly
+	st.CatalogName = pb.CatalogName
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
 	encryptionDetailsField, err := encryptionDetailsFromPb(pb.EncryptionDetails)
 	if err != nil {
 		return nil, err
@@ -30523,46 +26395,16 @@ func volumeInfoFromPb(pb *volumeInfoPb) (*VolumeInfo, error) {
 	if encryptionDetailsField != nil {
 		st.EncryptionDetails = encryptionDetailsField
 	}
-	fullNameField := &pb.FullName
-	if fullNameField != nil {
-		st.FullName = *fullNameField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	ownerField := &pb.Owner
-	if ownerField != nil {
-		st.Owner = *ownerField
-	}
-	schemaNameField := &pb.SchemaName
-	if schemaNameField != nil {
-		st.SchemaName = *schemaNameField
-	}
-	storageLocationField := &pb.StorageLocation
-	if storageLocationField != nil {
-		st.StorageLocation = *storageLocationField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
-	volumeIdField := &pb.VolumeId
-	if volumeIdField != nil {
-		st.VolumeId = *volumeIdField
-	}
-	volumeTypeField := &pb.VolumeType
-	if volumeTypeField != nil {
-		st.VolumeType = *volumeTypeField
-	}
+	st.FullName = pb.FullName
+	st.MetastoreId = pb.MetastoreId
+	st.Name = pb.Name
+	st.Owner = pb.Owner
+	st.SchemaName = pb.SchemaName
+	st.StorageLocation = pb.StorageLocation
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.VolumeId = pb.VolumeId
+	st.VolumeType = pb.VolumeType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -30627,11 +26469,14 @@ func volumeTypeFromPb(pb *volumeTypePb) (*VolumeType, error) {
 }
 
 type WorkspaceBinding struct {
+
+	// Wire name: 'binding_type'
 	BindingType WorkspaceBindingBindingType
 
+	// Wire name: 'workspace_id'
 	WorkspaceId int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func workspaceBindingToPb(st *WorkspaceBinding) (*workspaceBindingPb, error) {
@@ -30639,15 +26484,9 @@ func workspaceBindingToPb(st *WorkspaceBinding) (*workspaceBindingPb, error) {
 		return nil, nil
 	}
 	pb := &workspaceBindingPb{}
-	bindingTypePb := &st.BindingType
-	if bindingTypePb != nil {
-		pb.BindingType = *bindingTypePb
-	}
+	pb.BindingType = st.BindingType
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -30691,14 +26530,8 @@ func workspaceBindingFromPb(pb *workspaceBindingPb) (*WorkspaceBinding, error) {
 		return nil, nil
 	}
 	st := &WorkspaceBinding{}
-	bindingTypeField := &pb.BindingType
-	if bindingTypeField != nil {
-		st.BindingType = *bindingTypeField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.BindingType = pb.BindingType
+	st.WorkspaceId = pb.WorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -30759,13 +26592,15 @@ func workspaceBindingBindingTypeFromPb(pb *workspaceBindingBindingTypePb) (*Work
 // Currently assigned workspace bindings
 type WorkspaceBindingsResponse struct {
 	// List of workspace bindings
+	// Wire name: 'bindings'
 	Bindings []WorkspaceBinding
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func workspaceBindingsResponseToPb(st *WorkspaceBindingsResponse) (*workspaceBindingsResponsePb, error) {
@@ -30786,10 +26621,7 @@ func workspaceBindingsResponseToPb(st *WorkspaceBindingsResponse) (*workspaceBin
 	}
 	pb.Bindings = bindingsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -30838,20 +26670,17 @@ func workspaceBindingsResponseFromPb(pb *workspaceBindingsResponsePb) (*Workspac
 	st := &WorkspaceBindingsResponse{}
 
 	var bindingsField []WorkspaceBinding
-	for _, item := range pb.Bindings {
-		itemField, err := workspaceBindingFromPb(&item)
+	for _, itemPb := range pb.Bindings {
+		item, err := workspaceBindingFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			bindingsField = append(bindingsField, *itemField)
+		if item != nil {
+			bindingsField = append(bindingsField, *item)
 		}
 	}
 	st.Bindings = bindingsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -30863,4 +26692,58 @@ func (st *workspaceBindingsResponsePb) UnmarshalJSON(b []byte) error {
 
 func (st workspaceBindingsResponsePb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

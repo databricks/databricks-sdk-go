@@ -30,15 +30,22 @@ func (a *clusterPoliciesImpl) Create(ctx context.Context, request CreatePolicy) 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createPolicyResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createPolicyResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createPolicyResponseFromPb(&createPolicyResponsePb)
+	resp, err := createPolicyResponseFromPb(&createPolicyResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -56,7 +63,15 @@ func (a *clusterPoliciesImpl) Delete(ctx context.Context, request DeletePolicy) 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &deletePolicyResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deletePolicyResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -77,7 +92,15 @@ func (a *clusterPoliciesImpl) Edit(ctx context.Context, request EditPolicy) erro
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &editPolicyResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&editPolicyResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -97,15 +120,22 @@ func (a *clusterPoliciesImpl) Get(ctx context.Context, request GetClusterPolicyR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &policyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&policyPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := policyFromPb(&policyPb)
+	resp, err := policyFromPb(&policyPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -122,15 +152,22 @@ func (a *clusterPoliciesImpl) GetPermissionLevels(ctx context.Context, request G
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getClusterPolicyPermissionLevelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getClusterPolicyPermissionLevelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getClusterPolicyPermissionLevelsResponseFromPb(&getClusterPolicyPermissionLevelsResponsePb)
+	resp, err := getClusterPolicyPermissionLevelsResponseFromPb(&getClusterPolicyPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -147,15 +184,22 @@ func (a *clusterPoliciesImpl) GetPermissions(ctx context.Context, request GetClu
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &clusterPolicyPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&clusterPolicyPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := clusterPolicyPermissionsFromPb(&clusterPolicyPermissionsPb)
+	resp, err := clusterPolicyPermissionsFromPb(&clusterPolicyPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -201,15 +245,22 @@ func (a *clusterPoliciesImpl) internalList(ctx context.Context, request ListClus
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listPoliciesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listPoliciesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listPoliciesResponseFromPb(&listPoliciesResponsePb)
+	resp, err := listPoliciesResponseFromPb(&listPoliciesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -227,15 +278,22 @@ func (a *clusterPoliciesImpl) SetPermissions(ctx context.Context, request Cluste
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &clusterPolicyPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&clusterPolicyPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := clusterPolicyPermissionsFromPb(&clusterPolicyPermissionsPb)
+	resp, err := clusterPolicyPermissionsFromPb(&clusterPolicyPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -253,15 +311,22 @@ func (a *clusterPoliciesImpl) UpdatePermissions(ctx context.Context, request Clu
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &clusterPolicyPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&clusterPolicyPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := clusterPolicyPermissionsFromPb(&clusterPolicyPermissionsPb)
+	resp, err := clusterPolicyPermissionsFromPb(&clusterPolicyPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -284,7 +349,15 @@ func (a *clustersImpl) ChangeOwner(ctx context.Context, request ChangeClusterOwn
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &changeClusterOwnerResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&changeClusterOwnerResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -305,15 +378,22 @@ func (a *clustersImpl) Create(ctx context.Context, request CreateCluster) (*Crea
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createClusterResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createClusterResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createClusterResponseFromPb(&createClusterResponsePb)
+	resp, err := createClusterResponseFromPb(&createClusterResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -331,7 +411,15 @@ func (a *clustersImpl) Delete(ctx context.Context, request DeleteCluster) error 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &deleteClusterResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteClusterResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -352,7 +440,15 @@ func (a *clustersImpl) Edit(ctx context.Context, request EditCluster) error {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &editClusterResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&editClusterResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -414,15 +510,22 @@ func (a *clustersImpl) internalEvents(ctx context.Context, request GetEvents) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &getEventsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getEventsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getEventsResponseFromPb(&getEventsResponsePb)
+	resp, err := getEventsResponseFromPb(&getEventsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -439,15 +542,22 @@ func (a *clustersImpl) Get(ctx context.Context, request GetClusterRequest) (*Clu
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &clusterDetailsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&clusterDetailsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := clusterDetailsFromPb(&clusterDetailsPb)
+	resp, err := clusterDetailsFromPb(&clusterDetailsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -464,15 +574,22 @@ func (a *clustersImpl) GetPermissionLevels(ctx context.Context, request GetClust
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getClusterPermissionLevelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getClusterPermissionLevelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getClusterPermissionLevelsResponseFromPb(&getClusterPermissionLevelsResponsePb)
+	resp, err := getClusterPermissionLevelsResponseFromPb(&getClusterPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -489,15 +606,22 @@ func (a *clustersImpl) GetPermissions(ctx context.Context, request GetClusterPer
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &clusterPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&clusterPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := clusterPermissionsFromPb(&clusterPermissionsPb)
+	resp, err := clusterPermissionsFromPb(&clusterPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -553,15 +677,22 @@ func (a *clustersImpl) internalList(ctx context.Context, request ListClustersReq
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listClustersResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listClustersResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listClustersResponseFromPb(&listClustersResponsePb)
+	resp, err := listClustersResponseFromPb(&listClustersResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -573,15 +704,22 @@ func (a *clustersImpl) ListNodeTypes(ctx context.Context) (*ListNodeTypesRespons
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listNodeTypesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listNodeTypesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listNodeTypesResponseFromPb(&listNodeTypesResponsePb)
+	resp, err := listNodeTypesResponseFromPb(&listNodeTypesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -593,15 +731,22 @@ func (a *clustersImpl) ListZones(ctx context.Context) (*ListAvailableZonesRespon
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listAvailableZonesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listAvailableZonesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listAvailableZonesResponseFromPb(&listAvailableZonesResponsePb)
+	resp, err := listAvailableZonesResponseFromPb(&listAvailableZonesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -619,7 +764,15 @@ func (a *clustersImpl) PermanentDelete(ctx context.Context, request PermanentDel
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &permanentDeleteClusterResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&permanentDeleteClusterResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -640,7 +793,15 @@ func (a *clustersImpl) Pin(ctx context.Context, request PinCluster) error {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &pinClusterResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&pinClusterResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -661,7 +822,15 @@ func (a *clustersImpl) Resize(ctx context.Context, request ResizeCluster) error 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &resizeClusterResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&resizeClusterResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -682,7 +851,15 @@ func (a *clustersImpl) Restart(ctx context.Context, request RestartCluster) erro
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &restartClusterResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&restartClusterResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -703,15 +880,22 @@ func (a *clustersImpl) SetPermissions(ctx context.Context, request ClusterPermis
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &clusterPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&clusterPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := clusterPermissionsFromPb(&clusterPermissionsPb)
+	resp, err := clusterPermissionsFromPb(&clusterPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -723,15 +907,22 @@ func (a *clustersImpl) SparkVersions(ctx context.Context) (*GetSparkVersionsResp
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getSparkVersionsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&getSparkVersionsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getSparkVersionsResponseFromPb(&getSparkVersionsResponsePb)
+	resp, err := getSparkVersionsResponseFromPb(&getSparkVersionsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -749,7 +940,15 @@ func (a *clustersImpl) Start(ctx context.Context, request StartCluster) error {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &startClusterResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&startClusterResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -770,7 +969,15 @@ func (a *clustersImpl) Unpin(ctx context.Context, request UnpinCluster) error {
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &unpinClusterResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&unpinClusterResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -791,7 +998,15 @@ func (a *clustersImpl) Update(ctx context.Context, request UpdateCluster) error 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &updateClusterResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateClusterResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -812,15 +1027,22 @@ func (a *clustersImpl) UpdatePermissions(ctx context.Context, request ClusterPer
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &clusterPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&clusterPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := clusterPermissionsFromPb(&clusterPermissionsPb)
+	resp, err := clusterPermissionsFromPb(&clusterPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -843,7 +1065,15 @@ func (a *commandExecutionImpl) Cancel(ctx context.Context, request CancelCommand
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &cancelResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&cancelResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -863,15 +1093,22 @@ func (a *commandExecutionImpl) CommandStatus(ctx context.Context, request Comman
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &commandStatusResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&commandStatusResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := commandStatusResponseFromPb(&commandStatusResponsePb)
+	resp, err := commandStatusResponseFromPb(&commandStatusResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -888,15 +1125,22 @@ func (a *commandExecutionImpl) ContextStatus(ctx context.Context, request Contex
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &contextStatusResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&contextStatusResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := contextStatusResponseFromPb(&contextStatusResponsePb)
+	resp, err := contextStatusResponseFromPb(&contextStatusResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -914,15 +1158,22 @@ func (a *commandExecutionImpl) Create(ctx context.Context, request CreateContext
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createdPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createdPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createdFromPb(&createdPb)
+	resp, err := createdFromPb(&createdPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -940,7 +1191,15 @@ func (a *commandExecutionImpl) Destroy(ctx context.Context, request DestroyConte
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &destroyResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&destroyResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -961,15 +1220,22 @@ func (a *commandExecutionImpl) Execute(ctx context.Context, request Command) (*C
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createdPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createdPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createdFromPb(&createdPb)
+	resp, err := createdFromPb(&createdPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -992,15 +1258,22 @@ func (a *globalInitScriptsImpl) Create(ctx context.Context, request GlobalInitSc
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createResponseFromPb(&createResponsePb)
+	resp, err := createResponseFromPb(&createResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1017,7 +1290,15 @@ func (a *globalInitScriptsImpl) Delete(ctx context.Context, request DeleteGlobal
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1037,15 +1318,22 @@ func (a *globalInitScriptsImpl) Get(ctx context.Context, request GetGlobalInitSc
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &globalInitScriptDetailsWithContentPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&globalInitScriptDetailsWithContentPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := globalInitScriptDetailsWithContentFromPb(&globalInitScriptDetailsWithContentPb)
+	resp, err := globalInitScriptDetailsWithContentFromPb(&globalInitScriptDetailsWithContentPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1093,15 +1381,22 @@ func (a *globalInitScriptsImpl) internalList(ctx context.Context) (*ListGlobalIn
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listGlobalInitScriptsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listGlobalInitScriptsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listGlobalInitScriptsResponseFromPb(&listGlobalInitScriptsResponsePb)
+	resp, err := listGlobalInitScriptsResponseFromPb(&listGlobalInitScriptsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1119,7 +1414,15 @@ func (a *globalInitScriptsImpl) Update(ctx context.Context, request GlobalInitSc
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updateResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1145,15 +1448,22 @@ func (a *instancePoolsImpl) Create(ctx context.Context, request CreateInstancePo
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createInstancePoolResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createInstancePoolResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createInstancePoolResponseFromPb(&createInstancePoolResponsePb)
+	resp, err := createInstancePoolResponseFromPb(&createInstancePoolResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1171,7 +1481,15 @@ func (a *instancePoolsImpl) Delete(ctx context.Context, request DeleteInstancePo
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &deleteInstancePoolResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteInstancePoolResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1192,7 +1510,15 @@ func (a *instancePoolsImpl) Edit(ctx context.Context, request EditInstancePool) 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &editInstancePoolResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&editInstancePoolResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1212,15 +1538,22 @@ func (a *instancePoolsImpl) Get(ctx context.Context, request GetInstancePoolRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getInstancePoolPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getInstancePoolPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getInstancePoolFromPb(&getInstancePoolPb)
+	resp, err := getInstancePoolFromPb(&getInstancePoolPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1237,15 +1570,22 @@ func (a *instancePoolsImpl) GetPermissionLevels(ctx context.Context, request Get
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getInstancePoolPermissionLevelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getInstancePoolPermissionLevelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getInstancePoolPermissionLevelsResponseFromPb(&getInstancePoolPermissionLevelsResponsePb)
+	resp, err := getInstancePoolPermissionLevelsResponseFromPb(&getInstancePoolPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1262,15 +1602,22 @@ func (a *instancePoolsImpl) GetPermissions(ctx context.Context, request GetInsta
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &instancePoolPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&instancePoolPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := instancePoolPermissionsFromPb(&instancePoolPermissionsPb)
+	resp, err := instancePoolPermissionsFromPb(&instancePoolPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1312,15 +1659,22 @@ func (a *instancePoolsImpl) internalList(ctx context.Context) (*ListInstancePool
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listInstancePoolsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listInstancePoolsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listInstancePoolsFromPb(&listInstancePoolsPb)
+	resp, err := listInstancePoolsFromPb(&listInstancePoolsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1338,15 +1692,22 @@ func (a *instancePoolsImpl) SetPermissions(ctx context.Context, request Instance
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &instancePoolPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&instancePoolPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := instancePoolPermissionsFromPb(&instancePoolPermissionsPb)
+	resp, err := instancePoolPermissionsFromPb(&instancePoolPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1364,15 +1725,22 @@ func (a *instancePoolsImpl) UpdatePermissions(ctx context.Context, request Insta
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &instancePoolPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&instancePoolPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := instancePoolPermissionsFromPb(&instancePoolPermissionsPb)
+	resp, err := instancePoolPermissionsFromPb(&instancePoolPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1395,7 +1763,15 @@ func (a *instanceProfilesImpl) Add(ctx context.Context, request AddInstanceProfi
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &addResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&addResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1416,7 +1792,15 @@ func (a *instanceProfilesImpl) Edit(ctx context.Context, request InstanceProfile
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &editResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&editResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1465,15 +1849,22 @@ func (a *instanceProfilesImpl) internalList(ctx context.Context) (*ListInstanceP
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listInstanceProfilesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listInstanceProfilesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listInstanceProfilesResponseFromPb(&listInstanceProfilesResponsePb)
+	resp, err := listInstanceProfilesResponseFromPb(&listInstanceProfilesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1491,7 +1882,15 @@ func (a *instanceProfilesImpl) Remove(ctx context.Context, request RemoveInstanc
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &removeResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&removeResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1543,15 +1942,22 @@ func (a *librariesImpl) internalAllClusterStatuses(ctx context.Context) (*ListAl
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &listAllClusterLibraryStatusesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&listAllClusterLibraryStatusesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listAllClusterLibraryStatusesResponseFromPb(&listAllClusterLibraryStatusesResponsePb)
+	resp, err := listAllClusterLibraryStatusesResponseFromPb(&listAllClusterLibraryStatusesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1609,15 +2015,22 @@ func (a *librariesImpl) internalClusterStatus(ctx context.Context, request Clust
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &clusterLibraryStatusesPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&clusterLibraryStatusesPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := clusterLibraryStatusesFromPb(&clusterLibraryStatusesPb)
+	resp, err := clusterLibraryStatusesFromPb(&clusterLibraryStatusesPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1635,7 +2048,15 @@ func (a *librariesImpl) Install(ctx context.Context, request InstallLibraries) e
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &installLibrariesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&installLibrariesResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1656,7 +2077,15 @@ func (a *librariesImpl) Uninstall(ctx context.Context, request UninstallLibrarie
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &uninstallLibrariesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&uninstallLibrariesResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1682,15 +2111,22 @@ func (a *policyComplianceForClustersImpl) EnforceCompliance(ctx context.Context,
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &enforceClusterComplianceResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&enforceClusterComplianceResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := enforceClusterComplianceResponseFromPb(&enforceClusterComplianceResponsePb)
+	resp, err := enforceClusterComplianceResponseFromPb(&enforceClusterComplianceResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1707,15 +2143,22 @@ func (a *policyComplianceForClustersImpl) GetCompliance(ctx context.Context, req
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getClusterComplianceResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getClusterComplianceResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getClusterComplianceResponseFromPb(&getClusterComplianceResponsePb)
+	resp, err := getClusterComplianceResponseFromPb(&getClusterComplianceResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1771,15 +2214,22 @@ func (a *policyComplianceForClustersImpl) internalListCompliance(ctx context.Con
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listClusterCompliancesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listClusterCompliancesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listClusterCompliancesResponseFromPb(&listClusterCompliancesResponsePb)
+	resp, err := listClusterCompliancesResponseFromPb(&listClusterCompliancesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1801,15 +2251,22 @@ func (a *policyFamiliesImpl) Get(ctx context.Context, request GetPolicyFamilyReq
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &policyFamilyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&policyFamilyPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := policyFamilyFromPb(&policyFamilyPb)
+	resp, err := policyFamilyFromPb(&policyFamilyPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1863,15 +2320,22 @@ func (a *policyFamiliesImpl) internalList(ctx context.Context, request ListPolic
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listPolicyFamiliesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listPolicyFamiliesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listPolicyFamiliesResponseFromPb(&listPolicyFamiliesResponsePb)
+	resp, err := listPolicyFamiliesResponseFromPb(&listPolicyFamiliesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }

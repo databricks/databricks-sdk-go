@@ -11,76 +11,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type AwsCredentials struct {
+
+	// Wire name: 'sts_role'
 	StsRole *StsRole
 }
 
@@ -147,18 +80,22 @@ func awsCredentialsFromPb(pb *awsCredentialsPb) (*AwsCredentials, error) {
 
 type AwsKeyInfo struct {
 	// The AWS KMS key alias.
+	// Wire name: 'key_alias'
 	KeyAlias string
 	// The AWS KMS key's Amazon Resource Name (ARN).
+	// Wire name: 'key_arn'
 	KeyArn string
 	// The AWS KMS key region.
+	// Wire name: 'key_region'
 	KeyRegion string
 	// This field applies only if the `use_cases` property includes `STORAGE`.
 	// If this is set to `true` or omitted, the key is also used to encrypt
 	// cluster EBS volumes. If you do not want to use this key for encrypting
 	// EBS volumes, set to `false`.
+	// Wire name: 'reuse_key_for_cluster_volumes'
 	ReuseKeyForClusterVolumes bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func awsKeyInfoToPb(st *AwsKeyInfo) (*awsKeyInfoPb, error) {
@@ -166,25 +103,13 @@ func awsKeyInfoToPb(st *AwsKeyInfo) (*awsKeyInfoPb, error) {
 		return nil, nil
 	}
 	pb := &awsKeyInfoPb{}
-	keyAliasPb := &st.KeyAlias
-	if keyAliasPb != nil {
-		pb.KeyAlias = *keyAliasPb
-	}
+	pb.KeyAlias = st.KeyAlias
 
-	keyArnPb := &st.KeyArn
-	if keyArnPb != nil {
-		pb.KeyArn = *keyArnPb
-	}
+	pb.KeyArn = st.KeyArn
 
-	keyRegionPb := &st.KeyRegion
-	if keyRegionPb != nil {
-		pb.KeyRegion = *keyRegionPb
-	}
+	pb.KeyRegion = st.KeyRegion
 
-	reuseKeyForClusterVolumesPb := &st.ReuseKeyForClusterVolumes
-	if reuseKeyForClusterVolumesPb != nil {
-		pb.ReuseKeyForClusterVolumes = *reuseKeyForClusterVolumesPb
-	}
+	pb.ReuseKeyForClusterVolumes = st.ReuseKeyForClusterVolumes
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -236,22 +161,10 @@ func awsKeyInfoFromPb(pb *awsKeyInfoPb) (*AwsKeyInfo, error) {
 		return nil, nil
 	}
 	st := &AwsKeyInfo{}
-	keyAliasField := &pb.KeyAlias
-	if keyAliasField != nil {
-		st.KeyAlias = *keyAliasField
-	}
-	keyArnField := &pb.KeyArn
-	if keyArnField != nil {
-		st.KeyArn = *keyArnField
-	}
-	keyRegionField := &pb.KeyRegion
-	if keyRegionField != nil {
-		st.KeyRegion = *keyRegionField
-	}
-	reuseKeyForClusterVolumesField := &pb.ReuseKeyForClusterVolumes
-	if reuseKeyForClusterVolumesField != nil {
-		st.ReuseKeyForClusterVolumes = *reuseKeyForClusterVolumesField
-	}
+	st.KeyAlias = pb.KeyAlias
+	st.KeyArn = pb.KeyArn
+	st.KeyRegion = pb.KeyRegion
+	st.ReuseKeyForClusterVolumes = pb.ReuseKeyForClusterVolumes
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -267,11 +180,13 @@ func (st awsKeyInfoPb) MarshalJSON() ([]byte, error) {
 
 type AzureWorkspaceInfo struct {
 	// Azure Resource Group name
+	// Wire name: 'resource_group'
 	ResourceGroup string
 	// Azure Subscription ID
+	// Wire name: 'subscription_id'
 	SubscriptionId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func azureWorkspaceInfoToPb(st *AzureWorkspaceInfo) (*azureWorkspaceInfoPb, error) {
@@ -279,15 +194,9 @@ func azureWorkspaceInfoToPb(st *AzureWorkspaceInfo) (*azureWorkspaceInfoPb, erro
 		return nil, nil
 	}
 	pb := &azureWorkspaceInfoPb{}
-	resourceGroupPb := &st.ResourceGroup
-	if resourceGroupPb != nil {
-		pb.ResourceGroup = *resourceGroupPb
-	}
+	pb.ResourceGroup = st.ResourceGroup
 
-	subscriptionIdPb := &st.SubscriptionId
-	if subscriptionIdPb != nil {
-		pb.SubscriptionId = *subscriptionIdPb
-	}
+	pb.SubscriptionId = st.SubscriptionId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -332,14 +241,8 @@ func azureWorkspaceInfoFromPb(pb *azureWorkspaceInfoPb) (*AzureWorkspaceInfo, er
 		return nil, nil
 	}
 	st := &AzureWorkspaceInfo{}
-	resourceGroupField := &pb.ResourceGroup
-	if resourceGroupField != nil {
-		st.ResourceGroup = *resourceGroupField
-	}
-	subscriptionIdField := &pb.SubscriptionId
-	if subscriptionIdField != nil {
-		st.SubscriptionId = *subscriptionIdField
-	}
+	st.ResourceGroup = pb.ResourceGroup
+	st.SubscriptionId = pb.SubscriptionId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -356,6 +259,7 @@ func (st azureWorkspaceInfoPb) MarshalJSON() ([]byte, error) {
 // The general workspace configurations that are specific to cloud providers.
 type CloudResourceContainer struct {
 	// The general workspace configurations that are specific to Google Cloud.
+	// Wire name: 'gcp'
 	Gcp *CustomerFacingGcpCloudResourceContainer
 }
 
@@ -423,17 +327,20 @@ func cloudResourceContainerFromPb(pb *cloudResourceContainerPb) (*CloudResourceC
 
 type CreateAwsKeyInfo struct {
 	// The AWS KMS key alias.
+	// Wire name: 'key_alias'
 	KeyAlias string
 	// The AWS KMS key's Amazon Resource Name (ARN). Note that the key's AWS
 	// region is inferred from the ARN.
+	// Wire name: 'key_arn'
 	KeyArn string
 	// This field applies only if the `use_cases` property includes `STORAGE`.
 	// If this is set to `true` or omitted, the key is also used to encrypt
 	// cluster EBS volumes. To not use this key also for encrypting EBS volumes,
 	// set this to `false`.
+	// Wire name: 'reuse_key_for_cluster_volumes'
 	ReuseKeyForClusterVolumes bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createAwsKeyInfoToPb(st *CreateAwsKeyInfo) (*createAwsKeyInfoPb, error) {
@@ -441,20 +348,11 @@ func createAwsKeyInfoToPb(st *CreateAwsKeyInfo) (*createAwsKeyInfoPb, error) {
 		return nil, nil
 	}
 	pb := &createAwsKeyInfoPb{}
-	keyAliasPb := &st.KeyAlias
-	if keyAliasPb != nil {
-		pb.KeyAlias = *keyAliasPb
-	}
+	pb.KeyAlias = st.KeyAlias
 
-	keyArnPb := &st.KeyArn
-	if keyArnPb != nil {
-		pb.KeyArn = *keyArnPb
-	}
+	pb.KeyArn = st.KeyArn
 
-	reuseKeyForClusterVolumesPb := &st.ReuseKeyForClusterVolumes
-	if reuseKeyForClusterVolumesPb != nil {
-		pb.ReuseKeyForClusterVolumes = *reuseKeyForClusterVolumesPb
-	}
+	pb.ReuseKeyForClusterVolumes = st.ReuseKeyForClusterVolumes
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -505,18 +403,9 @@ func createAwsKeyInfoFromPb(pb *createAwsKeyInfoPb) (*CreateAwsKeyInfo, error) {
 		return nil, nil
 	}
 	st := &CreateAwsKeyInfo{}
-	keyAliasField := &pb.KeyAlias
-	if keyAliasField != nil {
-		st.KeyAlias = *keyAliasField
-	}
-	keyArnField := &pb.KeyArn
-	if keyArnField != nil {
-		st.KeyArn = *keyArnField
-	}
-	reuseKeyForClusterVolumesField := &pb.ReuseKeyForClusterVolumes
-	if reuseKeyForClusterVolumesField != nil {
-		st.ReuseKeyForClusterVolumes = *reuseKeyForClusterVolumesField
-	}
+	st.KeyAlias = pb.KeyAlias
+	st.KeyArn = pb.KeyArn
+	st.ReuseKeyForClusterVolumes = pb.ReuseKeyForClusterVolumes
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -531,6 +420,8 @@ func (st createAwsKeyInfoPb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateCredentialAwsCredentials struct {
+
+	// Wire name: 'sts_role'
 	StsRole *CreateCredentialStsRole
 }
 
@@ -596,8 +487,11 @@ func createCredentialAwsCredentialsFromPb(pb *createCredentialAwsCredentialsPb) 
 }
 
 type CreateCredentialRequest struct {
+
+	// Wire name: 'aws_credentials'
 	AwsCredentials CreateCredentialAwsCredentials
 	// The human-readable name of the credential configuration object.
+	// Wire name: 'credentials_name'
 	CredentialsName string
 }
 
@@ -614,10 +508,7 @@ func createCredentialRequestToPb(st *CreateCredentialRequest) (*createCredential
 		pb.AwsCredentials = *awsCredentialsPb
 	}
 
-	credentialsNamePb := &st.CredentialsName
-	if credentialsNamePb != nil {
-		pb.CredentialsName = *credentialsNamePb
-	}
+	pb.CredentialsName = st.CredentialsName
 
 	return pb, nil
 }
@@ -665,19 +556,17 @@ func createCredentialRequestFromPb(pb *createCredentialRequestPb) (*CreateCreden
 	if awsCredentialsField != nil {
 		st.AwsCredentials = *awsCredentialsField
 	}
-	credentialsNameField := &pb.CredentialsName
-	if credentialsNameField != nil {
-		st.CredentialsName = *credentialsNameField
-	}
+	st.CredentialsName = pb.CredentialsName
 
 	return st, nil
 }
 
 type CreateCredentialStsRole struct {
 	// The Amazon Resource Name (ARN) of the cross account role.
+	// Wire name: 'role_arn'
 	RoleArn string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createCredentialStsRoleToPb(st *CreateCredentialStsRole) (*createCredentialStsRolePb, error) {
@@ -685,10 +574,7 @@ func createCredentialStsRoleToPb(st *CreateCredentialStsRole) (*createCredential
 		return nil, nil
 	}
 	pb := &createCredentialStsRolePb{}
-	roleArnPb := &st.RoleArn
-	if roleArnPb != nil {
-		pb.RoleArn = *roleArnPb
-	}
+	pb.RoleArn = st.RoleArn
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -731,10 +617,7 @@ func createCredentialStsRoleFromPb(pb *createCredentialStsRolePb) (*CreateCreden
 		return nil, nil
 	}
 	st := &CreateCredentialStsRole{}
-	roleArnField := &pb.RoleArn
-	if roleArnField != nil {
-		st.RoleArn = *roleArnField
-	}
+	st.RoleArn = pb.RoleArn
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -749,10 +632,14 @@ func (st createCredentialStsRolePb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateCustomerManagedKeyRequest struct {
+
+	// Wire name: 'aws_key_info'
 	AwsKeyInfo *CreateAwsKeyInfo
 
+	// Wire name: 'gcp_key_info'
 	GcpKeyInfo *CreateGcpKeyInfo
 	// The cases that the key can be used for.
+	// Wire name: 'use_cases'
 	UseCases []KeyUseCase
 }
 
@@ -777,14 +664,7 @@ func createCustomerManagedKeyRequestToPb(st *CreateCustomerManagedKeyRequest) (*
 		pb.GcpKeyInfo = gcpKeyInfoPb
 	}
 
-	var useCasesPb []KeyUseCase
-	for _, item := range st.UseCases {
-		itemPb := &item
-		if itemPb != nil {
-			useCasesPb = append(useCasesPb, *itemPb)
-		}
-	}
-	pb.UseCases = useCasesPb
+	pb.UseCases = st.UseCases
 
 	return pb, nil
 }
@@ -841,21 +721,14 @@ func createCustomerManagedKeyRequestFromPb(pb *createCustomerManagedKeyRequestPb
 	if gcpKeyInfoField != nil {
 		st.GcpKeyInfo = gcpKeyInfoField
 	}
-
-	var useCasesField []KeyUseCase
-	for _, item := range pb.UseCases {
-		itemField := &item
-		if itemField != nil {
-			useCasesField = append(useCasesField, *itemField)
-		}
-	}
-	st.UseCases = useCasesField
+	st.UseCases = pb.UseCases
 
 	return st, nil
 }
 
 type CreateGcpKeyInfo struct {
 	// The GCP KMS key's resource name
+	// Wire name: 'kms_key_id'
 	KmsKeyId string
 }
 
@@ -864,10 +737,7 @@ func createGcpKeyInfoToPb(st *CreateGcpKeyInfo) (*createGcpKeyInfoPb, error) {
 		return nil, nil
 	}
 	pb := &createGcpKeyInfoPb{}
-	kmsKeyIdPb := &st.KmsKeyId
-	if kmsKeyIdPb != nil {
-		pb.KmsKeyId = *kmsKeyIdPb
-	}
+	pb.KmsKeyId = st.KmsKeyId
 
 	return pb, nil
 }
@@ -907,10 +777,7 @@ func createGcpKeyInfoFromPb(pb *createGcpKeyInfoPb) (*CreateGcpKeyInfo, error) {
 		return nil, nil
 	}
 	st := &CreateGcpKeyInfo{}
-	kmsKeyIdField := &pb.KmsKeyId
-	if kmsKeyIdField != nil {
-		st.KmsKeyId = *kmsKeyIdField
-	}
+	st.KmsKeyId = pb.KmsKeyId
 
 	return st, nil
 }
@@ -918,25 +785,31 @@ func createGcpKeyInfoFromPb(pb *createGcpKeyInfoPb) (*CreateGcpKeyInfo, error) {
 type CreateNetworkRequest struct {
 	// The Google Cloud specific information for this network (for example, the
 	// VPC ID, subnet ID, and secondary IP ranges).
+	// Wire name: 'gcp_network_info'
 	GcpNetworkInfo *GcpNetworkInfo
 	// The human-readable name of the network configuration.
+	// Wire name: 'network_name'
 	NetworkName string
 	// IDs of one to five security groups associated with this network. Security
 	// group IDs **cannot** be used in multiple network configurations.
+	// Wire name: 'security_group_ids'
 	SecurityGroupIds []string
 	// IDs of at least two subnets associated with this network. Subnet IDs
 	// **cannot** be used in multiple network configurations.
+	// Wire name: 'subnet_ids'
 	SubnetIds []string
 	// If specified, contains the VPC endpoints used to allow cluster
 	// communication from this VPC over [AWS PrivateLink].
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
+	// Wire name: 'vpc_endpoints'
 	VpcEndpoints *NetworkVpcEndpoints
 	// The ID of the VPC associated with this network. VPC IDs can be used in
 	// multiple network configurations.
+	// Wire name: 'vpc_id'
 	VpcId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createNetworkRequestToPb(st *CreateNetworkRequest) (*createNetworkRequestPb, error) {
@@ -952,28 +825,11 @@ func createNetworkRequestToPb(st *CreateNetworkRequest) (*createNetworkRequestPb
 		pb.GcpNetworkInfo = gcpNetworkInfoPb
 	}
 
-	networkNamePb := &st.NetworkName
-	if networkNamePb != nil {
-		pb.NetworkName = *networkNamePb
-	}
+	pb.NetworkName = st.NetworkName
 
-	var securityGroupIdsPb []string
-	for _, item := range st.SecurityGroupIds {
-		itemPb := &item
-		if itemPb != nil {
-			securityGroupIdsPb = append(securityGroupIdsPb, *itemPb)
-		}
-	}
-	pb.SecurityGroupIds = securityGroupIdsPb
+	pb.SecurityGroupIds = st.SecurityGroupIds
 
-	var subnetIdsPb []string
-	for _, item := range st.SubnetIds {
-		itemPb := &item
-		if itemPb != nil {
-			subnetIdsPb = append(subnetIdsPb, *itemPb)
-		}
-	}
-	pb.SubnetIds = subnetIdsPb
+	pb.SubnetIds = st.SubnetIds
 
 	vpcEndpointsPb, err := networkVpcEndpointsToPb(st.VpcEndpoints)
 	if err != nil {
@@ -983,10 +839,7 @@ func createNetworkRequestToPb(st *CreateNetworkRequest) (*createNetworkRequestPb
 		pb.VpcEndpoints = vpcEndpointsPb
 	}
 
-	vpcIdPb := &st.VpcId
-	if vpcIdPb != nil {
-		pb.VpcId = *vpcIdPb
-	}
+	pb.VpcId = st.VpcId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1053,28 +906,9 @@ func createNetworkRequestFromPb(pb *createNetworkRequestPb) (*CreateNetworkReque
 	if gcpNetworkInfoField != nil {
 		st.GcpNetworkInfo = gcpNetworkInfoField
 	}
-	networkNameField := &pb.NetworkName
-	if networkNameField != nil {
-		st.NetworkName = *networkNameField
-	}
-
-	var securityGroupIdsField []string
-	for _, item := range pb.SecurityGroupIds {
-		itemField := &item
-		if itemField != nil {
-			securityGroupIdsField = append(securityGroupIdsField, *itemField)
-		}
-	}
-	st.SecurityGroupIds = securityGroupIdsField
-
-	var subnetIdsField []string
-	for _, item := range pb.SubnetIds {
-		itemField := &item
-		if itemField != nil {
-			subnetIdsField = append(subnetIdsField, *itemField)
-		}
-	}
-	st.SubnetIds = subnetIdsField
+	st.NetworkName = pb.NetworkName
+	st.SecurityGroupIds = pb.SecurityGroupIds
+	st.SubnetIds = pb.SubnetIds
 	vpcEndpointsField, err := networkVpcEndpointsFromPb(pb.VpcEndpoints)
 	if err != nil {
 		return nil, err
@@ -1082,10 +916,7 @@ func createNetworkRequestFromPb(pb *createNetworkRequestPb) (*CreateNetworkReque
 	if vpcEndpointsField != nil {
 		st.VpcEndpoints = vpcEndpointsField
 	}
-	vpcIdField := &pb.VpcId
-	if vpcIdField != nil {
-		st.VpcId = *vpcIdField
-	}
+	st.VpcId = pb.VpcId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1101,8 +932,10 @@ func (st createNetworkRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateStorageConfigurationRequest struct {
 	// Root S3 bucket information.
+	// Wire name: 'root_bucket_info'
 	RootBucketInfo RootBucketInfo
 	// The human-readable name of the storage configuration.
+	// Wire name: 'storage_configuration_name'
 	StorageConfigurationName string
 }
 
@@ -1119,10 +952,7 @@ func createStorageConfigurationRequestToPb(st *CreateStorageConfigurationRequest
 		pb.RootBucketInfo = *rootBucketInfoPb
 	}
 
-	storageConfigurationNamePb := &st.StorageConfigurationName
-	if storageConfigurationNamePb != nil {
-		pb.StorageConfigurationName = *storageConfigurationNamePb
-	}
+	pb.StorageConfigurationName = st.StorageConfigurationName
 
 	return pb, nil
 }
@@ -1171,26 +1001,27 @@ func createStorageConfigurationRequestFromPb(pb *createStorageConfigurationReque
 	if rootBucketInfoField != nil {
 		st.RootBucketInfo = *rootBucketInfoField
 	}
-	storageConfigurationNameField := &pb.StorageConfigurationName
-	if storageConfigurationNameField != nil {
-		st.StorageConfigurationName = *storageConfigurationNameField
-	}
+	st.StorageConfigurationName = pb.StorageConfigurationName
 
 	return st, nil
 }
 
 type CreateVpcEndpointRequest struct {
 	// The ID of the VPC endpoint object in AWS.
+	// Wire name: 'aws_vpc_endpoint_id'
 	AwsVpcEndpointId string
 	// The Google Cloud specific information for this Private Service Connect
 	// endpoint.
+	// Wire name: 'gcp_vpc_endpoint_info'
 	GcpVpcEndpointInfo *GcpVpcEndpointInfo
 	// The AWS region in which this VPC endpoint object exists.
+	// Wire name: 'region'
 	Region string
 	// The human-readable name of the storage configuration.
+	// Wire name: 'vpc_endpoint_name'
 	VpcEndpointName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createVpcEndpointRequestToPb(st *CreateVpcEndpointRequest) (*createVpcEndpointRequestPb, error) {
@@ -1198,10 +1029,7 @@ func createVpcEndpointRequestToPb(st *CreateVpcEndpointRequest) (*createVpcEndpo
 		return nil, nil
 	}
 	pb := &createVpcEndpointRequestPb{}
-	awsVpcEndpointIdPb := &st.AwsVpcEndpointId
-	if awsVpcEndpointIdPb != nil {
-		pb.AwsVpcEndpointId = *awsVpcEndpointIdPb
-	}
+	pb.AwsVpcEndpointId = st.AwsVpcEndpointId
 
 	gcpVpcEndpointInfoPb, err := gcpVpcEndpointInfoToPb(st.GcpVpcEndpointInfo)
 	if err != nil {
@@ -1211,15 +1039,9 @@ func createVpcEndpointRequestToPb(st *CreateVpcEndpointRequest) (*createVpcEndpo
 		pb.GcpVpcEndpointInfo = gcpVpcEndpointInfoPb
 	}
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
-	vpcEndpointNamePb := &st.VpcEndpointName
-	if vpcEndpointNamePb != nil {
-		pb.VpcEndpointName = *vpcEndpointNamePb
-	}
+	pb.VpcEndpointName = st.VpcEndpointName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1269,10 +1091,7 @@ func createVpcEndpointRequestFromPb(pb *createVpcEndpointRequestPb) (*CreateVpcE
 		return nil, nil
 	}
 	st := &CreateVpcEndpointRequest{}
-	awsVpcEndpointIdField := &pb.AwsVpcEndpointId
-	if awsVpcEndpointIdField != nil {
-		st.AwsVpcEndpointId = *awsVpcEndpointIdField
-	}
+	st.AwsVpcEndpointId = pb.AwsVpcEndpointId
 	gcpVpcEndpointInfoField, err := gcpVpcEndpointInfoFromPb(pb.GcpVpcEndpointInfo)
 	if err != nil {
 		return nil, err
@@ -1280,14 +1099,8 @@ func createVpcEndpointRequestFromPb(pb *createVpcEndpointRequestPb) (*CreateVpcE
 	if gcpVpcEndpointInfoField != nil {
 		st.GcpVpcEndpointInfo = gcpVpcEndpointInfoField
 	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
-	vpcEndpointNameField := &pb.VpcEndpointName
-	if vpcEndpointNameField != nil {
-		st.VpcEndpointName = *vpcEndpointNameField
-	}
+	st.Region = pb.Region
+	st.VpcEndpointName = pb.VpcEndpointName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1303,19 +1116,24 @@ func (st createVpcEndpointRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateWorkspaceRequest struct {
 	// The AWS region of the workspace's data plane.
+	// Wire name: 'aws_region'
 	AwsRegion string
 	// The cloud provider which the workspace uses. For Google Cloud workspaces,
 	// always set this field to `gcp`.
+	// Wire name: 'cloud'
 	Cloud string
 	// The general workspace configurations that are specific to cloud
 	// providers.
+	// Wire name: 'cloud_resource_container'
 	CloudResourceContainer *CloudResourceContainer
 	// ID of the workspace's credential configuration object.
+	// Wire name: 'credentials_id'
 	CredentialsId string
 	// The custom tags key-value pairing that is attached to this workspace. The
 	// key-value pair is a string of utf-8 characters. The value can be an empty
 	// string, with maximum length of 255 characters. The key can be of maximum
 	// length of 127 characters, and cannot be empty.
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// The deployment name defines part of the subdomain for the workspace. The
 	// workspace URL for the web application and REST APIs is
@@ -1346,6 +1164,7 @@ type CreateWorkspaceRequest struct {
 	//
 	// If a new workspace omits this property, the server generates a unique
 	// deployment name for you with the pattern `dbc-xxxxxxxx-xxxx`.
+	// Wire name: 'deployment_name'
 	DeploymentName string
 	// The network settings for the workspace. The configurations are only for
 	// Databricks-managed VPCs. It is ignored if you specify a customer-managed
@@ -1370,26 +1189,33 @@ type CreateWorkspaceRequest struct {
 	// for a new workspace].
 	//
 	// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
+	// Wire name: 'gcp_managed_network_config'
 	GcpManagedNetworkConfig *GcpManagedNetworkConfig
 	// The configurations for the GKE cluster of a Databricks workspace.
+	// Wire name: 'gke_config'
 	GkeConfig *GkeConfig
 	// Whether no public IP is enabled for the workspace.
+	// Wire name: 'is_no_public_ip_enabled'
 	IsNoPublicIpEnabled bool
 	// The Google Cloud region of the workspace data plane in your Google
 	// account. For example, `us-east4`.
+	// Wire name: 'location'
 	Location string
 	// The ID of the workspace's managed services encryption key configuration
 	// object. This is used to help protect and control access to the
 	// workspace's notebooks, secrets, Databricks SQL queries, and query
 	// history. The provided key configuration object property `use_cases` must
 	// contain `MANAGED_SERVICES`.
+	// Wire name: 'managed_services_customer_managed_key_id'
 	ManagedServicesCustomerManagedKeyId string
 
+	// Wire name: 'network_id'
 	NetworkId string
 	// The pricing tier of the workspace. For pricing tier information, see [AWS
 	// Pricing].
 	//
 	// [AWS Pricing]: https://databricks.com/product/aws-pricing
+	// Wire name: 'pricing_tier'
 	PricingTier PricingTier
 	// ID of the workspace's private access settings object. Only used for
 	// PrivateLink. This ID must be specified for customers using [AWS
@@ -1402,18 +1228,22 @@ type CreateWorkspaceRequest struct {
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+	// Wire name: 'private_access_settings_id'
 	PrivateAccessSettingsId string
 	// The ID of the workspace's storage configuration object.
+	// Wire name: 'storage_configuration_id'
 	StorageConfigurationId string
 	// The ID of the workspace's storage encryption key configuration object.
 	// This is used to encrypt the workspace's root S3 bucket (root DBFS and
 	// system data) and, optionally, cluster EBS volumes. The provided key
 	// configuration object property `use_cases` must contain `STORAGE`.
+	// Wire name: 'storage_customer_managed_key_id'
 	StorageCustomerManagedKeyId string
 	// The workspace's human-readable name.
+	// Wire name: 'workspace_name'
 	WorkspaceName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createWorkspaceRequestToPb(st *CreateWorkspaceRequest) (*createWorkspaceRequestPb, error) {
@@ -1421,15 +1251,9 @@ func createWorkspaceRequestToPb(st *CreateWorkspaceRequest) (*createWorkspaceReq
 		return nil, nil
 	}
 	pb := &createWorkspaceRequestPb{}
-	awsRegionPb := &st.AwsRegion
-	if awsRegionPb != nil {
-		pb.AwsRegion = *awsRegionPb
-	}
+	pb.AwsRegion = st.AwsRegion
 
-	cloudPb := &st.Cloud
-	if cloudPb != nil {
-		pb.Cloud = *cloudPb
-	}
+	pb.Cloud = st.Cloud
 
 	cloudResourceContainerPb, err := cloudResourceContainerToPb(st.CloudResourceContainer)
 	if err != nil {
@@ -1439,24 +1263,11 @@ func createWorkspaceRequestToPb(st *CreateWorkspaceRequest) (*createWorkspaceReq
 		pb.CloudResourceContainer = cloudResourceContainerPb
 	}
 
-	credentialsIdPb := &st.CredentialsId
-	if credentialsIdPb != nil {
-		pb.CredentialsId = *credentialsIdPb
-	}
+	pb.CredentialsId = st.CredentialsId
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	deploymentNamePb := &st.DeploymentName
-	if deploymentNamePb != nil {
-		pb.DeploymentName = *deploymentNamePb
-	}
+	pb.DeploymentName = st.DeploymentName
 
 	gcpManagedNetworkConfigPb, err := gcpManagedNetworkConfigToPb(st.GcpManagedNetworkConfig)
 	if err != nil {
@@ -1474,50 +1285,23 @@ func createWorkspaceRequestToPb(st *CreateWorkspaceRequest) (*createWorkspaceReq
 		pb.GkeConfig = gkeConfigPb
 	}
 
-	isNoPublicIpEnabledPb := &st.IsNoPublicIpEnabled
-	if isNoPublicIpEnabledPb != nil {
-		pb.IsNoPublicIpEnabled = *isNoPublicIpEnabledPb
-	}
+	pb.IsNoPublicIpEnabled = st.IsNoPublicIpEnabled
 
-	locationPb := &st.Location
-	if locationPb != nil {
-		pb.Location = *locationPb
-	}
+	pb.Location = st.Location
 
-	managedServicesCustomerManagedKeyIdPb := &st.ManagedServicesCustomerManagedKeyId
-	if managedServicesCustomerManagedKeyIdPb != nil {
-		pb.ManagedServicesCustomerManagedKeyId = *managedServicesCustomerManagedKeyIdPb
-	}
+	pb.ManagedServicesCustomerManagedKeyId = st.ManagedServicesCustomerManagedKeyId
 
-	networkIdPb := &st.NetworkId
-	if networkIdPb != nil {
-		pb.NetworkId = *networkIdPb
-	}
+	pb.NetworkId = st.NetworkId
 
-	pricingTierPb := &st.PricingTier
-	if pricingTierPb != nil {
-		pb.PricingTier = *pricingTierPb
-	}
+	pb.PricingTier = st.PricingTier
 
-	privateAccessSettingsIdPb := &st.PrivateAccessSettingsId
-	if privateAccessSettingsIdPb != nil {
-		pb.PrivateAccessSettingsId = *privateAccessSettingsIdPb
-	}
+	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
 
-	storageConfigurationIdPb := &st.StorageConfigurationId
-	if storageConfigurationIdPb != nil {
-		pb.StorageConfigurationId = *storageConfigurationIdPb
-	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
 
-	storageCustomerManagedKeyIdPb := &st.StorageCustomerManagedKeyId
-	if storageCustomerManagedKeyIdPb != nil {
-		pb.StorageCustomerManagedKeyId = *storageCustomerManagedKeyIdPb
-	}
+	pb.StorageCustomerManagedKeyId = st.StorageCustomerManagedKeyId
 
-	workspaceNamePb := &st.WorkspaceName
-	if workspaceNamePb != nil {
-		pb.WorkspaceName = *workspaceNamePb
-	}
+	pb.WorkspaceName = st.WorkspaceName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1668,14 +1452,8 @@ func createWorkspaceRequestFromPb(pb *createWorkspaceRequestPb) (*CreateWorkspac
 		return nil, nil
 	}
 	st := &CreateWorkspaceRequest{}
-	awsRegionField := &pb.AwsRegion
-	if awsRegionField != nil {
-		st.AwsRegion = *awsRegionField
-	}
-	cloudField := &pb.Cloud
-	if cloudField != nil {
-		st.Cloud = *cloudField
-	}
+	st.AwsRegion = pb.AwsRegion
+	st.Cloud = pb.Cloud
 	cloudResourceContainerField, err := cloudResourceContainerFromPb(pb.CloudResourceContainer)
 	if err != nil {
 		return nil, err
@@ -1683,23 +1461,9 @@ func createWorkspaceRequestFromPb(pb *createWorkspaceRequestPb) (*CreateWorkspac
 	if cloudResourceContainerField != nil {
 		st.CloudResourceContainer = cloudResourceContainerField
 	}
-	credentialsIdField := &pb.CredentialsId
-	if credentialsIdField != nil {
-		st.CredentialsId = *credentialsIdField
-	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-	deploymentNameField := &pb.DeploymentName
-	if deploymentNameField != nil {
-		st.DeploymentName = *deploymentNameField
-	}
+	st.CredentialsId = pb.CredentialsId
+	st.CustomTags = pb.CustomTags
+	st.DeploymentName = pb.DeploymentName
 	gcpManagedNetworkConfigField, err := gcpManagedNetworkConfigFromPb(pb.GcpManagedNetworkConfig)
 	if err != nil {
 		return nil, err
@@ -1714,42 +1478,15 @@ func createWorkspaceRequestFromPb(pb *createWorkspaceRequestPb) (*CreateWorkspac
 	if gkeConfigField != nil {
 		st.GkeConfig = gkeConfigField
 	}
-	isNoPublicIpEnabledField := &pb.IsNoPublicIpEnabled
-	if isNoPublicIpEnabledField != nil {
-		st.IsNoPublicIpEnabled = *isNoPublicIpEnabledField
-	}
-	locationField := &pb.Location
-	if locationField != nil {
-		st.Location = *locationField
-	}
-	managedServicesCustomerManagedKeyIdField := &pb.ManagedServicesCustomerManagedKeyId
-	if managedServicesCustomerManagedKeyIdField != nil {
-		st.ManagedServicesCustomerManagedKeyId = *managedServicesCustomerManagedKeyIdField
-	}
-	networkIdField := &pb.NetworkId
-	if networkIdField != nil {
-		st.NetworkId = *networkIdField
-	}
-	pricingTierField := &pb.PricingTier
-	if pricingTierField != nil {
-		st.PricingTier = *pricingTierField
-	}
-	privateAccessSettingsIdField := &pb.PrivateAccessSettingsId
-	if privateAccessSettingsIdField != nil {
-		st.PrivateAccessSettingsId = *privateAccessSettingsIdField
-	}
-	storageConfigurationIdField := &pb.StorageConfigurationId
-	if storageConfigurationIdField != nil {
-		st.StorageConfigurationId = *storageConfigurationIdField
-	}
-	storageCustomerManagedKeyIdField := &pb.StorageCustomerManagedKeyId
-	if storageCustomerManagedKeyIdField != nil {
-		st.StorageCustomerManagedKeyId = *storageCustomerManagedKeyIdField
-	}
-	workspaceNameField := &pb.WorkspaceName
-	if workspaceNameField != nil {
-		st.WorkspaceName = *workspaceNameField
-	}
+	st.IsNoPublicIpEnabled = pb.IsNoPublicIpEnabled
+	st.Location = pb.Location
+	st.ManagedServicesCustomerManagedKeyId = pb.ManagedServicesCustomerManagedKeyId
+	st.NetworkId = pb.NetworkId
+	st.PricingTier = pb.PricingTier
+	st.PrivateAccessSettingsId = pb.PrivateAccessSettingsId
+	st.StorageConfigurationId = pb.StorageConfigurationId
+	st.StorageCustomerManagedKeyId = pb.StorageCustomerManagedKeyId
+	st.WorkspaceName = pb.WorkspaceName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1765,17 +1502,22 @@ func (st createWorkspaceRequestPb) MarshalJSON() ([]byte, error) {
 
 type Credential struct {
 	// The Databricks account ID that hosts the credential.
+	// Wire name: 'account_id'
 	AccountId string
 
+	// Wire name: 'aws_credentials'
 	AwsCredentials *AwsCredentials
 	// Time in epoch milliseconds when the credential was created.
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// Databricks credential configuration ID.
+	// Wire name: 'credentials_id'
 	CredentialsId string
 	// The human-readable name of the credential configuration object.
+	// Wire name: 'credentials_name'
 	CredentialsName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func credentialToPb(st *Credential) (*credentialPb, error) {
@@ -1783,10 +1525,7 @@ func credentialToPb(st *Credential) (*credentialPb, error) {
 		return nil, nil
 	}
 	pb := &credentialPb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
 	awsCredentialsPb, err := awsCredentialsToPb(st.AwsCredentials)
 	if err != nil {
@@ -1796,20 +1535,11 @@ func credentialToPb(st *Credential) (*credentialPb, error) {
 		pb.AwsCredentials = awsCredentialsPb
 	}
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
-	credentialsIdPb := &st.CredentialsId
-	if credentialsIdPb != nil {
-		pb.CredentialsId = *credentialsIdPb
-	}
+	pb.CredentialsId = st.CredentialsId
 
-	credentialsNamePb := &st.CredentialsName
-	if credentialsNamePb != nil {
-		pb.CredentialsName = *credentialsNamePb
-	}
+	pb.CredentialsName = st.CredentialsName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1860,10 +1590,7 @@ func credentialFromPb(pb *credentialPb) (*Credential, error) {
 		return nil, nil
 	}
 	st := &Credential{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
+	st.AccountId = pb.AccountId
 	awsCredentialsField, err := awsCredentialsFromPb(pb.AwsCredentials)
 	if err != nil {
 		return nil, err
@@ -1871,18 +1598,9 @@ func credentialFromPb(pb *credentialPb) (*Credential, error) {
 	if awsCredentialsField != nil {
 		st.AwsCredentials = awsCredentialsField
 	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
-	credentialsIdField := &pb.CredentialsId
-	if credentialsIdField != nil {
-		st.CredentialsId = *credentialsIdField
-	}
-	credentialsNameField := &pb.CredentialsName
-	if credentialsNameField != nil {
-		st.CredentialsName = *credentialsNameField
-	}
+	st.CreationTime = pb.CreationTime
+	st.CredentialsId = pb.CredentialsId
+	st.CredentialsName = pb.CredentialsName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1923,9 +1641,10 @@ func customTagsFromPb(stPb *customTagsPb) (*CustomTags, error) {
 type CustomerFacingGcpCloudResourceContainer struct {
 	// The Google Cloud project ID, which the workspace uses to instantiate
 	// cloud resources for your workspace.
+	// Wire name: 'project_id'
 	ProjectId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func customerFacingGcpCloudResourceContainerToPb(st *CustomerFacingGcpCloudResourceContainer) (*customerFacingGcpCloudResourceContainerPb, error) {
@@ -1933,10 +1652,7 @@ func customerFacingGcpCloudResourceContainerToPb(st *CustomerFacingGcpCloudResou
 		return nil, nil
 	}
 	pb := &customerFacingGcpCloudResourceContainerPb{}
-	projectIdPb := &st.ProjectId
-	if projectIdPb != nil {
-		pb.ProjectId = *projectIdPb
-	}
+	pb.ProjectId = st.ProjectId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1980,10 +1696,7 @@ func customerFacingGcpCloudResourceContainerFromPb(pb *customerFacingGcpCloudRes
 		return nil, nil
 	}
 	st := &CustomerFacingGcpCloudResourceContainer{}
-	projectIdField := &pb.ProjectId
-	if projectIdField != nil {
-		st.ProjectId = *projectIdField
-	}
+	st.ProjectId = pb.ProjectId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1999,19 +1712,25 @@ func (st customerFacingGcpCloudResourceContainerPb) MarshalJSON() ([]byte, error
 
 type CustomerManagedKey struct {
 	// The Databricks account ID that holds the customer-managed key.
+	// Wire name: 'account_id'
 	AccountId string
 
+	// Wire name: 'aws_key_info'
 	AwsKeyInfo *AwsKeyInfo
 	// Time in epoch milliseconds when the customer key was created.
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// ID of the encryption key configuration object.
+	// Wire name: 'customer_managed_key_id'
 	CustomerManagedKeyId string
 
+	// Wire name: 'gcp_key_info'
 	GcpKeyInfo *GcpKeyInfo
 	// The cases that the key can be used for.
+	// Wire name: 'use_cases'
 	UseCases []KeyUseCase
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func customerManagedKeyToPb(st *CustomerManagedKey) (*customerManagedKeyPb, error) {
@@ -2019,10 +1738,7 @@ func customerManagedKeyToPb(st *CustomerManagedKey) (*customerManagedKeyPb, erro
 		return nil, nil
 	}
 	pb := &customerManagedKeyPb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
 	awsKeyInfoPb, err := awsKeyInfoToPb(st.AwsKeyInfo)
 	if err != nil {
@@ -2032,15 +1748,9 @@ func customerManagedKeyToPb(st *CustomerManagedKey) (*customerManagedKeyPb, erro
 		pb.AwsKeyInfo = awsKeyInfoPb
 	}
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
-	customerManagedKeyIdPb := &st.CustomerManagedKeyId
-	if customerManagedKeyIdPb != nil {
-		pb.CustomerManagedKeyId = *customerManagedKeyIdPb
-	}
+	pb.CustomerManagedKeyId = st.CustomerManagedKeyId
 
 	gcpKeyInfoPb, err := gcpKeyInfoToPb(st.GcpKeyInfo)
 	if err != nil {
@@ -2050,14 +1760,7 @@ func customerManagedKeyToPb(st *CustomerManagedKey) (*customerManagedKeyPb, erro
 		pb.GcpKeyInfo = gcpKeyInfoPb
 	}
 
-	var useCasesPb []KeyUseCase
-	for _, item := range st.UseCases {
-		itemPb := &item
-		if itemPb != nil {
-			useCasesPb = append(useCasesPb, *itemPb)
-		}
-	}
-	pb.UseCases = useCasesPb
+	pb.UseCases = st.UseCases
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2110,10 +1813,7 @@ func customerManagedKeyFromPb(pb *customerManagedKeyPb) (*CustomerManagedKey, er
 		return nil, nil
 	}
 	st := &CustomerManagedKey{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
+	st.AccountId = pb.AccountId
 	awsKeyInfoField, err := awsKeyInfoFromPb(pb.AwsKeyInfo)
 	if err != nil {
 		return nil, err
@@ -2121,14 +1821,8 @@ func customerManagedKeyFromPb(pb *customerManagedKeyPb) (*CustomerManagedKey, er
 	if awsKeyInfoField != nil {
 		st.AwsKeyInfo = awsKeyInfoField
 	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
-	customerManagedKeyIdField := &pb.CustomerManagedKeyId
-	if customerManagedKeyIdField != nil {
-		st.CustomerManagedKeyId = *customerManagedKeyIdField
-	}
+	st.CreationTime = pb.CreationTime
+	st.CustomerManagedKeyId = pb.CustomerManagedKeyId
 	gcpKeyInfoField, err := gcpKeyInfoFromPb(pb.GcpKeyInfo)
 	if err != nil {
 		return nil, err
@@ -2136,15 +1830,7 @@ func customerManagedKeyFromPb(pb *customerManagedKeyPb) (*CustomerManagedKey, er
 	if gcpKeyInfoField != nil {
 		st.GcpKeyInfo = gcpKeyInfoField
 	}
-
-	var useCasesField []KeyUseCase
-	for _, item := range pb.UseCases {
-		itemField := &item
-		if itemField != nil {
-			useCasesField = append(useCasesField, *itemField)
-		}
-	}
-	st.UseCases = useCasesField
+	st.UseCases = pb.UseCases
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2161,7 +1847,8 @@ func (st customerManagedKeyPb) MarshalJSON() ([]byte, error) {
 // Delete credential configuration
 type DeleteCredentialRequest struct {
 	// Databricks Account API credential configuration ID
-	CredentialsId string
+	// Wire name: 'credentials_id'
+	CredentialsId string `tf:"-"`
 }
 
 func deleteCredentialRequestToPb(st *DeleteCredentialRequest) (*deleteCredentialRequestPb, error) {
@@ -2169,10 +1856,7 @@ func deleteCredentialRequestToPb(st *DeleteCredentialRequest) (*deleteCredential
 		return nil, nil
 	}
 	pb := &deleteCredentialRequestPb{}
-	credentialsIdPb := &st.CredentialsId
-	if credentialsIdPb != nil {
-		pb.CredentialsId = *credentialsIdPb
-	}
+	pb.CredentialsId = st.CredentialsId
 
 	return pb, nil
 }
@@ -2212,10 +1896,7 @@ func deleteCredentialRequestFromPb(pb *deleteCredentialRequestPb) (*DeleteCreden
 		return nil, nil
 	}
 	st := &DeleteCredentialRequest{}
-	credentialsIdField := &pb.CredentialsId
-	if credentialsIdField != nil {
-		st.CredentialsId = *credentialsIdField
-	}
+	st.CredentialsId = pb.CredentialsId
 
 	return st, nil
 }
@@ -2223,7 +1904,8 @@ func deleteCredentialRequestFromPb(pb *deleteCredentialRequestPb) (*DeleteCreden
 // Delete encryption key configuration
 type DeleteEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
-	CustomerManagedKeyId string
+	// Wire name: 'customer_managed_key_id'
+	CustomerManagedKeyId string `tf:"-"`
 }
 
 func deleteEncryptionKeyRequestToPb(st *DeleteEncryptionKeyRequest) (*deleteEncryptionKeyRequestPb, error) {
@@ -2231,10 +1913,7 @@ func deleteEncryptionKeyRequestToPb(st *DeleteEncryptionKeyRequest) (*deleteEncr
 		return nil, nil
 	}
 	pb := &deleteEncryptionKeyRequestPb{}
-	customerManagedKeyIdPb := &st.CustomerManagedKeyId
-	if customerManagedKeyIdPb != nil {
-		pb.CustomerManagedKeyId = *customerManagedKeyIdPb
-	}
+	pb.CustomerManagedKeyId = st.CustomerManagedKeyId
 
 	return pb, nil
 }
@@ -2274,10 +1953,7 @@ func deleteEncryptionKeyRequestFromPb(pb *deleteEncryptionKeyRequestPb) (*Delete
 		return nil, nil
 	}
 	st := &DeleteEncryptionKeyRequest{}
-	customerManagedKeyIdField := &pb.CustomerManagedKeyId
-	if customerManagedKeyIdField != nil {
-		st.CustomerManagedKeyId = *customerManagedKeyIdField
-	}
+	st.CustomerManagedKeyId = pb.CustomerManagedKeyId
 
 	return st, nil
 }
@@ -2285,7 +1961,8 @@ func deleteEncryptionKeyRequestFromPb(pb *deleteEncryptionKeyRequestPb) (*Delete
 // Delete a network configuration
 type DeleteNetworkRequest struct {
 	// Databricks Account API network configuration ID.
-	NetworkId string
+	// Wire name: 'network_id'
+	NetworkId string `tf:"-"`
 }
 
 func deleteNetworkRequestToPb(st *DeleteNetworkRequest) (*deleteNetworkRequestPb, error) {
@@ -2293,10 +1970,7 @@ func deleteNetworkRequestToPb(st *DeleteNetworkRequest) (*deleteNetworkRequestPb
 		return nil, nil
 	}
 	pb := &deleteNetworkRequestPb{}
-	networkIdPb := &st.NetworkId
-	if networkIdPb != nil {
-		pb.NetworkId = *networkIdPb
-	}
+	pb.NetworkId = st.NetworkId
 
 	return pb, nil
 }
@@ -2336,10 +2010,7 @@ func deleteNetworkRequestFromPb(pb *deleteNetworkRequestPb) (*DeleteNetworkReque
 		return nil, nil
 	}
 	st := &DeleteNetworkRequest{}
-	networkIdField := &pb.NetworkId
-	if networkIdField != nil {
-		st.NetworkId = *networkIdField
-	}
+	st.NetworkId = pb.NetworkId
 
 	return st, nil
 }
@@ -2347,7 +2018,8 @@ func deleteNetworkRequestFromPb(pb *deleteNetworkRequestPb) (*DeleteNetworkReque
 // Delete a private access settings object
 type DeletePrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
-	PrivateAccessSettingsId string
+	// Wire name: 'private_access_settings_id'
+	PrivateAccessSettingsId string `tf:"-"`
 }
 
 func deletePrivateAccesRequestToPb(st *DeletePrivateAccesRequest) (*deletePrivateAccesRequestPb, error) {
@@ -2355,10 +2027,7 @@ func deletePrivateAccesRequestToPb(st *DeletePrivateAccesRequest) (*deletePrivat
 		return nil, nil
 	}
 	pb := &deletePrivateAccesRequestPb{}
-	privateAccessSettingsIdPb := &st.PrivateAccessSettingsId
-	if privateAccessSettingsIdPb != nil {
-		pb.PrivateAccessSettingsId = *privateAccessSettingsIdPb
-	}
+	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
 
 	return pb, nil
 }
@@ -2398,10 +2067,7 @@ func deletePrivateAccesRequestFromPb(pb *deletePrivateAccesRequestPb) (*DeletePr
 		return nil, nil
 	}
 	st := &DeletePrivateAccesRequest{}
-	privateAccessSettingsIdField := &pb.PrivateAccessSettingsId
-	if privateAccessSettingsIdField != nil {
-		st.PrivateAccessSettingsId = *privateAccessSettingsIdField
-	}
+	st.PrivateAccessSettingsId = pb.PrivateAccessSettingsId
 
 	return st, nil
 }
@@ -2458,7 +2124,8 @@ func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
 // Delete storage configuration
 type DeleteStorageRequest struct {
 	// Databricks Account API storage configuration ID.
-	StorageConfigurationId string
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string `tf:"-"`
 }
 
 func deleteStorageRequestToPb(st *DeleteStorageRequest) (*deleteStorageRequestPb, error) {
@@ -2466,10 +2133,7 @@ func deleteStorageRequestToPb(st *DeleteStorageRequest) (*deleteStorageRequestPb
 		return nil, nil
 	}
 	pb := &deleteStorageRequestPb{}
-	storageConfigurationIdPb := &st.StorageConfigurationId
-	if storageConfigurationIdPb != nil {
-		pb.StorageConfigurationId = *storageConfigurationIdPb
-	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
 
 	return pb, nil
 }
@@ -2509,10 +2173,7 @@ func deleteStorageRequestFromPb(pb *deleteStorageRequestPb) (*DeleteStorageReque
 		return nil, nil
 	}
 	st := &DeleteStorageRequest{}
-	storageConfigurationIdField := &pb.StorageConfigurationId
-	if storageConfigurationIdField != nil {
-		st.StorageConfigurationId = *storageConfigurationIdField
-	}
+	st.StorageConfigurationId = pb.StorageConfigurationId
 
 	return st, nil
 }
@@ -2520,7 +2181,8 @@ func deleteStorageRequestFromPb(pb *deleteStorageRequestPb) (*DeleteStorageReque
 // Delete VPC endpoint configuration
 type DeleteVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
-	VpcEndpointId string
+	// Wire name: 'vpc_endpoint_id'
+	VpcEndpointId string `tf:"-"`
 }
 
 func deleteVpcEndpointRequestToPb(st *DeleteVpcEndpointRequest) (*deleteVpcEndpointRequestPb, error) {
@@ -2528,10 +2190,7 @@ func deleteVpcEndpointRequestToPb(st *DeleteVpcEndpointRequest) (*deleteVpcEndpo
 		return nil, nil
 	}
 	pb := &deleteVpcEndpointRequestPb{}
-	vpcEndpointIdPb := &st.VpcEndpointId
-	if vpcEndpointIdPb != nil {
-		pb.VpcEndpointId = *vpcEndpointIdPb
-	}
+	pb.VpcEndpointId = st.VpcEndpointId
 
 	return pb, nil
 }
@@ -2571,10 +2230,7 @@ func deleteVpcEndpointRequestFromPb(pb *deleteVpcEndpointRequestPb) (*DeleteVpcE
 		return nil, nil
 	}
 	st := &DeleteVpcEndpointRequest{}
-	vpcEndpointIdField := &pb.VpcEndpointId
-	if vpcEndpointIdField != nil {
-		st.VpcEndpointId = *vpcEndpointIdField
-	}
+	st.VpcEndpointId = pb.VpcEndpointId
 
 	return st, nil
 }
@@ -2582,7 +2238,8 @@ func deleteVpcEndpointRequestFromPb(pb *deleteVpcEndpointRequestPb) (*DeleteVpcE
 // Delete a workspace
 type DeleteWorkspaceRequest struct {
 	// Workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func deleteWorkspaceRequestToPb(st *DeleteWorkspaceRequest) (*deleteWorkspaceRequestPb, error) {
@@ -2590,10 +2247,7 @@ func deleteWorkspaceRequestToPb(st *DeleteWorkspaceRequest) (*deleteWorkspaceReq
 		return nil, nil
 	}
 	pb := &deleteWorkspaceRequestPb{}
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -2633,10 +2287,7 @@ func deleteWorkspaceRequestFromPb(pb *deleteWorkspaceRequestPb) (*DeleteWorkspac
 		return nil, nil
 	}
 	st := &DeleteWorkspaceRequest{}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
@@ -2743,13 +2394,16 @@ func errorTypeFromPb(pb *errorTypePb) (*ErrorType, error) {
 
 type ExternalCustomerInfo struct {
 	// Email of the authoritative user.
+	// Wire name: 'authoritative_user_email'
 	AuthoritativeUserEmail string
 	// The authoritative user full name.
+	// Wire name: 'authoritative_user_full_name'
 	AuthoritativeUserFullName string
 	// The legal entity name for the external workspace
+	// Wire name: 'customer_name'
 	CustomerName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func externalCustomerInfoToPb(st *ExternalCustomerInfo) (*externalCustomerInfoPb, error) {
@@ -2757,20 +2411,11 @@ func externalCustomerInfoToPb(st *ExternalCustomerInfo) (*externalCustomerInfoPb
 		return nil, nil
 	}
 	pb := &externalCustomerInfoPb{}
-	authoritativeUserEmailPb := &st.AuthoritativeUserEmail
-	if authoritativeUserEmailPb != nil {
-		pb.AuthoritativeUserEmail = *authoritativeUserEmailPb
-	}
+	pb.AuthoritativeUserEmail = st.AuthoritativeUserEmail
 
-	authoritativeUserFullNamePb := &st.AuthoritativeUserFullName
-	if authoritativeUserFullNamePb != nil {
-		pb.AuthoritativeUserFullName = *authoritativeUserFullNamePb
-	}
+	pb.AuthoritativeUserFullName = st.AuthoritativeUserFullName
 
-	customerNamePb := &st.CustomerName
-	if customerNamePb != nil {
-		pb.CustomerName = *customerNamePb
-	}
+	pb.CustomerName = st.CustomerName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2817,18 +2462,9 @@ func externalCustomerInfoFromPb(pb *externalCustomerInfoPb) (*ExternalCustomerIn
 		return nil, nil
 	}
 	st := &ExternalCustomerInfo{}
-	authoritativeUserEmailField := &pb.AuthoritativeUserEmail
-	if authoritativeUserEmailField != nil {
-		st.AuthoritativeUserEmail = *authoritativeUserEmailField
-	}
-	authoritativeUserFullNameField := &pb.AuthoritativeUserFullName
-	if authoritativeUserFullNameField != nil {
-		st.AuthoritativeUserFullName = *authoritativeUserFullNameField
-	}
-	customerNameField := &pb.CustomerName
-	if customerNameField != nil {
-		st.CustomerName = *customerNameField
-	}
+	st.AuthoritativeUserEmail = pb.AuthoritativeUserEmail
+	st.AuthoritativeUserFullName = pb.AuthoritativeUserFullName
+	st.CustomerName = pb.CustomerName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2844,6 +2480,7 @@ func (st externalCustomerInfoPb) MarshalJSON() ([]byte, error) {
 
 type GcpKeyInfo struct {
 	// The GCP KMS key's resource name
+	// Wire name: 'kms_key_id'
 	KmsKeyId string
 }
 
@@ -2852,10 +2489,7 @@ func gcpKeyInfoToPb(st *GcpKeyInfo) (*gcpKeyInfoPb, error) {
 		return nil, nil
 	}
 	pb := &gcpKeyInfoPb{}
-	kmsKeyIdPb := &st.KmsKeyId
-	if kmsKeyIdPb != nil {
-		pb.KmsKeyId = *kmsKeyIdPb
-	}
+	pb.KmsKeyId = st.KmsKeyId
 
 	return pb, nil
 }
@@ -2895,10 +2529,7 @@ func gcpKeyInfoFromPb(pb *gcpKeyInfoPb) (*GcpKeyInfo, error) {
 		return nil, nil
 	}
 	st := &GcpKeyInfo{}
-	kmsKeyIdField := &pb.KmsKeyId
-	if kmsKeyIdField != nil {
-		st.KmsKeyId = *kmsKeyIdField
-	}
+	st.KmsKeyId = pb.KmsKeyId
 
 	return st, nil
 }
@@ -2929,15 +2560,18 @@ func gcpKeyInfoFromPb(pb *gcpKeyInfoPb) (*GcpKeyInfo, error) {
 type GcpManagedNetworkConfig struct {
 	// The IP range from which to allocate GKE cluster pods. No bigger than `/9`
 	// and no smaller than `/21`.
+	// Wire name: 'gke_cluster_pod_ip_range'
 	GkeClusterPodIpRange string
 	// The IP range from which to allocate GKE cluster services. No bigger than
 	// `/16` and no smaller than `/27`.
+	// Wire name: 'gke_cluster_service_ip_range'
 	GkeClusterServiceIpRange string
 	// The IP range from which to allocate GKE cluster nodes. No bigger than
 	// `/9` and no smaller than `/29`.
+	// Wire name: 'subnet_cidr'
 	SubnetCidr string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func gcpManagedNetworkConfigToPb(st *GcpManagedNetworkConfig) (*gcpManagedNetworkConfigPb, error) {
@@ -2945,20 +2579,11 @@ func gcpManagedNetworkConfigToPb(st *GcpManagedNetworkConfig) (*gcpManagedNetwor
 		return nil, nil
 	}
 	pb := &gcpManagedNetworkConfigPb{}
-	gkeClusterPodIpRangePb := &st.GkeClusterPodIpRange
-	if gkeClusterPodIpRangePb != nil {
-		pb.GkeClusterPodIpRange = *gkeClusterPodIpRangePb
-	}
+	pb.GkeClusterPodIpRange = st.GkeClusterPodIpRange
 
-	gkeClusterServiceIpRangePb := &st.GkeClusterServiceIpRange
-	if gkeClusterServiceIpRangePb != nil {
-		pb.GkeClusterServiceIpRange = *gkeClusterServiceIpRangePb
-	}
+	pb.GkeClusterServiceIpRange = st.GkeClusterServiceIpRange
 
-	subnetCidrPb := &st.SubnetCidr
-	if subnetCidrPb != nil {
-		pb.SubnetCidr = *subnetCidrPb
-	}
+	pb.SubnetCidr = st.SubnetCidr
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3008,18 +2633,9 @@ func gcpManagedNetworkConfigFromPb(pb *gcpManagedNetworkConfigPb) (*GcpManagedNe
 		return nil, nil
 	}
 	st := &GcpManagedNetworkConfig{}
-	gkeClusterPodIpRangeField := &pb.GkeClusterPodIpRange
-	if gkeClusterPodIpRangeField != nil {
-		st.GkeClusterPodIpRange = *gkeClusterPodIpRangeField
-	}
-	gkeClusterServiceIpRangeField := &pb.GkeClusterServiceIpRange
-	if gkeClusterServiceIpRangeField != nil {
-		st.GkeClusterServiceIpRange = *gkeClusterServiceIpRangeField
-	}
-	subnetCidrField := &pb.SubnetCidr
-	if subnetCidrField != nil {
-		st.SubnetCidr = *subnetCidrField
-	}
+	st.GkeClusterPodIpRange = pb.GkeClusterPodIpRange
+	st.GkeClusterServiceIpRange = pb.GkeClusterServiceIpRange
+	st.SubnetCidr = pb.SubnetCidr
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3037,22 +2653,28 @@ func (st gcpManagedNetworkConfigPb) MarshalJSON() ([]byte, error) {
 // ID, subnet ID, and secondary IP ranges).
 type GcpNetworkInfo struct {
 	// The Google Cloud project ID of the VPC network.
+	// Wire name: 'network_project_id'
 	NetworkProjectId string
 	// The name of the secondary IP range for pods. A Databricks-managed GKE
 	// cluster uses this IP range for its pods. This secondary IP range can be
 	// used by only one workspace.
+	// Wire name: 'pod_ip_range_name'
 	PodIpRangeName string
 	// The name of the secondary IP range for services. A Databricks-managed GKE
 	// cluster uses this IP range for its services. This secondary IP range can
 	// be used by only one workspace.
+	// Wire name: 'service_ip_range_name'
 	ServiceIpRangeName string
 	// The ID of the subnet associated with this network.
+	// Wire name: 'subnet_id'
 	SubnetId string
 	// The Google Cloud region of the workspace data plane (for example,
 	// `us-east4`).
+	// Wire name: 'subnet_region'
 	SubnetRegion string
 	// The ID of the VPC associated with this network. VPC IDs can be used in
 	// multiple network configurations.
+	// Wire name: 'vpc_id'
 	VpcId string
 }
 
@@ -3061,35 +2683,17 @@ func gcpNetworkInfoToPb(st *GcpNetworkInfo) (*gcpNetworkInfoPb, error) {
 		return nil, nil
 	}
 	pb := &gcpNetworkInfoPb{}
-	networkProjectIdPb := &st.NetworkProjectId
-	if networkProjectIdPb != nil {
-		pb.NetworkProjectId = *networkProjectIdPb
-	}
+	pb.NetworkProjectId = st.NetworkProjectId
 
-	podIpRangeNamePb := &st.PodIpRangeName
-	if podIpRangeNamePb != nil {
-		pb.PodIpRangeName = *podIpRangeNamePb
-	}
+	pb.PodIpRangeName = st.PodIpRangeName
 
-	serviceIpRangeNamePb := &st.ServiceIpRangeName
-	if serviceIpRangeNamePb != nil {
-		pb.ServiceIpRangeName = *serviceIpRangeNamePb
-	}
+	pb.ServiceIpRangeName = st.ServiceIpRangeName
 
-	subnetIdPb := &st.SubnetId
-	if subnetIdPb != nil {
-		pb.SubnetId = *subnetIdPb
-	}
+	pb.SubnetId = st.SubnetId
 
-	subnetRegionPb := &st.SubnetRegion
-	if subnetRegionPb != nil {
-		pb.SubnetRegion = *subnetRegionPb
-	}
+	pb.SubnetRegion = st.SubnetRegion
 
-	vpcIdPb := &st.VpcId
-	if vpcIdPb != nil {
-		pb.VpcId = *vpcIdPb
-	}
+	pb.VpcId = st.VpcId
 
 	return pb, nil
 }
@@ -3145,30 +2749,12 @@ func gcpNetworkInfoFromPb(pb *gcpNetworkInfoPb) (*GcpNetworkInfo, error) {
 		return nil, nil
 	}
 	st := &GcpNetworkInfo{}
-	networkProjectIdField := &pb.NetworkProjectId
-	if networkProjectIdField != nil {
-		st.NetworkProjectId = *networkProjectIdField
-	}
-	podIpRangeNameField := &pb.PodIpRangeName
-	if podIpRangeNameField != nil {
-		st.PodIpRangeName = *podIpRangeNameField
-	}
-	serviceIpRangeNameField := &pb.ServiceIpRangeName
-	if serviceIpRangeNameField != nil {
-		st.ServiceIpRangeName = *serviceIpRangeNameField
-	}
-	subnetIdField := &pb.SubnetId
-	if subnetIdField != nil {
-		st.SubnetId = *subnetIdField
-	}
-	subnetRegionField := &pb.SubnetRegion
-	if subnetRegionField != nil {
-		st.SubnetRegion = *subnetRegionField
-	}
-	vpcIdField := &pb.VpcId
-	if vpcIdField != nil {
-		st.VpcId = *vpcIdField
-	}
+	st.NetworkProjectId = pb.NetworkProjectId
+	st.PodIpRangeName = pb.PodIpRangeName
+	st.ServiceIpRangeName = pb.ServiceIpRangeName
+	st.SubnetId = pb.SubnetId
+	st.SubnetRegion = pb.SubnetRegion
+	st.VpcId = pb.VpcId
 
 	return st, nil
 }
@@ -3177,18 +2763,23 @@ func gcpNetworkInfoFromPb(pb *gcpNetworkInfoPb) (*GcpNetworkInfo, error) {
 // endpoint.
 type GcpVpcEndpointInfo struct {
 	// Region of the PSC endpoint.
+	// Wire name: 'endpoint_region'
 	EndpointRegion string
 	// The Google Cloud project ID of the VPC network where the PSC connection
 	// resides.
+	// Wire name: 'project_id'
 	ProjectId string
 	// The unique ID of this PSC connection.
+	// Wire name: 'psc_connection_id'
 	PscConnectionId string
 	// The name of the PSC endpoint in the Google Cloud project.
+	// Wire name: 'psc_endpoint_name'
 	PscEndpointName string
 	// The service attachment this PSC connection connects to.
+	// Wire name: 'service_attachment_id'
 	ServiceAttachmentId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func gcpVpcEndpointInfoToPb(st *GcpVpcEndpointInfo) (*gcpVpcEndpointInfoPb, error) {
@@ -3196,30 +2787,15 @@ func gcpVpcEndpointInfoToPb(st *GcpVpcEndpointInfo) (*gcpVpcEndpointInfoPb, erro
 		return nil, nil
 	}
 	pb := &gcpVpcEndpointInfoPb{}
-	endpointRegionPb := &st.EndpointRegion
-	if endpointRegionPb != nil {
-		pb.EndpointRegion = *endpointRegionPb
-	}
+	pb.EndpointRegion = st.EndpointRegion
 
-	projectIdPb := &st.ProjectId
-	if projectIdPb != nil {
-		pb.ProjectId = *projectIdPb
-	}
+	pb.ProjectId = st.ProjectId
 
-	pscConnectionIdPb := &st.PscConnectionId
-	if pscConnectionIdPb != nil {
-		pb.PscConnectionId = *pscConnectionIdPb
-	}
+	pb.PscConnectionId = st.PscConnectionId
 
-	pscEndpointNamePb := &st.PscEndpointName
-	if pscEndpointNamePb != nil {
-		pb.PscEndpointName = *pscEndpointNamePb
-	}
+	pb.PscEndpointName = st.PscEndpointName
 
-	serviceAttachmentIdPb := &st.ServiceAttachmentId
-	if serviceAttachmentIdPb != nil {
-		pb.ServiceAttachmentId = *serviceAttachmentIdPb
-	}
+	pb.ServiceAttachmentId = st.ServiceAttachmentId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3271,26 +2847,11 @@ func gcpVpcEndpointInfoFromPb(pb *gcpVpcEndpointInfoPb) (*GcpVpcEndpointInfo, er
 		return nil, nil
 	}
 	st := &GcpVpcEndpointInfo{}
-	endpointRegionField := &pb.EndpointRegion
-	if endpointRegionField != nil {
-		st.EndpointRegion = *endpointRegionField
-	}
-	projectIdField := &pb.ProjectId
-	if projectIdField != nil {
-		st.ProjectId = *projectIdField
-	}
-	pscConnectionIdField := &pb.PscConnectionId
-	if pscConnectionIdField != nil {
-		st.PscConnectionId = *pscConnectionIdField
-	}
-	pscEndpointNameField := &pb.PscEndpointName
-	if pscEndpointNameField != nil {
-		st.PscEndpointName = *pscEndpointNameField
-	}
-	serviceAttachmentIdField := &pb.ServiceAttachmentId
-	if serviceAttachmentIdField != nil {
-		st.ServiceAttachmentId = *serviceAttachmentIdField
-	}
+	st.EndpointRegion = pb.EndpointRegion
+	st.ProjectId = pb.ProjectId
+	st.PscConnectionId = pb.PscConnectionId
+	st.PscEndpointName = pb.PscEndpointName
+	st.ServiceAttachmentId = pb.ServiceAttachmentId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3307,7 +2868,8 @@ func (st gcpVpcEndpointInfoPb) MarshalJSON() ([]byte, error) {
 // Get credential configuration
 type GetCredentialRequest struct {
 	// Databricks Account API credential configuration ID
-	CredentialsId string
+	// Wire name: 'credentials_id'
+	CredentialsId string `tf:"-"`
 }
 
 func getCredentialRequestToPb(st *GetCredentialRequest) (*getCredentialRequestPb, error) {
@@ -3315,10 +2877,7 @@ func getCredentialRequestToPb(st *GetCredentialRequest) (*getCredentialRequestPb
 		return nil, nil
 	}
 	pb := &getCredentialRequestPb{}
-	credentialsIdPb := &st.CredentialsId
-	if credentialsIdPb != nil {
-		pb.CredentialsId = *credentialsIdPb
-	}
+	pb.CredentialsId = st.CredentialsId
 
 	return pb, nil
 }
@@ -3358,10 +2917,7 @@ func getCredentialRequestFromPb(pb *getCredentialRequestPb) (*GetCredentialReque
 		return nil, nil
 	}
 	st := &GetCredentialRequest{}
-	credentialsIdField := &pb.CredentialsId
-	if credentialsIdField != nil {
-		st.CredentialsId = *credentialsIdField
-	}
+	st.CredentialsId = pb.CredentialsId
 
 	return st, nil
 }
@@ -3369,7 +2925,8 @@ func getCredentialRequestFromPb(pb *getCredentialRequestPb) (*GetCredentialReque
 // Get encryption key configuration
 type GetEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
-	CustomerManagedKeyId string
+	// Wire name: 'customer_managed_key_id'
+	CustomerManagedKeyId string `tf:"-"`
 }
 
 func getEncryptionKeyRequestToPb(st *GetEncryptionKeyRequest) (*getEncryptionKeyRequestPb, error) {
@@ -3377,10 +2934,7 @@ func getEncryptionKeyRequestToPb(st *GetEncryptionKeyRequest) (*getEncryptionKey
 		return nil, nil
 	}
 	pb := &getEncryptionKeyRequestPb{}
-	customerManagedKeyIdPb := &st.CustomerManagedKeyId
-	if customerManagedKeyIdPb != nil {
-		pb.CustomerManagedKeyId = *customerManagedKeyIdPb
-	}
+	pb.CustomerManagedKeyId = st.CustomerManagedKeyId
 
 	return pb, nil
 }
@@ -3420,10 +2974,7 @@ func getEncryptionKeyRequestFromPb(pb *getEncryptionKeyRequestPb) (*GetEncryptio
 		return nil, nil
 	}
 	st := &GetEncryptionKeyRequest{}
-	customerManagedKeyIdField := &pb.CustomerManagedKeyId
-	if customerManagedKeyIdField != nil {
-		st.CustomerManagedKeyId = *customerManagedKeyIdField
-	}
+	st.CustomerManagedKeyId = pb.CustomerManagedKeyId
 
 	return st, nil
 }
@@ -3431,7 +2982,8 @@ func getEncryptionKeyRequestFromPb(pb *getEncryptionKeyRequestPb) (*GetEncryptio
 // Get a network configuration
 type GetNetworkRequest struct {
 	// Databricks Account API network configuration ID.
-	NetworkId string
+	// Wire name: 'network_id'
+	NetworkId string `tf:"-"`
 }
 
 func getNetworkRequestToPb(st *GetNetworkRequest) (*getNetworkRequestPb, error) {
@@ -3439,10 +2991,7 @@ func getNetworkRequestToPb(st *GetNetworkRequest) (*getNetworkRequestPb, error) 
 		return nil, nil
 	}
 	pb := &getNetworkRequestPb{}
-	networkIdPb := &st.NetworkId
-	if networkIdPb != nil {
-		pb.NetworkId = *networkIdPb
-	}
+	pb.NetworkId = st.NetworkId
 
 	return pb, nil
 }
@@ -3482,10 +3031,7 @@ func getNetworkRequestFromPb(pb *getNetworkRequestPb) (*GetNetworkRequest, error
 		return nil, nil
 	}
 	st := &GetNetworkRequest{}
-	networkIdField := &pb.NetworkId
-	if networkIdField != nil {
-		st.NetworkId = *networkIdField
-	}
+	st.NetworkId = pb.NetworkId
 
 	return st, nil
 }
@@ -3493,7 +3039,8 @@ func getNetworkRequestFromPb(pb *getNetworkRequestPb) (*GetNetworkRequest, error
 // Get a private access settings object
 type GetPrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
-	PrivateAccessSettingsId string
+	// Wire name: 'private_access_settings_id'
+	PrivateAccessSettingsId string `tf:"-"`
 }
 
 func getPrivateAccesRequestToPb(st *GetPrivateAccesRequest) (*getPrivateAccesRequestPb, error) {
@@ -3501,10 +3048,7 @@ func getPrivateAccesRequestToPb(st *GetPrivateAccesRequest) (*getPrivateAccesReq
 		return nil, nil
 	}
 	pb := &getPrivateAccesRequestPb{}
-	privateAccessSettingsIdPb := &st.PrivateAccessSettingsId
-	if privateAccessSettingsIdPb != nil {
-		pb.PrivateAccessSettingsId = *privateAccessSettingsIdPb
-	}
+	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
 
 	return pb, nil
 }
@@ -3544,10 +3088,7 @@ func getPrivateAccesRequestFromPb(pb *getPrivateAccesRequestPb) (*GetPrivateAcce
 		return nil, nil
 	}
 	st := &GetPrivateAccesRequest{}
-	privateAccessSettingsIdField := &pb.PrivateAccessSettingsId
-	if privateAccessSettingsIdField != nil {
-		st.PrivateAccessSettingsId = *privateAccessSettingsIdField
-	}
+	st.PrivateAccessSettingsId = pb.PrivateAccessSettingsId
 
 	return st, nil
 }
@@ -3555,7 +3096,8 @@ func getPrivateAccesRequestFromPb(pb *getPrivateAccesRequestPb) (*GetPrivateAcce
 // Get storage configuration
 type GetStorageRequest struct {
 	// Databricks Account API storage configuration ID.
-	StorageConfigurationId string
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string `tf:"-"`
 }
 
 func getStorageRequestToPb(st *GetStorageRequest) (*getStorageRequestPb, error) {
@@ -3563,10 +3105,7 @@ func getStorageRequestToPb(st *GetStorageRequest) (*getStorageRequestPb, error) 
 		return nil, nil
 	}
 	pb := &getStorageRequestPb{}
-	storageConfigurationIdPb := &st.StorageConfigurationId
-	if storageConfigurationIdPb != nil {
-		pb.StorageConfigurationId = *storageConfigurationIdPb
-	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
 
 	return pb, nil
 }
@@ -3606,10 +3145,7 @@ func getStorageRequestFromPb(pb *getStorageRequestPb) (*GetStorageRequest, error
 		return nil, nil
 	}
 	st := &GetStorageRequest{}
-	storageConfigurationIdField := &pb.StorageConfigurationId
-	if storageConfigurationIdField != nil {
-		st.StorageConfigurationId = *storageConfigurationIdField
-	}
+	st.StorageConfigurationId = pb.StorageConfigurationId
 
 	return st, nil
 }
@@ -3617,7 +3153,8 @@ func getStorageRequestFromPb(pb *getStorageRequestPb) (*GetStorageRequest, error
 // Get a VPC endpoint configuration
 type GetVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
-	VpcEndpointId string
+	// Wire name: 'vpc_endpoint_id'
+	VpcEndpointId string `tf:"-"`
 }
 
 func getVpcEndpointRequestToPb(st *GetVpcEndpointRequest) (*getVpcEndpointRequestPb, error) {
@@ -3625,10 +3162,7 @@ func getVpcEndpointRequestToPb(st *GetVpcEndpointRequest) (*getVpcEndpointReques
 		return nil, nil
 	}
 	pb := &getVpcEndpointRequestPb{}
-	vpcEndpointIdPb := &st.VpcEndpointId
-	if vpcEndpointIdPb != nil {
-		pb.VpcEndpointId = *vpcEndpointIdPb
-	}
+	pb.VpcEndpointId = st.VpcEndpointId
 
 	return pb, nil
 }
@@ -3668,10 +3202,7 @@ func getVpcEndpointRequestFromPb(pb *getVpcEndpointRequestPb) (*GetVpcEndpointRe
 		return nil, nil
 	}
 	st := &GetVpcEndpointRequest{}
-	vpcEndpointIdField := &pb.VpcEndpointId
-	if vpcEndpointIdField != nil {
-		st.VpcEndpointId = *vpcEndpointIdField
-	}
+	st.VpcEndpointId = pb.VpcEndpointId
 
 	return st, nil
 }
@@ -3679,7 +3210,8 @@ func getVpcEndpointRequestFromPb(pb *getVpcEndpointRequestPb) (*GetVpcEndpointRe
 // Get a workspace
 type GetWorkspaceRequest struct {
 	// Workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 }
 
 func getWorkspaceRequestToPb(st *GetWorkspaceRequest) (*getWorkspaceRequestPb, error) {
@@ -3687,10 +3219,7 @@ func getWorkspaceRequestToPb(st *GetWorkspaceRequest) (*getWorkspaceRequestPb, e
 		return nil, nil
 	}
 	pb := &getWorkspaceRequestPb{}
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
@@ -3730,10 +3259,7 @@ func getWorkspaceRequestFromPb(pb *getWorkspaceRequestPb) (*GetWorkspaceRequest,
 		return nil, nil
 	}
 	st := &GetWorkspaceRequest{}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
 }
@@ -3748,14 +3274,16 @@ type GkeConfig struct {
 	//
 	// Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of
 	// a public GKE cluster have public IP addresses.
+	// Wire name: 'connectivity_type'
 	ConnectivityType GkeConfigConnectivityType
 	// The IP range from which to allocate GKE cluster master resources. This
 	// field will be ignored if GKE private cluster is not enabled.
 	//
 	// It must be exactly as big as `/28`.
+	// Wire name: 'master_ip_range'
 	MasterIpRange string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func gkeConfigToPb(st *GkeConfig) (*gkeConfigPb, error) {
@@ -3763,15 +3291,9 @@ func gkeConfigToPb(st *GkeConfig) (*gkeConfigPb, error) {
 		return nil, nil
 	}
 	pb := &gkeConfigPb{}
-	connectivityTypePb := &st.ConnectivityType
-	if connectivityTypePb != nil {
-		pb.ConnectivityType = *connectivityTypePb
-	}
+	pb.ConnectivityType = st.ConnectivityType
 
-	masterIpRangePb := &st.MasterIpRange
-	if masterIpRangePb != nil {
-		pb.MasterIpRange = *masterIpRangePb
-	}
+	pb.MasterIpRange = st.MasterIpRange
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3826,14 +3348,8 @@ func gkeConfigFromPb(pb *gkeConfigPb) (*GkeConfig, error) {
 		return nil, nil
 	}
 	st := &GkeConfig{}
-	connectivityTypeField := &pb.ConnectivityType
-	if connectivityTypeField != nil {
-		st.ConnectivityType = *connectivityTypeField
-	}
-	masterIpRangeField := &pb.MasterIpRange
-	if masterIpRangeField != nil {
-		st.MasterIpRange = *masterIpRangeField
-	}
+	st.ConnectivityType = pb.ConnectivityType
+	st.MasterIpRange = pb.MasterIpRange
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3951,40 +3467,53 @@ func keyUseCaseFromPb(pb *keyUseCasePb) (*KeyUseCase, error) {
 
 type Network struct {
 	// The Databricks account ID associated with this network configuration.
+	// Wire name: 'account_id'
 	AccountId string
 	// Time in epoch milliseconds when the network was created.
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// Array of error messages about the network configuration.
+	// Wire name: 'error_messages'
 	ErrorMessages []NetworkHealth
 	// The Google Cloud specific information for this network (for example, the
 	// VPC ID, subnet ID, and secondary IP ranges).
+	// Wire name: 'gcp_network_info'
 	GcpNetworkInfo *GcpNetworkInfo
 	// The Databricks network configuration ID.
+	// Wire name: 'network_id'
 	NetworkId string
 	// The human-readable name of the network configuration.
+	// Wire name: 'network_name'
 	NetworkName string
 
+	// Wire name: 'security_group_ids'
 	SecurityGroupIds []string
 
+	// Wire name: 'subnet_ids'
 	SubnetIds []string
 	// If specified, contains the VPC endpoints used to allow cluster
 	// communication from this VPC over [AWS PrivateLink].
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
+	// Wire name: 'vpc_endpoints'
 	VpcEndpoints *NetworkVpcEndpoints
 	// The ID of the VPC associated with this network configuration. VPC IDs can
 	// be used in multiple networks.
+	// Wire name: 'vpc_id'
 	VpcId string
 	// The status of this network configuration object in terms of its use in a
 	// workspace: * `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`:
 	// Broken. * `WARNED`: Warned.
+	// Wire name: 'vpc_status'
 	VpcStatus VpcStatus
 	// Array of warning messages about the network configuration.
+	// Wire name: 'warning_messages'
 	WarningMessages []NetworkWarning
 	// Workspace ID associated with this network configuration.
+	// Wire name: 'workspace_id'
 	WorkspaceId int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func networkToPb(st *Network) (*networkPb, error) {
@@ -3992,15 +3521,9 @@ func networkToPb(st *Network) (*networkPb, error) {
 		return nil, nil
 	}
 	pb := &networkPb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
 	var errorMessagesPb []networkHealthPb
 	for _, item := range st.ErrorMessages {
@@ -4022,33 +3545,13 @@ func networkToPb(st *Network) (*networkPb, error) {
 		pb.GcpNetworkInfo = gcpNetworkInfoPb
 	}
 
-	networkIdPb := &st.NetworkId
-	if networkIdPb != nil {
-		pb.NetworkId = *networkIdPb
-	}
+	pb.NetworkId = st.NetworkId
 
-	networkNamePb := &st.NetworkName
-	if networkNamePb != nil {
-		pb.NetworkName = *networkNamePb
-	}
+	pb.NetworkName = st.NetworkName
 
-	var securityGroupIdsPb []string
-	for _, item := range st.SecurityGroupIds {
-		itemPb := &item
-		if itemPb != nil {
-			securityGroupIdsPb = append(securityGroupIdsPb, *itemPb)
-		}
-	}
-	pb.SecurityGroupIds = securityGroupIdsPb
+	pb.SecurityGroupIds = st.SecurityGroupIds
 
-	var subnetIdsPb []string
-	for _, item := range st.SubnetIds {
-		itemPb := &item
-		if itemPb != nil {
-			subnetIdsPb = append(subnetIdsPb, *itemPb)
-		}
-	}
-	pb.SubnetIds = subnetIdsPb
+	pb.SubnetIds = st.SubnetIds
 
 	vpcEndpointsPb, err := networkVpcEndpointsToPb(st.VpcEndpoints)
 	if err != nil {
@@ -4058,15 +3561,9 @@ func networkToPb(st *Network) (*networkPb, error) {
 		pb.VpcEndpoints = vpcEndpointsPb
 	}
 
-	vpcIdPb := &st.VpcId
-	if vpcIdPb != nil {
-		pb.VpcId = *vpcIdPb
-	}
+	pb.VpcId = st.VpcId
 
-	vpcStatusPb := &st.VpcStatus
-	if vpcStatusPb != nil {
-		pb.VpcStatus = *vpcStatusPb
-	}
+	pb.VpcStatus = st.VpcStatus
 
 	var warningMessagesPb []networkWarningPb
 	for _, item := range st.WarningMessages {
@@ -4080,10 +3577,7 @@ func networkToPb(st *Network) (*networkPb, error) {
 	}
 	pb.WarningMessages = warningMessagesPb
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4157,23 +3651,17 @@ func networkFromPb(pb *networkPb) (*Network, error) {
 		return nil, nil
 	}
 	st := &Network{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
+	st.AccountId = pb.AccountId
+	st.CreationTime = pb.CreationTime
 
 	var errorMessagesField []NetworkHealth
-	for _, item := range pb.ErrorMessages {
-		itemField, err := networkHealthFromPb(&item)
+	for _, itemPb := range pb.ErrorMessages {
+		item, err := networkHealthFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			errorMessagesField = append(errorMessagesField, *itemField)
+		if item != nil {
+			errorMessagesField = append(errorMessagesField, *item)
 		}
 	}
 	st.ErrorMessages = errorMessagesField
@@ -4184,32 +3672,10 @@ func networkFromPb(pb *networkPb) (*Network, error) {
 	if gcpNetworkInfoField != nil {
 		st.GcpNetworkInfo = gcpNetworkInfoField
 	}
-	networkIdField := &pb.NetworkId
-	if networkIdField != nil {
-		st.NetworkId = *networkIdField
-	}
-	networkNameField := &pb.NetworkName
-	if networkNameField != nil {
-		st.NetworkName = *networkNameField
-	}
-
-	var securityGroupIdsField []string
-	for _, item := range pb.SecurityGroupIds {
-		itemField := &item
-		if itemField != nil {
-			securityGroupIdsField = append(securityGroupIdsField, *itemField)
-		}
-	}
-	st.SecurityGroupIds = securityGroupIdsField
-
-	var subnetIdsField []string
-	for _, item := range pb.SubnetIds {
-		itemField := &item
-		if itemField != nil {
-			subnetIdsField = append(subnetIdsField, *itemField)
-		}
-	}
-	st.SubnetIds = subnetIdsField
+	st.NetworkId = pb.NetworkId
+	st.NetworkName = pb.NetworkName
+	st.SecurityGroupIds = pb.SecurityGroupIds
+	st.SubnetIds = pb.SubnetIds
 	vpcEndpointsField, err := networkVpcEndpointsFromPb(pb.VpcEndpoints)
 	if err != nil {
 		return nil, err
@@ -4217,30 +3683,21 @@ func networkFromPb(pb *networkPb) (*Network, error) {
 	if vpcEndpointsField != nil {
 		st.VpcEndpoints = vpcEndpointsField
 	}
-	vpcIdField := &pb.VpcId
-	if vpcIdField != nil {
-		st.VpcId = *vpcIdField
-	}
-	vpcStatusField := &pb.VpcStatus
-	if vpcStatusField != nil {
-		st.VpcStatus = *vpcStatusField
-	}
+	st.VpcId = pb.VpcId
+	st.VpcStatus = pb.VpcStatus
 
 	var warningMessagesField []NetworkWarning
-	for _, item := range pb.WarningMessages {
-		itemField, err := networkWarningFromPb(&item)
+	for _, itemPb := range pb.WarningMessages {
+		item, err := networkWarningFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			warningMessagesField = append(warningMessagesField, *itemField)
+		if item != nil {
+			warningMessagesField = append(warningMessagesField, *item)
 		}
 	}
 	st.WarningMessages = warningMessagesField
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.WorkspaceId = pb.WorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4256,12 +3713,14 @@ func (st networkPb) MarshalJSON() ([]byte, error) {
 
 type NetworkHealth struct {
 	// Details of the error.
+	// Wire name: 'error_message'
 	ErrorMessage string
 	// The AWS resource associated with this error: credentials, VPC, subnet,
 	// security group, or network ACL.
+	// Wire name: 'error_type'
 	ErrorType ErrorType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func networkHealthToPb(st *NetworkHealth) (*networkHealthPb, error) {
@@ -4269,15 +3728,9 @@ func networkHealthToPb(st *NetworkHealth) (*networkHealthPb, error) {
 		return nil, nil
 	}
 	pb := &networkHealthPb{}
-	errorMessagePb := &st.ErrorMessage
-	if errorMessagePb != nil {
-		pb.ErrorMessage = *errorMessagePb
-	}
+	pb.ErrorMessage = st.ErrorMessage
 
-	errorTypePb := &st.ErrorType
-	if errorTypePb != nil {
-		pb.ErrorType = *errorTypePb
-	}
+	pb.ErrorType = st.ErrorType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4323,14 +3776,8 @@ func networkHealthFromPb(pb *networkHealthPb) (*NetworkHealth, error) {
 		return nil, nil
 	}
 	st := &NetworkHealth{}
-	errorMessageField := &pb.ErrorMessage
-	if errorMessageField != nil {
-		st.ErrorMessage = *errorMessageField
-	}
-	errorTypeField := &pb.ErrorType
-	if errorTypeField != nil {
-		st.ErrorType = *errorTypeField
-	}
+	st.ErrorMessage = pb.ErrorMessage
+	st.ErrorType = pb.ErrorType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4351,9 +3798,11 @@ func (st networkHealthPb) MarshalJSON() ([]byte, error) {
 type NetworkVpcEndpoints struct {
 	// The VPC endpoint ID used by this network to access the Databricks secure
 	// cluster connectivity relay.
+	// Wire name: 'dataplane_relay'
 	DataplaneRelay []string
 	// The VPC endpoint ID used by this network to access the Databricks REST
 	// API.
+	// Wire name: 'rest_api'
 	RestApi []string
 }
 
@@ -4362,24 +3811,9 @@ func networkVpcEndpointsToPb(st *NetworkVpcEndpoints) (*networkVpcEndpointsPb, e
 		return nil, nil
 	}
 	pb := &networkVpcEndpointsPb{}
+	pb.DataplaneRelay = st.DataplaneRelay
 
-	var dataplaneRelayPb []string
-	for _, item := range st.DataplaneRelay {
-		itemPb := &item
-		if itemPb != nil {
-			dataplaneRelayPb = append(dataplaneRelayPb, *itemPb)
-		}
-	}
-	pb.DataplaneRelay = dataplaneRelayPb
-
-	var restApiPb []string
-	for _, item := range st.RestApi {
-		itemPb := &item
-		if itemPb != nil {
-			restApiPb = append(restApiPb, *itemPb)
-		}
-	}
-	pb.RestApi = restApiPb
+	pb.RestApi = st.RestApi
 
 	return pb, nil
 }
@@ -4423,36 +3857,22 @@ func networkVpcEndpointsFromPb(pb *networkVpcEndpointsPb) (*NetworkVpcEndpoints,
 		return nil, nil
 	}
 	st := &NetworkVpcEndpoints{}
-
-	var dataplaneRelayField []string
-	for _, item := range pb.DataplaneRelay {
-		itemField := &item
-		if itemField != nil {
-			dataplaneRelayField = append(dataplaneRelayField, *itemField)
-		}
-	}
-	st.DataplaneRelay = dataplaneRelayField
-
-	var restApiField []string
-	for _, item := range pb.RestApi {
-		itemField := &item
-		if itemField != nil {
-			restApiField = append(restApiField, *itemField)
-		}
-	}
-	st.RestApi = restApiField
+	st.DataplaneRelay = pb.DataplaneRelay
+	st.RestApi = pb.RestApi
 
 	return st, nil
 }
 
 type NetworkWarning struct {
 	// Details of the warning.
+	// Wire name: 'warning_message'
 	WarningMessage string
 	// The AWS resource associated with this warning: a subnet or a security
 	// group.
+	// Wire name: 'warning_type'
 	WarningType WarningType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func networkWarningToPb(st *NetworkWarning) (*networkWarningPb, error) {
@@ -4460,15 +3880,9 @@ func networkWarningToPb(st *NetworkWarning) (*networkWarningPb, error) {
 		return nil, nil
 	}
 	pb := &networkWarningPb{}
-	warningMessagePb := &st.WarningMessage
-	if warningMessagePb != nil {
-		pb.WarningMessage = *warningMessagePb
-	}
+	pb.WarningMessage = st.WarningMessage
 
-	warningTypePb := &st.WarningType
-	if warningTypePb != nil {
-		pb.WarningType = *warningTypePb
-	}
+	pb.WarningType = st.WarningType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4514,14 +3928,8 @@ func networkWarningFromPb(pb *networkWarningPb) (*NetworkWarning, error) {
 		return nil, nil
 	}
 	st := &NetworkWarning{}
-	warningMessageField := &pb.WarningMessage
-	if warningMessageField != nil {
-		st.WarningMessage = *warningMessageField
-	}
-	warningTypeField := &pb.WarningType
-	if warningTypeField != nil {
-		st.WarningType = *warningTypeField
-	}
+	st.WarningMessage = pb.WarningMessage
+	st.WarningType = pb.WarningType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4643,8 +4051,10 @@ func privateAccessLevelFromPb(pb *privateAccessLevelPb) (*PrivateAccessLevel, er
 
 type PrivateAccessSettings struct {
 	// The Databricks account ID that hosts the credential.
+	// Wire name: 'account_id'
 	AccountId string
 	// An array of Databricks VPC endpoint IDs.
+	// Wire name: 'allowed_vpc_endpoint_ids'
 	AllowedVpcEndpointIds []string
 	// The private access level controls which VPC endpoints can connect to the
 	// UI or API of any workspace that attaches this private access settings
@@ -4652,22 +4062,27 @@ type PrivateAccessSettings struct {
 	// that are registered in your Databricks account connect to your workspace.
 	// * `ENDPOINT` level access allows only specified VPC endpoints connect to
 	// your workspace. For details, see `allowed_vpc_endpoint_ids`.
+	// Wire name: 'private_access_level'
 	PrivateAccessLevel PrivateAccessLevel
 	// Databricks private access settings ID.
+	// Wire name: 'private_access_settings_id'
 	PrivateAccessSettingsId string
 	// The human-readable name of the private access settings object.
+	// Wire name: 'private_access_settings_name'
 	PrivateAccessSettingsName string
 	// Determines if the workspace can be accessed over public internet. For
 	// fully private workspaces, you can optionally specify `false`, but only if
 	// you implement both the front-end and the back-end PrivateLink
 	// connections. Otherwise, specify `true`, which means that public access is
 	// enabled.
+	// Wire name: 'public_access_enabled'
 	PublicAccessEnabled bool
 	// The cloud region for workspaces attached to this private access settings
 	// object.
+	// Wire name: 'region'
 	Region string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func privateAccessSettingsToPb(st *PrivateAccessSettings) (*privateAccessSettingsPb, error) {
@@ -4675,44 +4090,19 @@ func privateAccessSettingsToPb(st *PrivateAccessSettings) (*privateAccessSetting
 		return nil, nil
 	}
 	pb := &privateAccessSettingsPb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
-	var allowedVpcEndpointIdsPb []string
-	for _, item := range st.AllowedVpcEndpointIds {
-		itemPb := &item
-		if itemPb != nil {
-			allowedVpcEndpointIdsPb = append(allowedVpcEndpointIdsPb, *itemPb)
-		}
-	}
-	pb.AllowedVpcEndpointIds = allowedVpcEndpointIdsPb
+	pb.AllowedVpcEndpointIds = st.AllowedVpcEndpointIds
 
-	privateAccessLevelPb := &st.PrivateAccessLevel
-	if privateAccessLevelPb != nil {
-		pb.PrivateAccessLevel = *privateAccessLevelPb
-	}
+	pb.PrivateAccessLevel = st.PrivateAccessLevel
 
-	privateAccessSettingsIdPb := &st.PrivateAccessSettingsId
-	if privateAccessSettingsIdPb != nil {
-		pb.PrivateAccessSettingsId = *privateAccessSettingsIdPb
-	}
+	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
 
-	privateAccessSettingsNamePb := &st.PrivateAccessSettingsName
-	if privateAccessSettingsNamePb != nil {
-		pb.PrivateAccessSettingsName = *privateAccessSettingsNamePb
-	}
+	pb.PrivateAccessSettingsName = st.PrivateAccessSettingsName
 
-	publicAccessEnabledPb := &st.PublicAccessEnabled
-	if publicAccessEnabledPb != nil {
-		pb.PublicAccessEnabled = *publicAccessEnabledPb
-	}
+	pb.PublicAccessEnabled = st.PublicAccessEnabled
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4777,39 +4167,13 @@ func privateAccessSettingsFromPb(pb *privateAccessSettingsPb) (*PrivateAccessSet
 		return nil, nil
 	}
 	st := &PrivateAccessSettings{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
-
-	var allowedVpcEndpointIdsField []string
-	for _, item := range pb.AllowedVpcEndpointIds {
-		itemField := &item
-		if itemField != nil {
-			allowedVpcEndpointIdsField = append(allowedVpcEndpointIdsField, *itemField)
-		}
-	}
-	st.AllowedVpcEndpointIds = allowedVpcEndpointIdsField
-	privateAccessLevelField := &pb.PrivateAccessLevel
-	if privateAccessLevelField != nil {
-		st.PrivateAccessLevel = *privateAccessLevelField
-	}
-	privateAccessSettingsIdField := &pb.PrivateAccessSettingsId
-	if privateAccessSettingsIdField != nil {
-		st.PrivateAccessSettingsId = *privateAccessSettingsIdField
-	}
-	privateAccessSettingsNameField := &pb.PrivateAccessSettingsName
-	if privateAccessSettingsNameField != nil {
-		st.PrivateAccessSettingsName = *privateAccessSettingsNameField
-	}
-	publicAccessEnabledField := &pb.PublicAccessEnabled
-	if publicAccessEnabledField != nil {
-		st.PublicAccessEnabled = *publicAccessEnabledField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
+	st.AccountId = pb.AccountId
+	st.AllowedVpcEndpointIds = pb.AllowedVpcEndpointIds
+	st.PrivateAccessLevel = pb.PrivateAccessLevel
+	st.PrivateAccessSettingsId = pb.PrivateAccessSettingsId
+	st.PrivateAccessSettingsName = pb.PrivateAccessSettingsName
+	st.PublicAccessEnabled = pb.PublicAccessEnabled
+	st.Region = pb.Region
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4875,9 +4239,10 @@ func replaceResponseFromPb(pb *replaceResponsePb) (*ReplaceResponse, error) {
 // Root S3 bucket information.
 type RootBucketInfo struct {
 	// The name of the S3 bucket.
+	// Wire name: 'bucket_name'
 	BucketName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func rootBucketInfoToPb(st *RootBucketInfo) (*rootBucketInfoPb, error) {
@@ -4885,10 +4250,7 @@ func rootBucketInfoToPb(st *RootBucketInfo) (*rootBucketInfoPb, error) {
 		return nil, nil
 	}
 	pb := &rootBucketInfoPb{}
-	bucketNamePb := &st.BucketName
-	if bucketNamePb != nil {
-		pb.BucketName = *bucketNamePb
-	}
+	pb.BucketName = st.BucketName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4931,10 +4293,7 @@ func rootBucketInfoFromPb(pb *rootBucketInfoPb) (*RootBucketInfo, error) {
 		return nil, nil
 	}
 	st := &RootBucketInfo{}
-	bucketNameField := &pb.BucketName
-	if bucketNameField != nil {
-		st.BucketName = *bucketNameField
-	}
+	st.BucketName = pb.BucketName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4950,17 +4309,22 @@ func (st rootBucketInfoPb) MarshalJSON() ([]byte, error) {
 
 type StorageConfiguration struct {
 	// The Databricks account ID that hosts the credential.
+	// Wire name: 'account_id'
 	AccountId string
 	// Time in epoch milliseconds when the storage configuration was created.
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// Root S3 bucket information.
+	// Wire name: 'root_bucket_info'
 	RootBucketInfo *RootBucketInfo
 	// Databricks storage configuration ID.
+	// Wire name: 'storage_configuration_id'
 	StorageConfigurationId string
 	// The human-readable name of the storage configuration.
+	// Wire name: 'storage_configuration_name'
 	StorageConfigurationName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func storageConfigurationToPb(st *StorageConfiguration) (*storageConfigurationPb, error) {
@@ -4968,15 +4332,9 @@ func storageConfigurationToPb(st *StorageConfiguration) (*storageConfigurationPb
 		return nil, nil
 	}
 	pb := &storageConfigurationPb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
 	rootBucketInfoPb, err := rootBucketInfoToPb(st.RootBucketInfo)
 	if err != nil {
@@ -4986,15 +4344,9 @@ func storageConfigurationToPb(st *StorageConfiguration) (*storageConfigurationPb
 		pb.RootBucketInfo = rootBucketInfoPb
 	}
 
-	storageConfigurationIdPb := &st.StorageConfigurationId
-	if storageConfigurationIdPb != nil {
-		pb.StorageConfigurationId = *storageConfigurationIdPb
-	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
 
-	storageConfigurationNamePb := &st.StorageConfigurationName
-	if storageConfigurationNamePb != nil {
-		pb.StorageConfigurationName = *storageConfigurationNamePb
-	}
+	pb.StorageConfigurationName = st.StorageConfigurationName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5045,14 +4397,8 @@ func storageConfigurationFromPb(pb *storageConfigurationPb) (*StorageConfigurati
 		return nil, nil
 	}
 	st := &StorageConfiguration{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
+	st.AccountId = pb.AccountId
+	st.CreationTime = pb.CreationTime
 	rootBucketInfoField, err := rootBucketInfoFromPb(pb.RootBucketInfo)
 	if err != nil {
 		return nil, err
@@ -5060,14 +4406,8 @@ func storageConfigurationFromPb(pb *storageConfigurationPb) (*StorageConfigurati
 	if rootBucketInfoField != nil {
 		st.RootBucketInfo = rootBucketInfoField
 	}
-	storageConfigurationIdField := &pb.StorageConfigurationId
-	if storageConfigurationIdField != nil {
-		st.StorageConfigurationId = *storageConfigurationIdField
-	}
-	storageConfigurationNameField := &pb.StorageConfigurationName
-	if storageConfigurationNameField != nil {
-		st.StorageConfigurationName = *storageConfigurationNameField
-	}
+	st.StorageConfigurationId = pb.StorageConfigurationId
+	st.StorageConfigurationName = pb.StorageConfigurationName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5084,11 +4424,13 @@ func (st storageConfigurationPb) MarshalJSON() ([]byte, error) {
 type StsRole struct {
 	// The external ID that needs to be trusted by the cross-account role. This
 	// is always your Databricks account ID.
+	// Wire name: 'external_id'
 	ExternalId string
 	// The Amazon Resource Name (ARN) of the cross account role.
+	// Wire name: 'role_arn'
 	RoleArn string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func stsRoleToPb(st *StsRole) (*stsRolePb, error) {
@@ -5096,15 +4438,9 @@ func stsRoleToPb(st *StsRole) (*stsRolePb, error) {
 		return nil, nil
 	}
 	pb := &stsRolePb{}
-	externalIdPb := &st.ExternalId
-	if externalIdPb != nil {
-		pb.ExternalId = *externalIdPb
-	}
+	pb.ExternalId = st.ExternalId
 
-	roleArnPb := &st.RoleArn
-	if roleArnPb != nil {
-		pb.RoleArn = *roleArnPb
-	}
+	pb.RoleArn = st.RoleArn
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5150,14 +4486,8 @@ func stsRoleFromPb(pb *stsRolePb) (*StsRole, error) {
 		return nil, nil
 	}
 	st := &StsRole{}
-	externalIdField := &pb.ExternalId
-	if externalIdField != nil {
-		st.ExternalId = *externalIdField
-	}
-	roleArnField := &pb.RoleArn
-	if roleArnField != nil {
-		st.RoleArn = *roleArnField
-	}
+	st.ExternalId = pb.ExternalId
+	st.RoleArn = pb.RoleArn
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5223,38 +4553,48 @@ func updateResponseFromPb(pb *updateResponsePb) (*UpdateResponse, error) {
 type UpdateWorkspaceRequest struct {
 	// The AWS region of the workspace's data plane (for example, `us-west-2`).
 	// This parameter is available only for updating failed workspaces.
+	// Wire name: 'aws_region'
 	AwsRegion string
 	// ID of the workspace's credential configuration object. This parameter is
 	// available for updating both failed and running workspaces.
+	// Wire name: 'credentials_id'
 	CredentialsId string
 	// The custom tags key-value pairing that is attached to this workspace. The
 	// key-value pair is a string of utf-8 characters. The value can be an empty
 	// string, with maximum length of 255 characters. The key can be of maximum
 	// length of 127 characters, and cannot be empty.
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// The ID of the workspace's managed services encryption key configuration
 	// object. This parameter is available only for updating failed workspaces.
+	// Wire name: 'managed_services_customer_managed_key_id'
 	ManagedServicesCustomerManagedKeyId string
 
+	// Wire name: 'network_connectivity_config_id'
 	NetworkConnectivityConfigId string
 	// The ID of the workspace's network configuration object. Used only if you
 	// already use a customer-managed VPC. For failed workspaces only, you can
 	// switch from a Databricks-managed VPC to a customer-managed VPC by
 	// updating the workspace to add a network configuration ID.
+	// Wire name: 'network_id'
 	NetworkId string
 	// The ID of the workspace's private access settings configuration object.
 	// This parameter is available only for updating failed workspaces.
+	// Wire name: 'private_access_settings_id'
 	PrivateAccessSettingsId string
 	// The ID of the workspace's storage configuration object. This parameter is
 	// available only for updating failed workspaces.
+	// Wire name: 'storage_configuration_id'
 	StorageConfigurationId string
 	// The ID of the key configuration object for workspace storage. This
 	// parameter is available for updating both failed and running workspaces.
+	// Wire name: 'storage_customer_managed_key_id'
 	StorageCustomerManagedKeyId string
 	// Workspace ID.
-	WorkspaceId int64
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateWorkspaceRequestToPb(st *UpdateWorkspaceRequest) (*updateWorkspaceRequestPb, error) {
@@ -5262,59 +4602,25 @@ func updateWorkspaceRequestToPb(st *UpdateWorkspaceRequest) (*updateWorkspaceReq
 		return nil, nil
 	}
 	pb := &updateWorkspaceRequestPb{}
-	awsRegionPb := &st.AwsRegion
-	if awsRegionPb != nil {
-		pb.AwsRegion = *awsRegionPb
-	}
+	pb.AwsRegion = st.AwsRegion
 
-	credentialsIdPb := &st.CredentialsId
-	if credentialsIdPb != nil {
-		pb.CredentialsId = *credentialsIdPb
-	}
+	pb.CredentialsId = st.CredentialsId
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	managedServicesCustomerManagedKeyIdPb := &st.ManagedServicesCustomerManagedKeyId
-	if managedServicesCustomerManagedKeyIdPb != nil {
-		pb.ManagedServicesCustomerManagedKeyId = *managedServicesCustomerManagedKeyIdPb
-	}
+	pb.ManagedServicesCustomerManagedKeyId = st.ManagedServicesCustomerManagedKeyId
 
-	networkConnectivityConfigIdPb := &st.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdPb != nil {
-		pb.NetworkConnectivityConfigId = *networkConnectivityConfigIdPb
-	}
+	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
 
-	networkIdPb := &st.NetworkId
-	if networkIdPb != nil {
-		pb.NetworkId = *networkIdPb
-	}
+	pb.NetworkId = st.NetworkId
 
-	privateAccessSettingsIdPb := &st.PrivateAccessSettingsId
-	if privateAccessSettingsIdPb != nil {
-		pb.PrivateAccessSettingsId = *privateAccessSettingsIdPb
-	}
+	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
 
-	storageConfigurationIdPb := &st.StorageConfigurationId
-	if storageConfigurationIdPb != nil {
-		pb.StorageConfigurationId = *storageConfigurationIdPb
-	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
 
-	storageCustomerManagedKeyIdPb := &st.StorageCustomerManagedKeyId
-	if storageCustomerManagedKeyIdPb != nil {
-		pb.StorageCustomerManagedKeyId = *storageCustomerManagedKeyIdPb
-	}
+	pb.StorageCustomerManagedKeyId = st.StorageCustomerManagedKeyId
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5387,51 +4693,16 @@ func updateWorkspaceRequestFromPb(pb *updateWorkspaceRequestPb) (*UpdateWorkspac
 		return nil, nil
 	}
 	st := &UpdateWorkspaceRequest{}
-	awsRegionField := &pb.AwsRegion
-	if awsRegionField != nil {
-		st.AwsRegion = *awsRegionField
-	}
-	credentialsIdField := &pb.CredentialsId
-	if credentialsIdField != nil {
-		st.CredentialsId = *credentialsIdField
-	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-	managedServicesCustomerManagedKeyIdField := &pb.ManagedServicesCustomerManagedKeyId
-	if managedServicesCustomerManagedKeyIdField != nil {
-		st.ManagedServicesCustomerManagedKeyId = *managedServicesCustomerManagedKeyIdField
-	}
-	networkConnectivityConfigIdField := &pb.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdField != nil {
-		st.NetworkConnectivityConfigId = *networkConnectivityConfigIdField
-	}
-	networkIdField := &pb.NetworkId
-	if networkIdField != nil {
-		st.NetworkId = *networkIdField
-	}
-	privateAccessSettingsIdField := &pb.PrivateAccessSettingsId
-	if privateAccessSettingsIdField != nil {
-		st.PrivateAccessSettingsId = *privateAccessSettingsIdField
-	}
-	storageConfigurationIdField := &pb.StorageConfigurationId
-	if storageConfigurationIdField != nil {
-		st.StorageConfigurationId = *storageConfigurationIdField
-	}
-	storageCustomerManagedKeyIdField := &pb.StorageCustomerManagedKeyId
-	if storageCustomerManagedKeyIdField != nil {
-		st.StorageCustomerManagedKeyId = *storageCustomerManagedKeyIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.AwsRegion = pb.AwsRegion
+	st.CredentialsId = pb.CredentialsId
+	st.CustomTags = pb.CustomTags
+	st.ManagedServicesCustomerManagedKeyId = pb.ManagedServicesCustomerManagedKeyId
+	st.NetworkConnectivityConfigId = pb.NetworkConnectivityConfigId
+	st.NetworkId = pb.NetworkId
+	st.PrivateAccessSettingsId = pb.PrivateAccessSettingsId
+	st.StorageConfigurationId = pb.StorageConfigurationId
+	st.StorageCustomerManagedKeyId = pb.StorageCustomerManagedKeyId
+	st.WorkspaceId = pb.WorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5460,6 +4731,7 @@ type UpsertPrivateAccessSettingsRequest struct {
 	// public internet, see [IP access lists].
 	//
 	// [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
+	// Wire name: 'allowed_vpc_endpoint_ids'
 	AllowedVpcEndpointIds []string
 	// The private access level controls which VPC endpoints can connect to the
 	// UI or API of any workspace that attaches this private access settings
@@ -5467,22 +4739,27 @@ type UpsertPrivateAccessSettingsRequest struct {
 	// that are registered in your Databricks account connect to your workspace.
 	// * `ENDPOINT` level access allows only specified VPC endpoints connect to
 	// your workspace. For details, see `allowed_vpc_endpoint_ids`.
+	// Wire name: 'private_access_level'
 	PrivateAccessLevel PrivateAccessLevel
 	// Databricks Account API private access settings ID.
-	PrivateAccessSettingsId string
+	// Wire name: 'private_access_settings_id'
+	PrivateAccessSettingsId string `tf:"-"`
 	// The human-readable name of the private access settings object.
+	// Wire name: 'private_access_settings_name'
 	PrivateAccessSettingsName string
 	// Determines if the workspace can be accessed over public internet. For
 	// fully private workspaces, you can optionally specify `false`, but only if
 	// you implement both the front-end and the back-end PrivateLink
 	// connections. Otherwise, specify `true`, which means that public access is
 	// enabled.
+	// Wire name: 'public_access_enabled'
 	PublicAccessEnabled bool
 	// The cloud region for workspaces associated with this private access
 	// settings object.
+	// Wire name: 'region'
 	Region string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func upsertPrivateAccessSettingsRequestToPb(st *UpsertPrivateAccessSettingsRequest) (*upsertPrivateAccessSettingsRequestPb, error) {
@@ -5490,40 +4767,17 @@ func upsertPrivateAccessSettingsRequestToPb(st *UpsertPrivateAccessSettingsReque
 		return nil, nil
 	}
 	pb := &upsertPrivateAccessSettingsRequestPb{}
+	pb.AllowedVpcEndpointIds = st.AllowedVpcEndpointIds
 
-	var allowedVpcEndpointIdsPb []string
-	for _, item := range st.AllowedVpcEndpointIds {
-		itemPb := &item
-		if itemPb != nil {
-			allowedVpcEndpointIdsPb = append(allowedVpcEndpointIdsPb, *itemPb)
-		}
-	}
-	pb.AllowedVpcEndpointIds = allowedVpcEndpointIdsPb
+	pb.PrivateAccessLevel = st.PrivateAccessLevel
 
-	privateAccessLevelPb := &st.PrivateAccessLevel
-	if privateAccessLevelPb != nil {
-		pb.PrivateAccessLevel = *privateAccessLevelPb
-	}
+	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
 
-	privateAccessSettingsIdPb := &st.PrivateAccessSettingsId
-	if privateAccessSettingsIdPb != nil {
-		pb.PrivateAccessSettingsId = *privateAccessSettingsIdPb
-	}
+	pb.PrivateAccessSettingsName = st.PrivateAccessSettingsName
 
-	privateAccessSettingsNamePb := &st.PrivateAccessSettingsName
-	if privateAccessSettingsNamePb != nil {
-		pb.PrivateAccessSettingsName = *privateAccessSettingsNamePb
-	}
+	pb.PublicAccessEnabled = st.PublicAccessEnabled
 
-	publicAccessEnabledPb := &st.PublicAccessEnabled
-	if publicAccessEnabledPb != nil {
-		pb.PublicAccessEnabled = *publicAccessEnabledPb
-	}
-
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5599,35 +4853,12 @@ func upsertPrivateAccessSettingsRequestFromPb(pb *upsertPrivateAccessSettingsReq
 		return nil, nil
 	}
 	st := &UpsertPrivateAccessSettingsRequest{}
-
-	var allowedVpcEndpointIdsField []string
-	for _, item := range pb.AllowedVpcEndpointIds {
-		itemField := &item
-		if itemField != nil {
-			allowedVpcEndpointIdsField = append(allowedVpcEndpointIdsField, *itemField)
-		}
-	}
-	st.AllowedVpcEndpointIds = allowedVpcEndpointIdsField
-	privateAccessLevelField := &pb.PrivateAccessLevel
-	if privateAccessLevelField != nil {
-		st.PrivateAccessLevel = *privateAccessLevelField
-	}
-	privateAccessSettingsIdField := &pb.PrivateAccessSettingsId
-	if privateAccessSettingsIdField != nil {
-		st.PrivateAccessSettingsId = *privateAccessSettingsIdField
-	}
-	privateAccessSettingsNameField := &pb.PrivateAccessSettingsName
-	if privateAccessSettingsNameField != nil {
-		st.PrivateAccessSettingsName = *privateAccessSettingsNameField
-	}
-	publicAccessEnabledField := &pb.PublicAccessEnabled
-	if publicAccessEnabledField != nil {
-		st.PublicAccessEnabled = *publicAccessEnabledField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
+	st.AllowedVpcEndpointIds = pb.AllowedVpcEndpointIds
+	st.PrivateAccessLevel = pb.PrivateAccessLevel
+	st.PrivateAccessSettingsId = pb.PrivateAccessSettingsId
+	st.PrivateAccessSettingsName = pb.PrivateAccessSettingsName
+	st.PublicAccessEnabled = pb.PublicAccessEnabled
+	st.Region = pb.Region
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5643,8 +4874,10 @@ func (st upsertPrivateAccessSettingsRequestPb) MarshalJSON() ([]byte, error) {
 
 type VpcEndpoint struct {
 	// The Databricks account ID that hosts the VPC endpoint configuration.
+	// Wire name: 'account_id'
 	AccountId string
 	// The AWS Account in which the VPC endpoint object exists.
+	// Wire name: 'aws_account_id'
 	AwsAccountId string
 	// The ID of the Databricks [endpoint service] that this VPC endpoint is
 	// connected to. For a list of endpoint service IDs for each supported AWS
@@ -5652,33 +4885,41 @@ type VpcEndpoint struct {
 	//
 	// [Databricks PrivateLink documentation]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	// [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
+	// Wire name: 'aws_endpoint_service_id'
 	AwsEndpointServiceId string
 	// The ID of the VPC endpoint object in AWS.
+	// Wire name: 'aws_vpc_endpoint_id'
 	AwsVpcEndpointId string
 	// The Google Cloud specific information for this Private Service Connect
 	// endpoint.
+	// Wire name: 'gcp_vpc_endpoint_info'
 	GcpVpcEndpointInfo *GcpVpcEndpointInfo
 	// The AWS region in which this VPC endpoint object exists.
+	// Wire name: 'region'
 	Region string
 	// The current state (such as `available` or `rejected`) of the VPC
 	// endpoint. Derived from AWS. For the full set of values, see [AWS
 	// DescribeVpcEndpoint documentation].
 	//
 	// [AWS DescribeVpcEndpoint documentation]: https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-vpc-endpoints.html
+	// Wire name: 'state'
 	State string
 	// This enumeration represents the type of Databricks VPC [endpoint service]
 	// that was used when creating this VPC endpoint.
 	//
 	// [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
+	// Wire name: 'use_case'
 	UseCase EndpointUseCase
 	// Databricks VPC endpoint ID. This is the Databricks-specific name of the
 	// VPC endpoint. Do not confuse this with the `aws_vpc_endpoint_id`, which
 	// is the ID within AWS of the VPC endpoint.
+	// Wire name: 'vpc_endpoint_id'
 	VpcEndpointId string
 	// The human-readable name of the storage configuration.
+	// Wire name: 'vpc_endpoint_name'
 	VpcEndpointName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func vpcEndpointToPb(st *VpcEndpoint) (*vpcEndpointPb, error) {
@@ -5686,25 +4927,13 @@ func vpcEndpointToPb(st *VpcEndpoint) (*vpcEndpointPb, error) {
 		return nil, nil
 	}
 	pb := &vpcEndpointPb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
-	awsAccountIdPb := &st.AwsAccountId
-	if awsAccountIdPb != nil {
-		pb.AwsAccountId = *awsAccountIdPb
-	}
+	pb.AwsAccountId = st.AwsAccountId
 
-	awsEndpointServiceIdPb := &st.AwsEndpointServiceId
-	if awsEndpointServiceIdPb != nil {
-		pb.AwsEndpointServiceId = *awsEndpointServiceIdPb
-	}
+	pb.AwsEndpointServiceId = st.AwsEndpointServiceId
 
-	awsVpcEndpointIdPb := &st.AwsVpcEndpointId
-	if awsVpcEndpointIdPb != nil {
-		pb.AwsVpcEndpointId = *awsVpcEndpointIdPb
-	}
+	pb.AwsVpcEndpointId = st.AwsVpcEndpointId
 
 	gcpVpcEndpointInfoPb, err := gcpVpcEndpointInfoToPb(st.GcpVpcEndpointInfo)
 	if err != nil {
@@ -5714,30 +4943,15 @@ func vpcEndpointToPb(st *VpcEndpoint) (*vpcEndpointPb, error) {
 		pb.GcpVpcEndpointInfo = gcpVpcEndpointInfoPb
 	}
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
-	useCasePb := &st.UseCase
-	if useCasePb != nil {
-		pb.UseCase = *useCasePb
-	}
+	pb.UseCase = st.UseCase
 
-	vpcEndpointIdPb := &st.VpcEndpointId
-	if vpcEndpointIdPb != nil {
-		pb.VpcEndpointId = *vpcEndpointIdPb
-	}
+	pb.VpcEndpointId = st.VpcEndpointId
 
-	vpcEndpointNamePb := &st.VpcEndpointName
-	if vpcEndpointNamePb != nil {
-		pb.VpcEndpointName = *vpcEndpointNamePb
-	}
+	pb.VpcEndpointName = st.VpcEndpointName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5813,22 +5027,10 @@ func vpcEndpointFromPb(pb *vpcEndpointPb) (*VpcEndpoint, error) {
 		return nil, nil
 	}
 	st := &VpcEndpoint{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
-	awsAccountIdField := &pb.AwsAccountId
-	if awsAccountIdField != nil {
-		st.AwsAccountId = *awsAccountIdField
-	}
-	awsEndpointServiceIdField := &pb.AwsEndpointServiceId
-	if awsEndpointServiceIdField != nil {
-		st.AwsEndpointServiceId = *awsEndpointServiceIdField
-	}
-	awsVpcEndpointIdField := &pb.AwsVpcEndpointId
-	if awsVpcEndpointIdField != nil {
-		st.AwsVpcEndpointId = *awsVpcEndpointIdField
-	}
+	st.AccountId = pb.AccountId
+	st.AwsAccountId = pb.AwsAccountId
+	st.AwsEndpointServiceId = pb.AwsEndpointServiceId
+	st.AwsVpcEndpointId = pb.AwsVpcEndpointId
 	gcpVpcEndpointInfoField, err := gcpVpcEndpointInfoFromPb(pb.GcpVpcEndpointInfo)
 	if err != nil {
 		return nil, err
@@ -5836,26 +5038,11 @@ func vpcEndpointFromPb(pb *vpcEndpointPb) (*VpcEndpoint, error) {
 	if gcpVpcEndpointInfoField != nil {
 		st.GcpVpcEndpointInfo = gcpVpcEndpointInfoField
 	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
-	useCaseField := &pb.UseCase
-	if useCaseField != nil {
-		st.UseCase = *useCaseField
-	}
-	vpcEndpointIdField := &pb.VpcEndpointId
-	if vpcEndpointIdField != nil {
-		st.VpcEndpointId = *vpcEndpointIdField
-	}
-	vpcEndpointNameField := &pb.VpcEndpointName
-	if vpcEndpointNameField != nil {
-		st.VpcEndpointName = *vpcEndpointNameField
-	}
+	st.Region = pb.Region
+	st.State = pb.State
+	st.UseCase = pb.UseCase
+	st.VpcEndpointId = pb.VpcEndpointId
+	st.VpcEndpointName = pb.VpcEndpointName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5971,24 +5158,32 @@ func warningTypeFromPb(pb *warningTypePb) (*WarningType, error) {
 
 type Workspace struct {
 	// Databricks account ID.
+	// Wire name: 'account_id'
 	AccountId string
 	// The AWS region of the workspace data plane (for example, `us-west-2`).
+	// Wire name: 'aws_region'
 	AwsRegion string
 
+	// Wire name: 'azure_workspace_info'
 	AzureWorkspaceInfo *AzureWorkspaceInfo
 	// The cloud name. This field always has the value `gcp`.
+	// Wire name: 'cloud'
 	Cloud string
 	// The general workspace configurations that are specific to cloud
 	// providers.
+	// Wire name: 'cloud_resource_container'
 	CloudResourceContainer *CloudResourceContainer
 	// Time in epoch milliseconds when the workspace was created.
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// ID of the workspace's credential configuration object.
+	// Wire name: 'credentials_id'
 	CredentialsId string
 	// The custom tags key-value pairing that is attached to this workspace. The
 	// key-value pair is a string of utf-8 characters. The value can be an empty
 	// string, with maximum length of 255 characters. The key can be of maximum
 	// length of 127 characters, and cannot be empty.
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// The deployment name defines part of the subdomain for the workspace. The
 	// workspace URL for web application and REST APIs is
@@ -5996,10 +5191,12 @@ type Workspace struct {
 	//
 	// This value must be unique across all non-deleted deployments across all
 	// AWS regions.
+	// Wire name: 'deployment_name'
 	DeploymentName string
 	// If this workspace is for a external customer, then external_customer_info
 	// is populated. If this workspace is not for a external customer, then
 	// external_customer_info is empty.
+	// Wire name: 'external_customer_info'
 	ExternalCustomerInfo *ExternalCustomerInfo
 	// The network settings for the workspace. The configurations are only for
 	// Databricks-managed VPCs. It is ignored if you specify a customer-managed
@@ -6024,23 +5221,30 @@ type Workspace struct {
 	// for a new workspace].
 	//
 	// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
+	// Wire name: 'gcp_managed_network_config'
 	GcpManagedNetworkConfig *GcpManagedNetworkConfig
 	// The configurations for the GKE cluster of a Databricks workspace.
+	// Wire name: 'gke_config'
 	GkeConfig *GkeConfig
 	// Whether no public IP is enabled for the workspace.
+	// Wire name: 'is_no_public_ip_enabled'
 	IsNoPublicIpEnabled bool
 	// The Google Cloud region of the workspace data plane in your Google
 	// account (for example, `us-east4`).
+	// Wire name: 'location'
 	Location string
 	// ID of the key configuration for encrypting managed services.
+	// Wire name: 'managed_services_customer_managed_key_id'
 	ManagedServicesCustomerManagedKeyId string
 	// The network configuration ID that is attached to the workspace. This
 	// field is available only if the network is a customer-managed network.
+	// Wire name: 'network_id'
 	NetworkId string
 	// The pricing tier of the workspace. For pricing tier information, see [AWS
 	// Pricing].
 	//
 	// [AWS Pricing]: https://databricks.com/product/aws-pricing
+	// Wire name: 'pricing_tier'
 	PricingTier PricingTier
 	// ID of the workspace's private access settings object. Only used for
 	// PrivateLink. You must specify this ID if you are using [AWS PrivateLink]
@@ -6052,23 +5256,30 @@ type Workspace struct {
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+	// Wire name: 'private_access_settings_id'
 	PrivateAccessSettingsId string
 	// ID of the workspace's storage configuration object.
+	// Wire name: 'storage_configuration_id'
 	StorageConfigurationId string
 	// ID of the key configuration for encrypting workspace storage.
+	// Wire name: 'storage_customer_managed_key_id'
 	StorageCustomerManagedKeyId string
 	// A unique integer ID for the workspace
+	// Wire name: 'workspace_id'
 	WorkspaceId int64
 	// The human-readable name of the workspace.
+	// Wire name: 'workspace_name'
 	WorkspaceName string
 	// The status of the workspace. For workspace creation, usually it is set to
 	// `PROVISIONING` initially. Continue to check the status until the status
 	// is `RUNNING`.
+	// Wire name: 'workspace_status'
 	WorkspaceStatus WorkspaceStatus
 	// Message describing the current workspace status.
+	// Wire name: 'workspace_status_message'
 	WorkspaceStatusMessage string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func workspaceToPb(st *Workspace) (*workspacePb, error) {
@@ -6076,15 +5287,9 @@ func workspaceToPb(st *Workspace) (*workspacePb, error) {
 		return nil, nil
 	}
 	pb := &workspacePb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
-	awsRegionPb := &st.AwsRegion
-	if awsRegionPb != nil {
-		pb.AwsRegion = *awsRegionPb
-	}
+	pb.AwsRegion = st.AwsRegion
 
 	azureWorkspaceInfoPb, err := azureWorkspaceInfoToPb(st.AzureWorkspaceInfo)
 	if err != nil {
@@ -6094,10 +5299,7 @@ func workspaceToPb(st *Workspace) (*workspacePb, error) {
 		pb.AzureWorkspaceInfo = azureWorkspaceInfoPb
 	}
 
-	cloudPb := &st.Cloud
-	if cloudPb != nil {
-		pb.Cloud = *cloudPb
-	}
+	pb.Cloud = st.Cloud
 
 	cloudResourceContainerPb, err := cloudResourceContainerToPb(st.CloudResourceContainer)
 	if err != nil {
@@ -6107,29 +5309,13 @@ func workspaceToPb(st *Workspace) (*workspacePb, error) {
 		pb.CloudResourceContainer = cloudResourceContainerPb
 	}
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
-	credentialsIdPb := &st.CredentialsId
-	if credentialsIdPb != nil {
-		pb.CredentialsId = *credentialsIdPb
-	}
+	pb.CredentialsId = st.CredentialsId
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	deploymentNamePb := &st.DeploymentName
-	if deploymentNamePb != nil {
-		pb.DeploymentName = *deploymentNamePb
-	}
+	pb.DeploymentName = st.DeploymentName
 
 	externalCustomerInfoPb, err := externalCustomerInfoToPb(st.ExternalCustomerInfo)
 	if err != nil {
@@ -6155,65 +5341,29 @@ func workspaceToPb(st *Workspace) (*workspacePb, error) {
 		pb.GkeConfig = gkeConfigPb
 	}
 
-	isNoPublicIpEnabledPb := &st.IsNoPublicIpEnabled
-	if isNoPublicIpEnabledPb != nil {
-		pb.IsNoPublicIpEnabled = *isNoPublicIpEnabledPb
-	}
+	pb.IsNoPublicIpEnabled = st.IsNoPublicIpEnabled
 
-	locationPb := &st.Location
-	if locationPb != nil {
-		pb.Location = *locationPb
-	}
+	pb.Location = st.Location
 
-	managedServicesCustomerManagedKeyIdPb := &st.ManagedServicesCustomerManagedKeyId
-	if managedServicesCustomerManagedKeyIdPb != nil {
-		pb.ManagedServicesCustomerManagedKeyId = *managedServicesCustomerManagedKeyIdPb
-	}
+	pb.ManagedServicesCustomerManagedKeyId = st.ManagedServicesCustomerManagedKeyId
 
-	networkIdPb := &st.NetworkId
-	if networkIdPb != nil {
-		pb.NetworkId = *networkIdPb
-	}
+	pb.NetworkId = st.NetworkId
 
-	pricingTierPb := &st.PricingTier
-	if pricingTierPb != nil {
-		pb.PricingTier = *pricingTierPb
-	}
+	pb.PricingTier = st.PricingTier
 
-	privateAccessSettingsIdPb := &st.PrivateAccessSettingsId
-	if privateAccessSettingsIdPb != nil {
-		pb.PrivateAccessSettingsId = *privateAccessSettingsIdPb
-	}
+	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
 
-	storageConfigurationIdPb := &st.StorageConfigurationId
-	if storageConfigurationIdPb != nil {
-		pb.StorageConfigurationId = *storageConfigurationIdPb
-	}
+	pb.StorageConfigurationId = st.StorageConfigurationId
 
-	storageCustomerManagedKeyIdPb := &st.StorageCustomerManagedKeyId
-	if storageCustomerManagedKeyIdPb != nil {
-		pb.StorageCustomerManagedKeyId = *storageCustomerManagedKeyIdPb
-	}
+	pb.StorageCustomerManagedKeyId = st.StorageCustomerManagedKeyId
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
-	workspaceNamePb := &st.WorkspaceName
-	if workspaceNamePb != nil {
-		pb.WorkspaceName = *workspaceNamePb
-	}
+	pb.WorkspaceName = st.WorkspaceName
 
-	workspaceStatusPb := &st.WorkspaceStatus
-	if workspaceStatusPb != nil {
-		pb.WorkspaceStatus = *workspaceStatusPb
-	}
+	pb.WorkspaceStatus = st.WorkspaceStatus
 
-	workspaceStatusMessagePb := &st.WorkspaceStatusMessage
-	if workspaceStatusMessagePb != nil {
-		pb.WorkspaceStatusMessage = *workspaceStatusMessagePb
-	}
+	pb.WorkspaceStatusMessage = st.WorkspaceStatusMessage
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6351,14 +5501,8 @@ func workspaceFromPb(pb *workspacePb) (*Workspace, error) {
 		return nil, nil
 	}
 	st := &Workspace{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
-	awsRegionField := &pb.AwsRegion
-	if awsRegionField != nil {
-		st.AwsRegion = *awsRegionField
-	}
+	st.AccountId = pb.AccountId
+	st.AwsRegion = pb.AwsRegion
 	azureWorkspaceInfoField, err := azureWorkspaceInfoFromPb(pb.AzureWorkspaceInfo)
 	if err != nil {
 		return nil, err
@@ -6366,10 +5510,7 @@ func workspaceFromPb(pb *workspacePb) (*Workspace, error) {
 	if azureWorkspaceInfoField != nil {
 		st.AzureWorkspaceInfo = azureWorkspaceInfoField
 	}
-	cloudField := &pb.Cloud
-	if cloudField != nil {
-		st.Cloud = *cloudField
-	}
+	st.Cloud = pb.Cloud
 	cloudResourceContainerField, err := cloudResourceContainerFromPb(pb.CloudResourceContainer)
 	if err != nil {
 		return nil, err
@@ -6377,27 +5518,10 @@ func workspaceFromPb(pb *workspacePb) (*Workspace, error) {
 	if cloudResourceContainerField != nil {
 		st.CloudResourceContainer = cloudResourceContainerField
 	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
-	credentialsIdField := &pb.CredentialsId
-	if credentialsIdField != nil {
-		st.CredentialsId = *credentialsIdField
-	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-	deploymentNameField := &pb.DeploymentName
-	if deploymentNameField != nil {
-		st.DeploymentName = *deploymentNameField
-	}
+	st.CreationTime = pb.CreationTime
+	st.CredentialsId = pb.CredentialsId
+	st.CustomTags = pb.CustomTags
+	st.DeploymentName = pb.DeploymentName
 	externalCustomerInfoField, err := externalCustomerInfoFromPb(pb.ExternalCustomerInfo)
 	if err != nil {
 		return nil, err
@@ -6419,54 +5543,18 @@ func workspaceFromPb(pb *workspacePb) (*Workspace, error) {
 	if gkeConfigField != nil {
 		st.GkeConfig = gkeConfigField
 	}
-	isNoPublicIpEnabledField := &pb.IsNoPublicIpEnabled
-	if isNoPublicIpEnabledField != nil {
-		st.IsNoPublicIpEnabled = *isNoPublicIpEnabledField
-	}
-	locationField := &pb.Location
-	if locationField != nil {
-		st.Location = *locationField
-	}
-	managedServicesCustomerManagedKeyIdField := &pb.ManagedServicesCustomerManagedKeyId
-	if managedServicesCustomerManagedKeyIdField != nil {
-		st.ManagedServicesCustomerManagedKeyId = *managedServicesCustomerManagedKeyIdField
-	}
-	networkIdField := &pb.NetworkId
-	if networkIdField != nil {
-		st.NetworkId = *networkIdField
-	}
-	pricingTierField := &pb.PricingTier
-	if pricingTierField != nil {
-		st.PricingTier = *pricingTierField
-	}
-	privateAccessSettingsIdField := &pb.PrivateAccessSettingsId
-	if privateAccessSettingsIdField != nil {
-		st.PrivateAccessSettingsId = *privateAccessSettingsIdField
-	}
-	storageConfigurationIdField := &pb.StorageConfigurationId
-	if storageConfigurationIdField != nil {
-		st.StorageConfigurationId = *storageConfigurationIdField
-	}
-	storageCustomerManagedKeyIdField := &pb.StorageCustomerManagedKeyId
-	if storageCustomerManagedKeyIdField != nil {
-		st.StorageCustomerManagedKeyId = *storageCustomerManagedKeyIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
-	workspaceNameField := &pb.WorkspaceName
-	if workspaceNameField != nil {
-		st.WorkspaceName = *workspaceNameField
-	}
-	workspaceStatusField := &pb.WorkspaceStatus
-	if workspaceStatusField != nil {
-		st.WorkspaceStatus = *workspaceStatusField
-	}
-	workspaceStatusMessageField := &pb.WorkspaceStatusMessage
-	if workspaceStatusMessageField != nil {
-		st.WorkspaceStatusMessage = *workspaceStatusMessageField
-	}
+	st.IsNoPublicIpEnabled = pb.IsNoPublicIpEnabled
+	st.Location = pb.Location
+	st.ManagedServicesCustomerManagedKeyId = pb.ManagedServicesCustomerManagedKeyId
+	st.NetworkId = pb.NetworkId
+	st.PricingTier = pb.PricingTier
+	st.PrivateAccessSettingsId = pb.PrivateAccessSettingsId
+	st.StorageConfigurationId = pb.StorageConfigurationId
+	st.StorageCustomerManagedKeyId = pb.StorageCustomerManagedKeyId
+	st.WorkspaceId = pb.WorkspaceId
+	st.WorkspaceName = pb.WorkspaceName
+	st.WorkspaceStatus = pb.WorkspaceStatus
+	st.WorkspaceStatusMessage = pb.WorkspaceStatusMessage
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6533,4 +5621,58 @@ func workspaceStatusFromPb(pb *workspaceStatusPb) (*WorkspaceStatus, error) {
 	}
 	st := WorkspaceStatus(*pb)
 	return &st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

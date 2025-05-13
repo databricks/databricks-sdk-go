@@ -29,15 +29,22 @@ func (a *billableUsageImpl) Download(ctx context.Context, request DownloadReques
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "text/plain"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &downloadResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&downloadResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := downloadResponseFromPb(&downloadResponsePb)
+	resp, err := downloadResponseFromPb(&downloadResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -60,15 +67,22 @@ func (a *budgetPolicyImpl) Create(ctx context.Context, request CreateBudgetPolic
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &budgetPolicyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&budgetPolicyPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := budgetPolicyFromPb(&budgetPolicyPb)
+	resp, err := budgetPolicyFromPb(&budgetPolicyPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -85,7 +99,15 @@ func (a *budgetPolicyImpl) Delete(ctx context.Context, request DeleteBudgetPolic
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -105,15 +127,22 @@ func (a *budgetPolicyImpl) Get(ctx context.Context, request GetBudgetPolicyReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &budgetPolicyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&budgetPolicyPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := budgetPolicyFromPb(&budgetPolicyPb)
+	resp, err := budgetPolicyFromPb(&budgetPolicyPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -167,15 +196,22 @@ func (a *budgetPolicyImpl) internalList(ctx context.Context, request ListBudgetP
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listBudgetPoliciesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listBudgetPoliciesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listBudgetPoliciesResponseFromPb(&listBudgetPoliciesResponsePb)
+	resp, err := listBudgetPoliciesResponseFromPb(&listBudgetPoliciesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -196,15 +232,22 @@ func (a *budgetPolicyImpl) Update(ctx context.Context, request UpdateBudgetPolic
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb).Policy, &budgetPolicyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Policy,
+		&budgetPolicyPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := budgetPolicyFromPb(&budgetPolicyPb)
+	resp, err := budgetPolicyFromPb(&budgetPolicyPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -227,15 +270,22 @@ func (a *budgetsImpl) Create(ctx context.Context, request CreateBudgetConfigurat
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createBudgetConfigurationResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createBudgetConfigurationResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createBudgetConfigurationResponseFromPb(&createBudgetConfigurationResponsePb)
+	resp, err := createBudgetConfigurationResponseFromPb(&createBudgetConfigurationResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -252,7 +302,15 @@ func (a *budgetsImpl) Delete(ctx context.Context, request DeleteBudgetConfigurat
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteBudgetConfigurationResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteBudgetConfigurationResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -272,15 +330,22 @@ func (a *budgetsImpl) Get(ctx context.Context, request GetBudgetConfigurationReq
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getBudgetConfigurationResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getBudgetConfigurationResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getBudgetConfigurationResponseFromPb(&getBudgetConfigurationResponsePb)
+	resp, err := getBudgetConfigurationResponseFromPb(&getBudgetConfigurationResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -332,15 +397,22 @@ func (a *budgetsImpl) internalList(ctx context.Context, request ListBudgetConfig
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listBudgetConfigurationsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listBudgetConfigurationsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listBudgetConfigurationsResponseFromPb(&listBudgetConfigurationsResponsePb)
+	resp, err := listBudgetConfigurationsResponseFromPb(&listBudgetConfigurationsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -358,15 +430,22 @@ func (a *budgetsImpl) Update(ctx context.Context, request UpdateBudgetConfigurat
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &updateBudgetConfigurationResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateBudgetConfigurationResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := updateBudgetConfigurationResponseFromPb(&updateBudgetConfigurationResponsePb)
+	resp, err := updateBudgetConfigurationResponseFromPb(&updateBudgetConfigurationResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -389,15 +468,22 @@ func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDe
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &wrappedLogDeliveryConfigurationPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&wrappedLogDeliveryConfigurationPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := wrappedLogDeliveryConfigurationFromPb(&wrappedLogDeliveryConfigurationPb)
+	resp, err := wrappedLogDeliveryConfigurationFromPb(&wrappedLogDeliveryConfigurationPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -414,15 +500,22 @@ func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &wrappedLogDeliveryConfigurationPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&wrappedLogDeliveryConfigurationPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := wrappedLogDeliveryConfigurationFromPb(&wrappedLogDeliveryConfigurationPb)
+	resp, err := wrappedLogDeliveryConfigurationFromPb(&wrappedLogDeliveryConfigurationPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -470,15 +563,22 @@ func (a *logDeliveryImpl) internalList(ctx context.Context, request ListLogDeliv
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &wrappedLogDeliveryConfigurationsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&wrappedLogDeliveryConfigurationsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := wrappedLogDeliveryConfigurationsFromPb(&wrappedLogDeliveryConfigurationsPb)
+	resp, err := wrappedLogDeliveryConfigurationsFromPb(&wrappedLogDeliveryConfigurationsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -496,7 +596,15 @@ func (a *logDeliveryImpl) PatchStatus(ctx context.Context, request UpdateLogDeli
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &patchStatusResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&patchStatusResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -522,15 +630,22 @@ func (a *usageDashboardsImpl) Create(ctx context.Context, request CreateBillingU
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createBillingUsageDashboardResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createBillingUsageDashboardResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createBillingUsageDashboardResponseFromPb(&createBillingUsageDashboardResponsePb)
+	resp, err := createBillingUsageDashboardResponseFromPb(&createBillingUsageDashboardResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -547,15 +662,22 @@ func (a *usageDashboardsImpl) Get(ctx context.Context, request GetBillingUsageDa
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getBillingUsageDashboardResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getBillingUsageDashboardResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getBillingUsageDashboardResponseFromPb(&getBillingUsageDashboardResponsePb)
+	resp, err := getBillingUsageDashboardResponseFromPb(&getBillingUsageDashboardResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }

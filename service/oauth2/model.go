@@ -11,84 +11,18 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 // Create account federation policy
 type CreateAccountFederationPolicyRequest struct {
+
+	// Wire name: 'policy'
 	Policy FederationPolicy
 	// The identifier for the federation policy. The identifier must contain
 	// only lowercase alphanumeric characters, numbers, hyphens, and slashes. If
 	// unspecified, the id will be assigned by Databricks.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createAccountFederationPolicyRequestToPb(st *CreateAccountFederationPolicyRequest) (*createAccountFederationPolicyRequestPb, error) {
@@ -104,10 +38,7 @@ func createAccountFederationPolicyRequestToPb(st *CreateAccountFederationPolicyR
 		pb.Policy = *policyPb
 	}
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -160,10 +91,7 @@ func createAccountFederationPolicyRequestFromPb(pb *createAccountFederationPolic
 	if policyField != nil {
 		st.Policy = *policyField
 	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.PolicyId = pb.PolicyId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -180,22 +108,28 @@ func (st createAccountFederationPolicyRequestPb) MarshalJSON() ([]byte, error) {
 type CreateCustomAppIntegration struct {
 	// This field indicates whether an OAuth client secret is required to
 	// authenticate this client.
+	// Wire name: 'confidential'
 	Confidential bool
 	// Name of the custom OAuth app
+	// Wire name: 'name'
 	Name string
 	// List of OAuth redirect urls
+	// Wire name: 'redirect_urls'
 	RedirectUrls []string
 	// OAuth scopes granted to the application. Supported scopes: all-apis, sql,
 	// offline_access, openid, profile, email.
+	// Wire name: 'scopes'
 	Scopes []string
 	// Token access policy
+	// Wire name: 'token_access_policy'
 	TokenAccessPolicy *TokenAccessPolicy
 	// Scopes that will need to be consented by end user to mint the access
 	// token. If the user does not authorize the access token will not be
 	// minted. Must be a subset of scopes.
+	// Wire name: 'user_authorized_scopes'
 	UserAuthorizedScopes []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createCustomAppIntegrationToPb(st *CreateCustomAppIntegration) (*createCustomAppIntegrationPb, error) {
@@ -203,33 +137,13 @@ func createCustomAppIntegrationToPb(st *CreateCustomAppIntegration) (*createCust
 		return nil, nil
 	}
 	pb := &createCustomAppIntegrationPb{}
-	confidentialPb := &st.Confidential
-	if confidentialPb != nil {
-		pb.Confidential = *confidentialPb
-	}
+	pb.Confidential = st.Confidential
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	var redirectUrlsPb []string
-	for _, item := range st.RedirectUrls {
-		itemPb := &item
-		if itemPb != nil {
-			redirectUrlsPb = append(redirectUrlsPb, *itemPb)
-		}
-	}
-	pb.RedirectUrls = redirectUrlsPb
+	pb.RedirectUrls = st.RedirectUrls
 
-	var scopesPb []string
-	for _, item := range st.Scopes {
-		itemPb := &item
-		if itemPb != nil {
-			scopesPb = append(scopesPb, *itemPb)
-		}
-	}
-	pb.Scopes = scopesPb
+	pb.Scopes = st.Scopes
 
 	tokenAccessPolicyPb, err := tokenAccessPolicyToPb(st.TokenAccessPolicy)
 	if err != nil {
@@ -239,14 +153,7 @@ func createCustomAppIntegrationToPb(st *CreateCustomAppIntegration) (*createCust
 		pb.TokenAccessPolicy = tokenAccessPolicyPb
 	}
 
-	var userAuthorizedScopesPb []string
-	for _, item := range st.UserAuthorizedScopes {
-		itemPb := &item
-		if itemPb != nil {
-			userAuthorizedScopesPb = append(userAuthorizedScopesPb, *itemPb)
-		}
-	}
-	pb.UserAuthorizedScopes = userAuthorizedScopesPb
+	pb.UserAuthorizedScopes = st.UserAuthorizedScopes
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -303,32 +210,10 @@ func createCustomAppIntegrationFromPb(pb *createCustomAppIntegrationPb) (*Create
 		return nil, nil
 	}
 	st := &CreateCustomAppIntegration{}
-	confidentialField := &pb.Confidential
-	if confidentialField != nil {
-		st.Confidential = *confidentialField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-
-	var redirectUrlsField []string
-	for _, item := range pb.RedirectUrls {
-		itemField := &item
-		if itemField != nil {
-			redirectUrlsField = append(redirectUrlsField, *itemField)
-		}
-	}
-	st.RedirectUrls = redirectUrlsField
-
-	var scopesField []string
-	for _, item := range pb.Scopes {
-		itemField := &item
-		if itemField != nil {
-			scopesField = append(scopesField, *itemField)
-		}
-	}
-	st.Scopes = scopesField
+	st.Confidential = pb.Confidential
+	st.Name = pb.Name
+	st.RedirectUrls = pb.RedirectUrls
+	st.Scopes = pb.Scopes
 	tokenAccessPolicyField, err := tokenAccessPolicyFromPb(pb.TokenAccessPolicy)
 	if err != nil {
 		return nil, err
@@ -336,15 +221,7 @@ func createCustomAppIntegrationFromPb(pb *createCustomAppIntegrationPb) (*Create
 	if tokenAccessPolicyField != nil {
 		st.TokenAccessPolicy = tokenAccessPolicyField
 	}
-
-	var userAuthorizedScopesField []string
-	for _, item := range pb.UserAuthorizedScopes {
-		itemField := &item
-		if itemField != nil {
-			userAuthorizedScopesField = append(userAuthorizedScopesField, *itemField)
-		}
-	}
-	st.UserAuthorizedScopes = userAuthorizedScopesField
+	st.UserAuthorizedScopes = pb.UserAuthorizedScopes
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -360,14 +237,17 @@ func (st createCustomAppIntegrationPb) MarshalJSON() ([]byte, error) {
 
 type CreateCustomAppIntegrationOutput struct {
 	// OAuth client-id generated by the Databricks
+	// Wire name: 'client_id'
 	ClientId string
 	// OAuth client-secret generated by the Databricks. If this is a
 	// confidential OAuth app client-secret will be generated.
+	// Wire name: 'client_secret'
 	ClientSecret string
 	// Unique integration id for the custom OAuth app
+	// Wire name: 'integration_id'
 	IntegrationId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createCustomAppIntegrationOutputToPb(st *CreateCustomAppIntegrationOutput) (*createCustomAppIntegrationOutputPb, error) {
@@ -375,20 +255,11 @@ func createCustomAppIntegrationOutputToPb(st *CreateCustomAppIntegrationOutput) 
 		return nil, nil
 	}
 	pb := &createCustomAppIntegrationOutputPb{}
-	clientIdPb := &st.ClientId
-	if clientIdPb != nil {
-		pb.ClientId = *clientIdPb
-	}
+	pb.ClientId = st.ClientId
 
-	clientSecretPb := &st.ClientSecret
-	if clientSecretPb != nil {
-		pb.ClientSecret = *clientSecretPb
-	}
+	pb.ClientSecret = st.ClientSecret
 
-	integrationIdPb := &st.IntegrationId
-	if integrationIdPb != nil {
-		pb.IntegrationId = *integrationIdPb
-	}
+	pb.IntegrationId = st.IntegrationId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -436,18 +307,9 @@ func createCustomAppIntegrationOutputFromPb(pb *createCustomAppIntegrationOutput
 		return nil, nil
 	}
 	st := &CreateCustomAppIntegrationOutput{}
-	clientIdField := &pb.ClientId
-	if clientIdField != nil {
-		st.ClientId = *clientIdField
-	}
-	clientSecretField := &pb.ClientSecret
-	if clientSecretField != nil {
-		st.ClientSecret = *clientSecretField
-	}
-	integrationIdField := &pb.IntegrationId
-	if integrationIdField != nil {
-		st.IntegrationId = *integrationIdField
-	}
+	st.ClientId = pb.ClientId
+	st.ClientSecret = pb.ClientSecret
+	st.IntegrationId = pb.IntegrationId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -464,11 +326,13 @@ func (st createCustomAppIntegrationOutputPb) MarshalJSON() ([]byte, error) {
 type CreatePublishedAppIntegration struct {
 	// App id of the OAuth published app integration. For example power-bi,
 	// tableau-deskop
+	// Wire name: 'app_id'
 	AppId string
 	// Token access policy
+	// Wire name: 'token_access_policy'
 	TokenAccessPolicy *TokenAccessPolicy
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createPublishedAppIntegrationToPb(st *CreatePublishedAppIntegration) (*createPublishedAppIntegrationPb, error) {
@@ -476,10 +340,7 @@ func createPublishedAppIntegrationToPb(st *CreatePublishedAppIntegration) (*crea
 		return nil, nil
 	}
 	pb := &createPublishedAppIntegrationPb{}
-	appIdPb := &st.AppId
-	if appIdPb != nil {
-		pb.AppId = *appIdPb
-	}
+	pb.AppId = st.AppId
 
 	tokenAccessPolicyPb, err := tokenAccessPolicyToPb(st.TokenAccessPolicy)
 	if err != nil {
@@ -533,10 +394,7 @@ func createPublishedAppIntegrationFromPb(pb *createPublishedAppIntegrationPb) (*
 		return nil, nil
 	}
 	st := &CreatePublishedAppIntegration{}
-	appIdField := &pb.AppId
-	if appIdField != nil {
-		st.AppId = *appIdField
-	}
+	st.AppId = pb.AppId
 	tokenAccessPolicyField, err := tokenAccessPolicyFromPb(pb.TokenAccessPolicy)
 	if err != nil {
 		return nil, err
@@ -559,9 +417,10 @@ func (st createPublishedAppIntegrationPb) MarshalJSON() ([]byte, error) {
 
 type CreatePublishedAppIntegrationOutput struct {
 	// Unique integration id for the published OAuth app
+	// Wire name: 'integration_id'
 	IntegrationId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createPublishedAppIntegrationOutputToPb(st *CreatePublishedAppIntegrationOutput) (*createPublishedAppIntegrationOutputPb, error) {
@@ -569,10 +428,7 @@ func createPublishedAppIntegrationOutputToPb(st *CreatePublishedAppIntegrationOu
 		return nil, nil
 	}
 	pb := &createPublishedAppIntegrationOutputPb{}
-	integrationIdPb := &st.IntegrationId
-	if integrationIdPb != nil {
-		pb.IntegrationId = *integrationIdPb
-	}
+	pb.IntegrationId = st.IntegrationId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -615,10 +471,7 @@ func createPublishedAppIntegrationOutputFromPb(pb *createPublishedAppIntegration
 		return nil, nil
 	}
 	st := &CreatePublishedAppIntegrationOutput{}
-	integrationIdField := &pb.IntegrationId
-	if integrationIdField != nil {
-		st.IntegrationId = *integrationIdField
-	}
+	st.IntegrationId = pb.IntegrationId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -634,15 +487,19 @@ func (st createPublishedAppIntegrationOutputPb) MarshalJSON() ([]byte, error) {
 
 // Create service principal federation policy
 type CreateServicePrincipalFederationPolicyRequest struct {
+
+	// Wire name: 'policy'
 	Policy FederationPolicy
 	// The identifier for the federation policy. The identifier must contain
 	// only lowercase alphanumeric characters, numbers, hyphens, and slashes. If
 	// unspecified, the id will be assigned by Databricks.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 	// The service principal id for the federation policy.
-	ServicePrincipalId int64
+	// Wire name: 'service_principal_id'
+	ServicePrincipalId int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createServicePrincipalFederationPolicyRequestToPb(st *CreateServicePrincipalFederationPolicyRequest) (*createServicePrincipalFederationPolicyRequestPb, error) {
@@ -658,15 +515,9 @@ func createServicePrincipalFederationPolicyRequestToPb(st *CreateServicePrincipa
 		pb.Policy = *policyPb
 	}
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	servicePrincipalIdPb := &st.ServicePrincipalId
-	if servicePrincipalIdPb != nil {
-		pb.ServicePrincipalId = *servicePrincipalIdPb
-	}
+	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -721,14 +572,8 @@ func createServicePrincipalFederationPolicyRequestFromPb(pb *createServicePrinci
 	if policyField != nil {
 		st.Policy = *policyField
 	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	servicePrincipalIdField := &pb.ServicePrincipalId
-	if servicePrincipalIdField != nil {
-		st.ServicePrincipalId = *servicePrincipalIdField
-	}
+	st.PolicyId = pb.PolicyId
+	st.ServicePrincipalId = pb.ServicePrincipalId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -745,11 +590,13 @@ func (st createServicePrincipalFederationPolicyRequestPb) MarshalJSON() ([]byte,
 type CreateServicePrincipalSecretRequest struct {
 	// The lifetime of the secret in seconds. If this parameter is not provided,
 	// the secret will have a default lifetime of 730 days (63072000s).
+	// Wire name: 'lifetime'
 	Lifetime string
 	// The service principal ID.
-	ServicePrincipalId int64
+	// Wire name: 'service_principal_id'
+	ServicePrincipalId int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createServicePrincipalSecretRequestToPb(st *CreateServicePrincipalSecretRequest) (*createServicePrincipalSecretRequestPb, error) {
@@ -757,15 +604,9 @@ func createServicePrincipalSecretRequestToPb(st *CreateServicePrincipalSecretReq
 		return nil, nil
 	}
 	pb := &createServicePrincipalSecretRequestPb{}
-	lifetimePb := &st.Lifetime
-	if lifetimePb != nil {
-		pb.Lifetime = *lifetimePb
-	}
+	pb.Lifetime = st.Lifetime
 
-	servicePrincipalIdPb := &st.ServicePrincipalId
-	if servicePrincipalIdPb != nil {
-		pb.ServicePrincipalId = *servicePrincipalIdPb
-	}
+	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -811,14 +652,8 @@ func createServicePrincipalSecretRequestFromPb(pb *createServicePrincipalSecretR
 		return nil, nil
 	}
 	st := &CreateServicePrincipalSecretRequest{}
-	lifetimeField := &pb.Lifetime
-	if lifetimeField != nil {
-		st.Lifetime = *lifetimeField
-	}
-	servicePrincipalIdField := &pb.ServicePrincipalId
-	if servicePrincipalIdField != nil {
-		st.ServicePrincipalId = *servicePrincipalIdField
-	}
+	st.Lifetime = pb.Lifetime
+	st.ServicePrincipalId = pb.ServicePrincipalId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -834,22 +669,29 @@ func (st createServicePrincipalSecretRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateServicePrincipalSecretResponse struct {
 	// UTC time when the secret was created
+	// Wire name: 'create_time'
 	CreateTime string
 	// UTC time when the secret will expire. If the field is not present, the
 	// secret does not expire.
+	// Wire name: 'expire_time'
 	ExpireTime string
 	// ID of the secret
+	// Wire name: 'id'
 	Id string
 	// Secret Value
+	// Wire name: 'secret'
 	Secret string
 	// Secret Hash
+	// Wire name: 'secret_hash'
 	SecretHash string
 	// Status of the secret
+	// Wire name: 'status'
 	Status string
 	// UTC time when the secret was updated
+	// Wire name: 'update_time'
 	UpdateTime string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createServicePrincipalSecretResponseToPb(st *CreateServicePrincipalSecretResponse) (*createServicePrincipalSecretResponsePb, error) {
@@ -857,40 +699,19 @@ func createServicePrincipalSecretResponseToPb(st *CreateServicePrincipalSecretRe
 		return nil, nil
 	}
 	pb := &createServicePrincipalSecretResponsePb{}
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	expireTimePb := &st.ExpireTime
-	if expireTimePb != nil {
-		pb.ExpireTime = *expireTimePb
-	}
+	pb.ExpireTime = st.ExpireTime
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	secretPb := &st.Secret
-	if secretPb != nil {
-		pb.Secret = *secretPb
-	}
+	pb.Secret = st.Secret
 
-	secretHashPb := &st.SecretHash
-	if secretHashPb != nil {
-		pb.SecretHash = *secretHashPb
-	}
+	pb.SecretHash = st.SecretHash
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -946,34 +767,13 @@ func createServicePrincipalSecretResponseFromPb(pb *createServicePrincipalSecret
 		return nil, nil
 	}
 	st := &CreateServicePrincipalSecretResponse{}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	expireTimeField := &pb.ExpireTime
-	if expireTimeField != nil {
-		st.ExpireTime = *expireTimeField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	secretField := &pb.Secret
-	if secretField != nil {
-		st.Secret = *secretField
-	}
-	secretHashField := &pb.SecretHash
-	if secretHashField != nil {
-		st.SecretHash = *secretHashField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
+	st.CreateTime = pb.CreateTime
+	st.ExpireTime = pb.ExpireTime
+	st.Id = pb.Id
+	st.Secret = pb.Secret
+	st.SecretHash = pb.SecretHash
+	st.Status = pb.Status
+	st.UpdateTime = pb.UpdateTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -990,7 +790,8 @@ func (st createServicePrincipalSecretResponsePb) MarshalJSON() ([]byte, error) {
 // Delete account federation policy
 type DeleteAccountFederationPolicyRequest struct {
 	// The identifier for the federation policy.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 }
 
 func deleteAccountFederationPolicyRequestToPb(st *DeleteAccountFederationPolicyRequest) (*deleteAccountFederationPolicyRequestPb, error) {
@@ -998,10 +799,7 @@ func deleteAccountFederationPolicyRequestToPb(st *DeleteAccountFederationPolicyR
 		return nil, nil
 	}
 	pb := &deleteAccountFederationPolicyRequestPb{}
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	return pb, nil
 }
@@ -1041,10 +839,7 @@ func deleteAccountFederationPolicyRequestFromPb(pb *deleteAccountFederationPolic
 		return nil, nil
 	}
 	st := &DeleteAccountFederationPolicyRequest{}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.PolicyId = pb.PolicyId
 
 	return st, nil
 }
@@ -1100,7 +895,9 @@ func deleteCustomAppIntegrationOutputFromPb(pb *deleteCustomAppIntegrationOutput
 
 // Delete Custom OAuth App Integration
 type DeleteCustomAppIntegrationRequest struct {
-	IntegrationId string
+
+	// Wire name: 'integration_id'
+	IntegrationId string `tf:"-"`
 }
 
 func deleteCustomAppIntegrationRequestToPb(st *DeleteCustomAppIntegrationRequest) (*deleteCustomAppIntegrationRequestPb, error) {
@@ -1108,10 +905,7 @@ func deleteCustomAppIntegrationRequestToPb(st *DeleteCustomAppIntegrationRequest
 		return nil, nil
 	}
 	pb := &deleteCustomAppIntegrationRequestPb{}
-	integrationIdPb := &st.IntegrationId
-	if integrationIdPb != nil {
-		pb.IntegrationId = *integrationIdPb
-	}
+	pb.IntegrationId = st.IntegrationId
 
 	return pb, nil
 }
@@ -1150,10 +944,7 @@ func deleteCustomAppIntegrationRequestFromPb(pb *deleteCustomAppIntegrationReque
 		return nil, nil
 	}
 	st := &DeleteCustomAppIntegrationRequest{}
-	integrationIdField := &pb.IntegrationId
-	if integrationIdField != nil {
-		st.IntegrationId = *integrationIdField
-	}
+	st.IntegrationId = pb.IntegrationId
 
 	return st, nil
 }
@@ -1209,7 +1000,9 @@ func deletePublishedAppIntegrationOutputFromPb(pb *deletePublishedAppIntegration
 
 // Delete Published OAuth App Integration
 type DeletePublishedAppIntegrationRequest struct {
-	IntegrationId string
+
+	// Wire name: 'integration_id'
+	IntegrationId string `tf:"-"`
 }
 
 func deletePublishedAppIntegrationRequestToPb(st *DeletePublishedAppIntegrationRequest) (*deletePublishedAppIntegrationRequestPb, error) {
@@ -1217,10 +1010,7 @@ func deletePublishedAppIntegrationRequestToPb(st *DeletePublishedAppIntegrationR
 		return nil, nil
 	}
 	pb := &deletePublishedAppIntegrationRequestPb{}
-	integrationIdPb := &st.IntegrationId
-	if integrationIdPb != nil {
-		pb.IntegrationId = *integrationIdPb
-	}
+	pb.IntegrationId = st.IntegrationId
 
 	return pb, nil
 }
@@ -1259,10 +1049,7 @@ func deletePublishedAppIntegrationRequestFromPb(pb *deletePublishedAppIntegratio
 		return nil, nil
 	}
 	st := &DeletePublishedAppIntegrationRequest{}
-	integrationIdField := &pb.IntegrationId
-	if integrationIdField != nil {
-		st.IntegrationId = *integrationIdField
-	}
+	st.IntegrationId = pb.IntegrationId
 
 	return st, nil
 }
@@ -1319,9 +1106,11 @@ func deleteResponseFromPb(pb *deleteResponsePb) (*DeleteResponse, error) {
 // Delete service principal federation policy
 type DeleteServicePrincipalFederationPolicyRequest struct {
 	// The identifier for the federation policy.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 	// The service principal id for the federation policy.
-	ServicePrincipalId int64
+	// Wire name: 'service_principal_id'
+	ServicePrincipalId int64 `tf:"-"`
 }
 
 func deleteServicePrincipalFederationPolicyRequestToPb(st *DeleteServicePrincipalFederationPolicyRequest) (*deleteServicePrincipalFederationPolicyRequestPb, error) {
@@ -1329,15 +1118,9 @@ func deleteServicePrincipalFederationPolicyRequestToPb(st *DeleteServicePrincipa
 		return nil, nil
 	}
 	pb := &deleteServicePrincipalFederationPolicyRequestPb{}
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	servicePrincipalIdPb := &st.ServicePrincipalId
-	if servicePrincipalIdPb != nil {
-		pb.ServicePrincipalId = *servicePrincipalIdPb
-	}
+	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	return pb, nil
 }
@@ -1379,14 +1162,8 @@ func deleteServicePrincipalFederationPolicyRequestFromPb(pb *deleteServicePrinci
 		return nil, nil
 	}
 	st := &DeleteServicePrincipalFederationPolicyRequest{}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	servicePrincipalIdField := &pb.ServicePrincipalId
-	if servicePrincipalIdField != nil {
-		st.ServicePrincipalId = *servicePrincipalIdField
-	}
+	st.PolicyId = pb.PolicyId
+	st.ServicePrincipalId = pb.ServicePrincipalId
 
 	return st, nil
 }
@@ -1394,9 +1171,11 @@ func deleteServicePrincipalFederationPolicyRequestFromPb(pb *deleteServicePrinci
 // Delete service principal secret
 type DeleteServicePrincipalSecretRequest struct {
 	// The secret ID.
-	SecretId string
+	// Wire name: 'secret_id'
+	SecretId string `tf:"-"`
 	// The service principal ID.
-	ServicePrincipalId int64
+	// Wire name: 'service_principal_id'
+	ServicePrincipalId int64 `tf:"-"`
 }
 
 func deleteServicePrincipalSecretRequestToPb(st *DeleteServicePrincipalSecretRequest) (*deleteServicePrincipalSecretRequestPb, error) {
@@ -1404,15 +1183,9 @@ func deleteServicePrincipalSecretRequestToPb(st *DeleteServicePrincipalSecretReq
 		return nil, nil
 	}
 	pb := &deleteServicePrincipalSecretRequestPb{}
-	secretIdPb := &st.SecretId
-	if secretIdPb != nil {
-		pb.SecretId = *secretIdPb
-	}
+	pb.SecretId = st.SecretId
 
-	servicePrincipalIdPb := &st.ServicePrincipalId
-	if servicePrincipalIdPb != nil {
-		pb.ServicePrincipalId = *servicePrincipalIdPb
-	}
+	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	return pb, nil
 }
@@ -1454,22 +1227,18 @@ func deleteServicePrincipalSecretRequestFromPb(pb *deleteServicePrincipalSecretR
 		return nil, nil
 	}
 	st := &DeleteServicePrincipalSecretRequest{}
-	secretIdField := &pb.SecretId
-	if secretIdField != nil {
-		st.SecretId = *secretIdField
-	}
-	servicePrincipalIdField := &pb.ServicePrincipalId
-	if servicePrincipalIdField != nil {
-		st.ServicePrincipalId = *servicePrincipalIdField
-	}
+	st.SecretId = pb.SecretId
+	st.ServicePrincipalId = pb.ServicePrincipalId
 
 	return st, nil
 }
 
 type FederationPolicy struct {
 	// Creation time of the federation policy.
+	// Wire name: 'create_time'
 	CreateTime string
 	// Description of the federation policy.
+	// Wire name: 'description'
 	Description string
 	// Resource name for the federation policy. Example values include
 	// `accounts/<account-id>/federationPolicies/my-federation-policy` for
@@ -1478,16 +1247,20 @@ type FederationPolicy struct {
 	// for Service Principal Federation Policies. Typically an output parameter,
 	// which does not need to be specified in create or update requests. If
 	// specified in a request, must match the value in the request URL.
+	// Wire name: 'name'
 	Name string
 	// Specifies the policy to use for validating OIDC claims in your federated
 	// tokens.
+	// Wire name: 'oidc_policy'
 	OidcPolicy *OidcFederationPolicy
 	// Unique, immutable id of the federation policy.
+	// Wire name: 'uid'
 	Uid string
 	// Last update time of the federation policy.
+	// Wire name: 'update_time'
 	UpdateTime string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func federationPolicyToPb(st *FederationPolicy) (*federationPolicyPb, error) {
@@ -1495,20 +1268,11 @@ func federationPolicyToPb(st *FederationPolicy) (*federationPolicyPb, error) {
 		return nil, nil
 	}
 	pb := &federationPolicyPb{}
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	oidcPolicyPb, err := oidcFederationPolicyToPb(st.OidcPolicy)
 	if err != nil {
@@ -1518,15 +1282,9 @@ func federationPolicyToPb(st *FederationPolicy) (*federationPolicyPb, error) {
 		pb.OidcPolicy = oidcPolicyPb
 	}
 
-	uidPb := &st.Uid
-	if uidPb != nil {
-		pb.Uid = *uidPb
-	}
+	pb.Uid = st.Uid
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1586,18 +1344,9 @@ func federationPolicyFromPb(pb *federationPolicyPb) (*FederationPolicy, error) {
 		return nil, nil
 	}
 	st := &FederationPolicy{}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.CreateTime = pb.CreateTime
+	st.Description = pb.Description
+	st.Name = pb.Name
 	oidcPolicyField, err := oidcFederationPolicyFromPb(pb.OidcPolicy)
 	if err != nil {
 		return nil, err
@@ -1605,14 +1354,8 @@ func federationPolicyFromPb(pb *federationPolicyPb) (*FederationPolicy, error) {
 	if oidcPolicyField != nil {
 		st.OidcPolicy = oidcPolicyField
 	}
-	uidField := &pb.Uid
-	if uidField != nil {
-		st.Uid = *uidField
-	}
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
+	st.Uid = pb.Uid
+	st.UpdateTime = pb.UpdateTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1629,7 +1372,8 @@ func (st federationPolicyPb) MarshalJSON() ([]byte, error) {
 // Get account federation policy
 type GetAccountFederationPolicyRequest struct {
 	// The identifier for the federation policy.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 }
 
 func getAccountFederationPolicyRequestToPb(st *GetAccountFederationPolicyRequest) (*getAccountFederationPolicyRequestPb, error) {
@@ -1637,10 +1381,7 @@ func getAccountFederationPolicyRequestToPb(st *GetAccountFederationPolicyRequest
 		return nil, nil
 	}
 	pb := &getAccountFederationPolicyRequestPb{}
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
 	return pb, nil
 }
@@ -1680,42 +1421,50 @@ func getAccountFederationPolicyRequestFromPb(pb *getAccountFederationPolicyReque
 		return nil, nil
 	}
 	st := &GetAccountFederationPolicyRequest{}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
+	st.PolicyId = pb.PolicyId
 
 	return st, nil
 }
 
 type GetCustomAppIntegrationOutput struct {
 	// The client id of the custom OAuth app
+	// Wire name: 'client_id'
 	ClientId string
 	// This field indicates whether an OAuth client secret is required to
 	// authenticate this client.
+	// Wire name: 'confidential'
 	Confidential bool
 
+	// Wire name: 'create_time'
 	CreateTime string
 
+	// Wire name: 'created_by'
 	CreatedBy int64
 
+	// Wire name: 'creator_username'
 	CreatorUsername string
 	// ID of this custom app
+	// Wire name: 'integration_id'
 	IntegrationId string
 	// The display name of the custom OAuth app
+	// Wire name: 'name'
 	Name string
 	// List of OAuth redirect urls
+	// Wire name: 'redirect_urls'
 	RedirectUrls []string
 
+	// Wire name: 'scopes'
 	Scopes []string
 	// Token access policy
+	// Wire name: 'token_access_policy'
 	TokenAccessPolicy *TokenAccessPolicy
 	// Scopes that will need to be consented by end user to mint the access
 	// token. If the user does not authorize the access token will not be
 	// minted. Must be a subset of scopes.
+	// Wire name: 'user_authorized_scopes'
 	UserAuthorizedScopes []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getCustomAppIntegrationOutputToPb(st *GetCustomAppIntegrationOutput) (*getCustomAppIntegrationOutputPb, error) {
@@ -1723,58 +1472,23 @@ func getCustomAppIntegrationOutputToPb(st *GetCustomAppIntegrationOutput) (*getC
 		return nil, nil
 	}
 	pb := &getCustomAppIntegrationOutputPb{}
-	clientIdPb := &st.ClientId
-	if clientIdPb != nil {
-		pb.ClientId = *clientIdPb
-	}
+	pb.ClientId = st.ClientId
 
-	confidentialPb := &st.Confidential
-	if confidentialPb != nil {
-		pb.Confidential = *confidentialPb
-	}
+	pb.Confidential = st.Confidential
 
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	creatorUsernamePb := &st.CreatorUsername
-	if creatorUsernamePb != nil {
-		pb.CreatorUsername = *creatorUsernamePb
-	}
+	pb.CreatorUsername = st.CreatorUsername
 
-	integrationIdPb := &st.IntegrationId
-	if integrationIdPb != nil {
-		pb.IntegrationId = *integrationIdPb
-	}
+	pb.IntegrationId = st.IntegrationId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	var redirectUrlsPb []string
-	for _, item := range st.RedirectUrls {
-		itemPb := &item
-		if itemPb != nil {
-			redirectUrlsPb = append(redirectUrlsPb, *itemPb)
-		}
-	}
-	pb.RedirectUrls = redirectUrlsPb
+	pb.RedirectUrls = st.RedirectUrls
 
-	var scopesPb []string
-	for _, item := range st.Scopes {
-		itemPb := &item
-		if itemPb != nil {
-			scopesPb = append(scopesPb, *itemPb)
-		}
-	}
-	pb.Scopes = scopesPb
+	pb.Scopes = st.Scopes
 
 	tokenAccessPolicyPb, err := tokenAccessPolicyToPb(st.TokenAccessPolicy)
 	if err != nil {
@@ -1784,14 +1498,7 @@ func getCustomAppIntegrationOutputToPb(st *GetCustomAppIntegrationOutput) (*getC
 		pb.TokenAccessPolicy = tokenAccessPolicyPb
 	}
 
-	var userAuthorizedScopesPb []string
-	for _, item := range st.UserAuthorizedScopes {
-		itemPb := &item
-		if itemPb != nil {
-			userAuthorizedScopesPb = append(userAuthorizedScopesPb, *itemPb)
-		}
-	}
-	pb.UserAuthorizedScopes = userAuthorizedScopesPb
+	pb.UserAuthorizedScopes = st.UserAuthorizedScopes
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1857,52 +1564,15 @@ func getCustomAppIntegrationOutputFromPb(pb *getCustomAppIntegrationOutputPb) (*
 		return nil, nil
 	}
 	st := &GetCustomAppIntegrationOutput{}
-	clientIdField := &pb.ClientId
-	if clientIdField != nil {
-		st.ClientId = *clientIdField
-	}
-	confidentialField := &pb.Confidential
-	if confidentialField != nil {
-		st.Confidential = *confidentialField
-	}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	creatorUsernameField := &pb.CreatorUsername
-	if creatorUsernameField != nil {
-		st.CreatorUsername = *creatorUsernameField
-	}
-	integrationIdField := &pb.IntegrationId
-	if integrationIdField != nil {
-		st.IntegrationId = *integrationIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-
-	var redirectUrlsField []string
-	for _, item := range pb.RedirectUrls {
-		itemField := &item
-		if itemField != nil {
-			redirectUrlsField = append(redirectUrlsField, *itemField)
-		}
-	}
-	st.RedirectUrls = redirectUrlsField
-
-	var scopesField []string
-	for _, item := range pb.Scopes {
-		itemField := &item
-		if itemField != nil {
-			scopesField = append(scopesField, *itemField)
-		}
-	}
-	st.Scopes = scopesField
+	st.ClientId = pb.ClientId
+	st.Confidential = pb.Confidential
+	st.CreateTime = pb.CreateTime
+	st.CreatedBy = pb.CreatedBy
+	st.CreatorUsername = pb.CreatorUsername
+	st.IntegrationId = pb.IntegrationId
+	st.Name = pb.Name
+	st.RedirectUrls = pb.RedirectUrls
+	st.Scopes = pb.Scopes
 	tokenAccessPolicyField, err := tokenAccessPolicyFromPb(pb.TokenAccessPolicy)
 	if err != nil {
 		return nil, err
@@ -1910,15 +1580,7 @@ func getCustomAppIntegrationOutputFromPb(pb *getCustomAppIntegrationOutputPb) (*
 	if tokenAccessPolicyField != nil {
 		st.TokenAccessPolicy = tokenAccessPolicyField
 	}
-
-	var userAuthorizedScopesField []string
-	for _, item := range pb.UserAuthorizedScopes {
-		itemField := &item
-		if itemField != nil {
-			userAuthorizedScopesField = append(userAuthorizedScopesField, *itemField)
-		}
-	}
-	st.UserAuthorizedScopes = userAuthorizedScopesField
+	st.UserAuthorizedScopes = pb.UserAuthorizedScopes
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1935,7 +1597,8 @@ func (st getCustomAppIntegrationOutputPb) MarshalJSON() ([]byte, error) {
 // Get OAuth Custom App Integration
 type GetCustomAppIntegrationRequest struct {
 	// The OAuth app integration ID.
-	IntegrationId string
+	// Wire name: 'integration_id'
+	IntegrationId string `tf:"-"`
 }
 
 func getCustomAppIntegrationRequestToPb(st *GetCustomAppIntegrationRequest) (*getCustomAppIntegrationRequestPb, error) {
@@ -1943,10 +1606,7 @@ func getCustomAppIntegrationRequestToPb(st *GetCustomAppIntegrationRequest) (*ge
 		return nil, nil
 	}
 	pb := &getCustomAppIntegrationRequestPb{}
-	integrationIdPb := &st.IntegrationId
-	if integrationIdPb != nil {
-		pb.IntegrationId = *integrationIdPb
-	}
+	pb.IntegrationId = st.IntegrationId
 
 	return pb, nil
 }
@@ -1986,21 +1646,20 @@ func getCustomAppIntegrationRequestFromPb(pb *getCustomAppIntegrationRequestPb) 
 		return nil, nil
 	}
 	st := &GetCustomAppIntegrationRequest{}
-	integrationIdField := &pb.IntegrationId
-	if integrationIdField != nil {
-		st.IntegrationId = *integrationIdField
-	}
+	st.IntegrationId = pb.IntegrationId
 
 	return st, nil
 }
 
 type GetCustomAppIntegrationsOutput struct {
 	// List of Custom OAuth App Integrations defined for the account.
+	// Wire name: 'apps'
 	Apps []GetCustomAppIntegrationOutput
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getCustomAppIntegrationsOutputToPb(st *GetCustomAppIntegrationsOutput) (*getCustomAppIntegrationsOutputPb, error) {
@@ -2021,10 +1680,7 @@ func getCustomAppIntegrationsOutputToPb(st *GetCustomAppIntegrationsOutput) (*ge
 	}
 	pb.Apps = appsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2071,20 +1727,17 @@ func getCustomAppIntegrationsOutputFromPb(pb *getCustomAppIntegrationsOutputPb) 
 	st := &GetCustomAppIntegrationsOutput{}
 
 	var appsField []GetCustomAppIntegrationOutput
-	for _, item := range pb.Apps {
-		itemField, err := getCustomAppIntegrationOutputFromPb(&item)
+	for _, itemPb := range pb.Apps {
+		item, err := getCustomAppIntegrationOutputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			appsField = append(appsField, *itemField)
+		if item != nil {
+			appsField = append(appsField, *item)
 		}
 	}
 	st.Apps = appsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2100,19 +1753,25 @@ func (st getCustomAppIntegrationsOutputPb) MarshalJSON() ([]byte, error) {
 
 type GetPublishedAppIntegrationOutput struct {
 	// App-id of the published app integration
+	// Wire name: 'app_id'
 	AppId string
 
+	// Wire name: 'create_time'
 	CreateTime string
 
+	// Wire name: 'created_by'
 	CreatedBy int64
 	// Unique integration id for the published OAuth app
+	// Wire name: 'integration_id'
 	IntegrationId string
 	// Display name of the published OAuth app
+	// Wire name: 'name'
 	Name string
 	// Token access policy
+	// Wire name: 'token_access_policy'
 	TokenAccessPolicy *TokenAccessPolicy
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getPublishedAppIntegrationOutputToPb(st *GetPublishedAppIntegrationOutput) (*getPublishedAppIntegrationOutputPb, error) {
@@ -2120,30 +1779,15 @@ func getPublishedAppIntegrationOutputToPb(st *GetPublishedAppIntegrationOutput) 
 		return nil, nil
 	}
 	pb := &getPublishedAppIntegrationOutputPb{}
-	appIdPb := &st.AppId
-	if appIdPb != nil {
-		pb.AppId = *appIdPb
-	}
+	pb.AppId = st.AppId
 
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	integrationIdPb := &st.IntegrationId
-	if integrationIdPb != nil {
-		pb.IntegrationId = *integrationIdPb
-	}
+	pb.IntegrationId = st.IntegrationId
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	tokenAccessPolicyPb, err := tokenAccessPolicyToPb(st.TokenAccessPolicy)
 	if err != nil {
@@ -2204,26 +1848,11 @@ func getPublishedAppIntegrationOutputFromPb(pb *getPublishedAppIntegrationOutput
 		return nil, nil
 	}
 	st := &GetPublishedAppIntegrationOutput{}
-	appIdField := &pb.AppId
-	if appIdField != nil {
-		st.AppId = *appIdField
-	}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	integrationIdField := &pb.IntegrationId
-	if integrationIdField != nil {
-		st.IntegrationId = *integrationIdField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.AppId = pb.AppId
+	st.CreateTime = pb.CreateTime
+	st.CreatedBy = pb.CreatedBy
+	st.IntegrationId = pb.IntegrationId
+	st.Name = pb.Name
 	tokenAccessPolicyField, err := tokenAccessPolicyFromPb(pb.TokenAccessPolicy)
 	if err != nil {
 		return nil, err
@@ -2246,7 +1875,9 @@ func (st getPublishedAppIntegrationOutputPb) MarshalJSON() ([]byte, error) {
 
 // Get OAuth Published App Integration
 type GetPublishedAppIntegrationRequest struct {
-	IntegrationId string
+
+	// Wire name: 'integration_id'
+	IntegrationId string `tf:"-"`
 }
 
 func getPublishedAppIntegrationRequestToPb(st *GetPublishedAppIntegrationRequest) (*getPublishedAppIntegrationRequestPb, error) {
@@ -2254,10 +1885,7 @@ func getPublishedAppIntegrationRequestToPb(st *GetPublishedAppIntegrationRequest
 		return nil, nil
 	}
 	pb := &getPublishedAppIntegrationRequestPb{}
-	integrationIdPb := &st.IntegrationId
-	if integrationIdPb != nil {
-		pb.IntegrationId = *integrationIdPb
-	}
+	pb.IntegrationId = st.IntegrationId
 
 	return pb, nil
 }
@@ -2296,21 +1924,20 @@ func getPublishedAppIntegrationRequestFromPb(pb *getPublishedAppIntegrationReque
 		return nil, nil
 	}
 	st := &GetPublishedAppIntegrationRequest{}
-	integrationIdField := &pb.IntegrationId
-	if integrationIdField != nil {
-		st.IntegrationId = *integrationIdField
-	}
+	st.IntegrationId = pb.IntegrationId
 
 	return st, nil
 }
 
 type GetPublishedAppIntegrationsOutput struct {
 	// List of Published OAuth App Integrations defined for the account.
+	// Wire name: 'apps'
 	Apps []GetPublishedAppIntegrationOutput
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getPublishedAppIntegrationsOutputToPb(st *GetPublishedAppIntegrationsOutput) (*getPublishedAppIntegrationsOutputPb, error) {
@@ -2331,10 +1958,7 @@ func getPublishedAppIntegrationsOutputToPb(st *GetPublishedAppIntegrationsOutput
 	}
 	pb.Apps = appsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2381,20 +2005,17 @@ func getPublishedAppIntegrationsOutputFromPb(pb *getPublishedAppIntegrationsOutp
 	st := &GetPublishedAppIntegrationsOutput{}
 
 	var appsField []GetPublishedAppIntegrationOutput
-	for _, item := range pb.Apps {
-		itemField, err := getPublishedAppIntegrationOutputFromPb(&item)
+	for _, itemPb := range pb.Apps {
+		item, err := getPublishedAppIntegrationOutputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			appsField = append(appsField, *itemField)
+		if item != nil {
+			appsField = append(appsField, *item)
 		}
 	}
 	st.Apps = appsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2410,12 +2031,14 @@ func (st getPublishedAppIntegrationsOutputPb) MarshalJSON() ([]byte, error) {
 
 type GetPublishedAppsOutput struct {
 	// List of Published OAuth Apps.
+	// Wire name: 'apps'
 	Apps []PublishedAppOutput
 	// A token that can be used to get the next page of results. If not present,
 	// there are no more results to show.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getPublishedAppsOutputToPb(st *GetPublishedAppsOutput) (*getPublishedAppsOutputPb, error) {
@@ -2436,10 +2059,7 @@ func getPublishedAppsOutputToPb(st *GetPublishedAppsOutput) (*getPublishedAppsOu
 	}
 	pb.Apps = appsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2487,20 +2107,17 @@ func getPublishedAppsOutputFromPb(pb *getPublishedAppsOutputPb) (*GetPublishedAp
 	st := &GetPublishedAppsOutput{}
 
 	var appsField []PublishedAppOutput
-	for _, item := range pb.Apps {
-		itemField, err := publishedAppOutputFromPb(&item)
+	for _, itemPb := range pb.Apps {
+		item, err := publishedAppOutputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			appsField = append(appsField, *itemField)
+		if item != nil {
+			appsField = append(appsField, *item)
 		}
 	}
 	st.Apps = appsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2517,9 +2134,11 @@ func (st getPublishedAppsOutputPb) MarshalJSON() ([]byte, error) {
 // Get service principal federation policy
 type GetServicePrincipalFederationPolicyRequest struct {
 	// The identifier for the federation policy.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 	// The service principal id for the federation policy.
-	ServicePrincipalId int64
+	// Wire name: 'service_principal_id'
+	ServicePrincipalId int64 `tf:"-"`
 }
 
 func getServicePrincipalFederationPolicyRequestToPb(st *GetServicePrincipalFederationPolicyRequest) (*getServicePrincipalFederationPolicyRequestPb, error) {
@@ -2527,15 +2146,9 @@ func getServicePrincipalFederationPolicyRequestToPb(st *GetServicePrincipalFeder
 		return nil, nil
 	}
 	pb := &getServicePrincipalFederationPolicyRequestPb{}
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	servicePrincipalIdPb := &st.ServicePrincipalId
-	if servicePrincipalIdPb != nil {
-		pb.ServicePrincipalId = *servicePrincipalIdPb
-	}
+	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	return pb, nil
 }
@@ -2577,25 +2190,22 @@ func getServicePrincipalFederationPolicyRequestFromPb(pb *getServicePrincipalFed
 		return nil, nil
 	}
 	st := &GetServicePrincipalFederationPolicyRequest{}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	servicePrincipalIdField := &pb.ServicePrincipalId
-	if servicePrincipalIdField != nil {
-		st.ServicePrincipalId = *servicePrincipalIdField
-	}
+	st.PolicyId = pb.PolicyId
+	st.ServicePrincipalId = pb.ServicePrincipalId
 
 	return st, nil
 }
 
 // List account federation policies
 type ListAccountFederationPoliciesRequest struct {
-	PageSize int
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAccountFederationPoliciesRequestToPb(st *ListAccountFederationPoliciesRequest) (*listAccountFederationPoliciesRequestPb, error) {
@@ -2603,15 +2213,9 @@ func listAccountFederationPoliciesRequestToPb(st *ListAccountFederationPoliciesR
 		return nil, nil
 	}
 	pb := &listAccountFederationPoliciesRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2655,14 +2259,8 @@ func listAccountFederationPoliciesRequestFromPb(pb *listAccountFederationPolicie
 		return nil, nil
 	}
 	st := &ListAccountFederationPoliciesRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2678,13 +2276,17 @@ func (st listAccountFederationPoliciesRequestPb) MarshalJSON() ([]byte, error) {
 
 // Get custom oauth app integrations
 type ListCustomAppIntegrationsRequest struct {
-	IncludeCreatorUsername bool
 
-	PageSize int
+	// Wire name: 'include_creator_username'
+	IncludeCreatorUsername bool `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listCustomAppIntegrationsRequestToPb(st *ListCustomAppIntegrationsRequest) (*listCustomAppIntegrationsRequestPb, error) {
@@ -2692,20 +2294,11 @@ func listCustomAppIntegrationsRequestToPb(st *ListCustomAppIntegrationsRequest) 
 		return nil, nil
 	}
 	pb := &listCustomAppIntegrationsRequestPb{}
-	includeCreatorUsernamePb := &st.IncludeCreatorUsername
-	if includeCreatorUsernamePb != nil {
-		pb.IncludeCreatorUsername = *includeCreatorUsernamePb
-	}
+	pb.IncludeCreatorUsername = st.IncludeCreatorUsername
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2751,18 +2344,9 @@ func listCustomAppIntegrationsRequestFromPb(pb *listCustomAppIntegrationsRequest
 		return nil, nil
 	}
 	st := &ListCustomAppIntegrationsRequest{}
-	includeCreatorUsernameField := &pb.IncludeCreatorUsername
-	if includeCreatorUsernameField != nil {
-		st.IncludeCreatorUsername = *includeCreatorUsernameField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.IncludeCreatorUsername = pb.IncludeCreatorUsername
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2777,11 +2361,14 @@ func (st listCustomAppIntegrationsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListFederationPoliciesResponse struct {
+
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'policies'
 	Policies []FederationPolicy
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listFederationPoliciesResponseToPb(st *ListFederationPoliciesResponse) (*listFederationPoliciesResponsePb, error) {
@@ -2789,10 +2376,7 @@ func listFederationPoliciesResponseToPb(st *ListFederationPoliciesResponse) (*li
 		return nil, nil
 	}
 	pb := &listFederationPoliciesResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var policiesPb []federationPolicyPb
 	for _, item := range st.Policies {
@@ -2848,19 +2432,16 @@ func listFederationPoliciesResponseFromPb(pb *listFederationPoliciesResponsePb) 
 		return nil, nil
 	}
 	st := &ListFederationPoliciesResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var policiesField []FederationPolicy
-	for _, item := range pb.Policies {
-		itemField, err := federationPolicyFromPb(&item)
+	for _, itemPb := range pb.Policies {
+		item, err := federationPolicyFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			policiesField = append(policiesField, *itemField)
+		if item != nil {
+			policiesField = append(policiesField, *item)
 		}
 	}
 	st.Policies = policiesField
@@ -2880,11 +2461,13 @@ func (st listFederationPoliciesResponsePb) MarshalJSON() ([]byte, error) {
 // Get all the published OAuth apps
 type ListOAuthPublishedAppsRequest struct {
 	// The max number of OAuth published apps to return in one page.
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// A token that can be used to get the next page of results.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listOAuthPublishedAppsRequestToPb(st *ListOAuthPublishedAppsRequest) (*listOAuthPublishedAppsRequestPb, error) {
@@ -2892,15 +2475,9 @@ func listOAuthPublishedAppsRequestToPb(st *ListOAuthPublishedAppsRequest) (*list
 		return nil, nil
 	}
 	pb := &listOAuthPublishedAppsRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2945,14 +2522,8 @@ func listOAuthPublishedAppsRequestFromPb(pb *listOAuthPublishedAppsRequestPb) (*
 		return nil, nil
 	}
 	st := &ListOAuthPublishedAppsRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2968,11 +2539,14 @@ func (st listOAuthPublishedAppsRequestPb) MarshalJSON() ([]byte, error) {
 
 // Get published oauth app integrations
 type ListPublishedAppIntegrationsRequest struct {
-	PageSize int
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listPublishedAppIntegrationsRequestToPb(st *ListPublishedAppIntegrationsRequest) (*listPublishedAppIntegrationsRequestPb, error) {
@@ -2980,15 +2554,9 @@ func listPublishedAppIntegrationsRequestToPb(st *ListPublishedAppIntegrationsReq
 		return nil, nil
 	}
 	pb := &listPublishedAppIntegrationsRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3032,14 +2600,8 @@ func listPublishedAppIntegrationsRequestFromPb(pb *listPublishedAppIntegrationsR
 		return nil, nil
 	}
 	st := &ListPublishedAppIntegrationsRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3055,13 +2617,17 @@ func (st listPublishedAppIntegrationsRequestPb) MarshalJSON() ([]byte, error) {
 
 // List service principal federation policies
 type ListServicePrincipalFederationPoliciesRequest struct {
-	PageSize int
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
+
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The service principal id for the federation policy.
-	ServicePrincipalId int64
+	// Wire name: 'service_principal_id'
+	ServicePrincipalId int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listServicePrincipalFederationPoliciesRequestToPb(st *ListServicePrincipalFederationPoliciesRequest) (*listServicePrincipalFederationPoliciesRequestPb, error) {
@@ -3069,20 +2635,11 @@ func listServicePrincipalFederationPoliciesRequestToPb(st *ListServicePrincipalF
 		return nil, nil
 	}
 	pb := &listServicePrincipalFederationPoliciesRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	servicePrincipalIdPb := &st.ServicePrincipalId
-	if servicePrincipalIdPb != nil {
-		pb.ServicePrincipalId = *servicePrincipalIdPb
-	}
+	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3128,18 +2685,9 @@ func listServicePrincipalFederationPoliciesRequestFromPb(pb *listServicePrincipa
 		return nil, nil
 	}
 	st := &ListServicePrincipalFederationPoliciesRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	servicePrincipalIdField := &pb.ServicePrincipalId
-	if servicePrincipalIdField != nil {
-		st.ServicePrincipalId = *servicePrincipalIdField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+	st.ServicePrincipalId = pb.ServicePrincipalId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3164,11 +2712,13 @@ type ListServicePrincipalSecretsRequest struct {
 	// the response contains no `next_page_token`. Note that the number of
 	// entries returned must not be used to determine when the listing is
 	// complete.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The service principal ID.
-	ServicePrincipalId int64
+	// Wire name: 'service_principal_id'
+	ServicePrincipalId int64 `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listServicePrincipalSecretsRequestToPb(st *ListServicePrincipalSecretsRequest) (*listServicePrincipalSecretsRequestPb, error) {
@@ -3176,15 +2726,9 @@ func listServicePrincipalSecretsRequestToPb(st *ListServicePrincipalSecretsReque
 		return nil, nil
 	}
 	pb := &listServicePrincipalSecretsRequestPb{}
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	servicePrincipalIdPb := &st.ServicePrincipalId
-	if servicePrincipalIdPb != nil {
-		pb.ServicePrincipalId = *servicePrincipalIdPb
-	}
+	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3237,14 +2781,8 @@ func listServicePrincipalSecretsRequestFromPb(pb *listServicePrincipalSecretsReq
 		return nil, nil
 	}
 	st := &ListServicePrincipalSecretsRequest{}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	servicePrincipalIdField := &pb.ServicePrincipalId
-	if servicePrincipalIdField != nil {
-		st.ServicePrincipalId = *servicePrincipalIdField
-	}
+	st.PageToken = pb.PageToken
+	st.ServicePrincipalId = pb.ServicePrincipalId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3260,11 +2798,13 @@ func (st listServicePrincipalSecretsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListServicePrincipalSecretsResponse struct {
 	// A token, which can be sent as `page_token` to retrieve the next page.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// List of the secrets
+	// Wire name: 'secrets'
 	Secrets []SecretInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listServicePrincipalSecretsResponseToPb(st *ListServicePrincipalSecretsResponse) (*listServicePrincipalSecretsResponsePb, error) {
@@ -3272,10 +2812,7 @@ func listServicePrincipalSecretsResponseToPb(st *ListServicePrincipalSecretsResp
 		return nil, nil
 	}
 	pb := &listServicePrincipalSecretsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var secretsPb []secretInfoPb
 	for _, item := range st.Secrets {
@@ -3332,19 +2869,16 @@ func listServicePrincipalSecretsResponseFromPb(pb *listServicePrincipalSecretsRe
 		return nil, nil
 	}
 	st := &ListServicePrincipalSecretsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var secretsField []SecretInfo
-	for _, item := range pb.Secrets {
-		itemField, err := secretInfoFromPb(&item)
+	for _, itemPb := range pb.Secrets {
+		item, err := secretInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			secretsField = append(secretsField, *itemField)
+		if item != nil {
+			secretsField = append(secretsField, *item)
 		}
 	}
 	st.Secrets = secretsField
@@ -3370,9 +2904,11 @@ type OidcFederationPolicy struct {
 	// the token matches at least one audience in the policy, the token is
 	// considered a match. If audiences is unspecified, defaults to your
 	// Databricks account id.
+	// Wire name: 'audiences'
 	Audiences []string
 	// The required token issuer, as specified in the 'iss' claim of federated
 	// tokens.
+	// Wire name: 'issuer'
 	Issuer string
 	// The public keys used to validate the signature of federated tokens, in
 	// JWKS format. Most use cases should not need to specify this field. If
@@ -3380,6 +2916,7 @@ type OidcFederationPolicy struct {
 	// automatically fetches the public keys from your issuer’s well known
 	// endpoint. Databricks strongly recommends relying on your issuer’s well
 	// known endpoint for discovering public keys.
+	// Wire name: 'jwks_json'
 	JwksJson string
 	// URL of the public keys used to validate the signature of federated
 	// tokens, in JWKS format. Most use cases should not need to specify this
@@ -3387,16 +2924,19 @@ type OidcFederationPolicy struct {
 	// Databricks automatically fetches the public keys from your issuer’s
 	// well known endpoint. Databricks strongly recommends relying on your
 	// issuer’s well known endpoint for discovering public keys.
+	// Wire name: 'jwks_uri'
 	JwksUri string
 	// The required token subject, as specified in the subject claim of
 	// federated tokens. Must be specified for service principal federation
 	// policies. Must not be specified for account federation policies.
+	// Wire name: 'subject'
 	Subject string
 	// The claim that contains the subject of the token. If unspecified, the
 	// default value is 'sub'.
+	// Wire name: 'subject_claim'
 	SubjectClaim string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func oidcFederationPolicyToPb(st *OidcFederationPolicy) (*oidcFederationPolicyPb, error) {
@@ -3404,40 +2944,17 @@ func oidcFederationPolicyToPb(st *OidcFederationPolicy) (*oidcFederationPolicyPb
 		return nil, nil
 	}
 	pb := &oidcFederationPolicyPb{}
+	pb.Audiences = st.Audiences
 
-	var audiencesPb []string
-	for _, item := range st.Audiences {
-		itemPb := &item
-		if itemPb != nil {
-			audiencesPb = append(audiencesPb, *itemPb)
-		}
-	}
-	pb.Audiences = audiencesPb
+	pb.Issuer = st.Issuer
 
-	issuerPb := &st.Issuer
-	if issuerPb != nil {
-		pb.Issuer = *issuerPb
-	}
+	pb.JwksJson = st.JwksJson
 
-	jwksJsonPb := &st.JwksJson
-	if jwksJsonPb != nil {
-		pb.JwksJson = *jwksJsonPb
-	}
+	pb.JwksUri = st.JwksUri
 
-	jwksUriPb := &st.JwksUri
-	if jwksUriPb != nil {
-		pb.JwksUri = *jwksUriPb
-	}
+	pb.Subject = st.Subject
 
-	subjectPb := &st.Subject
-	if subjectPb != nil {
-		pb.Subject = *subjectPb
-	}
-
-	subjectClaimPb := &st.SubjectClaim
-	if subjectClaimPb != nil {
-		pb.SubjectClaim = *subjectClaimPb
-	}
+	pb.SubjectClaim = st.SubjectClaim
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3509,35 +3026,12 @@ func oidcFederationPolicyFromPb(pb *oidcFederationPolicyPb) (*OidcFederationPoli
 		return nil, nil
 	}
 	st := &OidcFederationPolicy{}
-
-	var audiencesField []string
-	for _, item := range pb.Audiences {
-		itemField := &item
-		if itemField != nil {
-			audiencesField = append(audiencesField, *itemField)
-		}
-	}
-	st.Audiences = audiencesField
-	issuerField := &pb.Issuer
-	if issuerField != nil {
-		st.Issuer = *issuerField
-	}
-	jwksJsonField := &pb.JwksJson
-	if jwksJsonField != nil {
-		st.JwksJson = *jwksJsonField
-	}
-	jwksUriField := &pb.JwksUri
-	if jwksUriField != nil {
-		st.JwksUri = *jwksUriField
-	}
-	subjectField := &pb.Subject
-	if subjectField != nil {
-		st.Subject = *subjectField
-	}
-	subjectClaimField := &pb.SubjectClaim
-	if subjectClaimField != nil {
-		st.SubjectClaim = *subjectClaimField
-	}
+	st.Audiences = pb.Audiences
+	st.Issuer = pb.Issuer
+	st.JwksJson = pb.JwksJson
+	st.JwksUri = pb.JwksUri
+	st.Subject = pb.Subject
+	st.SubjectClaim = pb.SubjectClaim
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3553,23 +3047,30 @@ func (st oidcFederationPolicyPb) MarshalJSON() ([]byte, error) {
 
 type PublishedAppOutput struct {
 	// Unique ID of the published OAuth app.
+	// Wire name: 'app_id'
 	AppId string
 	// Client ID of the published OAuth app. It is the client_id in the OAuth
 	// flow
+	// Wire name: 'client_id'
 	ClientId string
 	// Description of the published OAuth app.
+	// Wire name: 'description'
 	Description string
 	// Whether the published OAuth app is a confidential client. It is always
 	// false for published OAuth apps.
+	// Wire name: 'is_confidential_client'
 	IsConfidentialClient bool
 	// The display name of the published OAuth app.
+	// Wire name: 'name'
 	Name string
 	// Redirect URLs of the published OAuth app.
+	// Wire name: 'redirect_urls'
 	RedirectUrls []string
 	// Required scopes for the published OAuth app.
+	// Wire name: 'scopes'
 	Scopes []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func publishedAppOutputToPb(st *PublishedAppOutput) (*publishedAppOutputPb, error) {
@@ -3577,48 +3078,19 @@ func publishedAppOutputToPb(st *PublishedAppOutput) (*publishedAppOutputPb, erro
 		return nil, nil
 	}
 	pb := &publishedAppOutputPb{}
-	appIdPb := &st.AppId
-	if appIdPb != nil {
-		pb.AppId = *appIdPb
-	}
+	pb.AppId = st.AppId
 
-	clientIdPb := &st.ClientId
-	if clientIdPb != nil {
-		pb.ClientId = *clientIdPb
-	}
+	pb.ClientId = st.ClientId
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	isConfidentialClientPb := &st.IsConfidentialClient
-	if isConfidentialClientPb != nil {
-		pb.IsConfidentialClient = *isConfidentialClientPb
-	}
+	pb.IsConfidentialClient = st.IsConfidentialClient
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	var redirectUrlsPb []string
-	for _, item := range st.RedirectUrls {
-		itemPb := &item
-		if itemPb != nil {
-			redirectUrlsPb = append(redirectUrlsPb, *itemPb)
-		}
-	}
-	pb.RedirectUrls = redirectUrlsPb
+	pb.RedirectUrls = st.RedirectUrls
 
-	var scopesPb []string
-	for _, item := range st.Scopes {
-		itemPb := &item
-		if itemPb != nil {
-			scopesPb = append(scopesPb, *itemPb)
-		}
-	}
-	pb.Scopes = scopesPb
+	pb.Scopes = st.Scopes
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3675,44 +3147,13 @@ func publishedAppOutputFromPb(pb *publishedAppOutputPb) (*PublishedAppOutput, er
 		return nil, nil
 	}
 	st := &PublishedAppOutput{}
-	appIdField := &pb.AppId
-	if appIdField != nil {
-		st.AppId = *appIdField
-	}
-	clientIdField := &pb.ClientId
-	if clientIdField != nil {
-		st.ClientId = *clientIdField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	isConfidentialClientField := &pb.IsConfidentialClient
-	if isConfidentialClientField != nil {
-		st.IsConfidentialClient = *isConfidentialClientField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-
-	var redirectUrlsField []string
-	for _, item := range pb.RedirectUrls {
-		itemField := &item
-		if itemField != nil {
-			redirectUrlsField = append(redirectUrlsField, *itemField)
-		}
-	}
-	st.RedirectUrls = redirectUrlsField
-
-	var scopesField []string
-	for _, item := range pb.Scopes {
-		itemField := &item
-		if itemField != nil {
-			scopesField = append(scopesField, *itemField)
-		}
-	}
-	st.Scopes = scopesField
+	st.AppId = pb.AppId
+	st.ClientId = pb.ClientId
+	st.Description = pb.Description
+	st.IsConfidentialClient = pb.IsConfidentialClient
+	st.Name = pb.Name
+	st.RedirectUrls = pb.RedirectUrls
+	st.Scopes = pb.Scopes
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3728,20 +3169,26 @@ func (st publishedAppOutputPb) MarshalJSON() ([]byte, error) {
 
 type SecretInfo struct {
 	// UTC time when the secret was created
+	// Wire name: 'create_time'
 	CreateTime string
 	// UTC time when the secret will expire. If the field is not present, the
 	// secret does not expire.
+	// Wire name: 'expire_time'
 	ExpireTime string
 	// ID of the secret
+	// Wire name: 'id'
 	Id string
 	// Secret Hash
+	// Wire name: 'secret_hash'
 	SecretHash string
 	// Status of the secret
+	// Wire name: 'status'
 	Status string
 	// UTC time when the secret was updated
+	// Wire name: 'update_time'
 	UpdateTime string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func secretInfoToPb(st *SecretInfo) (*secretInfoPb, error) {
@@ -3749,35 +3196,17 @@ func secretInfoToPb(st *SecretInfo) (*secretInfoPb, error) {
 		return nil, nil
 	}
 	pb := &secretInfoPb{}
-	createTimePb := &st.CreateTime
-	if createTimePb != nil {
-		pb.CreateTime = *createTimePb
-	}
+	pb.CreateTime = st.CreateTime
 
-	expireTimePb := &st.ExpireTime
-	if expireTimePb != nil {
-		pb.ExpireTime = *expireTimePb
-	}
+	pb.ExpireTime = st.ExpireTime
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	secretHashPb := &st.SecretHash
-	if secretHashPb != nil {
-		pb.SecretHash = *secretHashPb
-	}
+	pb.SecretHash = st.SecretHash
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	updateTimePb := &st.UpdateTime
-	if updateTimePb != nil {
-		pb.UpdateTime = *updateTimePb
-	}
+	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3831,30 +3260,12 @@ func secretInfoFromPb(pb *secretInfoPb) (*SecretInfo, error) {
 		return nil, nil
 	}
 	st := &SecretInfo{}
-	createTimeField := &pb.CreateTime
-	if createTimeField != nil {
-		st.CreateTime = *createTimeField
-	}
-	expireTimeField := &pb.ExpireTime
-	if expireTimeField != nil {
-		st.ExpireTime = *expireTimeField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	secretHashField := &pb.SecretHash
-	if secretHashField != nil {
-		st.SecretHash = *secretHashField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	updateTimeField := &pb.UpdateTime
-	if updateTimeField != nil {
-		st.UpdateTime = *updateTimeField
-	}
+	st.CreateTime = pb.CreateTime
+	st.ExpireTime = pb.ExpireTime
+	st.Id = pb.Id
+	st.SecretHash = pb.SecretHash
+	st.Status = pb.Status
+	st.UpdateTime = pb.UpdateTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3870,11 +3281,13 @@ func (st secretInfoPb) MarshalJSON() ([]byte, error) {
 
 type TokenAccessPolicy struct {
 	// access token time to live in minutes
+	// Wire name: 'access_token_ttl_in_minutes'
 	AccessTokenTtlInMinutes int
 	// refresh token time to live in minutes
+	// Wire name: 'refresh_token_ttl_in_minutes'
 	RefreshTokenTtlInMinutes int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tokenAccessPolicyToPb(st *TokenAccessPolicy) (*tokenAccessPolicyPb, error) {
@@ -3882,15 +3295,9 @@ func tokenAccessPolicyToPb(st *TokenAccessPolicy) (*tokenAccessPolicyPb, error) 
 		return nil, nil
 	}
 	pb := &tokenAccessPolicyPb{}
-	accessTokenTtlInMinutesPb := &st.AccessTokenTtlInMinutes
-	if accessTokenTtlInMinutesPb != nil {
-		pb.AccessTokenTtlInMinutes = *accessTokenTtlInMinutesPb
-	}
+	pb.AccessTokenTtlInMinutes = st.AccessTokenTtlInMinutes
 
-	refreshTokenTtlInMinutesPb := &st.RefreshTokenTtlInMinutes
-	if refreshTokenTtlInMinutesPb != nil {
-		pb.RefreshTokenTtlInMinutes = *refreshTokenTtlInMinutesPb
-	}
+	pb.RefreshTokenTtlInMinutes = st.RefreshTokenTtlInMinutes
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3935,14 +3342,8 @@ func tokenAccessPolicyFromPb(pb *tokenAccessPolicyPb) (*TokenAccessPolicy, error
 		return nil, nil
 	}
 	st := &TokenAccessPolicy{}
-	accessTokenTtlInMinutesField := &pb.AccessTokenTtlInMinutes
-	if accessTokenTtlInMinutesField != nil {
-		st.AccessTokenTtlInMinutes = *accessTokenTtlInMinutesField
-	}
-	refreshTokenTtlInMinutesField := &pb.RefreshTokenTtlInMinutes
-	if refreshTokenTtlInMinutesField != nil {
-		st.RefreshTokenTtlInMinutes = *refreshTokenTtlInMinutesField
-	}
+	st.AccessTokenTtlInMinutes = pb.AccessTokenTtlInMinutes
+	st.RefreshTokenTtlInMinutes = pb.RefreshTokenTtlInMinutes
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3958,18 +3359,22 @@ func (st tokenAccessPolicyPb) MarshalJSON() ([]byte, error) {
 
 // Update account federation policy
 type UpdateAccountFederationPolicyRequest struct {
+
+	// Wire name: 'policy'
 	Policy FederationPolicy
 	// The identifier for the federation policy.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 	// The field mask specifies which fields of the policy to update. To specify
 	// multiple fields in the field mask, use comma as the separator (no space).
 	// The special value '*' indicates that all fields should be updated (full
 	// replacement). If unspecified, all fields that are set in the policy
 	// provided in the update request will overwrite the corresponding fields in
 	// the existing policy. Example value: 'description,oidc_policy.audiences'.
-	UpdateMask string
+	// Wire name: 'update_mask'
+	UpdateMask string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateAccountFederationPolicyRequestToPb(st *UpdateAccountFederationPolicyRequest) (*updateAccountFederationPolicyRequestPb, error) {
@@ -3985,15 +3390,9 @@ func updateAccountFederationPolicyRequestToPb(st *UpdateAccountFederationPolicyR
 		pb.Policy = *policyPb
 	}
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	updateMaskPb := &st.UpdateMask
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4051,14 +3450,8 @@ func updateAccountFederationPolicyRequestFromPb(pb *updateAccountFederationPolic
 	if policyField != nil {
 		st.Policy = *policyField
 	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	updateMaskField := &pb.UpdateMask
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.PolicyId = pb.PolicyId
+	st.UpdateMask = pb.UpdateMask
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4073,19 +3466,25 @@ func (st updateAccountFederationPolicyRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateCustomAppIntegration struct {
-	IntegrationId string
+
+	// Wire name: 'integration_id'
+	IntegrationId string `tf:"-"`
 	// List of OAuth redirect urls to be updated in the custom OAuth app
 	// integration
+	// Wire name: 'redirect_urls'
 	RedirectUrls []string
 	// List of OAuth scopes to be updated in the custom OAuth app integration,
 	// similar to redirect URIs this will fully replace the existing values
 	// instead of appending
+	// Wire name: 'scopes'
 	Scopes []string
 	// Token access policy to be updated in the custom OAuth app integration
+	// Wire name: 'token_access_policy'
 	TokenAccessPolicy *TokenAccessPolicy
 	// Scopes that will need to be consented by end user to mint the access
 	// token. If the user does not authorize the access token will not be
 	// minted. Must be a subset of scopes.
+	// Wire name: 'user_authorized_scopes'
 	UserAuthorizedScopes []string
 }
 
@@ -4094,28 +3493,11 @@ func updateCustomAppIntegrationToPb(st *UpdateCustomAppIntegration) (*updateCust
 		return nil, nil
 	}
 	pb := &updateCustomAppIntegrationPb{}
-	integrationIdPb := &st.IntegrationId
-	if integrationIdPb != nil {
-		pb.IntegrationId = *integrationIdPb
-	}
+	pb.IntegrationId = st.IntegrationId
 
-	var redirectUrlsPb []string
-	for _, item := range st.RedirectUrls {
-		itemPb := &item
-		if itemPb != nil {
-			redirectUrlsPb = append(redirectUrlsPb, *itemPb)
-		}
-	}
-	pb.RedirectUrls = redirectUrlsPb
+	pb.RedirectUrls = st.RedirectUrls
 
-	var scopesPb []string
-	for _, item := range st.Scopes {
-		itemPb := &item
-		if itemPb != nil {
-			scopesPb = append(scopesPb, *itemPb)
-		}
-	}
-	pb.Scopes = scopesPb
+	pb.Scopes = st.Scopes
 
 	tokenAccessPolicyPb, err := tokenAccessPolicyToPb(st.TokenAccessPolicy)
 	if err != nil {
@@ -4125,14 +3507,7 @@ func updateCustomAppIntegrationToPb(st *UpdateCustomAppIntegration) (*updateCust
 		pb.TokenAccessPolicy = tokenAccessPolicyPb
 	}
 
-	var userAuthorizedScopesPb []string
-	for _, item := range st.UserAuthorizedScopes {
-		itemPb := &item
-		if itemPb != nil {
-			userAuthorizedScopesPb = append(userAuthorizedScopesPb, *itemPb)
-		}
-	}
-	pb.UserAuthorizedScopes = userAuthorizedScopesPb
+	pb.UserAuthorizedScopes = st.UserAuthorizedScopes
 
 	return pb, nil
 }
@@ -4184,28 +3559,9 @@ func updateCustomAppIntegrationFromPb(pb *updateCustomAppIntegrationPb) (*Update
 		return nil, nil
 	}
 	st := &UpdateCustomAppIntegration{}
-	integrationIdField := &pb.IntegrationId
-	if integrationIdField != nil {
-		st.IntegrationId = *integrationIdField
-	}
-
-	var redirectUrlsField []string
-	for _, item := range pb.RedirectUrls {
-		itemField := &item
-		if itemField != nil {
-			redirectUrlsField = append(redirectUrlsField, *itemField)
-		}
-	}
-	st.RedirectUrls = redirectUrlsField
-
-	var scopesField []string
-	for _, item := range pb.Scopes {
-		itemField := &item
-		if itemField != nil {
-			scopesField = append(scopesField, *itemField)
-		}
-	}
-	st.Scopes = scopesField
+	st.IntegrationId = pb.IntegrationId
+	st.RedirectUrls = pb.RedirectUrls
+	st.Scopes = pb.Scopes
 	tokenAccessPolicyField, err := tokenAccessPolicyFromPb(pb.TokenAccessPolicy)
 	if err != nil {
 		return nil, err
@@ -4213,15 +3569,7 @@ func updateCustomAppIntegrationFromPb(pb *updateCustomAppIntegrationPb) (*Update
 	if tokenAccessPolicyField != nil {
 		st.TokenAccessPolicy = tokenAccessPolicyField
 	}
-
-	var userAuthorizedScopesField []string
-	for _, item := range pb.UserAuthorizedScopes {
-		itemField := &item
-		if itemField != nil {
-			userAuthorizedScopesField = append(userAuthorizedScopesField, *itemField)
-		}
-	}
-	st.UserAuthorizedScopes = userAuthorizedScopesField
+	st.UserAuthorizedScopes = pb.UserAuthorizedScopes
 
 	return st, nil
 }
@@ -4276,8 +3624,11 @@ func updateCustomAppIntegrationOutputFromPb(pb *updateCustomAppIntegrationOutput
 }
 
 type UpdatePublishedAppIntegration struct {
-	IntegrationId string
+
+	// Wire name: 'integration_id'
+	IntegrationId string `tf:"-"`
 	// Token access policy to be updated in the published OAuth app integration
+	// Wire name: 'token_access_policy'
 	TokenAccessPolicy *TokenAccessPolicy
 }
 
@@ -4286,10 +3637,7 @@ func updatePublishedAppIntegrationToPb(st *UpdatePublishedAppIntegration) (*upda
 		return nil, nil
 	}
 	pb := &updatePublishedAppIntegrationPb{}
-	integrationIdPb := &st.IntegrationId
-	if integrationIdPb != nil {
-		pb.IntegrationId = *integrationIdPb
-	}
+	pb.IntegrationId = st.IntegrationId
 
 	tokenAccessPolicyPb, err := tokenAccessPolicyToPb(st.TokenAccessPolicy)
 	if err != nil {
@@ -4338,10 +3686,7 @@ func updatePublishedAppIntegrationFromPb(pb *updatePublishedAppIntegrationPb) (*
 		return nil, nil
 	}
 	st := &UpdatePublishedAppIntegration{}
-	integrationIdField := &pb.IntegrationId
-	if integrationIdField != nil {
-		st.IntegrationId = *integrationIdField
-	}
+	st.IntegrationId = pb.IntegrationId
 	tokenAccessPolicyField, err := tokenAccessPolicyFromPb(pb.TokenAccessPolicy)
 	if err != nil {
 		return nil, err
@@ -4404,20 +3749,25 @@ func updatePublishedAppIntegrationOutputFromPb(pb *updatePublishedAppIntegration
 
 // Update service principal federation policy
 type UpdateServicePrincipalFederationPolicyRequest struct {
+
+	// Wire name: 'policy'
 	Policy FederationPolicy
 	// The identifier for the federation policy.
-	PolicyId string
+	// Wire name: 'policy_id'
+	PolicyId string `tf:"-"`
 	// The service principal id for the federation policy.
-	ServicePrincipalId int64
+	// Wire name: 'service_principal_id'
+	ServicePrincipalId int64 `tf:"-"`
 	// The field mask specifies which fields of the policy to update. To specify
 	// multiple fields in the field mask, use comma as the separator (no space).
 	// The special value '*' indicates that all fields should be updated (full
 	// replacement). If unspecified, all fields that are set in the policy
 	// provided in the update request will overwrite the corresponding fields in
 	// the existing policy. Example value: 'description,oidc_policy.audiences'.
-	UpdateMask string
+	// Wire name: 'update_mask'
+	UpdateMask string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateServicePrincipalFederationPolicyRequestToPb(st *UpdateServicePrincipalFederationPolicyRequest) (*updateServicePrincipalFederationPolicyRequestPb, error) {
@@ -4433,20 +3783,11 @@ func updateServicePrincipalFederationPolicyRequestToPb(st *UpdateServicePrincipa
 		pb.Policy = *policyPb
 	}
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	servicePrincipalIdPb := &st.ServicePrincipalId
-	if servicePrincipalIdPb != nil {
-		pb.ServicePrincipalId = *servicePrincipalIdPb
-	}
+	pb.ServicePrincipalId = st.ServicePrincipalId
 
-	updateMaskPb := &st.UpdateMask
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4506,18 +3847,9 @@ func updateServicePrincipalFederationPolicyRequestFromPb(pb *updateServicePrinci
 	if policyField != nil {
 		st.Policy = *policyField
 	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-	servicePrincipalIdField := &pb.ServicePrincipalId
-	if servicePrincipalIdField != nil {
-		st.ServicePrincipalId = *servicePrincipalIdField
-	}
-	updateMaskField := &pb.UpdateMask
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.PolicyId = pb.PolicyId
+	st.ServicePrincipalId = pb.ServicePrincipalId
+	st.UpdateMask = pb.UpdateMask
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4529,4 +3861,58 @@ func (st *updateServicePrincipalFederationPolicyRequestPb) UnmarshalJSON(b []byt
 
 func (st updateServicePrincipalFederationPolicyRequestPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

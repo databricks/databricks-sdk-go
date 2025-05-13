@@ -30,15 +30,22 @@ func (a *alertsImpl) Create(ctx context.Context, request CreateAlertRequest) (*A
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &alertPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&alertPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := alertFromPb(&alertPb)
+	resp, err := alertFromPb(&alertPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -55,7 +62,15 @@ func (a *alertsImpl) Delete(ctx context.Context, request TrashAlertRequest) erro
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &emptyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&emptyPb,
+	)
 	if err != nil {
 		return err
 	}
@@ -75,15 +90,22 @@ func (a *alertsImpl) Get(ctx context.Context, request GetAlertRequest) (*Alert, 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &alertPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&alertPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := alertFromPb(&alertPb)
+	resp, err := alertFromPb(&alertPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -139,15 +161,22 @@ func (a *alertsImpl) internalList(ctx context.Context, request ListAlertsRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listAlertsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listAlertsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listAlertsResponseFromPb(&listAlertsResponsePb)
+	resp, err := listAlertsResponseFromPb(&listAlertsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -165,15 +194,22 @@ func (a *alertsImpl) Update(ctx context.Context, request UpdateAlertRequest) (*A
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &alertPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&alertPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := alertFromPb(&alertPb)
+	resp, err := alertFromPb(&alertPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -196,15 +232,22 @@ func (a *alertsLegacyImpl) Create(ctx context.Context, request CreateAlert) (*Le
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &legacyAlertPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&legacyAlertPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := legacyAlertFromPb(&legacyAlertPb)
+	resp, err := legacyAlertFromPb(&legacyAlertPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -221,7 +264,15 @@ func (a *alertsLegacyImpl) Delete(ctx context.Context, request DeleteAlertsLegac
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -241,15 +292,22 @@ func (a *alertsLegacyImpl) Get(ctx context.Context, request GetAlertsLegacyReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &legacyAlertPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&legacyAlertPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := legacyAlertFromPb(&legacyAlertPb)
+	resp, err := legacyAlertFromPb(&legacyAlertPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -261,19 +319,25 @@ func (a *alertsLegacyImpl) List(ctx context.Context) ([]LegacyAlert, error) {
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &legacyAlertListPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&legacyAlertListPb,
+	)
 	if err != nil {
 		return nil, err
 	}
 	var resp []LegacyAlert
 	for _, item := range legacyAlertListPb {
-		itemField, err := legacyAlertFromPb(&item)
+		itemResp, err := legacyAlertFromPb(&item)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resp = append(resp, *itemField)
-		}
+		resp = append(resp, *itemResp)
 	}
 
 	return resp, err
@@ -292,7 +356,15 @@ func (a *alertsLegacyImpl) Update(ctx context.Context, request EditAlert) error 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &updateResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -318,15 +390,22 @@ func (a *alertsV2Impl) CreateAlert(ctx context.Context, request CreateAlertV2Req
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &alertV2Pb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&alertV2Pb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := alertV2FromPb(&alertV2Pb)
+	resp, err := alertV2FromPb(&alertV2Pb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -343,15 +422,22 @@ func (a *alertsV2Impl) GetAlert(ctx context.Context, request GetAlertV2Request) 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &alertV2Pb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&alertV2Pb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := alertV2FromPb(&alertV2Pb)
+	resp, err := alertV2FromPb(&alertV2Pb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -359,13 +445,13 @@ func (a *alertsV2Impl) GetAlert(ctx context.Context, request GetAlertV2Request) 
 // List alerts.
 //
 // Gets a list of alerts accessible to the user, ordered by creation time.
-func (a *alertsV2Impl) ListAlerts(ctx context.Context, request ListAlertsV2Request) listing.Iterator[AlertV2] {
+func (a *alertsV2Impl) ListAlerts(ctx context.Context, request ListAlertsV2Request) listing.Iterator[ListAlertsV2ResponseAlert] {
 
 	getNextPage := func(ctx context.Context, req ListAlertsV2Request) (*ListAlertsV2Response, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalListAlerts(ctx, req)
 	}
-	getItems := func(resp *ListAlertsV2Response) []AlertV2 {
+	getItems := func(resp *ListAlertsV2Response) []ListAlertsV2ResponseAlert {
 		return resp.Results
 	}
 	getNextReq := func(resp *ListAlertsV2Response) *ListAlertsV2Request {
@@ -386,9 +472,9 @@ func (a *alertsV2Impl) ListAlerts(ctx context.Context, request ListAlertsV2Reque
 // List alerts.
 //
 // Gets a list of alerts accessible to the user, ordered by creation time.
-func (a *alertsV2Impl) ListAlertsAll(ctx context.Context, request ListAlertsV2Request) ([]AlertV2, error) {
+func (a *alertsV2Impl) ListAlertsAll(ctx context.Context, request ListAlertsV2Request) ([]ListAlertsV2ResponseAlert, error) {
 	iterator := a.ListAlerts(ctx, request)
-	return listing.ToSlice[AlertV2](ctx, iterator)
+	return listing.ToSlice[ListAlertsV2ResponseAlert](ctx, iterator)
 }
 
 func (a *alertsV2Impl) internalListAlerts(ctx context.Context, request ListAlertsV2Request) (*ListAlertsV2Response, error) {
@@ -403,15 +489,22 @@ func (a *alertsV2Impl) internalListAlerts(ctx context.Context, request ListAlert
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listAlertsV2ResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listAlertsV2ResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listAlertsV2ResponseFromPb(&listAlertsV2ResponsePb)
+	resp, err := listAlertsV2ResponseFromPb(&listAlertsV2ResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -428,7 +521,15 @@ func (a *alertsV2Impl) TrashAlert(ctx context.Context, request TrashAlertV2Reque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &emptyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&emptyPb,
+	)
 	if err != nil {
 		return err
 	}
@@ -449,15 +550,22 @@ func (a *alertsV2Impl) UpdateAlert(ctx context.Context, request UpdateAlertV2Req
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &alertV2Pb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&alertV2Pb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := alertV2FromPb(&alertV2Pb)
+	resp, err := alertV2FromPb(&alertV2Pb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -480,15 +588,22 @@ func (a *dashboardWidgetsImpl) Create(ctx context.Context, request CreateWidget)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &widgetPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&widgetPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := widgetFromPb(&widgetPb)
+	resp, err := widgetFromPb(&widgetPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -505,7 +620,15 @@ func (a *dashboardWidgetsImpl) Delete(ctx context.Context, request DeleteDashboa
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -526,15 +649,22 @@ func (a *dashboardWidgetsImpl) Update(ctx context.Context, request CreateWidget)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &widgetPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&widgetPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := widgetFromPb(&widgetPb)
+	resp, err := widgetFromPb(&widgetPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -557,15 +687,22 @@ func (a *dashboardsImpl) Create(ctx context.Context, request DashboardPostConten
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &dashboardPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&dashboardPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := dashboardFromPb(&dashboardPb)
+	resp, err := dashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -582,7 +719,15 @@ func (a *dashboardsImpl) Delete(ctx context.Context, request DeleteDashboardRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -602,15 +747,22 @@ func (a *dashboardsImpl) Get(ctx context.Context, request GetDashboardRequest) (
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &dashboardPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&dashboardPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := dashboardFromPb(&dashboardPb)
+	resp, err := dashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -676,15 +828,22 @@ func (a *dashboardsImpl) internalList(ctx context.Context, request ListDashboard
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listResponseFromPb(&listResponsePb)
+	resp, err := listResponseFromPb(&listResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -701,7 +860,15 @@ func (a *dashboardsImpl) Restore(ctx context.Context, request RestoreDashboardRe
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &restoreResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&restoreResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -722,15 +889,22 @@ func (a *dashboardsImpl) Update(ctx context.Context, request DashboardEditConten
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &dashboardPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&dashboardPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := dashboardFromPb(&dashboardPb)
+	resp, err := dashboardFromPb(&dashboardPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -747,19 +921,25 @@ func (a *dataSourcesImpl) List(ctx context.Context) ([]DataSource, error) {
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &dataSourceListPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&dataSourceListPb,
+	)
 	if err != nil {
 		return nil, err
 	}
 	var resp []DataSource
 	for _, item := range dataSourceListPb {
-		itemField, err := dataSourceFromPb(&item)
+		itemResp, err := dataSourceFromPb(&item)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resp = append(resp, *itemField)
-		}
+		resp = append(resp, *itemResp)
 	}
 
 	return resp, err
@@ -782,15 +962,22 @@ func (a *dbsqlPermissionsImpl) Get(ctx context.Context, request GetDbsqlPermissi
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getResponseFromPb(&getResponsePb)
+	resp, err := getResponseFromPb(&getResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -808,15 +995,22 @@ func (a *dbsqlPermissionsImpl) Set(ctx context.Context, request SetRequest) (*Se
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &setResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&setResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := setResponseFromPb(&setResponsePb)
+	resp, err := setResponseFromPb(&setResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -834,15 +1028,22 @@ func (a *dbsqlPermissionsImpl) TransferOwnership(ctx context.Context, request Tr
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &successPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&successPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := successFromPb(&successPb)
+	resp, err := successFromPb(&successPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -865,15 +1066,22 @@ func (a *queriesImpl) Create(ctx context.Context, request CreateQueryRequest) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &queryPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&queryPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := queryFromPb(&queryPb)
+	resp, err := queryFromPb(&queryPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -890,7 +1098,15 @@ func (a *queriesImpl) Delete(ctx context.Context, request TrashQueryRequest) err
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &emptyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&emptyPb,
+	)
 	if err != nil {
 		return err
 	}
@@ -910,15 +1126,22 @@ func (a *queriesImpl) Get(ctx context.Context, request GetQueryRequest) (*Query,
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &queryPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&queryPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := queryFromPb(&queryPb)
+	resp, err := queryFromPb(&queryPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -974,15 +1197,22 @@ func (a *queriesImpl) internalList(ctx context.Context, request ListQueriesReque
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listQueryObjectsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listQueryObjectsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listQueryObjectsResponseFromPb(&listQueryObjectsResponsePb)
+	resp, err := listQueryObjectsResponseFromPb(&listQueryObjectsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1034,15 +1264,22 @@ func (a *queriesImpl) internalListVisualizations(ctx context.Context, request Li
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listVisualizationsForQueryResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listVisualizationsForQueryResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listVisualizationsForQueryResponseFromPb(&listVisualizationsForQueryResponsePb)
+	resp, err := listVisualizationsForQueryResponseFromPb(&listVisualizationsForQueryResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1060,15 +1297,22 @@ func (a *queriesImpl) Update(ctx context.Context, request UpdateQueryRequest) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &queryPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&queryPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := queryFromPb(&queryPb)
+	resp, err := queryFromPb(&queryPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1091,15 +1335,22 @@ func (a *queriesLegacyImpl) Create(ctx context.Context, request QueryPostContent
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &legacyQueryPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&legacyQueryPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := legacyQueryFromPb(&legacyQueryPb)
+	resp, err := legacyQueryFromPb(&legacyQueryPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1116,7 +1367,15 @@ func (a *queriesLegacyImpl) Delete(ctx context.Context, request DeleteQueriesLeg
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1136,15 +1395,22 @@ func (a *queriesLegacyImpl) Get(ctx context.Context, request GetQueriesLegacyReq
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &legacyQueryPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&legacyQueryPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := legacyQueryFromPb(&legacyQueryPb)
+	resp, err := legacyQueryFromPb(&legacyQueryPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1222,15 +1488,22 @@ func (a *queriesLegacyImpl) internalList(ctx context.Context, request ListQuerie
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &queryListPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&queryListPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := queryListFromPb(&queryListPb)
+	resp, err := queryListFromPb(&queryListPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1247,7 +1520,15 @@ func (a *queriesLegacyImpl) Restore(ctx context.Context, request RestoreQueriesL
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &restoreResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&restoreResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1268,15 +1549,22 @@ func (a *queriesLegacyImpl) Update(ctx context.Context, request QueryEditContent
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &legacyQueryPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&legacyQueryPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := legacyQueryFromPb(&legacyQueryPb)
+	resp, err := legacyQueryFromPb(&legacyQueryPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1298,15 +1586,22 @@ func (a *queryHistoryImpl) List(ctx context.Context, request ListQueryHistoryReq
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listQueriesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listQueriesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listQueriesResponseFromPb(&listQueriesResponsePb)
+	resp, err := listQueriesResponseFromPb(&listQueriesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1329,15 +1624,22 @@ func (a *queryVisualizationsImpl) Create(ctx context.Context, request CreateVisu
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &visualizationPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&visualizationPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := visualizationFromPb(&visualizationPb)
+	resp, err := visualizationFromPb(&visualizationPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1354,7 +1656,15 @@ func (a *queryVisualizationsImpl) Delete(ctx context.Context, request DeleteVisu
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &emptyPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&emptyPb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1375,15 +1685,22 @@ func (a *queryVisualizationsImpl) Update(ctx context.Context, request UpdateVisu
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &visualizationPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&visualizationPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := visualizationFromPb(&visualizationPb)
+	resp, err := visualizationFromPb(&visualizationPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1406,15 +1723,22 @@ func (a *queryVisualizationsLegacyImpl) Create(ctx context.Context, request Crea
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &legacyVisualizationPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&legacyVisualizationPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := legacyVisualizationFromPb(&legacyVisualizationPb)
+	resp, err := legacyVisualizationFromPb(&legacyVisualizationPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1431,7 +1755,15 @@ func (a *queryVisualizationsLegacyImpl) Delete(ctx context.Context, request Dele
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1452,15 +1784,22 @@ func (a *queryVisualizationsLegacyImpl) Update(ctx context.Context, request Lega
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &legacyVisualizationPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&legacyVisualizationPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := legacyVisualizationFromPb(&legacyVisualizationPb)
+	resp, err := legacyVisualizationFromPb(&legacyVisualizationPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1477,15 +1816,22 @@ func (a *redashConfigImpl) GetConfig(ctx context.Context) (*ClientConfig, error)
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &clientConfigPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&clientConfigPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := clientConfigFromPb(&clientConfigPb)
+	resp, err := clientConfigFromPb(&clientConfigPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1506,7 +1852,15 @@ func (a *statementExecutionImpl) CancelExecution(ctx context.Context, request Ca
 	path := fmt.Sprintf("/api/2.0/sql/statements/%v/cancel", requestPb.StatementId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &cancelExecutionResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&cancelExecutionResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1527,15 +1881,22 @@ func (a *statementExecutionImpl) ExecuteStatement(ctx context.Context, request E
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &statementResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&statementResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := StatementResponseFromPb(&statementResponsePb)
+	resp, err := StatementResponseFromPb(&statementResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1552,15 +1913,22 @@ func (a *statementExecutionImpl) GetStatement(ctx context.Context, request GetSt
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &statementResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&statementResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := StatementResponseFromPb(&statementResponsePb)
+	resp, err := StatementResponseFromPb(&statementResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1577,15 +1945,22 @@ func (a *statementExecutionImpl) GetStatementResultChunkN(ctx context.Context, r
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &resultDataPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&resultDataPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := resultDataFromPb(&resultDataPb)
+	resp, err := resultDataFromPb(&resultDataPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1608,15 +1983,22 @@ func (a *warehousesImpl) Create(ctx context.Context, request CreateWarehouseRequ
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createWarehouseResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createWarehouseResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createWarehouseResponseFromPb(&createWarehouseResponsePb)
+	resp, err := createWarehouseResponseFromPb(&createWarehouseResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1633,7 +2015,15 @@ func (a *warehousesImpl) Delete(ctx context.Context, request DeleteWarehouseRequ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteWarehouseResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteWarehouseResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1654,7 +2044,15 @@ func (a *warehousesImpl) Edit(ctx context.Context, request EditWarehouseRequest)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &editWarehouseResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&editWarehouseResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1674,15 +2072,22 @@ func (a *warehousesImpl) Get(ctx context.Context, request GetWarehouseRequest) (
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getWarehouseResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getWarehouseResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getWarehouseResponseFromPb(&getWarehouseResponsePb)
+	resp, err := getWarehouseResponseFromPb(&getWarehouseResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1699,15 +2104,22 @@ func (a *warehousesImpl) GetPermissionLevels(ctx context.Context, request GetWar
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getWarehousePermissionLevelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getWarehousePermissionLevelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getWarehousePermissionLevelsResponseFromPb(&getWarehousePermissionLevelsResponsePb)
+	resp, err := getWarehousePermissionLevelsResponseFromPb(&getWarehousePermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1724,15 +2136,22 @@ func (a *warehousesImpl) GetPermissions(ctx context.Context, request GetWarehous
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &warehousePermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&warehousePermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := warehousePermissionsFromPb(&warehousePermissionsPb)
+	resp, err := warehousePermissionsFromPb(&warehousePermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1744,15 +2163,22 @@ func (a *warehousesImpl) GetWorkspaceWarehouseConfig(ctx context.Context) (*GetW
 
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &getWorkspaceWarehouseConfigResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		nil,
+		nil,
+		&getWorkspaceWarehouseConfigResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getWorkspaceWarehouseConfigResponseFromPb(&getWorkspaceWarehouseConfigResponsePb)
+	resp, err := getWorkspaceWarehouseConfigResponseFromPb(&getWorkspaceWarehouseConfigResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1798,15 +2224,22 @@ func (a *warehousesImpl) internalList(ctx context.Context, request ListWarehouse
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listWarehousesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listWarehousesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listWarehousesResponseFromPb(&listWarehousesResponsePb)
+	resp, err := listWarehousesResponseFromPb(&listWarehousesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1824,15 +2257,22 @@ func (a *warehousesImpl) SetPermissions(ctx context.Context, request WarehousePe
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &warehousePermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&warehousePermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := warehousePermissionsFromPb(&warehousePermissionsPb)
+	resp, err := warehousePermissionsFromPb(&warehousePermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -1850,7 +2290,15 @@ func (a *warehousesImpl) SetWorkspaceWarehouseConfig(ctx context.Context, reques
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &setWorkspaceWarehouseConfigResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&setWorkspaceWarehouseConfigResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1870,7 +2318,15 @@ func (a *warehousesImpl) Start(ctx context.Context, request StartRequest) error 
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &startWarehouseResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&startWarehouseResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1890,7 +2346,15 @@ func (a *warehousesImpl) Stop(ctx context.Context, request StopRequest) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &stopWarehouseResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&stopWarehouseResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -1911,15 +2375,22 @@ func (a *warehousesImpl) UpdatePermissions(ctx context.Context, request Warehous
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &warehousePermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&warehousePermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := warehousePermissionsFromPb(&warehousePermissionsPb)
+	resp, err := warehousePermissionsFromPb(&warehousePermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }

@@ -12,123 +12,75 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type CreatePipeline struct {
 	// If false, deployment will fail if name conflicts with that of another
 	// pipeline.
+	// Wire name: 'allow_duplicate_names'
 	AllowDuplicateNames bool
 	// Budget policy of this pipeline.
+	// Wire name: 'budget_policy_id'
 	BudgetPolicyId string
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
+	// Wire name: 'catalog'
 	Catalog string
 	// DLT Release Channel that specifies which version to use.
+	// Wire name: 'channel'
 	Channel string
 	// Cluster settings for this pipeline deployment.
+	// Wire name: 'clusters'
 	Clusters []PipelineCluster
 	// String-String configuration for this pipeline execution.
+	// Wire name: 'configuration'
 	Configuration map[string]string
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
+	// Wire name: 'continuous'
 	Continuous bool
 	// Deployment type of this pipeline.
+	// Wire name: 'deployment'
 	Deployment *PipelineDeployment
 	// Whether the pipeline is in Development mode. Defaults to false.
+	// Wire name: 'development'
 	Development bool
 
+	// Wire name: 'dry_run'
 	DryRun bool
 	// Pipeline product edition.
+	// Wire name: 'edition'
 	Edition string
 	// Event log configuration for this pipeline
+	// Wire name: 'event_log'
 	EventLog *EventLogSpec
 	// Filters on which Pipeline packages to include in the deployed graph.
+	// Wire name: 'filters'
 	Filters *Filters
 	// The definition of a gateway pipeline to support change data capture.
+	// Wire name: 'gateway_definition'
 	GatewayDefinition *IngestionGatewayPipelineDefinition
 	// Unique identifier for this pipeline.
+	// Wire name: 'id'
 	Id string
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'schema', 'target', or 'catalog' settings.
+	// Wire name: 'ingestion_definition'
 	IngestionDefinition *IngestionPipelineDefinition
 	// Libraries or code needed by this deployment.
+	// Wire name: 'libraries'
 	Libraries []PipelineLibrary
 	// Friendly identifier for this pipeline.
+	// Wire name: 'name'
 	Name string
 	// List of notification settings for this pipeline.
+	// Wire name: 'notifications'
 	Notifications []Notifications
 	// Whether Photon is enabled for this pipeline.
+	// Wire name: 'photon'
 	Photon bool
 	// Restart window of this pipeline.
+	// Wire name: 'restart_window'
 	RestartWindow *RestartWindow
 	// Write-only setting, available only in Create/Update calls. Specifies the
 	// user or service principal that the pipeline runs as. If not specified,
@@ -136,22 +88,28 @@ type CreatePipeline struct {
 	//
 	// Only `user_name` or `service_principal_name` can be specified. If both
 	// are specified, an error is thrown.
+	// Wire name: 'run_as'
 	RunAs *RunAs
 	// The default schema (database) where tables are read from or published to.
+	// Wire name: 'schema'
 	Schema string
 	// Whether serverless compute is enabled for this pipeline.
+	// Wire name: 'serverless'
 	Serverless bool
 	// DBFS root directory for storing checkpoints and tables.
+	// Wire name: 'storage'
 	Storage string
 	// Target schema (database) to add tables in this pipeline to. Exactly one
 	// of `schema` or `target` must be specified. To publish to Unity Catalog,
 	// also specify `catalog`. This legacy field is deprecated for pipeline
 	// creation in favor of the `schema` field.
+	// Wire name: 'target'
 	Target string
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+	// Wire name: 'trigger'
 	Trigger *PipelineTrigger
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createPipelineToPb(st *CreatePipeline) (*createPipelinePb, error) {
@@ -159,25 +117,13 @@ func createPipelineToPb(st *CreatePipeline) (*createPipelinePb, error) {
 		return nil, nil
 	}
 	pb := &createPipelinePb{}
-	allowDuplicateNamesPb := &st.AllowDuplicateNames
-	if allowDuplicateNamesPb != nil {
-		pb.AllowDuplicateNames = *allowDuplicateNamesPb
-	}
+	pb.AllowDuplicateNames = st.AllowDuplicateNames
 
-	budgetPolicyIdPb := &st.BudgetPolicyId
-	if budgetPolicyIdPb != nil {
-		pb.BudgetPolicyId = *budgetPolicyIdPb
-	}
+	pb.BudgetPolicyId = st.BudgetPolicyId
 
-	catalogPb := &st.Catalog
-	if catalogPb != nil {
-		pb.Catalog = *catalogPb
-	}
+	pb.Catalog = st.Catalog
 
-	channelPb := &st.Channel
-	if channelPb != nil {
-		pb.Channel = *channelPb
-	}
+	pb.Channel = st.Channel
 
 	var clustersPb []pipelineClusterPb
 	for _, item := range st.Clusters {
@@ -191,19 +137,9 @@ func createPipelineToPb(st *CreatePipeline) (*createPipelinePb, error) {
 	}
 	pb.Clusters = clustersPb
 
-	configurationPb := map[string]string{}
-	for k, v := range st.Configuration {
-		itemPb := &v
-		if itemPb != nil {
-			configurationPb[k] = *itemPb
-		}
-	}
-	pb.Configuration = configurationPb
+	pb.Configuration = st.Configuration
 
-	continuousPb := &st.Continuous
-	if continuousPb != nil {
-		pb.Continuous = *continuousPb
-	}
+	pb.Continuous = st.Continuous
 
 	deploymentPb, err := pipelineDeploymentToPb(st.Deployment)
 	if err != nil {
@@ -213,20 +149,11 @@ func createPipelineToPb(st *CreatePipeline) (*createPipelinePb, error) {
 		pb.Deployment = deploymentPb
 	}
 
-	developmentPb := &st.Development
-	if developmentPb != nil {
-		pb.Development = *developmentPb
-	}
+	pb.Development = st.Development
 
-	dryRunPb := &st.DryRun
-	if dryRunPb != nil {
-		pb.DryRun = *dryRunPb
-	}
+	pb.DryRun = st.DryRun
 
-	editionPb := &st.Edition
-	if editionPb != nil {
-		pb.Edition = *editionPb
-	}
+	pb.Edition = st.Edition
 
 	eventLogPb, err := eventLogSpecToPb(st.EventLog)
 	if err != nil {
@@ -252,10 +179,7 @@ func createPipelineToPb(st *CreatePipeline) (*createPipelinePb, error) {
 		pb.GatewayDefinition = gatewayDefinitionPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	ingestionDefinitionPb, err := ingestionPipelineDefinitionToPb(st.IngestionDefinition)
 	if err != nil {
@@ -277,10 +201,7 @@ func createPipelineToPb(st *CreatePipeline) (*createPipelinePb, error) {
 	}
 	pb.Libraries = librariesPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var notificationsPb []notificationsPb
 	for _, item := range st.Notifications {
@@ -294,10 +215,7 @@ func createPipelineToPb(st *CreatePipeline) (*createPipelinePb, error) {
 	}
 	pb.Notifications = notificationsPb
 
-	photonPb := &st.Photon
-	if photonPb != nil {
-		pb.Photon = *photonPb
-	}
+	pb.Photon = st.Photon
 
 	restartWindowPb, err := restartWindowToPb(st.RestartWindow)
 	if err != nil {
@@ -315,25 +233,13 @@ func createPipelineToPb(st *CreatePipeline) (*createPipelinePb, error) {
 		pb.RunAs = runAsPb
 	}
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	serverlessPb := &st.Serverless
-	if serverlessPb != nil {
-		pb.Serverless = *serverlessPb
-	}
+	pb.Serverless = st.Serverless
 
-	storagePb := &st.Storage
-	if storagePb != nil {
-		pb.Storage = *storagePb
-	}
+	pb.Storage = st.Storage
 
-	targetPb := &st.Target
-	if targetPb != nil {
-		pb.Target = *targetPb
-	}
+	pb.Target = st.Target
 
 	triggerPb, err := pipelineTriggerToPb(st.Trigger)
 	if err != nil {
@@ -450,47 +356,24 @@ func createPipelineFromPb(pb *createPipelinePb) (*CreatePipeline, error) {
 		return nil, nil
 	}
 	st := &CreatePipeline{}
-	allowDuplicateNamesField := &pb.AllowDuplicateNames
-	if allowDuplicateNamesField != nil {
-		st.AllowDuplicateNames = *allowDuplicateNamesField
-	}
-	budgetPolicyIdField := &pb.BudgetPolicyId
-	if budgetPolicyIdField != nil {
-		st.BudgetPolicyId = *budgetPolicyIdField
-	}
-	catalogField := &pb.Catalog
-	if catalogField != nil {
-		st.Catalog = *catalogField
-	}
-	channelField := &pb.Channel
-	if channelField != nil {
-		st.Channel = *channelField
-	}
+	st.AllowDuplicateNames = pb.AllowDuplicateNames
+	st.BudgetPolicyId = pb.BudgetPolicyId
+	st.Catalog = pb.Catalog
+	st.Channel = pb.Channel
 
 	var clustersField []PipelineCluster
-	for _, item := range pb.Clusters {
-		itemField, err := pipelineClusterFromPb(&item)
+	for _, itemPb := range pb.Clusters {
+		item, err := pipelineClusterFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			clustersField = append(clustersField, *itemField)
+		if item != nil {
+			clustersField = append(clustersField, *item)
 		}
 	}
 	st.Clusters = clustersField
-
-	configurationField := map[string]string{}
-	for k, v := range pb.Configuration {
-		itemField := &v
-		if itemField != nil {
-			configurationField[k] = *itemField
-		}
-	}
-	st.Configuration = configurationField
-	continuousField := &pb.Continuous
-	if continuousField != nil {
-		st.Continuous = *continuousField
-	}
+	st.Configuration = pb.Configuration
+	st.Continuous = pb.Continuous
 	deploymentField, err := pipelineDeploymentFromPb(pb.Deployment)
 	if err != nil {
 		return nil, err
@@ -498,18 +381,9 @@ func createPipelineFromPb(pb *createPipelinePb) (*CreatePipeline, error) {
 	if deploymentField != nil {
 		st.Deployment = deploymentField
 	}
-	developmentField := &pb.Development
-	if developmentField != nil {
-		st.Development = *developmentField
-	}
-	dryRunField := &pb.DryRun
-	if dryRunField != nil {
-		st.DryRun = *dryRunField
-	}
-	editionField := &pb.Edition
-	if editionField != nil {
-		st.Edition = *editionField
-	}
+	st.Development = pb.Development
+	st.DryRun = pb.DryRun
+	st.Edition = pb.Edition
 	eventLogField, err := eventLogSpecFromPb(pb.EventLog)
 	if err != nil {
 		return nil, err
@@ -531,10 +405,7 @@ func createPipelineFromPb(pb *createPipelinePb) (*CreatePipeline, error) {
 	if gatewayDefinitionField != nil {
 		st.GatewayDefinition = gatewayDefinitionField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	ingestionDefinitionField, err := ingestionPipelineDefinitionFromPb(pb.IngestionDefinition)
 	if err != nil {
 		return nil, err
@@ -544,36 +415,30 @@ func createPipelineFromPb(pb *createPipelinePb) (*CreatePipeline, error) {
 	}
 
 	var librariesField []PipelineLibrary
-	for _, item := range pb.Libraries {
-		itemField, err := pipelineLibraryFromPb(&item)
+	for _, itemPb := range pb.Libraries {
+		item, err := pipelineLibraryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			librariesField = append(librariesField, *itemField)
+		if item != nil {
+			librariesField = append(librariesField, *item)
 		}
 	}
 	st.Libraries = librariesField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	var notificationsField []Notifications
-	for _, item := range pb.Notifications {
-		itemField, err := notificationsFromPb(&item)
+	for _, itemPb := range pb.Notifications {
+		item, err := notificationsFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			notificationsField = append(notificationsField, *itemField)
+		if item != nil {
+			notificationsField = append(notificationsField, *item)
 		}
 	}
 	st.Notifications = notificationsField
-	photonField := &pb.Photon
-	if photonField != nil {
-		st.Photon = *photonField
-	}
+	st.Photon = pb.Photon
 	restartWindowField, err := restartWindowFromPb(pb.RestartWindow)
 	if err != nil {
 		return nil, err
@@ -588,22 +453,10 @@ func createPipelineFromPb(pb *createPipelinePb) (*CreatePipeline, error) {
 	if runAsField != nil {
 		st.RunAs = runAsField
 	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-	serverlessField := &pb.Serverless
-	if serverlessField != nil {
-		st.Serverless = *serverlessField
-	}
-	storageField := &pb.Storage
-	if storageField != nil {
-		st.Storage = *storageField
-	}
-	targetField := &pb.Target
-	if targetField != nil {
-		st.Target = *targetField
-	}
+	st.Schema = pb.Schema
+	st.Serverless = pb.Serverless
+	st.Storage = pb.Storage
+	st.Target = pb.Target
 	triggerField, err := pipelineTriggerFromPb(pb.Trigger)
 	if err != nil {
 		return nil, err
@@ -626,12 +479,14 @@ func (st createPipelinePb) MarshalJSON() ([]byte, error) {
 
 type CreatePipelineResponse struct {
 	// Only returned when dry_run is true.
+	// Wire name: 'effective_settings'
 	EffectiveSettings *PipelineSpec
 	// The unique identifier for the newly created pipeline. Only returned when
 	// dry_run is false.
+	// Wire name: 'pipeline_id'
 	PipelineId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createPipelineResponseToPb(st *CreatePipelineResponse) (*createPipelineResponsePb, error) {
@@ -647,10 +502,7 @@ func createPipelineResponseToPb(st *CreatePipelineResponse) (*createPipelineResp
 		pb.EffectiveSettings = effectiveSettingsPb
 	}
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -703,10 +555,7 @@ func createPipelineResponseFromPb(pb *createPipelineResponsePb) (*CreatePipeline
 	if effectiveSettingsField != nil {
 		st.EffectiveSettings = effectiveSettingsField
 	}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
+	st.PipelineId = pb.PipelineId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -721,11 +570,14 @@ func (st createPipelineResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type CronTrigger struct {
+
+	// Wire name: 'quartz_cron_schedule'
 	QuartzCronSchedule string
 
+	// Wire name: 'timezone_id'
 	TimezoneId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cronTriggerToPb(st *CronTrigger) (*cronTriggerPb, error) {
@@ -733,15 +585,9 @@ func cronTriggerToPb(st *CronTrigger) (*cronTriggerPb, error) {
 		return nil, nil
 	}
 	pb := &cronTriggerPb{}
-	quartzCronSchedulePb := &st.QuartzCronSchedule
-	if quartzCronSchedulePb != nil {
-		pb.QuartzCronSchedule = *quartzCronSchedulePb
-	}
+	pb.QuartzCronSchedule = st.QuartzCronSchedule
 
-	timezoneIdPb := &st.TimezoneId
-	if timezoneIdPb != nil {
-		pb.TimezoneId = *timezoneIdPb
-	}
+	pb.TimezoneId = st.TimezoneId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -785,14 +631,8 @@ func cronTriggerFromPb(pb *cronTriggerPb) (*CronTrigger, error) {
 		return nil, nil
 	}
 	st := &CronTrigger{}
-	quartzCronScheduleField := &pb.QuartzCronSchedule
-	if quartzCronScheduleField != nil {
-		st.QuartzCronSchedule = *quartzCronScheduleField
-	}
-	timezoneIdField := &pb.TimezoneId
-	if timezoneIdField != nil {
-		st.TimezoneId = *timezoneIdField
-	}
+	st.QuartzCronSchedule = pb.QuartzCronSchedule
+	st.TimezoneId = pb.TimezoneId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -808,11 +648,13 @@ func (st cronTriggerPb) MarshalJSON() ([]byte, error) {
 
 type DataPlaneId struct {
 	// The instance name of the data plane emitting an event.
+	// Wire name: 'instance'
 	Instance string
 	// A sequence number, unique and increasing within the data plane instance.
-	SeqNo int64
+	// Wire name: 'seq_no'
+	SeqNo int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func dataPlaneIdToPb(st *DataPlaneId) (*dataPlaneIdPb, error) {
@@ -820,15 +662,9 @@ func dataPlaneIdToPb(st *DataPlaneId) (*dataPlaneIdPb, error) {
 		return nil, nil
 	}
 	pb := &dataPlaneIdPb{}
-	instancePb := &st.Instance
-	if instancePb != nil {
-		pb.Instance = *instancePb
-	}
+	pb.Instance = st.Instance
 
-	seqNoPb := &st.SeqNo
-	if seqNoPb != nil {
-		pb.SeqNo = *seqNoPb
-	}
+	pb.SeqNo = st.SeqNo
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -863,7 +699,7 @@ type dataPlaneIdPb struct {
 	// The instance name of the data plane emitting an event.
 	Instance string `json:"instance,omitempty"`
 	// A sequence number, unique and increasing within the data plane instance.
-	SeqNo int64 `json:"seq_no,omitempty"`
+	SeqNo int `json:"seq_no,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -873,14 +709,8 @@ func dataPlaneIdFromPb(pb *dataPlaneIdPb) (*DataPlaneId, error) {
 		return nil, nil
 	}
 	st := &DataPlaneId{}
-	instanceField := &pb.Instance
-	if instanceField != nil {
-		st.Instance = *instanceField
-	}
-	seqNoField := &pb.SeqNo
-	if seqNoField != nil {
-		st.SeqNo = *seqNoField
-	}
+	st.Instance = pb.Instance
+	st.SeqNo = pb.SeqNo
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -953,7 +783,9 @@ func dayOfWeekFromPb(pb *dayOfWeekPb) (*DayOfWeek, error) {
 
 // Delete a pipeline
 type DeletePipelineRequest struct {
-	PipelineId string
+
+	// Wire name: 'pipeline_id'
+	PipelineId string `tf:"-"`
 }
 
 func deletePipelineRequestToPb(st *DeletePipelineRequest) (*deletePipelineRequestPb, error) {
@@ -961,10 +793,7 @@ func deletePipelineRequestToPb(st *DeletePipelineRequest) (*deletePipelineReques
 		return nil, nil
 	}
 	pb := &deletePipelineRequestPb{}
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
 	return pb, nil
 }
@@ -1003,10 +832,7 @@ func deletePipelineRequestFromPb(pb *deletePipelineRequestPb) (*DeletePipelineRe
 		return nil, nil
 	}
 	st := &DeletePipelineRequest{}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
+	st.PipelineId = pb.PipelineId
 
 	return st, nil
 }
@@ -1107,55 +933,77 @@ func deploymentKindFromPb(pb *deploymentKindPb) (*DeploymentKind, error) {
 type EditPipeline struct {
 	// If false, deployment will fail if name has changed and conflicts the name
 	// of another pipeline.
+	// Wire name: 'allow_duplicate_names'
 	AllowDuplicateNames bool
 	// Budget policy of this pipeline.
+	// Wire name: 'budget_policy_id'
 	BudgetPolicyId string
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
+	// Wire name: 'catalog'
 	Catalog string
 	// DLT Release Channel that specifies which version to use.
+	// Wire name: 'channel'
 	Channel string
 	// Cluster settings for this pipeline deployment.
+	// Wire name: 'clusters'
 	Clusters []PipelineCluster
 	// String-String configuration for this pipeline execution.
+	// Wire name: 'configuration'
 	Configuration map[string]string
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
+	// Wire name: 'continuous'
 	Continuous bool
 	// Deployment type of this pipeline.
+	// Wire name: 'deployment'
 	Deployment *PipelineDeployment
 	// Whether the pipeline is in Development mode. Defaults to false.
+	// Wire name: 'development'
 	Development bool
 	// Pipeline product edition.
+	// Wire name: 'edition'
 	Edition string
 	// Event log configuration for this pipeline
+	// Wire name: 'event_log'
 	EventLog *EventLogSpec
 	// If present, the last-modified time of the pipeline settings before the
 	// edit. If the settings were modified after that time, then the request
 	// will fail with a conflict.
+	// Wire name: 'expected_last_modified'
 	ExpectedLastModified int64
 	// Filters on which Pipeline packages to include in the deployed graph.
+	// Wire name: 'filters'
 	Filters *Filters
 	// The definition of a gateway pipeline to support change data capture.
+	// Wire name: 'gateway_definition'
 	GatewayDefinition *IngestionGatewayPipelineDefinition
 	// Unique identifier for this pipeline.
+	// Wire name: 'id'
 	Id string
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'schema', 'target', or 'catalog' settings.
+	// Wire name: 'ingestion_definition'
 	IngestionDefinition *IngestionPipelineDefinition
 	// Libraries or code needed by this deployment.
+	// Wire name: 'libraries'
 	Libraries []PipelineLibrary
 	// Friendly identifier for this pipeline.
+	// Wire name: 'name'
 	Name string
 	// List of notification settings for this pipeline.
+	// Wire name: 'notifications'
 	Notifications []Notifications
 	// Whether Photon is enabled for this pipeline.
+	// Wire name: 'photon'
 	Photon bool
 	// Unique identifier for this pipeline.
+	// Wire name: 'pipeline_id'
 	PipelineId string
 	// Restart window of this pipeline.
+	// Wire name: 'restart_window'
 	RestartWindow *RestartWindow
 	// Write-only setting, available only in Create/Update calls. Specifies the
 	// user or service principal that the pipeline runs as. If not specified,
@@ -1163,22 +1011,28 @@ type EditPipeline struct {
 	//
 	// Only `user_name` or `service_principal_name` can be specified. If both
 	// are specified, an error is thrown.
+	// Wire name: 'run_as'
 	RunAs *RunAs
 	// The default schema (database) where tables are read from or published to.
+	// Wire name: 'schema'
 	Schema string
 	// Whether serverless compute is enabled for this pipeline.
+	// Wire name: 'serverless'
 	Serverless bool
 	// DBFS root directory for storing checkpoints and tables.
+	// Wire name: 'storage'
 	Storage string
 	// Target schema (database) to add tables in this pipeline to. Exactly one
 	// of `schema` or `target` must be specified. To publish to Unity Catalog,
 	// also specify `catalog`. This legacy field is deprecated for pipeline
 	// creation in favor of the `schema` field.
+	// Wire name: 'target'
 	Target string
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+	// Wire name: 'trigger'
 	Trigger *PipelineTrigger
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func editPipelineToPb(st *EditPipeline) (*editPipelinePb, error) {
@@ -1186,25 +1040,13 @@ func editPipelineToPb(st *EditPipeline) (*editPipelinePb, error) {
 		return nil, nil
 	}
 	pb := &editPipelinePb{}
-	allowDuplicateNamesPb := &st.AllowDuplicateNames
-	if allowDuplicateNamesPb != nil {
-		pb.AllowDuplicateNames = *allowDuplicateNamesPb
-	}
+	pb.AllowDuplicateNames = st.AllowDuplicateNames
 
-	budgetPolicyIdPb := &st.BudgetPolicyId
-	if budgetPolicyIdPb != nil {
-		pb.BudgetPolicyId = *budgetPolicyIdPb
-	}
+	pb.BudgetPolicyId = st.BudgetPolicyId
 
-	catalogPb := &st.Catalog
-	if catalogPb != nil {
-		pb.Catalog = *catalogPb
-	}
+	pb.Catalog = st.Catalog
 
-	channelPb := &st.Channel
-	if channelPb != nil {
-		pb.Channel = *channelPb
-	}
+	pb.Channel = st.Channel
 
 	var clustersPb []pipelineClusterPb
 	for _, item := range st.Clusters {
@@ -1218,19 +1060,9 @@ func editPipelineToPb(st *EditPipeline) (*editPipelinePb, error) {
 	}
 	pb.Clusters = clustersPb
 
-	configurationPb := map[string]string{}
-	for k, v := range st.Configuration {
-		itemPb := &v
-		if itemPb != nil {
-			configurationPb[k] = *itemPb
-		}
-	}
-	pb.Configuration = configurationPb
+	pb.Configuration = st.Configuration
 
-	continuousPb := &st.Continuous
-	if continuousPb != nil {
-		pb.Continuous = *continuousPb
-	}
+	pb.Continuous = st.Continuous
 
 	deploymentPb, err := pipelineDeploymentToPb(st.Deployment)
 	if err != nil {
@@ -1240,15 +1072,9 @@ func editPipelineToPb(st *EditPipeline) (*editPipelinePb, error) {
 		pb.Deployment = deploymentPb
 	}
 
-	developmentPb := &st.Development
-	if developmentPb != nil {
-		pb.Development = *developmentPb
-	}
+	pb.Development = st.Development
 
-	editionPb := &st.Edition
-	if editionPb != nil {
-		pb.Edition = *editionPb
-	}
+	pb.Edition = st.Edition
 
 	eventLogPb, err := eventLogSpecToPb(st.EventLog)
 	if err != nil {
@@ -1258,10 +1084,7 @@ func editPipelineToPb(st *EditPipeline) (*editPipelinePb, error) {
 		pb.EventLog = eventLogPb
 	}
 
-	expectedLastModifiedPb := &st.ExpectedLastModified
-	if expectedLastModifiedPb != nil {
-		pb.ExpectedLastModified = *expectedLastModifiedPb
-	}
+	pb.ExpectedLastModified = st.ExpectedLastModified
 
 	filtersPb, err := filtersToPb(st.Filters)
 	if err != nil {
@@ -1279,10 +1102,7 @@ func editPipelineToPb(st *EditPipeline) (*editPipelinePb, error) {
 		pb.GatewayDefinition = gatewayDefinitionPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	ingestionDefinitionPb, err := ingestionPipelineDefinitionToPb(st.IngestionDefinition)
 	if err != nil {
@@ -1304,10 +1124,7 @@ func editPipelineToPb(st *EditPipeline) (*editPipelinePb, error) {
 	}
 	pb.Libraries = librariesPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var notificationsPb []notificationsPb
 	for _, item := range st.Notifications {
@@ -1321,15 +1138,9 @@ func editPipelineToPb(st *EditPipeline) (*editPipelinePb, error) {
 	}
 	pb.Notifications = notificationsPb
 
-	photonPb := &st.Photon
-	if photonPb != nil {
-		pb.Photon = *photonPb
-	}
+	pb.Photon = st.Photon
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
 	restartWindowPb, err := restartWindowToPb(st.RestartWindow)
 	if err != nil {
@@ -1347,25 +1158,13 @@ func editPipelineToPb(st *EditPipeline) (*editPipelinePb, error) {
 		pb.RunAs = runAsPb
 	}
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	serverlessPb := &st.Serverless
-	if serverlessPb != nil {
-		pb.Serverless = *serverlessPb
-	}
+	pb.Serverless = st.Serverless
 
-	storagePb := &st.Storage
-	if storagePb != nil {
-		pb.Storage = *storagePb
-	}
+	pb.Storage = st.Storage
 
-	targetPb := &st.Target
-	if targetPb != nil {
-		pb.Target = *targetPb
-	}
+	pb.Target = st.Target
 
 	triggerPb, err := pipelineTriggerToPb(st.Trigger)
 	if err != nil {
@@ -1454,7 +1253,7 @@ type editPipelinePb struct {
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
-	PipelineId string `json:"-" url:"-"`
+	PipelineId string `json:"pipeline_id,omitempty" url:"-"`
 	// Restart window of this pipeline.
 	RestartWindow *restartWindowPb `json:"restart_window,omitempty"`
 	// Write-only setting, available only in Create/Update calls. Specifies the
@@ -1486,47 +1285,24 @@ func editPipelineFromPb(pb *editPipelinePb) (*EditPipeline, error) {
 		return nil, nil
 	}
 	st := &EditPipeline{}
-	allowDuplicateNamesField := &pb.AllowDuplicateNames
-	if allowDuplicateNamesField != nil {
-		st.AllowDuplicateNames = *allowDuplicateNamesField
-	}
-	budgetPolicyIdField := &pb.BudgetPolicyId
-	if budgetPolicyIdField != nil {
-		st.BudgetPolicyId = *budgetPolicyIdField
-	}
-	catalogField := &pb.Catalog
-	if catalogField != nil {
-		st.Catalog = *catalogField
-	}
-	channelField := &pb.Channel
-	if channelField != nil {
-		st.Channel = *channelField
-	}
+	st.AllowDuplicateNames = pb.AllowDuplicateNames
+	st.BudgetPolicyId = pb.BudgetPolicyId
+	st.Catalog = pb.Catalog
+	st.Channel = pb.Channel
 
 	var clustersField []PipelineCluster
-	for _, item := range pb.Clusters {
-		itemField, err := pipelineClusterFromPb(&item)
+	for _, itemPb := range pb.Clusters {
+		item, err := pipelineClusterFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			clustersField = append(clustersField, *itemField)
+		if item != nil {
+			clustersField = append(clustersField, *item)
 		}
 	}
 	st.Clusters = clustersField
-
-	configurationField := map[string]string{}
-	for k, v := range pb.Configuration {
-		itemField := &v
-		if itemField != nil {
-			configurationField[k] = *itemField
-		}
-	}
-	st.Configuration = configurationField
-	continuousField := &pb.Continuous
-	if continuousField != nil {
-		st.Continuous = *continuousField
-	}
+	st.Configuration = pb.Configuration
+	st.Continuous = pb.Continuous
 	deploymentField, err := pipelineDeploymentFromPb(pb.Deployment)
 	if err != nil {
 		return nil, err
@@ -1534,14 +1310,8 @@ func editPipelineFromPb(pb *editPipelinePb) (*EditPipeline, error) {
 	if deploymentField != nil {
 		st.Deployment = deploymentField
 	}
-	developmentField := &pb.Development
-	if developmentField != nil {
-		st.Development = *developmentField
-	}
-	editionField := &pb.Edition
-	if editionField != nil {
-		st.Edition = *editionField
-	}
+	st.Development = pb.Development
+	st.Edition = pb.Edition
 	eventLogField, err := eventLogSpecFromPb(pb.EventLog)
 	if err != nil {
 		return nil, err
@@ -1549,10 +1319,7 @@ func editPipelineFromPb(pb *editPipelinePb) (*EditPipeline, error) {
 	if eventLogField != nil {
 		st.EventLog = eventLogField
 	}
-	expectedLastModifiedField := &pb.ExpectedLastModified
-	if expectedLastModifiedField != nil {
-		st.ExpectedLastModified = *expectedLastModifiedField
-	}
+	st.ExpectedLastModified = pb.ExpectedLastModified
 	filtersField, err := filtersFromPb(pb.Filters)
 	if err != nil {
 		return nil, err
@@ -1567,10 +1334,7 @@ func editPipelineFromPb(pb *editPipelinePb) (*EditPipeline, error) {
 	if gatewayDefinitionField != nil {
 		st.GatewayDefinition = gatewayDefinitionField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	ingestionDefinitionField, err := ingestionPipelineDefinitionFromPb(pb.IngestionDefinition)
 	if err != nil {
 		return nil, err
@@ -1580,40 +1344,31 @@ func editPipelineFromPb(pb *editPipelinePb) (*EditPipeline, error) {
 	}
 
 	var librariesField []PipelineLibrary
-	for _, item := range pb.Libraries {
-		itemField, err := pipelineLibraryFromPb(&item)
+	for _, itemPb := range pb.Libraries {
+		item, err := pipelineLibraryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			librariesField = append(librariesField, *itemField)
+		if item != nil {
+			librariesField = append(librariesField, *item)
 		}
 	}
 	st.Libraries = librariesField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	var notificationsField []Notifications
-	for _, item := range pb.Notifications {
-		itemField, err := notificationsFromPb(&item)
+	for _, itemPb := range pb.Notifications {
+		item, err := notificationsFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			notificationsField = append(notificationsField, *itemField)
+		if item != nil {
+			notificationsField = append(notificationsField, *item)
 		}
 	}
 	st.Notifications = notificationsField
-	photonField := &pb.Photon
-	if photonField != nil {
-		st.Photon = *photonField
-	}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
+	st.Photon = pb.Photon
+	st.PipelineId = pb.PipelineId
 	restartWindowField, err := restartWindowFromPb(pb.RestartWindow)
 	if err != nil {
 		return nil, err
@@ -1628,22 +1383,10 @@ func editPipelineFromPb(pb *editPipelinePb) (*EditPipeline, error) {
 	if runAsField != nil {
 		st.RunAs = runAsField
 	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-	serverlessField := &pb.Serverless
-	if serverlessField != nil {
-		st.Serverless = *serverlessField
-	}
-	storageField := &pb.Storage
-	if storageField != nil {
-		st.Storage = *storageField
-	}
-	targetField := &pb.Target
-	if targetField != nil {
-		st.Target = *targetField
-	}
+	st.Schema = pb.Schema
+	st.Serverless = pb.Serverless
+	st.Storage = pb.Storage
+	st.Target = pb.Target
 	triggerField, err := pipelineTriggerFromPb(pb.Trigger)
 	if err != nil {
 		return nil, err
@@ -1715,11 +1458,13 @@ func editPipelineResponseFromPb(pb *editPipelineResponsePb) (*EditPipelineRespon
 
 type ErrorDetail struct {
 	// The exception thrown for this error, with its chain of cause.
+	// Wire name: 'exceptions'
 	Exceptions []SerializedException
 	// Whether this error is considered fatal, that is, unrecoverable.
+	// Wire name: 'fatal'
 	Fatal bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func errorDetailToPb(st *ErrorDetail) (*errorDetailPb, error) {
@@ -1740,10 +1485,7 @@ func errorDetailToPb(st *ErrorDetail) (*errorDetailPb, error) {
 	}
 	pb.Exceptions = exceptionsPb
 
-	fatalPb := &st.Fatal
-	if fatalPb != nil {
-		pb.Fatal = *fatalPb
-	}
+	pb.Fatal = st.Fatal
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1790,20 +1532,17 @@ func errorDetailFromPb(pb *errorDetailPb) (*ErrorDetail, error) {
 	st := &ErrorDetail{}
 
 	var exceptionsField []SerializedException
-	for _, item := range pb.Exceptions {
-		itemField, err := serializedExceptionFromPb(&item)
+	for _, itemPb := range pb.Exceptions {
+		item, err := serializedExceptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			exceptionsField = append(exceptionsField, *itemField)
+		if item != nil {
+			exceptionsField = append(exceptionsField, *item)
 		}
 	}
 	st.Exceptions = exceptionsField
-	fatalField := &pb.Fatal
-	if fatalField != nil {
-		st.Fatal = *fatalField
-	}
+	st.Fatal = pb.Fatal
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1869,13 +1608,16 @@ func eventLevelFromPb(pb *eventLevelPb) (*EventLevel, error) {
 // Configurable event log parameters.
 type EventLogSpec struct {
 	// The UC catalog the event log is published under.
+	// Wire name: 'catalog'
 	Catalog string
 	// The name the event log is published to in UC.
+	// Wire name: 'name'
 	Name string
 	// The UC schema the event log is published under.
+	// Wire name: 'schema'
 	Schema string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func eventLogSpecToPb(st *EventLogSpec) (*eventLogSpecPb, error) {
@@ -1883,20 +1625,11 @@ func eventLogSpecToPb(st *EventLogSpec) (*eventLogSpecPb, error) {
 		return nil, nil
 	}
 	pb := &eventLogSpecPb{}
-	catalogPb := &st.Catalog
-	if catalogPb != nil {
-		pb.Catalog = *catalogPb
-	}
+	pb.Catalog = st.Catalog
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1943,18 +1676,9 @@ func eventLogSpecFromPb(pb *eventLogSpecPb) (*EventLogSpec, error) {
 		return nil, nil
 	}
 	st := &EventLogSpec{}
-	catalogField := &pb.Catalog
-	if catalogField != nil {
-		st.Catalog = *catalogField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
+	st.Catalog = pb.Catalog
+	st.Name = pb.Name
+	st.Schema = pb.Schema
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1969,10 +1693,11 @@ func (st eventLogSpecPb) MarshalJSON() ([]byte, error) {
 }
 
 type FileLibrary struct {
-	// The absolute path of the source code.
+	// The absolute path of the file.
+	// Wire name: 'path'
 	Path string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func fileLibraryToPb(st *FileLibrary) (*fileLibraryPb, error) {
@@ -1980,10 +1705,7 @@ func fileLibraryToPb(st *FileLibrary) (*fileLibraryPb, error) {
 		return nil, nil
 	}
 	pb := &fileLibraryPb{}
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2015,7 +1737,7 @@ func (st FileLibrary) MarshalJSON() ([]byte, error) {
 }
 
 type fileLibraryPb struct {
-	// The absolute path of the source code.
+	// The absolute path of the file.
 	Path string `json:"path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2026,10 +1748,7 @@ func fileLibraryFromPb(pb *fileLibraryPb) (*FileLibrary, error) {
 		return nil, nil
 	}
 	st := &FileLibrary{}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Path = pb.Path
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2045,8 +1764,10 @@ func (st fileLibraryPb) MarshalJSON() ([]byte, error) {
 
 type Filters struct {
 	// Paths to exclude.
+	// Wire name: 'exclude'
 	Exclude []string
 	// Paths to include.
+	// Wire name: 'include'
 	Include []string
 }
 
@@ -2055,24 +1776,9 @@ func filtersToPb(st *Filters) (*filtersPb, error) {
 		return nil, nil
 	}
 	pb := &filtersPb{}
+	pb.Exclude = st.Exclude
 
-	var excludePb []string
-	for _, item := range st.Exclude {
-		itemPb := &item
-		if itemPb != nil {
-			excludePb = append(excludePb, *itemPb)
-		}
-	}
-	pb.Exclude = excludePb
-
-	var includePb []string
-	for _, item := range st.Include {
-		itemPb := &item
-		if itemPb != nil {
-			includePb = append(includePb, *itemPb)
-		}
-	}
-	pb.Include = includePb
+	pb.Include = st.Include
 
 	return pb, nil
 }
@@ -2114,24 +1820,8 @@ func filtersFromPb(pb *filtersPb) (*Filters, error) {
 		return nil, nil
 	}
 	st := &Filters{}
-
-	var excludeField []string
-	for _, item := range pb.Exclude {
-		itemField := &item
-		if itemField != nil {
-			excludeField = append(excludeField, *itemField)
-		}
-	}
-	st.Exclude = excludeField
-
-	var includeField []string
-	for _, item := range pb.Include {
-		itemField := &item
-		if itemField != nil {
-			includeField = append(includeField, *itemField)
-		}
-	}
-	st.Include = includeField
+	st.Exclude = pb.Exclude
+	st.Include = pb.Include
 
 	return st, nil
 }
@@ -2139,7 +1829,8 @@ func filtersFromPb(pb *filtersPb) (*Filters, error) {
 // Get pipeline permission levels
 type GetPipelinePermissionLevelsRequest struct {
 	// The pipeline for which to get or manage permissions.
-	PipelineId string
+	// Wire name: 'pipeline_id'
+	PipelineId string `tf:"-"`
 }
 
 func getPipelinePermissionLevelsRequestToPb(st *GetPipelinePermissionLevelsRequest) (*getPipelinePermissionLevelsRequestPb, error) {
@@ -2147,10 +1838,7 @@ func getPipelinePermissionLevelsRequestToPb(st *GetPipelinePermissionLevelsReque
 		return nil, nil
 	}
 	pb := &getPipelinePermissionLevelsRequestPb{}
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
 	return pb, nil
 }
@@ -2190,16 +1878,14 @@ func getPipelinePermissionLevelsRequestFromPb(pb *getPipelinePermissionLevelsReq
 		return nil, nil
 	}
 	st := &GetPipelinePermissionLevelsRequest{}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
+	st.PipelineId = pb.PipelineId
 
 	return st, nil
 }
 
 type GetPipelinePermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []PipelinePermissionsDescription
 }
 
@@ -2261,13 +1947,13 @@ func getPipelinePermissionLevelsResponseFromPb(pb *getPipelinePermissionLevelsRe
 	st := &GetPipelinePermissionLevelsResponse{}
 
 	var permissionLevelsField []PipelinePermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := pipelinePermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := pipelinePermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -2278,7 +1964,8 @@ func getPipelinePermissionLevelsResponseFromPb(pb *getPipelinePermissionLevelsRe
 // Get pipeline permissions
 type GetPipelinePermissionsRequest struct {
 	// The pipeline for which to get or manage permissions.
-	PipelineId string
+	// Wire name: 'pipeline_id'
+	PipelineId string `tf:"-"`
 }
 
 func getPipelinePermissionsRequestToPb(st *GetPipelinePermissionsRequest) (*getPipelinePermissionsRequestPb, error) {
@@ -2286,10 +1973,7 @@ func getPipelinePermissionsRequestToPb(st *GetPipelinePermissionsRequest) (*getP
 		return nil, nil
 	}
 	pb := &getPipelinePermissionsRequestPb{}
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
 	return pb, nil
 }
@@ -2329,17 +2013,16 @@ func getPipelinePermissionsRequestFromPb(pb *getPipelinePermissionsRequestPb) (*
 		return nil, nil
 	}
 	st := &GetPipelinePermissionsRequest{}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
+	st.PipelineId = pb.PipelineId
 
 	return st, nil
 }
 
 // Get a pipeline
 type GetPipelineRequest struct {
-	PipelineId string
+
+	// Wire name: 'pipeline_id'
+	PipelineId string `tf:"-"`
 }
 
 func getPipelineRequestToPb(st *GetPipelineRequest) (*getPipelineRequestPb, error) {
@@ -2347,10 +2030,7 @@ func getPipelineRequestToPb(st *GetPipelineRequest) (*getPipelineRequestPb, erro
 		return nil, nil
 	}
 	pb := &getPipelineRequestPb{}
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
 	return pb, nil
 }
@@ -2389,43 +2069,52 @@ func getPipelineRequestFromPb(pb *getPipelineRequestPb) (*GetPipelineRequest, er
 		return nil, nil
 	}
 	st := &GetPipelineRequest{}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
+	st.PipelineId = pb.PipelineId
 
 	return st, nil
 }
 
 type GetPipelineResponse struct {
 	// An optional message detailing the cause of the pipeline state.
+	// Wire name: 'cause'
 	Cause string
 	// The ID of the cluster that the pipeline is running on.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// The username of the pipeline creator.
+	// Wire name: 'creator_user_name'
 	CreatorUserName string
 	// Serverless budget policy ID of this pipeline.
+	// Wire name: 'effective_budget_policy_id'
 	EffectiveBudgetPolicyId string
 	// The health of a pipeline.
+	// Wire name: 'health'
 	Health GetPipelineResponseHealth
 	// The last time the pipeline settings were modified or created.
+	// Wire name: 'last_modified'
 	LastModified int64
 	// Status of the latest updates for the pipeline. Ordered with the newest
 	// update first.
+	// Wire name: 'latest_updates'
 	LatestUpdates []UpdateStateInfo
 	// A human friendly identifier for the pipeline, taken from the `spec`.
+	// Wire name: 'name'
 	Name string
 	// The ID of the pipeline.
+	// Wire name: 'pipeline_id'
 	PipelineId string
 	// Username of the user that the pipeline will run on behalf of.
+	// Wire name: 'run_as_user_name'
 	RunAsUserName string
 	// The pipeline specification. This field is not returned when called by
 	// `ListPipelines`.
+	// Wire name: 'spec'
 	Spec *PipelineSpec
 	// The pipeline state.
+	// Wire name: 'state'
 	State PipelineState
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getPipelineResponseToPb(st *GetPipelineResponse) (*getPipelineResponsePb, error) {
@@ -2433,35 +2122,17 @@ func getPipelineResponseToPb(st *GetPipelineResponse) (*getPipelineResponsePb, e
 		return nil, nil
 	}
 	pb := &getPipelineResponsePb{}
-	causePb := &st.Cause
-	if causePb != nil {
-		pb.Cause = *causePb
-	}
+	pb.Cause = st.Cause
 
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	creatorUserNamePb := &st.CreatorUserName
-	if creatorUserNamePb != nil {
-		pb.CreatorUserName = *creatorUserNamePb
-	}
+	pb.CreatorUserName = st.CreatorUserName
 
-	effectiveBudgetPolicyIdPb := &st.EffectiveBudgetPolicyId
-	if effectiveBudgetPolicyIdPb != nil {
-		pb.EffectiveBudgetPolicyId = *effectiveBudgetPolicyIdPb
-	}
+	pb.EffectiveBudgetPolicyId = st.EffectiveBudgetPolicyId
 
-	healthPb := &st.Health
-	if healthPb != nil {
-		pb.Health = *healthPb
-	}
+	pb.Health = st.Health
 
-	lastModifiedPb := &st.LastModified
-	if lastModifiedPb != nil {
-		pb.LastModified = *lastModifiedPb
-	}
+	pb.LastModified = st.LastModified
 
 	var latestUpdatesPb []updateStateInfoPb
 	for _, item := range st.LatestUpdates {
@@ -2475,20 +2146,11 @@ func getPipelineResponseToPb(st *GetPipelineResponse) (*getPipelineResponsePb, e
 	}
 	pb.LatestUpdates = latestUpdatesPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
-	runAsUserNamePb := &st.RunAsUserName
-	if runAsUserNamePb != nil {
-		pb.RunAsUserName = *runAsUserNamePb
-	}
+	pb.RunAsUserName = st.RunAsUserName
 
 	specPb, err := pipelineSpecToPb(st.Spec)
 	if err != nil {
@@ -2498,10 +2160,7 @@ func getPipelineResponseToPb(st *GetPipelineResponse) (*getPipelineResponsePb, e
 		pb.Spec = specPb
 	}
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2568,54 +2227,27 @@ func getPipelineResponseFromPb(pb *getPipelineResponsePb) (*GetPipelineResponse,
 		return nil, nil
 	}
 	st := &GetPipelineResponse{}
-	causeField := &pb.Cause
-	if causeField != nil {
-		st.Cause = *causeField
-	}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	creatorUserNameField := &pb.CreatorUserName
-	if creatorUserNameField != nil {
-		st.CreatorUserName = *creatorUserNameField
-	}
-	effectiveBudgetPolicyIdField := &pb.EffectiveBudgetPolicyId
-	if effectiveBudgetPolicyIdField != nil {
-		st.EffectiveBudgetPolicyId = *effectiveBudgetPolicyIdField
-	}
-	healthField := &pb.Health
-	if healthField != nil {
-		st.Health = *healthField
-	}
-	lastModifiedField := &pb.LastModified
-	if lastModifiedField != nil {
-		st.LastModified = *lastModifiedField
-	}
+	st.Cause = pb.Cause
+	st.ClusterId = pb.ClusterId
+	st.CreatorUserName = pb.CreatorUserName
+	st.EffectiveBudgetPolicyId = pb.EffectiveBudgetPolicyId
+	st.Health = pb.Health
+	st.LastModified = pb.LastModified
 
 	var latestUpdatesField []UpdateStateInfo
-	for _, item := range pb.LatestUpdates {
-		itemField, err := updateStateInfoFromPb(&item)
+	for _, itemPb := range pb.LatestUpdates {
+		item, err := updateStateInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			latestUpdatesField = append(latestUpdatesField, *itemField)
+		if item != nil {
+			latestUpdatesField = append(latestUpdatesField, *item)
 		}
 	}
 	st.LatestUpdates = latestUpdatesField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
-	runAsUserNameField := &pb.RunAsUserName
-	if runAsUserNameField != nil {
-		st.RunAsUserName = *runAsUserNameField
-	}
+	st.Name = pb.Name
+	st.PipelineId = pb.PipelineId
+	st.RunAsUserName = pb.RunAsUserName
 	specField, err := pipelineSpecFromPb(pb.Spec)
 	if err != nil {
 		return nil, err
@@ -2623,10 +2255,7 @@ func getPipelineResponseFromPb(pb *getPipelineResponsePb) (*GetPipelineResponse,
 	if specField != nil {
 		st.Spec = specField
 	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.State = pb.State
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2688,9 +2317,11 @@ func getPipelineResponseHealthFromPb(pb *getPipelineResponseHealthPb) (*GetPipel
 // Get a pipeline update
 type GetUpdateRequest struct {
 	// The ID of the pipeline.
-	PipelineId string
+	// Wire name: 'pipeline_id'
+	PipelineId string `tf:"-"`
 	// The ID of the update.
-	UpdateId string
+	// Wire name: 'update_id'
+	UpdateId string `tf:"-"`
 }
 
 func getUpdateRequestToPb(st *GetUpdateRequest) (*getUpdateRequestPb, error) {
@@ -2698,15 +2329,9 @@ func getUpdateRequestToPb(st *GetUpdateRequest) (*getUpdateRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getUpdateRequestPb{}
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
-	updateIdPb := &st.UpdateId
-	if updateIdPb != nil {
-		pb.UpdateId = *updateIdPb
-	}
+	pb.UpdateId = st.UpdateId
 
 	return pb, nil
 }
@@ -2748,20 +2373,15 @@ func getUpdateRequestFromPb(pb *getUpdateRequestPb) (*GetUpdateRequest, error) {
 		return nil, nil
 	}
 	st := &GetUpdateRequest{}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
-	updateIdField := &pb.UpdateId
-	if updateIdField != nil {
-		st.UpdateId = *updateIdField
-	}
+	st.PipelineId = pb.PipelineId
+	st.UpdateId = pb.UpdateId
 
 	return st, nil
 }
 
 type GetUpdateResponse struct {
 	// The current update info.
+	// Wire name: 'update'
 	Update *UpdateInfo
 }
 
@@ -2829,10 +2449,13 @@ func getUpdateResponseFromPb(pb *getUpdateResponsePb) (*GetUpdateResponse, error
 
 type IngestionConfig struct {
 	// Select a specific source report.
+	// Wire name: 'report'
 	Report *ReportSpec
 	// Select all tables from a specific source schema.
+	// Wire name: 'schema'
 	Schema *SchemaSpec
 	// Select a specific source table.
+	// Wire name: 'table'
 	Table *TableSpec
 }
 
@@ -2936,23 +2559,28 @@ type IngestionGatewayPipelineDefinition struct {
 	// [Deprecated, use connection_name instead] Immutable. The Unity Catalog
 	// connection that this gateway pipeline uses to communicate with the
 	// source.
+	// Wire name: 'connection_id'
 	ConnectionId string
 	// Immutable. The Unity Catalog connection that this gateway pipeline uses
 	// to communicate with the source.
+	// Wire name: 'connection_name'
 	ConnectionName string
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
+	// Wire name: 'gateway_storage_catalog'
 	GatewayStorageCatalog string
 	// Optional. The Unity Catalog-compatible name for the gateway storage
 	// location. This is the destination to use for the data that is extracted
 	// by the gateway. Delta Live Tables system will automatically create the
 	// storage location under the catalog and schema.
+	// Wire name: 'gateway_storage_name'
 	GatewayStorageName string
 	// Required, Immutable. The name of the schema for the gateway pipelines's
 	// storage location.
+	// Wire name: 'gateway_storage_schema'
 	GatewayStorageSchema string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func ingestionGatewayPipelineDefinitionToPb(st *IngestionGatewayPipelineDefinition) (*ingestionGatewayPipelineDefinitionPb, error) {
@@ -2960,30 +2588,15 @@ func ingestionGatewayPipelineDefinitionToPb(st *IngestionGatewayPipelineDefiniti
 		return nil, nil
 	}
 	pb := &ingestionGatewayPipelineDefinitionPb{}
-	connectionIdPb := &st.ConnectionId
-	if connectionIdPb != nil {
-		pb.ConnectionId = *connectionIdPb
-	}
+	pb.ConnectionId = st.ConnectionId
 
-	connectionNamePb := &st.ConnectionName
-	if connectionNamePb != nil {
-		pb.ConnectionName = *connectionNamePb
-	}
+	pb.ConnectionName = st.ConnectionName
 
-	gatewayStorageCatalogPb := &st.GatewayStorageCatalog
-	if gatewayStorageCatalogPb != nil {
-		pb.GatewayStorageCatalog = *gatewayStorageCatalogPb
-	}
+	pb.GatewayStorageCatalog = st.GatewayStorageCatalog
 
-	gatewayStorageNamePb := &st.GatewayStorageName
-	if gatewayStorageNamePb != nil {
-		pb.GatewayStorageName = *gatewayStorageNamePb
-	}
+	pb.GatewayStorageName = st.GatewayStorageName
 
-	gatewayStorageSchemaPb := &st.GatewayStorageSchema
-	if gatewayStorageSchemaPb != nil {
-		pb.GatewayStorageSchema = *gatewayStorageSchemaPb
-	}
+	pb.GatewayStorageSchema = st.GatewayStorageSchema
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3021,10 +2634,10 @@ type ingestionGatewayPipelineDefinitionPb struct {
 	ConnectionId string `json:"connection_id,omitempty"`
 	// Immutable. The Unity Catalog connection that this gateway pipeline uses
 	// to communicate with the source.
-	ConnectionName string `json:"connection_name"`
+	ConnectionName string `json:"connection_name,omitempty"`
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
-	GatewayStorageCatalog string `json:"gateway_storage_catalog"`
+	GatewayStorageCatalog string `json:"gateway_storage_catalog,omitempty"`
 	// Optional. The Unity Catalog-compatible name for the gateway storage
 	// location. This is the destination to use for the data that is extracted
 	// by the gateway. Delta Live Tables system will automatically create the
@@ -3032,7 +2645,7 @@ type ingestionGatewayPipelineDefinitionPb struct {
 	GatewayStorageName string `json:"gateway_storage_name,omitempty"`
 	// Required, Immutable. The name of the schema for the gateway pipelines's
 	// storage location.
-	GatewayStorageSchema string `json:"gateway_storage_schema"`
+	GatewayStorageSchema string `json:"gateway_storage_schema,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3042,26 +2655,11 @@ func ingestionGatewayPipelineDefinitionFromPb(pb *ingestionGatewayPipelineDefini
 		return nil, nil
 	}
 	st := &IngestionGatewayPipelineDefinition{}
-	connectionIdField := &pb.ConnectionId
-	if connectionIdField != nil {
-		st.ConnectionId = *connectionIdField
-	}
-	connectionNameField := &pb.ConnectionName
-	if connectionNameField != nil {
-		st.ConnectionName = *connectionNameField
-	}
-	gatewayStorageCatalogField := &pb.GatewayStorageCatalog
-	if gatewayStorageCatalogField != nil {
-		st.GatewayStorageCatalog = *gatewayStorageCatalogField
-	}
-	gatewayStorageNameField := &pb.GatewayStorageName
-	if gatewayStorageNameField != nil {
-		st.GatewayStorageName = *gatewayStorageNameField
-	}
-	gatewayStorageSchemaField := &pb.GatewayStorageSchema
-	if gatewayStorageSchemaField != nil {
-		st.GatewayStorageSchema = *gatewayStorageSchemaField
-	}
+	st.ConnectionId = pb.ConnectionId
+	st.ConnectionName = pb.ConnectionName
+	st.GatewayStorageCatalog = pb.GatewayStorageCatalog
+	st.GatewayStorageName = pb.GatewayStorageName
+	st.GatewayStorageSchema = pb.GatewayStorageSchema
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3079,19 +2677,23 @@ type IngestionPipelineDefinition struct {
 	// Immutable. The Unity Catalog connection that this ingestion pipeline uses
 	// to communicate with the source. This is used with connectors for
 	// applications like Salesforce, Workday, and so on.
+	// Wire name: 'connection_name'
 	ConnectionName string
 	// Immutable. Identifier for the gateway that is used by this ingestion
 	// pipeline to communicate with the source database. This is used with
 	// connectors to databases like SQL Server.
+	// Wire name: 'ingestion_gateway_id'
 	IngestionGatewayId string
 	// Required. Settings specifying tables to replicate and the destination for
 	// the replicated tables.
+	// Wire name: 'objects'
 	Objects []IngestionConfig
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in the pipeline.
+	// Wire name: 'table_configuration'
 	TableConfiguration *TableSpecificConfig
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func ingestionPipelineDefinitionToPb(st *IngestionPipelineDefinition) (*ingestionPipelineDefinitionPb, error) {
@@ -3099,15 +2701,9 @@ func ingestionPipelineDefinitionToPb(st *IngestionPipelineDefinition) (*ingestio
 		return nil, nil
 	}
 	pb := &ingestionPipelineDefinitionPb{}
-	connectionNamePb := &st.ConnectionName
-	if connectionNamePb != nil {
-		pb.ConnectionName = *connectionNamePb
-	}
+	pb.ConnectionName = st.ConnectionName
 
-	ingestionGatewayIdPb := &st.IngestionGatewayId
-	if ingestionGatewayIdPb != nil {
-		pb.IngestionGatewayId = *ingestionGatewayIdPb
-	}
+	pb.IngestionGatewayId = st.IngestionGatewayId
 
 	var objectsPb []ingestionConfigPb
 	for _, item := range st.Objects {
@@ -3182,23 +2778,17 @@ func ingestionPipelineDefinitionFromPb(pb *ingestionPipelineDefinitionPb) (*Inge
 		return nil, nil
 	}
 	st := &IngestionPipelineDefinition{}
-	connectionNameField := &pb.ConnectionName
-	if connectionNameField != nil {
-		st.ConnectionName = *connectionNameField
-	}
-	ingestionGatewayIdField := &pb.IngestionGatewayId
-	if ingestionGatewayIdField != nil {
-		st.IngestionGatewayId = *ingestionGatewayIdField
-	}
+	st.ConnectionName = pb.ConnectionName
+	st.IngestionGatewayId = pb.IngestionGatewayId
 
 	var objectsField []IngestionConfig
-	for _, item := range pb.Objects {
-		itemField, err := ingestionConfigFromPb(&item)
+	for _, itemPb := range pb.Objects {
+		item, err := ingestionConfigFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			objectsField = append(objectsField, *itemField)
+		if item != nil {
+			objectsField = append(objectsField, *item)
 		}
 	}
 	st.Objects = objectsField
@@ -3231,24 +2821,29 @@ type ListPipelineEventsRequest struct {
 	//
 	// Composite expressions are supported, for example: level in ('ERROR',
 	// 'WARN') AND timestamp> '2021-07-22T06:37:33.083Z'
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// Max number of entries to return in a single page. The system may return
 	// fewer than max_results events in a response, even if there are more
 	// events available.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// A string indicating a sort order by timestamp for the results, for
 	// example, ["timestamp asc"]. The sort order can be ascending or
 	// descending. By default, events are returned in descending order by
 	// timestamp.
-	OrderBy []string
+	// Wire name: 'order_by'
+	OrderBy []string `tf:"-"`
 	// Page token returned by previous call. This field is mutually exclusive
 	// with all fields in this request except max_results. An error is returned
 	// if any fields other than max_results are set when this field is set.
-	PageToken string
-	// The pipeline to return events for.
-	PipelineId string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'pipeline_id'
+	PipelineId string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listPipelineEventsRequestToPb(st *ListPipelineEventsRequest) (*listPipelineEventsRequestPb, error) {
@@ -3256,34 +2851,15 @@ func listPipelineEventsRequestToPb(st *ListPipelineEventsRequest) (*listPipeline
 		return nil, nil
 	}
 	pb := &listPipelineEventsRequestPb{}
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	var orderByPb []string
-	for _, item := range st.OrderBy {
-		itemPb := &item
-		if itemPb != nil {
-			orderByPb = append(orderByPb, *itemPb)
-		}
-	}
-	pb.OrderBy = orderByPb
+	pb.OrderBy = st.OrderBy
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3336,7 +2912,7 @@ type listPipelineEventsRequestPb struct {
 	// with all fields in this request except max_results. An error is returned
 	// if any fields other than max_results are set when this field is set.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-	// The pipeline to return events for.
+
 	PipelineId string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3347,31 +2923,11 @@ func listPipelineEventsRequestFromPb(pb *listPipelineEventsRequestPb) (*ListPipe
 		return nil, nil
 	}
 	st := &ListPipelineEventsRequest{}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-
-	var orderByField []string
-	for _, item := range pb.OrderBy {
-		itemField := &item
-		if itemField != nil {
-			orderByField = append(orderByField, *itemField)
-		}
-	}
-	st.OrderBy = orderByField
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
+	st.Filter = pb.Filter
+	st.MaxResults = pb.MaxResults
+	st.OrderBy = pb.OrderBy
+	st.PageToken = pb.PageToken
+	st.PipelineId = pb.PipelineId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3387,13 +2943,16 @@ func (st listPipelineEventsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListPipelineEventsResponse struct {
 	// The list of events matching the request criteria.
+	// Wire name: 'events'
 	Events []PipelineEvent
 	// If present, a token to fetch the next page of events.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// If present, a token to fetch the previous page of events.
+	// Wire name: 'prev_page_token'
 	PrevPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listPipelineEventsResponseToPb(st *ListPipelineEventsResponse) (*listPipelineEventsResponsePb, error) {
@@ -3414,15 +2973,9 @@ func listPipelineEventsResponseToPb(st *ListPipelineEventsResponse) (*listPipeli
 	}
 	pb.Events = eventsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
-	prevPageTokenPb := &st.PrevPageToken
-	if prevPageTokenPb != nil {
-		pb.PrevPageToken = *prevPageTokenPb
-	}
+	pb.PrevPageToken = st.PrevPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3471,24 +3024,18 @@ func listPipelineEventsResponseFromPb(pb *listPipelineEventsResponsePb) (*ListPi
 	st := &ListPipelineEventsResponse{}
 
 	var eventsField []PipelineEvent
-	for _, item := range pb.Events {
-		itemField, err := pipelineEventFromPb(&item)
+	for _, itemPb := range pb.Events {
+		item, err := pipelineEventFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			eventsField = append(eventsField, *itemField)
+		if item != nil {
+			eventsField = append(eventsField, *item)
 		}
 	}
 	st.Events = eventsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
-	prevPageTokenField := &pb.PrevPageToken
-	if prevPageTokenField != nil {
-		st.PrevPageToken = *prevPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
+	st.PrevPageToken = pb.PrevPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3513,20 +3060,24 @@ type ListPipelinesRequest struct {
 	// '%shopping%'`
 	//
 	// Composite filters are not supported. This field is optional.
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// The maximum number of entries to return in a single page. The system may
 	// return fewer than max_results events in a response, even if there are
 	// more events available. This field is optional. The default value is 25.
 	// The maximum value is 100. An error is returned if the value of
 	// max_results is greater than 100.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// A list of strings specifying the order of results. Supported order_by
 	// fields are id and name. The default is id asc. This field is optional.
-	OrderBy []string
+	// Wire name: 'order_by'
+	OrderBy []string `tf:"-"`
 	// Page token returned by previous call
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listPipelinesRequestToPb(st *ListPipelinesRequest) (*listPipelinesRequestPb, error) {
@@ -3534,29 +3085,13 @@ func listPipelinesRequestToPb(st *ListPipelinesRequest) (*listPipelinesRequestPb
 		return nil, nil
 	}
 	pb := &listPipelinesRequestPb{}
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	var orderByPb []string
-	for _, item := range st.OrderBy {
-		itemPb := &item
-		if itemPb != nil {
-			orderByPb = append(orderByPb, *itemPb)
-		}
-	}
-	pb.OrderBy = orderByPb
+	pb.OrderBy = st.OrderBy
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3618,27 +3153,10 @@ func listPipelinesRequestFromPb(pb *listPipelinesRequestPb) (*ListPipelinesReque
 		return nil, nil
 	}
 	st := &ListPipelinesRequest{}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-
-	var orderByField []string
-	for _, item := range pb.OrderBy {
-		itemField := &item
-		if itemField != nil {
-			orderByField = append(orderByField, *itemField)
-		}
-	}
-	st.OrderBy = orderByField
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.Filter = pb.Filter
+	st.MaxResults = pb.MaxResults
+	st.OrderBy = pb.OrderBy
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3654,11 +3172,13 @@ func (st listPipelinesRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListPipelinesResponse struct {
 	// If present, a token to fetch the next page of events.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// The list of events matching the request criteria.
+	// Wire name: 'statuses'
 	Statuses []PipelineStateInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listPipelinesResponseToPb(st *ListPipelinesResponse) (*listPipelinesResponsePb, error) {
@@ -3666,10 +3186,7 @@ func listPipelinesResponseToPb(st *ListPipelinesResponse) (*listPipelinesRespons
 		return nil, nil
 	}
 	pb := &listPipelinesResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var statusesPb []pipelineStateInfoPb
 	for _, item := range st.Statuses {
@@ -3726,19 +3243,16 @@ func listPipelinesResponseFromPb(pb *listPipelinesResponsePb) (*ListPipelinesRes
 		return nil, nil
 	}
 	st := &ListPipelinesResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var statusesField []PipelineStateInfo
-	for _, item := range pb.Statuses {
-		itemField, err := pipelineStateInfoFromPb(&item)
+	for _, itemPb := range pb.Statuses {
+		item, err := pipelineStateInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			statusesField = append(statusesField, *itemField)
+		if item != nil {
+			statusesField = append(statusesField, *item)
 		}
 	}
 	st.Statuses = statusesField
@@ -3758,15 +3272,19 @@ func (st listPipelinesResponsePb) MarshalJSON() ([]byte, error) {
 // List pipeline updates
 type ListUpdatesRequest struct {
 	// Max number of entries to return in a single page.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Page token returned by previous call
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The pipeline to return updates for.
-	PipelineId string
+	// Wire name: 'pipeline_id'
+	PipelineId string `tf:"-"`
 	// If present, returns updates until and including this update_id.
-	UntilUpdateId string
+	// Wire name: 'until_update_id'
+	UntilUpdateId string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listUpdatesRequestToPb(st *ListUpdatesRequest) (*listUpdatesRequestPb, error) {
@@ -3774,25 +3292,13 @@ func listUpdatesRequestToPb(st *ListUpdatesRequest) (*listUpdatesRequestPb, erro
 		return nil, nil
 	}
 	pb := &listUpdatesRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
-	untilUpdateIdPb := &st.UntilUpdateId
-	if untilUpdateIdPb != nil {
-		pb.UntilUpdateId = *untilUpdateIdPb
-	}
+	pb.UntilUpdateId = st.UntilUpdateId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3841,22 +3347,10 @@ func listUpdatesRequestFromPb(pb *listUpdatesRequestPb) (*ListUpdatesRequest, er
 		return nil, nil
 	}
 	st := &ListUpdatesRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
-	untilUpdateIdField := &pb.UntilUpdateId
-	if untilUpdateIdField != nil {
-		st.UntilUpdateId = *untilUpdateIdField
-	}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.PipelineId = pb.PipelineId
+	st.UntilUpdateId = pb.UntilUpdateId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3873,14 +3367,17 @@ func (st listUpdatesRequestPb) MarshalJSON() ([]byte, error) {
 type ListUpdatesResponse struct {
 	// If present, then there are more results, and this a token to be used in a
 	// subsequent request to fetch the next page.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// If present, then this token can be used in a subsequent request to fetch
 	// the previous page.
+	// Wire name: 'prev_page_token'
 	PrevPageToken string
 
+	// Wire name: 'updates'
 	Updates []UpdateInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listUpdatesResponseToPb(st *ListUpdatesResponse) (*listUpdatesResponsePb, error) {
@@ -3888,15 +3385,9 @@ func listUpdatesResponseToPb(st *ListUpdatesResponse) (*listUpdatesResponsePb, e
 		return nil, nil
 	}
 	pb := &listUpdatesResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
-	prevPageTokenPb := &st.PrevPageToken
-	if prevPageTokenPb != nil {
-		pb.PrevPageToken = *prevPageTokenPb
-	}
+	pb.PrevPageToken = st.PrevPageToken
 
 	var updatesPb []updateInfoPb
 	for _, item := range st.Updates {
@@ -3957,23 +3448,17 @@ func listUpdatesResponseFromPb(pb *listUpdatesResponsePb) (*ListUpdatesResponse,
 		return nil, nil
 	}
 	st := &ListUpdatesResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
-	prevPageTokenField := &pb.PrevPageToken
-	if prevPageTokenField != nil {
-		st.PrevPageToken = *prevPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
+	st.PrevPageToken = pb.PrevPageToken
 
 	var updatesField []UpdateInfo
-	for _, item := range pb.Updates {
-		itemField, err := updateInfoFromPb(&item)
+	for _, itemPb := range pb.Updates {
+		item, err := updateInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			updatesField = append(updatesField, *itemField)
+		if item != nil {
+			updatesField = append(updatesField, *item)
 		}
 	}
 	st.Updates = updatesField
@@ -4087,10 +3572,11 @@ func maturityLevelFromPb(pb *maturityLevelPb) (*MaturityLevel, error) {
 }
 
 type NotebookLibrary struct {
-	// The absolute path of the source code.
+	// The absolute path of the notebook.
+	// Wire name: 'path'
 	Path string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func notebookLibraryToPb(st *NotebookLibrary) (*notebookLibraryPb, error) {
@@ -4098,10 +3584,7 @@ func notebookLibraryToPb(st *NotebookLibrary) (*notebookLibraryPb, error) {
 		return nil, nil
 	}
 	pb := &notebookLibraryPb{}
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4133,7 +3616,7 @@ func (st NotebookLibrary) MarshalJSON() ([]byte, error) {
 }
 
 type notebookLibraryPb struct {
-	// The absolute path of the source code.
+	// The absolute path of the notebook.
 	Path string `json:"path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4144,10 +3627,7 @@ func notebookLibraryFromPb(pb *notebookLibraryPb) (*NotebookLibrary, error) {
 		return nil, nil
 	}
 	st := &NotebookLibrary{}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.Path = pb.Path
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4169,8 +3649,10 @@ type Notifications struct {
 	// `on-update-failure`: Each time a pipeline update fails. *
 	// `on-update-fatal-failure`: A pipeline update fails with a non-retryable
 	// (fatal) error. * `on-flow-failure`: A single data flow fails.
+	// Wire name: 'alerts'
 	Alerts []string
 	// A list of email addresses notified when a configured alert is triggered.
+	// Wire name: 'email_recipients'
 	EmailRecipients []string
 }
 
@@ -4179,24 +3661,9 @@ func notificationsToPb(st *Notifications) (*notificationsPb, error) {
 		return nil, nil
 	}
 	pb := &notificationsPb{}
+	pb.Alerts = st.Alerts
 
-	var alertsPb []string
-	for _, item := range st.Alerts {
-		itemPb := &item
-		if itemPb != nil {
-			alertsPb = append(alertsPb, *itemPb)
-		}
-	}
-	pb.Alerts = alertsPb
-
-	var emailRecipientsPb []string
-	for _, item := range st.EmailRecipients {
-		itemPb := &item
-		if itemPb != nil {
-			emailRecipientsPb = append(emailRecipientsPb, *itemPb)
-		}
-	}
-	pb.EmailRecipients = emailRecipientsPb
+	pb.EmailRecipients = st.EmailRecipients
 
 	return pb, nil
 }
@@ -4244,66 +3711,67 @@ func notificationsFromPb(pb *notificationsPb) (*Notifications, error) {
 		return nil, nil
 	}
 	st := &Notifications{}
-
-	var alertsField []string
-	for _, item := range pb.Alerts {
-		itemField := &item
-		if itemField != nil {
-			alertsField = append(alertsField, *itemField)
-		}
-	}
-	st.Alerts = alertsField
-
-	var emailRecipientsField []string
-	for _, item := range pb.EmailRecipients {
-		itemField := &item
-		if itemField != nil {
-			emailRecipientsField = append(emailRecipientsField, *itemField)
-		}
-	}
-	st.EmailRecipients = emailRecipientsField
+	st.Alerts = pb.Alerts
+	st.EmailRecipients = pb.EmailRecipients
 
 	return st, nil
 }
 
 type Origin struct {
 	// The id of a batch. Unique within a flow.
-	BatchId int64
+	// Wire name: 'batch_id'
+	BatchId int
 	// The cloud provider, e.g., AWS or Azure.
+	// Wire name: 'cloud'
 	Cloud string
 	// The id of the cluster where an execution happens. Unique within a region.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// The name of a dataset. Unique within a pipeline.
+	// Wire name: 'dataset_name'
 	DatasetName string
 	// The id of the flow. Globally unique. Incremental queries will generally
 	// reuse the same id while complete queries will have a new id per update.
+	// Wire name: 'flow_id'
 	FlowId string
 	// The name of the flow. Not unique.
+	// Wire name: 'flow_name'
 	FlowName string
 	// The optional host name where the event was triggered
+	// Wire name: 'host'
 	Host string
 	// The id of a maintenance run. Globally unique.
+	// Wire name: 'maintenance_id'
 	MaintenanceId string
 	// Materialization name.
+	// Wire name: 'materialization_name'
 	MaterializationName string
 	// The org id of the user. Unique within a cloud.
-	OrgId int64
+	// Wire name: 'org_id'
+	OrgId int
 	// The id of the pipeline. Globally unique.
+	// Wire name: 'pipeline_id'
 	PipelineId string
 	// The name of the pipeline. Not unique.
+	// Wire name: 'pipeline_name'
 	PipelineName string
 	// The cloud region.
+	// Wire name: 'region'
 	Region string
 	// The id of the request that caused an update.
+	// Wire name: 'request_id'
 	RequestId string
 	// The id of a (delta) table. Globally unique.
+	// Wire name: 'table_id'
 	TableId string
 	// The Unity Catalog id of the MV or ST being updated.
+	// Wire name: 'uc_resource_id'
 	UcResourceId string
 	// The id of an execution. Globally unique.
+	// Wire name: 'update_id'
 	UpdateId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func originToPb(st *Origin) (*originPb, error) {
@@ -4311,90 +3779,39 @@ func originToPb(st *Origin) (*originPb, error) {
 		return nil, nil
 	}
 	pb := &originPb{}
-	batchIdPb := &st.BatchId
-	if batchIdPb != nil {
-		pb.BatchId = *batchIdPb
-	}
+	pb.BatchId = st.BatchId
 
-	cloudPb := &st.Cloud
-	if cloudPb != nil {
-		pb.Cloud = *cloudPb
-	}
+	pb.Cloud = st.Cloud
 
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	datasetNamePb := &st.DatasetName
-	if datasetNamePb != nil {
-		pb.DatasetName = *datasetNamePb
-	}
+	pb.DatasetName = st.DatasetName
 
-	flowIdPb := &st.FlowId
-	if flowIdPb != nil {
-		pb.FlowId = *flowIdPb
-	}
+	pb.FlowId = st.FlowId
 
-	flowNamePb := &st.FlowName
-	if flowNamePb != nil {
-		pb.FlowName = *flowNamePb
-	}
+	pb.FlowName = st.FlowName
 
-	hostPb := &st.Host
-	if hostPb != nil {
-		pb.Host = *hostPb
-	}
+	pb.Host = st.Host
 
-	maintenanceIdPb := &st.MaintenanceId
-	if maintenanceIdPb != nil {
-		pb.MaintenanceId = *maintenanceIdPb
-	}
+	pb.MaintenanceId = st.MaintenanceId
 
-	materializationNamePb := &st.MaterializationName
-	if materializationNamePb != nil {
-		pb.MaterializationName = *materializationNamePb
-	}
+	pb.MaterializationName = st.MaterializationName
 
-	orgIdPb := &st.OrgId
-	if orgIdPb != nil {
-		pb.OrgId = *orgIdPb
-	}
+	pb.OrgId = st.OrgId
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
-	pipelineNamePb := &st.PipelineName
-	if pipelineNamePb != nil {
-		pb.PipelineName = *pipelineNamePb
-	}
+	pb.PipelineName = st.PipelineName
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
-	requestIdPb := &st.RequestId
-	if requestIdPb != nil {
-		pb.RequestId = *requestIdPb
-	}
+	pb.RequestId = st.RequestId
 
-	tableIdPb := &st.TableId
-	if tableIdPb != nil {
-		pb.TableId = *tableIdPb
-	}
+	pb.TableId = st.TableId
 
-	ucResourceIdPb := &st.UcResourceId
-	if ucResourceIdPb != nil {
-		pb.UcResourceId = *ucResourceIdPb
-	}
+	pb.UcResourceId = st.UcResourceId
 
-	updateIdPb := &st.UpdateId
-	if updateIdPb != nil {
-		pb.UpdateId = *updateIdPb
-	}
+	pb.UpdateId = st.UpdateId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4427,7 +3844,7 @@ func (st Origin) MarshalJSON() ([]byte, error) {
 
 type originPb struct {
 	// The id of a batch. Unique within a flow.
-	BatchId int64 `json:"batch_id,omitempty"`
+	BatchId int `json:"batch_id,omitempty"`
 	// The cloud provider, e.g., AWS or Azure.
 	Cloud string `json:"cloud,omitempty"`
 	// The id of the cluster where an execution happens. Unique within a region.
@@ -4446,7 +3863,7 @@ type originPb struct {
 	// Materialization name.
 	MaterializationName string `json:"materialization_name,omitempty"`
 	// The org id of the user. Unique within a cloud.
-	OrgId int64 `json:"org_id,omitempty"`
+	OrgId int `json:"org_id,omitempty"`
 	// The id of the pipeline. Globally unique.
 	PipelineId string `json:"pipeline_id,omitempty"`
 	// The name of the pipeline. Not unique.
@@ -4470,74 +3887,23 @@ func originFromPb(pb *originPb) (*Origin, error) {
 		return nil, nil
 	}
 	st := &Origin{}
-	batchIdField := &pb.BatchId
-	if batchIdField != nil {
-		st.BatchId = *batchIdField
-	}
-	cloudField := &pb.Cloud
-	if cloudField != nil {
-		st.Cloud = *cloudField
-	}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	datasetNameField := &pb.DatasetName
-	if datasetNameField != nil {
-		st.DatasetName = *datasetNameField
-	}
-	flowIdField := &pb.FlowId
-	if flowIdField != nil {
-		st.FlowId = *flowIdField
-	}
-	flowNameField := &pb.FlowName
-	if flowNameField != nil {
-		st.FlowName = *flowNameField
-	}
-	hostField := &pb.Host
-	if hostField != nil {
-		st.Host = *hostField
-	}
-	maintenanceIdField := &pb.MaintenanceId
-	if maintenanceIdField != nil {
-		st.MaintenanceId = *maintenanceIdField
-	}
-	materializationNameField := &pb.MaterializationName
-	if materializationNameField != nil {
-		st.MaterializationName = *materializationNameField
-	}
-	orgIdField := &pb.OrgId
-	if orgIdField != nil {
-		st.OrgId = *orgIdField
-	}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
-	pipelineNameField := &pb.PipelineName
-	if pipelineNameField != nil {
-		st.PipelineName = *pipelineNameField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
-	requestIdField := &pb.RequestId
-	if requestIdField != nil {
-		st.RequestId = *requestIdField
-	}
-	tableIdField := &pb.TableId
-	if tableIdField != nil {
-		st.TableId = *tableIdField
-	}
-	ucResourceIdField := &pb.UcResourceId
-	if ucResourceIdField != nil {
-		st.UcResourceId = *ucResourceIdField
-	}
-	updateIdField := &pb.UpdateId
-	if updateIdField != nil {
-		st.UpdateId = *updateIdField
-	}
+	st.BatchId = pb.BatchId
+	st.Cloud = pb.Cloud
+	st.ClusterId = pb.ClusterId
+	st.DatasetName = pb.DatasetName
+	st.FlowId = pb.FlowId
+	st.FlowName = pb.FlowName
+	st.Host = pb.Host
+	st.MaintenanceId = pb.MaintenanceId
+	st.MaterializationName = pb.MaterializationName
+	st.OrgId = pb.OrgId
+	st.PipelineId = pb.PipelineId
+	st.PipelineName = pb.PipelineName
+	st.Region = pb.Region
+	st.RequestId = pb.RequestId
+	st.TableId = pb.TableId
+	st.UcResourceId = pb.UcResourceId
+	st.UpdateId = pb.UpdateId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4553,15 +3919,19 @@ func (st originPb) MarshalJSON() ([]byte, error) {
 
 type PipelineAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel PipelinePermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelineAccessControlRequestToPb(st *PipelineAccessControlRequest) (*pipelineAccessControlRequestPb, error) {
@@ -4569,25 +3939,13 @@ func pipelineAccessControlRequestToPb(st *PipelineAccessControlRequest) (*pipeli
 		return nil, nil
 	}
 	pb := &pipelineAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4636,22 +3994,10 @@ func pipelineAccessControlRequestFromPb(pb *pipelineAccessControlRequestPb) (*Pi
 		return nil, nil
 	}
 	st := &PipelineAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4667,17 +4013,22 @@ func (st pipelineAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type PipelineAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []PipelinePermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelineAccessControlResponseToPb(st *PipelineAccessControlResponse) (*pipelineAccessControlResponsePb, error) {
@@ -4698,25 +4049,13 @@ func pipelineAccessControlResponseToPb(st *PipelineAccessControlResponse) (*pipe
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4769,32 +4108,20 @@ func pipelineAccessControlResponseFromPb(pb *pipelineAccessControlResponsePb) (*
 	st := &PipelineAccessControlResponse{}
 
 	var allPermissionsField []PipelinePermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := pipelinePermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := pipelinePermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4811,16 +4138,20 @@ func (st pipelineAccessControlResponsePb) MarshalJSON() ([]byte, error) {
 type PipelineCluster struct {
 	// Note: This field won't be persisted. Only API users will check this
 	// field.
+	// Wire name: 'apply_policy_default_values'
 	ApplyPolicyDefaultValues bool
 	// Parameters needed in order to automatically scale clusters up and down
 	// based on load. Note: autoscaling works best with DB runtime versions 3.0
 	// or later.
+	// Wire name: 'autoscale'
 	Autoscale *PipelineClusterAutoscale
 	// Attributes related to clusters running on Amazon Web Services. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'aws_attributes'
 	AwsAttributes *compute.AwsAttributes
 	// Attributes related to clusters running on Microsoft Azure. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'azure_attributes'
 	AzureAttributes *compute.AzureAttributes
 	// The configuration for delivering spark logs to a long-term storage
 	// destination. Only dbfs destinations are supported. Only one destination
@@ -4828,6 +4159,7 @@ type PipelineCluster struct {
 	// delivered to the destination every `5 mins`. The destination of driver
 	// logs is `$destination/$clusterId/driver`, while the destination of
 	// executor logs is `$destination/$clusterId/executor`.
+	// Wire name: 'cluster_log_conf'
 	ClusterLogConf *compute.ClusterLogConf
 	// Additional tags for cluster resources. Databricks will tag all cluster
 	// resources (e.g., AWS instances and EBS volumes) with these tags in
@@ -4837,36 +4169,45 @@ type PipelineCluster struct {
 	//
 	// - Clusters can only reuse cloud resources if the resources' tags are a
 	// subset of the cluster tags
+	// Wire name: 'custom_tags'
 	CustomTags map[string]string
 	// The optional ID of the instance pool for the driver of the cluster
 	// belongs. The pool cluster uses the instance pool with id
 	// (instance_pool_id) if the driver pool is not assigned.
+	// Wire name: 'driver_instance_pool_id'
 	DriverInstancePoolId string
 	// The node type of the Spark driver. Note that this field is optional; if
 	// unset, the driver node type will be set as the same value as
 	// `node_type_id` defined above.
+	// Wire name: 'driver_node_type_id'
 	DriverNodeTypeId string
 	// Whether to enable local disk encryption for the cluster.
+	// Wire name: 'enable_local_disk_encryption'
 	EnableLocalDiskEncryption bool
 	// Attributes related to clusters running on Google Cloud Platform. If not
 	// specified at cluster creation, a set of default values will be used.
+	// Wire name: 'gcp_attributes'
 	GcpAttributes *compute.GcpAttributes
 	// The configuration for storing init scripts. Any number of destinations
 	// can be specified. The scripts are executed sequentially in the order
 	// provided. If `cluster_log_conf` is specified, init script logs are sent
 	// to `<destination>/<cluster-ID>/init_scripts`.
+	// Wire name: 'init_scripts'
 	InitScripts []compute.InitScriptInfo
 	// The optional ID of the instance pool to which the cluster belongs.
+	// Wire name: 'instance_pool_id'
 	InstancePoolId string
 	// A label for the cluster specification, either `default` to configure the
 	// default cluster, or `maintenance` to configure the maintenance cluster.
 	// This field is optional. The default value is `default`.
+	// Wire name: 'label'
 	Label string
 	// This field encodes, through a single value, the resources available to
 	// each of the Spark nodes in this cluster. For example, the Spark nodes can
 	// be provisioned and optimized for memory or compute intensive workloads. A
 	// list of available node types can be retrieved by using the
 	// :method:clusters/listNodeTypes API call.
+	// Wire name: 'node_type_id'
 	NodeTypeId string
 	// Number of worker nodes that this cluster should have. A cluster has one
 	// Spark Driver and `num_workers` Executors for a total of `num_workers` + 1
@@ -4878,12 +4219,15 @@ type PipelineCluster struct {
 	// field will immediately be updated to reflect the target size of 10
 	// workers, whereas the workers listed in `spark_info` will gradually
 	// increase from 5 to 10 as the new nodes are provisioned.
+	// Wire name: 'num_workers'
 	NumWorkers int
 	// The ID of the cluster policy used to create the cluster if applicable.
+	// Wire name: 'policy_id'
 	PolicyId string
 	// An object containing a set of optional, user-specified Spark
 	// configuration key-value pairs. See :method:clusters/create for more
 	// details.
+	// Wire name: 'spark_conf'
 	SparkConf map[string]string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs. Please note that key-value pair of the form
@@ -4898,13 +4242,15 @@ type PipelineCluster struct {
 	// Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m",
 	// "SPARK_LOCAL_DIRS": "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
 	// "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+	// Wire name: 'spark_env_vars'
 	SparkEnvVars map[string]string
 	// SSH public key contents that will be added to each Spark node in this
 	// cluster. The corresponding private keys can be used to login with the
 	// user name `ubuntu` on port `2200`. Up to 10 keys can be specified.
+	// Wire name: 'ssh_public_keys'
 	SshPublicKeys []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelineClusterToPb(st *PipelineCluster) (*pipelineClusterPb, error) {
@@ -4912,10 +4258,7 @@ func pipelineClusterToPb(st *PipelineCluster) (*pipelineClusterPb, error) {
 		return nil, nil
 	}
 	pb := &pipelineClusterPb{}
-	applyPolicyDefaultValuesPb := &st.ApplyPolicyDefaultValues
-	if applyPolicyDefaultValuesPb != nil {
-		pb.ApplyPolicyDefaultValues = *applyPolicyDefaultValuesPb
-	}
+	pb.ApplyPolicyDefaultValues = st.ApplyPolicyDefaultValues
 
 	autoscalePb, err := pipelineClusterAutoscaleToPb(st.Autoscale)
 	if err != nil {
@@ -4949,29 +4292,13 @@ func pipelineClusterToPb(st *PipelineCluster) (*pipelineClusterPb, error) {
 		pb.ClusterLogConf = clusterLogConfPb
 	}
 
-	customTagsPb := map[string]string{}
-	for k, v := range st.CustomTags {
-		itemPb := &v
-		if itemPb != nil {
-			customTagsPb[k] = *itemPb
-		}
-	}
-	pb.CustomTags = customTagsPb
+	pb.CustomTags = st.CustomTags
 
-	driverInstancePoolIdPb := &st.DriverInstancePoolId
-	if driverInstancePoolIdPb != nil {
-		pb.DriverInstancePoolId = *driverInstancePoolIdPb
-	}
+	pb.DriverInstancePoolId = st.DriverInstancePoolId
 
-	driverNodeTypeIdPb := &st.DriverNodeTypeId
-	if driverNodeTypeIdPb != nil {
-		pb.DriverNodeTypeId = *driverNodeTypeIdPb
-	}
+	pb.DriverNodeTypeId = st.DriverNodeTypeId
 
-	enableLocalDiskEncryptionPb := &st.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionPb != nil {
-		pb.EnableLocalDiskEncryption = *enableLocalDiskEncryptionPb
-	}
+	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
 
 	gcpAttributesPb, err := compute.GcpAttributesToPb(st.GcpAttributes)
 	if err != nil {
@@ -4993,57 +4320,21 @@ func pipelineClusterToPb(st *PipelineCluster) (*pipelineClusterPb, error) {
 	}
 	pb.InitScripts = initScriptsPb
 
-	instancePoolIdPb := &st.InstancePoolId
-	if instancePoolIdPb != nil {
-		pb.InstancePoolId = *instancePoolIdPb
-	}
+	pb.InstancePoolId = st.InstancePoolId
 
-	labelPb := &st.Label
-	if labelPb != nil {
-		pb.Label = *labelPb
-	}
+	pb.Label = st.Label
 
-	nodeTypeIdPb := &st.NodeTypeId
-	if nodeTypeIdPb != nil {
-		pb.NodeTypeId = *nodeTypeIdPb
-	}
+	pb.NodeTypeId = st.NodeTypeId
 
-	numWorkersPb := &st.NumWorkers
-	if numWorkersPb != nil {
-		pb.NumWorkers = *numWorkersPb
-	}
+	pb.NumWorkers = st.NumWorkers
 
-	policyIdPb := &st.PolicyId
-	if policyIdPb != nil {
-		pb.PolicyId = *policyIdPb
-	}
+	pb.PolicyId = st.PolicyId
 
-	sparkConfPb := map[string]string{}
-	for k, v := range st.SparkConf {
-		itemPb := &v
-		if itemPb != nil {
-			sparkConfPb[k] = *itemPb
-		}
-	}
-	pb.SparkConf = sparkConfPb
+	pb.SparkConf = st.SparkConf
 
-	sparkEnvVarsPb := map[string]string{}
-	for k, v := range st.SparkEnvVars {
-		itemPb := &v
-		if itemPb != nil {
-			sparkEnvVarsPb[k] = *itemPb
-		}
-	}
-	pb.SparkEnvVars = sparkEnvVarsPb
+	pb.SparkEnvVars = st.SparkEnvVars
 
-	var sshPublicKeysPb []string
-	for _, item := range st.SshPublicKeys {
-		itemPb := &item
-		if itemPb != nil {
-			sshPublicKeysPb = append(sshPublicKeysPb, *itemPb)
-		}
-	}
-	pb.SshPublicKeys = sshPublicKeysPb
+	pb.SshPublicKeys = st.SshPublicKeys
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5178,10 +4469,7 @@ func pipelineClusterFromPb(pb *pipelineClusterPb) (*PipelineCluster, error) {
 		return nil, nil
 	}
 	st := &PipelineCluster{}
-	applyPolicyDefaultValuesField := &pb.ApplyPolicyDefaultValues
-	if applyPolicyDefaultValuesField != nil {
-		st.ApplyPolicyDefaultValues = *applyPolicyDefaultValuesField
-	}
+	st.ApplyPolicyDefaultValues = pb.ApplyPolicyDefaultValues
 	autoscaleField, err := pipelineClusterAutoscaleFromPb(pb.Autoscale)
 	if err != nil {
 		return nil, err
@@ -5210,27 +4498,10 @@ func pipelineClusterFromPb(pb *pipelineClusterPb) (*PipelineCluster, error) {
 	if clusterLogConfField != nil {
 		st.ClusterLogConf = clusterLogConfField
 	}
-
-	customTagsField := map[string]string{}
-	for k, v := range pb.CustomTags {
-		itemField := &v
-		if itemField != nil {
-			customTagsField[k] = *itemField
-		}
-	}
-	st.CustomTags = customTagsField
-	driverInstancePoolIdField := &pb.DriverInstancePoolId
-	if driverInstancePoolIdField != nil {
-		st.DriverInstancePoolId = *driverInstancePoolIdField
-	}
-	driverNodeTypeIdField := &pb.DriverNodeTypeId
-	if driverNodeTypeIdField != nil {
-		st.DriverNodeTypeId = *driverNodeTypeIdField
-	}
-	enableLocalDiskEncryptionField := &pb.EnableLocalDiskEncryption
-	if enableLocalDiskEncryptionField != nil {
-		st.EnableLocalDiskEncryption = *enableLocalDiskEncryptionField
-	}
+	st.CustomTags = pb.CustomTags
+	st.DriverInstancePoolId = pb.DriverInstancePoolId
+	st.DriverNodeTypeId = pb.DriverNodeTypeId
+	st.EnableLocalDiskEncryption = pb.EnableLocalDiskEncryption
 	gcpAttributesField, err := compute.GcpAttributesFromPb(pb.GcpAttributes)
 	if err != nil {
 		return nil, err
@@ -5240,63 +4511,24 @@ func pipelineClusterFromPb(pb *pipelineClusterPb) (*PipelineCluster, error) {
 	}
 
 	var initScriptsField []compute.InitScriptInfo
-	for _, item := range pb.InitScripts {
-		itemField, err := compute.InitScriptInfoFromPb(&item)
+	for _, itemPb := range pb.InitScripts {
+		item, err := compute.InitScriptInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			initScriptsField = append(initScriptsField, *itemField)
+		if item != nil {
+			initScriptsField = append(initScriptsField, *item)
 		}
 	}
 	st.InitScripts = initScriptsField
-	instancePoolIdField := &pb.InstancePoolId
-	if instancePoolIdField != nil {
-		st.InstancePoolId = *instancePoolIdField
-	}
-	labelField := &pb.Label
-	if labelField != nil {
-		st.Label = *labelField
-	}
-	nodeTypeIdField := &pb.NodeTypeId
-	if nodeTypeIdField != nil {
-		st.NodeTypeId = *nodeTypeIdField
-	}
-	numWorkersField := &pb.NumWorkers
-	if numWorkersField != nil {
-		st.NumWorkers = *numWorkersField
-	}
-	policyIdField := &pb.PolicyId
-	if policyIdField != nil {
-		st.PolicyId = *policyIdField
-	}
-
-	sparkConfField := map[string]string{}
-	for k, v := range pb.SparkConf {
-		itemField := &v
-		if itemField != nil {
-			sparkConfField[k] = *itemField
-		}
-	}
-	st.SparkConf = sparkConfField
-
-	sparkEnvVarsField := map[string]string{}
-	for k, v := range pb.SparkEnvVars {
-		itemField := &v
-		if itemField != nil {
-			sparkEnvVarsField[k] = *itemField
-		}
-	}
-	st.SparkEnvVars = sparkEnvVarsField
-
-	var sshPublicKeysField []string
-	for _, item := range pb.SshPublicKeys {
-		itemField := &item
-		if itemField != nil {
-			sshPublicKeysField = append(sshPublicKeysField, *itemField)
-		}
-	}
-	st.SshPublicKeys = sshPublicKeysField
+	st.InstancePoolId = pb.InstancePoolId
+	st.Label = pb.Label
+	st.NodeTypeId = pb.NodeTypeId
+	st.NumWorkers = pb.NumWorkers
+	st.PolicyId = pb.PolicyId
+	st.SparkConf = pb.SparkConf
+	st.SparkEnvVars = pb.SparkEnvVars
+	st.SshPublicKeys = pb.SshPublicKeys
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5313,16 +4545,19 @@ func (st pipelineClusterPb) MarshalJSON() ([]byte, error) {
 type PipelineClusterAutoscale struct {
 	// The maximum number of workers to which the cluster can scale up when
 	// overloaded. `max_workers` must be strictly greater than `min_workers`.
+	// Wire name: 'max_workers'
 	MaxWorkers int
 	// The minimum number of workers the cluster can scale down to when
 	// underutilized. It is also the initial number of workers the cluster will
 	// have after creation.
+	// Wire name: 'min_workers'
 	MinWorkers int
 	// Databricks Enhanced Autoscaling optimizes cluster utilization by
 	// automatically allocating cluster resources based on workload volume, with
 	// minimal impact to the data processing latency of your pipelines. Enhanced
 	// Autoscaling is available for `updates` clusters only. The legacy
 	// autoscaling feature is used for `maintenance` clusters.
+	// Wire name: 'mode'
 	Mode PipelineClusterAutoscaleMode
 }
 
@@ -5331,20 +4566,11 @@ func pipelineClusterAutoscaleToPb(st *PipelineClusterAutoscale) (*pipelineCluste
 		return nil, nil
 	}
 	pb := &pipelineClusterAutoscalePb{}
-	maxWorkersPb := &st.MaxWorkers
-	if maxWorkersPb != nil {
-		pb.MaxWorkers = *maxWorkersPb
-	}
+	pb.MaxWorkers = st.MaxWorkers
 
-	minWorkersPb := &st.MinWorkers
-	if minWorkersPb != nil {
-		pb.MinWorkers = *minWorkersPb
-	}
+	pb.MinWorkers = st.MinWorkers
 
-	modePb := &st.Mode
-	if modePb != nil {
-		pb.Mode = *modePb
-	}
+	pb.Mode = st.Mode
 
 	return pb, nil
 }
@@ -5395,18 +4621,9 @@ func pipelineClusterAutoscaleFromPb(pb *pipelineClusterAutoscalePb) (*PipelineCl
 		return nil, nil
 	}
 	st := &PipelineClusterAutoscale{}
-	maxWorkersField := &pb.MaxWorkers
-	if maxWorkersField != nil {
-		st.MaxWorkers = *maxWorkersField
-	}
-	minWorkersField := &pb.MinWorkers
-	if minWorkersField != nil {
-		st.MinWorkers = *minWorkersField
-	}
-	modeField := &pb.Mode
-	if modeField != nil {
-		st.Mode = *modeField
-	}
+	st.MaxWorkers = pb.MaxWorkers
+	st.MinWorkers = pb.MinWorkers
+	st.Mode = pb.Mode
 
 	return st, nil
 }
@@ -5462,11 +4679,13 @@ func pipelineClusterAutoscaleModeFromPb(pb *pipelineClusterAutoscaleModePb) (*Pi
 
 type PipelineDeployment struct {
 	// The deployment method that manages the pipeline.
+	// Wire name: 'kind'
 	Kind DeploymentKind
 	// The path to the file containing metadata about the deployment.
+	// Wire name: 'metadata_file_path'
 	MetadataFilePath string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelineDeploymentToPb(st *PipelineDeployment) (*pipelineDeploymentPb, error) {
@@ -5474,15 +4693,9 @@ func pipelineDeploymentToPb(st *PipelineDeployment) (*pipelineDeploymentPb, erro
 		return nil, nil
 	}
 	pb := &pipelineDeploymentPb{}
-	kindPb := &st.Kind
-	if kindPb != nil {
-		pb.Kind = *kindPb
-	}
+	pb.Kind = st.Kind
 
-	metadataFilePathPb := &st.MetadataFilePath
-	if metadataFilePathPb != nil {
-		pb.MetadataFilePath = *metadataFilePathPb
-	}
+	pb.MetadataFilePath = st.MetadataFilePath
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5515,7 +4728,7 @@ func (st PipelineDeployment) MarshalJSON() ([]byte, error) {
 
 type pipelineDeploymentPb struct {
 	// The deployment method that manages the pipeline.
-	Kind DeploymentKind `json:"kind"`
+	Kind DeploymentKind `json:"kind,omitempty"`
 	// The path to the file containing metadata about the deployment.
 	MetadataFilePath string `json:"metadata_file_path,omitempty"`
 
@@ -5527,14 +4740,8 @@ func pipelineDeploymentFromPb(pb *pipelineDeploymentPb) (*PipelineDeployment, er
 		return nil, nil
 	}
 	st := &PipelineDeployment{}
-	kindField := &pb.Kind
-	if kindField != nil {
-		st.Kind = *kindField
-	}
-	metadataFilePathField := &pb.MetadataFilePath
-	if metadataFilePathField != nil {
-		st.MetadataFilePath = *metadataFilePathField
-	}
+	st.Kind = pb.Kind
+	st.MetadataFilePath = pb.MetadataFilePath
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5550,25 +4757,34 @@ func (st pipelineDeploymentPb) MarshalJSON() ([]byte, error) {
 
 type PipelineEvent struct {
 	// Information about an error captured by the event.
+	// Wire name: 'error'
 	Error *ErrorDetail
 	// The event type. Should always correspond to the details
+	// Wire name: 'event_type'
 	EventType string
 	// A time-based, globally unique id.
+	// Wire name: 'id'
 	Id string
 	// The severity level of the event.
+	// Wire name: 'level'
 	Level EventLevel
 	// Maturity level for event_type.
+	// Wire name: 'maturity_level'
 	MaturityLevel MaturityLevel
 	// The display message associated with the event.
+	// Wire name: 'message'
 	Message string
 	// Describes where the event originates from.
+	// Wire name: 'origin'
 	Origin *Origin
 	// A sequencing object to identify and order events.
+	// Wire name: 'sequence'
 	Sequence *Sequencing
 	// The time of the event.
+	// Wire name: 'timestamp'
 	Timestamp string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelineEventToPb(st *PipelineEvent) (*pipelineEventPb, error) {
@@ -5584,30 +4800,15 @@ func pipelineEventToPb(st *PipelineEvent) (*pipelineEventPb, error) {
 		pb.Error = errorPb
 	}
 
-	eventTypePb := &st.EventType
-	if eventTypePb != nil {
-		pb.EventType = *eventTypePb
-	}
+	pb.EventType = st.EventType
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	levelPb := &st.Level
-	if levelPb != nil {
-		pb.Level = *levelPb
-	}
+	pb.Level = st.Level
 
-	maturityLevelPb := &st.MaturityLevel
-	if maturityLevelPb != nil {
-		pb.MaturityLevel = *maturityLevelPb
-	}
+	pb.MaturityLevel = st.MaturityLevel
 
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
 	originPb, err := originToPb(st.Origin)
 	if err != nil {
@@ -5625,10 +4826,7 @@ func pipelineEventToPb(st *PipelineEvent) (*pipelineEventPb, error) {
 		pb.Sequence = sequencePb
 	}
 
-	timestampPb := &st.Timestamp
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5694,26 +4892,11 @@ func pipelineEventFromPb(pb *pipelineEventPb) (*PipelineEvent, error) {
 	if errorField != nil {
 		st.Error = errorField
 	}
-	eventTypeField := &pb.EventType
-	if eventTypeField != nil {
-		st.EventType = *eventTypeField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	levelField := &pb.Level
-	if levelField != nil {
-		st.Level = *levelField
-	}
-	maturityLevelField := &pb.MaturityLevel
-	if maturityLevelField != nil {
-		st.MaturityLevel = *maturityLevelField
-	}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
+	st.EventType = pb.EventType
+	st.Id = pb.Id
+	st.Level = pb.Level
+	st.MaturityLevel = pb.MaturityLevel
+	st.Message = pb.Message
 	originField, err := originFromPb(pb.Origin)
 	if err != nil {
 		return nil, err
@@ -5728,10 +4911,7 @@ func pipelineEventFromPb(pb *pipelineEventPb) (*PipelineEvent, error) {
 	if sequenceField != nil {
 		st.Sequence = sequenceField
 	}
-	timestampField := &pb.Timestamp
-	if timestampField != nil {
-		st.Timestamp = *timestampField
-	}
+	st.Timestamp = pb.Timestamp
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5748,18 +4928,23 @@ func (st pipelineEventPb) MarshalJSON() ([]byte, error) {
 type PipelineLibrary struct {
 	// The path to a file that defines a pipeline and is stored in the
 	// Databricks Repos.
+	// Wire name: 'file'
 	File *FileLibrary
 	// URI of the jar to be installed. Currently only DBFS is supported.
+	// Wire name: 'jar'
 	Jar string
 	// Specification of a maven library to be installed.
+	// Wire name: 'maven'
 	Maven *compute.MavenLibrary
 	// The path to a notebook that defines a pipeline and is stored in the
 	// Databricks workspace.
+	// Wire name: 'notebook'
 	Notebook *NotebookLibrary
 	// URI of the whl to be installed.
+	// Wire name: 'whl'
 	Whl string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelineLibraryToPb(st *PipelineLibrary) (*pipelineLibraryPb, error) {
@@ -5775,10 +4960,7 @@ func pipelineLibraryToPb(st *PipelineLibrary) (*pipelineLibraryPb, error) {
 		pb.File = filePb
 	}
 
-	jarPb := &st.Jar
-	if jarPb != nil {
-		pb.Jar = *jarPb
-	}
+	pb.Jar = st.Jar
 
 	mavenPb, err := compute.MavenLibraryToPb(st.Maven)
 	if err != nil {
@@ -5796,10 +4978,7 @@ func pipelineLibraryToPb(st *PipelineLibrary) (*pipelineLibraryPb, error) {
 		pb.Notebook = notebookPb
 	}
 
-	whlPb := &st.Whl
-	if whlPb != nil {
-		pb.Whl = *whlPb
-	}
+	pb.Whl = st.Whl
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5859,10 +5038,7 @@ func pipelineLibraryFromPb(pb *pipelineLibraryPb) (*PipelineLibrary, error) {
 	if fileField != nil {
 		st.File = fileField
 	}
-	jarField := &pb.Jar
-	if jarField != nil {
-		st.Jar = *jarField
-	}
+	st.Jar = pb.Jar
 	mavenField, err := compute.MavenLibraryFromPb(pb.Maven)
 	if err != nil {
 		return nil, err
@@ -5877,10 +5053,7 @@ func pipelineLibraryFromPb(pb *pipelineLibraryPb) (*PipelineLibrary, error) {
 	if notebookField != nil {
 		st.Notebook = notebookField
 	}
-	whlField := &pb.Whl
-	if whlField != nil {
-		st.Whl = *whlField
-	}
+	st.Whl = pb.Whl
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5895,13 +5068,17 @@ func (st pipelineLibraryPb) MarshalJSON() ([]byte, error) {
 }
 
 type PipelinePermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel PipelinePermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelinePermissionToPb(st *PipelinePermission) (*pipelinePermissionPb, error) {
@@ -5909,24 +5086,11 @@ func pipelinePermissionToPb(st *PipelinePermission) (*pipelinePermissionPb, erro
 		return nil, nil
 	}
 	pb := &pipelinePermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5972,23 +5136,9 @@ func pipelinePermissionFromPb(pb *pipelinePermissionPb) (*PipelinePermission, er
 		return nil, nil
 	}
 	st := &PipelinePermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6052,13 +5202,17 @@ func pipelinePermissionLevelFromPb(pb *pipelinePermissionLevelPb) (*PipelinePerm
 }
 
 type PipelinePermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []PipelineAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelinePermissionsToPb(st *PipelinePermissions) (*pipelinePermissionsPb, error) {
@@ -6079,15 +5233,9 @@ func pipelinePermissionsToPb(st *PipelinePermissions) (*pipelinePermissionsPb, e
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6135,24 +5283,18 @@ func pipelinePermissionsFromPb(pb *pipelinePermissionsPb) (*PipelinePermissions,
 	st := &PipelinePermissions{}
 
 	var accessControlListField []PipelineAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := pipelineAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := pipelineAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6167,11 +5309,14 @@ func (st pipelinePermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type PipelinePermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel PipelinePermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelinePermissionsDescriptionToPb(st *PipelinePermissionsDescription) (*pipelinePermissionsDescriptionPb, error) {
@@ -6179,15 +5324,9 @@ func pipelinePermissionsDescriptionToPb(st *PipelinePermissionsDescription) (*pi
 		return nil, nil
 	}
 	pb := &pipelinePermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6231,14 +5370,8 @@ func pipelinePermissionsDescriptionFromPb(pb *pipelinePermissionsDescriptionPb) 
 		return nil, nil
 	}
 	st := &PipelinePermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6253,9 +5386,12 @@ func (st pipelinePermissionsDescriptionPb) MarshalJSON() ([]byte, error) {
 }
 
 type PipelinePermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []PipelineAccessControlRequest
 	// The pipeline for which to get or manage permissions.
-	PipelineId string
+	// Wire name: 'pipeline_id'
+	PipelineId string `tf:"-"`
 }
 
 func pipelinePermissionsRequestToPb(st *PipelinePermissionsRequest) (*pipelinePermissionsRequestPb, error) {
@@ -6276,10 +5412,7 @@ func pipelinePermissionsRequestToPb(st *PipelinePermissionsRequest) (*pipelinePe
 	}
 	pb.AccessControlList = accessControlListPb
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
 	return pb, nil
 }
@@ -6322,83 +5455,104 @@ func pipelinePermissionsRequestFromPb(pb *pipelinePermissionsRequestPb) (*Pipeli
 	st := &PipelinePermissionsRequest{}
 
 	var accessControlListField []PipelineAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := pipelineAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := pipelineAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
+	st.PipelineId = pb.PipelineId
 
 	return st, nil
 }
 
 type PipelineSpec struct {
 	// Budget policy of this pipeline.
+	// Wire name: 'budget_policy_id'
 	BudgetPolicyId string
 	// A catalog in Unity Catalog to publish data from this pipeline to. If
 	// `target` is specified, tables in this pipeline are published to a
 	// `target` schema inside `catalog` (for example,
 	// `catalog`.`target`.`table`). If `target` is not specified, no data is
 	// published to Unity Catalog.
+	// Wire name: 'catalog'
 	Catalog string
 	// DLT Release Channel that specifies which version to use.
+	// Wire name: 'channel'
 	Channel string
 	// Cluster settings for this pipeline deployment.
+	// Wire name: 'clusters'
 	Clusters []PipelineCluster
 	// String-String configuration for this pipeline execution.
+	// Wire name: 'configuration'
 	Configuration map[string]string
 	// Whether the pipeline is continuous or triggered. This replaces `trigger`.
+	// Wire name: 'continuous'
 	Continuous bool
 	// Deployment type of this pipeline.
+	// Wire name: 'deployment'
 	Deployment *PipelineDeployment
 	// Whether the pipeline is in Development mode. Defaults to false.
+	// Wire name: 'development'
 	Development bool
 	// Pipeline product edition.
+	// Wire name: 'edition'
 	Edition string
 	// Event log configuration for this pipeline
+	// Wire name: 'event_log'
 	EventLog *EventLogSpec
 	// Filters on which Pipeline packages to include in the deployed graph.
+	// Wire name: 'filters'
 	Filters *Filters
 	// The definition of a gateway pipeline to support change data capture.
+	// Wire name: 'gateway_definition'
 	GatewayDefinition *IngestionGatewayPipelineDefinition
 	// Unique identifier for this pipeline.
+	// Wire name: 'id'
 	Id string
 	// The configuration for a managed ingestion pipeline. These settings cannot
 	// be used with the 'libraries', 'schema', 'target', or 'catalog' settings.
+	// Wire name: 'ingestion_definition'
 	IngestionDefinition *IngestionPipelineDefinition
 	// Libraries or code needed by this deployment.
+	// Wire name: 'libraries'
 	Libraries []PipelineLibrary
 	// Friendly identifier for this pipeline.
+	// Wire name: 'name'
 	Name string
 	// List of notification settings for this pipeline.
+	// Wire name: 'notifications'
 	Notifications []Notifications
 	// Whether Photon is enabled for this pipeline.
+	// Wire name: 'photon'
 	Photon bool
 	// Restart window of this pipeline.
+	// Wire name: 'restart_window'
 	RestartWindow *RestartWindow
 	// The default schema (database) where tables are read from or published to.
+	// Wire name: 'schema'
 	Schema string
 	// Whether serverless compute is enabled for this pipeline.
+	// Wire name: 'serverless'
 	Serverless bool
 	// DBFS root directory for storing checkpoints and tables.
+	// Wire name: 'storage'
 	Storage string
 	// Target schema (database) to add tables in this pipeline to. Exactly one
 	// of `schema` or `target` must be specified. To publish to Unity Catalog,
 	// also specify `catalog`. This legacy field is deprecated for pipeline
 	// creation in favor of the `schema` field.
+	// Wire name: 'target'
 	Target string
 	// Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+	// Wire name: 'trigger'
 	Trigger *PipelineTrigger
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelineSpecToPb(st *PipelineSpec) (*pipelineSpecPb, error) {
@@ -6406,20 +5560,11 @@ func pipelineSpecToPb(st *PipelineSpec) (*pipelineSpecPb, error) {
 		return nil, nil
 	}
 	pb := &pipelineSpecPb{}
-	budgetPolicyIdPb := &st.BudgetPolicyId
-	if budgetPolicyIdPb != nil {
-		pb.BudgetPolicyId = *budgetPolicyIdPb
-	}
+	pb.BudgetPolicyId = st.BudgetPolicyId
 
-	catalogPb := &st.Catalog
-	if catalogPb != nil {
-		pb.Catalog = *catalogPb
-	}
+	pb.Catalog = st.Catalog
 
-	channelPb := &st.Channel
-	if channelPb != nil {
-		pb.Channel = *channelPb
-	}
+	pb.Channel = st.Channel
 
 	var clustersPb []pipelineClusterPb
 	for _, item := range st.Clusters {
@@ -6433,19 +5578,9 @@ func pipelineSpecToPb(st *PipelineSpec) (*pipelineSpecPb, error) {
 	}
 	pb.Clusters = clustersPb
 
-	configurationPb := map[string]string{}
-	for k, v := range st.Configuration {
-		itemPb := &v
-		if itemPb != nil {
-			configurationPb[k] = *itemPb
-		}
-	}
-	pb.Configuration = configurationPb
+	pb.Configuration = st.Configuration
 
-	continuousPb := &st.Continuous
-	if continuousPb != nil {
-		pb.Continuous = *continuousPb
-	}
+	pb.Continuous = st.Continuous
 
 	deploymentPb, err := pipelineDeploymentToPb(st.Deployment)
 	if err != nil {
@@ -6455,15 +5590,9 @@ func pipelineSpecToPb(st *PipelineSpec) (*pipelineSpecPb, error) {
 		pb.Deployment = deploymentPb
 	}
 
-	developmentPb := &st.Development
-	if developmentPb != nil {
-		pb.Development = *developmentPb
-	}
+	pb.Development = st.Development
 
-	editionPb := &st.Edition
-	if editionPb != nil {
-		pb.Edition = *editionPb
-	}
+	pb.Edition = st.Edition
 
 	eventLogPb, err := eventLogSpecToPb(st.EventLog)
 	if err != nil {
@@ -6489,10 +5618,7 @@ func pipelineSpecToPb(st *PipelineSpec) (*pipelineSpecPb, error) {
 		pb.GatewayDefinition = gatewayDefinitionPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	ingestionDefinitionPb, err := ingestionPipelineDefinitionToPb(st.IngestionDefinition)
 	if err != nil {
@@ -6514,10 +5640,7 @@ func pipelineSpecToPb(st *PipelineSpec) (*pipelineSpecPb, error) {
 	}
 	pb.Libraries = librariesPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var notificationsPb []notificationsPb
 	for _, item := range st.Notifications {
@@ -6531,10 +5654,7 @@ func pipelineSpecToPb(st *PipelineSpec) (*pipelineSpecPb, error) {
 	}
 	pb.Notifications = notificationsPb
 
-	photonPb := &st.Photon
-	if photonPb != nil {
-		pb.Photon = *photonPb
-	}
+	pb.Photon = st.Photon
 
 	restartWindowPb, err := restartWindowToPb(st.RestartWindow)
 	if err != nil {
@@ -6544,25 +5664,13 @@ func pipelineSpecToPb(st *PipelineSpec) (*pipelineSpecPb, error) {
 		pb.RestartWindow = restartWindowPb
 	}
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	serverlessPb := &st.Serverless
-	if serverlessPb != nil {
-		pb.Serverless = *serverlessPb
-	}
+	pb.Serverless = st.Serverless
 
-	storagePb := &st.Storage
-	if storagePb != nil {
-		pb.Storage = *storagePb
-	}
+	pb.Storage = st.Storage
 
-	targetPb := &st.Target
-	if targetPb != nil {
-		pb.Target = *targetPb
-	}
+	pb.Target = st.Target
 
 	triggerPb, err := pipelineTriggerToPb(st.Trigger)
 	if err != nil {
@@ -6667,43 +5775,23 @@ func pipelineSpecFromPb(pb *pipelineSpecPb) (*PipelineSpec, error) {
 		return nil, nil
 	}
 	st := &PipelineSpec{}
-	budgetPolicyIdField := &pb.BudgetPolicyId
-	if budgetPolicyIdField != nil {
-		st.BudgetPolicyId = *budgetPolicyIdField
-	}
-	catalogField := &pb.Catalog
-	if catalogField != nil {
-		st.Catalog = *catalogField
-	}
-	channelField := &pb.Channel
-	if channelField != nil {
-		st.Channel = *channelField
-	}
+	st.BudgetPolicyId = pb.BudgetPolicyId
+	st.Catalog = pb.Catalog
+	st.Channel = pb.Channel
 
 	var clustersField []PipelineCluster
-	for _, item := range pb.Clusters {
-		itemField, err := pipelineClusterFromPb(&item)
+	for _, itemPb := range pb.Clusters {
+		item, err := pipelineClusterFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			clustersField = append(clustersField, *itemField)
+		if item != nil {
+			clustersField = append(clustersField, *item)
 		}
 	}
 	st.Clusters = clustersField
-
-	configurationField := map[string]string{}
-	for k, v := range pb.Configuration {
-		itemField := &v
-		if itemField != nil {
-			configurationField[k] = *itemField
-		}
-	}
-	st.Configuration = configurationField
-	continuousField := &pb.Continuous
-	if continuousField != nil {
-		st.Continuous = *continuousField
-	}
+	st.Configuration = pb.Configuration
+	st.Continuous = pb.Continuous
 	deploymentField, err := pipelineDeploymentFromPb(pb.Deployment)
 	if err != nil {
 		return nil, err
@@ -6711,14 +5799,8 @@ func pipelineSpecFromPb(pb *pipelineSpecPb) (*PipelineSpec, error) {
 	if deploymentField != nil {
 		st.Deployment = deploymentField
 	}
-	developmentField := &pb.Development
-	if developmentField != nil {
-		st.Development = *developmentField
-	}
-	editionField := &pb.Edition
-	if editionField != nil {
-		st.Edition = *editionField
-	}
+	st.Development = pb.Development
+	st.Edition = pb.Edition
 	eventLogField, err := eventLogSpecFromPb(pb.EventLog)
 	if err != nil {
 		return nil, err
@@ -6740,10 +5822,7 @@ func pipelineSpecFromPb(pb *pipelineSpecPb) (*PipelineSpec, error) {
 	if gatewayDefinitionField != nil {
 		st.GatewayDefinition = gatewayDefinitionField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	ingestionDefinitionField, err := ingestionPipelineDefinitionFromPb(pb.IngestionDefinition)
 	if err != nil {
 		return nil, err
@@ -6753,36 +5832,30 @@ func pipelineSpecFromPb(pb *pipelineSpecPb) (*PipelineSpec, error) {
 	}
 
 	var librariesField []PipelineLibrary
-	for _, item := range pb.Libraries {
-		itemField, err := pipelineLibraryFromPb(&item)
+	for _, itemPb := range pb.Libraries {
+		item, err := pipelineLibraryFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			librariesField = append(librariesField, *itemField)
+		if item != nil {
+			librariesField = append(librariesField, *item)
 		}
 	}
 	st.Libraries = librariesField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	var notificationsField []Notifications
-	for _, item := range pb.Notifications {
-		itemField, err := notificationsFromPb(&item)
+	for _, itemPb := range pb.Notifications {
+		item, err := notificationsFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			notificationsField = append(notificationsField, *itemField)
+		if item != nil {
+			notificationsField = append(notificationsField, *item)
 		}
 	}
 	st.Notifications = notificationsField
-	photonField := &pb.Photon
-	if photonField != nil {
-		st.Photon = *photonField
-	}
+	st.Photon = pb.Photon
 	restartWindowField, err := restartWindowFromPb(pb.RestartWindow)
 	if err != nil {
 		return nil, err
@@ -6790,22 +5863,10 @@ func pipelineSpecFromPb(pb *pipelineSpecPb) (*PipelineSpec, error) {
 	if restartWindowField != nil {
 		st.RestartWindow = restartWindowField
 	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-	serverlessField := &pb.Serverless
-	if serverlessField != nil {
-		st.Serverless = *serverlessField
-	}
-	storageField := &pb.Storage
-	if storageField != nil {
-		st.Storage = *storageField
-	}
-	targetField := &pb.Target
-	if targetField != nil {
-		st.Target = *targetField
-	}
+	st.Schema = pb.Schema
+	st.Serverless = pb.Serverless
+	st.Storage = pb.Storage
+	st.Target = pb.Target
 	triggerField, err := pipelineTriggerFromPb(pb.Trigger)
 	if err != nil {
 		return nil, err
@@ -6887,25 +5948,33 @@ func pipelineStateFromPb(pb *pipelineStatePb) (*PipelineState, error) {
 
 type PipelineStateInfo struct {
 	// The unique identifier of the cluster running the pipeline.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// The username of the pipeline creator.
+	// Wire name: 'creator_user_name'
 	CreatorUserName string
 	// The health of a pipeline.
+	// Wire name: 'health'
 	Health PipelineStateInfoHealth
 	// Status of the latest updates for the pipeline. Ordered with the newest
 	// update first.
+	// Wire name: 'latest_updates'
 	LatestUpdates []UpdateStateInfo
 	// The user-friendly name of the pipeline.
+	// Wire name: 'name'
 	Name string
 	// The unique identifier of the pipeline.
+	// Wire name: 'pipeline_id'
 	PipelineId string
 	// The username that the pipeline runs as. This is a read only value derived
 	// from the pipeline owner.
+	// Wire name: 'run_as_user_name'
 	RunAsUserName string
 	// The pipeline state.
+	// Wire name: 'state'
 	State PipelineState
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pipelineStateInfoToPb(st *PipelineStateInfo) (*pipelineStateInfoPb, error) {
@@ -6913,20 +5982,11 @@ func pipelineStateInfoToPb(st *PipelineStateInfo) (*pipelineStateInfoPb, error) 
 		return nil, nil
 	}
 	pb := &pipelineStateInfoPb{}
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
-	creatorUserNamePb := &st.CreatorUserName
-	if creatorUserNamePb != nil {
-		pb.CreatorUserName = *creatorUserNamePb
-	}
+	pb.CreatorUserName = st.CreatorUserName
 
-	healthPb := &st.Health
-	if healthPb != nil {
-		pb.Health = *healthPb
-	}
+	pb.Health = st.Health
 
 	var latestUpdatesPb []updateStateInfoPb
 	for _, item := range st.LatestUpdates {
@@ -6940,25 +6000,13 @@ func pipelineStateInfoToPb(st *PipelineStateInfo) (*pipelineStateInfoPb, error) 
 	}
 	pb.LatestUpdates = latestUpdatesPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
-	runAsUserNamePb := &st.RunAsUserName
-	if runAsUserNamePb != nil {
-		pb.RunAsUserName = *runAsUserNamePb
-	}
+	pb.RunAsUserName = st.RunAsUserName
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7017,46 +6065,25 @@ func pipelineStateInfoFromPb(pb *pipelineStateInfoPb) (*PipelineStateInfo, error
 		return nil, nil
 	}
 	st := &PipelineStateInfo{}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
-	creatorUserNameField := &pb.CreatorUserName
-	if creatorUserNameField != nil {
-		st.CreatorUserName = *creatorUserNameField
-	}
-	healthField := &pb.Health
-	if healthField != nil {
-		st.Health = *healthField
-	}
+	st.ClusterId = pb.ClusterId
+	st.CreatorUserName = pb.CreatorUserName
+	st.Health = pb.Health
 
 	var latestUpdatesField []UpdateStateInfo
-	for _, item := range pb.LatestUpdates {
-		itemField, err := updateStateInfoFromPb(&item)
+	for _, itemPb := range pb.LatestUpdates {
+		item, err := updateStateInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			latestUpdatesField = append(latestUpdatesField, *itemField)
+		if item != nil {
+			latestUpdatesField = append(latestUpdatesField, *item)
 		}
 	}
 	st.LatestUpdates = latestUpdatesField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
-	runAsUserNameField := &pb.RunAsUserName
-	if runAsUserNameField != nil {
-		st.RunAsUserName = *runAsUserNameField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.Name = pb.Name
+	st.PipelineId = pb.PipelineId
+	st.RunAsUserName = pb.RunAsUserName
+	st.State = pb.State
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7116,8 +6143,11 @@ func pipelineStateInfoHealthFromPb(pb *pipelineStateInfoHealthPb) (*PipelineStat
 }
 
 type PipelineTrigger struct {
+
+	// Wire name: 'cron'
 	Cron *CronTrigger
 
+	// Wire name: 'manual'
 	Manual *ManualTrigger
 }
 
@@ -7201,20 +6231,25 @@ func pipelineTriggerFromPb(pb *pipelineTriggerPb) (*PipelineTrigger, error) {
 
 type ReportSpec struct {
 	// Required. Destination catalog to store table.
+	// Wire name: 'destination_catalog'
 	DestinationCatalog string
 	// Required. Destination schema to store table.
+	// Wire name: 'destination_schema'
 	DestinationSchema string
 	// Required. Destination table name. The pipeline fails if a table with that
 	// name already exists.
+	// Wire name: 'destination_table'
 	DestinationTable string
 	// Required. Report URL in the source system.
+	// Wire name: 'source_url'
 	SourceUrl string
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
 	// IngestionPipelineDefinition object.
+	// Wire name: 'table_configuration'
 	TableConfiguration *TableSpecificConfig
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func reportSpecToPb(st *ReportSpec) (*reportSpecPb, error) {
@@ -7222,25 +6257,13 @@ func reportSpecToPb(st *ReportSpec) (*reportSpecPb, error) {
 		return nil, nil
 	}
 	pb := &reportSpecPb{}
-	destinationCatalogPb := &st.DestinationCatalog
-	if destinationCatalogPb != nil {
-		pb.DestinationCatalog = *destinationCatalogPb
-	}
+	pb.DestinationCatalog = st.DestinationCatalog
 
-	destinationSchemaPb := &st.DestinationSchema
-	if destinationSchemaPb != nil {
-		pb.DestinationSchema = *destinationSchemaPb
-	}
+	pb.DestinationSchema = st.DestinationSchema
 
-	destinationTablePb := &st.DestinationTable
-	if destinationTablePb != nil {
-		pb.DestinationTable = *destinationTablePb
-	}
+	pb.DestinationTable = st.DestinationTable
 
-	sourceUrlPb := &st.SourceUrl
-	if sourceUrlPb != nil {
-		pb.SourceUrl = *sourceUrlPb
-	}
+	pb.SourceUrl = st.SourceUrl
 
 	tableConfigurationPb, err := tableSpecificConfigToPb(st.TableConfiguration)
 	if err != nil {
@@ -7281,14 +6304,14 @@ func (st ReportSpec) MarshalJSON() ([]byte, error) {
 
 type reportSpecPb struct {
 	// Required. Destination catalog to store table.
-	DestinationCatalog string `json:"destination_catalog"`
+	DestinationCatalog string `json:"destination_catalog,omitempty"`
 	// Required. Destination schema to store table.
-	DestinationSchema string `json:"destination_schema"`
+	DestinationSchema string `json:"destination_schema,omitempty"`
 	// Required. Destination table name. The pipeline fails if a table with that
 	// name already exists.
 	DestinationTable string `json:"destination_table,omitempty"`
 	// Required. Report URL in the source system.
-	SourceUrl string `json:"source_url"`
+	SourceUrl string `json:"source_url,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
 	// IngestionPipelineDefinition object.
@@ -7302,22 +6325,10 @@ func reportSpecFromPb(pb *reportSpecPb) (*ReportSpec, error) {
 		return nil, nil
 	}
 	st := &ReportSpec{}
-	destinationCatalogField := &pb.DestinationCatalog
-	if destinationCatalogField != nil {
-		st.DestinationCatalog = *destinationCatalogField
-	}
-	destinationSchemaField := &pb.DestinationSchema
-	if destinationSchemaField != nil {
-		st.DestinationSchema = *destinationSchemaField
-	}
-	destinationTableField := &pb.DestinationTable
-	if destinationTableField != nil {
-		st.DestinationTable = *destinationTableField
-	}
-	sourceUrlField := &pb.SourceUrl
-	if sourceUrlField != nil {
-		st.SourceUrl = *sourceUrlField
-	}
+	st.DestinationCatalog = pb.DestinationCatalog
+	st.DestinationSchema = pb.DestinationSchema
+	st.DestinationTable = pb.DestinationTable
+	st.SourceUrl = pb.SourceUrl
 	tableConfigurationField, err := tableSpecificConfigFromPb(pb.TableConfiguration)
 	if err != nil {
 		return nil, err
@@ -7342,17 +6353,20 @@ type RestartWindow struct {
 	// Days of week in which the restart is allowed to happen (within a
 	// five-hour window starting at start_hour). If not specified all days of
 	// the week will be used.
+	// Wire name: 'days_of_week'
 	DaysOfWeek []DayOfWeek
 	// An integer between 0 and 23 denoting the start hour for the restart
 	// window in the 24-hour day. Continuous pipeline restart is triggered only
 	// within a five-hour window starting at this hour.
+	// Wire name: 'start_hour'
 	StartHour int
 	// Time zone id of restart window. See
 	// https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
 	// for details. If not specified, UTC will be used.
+	// Wire name: 'time_zone_id'
 	TimeZoneId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func restartWindowToPb(st *RestartWindow) (*restartWindowPb, error) {
@@ -7360,25 +6374,11 @@ func restartWindowToPb(st *RestartWindow) (*restartWindowPb, error) {
 		return nil, nil
 	}
 	pb := &restartWindowPb{}
+	pb.DaysOfWeek = st.DaysOfWeek
 
-	var daysOfWeekPb []DayOfWeek
-	for _, item := range st.DaysOfWeek {
-		itemPb := &item
-		if itemPb != nil {
-			daysOfWeekPb = append(daysOfWeekPb, *itemPb)
-		}
-	}
-	pb.DaysOfWeek = daysOfWeekPb
+	pb.StartHour = st.StartHour
 
-	startHourPb := &st.StartHour
-	if startHourPb != nil {
-		pb.StartHour = *startHourPb
-	}
-
-	timeZoneIdPb := &st.TimeZoneId
-	if timeZoneIdPb != nil {
-		pb.TimeZoneId = *timeZoneIdPb
-	}
+	pb.TimeZoneId = st.TimeZoneId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7431,23 +6431,9 @@ func restartWindowFromPb(pb *restartWindowPb) (*RestartWindow, error) {
 		return nil, nil
 	}
 	st := &RestartWindow{}
-
-	var daysOfWeekField []DayOfWeek
-	for _, item := range pb.DaysOfWeek {
-		itemField := &item
-		if itemField != nil {
-			daysOfWeekField = append(daysOfWeekField, *itemField)
-		}
-	}
-	st.DaysOfWeek = daysOfWeekField
-	startHourField := &pb.StartHour
-	if startHourField != nil {
-		st.StartHour = *startHourField
-	}
-	timeZoneIdField := &pb.TimeZoneId
-	if timeZoneIdField != nil {
-		st.TimeZoneId = *timeZoneIdField
-	}
+	st.DaysOfWeek = pb.DaysOfWeek
+	st.StartHour = pb.StartHour
+	st.TimeZoneId = pb.TimeZoneId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7470,12 +6456,14 @@ func (st restartWindowPb) MarshalJSON() ([]byte, error) {
 type RunAs struct {
 	// Application ID of an active service principal. Setting this field
 	// requires the `servicePrincipal/user` role.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// The email of an active workspace user. Users can only set this field to
 	// their own email.
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func runAsToPb(st *RunAs) (*runAsPb, error) {
@@ -7483,15 +6471,9 @@ func runAsToPb(st *RunAs) (*runAsPb, error) {
 		return nil, nil
 	}
 	pb := &runAsPb{}
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7538,14 +6520,8 @@ func runAsFromPb(pb *runAsPb) (*RunAs, error) {
 		return nil, nil
 	}
 	st := &RunAs{}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7561,22 +6537,27 @@ func (st runAsPb) MarshalJSON() ([]byte, error) {
 
 type SchemaSpec struct {
 	// Required. Destination catalog to store tables.
+	// Wire name: 'destination_catalog'
 	DestinationCatalog string
 	// Required. Destination schema to store tables in. Tables with the same
 	// name as the source tables are created in this destination schema. The
 	// pipeline fails If a table with the same name already exists.
+	// Wire name: 'destination_schema'
 	DestinationSchema string
 	// The source catalog name. Might be optional depending on the type of
 	// source.
+	// Wire name: 'source_catalog'
 	SourceCatalog string
 	// Required. Schema name in the source database.
+	// Wire name: 'source_schema'
 	SourceSchema string
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in this schema and override the
 	// table_configuration defined in the IngestionPipelineDefinition object.
+	// Wire name: 'table_configuration'
 	TableConfiguration *TableSpecificConfig
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func schemaSpecToPb(st *SchemaSpec) (*schemaSpecPb, error) {
@@ -7584,25 +6565,13 @@ func schemaSpecToPb(st *SchemaSpec) (*schemaSpecPb, error) {
 		return nil, nil
 	}
 	pb := &schemaSpecPb{}
-	destinationCatalogPb := &st.DestinationCatalog
-	if destinationCatalogPb != nil {
-		pb.DestinationCatalog = *destinationCatalogPb
-	}
+	pb.DestinationCatalog = st.DestinationCatalog
 
-	destinationSchemaPb := &st.DestinationSchema
-	if destinationSchemaPb != nil {
-		pb.DestinationSchema = *destinationSchemaPb
-	}
+	pb.DestinationSchema = st.DestinationSchema
 
-	sourceCatalogPb := &st.SourceCatalog
-	if sourceCatalogPb != nil {
-		pb.SourceCatalog = *sourceCatalogPb
-	}
+	pb.SourceCatalog = st.SourceCatalog
 
-	sourceSchemaPb := &st.SourceSchema
-	if sourceSchemaPb != nil {
-		pb.SourceSchema = *sourceSchemaPb
-	}
+	pb.SourceSchema = st.SourceSchema
 
 	tableConfigurationPb, err := tableSpecificConfigToPb(st.TableConfiguration)
 	if err != nil {
@@ -7643,16 +6612,16 @@ func (st SchemaSpec) MarshalJSON() ([]byte, error) {
 
 type schemaSpecPb struct {
 	// Required. Destination catalog to store tables.
-	DestinationCatalog string `json:"destination_catalog"`
+	DestinationCatalog string `json:"destination_catalog,omitempty"`
 	// Required. Destination schema to store tables in. Tables with the same
 	// name as the source tables are created in this destination schema. The
 	// pipeline fails If a table with the same name already exists.
-	DestinationSchema string `json:"destination_schema"`
+	DestinationSchema string `json:"destination_schema,omitempty"`
 	// The source catalog name. Might be optional depending on the type of
 	// source.
 	SourceCatalog string `json:"source_catalog,omitempty"`
 	// Required. Schema name in the source database.
-	SourceSchema string `json:"source_schema"`
+	SourceSchema string `json:"source_schema,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in this schema and override the
 	// table_configuration defined in the IngestionPipelineDefinition object.
@@ -7666,22 +6635,10 @@ func schemaSpecFromPb(pb *schemaSpecPb) (*SchemaSpec, error) {
 		return nil, nil
 	}
 	st := &SchemaSpec{}
-	destinationCatalogField := &pb.DestinationCatalog
-	if destinationCatalogField != nil {
-		st.DestinationCatalog = *destinationCatalogField
-	}
-	destinationSchemaField := &pb.DestinationSchema
-	if destinationSchemaField != nil {
-		st.DestinationSchema = *destinationSchemaField
-	}
-	sourceCatalogField := &pb.SourceCatalog
-	if sourceCatalogField != nil {
-		st.SourceCatalog = *sourceCatalogField
-	}
-	sourceSchemaField := &pb.SourceSchema
-	if sourceSchemaField != nil {
-		st.SourceSchema = *sourceSchemaField
-	}
+	st.DestinationCatalog = pb.DestinationCatalog
+	st.DestinationSchema = pb.DestinationSchema
+	st.SourceCatalog = pb.SourceCatalog
+	st.SourceSchema = pb.SourceSchema
 	tableConfigurationField, err := tableSpecificConfigFromPb(pb.TableConfiguration)
 	if err != nil {
 		return nil, err
@@ -7704,11 +6661,13 @@ func (st schemaSpecPb) MarshalJSON() ([]byte, error) {
 
 type Sequencing struct {
 	// A sequence number, unique and increasing within the control plane.
-	ControlPlaneSeqNo int64
+	// Wire name: 'control_plane_seq_no'
+	ControlPlaneSeqNo int
 	// the ID assigned by the data plane.
+	// Wire name: 'data_plane_id'
 	DataPlaneId *DataPlaneId
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func sequencingToPb(st *Sequencing) (*sequencingPb, error) {
@@ -7716,10 +6675,7 @@ func sequencingToPb(st *Sequencing) (*sequencingPb, error) {
 		return nil, nil
 	}
 	pb := &sequencingPb{}
-	controlPlaneSeqNoPb := &st.ControlPlaneSeqNo
-	if controlPlaneSeqNoPb != nil {
-		pb.ControlPlaneSeqNo = *controlPlaneSeqNoPb
-	}
+	pb.ControlPlaneSeqNo = st.ControlPlaneSeqNo
 
 	dataPlaneIdPb, err := dataPlaneIdToPb(st.DataPlaneId)
 	if err != nil {
@@ -7760,7 +6716,7 @@ func (st Sequencing) MarshalJSON() ([]byte, error) {
 
 type sequencingPb struct {
 	// A sequence number, unique and increasing within the control plane.
-	ControlPlaneSeqNo int64 `json:"control_plane_seq_no,omitempty"`
+	ControlPlaneSeqNo int `json:"control_plane_seq_no,omitempty"`
 	// the ID assigned by the data plane.
 	DataPlaneId *dataPlaneIdPb `json:"data_plane_id,omitempty"`
 
@@ -7772,10 +6728,7 @@ func sequencingFromPb(pb *sequencingPb) (*Sequencing, error) {
 		return nil, nil
 	}
 	st := &Sequencing{}
-	controlPlaneSeqNoField := &pb.ControlPlaneSeqNo
-	if controlPlaneSeqNoField != nil {
-		st.ControlPlaneSeqNo = *controlPlaneSeqNoField
-	}
+	st.ControlPlaneSeqNo = pb.ControlPlaneSeqNo
 	dataPlaneIdField, err := dataPlaneIdFromPb(pb.DataPlaneId)
 	if err != nil {
 		return nil, err
@@ -7798,13 +6751,16 @@ func (st sequencingPb) MarshalJSON() ([]byte, error) {
 
 type SerializedException struct {
 	// Runtime class of the exception
+	// Wire name: 'class_name'
 	ClassName string
 	// Exception message
+	// Wire name: 'message'
 	Message string
 	// Stack trace consisting of a list of stack frames
+	// Wire name: 'stack'
 	Stack []StackFrame
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func serializedExceptionToPb(st *SerializedException) (*serializedExceptionPb, error) {
@@ -7812,15 +6768,9 @@ func serializedExceptionToPb(st *SerializedException) (*serializedExceptionPb, e
 		return nil, nil
 	}
 	pb := &serializedExceptionPb{}
-	classNamePb := &st.ClassName
-	if classNamePb != nil {
-		pb.ClassName = *classNamePb
-	}
+	pb.ClassName = st.ClassName
 
-	messagePb := &st.Message
-	if messagePb != nil {
-		pb.Message = *messagePb
-	}
+	pb.Message = st.Message
 
 	var stackPb []stackFramePb
 	for _, item := range st.Stack {
@@ -7879,23 +6829,17 @@ func serializedExceptionFromPb(pb *serializedExceptionPb) (*SerializedException,
 		return nil, nil
 	}
 	st := &SerializedException{}
-	classNameField := &pb.ClassName
-	if classNameField != nil {
-		st.ClassName = *classNameField
-	}
-	messageField := &pb.Message
-	if messageField != nil {
-		st.Message = *messageField
-	}
+	st.ClassName = pb.ClassName
+	st.Message = pb.Message
 
 	var stackField []StackFrame
-	for _, item := range pb.Stack {
-		itemField, err := stackFrameFromPb(&item)
+	for _, itemPb := range pb.Stack {
+		item, err := stackFrameFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			stackField = append(stackField, *itemField)
+		if item != nil {
+			stackField = append(stackField, *item)
 		}
 	}
 	st.Stack = stackField
@@ -7914,15 +6858,19 @@ func (st serializedExceptionPb) MarshalJSON() ([]byte, error) {
 
 type StackFrame struct {
 	// Class from which the method call originated
+	// Wire name: 'declaring_class'
 	DeclaringClass string
 	// File where the method is defined
+	// Wire name: 'file_name'
 	FileName string
 	// Line from which the method was called
+	// Wire name: 'line_number'
 	LineNumber int
 	// Name of the method which was called
+	// Wire name: 'method_name'
 	MethodName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func stackFrameToPb(st *StackFrame) (*stackFramePb, error) {
@@ -7930,25 +6878,13 @@ func stackFrameToPb(st *StackFrame) (*stackFramePb, error) {
 		return nil, nil
 	}
 	pb := &stackFramePb{}
-	declaringClassPb := &st.DeclaringClass
-	if declaringClassPb != nil {
-		pb.DeclaringClass = *declaringClassPb
-	}
+	pb.DeclaringClass = st.DeclaringClass
 
-	fileNamePb := &st.FileName
-	if fileNamePb != nil {
-		pb.FileName = *fileNamePb
-	}
+	pb.FileName = st.FileName
 
-	lineNumberPb := &st.LineNumber
-	if lineNumberPb != nil {
-		pb.LineNumber = *lineNumberPb
-	}
+	pb.LineNumber = st.LineNumber
 
-	methodNamePb := &st.MethodName
-	if methodNamePb != nil {
-		pb.MethodName = *methodNamePb
-	}
+	pb.MethodName = st.MethodName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7997,22 +6933,10 @@ func stackFrameFromPb(pb *stackFramePb) (*StackFrame, error) {
 		return nil, nil
 	}
 	st := &StackFrame{}
-	declaringClassField := &pb.DeclaringClass
-	if declaringClassField != nil {
-		st.DeclaringClass = *declaringClassField
-	}
-	fileNameField := &pb.FileName
-	if fileNameField != nil {
-		st.FileName = *fileNameField
-	}
-	lineNumberField := &pb.LineNumber
-	if lineNumberField != nil {
-		st.LineNumber = *lineNumberField
-	}
-	methodNameField := &pb.MethodName
-	if methodNameField != nil {
-		st.MethodName = *methodNameField
-	}
+	st.DeclaringClass = pb.DeclaringClass
+	st.FileName = pb.FileName
+	st.LineNumber = pb.LineNumber
+	st.MethodName = pb.MethodName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8027,27 +6951,33 @@ func (st stackFramePb) MarshalJSON() ([]byte, error) {
 }
 
 type StartUpdate struct {
-	// What triggered this update.
+
+	// Wire name: 'cause'
 	Cause StartUpdateCause
 	// If true, this update will reset all tables before running.
+	// Wire name: 'full_refresh'
 	FullRefresh bool
 	// A list of tables to update with fullRefresh. If both refresh_selection
 	// and full_refresh_selection are empty, this is a full graph update. Full
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
+	// Wire name: 'full_refresh_selection'
 	FullRefreshSelection []string
 
-	PipelineId string
+	// Wire name: 'pipeline_id'
+	PipelineId string `tf:"-"`
 	// A list of tables to update without fullRefresh. If both refresh_selection
 	// and full_refresh_selection are empty, this is a full graph update. Full
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
+	// Wire name: 'refresh_selection'
 	RefreshSelection []string
 	// If true, this update only validates the correctness of pipeline source
 	// code but does not materialize or publish any datasets.
+	// Wire name: 'validate_only'
 	ValidateOnly bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func startUpdateToPb(st *StartUpdate) (*startUpdatePb, error) {
@@ -8055,43 +6985,17 @@ func startUpdateToPb(st *StartUpdate) (*startUpdatePb, error) {
 		return nil, nil
 	}
 	pb := &startUpdatePb{}
-	causePb := &st.Cause
-	if causePb != nil {
-		pb.Cause = *causePb
-	}
+	pb.Cause = st.Cause
 
-	fullRefreshPb := &st.FullRefresh
-	if fullRefreshPb != nil {
-		pb.FullRefresh = *fullRefreshPb
-	}
+	pb.FullRefresh = st.FullRefresh
 
-	var fullRefreshSelectionPb []string
-	for _, item := range st.FullRefreshSelection {
-		itemPb := &item
-		if itemPb != nil {
-			fullRefreshSelectionPb = append(fullRefreshSelectionPb, *itemPb)
-		}
-	}
-	pb.FullRefreshSelection = fullRefreshSelectionPb
+	pb.FullRefreshSelection = st.FullRefreshSelection
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
-	var refreshSelectionPb []string
-	for _, item := range st.RefreshSelection {
-		itemPb := &item
-		if itemPb != nil {
-			refreshSelectionPb = append(refreshSelectionPb, *itemPb)
-		}
-	}
-	pb.RefreshSelection = refreshSelectionPb
+	pb.RefreshSelection = st.RefreshSelection
 
-	validateOnlyPb := &st.ValidateOnly
-	if validateOnlyPb != nil {
-		pb.ValidateOnly = *validateOnlyPb
-	}
+	pb.ValidateOnly = st.ValidateOnly
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8123,7 +7027,6 @@ func (st StartUpdate) MarshalJSON() ([]byte, error) {
 }
 
 type startUpdatePb struct {
-	// What triggered this update.
 	Cause StartUpdateCause `json:"cause,omitempty"`
 	// If true, this update will reset all tables before running.
 	FullRefresh bool `json:"full_refresh,omitempty"`
@@ -8151,40 +7054,12 @@ func startUpdateFromPb(pb *startUpdatePb) (*StartUpdate, error) {
 		return nil, nil
 	}
 	st := &StartUpdate{}
-	causeField := &pb.Cause
-	if causeField != nil {
-		st.Cause = *causeField
-	}
-	fullRefreshField := &pb.FullRefresh
-	if fullRefreshField != nil {
-		st.FullRefresh = *fullRefreshField
-	}
-
-	var fullRefreshSelectionField []string
-	for _, item := range pb.FullRefreshSelection {
-		itemField := &item
-		if itemField != nil {
-			fullRefreshSelectionField = append(fullRefreshSelectionField, *itemField)
-		}
-	}
-	st.FullRefreshSelection = fullRefreshSelectionField
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
-
-	var refreshSelectionField []string
-	for _, item := range pb.RefreshSelection {
-		itemField := &item
-		if itemField != nil {
-			refreshSelectionField = append(refreshSelectionField, *itemField)
-		}
-	}
-	st.RefreshSelection = refreshSelectionField
-	validateOnlyField := &pb.ValidateOnly
-	if validateOnlyField != nil {
-		st.ValidateOnly = *validateOnlyField
-	}
+	st.Cause = pb.Cause
+	st.FullRefresh = pb.FullRefresh
+	st.FullRefreshSelection = pb.FullRefreshSelection
+	st.PipelineId = pb.PipelineId
+	st.RefreshSelection = pb.RefreshSelection
+	st.ValidateOnly = pb.ValidateOnly
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8198,7 +7073,6 @@ func (st startUpdatePb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
 }
 
-// What triggered this update.
 type StartUpdateCause string
 type startUpdateCausePb string
 
@@ -8252,9 +7126,11 @@ func startUpdateCauseFromPb(pb *startUpdateCausePb) (*StartUpdateCause, error) {
 }
 
 type StartUpdateResponse struct {
+
+	// Wire name: 'update_id'
 	UpdateId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func startUpdateResponseToPb(st *StartUpdateResponse) (*startUpdateResponsePb, error) {
@@ -8262,10 +7138,7 @@ func startUpdateResponseToPb(st *StartUpdateResponse) (*startUpdateResponsePb, e
 		return nil, nil
 	}
 	pb := &startUpdateResponsePb{}
-	updateIdPb := &st.UpdateId
-	if updateIdPb != nil {
-		pb.UpdateId = *updateIdPb
-	}
+	pb.UpdateId = st.UpdateId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8307,10 +7180,7 @@ func startUpdateResponseFromPb(pb *startUpdateResponsePb) (*StartUpdateResponse,
 		return nil, nil
 	}
 	st := &StartUpdateResponse{}
-	updateIdField := &pb.UpdateId
-	if updateIdField != nil {
-		st.UpdateId = *updateIdField
-	}
+	st.UpdateId = pb.UpdateId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8375,7 +7245,9 @@ func stopPipelineResponseFromPb(pb *stopPipelineResponsePb) (*StopPipelineRespon
 
 // Stop a pipeline
 type StopRequest struct {
-	PipelineId string
+
+	// Wire name: 'pipeline_id'
+	PipelineId string `tf:"-"`
 }
 
 func stopRequestToPb(st *StopRequest) (*stopRequestPb, error) {
@@ -8383,10 +7255,7 @@ func stopRequestToPb(st *StopRequest) (*stopRequestPb, error) {
 		return nil, nil
 	}
 	pb := &stopRequestPb{}
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
 	return pb, nil
 }
@@ -8425,35 +7294,39 @@ func stopRequestFromPb(pb *stopRequestPb) (*StopRequest, error) {
 		return nil, nil
 	}
 	st := &StopRequest{}
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
+	st.PipelineId = pb.PipelineId
 
 	return st, nil
 }
 
 type TableSpec struct {
 	// Required. Destination catalog to store table.
+	// Wire name: 'destination_catalog'
 	DestinationCatalog string
 	// Required. Destination schema to store table.
+	// Wire name: 'destination_schema'
 	DestinationSchema string
 	// Optional. Destination table name. The pipeline fails if a table with that
 	// name already exists. If not set, the source table name is used.
+	// Wire name: 'destination_table'
 	DestinationTable string
 	// Source catalog name. Might be optional depending on the type of source.
+	// Wire name: 'source_catalog'
 	SourceCatalog string
 	// Schema name in the source database. Might be optional depending on the
 	// type of source.
+	// Wire name: 'source_schema'
 	SourceSchema string
 	// Required. Table name in the source database.
+	// Wire name: 'source_table'
 	SourceTable string
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
 	// IngestionPipelineDefinition object and the SchemaSpec.
+	// Wire name: 'table_configuration'
 	TableConfiguration *TableSpecificConfig
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tableSpecToPb(st *TableSpec) (*tableSpecPb, error) {
@@ -8461,35 +7334,17 @@ func tableSpecToPb(st *TableSpec) (*tableSpecPb, error) {
 		return nil, nil
 	}
 	pb := &tableSpecPb{}
-	destinationCatalogPb := &st.DestinationCatalog
-	if destinationCatalogPb != nil {
-		pb.DestinationCatalog = *destinationCatalogPb
-	}
+	pb.DestinationCatalog = st.DestinationCatalog
 
-	destinationSchemaPb := &st.DestinationSchema
-	if destinationSchemaPb != nil {
-		pb.DestinationSchema = *destinationSchemaPb
-	}
+	pb.DestinationSchema = st.DestinationSchema
 
-	destinationTablePb := &st.DestinationTable
-	if destinationTablePb != nil {
-		pb.DestinationTable = *destinationTablePb
-	}
+	pb.DestinationTable = st.DestinationTable
 
-	sourceCatalogPb := &st.SourceCatalog
-	if sourceCatalogPb != nil {
-		pb.SourceCatalog = *sourceCatalogPb
-	}
+	pb.SourceCatalog = st.SourceCatalog
 
-	sourceSchemaPb := &st.SourceSchema
-	if sourceSchemaPb != nil {
-		pb.SourceSchema = *sourceSchemaPb
-	}
+	pb.SourceSchema = st.SourceSchema
 
-	sourceTablePb := &st.SourceTable
-	if sourceTablePb != nil {
-		pb.SourceTable = *sourceTablePb
-	}
+	pb.SourceTable = st.SourceTable
 
 	tableConfigurationPb, err := tableSpecificConfigToPb(st.TableConfiguration)
 	if err != nil {
@@ -8530,9 +7385,9 @@ func (st TableSpec) MarshalJSON() ([]byte, error) {
 
 type tableSpecPb struct {
 	// Required. Destination catalog to store table.
-	DestinationCatalog string `json:"destination_catalog"`
+	DestinationCatalog string `json:"destination_catalog,omitempty"`
 	// Required. Destination schema to store table.
-	DestinationSchema string `json:"destination_schema"`
+	DestinationSchema string `json:"destination_schema,omitempty"`
 	// Optional. Destination table name. The pipeline fails if a table with that
 	// name already exists. If not set, the source table name is used.
 	DestinationTable string `json:"destination_table,omitempty"`
@@ -8542,7 +7397,7 @@ type tableSpecPb struct {
 	// type of source.
 	SourceSchema string `json:"source_schema,omitempty"`
 	// Required. Table name in the source database.
-	SourceTable string `json:"source_table"`
+	SourceTable string `json:"source_table,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
 	// IngestionPipelineDefinition object and the SchemaSpec.
@@ -8556,30 +7411,12 @@ func tableSpecFromPb(pb *tableSpecPb) (*TableSpec, error) {
 		return nil, nil
 	}
 	st := &TableSpec{}
-	destinationCatalogField := &pb.DestinationCatalog
-	if destinationCatalogField != nil {
-		st.DestinationCatalog = *destinationCatalogField
-	}
-	destinationSchemaField := &pb.DestinationSchema
-	if destinationSchemaField != nil {
-		st.DestinationSchema = *destinationSchemaField
-	}
-	destinationTableField := &pb.DestinationTable
-	if destinationTableField != nil {
-		st.DestinationTable = *destinationTableField
-	}
-	sourceCatalogField := &pb.SourceCatalog
-	if sourceCatalogField != nil {
-		st.SourceCatalog = *sourceCatalogField
-	}
-	sourceSchemaField := &pb.SourceSchema
-	if sourceSchemaField != nil {
-		st.SourceSchema = *sourceSchemaField
-	}
-	sourceTableField := &pb.SourceTable
-	if sourceTableField != nil {
-		st.SourceTable = *sourceTableField
-	}
+	st.DestinationCatalog = pb.DestinationCatalog
+	st.DestinationSchema = pb.DestinationSchema
+	st.DestinationTable = pb.DestinationTable
+	st.SourceCatalog = pb.SourceCatalog
+	st.SourceSchema = pb.SourceSchema
+	st.SourceTable = pb.SourceTable
 	tableConfigurationField, err := tableSpecificConfigFromPb(pb.TableConfiguration)
 	if err != nil {
 		return nil, err
@@ -8602,18 +7439,22 @@ func (st tableSpecPb) MarshalJSON() ([]byte, error) {
 
 type TableSpecificConfig struct {
 	// The primary key of the table used to apply changes.
+	// Wire name: 'primary_keys'
 	PrimaryKeys []string
 	// If true, formula fields defined in the table are included in the
 	// ingestion. This setting is only valid for the Salesforce connector
+	// Wire name: 'salesforce_include_formula_fields'
 	SalesforceIncludeFormulaFields bool
 	// The SCD type to use to ingest the table.
+	// Wire name: 'scd_type'
 	ScdType TableSpecificConfigScdType
 	// The column names specifying the logical order of events in the source
 	// data. Delta Live Tables uses this sequencing to handle change events that
 	// arrive out of order.
+	// Wire name: 'sequence_by'
 	SequenceBy []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tableSpecificConfigToPb(st *TableSpecificConfig) (*tableSpecificConfigPb, error) {
@@ -8621,34 +7462,13 @@ func tableSpecificConfigToPb(st *TableSpecificConfig) (*tableSpecificConfigPb, e
 		return nil, nil
 	}
 	pb := &tableSpecificConfigPb{}
+	pb.PrimaryKeys = st.PrimaryKeys
 
-	var primaryKeysPb []string
-	for _, item := range st.PrimaryKeys {
-		itemPb := &item
-		if itemPb != nil {
-			primaryKeysPb = append(primaryKeysPb, *itemPb)
-		}
-	}
-	pb.PrimaryKeys = primaryKeysPb
+	pb.SalesforceIncludeFormulaFields = st.SalesforceIncludeFormulaFields
 
-	salesforceIncludeFormulaFieldsPb := &st.SalesforceIncludeFormulaFields
-	if salesforceIncludeFormulaFieldsPb != nil {
-		pb.SalesforceIncludeFormulaFields = *salesforceIncludeFormulaFieldsPb
-	}
+	pb.ScdType = st.ScdType
 
-	scdTypePb := &st.ScdType
-	if scdTypePb != nil {
-		pb.ScdType = *scdTypePb
-	}
-
-	var sequenceByPb []string
-	for _, item := range st.SequenceBy {
-		itemPb := &item
-		if itemPb != nil {
-			sequenceByPb = append(sequenceByPb, *itemPb)
-		}
-	}
-	pb.SequenceBy = sequenceByPb
+	pb.SequenceBy = st.SequenceBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8700,32 +7520,10 @@ func tableSpecificConfigFromPb(pb *tableSpecificConfigPb) (*TableSpecificConfig,
 		return nil, nil
 	}
 	st := &TableSpecificConfig{}
-
-	var primaryKeysField []string
-	for _, item := range pb.PrimaryKeys {
-		itemField := &item
-		if itemField != nil {
-			primaryKeysField = append(primaryKeysField, *itemField)
-		}
-	}
-	st.PrimaryKeys = primaryKeysField
-	salesforceIncludeFormulaFieldsField := &pb.SalesforceIncludeFormulaFields
-	if salesforceIncludeFormulaFieldsField != nil {
-		st.SalesforceIncludeFormulaFields = *salesforceIncludeFormulaFieldsField
-	}
-	scdTypeField := &pb.ScdType
-	if scdTypeField != nil {
-		st.ScdType = *scdTypeField
-	}
-
-	var sequenceByField []string
-	for _, item := range pb.SequenceBy {
-		itemField := &item
-		if itemField != nil {
-			sequenceByField = append(sequenceByField, *itemField)
-		}
-	}
-	st.SequenceBy = sequenceByField
+	st.PrimaryKeys = pb.PrimaryKeys
+	st.SalesforceIncludeFormulaFields = pb.SalesforceIncludeFormulaFields
+	st.ScdType = pb.ScdType
+	st.SequenceBy = pb.SequenceBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8786,37 +7584,48 @@ func tableSpecificConfigScdTypeFromPb(pb *tableSpecificConfigScdTypePb) (*TableS
 
 type UpdateInfo struct {
 	// What triggered this update.
+	// Wire name: 'cause'
 	Cause UpdateInfoCause
 	// The ID of the cluster that the update is running on.
+	// Wire name: 'cluster_id'
 	ClusterId string
 	// The pipeline configuration with system defaults applied where unspecified
 	// by the user. Not returned by ListUpdates.
+	// Wire name: 'config'
 	Config *PipelineSpec
 	// The time when this update was created.
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// If true, this update will reset all tables before running.
+	// Wire name: 'full_refresh'
 	FullRefresh bool
 	// A list of tables to update with fullRefresh. If both refresh_selection
 	// and full_refresh_selection are empty, this is a full graph update. Full
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
+	// Wire name: 'full_refresh_selection'
 	FullRefreshSelection []string
 	// The ID of the pipeline.
+	// Wire name: 'pipeline_id'
 	PipelineId string
 	// A list of tables to update without fullRefresh. If both refresh_selection
 	// and full_refresh_selection are empty, this is a full graph update. Full
 	// Refresh on a table means that the states of the table will be reset
 	// before the refresh.
+	// Wire name: 'refresh_selection'
 	RefreshSelection []string
 	// The update state.
+	// Wire name: 'state'
 	State UpdateInfoState
 	// The ID of this update.
+	// Wire name: 'update_id'
 	UpdateId string
 	// If true, this update only validates the correctness of pipeline source
 	// code but does not materialize or publish any datasets.
+	// Wire name: 'validate_only'
 	ValidateOnly bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateInfoToPb(st *UpdateInfo) (*updateInfoPb, error) {
@@ -8824,15 +7633,9 @@ func updateInfoToPb(st *UpdateInfo) (*updateInfoPb, error) {
 		return nil, nil
 	}
 	pb := &updateInfoPb{}
-	causePb := &st.Cause
-	if causePb != nil {
-		pb.Cause = *causePb
-	}
+	pb.Cause = st.Cause
 
-	clusterIdPb := &st.ClusterId
-	if clusterIdPb != nil {
-		pb.ClusterId = *clusterIdPb
-	}
+	pb.ClusterId = st.ClusterId
 
 	configPb, err := pipelineSpecToPb(st.Config)
 	if err != nil {
@@ -8842,53 +7645,21 @@ func updateInfoToPb(st *UpdateInfo) (*updateInfoPb, error) {
 		pb.Config = configPb
 	}
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
-	fullRefreshPb := &st.FullRefresh
-	if fullRefreshPb != nil {
-		pb.FullRefresh = *fullRefreshPb
-	}
+	pb.FullRefresh = st.FullRefresh
 
-	var fullRefreshSelectionPb []string
-	for _, item := range st.FullRefreshSelection {
-		itemPb := &item
-		if itemPb != nil {
-			fullRefreshSelectionPb = append(fullRefreshSelectionPb, *itemPb)
-		}
-	}
-	pb.FullRefreshSelection = fullRefreshSelectionPb
+	pb.FullRefreshSelection = st.FullRefreshSelection
 
-	pipelineIdPb := &st.PipelineId
-	if pipelineIdPb != nil {
-		pb.PipelineId = *pipelineIdPb
-	}
+	pb.PipelineId = st.PipelineId
 
-	var refreshSelectionPb []string
-	for _, item := range st.RefreshSelection {
-		itemPb := &item
-		if itemPb != nil {
-			refreshSelectionPb = append(refreshSelectionPb, *itemPb)
-		}
-	}
-	pb.RefreshSelection = refreshSelectionPb
+	pb.RefreshSelection = st.RefreshSelection
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
-	updateIdPb := &st.UpdateId
-	if updateIdPb != nil {
-		pb.UpdateId = *updateIdPb
-	}
+	pb.UpdateId = st.UpdateId
 
-	validateOnlyPb := &st.ValidateOnly
-	if validateOnlyPb != nil {
-		pb.ValidateOnly = *validateOnlyPb
-	}
+	pb.ValidateOnly = st.ValidateOnly
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8959,14 +7730,8 @@ func updateInfoFromPb(pb *updateInfoPb) (*UpdateInfo, error) {
 		return nil, nil
 	}
 	st := &UpdateInfo{}
-	causeField := &pb.Cause
-	if causeField != nil {
-		st.Cause = *causeField
-	}
-	clusterIdField := &pb.ClusterId
-	if clusterIdField != nil {
-		st.ClusterId = *clusterIdField
-	}
+	st.Cause = pb.Cause
+	st.ClusterId = pb.ClusterId
 	configField, err := pipelineSpecFromPb(pb.Config)
 	if err != nil {
 		return nil, err
@@ -8974,48 +7739,14 @@ func updateInfoFromPb(pb *updateInfoPb) (*UpdateInfo, error) {
 	if configField != nil {
 		st.Config = configField
 	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
-	fullRefreshField := &pb.FullRefresh
-	if fullRefreshField != nil {
-		st.FullRefresh = *fullRefreshField
-	}
-
-	var fullRefreshSelectionField []string
-	for _, item := range pb.FullRefreshSelection {
-		itemField := &item
-		if itemField != nil {
-			fullRefreshSelectionField = append(fullRefreshSelectionField, *itemField)
-		}
-	}
-	st.FullRefreshSelection = fullRefreshSelectionField
-	pipelineIdField := &pb.PipelineId
-	if pipelineIdField != nil {
-		st.PipelineId = *pipelineIdField
-	}
-
-	var refreshSelectionField []string
-	for _, item := range pb.RefreshSelection {
-		itemField := &item
-		if itemField != nil {
-			refreshSelectionField = append(refreshSelectionField, *itemField)
-		}
-	}
-	st.RefreshSelection = refreshSelectionField
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
-	updateIdField := &pb.UpdateId
-	if updateIdField != nil {
-		st.UpdateId = *updateIdField
-	}
-	validateOnlyField := &pb.ValidateOnly
-	if validateOnlyField != nil {
-		st.ValidateOnly = *validateOnlyField
-	}
+	st.CreationTime = pb.CreationTime
+	st.FullRefresh = pb.FullRefresh
+	st.FullRefreshSelection = pb.FullRefreshSelection
+	st.PipelineId = pb.PipelineId
+	st.RefreshSelection = pb.RefreshSelection
+	st.State = pb.State
+	st.UpdateId = pb.UpdateId
+	st.ValidateOnly = pb.ValidateOnly
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9146,13 +7877,17 @@ func updateInfoStateFromPb(pb *updateInfoStatePb) (*UpdateInfoState, error) {
 }
 
 type UpdateStateInfo struct {
+
+	// Wire name: 'creation_time'
 	CreationTime string
-	// The update state.
+
+	// Wire name: 'state'
 	State UpdateStateInfoState
 
+	// Wire name: 'update_id'
 	UpdateId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateStateInfoToPb(st *UpdateStateInfo) (*updateStateInfoPb, error) {
@@ -9160,20 +7895,11 @@ func updateStateInfoToPb(st *UpdateStateInfo) (*updateStateInfoPb, error) {
 		return nil, nil
 	}
 	pb := &updateStateInfoPb{}
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
-	updateIdPb := &st.UpdateId
-	if updateIdPb != nil {
-		pb.UpdateId = *updateIdPb
-	}
+	pb.UpdateId = st.UpdateId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9206,7 +7932,7 @@ func (st UpdateStateInfo) MarshalJSON() ([]byte, error) {
 
 type updateStateInfoPb struct {
 	CreationTime string `json:"creation_time,omitempty"`
-	// The update state.
+
 	State UpdateStateInfoState `json:"state,omitempty"`
 
 	UpdateId string `json:"update_id,omitempty"`
@@ -9219,18 +7945,9 @@ func updateStateInfoFromPb(pb *updateStateInfoPb) (*UpdateStateInfo, error) {
 		return nil, nil
 	}
 	st := &UpdateStateInfo{}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
-	updateIdField := &pb.UpdateId
-	if updateIdField != nil {
-		st.UpdateId = *updateIdField
-	}
+	st.CreationTime = pb.CreationTime
+	st.State = pb.State
+	st.UpdateId = pb.UpdateId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9244,7 +7961,6 @@ func (st updateStateInfoPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
 }
 
-// The update state.
 type UpdateStateInfoState string
 type updateStateInfoStatePb string
 
@@ -9305,4 +8021,58 @@ func updateStateInfoStateFromPb(pb *updateStateInfoStatePb) (*UpdateStateInfoSta
 	}
 	st := UpdateStateInfoState(*pb)
 	return &st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

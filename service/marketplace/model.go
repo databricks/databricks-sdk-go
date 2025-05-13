@@ -11,78 +11,12 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type AddExchangeForListingRequest struct {
+
+	// Wire name: 'exchange_id'
 	ExchangeId string
 
+	// Wire name: 'listing_id'
 	ListingId string
 }
 
@@ -91,15 +25,9 @@ func addExchangeForListingRequestToPb(st *AddExchangeForListingRequest) (*addExc
 		return nil, nil
 	}
 	pb := &addExchangeForListingRequestPb{}
-	exchangeIdPb := &st.ExchangeId
-	if exchangeIdPb != nil {
-		pb.ExchangeId = *exchangeIdPb
-	}
+	pb.ExchangeId = st.ExchangeId
 
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
 	return pb, nil
 }
@@ -140,19 +68,15 @@ func addExchangeForListingRequestFromPb(pb *addExchangeForListingRequestPb) (*Ad
 		return nil, nil
 	}
 	st := &AddExchangeForListingRequest{}
-	exchangeIdField := &pb.ExchangeId
-	if exchangeIdField != nil {
-		st.ExchangeId = *exchangeIdField
-	}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
+	st.ExchangeId = pb.ExchangeId
+	st.ListingId = pb.ListingId
 
 	return st, nil
 }
 
 type AddExchangeForListingResponse struct {
+
+	// Wire name: 'exchange_for_listing'
 	ExchangeForListing *ExchangeListing
 }
 
@@ -273,7 +197,9 @@ func assetTypeFromPb(pb *assetTypePb) (*AssetType, error) {
 
 // Get one batch of listings. One may specify up to 50 IDs per request.
 type BatchGetListingsRequest struct {
-	Ids []string
+
+	// Wire name: 'ids'
+	Ids []string `tf:"-"`
 }
 
 func batchGetListingsRequestToPb(st *BatchGetListingsRequest) (*batchGetListingsRequestPb, error) {
@@ -281,15 +207,7 @@ func batchGetListingsRequestToPb(st *BatchGetListingsRequest) (*batchGetListings
 		return nil, nil
 	}
 	pb := &batchGetListingsRequestPb{}
-
-	var idsPb []string
-	for _, item := range st.Ids {
-		itemPb := &item
-		if itemPb != nil {
-			idsPb = append(idsPb, *itemPb)
-		}
-	}
-	pb.Ids = idsPb
+	pb.Ids = st.Ids
 
 	return pb, nil
 }
@@ -328,20 +246,14 @@ func batchGetListingsRequestFromPb(pb *batchGetListingsRequestPb) (*BatchGetList
 		return nil, nil
 	}
 	st := &BatchGetListingsRequest{}
-
-	var idsField []string
-	for _, item := range pb.Ids {
-		itemField := &item
-		if itemField != nil {
-			idsField = append(idsField, *itemField)
-		}
-	}
-	st.Ids = idsField
+	st.Ids = pb.Ids
 
 	return st, nil
 }
 
 type BatchGetListingsResponse struct {
+
+	// Wire name: 'listings'
 	Listings []Listing
 }
 
@@ -402,13 +314,13 @@ func batchGetListingsResponseFromPb(pb *batchGetListingsResponsePb) (*BatchGetLi
 	st := &BatchGetListingsResponse{}
 
 	var listingsField []Listing
-	for _, item := range pb.Listings {
-		itemField, err := listingFromPb(&item)
+	for _, itemPb := range pb.Listings {
+		item, err := listingFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			listingsField = append(listingsField, *itemField)
+		if item != nil {
+			listingsField = append(listingsField, *item)
 		}
 	}
 	st.Listings = listingsField
@@ -418,7 +330,9 @@ func batchGetListingsResponseFromPb(pb *batchGetListingsResponsePb) (*BatchGetLi
 
 // Get one batch of providers. One may specify up to 50 IDs per request.
 type BatchGetProvidersRequest struct {
-	Ids []string
+
+	// Wire name: 'ids'
+	Ids []string `tf:"-"`
 }
 
 func batchGetProvidersRequestToPb(st *BatchGetProvidersRequest) (*batchGetProvidersRequestPb, error) {
@@ -426,15 +340,7 @@ func batchGetProvidersRequestToPb(st *BatchGetProvidersRequest) (*batchGetProvid
 		return nil, nil
 	}
 	pb := &batchGetProvidersRequestPb{}
-
-	var idsPb []string
-	for _, item := range st.Ids {
-		itemPb := &item
-		if itemPb != nil {
-			idsPb = append(idsPb, *itemPb)
-		}
-	}
-	pb.Ids = idsPb
+	pb.Ids = st.Ids
 
 	return pb, nil
 }
@@ -473,20 +379,14 @@ func batchGetProvidersRequestFromPb(pb *batchGetProvidersRequestPb) (*BatchGetPr
 		return nil, nil
 	}
 	st := &BatchGetProvidersRequest{}
-
-	var idsField []string
-	for _, item := range pb.Ids {
-		itemField := &item
-		if itemField != nil {
-			idsField = append(idsField, *itemField)
-		}
-	}
-	st.Ids = idsField
+	st.Ids = pb.Ids
 
 	return st, nil
 }
 
 type BatchGetProvidersResponse struct {
+
+	// Wire name: 'providers'
 	Providers []ProviderInfo
 }
 
@@ -547,13 +447,13 @@ func batchGetProvidersResponseFromPb(pb *batchGetProvidersResponsePb) (*BatchGet
 	st := &BatchGetProvidersResponse{}
 
 	var providersField []ProviderInfo
-	for _, item := range pb.Providers {
-		itemField, err := providerInfoFromPb(&item)
+	for _, itemPb := range pb.Providers {
+		item, err := providerInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			providersField = append(providersField, *itemField)
+		if item != nil {
+			providersField = append(providersField, *item)
 		}
 	}
 	st.Providers = providersField
@@ -646,6 +546,8 @@ func categoryFromPb(pb *categoryPb) (*Category, error) {
 }
 
 type ConsumerTerms struct {
+
+	// Wire name: 'version'
 	Version string
 }
 
@@ -654,10 +556,7 @@ func consumerTermsToPb(st *ConsumerTerms) (*consumerTermsPb, error) {
 		return nil, nil
 	}
 	pb := &consumerTermsPb{}
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	return pb, nil
 }
@@ -696,10 +595,7 @@ func consumerTermsFromPb(pb *consumerTermsPb) (*ConsumerTerms, error) {
 		return nil, nil
 	}
 	st := &ConsumerTerms{}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Version = pb.Version
 
 	return st, nil
 }
@@ -707,15 +603,20 @@ func consumerTermsFromPb(pb *consumerTermsPb) (*ConsumerTerms, error) {
 // contact info for the consumer requesting data or performing a listing
 // installation
 type ContactInfo struct {
+
+	// Wire name: 'company'
 	Company string
 
+	// Wire name: 'email'
 	Email string
 
+	// Wire name: 'first_name'
 	FirstName string
 
+	// Wire name: 'last_name'
 	LastName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func contactInfoToPb(st *ContactInfo) (*contactInfoPb, error) {
@@ -723,25 +624,13 @@ func contactInfoToPb(st *ContactInfo) (*contactInfoPb, error) {
 		return nil, nil
 	}
 	pb := &contactInfoPb{}
-	companyPb := &st.Company
-	if companyPb != nil {
-		pb.Company = *companyPb
-	}
+	pb.Company = st.Company
 
-	emailPb := &st.Email
-	if emailPb != nil {
-		pb.Email = *emailPb
-	}
+	pb.Email = st.Email
 
-	firstNamePb := &st.FirstName
-	if firstNamePb != nil {
-		pb.FirstName = *firstNamePb
-	}
+	pb.FirstName = st.FirstName
 
-	lastNamePb := &st.LastName
-	if lastNamePb != nil {
-		pb.LastName = *lastNamePb
-	}
+	pb.LastName = st.LastName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -789,22 +678,10 @@ func contactInfoFromPb(pb *contactInfoPb) (*ContactInfo, error) {
 		return nil, nil
 	}
 	st := &ContactInfo{}
-	companyField := &pb.Company
-	if companyField != nil {
-		st.Company = *companyField
-	}
-	emailField := &pb.Email
-	if emailField != nil {
-		st.Email = *emailField
-	}
-	firstNameField := &pb.FirstName
-	if firstNameField != nil {
-		st.FirstName = *firstNameField
-	}
-	lastNameField := &pb.LastName
-	if lastNameField != nil {
-		st.LastName = *lastNameField
-	}
+	st.Company = pb.Company
+	st.Email = pb.Email
+	st.FirstName = pb.FirstName
+	st.LastName = pb.LastName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -863,6 +740,8 @@ func costFromPb(pb *costPb) (*Cost, error) {
 }
 
 type CreateExchangeFilterRequest struct {
+
+	// Wire name: 'filter'
 	Filter ExchangeFilter
 }
 
@@ -928,9 +807,11 @@ func createExchangeFilterRequestFromPb(pb *createExchangeFilterRequestPb) (*Crea
 }
 
 type CreateExchangeFilterResponse struct {
+
+	// Wire name: 'filter_id'
 	FilterId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createExchangeFilterResponseToPb(st *CreateExchangeFilterResponse) (*createExchangeFilterResponsePb, error) {
@@ -938,10 +819,7 @@ func createExchangeFilterResponseToPb(st *CreateExchangeFilterResponse) (*create
 		return nil, nil
 	}
 	pb := &createExchangeFilterResponsePb{}
-	filterIdPb := &st.FilterId
-	if filterIdPb != nil {
-		pb.FilterId = *filterIdPb
-	}
+	pb.FilterId = st.FilterId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -983,10 +861,7 @@ func createExchangeFilterResponseFromPb(pb *createExchangeFilterResponsePb) (*Cr
 		return nil, nil
 	}
 	st := &CreateExchangeFilterResponse{}
-	filterIdField := &pb.FilterId
-	if filterIdField != nil {
-		st.FilterId = *filterIdField
-	}
+	st.FilterId = pb.FilterId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1001,6 +876,8 @@ func (st createExchangeFilterResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateExchangeRequest struct {
+
+	// Wire name: 'exchange'
 	Exchange Exchange
 }
 
@@ -1066,9 +943,11 @@ func createExchangeRequestFromPb(pb *createExchangeRequestPb) (*CreateExchangeRe
 }
 
 type CreateExchangeResponse struct {
+
+	// Wire name: 'exchange_id'
 	ExchangeId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createExchangeResponseToPb(st *CreateExchangeResponse) (*createExchangeResponsePb, error) {
@@ -1076,10 +955,7 @@ func createExchangeResponseToPb(st *CreateExchangeResponse) (*createExchangeResp
 		return nil, nil
 	}
 	pb := &createExchangeResponsePb{}
-	exchangeIdPb := &st.ExchangeId
-	if exchangeIdPb != nil {
-		pb.ExchangeId = *exchangeIdPb
-	}
+	pb.ExchangeId = st.ExchangeId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1121,10 +997,7 @@ func createExchangeResponseFromPb(pb *createExchangeResponsePb) (*CreateExchange
 		return nil, nil
 	}
 	st := &CreateExchangeResponse{}
-	exchangeIdField := &pb.ExchangeId
-	if exchangeIdField != nil {
-		st.ExchangeId = *exchangeIdField
-	}
+	st.ExchangeId = pb.ExchangeId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1139,15 +1012,20 @@ func (st createExchangeResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateFileRequest struct {
+
+	// Wire name: 'display_name'
 	DisplayName string
 
+	// Wire name: 'file_parent'
 	FileParent FileParent
 
+	// Wire name: 'marketplace_file_type'
 	MarketplaceFileType MarketplaceFileType
 
+	// Wire name: 'mime_type'
 	MimeType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createFileRequestToPb(st *CreateFileRequest) (*createFileRequestPb, error) {
@@ -1155,10 +1033,7 @@ func createFileRequestToPb(st *CreateFileRequest) (*createFileRequestPb, error) 
 		return nil, nil
 	}
 	pb := &createFileRequestPb{}
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
 	fileParentPb, err := fileParentToPb(&st.FileParent)
 	if err != nil {
@@ -1168,15 +1043,9 @@ func createFileRequestToPb(st *CreateFileRequest) (*createFileRequestPb, error) 
 		pb.FileParent = *fileParentPb
 	}
 
-	marketplaceFileTypePb := &st.MarketplaceFileType
-	if marketplaceFileTypePb != nil {
-		pb.MarketplaceFileType = *marketplaceFileTypePb
-	}
+	pb.MarketplaceFileType = st.MarketplaceFileType
 
-	mimeTypePb := &st.MimeType
-	if mimeTypePb != nil {
-		pb.MimeType = *mimeTypePb
-	}
+	pb.MimeType = st.MimeType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1224,10 +1093,7 @@ func createFileRequestFromPb(pb *createFileRequestPb) (*CreateFileRequest, error
 		return nil, nil
 	}
 	st := &CreateFileRequest{}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
+	st.DisplayName = pb.DisplayName
 	fileParentField, err := fileParentFromPb(&pb.FileParent)
 	if err != nil {
 		return nil, err
@@ -1235,14 +1101,8 @@ func createFileRequestFromPb(pb *createFileRequestPb) (*CreateFileRequest, error
 	if fileParentField != nil {
 		st.FileParent = *fileParentField
 	}
-	marketplaceFileTypeField := &pb.MarketplaceFileType
-	if marketplaceFileTypeField != nil {
-		st.MarketplaceFileType = *marketplaceFileTypeField
-	}
-	mimeTypeField := &pb.MimeType
-	if mimeTypeField != nil {
-		st.MimeType = *mimeTypeField
-	}
+	st.MarketplaceFileType = pb.MarketplaceFileType
+	st.MimeType = pb.MimeType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1257,11 +1117,14 @@ func (st createFileRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateFileResponse struct {
+
+	// Wire name: 'file_info'
 	FileInfo *FileInfo
 	// Pre-signed POST URL to blob storage
+	// Wire name: 'upload_url'
 	UploadUrl string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createFileResponseToPb(st *CreateFileResponse) (*createFileResponsePb, error) {
@@ -1277,10 +1140,7 @@ func createFileResponseToPb(st *CreateFileResponse) (*createFileResponsePb, erro
 		pb.FileInfo = fileInfoPb
 	}
 
-	uploadUrlPb := &st.UploadUrl
-	if uploadUrlPb != nil {
-		pb.UploadUrl = *uploadUrlPb
-	}
+	pb.UploadUrl = st.UploadUrl
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1331,10 +1191,7 @@ func createFileResponseFromPb(pb *createFileResponsePb) (*CreateFileResponse, er
 	if fileInfoField != nil {
 		st.FileInfo = fileInfoField
 	}
-	uploadUrlField := &pb.UploadUrl
-	if uploadUrlField != nil {
-		st.UploadUrl = *uploadUrlField
-	}
+	st.UploadUrl = pb.UploadUrl
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1349,19 +1206,26 @@ func (st createFileResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateInstallationRequest struct {
+
+	// Wire name: 'accepted_consumer_terms'
 	AcceptedConsumerTerms *ConsumerTerms
 
+	// Wire name: 'catalog_name'
 	CatalogName string
 
-	ListingId string
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
+	// Wire name: 'recipient_type'
 	RecipientType DeltaSharingRecipientType
 	// for git repo installations
+	// Wire name: 'repo_detail'
 	RepoDetail *RepoInstallation
 
+	// Wire name: 'share_name'
 	ShareName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createInstallationRequestToPb(st *CreateInstallationRequest) (*createInstallationRequestPb, error) {
@@ -1377,20 +1241,11 @@ func createInstallationRequestToPb(st *CreateInstallationRequest) (*createInstal
 		pb.AcceptedConsumerTerms = acceptedConsumerTermsPb
 	}
 
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	recipientTypePb := &st.RecipientType
-	if recipientTypePb != nil {
-		pb.RecipientType = *recipientTypePb
-	}
+	pb.RecipientType = st.RecipientType
 
 	repoDetailPb, err := repoInstallationToPb(st.RepoDetail)
 	if err != nil {
@@ -1400,10 +1255,7 @@ func createInstallationRequestToPb(st *CreateInstallationRequest) (*createInstal
 		pb.RepoDetail = repoDetailPb
 	}
 
-	shareNamePb := &st.ShareName
-	if shareNamePb != nil {
-		pb.ShareName = *shareNamePb
-	}
+	pb.ShareName = st.ShareName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1462,18 +1314,9 @@ func createInstallationRequestFromPb(pb *createInstallationRequestPb) (*CreateIn
 	if acceptedConsumerTermsField != nil {
 		st.AcceptedConsumerTerms = acceptedConsumerTermsField
 	}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	recipientTypeField := &pb.RecipientType
-	if recipientTypeField != nil {
-		st.RecipientType = *recipientTypeField
-	}
+	st.CatalogName = pb.CatalogName
+	st.ListingId = pb.ListingId
+	st.RecipientType = pb.RecipientType
 	repoDetailField, err := repoInstallationFromPb(pb.RepoDetail)
 	if err != nil {
 		return nil, err
@@ -1481,10 +1324,7 @@ func createInstallationRequestFromPb(pb *createInstallationRequestPb) (*CreateIn
 	if repoDetailField != nil {
 		st.RepoDetail = repoDetailField
 	}
-	shareNameField := &pb.ShareName
-	if shareNameField != nil {
-		st.ShareName = *shareNameField
-	}
+	st.ShareName = pb.ShareName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1499,6 +1339,8 @@ func (st createInstallationRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateListingRequest struct {
+
+	// Wire name: 'listing'
 	Listing Listing
 }
 
@@ -1564,9 +1406,11 @@ func createListingRequestFromPb(pb *createListingRequestPb) (*CreateListingReque
 }
 
 type CreateListingResponse struct {
+
+	// Wire name: 'listing_id'
 	ListingId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createListingResponseToPb(st *CreateListingResponse) (*createListingResponsePb, error) {
@@ -1574,10 +1418,7 @@ func createListingResponseToPb(st *CreateListingResponse) (*createListingRespons
 		return nil, nil
 	}
 	pb := &createListingResponsePb{}
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1619,10 +1460,7 @@ func createListingResponseFromPb(pb *createListingResponsePb) (*CreateListingRes
 		return nil, nil
 	}
 	st := &CreateListingResponse{}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
+	st.ListingId = pb.ListingId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1638,25 +1476,35 @@ func (st createListingResponsePb) MarshalJSON() ([]byte, error) {
 
 // Data request messages also creates a lead (maybe)
 type CreatePersonalizationRequest struct {
+
+	// Wire name: 'accepted_consumer_terms'
 	AcceptedConsumerTerms ConsumerTerms
 
+	// Wire name: 'comment'
 	Comment string
 
+	// Wire name: 'company'
 	Company string
 
+	// Wire name: 'first_name'
 	FirstName string
 
+	// Wire name: 'intended_use'
 	IntendedUse string
 
+	// Wire name: 'is_from_lighthouse'
 	IsFromLighthouse bool
 
+	// Wire name: 'last_name'
 	LastName string
 
-	ListingId string
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
+	// Wire name: 'recipient_type'
 	RecipientType DeltaSharingRecipientType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createPersonalizationRequestToPb(st *CreatePersonalizationRequest) (*createPersonalizationRequestPb, error) {
@@ -1672,45 +1520,21 @@ func createPersonalizationRequestToPb(st *CreatePersonalizationRequest) (*create
 		pb.AcceptedConsumerTerms = *acceptedConsumerTermsPb
 	}
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	companyPb := &st.Company
-	if companyPb != nil {
-		pb.Company = *companyPb
-	}
+	pb.Company = st.Company
 
-	firstNamePb := &st.FirstName
-	if firstNamePb != nil {
-		pb.FirstName = *firstNamePb
-	}
+	pb.FirstName = st.FirstName
 
-	intendedUsePb := &st.IntendedUse
-	if intendedUsePb != nil {
-		pb.IntendedUse = *intendedUsePb
-	}
+	pb.IntendedUse = st.IntendedUse
 
-	isFromLighthousePb := &st.IsFromLighthouse
-	if isFromLighthousePb != nil {
-		pb.IsFromLighthouse = *isFromLighthousePb
-	}
+	pb.IsFromLighthouse = st.IsFromLighthouse
 
-	lastNamePb := &st.LastName
-	if lastNamePb != nil {
-		pb.LastName = *lastNamePb
-	}
+	pb.LastName = st.LastName
 
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	recipientTypePb := &st.RecipientType
-	if recipientTypePb != nil {
-		pb.RecipientType = *recipientTypePb
-	}
+	pb.RecipientType = st.RecipientType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1775,38 +1599,14 @@ func createPersonalizationRequestFromPb(pb *createPersonalizationRequestPb) (*Cr
 	if acceptedConsumerTermsField != nil {
 		st.AcceptedConsumerTerms = *acceptedConsumerTermsField
 	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	companyField := &pb.Company
-	if companyField != nil {
-		st.Company = *companyField
-	}
-	firstNameField := &pb.FirstName
-	if firstNameField != nil {
-		st.FirstName = *firstNameField
-	}
-	intendedUseField := &pb.IntendedUse
-	if intendedUseField != nil {
-		st.IntendedUse = *intendedUseField
-	}
-	isFromLighthouseField := &pb.IsFromLighthouse
-	if isFromLighthouseField != nil {
-		st.IsFromLighthouse = *isFromLighthouseField
-	}
-	lastNameField := &pb.LastName
-	if lastNameField != nil {
-		st.LastName = *lastNameField
-	}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	recipientTypeField := &pb.RecipientType
-	if recipientTypeField != nil {
-		st.RecipientType = *recipientTypeField
-	}
+	st.Comment = pb.Comment
+	st.Company = pb.Company
+	st.FirstName = pb.FirstName
+	st.IntendedUse = pb.IntendedUse
+	st.IsFromLighthouse = pb.IsFromLighthouse
+	st.LastName = pb.LastName
+	st.ListingId = pb.ListingId
+	st.RecipientType = pb.RecipientType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1821,9 +1621,11 @@ func (st createPersonalizationRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type CreatePersonalizationRequestResponse struct {
+
+	// Wire name: 'id'
 	Id string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createPersonalizationRequestResponseToPb(st *CreatePersonalizationRequestResponse) (*createPersonalizationRequestResponsePb, error) {
@@ -1831,10 +1633,7 @@ func createPersonalizationRequestResponseToPb(st *CreatePersonalizationRequestRe
 		return nil, nil
 	}
 	pb := &createPersonalizationRequestResponsePb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1876,10 +1675,7 @@ func createPersonalizationRequestResponseFromPb(pb *createPersonalizationRequest
 		return nil, nil
 	}
 	st := &CreatePersonalizationRequestResponse{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1894,6 +1690,8 @@ func (st createPersonalizationRequestResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateProviderRequest struct {
+
+	// Wire name: 'provider'
 	Provider ProviderInfo
 }
 
@@ -1959,9 +1757,11 @@ func createProviderRequestFromPb(pb *createProviderRequestPb) (*CreateProviderRe
 }
 
 type CreateProviderResponse struct {
+
+	// Wire name: 'id'
 	Id string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createProviderResponseToPb(st *CreateProviderResponse) (*createProviderResponsePb, error) {
@@ -1969,10 +1769,7 @@ func createProviderResponseToPb(st *CreateProviderResponse) (*createProviderResp
 		return nil, nil
 	}
 	pb := &createProviderResponsePb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2014,10 +1811,7 @@ func createProviderResponseFromPb(pb *createProviderResponsePb) (*CreateProvider
 		return nil, nil
 	}
 	st := &CreateProviderResponse{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2090,8 +1884,11 @@ func dataRefreshFromPb(pb *dataRefreshPb) (*DataRefresh, error) {
 }
 
 type DataRefreshInfo struct {
+
+	// Wire name: 'interval'
 	Interval int64
 
+	// Wire name: 'unit'
 	Unit DataRefresh
 }
 
@@ -2100,15 +1897,9 @@ func dataRefreshInfoToPb(st *DataRefreshInfo) (*dataRefreshInfoPb, error) {
 		return nil, nil
 	}
 	pb := &dataRefreshInfoPb{}
-	intervalPb := &st.Interval
-	if intervalPb != nil {
-		pb.Interval = *intervalPb
-	}
+	pb.Interval = st.Interval
 
-	unitPb := &st.Unit
-	if unitPb != nil {
-		pb.Unit = *unitPb
-	}
+	pb.Unit = st.Unit
 
 	return pb, nil
 }
@@ -2149,21 +1940,17 @@ func dataRefreshInfoFromPb(pb *dataRefreshInfoPb) (*DataRefreshInfo, error) {
 		return nil, nil
 	}
 	st := &DataRefreshInfo{}
-	intervalField := &pb.Interval
-	if intervalField != nil {
-		st.Interval = *intervalField
-	}
-	unitField := &pb.Unit
-	if unitField != nil {
-		st.Unit = *unitField
-	}
+	st.Interval = pb.Interval
+	st.Unit = pb.Unit
 
 	return st, nil
 }
 
 // Delete an exchange filter
 type DeleteExchangeFilterRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteExchangeFilterRequestToPb(st *DeleteExchangeFilterRequest) (*deleteExchangeFilterRequestPb, error) {
@@ -2171,10 +1958,7 @@ func deleteExchangeFilterRequestToPb(st *DeleteExchangeFilterRequest) (*deleteEx
 		return nil, nil
 	}
 	pb := &deleteExchangeFilterRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -2213,10 +1997,7 @@ func deleteExchangeFilterRequestFromPb(pb *deleteExchangeFilterRequestPb) (*Dele
 		return nil, nil
 	}
 	st := &DeleteExchangeFilterRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -2272,7 +2053,9 @@ func deleteExchangeFilterResponseFromPb(pb *deleteExchangeFilterResponsePb) (*De
 
 // Delete an exchange
 type DeleteExchangeRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteExchangeRequestToPb(st *DeleteExchangeRequest) (*deleteExchangeRequestPb, error) {
@@ -2280,10 +2063,7 @@ func deleteExchangeRequestToPb(st *DeleteExchangeRequest) (*deleteExchangeReques
 		return nil, nil
 	}
 	pb := &deleteExchangeRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -2322,10 +2102,7 @@ func deleteExchangeRequestFromPb(pb *deleteExchangeRequestPb) (*DeleteExchangeRe
 		return nil, nil
 	}
 	st := &DeleteExchangeRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -2381,7 +2158,9 @@ func deleteExchangeResponseFromPb(pb *deleteExchangeResponsePb) (*DeleteExchange
 
 // Delete a file
 type DeleteFileRequest struct {
-	FileId string
+
+	// Wire name: 'file_id'
+	FileId string `tf:"-"`
 }
 
 func deleteFileRequestToPb(st *DeleteFileRequest) (*deleteFileRequestPb, error) {
@@ -2389,10 +2168,7 @@ func deleteFileRequestToPb(st *DeleteFileRequest) (*deleteFileRequestPb, error) 
 		return nil, nil
 	}
 	pb := &deleteFileRequestPb{}
-	fileIdPb := &st.FileId
-	if fileIdPb != nil {
-		pb.FileId = *fileIdPb
-	}
+	pb.FileId = st.FileId
 
 	return pb, nil
 }
@@ -2431,10 +2207,7 @@ func deleteFileRequestFromPb(pb *deleteFileRequestPb) (*DeleteFileRequest, error
 		return nil, nil
 	}
 	st := &DeleteFileRequest{}
-	fileIdField := &pb.FileId
-	if fileIdField != nil {
-		st.FileId = *fileIdField
-	}
+	st.FileId = pb.FileId
 
 	return st, nil
 }
@@ -2490,9 +2263,12 @@ func deleteFileResponseFromPb(pb *deleteFileResponsePb) (*DeleteFileResponse, er
 
 // Uninstall from a listing
 type DeleteInstallationRequest struct {
-	InstallationId string
 
-	ListingId string
+	// Wire name: 'installation_id'
+	InstallationId string `tf:"-"`
+
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 }
 
 func deleteInstallationRequestToPb(st *DeleteInstallationRequest) (*deleteInstallationRequestPb, error) {
@@ -2500,15 +2276,9 @@ func deleteInstallationRequestToPb(st *DeleteInstallationRequest) (*deleteInstal
 		return nil, nil
 	}
 	pb := &deleteInstallationRequestPb{}
-	installationIdPb := &st.InstallationId
-	if installationIdPb != nil {
-		pb.InstallationId = *installationIdPb
-	}
+	pb.InstallationId = st.InstallationId
 
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
 	return pb, nil
 }
@@ -2549,14 +2319,8 @@ func deleteInstallationRequestFromPb(pb *deleteInstallationRequestPb) (*DeleteIn
 		return nil, nil
 	}
 	st := &DeleteInstallationRequest{}
-	installationIdField := &pb.InstallationId
-	if installationIdField != nil {
-		st.InstallationId = *installationIdField
-	}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
+	st.InstallationId = pb.InstallationId
+	st.ListingId = pb.ListingId
 
 	return st, nil
 }
@@ -2612,7 +2376,9 @@ func deleteInstallationResponseFromPb(pb *deleteInstallationResponsePb) (*Delete
 
 // Delete a listing
 type DeleteListingRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteListingRequestToPb(st *DeleteListingRequest) (*deleteListingRequestPb, error) {
@@ -2620,10 +2386,7 @@ func deleteListingRequestToPb(st *DeleteListingRequest) (*deleteListingRequestPb
 		return nil, nil
 	}
 	pb := &deleteListingRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -2662,10 +2425,7 @@ func deleteListingRequestFromPb(pb *deleteListingRequestPb) (*DeleteListingReque
 		return nil, nil
 	}
 	st := &DeleteListingRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -2721,7 +2481,9 @@ func deleteListingResponseFromPb(pb *deleteListingResponsePb) (*DeleteListingRes
 
 // Delete provider
 type DeleteProviderRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteProviderRequestToPb(st *DeleteProviderRequest) (*deleteProviderRequestPb, error) {
@@ -2729,10 +2491,7 @@ func deleteProviderRequestToPb(st *DeleteProviderRequest) (*deleteProviderReques
 		return nil, nil
 	}
 	pb := &deleteProviderRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -2771,10 +2530,7 @@ func deleteProviderRequestFromPb(pb *deleteProviderRequestPb) (*DeleteProviderRe
 		return nil, nil
 	}
 	st := &DeleteProviderRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -2873,25 +2629,35 @@ func deltaSharingRecipientTypeFromPb(pb *deltaSharingRecipientTypePb) (*DeltaSha
 }
 
 type Exchange struct {
+
+	// Wire name: 'comment'
 	Comment string
 
+	// Wire name: 'created_at'
 	CreatedAt int64
 
+	// Wire name: 'created_by'
 	CreatedBy string
 
+	// Wire name: 'filters'
 	Filters []ExchangeFilter
 
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'linked_listings'
 	LinkedListings []ExchangeListing
 
+	// Wire name: 'name'
 	Name string
 
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func exchangeToPb(st *Exchange) (*exchangePb, error) {
@@ -2899,20 +2665,11 @@ func exchangeToPb(st *Exchange) (*exchangePb, error) {
 		return nil, nil
 	}
 	pb := &exchangePb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
 	var filtersPb []exchangeFilterPb
 	for _, item := range st.Filters {
@@ -2926,10 +2683,7 @@ func exchangeToPb(st *Exchange) (*exchangePb, error) {
 	}
 	pb.Filters = filtersPb
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	var linkedListingsPb []exchangeListingPb
 	for _, item := range st.LinkedListings {
@@ -2943,20 +2697,11 @@ func exchangeToPb(st *Exchange) (*exchangePb, error) {
 	}
 	pb.LinkedListings = linkedListingsPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3014,58 +2759,37 @@ func exchangeFromPb(pb *exchangePb) (*Exchange, error) {
 		return nil, nil
 	}
 	st := &Exchange{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
+	st.Comment = pb.Comment
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
 
 	var filtersField []ExchangeFilter
-	for _, item := range pb.Filters {
-		itemField, err := exchangeFilterFromPb(&item)
+	for _, itemPb := range pb.Filters {
+		item, err := exchangeFilterFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			filtersField = append(filtersField, *itemField)
+		if item != nil {
+			filtersField = append(filtersField, *item)
 		}
 	}
 	st.Filters = filtersField
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	var linkedListingsField []ExchangeListing
-	for _, item := range pb.LinkedListings {
-		itemField, err := exchangeListingFromPb(&item)
+	for _, itemPb := range pb.LinkedListings {
+		item, err := exchangeListingFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			linkedListingsField = append(linkedListingsField, *itemField)
+		if item != nil {
+			linkedListingsField = append(linkedListingsField, *item)
 		}
 	}
 	st.LinkedListings = linkedListingsField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.Name = pb.Name
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3080,25 +2804,35 @@ func (st exchangePb) MarshalJSON() ([]byte, error) {
 }
 
 type ExchangeFilter struct {
+
+	// Wire name: 'created_at'
 	CreatedAt int64
 
+	// Wire name: 'created_by'
 	CreatedBy string
 
+	// Wire name: 'exchange_id'
 	ExchangeId string
 
+	// Wire name: 'filter_type'
 	FilterType ExchangeFilterType
 
+	// Wire name: 'filter_value'
 	FilterValue string
 
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'name'
 	Name string
 
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func exchangeFilterToPb(st *ExchangeFilter) (*exchangeFilterPb, error) {
@@ -3106,50 +2840,23 @@ func exchangeFilterToPb(st *ExchangeFilter) (*exchangeFilterPb, error) {
 		return nil, nil
 	}
 	pb := &exchangeFilterPb{}
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	exchangeIdPb := &st.ExchangeId
-	if exchangeIdPb != nil {
-		pb.ExchangeId = *exchangeIdPb
-	}
+	pb.ExchangeId = st.ExchangeId
 
-	filterTypePb := &st.FilterType
-	if filterTypePb != nil {
-		pb.FilterType = *filterTypePb
-	}
+	pb.FilterType = st.FilterType
 
-	filterValuePb := &st.FilterValue
-	if filterValuePb != nil {
-		pb.FilterValue = *filterValuePb
-	}
+	pb.FilterValue = st.FilterValue
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3207,42 +2914,15 @@ func exchangeFilterFromPb(pb *exchangeFilterPb) (*ExchangeFilter, error) {
 		return nil, nil
 	}
 	st := &ExchangeFilter{}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	exchangeIdField := &pb.ExchangeId
-	if exchangeIdField != nil {
-		st.ExchangeId = *exchangeIdField
-	}
-	filterTypeField := &pb.FilterType
-	if filterTypeField != nil {
-		st.FilterType = *filterTypeField
-	}
-	filterValueField := &pb.FilterValue
-	if filterValueField != nil {
-		st.FilterValue = *filterValueField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.ExchangeId = pb.ExchangeId
+	st.FilterType = pb.FilterType
+	st.FilterValue = pb.FilterValue
+	st.Id = pb.Id
+	st.Name = pb.Name
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3299,21 +2979,29 @@ func exchangeFilterTypeFromPb(pb *exchangeFilterTypePb) (*ExchangeFilterType, er
 }
 
 type ExchangeListing struct {
+
+	// Wire name: 'created_at'
 	CreatedAt int64
 
+	// Wire name: 'created_by'
 	CreatedBy string
 
+	// Wire name: 'exchange_id'
 	ExchangeId string
 
+	// Wire name: 'exchange_name'
 	ExchangeName string
 
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'listing_id'
 	ListingId string
 
+	// Wire name: 'listing_name'
 	ListingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func exchangeListingToPb(st *ExchangeListing) (*exchangeListingPb, error) {
@@ -3321,40 +3009,19 @@ func exchangeListingToPb(st *ExchangeListing) (*exchangeListingPb, error) {
 		return nil, nil
 	}
 	pb := &exchangeListingPb{}
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	exchangeIdPb := &st.ExchangeId
-	if exchangeIdPb != nil {
-		pb.ExchangeId = *exchangeIdPb
-	}
+	pb.ExchangeId = st.ExchangeId
 
-	exchangeNamePb := &st.ExchangeName
-	if exchangeNamePb != nil {
-		pb.ExchangeName = *exchangeNamePb
-	}
+	pb.ExchangeName = st.ExchangeName
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	listingNamePb := &st.ListingName
-	if listingNamePb != nil {
-		pb.ListingName = *listingNamePb
-	}
+	pb.ListingName = st.ListingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3408,34 +3075,13 @@ func exchangeListingFromPb(pb *exchangeListingPb) (*ExchangeListing, error) {
 		return nil, nil
 	}
 	st := &ExchangeListing{}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	exchangeIdField := &pb.ExchangeId
-	if exchangeIdField != nil {
-		st.ExchangeId = *exchangeIdField
-	}
-	exchangeNameField := &pb.ExchangeName
-	if exchangeNameField != nil {
-		st.ExchangeName = *exchangeNameField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	listingNameField := &pb.ListingName
-	if listingNameField != nil {
-		st.ListingName = *listingNameField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.ExchangeId = pb.ExchangeId
+	st.ExchangeName = pb.ExchangeName
+	st.Id = pb.Id
+	st.ListingId = pb.ListingId
+	st.ListingName = pb.ListingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3450,28 +3096,39 @@ func (st exchangeListingPb) MarshalJSON() ([]byte, error) {
 }
 
 type FileInfo struct {
+
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Name displayed to users for applicable files, e.g. embedded notebooks
+	// Wire name: 'display_name'
 	DisplayName string
 
+	// Wire name: 'download_link'
 	DownloadLink string
 
+	// Wire name: 'file_parent'
 	FileParent *FileParent
 
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'marketplace_file_type'
 	MarketplaceFileType MarketplaceFileType
 
+	// Wire name: 'mime_type'
 	MimeType string
 
+	// Wire name: 'status'
 	Status FileStatus
 	// Populated if status is in a failed state with more information on reason
 	// for the failure.
+	// Wire name: 'status_message'
 	StatusMessage string
 
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
@@ -3479,20 +3136,11 @@ func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
 		return nil, nil
 	}
 	pb := &fileInfoPb{}
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	downloadLinkPb := &st.DownloadLink
-	if downloadLinkPb != nil {
-		pb.DownloadLink = *downloadLinkPb
-	}
+	pb.DownloadLink = st.DownloadLink
 
 	fileParentPb, err := fileParentToPb(st.FileParent)
 	if err != nil {
@@ -3502,35 +3150,17 @@ func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
 		pb.FileParent = fileParentPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	marketplaceFileTypePb := &st.MarketplaceFileType
-	if marketplaceFileTypePb != nil {
-		pb.MarketplaceFileType = *marketplaceFileTypePb
-	}
+	pb.MarketplaceFileType = st.MarketplaceFileType
 
-	mimeTypePb := &st.MimeType
-	if mimeTypePb != nil {
-		pb.MimeType = *mimeTypePb
-	}
+	pb.MimeType = st.MimeType
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	statusMessagePb := &st.StatusMessage
-	if statusMessagePb != nil {
-		pb.StatusMessage = *statusMessagePb
-	}
+	pb.StatusMessage = st.StatusMessage
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3591,18 +3221,9 @@ func fileInfoFromPb(pb *fileInfoPb) (*FileInfo, error) {
 		return nil, nil
 	}
 	st := &FileInfo{}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	downloadLinkField := &pb.DownloadLink
-	if downloadLinkField != nil {
-		st.DownloadLink = *downloadLinkField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.DisplayName = pb.DisplayName
+	st.DownloadLink = pb.DownloadLink
 	fileParentField, err := fileParentFromPb(pb.FileParent)
 	if err != nil {
 		return nil, err
@@ -3610,30 +3231,12 @@ func fileInfoFromPb(pb *fileInfoPb) (*FileInfo, error) {
 	if fileParentField != nil {
 		st.FileParent = fileParentField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	marketplaceFileTypeField := &pb.MarketplaceFileType
-	if marketplaceFileTypeField != nil {
-		st.MarketplaceFileType = *marketplaceFileTypeField
-	}
-	mimeTypeField := &pb.MimeType
-	if mimeTypeField != nil {
-		st.MimeType = *mimeTypeField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	statusMessageField := &pb.StatusMessage
-	if statusMessageField != nil {
-		st.StatusMessage = *statusMessageField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
+	st.Id = pb.Id
+	st.MarketplaceFileType = pb.MarketplaceFileType
+	st.MimeType = pb.MimeType
+	st.Status = pb.Status
+	st.StatusMessage = pb.StatusMessage
+	st.UpdatedAt = pb.UpdatedAt
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3648,11 +3251,14 @@ func (st fileInfoPb) MarshalJSON() ([]byte, error) {
 }
 
 type FileParent struct {
+
+	// Wire name: 'file_parent_type'
 	FileParentType FileParentType
 	// TODO make the following fields required
+	// Wire name: 'parent_id'
 	ParentId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func fileParentToPb(st *FileParent) (*fileParentPb, error) {
@@ -3660,15 +3266,9 @@ func fileParentToPb(st *FileParent) (*fileParentPb, error) {
 		return nil, nil
 	}
 	pb := &fileParentPb{}
-	fileParentTypePb := &st.FileParentType
-	if fileParentTypePb != nil {
-		pb.FileParentType = *fileParentTypePb
-	}
+	pb.FileParentType = st.FileParentType
 
-	parentIdPb := &st.ParentId
-	if parentIdPb != nil {
-		pb.ParentId = *parentIdPb
-	}
+	pb.ParentId = st.ParentId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3712,14 +3312,8 @@ func fileParentFromPb(pb *fileParentPb) (*FileParent, error) {
 		return nil, nil
 	}
 	st := &FileParent{}
-	fileParentTypeField := &pb.FileParentType
-	if fileParentTypeField != nil {
-		st.FileParentType = *fileParentTypeField
-	}
-	parentIdField := &pb.ParentId
-	if parentIdField != nil {
-		st.ParentId = *parentIdField
-	}
+	st.FileParentType = pb.FileParentType
+	st.ParentId = pb.ParentId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3873,7 +3467,9 @@ func fulfillmentTypeFromPb(pb *fulfillmentTypePb) (*FulfillmentType, error) {
 
 // Get an exchange
 type GetExchangeRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getExchangeRequestToPb(st *GetExchangeRequest) (*getExchangeRequestPb, error) {
@@ -3881,10 +3477,7 @@ func getExchangeRequestToPb(st *GetExchangeRequest) (*getExchangeRequestPb, erro
 		return nil, nil
 	}
 	pb := &getExchangeRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -3923,15 +3516,14 @@ func getExchangeRequestFromPb(pb *getExchangeRequestPb) (*GetExchangeRequest, er
 		return nil, nil
 	}
 	st := &GetExchangeRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type GetExchangeResponse struct {
+
+	// Wire name: 'exchange'
 	Exchange *Exchange
 }
 
@@ -3998,7 +3590,9 @@ func getExchangeResponseFromPb(pb *getExchangeResponsePb) (*GetExchangeResponse,
 
 // Get a file
 type GetFileRequest struct {
-	FileId string
+
+	// Wire name: 'file_id'
+	FileId string `tf:"-"`
 }
 
 func getFileRequestToPb(st *GetFileRequest) (*getFileRequestPb, error) {
@@ -4006,10 +3600,7 @@ func getFileRequestToPb(st *GetFileRequest) (*getFileRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getFileRequestPb{}
-	fileIdPb := &st.FileId
-	if fileIdPb != nil {
-		pb.FileId = *fileIdPb
-	}
+	pb.FileId = st.FileId
 
 	return pb, nil
 }
@@ -4048,15 +3639,14 @@ func getFileRequestFromPb(pb *getFileRequestPb) (*GetFileRequest, error) {
 		return nil, nil
 	}
 	st := &GetFileRequest{}
-	fileIdField := &pb.FileId
-	if fileIdField != nil {
-		st.FileId = *fileIdField
-	}
+	st.FileId = pb.FileId
 
 	return st, nil
 }
 
 type GetFileResponse struct {
+
+	// Wire name: 'file_info'
 	FileInfo *FileInfo
 }
 
@@ -4123,9 +3713,10 @@ func getFileResponseFromPb(pb *getFileResponsePb) (*GetFileResponse, error) {
 
 type GetLatestVersionProviderAnalyticsDashboardResponse struct {
 	// version here is latest logical version of the dashboard template
+	// Wire name: 'version'
 	Version int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getLatestVersionProviderAnalyticsDashboardResponseToPb(st *GetLatestVersionProviderAnalyticsDashboardResponse) (*getLatestVersionProviderAnalyticsDashboardResponsePb, error) {
@@ -4133,10 +3724,7 @@ func getLatestVersionProviderAnalyticsDashboardResponseToPb(st *GetLatestVersion
 		return nil, nil
 	}
 	pb := &getLatestVersionProviderAnalyticsDashboardResponsePb{}
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4179,10 +3767,7 @@ func getLatestVersionProviderAnalyticsDashboardResponseFromPb(pb *getLatestVersi
 		return nil, nil
 	}
 	st := &GetLatestVersionProviderAnalyticsDashboardResponse{}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4198,13 +3783,17 @@ func (st getLatestVersionProviderAnalyticsDashboardResponsePb) MarshalJSON() ([]
 
 // Get listing content metadata
 type GetListingContentMetadataRequest struct {
-	ListingId string
 
-	PageSize int
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func getListingContentMetadataRequestToPb(st *GetListingContentMetadataRequest) (*getListingContentMetadataRequestPb, error) {
@@ -4212,20 +3801,11 @@ func getListingContentMetadataRequestToPb(st *GetListingContentMetadataRequest) 
 		return nil, nil
 	}
 	pb := &getListingContentMetadataRequestPb{}
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4271,18 +3851,9 @@ func getListingContentMetadataRequestFromPb(pb *getListingContentMetadataRequest
 		return nil, nil
 	}
 	st := &GetListingContentMetadataRequest{}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.ListingId = pb.ListingId
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4297,11 +3868,14 @@ func (st getListingContentMetadataRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type GetListingContentMetadataResponse struct {
+
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'shared_data_objects'
 	SharedDataObjects []SharedDataObject
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getListingContentMetadataResponseToPb(st *GetListingContentMetadataResponse) (*getListingContentMetadataResponsePb, error) {
@@ -4309,10 +3883,7 @@ func getListingContentMetadataResponseToPb(st *GetListingContentMetadataResponse
 		return nil, nil
 	}
 	pb := &getListingContentMetadataResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var sharedDataObjectsPb []sharedDataObjectPb
 	for _, item := range st.SharedDataObjects {
@@ -4368,19 +3939,16 @@ func getListingContentMetadataResponseFromPb(pb *getListingContentMetadataRespon
 		return nil, nil
 	}
 	st := &GetListingContentMetadataResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var sharedDataObjectsField []SharedDataObject
-	for _, item := range pb.SharedDataObjects {
-		itemField, err := sharedDataObjectFromPb(&item)
+	for _, itemPb := range pb.SharedDataObjects {
+		item, err := sharedDataObjectFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			sharedDataObjectsField = append(sharedDataObjectsField, *itemField)
+		if item != nil {
+			sharedDataObjectsField = append(sharedDataObjectsField, *item)
 		}
 	}
 	st.SharedDataObjects = sharedDataObjectsField
@@ -4399,7 +3967,9 @@ func (st getListingContentMetadataResponsePb) MarshalJSON() ([]byte, error) {
 
 // Get listing
 type GetListingRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getListingRequestToPb(st *GetListingRequest) (*getListingRequestPb, error) {
@@ -4407,10 +3977,7 @@ func getListingRequestToPb(st *GetListingRequest) (*getListingRequestPb, error) 
 		return nil, nil
 	}
 	pb := &getListingRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -4449,15 +4016,14 @@ func getListingRequestFromPb(pb *getListingRequestPb) (*GetListingRequest, error
 		return nil, nil
 	}
 	st := &GetListingRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type GetListingResponse struct {
+
+	// Wire name: 'listing'
 	Listing *Listing
 }
 
@@ -4524,11 +4090,14 @@ func getListingResponseFromPb(pb *getListingResponsePb) (*GetListingResponse, er
 
 // List listings
 type GetListingsRequest struct {
-	PageSize int
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func getListingsRequestToPb(st *GetListingsRequest) (*getListingsRequestPb, error) {
@@ -4536,15 +4105,9 @@ func getListingsRequestToPb(st *GetListingsRequest) (*getListingsRequestPb, erro
 		return nil, nil
 	}
 	pb := &getListingsRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4588,14 +4151,8 @@ func getListingsRequestFromPb(pb *getListingsRequestPb) (*GetListingsRequest, er
 		return nil, nil
 	}
 	st := &GetListingsRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4610,11 +4167,14 @@ func (st getListingsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type GetListingsResponse struct {
+
+	// Wire name: 'listings'
 	Listings []Listing
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getListingsResponseToPb(st *GetListingsResponse) (*getListingsResponsePb, error) {
@@ -4635,10 +4195,7 @@ func getListingsResponseToPb(st *GetListingsResponse) (*getListingsResponsePb, e
 	}
 	pb.Listings = listingsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4684,20 +4241,17 @@ func getListingsResponseFromPb(pb *getListingsResponsePb) (*GetListingsResponse,
 	st := &GetListingsResponse{}
 
 	var listingsField []Listing
-	for _, item := range pb.Listings {
-		itemField, err := listingFromPb(&item)
+	for _, itemPb := range pb.Listings {
+		item, err := listingFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			listingsField = append(listingsField, *itemField)
+		if item != nil {
+			listingsField = append(listingsField, *item)
 		}
 	}
 	st.Listings = listingsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4713,7 +4267,9 @@ func (st getListingsResponsePb) MarshalJSON() ([]byte, error) {
 
 // Get the personalization request for a listing
 type GetPersonalizationRequestRequest struct {
-	ListingId string
+
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 }
 
 func getPersonalizationRequestRequestToPb(st *GetPersonalizationRequestRequest) (*getPersonalizationRequestRequestPb, error) {
@@ -4721,10 +4277,7 @@ func getPersonalizationRequestRequestToPb(st *GetPersonalizationRequestRequest) 
 		return nil, nil
 	}
 	pb := &getPersonalizationRequestRequestPb{}
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
 	return pb, nil
 }
@@ -4763,15 +4316,14 @@ func getPersonalizationRequestRequestFromPb(pb *getPersonalizationRequestRequest
 		return nil, nil
 	}
 	st := &GetPersonalizationRequestRequest{}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
+	st.ListingId = pb.ListingId
 
 	return st, nil
 }
 
 type GetPersonalizationRequestResponse struct {
+
+	// Wire name: 'personalization_requests'
 	PersonalizationRequests []PersonalizationRequest
 }
 
@@ -4832,13 +4384,13 @@ func getPersonalizationRequestResponseFromPb(pb *getPersonalizationRequestRespon
 	st := &GetPersonalizationRequestResponse{}
 
 	var personalizationRequestsField []PersonalizationRequest
-	for _, item := range pb.PersonalizationRequests {
-		itemField, err := personalizationRequestFromPb(&item)
+	for _, itemPb := range pb.PersonalizationRequests {
+		item, err := personalizationRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			personalizationRequestsField = append(personalizationRequestsField, *itemField)
+		if item != nil {
+			personalizationRequestsField = append(personalizationRequestsField, *item)
 		}
 	}
 	st.PersonalizationRequests = personalizationRequestsField
@@ -4848,7 +4400,9 @@ func getPersonalizationRequestResponseFromPb(pb *getPersonalizationRequestRespon
 
 // Get a provider
 type GetProviderRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getProviderRequestToPb(st *GetProviderRequest) (*getProviderRequestPb, error) {
@@ -4856,10 +4410,7 @@ func getProviderRequestToPb(st *GetProviderRequest) (*getProviderRequestPb, erro
 		return nil, nil
 	}
 	pb := &getProviderRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -4898,15 +4449,14 @@ func getProviderRequestFromPb(pb *getProviderRequestPb) (*GetProviderRequest, er
 		return nil, nil
 	}
 	st := &GetProviderRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type GetProviderResponse struct {
+
+	// Wire name: 'provider'
 	Provider *ProviderInfo
 }
 
@@ -4972,6 +4522,8 @@ func getProviderResponseFromPb(pb *getProviderResponsePb) (*GetProviderResponse,
 }
 
 type Installation struct {
+
+	// Wire name: 'installation'
 	Installation *InstallationDetail
 }
 
@@ -5037,33 +4589,47 @@ func installationFromPb(pb *installationPb) (*Installation, error) {
 }
 
 type InstallationDetail struct {
+
+	// Wire name: 'catalog_name'
 	CatalogName string
 
+	// Wire name: 'error_message'
 	ErrorMessage string
 
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'installed_on'
 	InstalledOn int64
 
+	// Wire name: 'listing_id'
 	ListingId string
 
+	// Wire name: 'listing_name'
 	ListingName string
 
+	// Wire name: 'recipient_type'
 	RecipientType DeltaSharingRecipientType
 
+	// Wire name: 'repo_name'
 	RepoName string
 
+	// Wire name: 'repo_path'
 	RepoPath string
 
+	// Wire name: 'share_name'
 	ShareName string
 
+	// Wire name: 'status'
 	Status InstallationStatus
 
+	// Wire name: 'token_detail'
 	TokenDetail *TokenDetail
 
+	// Wire name: 'tokens'
 	Tokens []TokenInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func installationDetailToPb(st *InstallationDetail) (*installationDetailPb, error) {
@@ -5071,60 +4637,27 @@ func installationDetailToPb(st *InstallationDetail) (*installationDetailPb, erro
 		return nil, nil
 	}
 	pb := &installationDetailPb{}
-	catalogNamePb := &st.CatalogName
-	if catalogNamePb != nil {
-		pb.CatalogName = *catalogNamePb
-	}
+	pb.CatalogName = st.CatalogName
 
-	errorMessagePb := &st.ErrorMessage
-	if errorMessagePb != nil {
-		pb.ErrorMessage = *errorMessagePb
-	}
+	pb.ErrorMessage = st.ErrorMessage
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	installedOnPb := &st.InstalledOn
-	if installedOnPb != nil {
-		pb.InstalledOn = *installedOnPb
-	}
+	pb.InstalledOn = st.InstalledOn
 
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	listingNamePb := &st.ListingName
-	if listingNamePb != nil {
-		pb.ListingName = *listingNamePb
-	}
+	pb.ListingName = st.ListingName
 
-	recipientTypePb := &st.RecipientType
-	if recipientTypePb != nil {
-		pb.RecipientType = *recipientTypePb
-	}
+	pb.RecipientType = st.RecipientType
 
-	repoNamePb := &st.RepoName
-	if repoNamePb != nil {
-		pb.RepoName = *repoNamePb
-	}
+	pb.RepoName = st.RepoName
 
-	repoPathPb := &st.RepoPath
-	if repoPathPb != nil {
-		pb.RepoPath = *repoPathPb
-	}
+	pb.RepoPath = st.RepoPath
 
-	shareNamePb := &st.ShareName
-	if shareNamePb != nil {
-		pb.ShareName = *shareNamePb
-	}
+	pb.ShareName = st.ShareName
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	tokenDetailPb, err := tokenDetailToPb(st.TokenDetail)
 	if err != nil {
@@ -5210,50 +4743,17 @@ func installationDetailFromPb(pb *installationDetailPb) (*InstallationDetail, er
 		return nil, nil
 	}
 	st := &InstallationDetail{}
-	catalogNameField := &pb.CatalogName
-	if catalogNameField != nil {
-		st.CatalogName = *catalogNameField
-	}
-	errorMessageField := &pb.ErrorMessage
-	if errorMessageField != nil {
-		st.ErrorMessage = *errorMessageField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	installedOnField := &pb.InstalledOn
-	if installedOnField != nil {
-		st.InstalledOn = *installedOnField
-	}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	listingNameField := &pb.ListingName
-	if listingNameField != nil {
-		st.ListingName = *listingNameField
-	}
-	recipientTypeField := &pb.RecipientType
-	if recipientTypeField != nil {
-		st.RecipientType = *recipientTypeField
-	}
-	repoNameField := &pb.RepoName
-	if repoNameField != nil {
-		st.RepoName = *repoNameField
-	}
-	repoPathField := &pb.RepoPath
-	if repoPathField != nil {
-		st.RepoPath = *repoPathField
-	}
-	shareNameField := &pb.ShareName
-	if shareNameField != nil {
-		st.ShareName = *shareNameField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.CatalogName = pb.CatalogName
+	st.ErrorMessage = pb.ErrorMessage
+	st.Id = pb.Id
+	st.InstalledOn = pb.InstalledOn
+	st.ListingId = pb.ListingId
+	st.ListingName = pb.ListingName
+	st.RecipientType = pb.RecipientType
+	st.RepoName = pb.RepoName
+	st.RepoPath = pb.RepoPath
+	st.ShareName = pb.ShareName
+	st.Status = pb.Status
 	tokenDetailField, err := tokenDetailFromPb(pb.TokenDetail)
 	if err != nil {
 		return nil, err
@@ -5263,13 +4763,13 @@ func installationDetailFromPb(pb *installationDetailPb) (*InstallationDetail, er
 	}
 
 	var tokensField []TokenInfo
-	for _, item := range pb.Tokens {
-		itemField, err := tokenInfoFromPb(&item)
+	for _, itemPb := range pb.Tokens {
+		item, err := tokenInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tokensField = append(tokensField, *itemField)
+		if item != nil {
+			tokensField = append(tokensField, *item)
 		}
 	}
 	st.Tokens = tokensField
@@ -5332,11 +4832,14 @@ func installationStatusFromPb(pb *installationStatusPb) (*InstallationStatus, er
 
 // List all installations
 type ListAllInstallationsRequest struct {
-	PageSize int
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAllInstallationsRequestToPb(st *ListAllInstallationsRequest) (*listAllInstallationsRequestPb, error) {
@@ -5344,15 +4847,9 @@ func listAllInstallationsRequestToPb(st *ListAllInstallationsRequest) (*listAllI
 		return nil, nil
 	}
 	pb := &listAllInstallationsRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5396,14 +4893,8 @@ func listAllInstallationsRequestFromPb(pb *listAllInstallationsRequestPb) (*List
 		return nil, nil
 	}
 	st := &ListAllInstallationsRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5418,11 +4909,14 @@ func (st listAllInstallationsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListAllInstallationsResponse struct {
+
+	// Wire name: 'installations'
 	Installations []InstallationDetail
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAllInstallationsResponseToPb(st *ListAllInstallationsResponse) (*listAllInstallationsResponsePb, error) {
@@ -5443,10 +4937,7 @@ func listAllInstallationsResponseToPb(st *ListAllInstallationsResponse) (*listAl
 	}
 	pb.Installations = installationsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5492,20 +4983,17 @@ func listAllInstallationsResponseFromPb(pb *listAllInstallationsResponsePb) (*Li
 	st := &ListAllInstallationsResponse{}
 
 	var installationsField []InstallationDetail
-	for _, item := range pb.Installations {
-		itemField, err := installationDetailFromPb(&item)
+	for _, itemPb := range pb.Installations {
+		item, err := installationDetailFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			installationsField = append(installationsField, *itemField)
+		if item != nil {
+			installationsField = append(installationsField, *item)
 		}
 	}
 	st.Installations = installationsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5521,11 +5009,14 @@ func (st listAllInstallationsResponsePb) MarshalJSON() ([]byte, error) {
 
 // List all personalization requests
 type ListAllPersonalizationRequestsRequest struct {
-	PageSize int
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAllPersonalizationRequestsRequestToPb(st *ListAllPersonalizationRequestsRequest) (*listAllPersonalizationRequestsRequestPb, error) {
@@ -5533,15 +5024,9 @@ func listAllPersonalizationRequestsRequestToPb(st *ListAllPersonalizationRequest
 		return nil, nil
 	}
 	pb := &listAllPersonalizationRequestsRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5585,14 +5070,8 @@ func listAllPersonalizationRequestsRequestFromPb(pb *listAllPersonalizationReque
 		return nil, nil
 	}
 	st := &ListAllPersonalizationRequestsRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5607,11 +5086,14 @@ func (st listAllPersonalizationRequestsRequestPb) MarshalJSON() ([]byte, error) 
 }
 
 type ListAllPersonalizationRequestsResponse struct {
+
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'personalization_requests'
 	PersonalizationRequests []PersonalizationRequest
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listAllPersonalizationRequestsResponseToPb(st *ListAllPersonalizationRequestsResponse) (*listAllPersonalizationRequestsResponsePb, error) {
@@ -5619,10 +5101,7 @@ func listAllPersonalizationRequestsResponseToPb(st *ListAllPersonalizationReques
 		return nil, nil
 	}
 	pb := &listAllPersonalizationRequestsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var personalizationRequestsPb []personalizationRequestPb
 	for _, item := range st.PersonalizationRequests {
@@ -5678,19 +5157,16 @@ func listAllPersonalizationRequestsResponseFromPb(pb *listAllPersonalizationRequ
 		return nil, nil
 	}
 	st := &ListAllPersonalizationRequestsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var personalizationRequestsField []PersonalizationRequest
-	for _, item := range pb.PersonalizationRequests {
-		itemField, err := personalizationRequestFromPb(&item)
+	for _, itemPb := range pb.PersonalizationRequests {
+		item, err := personalizationRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			personalizationRequestsField = append(personalizationRequestsField, *itemField)
+		if item != nil {
+			personalizationRequestsField = append(personalizationRequestsField, *item)
 		}
 	}
 	st.PersonalizationRequests = personalizationRequestsField
@@ -5709,13 +5185,17 @@ func (st listAllPersonalizationRequestsResponsePb) MarshalJSON() ([]byte, error)
 
 // List exchange filters
 type ListExchangeFiltersRequest struct {
-	ExchangeId string
 
-	PageSize int
+	// Wire name: 'exchange_id'
+	ExchangeId string `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listExchangeFiltersRequestToPb(st *ListExchangeFiltersRequest) (*listExchangeFiltersRequestPb, error) {
@@ -5723,20 +5203,11 @@ func listExchangeFiltersRequestToPb(st *ListExchangeFiltersRequest) (*listExchan
 		return nil, nil
 	}
 	pb := &listExchangeFiltersRequestPb{}
-	exchangeIdPb := &st.ExchangeId
-	if exchangeIdPb != nil {
-		pb.ExchangeId = *exchangeIdPb
-	}
+	pb.ExchangeId = st.ExchangeId
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5782,18 +5253,9 @@ func listExchangeFiltersRequestFromPb(pb *listExchangeFiltersRequestPb) (*ListEx
 		return nil, nil
 	}
 	st := &ListExchangeFiltersRequest{}
-	exchangeIdField := &pb.ExchangeId
-	if exchangeIdField != nil {
-		st.ExchangeId = *exchangeIdField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.ExchangeId = pb.ExchangeId
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5808,11 +5270,14 @@ func (st listExchangeFiltersRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListExchangeFiltersResponse struct {
+
+	// Wire name: 'filters'
 	Filters []ExchangeFilter
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listExchangeFiltersResponseToPb(st *ListExchangeFiltersResponse) (*listExchangeFiltersResponsePb, error) {
@@ -5833,10 +5298,7 @@ func listExchangeFiltersResponseToPb(st *ListExchangeFiltersResponse) (*listExch
 	}
 	pb.Filters = filtersPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5882,20 +5344,17 @@ func listExchangeFiltersResponseFromPb(pb *listExchangeFiltersResponsePb) (*List
 	st := &ListExchangeFiltersResponse{}
 
 	var filtersField []ExchangeFilter
-	for _, item := range pb.Filters {
-		itemField, err := exchangeFilterFromPb(&item)
+	for _, itemPb := range pb.Filters {
+		item, err := exchangeFilterFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			filtersField = append(filtersField, *itemField)
+		if item != nil {
+			filtersField = append(filtersField, *item)
 		}
 	}
 	st.Filters = filtersField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5911,13 +5370,17 @@ func (st listExchangeFiltersResponsePb) MarshalJSON() ([]byte, error) {
 
 // List exchanges for listing
 type ListExchangesForListingRequest struct {
-	ListingId string
 
-	PageSize int
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listExchangesForListingRequestToPb(st *ListExchangesForListingRequest) (*listExchangesForListingRequestPb, error) {
@@ -5925,20 +5388,11 @@ func listExchangesForListingRequestToPb(st *ListExchangesForListingRequest) (*li
 		return nil, nil
 	}
 	pb := &listExchangesForListingRequestPb{}
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5984,18 +5438,9 @@ func listExchangesForListingRequestFromPb(pb *listExchangesForListingRequestPb) 
 		return nil, nil
 	}
 	st := &ListExchangesForListingRequest{}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.ListingId = pb.ListingId
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6010,11 +5455,14 @@ func (st listExchangesForListingRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListExchangesForListingResponse struct {
+
+	// Wire name: 'exchange_listing'
 	ExchangeListing []ExchangeListing
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listExchangesForListingResponseToPb(st *ListExchangesForListingResponse) (*listExchangesForListingResponsePb, error) {
@@ -6035,10 +5483,7 @@ func listExchangesForListingResponseToPb(st *ListExchangesForListingResponse) (*
 	}
 	pb.ExchangeListing = exchangeListingPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6084,20 +5529,17 @@ func listExchangesForListingResponseFromPb(pb *listExchangesForListingResponsePb
 	st := &ListExchangesForListingResponse{}
 
 	var exchangeListingField []ExchangeListing
-	for _, item := range pb.ExchangeListing {
-		itemField, err := exchangeListingFromPb(&item)
+	for _, itemPb := range pb.ExchangeListing {
+		item, err := exchangeListingFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			exchangeListingField = append(exchangeListingField, *itemField)
+		if item != nil {
+			exchangeListingField = append(exchangeListingField, *item)
 		}
 	}
 	st.ExchangeListing = exchangeListingField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6113,11 +5555,14 @@ func (st listExchangesForListingResponsePb) MarshalJSON() ([]byte, error) {
 
 // List exchanges
 type ListExchangesRequest struct {
-	PageSize int
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listExchangesRequestToPb(st *ListExchangesRequest) (*listExchangesRequestPb, error) {
@@ -6125,15 +5570,9 @@ func listExchangesRequestToPb(st *ListExchangesRequest) (*listExchangesRequestPb
 		return nil, nil
 	}
 	pb := &listExchangesRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6177,14 +5616,8 @@ func listExchangesRequestFromPb(pb *listExchangesRequestPb) (*ListExchangesReque
 		return nil, nil
 	}
 	st := &ListExchangesRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6199,11 +5632,14 @@ func (st listExchangesRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListExchangesResponse struct {
+
+	// Wire name: 'exchanges'
 	Exchanges []Exchange
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listExchangesResponseToPb(st *ListExchangesResponse) (*listExchangesResponsePb, error) {
@@ -6224,10 +5660,7 @@ func listExchangesResponseToPb(st *ListExchangesResponse) (*listExchangesRespons
 	}
 	pb.Exchanges = exchangesPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6273,20 +5706,17 @@ func listExchangesResponseFromPb(pb *listExchangesResponsePb) (*ListExchangesRes
 	st := &ListExchangesResponse{}
 
 	var exchangesField []Exchange
-	for _, item := range pb.Exchanges {
-		itemField, err := exchangeFromPb(&item)
+	for _, itemPb := range pb.Exchanges {
+		item, err := exchangeFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			exchangesField = append(exchangesField, *itemField)
+		if item != nil {
+			exchangesField = append(exchangesField, *item)
 		}
 	}
 	st.Exchanges = exchangesField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6302,13 +5732,17 @@ func (st listExchangesResponsePb) MarshalJSON() ([]byte, error) {
 
 // List files
 type ListFilesRequest struct {
-	FileParent FileParent
 
-	PageSize int
+	// Wire name: 'file_parent'
+	FileParent FileParent `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listFilesRequestToPb(st *ListFilesRequest) (*listFilesRequestPb, error) {
@@ -6324,15 +5758,9 @@ func listFilesRequestToPb(st *ListFilesRequest) (*listFilesRequestPb, error) {
 		pb.FileParent = *fileParentPb
 	}
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6385,14 +5813,8 @@ func listFilesRequestFromPb(pb *listFilesRequestPb) (*ListFilesRequest, error) {
 	if fileParentField != nil {
 		st.FileParent = *fileParentField
 	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6407,11 +5829,14 @@ func (st listFilesRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListFilesResponse struct {
+
+	// Wire name: 'file_infos'
 	FileInfos []FileInfo
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listFilesResponseToPb(st *ListFilesResponse) (*listFilesResponsePb, error) {
@@ -6432,10 +5857,7 @@ func listFilesResponseToPb(st *ListFilesResponse) (*listFilesResponsePb, error) 
 	}
 	pb.FileInfos = fileInfosPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6481,20 +5903,17 @@ func listFilesResponseFromPb(pb *listFilesResponsePb) (*ListFilesResponse, error
 	st := &ListFilesResponse{}
 
 	var fileInfosField []FileInfo
-	for _, item := range pb.FileInfos {
-		itemField, err := fileInfoFromPb(&item)
+	for _, itemPb := range pb.FileInfos {
+		item, err := fileInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			fileInfosField = append(fileInfosField, *itemField)
+		if item != nil {
+			fileInfosField = append(fileInfosField, *item)
 		}
 	}
 	st.FileInfos = fileInfosField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6510,13 +5929,17 @@ func (st listFilesResponsePb) MarshalJSON() ([]byte, error) {
 
 // List all listing fulfillments
 type ListFulfillmentsRequest struct {
-	ListingId string
 
-	PageSize int
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listFulfillmentsRequestToPb(st *ListFulfillmentsRequest) (*listFulfillmentsRequestPb, error) {
@@ -6524,20 +5947,11 @@ func listFulfillmentsRequestToPb(st *ListFulfillmentsRequest) (*listFulfillments
 		return nil, nil
 	}
 	pb := &listFulfillmentsRequestPb{}
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6583,18 +5997,9 @@ func listFulfillmentsRequestFromPb(pb *listFulfillmentsRequestPb) (*ListFulfillm
 		return nil, nil
 	}
 	st := &ListFulfillmentsRequest{}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.ListingId = pb.ListingId
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6609,11 +6014,14 @@ func (st listFulfillmentsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListFulfillmentsResponse struct {
+
+	// Wire name: 'fulfillments'
 	Fulfillments []ListingFulfillment
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listFulfillmentsResponseToPb(st *ListFulfillmentsResponse) (*listFulfillmentsResponsePb, error) {
@@ -6634,10 +6042,7 @@ func listFulfillmentsResponseToPb(st *ListFulfillmentsResponse) (*listFulfillmen
 	}
 	pb.Fulfillments = fulfillmentsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6683,20 +6088,17 @@ func listFulfillmentsResponseFromPb(pb *listFulfillmentsResponsePb) (*ListFulfil
 	st := &ListFulfillmentsResponse{}
 
 	var fulfillmentsField []ListingFulfillment
-	for _, item := range pb.Fulfillments {
-		itemField, err := listingFulfillmentFromPb(&item)
+	for _, itemPb := range pb.Fulfillments {
+		item, err := listingFulfillmentFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			fulfillmentsField = append(fulfillmentsField, *itemField)
+		if item != nil {
+			fulfillmentsField = append(fulfillmentsField, *item)
 		}
 	}
 	st.Fulfillments = fulfillmentsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6712,13 +6114,17 @@ func (st listFulfillmentsResponsePb) MarshalJSON() ([]byte, error) {
 
 // List installations for a listing
 type ListInstallationsRequest struct {
-	ListingId string
 
-	PageSize int
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listInstallationsRequestToPb(st *ListInstallationsRequest) (*listInstallationsRequestPb, error) {
@@ -6726,20 +6132,11 @@ func listInstallationsRequestToPb(st *ListInstallationsRequest) (*listInstallati
 		return nil, nil
 	}
 	pb := &listInstallationsRequestPb{}
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6785,18 +6182,9 @@ func listInstallationsRequestFromPb(pb *listInstallationsRequestPb) (*ListInstal
 		return nil, nil
 	}
 	st := &ListInstallationsRequest{}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.ListingId = pb.ListingId
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6811,11 +6199,14 @@ func (st listInstallationsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListInstallationsResponse struct {
+
+	// Wire name: 'installations'
 	Installations []InstallationDetail
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listInstallationsResponseToPb(st *ListInstallationsResponse) (*listInstallationsResponsePb, error) {
@@ -6836,10 +6227,7 @@ func listInstallationsResponseToPb(st *ListInstallationsResponse) (*listInstalla
 	}
 	pb.Installations = installationsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6885,20 +6273,17 @@ func listInstallationsResponseFromPb(pb *listInstallationsResponsePb) (*ListInst
 	st := &ListInstallationsResponse{}
 
 	var installationsField []InstallationDetail
-	for _, item := range pb.Installations {
-		itemField, err := installationDetailFromPb(&item)
+	for _, itemPb := range pb.Installations {
+		item, err := installationDetailFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			installationsField = append(installationsField, *itemField)
+		if item != nil {
+			installationsField = append(installationsField, *item)
 		}
 	}
 	st.Installations = installationsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6914,13 +6299,17 @@ func (st listInstallationsResponsePb) MarshalJSON() ([]byte, error) {
 
 // List listings for exchange
 type ListListingsForExchangeRequest struct {
-	ExchangeId string
 
-	PageSize int
+	// Wire name: 'exchange_id'
+	ExchangeId string `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listListingsForExchangeRequestToPb(st *ListListingsForExchangeRequest) (*listListingsForExchangeRequestPb, error) {
@@ -6928,20 +6317,11 @@ func listListingsForExchangeRequestToPb(st *ListListingsForExchangeRequest) (*li
 		return nil, nil
 	}
 	pb := &listListingsForExchangeRequestPb{}
-	exchangeIdPb := &st.ExchangeId
-	if exchangeIdPb != nil {
-		pb.ExchangeId = *exchangeIdPb
-	}
+	pb.ExchangeId = st.ExchangeId
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6987,18 +6367,9 @@ func listListingsForExchangeRequestFromPb(pb *listListingsForExchangeRequestPb) 
 		return nil, nil
 	}
 	st := &ListListingsForExchangeRequest{}
-	exchangeIdField := &pb.ExchangeId
-	if exchangeIdField != nil {
-		st.ExchangeId = *exchangeIdField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.ExchangeId = pb.ExchangeId
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7013,11 +6384,14 @@ func (st listListingsForExchangeRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListListingsForExchangeResponse struct {
+
+	// Wire name: 'exchange_listings'
 	ExchangeListings []ExchangeListing
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listListingsForExchangeResponseToPb(st *ListListingsForExchangeResponse) (*listListingsForExchangeResponsePb, error) {
@@ -7038,10 +6412,7 @@ func listListingsForExchangeResponseToPb(st *ListListingsForExchangeResponse) (*
 	}
 	pb.ExchangeListings = exchangeListingsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7087,20 +6458,17 @@ func listListingsForExchangeResponseFromPb(pb *listListingsForExchangeResponsePb
 	st := &ListListingsForExchangeResponse{}
 
 	var exchangeListingsField []ExchangeListing
-	for _, item := range pb.ExchangeListings {
-		itemField, err := exchangeListingFromPb(&item)
+	for _, itemPb := range pb.ExchangeListings {
+		item, err := exchangeListingFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			exchangeListingsField = append(exchangeListingsField, *itemField)
+		if item != nil {
+			exchangeListingsField = append(exchangeListingsField, *item)
 		}
 	}
 	st.ExchangeListings = exchangeListingsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7117,25 +6485,34 @@ func (st listListingsForExchangeResponsePb) MarshalJSON() ([]byte, error) {
 // List listings
 type ListListingsRequest struct {
 	// Matches any of the following asset types
-	Assets []AssetType
+	// Wire name: 'assets'
+	Assets []AssetType `tf:"-"`
 	// Matches any of the following categories
-	Categories []Category
+	// Wire name: 'categories'
+	Categories []Category `tf:"-"`
 	// Filters each listing based on if it is free.
-	IsFree bool
+	// Wire name: 'is_free'
+	IsFree bool `tf:"-"`
 	// Filters each listing based on if it is a private exchange.
-	IsPrivateExchange bool
+	// Wire name: 'is_private_exchange'
+	IsPrivateExchange bool `tf:"-"`
 	// Filters each listing based on whether it is a staff pick.
-	IsStaffPick bool
+	// Wire name: 'is_staff_pick'
+	IsStaffPick bool `tf:"-"`
 
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Matches any of the following provider ids
-	ProviderIds []string
+	// Wire name: 'provider_ids'
+	ProviderIds []string `tf:"-"`
 	// Matches any of the following tags
-	Tags []ListingTag
+	// Wire name: 'tags'
+	Tags []ListingTag `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listListingsRequestToPb(st *ListListingsRequest) (*listListingsRequestPb, error) {
@@ -7143,58 +6520,21 @@ func listListingsRequestToPb(st *ListListingsRequest) (*listListingsRequestPb, e
 		return nil, nil
 	}
 	pb := &listListingsRequestPb{}
+	pb.Assets = st.Assets
 
-	var assetsPb []AssetType
-	for _, item := range st.Assets {
-		itemPb := &item
-		if itemPb != nil {
-			assetsPb = append(assetsPb, *itemPb)
-		}
-	}
-	pb.Assets = assetsPb
+	pb.Categories = st.Categories
 
-	var categoriesPb []Category
-	for _, item := range st.Categories {
-		itemPb := &item
-		if itemPb != nil {
-			categoriesPb = append(categoriesPb, *itemPb)
-		}
-	}
-	pb.Categories = categoriesPb
+	pb.IsFree = st.IsFree
 
-	isFreePb := &st.IsFree
-	if isFreePb != nil {
-		pb.IsFree = *isFreePb
-	}
+	pb.IsPrivateExchange = st.IsPrivateExchange
 
-	isPrivateExchangePb := &st.IsPrivateExchange
-	if isPrivateExchangePb != nil {
-		pb.IsPrivateExchange = *isPrivateExchangePb
-	}
+	pb.IsStaffPick = st.IsStaffPick
 
-	isStaffPickPb := &st.IsStaffPick
-	if isStaffPickPb != nil {
-		pb.IsStaffPick = *isStaffPickPb
-	}
+	pb.PageSize = st.PageSize
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageToken = st.PageToken
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
-
-	var providerIdsPb []string
-	for _, item := range st.ProviderIds {
-		itemPb := &item
-		if itemPb != nil {
-			providerIdsPb = append(providerIdsPb, *itemPb)
-		}
-	}
-	pb.ProviderIds = providerIdsPb
+	pb.ProviderIds = st.ProviderIds
 
 	var tagsPb []listingTagPb
 	for _, item := range st.Tags {
@@ -7265,62 +6605,23 @@ func listListingsRequestFromPb(pb *listListingsRequestPb) (*ListListingsRequest,
 		return nil, nil
 	}
 	st := &ListListingsRequest{}
-
-	var assetsField []AssetType
-	for _, item := range pb.Assets {
-		itemField := &item
-		if itemField != nil {
-			assetsField = append(assetsField, *itemField)
-		}
-	}
-	st.Assets = assetsField
-
-	var categoriesField []Category
-	for _, item := range pb.Categories {
-		itemField := &item
-		if itemField != nil {
-			categoriesField = append(categoriesField, *itemField)
-		}
-	}
-	st.Categories = categoriesField
-	isFreeField := &pb.IsFree
-	if isFreeField != nil {
-		st.IsFree = *isFreeField
-	}
-	isPrivateExchangeField := &pb.IsPrivateExchange
-	if isPrivateExchangeField != nil {
-		st.IsPrivateExchange = *isPrivateExchangeField
-	}
-	isStaffPickField := &pb.IsStaffPick
-	if isStaffPickField != nil {
-		st.IsStaffPick = *isStaffPickField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-
-	var providerIdsField []string
-	for _, item := range pb.ProviderIds {
-		itemField := &item
-		if itemField != nil {
-			providerIdsField = append(providerIdsField, *itemField)
-		}
-	}
-	st.ProviderIds = providerIdsField
+	st.Assets = pb.Assets
+	st.Categories = pb.Categories
+	st.IsFree = pb.IsFree
+	st.IsPrivateExchange = pb.IsPrivateExchange
+	st.IsStaffPick = pb.IsStaffPick
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+	st.ProviderIds = pb.ProviderIds
 
 	var tagsField []ListingTag
-	for _, item := range pb.Tags {
-		itemField, err := listingTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := listingTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -7338,11 +6639,14 @@ func (st listListingsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListListingsResponse struct {
+
+	// Wire name: 'listings'
 	Listings []Listing
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listListingsResponseToPb(st *ListListingsResponse) (*listListingsResponsePb, error) {
@@ -7363,10 +6667,7 @@ func listListingsResponseToPb(st *ListListingsResponse) (*listListingsResponsePb
 	}
 	pb.Listings = listingsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7412,20 +6713,17 @@ func listListingsResponseFromPb(pb *listListingsResponsePb) (*ListListingsRespon
 	st := &ListListingsResponse{}
 
 	var listingsField []Listing
-	for _, item := range pb.Listings {
-		itemField, err := listingFromPb(&item)
+	for _, itemPb := range pb.Listings {
+		item, err := listingFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			listingsField = append(listingsField, *itemField)
+		if item != nil {
+			listingsField = append(listingsField, *item)
 		}
 	}
 	st.Listings = listingsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7441,13 +6739,16 @@ func (st listListingsResponsePb) MarshalJSON() ([]byte, error) {
 
 type ListProviderAnalyticsDashboardResponse struct {
 	// dashboard_id will be used to open Lakeview dashboard.
+	// Wire name: 'dashboard_id'
 	DashboardId string
 
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'version'
 	Version int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listProviderAnalyticsDashboardResponseToPb(st *ListProviderAnalyticsDashboardResponse) (*listProviderAnalyticsDashboardResponsePb, error) {
@@ -7455,20 +6756,11 @@ func listProviderAnalyticsDashboardResponseToPb(st *ListProviderAnalyticsDashboa
 		return nil, nil
 	}
 	pb := &listProviderAnalyticsDashboardResponsePb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7515,18 +6807,9 @@ func listProviderAnalyticsDashboardResponseFromPb(pb *listProviderAnalyticsDashb
 		return nil, nil
 	}
 	st := &ListProviderAnalyticsDashboardResponse{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.DashboardId = pb.DashboardId
+	st.Id = pb.Id
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7542,13 +6825,17 @@ func (st listProviderAnalyticsDashboardResponsePb) MarshalJSON() ([]byte, error)
 
 // List providers
 type ListProvidersRequest struct {
-	IsFeatured bool
 
-	PageSize int
+	// Wire name: 'is_featured'
+	IsFeatured bool `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listProvidersRequestToPb(st *ListProvidersRequest) (*listProvidersRequestPb, error) {
@@ -7556,20 +6843,11 @@ func listProvidersRequestToPb(st *ListProvidersRequest) (*listProvidersRequestPb
 		return nil, nil
 	}
 	pb := &listProvidersRequestPb{}
-	isFeaturedPb := &st.IsFeatured
-	if isFeaturedPb != nil {
-		pb.IsFeatured = *isFeaturedPb
-	}
+	pb.IsFeatured = st.IsFeatured
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7615,18 +6893,9 @@ func listProvidersRequestFromPb(pb *listProvidersRequestPb) (*ListProvidersReque
 		return nil, nil
 	}
 	st := &ListProvidersRequest{}
-	isFeaturedField := &pb.IsFeatured
-	if isFeaturedField != nil {
-		st.IsFeatured = *isFeaturedField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.IsFeatured = pb.IsFeatured
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7641,11 +6910,14 @@ func (st listProvidersRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListProvidersResponse struct {
+
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'providers'
 	Providers []ProviderInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listProvidersResponseToPb(st *ListProvidersResponse) (*listProvidersResponsePb, error) {
@@ -7653,10 +6925,7 @@ func listProvidersResponseToPb(st *ListProvidersResponse) (*listProvidersRespons
 		return nil, nil
 	}
 	pb := &listProvidersResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var providersPb []providerInfoPb
 	for _, item := range st.Providers {
@@ -7712,19 +6981,16 @@ func listProvidersResponseFromPb(pb *listProvidersResponsePb) (*ListProvidersRes
 		return nil, nil
 	}
 	st := &ListProvidersResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var providersField []ProviderInfo
-	for _, item := range pb.Providers {
-		itemField, err := providerInfoFromPb(&item)
+	for _, itemPb := range pb.Providers {
+		item, err := providerInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			providersField = append(providersField, *itemField)
+		if item != nil {
+			providersField = append(providersField, *item)
 		}
 	}
 	st.Providers = providersField
@@ -7742,13 +7008,17 @@ func (st listProvidersResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type Listing struct {
+
+	// Wire name: 'detail'
 	Detail *ListingDetail
 
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'summary'
 	Summary ListingSummary
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listingToPb(st *Listing) (*listingPb, error) {
@@ -7764,10 +7034,7 @@ func listingToPb(st *Listing) (*listingPb, error) {
 		pb.Detail = detailPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	summaryPb, err := listingSummaryToPb(&st.Summary)
 	if err != nil {
@@ -7828,10 +7095,7 @@ func listingFromPb(pb *listingPb) (*Listing, error) {
 	if detailField != nil {
 		st.Detail = detailField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	summaryField, err := listingSummaryFromPb(&pb.Summary)
 	if err != nil {
 		return nil, err
@@ -7855,39 +7119,55 @@ func (st listingPb) MarshalJSON() ([]byte, error) {
 type ListingDetail struct {
 	// Type of assets included in the listing. eg. GIT_REPO, DATA_TABLE, MODEL,
 	// NOTEBOOK
+	// Wire name: 'assets'
 	Assets []AssetType
 	// The ending date timestamp for when the data spans
+	// Wire name: 'collection_date_end'
 	CollectionDateEnd int64
 	// The starting date timestamp for when the data spans
+	// Wire name: 'collection_date_start'
 	CollectionDateStart int64
 	// Smallest unit of time in the dataset
+	// Wire name: 'collection_granularity'
 	CollectionGranularity *DataRefreshInfo
 	// Whether the dataset is free or paid
+	// Wire name: 'cost'
 	Cost Cost
 	// Where/how the data is sourced
+	// Wire name: 'data_source'
 	DataSource string
 
+	// Wire name: 'description'
 	Description string
 
+	// Wire name: 'documentation_link'
 	DocumentationLink string
 
+	// Wire name: 'embedded_notebook_file_infos'
 	EmbeddedNotebookFileInfos []FileInfo
 
+	// Wire name: 'file_ids'
 	FileIds []string
 	// Which geo region the listing data is collected from
+	// Wire name: 'geographical_coverage'
 	GeographicalCoverage string
 	// ID 20, 21 removed don't use License of the data asset - Required for
 	// listings with model based assets
+	// Wire name: 'license'
 	License string
 	// What the pricing model is (e.g. paid, subscription, paid upfront); should
 	// only be present if cost is paid TODO: Not used yet, should deprecate if
 	// we will never use it
+	// Wire name: 'pricing_model'
 	PricingModel string
 
+	// Wire name: 'privacy_policy_link'
 	PrivacyPolicyLink string
 	// size of the dataset in GB
+	// Wire name: 'size'
 	Size float64
 
+	// Wire name: 'support_link'
 	SupportLink string
 	// Listing tags - Simple key value pair to annotate listings. When should I
 	// use tags vs dedicated fields? Using tags avoids the need to add new
@@ -7896,13 +7176,16 @@ type ListingDetail struct {
 	// the field is optional and won't need to have NOT NULL integrity check 2.
 	// The value is fairly fixed, static and low cardinality (eg. enums). 3. The
 	// value won't be used in filters or joins with other tables.
+	// Wire name: 'tags'
 	Tags []ListingTag
 
+	// Wire name: 'terms_of_service'
 	TermsOfService string
 	// How often data is updated
+	// Wire name: 'update_frequency'
 	UpdateFrequency *DataRefreshInfo
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listingDetailToPb(st *ListingDetail) (*listingDetailPb, error) {
@@ -7910,25 +7193,11 @@ func listingDetailToPb(st *ListingDetail) (*listingDetailPb, error) {
 		return nil, nil
 	}
 	pb := &listingDetailPb{}
+	pb.Assets = st.Assets
 
-	var assetsPb []AssetType
-	for _, item := range st.Assets {
-		itemPb := &item
-		if itemPb != nil {
-			assetsPb = append(assetsPb, *itemPb)
-		}
-	}
-	pb.Assets = assetsPb
+	pb.CollectionDateEnd = st.CollectionDateEnd
 
-	collectionDateEndPb := &st.CollectionDateEnd
-	if collectionDateEndPb != nil {
-		pb.CollectionDateEnd = *collectionDateEndPb
-	}
-
-	collectionDateStartPb := &st.CollectionDateStart
-	if collectionDateStartPb != nil {
-		pb.CollectionDateStart = *collectionDateStartPb
-	}
+	pb.CollectionDateStart = st.CollectionDateStart
 
 	collectionGranularityPb, err := dataRefreshInfoToPb(st.CollectionGranularity)
 	if err != nil {
@@ -7938,25 +7207,13 @@ func listingDetailToPb(st *ListingDetail) (*listingDetailPb, error) {
 		pb.CollectionGranularity = collectionGranularityPb
 	}
 
-	costPb := &st.Cost
-	if costPb != nil {
-		pb.Cost = *costPb
-	}
+	pb.Cost = st.Cost
 
-	dataSourcePb := &st.DataSource
-	if dataSourcePb != nil {
-		pb.DataSource = *dataSourcePb
-	}
+	pb.DataSource = st.DataSource
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	documentationLinkPb := &st.DocumentationLink
-	if documentationLinkPb != nil {
-		pb.DocumentationLink = *documentationLinkPb
-	}
+	pb.DocumentationLink = st.DocumentationLink
 
 	var embeddedNotebookFileInfosPb []fileInfoPb
 	for _, item := range st.EmbeddedNotebookFileInfos {
@@ -7970,44 +7227,19 @@ func listingDetailToPb(st *ListingDetail) (*listingDetailPb, error) {
 	}
 	pb.EmbeddedNotebookFileInfos = embeddedNotebookFileInfosPb
 
-	var fileIdsPb []string
-	for _, item := range st.FileIds {
-		itemPb := &item
-		if itemPb != nil {
-			fileIdsPb = append(fileIdsPb, *itemPb)
-		}
-	}
-	pb.FileIds = fileIdsPb
+	pb.FileIds = st.FileIds
 
-	geographicalCoveragePb := &st.GeographicalCoverage
-	if geographicalCoveragePb != nil {
-		pb.GeographicalCoverage = *geographicalCoveragePb
-	}
+	pb.GeographicalCoverage = st.GeographicalCoverage
 
-	licensePb := &st.License
-	if licensePb != nil {
-		pb.License = *licensePb
-	}
+	pb.License = st.License
 
-	pricingModelPb := &st.PricingModel
-	if pricingModelPb != nil {
-		pb.PricingModel = *pricingModelPb
-	}
+	pb.PricingModel = st.PricingModel
 
-	privacyPolicyLinkPb := &st.PrivacyPolicyLink
-	if privacyPolicyLinkPb != nil {
-		pb.PrivacyPolicyLink = *privacyPolicyLinkPb
-	}
+	pb.PrivacyPolicyLink = st.PrivacyPolicyLink
 
-	sizePb := &st.Size
-	if sizePb != nil {
-		pb.Size = *sizePb
-	}
+	pb.Size = st.Size
 
-	supportLinkPb := &st.SupportLink
-	if supportLinkPb != nil {
-		pb.SupportLink = *supportLinkPb
-	}
+	pb.SupportLink = st.SupportLink
 
 	var tagsPb []listingTagPb
 	for _, item := range st.Tags {
@@ -8021,10 +7253,7 @@ func listingDetailToPb(st *ListingDetail) (*listingDetailPb, error) {
 	}
 	pb.Tags = tagsPb
 
-	termsOfServicePb := &st.TermsOfService
-	if termsOfServicePb != nil {
-		pb.TermsOfService = *termsOfServicePb
-	}
+	pb.TermsOfService = st.TermsOfService
 
 	updateFrequencyPb, err := dataRefreshInfoToPb(st.UpdateFrequency)
 	if err != nil {
@@ -8121,23 +7350,9 @@ func listingDetailFromPb(pb *listingDetailPb) (*ListingDetail, error) {
 		return nil, nil
 	}
 	st := &ListingDetail{}
-
-	var assetsField []AssetType
-	for _, item := range pb.Assets {
-		itemField := &item
-		if itemField != nil {
-			assetsField = append(assetsField, *itemField)
-		}
-	}
-	st.Assets = assetsField
-	collectionDateEndField := &pb.CollectionDateEnd
-	if collectionDateEndField != nil {
-		st.CollectionDateEnd = *collectionDateEndField
-	}
-	collectionDateStartField := &pb.CollectionDateStart
-	if collectionDateStartField != nil {
-		st.CollectionDateStart = *collectionDateStartField
-	}
+	st.Assets = pb.Assets
+	st.CollectionDateEnd = pb.CollectionDateEnd
+	st.CollectionDateStart = pb.CollectionDateStart
 	collectionGranularityField, err := dataRefreshInfoFromPb(pb.CollectionGranularity)
 	if err != nil {
 		return nil, err
@@ -8145,83 +7360,42 @@ func listingDetailFromPb(pb *listingDetailPb) (*ListingDetail, error) {
 	if collectionGranularityField != nil {
 		st.CollectionGranularity = collectionGranularityField
 	}
-	costField := &pb.Cost
-	if costField != nil {
-		st.Cost = *costField
-	}
-	dataSourceField := &pb.DataSource
-	if dataSourceField != nil {
-		st.DataSource = *dataSourceField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	documentationLinkField := &pb.DocumentationLink
-	if documentationLinkField != nil {
-		st.DocumentationLink = *documentationLinkField
-	}
+	st.Cost = pb.Cost
+	st.DataSource = pb.DataSource
+	st.Description = pb.Description
+	st.DocumentationLink = pb.DocumentationLink
 
 	var embeddedNotebookFileInfosField []FileInfo
-	for _, item := range pb.EmbeddedNotebookFileInfos {
-		itemField, err := fileInfoFromPb(&item)
+	for _, itemPb := range pb.EmbeddedNotebookFileInfos {
+		item, err := fileInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			embeddedNotebookFileInfosField = append(embeddedNotebookFileInfosField, *itemField)
+		if item != nil {
+			embeddedNotebookFileInfosField = append(embeddedNotebookFileInfosField, *item)
 		}
 	}
 	st.EmbeddedNotebookFileInfos = embeddedNotebookFileInfosField
-
-	var fileIdsField []string
-	for _, item := range pb.FileIds {
-		itemField := &item
-		if itemField != nil {
-			fileIdsField = append(fileIdsField, *itemField)
-		}
-	}
-	st.FileIds = fileIdsField
-	geographicalCoverageField := &pb.GeographicalCoverage
-	if geographicalCoverageField != nil {
-		st.GeographicalCoverage = *geographicalCoverageField
-	}
-	licenseField := &pb.License
-	if licenseField != nil {
-		st.License = *licenseField
-	}
-	pricingModelField := &pb.PricingModel
-	if pricingModelField != nil {
-		st.PricingModel = *pricingModelField
-	}
-	privacyPolicyLinkField := &pb.PrivacyPolicyLink
-	if privacyPolicyLinkField != nil {
-		st.PrivacyPolicyLink = *privacyPolicyLinkField
-	}
-	sizeField := &pb.Size
-	if sizeField != nil {
-		st.Size = *sizeField
-	}
-	supportLinkField := &pb.SupportLink
-	if supportLinkField != nil {
-		st.SupportLink = *supportLinkField
-	}
+	st.FileIds = pb.FileIds
+	st.GeographicalCoverage = pb.GeographicalCoverage
+	st.License = pb.License
+	st.PricingModel = pb.PricingModel
+	st.PrivacyPolicyLink = pb.PrivacyPolicyLink
+	st.Size = pb.Size
+	st.SupportLink = pb.SupportLink
 
 	var tagsField []ListingTag
-	for _, item := range pb.Tags {
-		itemField, err := listingTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := listingTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
-	termsOfServiceField := &pb.TermsOfService
-	if termsOfServiceField != nil {
-		st.TermsOfService = *termsOfServiceField
-	}
+	st.TermsOfService = pb.TermsOfService
 	updateFrequencyField, err := dataRefreshInfoFromPb(pb.UpdateFrequency)
 	if err != nil {
 		return nil, err
@@ -8243,14 +7417,20 @@ func (st listingDetailPb) MarshalJSON() ([]byte, error) {
 }
 
 type ListingFulfillment struct {
+
+	// Wire name: 'fulfillment_type'
 	FulfillmentType FulfillmentType
 
+	// Wire name: 'listing_id'
 	ListingId string
 
+	// Wire name: 'recipient_type'
 	RecipientType DeltaSharingRecipientType
 
+	// Wire name: 'repo_info'
 	RepoInfo *RepoInfo
 
+	// Wire name: 'share_info'
 	ShareInfo *ShareInfo
 }
 
@@ -8259,20 +7439,11 @@ func listingFulfillmentToPb(st *ListingFulfillment) (*listingFulfillmentPb, erro
 		return nil, nil
 	}
 	pb := &listingFulfillmentPb{}
-	fulfillmentTypePb := &st.FulfillmentType
-	if fulfillmentTypePb != nil {
-		pb.FulfillmentType = *fulfillmentTypePb
-	}
+	pb.FulfillmentType = st.FulfillmentType
 
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	recipientTypePb := &st.RecipientType
-	if recipientTypePb != nil {
-		pb.RecipientType = *recipientTypePb
-	}
+	pb.RecipientType = st.RecipientType
 
 	repoInfoPb, err := repoInfoToPb(st.RepoInfo)
 	if err != nil {
@@ -8335,18 +7506,9 @@ func listingFulfillmentFromPb(pb *listingFulfillmentPb) (*ListingFulfillment, er
 		return nil, nil
 	}
 	st := &ListingFulfillment{}
-	fulfillmentTypeField := &pb.FulfillmentType
-	if fulfillmentTypeField != nil {
-		st.FulfillmentType = *fulfillmentTypeField
-	}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	recipientTypeField := &pb.RecipientType
-	if recipientTypeField != nil {
-		st.RecipientType = *recipientTypeField
-	}
+	st.FulfillmentType = pb.FulfillmentType
+	st.ListingId = pb.ListingId
+	st.RecipientType = pb.RecipientType
 	repoInfoField, err := repoInfoFromPb(pb.RepoInfo)
 	if err != nil {
 		return nil, err
@@ -8366,6 +7528,8 @@ func listingFulfillmentFromPb(pb *listingFulfillmentPb) (*ListingFulfillment, er
 }
 
 type ListingSetting struct {
+
+	// Wire name: 'visibility'
 	Visibility Visibility
 }
 
@@ -8374,10 +7538,7 @@ func listingSettingToPb(st *ListingSetting) (*listingSettingPb, error) {
 		return nil, nil
 	}
 	pb := &listingSettingPb{}
-	visibilityPb := &st.Visibility
-	if visibilityPb != nil {
-		pb.Visibility = *visibilityPb
-	}
+	pb.Visibility = st.Visibility
 
 	return pb, nil
 }
@@ -8416,10 +7577,7 @@ func listingSettingFromPb(pb *listingSettingPb) (*ListingSetting, error) {
 		return nil, nil
 	}
 	st := &ListingSetting{}
-	visibilityField := &pb.Visibility
-	if visibilityField != nil {
-		st.Visibility = *visibilityField
-	}
+	st.Visibility = pb.Visibility
 
 	return st, nil
 }
@@ -8518,46 +7676,66 @@ func listingStatusFromPb(pb *listingStatusPb) (*ListingStatus, error) {
 }
 
 type ListingSummary struct {
+
+	// Wire name: 'categories'
 	Categories []Category
 
+	// Wire name: 'created_at'
 	CreatedAt int64
 
+	// Wire name: 'created_by'
 	CreatedBy string
 
+	// Wire name: 'created_by_id'
 	CreatedById int64
 
+	// Wire name: 'exchange_ids'
 	ExchangeIds []string
 	// if a git repo is being created, a listing will be initialized with this
 	// field as opposed to a share
+	// Wire name: 'git_repo'
 	GitRepo *RepoInfo
 
+	// Wire name: 'listingType'
 	ListingType ListingType
 
+	// Wire name: 'name'
 	Name string
 
+	// Wire name: 'provider_id'
 	ProviderId string
 
+	// Wire name: 'provider_region'
 	ProviderRegion *RegionInfo
 
+	// Wire name: 'published_at'
 	PublishedAt int64
 
+	// Wire name: 'published_by'
 	PublishedBy string
 
+	// Wire name: 'setting'
 	Setting *ListingSetting
 
+	// Wire name: 'share'
 	Share *ShareInfo
 	// Enums
+	// Wire name: 'status'
 	Status ListingStatus
 
+	// Wire name: 'subtitle'
 	Subtitle string
 
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
+	// Wire name: 'updated_by_id'
 	UpdatedById int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listingSummaryToPb(st *ListingSummary) (*listingSummaryPb, error) {
@@ -8565,39 +7743,15 @@ func listingSummaryToPb(st *ListingSummary) (*listingSummaryPb, error) {
 		return nil, nil
 	}
 	pb := &listingSummaryPb{}
+	pb.Categories = st.Categories
 
-	var categoriesPb []Category
-	for _, item := range st.Categories {
-		itemPb := &item
-		if itemPb != nil {
-			categoriesPb = append(categoriesPb, *itemPb)
-		}
-	}
-	pb.Categories = categoriesPb
+	pb.CreatedAt = st.CreatedAt
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedById = st.CreatedById
 
-	createdByIdPb := &st.CreatedById
-	if createdByIdPb != nil {
-		pb.CreatedById = *createdByIdPb
-	}
-
-	var exchangeIdsPb []string
-	for _, item := range st.ExchangeIds {
-		itemPb := &item
-		if itemPb != nil {
-			exchangeIdsPb = append(exchangeIdsPb, *itemPb)
-		}
-	}
-	pb.ExchangeIds = exchangeIdsPb
+	pb.ExchangeIds = st.ExchangeIds
 
 	gitRepoPb, err := repoInfoToPb(st.GitRepo)
 	if err != nil {
@@ -8607,20 +7761,11 @@ func listingSummaryToPb(st *ListingSummary) (*listingSummaryPb, error) {
 		pb.GitRepo = gitRepoPb
 	}
 
-	listingTypePb := &st.ListingType
-	if listingTypePb != nil {
-		pb.ListingType = *listingTypePb
-	}
+	pb.ListingType = st.ListingType
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	providerIdPb := &st.ProviderId
-	if providerIdPb != nil {
-		pb.ProviderId = *providerIdPb
-	}
+	pb.ProviderId = st.ProviderId
 
 	providerRegionPb, err := regionInfoToPb(st.ProviderRegion)
 	if err != nil {
@@ -8630,15 +7775,9 @@ func listingSummaryToPb(st *ListingSummary) (*listingSummaryPb, error) {
 		pb.ProviderRegion = providerRegionPb
 	}
 
-	publishedAtPb := &st.PublishedAt
-	if publishedAtPb != nil {
-		pb.PublishedAt = *publishedAtPb
-	}
+	pb.PublishedAt = st.PublishedAt
 
-	publishedByPb := &st.PublishedBy
-	if publishedByPb != nil {
-		pb.PublishedBy = *publishedByPb
-	}
+	pb.PublishedBy = st.PublishedBy
 
 	settingPb, err := listingSettingToPb(st.Setting)
 	if err != nil {
@@ -8656,30 +7795,15 @@ func listingSummaryToPb(st *ListingSummary) (*listingSummaryPb, error) {
 		pb.Share = sharePb
 	}
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	subtitlePb := &st.Subtitle
-	if subtitlePb != nil {
-		pb.Subtitle = *subtitlePb
-	}
+	pb.Subtitle = st.Subtitle
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
-	updatedByIdPb := &st.UpdatedById
-	if updatedByIdPb != nil {
-		pb.UpdatedById = *updatedByIdPb
-	}
+	pb.UpdatedById = st.UpdatedById
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8758,36 +7882,11 @@ func listingSummaryFromPb(pb *listingSummaryPb) (*ListingSummary, error) {
 		return nil, nil
 	}
 	st := &ListingSummary{}
-
-	var categoriesField []Category
-	for _, item := range pb.Categories {
-		itemField := &item
-		if itemField != nil {
-			categoriesField = append(categoriesField, *itemField)
-		}
-	}
-	st.Categories = categoriesField
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	createdByIdField := &pb.CreatedById
-	if createdByIdField != nil {
-		st.CreatedById = *createdByIdField
-	}
-
-	var exchangeIdsField []string
-	for _, item := range pb.ExchangeIds {
-		itemField := &item
-		if itemField != nil {
-			exchangeIdsField = append(exchangeIdsField, *itemField)
-		}
-	}
-	st.ExchangeIds = exchangeIdsField
+	st.Categories = pb.Categories
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.CreatedById = pb.CreatedById
+	st.ExchangeIds = pb.ExchangeIds
 	gitRepoField, err := repoInfoFromPb(pb.GitRepo)
 	if err != nil {
 		return nil, err
@@ -8795,18 +7894,9 @@ func listingSummaryFromPb(pb *listingSummaryPb) (*ListingSummary, error) {
 	if gitRepoField != nil {
 		st.GitRepo = gitRepoField
 	}
-	listingTypeField := &pb.ListingType
-	if listingTypeField != nil {
-		st.ListingType = *listingTypeField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	providerIdField := &pb.ProviderId
-	if providerIdField != nil {
-		st.ProviderId = *providerIdField
-	}
+	st.ListingType = pb.ListingType
+	st.Name = pb.Name
+	st.ProviderId = pb.ProviderId
 	providerRegionField, err := regionInfoFromPb(pb.ProviderRegion)
 	if err != nil {
 		return nil, err
@@ -8814,14 +7904,8 @@ func listingSummaryFromPb(pb *listingSummaryPb) (*ListingSummary, error) {
 	if providerRegionField != nil {
 		st.ProviderRegion = providerRegionField
 	}
-	publishedAtField := &pb.PublishedAt
-	if publishedAtField != nil {
-		st.PublishedAt = *publishedAtField
-	}
-	publishedByField := &pb.PublishedBy
-	if publishedByField != nil {
-		st.PublishedBy = *publishedByField
-	}
+	st.PublishedAt = pb.PublishedAt
+	st.PublishedBy = pb.PublishedBy
 	settingField, err := listingSettingFromPb(pb.Setting)
 	if err != nil {
 		return nil, err
@@ -8836,26 +7920,11 @@ func listingSummaryFromPb(pb *listingSummaryPb) (*ListingSummary, error) {
 	if shareField != nil {
 		st.Share = shareField
 	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	subtitleField := &pb.Subtitle
-	if subtitleField != nil {
-		st.Subtitle = *subtitleField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
-	updatedByIdField := &pb.UpdatedById
-	if updatedByIdField != nil {
-		st.UpdatedById = *updatedByIdField
-	}
+	st.Status = pb.Status
+	st.Subtitle = pb.Subtitle
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
+	st.UpdatedById = pb.UpdatedById
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8871,9 +7940,11 @@ func (st listingSummaryPb) MarshalJSON() ([]byte, error) {
 
 type ListingTag struct {
 	// Tag name (enum)
+	// Wire name: 'tag_name'
 	TagName ListingTagType
 	// String representation of the tag value. Values should be string literals
 	// (no complex types)
+	// Wire name: 'tag_values'
 	TagValues []string
 }
 
@@ -8882,19 +7953,9 @@ func listingTagToPb(st *ListingTag) (*listingTagPb, error) {
 		return nil, nil
 	}
 	pb := &listingTagPb{}
-	tagNamePb := &st.TagName
-	if tagNamePb != nil {
-		pb.TagName = *tagNamePb
-	}
+	pb.TagName = st.TagName
 
-	var tagValuesPb []string
-	for _, item := range st.TagValues {
-		itemPb := &item
-		if itemPb != nil {
-			tagValuesPb = append(tagValuesPb, *itemPb)
-		}
-	}
-	pb.TagValues = tagValuesPb
+	pb.TagValues = st.TagValues
 
 	return pb, nil
 }
@@ -8937,19 +7998,8 @@ func listingTagFromPb(pb *listingTagPb) (*ListingTag, error) {
 		return nil, nil
 	}
 	st := &ListingTag{}
-	tagNameField := &pb.TagName
-	if tagNameField != nil {
-		st.TagName = *tagNameField
-	}
-
-	var tagValuesField []string
-	for _, item := range pb.TagValues {
-		itemField := &item
-		if itemField != nil {
-			tagValuesField = append(tagValuesField, *itemField)
-		}
-	}
-	st.TagValues = tagValuesField
+	st.TagName = pb.TagName
+	st.TagValues = pb.TagValues
 
 	return st, nil
 }
@@ -9089,40 +8139,57 @@ func marketplaceFileTypeFromPb(pb *marketplaceFileTypePb) (*MarketplaceFileType,
 }
 
 type PersonalizationRequest struct {
+
+	// Wire name: 'comment'
 	Comment string
 
+	// Wire name: 'consumer_region'
 	ConsumerRegion RegionInfo
 	// contact info for the consumer requesting data or performing a listing
 	// installation
+	// Wire name: 'contact_info'
 	ContactInfo *ContactInfo
 
+	// Wire name: 'created_at'
 	CreatedAt int64
 
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'intended_use'
 	IntendedUse string
 
+	// Wire name: 'is_from_lighthouse'
 	IsFromLighthouse bool
 
+	// Wire name: 'listing_id'
 	ListingId string
 
+	// Wire name: 'listing_name'
 	ListingName string
 
+	// Wire name: 'metastore_id'
 	MetastoreId string
 
+	// Wire name: 'provider_id'
 	ProviderId string
 
+	// Wire name: 'recipient_type'
 	RecipientType DeltaSharingRecipientType
 
+	// Wire name: 'share'
 	Share *ShareInfo
 
+	// Wire name: 'status'
 	Status PersonalizationRequestStatus
 
+	// Wire name: 'status_message'
 	StatusMessage string
 
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func personalizationRequestToPb(st *PersonalizationRequest) (*personalizationRequestPb, error) {
@@ -9130,10 +8197,7 @@ func personalizationRequestToPb(st *PersonalizationRequest) (*personalizationReq
 		return nil, nil
 	}
 	pb := &personalizationRequestPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
 	consumerRegionPb, err := regionInfoToPb(&st.ConsumerRegion)
 	if err != nil {
@@ -9151,50 +8215,23 @@ func personalizationRequestToPb(st *PersonalizationRequest) (*personalizationReq
 		pb.ContactInfo = contactInfoPb
 	}
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	intendedUsePb := &st.IntendedUse
-	if intendedUsePb != nil {
-		pb.IntendedUse = *intendedUsePb
-	}
+	pb.IntendedUse = st.IntendedUse
 
-	isFromLighthousePb := &st.IsFromLighthouse
-	if isFromLighthousePb != nil {
-		pb.IsFromLighthouse = *isFromLighthousePb
-	}
+	pb.IsFromLighthouse = st.IsFromLighthouse
 
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	listingNamePb := &st.ListingName
-	if listingNamePb != nil {
-		pb.ListingName = *listingNamePb
-	}
+	pb.ListingName = st.ListingName
 
-	metastoreIdPb := &st.MetastoreId
-	if metastoreIdPb != nil {
-		pb.MetastoreId = *metastoreIdPb
-	}
+	pb.MetastoreId = st.MetastoreId
 
-	providerIdPb := &st.ProviderId
-	if providerIdPb != nil {
-		pb.ProviderId = *providerIdPb
-	}
+	pb.ProviderId = st.ProviderId
 
-	recipientTypePb := &st.RecipientType
-	if recipientTypePb != nil {
-		pb.RecipientType = *recipientTypePb
-	}
+	pb.RecipientType = st.RecipientType
 
 	sharePb, err := shareInfoToPb(st.Share)
 	if err != nil {
@@ -9204,20 +8241,11 @@ func personalizationRequestToPb(st *PersonalizationRequest) (*personalizationReq
 		pb.Share = sharePb
 	}
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	statusMessagePb := &st.StatusMessage
-	if statusMessagePb != nil {
-		pb.StatusMessage = *statusMessagePb
-	}
+	pb.StatusMessage = st.StatusMessage
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9290,10 +8318,7 @@ func personalizationRequestFromPb(pb *personalizationRequestPb) (*Personalizatio
 		return nil, nil
 	}
 	st := &PersonalizationRequest{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
+	st.Comment = pb.Comment
 	consumerRegionField, err := regionInfoFromPb(&pb.ConsumerRegion)
 	if err != nil {
 		return nil, err
@@ -9308,42 +8333,15 @@ func personalizationRequestFromPb(pb *personalizationRequestPb) (*Personalizatio
 	if contactInfoField != nil {
 		st.ContactInfo = contactInfoField
 	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	intendedUseField := &pb.IntendedUse
-	if intendedUseField != nil {
-		st.IntendedUse = *intendedUseField
-	}
-	isFromLighthouseField := &pb.IsFromLighthouse
-	if isFromLighthouseField != nil {
-		st.IsFromLighthouse = *isFromLighthouseField
-	}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	listingNameField := &pb.ListingName
-	if listingNameField != nil {
-		st.ListingName = *listingNameField
-	}
-	metastoreIdField := &pb.MetastoreId
-	if metastoreIdField != nil {
-		st.MetastoreId = *metastoreIdField
-	}
-	providerIdField := &pb.ProviderId
-	if providerIdField != nil {
-		st.ProviderId = *providerIdField
-	}
-	recipientTypeField := &pb.RecipientType
-	if recipientTypeField != nil {
-		st.RecipientType = *recipientTypeField
-	}
+	st.CreatedAt = pb.CreatedAt
+	st.Id = pb.Id
+	st.IntendedUse = pb.IntendedUse
+	st.IsFromLighthouse = pb.IsFromLighthouse
+	st.ListingId = pb.ListingId
+	st.ListingName = pb.ListingName
+	st.MetastoreId = pb.MetastoreId
+	st.ProviderId = pb.ProviderId
+	st.RecipientType = pb.RecipientType
 	shareField, err := shareInfoFromPb(pb.Share)
 	if err != nil {
 		return nil, err
@@ -9351,18 +8349,9 @@ func personalizationRequestFromPb(pb *personalizationRequestPb) (*Personalizatio
 	if shareField != nil {
 		st.Share = shareField
 	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	statusMessageField := &pb.StatusMessage
-	if statusMessageField != nil {
-		st.StatusMessage = *statusMessageField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
+	st.Status = pb.Status
+	st.StatusMessage = pb.StatusMessage
+	st.UpdatedAt = pb.UpdatedAt
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9425,6 +8414,8 @@ func personalizationRequestStatusFromPb(pb *personalizationRequestStatusPb) (*Pe
 }
 
 type ProviderAnalyticsDashboard struct {
+
+	// Wire name: 'id'
 	Id string
 }
 
@@ -9433,10 +8424,7 @@ func providerAnalyticsDashboardToPb(st *ProviderAnalyticsDashboard) (*providerAn
 		return nil, nil
 	}
 	pb := &providerAnalyticsDashboardPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -9475,44 +8463,56 @@ func providerAnalyticsDashboardFromPb(pb *providerAnalyticsDashboardPb) (*Provid
 		return nil, nil
 	}
 	st := &ProviderAnalyticsDashboard{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type ProviderInfo struct {
+
+	// Wire name: 'business_contact_email'
 	BusinessContactEmail string
 
+	// Wire name: 'company_website_link'
 	CompanyWebsiteLink string
 
+	// Wire name: 'dark_mode_icon_file_id'
 	DarkModeIconFileId string
 
+	// Wire name: 'dark_mode_icon_file_path'
 	DarkModeIconFilePath string
 
+	// Wire name: 'description'
 	Description string
 
+	// Wire name: 'icon_file_id'
 	IconFileId string
 
+	// Wire name: 'icon_file_path'
 	IconFilePath string
 
+	// Wire name: 'id'
 	Id string
 	// is_featured is accessible by consumers only
+	// Wire name: 'is_featured'
 	IsFeatured bool
 
+	// Wire name: 'name'
 	Name string
 
+	// Wire name: 'privacy_policy_link'
 	PrivacyPolicyLink string
 	// published_by is only applicable to data aggregators (e.g. Crux)
+	// Wire name: 'published_by'
 	PublishedBy string
 
+	// Wire name: 'support_contact_email'
 	SupportContactEmail string
 
+	// Wire name: 'term_of_service_link'
 	TermOfServiceLink string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func providerInfoToPb(st *ProviderInfo) (*providerInfoPb, error) {
@@ -9520,75 +8520,33 @@ func providerInfoToPb(st *ProviderInfo) (*providerInfoPb, error) {
 		return nil, nil
 	}
 	pb := &providerInfoPb{}
-	businessContactEmailPb := &st.BusinessContactEmail
-	if businessContactEmailPb != nil {
-		pb.BusinessContactEmail = *businessContactEmailPb
-	}
+	pb.BusinessContactEmail = st.BusinessContactEmail
 
-	companyWebsiteLinkPb := &st.CompanyWebsiteLink
-	if companyWebsiteLinkPb != nil {
-		pb.CompanyWebsiteLink = *companyWebsiteLinkPb
-	}
+	pb.CompanyWebsiteLink = st.CompanyWebsiteLink
 
-	darkModeIconFileIdPb := &st.DarkModeIconFileId
-	if darkModeIconFileIdPb != nil {
-		pb.DarkModeIconFileId = *darkModeIconFileIdPb
-	}
+	pb.DarkModeIconFileId = st.DarkModeIconFileId
 
-	darkModeIconFilePathPb := &st.DarkModeIconFilePath
-	if darkModeIconFilePathPb != nil {
-		pb.DarkModeIconFilePath = *darkModeIconFilePathPb
-	}
+	pb.DarkModeIconFilePath = st.DarkModeIconFilePath
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	iconFileIdPb := &st.IconFileId
-	if iconFileIdPb != nil {
-		pb.IconFileId = *iconFileIdPb
-	}
+	pb.IconFileId = st.IconFileId
 
-	iconFilePathPb := &st.IconFilePath
-	if iconFilePathPb != nil {
-		pb.IconFilePath = *iconFilePathPb
-	}
+	pb.IconFilePath = st.IconFilePath
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	isFeaturedPb := &st.IsFeatured
-	if isFeaturedPb != nil {
-		pb.IsFeatured = *isFeaturedPb
-	}
+	pb.IsFeatured = st.IsFeatured
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	privacyPolicyLinkPb := &st.PrivacyPolicyLink
-	if privacyPolicyLinkPb != nil {
-		pb.PrivacyPolicyLink = *privacyPolicyLinkPb
-	}
+	pb.PrivacyPolicyLink = st.PrivacyPolicyLink
 
-	publishedByPb := &st.PublishedBy
-	if publishedByPb != nil {
-		pb.PublishedBy = *publishedByPb
-	}
+	pb.PublishedBy = st.PublishedBy
 
-	supportContactEmailPb := &st.SupportContactEmail
-	if supportContactEmailPb != nil {
-		pb.SupportContactEmail = *supportContactEmailPb
-	}
+	pb.SupportContactEmail = st.SupportContactEmail
 
-	termOfServiceLinkPb := &st.TermOfServiceLink
-	if termOfServiceLinkPb != nil {
-		pb.TermOfServiceLink = *termOfServiceLinkPb
-	}
+	pb.TermOfServiceLink = st.TermOfServiceLink
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9656,62 +8614,20 @@ func providerInfoFromPb(pb *providerInfoPb) (*ProviderInfo, error) {
 		return nil, nil
 	}
 	st := &ProviderInfo{}
-	businessContactEmailField := &pb.BusinessContactEmail
-	if businessContactEmailField != nil {
-		st.BusinessContactEmail = *businessContactEmailField
-	}
-	companyWebsiteLinkField := &pb.CompanyWebsiteLink
-	if companyWebsiteLinkField != nil {
-		st.CompanyWebsiteLink = *companyWebsiteLinkField
-	}
-	darkModeIconFileIdField := &pb.DarkModeIconFileId
-	if darkModeIconFileIdField != nil {
-		st.DarkModeIconFileId = *darkModeIconFileIdField
-	}
-	darkModeIconFilePathField := &pb.DarkModeIconFilePath
-	if darkModeIconFilePathField != nil {
-		st.DarkModeIconFilePath = *darkModeIconFilePathField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	iconFileIdField := &pb.IconFileId
-	if iconFileIdField != nil {
-		st.IconFileId = *iconFileIdField
-	}
-	iconFilePathField := &pb.IconFilePath
-	if iconFilePathField != nil {
-		st.IconFilePath = *iconFilePathField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	isFeaturedField := &pb.IsFeatured
-	if isFeaturedField != nil {
-		st.IsFeatured = *isFeaturedField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	privacyPolicyLinkField := &pb.PrivacyPolicyLink
-	if privacyPolicyLinkField != nil {
-		st.PrivacyPolicyLink = *privacyPolicyLinkField
-	}
-	publishedByField := &pb.PublishedBy
-	if publishedByField != nil {
-		st.PublishedBy = *publishedByField
-	}
-	supportContactEmailField := &pb.SupportContactEmail
-	if supportContactEmailField != nil {
-		st.SupportContactEmail = *supportContactEmailField
-	}
-	termOfServiceLinkField := &pb.TermOfServiceLink
-	if termOfServiceLinkField != nil {
-		st.TermOfServiceLink = *termOfServiceLinkField
-	}
+	st.BusinessContactEmail = pb.BusinessContactEmail
+	st.CompanyWebsiteLink = pb.CompanyWebsiteLink
+	st.DarkModeIconFileId = pb.DarkModeIconFileId
+	st.DarkModeIconFilePath = pb.DarkModeIconFilePath
+	st.Description = pb.Description
+	st.IconFileId = pb.IconFileId
+	st.IconFilePath = pb.IconFilePath
+	st.Id = pb.Id
+	st.IsFeatured = pb.IsFeatured
+	st.Name = pb.Name
+	st.PrivacyPolicyLink = pb.PrivacyPolicyLink
+	st.PublishedBy = pb.PublishedBy
+	st.SupportContactEmail = pb.SupportContactEmail
+	st.TermOfServiceLink = pb.TermOfServiceLink
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9726,11 +8642,14 @@ func (st providerInfoPb) MarshalJSON() ([]byte, error) {
 }
 
 type RegionInfo struct {
+
+	// Wire name: 'cloud'
 	Cloud string
 
+	// Wire name: 'region'
 	Region string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func regionInfoToPb(st *RegionInfo) (*regionInfoPb, error) {
@@ -9738,15 +8657,9 @@ func regionInfoToPb(st *RegionInfo) (*regionInfoPb, error) {
 		return nil, nil
 	}
 	pb := &regionInfoPb{}
-	cloudPb := &st.Cloud
-	if cloudPb != nil {
-		pb.Cloud = *cloudPb
-	}
+	pb.Cloud = st.Cloud
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9790,14 +8703,8 @@ func regionInfoFromPb(pb *regionInfoPb) (*RegionInfo, error) {
 		return nil, nil
 	}
 	st := &RegionInfo{}
-	cloudField := &pb.Cloud
-	if cloudField != nil {
-		st.Cloud = *cloudField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
+	st.Cloud = pb.Cloud
+	st.Region = pb.Region
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9813,7 +8720,9 @@ func (st regionInfoPb) MarshalJSON() ([]byte, error) {
 
 // Remove an exchange for listing
 type RemoveExchangeForListingRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func removeExchangeForListingRequestToPb(st *RemoveExchangeForListingRequest) (*removeExchangeForListingRequestPb, error) {
@@ -9821,10 +8730,7 @@ func removeExchangeForListingRequestToPb(st *RemoveExchangeForListingRequest) (*
 		return nil, nil
 	}
 	pb := &removeExchangeForListingRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -9863,10 +8769,7 @@ func removeExchangeForListingRequestFromPb(pb *removeExchangeForListingRequestPb
 		return nil, nil
 	}
 	st := &RemoveExchangeForListingRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -9922,6 +8825,7 @@ func removeExchangeForListingResponseFromPb(pb *removeExchangeForListingResponse
 
 type RepoInfo struct {
 	// the git repo url e.g. https://github.com/databrickslabs/dolly.git
+	// Wire name: 'git_repo_url'
 	GitRepoUrl string
 }
 
@@ -9930,10 +8834,7 @@ func repoInfoToPb(st *RepoInfo) (*repoInfoPb, error) {
 		return nil, nil
 	}
 	pb := &repoInfoPb{}
-	gitRepoUrlPb := &st.GitRepoUrl
-	if gitRepoUrlPb != nil {
-		pb.GitRepoUrl = *gitRepoUrlPb
-	}
+	pb.GitRepoUrl = st.GitRepoUrl
 
 	return pb, nil
 }
@@ -9973,20 +8874,19 @@ func repoInfoFromPb(pb *repoInfoPb) (*RepoInfo, error) {
 		return nil, nil
 	}
 	st := &RepoInfo{}
-	gitRepoUrlField := &pb.GitRepoUrl
-	if gitRepoUrlField != nil {
-		st.GitRepoUrl = *gitRepoUrlField
-	}
+	st.GitRepoUrl = pb.GitRepoUrl
 
 	return st, nil
 }
 
 type RepoInstallation struct {
 	// the user-specified repo name for their installed git repo listing
+	// Wire name: 'repo_name'
 	RepoName string
 	// refers to the full url file path that navigates the user to the repo's
 	// entrypoint (e.g. a README.md file, or the repo file view in the unified
 	// UI) should just be a relative path
+	// Wire name: 'repo_path'
 	RepoPath string
 }
 
@@ -9995,15 +8895,9 @@ func repoInstallationToPb(st *RepoInstallation) (*repoInstallationPb, error) {
 		return nil, nil
 	}
 	pb := &repoInstallationPb{}
-	repoNamePb := &st.RepoName
-	if repoNamePb != nil {
-		pb.RepoName = *repoNamePb
-	}
+	pb.RepoName = st.RepoName
 
-	repoPathPb := &st.RepoPath
-	if repoPathPb != nil {
-		pb.RepoPath = *repoPathPb
-	}
+	pb.RepoPath = st.RepoPath
 
 	return pb, nil
 }
@@ -10047,14 +8941,8 @@ func repoInstallationFromPb(pb *repoInstallationPb) (*RepoInstallation, error) {
 		return nil, nil
 	}
 	st := &RepoInstallation{}
-	repoNameField := &pb.RepoName
-	if repoNameField != nil {
-		st.RepoName = *repoNameField
-	}
-	repoPathField := &pb.RepoPath
-	if repoPathField != nil {
-		st.RepoPath = *repoPathField
-	}
+	st.RepoName = pb.RepoName
+	st.RepoPath = pb.RepoPath
 
 	return st, nil
 }
@@ -10062,23 +8950,31 @@ func repoInstallationFromPb(pb *repoInstallationPb) (*RepoInstallation, error) {
 // Search listings
 type SearchListingsRequest struct {
 	// Matches any of the following asset types
-	Assets []AssetType
+	// Wire name: 'assets'
+	Assets []AssetType `tf:"-"`
 	// Matches any of the following categories
-	Categories []Category
+	// Wire name: 'categories'
+	Categories []Category `tf:"-"`
 
-	IsFree bool
+	// Wire name: 'is_free'
+	IsFree bool `tf:"-"`
 
-	IsPrivateExchange bool
+	// Wire name: 'is_private_exchange'
+	IsPrivateExchange bool `tf:"-"`
 
-	PageSize int
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Matches any of the following provider ids
-	ProviderIds []string
+	// Wire name: 'provider_ids'
+	ProviderIds []string `tf:"-"`
 	// Fuzzy matches query
-	Query string
+	// Wire name: 'query'
+	Query string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func searchListingsRequestToPb(st *SearchListingsRequest) (*searchListingsRequestPb, error) {
@@ -10086,58 +8982,21 @@ func searchListingsRequestToPb(st *SearchListingsRequest) (*searchListingsReques
 		return nil, nil
 	}
 	pb := &searchListingsRequestPb{}
+	pb.Assets = st.Assets
 
-	var assetsPb []AssetType
-	for _, item := range st.Assets {
-		itemPb := &item
-		if itemPb != nil {
-			assetsPb = append(assetsPb, *itemPb)
-		}
-	}
-	pb.Assets = assetsPb
+	pb.Categories = st.Categories
 
-	var categoriesPb []Category
-	for _, item := range st.Categories {
-		itemPb := &item
-		if itemPb != nil {
-			categoriesPb = append(categoriesPb, *itemPb)
-		}
-	}
-	pb.Categories = categoriesPb
+	pb.IsFree = st.IsFree
 
-	isFreePb := &st.IsFree
-	if isFreePb != nil {
-		pb.IsFree = *isFreePb
-	}
+	pb.IsPrivateExchange = st.IsPrivateExchange
 
-	isPrivateExchangePb := &st.IsPrivateExchange
-	if isPrivateExchangePb != nil {
-		pb.IsPrivateExchange = *isPrivateExchangePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageToken = st.PageToken
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.ProviderIds = st.ProviderIds
 
-	var providerIdsPb []string
-	for _, item := range st.ProviderIds {
-		itemPb := &item
-		if itemPb != nil {
-			providerIdsPb = append(providerIdsPb, *itemPb)
-		}
-	}
-	pb.ProviderIds = providerIdsPb
-
-	queryPb := &st.Query
-	if queryPb != nil {
-		pb.Query = *queryPb
-	}
+	pb.Query = st.Query
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10194,53 +9053,14 @@ func searchListingsRequestFromPb(pb *searchListingsRequestPb) (*SearchListingsRe
 		return nil, nil
 	}
 	st := &SearchListingsRequest{}
-
-	var assetsField []AssetType
-	for _, item := range pb.Assets {
-		itemField := &item
-		if itemField != nil {
-			assetsField = append(assetsField, *itemField)
-		}
-	}
-	st.Assets = assetsField
-
-	var categoriesField []Category
-	for _, item := range pb.Categories {
-		itemField := &item
-		if itemField != nil {
-			categoriesField = append(categoriesField, *itemField)
-		}
-	}
-	st.Categories = categoriesField
-	isFreeField := &pb.IsFree
-	if isFreeField != nil {
-		st.IsFree = *isFreeField
-	}
-	isPrivateExchangeField := &pb.IsPrivateExchange
-	if isPrivateExchangeField != nil {
-		st.IsPrivateExchange = *isPrivateExchangeField
-	}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-
-	var providerIdsField []string
-	for _, item := range pb.ProviderIds {
-		itemField := &item
-		if itemField != nil {
-			providerIdsField = append(providerIdsField, *itemField)
-		}
-	}
-	st.ProviderIds = providerIdsField
-	queryField := &pb.Query
-	if queryField != nil {
-		st.Query = *queryField
-	}
+	st.Assets = pb.Assets
+	st.Categories = pb.Categories
+	st.IsFree = pb.IsFree
+	st.IsPrivateExchange = pb.IsPrivateExchange
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
+	st.ProviderIds = pb.ProviderIds
+	st.Query = pb.Query
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10255,11 +9075,14 @@ func (st searchListingsRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type SearchListingsResponse struct {
+
+	// Wire name: 'listings'
 	Listings []Listing
 
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func searchListingsResponseToPb(st *SearchListingsResponse) (*searchListingsResponsePb, error) {
@@ -10280,10 +9103,7 @@ func searchListingsResponseToPb(st *SearchListingsResponse) (*searchListingsResp
 	}
 	pb.Listings = listingsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10329,20 +9149,17 @@ func searchListingsResponseFromPb(pb *searchListingsResponsePb) (*SearchListings
 	st := &SearchListingsResponse{}
 
 	var listingsField []Listing
-	for _, item := range pb.Listings {
-		itemField, err := listingFromPb(&item)
+	for _, itemPb := range pb.Listings {
+		item, err := listingFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			listingsField = append(listingsField, *itemField)
+		if item != nil {
+			listingsField = append(listingsField, *item)
 		}
 	}
 	st.Listings = listingsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10357,8 +9174,11 @@ func (st searchListingsResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type ShareInfo struct {
+
+	// Wire name: 'name'
 	Name string
 
+	// Wire name: 'type'
 	Type ListingShareType
 }
 
@@ -10367,15 +9187,9 @@ func shareInfoToPb(st *ShareInfo) (*shareInfoPb, error) {
 		return nil, nil
 	}
 	pb := &shareInfoPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	return pb, nil
 }
@@ -10416,14 +9230,8 @@ func shareInfoFromPb(pb *shareInfoPb) (*ShareInfo, error) {
 		return nil, nil
 	}
 	st := &ShareInfo{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.Name = pb.Name
+	st.Type = pb.Type
 
 	return st, nil
 }
@@ -10431,11 +9239,13 @@ func shareInfoFromPb(pb *shareInfoPb) (*ShareInfo, error) {
 type SharedDataObject struct {
 	// The type of the data object. Could be one of: TABLE, SCHEMA,
 	// NOTEBOOK_FILE, MODEL, VOLUME
+	// Wire name: 'data_object_type'
 	DataObjectType string
 	// Name of the shared object
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func sharedDataObjectToPb(st *SharedDataObject) (*sharedDataObjectPb, error) {
@@ -10443,15 +9253,9 @@ func sharedDataObjectToPb(st *SharedDataObject) (*sharedDataObjectPb, error) {
 		return nil, nil
 	}
 	pb := &sharedDataObjectPb{}
-	dataObjectTypePb := &st.DataObjectType
-	if dataObjectTypePb != nil {
-		pb.DataObjectType = *dataObjectTypePb
-	}
+	pb.DataObjectType = st.DataObjectType
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10497,14 +9301,8 @@ func sharedDataObjectFromPb(pb *sharedDataObjectPb) (*SharedDataObject, error) {
 		return nil, nil
 	}
 	st := &SharedDataObject{}
-	dataObjectTypeField := &pb.DataObjectType
-	if dataObjectTypeField != nil {
-		st.DataObjectType = *dataObjectTypeField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.DataObjectType = pb.DataObjectType
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10519,17 +9317,22 @@ func (st sharedDataObjectPb) MarshalJSON() ([]byte, error) {
 }
 
 type TokenDetail struct {
+
+	// Wire name: 'bearerToken'
 	BearerToken string
 
+	// Wire name: 'endpoint'
 	Endpoint string
 
+	// Wire name: 'expirationTime'
 	ExpirationTime string
 	// These field names must follow the delta sharing protocol. Original
 	// message: RetrieveToken.Response in
 	// managed-catalog/api/messages/recipient.proto
+	// Wire name: 'shareCredentialsVersion'
 	ShareCredentialsVersion int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tokenDetailToPb(st *TokenDetail) (*tokenDetailPb, error) {
@@ -10537,25 +9340,13 @@ func tokenDetailToPb(st *TokenDetail) (*tokenDetailPb, error) {
 		return nil, nil
 	}
 	pb := &tokenDetailPb{}
-	bearerTokenPb := &st.BearerToken
-	if bearerTokenPb != nil {
-		pb.BearerToken = *bearerTokenPb
-	}
+	pb.BearerToken = st.BearerToken
 
-	endpointPb := &st.Endpoint
-	if endpointPb != nil {
-		pb.Endpoint = *endpointPb
-	}
+	pb.Endpoint = st.Endpoint
 
-	expirationTimePb := &st.ExpirationTime
-	if expirationTimePb != nil {
-		pb.ExpirationTime = *expirationTimePb
-	}
+	pb.ExpirationTime = st.ExpirationTime
 
-	shareCredentialsVersionPb := &st.ShareCredentialsVersion
-	if shareCredentialsVersionPb != nil {
-		pb.ShareCredentialsVersion = *shareCredentialsVersionPb
-	}
+	pb.ShareCredentialsVersion = st.ShareCredentialsVersion
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10605,22 +9396,10 @@ func tokenDetailFromPb(pb *tokenDetailPb) (*TokenDetail, error) {
 		return nil, nil
 	}
 	st := &TokenDetail{}
-	bearerTokenField := &pb.BearerToken
-	if bearerTokenField != nil {
-		st.BearerToken = *bearerTokenField
-	}
-	endpointField := &pb.Endpoint
-	if endpointField != nil {
-		st.Endpoint = *endpointField
-	}
-	expirationTimeField := &pb.ExpirationTime
-	if expirationTimeField != nil {
-		st.ExpirationTime = *expirationTimeField
-	}
-	shareCredentialsVersionField := &pb.ShareCredentialsVersion
-	if shareCredentialsVersionField != nil {
-		st.ShareCredentialsVersion = *shareCredentialsVersionField
-	}
+	st.BearerToken = pb.BearerToken
+	st.Endpoint = pb.Endpoint
+	st.ExpirationTime = pb.ExpirationTime
+	st.ShareCredentialsVersion = pb.ShareCredentialsVersion
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10637,21 +9416,28 @@ func (st tokenDetailPb) MarshalJSON() ([]byte, error) {
 type TokenInfo struct {
 	// Full activation url to retrieve the access token. It will be empty if the
 	// token is already retrieved.
+	// Wire name: 'activation_url'
 	ActivationUrl string
 	// Time at which this Recipient Token was created, in epoch milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// Username of Recipient Token creator.
+	// Wire name: 'created_by'
 	CreatedBy string
 	// Expiration timestamp of the token in epoch milliseconds.
+	// Wire name: 'expiration_time'
 	ExpirationTime int64
 	// Unique id of the Recipient Token.
+	// Wire name: 'id'
 	Id string
 	// Time at which this Recipient Token was updated, in epoch milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// Username of Recipient Token updater.
+	// Wire name: 'updated_by'
 	UpdatedBy string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tokenInfoToPb(st *TokenInfo) (*tokenInfoPb, error) {
@@ -10659,40 +9445,19 @@ func tokenInfoToPb(st *TokenInfo) (*tokenInfoPb, error) {
 		return nil, nil
 	}
 	pb := &tokenInfoPb{}
-	activationUrlPb := &st.ActivationUrl
-	if activationUrlPb != nil {
-		pb.ActivationUrl = *activationUrlPb
-	}
+	pb.ActivationUrl = st.ActivationUrl
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	expirationTimePb := &st.ExpirationTime
-	if expirationTimePb != nil {
-		pb.ExpirationTime = *expirationTimePb
-	}
+	pb.ExpirationTime = st.ExpirationTime
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10748,34 +9513,13 @@ func tokenInfoFromPb(pb *tokenInfoPb) (*TokenInfo, error) {
 		return nil, nil
 	}
 	st := &TokenInfo{}
-	activationUrlField := &pb.ActivationUrl
-	if activationUrlField != nil {
-		st.ActivationUrl = *activationUrlField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	expirationTimeField := &pb.ExpirationTime
-	if expirationTimeField != nil {
-		st.ExpirationTime = *expirationTimeField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.ActivationUrl = pb.ActivationUrl
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.ExpirationTime = pb.ExpirationTime
+	st.Id = pb.Id
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10790,9 +9534,12 @@ func (st tokenInfoPb) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateExchangeFilterRequest struct {
+
+	// Wire name: 'filter'
 	Filter ExchangeFilter
 
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func updateExchangeFilterRequestToPb(st *UpdateExchangeFilterRequest) (*updateExchangeFilterRequestPb, error) {
@@ -10808,10 +9555,7 @@ func updateExchangeFilterRequestToPb(st *UpdateExchangeFilterRequest) (*updateEx
 		pb.Filter = *filterPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -10859,15 +9603,14 @@ func updateExchangeFilterRequestFromPb(pb *updateExchangeFilterRequestPb) (*Upda
 	if filterField != nil {
 		st.Filter = *filterField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type UpdateExchangeFilterResponse struct {
+
+	// Wire name: 'filter'
 	Filter *ExchangeFilter
 }
 
@@ -10933,9 +9676,12 @@ func updateExchangeFilterResponseFromPb(pb *updateExchangeFilterResponsePb) (*Up
 }
 
 type UpdateExchangeRequest struct {
+
+	// Wire name: 'exchange'
 	Exchange Exchange
 
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func updateExchangeRequestToPb(st *UpdateExchangeRequest) (*updateExchangeRequestPb, error) {
@@ -10951,10 +9697,7 @@ func updateExchangeRequestToPb(st *UpdateExchangeRequest) (*updateExchangeReques
 		pb.Exchange = *exchangePb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -11002,15 +9745,14 @@ func updateExchangeRequestFromPb(pb *updateExchangeRequestPb) (*UpdateExchangeRe
 	if exchangeField != nil {
 		st.Exchange = *exchangeField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type UpdateExchangeResponse struct {
+
+	// Wire name: 'exchange'
 	Exchange *Exchange
 }
 
@@ -11076,15 +9818,20 @@ func updateExchangeResponseFromPb(pb *updateExchangeResponsePb) (*UpdateExchange
 }
 
 type UpdateInstallationRequest struct {
+
+	// Wire name: 'installation'
 	Installation InstallationDetail
 
-	InstallationId string
+	// Wire name: 'installation_id'
+	InstallationId string `tf:"-"`
 
-	ListingId string
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
+	// Wire name: 'rotate_token'
 	RotateToken bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateInstallationRequestToPb(st *UpdateInstallationRequest) (*updateInstallationRequestPb, error) {
@@ -11100,20 +9847,11 @@ func updateInstallationRequestToPb(st *UpdateInstallationRequest) (*updateInstal
 		pb.Installation = *installationPb
 	}
 
-	installationIdPb := &st.InstallationId
-	if installationIdPb != nil {
-		pb.InstallationId = *installationIdPb
-	}
+	pb.InstallationId = st.InstallationId
 
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	rotateTokenPb := &st.RotateToken
-	if rotateTokenPb != nil {
-		pb.RotateToken = *rotateTokenPb
-	}
+	pb.RotateToken = st.RotateToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11168,18 +9906,9 @@ func updateInstallationRequestFromPb(pb *updateInstallationRequestPb) (*UpdateIn
 	if installationField != nil {
 		st.Installation = *installationField
 	}
-	installationIdField := &pb.InstallationId
-	if installationIdField != nil {
-		st.InstallationId = *installationIdField
-	}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	rotateTokenField := &pb.RotateToken
-	if rotateTokenField != nil {
-		st.RotateToken = *rotateTokenField
-	}
+	st.InstallationId = pb.InstallationId
+	st.ListingId = pb.ListingId
+	st.RotateToken = pb.RotateToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11194,6 +9923,8 @@ func (st updateInstallationRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateInstallationResponse struct {
+
+	// Wire name: 'installation'
 	Installation *InstallationDetail
 }
 
@@ -11259,8 +9990,11 @@ func updateInstallationResponseFromPb(pb *updateInstallationResponsePb) (*Update
 }
 
 type UpdateListingRequest struct {
-	Id string
 
+	// Wire name: 'id'
+	Id string `tf:"-"`
+
+	// Wire name: 'listing'
 	Listing Listing
 }
 
@@ -11269,10 +10003,7 @@ func updateListingRequestToPb(st *UpdateListingRequest) (*updateListingRequestPb
 		return nil, nil
 	}
 	pb := &updateListingRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	listingPb, err := listingToPb(&st.Listing)
 	if err != nil {
@@ -11321,10 +10052,7 @@ func updateListingRequestFromPb(pb *updateListingRequestPb) (*UpdateListingReque
 		return nil, nil
 	}
 	st := &UpdateListingRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	listingField, err := listingFromPb(&pb.Listing)
 	if err != nil {
 		return nil, err
@@ -11337,6 +10065,8 @@ func updateListingRequestFromPb(pb *updateListingRequestPb) (*UpdateListingReque
 }
 
 type UpdateListingResponse struct {
+
+	// Wire name: 'listing'
 	Listing *Listing
 }
 
@@ -11402,17 +10132,23 @@ func updateListingResponseFromPb(pb *updateListingResponsePb) (*UpdateListingRes
 }
 
 type UpdatePersonalizationRequestRequest struct {
-	ListingId string
 
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
+
+	// Wire name: 'reason'
 	Reason string
 
-	RequestId string
+	// Wire name: 'request_id'
+	RequestId string `tf:"-"`
 
+	// Wire name: 'share'
 	Share *ShareInfo
 
+	// Wire name: 'status'
 	Status PersonalizationRequestStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updatePersonalizationRequestRequestToPb(st *UpdatePersonalizationRequestRequest) (*updatePersonalizationRequestRequestPb, error) {
@@ -11420,20 +10156,11 @@ func updatePersonalizationRequestRequestToPb(st *UpdatePersonalizationRequestReq
 		return nil, nil
 	}
 	pb := &updatePersonalizationRequestRequestPb{}
-	listingIdPb := &st.ListingId
-	if listingIdPb != nil {
-		pb.ListingId = *listingIdPb
-	}
+	pb.ListingId = st.ListingId
 
-	reasonPb := &st.Reason
-	if reasonPb != nil {
-		pb.Reason = *reasonPb
-	}
+	pb.Reason = st.Reason
 
-	requestIdPb := &st.RequestId
-	if requestIdPb != nil {
-		pb.RequestId = *requestIdPb
-	}
+	pb.RequestId = st.RequestId
 
 	sharePb, err := shareInfoToPb(st.Share)
 	if err != nil {
@@ -11443,10 +10170,7 @@ func updatePersonalizationRequestRequestToPb(st *UpdatePersonalizationRequestReq
 		pb.Share = sharePb
 	}
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11496,18 +10220,9 @@ func updatePersonalizationRequestRequestFromPb(pb *updatePersonalizationRequestR
 		return nil, nil
 	}
 	st := &UpdatePersonalizationRequestRequest{}
-	listingIdField := &pb.ListingId
-	if listingIdField != nil {
-		st.ListingId = *listingIdField
-	}
-	reasonField := &pb.Reason
-	if reasonField != nil {
-		st.Reason = *reasonField
-	}
-	requestIdField := &pb.RequestId
-	if requestIdField != nil {
-		st.RequestId = *requestIdField
-	}
+	st.ListingId = pb.ListingId
+	st.Reason = pb.Reason
+	st.RequestId = pb.RequestId
 	shareField, err := shareInfoFromPb(pb.Share)
 	if err != nil {
 		return nil, err
@@ -11515,10 +10230,7 @@ func updatePersonalizationRequestRequestFromPb(pb *updatePersonalizationRequestR
 	if shareField != nil {
 		st.Share = shareField
 	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.Status = pb.Status
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11533,6 +10245,8 @@ func (st updatePersonalizationRequestRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type UpdatePersonalizationRequestResponse struct {
+
+	// Wire name: 'request'
 	Request *PersonalizationRequest
 }
 
@@ -11599,13 +10313,15 @@ func updatePersonalizationRequestResponseFromPb(pb *updatePersonalizationRequest
 
 type UpdateProviderAnalyticsDashboardRequest struct {
 	// id is immutable property and can't be updated.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 	// this is the version of the dashboard template we want to update our user
 	// to current expectation is that it should be equal to latest version of
 	// the dashboard template
+	// Wire name: 'version'
 	Version int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateProviderAnalyticsDashboardRequestToPb(st *UpdateProviderAnalyticsDashboardRequest) (*updateProviderAnalyticsDashboardRequestPb, error) {
@@ -11613,15 +10329,9 @@ func updateProviderAnalyticsDashboardRequestToPb(st *UpdateProviderAnalyticsDash
 		return nil, nil
 	}
 	pb := &updateProviderAnalyticsDashboardRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11668,14 +10378,8 @@ func updateProviderAnalyticsDashboardRequestFromPb(pb *updateProviderAnalyticsDa
 		return nil, nil
 	}
 	st := &UpdateProviderAnalyticsDashboardRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Id = pb.Id
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11691,13 +10395,16 @@ func (st updateProviderAnalyticsDashboardRequestPb) MarshalJSON() ([]byte, error
 
 type UpdateProviderAnalyticsDashboardResponse struct {
 	// this is newly created Lakeview dashboard for the user
+	// Wire name: 'dashboard_id'
 	DashboardId string
 	// id & version should be the same as the request
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'version'
 	Version int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateProviderAnalyticsDashboardResponseToPb(st *UpdateProviderAnalyticsDashboardResponse) (*updateProviderAnalyticsDashboardResponsePb, error) {
@@ -11705,20 +10412,11 @@ func updateProviderAnalyticsDashboardResponseToPb(st *UpdateProviderAnalyticsDas
 		return nil, nil
 	}
 	pb := &updateProviderAnalyticsDashboardResponsePb{}
-	dashboardIdPb := &st.DashboardId
-	if dashboardIdPb != nil {
-		pb.DashboardId = *dashboardIdPb
-	}
+	pb.DashboardId = st.DashboardId
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11765,18 +10463,9 @@ func updateProviderAnalyticsDashboardResponseFromPb(pb *updateProviderAnalyticsD
 		return nil, nil
 	}
 	st := &UpdateProviderAnalyticsDashboardResponse{}
-	dashboardIdField := &pb.DashboardId
-	if dashboardIdField != nil {
-		st.DashboardId = *dashboardIdField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.DashboardId = pb.DashboardId
+	st.Id = pb.Id
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11791,8 +10480,11 @@ func (st updateProviderAnalyticsDashboardResponsePb) MarshalJSON() ([]byte, erro
 }
 
 type UpdateProviderRequest struct {
-	Id string
 
+	// Wire name: 'id'
+	Id string `tf:"-"`
+
+	// Wire name: 'provider'
 	Provider ProviderInfo
 }
 
@@ -11801,10 +10493,7 @@ func updateProviderRequestToPb(st *UpdateProviderRequest) (*updateProviderReques
 		return nil, nil
 	}
 	pb := &updateProviderRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	providerPb, err := providerInfoToPb(&st.Provider)
 	if err != nil {
@@ -11853,10 +10542,7 @@ func updateProviderRequestFromPb(pb *updateProviderRequestPb) (*UpdateProviderRe
 		return nil, nil
 	}
 	st := &UpdateProviderRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	providerField, err := providerInfoFromPb(&pb.Provider)
 	if err != nil {
 		return nil, err
@@ -11869,6 +10555,8 @@ func updateProviderRequestFromPb(pb *updateProviderRequestPb) (*UpdateProviderRe
 }
 
 type UpdateProviderResponse struct {
+
+	// Wire name: 'provider'
 	Provider *ProviderInfo
 }
 
@@ -11975,4 +10663,58 @@ func visibilityFromPb(pb *visibilityPb) (*Visibility, error) {
 	}
 	st := Visibility(*pb)
 	return &st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

@@ -11,75 +11,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 // Activity recorded for the action.
 type Activity struct {
 	// Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied
@@ -96,10 +27,13 @@ type Activity struct {
 	//
 	// * `SYSTEM_TRANSITION`: For events performed as a side effect, such as
 	// archiving existing model versions in a stage.
+	// Wire name: 'activity_type'
 	ActivityType ActivityType
 	// User-provided comment associated with the activity.
+	// Wire name: 'comment'
 	Comment string
 	// Creation time of the object, as a Unix timestamp in milliseconds.
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 	// Source stage of the transition (if the activity is stage transition
 	// related). Valid values are:
@@ -111,15 +45,19 @@ type Activity struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
+	// Wire name: 'from_stage'
 	FromStage Stage
 	// Unique identifier for the object.
+	// Wire name: 'id'
 	Id string
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// Comment made by system, for example explaining an activity of type
 	// `SYSTEM_TRANSITION`. It usually describes a side effect, such as a
 	// version being archived as part of another version's stage transition, and
 	// may not be returned for some activity types.
+	// Wire name: 'system_comment'
 	SystemComment string
 	// Target stage of the transition (if the activity is stage transition
 	// related). Valid values are:
@@ -131,11 +69,13 @@ type Activity struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
+	// Wire name: 'to_stage'
 	ToStage Stage
 	// The username of the user that created the object.
+	// Wire name: 'user_id'
 	UserId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func activityToPb(st *Activity) (*activityPb, error) {
@@ -143,50 +83,23 @@ func activityToPb(st *Activity) (*activityPb, error) {
 		return nil, nil
 	}
 	pb := &activityPb{}
-	activityTypePb := &st.ActivityType
-	if activityTypePb != nil {
-		pb.ActivityType = *activityTypePb
-	}
+	pb.ActivityType = st.ActivityType
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	fromStagePb := &st.FromStage
-	if fromStagePb != nil {
-		pb.FromStage = *fromStagePb
-	}
+	pb.FromStage = st.FromStage
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
-	systemCommentPb := &st.SystemComment
-	if systemCommentPb != nil {
-		pb.SystemComment = *systemCommentPb
-	}
+	pb.SystemComment = st.SystemComment
 
-	toStagePb := &st.ToStage
-	if toStagePb != nil {
-		pb.ToStage = *toStagePb
-	}
+	pb.ToStage = st.ToStage
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -279,42 +192,15 @@ func activityFromPb(pb *activityPb) (*Activity, error) {
 		return nil, nil
 	}
 	st := &Activity{}
-	activityTypeField := &pb.ActivityType
-	if activityTypeField != nil {
-		st.ActivityType = *activityTypeField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	fromStageField := &pb.FromStage
-	if fromStageField != nil {
-		st.FromStage = *fromStageField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
-	systemCommentField := &pb.SystemComment
-	if systemCommentField != nil {
-		st.SystemComment = *systemCommentField
-	}
-	toStageField := &pb.ToStage
-	if toStageField != nil {
-		st.ToStage = *toStageField
-	}
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.ActivityType = pb.ActivityType
+	st.Comment = pb.Comment
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.FromStage = pb.FromStage
+	st.Id = pb.Id
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
+	st.SystemComment = pb.SystemComment
+	st.ToStage = pb.ToStage
+	st.UserId = pb.UserId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -461,10 +347,13 @@ func activityTypeFromPb(pb *activityTypePb) (*ActivityType, error) {
 type ApproveTransitionRequest struct {
 	// Specifies whether to archive all current model versions in the target
 	// stage.
+	// Wire name: 'archive_existing_versions'
 	ArchiveExistingVersions bool
 	// User-provided comment on the action.
+	// Wire name: 'comment'
 	Comment string
 	// Name of the model.
+	// Wire name: 'name'
 	Name string
 	// Target stage of the transition. Valid values are:
 	//
@@ -475,11 +364,13 @@ type ApproveTransitionRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
+	// Wire name: 'stage'
 	Stage Stage
 	// Version of the model.
+	// Wire name: 'version'
 	Version string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func approveTransitionRequestToPb(st *ApproveTransitionRequest) (*approveTransitionRequestPb, error) {
@@ -487,30 +378,15 @@ func approveTransitionRequestToPb(st *ApproveTransitionRequest) (*approveTransit
 		return nil, nil
 	}
 	pb := &approveTransitionRequestPb{}
-	archiveExistingVersionsPb := &st.ArchiveExistingVersions
-	if archiveExistingVersionsPb != nil {
-		pb.ArchiveExistingVersions = *archiveExistingVersionsPb
-	}
+	pb.ArchiveExistingVersions = st.ArchiveExistingVersions
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	stagePb := &st.Stage
-	if stagePb != nil {
-		pb.Stage = *stagePb
-	}
+	pb.Stage = st.Stage
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -570,26 +446,11 @@ func approveTransitionRequestFromPb(pb *approveTransitionRequestPb) (*ApproveTra
 		return nil, nil
 	}
 	st := &ApproveTransitionRequest{}
-	archiveExistingVersionsField := &pb.ArchiveExistingVersions
-	if archiveExistingVersionsField != nil {
-		st.ArchiveExistingVersions = *archiveExistingVersionsField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	stageField := &pb.Stage
-	if stageField != nil {
-		st.Stage = *stageField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.ArchiveExistingVersions = pb.ArchiveExistingVersions
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.Stage = pb.Stage
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -605,6 +466,7 @@ func (st approveTransitionRequestPb) MarshalJSON() ([]byte, error) {
 
 type ApproveTransitionRequestResponse struct {
 	// Activity recorded for the action.
+	// Wire name: 'activity'
 	Activity *Activity
 }
 
@@ -673,20 +535,25 @@ func approveTransitionRequestResponseFromPb(pb *approveTransitionRequestResponse
 type ArtifactCredentialInfo struct {
 	// A collection of HTTP headers that should be specified when uploading to
 	// or downloading from the specified `signed_uri`.
+	// Wire name: 'headers'
 	Headers []ArtifactCredentialInfoHttpHeader
 	// The path, relative to the Run's artifact root location, of the artifact
 	// that can be accessed with the credential.
+	// Wire name: 'path'
 	Path string
 	// The ID of the MLflow Run containing the artifact that can be accessed
 	// with the credential.
+	// Wire name: 'run_id'
 	RunId string
 	// The signed URI credential that provides access to the artifact.
+	// Wire name: 'signed_uri'
 	SignedUri string
 	// The type of the signed credential URI (e.g., an AWS presigned URL or an
 	// Azure Shared Access Signature URI).
+	// Wire name: 'type'
 	Type ArtifactCredentialType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func artifactCredentialInfoToPb(st *ArtifactCredentialInfo) (*artifactCredentialInfoPb, error) {
@@ -707,25 +574,13 @@ func artifactCredentialInfoToPb(st *ArtifactCredentialInfo) (*artifactCredential
 	}
 	pb.Headers = headersPb
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	signedUriPb := &st.SignedUri
-	if signedUriPb != nil {
-		pb.SignedUri = *signedUriPb
-	}
+	pb.SignedUri = st.SignedUri
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -782,32 +637,20 @@ func artifactCredentialInfoFromPb(pb *artifactCredentialInfoPb) (*ArtifactCreden
 	st := &ArtifactCredentialInfo{}
 
 	var headersField []ArtifactCredentialInfoHttpHeader
-	for _, item := range pb.Headers {
-		itemField, err := artifactCredentialInfoHttpHeaderFromPb(&item)
+	for _, itemPb := range pb.Headers {
+		item, err := artifactCredentialInfoHttpHeaderFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			headersField = append(headersField, *itemField)
+		if item != nil {
+			headersField = append(headersField, *item)
 		}
 	}
 	st.Headers = headersField
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	signedUriField := &pb.SignedUri
-	if signedUriField != nil {
-		st.SignedUri = *signedUriField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.Path = pb.Path
+	st.RunId = pb.RunId
+	st.SignedUri = pb.SignedUri
+	st.Type = pb.Type
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -823,11 +666,13 @@ func (st artifactCredentialInfoPb) MarshalJSON() ([]byte, error) {
 
 type ArtifactCredentialInfoHttpHeader struct {
 	// The HTTP header name.
+	// Wire name: 'name'
 	Name string
 	// The HTTP header value.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func artifactCredentialInfoHttpHeaderToPb(st *ArtifactCredentialInfoHttpHeader) (*artifactCredentialInfoHttpHeaderPb, error) {
@@ -835,15 +680,9 @@ func artifactCredentialInfoHttpHeaderToPb(st *ArtifactCredentialInfoHttpHeader) 
 		return nil, nil
 	}
 	pb := &artifactCredentialInfoHttpHeaderPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -888,14 +727,8 @@ func artifactCredentialInfoHttpHeaderFromPb(pb *artifactCredentialInfoHttpHeader
 		return nil, nil
 	}
 	st := &ArtifactCredentialInfoHttpHeader{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Name = pb.Name
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1011,19 +844,25 @@ func commentActivityActionFromPb(pb *commentActivityActionPb) (*CommentActivityA
 // Comment details.
 type CommentObject struct {
 	// Array of actions on the activity allowed for the current viewer.
+	// Wire name: 'available_actions'
 	AvailableActions []CommentActivityAction
 	// User-provided comment on the action.
+	// Wire name: 'comment'
 	Comment string
 	// Creation time of the object, as a Unix timestamp in milliseconds.
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 	// Comment ID
+	// Wire name: 'id'
 	Id string
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// The username of the user that created the object.
+	// Wire name: 'user_id'
 	UserId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func commentObjectToPb(st *CommentObject) (*commentObjectPb, error) {
@@ -1031,40 +870,17 @@ func commentObjectToPb(st *CommentObject) (*commentObjectPb, error) {
 		return nil, nil
 	}
 	pb := &commentObjectPb{}
+	pb.AvailableActions = st.AvailableActions
 
-	var availableActionsPb []CommentActivityAction
-	for _, item := range st.AvailableActions {
-		itemPb := &item
-		if itemPb != nil {
-			availableActionsPb = append(availableActionsPb, *itemPb)
-		}
-	}
-	pb.AvailableActions = availableActionsPb
+	pb.Comment = st.Comment
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.Id = st.Id
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
-
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1117,35 +933,12 @@ func commentObjectFromPb(pb *commentObjectPb) (*CommentObject, error) {
 		return nil, nil
 	}
 	st := &CommentObject{}
-
-	var availableActionsField []CommentActivityAction
-	for _, item := range pb.AvailableActions {
-		itemField := &item
-		if itemField != nil {
-			availableActionsField = append(availableActionsField, *itemField)
-		}
-	}
-	st.AvailableActions = availableActionsField
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.AvailableActions = pb.AvailableActions
+	st.Comment = pb.Comment
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.Id = pb.Id
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
+	st.UserId = pb.UserId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1161,10 +954,13 @@ func (st commentObjectPb) MarshalJSON() ([]byte, error) {
 
 type CreateComment struct {
 	// User-provided comment on the action.
+	// Wire name: 'comment'
 	Comment string
 	// Name of the model.
+	// Wire name: 'name'
 	Name string
 	// Version of the model.
+	// Wire name: 'version'
 	Version string
 }
 
@@ -1173,20 +969,11 @@ func createCommentToPb(st *CreateComment) (*createCommentPb, error) {
 		return nil, nil
 	}
 	pb := &createCommentPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	return pb, nil
 }
@@ -1230,24 +1017,16 @@ func createCommentFromPb(pb *createCommentPb) (*CreateComment, error) {
 		return nil, nil
 	}
 	st := &CreateComment{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.Version = pb.Version
 
 	return st, nil
 }
 
 type CreateCommentResponse struct {
 	// Comment details.
+	// Wire name: 'comment'
 	Comment *CommentObject
 }
 
@@ -1316,17 +1095,20 @@ func createCommentResponseFromPb(pb *createCommentResponsePb) (*CreateCommentRes
 type CreateExperiment struct {
 	// Location where all artifacts for the experiment are stored. If not
 	// provided, the remote server will select an appropriate default.
+	// Wire name: 'artifact_location'
 	ArtifactLocation string
 	// Experiment name.
+	// Wire name: 'name'
 	Name string
 	// A collection of tags to set on the experiment. Maximum tag size and
 	// number of tags per request depends on the storage backend. All storage
 	// backends are guaranteed to support tag keys up to 250 bytes in size and
 	// tag values up to 5000 bytes in size. All storage backends are also
 	// guaranteed to support up to 20 tags per request.
+	// Wire name: 'tags'
 	Tags []ExperimentTag
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createExperimentToPb(st *CreateExperiment) (*createExperimentPb, error) {
@@ -1334,15 +1116,9 @@ func createExperimentToPb(st *CreateExperiment) (*createExperimentPb, error) {
 		return nil, nil
 	}
 	pb := &createExperimentPb{}
-	artifactLocationPb := &st.ArtifactLocation
-	if artifactLocationPb != nil {
-		pb.ArtifactLocation = *artifactLocationPb
-	}
+	pb.ArtifactLocation = st.ArtifactLocation
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var tagsPb []experimentTagPb
 	for _, item := range st.Tags {
@@ -1406,23 +1182,17 @@ func createExperimentFromPb(pb *createExperimentPb) (*CreateExperiment, error) {
 		return nil, nil
 	}
 	st := &CreateExperiment{}
-	artifactLocationField := &pb.ArtifactLocation
-	if artifactLocationField != nil {
-		st.ArtifactLocation = *artifactLocationField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.ArtifactLocation = pb.ArtifactLocation
+	st.Name = pb.Name
 
 	var tagsField []ExperimentTag
-	for _, item := range pb.Tags {
-		itemField, err := experimentTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := experimentTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -1441,9 +1211,10 @@ func (st createExperimentPb) MarshalJSON() ([]byte, error) {
 
 type CreateExperimentResponse struct {
 	// Unique identifier for the experiment.
+	// Wire name: 'experiment_id'
 	ExperimentId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createExperimentResponseToPb(st *CreateExperimentResponse) (*createExperimentResponsePb, error) {
@@ -1451,10 +1222,7 @@ func createExperimentResponseToPb(st *CreateExperimentResponse) (*createExperime
 		return nil, nil
 	}
 	pb := &createExperimentResponsePb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1497,10 +1265,7 @@ func createExperimentResponseFromPb(pb *createExperimentResponsePb) (*CreateExpe
 		return nil, nil
 	}
 	st := &CreateExperimentResponse{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
+	st.ExperimentId = pb.ExperimentId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1517,24 +1282,25 @@ func (st createExperimentResponsePb) MarshalJSON() ([]byte, error) {
 type CreateForecastingExperimentRequest struct {
 	// The column in the training table used to customize weights for each time
 	// series.
+	// Wire name: 'custom_weights_column'
 	CustomWeightsColumn string
 	// The path in the workspace to store the created experiment.
+	// Wire name: 'experiment_path'
 	ExperimentPath string
 	// The time interval between consecutive rows in the time series data.
 	// Possible values include: '1 second', '1 minute', '5 minutes', '10
 	// minutes', '15 minutes', '30 minutes', 'Hourly', 'Daily', 'Weekly',
 	// 'Monthly', 'Quarterly', 'Yearly'.
+	// Wire name: 'forecast_granularity'
 	ForecastGranularity string
 	// The number of time steps into the future to make predictions, calculated
 	// as a multiple of forecast_granularity. This value represents how far
 	// ahead the model should forecast.
+	// Wire name: 'forecast_horizon'
 	ForecastHorizon int64
-	// The fully qualified path of a Unity Catalog table, formatted as
-	// catalog_name.schema_name.table_name, used to store future feature data
-	// for predictions.
-	FutureFeatureDataPath string
 	// The region code(s) to automatically add holiday features. Currently
 	// supports only one region.
+	// Wire name: 'holiday_regions'
 	HolidayRegions []string
 	// Specifies the list of feature columns to include in model training. These
 	// columns must exist in the training data and be of type string, numerical,
@@ -1542,41 +1308,52 @@ type CreateForecastingExperimentRequest struct {
 	// Note: Certain columns are automatically handled: - Automatically
 	// excluded: split_column, target_column, custom_weights_column. -
 	// Automatically included: time_column.
+	// Wire name: 'include_features'
 	IncludeFeatures []string
 	// The maximum duration for the experiment in minutes. The experiment stops
 	// automatically if it exceeds this limit.
+	// Wire name: 'max_runtime'
 	MaxRuntime int64
 	// The fully qualified path of a Unity Catalog table, formatted as
 	// catalog_name.schema_name.table_name, used to store predictions.
+	// Wire name: 'prediction_data_path'
 	PredictionDataPath string
 	// The evaluation metric used to optimize the forecasting model.
+	// Wire name: 'primary_metric'
 	PrimaryMetric string
 	// The fully qualified path of a Unity Catalog model, formatted as
 	// catalog_name.schema_name.model_name, used to store the best model.
+	// Wire name: 'register_to'
 	RegisterTo string
 	// // The column in the training table used for custom data splits. Values
 	// must be 'train', 'validate', or 'test'.
+	// Wire name: 'split_column'
 	SplitColumn string
 	// The column in the input training table used as the prediction target for
 	// model training. The values in this column are used as the ground truth
 	// for model training.
+	// Wire name: 'target_column'
 	TargetColumn string
 	// The column in the input training table that represents each row's
 	// timestamp.
+	// Wire name: 'time_column'
 	TimeColumn string
 	// The column in the training table used to group the dataset for predicting
 	// individual time series.
+	// Wire name: 'timeseries_identifier_columns'
 	TimeseriesIdentifierColumns []string
-	// The fully qualified path of a Unity Catalog table, formatted as
+	// The fully qualified name of a Unity Catalog table, formatted as
 	// catalog_name.schema_name.table_name, used as training data for the
 	// forecasting model.
+	// Wire name: 'train_data_path'
 	TrainDataPath string
 	// List of frameworks to include for model tuning. Possible values are
 	// 'Prophet', 'ARIMA', 'DeepAR'. An empty list includes all supported
 	// frameworks.
+	// Wire name: 'training_frameworks'
 	TrainingFrameworks []string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createForecastingExperimentRequestToPb(st *CreateForecastingExperimentRequest) (*createForecastingExperimentRequestPb, error) {
@@ -1584,106 +1361,37 @@ func createForecastingExperimentRequestToPb(st *CreateForecastingExperimentReque
 		return nil, nil
 	}
 	pb := &createForecastingExperimentRequestPb{}
-	customWeightsColumnPb := &st.CustomWeightsColumn
-	if customWeightsColumnPb != nil {
-		pb.CustomWeightsColumn = *customWeightsColumnPb
-	}
+	pb.CustomWeightsColumn = st.CustomWeightsColumn
 
-	experimentPathPb := &st.ExperimentPath
-	if experimentPathPb != nil {
-		pb.ExperimentPath = *experimentPathPb
-	}
+	pb.ExperimentPath = st.ExperimentPath
 
-	forecastGranularityPb := &st.ForecastGranularity
-	if forecastGranularityPb != nil {
-		pb.ForecastGranularity = *forecastGranularityPb
-	}
+	pb.ForecastGranularity = st.ForecastGranularity
 
-	forecastHorizonPb := &st.ForecastHorizon
-	if forecastHorizonPb != nil {
-		pb.ForecastHorizon = *forecastHorizonPb
-	}
+	pb.ForecastHorizon = st.ForecastHorizon
 
-	futureFeatureDataPathPb := &st.FutureFeatureDataPath
-	if futureFeatureDataPathPb != nil {
-		pb.FutureFeatureDataPath = *futureFeatureDataPathPb
-	}
+	pb.HolidayRegions = st.HolidayRegions
 
-	var holidayRegionsPb []string
-	for _, item := range st.HolidayRegions {
-		itemPb := &item
-		if itemPb != nil {
-			holidayRegionsPb = append(holidayRegionsPb, *itemPb)
-		}
-	}
-	pb.HolidayRegions = holidayRegionsPb
+	pb.IncludeFeatures = st.IncludeFeatures
 
-	var includeFeaturesPb []string
-	for _, item := range st.IncludeFeatures {
-		itemPb := &item
-		if itemPb != nil {
-			includeFeaturesPb = append(includeFeaturesPb, *itemPb)
-		}
-	}
-	pb.IncludeFeatures = includeFeaturesPb
+	pb.MaxRuntime = st.MaxRuntime
 
-	maxRuntimePb := &st.MaxRuntime
-	if maxRuntimePb != nil {
-		pb.MaxRuntime = *maxRuntimePb
-	}
+	pb.PredictionDataPath = st.PredictionDataPath
 
-	predictionDataPathPb := &st.PredictionDataPath
-	if predictionDataPathPb != nil {
-		pb.PredictionDataPath = *predictionDataPathPb
-	}
+	pb.PrimaryMetric = st.PrimaryMetric
 
-	primaryMetricPb := &st.PrimaryMetric
-	if primaryMetricPb != nil {
-		pb.PrimaryMetric = *primaryMetricPb
-	}
+	pb.RegisterTo = st.RegisterTo
 
-	registerToPb := &st.RegisterTo
-	if registerToPb != nil {
-		pb.RegisterTo = *registerToPb
-	}
+	pb.SplitColumn = st.SplitColumn
 
-	splitColumnPb := &st.SplitColumn
-	if splitColumnPb != nil {
-		pb.SplitColumn = *splitColumnPb
-	}
+	pb.TargetColumn = st.TargetColumn
 
-	targetColumnPb := &st.TargetColumn
-	if targetColumnPb != nil {
-		pb.TargetColumn = *targetColumnPb
-	}
+	pb.TimeColumn = st.TimeColumn
 
-	timeColumnPb := &st.TimeColumn
-	if timeColumnPb != nil {
-		pb.TimeColumn = *timeColumnPb
-	}
+	pb.TimeseriesIdentifierColumns = st.TimeseriesIdentifierColumns
 
-	var timeseriesIdentifierColumnsPb []string
-	for _, item := range st.TimeseriesIdentifierColumns {
-		itemPb := &item
-		if itemPb != nil {
-			timeseriesIdentifierColumnsPb = append(timeseriesIdentifierColumnsPb, *itemPb)
-		}
-	}
-	pb.TimeseriesIdentifierColumns = timeseriesIdentifierColumnsPb
+	pb.TrainDataPath = st.TrainDataPath
 
-	trainDataPathPb := &st.TrainDataPath
-	if trainDataPathPb != nil {
-		pb.TrainDataPath = *trainDataPathPb
-	}
-
-	var trainingFrameworksPb []string
-	for _, item := range st.TrainingFrameworks {
-		itemPb := &item
-		if itemPb != nil {
-			trainingFrameworksPb = append(trainingFrameworksPb, *itemPb)
-		}
-	}
-	pb.TrainingFrameworks = trainingFrameworksPb
+	pb.TrainingFrameworks = st.TrainingFrameworks
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1729,10 +1437,6 @@ type createForecastingExperimentRequestPb struct {
 	// as a multiple of forecast_granularity. This value represents how far
 	// ahead the model should forecast.
 	ForecastHorizon int64 `json:"forecast_horizon"`
-	// The fully qualified path of a Unity Catalog table, formatted as
-	// catalog_name.schema_name.table_name, used to store future feature data
-	// for predictions.
-	FutureFeatureDataPath string `json:"future_feature_data_path,omitempty"`
 	// The region code(s) to automatically add holiday features. Currently
 	// supports only one region.
 	HolidayRegions []string `json:"holiday_regions,omitempty"`
@@ -1767,7 +1471,7 @@ type createForecastingExperimentRequestPb struct {
 	// The column in the training table used to group the dataset for predicting
 	// individual time series.
 	TimeseriesIdentifierColumns []string `json:"timeseries_identifier_columns,omitempty"`
-	// The fully qualified path of a Unity Catalog table, formatted as
+	// The fully qualified name of a Unity Catalog table, formatted as
 	// catalog_name.schema_name.table_name, used as training data for the
 	// forecasting model.
 	TrainDataPath string `json:"train_data_path"`
@@ -1784,94 +1488,22 @@ func createForecastingExperimentRequestFromPb(pb *createForecastingExperimentReq
 		return nil, nil
 	}
 	st := &CreateForecastingExperimentRequest{}
-	customWeightsColumnField := &pb.CustomWeightsColumn
-	if customWeightsColumnField != nil {
-		st.CustomWeightsColumn = *customWeightsColumnField
-	}
-	experimentPathField := &pb.ExperimentPath
-	if experimentPathField != nil {
-		st.ExperimentPath = *experimentPathField
-	}
-	forecastGranularityField := &pb.ForecastGranularity
-	if forecastGranularityField != nil {
-		st.ForecastGranularity = *forecastGranularityField
-	}
-	forecastHorizonField := &pb.ForecastHorizon
-	if forecastHorizonField != nil {
-		st.ForecastHorizon = *forecastHorizonField
-	}
-	futureFeatureDataPathField := &pb.FutureFeatureDataPath
-	if futureFeatureDataPathField != nil {
-		st.FutureFeatureDataPath = *futureFeatureDataPathField
-	}
-
-	var holidayRegionsField []string
-	for _, item := range pb.HolidayRegions {
-		itemField := &item
-		if itemField != nil {
-			holidayRegionsField = append(holidayRegionsField, *itemField)
-		}
-	}
-	st.HolidayRegions = holidayRegionsField
-
-	var includeFeaturesField []string
-	for _, item := range pb.IncludeFeatures {
-		itemField := &item
-		if itemField != nil {
-			includeFeaturesField = append(includeFeaturesField, *itemField)
-		}
-	}
-	st.IncludeFeatures = includeFeaturesField
-	maxRuntimeField := &pb.MaxRuntime
-	if maxRuntimeField != nil {
-		st.MaxRuntime = *maxRuntimeField
-	}
-	predictionDataPathField := &pb.PredictionDataPath
-	if predictionDataPathField != nil {
-		st.PredictionDataPath = *predictionDataPathField
-	}
-	primaryMetricField := &pb.PrimaryMetric
-	if primaryMetricField != nil {
-		st.PrimaryMetric = *primaryMetricField
-	}
-	registerToField := &pb.RegisterTo
-	if registerToField != nil {
-		st.RegisterTo = *registerToField
-	}
-	splitColumnField := &pb.SplitColumn
-	if splitColumnField != nil {
-		st.SplitColumn = *splitColumnField
-	}
-	targetColumnField := &pb.TargetColumn
-	if targetColumnField != nil {
-		st.TargetColumn = *targetColumnField
-	}
-	timeColumnField := &pb.TimeColumn
-	if timeColumnField != nil {
-		st.TimeColumn = *timeColumnField
-	}
-
-	var timeseriesIdentifierColumnsField []string
-	for _, item := range pb.TimeseriesIdentifierColumns {
-		itemField := &item
-		if itemField != nil {
-			timeseriesIdentifierColumnsField = append(timeseriesIdentifierColumnsField, *itemField)
-		}
-	}
-	st.TimeseriesIdentifierColumns = timeseriesIdentifierColumnsField
-	trainDataPathField := &pb.TrainDataPath
-	if trainDataPathField != nil {
-		st.TrainDataPath = *trainDataPathField
-	}
-
-	var trainingFrameworksField []string
-	for _, item := range pb.TrainingFrameworks {
-		itemField := &item
-		if itemField != nil {
-			trainingFrameworksField = append(trainingFrameworksField, *itemField)
-		}
-	}
-	st.TrainingFrameworks = trainingFrameworksField
+	st.CustomWeightsColumn = pb.CustomWeightsColumn
+	st.ExperimentPath = pb.ExperimentPath
+	st.ForecastGranularity = pb.ForecastGranularity
+	st.ForecastHorizon = pb.ForecastHorizon
+	st.HolidayRegions = pb.HolidayRegions
+	st.IncludeFeatures = pb.IncludeFeatures
+	st.MaxRuntime = pb.MaxRuntime
+	st.PredictionDataPath = pb.PredictionDataPath
+	st.PrimaryMetric = pb.PrimaryMetric
+	st.RegisterTo = pb.RegisterTo
+	st.SplitColumn = pb.SplitColumn
+	st.TargetColumn = pb.TargetColumn
+	st.TimeColumn = pb.TimeColumn
+	st.TimeseriesIdentifierColumns = pb.TimeseriesIdentifierColumns
+	st.TrainDataPath = pb.TrainDataPath
+	st.TrainingFrameworks = pb.TrainingFrameworks
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1887,9 +1519,10 @@ func (st createForecastingExperimentRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateForecastingExperimentResponse struct {
 	// The unique ID of the created forecasting experiment
+	// Wire name: 'experiment_id'
 	ExperimentId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createForecastingExperimentResponseToPb(st *CreateForecastingExperimentResponse) (*createForecastingExperimentResponsePb, error) {
@@ -1897,10 +1530,7 @@ func createForecastingExperimentResponseToPb(st *CreateForecastingExperimentResp
 		return nil, nil
 	}
 	pb := &createForecastingExperimentResponsePb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1943,10 +1573,7 @@ func createForecastingExperimentResponseFromPb(pb *createForecastingExperimentRe
 		return nil, nil
 	}
 	st := &CreateForecastingExperimentResponse{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
+	st.ExperimentId = pb.ExperimentId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1962,13 +1589,16 @@ func (st createForecastingExperimentResponsePb) MarshalJSON() ([]byte, error) {
 
 type CreateModelRequest struct {
 	// Optional description for registered model.
+	// Wire name: 'description'
 	Description string
 	// Register models under this name
+	// Wire name: 'name'
 	Name string
 	// Additional metadata for registered model.
+	// Wire name: 'tags'
 	Tags []ModelTag
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createModelRequestToPb(st *CreateModelRequest) (*createModelRequestPb, error) {
@@ -1976,15 +1606,9 @@ func createModelRequestToPb(st *CreateModelRequest) (*createModelRequestPb, erro
 		return nil, nil
 	}
 	pb := &createModelRequestPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var tagsPb []modelTagPb
 	for _, item := range st.Tags {
@@ -2043,23 +1667,17 @@ func createModelRequestFromPb(pb *createModelRequestPb) (*CreateModelRequest, er
 		return nil, nil
 	}
 	st := &CreateModelRequest{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Description = pb.Description
+	st.Name = pb.Name
 
 	var tagsField []ModelTag
-	for _, item := range pb.Tags {
-		itemField, err := modelTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := modelTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -2077,6 +1695,8 @@ func (st createModelRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type CreateModelResponse struct {
+
+	// Wire name: 'registered_model'
 	RegisteredModel *Model
 }
 
@@ -2143,21 +1763,27 @@ func createModelResponseFromPb(pb *createModelResponsePb) (*CreateModelResponse,
 
 type CreateModelVersionRequest struct {
 	// Optional description for model version.
+	// Wire name: 'description'
 	Description string
 	// Register model under this name
+	// Wire name: 'name'
 	Name string
 	// MLflow run ID for correlation, if `source` was generated by an experiment
 	// run in MLflow tracking server
+	// Wire name: 'run_id'
 	RunId string
 	// MLflow run link - this is the exact link of the run that generated this
 	// model version, potentially hosted at another instance of MLflow.
+	// Wire name: 'run_link'
 	RunLink string
 	// URI indicating the location of the model artifacts.
+	// Wire name: 'source'
 	Source string
 	// Additional metadata for model version.
+	// Wire name: 'tags'
 	Tags []ModelVersionTag
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createModelVersionRequestToPb(st *CreateModelVersionRequest) (*createModelVersionRequestPb, error) {
@@ -2165,30 +1791,15 @@ func createModelVersionRequestToPb(st *CreateModelVersionRequest) (*createModelV
 		return nil, nil
 	}
 	pb := &createModelVersionRequestPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runLinkPb := &st.RunLink
-	if runLinkPb != nil {
-		pb.RunLink = *runLinkPb
-	}
+	pb.RunLink = st.RunLink
 
-	sourcePb := &st.Source
-	if sourcePb != nil {
-		pb.Source = *sourcePb
-	}
+	pb.Source = st.Source
 
 	var tagsPb []modelVersionTagPb
 	for _, item := range st.Tags {
@@ -2255,35 +1866,20 @@ func createModelVersionRequestFromPb(pb *createModelVersionRequestPb) (*CreateMo
 		return nil, nil
 	}
 	st := &CreateModelVersionRequest{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runLinkField := &pb.RunLink
-	if runLinkField != nil {
-		st.RunLink = *runLinkField
-	}
-	sourceField := &pb.Source
-	if sourceField != nil {
-		st.Source = *sourceField
-	}
+	st.Description = pb.Description
+	st.Name = pb.Name
+	st.RunId = pb.RunId
+	st.RunLink = pb.RunLink
+	st.Source = pb.Source
 
 	var tagsField []ModelVersionTag
-	for _, item := range pb.Tags {
-		itemField, err := modelVersionTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := modelVersionTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -2302,6 +1898,7 @@ func (st createModelVersionRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateModelVersionResponse struct {
 	// Return new version number generated for this model in registry.
+	// Wire name: 'model_version'
 	ModelVersion *ModelVersion
 }
 
@@ -2369,6 +1966,7 @@ func createModelVersionResponseFromPb(pb *createModelVersionResponsePb) (*Create
 
 type CreateRegistryWebhook struct {
 	// User-specified description for the webhook.
+	// Wire name: 'description'
 	Description string
 	// Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A
 	// new model version was created for the associated model.
@@ -2403,12 +2001,16 @@ type CreateRegistryWebhook struct {
 	//
 	// * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model
 	// version be archived.
+	// Wire name: 'events'
 	Events []RegistryWebhookEvent
 
+	// Wire name: 'http_url_spec'
 	HttpUrlSpec *HttpUrlSpec
 
+	// Wire name: 'job_spec'
 	JobSpec *JobSpec
 	// Name of the model whose events would trigger this webhook.
+	// Wire name: 'model_name'
 	ModelName string
 	// Enable or disable triggering the webhook, or put the webhook into test
 	// mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an
@@ -2418,9 +2020,10 @@ type CreateRegistryWebhook struct {
 	//
 	// * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is
 	// not triggered on a real event.
+	// Wire name: 'status'
 	Status RegistryWebhookStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createRegistryWebhookToPb(st *CreateRegistryWebhook) (*createRegistryWebhookPb, error) {
@@ -2428,19 +2031,9 @@ func createRegistryWebhookToPb(st *CreateRegistryWebhook) (*createRegistryWebhoo
 		return nil, nil
 	}
 	pb := &createRegistryWebhookPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	var eventsPb []RegistryWebhookEvent
-	for _, item := range st.Events {
-		itemPb := &item
-		if itemPb != nil {
-			eventsPb = append(eventsPb, *itemPb)
-		}
-	}
-	pb.Events = eventsPb
+	pb.Events = st.Events
 
 	httpUrlSpecPb, err := httpUrlSpecToPb(st.HttpUrlSpec)
 	if err != nil {
@@ -2458,15 +2051,9 @@ func createRegistryWebhookToPb(st *CreateRegistryWebhook) (*createRegistryWebhoo
 		pb.JobSpec = jobSpecPb
 	}
 
-	modelNamePb := &st.ModelName
-	if modelNamePb != nil {
-		pb.ModelName = *modelNamePb
-	}
+	pb.ModelName = st.ModelName
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2558,19 +2145,8 @@ func createRegistryWebhookFromPb(pb *createRegistryWebhookPb) (*CreateRegistryWe
 		return nil, nil
 	}
 	st := &CreateRegistryWebhook{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-
-	var eventsField []RegistryWebhookEvent
-	for _, item := range pb.Events {
-		itemField := &item
-		if itemField != nil {
-			eventsField = append(eventsField, *itemField)
-		}
-	}
-	st.Events = eventsField
+	st.Description = pb.Description
+	st.Events = pb.Events
 	httpUrlSpecField, err := httpUrlSpecFromPb(pb.HttpUrlSpec)
 	if err != nil {
 		return nil, err
@@ -2585,14 +2161,8 @@ func createRegistryWebhookFromPb(pb *createRegistryWebhookPb) (*CreateRegistryWe
 	if jobSpecField != nil {
 		st.JobSpec = jobSpecField
 	}
-	modelNameField := &pb.ModelName
-	if modelNameField != nil {
-		st.ModelName = *modelNameField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.ModelName = pb.ModelName
+	st.Status = pb.Status
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2608,19 +2178,24 @@ func (st createRegistryWebhookPb) MarshalJSON() ([]byte, error) {
 
 type CreateRun struct {
 	// ID of the associated experiment.
+	// Wire name: 'experiment_id'
 	ExperimentId string
 	// The name of the run.
+	// Wire name: 'run_name'
 	RunName string
 	// Unix timestamp in milliseconds of when the run started.
+	// Wire name: 'start_time'
 	StartTime int64
 	// Additional metadata for run.
+	// Wire name: 'tags'
 	Tags []RunTag
 	// ID of the user executing the run. This field is deprecated as of MLflow
 	// 1.0, and will be removed in a future MLflow release. Use 'mlflow.user'
 	// tag instead.
+	// Wire name: 'user_id'
 	UserId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createRunToPb(st *CreateRun) (*createRunPb, error) {
@@ -2628,20 +2203,11 @@ func createRunToPb(st *CreateRun) (*createRunPb, error) {
 		return nil, nil
 	}
 	pb := &createRunPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
-	runNamePb := &st.RunName
-	if runNamePb != nil {
-		pb.RunName = *runNamePb
-	}
+	pb.RunName = st.RunName
 
-	startTimePb := &st.StartTime
-	if startTimePb != nil {
-		pb.StartTime = *startTimePb
-	}
+	pb.StartTime = st.StartTime
 
 	var tagsPb []runTagPb
 	for _, item := range st.Tags {
@@ -2655,10 +2221,7 @@ func createRunToPb(st *CreateRun) (*createRunPb, error) {
 	}
 	pb.Tags = tagsPb
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2711,34 +2274,22 @@ func createRunFromPb(pb *createRunPb) (*CreateRun, error) {
 		return nil, nil
 	}
 	st := &CreateRun{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
-	runNameField := &pb.RunName
-	if runNameField != nil {
-		st.RunName = *runNameField
-	}
-	startTimeField := &pb.StartTime
-	if startTimeField != nil {
-		st.StartTime = *startTimeField
-	}
+	st.ExperimentId = pb.ExperimentId
+	st.RunName = pb.RunName
+	st.StartTime = pb.StartTime
 
 	var tagsField []RunTag
-	for _, item := range pb.Tags {
-		itemField, err := runTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := runTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.UserId = pb.UserId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2754,6 +2305,7 @@ func (st createRunPb) MarshalJSON() ([]byte, error) {
 
 type CreateRunResponse struct {
 	// The newly created run.
+	// Wire name: 'run'
 	Run *Run
 }
 
@@ -2821,8 +2373,10 @@ func createRunResponseFromPb(pb *createRunResponsePb) (*CreateRunResponse, error
 
 type CreateTransitionRequest struct {
 	// User-provided comment on the action.
+	// Wire name: 'comment'
 	Comment string
 	// Name of the model.
+	// Wire name: 'name'
 	Name string
 	// Target stage of the transition. Valid values are:
 	//
@@ -2833,11 +2387,13 @@ type CreateTransitionRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
+	// Wire name: 'stage'
 	Stage Stage
 	// Version of the model.
+	// Wire name: 'version'
 	Version string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createTransitionRequestToPb(st *CreateTransitionRequest) (*createTransitionRequestPb, error) {
@@ -2845,25 +2401,13 @@ func createTransitionRequestToPb(st *CreateTransitionRequest) (*createTransition
 		return nil, nil
 	}
 	pb := &createTransitionRequestPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	stagePb := &st.Stage
-	if stagePb != nil {
-		pb.Stage = *stagePb
-	}
+	pb.Stage = st.Stage
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2920,22 +2464,10 @@ func createTransitionRequestFromPb(pb *createTransitionRequestPb) (*CreateTransi
 		return nil, nil
 	}
 	st := &CreateTransitionRequest{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	stageField := &pb.Stage
-	if stageField != nil {
-		st.Stage = *stageField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.Stage = pb.Stage
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2951,6 +2483,7 @@ func (st createTransitionRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateTransitionRequestResponse struct {
 	// Transition request details.
+	// Wire name: 'request'
 	Request *TransitionRequest
 }
 
@@ -3017,6 +2550,8 @@ func createTransitionRequestResponseFromPb(pb *createTransitionRequestResponsePb
 }
 
 type CreateWebhookResponse struct {
+
+	// Wire name: 'webhook'
 	Webhook *RegistryWebhook
 }
 
@@ -3086,26 +2621,32 @@ func createWebhookResponseFromPb(pb *createWebhookResponsePb) (*CreateWebhookRes
 type Dataset struct {
 	// Dataset digest, e.g. an md5 hash of the dataset that uniquely identifies
 	// it within datasets of the same name.
+	// Wire name: 'digest'
 	Digest string
 	// The name of the dataset. E.g. “my.uc.table@2” “nyc-taxi-dataset”,
 	// “fantastic-elk-3”
+	// Wire name: 'name'
 	Name string
 	// The profile of the dataset. Summary statistics for the dataset, such as
 	// the number of rows in a table, the mean / std / mode of each column in a
 	// table, or the number of elements in an array.
+	// Wire name: 'profile'
 	Profile string
 	// The schema of the dataset. E.g., MLflow ColSpec JSON for a dataframe,
 	// MLflow TensorSpec JSON for an ndarray, or another schema format.
+	// Wire name: 'schema'
 	Schema string
 	// Source information for the dataset. Note that the source may not exactly
 	// reproduce the dataset if it was transformed / modified before use with
 	// MLflow.
+	// Wire name: 'source'
 	Source string
 	// The type of the dataset source, e.g. ‘databricks-uc-table’,
 	// ‘DBFS’, ‘S3’, ...
+	// Wire name: 'source_type'
 	SourceType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func datasetToPb(st *Dataset) (*datasetPb, error) {
@@ -3113,35 +2654,17 @@ func datasetToPb(st *Dataset) (*datasetPb, error) {
 		return nil, nil
 	}
 	pb := &datasetPb{}
-	digestPb := &st.Digest
-	if digestPb != nil {
-		pb.Digest = *digestPb
-	}
+	pb.Digest = st.Digest
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	profilePb := &st.Profile
-	if profilePb != nil {
-		pb.Profile = *profilePb
-	}
+	pb.Profile = st.Profile
 
-	schemaPb := &st.Schema
-	if schemaPb != nil {
-		pb.Schema = *schemaPb
-	}
+	pb.Schema = st.Schema
 
-	sourcePb := &st.Source
-	if sourcePb != nil {
-		pb.Source = *sourcePb
-	}
+	pb.Source = st.Source
 
-	sourceTypePb := &st.SourceType
-	if sourceTypePb != nil {
-		pb.SourceType = *sourceTypePb
-	}
+	pb.SourceType = st.SourceType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3202,30 +2725,12 @@ func datasetFromPb(pb *datasetPb) (*Dataset, error) {
 		return nil, nil
 	}
 	st := &Dataset{}
-	digestField := &pb.Digest
-	if digestField != nil {
-		st.Digest = *digestField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	profileField := &pb.Profile
-	if profileField != nil {
-		st.Profile = *profileField
-	}
-	schemaField := &pb.Schema
-	if schemaField != nil {
-		st.Schema = *schemaField
-	}
-	sourceField := &pb.Source
-	if sourceField != nil {
-		st.Source = *sourceField
-	}
-	sourceTypeField := &pb.SourceType
-	if sourceTypeField != nil {
-		st.SourceType = *sourceTypeField
-	}
+	st.Digest = pb.Digest
+	st.Name = pb.Name
+	st.Profile = pb.Profile
+	st.Schema = pb.Schema
+	st.Source = pb.Source
+	st.SourceType = pb.SourceType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3242,9 +2747,11 @@ func (st datasetPb) MarshalJSON() ([]byte, error) {
 // DatasetInput. Represents a dataset and input tags.
 type DatasetInput struct {
 	// The dataset being used as a Run input.
+	// Wire name: 'dataset'
 	Dataset Dataset
 	// A list of tags for the dataset input, e.g. a “context” tag with value
 	// “training”
+	// Wire name: 'tags'
 	Tags []InputTag
 }
 
@@ -3323,13 +2830,13 @@ func datasetInputFromPb(pb *datasetInputPb) (*DatasetInput, error) {
 	}
 
 	var tagsField []InputTag
-	for _, item := range pb.Tags {
-		itemField, err := inputTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := inputTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -3339,7 +2846,9 @@ func datasetInputFromPb(pb *datasetInputPb) (*DatasetInput, error) {
 
 // Delete a comment
 type DeleteCommentRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteCommentRequestToPb(st *DeleteCommentRequest) (*deleteCommentRequestPb, error) {
@@ -3347,10 +2856,7 @@ func deleteCommentRequestToPb(st *DeleteCommentRequest) (*deleteCommentRequestPb
 		return nil, nil
 	}
 	pb := &deleteCommentRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -3389,10 +2895,7 @@ func deleteCommentRequestFromPb(pb *deleteCommentRequestPb) (*DeleteCommentReque
 		return nil, nil
 	}
 	st := &DeleteCommentRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -3448,6 +2951,7 @@ func deleteCommentResponseFromPb(pb *deleteCommentResponsePb) (*DeleteCommentRes
 
 type DeleteExperiment struct {
 	// ID of the associated experiment.
+	// Wire name: 'experiment_id'
 	ExperimentId string
 }
 
@@ -3456,10 +2960,7 @@ func deleteExperimentToPb(st *DeleteExperiment) (*deleteExperimentPb, error) {
 		return nil, nil
 	}
 	pb := &deleteExperimentPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
 	return pb, nil
 }
@@ -3499,10 +3000,7 @@ func deleteExperimentFromPb(pb *deleteExperimentPb) (*DeleteExperiment, error) {
 		return nil, nil
 	}
 	st := &DeleteExperiment{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
+	st.ExperimentId = pb.ExperimentId
 
 	return st, nil
 }
@@ -3559,7 +3057,8 @@ func deleteExperimentResponseFromPb(pb *deleteExperimentResponsePb) (*DeleteExpe
 // Delete a model
 type DeleteModelRequest struct {
 	// Registered model unique name identifier.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func deleteModelRequestToPb(st *DeleteModelRequest) (*deleteModelRequestPb, error) {
@@ -3567,10 +3066,7 @@ func deleteModelRequestToPb(st *DeleteModelRequest) (*deleteModelRequestPb, erro
 		return nil, nil
 	}
 	pb := &deleteModelRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -3610,10 +3106,7 @@ func deleteModelRequestFromPb(pb *deleteModelRequestPb) (*DeleteModelRequest, er
 		return nil, nil
 	}
 	st := &DeleteModelRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -3671,9 +3164,11 @@ func deleteModelResponseFromPb(pb *deleteModelResponsePb) (*DeleteModelResponse,
 type DeleteModelTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
-	Key string
+	// Wire name: 'key'
+	Key string `tf:"-"`
 	// Name of the registered model that the tag was logged under.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func deleteModelTagRequestToPb(st *DeleteModelTagRequest) (*deleteModelTagRequestPb, error) {
@@ -3681,15 +3176,9 @@ func deleteModelTagRequestToPb(st *DeleteModelTagRequest) (*deleteModelTagReques
 		return nil, nil
 	}
 	pb := &deleteModelTagRequestPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -3732,14 +3221,8 @@ func deleteModelTagRequestFromPb(pb *deleteModelTagRequestPb) (*DeleteModelTagRe
 		return nil, nil
 	}
 	st := &DeleteModelTagRequest{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Key = pb.Key
+	st.Name = pb.Name
 
 	return st, nil
 }
@@ -3796,9 +3279,11 @@ func deleteModelTagResponseFromPb(pb *deleteModelTagResponsePb) (*DeleteModelTag
 // Delete a model version.
 type DeleteModelVersionRequest struct {
 	// Name of the registered model
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Model version number
-	Version string
+	// Wire name: 'version'
+	Version string `tf:"-"`
 }
 
 func deleteModelVersionRequestToPb(st *DeleteModelVersionRequest) (*deleteModelVersionRequestPb, error) {
@@ -3806,15 +3291,9 @@ func deleteModelVersionRequestToPb(st *DeleteModelVersionRequest) (*deleteModelV
 		return nil, nil
 	}
 	pb := &deleteModelVersionRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	return pb, nil
 }
@@ -3856,14 +3335,8 @@ func deleteModelVersionRequestFromPb(pb *deleteModelVersionRequestPb) (*DeleteMo
 		return nil, nil
 	}
 	st := &DeleteModelVersionRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Name = pb.Name
+	st.Version = pb.Version
 
 	return st, nil
 }
@@ -3921,11 +3394,14 @@ func deleteModelVersionResponseFromPb(pb *deleteModelVersionResponsePb) (*Delete
 type DeleteModelVersionTagRequest struct {
 	// Name of the tag. The name must be an exact match; wild-card deletion is
 	// not supported. Maximum size is 250 bytes.
-	Key string
+	// Wire name: 'key'
+	Key string `tf:"-"`
 	// Name of the registered model that the tag was logged under.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Model version number that the tag was logged under.
-	Version string
+	// Wire name: 'version'
+	Version string `tf:"-"`
 }
 
 func deleteModelVersionTagRequestToPb(st *DeleteModelVersionTagRequest) (*deleteModelVersionTagRequestPb, error) {
@@ -3933,20 +3409,11 @@ func deleteModelVersionTagRequestToPb(st *DeleteModelVersionTagRequest) (*delete
 		return nil, nil
 	}
 	pb := &deleteModelVersionTagRequestPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	return pb, nil
 }
@@ -3991,18 +3458,9 @@ func deleteModelVersionTagRequestFromPb(pb *deleteModelVersionTagRequestPb) (*De
 		return nil, nil
 	}
 	st := &DeleteModelVersionTagRequest{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Key = pb.Key
+	st.Name = pb.Name
+	st.Version = pb.Version
 
 	return st, nil
 }
@@ -4058,6 +3516,7 @@ func deleteModelVersionTagResponseFromPb(pb *deleteModelVersionTagResponsePb) (*
 
 type DeleteRun struct {
 	// ID of the run to delete.
+	// Wire name: 'run_id'
 	RunId string
 }
 
@@ -4066,10 +3525,7 @@ func deleteRunToPb(st *DeleteRun) (*deleteRunPb, error) {
 		return nil, nil
 	}
 	pb := &deleteRunPb{}
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
 	return pb, nil
 }
@@ -4109,10 +3565,7 @@ func deleteRunFromPb(pb *deleteRunPb) (*DeleteRun, error) {
 		return nil, nil
 	}
 	st := &DeleteRun{}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
+	st.RunId = pb.RunId
 
 	return st, nil
 }
@@ -4168,16 +3621,19 @@ func deleteRunResponseFromPb(pb *deleteRunResponsePb) (*DeleteRunResponse, error
 
 type DeleteRuns struct {
 	// The ID of the experiment containing the runs to delete.
+	// Wire name: 'experiment_id'
 	ExperimentId string
 	// An optional positive integer indicating the maximum number of runs to
 	// delete. The maximum allowed value for max_runs is 10000.
+	// Wire name: 'max_runs'
 	MaxRuns int
 	// The maximum creation timestamp in milliseconds since the UNIX epoch for
 	// deleting runs. Only runs created prior to or at this timestamp are
 	// deleted.
+	// Wire name: 'max_timestamp_millis'
 	MaxTimestampMillis int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteRunsToPb(st *DeleteRuns) (*deleteRunsPb, error) {
@@ -4185,20 +3641,11 @@ func deleteRunsToPb(st *DeleteRuns) (*deleteRunsPb, error) {
 		return nil, nil
 	}
 	pb := &deleteRunsPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
-	maxRunsPb := &st.MaxRuns
-	if maxRunsPb != nil {
-		pb.MaxRuns = *maxRunsPb
-	}
+	pb.MaxRuns = st.MaxRuns
 
-	maxTimestampMillisPb := &st.MaxTimestampMillis
-	if maxTimestampMillisPb != nil {
-		pb.MaxTimestampMillis = *maxTimestampMillisPb
-	}
+	pb.MaxTimestampMillis = st.MaxTimestampMillis
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4248,18 +3695,9 @@ func deleteRunsFromPb(pb *deleteRunsPb) (*DeleteRuns, error) {
 		return nil, nil
 	}
 	st := &DeleteRuns{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
-	maxRunsField := &pb.MaxRuns
-	if maxRunsField != nil {
-		st.MaxRuns = *maxRunsField
-	}
-	maxTimestampMillisField := &pb.MaxTimestampMillis
-	if maxTimestampMillisField != nil {
-		st.MaxTimestampMillis = *maxTimestampMillisField
-	}
+	st.ExperimentId = pb.ExperimentId
+	st.MaxRuns = pb.MaxRuns
+	st.MaxTimestampMillis = pb.MaxTimestampMillis
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4275,9 +3713,10 @@ func (st deleteRunsPb) MarshalJSON() ([]byte, error) {
 
 type DeleteRunsResponse struct {
 	// The number of runs deleted.
+	// Wire name: 'runs_deleted'
 	RunsDeleted int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteRunsResponseToPb(st *DeleteRunsResponse) (*deleteRunsResponsePb, error) {
@@ -4285,10 +3724,7 @@ func deleteRunsResponseToPb(st *DeleteRunsResponse) (*deleteRunsResponsePb, erro
 		return nil, nil
 	}
 	pb := &deleteRunsResponsePb{}
-	runsDeletedPb := &st.RunsDeleted
-	if runsDeletedPb != nil {
-		pb.RunsDeleted = *runsDeletedPb
-	}
+	pb.RunsDeleted = st.RunsDeleted
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4331,10 +3767,7 @@ func deleteRunsResponseFromPb(pb *deleteRunsResponsePb) (*DeleteRunsResponse, er
 		return nil, nil
 	}
 	st := &DeleteRunsResponse{}
-	runsDeletedField := &pb.RunsDeleted
-	if runsDeletedField != nil {
-		st.RunsDeleted = *runsDeletedField
-	}
+	st.RunsDeleted = pb.RunsDeleted
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4350,8 +3783,10 @@ func (st deleteRunsResponsePb) MarshalJSON() ([]byte, error) {
 
 type DeleteTag struct {
 	// Name of the tag. Maximum size is 255 bytes. Must be provided.
+	// Wire name: 'key'
 	Key string
 	// ID of the run that the tag was logged under. Must be provided.
+	// Wire name: 'run_id'
 	RunId string
 }
 
@@ -4360,15 +3795,9 @@ func deleteTagToPb(st *DeleteTag) (*deleteTagPb, error) {
 		return nil, nil
 	}
 	pb := &deleteTagPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
 	return pb, nil
 }
@@ -4410,14 +3839,8 @@ func deleteTagFromPb(pb *deleteTagPb) (*DeleteTag, error) {
 		return nil, nil
 	}
 	st := &DeleteTag{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
+	st.Key = pb.Key
+	st.RunId = pb.RunId
 
 	return st, nil
 }
@@ -4474,13 +3897,16 @@ func deleteTagResponseFromPb(pb *deleteTagResponsePb) (*DeleteTagResponse, error
 // Delete a transition request
 type DeleteTransitionRequestRequest struct {
 	// User-provided comment on the action.
-	Comment string
+	// Wire name: 'comment'
+	Comment string `tf:"-"`
 	// Username of the user who created this request. Of the transition requests
 	// matching the specified details, only the one transition created by this
 	// user will be deleted.
-	Creator string
+	// Wire name: 'creator'
+	Creator string `tf:"-"`
 	// Name of the model.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Target stage of the transition request. Valid values are:
 	//
 	// * `None`: The initial stage of a model version.
@@ -4490,11 +3916,13 @@ type DeleteTransitionRequestRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
-	Stage DeleteTransitionRequestStage
+	// Wire name: 'stage'
+	Stage DeleteTransitionRequestStage `tf:"-"`
 	// Version of the model.
-	Version string
+	// Wire name: 'version'
+	Version string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteTransitionRequestRequestToPb(st *DeleteTransitionRequestRequest) (*deleteTransitionRequestRequestPb, error) {
@@ -4502,30 +3930,15 @@ func deleteTransitionRequestRequestToPb(st *DeleteTransitionRequestRequest) (*de
 		return nil, nil
 	}
 	pb := &deleteTransitionRequestRequestPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	creatorPb := &st.Creator
-	if creatorPb != nil {
-		pb.Creator = *creatorPb
-	}
+	pb.Creator = st.Creator
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	stagePb := &st.Stage
-	if stagePb != nil {
-		pb.Stage = *stagePb
-	}
+	pb.Stage = st.Stage
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4586,26 +3999,11 @@ func deleteTransitionRequestRequestFromPb(pb *deleteTransitionRequestRequestPb) 
 		return nil, nil
 	}
 	st := &DeleteTransitionRequestRequest{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	creatorField := &pb.Creator
-	if creatorField != nil {
-		st.Creator = *creatorField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	stageField := &pb.Stage
-	if stageField != nil {
-		st.Stage = *stageField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Comment = pb.Comment
+	st.Creator = pb.Creator
+	st.Name = pb.Name
+	st.Stage = pb.Stage
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4719,9 +4117,10 @@ func deleteTransitionRequestStageFromPb(pb *deleteTransitionRequestStagePb) (*De
 // Delete a webhook
 type DeleteWebhookRequest struct {
 	// Webhook ID required to delete a registry webhook.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteWebhookRequestToPb(st *DeleteWebhookRequest) (*deleteWebhookRequestPb, error) {
@@ -4729,10 +4128,7 @@ func deleteWebhookRequestToPb(st *DeleteWebhookRequest) (*deleteWebhookRequestPb
 		return nil, nil
 	}
 	pb := &deleteWebhookRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4775,10 +4171,7 @@ func deleteWebhookRequestFromPb(pb *deleteWebhookRequestPb) (*DeleteWebhookReque
 		return nil, nil
 	}
 	st := &DeleteWebhookRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4844,22 +4237,29 @@ func deleteWebhookResponseFromPb(pb *deleteWebhookResponsePb) (*DeleteWebhookRes
 // An experiment and its metadata.
 type Experiment struct {
 	// Location where artifacts for the experiment are stored.
+	// Wire name: 'artifact_location'
 	ArtifactLocation string
 	// Creation time
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// Unique identifier for the experiment.
+	// Wire name: 'experiment_id'
 	ExperimentId string
 	// Last update time
+	// Wire name: 'last_update_time'
 	LastUpdateTime int64
 	// Current life cycle stage of the experiment: "active" or "deleted".
 	// Deleted experiments are not returned by APIs.
+	// Wire name: 'lifecycle_stage'
 	LifecycleStage string
 	// Human readable name that identifies the experiment.
+	// Wire name: 'name'
 	Name string
 	// Tags: Additional metadata key-value pairs.
+	// Wire name: 'tags'
 	Tags []ExperimentTag
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func experimentToPb(st *Experiment) (*experimentPb, error) {
@@ -4867,35 +4267,17 @@ func experimentToPb(st *Experiment) (*experimentPb, error) {
 		return nil, nil
 	}
 	pb := &experimentPb{}
-	artifactLocationPb := &st.ArtifactLocation
-	if artifactLocationPb != nil {
-		pb.ArtifactLocation = *artifactLocationPb
-	}
+	pb.ArtifactLocation = st.ArtifactLocation
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
-	lastUpdateTimePb := &st.LastUpdateTime
-	if lastUpdateTimePb != nil {
-		pb.LastUpdateTime = *lastUpdateTimePb
-	}
+	pb.LastUpdateTime = st.LastUpdateTime
 
-	lifecycleStagePb := &st.LifecycleStage
-	if lifecycleStagePb != nil {
-		pb.LifecycleStage = *lifecycleStagePb
-	}
+	pb.LifecycleStage = st.LifecycleStage
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var tagsPb []experimentTagPb
 	for _, item := range st.Tags {
@@ -4963,39 +4345,21 @@ func experimentFromPb(pb *experimentPb) (*Experiment, error) {
 		return nil, nil
 	}
 	st := &Experiment{}
-	artifactLocationField := &pb.ArtifactLocation
-	if artifactLocationField != nil {
-		st.ArtifactLocation = *artifactLocationField
-	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
-	lastUpdateTimeField := &pb.LastUpdateTime
-	if lastUpdateTimeField != nil {
-		st.LastUpdateTime = *lastUpdateTimeField
-	}
-	lifecycleStageField := &pb.LifecycleStage
-	if lifecycleStageField != nil {
-		st.LifecycleStage = *lifecycleStageField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.ArtifactLocation = pb.ArtifactLocation
+	st.CreationTime = pb.CreationTime
+	st.ExperimentId = pb.ExperimentId
+	st.LastUpdateTime = pb.LastUpdateTime
+	st.LifecycleStage = pb.LifecycleStage
+	st.Name = pb.Name
 
 	var tagsField []ExperimentTag
-	for _, item := range pb.Tags {
-		itemField, err := experimentTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := experimentTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -5014,15 +4378,19 @@ func (st experimentPb) MarshalJSON() ([]byte, error) {
 
 type ExperimentAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ExperimentPermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func experimentAccessControlRequestToPb(st *ExperimentAccessControlRequest) (*experimentAccessControlRequestPb, error) {
@@ -5030,25 +4398,13 @@ func experimentAccessControlRequestToPb(st *ExperimentAccessControlRequest) (*ex
 		return nil, nil
 	}
 	pb := &experimentAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5097,22 +4453,10 @@ func experimentAccessControlRequestFromPb(pb *experimentAccessControlRequestPb) 
 		return nil, nil
 	}
 	st := &ExperimentAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5128,17 +4472,22 @@ func (st experimentAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type ExperimentAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []ExperimentPermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func experimentAccessControlResponseToPb(st *ExperimentAccessControlResponse) (*experimentAccessControlResponsePb, error) {
@@ -5159,25 +4508,13 @@ func experimentAccessControlResponseToPb(st *ExperimentAccessControlResponse) (*
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5230,32 +4567,20 @@ func experimentAccessControlResponseFromPb(pb *experimentAccessControlResponsePb
 	st := &ExperimentAccessControlResponse{}
 
 	var allPermissionsField []ExperimentPermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := experimentPermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := experimentPermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5270,13 +4595,17 @@ func (st experimentAccessControlResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type ExperimentPermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ExperimentPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func experimentPermissionToPb(st *ExperimentPermission) (*experimentPermissionPb, error) {
@@ -5284,24 +4613,11 @@ func experimentPermissionToPb(st *ExperimentPermission) (*experimentPermissionPb
 		return nil, nil
 	}
 	pb := &experimentPermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5347,23 +4663,9 @@ func experimentPermissionFromPb(pb *experimentPermissionPb) (*ExperimentPermissi
 		return nil, nil
 	}
 	st := &ExperimentPermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5425,13 +4727,17 @@ func experimentPermissionLevelFromPb(pb *experimentPermissionLevelPb) (*Experime
 }
 
 type ExperimentPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []ExperimentAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func experimentPermissionsToPb(st *ExperimentPermissions) (*experimentPermissionsPb, error) {
@@ -5452,15 +4758,9 @@ func experimentPermissionsToPb(st *ExperimentPermissions) (*experimentPermission
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5508,24 +4808,18 @@ func experimentPermissionsFromPb(pb *experimentPermissionsPb) (*ExperimentPermis
 	st := &ExperimentPermissions{}
 
 	var accessControlListField []ExperimentAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := experimentAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := experimentAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5540,11 +4834,14 @@ func (st experimentPermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type ExperimentPermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel ExperimentPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func experimentPermissionsDescriptionToPb(st *ExperimentPermissionsDescription) (*experimentPermissionsDescriptionPb, error) {
@@ -5552,15 +4849,9 @@ func experimentPermissionsDescriptionToPb(st *ExperimentPermissionsDescription) 
 		return nil, nil
 	}
 	pb := &experimentPermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5604,14 +4895,8 @@ func experimentPermissionsDescriptionFromPb(pb *experimentPermissionsDescription
 		return nil, nil
 	}
 	st := &ExperimentPermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5626,9 +4911,12 @@ func (st experimentPermissionsDescriptionPb) MarshalJSON() ([]byte, error) {
 }
 
 type ExperimentPermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []ExperimentAccessControlRequest
 	// The experiment for which to get or manage permissions.
-	ExperimentId string
+	// Wire name: 'experiment_id'
+	ExperimentId string `tf:"-"`
 }
 
 func experimentPermissionsRequestToPb(st *ExperimentPermissionsRequest) (*experimentPermissionsRequestPb, error) {
@@ -5649,10 +4937,7 @@ func experimentPermissionsRequestToPb(st *ExperimentPermissionsRequest) (*experi
 	}
 	pb.AccessControlList = accessControlListPb
 
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
 	return pb, nil
 }
@@ -5695,20 +4980,17 @@ func experimentPermissionsRequestFromPb(pb *experimentPermissionsRequestPb) (*Ex
 	st := &ExperimentPermissionsRequest{}
 
 	var accessControlListField []ExperimentAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := experimentAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := experimentAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
+	st.ExperimentId = pb.ExperimentId
 
 	return st, nil
 }
@@ -5716,11 +4998,13 @@ func experimentPermissionsRequestFromPb(pb *experimentPermissionsRequestPb) (*Ex
 // A tag for an experiment.
 type ExperimentTag struct {
 	// The tag key.
+	// Wire name: 'key'
 	Key string
 	// The tag value.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func experimentTagToPb(st *ExperimentTag) (*experimentTagPb, error) {
@@ -5728,15 +5012,9 @@ func experimentTagToPb(st *ExperimentTag) (*experimentTagPb, error) {
 		return nil, nil
 	}
 	pb := &experimentTagPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5781,14 +5059,8 @@ func experimentTagFromPb(pb *experimentTagPb) (*ExperimentTag, error) {
 		return nil, nil
 	}
 	st := &ExperimentTag{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5805,13 +5077,16 @@ func (st experimentTagPb) MarshalJSON() ([]byte, error) {
 // Metadata of a single artifact file or directory.
 type FileInfo struct {
 	// The size in bytes of the file. Unset for directories.
+	// Wire name: 'file_size'
 	FileSize int64
 	// Whether the path is a directory.
+	// Wire name: 'is_dir'
 	IsDir bool
 	// The path relative to the root artifact directory run.
+	// Wire name: 'path'
 	Path string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
@@ -5819,20 +5094,11 @@ func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
 		return nil, nil
 	}
 	pb := &fileInfoPb{}
-	fileSizePb := &st.FileSize
-	if fileSizePb != nil {
-		pb.FileSize = *fileSizePb
-	}
+	pb.FileSize = st.FileSize
 
-	isDirPb := &st.IsDir
-	if isDirPb != nil {
-		pb.IsDir = *isDirPb
-	}
+	pb.IsDir = st.IsDir
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5879,18 +5145,9 @@ func fileInfoFromPb(pb *fileInfoPb) (*FileInfo, error) {
 		return nil, nil
 	}
 	st := &FileInfo{}
-	fileSizeField := &pb.FileSize
-	if fileSizeField != nil {
-		st.FileSize = *fileSizeField
-	}
-	isDirField := &pb.IsDir
-	if isDirField != nil {
-		st.IsDir = *isDirField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
+	st.FileSize = pb.FileSize
+	st.IsDir = pb.IsDir
+	st.Path = pb.Path
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5908,13 +5165,16 @@ func (st fileInfoPb) MarshalJSON() ([]byte, error) {
 // state.
 type ForecastingExperiment struct {
 	// The unique ID for the forecasting experiment.
+	// Wire name: 'experiment_id'
 	ExperimentId string
 	// The URL to the forecasting experiment page.
+	// Wire name: 'experiment_page_url'
 	ExperimentPageUrl string
 	// The current state of the forecasting experiment.
+	// Wire name: 'state'
 	State ForecastingExperimentState
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func forecastingExperimentToPb(st *ForecastingExperiment) (*forecastingExperimentPb, error) {
@@ -5922,20 +5182,11 @@ func forecastingExperimentToPb(st *ForecastingExperiment) (*forecastingExperimen
 		return nil, nil
 	}
 	pb := &forecastingExperimentPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
-	experimentPageUrlPb := &st.ExperimentPageUrl
-	if experimentPageUrlPb != nil {
-		pb.ExperimentPageUrl = *experimentPageUrlPb
-	}
+	pb.ExperimentPageUrl = st.ExperimentPageUrl
 
-	statePb := &st.State
-	if statePb != nil {
-		pb.State = *statePb
-	}
+	pb.State = st.State
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5982,18 +5233,9 @@ func forecastingExperimentFromPb(pb *forecastingExperimentPb) (*ForecastingExper
 		return nil, nil
 	}
 	st := &ForecastingExperiment{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
-	experimentPageUrlField := &pb.ExperimentPageUrl
-	if experimentPageUrlField != nil {
-		st.ExperimentPageUrl = *experimentPageUrlField
-	}
-	stateField := &pb.State
-	if stateField != nil {
-		st.State = *stateField
-	}
+	st.ExperimentId = pb.ExperimentId
+	st.ExperimentPageUrl = pb.ExperimentPageUrl
+	st.State = pb.State
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6060,7 +5302,8 @@ func forecastingExperimentStateFromPb(pb *forecastingExperimentStatePb) (*Foreca
 // Get an experiment by name
 type GetByNameRequest struct {
 	// Name of the associated experiment.
-	ExperimentName string
+	// Wire name: 'experiment_name'
+	ExperimentName string `tf:"-"`
 }
 
 func getByNameRequestToPb(st *GetByNameRequest) (*getByNameRequestPb, error) {
@@ -6068,10 +5311,7 @@ func getByNameRequestToPb(st *GetByNameRequest) (*getByNameRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getByNameRequestPb{}
-	experimentNamePb := &st.ExperimentName
-	if experimentNamePb != nil {
-		pb.ExperimentName = *experimentNamePb
-	}
+	pb.ExperimentName = st.ExperimentName
 
 	return pb, nil
 }
@@ -6111,10 +5351,7 @@ func getByNameRequestFromPb(pb *getByNameRequestPb) (*GetByNameRequest, error) {
 		return nil, nil
 	}
 	st := &GetByNameRequest{}
-	experimentNameField := &pb.ExperimentName
-	if experimentNameField != nil {
-		st.ExperimentName = *experimentNameField
-	}
+	st.ExperimentName = pb.ExperimentName
 
 	return st, nil
 }
@@ -6122,7 +5359,8 @@ func getByNameRequestFromPb(pb *getByNameRequestPb) (*GetByNameRequest, error) {
 // Get credentials to download trace data
 type GetCredentialsForTraceDataDownloadRequest struct {
 	// The ID of the trace to fetch artifact download credentials for.
-	RequestId string
+	// Wire name: 'request_id'
+	RequestId string `tf:"-"`
 }
 
 func getCredentialsForTraceDataDownloadRequestToPb(st *GetCredentialsForTraceDataDownloadRequest) (*getCredentialsForTraceDataDownloadRequestPb, error) {
@@ -6130,10 +5368,7 @@ func getCredentialsForTraceDataDownloadRequestToPb(st *GetCredentialsForTraceDat
 		return nil, nil
 	}
 	pb := &getCredentialsForTraceDataDownloadRequestPb{}
-	requestIdPb := &st.RequestId
-	if requestIdPb != nil {
-		pb.RequestId = *requestIdPb
-	}
+	pb.RequestId = st.RequestId
 
 	return pb, nil
 }
@@ -6173,16 +5408,14 @@ func getCredentialsForTraceDataDownloadRequestFromPb(pb *getCredentialsForTraceD
 		return nil, nil
 	}
 	st := &GetCredentialsForTraceDataDownloadRequest{}
-	requestIdField := &pb.RequestId
-	if requestIdField != nil {
-		st.RequestId = *requestIdField
-	}
+	st.RequestId = pb.RequestId
 
 	return st, nil
 }
 
 type GetCredentialsForTraceDataDownloadResponse struct {
 	// The artifact download credentials for the specified trace data.
+	// Wire name: 'credential_info'
 	CredentialInfo *ArtifactCredentialInfo
 }
 
@@ -6251,7 +5484,8 @@ func getCredentialsForTraceDataDownloadResponseFromPb(pb *getCredentialsForTrace
 // Get credentials to upload trace data
 type GetCredentialsForTraceDataUploadRequest struct {
 	// The ID of the trace to fetch artifact upload credentials for.
-	RequestId string
+	// Wire name: 'request_id'
+	RequestId string `tf:"-"`
 }
 
 func getCredentialsForTraceDataUploadRequestToPb(st *GetCredentialsForTraceDataUploadRequest) (*getCredentialsForTraceDataUploadRequestPb, error) {
@@ -6259,10 +5493,7 @@ func getCredentialsForTraceDataUploadRequestToPb(st *GetCredentialsForTraceDataU
 		return nil, nil
 	}
 	pb := &getCredentialsForTraceDataUploadRequestPb{}
-	requestIdPb := &st.RequestId
-	if requestIdPb != nil {
-		pb.RequestId = *requestIdPb
-	}
+	pb.RequestId = st.RequestId
 
 	return pb, nil
 }
@@ -6302,16 +5533,14 @@ func getCredentialsForTraceDataUploadRequestFromPb(pb *getCredentialsForTraceDat
 		return nil, nil
 	}
 	st := &GetCredentialsForTraceDataUploadRequest{}
-	requestIdField := &pb.RequestId
-	if requestIdField != nil {
-		st.RequestId = *requestIdField
-	}
+	st.RequestId = pb.RequestId
 
 	return st, nil
 }
 
 type GetCredentialsForTraceDataUploadResponse struct {
 	// The artifact upload credentials for the specified trace data.
+	// Wire name: 'credential_info'
 	CredentialInfo *ArtifactCredentialInfo
 }
 
@@ -6379,6 +5608,7 @@ func getCredentialsForTraceDataUploadResponseFromPb(pb *getCredentialsForTraceDa
 
 type GetExperimentByNameResponse struct {
 	// Experiment details.
+	// Wire name: 'experiment'
 	Experiment *Experiment
 }
 
@@ -6447,7 +5677,8 @@ func getExperimentByNameResponseFromPb(pb *getExperimentByNameResponsePb) (*GetE
 // Get experiment permission levels
 type GetExperimentPermissionLevelsRequest struct {
 	// The experiment for which to get or manage permissions.
-	ExperimentId string
+	// Wire name: 'experiment_id'
+	ExperimentId string `tf:"-"`
 }
 
 func getExperimentPermissionLevelsRequestToPb(st *GetExperimentPermissionLevelsRequest) (*getExperimentPermissionLevelsRequestPb, error) {
@@ -6455,10 +5686,7 @@ func getExperimentPermissionLevelsRequestToPb(st *GetExperimentPermissionLevelsR
 		return nil, nil
 	}
 	pb := &getExperimentPermissionLevelsRequestPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
 	return pb, nil
 }
@@ -6498,16 +5726,14 @@ func getExperimentPermissionLevelsRequestFromPb(pb *getExperimentPermissionLevel
 		return nil, nil
 	}
 	st := &GetExperimentPermissionLevelsRequest{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
+	st.ExperimentId = pb.ExperimentId
 
 	return st, nil
 }
 
 type GetExperimentPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []ExperimentPermissionsDescription
 }
 
@@ -6569,13 +5795,13 @@ func getExperimentPermissionLevelsResponseFromPb(pb *getExperimentPermissionLeve
 	st := &GetExperimentPermissionLevelsResponse{}
 
 	var permissionLevelsField []ExperimentPermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := experimentPermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := experimentPermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -6586,7 +5812,8 @@ func getExperimentPermissionLevelsResponseFromPb(pb *getExperimentPermissionLeve
 // Get experiment permissions
 type GetExperimentPermissionsRequest struct {
 	// The experiment for which to get or manage permissions.
-	ExperimentId string
+	// Wire name: 'experiment_id'
+	ExperimentId string `tf:"-"`
 }
 
 func getExperimentPermissionsRequestToPb(st *GetExperimentPermissionsRequest) (*getExperimentPermissionsRequestPb, error) {
@@ -6594,10 +5821,7 @@ func getExperimentPermissionsRequestToPb(st *GetExperimentPermissionsRequest) (*
 		return nil, nil
 	}
 	pb := &getExperimentPermissionsRequestPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
 	return pb, nil
 }
@@ -6637,10 +5861,7 @@ func getExperimentPermissionsRequestFromPb(pb *getExperimentPermissionsRequestPb
 		return nil, nil
 	}
 	st := &GetExperimentPermissionsRequest{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
+	st.ExperimentId = pb.ExperimentId
 
 	return st, nil
 }
@@ -6648,7 +5869,8 @@ func getExperimentPermissionsRequestFromPb(pb *getExperimentPermissionsRequestPb
 // Get an experiment
 type GetExperimentRequest struct {
 	// ID of the associated experiment.
-	ExperimentId string
+	// Wire name: 'experiment_id'
+	ExperimentId string `tf:"-"`
 }
 
 func getExperimentRequestToPb(st *GetExperimentRequest) (*getExperimentRequestPb, error) {
@@ -6656,10 +5878,7 @@ func getExperimentRequestToPb(st *GetExperimentRequest) (*getExperimentRequestPb
 		return nil, nil
 	}
 	pb := &getExperimentRequestPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
 	return pb, nil
 }
@@ -6699,16 +5918,14 @@ func getExperimentRequestFromPb(pb *getExperimentRequestPb) (*GetExperimentReque
 		return nil, nil
 	}
 	st := &GetExperimentRequest{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
+	st.ExperimentId = pb.ExperimentId
 
 	return st, nil
 }
 
 type GetExperimentResponse struct {
 	// Experiment details.
+	// Wire name: 'experiment'
 	Experiment *Experiment
 }
 
@@ -6777,7 +5994,8 @@ func getExperimentResponseFromPb(pb *getExperimentResponsePb) (*GetExperimentRes
 // Get a forecasting experiment
 type GetForecastingExperimentRequest struct {
 	// The unique ID of a forecasting experiment
-	ExperimentId string
+	// Wire name: 'experiment_id'
+	ExperimentId string `tf:"-"`
 }
 
 func getForecastingExperimentRequestToPb(st *GetForecastingExperimentRequest) (*getForecastingExperimentRequestPb, error) {
@@ -6785,10 +6003,7 @@ func getForecastingExperimentRequestToPb(st *GetForecastingExperimentRequest) (*
 		return nil, nil
 	}
 	pb := &getForecastingExperimentRequestPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
 	return pb, nil
 }
@@ -6828,10 +6043,7 @@ func getForecastingExperimentRequestFromPb(pb *getForecastingExperimentRequestPb
 		return nil, nil
 	}
 	st := &GetForecastingExperimentRequest{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
+	st.ExperimentId = pb.ExperimentId
 
 	return st, nil
 }
@@ -6841,18 +6053,23 @@ type GetHistoryRequest struct {
 	// Maximum number of Metric records to return per paginated request. Default
 	// is set to 25,000. If set higher than 25,000, a request Exception will be
 	// raised.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Name of the metric.
-	MetricKey string
+	// Wire name: 'metric_key'
+	MetricKey string `tf:"-"`
 	// Token indicating the page of metric histories to fetch.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// ID of the run from which to fetch metric values. Must be provided.
-	RunId string
+	// Wire name: 'run_id'
+	RunId string `tf:"-"`
 	// [Deprecated, use `run_id` instead] ID of the run from which to fetch
 	// metric values. This field will be removed in a future MLflow version.
-	RunUuid string
+	// Wire name: 'run_uuid'
+	RunUuid string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getHistoryRequestToPb(st *GetHistoryRequest) (*getHistoryRequestPb, error) {
@@ -6860,30 +6077,15 @@ func getHistoryRequestToPb(st *GetHistoryRequest) (*getHistoryRequestPb, error) 
 		return nil, nil
 	}
 	pb := &getHistoryRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	metricKeyPb := &st.MetricKey
-	if metricKeyPb != nil {
-		pb.MetricKey = *metricKeyPb
-	}
+	pb.MetricKey = st.MetricKey
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runUuidPb := &st.RunUuid
-	if runUuidPb != nil {
-		pb.RunUuid = *runUuidPb
-	}
+	pb.RunUuid = st.RunUuid
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6937,26 +6139,11 @@ func getHistoryRequestFromPb(pb *getHistoryRequestPb) (*GetHistoryRequest, error
 		return nil, nil
 	}
 	st := &GetHistoryRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	metricKeyField := &pb.MetricKey
-	if metricKeyField != nil {
-		st.MetricKey = *metricKeyField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runUuidField := &pb.RunUuid
-	if runUuidField != nil {
-		st.RunUuid = *runUuidField
-	}
+	st.MaxResults = pb.MaxResults
+	st.MetricKey = pb.MetricKey
+	st.PageToken = pb.PageToken
+	st.RunId = pb.RunId
+	st.RunUuid = pb.RunUuid
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6972,8 +6159,10 @@ func (st getHistoryRequestPb) MarshalJSON() ([]byte, error) {
 
 type GetLatestVersionsRequest struct {
 	// Registered model unique name identifier.
+	// Wire name: 'name'
 	Name string
 	// List of stages.
+	// Wire name: 'stages'
 	Stages []string
 }
 
@@ -6982,19 +6171,9 @@ func getLatestVersionsRequestToPb(st *GetLatestVersionsRequest) (*getLatestVersi
 		return nil, nil
 	}
 	pb := &getLatestVersionsRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	var stagesPb []string
-	for _, item := range st.Stages {
-		itemPb := &item
-		if itemPb != nil {
-			stagesPb = append(stagesPb, *itemPb)
-		}
-	}
-	pb.Stages = stagesPb
+	pb.Stages = st.Stages
 
 	return pb, nil
 }
@@ -7036,19 +6215,8 @@ func getLatestVersionsRequestFromPb(pb *getLatestVersionsRequestPb) (*GetLatestV
 		return nil, nil
 	}
 	st := &GetLatestVersionsRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-
-	var stagesField []string
-	for _, item := range pb.Stages {
-		itemField := &item
-		if itemField != nil {
-			stagesField = append(stagesField, *itemField)
-		}
-	}
-	st.Stages = stagesField
+	st.Name = pb.Name
+	st.Stages = pb.Stages
 
 	return st, nil
 }
@@ -7057,6 +6225,7 @@ type GetLatestVersionsResponse struct {
 	// Latest version models for each requests stage. Only return models with
 	// current `READY` status. If no `stages` provided, returns the latest
 	// version for each stage, including `"None"`.
+	// Wire name: 'model_versions'
 	ModelVersions []ModelVersion
 }
 
@@ -7120,13 +6289,13 @@ func getLatestVersionsResponseFromPb(pb *getLatestVersionsResponsePb) (*GetLates
 	st := &GetLatestVersionsResponse{}
 
 	var modelVersionsField []ModelVersion
-	for _, item := range pb.ModelVersions {
-		itemField, err := modelVersionFromPb(&item)
+	for _, itemPb := range pb.ModelVersions {
+		item, err := modelVersionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			modelVersionsField = append(modelVersionsField, *itemField)
+		if item != nil {
+			modelVersionsField = append(modelVersionsField, *item)
 		}
 	}
 	st.ModelVersions = modelVersionsField
@@ -7139,13 +6308,15 @@ type GetMetricHistoryResponse struct {
 	// the request or if the total count of metrics returned is less than the
 	// service level pagination threshold. Otherwise, this is one page of
 	// results.
+	// Wire name: 'metrics'
 	Metrics []Metric
 	// A token that can be used to issue a query for the next page of metric
 	// history values. A missing token indicates that no additional metrics are
 	// available to fetch.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getMetricHistoryResponseToPb(st *GetMetricHistoryResponse) (*getMetricHistoryResponsePb, error) {
@@ -7166,10 +6337,7 @@ func getMetricHistoryResponseToPb(st *GetMetricHistoryResponse) (*getMetricHisto
 	}
 	pb.Metrics = metricsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7221,20 +6389,17 @@ func getMetricHistoryResponseFromPb(pb *getMetricHistoryResponsePb) (*GetMetricH
 	st := &GetMetricHistoryResponse{}
 
 	var metricsField []Metric
-	for _, item := range pb.Metrics {
-		itemField, err := metricFromPb(&item)
+	for _, itemPb := range pb.Metrics {
+		item, err := metricFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			metricsField = append(metricsField, *itemField)
+		if item != nil {
+			metricsField = append(metricsField, *item)
 		}
 	}
 	st.Metrics = metricsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7251,7 +6416,8 @@ func (st getMetricHistoryResponsePb) MarshalJSON() ([]byte, error) {
 // Get model
 type GetModelRequest struct {
 	// Registered model unique name identifier.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 }
 
 func getModelRequestToPb(st *GetModelRequest) (*getModelRequestPb, error) {
@@ -7259,10 +6425,7 @@ func getModelRequestToPb(st *GetModelRequest) (*getModelRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getModelRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	return pb, nil
 }
@@ -7302,15 +6465,14 @@ func getModelRequestFromPb(pb *getModelRequestPb) (*GetModelRequest, error) {
 		return nil, nil
 	}
 	st := &GetModelRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	return st, nil
 }
 
 type GetModelResponse struct {
+
+	// Wire name: 'registered_model_databricks'
 	RegisteredModelDatabricks *ModelDatabricks
 }
 
@@ -7378,9 +6540,11 @@ func getModelResponseFromPb(pb *getModelResponsePb) (*GetModelResponse, error) {
 // Get a model version URI
 type GetModelVersionDownloadUriRequest struct {
 	// Name of the registered model
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Model version number
-	Version string
+	// Wire name: 'version'
+	Version string `tf:"-"`
 }
 
 func getModelVersionDownloadUriRequestToPb(st *GetModelVersionDownloadUriRequest) (*getModelVersionDownloadUriRequestPb, error) {
@@ -7388,15 +6552,9 @@ func getModelVersionDownloadUriRequestToPb(st *GetModelVersionDownloadUriRequest
 		return nil, nil
 	}
 	pb := &getModelVersionDownloadUriRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	return pb, nil
 }
@@ -7438,23 +6596,18 @@ func getModelVersionDownloadUriRequestFromPb(pb *getModelVersionDownloadUriReque
 		return nil, nil
 	}
 	st := &GetModelVersionDownloadUriRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Name = pb.Name
+	st.Version = pb.Version
 
 	return st, nil
 }
 
 type GetModelVersionDownloadUriResponse struct {
 	// URI corresponding to where artifacts for this model version are stored.
+	// Wire name: 'artifact_uri'
 	ArtifactUri string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getModelVersionDownloadUriResponseToPb(st *GetModelVersionDownloadUriResponse) (*getModelVersionDownloadUriResponsePb, error) {
@@ -7462,10 +6615,7 @@ func getModelVersionDownloadUriResponseToPb(st *GetModelVersionDownloadUriRespon
 		return nil, nil
 	}
 	pb := &getModelVersionDownloadUriResponsePb{}
-	artifactUriPb := &st.ArtifactUri
-	if artifactUriPb != nil {
-		pb.ArtifactUri = *artifactUriPb
-	}
+	pb.ArtifactUri = st.ArtifactUri
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7508,10 +6658,7 @@ func getModelVersionDownloadUriResponseFromPb(pb *getModelVersionDownloadUriResp
 		return nil, nil
 	}
 	st := &GetModelVersionDownloadUriResponse{}
-	artifactUriField := &pb.ArtifactUri
-	if artifactUriField != nil {
-		st.ArtifactUri = *artifactUriField
-	}
+	st.ArtifactUri = pb.ArtifactUri
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7528,9 +6675,11 @@ func (st getModelVersionDownloadUriResponsePb) MarshalJSON() ([]byte, error) {
 // Get a model version
 type GetModelVersionRequest struct {
 	// Name of the registered model
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Model version number
-	Version string
+	// Wire name: 'version'
+	Version string `tf:"-"`
 }
 
 func getModelVersionRequestToPb(st *GetModelVersionRequest) (*getModelVersionRequestPb, error) {
@@ -7538,15 +6687,9 @@ func getModelVersionRequestToPb(st *GetModelVersionRequest) (*getModelVersionReq
 		return nil, nil
 	}
 	pb := &getModelVersionRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	return pb, nil
 }
@@ -7588,19 +6731,15 @@ func getModelVersionRequestFromPb(pb *getModelVersionRequestPb) (*GetModelVersio
 		return nil, nil
 	}
 	st := &GetModelVersionRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Name = pb.Name
+	st.Version = pb.Version
 
 	return st, nil
 }
 
 type GetModelVersionResponse struct {
+
+	// Wire name: 'model_version'
 	ModelVersion *ModelVersion
 }
 
@@ -7668,7 +6807,8 @@ func getModelVersionResponseFromPb(pb *getModelVersionResponsePb) (*GetModelVers
 // Get registered model permission levels
 type GetRegisteredModelPermissionLevelsRequest struct {
 	// The registered model for which to get or manage permissions.
-	RegisteredModelId string
+	// Wire name: 'registered_model_id'
+	RegisteredModelId string `tf:"-"`
 }
 
 func getRegisteredModelPermissionLevelsRequestToPb(st *GetRegisteredModelPermissionLevelsRequest) (*getRegisteredModelPermissionLevelsRequestPb, error) {
@@ -7676,10 +6816,7 @@ func getRegisteredModelPermissionLevelsRequestToPb(st *GetRegisteredModelPermiss
 		return nil, nil
 	}
 	pb := &getRegisteredModelPermissionLevelsRequestPb{}
-	registeredModelIdPb := &st.RegisteredModelId
-	if registeredModelIdPb != nil {
-		pb.RegisteredModelId = *registeredModelIdPb
-	}
+	pb.RegisteredModelId = st.RegisteredModelId
 
 	return pb, nil
 }
@@ -7719,16 +6856,14 @@ func getRegisteredModelPermissionLevelsRequestFromPb(pb *getRegisteredModelPermi
 		return nil, nil
 	}
 	st := &GetRegisteredModelPermissionLevelsRequest{}
-	registeredModelIdField := &pb.RegisteredModelId
-	if registeredModelIdField != nil {
-		st.RegisteredModelId = *registeredModelIdField
-	}
+	st.RegisteredModelId = pb.RegisteredModelId
 
 	return st, nil
 }
 
 type GetRegisteredModelPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []RegisteredModelPermissionsDescription
 }
 
@@ -7790,13 +6925,13 @@ func getRegisteredModelPermissionLevelsResponseFromPb(pb *getRegisteredModelPerm
 	st := &GetRegisteredModelPermissionLevelsResponse{}
 
 	var permissionLevelsField []RegisteredModelPermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := registeredModelPermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := registeredModelPermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -7807,7 +6942,8 @@ func getRegisteredModelPermissionLevelsResponseFromPb(pb *getRegisteredModelPerm
 // Get registered model permissions
 type GetRegisteredModelPermissionsRequest struct {
 	// The registered model for which to get or manage permissions.
-	RegisteredModelId string
+	// Wire name: 'registered_model_id'
+	RegisteredModelId string `tf:"-"`
 }
 
 func getRegisteredModelPermissionsRequestToPb(st *GetRegisteredModelPermissionsRequest) (*getRegisteredModelPermissionsRequestPb, error) {
@@ -7815,10 +6951,7 @@ func getRegisteredModelPermissionsRequestToPb(st *GetRegisteredModelPermissionsR
 		return nil, nil
 	}
 	pb := &getRegisteredModelPermissionsRequestPb{}
-	registeredModelIdPb := &st.RegisteredModelId
-	if registeredModelIdPb != nil {
-		pb.RegisteredModelId = *registeredModelIdPb
-	}
+	pb.RegisteredModelId = st.RegisteredModelId
 
 	return pb, nil
 }
@@ -7858,10 +6991,7 @@ func getRegisteredModelPermissionsRequestFromPb(pb *getRegisteredModelPermission
 		return nil, nil
 	}
 	st := &GetRegisteredModelPermissionsRequest{}
-	registeredModelIdField := &pb.RegisteredModelId
-	if registeredModelIdField != nil {
-		st.RegisteredModelId = *registeredModelIdField
-	}
+	st.RegisteredModelId = pb.RegisteredModelId
 
 	return st, nil
 }
@@ -7869,12 +6999,14 @@ func getRegisteredModelPermissionsRequestFromPb(pb *getRegisteredModelPermission
 // Get a run
 type GetRunRequest struct {
 	// ID of the run to fetch. Must be provided.
-	RunId string
+	// Wire name: 'run_id'
+	RunId string `tf:"-"`
 	// [Deprecated, use `run_id` instead] ID of the run to fetch. This field
 	// will be removed in a future MLflow version.
-	RunUuid string
+	// Wire name: 'run_uuid'
+	RunUuid string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getRunRequestToPb(st *GetRunRequest) (*getRunRequestPb, error) {
@@ -7882,15 +7014,9 @@ func getRunRequestToPb(st *GetRunRequest) (*getRunRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getRunRequestPb{}
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runUuidPb := &st.RunUuid
-	if runUuidPb != nil {
-		pb.RunUuid = *runUuidPb
-	}
+	pb.RunUuid = st.RunUuid
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7936,14 +7062,8 @@ func getRunRequestFromPb(pb *getRunRequestPb) (*GetRunRequest, error) {
 		return nil, nil
 	}
 	st := &GetRunRequest{}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runUuidField := &pb.RunUuid
-	if runUuidField != nil {
-		st.RunUuid = *runUuidField
-	}
+	st.RunId = pb.RunId
+	st.RunUuid = pb.RunUuid
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7960,6 +7080,7 @@ func (st getRunRequestPb) MarshalJSON() ([]byte, error) {
 type GetRunResponse struct {
 	// Run metadata (name, start time, etc) and data (metrics, params, and
 	// tags).
+	// Wire name: 'run'
 	Run *Run
 }
 
@@ -8031,6 +7152,7 @@ type HttpUrlSpec struct {
 	// by the wehbook. It should be of the form `"<auth type> <credentials>"`.
 	// If set to an empty string, no authorization header will be included in
 	// the request.
+	// Wire name: 'authorization'
 	Authorization string
 	// Enable/disable SSL certificate validation. Default is true. For
 	// self-signed certificates, this field must be false AND the destination
@@ -8039,15 +7161,18 @@ type HttpUrlSpec struct {
 	// HMAC-encoded portion of the payload and acknowledge the risk associated
 	// with disabling hostname validation whereby it becomes more likely that
 	// requests can be maliciously routed to an unintended host.
+	// Wire name: 'enable_ssl_verification'
 	EnableSslVerification bool
 	// Shared secret required for HMAC encoding payload. The HMAC-encoded
 	// payload will be sent in the header as: { "X-Databricks-Signature":
 	// $encoded_payload }.
+	// Wire name: 'secret'
 	Secret string
 	// External HTTPS URL called on event trigger (by using a POST request).
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func httpUrlSpecToPb(st *HttpUrlSpec) (*httpUrlSpecPb, error) {
@@ -8055,25 +7180,13 @@ func httpUrlSpecToPb(st *HttpUrlSpec) (*httpUrlSpecPb, error) {
 		return nil, nil
 	}
 	pb := &httpUrlSpecPb{}
-	authorizationPb := &st.Authorization
-	if authorizationPb != nil {
-		pb.Authorization = *authorizationPb
-	}
+	pb.Authorization = st.Authorization
 
-	enableSslVerificationPb := &st.EnableSslVerification
-	if enableSslVerificationPb != nil {
-		pb.EnableSslVerification = *enableSslVerificationPb
-	}
+	pb.EnableSslVerification = st.EnableSslVerification
 
-	secretPb := &st.Secret
-	if secretPb != nil {
-		pb.Secret = *secretPb
-	}
+	pb.Secret = st.Secret
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8133,22 +7246,10 @@ func httpUrlSpecFromPb(pb *httpUrlSpecPb) (*HttpUrlSpec, error) {
 		return nil, nil
 	}
 	st := &HttpUrlSpec{}
-	authorizationField := &pb.Authorization
-	if authorizationField != nil {
-		st.Authorization = *authorizationField
-	}
-	enableSslVerificationField := &pb.EnableSslVerification
-	if enableSslVerificationField != nil {
-		st.EnableSslVerification = *enableSslVerificationField
-	}
-	secretField := &pb.Secret
-	if secretField != nil {
-		st.Secret = *secretField
-	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.Authorization = pb.Authorization
+	st.EnableSslVerification = pb.EnableSslVerification
+	st.Secret = pb.Secret
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8170,11 +7271,13 @@ type HttpUrlSpecWithoutSecret struct {
 	// HMAC-encoded portion of the payload and acknowledge the risk associated
 	// with disabling hostname validation whereby it becomes more likely that
 	// requests can be maliciously routed to an unintended host.
+	// Wire name: 'enable_ssl_verification'
 	EnableSslVerification bool
 	// External HTTPS URL called on event trigger (by using a POST request).
+	// Wire name: 'url'
 	Url string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func httpUrlSpecWithoutSecretToPb(st *HttpUrlSpecWithoutSecret) (*httpUrlSpecWithoutSecretPb, error) {
@@ -8182,15 +7285,9 @@ func httpUrlSpecWithoutSecretToPb(st *HttpUrlSpecWithoutSecret) (*httpUrlSpecWit
 		return nil, nil
 	}
 	pb := &httpUrlSpecWithoutSecretPb{}
-	enableSslVerificationPb := &st.EnableSslVerification
-	if enableSslVerificationPb != nil {
-		pb.EnableSslVerification = *enableSslVerificationPb
-	}
+	pb.EnableSslVerification = st.EnableSslVerification
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8241,14 +7338,8 @@ func httpUrlSpecWithoutSecretFromPb(pb *httpUrlSpecWithoutSecretPb) (*HttpUrlSpe
 		return nil, nil
 	}
 	st := &HttpUrlSpecWithoutSecret{}
-	enableSslVerificationField := &pb.EnableSslVerification
-	if enableSslVerificationField != nil {
-		st.EnableSslVerification = *enableSslVerificationField
-	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
+	st.EnableSslVerification = pb.EnableSslVerification
+	st.Url = pb.Url
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8265,8 +7356,10 @@ func (st httpUrlSpecWithoutSecretPb) MarshalJSON() ([]byte, error) {
 // Tag for a dataset input.
 type InputTag struct {
 	// The tag key.
+	// Wire name: 'key'
 	Key string
 	// The tag value.
+	// Wire name: 'value'
 	Value string
 }
 
@@ -8275,15 +7368,9 @@ func inputTagToPb(st *InputTag) (*inputTagPb, error) {
 		return nil, nil
 	}
 	pb := &inputTagPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	return pb, nil
 }
@@ -8325,29 +7412,26 @@ func inputTagFromPb(pb *inputTagPb) (*InputTag, error) {
 		return nil, nil
 	}
 	st := &InputTag{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	return st, nil
 }
 
 type JobSpec struct {
 	// The personal access token used to authorize webhook's job runs.
+	// Wire name: 'access_token'
 	AccessToken string
 	// ID of the job that the webhook runs.
+	// Wire name: 'job_id'
 	JobId string
 	// URL of the workspace containing the job that this webhook runs. If not
 	// specified, the job’s workspace URL is assumed to be the same as the
 	// workspace where the webhook is created.
+	// Wire name: 'workspace_url'
 	WorkspaceUrl string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func jobSpecToPb(st *JobSpec) (*jobSpecPb, error) {
@@ -8355,20 +7439,11 @@ func jobSpecToPb(st *JobSpec) (*jobSpecPb, error) {
 		return nil, nil
 	}
 	pb := &jobSpecPb{}
-	accessTokenPb := &st.AccessToken
-	if accessTokenPb != nil {
-		pb.AccessToken = *accessTokenPb
-	}
+	pb.AccessToken = st.AccessToken
 
-	jobIdPb := &st.JobId
-	if jobIdPb != nil {
-		pb.JobId = *jobIdPb
-	}
+	pb.JobId = st.JobId
 
-	workspaceUrlPb := &st.WorkspaceUrl
-	if workspaceUrlPb != nil {
-		pb.WorkspaceUrl = *workspaceUrlPb
-	}
+	pb.WorkspaceUrl = st.WorkspaceUrl
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8417,18 +7492,9 @@ func jobSpecFromPb(pb *jobSpecPb) (*JobSpec, error) {
 		return nil, nil
 	}
 	st := &JobSpec{}
-	accessTokenField := &pb.AccessToken
-	if accessTokenField != nil {
-		st.AccessToken = *accessTokenField
-	}
-	jobIdField := &pb.JobId
-	if jobIdField != nil {
-		st.JobId = *jobIdField
-	}
-	workspaceUrlField := &pb.WorkspaceUrl
-	if workspaceUrlField != nil {
-		st.WorkspaceUrl = *workspaceUrlField
-	}
+	st.AccessToken = pb.AccessToken
+	st.JobId = pb.JobId
+	st.WorkspaceUrl = pb.WorkspaceUrl
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8444,13 +7510,15 @@ func (st jobSpecPb) MarshalJSON() ([]byte, error) {
 
 type JobSpecWithoutSecret struct {
 	// ID of the job that the webhook runs.
+	// Wire name: 'job_id'
 	JobId string
 	// URL of the workspace containing the job that this webhook runs. Defaults
 	// to the workspace URL in which the webhook is created. If not specified,
 	// the job’s workspace is assumed to be the same as the webhook’s.
+	// Wire name: 'workspace_url'
 	WorkspaceUrl string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func jobSpecWithoutSecretToPb(st *JobSpecWithoutSecret) (*jobSpecWithoutSecretPb, error) {
@@ -8458,15 +7526,9 @@ func jobSpecWithoutSecretToPb(st *JobSpecWithoutSecret) (*jobSpecWithoutSecretPb
 		return nil, nil
 	}
 	pb := &jobSpecWithoutSecretPb{}
-	jobIdPb := &st.JobId
-	if jobIdPb != nil {
-		pb.JobId = *jobIdPb
-	}
+	pb.JobId = st.JobId
 
-	workspaceUrlPb := &st.WorkspaceUrl
-	if workspaceUrlPb != nil {
-		pb.WorkspaceUrl = *workspaceUrlPb
-	}
+	pb.WorkspaceUrl = st.WorkspaceUrl
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8513,14 +7575,8 @@ func jobSpecWithoutSecretFromPb(pb *jobSpecWithoutSecretPb) (*JobSpecWithoutSecr
 		return nil, nil
 	}
 	st := &JobSpecWithoutSecret{}
-	jobIdField := &pb.JobId
-	if jobIdField != nil {
-		st.JobId = *jobIdField
-	}
-	workspaceUrlField := &pb.WorkspaceUrl
-	if workspaceUrlField != nil {
-		st.WorkspaceUrl = *workspaceUrlField
-	}
+	st.JobId = pb.JobId
+	st.WorkspaceUrl = pb.WorkspaceUrl
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8542,17 +7598,21 @@ type ListArtifactsRequest struct {
 	// `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC
 	// Volumes, which supports pagination. See [List directory contents | Files
 	// API](/api/workspace/files/listdirectorycontents).
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Filter artifacts matching this path (a relative path from the root
 	// artifact directory).
-	Path string
+	// Wire name: 'path'
+	Path string `tf:"-"`
 	// ID of the run whose artifacts to list. Must be provided.
-	RunId string
+	// Wire name: 'run_id'
+	RunId string `tf:"-"`
 	// [Deprecated, use `run_id` instead] ID of the run whose artifacts to list.
 	// This field will be removed in a future MLflow version.
-	RunUuid string
+	// Wire name: 'run_uuid'
+	RunUuid string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listArtifactsRequestToPb(st *ListArtifactsRequest) (*listArtifactsRequestPb, error) {
@@ -8560,25 +7620,13 @@ func listArtifactsRequestToPb(st *ListArtifactsRequest) (*listArtifactsRequestPb
 		return nil, nil
 	}
 	pb := &listArtifactsRequestPb{}
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	pathPb := &st.Path
-	if pathPb != nil {
-		pb.Path = *pathPb
-	}
+	pb.Path = st.Path
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runUuidPb := &st.RunUuid
-	if runUuidPb != nil {
-		pb.RunUuid = *runUuidPb
-	}
+	pb.RunUuid = st.RunUuid
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8634,22 +7682,10 @@ func listArtifactsRequestFromPb(pb *listArtifactsRequestPb) (*ListArtifactsReque
 		return nil, nil
 	}
 	st := &ListArtifactsRequest{}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	pathField := &pb.Path
-	if pathField != nil {
-		st.Path = *pathField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runUuidField := &pb.RunUuid
-	if runUuidField != nil {
-		st.RunUuid = *runUuidField
-	}
+	st.PageToken = pb.PageToken
+	st.Path = pb.Path
+	st.RunId = pb.RunId
+	st.RunUuid = pb.RunUuid
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8665,13 +7701,16 @@ func (st listArtifactsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListArtifactsResponse struct {
 	// The file location and metadata for artifacts.
+	// Wire name: 'files'
 	Files []FileInfo
 	// The token that can be used to retrieve the next page of artifact results.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// The root artifact directory for the run.
+	// Wire name: 'root_uri'
 	RootUri string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listArtifactsResponseToPb(st *ListArtifactsResponse) (*listArtifactsResponsePb, error) {
@@ -8692,15 +7731,9 @@ func listArtifactsResponseToPb(st *ListArtifactsResponse) (*listArtifactsRespons
 	}
 	pb.Files = filesPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
-	rootUriPb := &st.RootUri
-	if rootUriPb != nil {
-		pb.RootUri = *rootUriPb
-	}
+	pb.RootUri = st.RootUri
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8749,24 +7782,18 @@ func listArtifactsResponseFromPb(pb *listArtifactsResponsePb) (*ListArtifactsRes
 	st := &ListArtifactsResponse{}
 
 	var filesField []FileInfo
-	for _, item := range pb.Files {
-		itemField, err := fileInfoFromPb(&item)
+	for _, itemPb := range pb.Files {
+		item, err := fileInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			filesField = append(filesField, *itemField)
+		if item != nil {
+			filesField = append(filesField, *item)
 		}
 	}
 	st.Files = filesField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
-	rootUriField := &pb.RootUri
-	if rootUriField != nil {
-		st.RootUri = *rootUriField
-	}
+	st.NextPageToken = pb.NextPageToken
+	st.RootUri = pb.RootUri
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8787,14 +7814,17 @@ type ListExperimentsRequest struct {
 	// automatically capped at 1000. Callers of this endpoint are encouraged to
 	// pass max_results explicitly and leverage page_token to iterate through
 	// experiments.
-	MaxResults int64
+	// Wire name: 'max_results'
+	MaxResults int64 `tf:"-"`
 	// Token indicating the page of experiments to fetch
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Qualifier for type of experiments to be returned. If unspecified, return
 	// only active experiments.
-	ViewType ViewType
+	// Wire name: 'view_type'
+	ViewType ViewType `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listExperimentsRequestToPb(st *ListExperimentsRequest) (*listExperimentsRequestPb, error) {
@@ -8802,20 +7832,11 @@ func listExperimentsRequestToPb(st *ListExperimentsRequest) (*listExperimentsReq
 		return nil, nil
 	}
 	pb := &listExperimentsRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	viewTypePb := &st.ViewType
-	if viewTypePb != nil {
-		pb.ViewType = *viewTypePb
-	}
+	pb.ViewType = st.ViewType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8867,18 +7888,9 @@ func listExperimentsRequestFromPb(pb *listExperimentsRequestPb) (*ListExperiment
 		return nil, nil
 	}
 	st := &ListExperimentsRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	viewTypeField := &pb.ViewType
-	if viewTypeField != nil {
-		st.ViewType = *viewTypeField
-	}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
+	st.ViewType = pb.ViewType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8895,12 +7907,14 @@ func (st listExperimentsRequestPb) MarshalJSON() ([]byte, error) {
 type ListExperimentsResponse struct {
 	// Paginated Experiments beginning with the first item on the requested
 	// page.
+	// Wire name: 'experiments'
 	Experiments []Experiment
 	// Token that can be used to retrieve the next page of experiments. Empty
 	// token means no more experiment is available for retrieval.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listExperimentsResponseToPb(st *ListExperimentsResponse) (*listExperimentsResponsePb, error) {
@@ -8921,10 +7935,7 @@ func listExperimentsResponseToPb(st *ListExperimentsResponse) (*listExperimentsR
 	}
 	pb.Experiments = experimentsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8973,20 +7984,17 @@ func listExperimentsResponseFromPb(pb *listExperimentsResponsePb) (*ListExperime
 	st := &ListExperimentsResponse{}
 
 	var experimentsField []Experiment
-	for _, item := range pb.Experiments {
-		itemField, err := experimentFromPb(&item)
+	for _, itemPb := range pb.Experiments {
+		item, err := experimentFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			experimentsField = append(experimentsField, *itemField)
+		if item != nil {
+			experimentsField = append(experimentsField, *item)
 		}
 	}
 	st.Experiments = experimentsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9003,11 +8011,13 @@ func (st listExperimentsResponsePb) MarshalJSON() ([]byte, error) {
 // List models
 type ListModelsRequest struct {
 	// Maximum number of registered models desired. Max threshold is 1000.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Pagination token to go to the next page based on a previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listModelsRequestToPb(st *ListModelsRequest) (*listModelsRequestPb, error) {
@@ -9015,15 +8025,9 @@ func listModelsRequestToPb(st *ListModelsRequest) (*listModelsRequestPb, error) 
 		return nil, nil
 	}
 	pb := &listModelsRequestPb{}
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9068,14 +8072,8 @@ func listModelsRequestFromPb(pb *listModelsRequestPb) (*ListModelsRequest, error
 		return nil, nil
 	}
 	st := &ListModelsRequest{}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.MaxResults = pb.MaxResults
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9091,11 +8089,13 @@ func (st listModelsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListModelsResponse struct {
 	// Pagination token to request next page of models for the same query.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'registered_models'
 	RegisteredModels []Model
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listModelsResponseToPb(st *ListModelsResponse) (*listModelsResponsePb, error) {
@@ -9103,10 +8103,7 @@ func listModelsResponseToPb(st *ListModelsResponse) (*listModelsResponsePb, erro
 		return nil, nil
 	}
 	pb := &listModelsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var registeredModelsPb []modelPb
 	for _, item := range st.RegisteredModels {
@@ -9163,19 +8160,16 @@ func listModelsResponseFromPb(pb *listModelsResponsePb) (*ListModelsResponse, er
 		return nil, nil
 	}
 	st := &ListModelsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var registeredModelsField []Model
-	for _, item := range pb.RegisteredModels {
-		itemField, err := modelFromPb(&item)
+	for _, itemPb := range pb.RegisteredModels {
+		item, err := modelFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			registeredModelsField = append(registeredModelsField, *itemField)
+		if item != nil {
+			registeredModelsField = append(registeredModelsField, *item)
 		}
 	}
 	st.RegisteredModels = registeredModelsField
@@ -9194,11 +8188,13 @@ func (st listModelsResponsePb) MarshalJSON() ([]byte, error) {
 
 type ListRegistryWebhooks struct {
 	// Token that can be used to retrieve the next page of artifact results
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// Array of registry webhooks.
+	// Wire name: 'webhooks'
 	Webhooks []RegistryWebhook
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listRegistryWebhooksToPb(st *ListRegistryWebhooks) (*listRegistryWebhooksPb, error) {
@@ -9206,10 +8202,7 @@ func listRegistryWebhooksToPb(st *ListRegistryWebhooks) (*listRegistryWebhooksPb
 		return nil, nil
 	}
 	pb := &listRegistryWebhooksPb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var webhooksPb []registryWebhookPb
 	for _, item := range st.Webhooks {
@@ -9266,19 +8259,16 @@ func listRegistryWebhooksFromPb(pb *listRegistryWebhooksPb) (*ListRegistryWebhoo
 		return nil, nil
 	}
 	st := &ListRegistryWebhooks{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var webhooksField []RegistryWebhook
-	for _, item := range pb.Webhooks {
-		itemField, err := registryWebhookFromPb(&item)
+	for _, itemPb := range pb.Webhooks {
+		item, err := registryWebhookFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			webhooksField = append(webhooksField, *itemField)
+		if item != nil {
+			webhooksField = append(webhooksField, *item)
 		}
 	}
 	st.Webhooks = webhooksField
@@ -9298,9 +8288,11 @@ func (st listRegistryWebhooksPb) MarshalJSON() ([]byte, error) {
 // List transition requests
 type ListTransitionRequestsRequest struct {
 	// Name of the model.
-	Name string
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Version of the model.
-	Version string
+	// Wire name: 'version'
+	Version string `tf:"-"`
 }
 
 func listTransitionRequestsRequestToPb(st *ListTransitionRequestsRequest) (*listTransitionRequestsRequestPb, error) {
@@ -9308,15 +8300,9 @@ func listTransitionRequestsRequestToPb(st *ListTransitionRequestsRequest) (*list
 		return nil, nil
 	}
 	pb := &listTransitionRequestsRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	return pb, nil
 }
@@ -9358,20 +8344,15 @@ func listTransitionRequestsRequestFromPb(pb *listTransitionRequestsRequestPb) (*
 		return nil, nil
 	}
 	st := &ListTransitionRequestsRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Name = pb.Name
+	st.Version = pb.Version
 
 	return st, nil
 }
 
 type ListTransitionRequestsResponse struct {
 	// Array of open transition requests.
+	// Wire name: 'requests'
 	Requests []Activity
 }
 
@@ -9433,13 +8414,13 @@ func listTransitionRequestsResponseFromPb(pb *listTransitionRequestsResponsePb) 
 	st := &ListTransitionRequestsResponse{}
 
 	var requestsField []Activity
-	for _, item := range pb.Requests {
-		itemField, err := activityFromPb(&item)
+	for _, itemPb := range pb.Requests {
+		item, err := activityFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			requestsField = append(requestsField, *itemField)
+		if item != nil {
+			requestsField = append(requestsField, *item)
 		}
 	}
 	st.Requests = requestsField
@@ -9452,14 +8433,17 @@ type ListWebhooksRequest struct {
 	// If `events` is specified, any webhook with one or more of the specified
 	// trigger events is included in the output. If `events` is not specified,
 	// webhooks of all event types are included in the output.
-	Events []RegistryWebhookEvent
+	// Wire name: 'events'
+	Events []RegistryWebhookEvent `tf:"-"`
 	// If not specified, all webhooks associated with the specified events are
 	// listed, regardless of their associated model.
-	ModelName string
+	// Wire name: 'model_name'
+	ModelName string `tf:"-"`
 	// Token indicating the page of artifact results to fetch
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listWebhooksRequestToPb(st *ListWebhooksRequest) (*listWebhooksRequestPb, error) {
@@ -9467,25 +8451,11 @@ func listWebhooksRequestToPb(st *ListWebhooksRequest) (*listWebhooksRequestPb, e
 		return nil, nil
 	}
 	pb := &listWebhooksRequestPb{}
+	pb.Events = st.Events
 
-	var eventsPb []RegistryWebhookEvent
-	for _, item := range st.Events {
-		itemPb := &item
-		if itemPb != nil {
-			eventsPb = append(eventsPb, *itemPb)
-		}
-	}
-	pb.Events = eventsPb
+	pb.ModelName = st.ModelName
 
-	modelNamePb := &st.ModelName
-	if modelNamePb != nil {
-		pb.ModelName = *modelNamePb
-	}
-
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9535,23 +8505,9 @@ func listWebhooksRequestFromPb(pb *listWebhooksRequestPb) (*ListWebhooksRequest,
 		return nil, nil
 	}
 	st := &ListWebhooksRequest{}
-
-	var eventsField []RegistryWebhookEvent
-	for _, item := range pb.Events {
-		itemField := &item
-		if itemField != nil {
-			eventsField = append(eventsField, *itemField)
-		}
-	}
-	st.Events = eventsField
-	modelNameField := &pb.ModelName
-	if modelNameField != nil {
-		st.ModelName = *modelNameField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.Events = pb.Events
+	st.ModelName = pb.ModelName
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9568,17 +8524,21 @@ func (st listWebhooksRequestPb) MarshalJSON() ([]byte, error) {
 type LogBatch struct {
 	// Metrics to log. A single request can contain up to 1000 metrics, and up
 	// to 1000 metrics, params, and tags in total.
+	// Wire name: 'metrics'
 	Metrics []Metric
 	// Params to log. A single request can contain up to 100 params, and up to
 	// 1000 metrics, params, and tags in total.
+	// Wire name: 'params'
 	Params []Param
 	// ID of the run to log under
+	// Wire name: 'run_id'
 	RunId string
 	// Tags to log. A single request can contain up to 100 tags, and up to 1000
 	// metrics, params, and tags in total.
+	// Wire name: 'tags'
 	Tags []RunTag
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func logBatchToPb(st *LogBatch) (*logBatchPb, error) {
@@ -9611,10 +8571,7 @@ func logBatchToPb(st *LogBatch) (*logBatchPb, error) {
 	}
 	pb.Params = paramsPb
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
 	var tagsPb []runTagPb
 	for _, item := range st.Tags {
@@ -9680,41 +8637,38 @@ func logBatchFromPb(pb *logBatchPb) (*LogBatch, error) {
 	st := &LogBatch{}
 
 	var metricsField []Metric
-	for _, item := range pb.Metrics {
-		itemField, err := metricFromPb(&item)
+	for _, itemPb := range pb.Metrics {
+		item, err := metricFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			metricsField = append(metricsField, *itemField)
+		if item != nil {
+			metricsField = append(metricsField, *item)
 		}
 	}
 	st.Metrics = metricsField
 
 	var paramsField []Param
-	for _, item := range pb.Params {
-		itemField, err := paramFromPb(&item)
+	for _, itemPb := range pb.Params {
+		item, err := paramFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			paramsField = append(paramsField, *itemField)
+		if item != nil {
+			paramsField = append(paramsField, *item)
 		}
 	}
 	st.Params = paramsField
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
+	st.RunId = pb.RunId
 
 	var tagsField []RunTag
-	for _, item := range pb.Tags {
-		itemField, err := runTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := runTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -9782,10 +8736,13 @@ func logBatchResponseFromPb(pb *logBatchResponsePb) (*LogBatchResponse, error) {
 
 type LogInputs struct {
 	// Dataset inputs
+	// Wire name: 'datasets'
 	Datasets []DatasetInput
 	// Model inputs
+	// Wire name: 'models'
 	Models []ModelInput
 	// ID of the run to log under
+	// Wire name: 'run_id'
 	RunId string
 }
 
@@ -9819,10 +8776,7 @@ func logInputsToPb(st *LogInputs) (*logInputsPb, error) {
 	}
 	pb.Models = modelsPb
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
 	return pb, nil
 }
@@ -9868,32 +8822,29 @@ func logInputsFromPb(pb *logInputsPb) (*LogInputs, error) {
 	st := &LogInputs{}
 
 	var datasetsField []DatasetInput
-	for _, item := range pb.Datasets {
-		itemField, err := datasetInputFromPb(&item)
+	for _, itemPb := range pb.Datasets {
+		item, err := datasetInputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			datasetsField = append(datasetsField, *itemField)
+		if item != nil {
+			datasetsField = append(datasetsField, *item)
 		}
 	}
 	st.Datasets = datasetsField
 
 	var modelsField []ModelInput
-	for _, item := range pb.Models {
-		itemField, err := modelInputFromPb(&item)
+	for _, itemPb := range pb.Models {
+		item, err := modelInputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			modelsField = append(modelsField, *itemField)
+		if item != nil {
+			modelsField = append(modelsField, *item)
 		}
 	}
 	st.Models = modelsField
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
+	st.RunId = pb.RunId
 
 	return st, nil
 }
@@ -9951,27 +8902,36 @@ type LogMetric struct {
 	// Dataset digest of the dataset associated with the metric, e.g. an md5
 	// hash of the dataset that uniquely identifies it within datasets of the
 	// same name.
+	// Wire name: 'dataset_digest'
 	DatasetDigest string
 	// The name of the dataset associated with the metric. E.g.
 	// “my.uc.table@2” “nyc-taxi-dataset”, “fantastic-elk-3”
+	// Wire name: 'dataset_name'
 	DatasetName string
 	// Name of the metric.
+	// Wire name: 'key'
 	Key string
 	// ID of the logged model associated with the metric, if applicable
+	// Wire name: 'model_id'
 	ModelId string
 	// ID of the run under which to log the metric. Must be provided.
+	// Wire name: 'run_id'
 	RunId string
 	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// metric. This field will be removed in a future MLflow version.
+	// Wire name: 'run_uuid'
 	RunUuid string
 	// Step at which to log the metric
+	// Wire name: 'step'
 	Step int64
 	// Unix timestamp in milliseconds at the time metric was logged.
+	// Wire name: 'timestamp'
 	Timestamp int64
 	// Double value of the metric being logged.
+	// Wire name: 'value'
 	Value float64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func logMetricToPb(st *LogMetric) (*logMetricPb, error) {
@@ -9979,50 +8939,23 @@ func logMetricToPb(st *LogMetric) (*logMetricPb, error) {
 		return nil, nil
 	}
 	pb := &logMetricPb{}
-	datasetDigestPb := &st.DatasetDigest
-	if datasetDigestPb != nil {
-		pb.DatasetDigest = *datasetDigestPb
-	}
+	pb.DatasetDigest = st.DatasetDigest
 
-	datasetNamePb := &st.DatasetName
-	if datasetNamePb != nil {
-		pb.DatasetName = *datasetNamePb
-	}
+	pb.DatasetName = st.DatasetName
 
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	modelIdPb := &st.ModelId
-	if modelIdPb != nil {
-		pb.ModelId = *modelIdPb
-	}
+	pb.ModelId = st.ModelId
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runUuidPb := &st.RunUuid
-	if runUuidPb != nil {
-		pb.RunUuid = *runUuidPb
-	}
+	pb.RunUuid = st.RunUuid
 
-	stepPb := &st.Step
-	if stepPb != nil {
-		pb.Step = *stepPb
-	}
+	pb.Step = st.Step
 
-	timestampPb := &st.Timestamp
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10085,42 +9018,15 @@ func logMetricFromPb(pb *logMetricPb) (*LogMetric, error) {
 		return nil, nil
 	}
 	st := &LogMetric{}
-	datasetDigestField := &pb.DatasetDigest
-	if datasetDigestField != nil {
-		st.DatasetDigest = *datasetDigestField
-	}
-	datasetNameField := &pb.DatasetName
-	if datasetNameField != nil {
-		st.DatasetName = *datasetNameField
-	}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	modelIdField := &pb.ModelId
-	if modelIdField != nil {
-		st.ModelId = *modelIdField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runUuidField := &pb.RunUuid
-	if runUuidField != nil {
-		st.RunUuid = *runUuidField
-	}
-	stepField := &pb.Step
-	if stepField != nil {
-		st.Step = *stepField
-	}
-	timestampField := &pb.Timestamp
-	if timestampField != nil {
-		st.Timestamp = *timestampField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.DatasetDigest = pb.DatasetDigest
+	st.DatasetName = pb.DatasetName
+	st.Key = pb.Key
+	st.ModelId = pb.ModelId
+	st.RunId = pb.RunId
+	st.RunUuid = pb.RunUuid
+	st.Step = pb.Step
+	st.Timestamp = pb.Timestamp
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10185,11 +9091,13 @@ func logMetricResponseFromPb(pb *logMetricResponsePb) (*LogMetricResponse, error
 
 type LogModel struct {
 	// MLmodel file in json format.
+	// Wire name: 'model_json'
 	ModelJson string
 	// ID of the run to log under
+	// Wire name: 'run_id'
 	RunId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func logModelToPb(st *LogModel) (*logModelPb, error) {
@@ -10197,15 +9105,9 @@ func logModelToPb(st *LogModel) (*logModelPb, error) {
 		return nil, nil
 	}
 	pb := &logModelPb{}
-	modelJsonPb := &st.ModelJson
-	if modelJsonPb != nil {
-		pb.ModelJson = *modelJsonPb
-	}
+	pb.ModelJson = st.ModelJson
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10250,14 +9152,8 @@ func logModelFromPb(pb *logModelPb) (*LogModel, error) {
 		return nil, nil
 	}
 	st := &LogModel{}
-	modelJsonField := &pb.ModelJson
-	if modelJsonField != nil {
-		st.ModelJson = *modelJsonField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
+	st.ModelJson = pb.ModelJson
+	st.RunId = pb.RunId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10322,16 +9218,20 @@ func logModelResponseFromPb(pb *logModelResponsePb) (*LogModelResponse, error) {
 
 type LogParam struct {
 	// Name of the param. Maximum size is 255 bytes.
+	// Wire name: 'key'
 	Key string
 	// ID of the run under which to log the param. Must be provided.
+	// Wire name: 'run_id'
 	RunId string
 	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// param. This field will be removed in a future MLflow version.
+	// Wire name: 'run_uuid'
 	RunUuid string
 	// String value of the param being logged. Maximum size is 500 bytes.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func logParamToPb(st *LogParam) (*logParamPb, error) {
@@ -10339,25 +9239,13 @@ func logParamToPb(st *LogParam) (*logParamPb, error) {
 		return nil, nil
 	}
 	pb := &logParamPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runUuidPb := &st.RunUuid
-	if runUuidPb != nil {
-		pb.RunUuid = *runUuidPb
-	}
+	pb.RunUuid = st.RunUuid
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10407,22 +9295,10 @@ func logParamFromPb(pb *logParamPb) (*LogParam, error) {
 		return nil, nil
 	}
 	st := &LogParam{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runUuidField := &pb.RunUuid
-	if runUuidField != nil {
-		st.RunUuid = *runUuidField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.RunId = pb.RunId
+	st.RunUuid = pb.RunUuid
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10490,25 +9366,33 @@ type Metric struct {
 	// The dataset digest of the dataset associated with the metric, e.g. an md5
 	// hash of the dataset that uniquely identifies it within datasets of the
 	// same name.
+	// Wire name: 'dataset_digest'
 	DatasetDigest string
 	// The name of the dataset associated with the metric. E.g.
 	// “my.uc.table@2” “nyc-taxi-dataset”, “fantastic-elk-3”
+	// Wire name: 'dataset_name'
 	DatasetName string
 	// The key identifying the metric.
+	// Wire name: 'key'
 	Key string
 	// The ID of the logged model or registered model version associated with
 	// the metric, if applicable.
+	// Wire name: 'model_id'
 	ModelId string
 	// The ID of the run containing the metric.
+	// Wire name: 'run_id'
 	RunId string
 	// The step at which the metric was logged.
+	// Wire name: 'step'
 	Step int64
 	// The timestamp at which the metric was recorded.
+	// Wire name: 'timestamp'
 	Timestamp int64
 	// The value of the metric.
+	// Wire name: 'value'
 	Value float64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func metricToPb(st *Metric) (*metricPb, error) {
@@ -10516,45 +9400,21 @@ func metricToPb(st *Metric) (*metricPb, error) {
 		return nil, nil
 	}
 	pb := &metricPb{}
-	datasetDigestPb := &st.DatasetDigest
-	if datasetDigestPb != nil {
-		pb.DatasetDigest = *datasetDigestPb
-	}
+	pb.DatasetDigest = st.DatasetDigest
 
-	datasetNamePb := &st.DatasetName
-	if datasetNamePb != nil {
-		pb.DatasetName = *datasetNamePb
-	}
+	pb.DatasetName = st.DatasetName
 
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	modelIdPb := &st.ModelId
-	if modelIdPb != nil {
-		pb.ModelId = *modelIdPb
-	}
+	pb.ModelId = st.ModelId
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	stepPb := &st.Step
-	if stepPb != nil {
-		pb.Step = *stepPb
-	}
+	pb.Step = st.Step
 
-	timestampPb := &st.Timestamp
-	if timestampPb != nil {
-		pb.Timestamp = *timestampPb
-	}
+	pb.Timestamp = st.Timestamp
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10615,38 +9475,14 @@ func metricFromPb(pb *metricPb) (*Metric, error) {
 		return nil, nil
 	}
 	st := &Metric{}
-	datasetDigestField := &pb.DatasetDigest
-	if datasetDigestField != nil {
-		st.DatasetDigest = *datasetDigestField
-	}
-	datasetNameField := &pb.DatasetName
-	if datasetNameField != nil {
-		st.DatasetName = *datasetNameField
-	}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	modelIdField := &pb.ModelId
-	if modelIdField != nil {
-		st.ModelId = *modelIdField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	stepField := &pb.Step
-	if stepField != nil {
-		st.Step = *stepField
-	}
-	timestampField := &pb.Timestamp
-	if timestampField != nil {
-		st.Timestamp = *timestampField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.DatasetDigest = pb.DatasetDigest
+	st.DatasetName = pb.DatasetName
+	st.Key = pb.Key
+	st.ModelId = pb.ModelId
+	st.RunId = pb.RunId
+	st.Step = pb.Step
+	st.Timestamp = pb.Timestamp
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10662,23 +9498,30 @@ func (st metricPb) MarshalJSON() ([]byte, error) {
 
 type Model struct {
 	// Timestamp recorded when this `registered_model` was created.
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 	// Description of this `registered_model`.
+	// Wire name: 'description'
 	Description string
 	// Timestamp recorded when metadata for this `registered_model` was last
 	// updated.
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// Collection of latest model versions for each stage. Only contains models
 	// with current `READY` status.
+	// Wire name: 'latest_versions'
 	LatestVersions []ModelVersion
 	// Unique name for the model.
+	// Wire name: 'name'
 	Name string
 	// Tags: Additional metadata key-value pairs for this `registered_model`.
+	// Wire name: 'tags'
 	Tags []ModelTag
 	// User that created this `registered_model`
+	// Wire name: 'user_id'
 	UserId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func modelToPb(st *Model) (*modelPb, error) {
@@ -10686,20 +9529,11 @@ func modelToPb(st *Model) (*modelPb, error) {
 		return nil, nil
 	}
 	pb := &modelPb{}
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
 	var latestVersionsPb []modelVersionPb
 	for _, item := range st.LatestVersions {
@@ -10713,10 +9547,7 @@ func modelToPb(st *Model) (*modelPb, error) {
 	}
 	pb.LatestVersions = latestVersionsPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	var tagsPb []modelTagPb
 	for _, item := range st.Tags {
@@ -10730,10 +9561,7 @@ func modelToPb(st *Model) (*modelPb, error) {
 	}
 	pb.Tags = tagsPb
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10790,50 +9618,35 @@ func modelFromPb(pb *modelPb) (*Model, error) {
 		return nil, nil
 	}
 	st := &Model{}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.Description = pb.Description
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
 
 	var latestVersionsField []ModelVersion
-	for _, item := range pb.LatestVersions {
-		itemField, err := modelVersionFromPb(&item)
+	for _, itemPb := range pb.LatestVersions {
+		item, err := modelVersionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			latestVersionsField = append(latestVersionsField, *itemField)
+		if item != nil {
+			latestVersionsField = append(latestVersionsField, *item)
 		}
 	}
 	st.LatestVersions = latestVersionsField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Name = pb.Name
 
 	var tagsField []ModelTag
-	for _, item := range pb.Tags {
-		itemField, err := modelTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := modelTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.UserId = pb.UserId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10849,26 +9662,35 @@ func (st modelPb) MarshalJSON() ([]byte, error) {
 
 type ModelDatabricks struct {
 	// Creation time of the object, as a Unix timestamp in milliseconds.
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 	// User-specified description for the object.
+	// Wire name: 'description'
 	Description string
 	// Unique identifier for the object.
+	// Wire name: 'id'
 	Id string
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// Array of model versions, each the latest version for its stage.
+	// Wire name: 'latest_versions'
 	LatestVersions []ModelVersion
 	// Name of the model.
+	// Wire name: 'name'
 	Name string
 	// Permission level of the requesting user on the object. For what is
 	// allowed at each level, see [MLflow Model permissions](..).
+	// Wire name: 'permission_level'
 	PermissionLevel PermissionLevel
 	// Array of tags associated with the model.
+	// Wire name: 'tags'
 	Tags []ModelTag
 	// The username of the user that created the object.
+	// Wire name: 'user_id'
 	UserId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func modelDatabricksToPb(st *ModelDatabricks) (*modelDatabricksPb, error) {
@@ -10876,25 +9698,13 @@ func modelDatabricksToPb(st *ModelDatabricks) (*modelDatabricksPb, error) {
 		return nil, nil
 	}
 	pb := &modelDatabricksPb{}
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
 	var latestVersionsPb []modelVersionPb
 	for _, item := range st.LatestVersions {
@@ -10908,15 +9718,9 @@ func modelDatabricksToPb(st *ModelDatabricks) (*modelDatabricksPb, error) {
 	}
 	pb.LatestVersions = latestVersionsPb
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	var tagsPb []modelTagPb
 	for _, item := range st.Tags {
@@ -10930,10 +9734,7 @@ func modelDatabricksToPb(st *ModelDatabricks) (*modelDatabricksPb, error) {
 	}
 	pb.Tags = tagsPb
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10993,58 +9794,37 @@ func modelDatabricksFromPb(pb *modelDatabricksPb) (*ModelDatabricks, error) {
 		return nil, nil
 	}
 	st := &ModelDatabricks{}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.Description = pb.Description
+	st.Id = pb.Id
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
 
 	var latestVersionsField []ModelVersion
-	for _, item := range pb.LatestVersions {
-		itemField, err := modelVersionFromPb(&item)
+	for _, itemPb := range pb.LatestVersions {
+		item, err := modelVersionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			latestVersionsField = append(latestVersionsField, *itemField)
+		if item != nil {
+			latestVersionsField = append(latestVersionsField, *item)
 		}
 	}
 	st.LatestVersions = latestVersionsField
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Name = pb.Name
+	st.PermissionLevel = pb.PermissionLevel
 
 	var tagsField []ModelTag
-	for _, item := range pb.Tags {
-		itemField, err := modelTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := modelTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.UserId = pb.UserId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11061,6 +9841,7 @@ func (st modelDatabricksPb) MarshalJSON() ([]byte, error) {
 // Represents a LoggedModel or Registered Model Version input to a Run.
 type ModelInput struct {
 	// The unique identifier of the model.
+	// Wire name: 'model_id'
 	ModelId string
 }
 
@@ -11069,10 +9850,7 @@ func modelInputToPb(st *ModelInput) (*modelInputPb, error) {
 		return nil, nil
 	}
 	pb := &modelInputPb{}
-	modelIdPb := &st.ModelId
-	if modelIdPb != nil {
-		pb.ModelId = *modelIdPb
-	}
+	pb.ModelId = st.ModelId
 
 	return pb, nil
 }
@@ -11112,21 +9890,20 @@ func modelInputFromPb(pb *modelInputPb) (*ModelInput, error) {
 		return nil, nil
 	}
 	st := &ModelInput{}
-	modelIdField := &pb.ModelId
-	if modelIdField != nil {
-		st.ModelId = *modelIdField
-	}
+	st.ModelId = pb.ModelId
 
 	return st, nil
 }
 
 type ModelTag struct {
 	// The tag key.
+	// Wire name: 'key'
 	Key string
 	// The tag value.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func modelTagToPb(st *ModelTag) (*modelTagPb, error) {
@@ -11134,15 +9911,9 @@ func modelTagToPb(st *ModelTag) (*modelTagPb, error) {
 		return nil, nil
 	}
 	pb := &modelTagPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11187,14 +9958,8 @@ func modelTagFromPb(pb *modelTagPb) (*ModelTag, error) {
 		return nil, nil
 	}
 	st := &ModelTag{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11210,36 +9975,49 @@ func (st modelTagPb) MarshalJSON() ([]byte, error) {
 
 type ModelVersion struct {
 	// Timestamp recorded when this `model_version` was created.
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 	// Current stage for this `model_version`.
+	// Wire name: 'current_stage'
 	CurrentStage string
 	// Description of this `model_version`.
+	// Wire name: 'description'
 	Description string
 	// Timestamp recorded when metadata for this `model_version` was last
 	// updated.
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// Unique name of the model
+	// Wire name: 'name'
 	Name string
 	// MLflow run ID used when creating `model_version`, if `source` was
 	// generated by an experiment run stored in MLflow tracking server.
+	// Wire name: 'run_id'
 	RunId string
 	// Run Link: Direct link to the run that generated this version
+	// Wire name: 'run_link'
 	RunLink string
 	// URI indicating the location of the source model artifacts, used when
 	// creating `model_version`
+	// Wire name: 'source'
 	Source string
 	// Current status of `model_version`
+	// Wire name: 'status'
 	Status ModelVersionStatus
 	// Details on current `status`, if it is pending or failed.
+	// Wire name: 'status_message'
 	StatusMessage string
 	// Tags: Additional metadata key-value pairs for this `model_version`.
+	// Wire name: 'tags'
 	Tags []ModelVersionTag
 	// User that created this `model_version`.
+	// Wire name: 'user_id'
 	UserId string
 	// Model's version number.
+	// Wire name: 'version'
 	Version string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func modelVersionToPb(st *ModelVersion) (*modelVersionPb, error) {
@@ -11247,55 +10025,25 @@ func modelVersionToPb(st *ModelVersion) (*modelVersionPb, error) {
 		return nil, nil
 	}
 	pb := &modelVersionPb{}
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	currentStagePb := &st.CurrentStage
-	if currentStagePb != nil {
-		pb.CurrentStage = *currentStagePb
-	}
+	pb.CurrentStage = st.CurrentStage
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runLinkPb := &st.RunLink
-	if runLinkPb != nil {
-		pb.RunLink = *runLinkPb
-	}
+	pb.RunLink = st.RunLink
 
-	sourcePb := &st.Source
-	if sourcePb != nil {
-		pb.Source = *sourcePb
-	}
+	pb.Source = st.Source
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	statusMessagePb := &st.StatusMessage
-	if statusMessagePb != nil {
-		pb.StatusMessage = *statusMessagePb
-	}
+	pb.StatusMessage = st.StatusMessage
 
 	var tagsPb []modelVersionTagPb
 	for _, item := range st.Tags {
@@ -11309,15 +10057,9 @@ func modelVersionToPb(st *ModelVersion) (*modelVersionPb, error) {
 	}
 	pb.Tags = tagsPb
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11387,66 +10129,30 @@ func modelVersionFromPb(pb *modelVersionPb) (*ModelVersion, error) {
 		return nil, nil
 	}
 	st := &ModelVersion{}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	currentStageField := &pb.CurrentStage
-	if currentStageField != nil {
-		st.CurrentStage = *currentStageField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runLinkField := &pb.RunLink
-	if runLinkField != nil {
-		st.RunLink = *runLinkField
-	}
-	sourceField := &pb.Source
-	if sourceField != nil {
-		st.Source = *sourceField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	statusMessageField := &pb.StatusMessage
-	if statusMessageField != nil {
-		st.StatusMessage = *statusMessageField
-	}
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.CurrentStage = pb.CurrentStage
+	st.Description = pb.Description
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
+	st.Name = pb.Name
+	st.RunId = pb.RunId
+	st.RunLink = pb.RunLink
+	st.Source = pb.Source
+	st.Status = pb.Status
+	st.StatusMessage = pb.StatusMessage
 
 	var tagsField []ModelVersionTag
-	for _, item := range pb.Tags {
-		itemField, err := modelVersionTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := modelVersionTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.UserId = pb.UserId
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11462,6 +10168,7 @@ func (st modelVersionPb) MarshalJSON() ([]byte, error) {
 
 type ModelVersionDatabricks struct {
 	// Creation time of the object, as a Unix timestamp in milliseconds.
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 	// Stage of the model version. Valid values are:
 	//
@@ -11472,25 +10179,33 @@ type ModelVersionDatabricks struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
+	// Wire name: 'current_stage'
 	CurrentStage Stage
 	// User-specified description for the object.
+	// Wire name: 'description'
 	Description string
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// Name of the model.
+	// Wire name: 'name'
 	Name string
 	// Permission level of the requesting user on the object. For what is
 	// allowed at each level, see [MLflow Model permissions](..).
+	// Wire name: 'permission_level'
 	PermissionLevel PermissionLevel
 	// Unique identifier for the MLflow tracking run associated with the source
 	// model artifacts.
+	// Wire name: 'run_id'
 	RunId string
 	// URL of the run associated with the model artifacts. This field is set at
 	// model version creation time only for model versions whose source run is
 	// from a tracking server that is different from the registry server.
+	// Wire name: 'run_link'
 	RunLink string
 	// URI that indicates the location of the source model artifacts. This is
 	// used when creating the model version.
+	// Wire name: 'source'
 	Source string
 	// The status of the model version. Valid values are: *
 	// `PENDING_REGISTRATION`: Request to register a new model version is
@@ -11500,17 +10215,22 @@ type ModelVersionDatabricks struct {
 	// failed.
 	//
 	// * `READY`: Model version is ready for use.
+	// Wire name: 'status'
 	Status Status
 	// Details on the current status, for example why registration failed.
+	// Wire name: 'status_message'
 	StatusMessage string
 	// Array of tags that are associated with the model version.
+	// Wire name: 'tags'
 	Tags []ModelVersionTag
 	// The username of the user that created the object.
+	// Wire name: 'user_id'
 	UserId string
 	// Version of the model.
+	// Wire name: 'version'
 	Version string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func modelVersionDatabricksToPb(st *ModelVersionDatabricks) (*modelVersionDatabricksPb, error) {
@@ -11518,60 +10238,27 @@ func modelVersionDatabricksToPb(st *ModelVersionDatabricks) (*modelVersionDatabr
 		return nil, nil
 	}
 	pb := &modelVersionDatabricksPb{}
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	currentStagePb := &st.CurrentStage
-	if currentStagePb != nil {
-		pb.CurrentStage = *currentStagePb
-	}
+	pb.CurrentStage = st.CurrentStage
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runLinkPb := &st.RunLink
-	if runLinkPb != nil {
-		pb.RunLink = *runLinkPb
-	}
+	pb.RunLink = st.RunLink
 
-	sourcePb := &st.Source
-	if sourcePb != nil {
-		pb.Source = *sourcePb
-	}
+	pb.Source = st.Source
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	statusMessagePb := &st.StatusMessage
-	if statusMessagePb != nil {
-		pb.StatusMessage = *statusMessagePb
-	}
+	pb.StatusMessage = st.StatusMessage
 
 	var tagsPb []modelVersionTagPb
 	for _, item := range st.Tags {
@@ -11585,15 +10272,9 @@ func modelVersionDatabricksToPb(st *ModelVersionDatabricks) (*modelVersionDatabr
 	}
 	pb.Tags = tagsPb
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11682,70 +10363,31 @@ func modelVersionDatabricksFromPb(pb *modelVersionDatabricksPb) (*ModelVersionDa
 		return nil, nil
 	}
 	st := &ModelVersionDatabricks{}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	currentStageField := &pb.CurrentStage
-	if currentStageField != nil {
-		st.CurrentStage = *currentStageField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runLinkField := &pb.RunLink
-	if runLinkField != nil {
-		st.RunLink = *runLinkField
-	}
-	sourceField := &pb.Source
-	if sourceField != nil {
-		st.Source = *sourceField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	statusMessageField := &pb.StatusMessage
-	if statusMessageField != nil {
-		st.StatusMessage = *statusMessageField
-	}
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.CurrentStage = pb.CurrentStage
+	st.Description = pb.Description
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
+	st.Name = pb.Name
+	st.PermissionLevel = pb.PermissionLevel
+	st.RunId = pb.RunId
+	st.RunLink = pb.RunLink
+	st.Source = pb.Source
+	st.Status = pb.Status
+	st.StatusMessage = pb.StatusMessage
 
 	var tagsField []ModelVersionTag
-	for _, item := range pb.Tags {
-		itemField, err := modelVersionTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := modelVersionTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.UserId = pb.UserId
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11808,11 +10450,13 @@ func modelVersionStatusFromPb(pb *modelVersionStatusPb) (*ModelVersionStatus, er
 
 type ModelVersionTag struct {
 	// The tag key.
+	// Wire name: 'key'
 	Key string
 	// The tag value.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func modelVersionTagToPb(st *ModelVersionTag) (*modelVersionTagPb, error) {
@@ -11820,15 +10464,9 @@ func modelVersionTagToPb(st *ModelVersionTag) (*modelVersionTagPb, error) {
 		return nil, nil
 	}
 	pb := &modelVersionTagPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11873,14 +10511,8 @@ func modelVersionTagFromPb(pb *modelVersionTagPb) (*ModelVersionTag, error) {
 		return nil, nil
 	}
 	st := &ModelVersionTag{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11897,11 +10529,13 @@ func (st modelVersionTagPb) MarshalJSON() ([]byte, error) {
 // Param associated with a run.
 type Param struct {
 	// Key identifying this param.
+	// Wire name: 'key'
 	Key string
 	// Value associated with this param.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func paramToPb(st *Param) (*paramPb, error) {
@@ -11909,15 +10543,9 @@ func paramToPb(st *Param) (*paramPb, error) {
 		return nil, nil
 	}
 	pb := &paramPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11962,14 +10590,8 @@ func paramFromPb(pb *paramPb) (*Param, error) {
 		return nil, nil
 	}
 	st := &Param{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12037,15 +10659,19 @@ func permissionLevelFromPb(pb *permissionLevelPb) (*PermissionLevel, error) {
 
 type RegisteredModelAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel RegisteredModelPermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func registeredModelAccessControlRequestToPb(st *RegisteredModelAccessControlRequest) (*registeredModelAccessControlRequestPb, error) {
@@ -12053,25 +10679,13 @@ func registeredModelAccessControlRequestToPb(st *RegisteredModelAccessControlReq
 		return nil, nil
 	}
 	pb := &registeredModelAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12120,22 +10734,10 @@ func registeredModelAccessControlRequestFromPb(pb *registeredModelAccessControlR
 		return nil, nil
 	}
 	st := &RegisteredModelAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12151,17 +10753,22 @@ func (st registeredModelAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type RegisteredModelAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []RegisteredModelPermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func registeredModelAccessControlResponseToPb(st *RegisteredModelAccessControlResponse) (*registeredModelAccessControlResponsePb, error) {
@@ -12182,25 +10789,13 @@ func registeredModelAccessControlResponseToPb(st *RegisteredModelAccessControlRe
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12253,32 +10848,20 @@ func registeredModelAccessControlResponseFromPb(pb *registeredModelAccessControl
 	st := &RegisteredModelAccessControlResponse{}
 
 	var allPermissionsField []RegisteredModelPermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := registeredModelPermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := registeredModelPermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12293,13 +10876,17 @@ func (st registeredModelAccessControlResponsePb) MarshalJSON() ([]byte, error) {
 }
 
 type RegisteredModelPermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel RegisteredModelPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func registeredModelPermissionToPb(st *RegisteredModelPermission) (*registeredModelPermissionPb, error) {
@@ -12307,24 +10894,11 @@ func registeredModelPermissionToPb(st *RegisteredModelPermission) (*registeredMo
 		return nil, nil
 	}
 	pb := &registeredModelPermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12370,23 +10944,9 @@ func registeredModelPermissionFromPb(pb *registeredModelPermissionPb) (*Register
 		return nil, nil
 	}
 	st := &RegisteredModelPermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12452,13 +11012,17 @@ func registeredModelPermissionLevelFromPb(pb *registeredModelPermissionLevelPb) 
 }
 
 type RegisteredModelPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []RegisteredModelAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func registeredModelPermissionsToPb(st *RegisteredModelPermissions) (*registeredModelPermissionsPb, error) {
@@ -12479,15 +11043,9 @@ func registeredModelPermissionsToPb(st *RegisteredModelPermissions) (*registered
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12535,24 +11093,18 @@ func registeredModelPermissionsFromPb(pb *registeredModelPermissionsPb) (*Regist
 	st := &RegisteredModelPermissions{}
 
 	var accessControlListField []RegisteredModelAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := registeredModelAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := registeredModelAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12567,11 +11119,14 @@ func (st registeredModelPermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type RegisteredModelPermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel RegisteredModelPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func registeredModelPermissionsDescriptionToPb(st *RegisteredModelPermissionsDescription) (*registeredModelPermissionsDescriptionPb, error) {
@@ -12579,15 +11134,9 @@ func registeredModelPermissionsDescriptionToPb(st *RegisteredModelPermissionsDes
 		return nil, nil
 	}
 	pb := &registeredModelPermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12631,14 +11180,8 @@ func registeredModelPermissionsDescriptionFromPb(pb *registeredModelPermissionsD
 		return nil, nil
 	}
 	st := &RegisteredModelPermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12653,9 +11196,12 @@ func (st registeredModelPermissionsDescriptionPb) MarshalJSON() ([]byte, error) 
 }
 
 type RegisteredModelPermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []RegisteredModelAccessControlRequest
 	// The registered model for which to get or manage permissions.
-	RegisteredModelId string
+	// Wire name: 'registered_model_id'
+	RegisteredModelId string `tf:"-"`
 }
 
 func registeredModelPermissionsRequestToPb(st *RegisteredModelPermissionsRequest) (*registeredModelPermissionsRequestPb, error) {
@@ -12676,10 +11222,7 @@ func registeredModelPermissionsRequestToPb(st *RegisteredModelPermissionsRequest
 	}
 	pb.AccessControlList = accessControlListPb
 
-	registeredModelIdPb := &st.RegisteredModelId
-	if registeredModelIdPb != nil {
-		pb.RegisteredModelId = *registeredModelIdPb
-	}
+	pb.RegisteredModelId = st.RegisteredModelId
 
 	return pb, nil
 }
@@ -12722,28 +11265,27 @@ func registeredModelPermissionsRequestFromPb(pb *registeredModelPermissionsReque
 	st := &RegisteredModelPermissionsRequest{}
 
 	var accessControlListField []RegisteredModelAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := registeredModelAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := registeredModelAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	registeredModelIdField := &pb.RegisteredModelId
-	if registeredModelIdField != nil {
-		st.RegisteredModelId = *registeredModelIdField
-	}
+	st.RegisteredModelId = pb.RegisteredModelId
 
 	return st, nil
 }
 
 type RegistryWebhook struct {
 	// Creation time of the object, as a Unix timestamp in milliseconds.
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 	// User-specified description for the webhook.
+	// Wire name: 'description'
 	Description string
 	// Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A
 	// new model version was created for the associated model.
@@ -12778,16 +11320,22 @@ type RegistryWebhook struct {
 	//
 	// * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model
 	// version be archived.
+	// Wire name: 'events'
 	Events []RegistryWebhookEvent
 
+	// Wire name: 'http_url_spec'
 	HttpUrlSpec *HttpUrlSpecWithoutSecret
 	// Webhook ID
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'job_spec'
 	JobSpec *JobSpecWithoutSecret
 	// Time of the object at last update, as a Unix timestamp in milliseconds.
+	// Wire name: 'last_updated_timestamp'
 	LastUpdatedTimestamp int64
 	// Name of the model whose events would trigger this webhook.
+	// Wire name: 'model_name'
 	ModelName string
 	// Enable or disable triggering the webhook, or put the webhook into test
 	// mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an
@@ -12797,9 +11345,10 @@ type RegistryWebhook struct {
 	//
 	// * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is
 	// not triggered on a real event.
+	// Wire name: 'status'
 	Status RegistryWebhookStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func registryWebhookToPb(st *RegistryWebhook) (*registryWebhookPb, error) {
@@ -12807,24 +11356,11 @@ func registryWebhookToPb(st *RegistryWebhook) (*registryWebhookPb, error) {
 		return nil, nil
 	}
 	pb := &registryWebhookPb{}
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	var eventsPb []RegistryWebhookEvent
-	for _, item := range st.Events {
-		itemPb := &item
-		if itemPb != nil {
-			eventsPb = append(eventsPb, *itemPb)
-		}
-	}
-	pb.Events = eventsPb
+	pb.Events = st.Events
 
 	httpUrlSpecPb, err := httpUrlSpecWithoutSecretToPb(st.HttpUrlSpec)
 	if err != nil {
@@ -12834,10 +11370,7 @@ func registryWebhookToPb(st *RegistryWebhook) (*registryWebhookPb, error) {
 		pb.HttpUrlSpec = httpUrlSpecPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	jobSpecPb, err := jobSpecWithoutSecretToPb(st.JobSpec)
 	if err != nil {
@@ -12847,20 +11380,11 @@ func registryWebhookToPb(st *RegistryWebhook) (*registryWebhookPb, error) {
 		pb.JobSpec = jobSpecPb
 	}
 
-	lastUpdatedTimestampPb := &st.LastUpdatedTimestamp
-	if lastUpdatedTimestampPb != nil {
-		pb.LastUpdatedTimestamp = *lastUpdatedTimestampPb
-	}
+	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
-	modelNamePb := &st.ModelName
-	if modelNamePb != nil {
-		pb.ModelName = *modelNamePb
-	}
+	pb.ModelName = st.ModelName
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12958,23 +11482,9 @@ func registryWebhookFromPb(pb *registryWebhookPb) (*RegistryWebhook, error) {
 		return nil, nil
 	}
 	st := &RegistryWebhook{}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-
-	var eventsField []RegistryWebhookEvent
-	for _, item := range pb.Events {
-		itemField := &item
-		if itemField != nil {
-			eventsField = append(eventsField, *itemField)
-		}
-	}
-	st.Events = eventsField
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.Description = pb.Description
+	st.Events = pb.Events
 	httpUrlSpecField, err := httpUrlSpecWithoutSecretFromPb(pb.HttpUrlSpec)
 	if err != nil {
 		return nil, err
@@ -12982,10 +11492,7 @@ func registryWebhookFromPb(pb *registryWebhookPb) (*RegistryWebhook, error) {
 	if httpUrlSpecField != nil {
 		st.HttpUrlSpec = httpUrlSpecField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	jobSpecField, err := jobSpecWithoutSecretFromPb(pb.JobSpec)
 	if err != nil {
 		return nil, err
@@ -12993,18 +11500,9 @@ func registryWebhookFromPb(pb *registryWebhookPb) (*RegistryWebhook, error) {
 	if jobSpecField != nil {
 		st.JobSpec = jobSpecField
 	}
-	lastUpdatedTimestampField := &pb.LastUpdatedTimestamp
-	if lastUpdatedTimestampField != nil {
-		st.LastUpdatedTimestamp = *lastUpdatedTimestampField
-	}
-	modelNameField := &pb.ModelName
-	if modelNameField != nil {
-		st.ModelName = *modelNameField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.LastUpdatedTimestamp = pb.LastUpdatedTimestamp
+	st.ModelName = pb.ModelName
+	st.Status = pb.Status
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13142,8 +11640,10 @@ func registryWebhookStatusFromPb(pb *registryWebhookStatusPb) (*RegistryWebhookS
 
 type RejectTransitionRequest struct {
 	// User-provided comment on the action.
+	// Wire name: 'comment'
 	Comment string
 	// Name of the model.
+	// Wire name: 'name'
 	Name string
 	// Target stage of the transition. Valid values are:
 	//
@@ -13154,11 +11654,13 @@ type RejectTransitionRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
+	// Wire name: 'stage'
 	Stage Stage
 	// Version of the model.
+	// Wire name: 'version'
 	Version string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func rejectTransitionRequestToPb(st *RejectTransitionRequest) (*rejectTransitionRequestPb, error) {
@@ -13166,25 +11668,13 @@ func rejectTransitionRequestToPb(st *RejectTransitionRequest) (*rejectTransition
 		return nil, nil
 	}
 	pb := &rejectTransitionRequestPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	stagePb := &st.Stage
-	if stagePb != nil {
-		pb.Stage = *stagePb
-	}
+	pb.Stage = st.Stage
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13241,22 +11731,10 @@ func rejectTransitionRequestFromPb(pb *rejectTransitionRequestPb) (*RejectTransi
 		return nil, nil
 	}
 	st := &RejectTransitionRequest{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	stageField := &pb.Stage
-	if stageField != nil {
-		st.Stage = *stageField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.Stage = pb.Stage
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13272,6 +11750,7 @@ func (st rejectTransitionRequestPb) MarshalJSON() ([]byte, error) {
 
 type RejectTransitionRequestResponse struct {
 	// Activity recorded for the action.
+	// Wire name: 'activity'
 	Activity *Activity
 }
 
@@ -13339,11 +11818,13 @@ func rejectTransitionRequestResponseFromPb(pb *rejectTransitionRequestResponsePb
 
 type RenameModelRequest struct {
 	// Registered model unique name identifier.
+	// Wire name: 'name'
 	Name string
 	// If provided, updates the name for this `registered_model`.
+	// Wire name: 'new_name'
 	NewName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func renameModelRequestToPb(st *RenameModelRequest) (*renameModelRequestPb, error) {
@@ -13351,15 +11832,9 @@ func renameModelRequestToPb(st *RenameModelRequest) (*renameModelRequestPb, erro
 		return nil, nil
 	}
 	pb := &renameModelRequestPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13404,14 +11879,8 @@ func renameModelRequestFromPb(pb *renameModelRequestPb) (*RenameModelRequest, er
 		return nil, nil
 	}
 	st := &RenameModelRequest{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
+	st.Name = pb.Name
+	st.NewName = pb.NewName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13426,6 +11895,8 @@ func (st renameModelRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type RenameModelResponse struct {
+
+	// Wire name: 'registered_model'
 	RegisteredModel *Model
 }
 
@@ -13492,6 +11963,7 @@ func renameModelResponseFromPb(pb *renameModelResponsePb) (*RenameModelResponse,
 
 type RestoreExperiment struct {
 	// ID of the associated experiment.
+	// Wire name: 'experiment_id'
 	ExperimentId string
 }
 
@@ -13500,10 +11972,7 @@ func restoreExperimentToPb(st *RestoreExperiment) (*restoreExperimentPb, error) 
 		return nil, nil
 	}
 	pb := &restoreExperimentPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
 	return pb, nil
 }
@@ -13543,10 +12012,7 @@ func restoreExperimentFromPb(pb *restoreExperimentPb) (*RestoreExperiment, error
 		return nil, nil
 	}
 	st := &RestoreExperiment{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
+	st.ExperimentId = pb.ExperimentId
 
 	return st, nil
 }
@@ -13602,6 +12068,7 @@ func restoreExperimentResponseFromPb(pb *restoreExperimentResponsePb) (*RestoreE
 
 type RestoreRun struct {
 	// ID of the run to restore.
+	// Wire name: 'run_id'
 	RunId string
 }
 
@@ -13610,10 +12077,7 @@ func restoreRunToPb(st *RestoreRun) (*restoreRunPb, error) {
 		return nil, nil
 	}
 	pb := &restoreRunPb{}
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
 	return pb, nil
 }
@@ -13653,10 +12117,7 @@ func restoreRunFromPb(pb *restoreRunPb) (*RestoreRun, error) {
 		return nil, nil
 	}
 	st := &RestoreRun{}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
+	st.RunId = pb.RunId
 
 	return st, nil
 }
@@ -13712,16 +12173,19 @@ func restoreRunResponseFromPb(pb *restoreRunResponsePb) (*RestoreRunResponse, er
 
 type RestoreRuns struct {
 	// The ID of the experiment containing the runs to restore.
+	// Wire name: 'experiment_id'
 	ExperimentId string
 	// An optional positive integer indicating the maximum number of runs to
 	// restore. The maximum allowed value for max_runs is 10000.
+	// Wire name: 'max_runs'
 	MaxRuns int
 	// The minimum deletion timestamp in milliseconds since the UNIX epoch for
 	// restoring runs. Only runs deleted no earlier than this timestamp are
 	// restored.
+	// Wire name: 'min_timestamp_millis'
 	MinTimestampMillis int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func restoreRunsToPb(st *RestoreRuns) (*restoreRunsPb, error) {
@@ -13729,20 +12193,11 @@ func restoreRunsToPb(st *RestoreRuns) (*restoreRunsPb, error) {
 		return nil, nil
 	}
 	pb := &restoreRunsPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
-	maxRunsPb := &st.MaxRuns
-	if maxRunsPb != nil {
-		pb.MaxRuns = *maxRunsPb
-	}
+	pb.MaxRuns = st.MaxRuns
 
-	minTimestampMillisPb := &st.MinTimestampMillis
-	if minTimestampMillisPb != nil {
-		pb.MinTimestampMillis = *minTimestampMillisPb
-	}
+	pb.MinTimestampMillis = st.MinTimestampMillis
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13792,18 +12247,9 @@ func restoreRunsFromPb(pb *restoreRunsPb) (*RestoreRuns, error) {
 		return nil, nil
 	}
 	st := &RestoreRuns{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
-	maxRunsField := &pb.MaxRuns
-	if maxRunsField != nil {
-		st.MaxRuns = *maxRunsField
-	}
-	minTimestampMillisField := &pb.MinTimestampMillis
-	if minTimestampMillisField != nil {
-		st.MinTimestampMillis = *minTimestampMillisField
-	}
+	st.ExperimentId = pb.ExperimentId
+	st.MaxRuns = pb.MaxRuns
+	st.MinTimestampMillis = pb.MinTimestampMillis
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13819,9 +12265,10 @@ func (st restoreRunsPb) MarshalJSON() ([]byte, error) {
 
 type RestoreRunsResponse struct {
 	// The number of runs restored.
+	// Wire name: 'runs_restored'
 	RunsRestored int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func restoreRunsResponseToPb(st *RestoreRunsResponse) (*restoreRunsResponsePb, error) {
@@ -13829,10 +12276,7 @@ func restoreRunsResponseToPb(st *RestoreRunsResponse) (*restoreRunsResponsePb, e
 		return nil, nil
 	}
 	pb := &restoreRunsResponsePb{}
-	runsRestoredPb := &st.RunsRestored
-	if runsRestoredPb != nil {
-		pb.RunsRestored = *runsRestoredPb
-	}
+	pb.RunsRestored = st.RunsRestored
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13875,10 +12319,7 @@ func restoreRunsResponseFromPb(pb *restoreRunsResponsePb) (*RestoreRunsResponse,
 		return nil, nil
 	}
 	st := &RestoreRunsResponse{}
-	runsRestoredField := &pb.RunsRestored
-	if runsRestoredField != nil {
-		st.RunsRestored = *runsRestoredField
-	}
+	st.RunsRestored = pb.RunsRestored
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13895,10 +12336,13 @@ func (st restoreRunsResponsePb) MarshalJSON() ([]byte, error) {
 // A single run.
 type Run struct {
 	// Run data.
+	// Wire name: 'data'
 	Data *RunData
 	// Run metadata.
+	// Wire name: 'info'
 	Info *RunInfo
 	// Run inputs.
+	// Wire name: 'inputs'
 	Inputs *RunInputs
 }
 
@@ -14001,10 +12445,13 @@ func runFromPb(pb *runPb) (*Run, error) {
 // Run data (metrics, params, and tags).
 type RunData struct {
 	// Run metrics.
+	// Wire name: 'metrics'
 	Metrics []Metric
 	// Run parameters.
+	// Wire name: 'params'
 	Params []Param
 	// Additional metadata key-value pairs.
+	// Wire name: 'tags'
 	Tags []RunTag
 }
 
@@ -14094,37 +12541,37 @@ func runDataFromPb(pb *runDataPb) (*RunData, error) {
 	st := &RunData{}
 
 	var metricsField []Metric
-	for _, item := range pb.Metrics {
-		itemField, err := metricFromPb(&item)
+	for _, itemPb := range pb.Metrics {
+		item, err := metricFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			metricsField = append(metricsField, *itemField)
+		if item != nil {
+			metricsField = append(metricsField, *item)
 		}
 	}
 	st.Metrics = metricsField
 
 	var paramsField []Param
-	for _, item := range pb.Params {
-		itemField, err := paramFromPb(&item)
+	for _, itemPb := range pb.Params {
+		item, err := paramFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			paramsField = append(paramsField, *itemField)
+		if item != nil {
+			paramsField = append(paramsField, *item)
 		}
 	}
 	st.Params = paramsField
 
 	var tagsField []RunTag
-	for _, item := range pb.Tags {
-		itemField, err := runTagFromPb(&item)
+	for _, itemPb := range pb.Tags {
+		item, err := runTagFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tagsField = append(tagsField, *itemField)
+		if item != nil {
+			tagsField = append(tagsField, *item)
 		}
 	}
 	st.Tags = tagsField
@@ -14138,30 +12585,40 @@ type RunInfo struct {
 	// local path (starting with "/"), or a distributed file system (DFS) path,
 	// like ``s3://bucket/directory`` or ``dbfs:/my/directory``. If not set, the
 	// local ``./mlruns`` directory is chosen.
+	// Wire name: 'artifact_uri'
 	ArtifactUri string
 	// Unix timestamp of when the run ended in milliseconds.
+	// Wire name: 'end_time'
 	EndTime int64
 	// The experiment ID.
+	// Wire name: 'experiment_id'
 	ExperimentId string
 	// Current life cycle stage of the experiment : OneOf("active", "deleted")
+	// Wire name: 'lifecycle_stage'
 	LifecycleStage string
 	// Unique identifier for the run.
+	// Wire name: 'run_id'
 	RunId string
 	// The name of the run.
+	// Wire name: 'run_name'
 	RunName string
 	// [Deprecated, use run_id instead] Unique identifier for the run. This
 	// field will be removed in a future MLflow version.
+	// Wire name: 'run_uuid'
 	RunUuid string
 	// Unix timestamp of when the run started in milliseconds.
+	// Wire name: 'start_time'
 	StartTime int64
 	// Current status of the run.
+	// Wire name: 'status'
 	Status RunInfoStatus
 	// User who initiated the run. This field is deprecated as of MLflow 1.0,
 	// and will be removed in a future MLflow release. Use 'mlflow.user' tag
 	// instead.
+	// Wire name: 'user_id'
 	UserId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func runInfoToPb(st *RunInfo) (*runInfoPb, error) {
@@ -14169,55 +12626,25 @@ func runInfoToPb(st *RunInfo) (*runInfoPb, error) {
 		return nil, nil
 	}
 	pb := &runInfoPb{}
-	artifactUriPb := &st.ArtifactUri
-	if artifactUriPb != nil {
-		pb.ArtifactUri = *artifactUriPb
-	}
+	pb.ArtifactUri = st.ArtifactUri
 
-	endTimePb := &st.EndTime
-	if endTimePb != nil {
-		pb.EndTime = *endTimePb
-	}
+	pb.EndTime = st.EndTime
 
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
-	lifecycleStagePb := &st.LifecycleStage
-	if lifecycleStagePb != nil {
-		pb.LifecycleStage = *lifecycleStagePb
-	}
+	pb.LifecycleStage = st.LifecycleStage
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runNamePb := &st.RunName
-	if runNamePb != nil {
-		pb.RunName = *runNamePb
-	}
+	pb.RunName = st.RunName
 
-	runUuidPb := &st.RunUuid
-	if runUuidPb != nil {
-		pb.RunUuid = *runUuidPb
-	}
+	pb.RunUuid = st.RunUuid
 
-	startTimePb := &st.StartTime
-	if startTimePb != nil {
-		pb.StartTime = *startTimePb
-	}
+	pb.StartTime = st.StartTime
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14284,46 +12711,16 @@ func runInfoFromPb(pb *runInfoPb) (*RunInfo, error) {
 		return nil, nil
 	}
 	st := &RunInfo{}
-	artifactUriField := &pb.ArtifactUri
-	if artifactUriField != nil {
-		st.ArtifactUri = *artifactUriField
-	}
-	endTimeField := &pb.EndTime
-	if endTimeField != nil {
-		st.EndTime = *endTimeField
-	}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
-	lifecycleStageField := &pb.LifecycleStage
-	if lifecycleStageField != nil {
-		st.LifecycleStage = *lifecycleStageField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runNameField := &pb.RunName
-	if runNameField != nil {
-		st.RunName = *runNameField
-	}
-	runUuidField := &pb.RunUuid
-	if runUuidField != nil {
-		st.RunUuid = *runUuidField
-	}
-	startTimeField := &pb.StartTime
-	if startTimeField != nil {
-		st.StartTime = *startTimeField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.ArtifactUri = pb.ArtifactUri
+	st.EndTime = pb.EndTime
+	st.ExperimentId = pb.ExperimentId
+	st.LifecycleStage = pb.LifecycleStage
+	st.RunId = pb.RunId
+	st.RunName = pb.RunName
+	st.RunUuid = pb.RunUuid
+	st.StartTime = pb.StartTime
+	st.Status = pb.Status
+	st.UserId = pb.UserId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14391,11 +12788,13 @@ func runInfoStatusFromPb(pb *runInfoStatusPb) (*RunInfoStatus, error) {
 // Run inputs.
 type RunInputs struct {
 	// Run metrics.
+	// Wire name: 'dataset_inputs'
 	DatasetInputs []DatasetInput
 	// **NOTE**: Experimental: This API field may change or be removed in a
 	// future release without warning.
 	//
 	// Model inputs to the Run.
+	// Wire name: 'model_inputs'
 	ModelInputs []ModelInput
 }
 
@@ -14474,25 +12873,25 @@ func runInputsFromPb(pb *runInputsPb) (*RunInputs, error) {
 	st := &RunInputs{}
 
 	var datasetInputsField []DatasetInput
-	for _, item := range pb.DatasetInputs {
-		itemField, err := datasetInputFromPb(&item)
+	for _, itemPb := range pb.DatasetInputs {
+		item, err := datasetInputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			datasetInputsField = append(datasetInputsField, *itemField)
+		if item != nil {
+			datasetInputsField = append(datasetInputsField, *item)
 		}
 	}
 	st.DatasetInputs = datasetInputsField
 
 	var modelInputsField []ModelInput
-	for _, item := range pb.ModelInputs {
-		itemField, err := modelInputFromPb(&item)
+	for _, itemPb := range pb.ModelInputs {
+		item, err := modelInputFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			modelInputsField = append(modelInputsField, *itemField)
+		if item != nil {
+			modelInputsField = append(modelInputsField, *item)
 		}
 	}
 	st.ModelInputs = modelInputsField
@@ -14503,11 +12902,13 @@ func runInputsFromPb(pb *runInputsPb) (*RunInputs, error) {
 // Tag for a run.
 type RunTag struct {
 	// The tag key.
+	// Wire name: 'key'
 	Key string
 	// The tag value.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func runTagToPb(st *RunTag) (*runTagPb, error) {
@@ -14515,15 +12916,9 @@ func runTagToPb(st *RunTag) (*runTagPb, error) {
 		return nil, nil
 	}
 	pb := &runTagPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14568,14 +12963,8 @@ func runTagFromPb(pb *runTagPb) (*RunTag, error) {
 		return nil, nil
 	}
 	st := &RunTag{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14592,21 +12981,26 @@ func (st runTagPb) MarshalJSON() ([]byte, error) {
 type SearchExperiments struct {
 	// String representing a SQL filter condition (e.g. "name ILIKE
 	// 'my-experiment%'")
+	// Wire name: 'filter'
 	Filter string
 	// Maximum number of experiments desired. Max threshold is 3000.
+	// Wire name: 'max_results'
 	MaxResults int64
 	// List of columns for ordering search results, which can include experiment
 	// name and last updated timestamp with an optional "DESC" or "ASC"
 	// annotation, where "ASC" is the default. Tiebreaks are done by experiment
 	// id DESC.
+	// Wire name: 'order_by'
 	OrderBy []string
 	// Token indicating the page of experiments to fetch
+	// Wire name: 'page_token'
 	PageToken string
 	// Qualifier for type of experiments to be returned. If unspecified, return
 	// only active experiments.
+	// Wire name: 'view_type'
 	ViewType ViewType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func searchExperimentsToPb(st *SearchExperiments) (*searchExperimentsPb, error) {
@@ -14614,34 +13008,15 @@ func searchExperimentsToPb(st *SearchExperiments) (*searchExperimentsPb, error) 
 		return nil, nil
 	}
 	pb := &searchExperimentsPb{}
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	var orderByPb []string
-	for _, item := range st.OrderBy {
-		itemPb := &item
-		if itemPb != nil {
-			orderByPb = append(orderByPb, *itemPb)
-		}
-	}
-	pb.OrderBy = orderByPb
+	pb.OrderBy = st.OrderBy
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
-	viewTypePb := &st.ViewType
-	if viewTypePb != nil {
-		pb.ViewType = *viewTypePb
-	}
+	pb.ViewType = st.ViewType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14697,31 +13072,11 @@ func searchExperimentsFromPb(pb *searchExperimentsPb) (*SearchExperiments, error
 		return nil, nil
 	}
 	st := &SearchExperiments{}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-
-	var orderByField []string
-	for _, item := range pb.OrderBy {
-		itemField := &item
-		if itemField != nil {
-			orderByField = append(orderByField, *itemField)
-		}
-	}
-	st.OrderBy = orderByField
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	viewTypeField := &pb.ViewType
-	if viewTypeField != nil {
-		st.ViewType = *viewTypeField
-	}
+	st.Filter = pb.Filter
+	st.MaxResults = pb.MaxResults
+	st.OrderBy = pb.OrderBy
+	st.PageToken = pb.PageToken
+	st.ViewType = pb.ViewType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14737,12 +13092,14 @@ func (st searchExperimentsPb) MarshalJSON() ([]byte, error) {
 
 type SearchExperimentsResponse struct {
 	// Experiments that match the search criteria
+	// Wire name: 'experiments'
 	Experiments []Experiment
 	// Token that can be used to retrieve the next page of experiments. An empty
 	// token means that no more experiments are available for retrieval.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func searchExperimentsResponseToPb(st *SearchExperimentsResponse) (*searchExperimentsResponsePb, error) {
@@ -14763,10 +13120,7 @@ func searchExperimentsResponseToPb(st *SearchExperimentsResponse) (*searchExperi
 	}
 	pb.Experiments = experimentsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14814,20 +13168,17 @@ func searchExperimentsResponseFromPb(pb *searchExperimentsResponsePb) (*SearchEx
 	st := &SearchExperimentsResponse{}
 
 	var experimentsField []Experiment
-	for _, item := range pb.Experiments {
-		itemField, err := experimentFromPb(&item)
+	for _, itemPb := range pb.Experiments {
+		item, err := experimentFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			experimentsField = append(experimentsField, *itemField)
+		if item != nil {
+			experimentsField = append(experimentsField, *item)
 		}
 	}
 	st.Experiments = experimentsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14845,18 +13196,22 @@ func (st searchExperimentsResponsePb) MarshalJSON() ([]byte, error) {
 type SearchModelVersionsRequest struct {
 	// String filter condition, like "name='my-model-name'". Must be a single
 	// boolean condition, with string values wrapped in single quotes.
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// Maximum number of models desired. Max threshold is 10K.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// List of columns to be ordered by including model name, version, stage
 	// with an optional "DESC" or "ASC" annotation, where "ASC" is the default.
 	// Tiebreaks are done by latest stage transition timestamp, followed by name
 	// ASC, followed by version DESC.
-	OrderBy []string
+	// Wire name: 'order_by'
+	OrderBy []string `tf:"-"`
 	// Pagination token to go to next page based on previous search query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func searchModelVersionsRequestToPb(st *SearchModelVersionsRequest) (*searchModelVersionsRequestPb, error) {
@@ -14864,29 +13219,13 @@ func searchModelVersionsRequestToPb(st *SearchModelVersionsRequest) (*searchMode
 		return nil, nil
 	}
 	pb := &searchModelVersionsRequestPb{}
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	var orderByPb []string
-	for _, item := range st.OrderBy {
-		itemPb := &item
-		if itemPb != nil {
-			orderByPb = append(orderByPb, *itemPb)
-		}
-	}
-	pb.OrderBy = orderByPb
+	pb.OrderBy = st.OrderBy
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14939,27 +13278,10 @@ func searchModelVersionsRequestFromPb(pb *searchModelVersionsRequestPb) (*Search
 		return nil, nil
 	}
 	st := &SearchModelVersionsRequest{}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-
-	var orderByField []string
-	for _, item := range pb.OrderBy {
-		itemField := &item
-		if itemField != nil {
-			orderByField = append(orderByField, *itemField)
-		}
-	}
-	st.OrderBy = orderByField
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.Filter = pb.Filter
+	st.MaxResults = pb.MaxResults
+	st.OrderBy = pb.OrderBy
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14975,12 +13297,14 @@ func (st searchModelVersionsRequestPb) MarshalJSON() ([]byte, error) {
 
 type SearchModelVersionsResponse struct {
 	// Models that match the search criteria
+	// Wire name: 'model_versions'
 	ModelVersions []ModelVersion
 	// Pagination token to request next page of models for the same search
 	// query.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func searchModelVersionsResponseToPb(st *SearchModelVersionsResponse) (*searchModelVersionsResponsePb, error) {
@@ -15001,10 +13325,7 @@ func searchModelVersionsResponseToPb(st *SearchModelVersionsResponse) (*searchMo
 	}
 	pb.ModelVersions = modelVersionsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15052,20 +13373,17 @@ func searchModelVersionsResponseFromPb(pb *searchModelVersionsResponsePb) (*Sear
 	st := &SearchModelVersionsResponse{}
 
 	var modelVersionsField []ModelVersion
-	for _, item := range pb.ModelVersions {
-		itemField, err := modelVersionFromPb(&item)
+	for _, itemPb := range pb.ModelVersions {
+		item, err := modelVersionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			modelVersionsField = append(modelVersionsField, *itemField)
+		if item != nil {
+			modelVersionsField = append(modelVersionsField, *item)
 		}
 	}
 	st.ModelVersions = modelVersionsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15084,17 +13402,21 @@ type SearchModelsRequest struct {
 	// String filter condition, like "name LIKE 'my-model-name'". Interpreted in
 	// the backend automatically as "name LIKE '%my-model-name%'". Single
 	// boolean condition, with string values wrapped in single quotes.
-	Filter string
+	// Wire name: 'filter'
+	Filter string `tf:"-"`
 	// Maximum number of models desired. Default is 100. Max threshold is 1000.
-	MaxResults int
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// List of columns for ordering search results, which can include model name
 	// and last updated timestamp with an optional "DESC" or "ASC" annotation,
 	// where "ASC" is the default. Tiebreaks are done by model name ASC.
-	OrderBy []string
+	// Wire name: 'order_by'
+	OrderBy []string `tf:"-"`
 	// Pagination token to go to the next page based on a previous search query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func searchModelsRequestToPb(st *SearchModelsRequest) (*searchModelsRequestPb, error) {
@@ -15102,29 +13424,13 @@ func searchModelsRequestToPb(st *SearchModelsRequest) (*searchModelsRequestPb, e
 		return nil, nil
 	}
 	pb := &searchModelsRequestPb{}
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.Filter = st.Filter
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	var orderByPb []string
-	for _, item := range st.OrderBy {
-		itemPb := &item
-		if itemPb != nil {
-			orderByPb = append(orderByPb, *itemPb)
-		}
-	}
-	pb.OrderBy = orderByPb
+	pb.OrderBy = st.OrderBy
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15177,27 +13483,10 @@ func searchModelsRequestFromPb(pb *searchModelsRequestPb) (*SearchModelsRequest,
 		return nil, nil
 	}
 	st := &SearchModelsRequest{}
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-
-	var orderByField []string
-	for _, item := range pb.OrderBy {
-		itemField := &item
-		if itemField != nil {
-			orderByField = append(orderByField, *itemField)
-		}
-	}
-	st.OrderBy = orderByField
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.Filter = pb.Filter
+	st.MaxResults = pb.MaxResults
+	st.OrderBy = pb.OrderBy
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15213,11 +13502,13 @@ func (st searchModelsRequestPb) MarshalJSON() ([]byte, error) {
 
 type SearchModelsResponse struct {
 	// Pagination token to request the next page of models.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// Registered Models that match the search criteria.
+	// Wire name: 'registered_models'
 	RegisteredModels []Model
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func searchModelsResponseToPb(st *SearchModelsResponse) (*searchModelsResponsePb, error) {
@@ -15225,10 +13516,7 @@ func searchModelsResponseToPb(st *SearchModelsResponse) (*searchModelsResponsePb
 		return nil, nil
 	}
 	pb := &searchModelsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var registeredModelsPb []modelPb
 	for _, item := range st.RegisteredModels {
@@ -15285,19 +13573,16 @@ func searchModelsResponseFromPb(pb *searchModelsResponsePb) (*SearchModelsRespon
 		return nil, nil
 	}
 	st := &SearchModelsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var registeredModelsField []Model
-	for _, item := range pb.RegisteredModels {
-		itemField, err := modelFromPb(&item)
+	for _, itemPb := range pb.RegisteredModels {
+		item, err := modelFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			registeredModelsField = append(registeredModelsField, *itemField)
+		if item != nil {
+			registeredModelsField = append(registeredModelsField, *item)
 		}
 	}
 	st.RegisteredModels = registeredModelsField
@@ -15316,6 +13601,7 @@ func (st searchModelsResponsePb) MarshalJSON() ([]byte, error) {
 
 type SearchRuns struct {
 	// List of experiment IDs to search over.
+	// Wire name: 'experiment_ids'
 	ExperimentIds []string
 	// A filter expression over params, metrics, and tags, that allows returning
 	// a subset of runs. The syntax is a subset of SQL that supports ANDing
@@ -15329,8 +13615,10 @@ type SearchRuns struct {
 	// and tags."user-name" = 'Tomas'`
 	//
 	// Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`.
+	// Wire name: 'filter'
 	Filter string
 	// Maximum number of runs desired. Max threshold is 50000
+	// Wire name: 'max_results'
 	MaxResults int
 	// List of columns to be ordered by, including attributes, params, metrics,
 	// and tags with an optional `"DESC"` or `"ASC"` annotation, where `"ASC"`
@@ -15338,14 +13626,17 @@ type SearchRuns struct {
 	// "metrics.rmse"]`. Tiebreaks are done by start_time `DESC` followed by
 	// `run_id` for runs with the same start time (and this is the default
 	// ordering criterion if order_by is not provided).
+	// Wire name: 'order_by'
 	OrderBy []string
 	// Token for the current page of runs.
+	// Wire name: 'page_token'
 	PageToken string
 	// Whether to display only active, only deleted, or all runs. Defaults to
 	// only active runs.
+	// Wire name: 'run_view_type'
 	RunViewType ViewType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func searchRunsToPb(st *SearchRuns) (*searchRunsPb, error) {
@@ -15353,44 +13644,17 @@ func searchRunsToPb(st *SearchRuns) (*searchRunsPb, error) {
 		return nil, nil
 	}
 	pb := &searchRunsPb{}
+	pb.ExperimentIds = st.ExperimentIds
 
-	var experimentIdsPb []string
-	for _, item := range st.ExperimentIds {
-		itemPb := &item
-		if itemPb != nil {
-			experimentIdsPb = append(experimentIdsPb, *itemPb)
-		}
-	}
-	pb.ExperimentIds = experimentIdsPb
+	pb.Filter = st.Filter
 
-	filterPb := &st.Filter
-	if filterPb != nil {
-		pb.Filter = *filterPb
-	}
+	pb.MaxResults = st.MaxResults
 
-	maxResultsPb := &st.MaxResults
-	if maxResultsPb != nil {
-		pb.MaxResults = *maxResultsPb
-	}
+	pb.OrderBy = st.OrderBy
 
-	var orderByPb []string
-	for _, item := range st.OrderBy {
-		itemPb := &item
-		if itemPb != nil {
-			orderByPb = append(orderByPb, *itemPb)
-		}
-	}
-	pb.OrderBy = orderByPb
+	pb.PageToken = st.PageToken
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
-
-	runViewTypePb := &st.RunViewType
-	if runViewTypePb != nil {
-		pb.RunViewType = *runViewTypePb
-	}
+	pb.RunViewType = st.RunViewType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -15460,40 +13724,12 @@ func searchRunsFromPb(pb *searchRunsPb) (*SearchRuns, error) {
 		return nil, nil
 	}
 	st := &SearchRuns{}
-
-	var experimentIdsField []string
-	for _, item := range pb.ExperimentIds {
-		itemField := &item
-		if itemField != nil {
-			experimentIdsField = append(experimentIdsField, *itemField)
-		}
-	}
-	st.ExperimentIds = experimentIdsField
-	filterField := &pb.Filter
-	if filterField != nil {
-		st.Filter = *filterField
-	}
-	maxResultsField := &pb.MaxResults
-	if maxResultsField != nil {
-		st.MaxResults = *maxResultsField
-	}
-
-	var orderByField []string
-	for _, item := range pb.OrderBy {
-		itemField := &item
-		if itemField != nil {
-			orderByField = append(orderByField, *itemField)
-		}
-	}
-	st.OrderBy = orderByField
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
-	runViewTypeField := &pb.RunViewType
-	if runViewTypeField != nil {
-		st.RunViewType = *runViewTypeField
-	}
+	st.ExperimentIds = pb.ExperimentIds
+	st.Filter = pb.Filter
+	st.MaxResults = pb.MaxResults
+	st.OrderBy = pb.OrderBy
+	st.PageToken = pb.PageToken
+	st.RunViewType = pb.RunViewType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -15509,11 +13745,13 @@ func (st searchRunsPb) MarshalJSON() ([]byte, error) {
 
 type SearchRunsResponse struct {
 	// Token for the next page of runs.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 	// Runs that match the search criteria.
+	// Wire name: 'runs'
 	Runs []Run
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func searchRunsResponseToPb(st *SearchRunsResponse) (*searchRunsResponsePb, error) {
@@ -15521,10 +13759,7 @@ func searchRunsResponseToPb(st *SearchRunsResponse) (*searchRunsResponsePb, erro
 		return nil, nil
 	}
 	pb := &searchRunsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var runsPb []runPb
 	for _, item := range st.Runs {
@@ -15581,19 +13816,16 @@ func searchRunsResponseFromPb(pb *searchRunsResponsePb) (*SearchRunsResponse, er
 		return nil, nil
 	}
 	st := &SearchRunsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var runsField []Run
-	for _, item := range pb.Runs {
-		itemField, err := runFromPb(&item)
+	for _, itemPb := range pb.Runs {
+		item, err := runFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			runsField = append(runsField, *itemField)
+		if item != nil {
+			runsField = append(runsField, *item)
 		}
 	}
 	st.Runs = runsField
@@ -15612,11 +13844,14 @@ func (st searchRunsResponsePb) MarshalJSON() ([]byte, error) {
 
 type SetExperimentTag struct {
 	// ID of the experiment under which to log the tag. Must be provided.
+	// Wire name: 'experiment_id'
 	ExperimentId string
 	// Name of the tag. Keys up to 250 bytes in size are supported.
+	// Wire name: 'key'
 	Key string
 	// String value of the tag being logged. Values up to 64KB in size are
 	// supported.
+	// Wire name: 'value'
 	Value string
 }
 
@@ -15625,20 +13860,11 @@ func setExperimentTagToPb(st *SetExperimentTag) (*setExperimentTagPb, error) {
 		return nil, nil
 	}
 	pb := &setExperimentTagPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	return pb, nil
 }
@@ -15683,18 +13909,9 @@ func setExperimentTagFromPb(pb *setExperimentTagPb) (*SetExperimentTag, error) {
 		return nil, nil
 	}
 	st := &SetExperimentTag{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.ExperimentId = pb.ExperimentId
+	st.Key = pb.Key
+	st.Value = pb.Value
 
 	return st, nil
 }
@@ -15753,12 +13970,15 @@ type SetModelTagRequest struct {
 	// this name already exists, its preexisting value will be replaced by the
 	// specified `value`. All storage backends are guaranteed to support key
 	// values up to 250 bytes in size.
+	// Wire name: 'key'
 	Key string
 	// Unique name of the model.
+	// Wire name: 'name'
 	Name string
 	// String value of the tag being logged. Maximum size depends on storage
 	// backend. All storage backends are guaranteed to support key values up to
 	// 5000 bytes in size.
+	// Wire name: 'value'
 	Value string
 }
 
@@ -15767,20 +13987,11 @@ func setModelTagRequestToPb(st *SetModelTagRequest) (*setModelTagRequestPb, erro
 		return nil, nil
 	}
 	pb := &setModelTagRequestPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	return pb, nil
 }
@@ -15829,18 +14040,9 @@ func setModelTagRequestFromPb(pb *setModelTagRequestPb) (*SetModelTagRequest, er
 		return nil, nil
 	}
 	st := &SetModelTagRequest{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.Name = pb.Name
+	st.Value = pb.Value
 
 	return st, nil
 }
@@ -15899,14 +14101,18 @@ type SetModelVersionTagRequest struct {
 	// this name already exists, its preexisting value will be replaced by the
 	// specified `value`. All storage backends are guaranteed to support key
 	// values up to 250 bytes in size.
+	// Wire name: 'key'
 	Key string
 	// Unique name of the model.
+	// Wire name: 'name'
 	Name string
 	// String value of the tag being logged. Maximum size depends on storage
 	// backend. All storage backends are guaranteed to support key values up to
 	// 5000 bytes in size.
+	// Wire name: 'value'
 	Value string
 	// Model version number.
+	// Wire name: 'version'
 	Version string
 }
 
@@ -15915,25 +14121,13 @@ func setModelVersionTagRequestToPb(st *SetModelVersionTagRequest) (*setModelVers
 		return nil, nil
 	}
 	pb := &setModelVersionTagRequestPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	return pb, nil
 }
@@ -15984,22 +14178,10 @@ func setModelVersionTagRequestFromPb(pb *setModelVersionTagRequestPb) (*SetModel
 		return nil, nil
 	}
 	st := &SetModelVersionTagRequest{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Key = pb.Key
+	st.Name = pb.Name
+	st.Value = pb.Value
+	st.Version = pb.Version
 
 	return st, nil
 }
@@ -16055,17 +14237,21 @@ func setModelVersionTagResponseFromPb(pb *setModelVersionTagResponsePb) (*SetMod
 
 type SetTag struct {
 	// Name of the tag. Keys up to 250 bytes in size are supported.
+	// Wire name: 'key'
 	Key string
 	// ID of the run under which to log the tag. Must be provided.
+	// Wire name: 'run_id'
 	RunId string
 	// [Deprecated, use `run_id` instead] ID of the run under which to log the
 	// tag. This field will be removed in a future MLflow version.
+	// Wire name: 'run_uuid'
 	RunUuid string
 	// String value of the tag being logged. Values up to 64KB in size are
 	// supported.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func setTagToPb(st *SetTag) (*setTagPb, error) {
@@ -16073,25 +14259,13 @@ func setTagToPb(st *SetTag) (*setTagPb, error) {
 		return nil, nil
 	}
 	pb := &setTagPb{}
-	keyPb := &st.Key
-	if keyPb != nil {
-		pb.Key = *keyPb
-	}
+	pb.Key = st.Key
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runUuidPb := &st.RunUuid
-	if runUuidPb != nil {
-		pb.RunUuid = *runUuidPb
-	}
+	pb.RunUuid = st.RunUuid
 
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16142,22 +14316,10 @@ func setTagFromPb(pb *setTagPb) (*SetTag, error) {
 		return nil, nil
 	}
 	st := &SetTag{}
-	keyField := &pb.Key
-	if keyField != nil {
-		st.Key = *keyField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runUuidField := &pb.RunUuid
-	if runUuidField != nil {
-		st.RunUuid = *runUuidField
-	}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Key = pb.Key
+	st.RunId = pb.RunId
+	st.RunUuid = pb.RunUuid
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16341,11 +14503,13 @@ func statusFromPb(pb *statusPb) (*Status, error) {
 // Test webhook response object.
 type TestRegistryWebhook struct {
 	// Body of the response from the webhook URL
+	// Wire name: 'body'
 	Body string
 	// Status code returned by the webhook URL
+	// Wire name: 'status_code'
 	StatusCode int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func testRegistryWebhookToPb(st *TestRegistryWebhook) (*testRegistryWebhookPb, error) {
@@ -16353,15 +14517,9 @@ func testRegistryWebhookToPb(st *TestRegistryWebhook) (*testRegistryWebhookPb, e
 		return nil, nil
 	}
 	pb := &testRegistryWebhookPb{}
-	bodyPb := &st.Body
-	if bodyPb != nil {
-		pb.Body = *bodyPb
-	}
+	pb.Body = st.Body
 
-	statusCodePb := &st.StatusCode
-	if statusCodePb != nil {
-		pb.StatusCode = *statusCodePb
-	}
+	pb.StatusCode = st.StatusCode
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16406,14 +14564,8 @@ func testRegistryWebhookFromPb(pb *testRegistryWebhookPb) (*TestRegistryWebhook,
 		return nil, nil
 	}
 	st := &TestRegistryWebhook{}
-	bodyField := &pb.Body
-	if bodyField != nil {
-		st.Body = *bodyField
-	}
-	statusCodeField := &pb.StatusCode
-	if statusCodeField != nil {
-		st.StatusCode = *statusCodeField
-	}
+	st.Body = pb.Body
+	st.StatusCode = pb.StatusCode
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16431,8 +14583,10 @@ type TestRegistryWebhookRequest struct {
 	// If `event` is specified, the test trigger uses the specified event. If
 	// `event` is not specified, the test trigger uses a randomly chosen event
 	// associated with the webhook.
+	// Wire name: 'event'
 	Event RegistryWebhookEvent
 	// Webhook ID
+	// Wire name: 'id'
 	Id string
 }
 
@@ -16441,15 +14595,9 @@ func testRegistryWebhookRequestToPb(st *TestRegistryWebhookRequest) (*testRegist
 		return nil, nil
 	}
 	pb := &testRegistryWebhookRequestPb{}
-	eventPb := &st.Event
-	if eventPb != nil {
-		pb.Event = *eventPb
-	}
+	pb.Event = st.Event
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -16493,20 +14641,15 @@ func testRegistryWebhookRequestFromPb(pb *testRegistryWebhookRequestPb) (*TestRe
 		return nil, nil
 	}
 	st := &TestRegistryWebhookRequest{}
-	eventField := &pb.Event
-	if eventField != nil {
-		st.Event = *eventField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Event = pb.Event
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type TestRegistryWebhookResponse struct {
 	// Test webhook response object.
+	// Wire name: 'webhook'
 	Webhook *TestRegistryWebhook
 }
 
@@ -16575,10 +14718,13 @@ func testRegistryWebhookResponseFromPb(pb *testRegistryWebhookResponsePb) (*Test
 type TransitionModelVersionStageDatabricks struct {
 	// Specifies whether to archive all current model versions in the target
 	// stage.
+	// Wire name: 'archive_existing_versions'
 	ArchiveExistingVersions bool
 	// User-provided comment on the action.
+	// Wire name: 'comment'
 	Comment string
 	// Name of the model.
+	// Wire name: 'name'
 	Name string
 	// Target stage of the transition. Valid values are:
 	//
@@ -16589,11 +14735,13 @@ type TransitionModelVersionStageDatabricks struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
+	// Wire name: 'stage'
 	Stage Stage
 	// Version of the model.
+	// Wire name: 'version'
 	Version string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func transitionModelVersionStageDatabricksToPb(st *TransitionModelVersionStageDatabricks) (*transitionModelVersionStageDatabricksPb, error) {
@@ -16601,30 +14749,15 @@ func transitionModelVersionStageDatabricksToPb(st *TransitionModelVersionStageDa
 		return nil, nil
 	}
 	pb := &transitionModelVersionStageDatabricksPb{}
-	archiveExistingVersionsPb := &st.ArchiveExistingVersions
-	if archiveExistingVersionsPb != nil {
-		pb.ArchiveExistingVersions = *archiveExistingVersionsPb
-	}
+	pb.ArchiveExistingVersions = st.ArchiveExistingVersions
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	stagePb := &st.Stage
-	if stagePb != nil {
-		pb.Stage = *stagePb
-	}
+	pb.Stage = st.Stage
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16684,26 +14817,11 @@ func transitionModelVersionStageDatabricksFromPb(pb *transitionModelVersionStage
 		return nil, nil
 	}
 	st := &TransitionModelVersionStageDatabricks{}
-	archiveExistingVersionsField := &pb.ArchiveExistingVersions
-	if archiveExistingVersionsField != nil {
-		st.ArchiveExistingVersions = *archiveExistingVersionsField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	stageField := &pb.Stage
-	if stageField != nil {
-		st.Stage = *stageField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.ArchiveExistingVersions = pb.ArchiveExistingVersions
+	st.Comment = pb.Comment
+	st.Name = pb.Name
+	st.Stage = pb.Stage
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16720,10 +14838,13 @@ func (st transitionModelVersionStageDatabricksPb) MarshalJSON() ([]byte, error) 
 // Transition request details.
 type TransitionRequest struct {
 	// Array of actions on the activity allowed for the current viewer.
+	// Wire name: 'available_actions'
 	AvailableActions []ActivityAction
 	// User-provided comment associated with the transition request.
+	// Wire name: 'comment'
 	Comment string
 	// Creation time of the object, as a Unix timestamp in milliseconds.
+	// Wire name: 'creation_timestamp'
 	CreationTimestamp int64
 	// Target stage of the transition (if the activity is stage transition
 	// related). Valid values are:
@@ -16735,11 +14856,13 @@ type TransitionRequest struct {
 	// * `Production`: Production stage.
 	//
 	// * `Archived`: Archived stage.
+	// Wire name: 'to_stage'
 	ToStage Stage
 	// The username of the user that created the object.
+	// Wire name: 'user_id'
 	UserId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func transitionRequestToPb(st *TransitionRequest) (*transitionRequestPb, error) {
@@ -16747,35 +14870,15 @@ func transitionRequestToPb(st *TransitionRequest) (*transitionRequestPb, error) 
 		return nil, nil
 	}
 	pb := &transitionRequestPb{}
+	pb.AvailableActions = st.AvailableActions
 
-	var availableActionsPb []ActivityAction
-	for _, item := range st.AvailableActions {
-		itemPb := &item
-		if itemPb != nil {
-			availableActionsPb = append(availableActionsPb, *itemPb)
-		}
-	}
-	pb.AvailableActions = availableActionsPb
+	pb.Comment = st.Comment
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.CreationTimestamp = st.CreationTimestamp
 
-	creationTimestampPb := &st.CreationTimestamp
-	if creationTimestampPb != nil {
-		pb.CreationTimestamp = *creationTimestampPb
-	}
+	pb.ToStage = st.ToStage
 
-	toStagePb := &st.ToStage
-	if toStagePb != nil {
-		pb.ToStage = *toStagePb
-	}
-
-	userIdPb := &st.UserId
-	if userIdPb != nil {
-		pb.UserId = *userIdPb
-	}
+	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16835,31 +14938,11 @@ func transitionRequestFromPb(pb *transitionRequestPb) (*TransitionRequest, error
 		return nil, nil
 	}
 	st := &TransitionRequest{}
-
-	var availableActionsField []ActivityAction
-	for _, item := range pb.AvailableActions {
-		itemField := &item
-		if itemField != nil {
-			availableActionsField = append(availableActionsField, *itemField)
-		}
-	}
-	st.AvailableActions = availableActionsField
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	creationTimestampField := &pb.CreationTimestamp
-	if creationTimestampField != nil {
-		st.CreationTimestamp = *creationTimestampField
-	}
-	toStageField := &pb.ToStage
-	if toStageField != nil {
-		st.ToStage = *toStageField
-	}
-	userIdField := &pb.UserId
-	if userIdField != nil {
-		st.UserId = *userIdField
-	}
+	st.AvailableActions = pb.AvailableActions
+	st.Comment = pb.Comment
+	st.CreationTimestamp = pb.CreationTimestamp
+	st.ToStage = pb.ToStage
+	st.UserId = pb.UserId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16874,6 +14957,8 @@ func (st transitionRequestPb) MarshalJSON() ([]byte, error) {
 }
 
 type TransitionStageResponse struct {
+
+	// Wire name: 'model_version'
 	ModelVersion *ModelVersionDatabricks
 }
 
@@ -16940,8 +15025,10 @@ func transitionStageResponseFromPb(pb *transitionStageResponsePb) (*TransitionSt
 
 type UpdateComment struct {
 	// User-provided comment on the action.
+	// Wire name: 'comment'
 	Comment string
 	// Unique identifier of an activity
+	// Wire name: 'id'
 	Id string
 }
 
@@ -16950,15 +15037,9 @@ func updateCommentToPb(st *UpdateComment) (*updateCommentPb, error) {
 		return nil, nil
 	}
 	pb := &updateCommentPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -17000,20 +15081,15 @@ func updateCommentFromPb(pb *updateCommentPb) (*UpdateComment, error) {
 		return nil, nil
 	}
 	st := &UpdateComment{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Comment = pb.Comment
+	st.Id = pb.Id
 
 	return st, nil
 }
 
 type UpdateCommentResponse struct {
 	// Comment details.
+	// Wire name: 'comment'
 	Comment *CommentObject
 }
 
@@ -17081,12 +15157,14 @@ func updateCommentResponseFromPb(pb *updateCommentResponsePb) (*UpdateCommentRes
 
 type UpdateExperiment struct {
 	// ID of the associated experiment.
+	// Wire name: 'experiment_id'
 	ExperimentId string
 	// If provided, the experiment's name is changed to the new name. The new
 	// name must be unique.
+	// Wire name: 'new_name'
 	NewName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateExperimentToPb(st *UpdateExperiment) (*updateExperimentPb, error) {
@@ -17094,15 +15172,9 @@ func updateExperimentToPb(st *UpdateExperiment) (*updateExperimentPb, error) {
 		return nil, nil
 	}
 	pb := &updateExperimentPb{}
-	experimentIdPb := &st.ExperimentId
-	if experimentIdPb != nil {
-		pb.ExperimentId = *experimentIdPb
-	}
+	pb.ExperimentId = st.ExperimentId
 
-	newNamePb := &st.NewName
-	if newNamePb != nil {
-		pb.NewName = *newNamePb
-	}
+	pb.NewName = st.NewName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17148,14 +15220,8 @@ func updateExperimentFromPb(pb *updateExperimentPb) (*UpdateExperiment, error) {
 		return nil, nil
 	}
 	st := &UpdateExperiment{}
-	experimentIdField := &pb.ExperimentId
-	if experimentIdField != nil {
-		st.ExperimentId = *experimentIdField
-	}
-	newNameField := &pb.NewName
-	if newNameField != nil {
-		st.NewName = *newNameField
-	}
+	st.ExperimentId = pb.ExperimentId
+	st.NewName = pb.NewName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17220,11 +15286,13 @@ func updateExperimentResponseFromPb(pb *updateExperimentResponsePb) (*UpdateExpe
 
 type UpdateModelRequest struct {
 	// If provided, updates the description for this `registered_model`.
+	// Wire name: 'description'
 	Description string
 	// Registered model unique name identifier.
+	// Wire name: 'name'
 	Name string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateModelRequestToPb(st *UpdateModelRequest) (*updateModelRequestPb, error) {
@@ -17232,15 +15300,9 @@ func updateModelRequestToPb(st *UpdateModelRequest) (*updateModelRequestPb, erro
 		return nil, nil
 	}
 	pb := &updateModelRequestPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17285,14 +15347,8 @@ func updateModelRequestFromPb(pb *updateModelRequestPb) (*UpdateModelRequest, er
 		return nil, nil
 	}
 	st := &UpdateModelRequest{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
+	st.Description = pb.Description
+	st.Name = pb.Name
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17357,13 +15413,16 @@ func updateModelResponseFromPb(pb *updateModelResponsePb) (*UpdateModelResponse,
 
 type UpdateModelVersionRequest struct {
 	// If provided, updates the description for this `registered_model`.
+	// Wire name: 'description'
 	Description string
 	// Name of the registered model
+	// Wire name: 'name'
 	Name string
 	// Model version number
+	// Wire name: 'version'
 	Version string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateModelVersionRequestToPb(st *UpdateModelVersionRequest) (*updateModelVersionRequestPb, error) {
@@ -17371,20 +15430,11 @@ func updateModelVersionRequestToPb(st *UpdateModelVersionRequest) (*updateModelV
 		return nil, nil
 	}
 	pb := &updateModelVersionRequestPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	versionPb := &st.Version
-	if versionPb != nil {
-		pb.Version = *versionPb
-	}
+	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17431,18 +15481,9 @@ func updateModelVersionRequestFromPb(pb *updateModelVersionRequestPb) (*UpdateMo
 		return nil, nil
 	}
 	st := &UpdateModelVersionRequest{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	versionField := &pb.Version
-	if versionField != nil {
-		st.Version = *versionField
-	}
+	st.Description = pb.Description
+	st.Name = pb.Name
+	st.Version = pb.Version
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17507,6 +15548,7 @@ func updateModelVersionResponseFromPb(pb *updateModelVersionResponsePb) (*Update
 
 type UpdateRegistryWebhook struct {
 	// User-specified description for the webhook.
+	// Wire name: 'description'
 	Description string
 	// Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A
 	// new model version was created for the associated model.
@@ -17541,12 +15583,16 @@ type UpdateRegistryWebhook struct {
 	//
 	// * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model
 	// version be archived.
+	// Wire name: 'events'
 	Events []RegistryWebhookEvent
 
+	// Wire name: 'http_url_spec'
 	HttpUrlSpec *HttpUrlSpec
 	// Webhook ID
+	// Wire name: 'id'
 	Id string
 
+	// Wire name: 'job_spec'
 	JobSpec *JobSpec
 	// Enable or disable triggering the webhook, or put the webhook into test
 	// mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an
@@ -17556,9 +15602,10 @@ type UpdateRegistryWebhook struct {
 	//
 	// * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is
 	// not triggered on a real event.
+	// Wire name: 'status'
 	Status RegistryWebhookStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateRegistryWebhookToPb(st *UpdateRegistryWebhook) (*updateRegistryWebhookPb, error) {
@@ -17566,19 +15613,9 @@ func updateRegistryWebhookToPb(st *UpdateRegistryWebhook) (*updateRegistryWebhoo
 		return nil, nil
 	}
 	pb := &updateRegistryWebhookPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	var eventsPb []RegistryWebhookEvent
-	for _, item := range st.Events {
-		itemPb := &item
-		if itemPb != nil {
-			eventsPb = append(eventsPb, *itemPb)
-		}
-	}
-	pb.Events = eventsPb
+	pb.Events = st.Events
 
 	httpUrlSpecPb, err := httpUrlSpecToPb(st.HttpUrlSpec)
 	if err != nil {
@@ -17588,10 +15625,7 @@ func updateRegistryWebhookToPb(st *UpdateRegistryWebhook) (*updateRegistryWebhoo
 		pb.HttpUrlSpec = httpUrlSpecPb
 	}
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	jobSpecPb, err := jobSpecToPb(st.JobSpec)
 	if err != nil {
@@ -17601,10 +15635,7 @@ func updateRegistryWebhookToPb(st *UpdateRegistryWebhook) (*updateRegistryWebhoo
 		pb.JobSpec = jobSpecPb
 	}
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17696,19 +15727,8 @@ func updateRegistryWebhookFromPb(pb *updateRegistryWebhookPb) (*UpdateRegistryWe
 		return nil, nil
 	}
 	st := &UpdateRegistryWebhook{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-
-	var eventsField []RegistryWebhookEvent
-	for _, item := range pb.Events {
-		itemField := &item
-		if itemField != nil {
-			eventsField = append(eventsField, *itemField)
-		}
-	}
-	st.Events = eventsField
+	st.Description = pb.Description
+	st.Events = pb.Events
 	httpUrlSpecField, err := httpUrlSpecFromPb(pb.HttpUrlSpec)
 	if err != nil {
 		return nil, err
@@ -17716,10 +15736,7 @@ func updateRegistryWebhookFromPb(pb *updateRegistryWebhookPb) (*UpdateRegistryWe
 	if httpUrlSpecField != nil {
 		st.HttpUrlSpec = httpUrlSpecField
 	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 	jobSpecField, err := jobSpecFromPb(pb.JobSpec)
 	if err != nil {
 		return nil, err
@@ -17727,10 +15744,7 @@ func updateRegistryWebhookFromPb(pb *updateRegistryWebhookPb) (*UpdateRegistryWe
 	if jobSpecField != nil {
 		st.JobSpec = jobSpecField
 	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.Status = pb.Status
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17746,18 +15760,23 @@ func (st updateRegistryWebhookPb) MarshalJSON() ([]byte, error) {
 
 type UpdateRun struct {
 	// Unix timestamp in milliseconds of when the run ended.
+	// Wire name: 'end_time'
 	EndTime int64
 	// ID of the run to update. Must be provided.
+	// Wire name: 'run_id'
 	RunId string
 	// Updated name of the run.
+	// Wire name: 'run_name'
 	RunName string
 	// [Deprecated, use `run_id` instead] ID of the run to update. This field
 	// will be removed in a future MLflow version.
+	// Wire name: 'run_uuid'
 	RunUuid string
 	// Updated status of the run.
+	// Wire name: 'status'
 	Status UpdateRunStatus
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateRunToPb(st *UpdateRun) (*updateRunPb, error) {
@@ -17765,30 +15784,15 @@ func updateRunToPb(st *UpdateRun) (*updateRunPb, error) {
 		return nil, nil
 	}
 	pb := &updateRunPb{}
-	endTimePb := &st.EndTime
-	if endTimePb != nil {
-		pb.EndTime = *endTimePb
-	}
+	pb.EndTime = st.EndTime
 
-	runIdPb := &st.RunId
-	if runIdPb != nil {
-		pb.RunId = *runIdPb
-	}
+	pb.RunId = st.RunId
 
-	runNamePb := &st.RunName
-	if runNamePb != nil {
-		pb.RunName = *runNamePb
-	}
+	pb.RunName = st.RunName
 
-	runUuidPb := &st.RunUuid
-	if runUuidPb != nil {
-		pb.RunUuid = *runUuidPb
-	}
+	pb.RunUuid = st.RunUuid
 
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -17840,26 +15844,11 @@ func updateRunFromPb(pb *updateRunPb) (*UpdateRun, error) {
 		return nil, nil
 	}
 	st := &UpdateRun{}
-	endTimeField := &pb.EndTime
-	if endTimeField != nil {
-		st.EndTime = *endTimeField
-	}
-	runIdField := &pb.RunId
-	if runIdField != nil {
-		st.RunId = *runIdField
-	}
-	runNameField := &pb.RunName
-	if runNameField != nil {
-		st.RunName = *runNameField
-	}
-	runUuidField := &pb.RunUuid
-	if runUuidField != nil {
-		st.RunUuid = *runUuidField
-	}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.EndTime = pb.EndTime
+	st.RunId = pb.RunId
+	st.RunName = pb.RunName
+	st.RunUuid = pb.RunUuid
+	st.Status = pb.Status
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -17875,6 +15864,7 @@ func (st updateRunPb) MarshalJSON() ([]byte, error) {
 
 type UpdateRunResponse struct {
 	// Updated metadata of the run.
+	// Wire name: 'run_info'
 	RunInfo *RunInfo
 }
 
@@ -18085,4 +16075,58 @@ func viewTypeFromPb(pb *viewTypePb) (*ViewType, error) {
 	}
 	st := ViewType(*pb)
 	return &st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

@@ -11,76 +11,9 @@ import (
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
-func identity[T any](obj *T) (*T, error) {
-	return obj, nil
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-// Helper to strip trailing zeros in fractional part
-func rstripZeros(s string) string {
-	for len(s) > 0 && s[len(s)-1] == '0' {
-		s = s[:len(s)-1]
-	}
-	if len(s) > 0 && s[len(s)-1] == '.' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
-}
-
 type AccountIpAccessEnable struct {
+
+	// Wire name: 'acct_ip_acl_enable'
 	AcctIpAclEnable BooleanMessage
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -89,15 +22,17 @@ type AccountIpAccessEnable struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func accountIpAccessEnableToPb(st *AccountIpAccessEnable) (*accountIpAccessEnablePb, error) {
@@ -113,15 +48,9 @@ func accountIpAccessEnableToPb(st *AccountIpAccessEnable) (*accountIpAccessEnabl
 		pb.AcctIpAclEnable = *acctIpAclEnablePb
 	}
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -184,14 +113,8 @@ func accountIpAccessEnableFromPb(pb *accountIpAccessEnablePb) (*AccountIpAccessE
 	if acctIpAclEnableField != nil {
 		st.AcctIpAclEnable = *acctIpAclEnableField
 	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.Etag = pb.Etag
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -206,6 +129,8 @@ func (st accountIpAccessEnablePb) MarshalJSON() ([]byte, error) {
 }
 
 type AibiDashboardEmbeddingAccessPolicy struct {
+
+	// Wire name: 'access_policy_type'
 	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType
 }
 
@@ -214,10 +139,7 @@ func aibiDashboardEmbeddingAccessPolicyToPb(st *AibiDashboardEmbeddingAccessPoli
 		return nil, nil
 	}
 	pb := &aibiDashboardEmbeddingAccessPolicyPb{}
-	accessPolicyTypePb := &st.AccessPolicyType
-	if accessPolicyTypePb != nil {
-		pb.AccessPolicyType = *accessPolicyTypePb
-	}
+	pb.AccessPolicyType = st.AccessPolicyType
 
 	return pb, nil
 }
@@ -256,10 +178,7 @@ func aibiDashboardEmbeddingAccessPolicyFromPb(pb *aibiDashboardEmbeddingAccessPo
 		return nil, nil
 	}
 	st := &AibiDashboardEmbeddingAccessPolicy{}
-	accessPolicyTypeField := &pb.AccessPolicyType
-	if accessPolicyTypeField != nil {
-		st.AccessPolicyType = *accessPolicyTypeField
-	}
+	st.AccessPolicyType = pb.AccessPolicyType
 
 	return st, nil
 }
@@ -311,6 +230,8 @@ func aibiDashboardEmbeddingAccessPolicyAccessPolicyTypeFromPb(pb *aibiDashboardE
 }
 
 type AibiDashboardEmbeddingAccessPolicySetting struct {
+
+	// Wire name: 'aibi_dashboard_embedding_access_policy'
 	AibiDashboardEmbeddingAccessPolicy AibiDashboardEmbeddingAccessPolicy
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -319,15 +240,17 @@ type AibiDashboardEmbeddingAccessPolicySetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func aibiDashboardEmbeddingAccessPolicySettingToPb(st *AibiDashboardEmbeddingAccessPolicySetting) (*aibiDashboardEmbeddingAccessPolicySettingPb, error) {
@@ -343,15 +266,9 @@ func aibiDashboardEmbeddingAccessPolicySettingToPb(st *AibiDashboardEmbeddingAcc
 		pb.AibiDashboardEmbeddingAccessPolicy = *aibiDashboardEmbeddingAccessPolicyPb
 	}
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -414,14 +331,8 @@ func aibiDashboardEmbeddingAccessPolicySettingFromPb(pb *aibiDashboardEmbeddingA
 	if aibiDashboardEmbeddingAccessPolicyField != nil {
 		st.AibiDashboardEmbeddingAccessPolicy = *aibiDashboardEmbeddingAccessPolicyField
 	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.Etag = pb.Etag
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -436,6 +347,8 @@ func (st aibiDashboardEmbeddingAccessPolicySettingPb) MarshalJSON() ([]byte, err
 }
 
 type AibiDashboardEmbeddingApprovedDomains struct {
+
+	// Wire name: 'approved_domains'
 	ApprovedDomains []string
 }
 
@@ -444,15 +357,7 @@ func aibiDashboardEmbeddingApprovedDomainsToPb(st *AibiDashboardEmbeddingApprove
 		return nil, nil
 	}
 	pb := &aibiDashboardEmbeddingApprovedDomainsPb{}
-
-	var approvedDomainsPb []string
-	for _, item := range st.ApprovedDomains {
-		itemPb := &item
-		if itemPb != nil {
-			approvedDomainsPb = append(approvedDomainsPb, *itemPb)
-		}
-	}
-	pb.ApprovedDomains = approvedDomainsPb
+	pb.ApprovedDomains = st.ApprovedDomains
 
 	return pb, nil
 }
@@ -491,20 +396,14 @@ func aibiDashboardEmbeddingApprovedDomainsFromPb(pb *aibiDashboardEmbeddingAppro
 		return nil, nil
 	}
 	st := &AibiDashboardEmbeddingApprovedDomains{}
-
-	var approvedDomainsField []string
-	for _, item := range pb.ApprovedDomains {
-		itemField := &item
-		if itemField != nil {
-			approvedDomainsField = append(approvedDomainsField, *itemField)
-		}
-	}
-	st.ApprovedDomains = approvedDomainsField
+	st.ApprovedDomains = pb.ApprovedDomains
 
 	return st, nil
 }
 
 type AibiDashboardEmbeddingApprovedDomainsSetting struct {
+
+	// Wire name: 'aibi_dashboard_embedding_approved_domains'
 	AibiDashboardEmbeddingApprovedDomains AibiDashboardEmbeddingApprovedDomains
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -513,15 +412,17 @@ type AibiDashboardEmbeddingApprovedDomainsSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func aibiDashboardEmbeddingApprovedDomainsSettingToPb(st *AibiDashboardEmbeddingApprovedDomainsSetting) (*aibiDashboardEmbeddingApprovedDomainsSettingPb, error) {
@@ -537,15 +438,9 @@ func aibiDashboardEmbeddingApprovedDomainsSettingToPb(st *AibiDashboardEmbedding
 		pb.AibiDashboardEmbeddingApprovedDomains = *aibiDashboardEmbeddingApprovedDomainsPb
 	}
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -608,14 +503,8 @@ func aibiDashboardEmbeddingApprovedDomainsSettingFromPb(pb *aibiDashboardEmbeddi
 	if aibiDashboardEmbeddingApprovedDomainsField != nil {
 		st.AibiDashboardEmbeddingApprovedDomains = *aibiDashboardEmbeddingApprovedDomainsField
 	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.Etag = pb.Etag
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -630,6 +519,8 @@ func (st aibiDashboardEmbeddingApprovedDomainsSettingPb) MarshalJSON() ([]byte, 
 }
 
 type AutomaticClusterUpdateSetting struct {
+
+	// Wire name: 'automatic_cluster_update_workspace'
 	AutomaticClusterUpdateWorkspace ClusterAutoRestartMessage
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -638,15 +529,17 @@ type AutomaticClusterUpdateSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func automaticClusterUpdateSettingToPb(st *AutomaticClusterUpdateSetting) (*automaticClusterUpdateSettingPb, error) {
@@ -662,15 +555,9 @@ func automaticClusterUpdateSettingToPb(st *AutomaticClusterUpdateSetting) (*auto
 		pb.AutomaticClusterUpdateWorkspace = *automaticClusterUpdateWorkspacePb
 	}
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -733,14 +620,8 @@ func automaticClusterUpdateSettingFromPb(pb *automaticClusterUpdateSettingPb) (*
 	if automaticClusterUpdateWorkspaceField != nil {
 		st.AutomaticClusterUpdateWorkspace = *automaticClusterUpdateWorkspaceField
 	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.Etag = pb.Etag
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -755,9 +636,11 @@ func (st automaticClusterUpdateSettingPb) MarshalJSON() ([]byte, error) {
 }
 
 type BooleanMessage struct {
+
+	// Wire name: 'value'
 	Value bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func booleanMessageToPb(st *BooleanMessage) (*booleanMessagePb, error) {
@@ -765,10 +648,7 @@ func booleanMessageToPb(st *BooleanMessage) (*booleanMessagePb, error) {
 		return nil, nil
 	}
 	pb := &booleanMessagePb{}
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -810,10 +690,7 @@ func booleanMessageFromPb(pb *booleanMessagePb) (*BooleanMessage, error) {
 		return nil, nil
 	}
 	st := &BooleanMessage{}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -828,8 +705,11 @@ func (st booleanMessagePb) MarshalJSON() ([]byte, error) {
 }
 
 type ClusterAutoRestartMessage struct {
+
+	// Wire name: 'can_toggle'
 	CanToggle bool
 
+	// Wire name: 'enabled'
 	Enabled bool
 	// Contains an information about the enablement status judging (e.g. whether
 	// the enterprise tier is enabled) This is only additional information that
@@ -837,13 +717,16 @@ type ClusterAutoRestartMessage struct {
 	// intended to use only for purposes like showing an error message to the
 	// customer with the additional details. For example, using these details we
 	// can check why exactly the feature is disabled for this customer.
+	// Wire name: 'enablement_details'
 	EnablementDetails *ClusterAutoRestartMessageEnablementDetails
 
+	// Wire name: 'maintenance_window'
 	MaintenanceWindow *ClusterAutoRestartMessageMaintenanceWindow
 
+	// Wire name: 'restart_even_if_no_updates_available'
 	RestartEvenIfNoUpdatesAvailable bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterAutoRestartMessageToPb(st *ClusterAutoRestartMessage) (*clusterAutoRestartMessagePb, error) {
@@ -851,15 +734,9 @@ func clusterAutoRestartMessageToPb(st *ClusterAutoRestartMessage) (*clusterAutoR
 		return nil, nil
 	}
 	pb := &clusterAutoRestartMessagePb{}
-	canTogglePb := &st.CanToggle
-	if canTogglePb != nil {
-		pb.CanToggle = *canTogglePb
-	}
+	pb.CanToggle = st.CanToggle
 
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
 	enablementDetailsPb, err := clusterAutoRestartMessageEnablementDetailsToPb(st.EnablementDetails)
 	if err != nil {
@@ -877,10 +754,7 @@ func clusterAutoRestartMessageToPb(st *ClusterAutoRestartMessage) (*clusterAutoR
 		pb.MaintenanceWindow = maintenanceWindowPb
 	}
 
-	restartEvenIfNoUpdatesAvailablePb := &st.RestartEvenIfNoUpdatesAvailable
-	if restartEvenIfNoUpdatesAvailablePb != nil {
-		pb.RestartEvenIfNoUpdatesAvailable = *restartEvenIfNoUpdatesAvailablePb
-	}
+	pb.RestartEvenIfNoUpdatesAvailable = st.RestartEvenIfNoUpdatesAvailable
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -935,14 +809,8 @@ func clusterAutoRestartMessageFromPb(pb *clusterAutoRestartMessagePb) (*ClusterA
 		return nil, nil
 	}
 	st := &ClusterAutoRestartMessage{}
-	canToggleField := &pb.CanToggle
-	if canToggleField != nil {
-		st.CanToggle = *canToggleField
-	}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
+	st.CanToggle = pb.CanToggle
+	st.Enabled = pb.Enabled
 	enablementDetailsField, err := clusterAutoRestartMessageEnablementDetailsFromPb(pb.EnablementDetails)
 	if err != nil {
 		return nil, err
@@ -957,10 +825,7 @@ func clusterAutoRestartMessageFromPb(pb *clusterAutoRestartMessagePb) (*ClusterA
 	if maintenanceWindowField != nil {
 		st.MaintenanceWindow = maintenanceWindowField
 	}
-	restartEvenIfNoUpdatesAvailableField := &pb.RestartEvenIfNoUpdatesAvailable
-	if restartEvenIfNoUpdatesAvailableField != nil {
-		st.RestartEvenIfNoUpdatesAvailable = *restartEvenIfNoUpdatesAvailableField
-	}
+	st.RestartEvenIfNoUpdatesAvailable = pb.RestartEvenIfNoUpdatesAvailable
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -982,14 +847,17 @@ func (st clusterAutoRestartMessagePb) MarshalJSON() ([]byte, error) {
 // the feature is disabled for this customer.
 type ClusterAutoRestartMessageEnablementDetails struct {
 	// The feature is force enabled if compliance mode is active
+	// Wire name: 'forced_for_compliance_mode'
 	ForcedForComplianceMode bool
 	// The feature is unavailable if the corresponding entitlement disabled (see
 	// getShieldEntitlementEnable)
+	// Wire name: 'unavailable_for_disabled_entitlement'
 	UnavailableForDisabledEntitlement bool
 	// The feature is unavailable if the customer doesn't have enterprise tier
+	// Wire name: 'unavailable_for_non_enterprise_tier'
 	UnavailableForNonEnterpriseTier bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterAutoRestartMessageEnablementDetailsToPb(st *ClusterAutoRestartMessageEnablementDetails) (*clusterAutoRestartMessageEnablementDetailsPb, error) {
@@ -997,20 +865,11 @@ func clusterAutoRestartMessageEnablementDetailsToPb(st *ClusterAutoRestartMessag
 		return nil, nil
 	}
 	pb := &clusterAutoRestartMessageEnablementDetailsPb{}
-	forcedForComplianceModePb := &st.ForcedForComplianceMode
-	if forcedForComplianceModePb != nil {
-		pb.ForcedForComplianceMode = *forcedForComplianceModePb
-	}
+	pb.ForcedForComplianceMode = st.ForcedForComplianceMode
 
-	unavailableForDisabledEntitlementPb := &st.UnavailableForDisabledEntitlement
-	if unavailableForDisabledEntitlementPb != nil {
-		pb.UnavailableForDisabledEntitlement = *unavailableForDisabledEntitlementPb
-	}
+	pb.UnavailableForDisabledEntitlement = st.UnavailableForDisabledEntitlement
 
-	unavailableForNonEnterpriseTierPb := &st.UnavailableForNonEnterpriseTier
-	if unavailableForNonEnterpriseTierPb != nil {
-		pb.UnavailableForNonEnterpriseTier = *unavailableForNonEnterpriseTierPb
-	}
+	pb.UnavailableForNonEnterpriseTier = st.UnavailableForNonEnterpriseTier
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1058,18 +917,9 @@ func clusterAutoRestartMessageEnablementDetailsFromPb(pb *clusterAutoRestartMess
 		return nil, nil
 	}
 	st := &ClusterAutoRestartMessageEnablementDetails{}
-	forcedForComplianceModeField := &pb.ForcedForComplianceMode
-	if forcedForComplianceModeField != nil {
-		st.ForcedForComplianceMode = *forcedForComplianceModeField
-	}
-	unavailableForDisabledEntitlementField := &pb.UnavailableForDisabledEntitlement
-	if unavailableForDisabledEntitlementField != nil {
-		st.UnavailableForDisabledEntitlement = *unavailableForDisabledEntitlementField
-	}
-	unavailableForNonEnterpriseTierField := &pb.UnavailableForNonEnterpriseTier
-	if unavailableForNonEnterpriseTierField != nil {
-		st.UnavailableForNonEnterpriseTier = *unavailableForNonEnterpriseTierField
-	}
+	st.ForcedForComplianceMode = pb.ForcedForComplianceMode
+	st.UnavailableForDisabledEntitlement = pb.UnavailableForDisabledEntitlement
+	st.UnavailableForNonEnterpriseTier = pb.UnavailableForNonEnterpriseTier
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1084,6 +934,8 @@ func (st clusterAutoRestartMessageEnablementDetailsPb) MarshalJSON() ([]byte, er
 }
 
 type ClusterAutoRestartMessageMaintenanceWindow struct {
+
+	// Wire name: 'week_day_based_schedule'
 	WeekDayBasedSchedule *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule
 }
 
@@ -1203,10 +1055,14 @@ func clusterAutoRestartMessageMaintenanceWindowDayOfWeekFromPb(pb *clusterAutoRe
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule struct {
+
+	// Wire name: 'day_of_week'
 	DayOfWeek ClusterAutoRestartMessageMaintenanceWindowDayOfWeek
 
+	// Wire name: 'frequency'
 	Frequency ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency
 
+	// Wire name: 'window_start_time'
 	WindowStartTime *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime
 }
 
@@ -1215,15 +1071,9 @@ func clusterAutoRestartMessageMaintenanceWindowWeekDayBasedScheduleToPb(st *Clus
 		return nil, nil
 	}
 	pb := &clusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedulePb{}
-	dayOfWeekPb := &st.DayOfWeek
-	if dayOfWeekPb != nil {
-		pb.DayOfWeek = *dayOfWeekPb
-	}
+	pb.DayOfWeek = st.DayOfWeek
 
-	frequencyPb := &st.Frequency
-	if frequencyPb != nil {
-		pb.Frequency = *frequencyPb
-	}
+	pb.Frequency = st.Frequency
 
 	windowStartTimePb, err := clusterAutoRestartMessageMaintenanceWindowWindowStartTimeToPb(st.WindowStartTime)
 	if err != nil {
@@ -1274,14 +1124,8 @@ func clusterAutoRestartMessageMaintenanceWindowWeekDayBasedScheduleFromPb(pb *cl
 		return nil, nil
 	}
 	st := &ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule{}
-	dayOfWeekField := &pb.DayOfWeek
-	if dayOfWeekField != nil {
-		st.DayOfWeek = *dayOfWeekField
-	}
-	frequencyField := &pb.Frequency
-	if frequencyField != nil {
-		st.Frequency = *frequencyField
-	}
+	st.DayOfWeek = pb.DayOfWeek
+	st.Frequency = pb.Frequency
 	windowStartTimeField, err := clusterAutoRestartMessageMaintenanceWindowWindowStartTimeFromPb(pb.WindowStartTime)
 	if err != nil {
 		return nil, err
@@ -1348,11 +1192,14 @@ func clusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyFromPb(pb *cluste
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWindowStartTime struct {
+
+	// Wire name: 'hours'
 	Hours int
 
+	// Wire name: 'minutes'
 	Minutes int
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func clusterAutoRestartMessageMaintenanceWindowWindowStartTimeToPb(st *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) (*clusterAutoRestartMessageMaintenanceWindowWindowStartTimePb, error) {
@@ -1360,15 +1207,9 @@ func clusterAutoRestartMessageMaintenanceWindowWindowStartTimeToPb(st *ClusterAu
 		return nil, nil
 	}
 	pb := &clusterAutoRestartMessageMaintenanceWindowWindowStartTimePb{}
-	hoursPb := &st.Hours
-	if hoursPb != nil {
-		pb.Hours = *hoursPb
-	}
+	pb.Hours = st.Hours
 
-	minutesPb := &st.Minutes
-	if minutesPb != nil {
-		pb.Minutes = *minutesPb
-	}
+	pb.Minutes = st.Minutes
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1412,14 +1253,8 @@ func clusterAutoRestartMessageMaintenanceWindowWindowStartTimeFromPb(pb *cluster
 		return nil, nil
 	}
 	st := &ClusterAutoRestartMessageMaintenanceWindowWindowStartTime{}
-	hoursField := &pb.Hours
-	if hoursField != nil {
-		st.Hours = *hoursField
-	}
-	minutesField := &pb.Minutes
-	if minutesField != nil {
-		st.Minutes = *minutesField
-	}
+	st.Hours = pb.Hours
+	st.Minutes = pb.Minutes
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1436,11 +1271,13 @@ func (st clusterAutoRestartMessageMaintenanceWindowWindowStartTimePb) MarshalJSO
 // SHIELD feature: CSP
 type ComplianceSecurityProfile struct {
 	// Set by customers when they request Compliance Security Profile (CSP)
+	// Wire name: 'compliance_standards'
 	ComplianceStandards []ComplianceStandard
 
+	// Wire name: 'is_enabled'
 	IsEnabled bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func complianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*complianceSecurityProfilePb, error) {
@@ -1448,20 +1285,9 @@ func complianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*complianceSe
 		return nil, nil
 	}
 	pb := &complianceSecurityProfilePb{}
+	pb.ComplianceStandards = st.ComplianceStandards
 
-	var complianceStandardsPb []ComplianceStandard
-	for _, item := range st.ComplianceStandards {
-		itemPb := &item
-		if itemPb != nil {
-			complianceStandardsPb = append(complianceStandardsPb, *itemPb)
-		}
-	}
-	pb.ComplianceStandards = complianceStandardsPb
-
-	isEnabledPb := &st.IsEnabled
-	if isEnabledPb != nil {
-		pb.IsEnabled = *isEnabledPb
-	}
+	pb.IsEnabled = st.IsEnabled
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1506,19 +1332,8 @@ func complianceSecurityProfileFromPb(pb *complianceSecurityProfilePb) (*Complian
 		return nil, nil
 	}
 	st := &ComplianceSecurityProfile{}
-
-	var complianceStandardsField []ComplianceStandard
-	for _, item := range pb.ComplianceStandards {
-		itemField := &item
-		if itemField != nil {
-			complianceStandardsField = append(complianceStandardsField, *itemField)
-		}
-	}
-	st.ComplianceStandards = complianceStandardsField
-	isEnabledField := &pb.IsEnabled
-	if isEnabledField != nil {
-		st.IsEnabled = *isEnabledField
-	}
+	st.ComplianceStandards = pb.ComplianceStandards
+	st.IsEnabled = pb.IsEnabled
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1534,6 +1349,7 @@ func (st complianceSecurityProfilePb) MarshalJSON() ([]byte, error) {
 
 type ComplianceSecurityProfileSetting struct {
 	// SHIELD feature: CSP
+	// Wire name: 'compliance_security_profile_workspace'
 	ComplianceSecurityProfileWorkspace ComplianceSecurityProfile
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1542,15 +1358,17 @@ type ComplianceSecurityProfileSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func complianceSecurityProfileSettingToPb(st *ComplianceSecurityProfileSetting) (*complianceSecurityProfileSettingPb, error) {
@@ -1566,15 +1384,9 @@ func complianceSecurityProfileSettingToPb(st *ComplianceSecurityProfileSetting) 
 		pb.ComplianceSecurityProfileWorkspace = *complianceSecurityProfileWorkspacePb
 	}
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -1638,14 +1450,8 @@ func complianceSecurityProfileSettingFromPb(pb *complianceSecurityProfileSetting
 	if complianceSecurityProfileWorkspaceField != nil {
 		st.ComplianceSecurityProfileWorkspace = *complianceSecurityProfileWorkspaceField
 	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.Etag = pb.Etag
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -1727,14 +1533,20 @@ func ComplianceStandardFromPb(pb *ComplianceStandardPb) (*ComplianceStandard, er
 }
 
 type Config struct {
+
+	// Wire name: 'email'
 	Email *EmailConfig
 
+	// Wire name: 'generic_webhook'
 	GenericWebhook *GenericWebhookConfig
 
+	// Wire name: 'microsoft_teams'
 	MicrosoftTeams *MicrosoftTeamsConfig
 
+	// Wire name: 'pagerduty'
 	Pagerduty *PagerdutyConfig
 
+	// Wire name: 'slack'
 	Slack *SlackConfig
 }
 
@@ -1869,8 +1681,11 @@ func configFromPb(pb *configPb) (*Config, error) {
 
 // Details required to configure a block list or allow list.
 type CreateIpAccessList struct {
+
+	// Wire name: 'ip_addresses'
 	IpAddresses []string
 	// Label for the IP access list. This **cannot** be empty.
+	// Wire name: 'label'
 	Label string
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
@@ -1878,6 +1693,7 @@ type CreateIpAccessList struct {
 	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
+	// Wire name: 'list_type'
 	ListType ListType
 }
 
@@ -1886,25 +1702,11 @@ func createIpAccessListToPb(st *CreateIpAccessList) (*createIpAccessListPb, erro
 		return nil, nil
 	}
 	pb := &createIpAccessListPb{}
+	pb.IpAddresses = st.IpAddresses
 
-	var ipAddressesPb []string
-	for _, item := range st.IpAddresses {
-		itemPb := &item
-		if itemPb != nil {
-			ipAddressesPb = append(ipAddressesPb, *itemPb)
-		}
-	}
-	pb.IpAddresses = ipAddressesPb
+	pb.Label = st.Label
 
-	labelPb := &st.Label
-	if labelPb != nil {
-		pb.Label = *labelPb
-	}
-
-	listTypePb := &st.ListType
-	if listTypePb != nil {
-		pb.ListType = *listTypePb
-	}
+	pb.ListType = st.ListType
 
 	return pb, nil
 }
@@ -1952,23 +1754,9 @@ func createIpAccessListFromPb(pb *createIpAccessListPb) (*CreateIpAccessList, er
 		return nil, nil
 	}
 	st := &CreateIpAccessList{}
-
-	var ipAddressesField []string
-	for _, item := range pb.IpAddresses {
-		itemField := &item
-		if itemField != nil {
-			ipAddressesField = append(ipAddressesField, *itemField)
-		}
-	}
-	st.IpAddresses = ipAddressesField
-	labelField := &pb.Label
-	if labelField != nil {
-		st.Label = *labelField
-	}
-	listTypeField := &pb.ListType
-	if listTypeField != nil {
-		st.ListType = *listTypeField
-	}
+	st.IpAddresses = pb.IpAddresses
+	st.Label = pb.Label
+	st.ListType = pb.ListType
 
 	return st, nil
 }
@@ -1976,6 +1764,7 @@ func createIpAccessListFromPb(pb *createIpAccessListPb) (*CreateIpAccessList, er
 // An IP access list was successfully created.
 type CreateIpAccessListResponse struct {
 	// Definition of an IP Access list
+	// Wire name: 'ip_access_list'
 	IpAccessList *IpAccessListInfo
 }
 
@@ -2044,6 +1833,7 @@ func createIpAccessListResponseFromPb(pb *createIpAccessListResponsePb) (*Create
 // Create a network connectivity configuration
 type CreateNetworkConnectivityConfigRequest struct {
 	// Properties of the new network connectivity configuration.
+	// Wire name: 'network_connectivity_config'
 	NetworkConnectivityConfig CreateNetworkConnectivityConfiguration
 }
 
@@ -2115,10 +1905,12 @@ type CreateNetworkConnectivityConfiguration struct {
 	// alphanumeric characters, hyphens, and underscores. The length must be
 	// between 3 and 30 characters. The name must match the regular expression
 	// ^[0-9a-zA-Z-_]{3,30}$
+	// Wire name: 'name'
 	Name string
 	// The region for the network connectivity configuration. Only workspaces in
 	// the same region can be attached to the network connectivity
 	// configuration.
+	// Wire name: 'region'
 	Region string
 }
 
@@ -2127,15 +1919,9 @@ func createNetworkConnectivityConfigurationToPb(st *CreateNetworkConnectivityCon
 		return nil, nil
 	}
 	pb := &createNetworkConnectivityConfigurationPb{}
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
 	return pb, nil
 }
@@ -2182,14 +1968,8 @@ func createNetworkConnectivityConfigurationFromPb(pb *createNetworkConnectivityC
 		return nil, nil
 	}
 	st := &CreateNetworkConnectivityConfiguration{}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
+	st.Name = pb.Name
+	st.Region = pb.Region
 
 	return st, nil
 }
@@ -2197,11 +1977,13 @@ func createNetworkConnectivityConfigurationFromPb(pb *createNetworkConnectivityC
 type CreateNotificationDestinationRequest struct {
 	// The configuration for the notification destination. Must wrap EXACTLY one
 	// of the nested configs.
+	// Wire name: 'config'
 	Config *Config
 	// The display name for the notification destination.
+	// Wire name: 'display_name'
 	DisplayName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createNotificationDestinationRequestToPb(st *CreateNotificationDestinationRequest) (*createNotificationDestinationRequestPb, error) {
@@ -2217,10 +1999,7 @@ func createNotificationDestinationRequestToPb(st *CreateNotificationDestinationR
 		pb.Config = configPb
 	}
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2273,10 +2052,7 @@ func createNotificationDestinationRequestFromPb(pb *createNotificationDestinatio
 	if configField != nil {
 		st.Config = configField
 	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
+	st.DisplayName = pb.DisplayName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2293,13 +2069,16 @@ func (st createNotificationDestinationRequestPb) MarshalJSON() ([]byte, error) {
 // Configuration details for creating on-behalf tokens.
 type CreateOboTokenRequest struct {
 	// Application ID of the service principal.
+	// Wire name: 'application_id'
 	ApplicationId string
 	// Comment that describes the purpose of the token.
+	// Wire name: 'comment'
 	Comment string
 	// The number of seconds before the token expires.
+	// Wire name: 'lifetime_seconds'
 	LifetimeSeconds int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createOboTokenRequestToPb(st *CreateOboTokenRequest) (*createOboTokenRequestPb, error) {
@@ -2307,20 +2086,11 @@ func createOboTokenRequestToPb(st *CreateOboTokenRequest) (*createOboTokenReques
 		return nil, nil
 	}
 	pb := &createOboTokenRequestPb{}
-	applicationIdPb := &st.ApplicationId
-	if applicationIdPb != nil {
-		pb.ApplicationId = *applicationIdPb
-	}
+	pb.ApplicationId = st.ApplicationId
 
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	lifetimeSecondsPb := &st.LifetimeSeconds
-	if lifetimeSecondsPb != nil {
-		pb.LifetimeSeconds = *lifetimeSecondsPb
-	}
+	pb.LifetimeSeconds = st.LifetimeSeconds
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2367,18 +2137,9 @@ func createOboTokenRequestFromPb(pb *createOboTokenRequestPb) (*CreateOboTokenRe
 		return nil, nil
 	}
 	st := &CreateOboTokenRequest{}
-	applicationIdField := &pb.ApplicationId
-	if applicationIdField != nil {
-		st.ApplicationId = *applicationIdField
-	}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	lifetimeSecondsField := &pb.LifetimeSeconds
-	if lifetimeSecondsField != nil {
-		st.LifetimeSeconds = *lifetimeSecondsField
-	}
+	st.ApplicationId = pb.ApplicationId
+	st.Comment = pb.Comment
+	st.LifetimeSeconds = pb.LifetimeSeconds
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2394,11 +2155,14 @@ func (st createOboTokenRequestPb) MarshalJSON() ([]byte, error) {
 
 // An on-behalf token was successfully created for the service principal.
 type CreateOboTokenResponse struct {
+
+	// Wire name: 'token_info'
 	TokenInfo *TokenInfo
 	// Value of the token.
+	// Wire name: 'token_value'
 	TokenValue string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createOboTokenResponseToPb(st *CreateOboTokenResponse) (*createOboTokenResponsePb, error) {
@@ -2414,10 +2178,7 @@ func createOboTokenResponseToPb(st *CreateOboTokenResponse) (*createOboTokenResp
 		pb.TokenInfo = tokenInfoPb
 	}
 
-	tokenValuePb := &st.TokenValue
-	if tokenValuePb != nil {
-		pb.TokenValue = *tokenValuePb
-	}
+	pb.TokenValue = st.TokenValue
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2468,10 +2229,7 @@ func createOboTokenResponseFromPb(pb *createOboTokenResponsePb) (*CreateOboToken
 	if tokenInfoField != nil {
 		st.TokenInfo = tokenInfoField
 	}
-	tokenValueField := &pb.TokenValue
-	if tokenValueField != nil {
-		st.TokenValue = *tokenValueField
-	}
+	st.TokenValue = pb.TokenValue
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2492,6 +2250,7 @@ type CreatePrivateEndpointRule struct {
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
+	// Wire name: 'domain_names'
 	DomainNames []string
 	// Only used by private endpoints to Azure first-party services. Enum: blob
 	// | dfs | sqlServer | mysqlServer
@@ -2499,11 +2258,13 @@ type CreatePrivateEndpointRule struct {
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
 	// one for blob and one for dfs.
+	// Wire name: 'group_id'
 	GroupId string
 	// The Azure resource ID of the target resource.
+	// Wire name: 'resource_id'
 	ResourceId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createPrivateEndpointRuleToPb(st *CreatePrivateEndpointRule) (*createPrivateEndpointRulePb, error) {
@@ -2511,25 +2272,11 @@ func createPrivateEndpointRuleToPb(st *CreatePrivateEndpointRule) (*createPrivat
 		return nil, nil
 	}
 	pb := &createPrivateEndpointRulePb{}
+	pb.DomainNames = st.DomainNames
 
-	var domainNamesPb []string
-	for _, item := range st.DomainNames {
-		itemPb := &item
-		if itemPb != nil {
-			domainNamesPb = append(domainNamesPb, *itemPb)
-		}
-	}
-	pb.DomainNames = domainNamesPb
+	pb.GroupId = st.GroupId
 
-	groupIdPb := &st.GroupId
-	if groupIdPb != nil {
-		pb.GroupId = *groupIdPb
-	}
-
-	resourceIdPb := &st.ResourceId
-	if resourceIdPb != nil {
-		pb.ResourceId = *resourceIdPb
-	}
+	pb.ResourceId = st.ResourceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2584,23 +2331,9 @@ func createPrivateEndpointRuleFromPb(pb *createPrivateEndpointRulePb) (*CreatePr
 		return nil, nil
 	}
 	st := &CreatePrivateEndpointRule{}
-
-	var domainNamesField []string
-	for _, item := range pb.DomainNames {
-		itemField := &item
-		if itemField != nil {
-			domainNamesField = append(domainNamesField, *itemField)
-		}
-	}
-	st.DomainNames = domainNamesField
-	groupIdField := &pb.GroupId
-	if groupIdField != nil {
-		st.GroupId = *groupIdField
-	}
-	resourceIdField := &pb.ResourceId
-	if resourceIdField != nil {
-		st.ResourceId = *resourceIdField
-	}
+	st.DomainNames = pb.DomainNames
+	st.GroupId = pb.GroupId
+	st.ResourceId = pb.ResourceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2617,9 +2350,11 @@ func (st createPrivateEndpointRulePb) MarshalJSON() ([]byte, error) {
 // Create a private endpoint rule
 type CreatePrivateEndpointRuleRequest struct {
 	// Your Network Connectivity Configuration ID.
-	NetworkConnectivityConfigId string
+	// Wire name: 'network_connectivity_config_id'
+	NetworkConnectivityConfigId string `tf:"-"`
 	// Properties of the new private endpoint rule. Note that you must approve
 	// the endpoint in Azure portal after initialization.
+	// Wire name: 'private_endpoint_rule'
 	PrivateEndpointRule CreatePrivateEndpointRule
 }
 
@@ -2628,10 +2363,7 @@ func createPrivateEndpointRuleRequestToPb(st *CreatePrivateEndpointRuleRequest) 
 		return nil, nil
 	}
 	pb := &createPrivateEndpointRuleRequestPb{}
-	networkConnectivityConfigIdPb := &st.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdPb != nil {
-		pb.NetworkConnectivityConfigId = *networkConnectivityConfigIdPb
-	}
+	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
 
 	privateEndpointRulePb, err := createPrivateEndpointRuleToPb(&st.PrivateEndpointRule)
 	if err != nil {
@@ -2682,10 +2414,7 @@ func createPrivateEndpointRuleRequestFromPb(pb *createPrivateEndpointRuleRequest
 		return nil, nil
 	}
 	st := &CreatePrivateEndpointRuleRequest{}
-	networkConnectivityConfigIdField := &pb.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdField != nil {
-		st.NetworkConnectivityConfigId = *networkConnectivityConfigIdField
-	}
+	st.NetworkConnectivityConfigId = pb.NetworkConnectivityConfigId
 	privateEndpointRuleField, err := createPrivateEndpointRuleFromPb(&pb.PrivateEndpointRule)
 	if err != nil {
 		return nil, err
@@ -2699,13 +2428,15 @@ func createPrivateEndpointRuleRequestFromPb(pb *createPrivateEndpointRuleRequest
 
 type CreateTokenRequest struct {
 	// Optional description to attach to the token.
+	// Wire name: 'comment'
 	Comment string
 	// The lifetime of the token, in seconds.
 	//
 	// If the lifetime is not specified, this token remains valid indefinitely.
+	// Wire name: 'lifetime_seconds'
 	LifetimeSeconds int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createTokenRequestToPb(st *CreateTokenRequest) (*createTokenRequestPb, error) {
@@ -2713,15 +2444,9 @@ func createTokenRequestToPb(st *CreateTokenRequest) (*createTokenRequestPb, erro
 		return nil, nil
 	}
 	pb := &createTokenRequestPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	lifetimeSecondsPb := &st.LifetimeSeconds
-	if lifetimeSecondsPb != nil {
-		pb.LifetimeSeconds = *lifetimeSecondsPb
-	}
+	pb.LifetimeSeconds = st.LifetimeSeconds
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2768,14 +2493,8 @@ func createTokenRequestFromPb(pb *createTokenRequestPb) (*CreateTokenRequest, er
 		return nil, nil
 	}
 	st := &CreateTokenRequest{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	lifetimeSecondsField := &pb.LifetimeSeconds
-	if lifetimeSecondsField != nil {
-		st.LifetimeSeconds = *lifetimeSecondsField
-	}
+	st.Comment = pb.Comment
+	st.LifetimeSeconds = pb.LifetimeSeconds
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2791,11 +2510,13 @@ func (st createTokenRequestPb) MarshalJSON() ([]byte, error) {
 
 type CreateTokenResponse struct {
 	// The information for the new token.
+	// Wire name: 'token_info'
 	TokenInfo *PublicTokenInfo
 	// The value of the new token.
+	// Wire name: 'token_value'
 	TokenValue string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func createTokenResponseToPb(st *CreateTokenResponse) (*createTokenResponsePb, error) {
@@ -2811,10 +2532,7 @@ func createTokenResponseToPb(st *CreateTokenResponse) (*createTokenResponsePb, e
 		pb.TokenInfo = tokenInfoPb
 	}
 
-	tokenValuePb := &st.TokenValue
-	if tokenValuePb != nil {
-		pb.TokenValue = *tokenValuePb
-	}
+	pb.TokenValue = st.TokenValue
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2866,10 +2584,7 @@ func createTokenResponseFromPb(pb *createTokenResponsePb) (*CreateTokenResponse,
 	if tokenInfoField != nil {
 		st.TokenInfo = tokenInfoField
 	}
-	tokenValueField := &pb.TokenValue
-	if tokenValueField != nil {
-		st.TokenValue = *tokenValueField
-	}
+	st.TokenValue = pb.TokenValue
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2887,11 +2602,13 @@ func (st createTokenResponsePb) MarshalJSON() ([]byte, error) {
 type CspEnablementAccount struct {
 	// Set by customers when they request Compliance Security Profile (CSP)
 	// Invariants are enforced in Settings policy.
+	// Wire name: 'compliance_standards'
 	ComplianceStandards []ComplianceStandard
 	// Enforced = it cannot be overriden at workspace level.
+	// Wire name: 'is_enforced'
 	IsEnforced bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cspEnablementAccountToPb(st *CspEnablementAccount) (*cspEnablementAccountPb, error) {
@@ -2899,20 +2616,9 @@ func cspEnablementAccountToPb(st *CspEnablementAccount) (*cspEnablementAccountPb
 		return nil, nil
 	}
 	pb := &cspEnablementAccountPb{}
+	pb.ComplianceStandards = st.ComplianceStandards
 
-	var complianceStandardsPb []ComplianceStandard
-	for _, item := range st.ComplianceStandards {
-		itemPb := &item
-		if itemPb != nil {
-			complianceStandardsPb = append(complianceStandardsPb, *itemPb)
-		}
-	}
-	pb.ComplianceStandards = complianceStandardsPb
-
-	isEnforcedPb := &st.IsEnforced
-	if isEnforcedPb != nil {
-		pb.IsEnforced = *isEnforcedPb
-	}
+	pb.IsEnforced = st.IsEnforced
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -2958,19 +2664,8 @@ func cspEnablementAccountFromPb(pb *cspEnablementAccountPb) (*CspEnablementAccou
 		return nil, nil
 	}
 	st := &CspEnablementAccount{}
-
-	var complianceStandardsField []ComplianceStandard
-	for _, item := range pb.ComplianceStandards {
-		itemField := &item
-		if itemField != nil {
-			complianceStandardsField = append(complianceStandardsField, *itemField)
-		}
-	}
-	st.ComplianceStandards = complianceStandardsField
-	isEnforcedField := &pb.IsEnforced
-	if isEnforcedField != nil {
-		st.IsEnforced = *isEnforcedField
-	}
+	st.ComplianceStandards = pb.ComplianceStandards
+	st.IsEnforced = pb.IsEnforced
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -2986,6 +2681,7 @@ func (st cspEnablementAccountPb) MarshalJSON() ([]byte, error) {
 
 type CspEnablementAccountSetting struct {
 	// Account level policy for CSP
+	// Wire name: 'csp_enablement_account'
 	CspEnablementAccount CspEnablementAccount
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2994,15 +2690,17 @@ type CspEnablementAccountSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func cspEnablementAccountSettingToPb(st *CspEnablementAccountSetting) (*cspEnablementAccountSettingPb, error) {
@@ -3018,15 +2716,9 @@ func cspEnablementAccountSettingToPb(st *CspEnablementAccountSetting) (*cspEnabl
 		pb.CspEnablementAccount = *cspEnablementAccountPb
 	}
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3090,14 +2782,8 @@ func cspEnablementAccountSettingFromPb(pb *cspEnablementAccountSettingPb) (*CspE
 	if cspEnablementAccountField != nil {
 		st.CspEnablementAccount = *cspEnablementAccountField
 	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.Etag = pb.Etag
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3128,17 +2814,20 @@ type DefaultNamespaceSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 
+	// Wire name: 'namespace'
 	Namespace StringMessage
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func defaultNamespaceSettingToPb(st *DefaultNamespaceSetting) (*defaultNamespaceSettingPb, error) {
@@ -3146,10 +2835,7 @@ func defaultNamespaceSettingToPb(st *DefaultNamespaceSetting) (*defaultNamespace
 		return nil, nil
 	}
 	pb := &defaultNamespaceSettingPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	namespacePb, err := stringMessageToPb(&st.Namespace)
 	if err != nil {
@@ -3159,10 +2845,7 @@ func defaultNamespaceSettingToPb(st *DefaultNamespaceSetting) (*defaultNamespace
 		pb.Namespace = *namespacePb
 	}
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3219,10 +2902,7 @@ func defaultNamespaceSettingFromPb(pb *defaultNamespaceSettingPb) (*DefaultNames
 		return nil, nil
 	}
 	st := &DefaultNamespaceSetting{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 	namespaceField, err := stringMessageFromPb(&pb.Namespace)
 	if err != nil {
 		return nil, err
@@ -3230,10 +2910,7 @@ func defaultNamespaceSettingFromPb(pb *defaultNamespaceSettingPb) (*DefaultNames
 	if namespaceField != nil {
 		st.Namespace = *namespaceField
 	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3256,9 +2933,10 @@ type DeleteAccountIpAccessEnableRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteAccountIpAccessEnableRequestToPb(st *DeleteAccountIpAccessEnableRequest) (*deleteAccountIpAccessEnableRequestPb, error) {
@@ -3266,10 +2944,7 @@ func deleteAccountIpAccessEnableRequestToPb(st *DeleteAccountIpAccessEnableReque
 		return nil, nil
 	}
 	pb := &deleteAccountIpAccessEnableRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3318,10 +2993,7 @@ func deleteAccountIpAccessEnableRequestFromPb(pb *deleteAccountIpAccessEnableReq
 		return nil, nil
 	}
 	st := &DeleteAccountIpAccessEnableRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3344,6 +3016,7 @@ type DeleteAccountIpAccessEnableResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string
 }
 
@@ -3352,10 +3025,7 @@ func deleteAccountIpAccessEnableResponseToPb(st *DeleteAccountIpAccessEnableResp
 		return nil, nil
 	}
 	pb := &deleteAccountIpAccessEnableResponsePb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	return pb, nil
 }
@@ -3401,10 +3071,7 @@ func deleteAccountIpAccessEnableResponseFromPb(pb *deleteAccountIpAccessEnableRe
 		return nil, nil
 	}
 	st := &DeleteAccountIpAccessEnableResponse{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	return st, nil
 }
@@ -3412,7 +3079,8 @@ func deleteAccountIpAccessEnableResponseFromPb(pb *deleteAccountIpAccessEnableRe
 // Delete access list
 type DeleteAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	IpAccessListId string
+	// Wire name: 'ip_access_list_id'
+	IpAccessListId string `tf:"-"`
 }
 
 func deleteAccountIpAccessListRequestToPb(st *DeleteAccountIpAccessListRequest) (*deleteAccountIpAccessListRequestPb, error) {
@@ -3420,10 +3088,7 @@ func deleteAccountIpAccessListRequestToPb(st *DeleteAccountIpAccessListRequest) 
 		return nil, nil
 	}
 	pb := &deleteAccountIpAccessListRequestPb{}
-	ipAccessListIdPb := &st.IpAccessListId
-	if ipAccessListIdPb != nil {
-		pb.IpAccessListId = *ipAccessListIdPb
-	}
+	pb.IpAccessListId = st.IpAccessListId
 
 	return pb, nil
 }
@@ -3463,10 +3128,7 @@ func deleteAccountIpAccessListRequestFromPb(pb *deleteAccountIpAccessListRequest
 		return nil, nil
 	}
 	st := &DeleteAccountIpAccessListRequest{}
-	ipAccessListIdField := &pb.IpAccessListId
-	if ipAccessListIdField != nil {
-		st.IpAccessListId = *ipAccessListIdField
-	}
+	st.IpAccessListId = pb.IpAccessListId
 
 	return st, nil
 }
@@ -3480,9 +3142,10 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) (*deleteAibiDashboardEmbeddingAccessPolicySettingRequestPb, error) {
@@ -3490,10 +3153,7 @@ func deleteAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *DeleteAibiDa
 		return nil, nil
 	}
 	pb := &deleteAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3542,10 +3202,7 @@ func deleteAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb *deleteAibi
 		return nil, nil
 	}
 	st := &DeleteAibiDashboardEmbeddingAccessPolicySettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3568,6 +3225,7 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string
 }
 
@@ -3576,10 +3234,7 @@ func deleteAibiDashboardEmbeddingAccessPolicySettingResponseToPb(st *DeleteAibiD
 		return nil, nil
 	}
 	pb := &deleteAibiDashboardEmbeddingAccessPolicySettingResponsePb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	return pb, nil
 }
@@ -3625,10 +3280,7 @@ func deleteAibiDashboardEmbeddingAccessPolicySettingResponseFromPb(pb *deleteAib
 		return nil, nil
 	}
 	st := &DeleteAibiDashboardEmbeddingAccessPolicySettingResponse{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	return st, nil
 }
@@ -3642,9 +3294,10 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*deleteAibiDashboardEmbeddingApprovedDomainsSettingRequestPb, error) {
@@ -3652,10 +3305,7 @@ func deleteAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *DeleteAib
 		return nil, nil
 	}
 	pb := &deleteAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3704,10 +3354,7 @@ func deleteAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb *deleteA
 		return nil, nil
 	}
 	st := &DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3730,6 +3377,7 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string
 }
 
@@ -3738,10 +3386,7 @@ func deleteAibiDashboardEmbeddingApprovedDomainsSettingResponseToPb(st *DeleteAi
 		return nil, nil
 	}
 	pb := &deleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	return pb, nil
 }
@@ -3787,10 +3432,7 @@ func deleteAibiDashboardEmbeddingApprovedDomainsSettingResponseFromPb(pb *delete
 		return nil, nil
 	}
 	st := &DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	return st, nil
 }
@@ -3804,9 +3446,10 @@ type DeleteDefaultNamespaceSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteDefaultNamespaceSettingRequestToPb(st *DeleteDefaultNamespaceSettingRequest) (*deleteDefaultNamespaceSettingRequestPb, error) {
@@ -3814,10 +3457,7 @@ func deleteDefaultNamespaceSettingRequestToPb(st *DeleteDefaultNamespaceSettingR
 		return nil, nil
 	}
 	pb := &deleteDefaultNamespaceSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -3866,10 +3506,7 @@ func deleteDefaultNamespaceSettingRequestFromPb(pb *deleteDefaultNamespaceSettin
 		return nil, nil
 	}
 	st := &DeleteDefaultNamespaceSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -3892,6 +3529,7 @@ type DeleteDefaultNamespaceSettingResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string
 }
 
@@ -3900,10 +3538,7 @@ func deleteDefaultNamespaceSettingResponseToPb(st *DeleteDefaultNamespaceSetting
 		return nil, nil
 	}
 	pb := &deleteDefaultNamespaceSettingResponsePb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	return pb, nil
 }
@@ -3949,10 +3584,7 @@ func deleteDefaultNamespaceSettingResponseFromPb(pb *deleteDefaultNamespaceSetti
 		return nil, nil
 	}
 	st := &DeleteDefaultNamespaceSettingResponse{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	return st, nil
 }
@@ -3966,9 +3598,10 @@ type DeleteDisableLegacyAccessRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteDisableLegacyAccessRequestToPb(st *DeleteDisableLegacyAccessRequest) (*deleteDisableLegacyAccessRequestPb, error) {
@@ -3976,10 +3609,7 @@ func deleteDisableLegacyAccessRequestToPb(st *DeleteDisableLegacyAccessRequest) 
 		return nil, nil
 	}
 	pb := &deleteDisableLegacyAccessRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4028,10 +3658,7 @@ func deleteDisableLegacyAccessRequestFromPb(pb *deleteDisableLegacyAccessRequest
 		return nil, nil
 	}
 	st := &DeleteDisableLegacyAccessRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4054,6 +3681,7 @@ type DeleteDisableLegacyAccessResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string
 }
 
@@ -4062,10 +3690,7 @@ func deleteDisableLegacyAccessResponseToPb(st *DeleteDisableLegacyAccessResponse
 		return nil, nil
 	}
 	pb := &deleteDisableLegacyAccessResponsePb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	return pb, nil
 }
@@ -4111,10 +3736,7 @@ func deleteDisableLegacyAccessResponseFromPb(pb *deleteDisableLegacyAccessRespon
 		return nil, nil
 	}
 	st := &DeleteDisableLegacyAccessResponse{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	return st, nil
 }
@@ -4128,9 +3750,10 @@ type DeleteDisableLegacyDbfsRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteDisableLegacyDbfsRequestToPb(st *DeleteDisableLegacyDbfsRequest) (*deleteDisableLegacyDbfsRequestPb, error) {
@@ -4138,10 +3761,7 @@ func deleteDisableLegacyDbfsRequestToPb(st *DeleteDisableLegacyDbfsRequest) (*de
 		return nil, nil
 	}
 	pb := &deleteDisableLegacyDbfsRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4190,10 +3810,7 @@ func deleteDisableLegacyDbfsRequestFromPb(pb *deleteDisableLegacyDbfsRequestPb) 
 		return nil, nil
 	}
 	st := &DeleteDisableLegacyDbfsRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4216,6 +3833,7 @@ type DeleteDisableLegacyDbfsResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string
 }
 
@@ -4224,10 +3842,7 @@ func deleteDisableLegacyDbfsResponseToPb(st *DeleteDisableLegacyDbfsResponse) (*
 		return nil, nil
 	}
 	pb := &deleteDisableLegacyDbfsResponsePb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	return pb, nil
 }
@@ -4273,10 +3888,7 @@ func deleteDisableLegacyDbfsResponseFromPb(pb *deleteDisableLegacyDbfsResponsePb
 		return nil, nil
 	}
 	st := &DeleteDisableLegacyDbfsResponse{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	return st, nil
 }
@@ -4290,9 +3902,10 @@ type DeleteDisableLegacyFeaturesRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteDisableLegacyFeaturesRequestToPb(st *DeleteDisableLegacyFeaturesRequest) (*deleteDisableLegacyFeaturesRequestPb, error) {
@@ -4300,10 +3913,7 @@ func deleteDisableLegacyFeaturesRequestToPb(st *DeleteDisableLegacyFeaturesReque
 		return nil, nil
 	}
 	pb := &deleteDisableLegacyFeaturesRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4352,10 +3962,7 @@ func deleteDisableLegacyFeaturesRequestFromPb(pb *deleteDisableLegacyFeaturesReq
 		return nil, nil
 	}
 	st := &DeleteDisableLegacyFeaturesRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4378,6 +3985,7 @@ type DeleteDisableLegacyFeaturesResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string
 }
 
@@ -4386,10 +3994,7 @@ func deleteDisableLegacyFeaturesResponseToPb(st *DeleteDisableLegacyFeaturesResp
 		return nil, nil
 	}
 	pb := &deleteDisableLegacyFeaturesResponsePb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	return pb, nil
 }
@@ -4435,10 +4040,7 @@ func deleteDisableLegacyFeaturesResponseFromPb(pb *deleteDisableLegacyFeaturesRe
 		return nil, nil
 	}
 	st := &DeleteDisableLegacyFeaturesResponse{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	return st, nil
 }
@@ -4446,7 +4048,8 @@ func deleteDisableLegacyFeaturesResponseFromPb(pb *deleteDisableLegacyFeaturesRe
 // Delete access list
 type DeleteIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	IpAccessListId string
+	// Wire name: 'ip_access_list_id'
+	IpAccessListId string `tf:"-"`
 }
 
 func deleteIpAccessListRequestToPb(st *DeleteIpAccessListRequest) (*deleteIpAccessListRequestPb, error) {
@@ -4454,10 +4057,7 @@ func deleteIpAccessListRequestToPb(st *DeleteIpAccessListRequest) (*deleteIpAcce
 		return nil, nil
 	}
 	pb := &deleteIpAccessListRequestPb{}
-	ipAccessListIdPb := &st.IpAccessListId
-	if ipAccessListIdPb != nil {
-		pb.IpAccessListId = *ipAccessListIdPb
-	}
+	pb.IpAccessListId = st.IpAccessListId
 
 	return pb, nil
 }
@@ -4497,10 +4097,7 @@ func deleteIpAccessListRequestFromPb(pb *deleteIpAccessListRequestPb) (*DeleteIp
 		return nil, nil
 	}
 	st := &DeleteIpAccessListRequest{}
-	ipAccessListIdField := &pb.IpAccessListId
-	if ipAccessListIdField != nil {
-		st.IpAccessListId = *ipAccessListIdField
-	}
+	st.IpAccessListId = pb.IpAccessListId
 
 	return st, nil
 }
@@ -4508,7 +4105,8 @@ func deleteIpAccessListRequestFromPb(pb *deleteIpAccessListRequestPb) (*DeleteIp
 // Delete a network connectivity configuration
 type DeleteNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
-	NetworkConnectivityConfigId string
+	// Wire name: 'network_connectivity_config_id'
+	NetworkConnectivityConfigId string `tf:"-"`
 }
 
 func deleteNetworkConnectivityConfigurationRequestToPb(st *DeleteNetworkConnectivityConfigurationRequest) (*deleteNetworkConnectivityConfigurationRequestPb, error) {
@@ -4516,10 +4114,7 @@ func deleteNetworkConnectivityConfigurationRequestToPb(st *DeleteNetworkConnecti
 		return nil, nil
 	}
 	pb := &deleteNetworkConnectivityConfigurationRequestPb{}
-	networkConnectivityConfigIdPb := &st.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdPb != nil {
-		pb.NetworkConnectivityConfigId = *networkConnectivityConfigIdPb
-	}
+	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
 
 	return pb, nil
 }
@@ -4559,10 +4154,7 @@ func deleteNetworkConnectivityConfigurationRequestFromPb(pb *deleteNetworkConnec
 		return nil, nil
 	}
 	st := &DeleteNetworkConnectivityConfigurationRequest{}
-	networkConnectivityConfigIdField := &pb.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdField != nil {
-		st.NetworkConnectivityConfigId = *networkConnectivityConfigIdField
-	}
+	st.NetworkConnectivityConfigId = pb.NetworkConnectivityConfigId
 
 	return st, nil
 }
@@ -4618,7 +4210,9 @@ func deleteNetworkConnectivityConfigurationResponseFromPb(pb *deleteNetworkConne
 
 // Delete a notification destination
 type DeleteNotificationDestinationRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func deleteNotificationDestinationRequestToPb(st *DeleteNotificationDestinationRequest) (*deleteNotificationDestinationRequestPb, error) {
@@ -4626,10 +4220,7 @@ func deleteNotificationDestinationRequestToPb(st *DeleteNotificationDestinationR
 		return nil, nil
 	}
 	pb := &deleteNotificationDestinationRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -4668,10 +4259,7 @@ func deleteNotificationDestinationRequestFromPb(pb *deleteNotificationDestinatio
 		return nil, nil
 	}
 	st := &DeleteNotificationDestinationRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -4685,9 +4273,10 @@ type DeletePersonalComputeSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deletePersonalComputeSettingRequestToPb(st *DeletePersonalComputeSettingRequest) (*deletePersonalComputeSettingRequestPb, error) {
@@ -4695,10 +4284,7 @@ func deletePersonalComputeSettingRequestToPb(st *DeletePersonalComputeSettingReq
 		return nil, nil
 	}
 	pb := &deletePersonalComputeSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -4747,10 +4333,7 @@ func deletePersonalComputeSettingRequestFromPb(pb *deletePersonalComputeSettingR
 		return nil, nil
 	}
 	st := &DeletePersonalComputeSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -4773,6 +4356,7 @@ type DeletePersonalComputeSettingResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string
 }
 
@@ -4781,10 +4365,7 @@ func deletePersonalComputeSettingResponseToPb(st *DeletePersonalComputeSettingRe
 		return nil, nil
 	}
 	pb := &deletePersonalComputeSettingResponsePb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	return pb, nil
 }
@@ -4830,10 +4411,7 @@ func deletePersonalComputeSettingResponseFromPb(pb *deletePersonalComputeSetting
 		return nil, nil
 	}
 	st := &DeletePersonalComputeSettingResponse{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	return st, nil
 }
@@ -4841,9 +4419,11 @@ func deletePersonalComputeSettingResponseFromPb(pb *deletePersonalComputeSetting
 // Delete a private endpoint rule
 type DeletePrivateEndpointRuleRequest struct {
 	// Your Network Connectvity Configuration ID.
-	NetworkConnectivityConfigId string
+	// Wire name: 'network_connectivity_config_id'
+	NetworkConnectivityConfigId string `tf:"-"`
 	// Your private endpoint rule ID.
-	PrivateEndpointRuleId string
+	// Wire name: 'private_endpoint_rule_id'
+	PrivateEndpointRuleId string `tf:"-"`
 }
 
 func deletePrivateEndpointRuleRequestToPb(st *DeletePrivateEndpointRuleRequest) (*deletePrivateEndpointRuleRequestPb, error) {
@@ -4851,15 +4431,9 @@ func deletePrivateEndpointRuleRequestToPb(st *DeletePrivateEndpointRuleRequest) 
 		return nil, nil
 	}
 	pb := &deletePrivateEndpointRuleRequestPb{}
-	networkConnectivityConfigIdPb := &st.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdPb != nil {
-		pb.NetworkConnectivityConfigId = *networkConnectivityConfigIdPb
-	}
+	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
 
-	privateEndpointRuleIdPb := &st.PrivateEndpointRuleId
-	if privateEndpointRuleIdPb != nil {
-		pb.PrivateEndpointRuleId = *privateEndpointRuleIdPb
-	}
+	pb.PrivateEndpointRuleId = st.PrivateEndpointRuleId
 
 	return pb, nil
 }
@@ -4901,14 +4475,8 @@ func deletePrivateEndpointRuleRequestFromPb(pb *deletePrivateEndpointRuleRequest
 		return nil, nil
 	}
 	st := &DeletePrivateEndpointRuleRequest{}
-	networkConnectivityConfigIdField := &pb.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdField != nil {
-		st.NetworkConnectivityConfigId = *networkConnectivityConfigIdField
-	}
-	privateEndpointRuleIdField := &pb.PrivateEndpointRuleId
-	if privateEndpointRuleIdField != nil {
-		st.PrivateEndpointRuleId = *privateEndpointRuleIdField
-	}
+	st.NetworkConnectivityConfigId = pb.NetworkConnectivityConfigId
+	st.PrivateEndpointRuleId = pb.PrivateEndpointRuleId
 
 	return st, nil
 }
@@ -4971,9 +4539,10 @@ type DeleteRestrictWorkspaceAdminsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func deleteRestrictWorkspaceAdminsSettingRequestToPb(st *DeleteRestrictWorkspaceAdminsSettingRequest) (*deleteRestrictWorkspaceAdminsSettingRequestPb, error) {
@@ -4981,10 +4550,7 @@ func deleteRestrictWorkspaceAdminsSettingRequestToPb(st *DeleteRestrictWorkspace
 		return nil, nil
 	}
 	pb := &deleteRestrictWorkspaceAdminsSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5033,10 +4599,7 @@ func deleteRestrictWorkspaceAdminsSettingRequestFromPb(pb *deleteRestrictWorkspa
 		return nil, nil
 	}
 	st := &DeleteRestrictWorkspaceAdminsSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5059,6 +4622,7 @@ type DeleteRestrictWorkspaceAdminsSettingResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string
 }
 
@@ -5067,10 +4631,7 @@ func deleteRestrictWorkspaceAdminsSettingResponseToPb(st *DeleteRestrictWorkspac
 		return nil, nil
 	}
 	pb := &deleteRestrictWorkspaceAdminsSettingResponsePb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	return pb, nil
 }
@@ -5116,10 +4677,7 @@ func deleteRestrictWorkspaceAdminsSettingResponseFromPb(pb *deleteRestrictWorksp
 		return nil, nil
 	}
 	st := &DeleteRestrictWorkspaceAdminsSettingResponse{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	return st, nil
 }
@@ -5127,7 +4685,8 @@ func deleteRestrictWorkspaceAdminsSettingResponseFromPb(pb *deleteRestrictWorksp
 // Delete a token
 type DeleteTokenManagementRequest struct {
 	// The ID of the token to revoke.
-	TokenId string
+	// Wire name: 'token_id'
+	TokenId string `tf:"-"`
 }
 
 func deleteTokenManagementRequestToPb(st *DeleteTokenManagementRequest) (*deleteTokenManagementRequestPb, error) {
@@ -5135,10 +4694,7 @@ func deleteTokenManagementRequestToPb(st *DeleteTokenManagementRequest) (*delete
 		return nil, nil
 	}
 	pb := &deleteTokenManagementRequestPb{}
-	tokenIdPb := &st.TokenId
-	if tokenIdPb != nil {
-		pb.TokenId = *tokenIdPb
-	}
+	pb.TokenId = st.TokenId
 
 	return pb, nil
 }
@@ -5178,10 +4734,7 @@ func deleteTokenManagementRequestFromPb(pb *deleteTokenManagementRequestPb) (*De
 		return nil, nil
 	}
 	st := &DeleteTokenManagementRequest{}
-	tokenIdField := &pb.TokenId
-	if tokenIdField != nil {
-		st.TokenId = *tokenIdField
-	}
+	st.TokenId = pb.TokenId
 
 	return st, nil
 }
@@ -5237,6 +4790,8 @@ func destinationTypeFromPb(pb *destinationTypePb) (*DestinationType, error) {
 }
 
 type DisableLegacyAccess struct {
+
+	// Wire name: 'disable_legacy_access'
 	DisableLegacyAccess BooleanMessage
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -5245,15 +4800,17 @@ type DisableLegacyAccess struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func disableLegacyAccessToPb(st *DisableLegacyAccess) (*disableLegacyAccessPb, error) {
@@ -5269,15 +4826,9 @@ func disableLegacyAccessToPb(st *DisableLegacyAccess) (*disableLegacyAccessPb, e
 		pb.DisableLegacyAccess = *disableLegacyAccessPb
 	}
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5340,14 +4891,8 @@ func disableLegacyAccessFromPb(pb *disableLegacyAccessPb) (*DisableLegacyAccess,
 	if disableLegacyAccessField != nil {
 		st.DisableLegacyAccess = *disableLegacyAccessField
 	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.Etag = pb.Etag
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5362,6 +4907,8 @@ func (st disableLegacyAccessPb) MarshalJSON() ([]byte, error) {
 }
 
 type DisableLegacyDbfs struct {
+
+	// Wire name: 'disable_legacy_dbfs'
 	DisableLegacyDbfs BooleanMessage
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -5370,15 +4917,17 @@ type DisableLegacyDbfs struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func disableLegacyDbfsToPb(st *DisableLegacyDbfs) (*disableLegacyDbfsPb, error) {
@@ -5394,15 +4943,9 @@ func disableLegacyDbfsToPb(st *DisableLegacyDbfs) (*disableLegacyDbfsPb, error) 
 		pb.DisableLegacyDbfs = *disableLegacyDbfsPb
 	}
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5465,14 +5008,8 @@ func disableLegacyDbfsFromPb(pb *disableLegacyDbfsPb) (*DisableLegacyDbfs, error
 	if disableLegacyDbfsField != nil {
 		st.DisableLegacyDbfs = *disableLegacyDbfsField
 	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.Etag = pb.Etag
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5487,6 +5024,8 @@ func (st disableLegacyDbfsPb) MarshalJSON() ([]byte, error) {
 }
 
 type DisableLegacyFeatures struct {
+
+	// Wire name: 'disable_legacy_features'
 	DisableLegacyFeatures BooleanMessage
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -5495,15 +5034,17 @@ type DisableLegacyFeatures struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func disableLegacyFeaturesToPb(st *DisableLegacyFeatures) (*disableLegacyFeaturesPb, error) {
@@ -5519,15 +5060,9 @@ func disableLegacyFeaturesToPb(st *DisableLegacyFeatures) (*disableLegacyFeature
 		pb.DisableLegacyFeatures = *disableLegacyFeaturesPb
 	}
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5590,14 +5125,8 @@ func disableLegacyFeaturesFromPb(pb *disableLegacyFeaturesPb) (*DisableLegacyFea
 	if disableLegacyFeaturesField != nil {
 		st.DisableLegacyFeatures = *disableLegacyFeaturesField
 	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.Etag = pb.Etag
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -5617,6 +5146,7 @@ func (st disableLegacyFeaturesPb) MarshalJSON() ([]byte, error) {
 // dataplane, see networkconfig.textproto).
 type EgressNetworkPolicy struct {
 	// The access policy enforced for egress traffic to the internet.
+	// Wire name: 'internet_access'
 	InternetAccess *EgressNetworkPolicyInternetAccessPolicy
 }
 
@@ -5683,11 +5213,15 @@ func EgressNetworkPolicyFromPb(pb *EgressNetworkPolicyPb) (*EgressNetworkPolicy,
 }
 
 type EgressNetworkPolicyInternetAccessPolicy struct {
+
+	// Wire name: 'allowed_internet_destinations'
 	AllowedInternetDestinations []EgressNetworkPolicyInternetAccessPolicyInternetDestination
 
+	// Wire name: 'allowed_storage_destinations'
 	AllowedStorageDestinations []EgressNetworkPolicyInternetAccessPolicyStorageDestination
 	// Optional. If not specified, assume the policy is enforced for all
 	// workloads.
+	// Wire name: 'log_only_mode'
 	LogOnlyMode *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode
 	// At which level can Databricks and Databricks managed compute access
 	// Internet. FULL_ACCESS: Databricks can access Internet. No blocking rules
@@ -5695,6 +5229,7 @@ type EgressNetworkPolicyInternetAccessPolicy struct {
 	// allowed internet and storage destinations, as well as UC connections and
 	// external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only
 	// access destinations via private link.
+	// Wire name: 'restriction_mode'
 	RestrictionMode EgressNetworkPolicyInternetAccessPolicyRestrictionMode
 }
 
@@ -5736,10 +5271,7 @@ func egressNetworkPolicyInternetAccessPolicyToPb(st *EgressNetworkPolicyInternet
 		pb.LogOnlyMode = logOnlyModePb
 	}
 
-	restrictionModePb := &st.RestrictionMode
-	if restrictionModePb != nil {
-		pb.RestrictionMode = *restrictionModePb
-	}
+	pb.RestrictionMode = st.RestrictionMode
 
 	return pb, nil
 }
@@ -5792,25 +5324,25 @@ func egressNetworkPolicyInternetAccessPolicyFromPb(pb *egressNetworkPolicyIntern
 	st := &EgressNetworkPolicyInternetAccessPolicy{}
 
 	var allowedInternetDestinationsField []EgressNetworkPolicyInternetAccessPolicyInternetDestination
-	for _, item := range pb.AllowedInternetDestinations {
-		itemField, err := egressNetworkPolicyInternetAccessPolicyInternetDestinationFromPb(&item)
+	for _, itemPb := range pb.AllowedInternetDestinations {
+		item, err := egressNetworkPolicyInternetAccessPolicyInternetDestinationFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allowedInternetDestinationsField = append(allowedInternetDestinationsField, *itemField)
+		if item != nil {
+			allowedInternetDestinationsField = append(allowedInternetDestinationsField, *item)
 		}
 	}
 	st.AllowedInternetDestinations = allowedInternetDestinationsField
 
 	var allowedStorageDestinationsField []EgressNetworkPolicyInternetAccessPolicyStorageDestination
-	for _, item := range pb.AllowedStorageDestinations {
-		itemField, err := egressNetworkPolicyInternetAccessPolicyStorageDestinationFromPb(&item)
+	for _, itemPb := range pb.AllowedStorageDestinations {
+		item, err := egressNetworkPolicyInternetAccessPolicyStorageDestinationFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allowedStorageDestinationsField = append(allowedStorageDestinationsField, *itemField)
+		if item != nil {
+			allowedStorageDestinationsField = append(allowedStorageDestinationsField, *item)
 		}
 	}
 	st.AllowedStorageDestinations = allowedStorageDestinationsField
@@ -5821,10 +5353,7 @@ func egressNetworkPolicyInternetAccessPolicyFromPb(pb *egressNetworkPolicyIntern
 	if logOnlyModeField != nil {
 		st.LogOnlyMode = logOnlyModeField
 	}
-	restrictionModeField := &pb.RestrictionMode
-	if restrictionModeField != nil {
-		st.RestrictionMode = *restrictionModeField
-	}
+	st.RestrictionMode = pb.RestrictionMode
 
 	return st, nil
 }
@@ -5833,17 +5362,21 @@ func egressNetworkPolicyInternetAccessPolicyFromPb(pb *egressNetworkPolicyIntern
 // restricted. We only support domain name (FQDN) destinations for the time
 // being, though going forwards we want to support host names and IP addresses.
 type EgressNetworkPolicyInternetAccessPolicyInternetDestination struct {
+
+	// Wire name: 'destination'
 	Destination string
 	// The filtering protocol used by the DP. For private and public preview,
 	// SEG will only support TCP filtering (i.e. DNS based filtering, filtering
 	// by destination IP address), so protocol will be set to TCP by default and
 	// hidden from the user. In the future, users may be able to select HTTP
 	// filtering (i.e. SNI based filtering, filtering by FQDN).
+	// Wire name: 'protocol'
 	Protocol EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol
 
+	// Wire name: 'type'
 	Type EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func egressNetworkPolicyInternetAccessPolicyInternetDestinationToPb(st *EgressNetworkPolicyInternetAccessPolicyInternetDestination) (*egressNetworkPolicyInternetAccessPolicyInternetDestinationPb, error) {
@@ -5851,20 +5384,11 @@ func egressNetworkPolicyInternetAccessPolicyInternetDestinationToPb(st *EgressNe
 		return nil, nil
 	}
 	pb := &egressNetworkPolicyInternetAccessPolicyInternetDestinationPb{}
-	destinationPb := &st.Destination
-	if destinationPb != nil {
-		pb.Destination = *destinationPb
-	}
+	pb.Destination = st.Destination
 
-	protocolPb := &st.Protocol
-	if protocolPb != nil {
-		pb.Protocol = *protocolPb
-	}
+	pb.Protocol = st.Protocol
 
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -5914,18 +5438,9 @@ func egressNetworkPolicyInternetAccessPolicyInternetDestinationFromPb(pb *egress
 		return nil, nil
 	}
 	st := &EgressNetworkPolicyInternetAccessPolicyInternetDestination{}
-	destinationField := &pb.Destination
-	if destinationField != nil {
-		st.Destination = *destinationField
-	}
-	protocolField := &pb.Protocol
-	if protocolField != nil {
-		st.Protocol = *protocolField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.Destination = pb.Destination
+	st.Protocol = pb.Protocol
+	st.Type = pb.Type
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6029,8 +5544,11 @@ func egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinati
 }
 
 type EgressNetworkPolicyInternetAccessPolicyLogOnlyMode struct {
+
+	// Wire name: 'log_only_mode_type'
 	LogOnlyModeType EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType
 
+	// Wire name: 'workloads'
 	Workloads []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType
 }
 
@@ -6039,19 +5557,9 @@ func egressNetworkPolicyInternetAccessPolicyLogOnlyModeToPb(st *EgressNetworkPol
 		return nil, nil
 	}
 	pb := &egressNetworkPolicyInternetAccessPolicyLogOnlyModePb{}
-	logOnlyModeTypePb := &st.LogOnlyModeType
-	if logOnlyModeTypePb != nil {
-		pb.LogOnlyModeType = *logOnlyModeTypePb
-	}
+	pb.LogOnlyModeType = st.LogOnlyModeType
 
-	var workloadsPb []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType
-	for _, item := range st.Workloads {
-		itemPb := &item
-		if itemPb != nil {
-			workloadsPb = append(workloadsPb, *itemPb)
-		}
-	}
-	pb.Workloads = workloadsPb
+	pb.Workloads = st.Workloads
 
 	return pb, nil
 }
@@ -6092,19 +5600,8 @@ func egressNetworkPolicyInternetAccessPolicyLogOnlyModeFromPb(pb *egressNetworkP
 		return nil, nil
 	}
 	st := &EgressNetworkPolicyInternetAccessPolicyLogOnlyMode{}
-	logOnlyModeTypeField := &pb.LogOnlyModeType
-	if logOnlyModeTypeField != nil {
-		st.LogOnlyModeType = *logOnlyModeTypeField
-	}
-
-	var workloadsField []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType
-	for _, item := range pb.Workloads {
-		itemField := &item
-		if itemField != nil {
-			workloadsField = append(workloadsField, *itemField)
-		}
-	}
-	st.Workloads = workloadsField
+	st.LogOnlyModeType = pb.LogOnlyModeType
+	st.Workloads = pb.Workloads
 
 	return st, nil
 }
@@ -6252,23 +5749,32 @@ func egressNetworkPolicyInternetAccessPolicyRestrictionModeFromPb(pb *egressNetw
 
 // Users can specify accessible storage destinations.
 type EgressNetworkPolicyInternetAccessPolicyStorageDestination struct {
+
+	// Wire name: 'allowed_paths'
 	AllowedPaths []string
 
+	// Wire name: 'azure_container'
 	AzureContainer string
 
+	// Wire name: 'azure_dns_zone'
 	AzureDnsZone string
 
+	// Wire name: 'azure_storage_account'
 	AzureStorageAccount string
 
+	// Wire name: 'azure_storage_service'
 	AzureStorageService string
 
+	// Wire name: 'bucket_name'
 	BucketName string
 
+	// Wire name: 'region'
 	Region string
 
+	// Wire name: 'type'
 	Type EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func egressNetworkPolicyInternetAccessPolicyStorageDestinationToPb(st *EgressNetworkPolicyInternetAccessPolicyStorageDestination) (*egressNetworkPolicyInternetAccessPolicyStorageDestinationPb, error) {
@@ -6276,50 +5782,21 @@ func egressNetworkPolicyInternetAccessPolicyStorageDestinationToPb(st *EgressNet
 		return nil, nil
 	}
 	pb := &egressNetworkPolicyInternetAccessPolicyStorageDestinationPb{}
+	pb.AllowedPaths = st.AllowedPaths
 
-	var allowedPathsPb []string
-	for _, item := range st.AllowedPaths {
-		itemPb := &item
-		if itemPb != nil {
-			allowedPathsPb = append(allowedPathsPb, *itemPb)
-		}
-	}
-	pb.AllowedPaths = allowedPathsPb
+	pb.AzureContainer = st.AzureContainer
 
-	azureContainerPb := &st.AzureContainer
-	if azureContainerPb != nil {
-		pb.AzureContainer = *azureContainerPb
-	}
+	pb.AzureDnsZone = st.AzureDnsZone
 
-	azureDnsZonePb := &st.AzureDnsZone
-	if azureDnsZonePb != nil {
-		pb.AzureDnsZone = *azureDnsZonePb
-	}
+	pb.AzureStorageAccount = st.AzureStorageAccount
 
-	azureStorageAccountPb := &st.AzureStorageAccount
-	if azureStorageAccountPb != nil {
-		pb.AzureStorageAccount = *azureStorageAccountPb
-	}
+	pb.AzureStorageService = st.AzureStorageService
 
-	azureStorageServicePb := &st.AzureStorageService
-	if azureStorageServicePb != nil {
-		pb.AzureStorageService = *azureStorageServicePb
-	}
+	pb.BucketName = st.BucketName
 
-	bucketNamePb := &st.BucketName
-	if bucketNamePb != nil {
-		pb.BucketName = *bucketNamePb
-	}
+	pb.Region = st.Region
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
-
-	typePb := &st.Type
-	if typePb != nil {
-		pb.Type = *typePb
-	}
+	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6375,43 +5852,14 @@ func egressNetworkPolicyInternetAccessPolicyStorageDestinationFromPb(pb *egressN
 		return nil, nil
 	}
 	st := &EgressNetworkPolicyInternetAccessPolicyStorageDestination{}
-
-	var allowedPathsField []string
-	for _, item := range pb.AllowedPaths {
-		itemField := &item
-		if itemField != nil {
-			allowedPathsField = append(allowedPathsField, *itemField)
-		}
-	}
-	st.AllowedPaths = allowedPathsField
-	azureContainerField := &pb.AzureContainer
-	if azureContainerField != nil {
-		st.AzureContainer = *azureContainerField
-	}
-	azureDnsZoneField := &pb.AzureDnsZone
-	if azureDnsZoneField != nil {
-		st.AzureDnsZone = *azureDnsZoneField
-	}
-	azureStorageAccountField := &pb.AzureStorageAccount
-	if azureStorageAccountField != nil {
-		st.AzureStorageAccount = *azureStorageAccountField
-	}
-	azureStorageServiceField := &pb.AzureStorageService
-	if azureStorageServiceField != nil {
-		st.AzureStorageService = *azureStorageServiceField
-	}
-	bucketNameField := &pb.BucketName
-	if bucketNameField != nil {
-		st.BucketName = *bucketNameField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
-	typeField := &pb.Type
-	if typeField != nil {
-		st.Type = *typeField
-	}
+	st.AllowedPaths = pb.AllowedPaths
+	st.AzureContainer = pb.AzureContainer
+	st.AzureDnsZone = pb.AzureDnsZone
+	st.AzureStorageAccount = pb.AzureStorageAccount
+	st.AzureStorageService = pb.AzureStorageService
+	st.BucketName = pb.BucketName
+	st.Region = pb.Region
+	st.Type = pb.Type
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6521,6 +5969,7 @@ func egressResourceTypeFromPb(pb *egressResourceTypePb) (*EgressResourceType, er
 
 type EmailConfig struct {
 	// Email addresses to notify.
+	// Wire name: 'addresses'
 	Addresses []string
 }
 
@@ -6529,15 +5978,7 @@ func emailConfigToPb(st *EmailConfig) (*emailConfigPb, error) {
 		return nil, nil
 	}
 	pb := &emailConfigPb{}
-
-	var addressesPb []string
-	for _, item := range st.Addresses {
-		itemPb := &item
-		if itemPb != nil {
-			addressesPb = append(addressesPb, *itemPb)
-		}
-	}
-	pb.Addresses = addressesPb
+	pb.Addresses = st.Addresses
 
 	return pb, nil
 }
@@ -6577,15 +6018,7 @@ func emailConfigFromPb(pb *emailConfigPb) (*EmailConfig, error) {
 		return nil, nil
 	}
 	st := &EmailConfig{}
-
-	var addressesField []string
-	for _, item := range pb.Addresses {
-		itemField := &item
-		if itemField != nil {
-			addressesField = append(addressesField, *itemField)
-		}
-	}
-	st.Addresses = addressesField
+	st.Addresses = pb.Addresses
 
 	return st, nil
 }
@@ -6640,15 +6073,18 @@ func emptyFromPb(pb *emptyPb) (*Empty, error) {
 }
 
 type EnableExportNotebook struct {
+
+	// Wire name: 'boolean_val'
 	BooleanVal *BooleanMessage
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func enableExportNotebookToPb(st *EnableExportNotebook) (*enableExportNotebookPb, error) {
@@ -6664,10 +6100,7 @@ func enableExportNotebookToPb(st *EnableExportNotebook) (*enableExportNotebookPb
 		pb.BooleanVal = booleanValPb
 	}
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6722,10 +6155,7 @@ func enableExportNotebookFromPb(pb *enableExportNotebookPb) (*EnableExportNotebo
 	if booleanValField != nil {
 		st.BooleanVal = booleanValField
 	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6740,15 +6170,18 @@ func (st enableExportNotebookPb) MarshalJSON() ([]byte, error) {
 }
 
 type EnableNotebookTableClipboard struct {
+
+	// Wire name: 'boolean_val'
 	BooleanVal *BooleanMessage
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func enableNotebookTableClipboardToPb(st *EnableNotebookTableClipboard) (*enableNotebookTableClipboardPb, error) {
@@ -6764,10 +6197,7 @@ func enableNotebookTableClipboardToPb(st *EnableNotebookTableClipboard) (*enable
 		pb.BooleanVal = booleanValPb
 	}
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6822,10 +6252,7 @@ func enableNotebookTableClipboardFromPb(pb *enableNotebookTableClipboardPb) (*En
 	if booleanValField != nil {
 		st.BooleanVal = booleanValField
 	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6840,15 +6267,18 @@ func (st enableNotebookTableClipboardPb) MarshalJSON() ([]byte, error) {
 }
 
 type EnableResultsDownloading struct {
+
+	// Wire name: 'boolean_val'
 	BooleanVal *BooleanMessage
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func enableResultsDownloadingToPb(st *EnableResultsDownloading) (*enableResultsDownloadingPb, error) {
@@ -6864,10 +6294,7 @@ func enableResultsDownloadingToPb(st *EnableResultsDownloading) (*enableResultsD
 		pb.BooleanVal = booleanValPb
 	}
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6922,10 +6349,7 @@ func enableResultsDownloadingFromPb(pb *enableResultsDownloadingPb) (*EnableResu
 	if booleanValField != nil {
 		st.BooleanVal = booleanValField
 	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -6941,9 +6365,11 @@ func (st enableResultsDownloadingPb) MarshalJSON() ([]byte, error) {
 
 // SHIELD feature: ESM
 type EnhancedSecurityMonitoring struct {
+
+	// Wire name: 'is_enabled'
 	IsEnabled bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func enhancedSecurityMonitoringToPb(st *EnhancedSecurityMonitoring) (*enhancedSecurityMonitoringPb, error) {
@@ -6951,10 +6377,7 @@ func enhancedSecurityMonitoringToPb(st *EnhancedSecurityMonitoring) (*enhancedSe
 		return nil, nil
 	}
 	pb := &enhancedSecurityMonitoringPb{}
-	isEnabledPb := &st.IsEnabled
-	if isEnabledPb != nil {
-		pb.IsEnabled = *isEnabledPb
-	}
+	pb.IsEnabled = st.IsEnabled
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -6996,10 +6419,7 @@ func enhancedSecurityMonitoringFromPb(pb *enhancedSecurityMonitoringPb) (*Enhanc
 		return nil, nil
 	}
 	st := &EnhancedSecurityMonitoring{}
-	isEnabledField := &pb.IsEnabled
-	if isEnabledField != nil {
-		st.IsEnabled = *isEnabledField
-	}
+	st.IsEnabled = pb.IsEnabled
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7015,6 +6435,7 @@ func (st enhancedSecurityMonitoringPb) MarshalJSON() ([]byte, error) {
 
 type EnhancedSecurityMonitoringSetting struct {
 	// SHIELD feature: ESM
+	// Wire name: 'enhanced_security_monitoring_workspace'
 	EnhancedSecurityMonitoringWorkspace EnhancedSecurityMonitoring
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -7023,15 +6444,17 @@ type EnhancedSecurityMonitoringSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func enhancedSecurityMonitoringSettingToPb(st *EnhancedSecurityMonitoringSetting) (*enhancedSecurityMonitoringSettingPb, error) {
@@ -7047,15 +6470,9 @@ func enhancedSecurityMonitoringSettingToPb(st *EnhancedSecurityMonitoringSetting
 		pb.EnhancedSecurityMonitoringWorkspace = *enhancedSecurityMonitoringWorkspacePb
 	}
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7119,14 +6536,8 @@ func enhancedSecurityMonitoringSettingFromPb(pb *enhancedSecurityMonitoringSetti
 	if enhancedSecurityMonitoringWorkspaceField != nil {
 		st.EnhancedSecurityMonitoringWorkspace = *enhancedSecurityMonitoringWorkspaceField
 	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.Etag = pb.Etag
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7142,9 +6553,11 @@ func (st enhancedSecurityMonitoringSettingPb) MarshalJSON() ([]byte, error) {
 
 // Account level policy for ESM
 type EsmEnablementAccount struct {
+
+	// Wire name: 'is_enforced'
 	IsEnforced bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func esmEnablementAccountToPb(st *EsmEnablementAccount) (*esmEnablementAccountPb, error) {
@@ -7152,10 +6565,7 @@ func esmEnablementAccountToPb(st *EsmEnablementAccount) (*esmEnablementAccountPb
 		return nil, nil
 	}
 	pb := &esmEnablementAccountPb{}
-	isEnforcedPb := &st.IsEnforced
-	if isEnforcedPb != nil {
-		pb.IsEnforced = *isEnforcedPb
-	}
+	pb.IsEnforced = st.IsEnforced
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7197,10 +6607,7 @@ func esmEnablementAccountFromPb(pb *esmEnablementAccountPb) (*EsmEnablementAccou
 		return nil, nil
 	}
 	st := &EsmEnablementAccount{}
-	isEnforcedField := &pb.IsEnforced
-	if isEnforcedField != nil {
-		st.IsEnforced = *isEnforcedField
-	}
+	st.IsEnforced = pb.IsEnforced
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7216,6 +6623,7 @@ func (st esmEnablementAccountPb) MarshalJSON() ([]byte, error) {
 
 type EsmEnablementAccountSetting struct {
 	// Account level policy for ESM
+	// Wire name: 'esm_enablement_account'
 	EsmEnablementAccount EsmEnablementAccount
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -7224,15 +6632,17 @@ type EsmEnablementAccountSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func esmEnablementAccountSettingToPb(st *EsmEnablementAccountSetting) (*esmEnablementAccountSettingPb, error) {
@@ -7248,15 +6658,9 @@ func esmEnablementAccountSettingToPb(st *EsmEnablementAccountSetting) (*esmEnabl
 		pb.EsmEnablementAccount = *esmEnablementAccountPb
 	}
 
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7320,14 +6724,8 @@ func esmEnablementAccountSettingFromPb(pb *esmEnablementAccountSettingPb) (*EsmE
 	if esmEnablementAccountField != nil {
 		st.EsmEnablementAccount = *esmEnablementAccountField
 	}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.Etag = pb.Etag
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7344,18 +6742,23 @@ func (st esmEnablementAccountSettingPb) MarshalJSON() ([]byte, error) {
 // The exchange token is the result of the token exchange with the IdP
 type ExchangeToken struct {
 	// The requested token.
+	// Wire name: 'credential'
 	Credential string
 	// The end-of-life timestamp of the token. The value is in milliseconds
 	// since the Unix epoch.
+	// Wire name: 'credentialEolTime'
 	CredentialEolTime int64
 	// User ID of the user that owns this token.
+	// Wire name: 'ownerId'
 	OwnerId int64
 	// The scopes of access granted in the token.
+	// Wire name: 'scopes'
 	Scopes []string
 	// The type of this exchange token
+	// Wire name: 'tokenType'
 	TokenType TokenType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func exchangeTokenToPb(st *ExchangeToken) (*exchangeTokenPb, error) {
@@ -7363,34 +6766,15 @@ func exchangeTokenToPb(st *ExchangeToken) (*exchangeTokenPb, error) {
 		return nil, nil
 	}
 	pb := &exchangeTokenPb{}
-	credentialPb := &st.Credential
-	if credentialPb != nil {
-		pb.Credential = *credentialPb
-	}
+	pb.Credential = st.Credential
 
-	credentialEolTimePb := &st.CredentialEolTime
-	if credentialEolTimePb != nil {
-		pb.CredentialEolTime = *credentialEolTimePb
-	}
+	pb.CredentialEolTime = st.CredentialEolTime
 
-	ownerIdPb := &st.OwnerId
-	if ownerIdPb != nil {
-		pb.OwnerId = *ownerIdPb
-	}
+	pb.OwnerId = st.OwnerId
 
-	var scopesPb []string
-	for _, item := range st.Scopes {
-		itemPb := &item
-		if itemPb != nil {
-			scopesPb = append(scopesPb, *itemPb)
-		}
-	}
-	pb.Scopes = scopesPb
+	pb.Scopes = st.Scopes
 
-	tokenTypePb := &st.TokenType
-	if tokenTypePb != nil {
-		pb.TokenType = *tokenTypePb
-	}
+	pb.TokenType = st.TokenType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7442,31 +6826,11 @@ func exchangeTokenFromPb(pb *exchangeTokenPb) (*ExchangeToken, error) {
 		return nil, nil
 	}
 	st := &ExchangeToken{}
-	credentialField := &pb.Credential
-	if credentialField != nil {
-		st.Credential = *credentialField
-	}
-	credentialEolTimeField := &pb.CredentialEolTime
-	if credentialEolTimeField != nil {
-		st.CredentialEolTime = *credentialEolTimeField
-	}
-	ownerIdField := &pb.OwnerId
-	if ownerIdField != nil {
-		st.OwnerId = *ownerIdField
-	}
-
-	var scopesField []string
-	for _, item := range pb.Scopes {
-		itemField := &item
-		if itemField != nil {
-			scopesField = append(scopesField, *itemField)
-		}
-	}
-	st.Scopes = scopesField
-	tokenTypeField := &pb.TokenType
-	if tokenTypeField != nil {
-		st.TokenType = *tokenTypeField
-	}
+	st.Credential = pb.Credential
+	st.CredentialEolTime = pb.CredentialEolTime
+	st.OwnerId = pb.OwnerId
+	st.Scopes = pb.Scopes
+	st.TokenType = pb.TokenType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7483,10 +6847,13 @@ func (st exchangeTokenPb) MarshalJSON() ([]byte, error) {
 // Exchange a token with the IdP
 type ExchangeTokenRequest struct {
 	// The partition of Credentials store
+	// Wire name: 'partitionId'
 	PartitionId PartitionId
 	// Array of scopes for the token request.
+	// Wire name: 'scopes'
 	Scopes []string
 	// A list of token types being requested
+	// Wire name: 'tokenType'
 	TokenType []TokenType
 }
 
@@ -7503,23 +6870,9 @@ func exchangeTokenRequestToPb(st *ExchangeTokenRequest) (*exchangeTokenRequestPb
 		pb.PartitionId = *partitionIdPb
 	}
 
-	var scopesPb []string
-	for _, item := range st.Scopes {
-		itemPb := &item
-		if itemPb != nil {
-			scopesPb = append(scopesPb, *itemPb)
-		}
-	}
-	pb.Scopes = scopesPb
+	pb.Scopes = st.Scopes
 
-	var tokenTypePb []TokenType
-	for _, item := range st.TokenType {
-		itemPb := &item
-		if itemPb != nil {
-			tokenTypePb = append(tokenTypePb, *itemPb)
-		}
-	}
-	pb.TokenType = tokenTypePb
+	pb.TokenType = st.TokenType
 
 	return pb, nil
 }
@@ -7570,30 +6923,16 @@ func exchangeTokenRequestFromPb(pb *exchangeTokenRequestPb) (*ExchangeTokenReque
 	if partitionIdField != nil {
 		st.PartitionId = *partitionIdField
 	}
-
-	var scopesField []string
-	for _, item := range pb.Scopes {
-		itemField := &item
-		if itemField != nil {
-			scopesField = append(scopesField, *itemField)
-		}
-	}
-	st.Scopes = scopesField
-
-	var tokenTypeField []TokenType
-	for _, item := range pb.TokenType {
-		itemField := &item
-		if itemField != nil {
-			tokenTypeField = append(tokenTypeField, *itemField)
-		}
-	}
-	st.TokenType = tokenTypeField
+	st.Scopes = pb.Scopes
+	st.TokenType = pb.TokenType
 
 	return st, nil
 }
 
 // Exhanged tokens were successfully returned.
 type ExchangeTokenResponse struct {
+
+	// Wire name: 'values'
 	Values []ExchangeToken
 }
 
@@ -7654,13 +6993,13 @@ func exchangeTokenResponseFromPb(pb *exchangeTokenResponsePb) (*ExchangeTokenRes
 	st := &ExchangeTokenResponse{}
 
 	var valuesField []ExchangeToken
-	for _, item := range pb.Values {
-		itemField, err := exchangeTokenFromPb(&item)
+	for _, itemPb := range pb.Values {
+		item, err := exchangeTokenFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			valuesField = append(valuesField, *itemField)
+		if item != nil {
+			valuesField = append(valuesField, *item)
 		}
 	}
 	st.Values = valuesField
@@ -7671,6 +7010,7 @@ func exchangeTokenResponseFromPb(pb *exchangeTokenResponsePb) (*ExchangeTokenRes
 // An IP access list was successfully returned.
 type FetchIpAccessListResponse struct {
 	// Definition of an IP Access list
+	// Wire name: 'ip_access_list'
 	IpAccessList *IpAccessListInfo
 }
 
@@ -7738,19 +7078,25 @@ func fetchIpAccessListResponseFromPb(pb *fetchIpAccessListResponsePb) (*FetchIpA
 
 type GenericWebhookConfig struct {
 	// [Input-Only][Optional] Password for webhook.
+	// Wire name: 'password'
 	Password string
 	// [Output-Only] Whether password is set.
+	// Wire name: 'password_set'
 	PasswordSet bool
 	// [Input-Only] URL for webhook.
+	// Wire name: 'url'
 	Url string
 	// [Output-Only] Whether URL is set.
+	// Wire name: 'url_set'
 	UrlSet bool
 	// [Input-Only][Optional] Username for webhook.
+	// Wire name: 'username'
 	Username string
 	// [Output-Only] Whether username is set.
+	// Wire name: 'username_set'
 	UsernameSet bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func genericWebhookConfigToPb(st *GenericWebhookConfig) (*genericWebhookConfigPb, error) {
@@ -7758,35 +7104,17 @@ func genericWebhookConfigToPb(st *GenericWebhookConfig) (*genericWebhookConfigPb
 		return nil, nil
 	}
 	pb := &genericWebhookConfigPb{}
-	passwordPb := &st.Password
-	if passwordPb != nil {
-		pb.Password = *passwordPb
-	}
+	pb.Password = st.Password
 
-	passwordSetPb := &st.PasswordSet
-	if passwordSetPb != nil {
-		pb.PasswordSet = *passwordSetPb
-	}
+	pb.PasswordSet = st.PasswordSet
 
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
-	urlSetPb := &st.UrlSet
-	if urlSetPb != nil {
-		pb.UrlSet = *urlSetPb
-	}
+	pb.UrlSet = st.UrlSet
 
-	usernamePb := &st.Username
-	if usernamePb != nil {
-		pb.Username = *usernamePb
-	}
+	pb.Username = st.Username
 
-	usernameSetPb := &st.UsernameSet
-	if usernameSetPb != nil {
-		pb.UsernameSet = *usernameSetPb
-	}
+	pb.UsernameSet = st.UsernameSet
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7839,30 +7167,12 @@ func genericWebhookConfigFromPb(pb *genericWebhookConfigPb) (*GenericWebhookConf
 		return nil, nil
 	}
 	st := &GenericWebhookConfig{}
-	passwordField := &pb.Password
-	if passwordField != nil {
-		st.Password = *passwordField
-	}
-	passwordSetField := &pb.PasswordSet
-	if passwordSetField != nil {
-		st.PasswordSet = *passwordSetField
-	}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
-	urlSetField := &pb.UrlSet
-	if urlSetField != nil {
-		st.UrlSet = *urlSetField
-	}
-	usernameField := &pb.Username
-	if usernameField != nil {
-		st.Username = *usernameField
-	}
-	usernameSetField := &pb.UsernameSet
-	if usernameSetField != nil {
-		st.UsernameSet = *usernameSetField
-	}
+	st.Password = pb.Password
+	st.PasswordSet = pb.PasswordSet
+	st.Url = pb.Url
+	st.UrlSet = pb.UrlSet
+	st.Username = pb.Username
+	st.UsernameSet = pb.UsernameSet
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7885,9 +7195,10 @@ type GetAccountIpAccessEnableRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getAccountIpAccessEnableRequestToPb(st *GetAccountIpAccessEnableRequest) (*getAccountIpAccessEnableRequestPb, error) {
@@ -7895,10 +7206,7 @@ func getAccountIpAccessEnableRequestToPb(st *GetAccountIpAccessEnableRequest) (*
 		return nil, nil
 	}
 	pb := &getAccountIpAccessEnableRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -7947,10 +7255,7 @@ func getAccountIpAccessEnableRequestFromPb(pb *getAccountIpAccessEnableRequestPb
 		return nil, nil
 	}
 	st := &GetAccountIpAccessEnableRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -7967,7 +7272,8 @@ func (st getAccountIpAccessEnableRequestPb) MarshalJSON() ([]byte, error) {
 // Get IP access list
 type GetAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	IpAccessListId string
+	// Wire name: 'ip_access_list_id'
+	IpAccessListId string `tf:"-"`
 }
 
 func getAccountIpAccessListRequestToPb(st *GetAccountIpAccessListRequest) (*getAccountIpAccessListRequestPb, error) {
@@ -7975,10 +7281,7 @@ func getAccountIpAccessListRequestToPb(st *GetAccountIpAccessListRequest) (*getA
 		return nil, nil
 	}
 	pb := &getAccountIpAccessListRequestPb{}
-	ipAccessListIdPb := &st.IpAccessListId
-	if ipAccessListIdPb != nil {
-		pb.IpAccessListId = *ipAccessListIdPb
-	}
+	pb.IpAccessListId = st.IpAccessListId
 
 	return pb, nil
 }
@@ -8018,10 +7321,7 @@ func getAccountIpAccessListRequestFromPb(pb *getAccountIpAccessListRequestPb) (*
 		return nil, nil
 	}
 	st := &GetAccountIpAccessListRequest{}
-	ipAccessListIdField := &pb.IpAccessListId
-	if ipAccessListIdField != nil {
-		st.IpAccessListId = *ipAccessListIdField
-	}
+	st.IpAccessListId = pb.IpAccessListId
 
 	return st, nil
 }
@@ -8035,9 +7335,10 @@ type GetAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *GetAibiDashboardEmbeddingAccessPolicySettingRequest) (*getAibiDashboardEmbeddingAccessPolicySettingRequestPb, error) {
@@ -8045,10 +7346,7 @@ func getAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *GetAibiDashboar
 		return nil, nil
 	}
 	pb := &getAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8097,10 +7395,7 @@ func getAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb *getAibiDashbo
 		return nil, nil
 	}
 	st := &GetAibiDashboardEmbeddingAccessPolicySettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8123,9 +7418,10 @@ type GetAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) (*getAibiDashboardEmbeddingApprovedDomainsSettingRequestPb, error) {
@@ -8133,10 +7429,7 @@ func getAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *GetAibiDashb
 		return nil, nil
 	}
 	pb := &getAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8185,10 +7478,7 @@ func getAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb *getAibiDas
 		return nil, nil
 	}
 	st := &GetAibiDashboardEmbeddingApprovedDomainsSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8211,9 +7501,10 @@ type GetAutomaticClusterUpdateSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getAutomaticClusterUpdateSettingRequestToPb(st *GetAutomaticClusterUpdateSettingRequest) (*getAutomaticClusterUpdateSettingRequestPb, error) {
@@ -8221,10 +7512,7 @@ func getAutomaticClusterUpdateSettingRequestToPb(st *GetAutomaticClusterUpdateSe
 		return nil, nil
 	}
 	pb := &getAutomaticClusterUpdateSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8273,10 +7561,7 @@ func getAutomaticClusterUpdateSettingRequestFromPb(pb *getAutomaticClusterUpdate
 		return nil, nil
 	}
 	st := &GetAutomaticClusterUpdateSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8299,9 +7584,10 @@ type GetComplianceSecurityProfileSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getComplianceSecurityProfileSettingRequestToPb(st *GetComplianceSecurityProfileSettingRequest) (*getComplianceSecurityProfileSettingRequestPb, error) {
@@ -8309,10 +7595,7 @@ func getComplianceSecurityProfileSettingRequestToPb(st *GetComplianceSecurityPro
 		return nil, nil
 	}
 	pb := &getComplianceSecurityProfileSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8361,10 +7644,7 @@ func getComplianceSecurityProfileSettingRequestFromPb(pb *getComplianceSecurityP
 		return nil, nil
 	}
 	st := &GetComplianceSecurityProfileSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8387,9 +7667,10 @@ type GetCspEnablementAccountSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getCspEnablementAccountSettingRequestToPb(st *GetCspEnablementAccountSettingRequest) (*getCspEnablementAccountSettingRequestPb, error) {
@@ -8397,10 +7678,7 @@ func getCspEnablementAccountSettingRequestToPb(st *GetCspEnablementAccountSettin
 		return nil, nil
 	}
 	pb := &getCspEnablementAccountSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8449,10 +7727,7 @@ func getCspEnablementAccountSettingRequestFromPb(pb *getCspEnablementAccountSett
 		return nil, nil
 	}
 	st := &GetCspEnablementAccountSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8475,9 +7750,10 @@ type GetDefaultNamespaceSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getDefaultNamespaceSettingRequestToPb(st *GetDefaultNamespaceSettingRequest) (*getDefaultNamespaceSettingRequestPb, error) {
@@ -8485,10 +7761,7 @@ func getDefaultNamespaceSettingRequestToPb(st *GetDefaultNamespaceSettingRequest
 		return nil, nil
 	}
 	pb := &getDefaultNamespaceSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8537,10 +7810,7 @@ func getDefaultNamespaceSettingRequestFromPb(pb *getDefaultNamespaceSettingReque
 		return nil, nil
 	}
 	st := &GetDefaultNamespaceSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8563,9 +7833,10 @@ type GetDisableLegacyAccessRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getDisableLegacyAccessRequestToPb(st *GetDisableLegacyAccessRequest) (*getDisableLegacyAccessRequestPb, error) {
@@ -8573,10 +7844,7 @@ func getDisableLegacyAccessRequestToPb(st *GetDisableLegacyAccessRequest) (*getD
 		return nil, nil
 	}
 	pb := &getDisableLegacyAccessRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8625,10 +7893,7 @@ func getDisableLegacyAccessRequestFromPb(pb *getDisableLegacyAccessRequestPb) (*
 		return nil, nil
 	}
 	st := &GetDisableLegacyAccessRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8651,9 +7916,10 @@ type GetDisableLegacyDbfsRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getDisableLegacyDbfsRequestToPb(st *GetDisableLegacyDbfsRequest) (*getDisableLegacyDbfsRequestPb, error) {
@@ -8661,10 +7927,7 @@ func getDisableLegacyDbfsRequestToPb(st *GetDisableLegacyDbfsRequest) (*getDisab
 		return nil, nil
 	}
 	pb := &getDisableLegacyDbfsRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8713,10 +7976,7 @@ func getDisableLegacyDbfsRequestFromPb(pb *getDisableLegacyDbfsRequestPb) (*GetD
 		return nil, nil
 	}
 	st := &GetDisableLegacyDbfsRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8739,9 +7999,10 @@ type GetDisableLegacyFeaturesRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getDisableLegacyFeaturesRequestToPb(st *GetDisableLegacyFeaturesRequest) (*getDisableLegacyFeaturesRequestPb, error) {
@@ -8749,10 +8010,7 @@ func getDisableLegacyFeaturesRequestToPb(st *GetDisableLegacyFeaturesRequest) (*
 		return nil, nil
 	}
 	pb := &getDisableLegacyFeaturesRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8801,10 +8059,7 @@ func getDisableLegacyFeaturesRequestFromPb(pb *getDisableLegacyFeaturesRequestPb
 		return nil, nil
 	}
 	st := &GetDisableLegacyFeaturesRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8827,9 +8082,10 @@ type GetEnhancedSecurityMonitoringSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getEnhancedSecurityMonitoringSettingRequestToPb(st *GetEnhancedSecurityMonitoringSettingRequest) (*getEnhancedSecurityMonitoringSettingRequestPb, error) {
@@ -8837,10 +8093,7 @@ func getEnhancedSecurityMonitoringSettingRequestToPb(st *GetEnhancedSecurityMoni
 		return nil, nil
 	}
 	pb := &getEnhancedSecurityMonitoringSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8889,10 +8142,7 @@ func getEnhancedSecurityMonitoringSettingRequestFromPb(pb *getEnhancedSecurityMo
 		return nil, nil
 	}
 	st := &GetEnhancedSecurityMonitoringSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8915,9 +8165,10 @@ type GetEsmEnablementAccountSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getEsmEnablementAccountSettingRequestToPb(st *GetEsmEnablementAccountSettingRequest) (*getEsmEnablementAccountSettingRequestPb, error) {
@@ -8925,10 +8176,7 @@ func getEsmEnablementAccountSettingRequestToPb(st *GetEsmEnablementAccountSettin
 		return nil, nil
 	}
 	pb := &getEsmEnablementAccountSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -8977,10 +8225,7 @@ func getEsmEnablementAccountSettingRequestFromPb(pb *getEsmEnablementAccountSett
 		return nil, nil
 	}
 	st := &GetEsmEnablementAccountSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -8997,7 +8242,8 @@ func (st getEsmEnablementAccountSettingRequestPb) MarshalJSON() ([]byte, error) 
 // Get access list
 type GetIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	IpAccessListId string
+	// Wire name: 'ip_access_list_id'
+	IpAccessListId string `tf:"-"`
 }
 
 func getIpAccessListRequestToPb(st *GetIpAccessListRequest) (*getIpAccessListRequestPb, error) {
@@ -9005,10 +8251,7 @@ func getIpAccessListRequestToPb(st *GetIpAccessListRequest) (*getIpAccessListReq
 		return nil, nil
 	}
 	pb := &getIpAccessListRequestPb{}
-	ipAccessListIdPb := &st.IpAccessListId
-	if ipAccessListIdPb != nil {
-		pb.IpAccessListId = *ipAccessListIdPb
-	}
+	pb.IpAccessListId = st.IpAccessListId
 
 	return pb, nil
 }
@@ -9048,16 +8291,14 @@ func getIpAccessListRequestFromPb(pb *getIpAccessListRequestPb) (*GetIpAccessLis
 		return nil, nil
 	}
 	st := &GetIpAccessListRequest{}
-	ipAccessListIdField := &pb.IpAccessListId
-	if ipAccessListIdField != nil {
-		st.IpAccessListId = *ipAccessListIdField
-	}
+	st.IpAccessListId = pb.IpAccessListId
 
 	return st, nil
 }
 
 type GetIpAccessListResponse struct {
 	// Definition of an IP Access list
+	// Wire name: 'ip_access_list'
 	IpAccessList *IpAccessListInfo
 }
 
@@ -9125,6 +8366,8 @@ func getIpAccessListResponseFromPb(pb *getIpAccessListResponsePb) (*GetIpAccessL
 
 // IP access lists were successfully returned.
 type GetIpAccessListsResponse struct {
+
+	// Wire name: 'ip_access_lists'
 	IpAccessLists []IpAccessListInfo
 }
 
@@ -9185,13 +8428,13 @@ func getIpAccessListsResponseFromPb(pb *getIpAccessListsResponsePb) (*GetIpAcces
 	st := &GetIpAccessListsResponse{}
 
 	var ipAccessListsField []IpAccessListInfo
-	for _, item := range pb.IpAccessLists {
-		itemField, err := ipAccessListInfoFromPb(&item)
+	for _, itemPb := range pb.IpAccessLists {
+		item, err := ipAccessListInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			ipAccessListsField = append(ipAccessListsField, *itemField)
+		if item != nil {
+			ipAccessListsField = append(ipAccessListsField, *item)
 		}
 	}
 	st.IpAccessLists = ipAccessListsField
@@ -9202,7 +8445,8 @@ func getIpAccessListsResponseFromPb(pb *getIpAccessListsResponsePb) (*GetIpAcces
 // Get a network connectivity configuration
 type GetNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
-	NetworkConnectivityConfigId string
+	// Wire name: 'network_connectivity_config_id'
+	NetworkConnectivityConfigId string `tf:"-"`
 }
 
 func getNetworkConnectivityConfigurationRequestToPb(st *GetNetworkConnectivityConfigurationRequest) (*getNetworkConnectivityConfigurationRequestPb, error) {
@@ -9210,10 +8454,7 @@ func getNetworkConnectivityConfigurationRequestToPb(st *GetNetworkConnectivityCo
 		return nil, nil
 	}
 	pb := &getNetworkConnectivityConfigurationRequestPb{}
-	networkConnectivityConfigIdPb := &st.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdPb != nil {
-		pb.NetworkConnectivityConfigId = *networkConnectivityConfigIdPb
-	}
+	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
 
 	return pb, nil
 }
@@ -9253,17 +8494,16 @@ func getNetworkConnectivityConfigurationRequestFromPb(pb *getNetworkConnectivity
 		return nil, nil
 	}
 	st := &GetNetworkConnectivityConfigurationRequest{}
-	networkConnectivityConfigIdField := &pb.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdField != nil {
-		st.NetworkConnectivityConfigId = *networkConnectivityConfigIdField
-	}
+	st.NetworkConnectivityConfigId = pb.NetworkConnectivityConfigId
 
 	return st, nil
 }
 
 // Get a notification destination
 type GetNotificationDestinationRequest struct {
-	Id string
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
 }
 
 func getNotificationDestinationRequestToPb(st *GetNotificationDestinationRequest) (*getNotificationDestinationRequestPb, error) {
@@ -9271,10 +8511,7 @@ func getNotificationDestinationRequestToPb(st *GetNotificationDestinationRequest
 		return nil, nil
 	}
 	pb := &getNotificationDestinationRequestPb{}
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	return pb, nil
 }
@@ -9313,10 +8550,7 @@ func getNotificationDestinationRequestFromPb(pb *getNotificationDestinationReque
 		return nil, nil
 	}
 	st := &GetNotificationDestinationRequest{}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.Id = pb.Id
 
 	return st, nil
 }
@@ -9330,9 +8564,10 @@ type GetPersonalComputeSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getPersonalComputeSettingRequestToPb(st *GetPersonalComputeSettingRequest) (*getPersonalComputeSettingRequestPb, error) {
@@ -9340,10 +8575,7 @@ func getPersonalComputeSettingRequestToPb(st *GetPersonalComputeSettingRequest) 
 		return nil, nil
 	}
 	pb := &getPersonalComputeSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9392,10 +8624,7 @@ func getPersonalComputeSettingRequestFromPb(pb *getPersonalComputeSettingRequest
 		return nil, nil
 	}
 	st := &GetPersonalComputeSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9412,9 +8641,11 @@ func (st getPersonalComputeSettingRequestPb) MarshalJSON() ([]byte, error) {
 // Gets a private endpoint rule
 type GetPrivateEndpointRuleRequest struct {
 	// Your Network Connectvity Configuration ID.
-	NetworkConnectivityConfigId string
+	// Wire name: 'network_connectivity_config_id'
+	NetworkConnectivityConfigId string `tf:"-"`
 	// Your private endpoint rule ID.
-	PrivateEndpointRuleId string
+	// Wire name: 'private_endpoint_rule_id'
+	PrivateEndpointRuleId string `tf:"-"`
 }
 
 func getPrivateEndpointRuleRequestToPb(st *GetPrivateEndpointRuleRequest) (*getPrivateEndpointRuleRequestPb, error) {
@@ -9422,15 +8653,9 @@ func getPrivateEndpointRuleRequestToPb(st *GetPrivateEndpointRuleRequest) (*getP
 		return nil, nil
 	}
 	pb := &getPrivateEndpointRuleRequestPb{}
-	networkConnectivityConfigIdPb := &st.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdPb != nil {
-		pb.NetworkConnectivityConfigId = *networkConnectivityConfigIdPb
-	}
+	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
 
-	privateEndpointRuleIdPb := &st.PrivateEndpointRuleId
-	if privateEndpointRuleIdPb != nil {
-		pb.PrivateEndpointRuleId = *privateEndpointRuleIdPb
-	}
+	pb.PrivateEndpointRuleId = st.PrivateEndpointRuleId
 
 	return pb, nil
 }
@@ -9472,14 +8697,8 @@ func getPrivateEndpointRuleRequestFromPb(pb *getPrivateEndpointRuleRequestPb) (*
 		return nil, nil
 	}
 	st := &GetPrivateEndpointRuleRequest{}
-	networkConnectivityConfigIdField := &pb.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdField != nil {
-		st.NetworkConnectivityConfigId = *networkConnectivityConfigIdField
-	}
-	privateEndpointRuleIdField := &pb.PrivateEndpointRuleId
-	if privateEndpointRuleIdField != nil {
-		st.PrivateEndpointRuleId = *privateEndpointRuleIdField
-	}
+	st.NetworkConnectivityConfigId = pb.NetworkConnectivityConfigId
+	st.PrivateEndpointRuleId = pb.PrivateEndpointRuleId
 
 	return st, nil
 }
@@ -9493,9 +8712,10 @@ type GetRestrictWorkspaceAdminsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string
+	// Wire name: 'etag'
+	Etag string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func getRestrictWorkspaceAdminsSettingRequestToPb(st *GetRestrictWorkspaceAdminsSettingRequest) (*getRestrictWorkspaceAdminsSettingRequestPb, error) {
@@ -9503,10 +8723,7 @@ func getRestrictWorkspaceAdminsSettingRequestToPb(st *GetRestrictWorkspaceAdmins
 		return nil, nil
 	}
 	pb := &getRestrictWorkspaceAdminsSettingRequestPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9555,10 +8772,7 @@ func getRestrictWorkspaceAdminsSettingRequestFromPb(pb *getRestrictWorkspaceAdmi
 		return nil, nil
 	}
 	st := &GetRestrictWorkspaceAdminsSettingRequest{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -9574,7 +8788,9 @@ func (st getRestrictWorkspaceAdminsSettingRequestPb) MarshalJSON() ([]byte, erro
 
 // Check configuration status
 type GetStatusRequest struct {
-	Keys string
+
+	// Wire name: 'keys'
+	Keys string `tf:"-"`
 }
 
 func getStatusRequestToPb(st *GetStatusRequest) (*getStatusRequestPb, error) {
@@ -9582,10 +8798,7 @@ func getStatusRequestToPb(st *GetStatusRequest) (*getStatusRequestPb, error) {
 		return nil, nil
 	}
 	pb := &getStatusRequestPb{}
-	keysPb := &st.Keys
-	if keysPb != nil {
-		pb.Keys = *keysPb
-	}
+	pb.Keys = st.Keys
 
 	return pb, nil
 }
@@ -9624,10 +8837,7 @@ func getStatusRequestFromPb(pb *getStatusRequestPb) (*GetStatusRequest, error) {
 		return nil, nil
 	}
 	st := &GetStatusRequest{}
-	keysField := &pb.Keys
-	if keysField != nil {
-		st.Keys = *keysField
-	}
+	st.Keys = pb.Keys
 
 	return st, nil
 }
@@ -9635,7 +8845,8 @@ func getStatusRequestFromPb(pb *getStatusRequestPb) (*GetStatusRequest, error) {
 // Get token info
 type GetTokenManagementRequest struct {
 	// The ID of the token to get.
-	TokenId string
+	// Wire name: 'token_id'
+	TokenId string `tf:"-"`
 }
 
 func getTokenManagementRequestToPb(st *GetTokenManagementRequest) (*getTokenManagementRequestPb, error) {
@@ -9643,10 +8854,7 @@ func getTokenManagementRequestToPb(st *GetTokenManagementRequest) (*getTokenMana
 		return nil, nil
 	}
 	pb := &getTokenManagementRequestPb{}
-	tokenIdPb := &st.TokenId
-	if tokenIdPb != nil {
-		pb.TokenId = *tokenIdPb
-	}
+	pb.TokenId = st.TokenId
 
 	return pb, nil
 }
@@ -9686,16 +8894,14 @@ func getTokenManagementRequestFromPb(pb *getTokenManagementRequestPb) (*GetToken
 		return nil, nil
 	}
 	st := &GetTokenManagementRequest{}
-	tokenIdField := &pb.TokenId
-	if tokenIdField != nil {
-		st.TokenId = *tokenIdField
-	}
+	st.TokenId = pb.TokenId
 
 	return st, nil
 }
 
 type GetTokenPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []TokenPermissionsDescription
 }
 
@@ -9757,13 +8963,13 @@ func getTokenPermissionLevelsResponseFromPb(pb *getTokenPermissionLevelsResponse
 	st := &GetTokenPermissionLevelsResponse{}
 
 	var permissionLevelsField []TokenPermissionsDescription
-	for _, item := range pb.PermissionLevels {
-		itemField, err := tokenPermissionsDescriptionFromPb(&item)
+	for _, itemPb := range pb.PermissionLevels {
+		item, err := tokenPermissionsDescriptionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			permissionLevelsField = append(permissionLevelsField, *itemField)
+		if item != nil {
+			permissionLevelsField = append(permissionLevelsField, *item)
 		}
 	}
 	st.PermissionLevels = permissionLevelsField
@@ -9773,6 +8979,8 @@ func getTokenPermissionLevelsResponseFromPb(pb *getTokenPermissionLevelsResponse
 
 // Token with specified Token ID was successfully returned.
 type GetTokenResponse struct {
+
+	// Wire name: 'token_info'
 	TokenInfo *TokenInfo
 }
 
@@ -9840,18 +9048,25 @@ func getTokenResponseFromPb(pb *getTokenResponsePb) (*GetTokenResponse, error) {
 // Definition of an IP Access list
 type IpAccessListInfo struct {
 	// Total number of IP or CIDR values.
+	// Wire name: 'address_count'
 	AddressCount int
 	// Creation timestamp in milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64
 	// User ID of the user who created this list.
+	// Wire name: 'created_by'
 	CreatedBy int64
 	// Specifies whether this IP access list is enabled.
+	// Wire name: 'enabled'
 	Enabled bool
 
+	// Wire name: 'ip_addresses'
 	IpAddresses []string
 	// Label for the IP access list. This **cannot** be empty.
+	// Wire name: 'label'
 	Label string
 	// Universally unique identifier (UUID) of the IP access list.
+	// Wire name: 'list_id'
 	ListId string
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
@@ -9859,13 +9074,16 @@ type IpAccessListInfo struct {
 	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
+	// Wire name: 'list_type'
 	ListType ListType
 	// Update timestamp in milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64
 	// User ID of the user who updated this list.
+	// Wire name: 'updated_by'
 	UpdatedBy int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func ipAccessListInfoToPb(st *IpAccessListInfo) (*ipAccessListInfoPb, error) {
@@ -9873,59 +9091,25 @@ func ipAccessListInfoToPb(st *IpAccessListInfo) (*ipAccessListInfoPb, error) {
 		return nil, nil
 	}
 	pb := &ipAccessListInfoPb{}
-	addressCountPb := &st.AddressCount
-	if addressCountPb != nil {
-		pb.AddressCount = *addressCountPb
-	}
+	pb.AddressCount = st.AddressCount
 
-	createdAtPb := &st.CreatedAt
-	if createdAtPb != nil {
-		pb.CreatedAt = *createdAtPb
-	}
+	pb.CreatedAt = st.CreatedAt
 
-	createdByPb := &st.CreatedBy
-	if createdByPb != nil {
-		pb.CreatedBy = *createdByPb
-	}
+	pb.CreatedBy = st.CreatedBy
 
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
-	var ipAddressesPb []string
-	for _, item := range st.IpAddresses {
-		itemPb := &item
-		if itemPb != nil {
-			ipAddressesPb = append(ipAddressesPb, *itemPb)
-		}
-	}
-	pb.IpAddresses = ipAddressesPb
+	pb.IpAddresses = st.IpAddresses
 
-	labelPb := &st.Label
-	if labelPb != nil {
-		pb.Label = *labelPb
-	}
+	pb.Label = st.Label
 
-	listIdPb := &st.ListId
-	if listIdPb != nil {
-		pb.ListId = *listIdPb
-	}
+	pb.ListId = st.ListId
 
-	listTypePb := &st.ListType
-	if listTypePb != nil {
-		pb.ListType = *listTypePb
-	}
+	pb.ListType = st.ListType
 
-	updatedAtPb := &st.UpdatedAt
-	if updatedAtPb != nil {
-		pb.UpdatedAt = *updatedAtPb
-	}
+	pb.UpdatedAt = st.UpdatedAt
 
-	updatedByPb := &st.UpdatedBy
-	if updatedByPb != nil {
-		pb.UpdatedBy = *updatedByPb
-	}
+	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -9991,51 +9175,16 @@ func ipAccessListInfoFromPb(pb *ipAccessListInfoPb) (*IpAccessListInfo, error) {
 		return nil, nil
 	}
 	st := &IpAccessListInfo{}
-	addressCountField := &pb.AddressCount
-	if addressCountField != nil {
-		st.AddressCount = *addressCountField
-	}
-	createdAtField := &pb.CreatedAt
-	if createdAtField != nil {
-		st.CreatedAt = *createdAtField
-	}
-	createdByField := &pb.CreatedBy
-	if createdByField != nil {
-		st.CreatedBy = *createdByField
-	}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
-
-	var ipAddressesField []string
-	for _, item := range pb.IpAddresses {
-		itemField := &item
-		if itemField != nil {
-			ipAddressesField = append(ipAddressesField, *itemField)
-		}
-	}
-	st.IpAddresses = ipAddressesField
-	labelField := &pb.Label
-	if labelField != nil {
-		st.Label = *labelField
-	}
-	listIdField := &pb.ListId
-	if listIdField != nil {
-		st.ListId = *listIdField
-	}
-	listTypeField := &pb.ListType
-	if listTypeField != nil {
-		st.ListType = *listTypeField
-	}
-	updatedAtField := &pb.UpdatedAt
-	if updatedAtField != nil {
-		st.UpdatedAt = *updatedAtField
-	}
-	updatedByField := &pb.UpdatedBy
-	if updatedByField != nil {
-		st.UpdatedBy = *updatedByField
-	}
+	st.AddressCount = pb.AddressCount
+	st.CreatedAt = pb.CreatedAt
+	st.CreatedBy = pb.CreatedBy
+	st.Enabled = pb.Enabled
+	st.IpAddresses = pb.IpAddresses
+	st.Label = pb.Label
+	st.ListId = pb.ListId
+	st.ListType = pb.ListType
+	st.UpdatedAt = pb.UpdatedAt
+	st.UpdatedBy = pb.UpdatedBy
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10051,6 +9200,8 @@ func (st ipAccessListInfoPb) MarshalJSON() ([]byte, error) {
 
 // IP access lists were successfully returned.
 type ListIpAccessListResponse struct {
+
+	// Wire name: 'ip_access_lists'
 	IpAccessLists []IpAccessListInfo
 }
 
@@ -10111,13 +9262,13 @@ func listIpAccessListResponseFromPb(pb *listIpAccessListResponsePb) (*ListIpAcce
 	st := &ListIpAccessListResponse{}
 
 	var ipAccessListsField []IpAccessListInfo
-	for _, item := range pb.IpAccessLists {
-		itemField, err := ipAccessListInfoFromPb(&item)
+	for _, itemPb := range pb.IpAccessLists {
+		item, err := ipAccessListInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			ipAccessListsField = append(ipAccessListsField, *itemField)
+		if item != nil {
+			ipAccessListsField = append(ipAccessListsField, *item)
 		}
 	}
 	st.IpAccessLists = ipAccessListsField
@@ -10127,12 +9278,15 @@ func listIpAccessListResponseFromPb(pb *listIpAccessListResponsePb) (*ListIpAcce
 
 // The private endpoint rule list was successfully retrieved.
 type ListNccAzurePrivateEndpointRulesResponse struct {
+
+	// Wire name: 'items'
 	Items []NccAzurePrivateEndpointRule
 	// A token that can be used to get the next page of results. If null, there
 	// are no more results to show.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listNccAzurePrivateEndpointRulesResponseToPb(st *ListNccAzurePrivateEndpointRulesResponse) (*listNccAzurePrivateEndpointRulesResponsePb, error) {
@@ -10153,10 +9307,7 @@ func listNccAzurePrivateEndpointRulesResponseToPb(st *ListNccAzurePrivateEndpoin
 	}
 	pb.Items = itemsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10203,20 +9354,17 @@ func listNccAzurePrivateEndpointRulesResponseFromPb(pb *listNccAzurePrivateEndpo
 	st := &ListNccAzurePrivateEndpointRulesResponse{}
 
 	var itemsField []NccAzurePrivateEndpointRule
-	for _, item := range pb.Items {
-		itemField, err := nccAzurePrivateEndpointRuleFromPb(&item)
+	for _, itemPb := range pb.Items {
+		item, err := nccAzurePrivateEndpointRuleFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			itemsField = append(itemsField, *itemField)
+		if item != nil {
+			itemsField = append(itemsField, *item)
 		}
 	}
 	st.Items = itemsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10233,9 +9381,10 @@ func (st listNccAzurePrivateEndpointRulesResponsePb) MarshalJSON() ([]byte, erro
 // List network connectivity configurations
 type ListNetworkConnectivityConfigurationsRequest struct {
 	// Pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listNetworkConnectivityConfigurationsRequestToPb(st *ListNetworkConnectivityConfigurationsRequest) (*listNetworkConnectivityConfigurationsRequestPb, error) {
@@ -10243,10 +9392,7 @@ func listNetworkConnectivityConfigurationsRequestToPb(st *ListNetworkConnectivit
 		return nil, nil
 	}
 	pb := &listNetworkConnectivityConfigurationsRequestPb{}
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10289,10 +9435,7 @@ func listNetworkConnectivityConfigurationsRequestFromPb(pb *listNetworkConnectiv
 		return nil, nil
 	}
 	st := &ListNetworkConnectivityConfigurationsRequest{}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10308,12 +9451,15 @@ func (st listNetworkConnectivityConfigurationsRequestPb) MarshalJSON() ([]byte, 
 
 // The network connectivity configuration list was successfully retrieved.
 type ListNetworkConnectivityConfigurationsResponse struct {
+
+	// Wire name: 'items'
 	Items []NetworkConnectivityConfiguration
 	// A token that can be used to get the next page of results. If null, there
 	// are no more results to show.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listNetworkConnectivityConfigurationsResponseToPb(st *ListNetworkConnectivityConfigurationsResponse) (*listNetworkConnectivityConfigurationsResponsePb, error) {
@@ -10334,10 +9480,7 @@ func listNetworkConnectivityConfigurationsResponseToPb(st *ListNetworkConnectivi
 	}
 	pb.Items = itemsPb
 
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10384,20 +9527,17 @@ func listNetworkConnectivityConfigurationsResponseFromPb(pb *listNetworkConnecti
 	st := &ListNetworkConnectivityConfigurationsResponse{}
 
 	var itemsField []NetworkConnectivityConfiguration
-	for _, item := range pb.Items {
-		itemField, err := networkConnectivityConfigurationFromPb(&item)
+	for _, itemPb := range pb.Items {
+		item, err := networkConnectivityConfigurationFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			itemsField = append(itemsField, *itemField)
+		if item != nil {
+			itemsField = append(itemsField, *item)
 		}
 	}
 	st.Items = itemsField
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10413,11 +9553,14 @@ func (st listNetworkConnectivityConfigurationsResponsePb) MarshalJSON() ([]byte,
 
 // List notification destinations
 type ListNotificationDestinationsRequest struct {
-	PageSize int64
 
-	PageToken string
+	// Wire name: 'page_size'
+	PageSize int64 `tf:"-"`
 
-	ForceSendFields []string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
 func listNotificationDestinationsRequestToPb(st *ListNotificationDestinationsRequest) (*listNotificationDestinationsRequestPb, error) {
@@ -10425,15 +9568,9 @@ func listNotificationDestinationsRequestToPb(st *ListNotificationDestinationsReq
 		return nil, nil
 	}
 	pb := &listNotificationDestinationsRequestPb{}
-	pageSizePb := &st.PageSize
-	if pageSizePb != nil {
-		pb.PageSize = *pageSizePb
-	}
+	pb.PageSize = st.PageSize
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10477,14 +9614,8 @@ func listNotificationDestinationsRequestFromPb(pb *listNotificationDestinationsR
 		return nil, nil
 	}
 	st := &ListNotificationDestinationsRequest{}
-	pageSizeField := &pb.PageSize
-	if pageSizeField != nil {
-		st.PageSize = *pageSizeField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.PageSize = pb.PageSize
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10500,11 +9631,13 @@ func (st listNotificationDestinationsRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListNotificationDestinationsResponse struct {
 	// Page token for next of results.
+	// Wire name: 'next_page_token'
 	NextPageToken string
 
+	// Wire name: 'results'
 	Results []ListNotificationDestinationsResult
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listNotificationDestinationsResponseToPb(st *ListNotificationDestinationsResponse) (*listNotificationDestinationsResponsePb, error) {
@@ -10512,10 +9645,7 @@ func listNotificationDestinationsResponseToPb(st *ListNotificationDestinationsRe
 		return nil, nil
 	}
 	pb := &listNotificationDestinationsResponsePb{}
-	nextPageTokenPb := &st.NextPageToken
-	if nextPageTokenPb != nil {
-		pb.NextPageToken = *nextPageTokenPb
-	}
+	pb.NextPageToken = st.NextPageToken
 
 	var resultsPb []listNotificationDestinationsResultPb
 	for _, item := range st.Results {
@@ -10572,19 +9702,16 @@ func listNotificationDestinationsResponseFromPb(pb *listNotificationDestinations
 		return nil, nil
 	}
 	st := &ListNotificationDestinationsResponse{}
-	nextPageTokenField := &pb.NextPageToken
-	if nextPageTokenField != nil {
-		st.NextPageToken = *nextPageTokenField
-	}
+	st.NextPageToken = pb.NextPageToken
 
 	var resultsField []ListNotificationDestinationsResult
-	for _, item := range pb.Results {
-		itemField, err := listNotificationDestinationsResultFromPb(&item)
+	for _, itemPb := range pb.Results {
+		item, err := listNotificationDestinationsResultFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			resultsField = append(resultsField, *itemField)
+		if item != nil {
+			resultsField = append(resultsField, *item)
 		}
 	}
 	st.Results = resultsField
@@ -10604,13 +9731,16 @@ func (st listNotificationDestinationsResponsePb) MarshalJSON() ([]byte, error) {
 type ListNotificationDestinationsResult struct {
 	// [Output-only] The type of the notification destination. The type can not
 	// be changed once set.
+	// Wire name: 'destination_type'
 	DestinationType DestinationType
 	// The display name for the notification destination.
+	// Wire name: 'display_name'
 	DisplayName string
 	// UUID identifying notification destination.
+	// Wire name: 'id'
 	Id string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listNotificationDestinationsResultToPb(st *ListNotificationDestinationsResult) (*listNotificationDestinationsResultPb, error) {
@@ -10618,20 +9748,11 @@ func listNotificationDestinationsResultToPb(st *ListNotificationDestinationsResu
 		return nil, nil
 	}
 	pb := &listNotificationDestinationsResultPb{}
-	destinationTypePb := &st.DestinationType
-	if destinationTypePb != nil {
-		pb.DestinationType = *destinationTypePb
-	}
+	pb.DestinationType = st.DestinationType
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10679,18 +9800,9 @@ func listNotificationDestinationsResultFromPb(pb *listNotificationDestinationsRe
 		return nil, nil
 	}
 	st := &ListNotificationDestinationsResult{}
-	destinationTypeField := &pb.DestinationType
-	if destinationTypeField != nil {
-		st.DestinationType = *destinationTypeField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.DestinationType = pb.DestinationType
+	st.DisplayName = pb.DisplayName
+	st.Id = pb.Id
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10707,11 +9819,13 @@ func (st listNotificationDestinationsResultPb) MarshalJSON() ([]byte, error) {
 // List private endpoint rules
 type ListPrivateEndpointRulesRequest struct {
 	// Your Network Connectvity Configuration ID.
-	NetworkConnectivityConfigId string
+	// Wire name: 'network_connectivity_config_id'
+	NetworkConnectivityConfigId string `tf:"-"`
 	// Pagination token to go to next page based on previous query.
-	PageToken string
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listPrivateEndpointRulesRequestToPb(st *ListPrivateEndpointRulesRequest) (*listPrivateEndpointRulesRequestPb, error) {
@@ -10719,15 +9833,9 @@ func listPrivateEndpointRulesRequestToPb(st *ListPrivateEndpointRulesRequest) (*
 		return nil, nil
 	}
 	pb := &listPrivateEndpointRulesRequestPb{}
-	networkConnectivityConfigIdPb := &st.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdPb != nil {
-		pb.NetworkConnectivityConfigId = *networkConnectivityConfigIdPb
-	}
+	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
 
-	pageTokenPb := &st.PageToken
-	if pageTokenPb != nil {
-		pb.PageToken = *pageTokenPb
-	}
+	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10772,14 +9880,8 @@ func listPrivateEndpointRulesRequestFromPb(pb *listPrivateEndpointRulesRequestPb
 		return nil, nil
 	}
 	st := &ListPrivateEndpointRulesRequest{}
-	networkConnectivityConfigIdField := &pb.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdField != nil {
-		st.NetworkConnectivityConfigId = *networkConnectivityConfigIdField
-	}
-	pageTokenField := &pb.PageToken
-	if pageTokenField != nil {
-		st.PageToken = *pageTokenField
-	}
+	st.NetworkConnectivityConfigId = pb.NetworkConnectivityConfigId
+	st.PageToken = pb.PageToken
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10795,6 +9897,7 @@ func (st listPrivateEndpointRulesRequestPb) MarshalJSON() ([]byte, error) {
 
 type ListPublicTokensResponse struct {
 	// The information for each token.
+	// Wire name: 'token_infos'
 	TokenInfos []PublicTokenInfo
 }
 
@@ -10856,13 +9959,13 @@ func listPublicTokensResponseFromPb(pb *listPublicTokensResponsePb) (*ListPublic
 	st := &ListPublicTokensResponse{}
 
 	var tokenInfosField []PublicTokenInfo
-	for _, item := range pb.TokenInfos {
-		itemField, err := publicTokenInfoFromPb(&item)
+	for _, itemPb := range pb.TokenInfos {
+		item, err := publicTokenInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tokenInfosField = append(tokenInfosField, *itemField)
+		if item != nil {
+			tokenInfosField = append(tokenInfosField, *item)
 		}
 	}
 	st.TokenInfos = tokenInfosField
@@ -10873,11 +9976,13 @@ func listPublicTokensResponseFromPb(pb *listPublicTokensResponsePb) (*ListPublic
 // List all tokens
 type ListTokenManagementRequest struct {
 	// User ID of the user that created the token.
-	CreatedById int64
+	// Wire name: 'created_by_id'
+	CreatedById int64 `tf:"-"`
 	// Username of the user that created the token.
-	CreatedByUsername string
+	// Wire name: 'created_by_username'
+	CreatedByUsername string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func listTokenManagementRequestToPb(st *ListTokenManagementRequest) (*listTokenManagementRequestPb, error) {
@@ -10885,15 +9990,9 @@ func listTokenManagementRequestToPb(st *ListTokenManagementRequest) (*listTokenM
 		return nil, nil
 	}
 	pb := &listTokenManagementRequestPb{}
-	createdByIdPb := &st.CreatedById
-	if createdByIdPb != nil {
-		pb.CreatedById = *createdByIdPb
-	}
+	pb.CreatedById = st.CreatedById
 
-	createdByUsernamePb := &st.CreatedByUsername
-	if createdByUsernamePb != nil {
-		pb.CreatedByUsername = *createdByUsernamePb
-	}
+	pb.CreatedByUsername = st.CreatedByUsername
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -10938,14 +10037,8 @@ func listTokenManagementRequestFromPb(pb *listTokenManagementRequestPb) (*ListTo
 		return nil, nil
 	}
 	st := &ListTokenManagementRequest{}
-	createdByIdField := &pb.CreatedById
-	if createdByIdField != nil {
-		st.CreatedById = *createdByIdField
-	}
-	createdByUsernameField := &pb.CreatedByUsername
-	if createdByUsernameField != nil {
-		st.CreatedByUsername = *createdByUsernameField
-	}
+	st.CreatedById = pb.CreatedById
+	st.CreatedByUsername = pb.CreatedByUsername
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -10962,6 +10055,7 @@ func (st listTokenManagementRequestPb) MarshalJSON() ([]byte, error) {
 // Tokens were successfully returned.
 type ListTokensResponse struct {
 	// Token metadata of each user-created token in the workspace
+	// Wire name: 'token_infos'
 	TokenInfos []TokenInfo
 }
 
@@ -11023,13 +10117,13 @@ func listTokensResponseFromPb(pb *listTokensResponsePb) (*ListTokensResponse, er
 	st := &ListTokensResponse{}
 
 	var tokenInfosField []TokenInfo
-	for _, item := range pb.TokenInfos {
-		itemField, err := tokenInfoFromPb(&item)
+	for _, itemPb := range pb.TokenInfos {
+		item, err := tokenInfoFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			tokenInfosField = append(tokenInfosField, *itemField)
+		if item != nil {
+			tokenInfosField = append(tokenInfosField, *item)
 		}
 	}
 	st.TokenInfos = tokenInfosField
@@ -11091,11 +10185,13 @@ func listTypeFromPb(pb *listTypePb) (*ListType, error) {
 
 type MicrosoftTeamsConfig struct {
 	// [Input-Only] URL for Microsoft Teams.
+	// Wire name: 'url'
 	Url string
 	// [Output-Only] Whether URL is set.
+	// Wire name: 'url_set'
 	UrlSet bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func microsoftTeamsConfigToPb(st *MicrosoftTeamsConfig) (*microsoftTeamsConfigPb, error) {
@@ -11103,15 +10199,9 @@ func microsoftTeamsConfigToPb(st *MicrosoftTeamsConfig) (*microsoftTeamsConfigPb
 		return nil, nil
 	}
 	pb := &microsoftTeamsConfigPb{}
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
-	urlSetPb := &st.UrlSet
-	if urlSetPb != nil {
-		pb.UrlSet = *urlSetPb
-	}
+	pb.UrlSet = st.UrlSet
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11156,14 +10246,8 @@ func microsoftTeamsConfigFromPb(pb *microsoftTeamsConfigPb) (*MicrosoftTeamsConf
 		return nil, nil
 	}
 	st := &MicrosoftTeamsConfig{}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
-	urlSetField := &pb.UrlSet
-	if urlSetField != nil {
-		st.UrlSet = *urlSetField
-	}
+	st.Url = pb.Url
+	st.UrlSet = pb.UrlSet
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11182,6 +10266,7 @@ func (st microsoftTeamsConfigPb) MarshalJSON() ([]byte, error) {
 type NccAwsStableIpRule struct {
 	// The list of stable IP CIDR blocks from which Databricks network traffic
 	// originates when accessing your resources.
+	// Wire name: 'cidr_blocks'
 	CidrBlocks []string
 }
 
@@ -11190,15 +10275,7 @@ func nccAwsStableIpRuleToPb(st *NccAwsStableIpRule) (*nccAwsStableIpRulePb, erro
 		return nil, nil
 	}
 	pb := &nccAwsStableIpRulePb{}
-
-	var cidrBlocksPb []string
-	for _, item := range st.CidrBlocks {
-		itemPb := &item
-		if itemPb != nil {
-			cidrBlocksPb = append(cidrBlocksPb, *itemPb)
-		}
-	}
-	pb.CidrBlocks = cidrBlocksPb
+	pb.CidrBlocks = st.CidrBlocks
 
 	return pb, nil
 }
@@ -11239,15 +10316,7 @@ func nccAwsStableIpRuleFromPb(pb *nccAwsStableIpRulePb) (*NccAwsStableIpRule, er
 		return nil, nil
 	}
 	st := &NccAwsStableIpRule{}
-
-	var cidrBlocksField []string
-	for _, item := range pb.CidrBlocks {
-		itemField := &item
-		if itemField != nil {
-			cidrBlocksField = append(cidrBlocksField, *itemField)
-		}
-	}
-	st.CidrBlocks = cidrBlocksField
+	st.CidrBlocks = pb.CidrBlocks
 
 	return st, nil
 }
@@ -11267,19 +10336,25 @@ type NccAzurePrivateEndpointRule struct {
 	// link resource owner, the private endpoint becomes informative and should
 	// be deleted for clean-up. - EXPIRED: If the endpoint was created but not
 	// approved in 14 days, it will be EXPIRED.
+	// Wire name: 'connection_state'
 	ConnectionState NccAzurePrivateEndpointRuleConnectionState
 	// Time in epoch milliseconds when this object was created.
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// Whether this private endpoint is deactivated.
+	// Wire name: 'deactivated'
 	Deactivated bool
 	// Time in epoch milliseconds when this object was deactivated.
+	// Wire name: 'deactivated_at'
 	DeactivatedAt int64
 	// Only used by private endpoints to customer-managed resources.
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
+	// Wire name: 'domain_names'
 	DomainNames []string
 	// The name of the Azure private endpoint resource.
+	// Wire name: 'endpoint_name'
 	EndpointName string
 	// Only used by private endpoints to Azure first-party services. Enum: blob
 	// | dfs | sqlServer | mysqlServer
@@ -11287,18 +10362,23 @@ type NccAzurePrivateEndpointRule struct {
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
 	// one for blob and one for dfs.
+	// Wire name: 'group_id'
 	GroupId string
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
+	// Wire name: 'network_connectivity_config_id'
 	NetworkConnectivityConfigId string
 	// The Azure resource ID of the target resource.
+	// Wire name: 'resource_id'
 	ResourceId string
 	// The ID of a private endpoint rule.
+	// Wire name: 'rule_id'
 	RuleId string
 	// Time in epoch milliseconds when this object was updated.
+	// Wire name: 'updated_time'
 	UpdatedTime int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func nccAzurePrivateEndpointRuleToPb(st *NccAzurePrivateEndpointRule) (*nccAzurePrivateEndpointRulePb, error) {
@@ -11306,64 +10386,27 @@ func nccAzurePrivateEndpointRuleToPb(st *NccAzurePrivateEndpointRule) (*nccAzure
 		return nil, nil
 	}
 	pb := &nccAzurePrivateEndpointRulePb{}
-	connectionStatePb := &st.ConnectionState
-	if connectionStatePb != nil {
-		pb.ConnectionState = *connectionStatePb
-	}
+	pb.ConnectionState = st.ConnectionState
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
-	deactivatedPb := &st.Deactivated
-	if deactivatedPb != nil {
-		pb.Deactivated = *deactivatedPb
-	}
+	pb.Deactivated = st.Deactivated
 
-	deactivatedAtPb := &st.DeactivatedAt
-	if deactivatedAtPb != nil {
-		pb.DeactivatedAt = *deactivatedAtPb
-	}
+	pb.DeactivatedAt = st.DeactivatedAt
 
-	var domainNamesPb []string
-	for _, item := range st.DomainNames {
-		itemPb := &item
-		if itemPb != nil {
-			domainNamesPb = append(domainNamesPb, *itemPb)
-		}
-	}
-	pb.DomainNames = domainNamesPb
+	pb.DomainNames = st.DomainNames
 
-	endpointNamePb := &st.EndpointName
-	if endpointNamePb != nil {
-		pb.EndpointName = *endpointNamePb
-	}
+	pb.EndpointName = st.EndpointName
 
-	groupIdPb := &st.GroupId
-	if groupIdPb != nil {
-		pb.GroupId = *groupIdPb
-	}
+	pb.GroupId = st.GroupId
 
-	networkConnectivityConfigIdPb := &st.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdPb != nil {
-		pb.NetworkConnectivityConfigId = *networkConnectivityConfigIdPb
-	}
+	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
 
-	resourceIdPb := &st.ResourceId
-	if resourceIdPb != nil {
-		pb.ResourceId = *resourceIdPb
-	}
+	pb.ResourceId = st.ResourceId
 
-	ruleIdPb := &st.RuleId
-	if ruleIdPb != nil {
-		pb.RuleId = *ruleIdPb
-	}
+	pb.RuleId = st.RuleId
 
-	updatedTimePb := &st.UpdatedTime
-	if updatedTimePb != nil {
-		pb.UpdatedTime = *updatedTimePb
-	}
+	pb.UpdatedTime = st.UpdatedTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11446,55 +10489,17 @@ func nccAzurePrivateEndpointRuleFromPb(pb *nccAzurePrivateEndpointRulePb) (*NccA
 		return nil, nil
 	}
 	st := &NccAzurePrivateEndpointRule{}
-	connectionStateField := &pb.ConnectionState
-	if connectionStateField != nil {
-		st.ConnectionState = *connectionStateField
-	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
-	deactivatedField := &pb.Deactivated
-	if deactivatedField != nil {
-		st.Deactivated = *deactivatedField
-	}
-	deactivatedAtField := &pb.DeactivatedAt
-	if deactivatedAtField != nil {
-		st.DeactivatedAt = *deactivatedAtField
-	}
-
-	var domainNamesField []string
-	for _, item := range pb.DomainNames {
-		itemField := &item
-		if itemField != nil {
-			domainNamesField = append(domainNamesField, *itemField)
-		}
-	}
-	st.DomainNames = domainNamesField
-	endpointNameField := &pb.EndpointName
-	if endpointNameField != nil {
-		st.EndpointName = *endpointNameField
-	}
-	groupIdField := &pb.GroupId
-	if groupIdField != nil {
-		st.GroupId = *groupIdField
-	}
-	networkConnectivityConfigIdField := &pb.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdField != nil {
-		st.NetworkConnectivityConfigId = *networkConnectivityConfigIdField
-	}
-	resourceIdField := &pb.ResourceId
-	if resourceIdField != nil {
-		st.ResourceId = *resourceIdField
-	}
-	ruleIdField := &pb.RuleId
-	if ruleIdField != nil {
-		st.RuleId = *ruleIdField
-	}
-	updatedTimeField := &pb.UpdatedTime
-	if updatedTimeField != nil {
-		st.UpdatedTime = *updatedTimeField
-	}
+	st.ConnectionState = pb.ConnectionState
+	st.CreationTime = pb.CreationTime
+	st.Deactivated = pb.Deactivated
+	st.DeactivatedAt = pb.DeactivatedAt
+	st.DomainNames = pb.DomainNames
+	st.EndpointName = pb.EndpointName
+	st.GroupId = pb.GroupId
+	st.NetworkConnectivityConfigId = pb.NetworkConnectivityConfigId
+	st.ResourceId = pb.ResourceId
+	st.RuleId = pb.RuleId
+	st.UpdatedTime = pb.UpdatedTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11566,13 +10571,16 @@ func nccAzurePrivateEndpointRuleConnectionStateFromPb(pb *nccAzurePrivateEndpoin
 type NccAzureServiceEndpointRule struct {
 	// The list of subnets from which Databricks network traffic originates when
 	// accessing your Azure resources.
+	// Wire name: 'subnets'
 	Subnets []string
 	// The Azure region in which this service endpoint rule applies..
+	// Wire name: 'target_region'
 	TargetRegion string
 	// The Azure services to which this service endpoint rule applies to.
+	// Wire name: 'target_services'
 	TargetServices []EgressResourceType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func nccAzureServiceEndpointRuleToPb(st *NccAzureServiceEndpointRule) (*nccAzureServiceEndpointRulePb, error) {
@@ -11580,29 +10588,11 @@ func nccAzureServiceEndpointRuleToPb(st *NccAzureServiceEndpointRule) (*nccAzure
 		return nil, nil
 	}
 	pb := &nccAzureServiceEndpointRulePb{}
+	pb.Subnets = st.Subnets
 
-	var subnetsPb []string
-	for _, item := range st.Subnets {
-		itemPb := &item
-		if itemPb != nil {
-			subnetsPb = append(subnetsPb, *itemPb)
-		}
-	}
-	pb.Subnets = subnetsPb
+	pb.TargetRegion = st.TargetRegion
 
-	targetRegionPb := &st.TargetRegion
-	if targetRegionPb != nil {
-		pb.TargetRegion = *targetRegionPb
-	}
-
-	var targetServicesPb []EgressResourceType
-	for _, item := range st.TargetServices {
-		itemPb := &item
-		if itemPb != nil {
-			targetServicesPb = append(targetServicesPb, *itemPb)
-		}
-	}
-	pb.TargetServices = targetServicesPb
+	pb.TargetServices = st.TargetServices
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -11650,28 +10640,9 @@ func nccAzureServiceEndpointRuleFromPb(pb *nccAzureServiceEndpointRulePb) (*NccA
 		return nil, nil
 	}
 	st := &NccAzureServiceEndpointRule{}
-
-	var subnetsField []string
-	for _, item := range pb.Subnets {
-		itemField := &item
-		if itemField != nil {
-			subnetsField = append(subnetsField, *itemField)
-		}
-	}
-	st.Subnets = subnetsField
-	targetRegionField := &pb.TargetRegion
-	if targetRegionField != nil {
-		st.TargetRegion = *targetRegionField
-	}
-
-	var targetServicesField []EgressResourceType
-	for _, item := range pb.TargetServices {
-		itemField := &item
-		if itemField != nil {
-			targetServicesField = append(targetServicesField, *itemField)
-		}
-	}
-	st.TargetServices = targetServicesField
+	st.Subnets = pb.Subnets
+	st.TargetRegion = pb.TargetRegion
+	st.TargetServices = pb.TargetServices
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -11689,9 +10660,11 @@ type NccEgressConfig struct {
 	// The network connectivity rules that are applied by default without
 	// resource specific configurations. You can find the stable network
 	// information of your serverless compute resources here.
+	// Wire name: 'default_rules'
 	DefaultRules *NccEgressDefaultRules
 	// The network connectivity rules that configured for each destinations.
 	// These rules override default rules.
+	// Wire name: 'target_rules'
 	TargetRules *NccEgressTargetRules
 }
 
@@ -11782,10 +10755,12 @@ type NccEgressDefaultRules struct {
 	// The stable AWS IP CIDR blocks. You can use these to configure the
 	// firewall of your resources to allow traffic from your Databricks
 	// workspace.
+	// Wire name: 'aws_stable_ip_rule'
 	AwsStableIpRule *NccAwsStableIpRule
 	// The stable Azure service endpoints. You can configure the firewall of
 	// your Azure resources to allow traffic from your Databricks serverless
 	// compute resources.
+	// Wire name: 'azure_service_endpoint_rule'
 	AzureServiceEndpointRule *NccAzureServiceEndpointRule
 }
 
@@ -11875,6 +10850,8 @@ func nccEgressDefaultRulesFromPb(pb *nccEgressDefaultRulesPb) (*NccEgressDefault
 // Target rule controls the egress rules that are dedicated to specific
 // resources.
 type NccEgressTargetRules struct {
+
+	// Wire name: 'azure_private_endpoint_rules'
 	AzurePrivateEndpointRules []NccAzurePrivateEndpointRule
 }
 
@@ -11935,13 +10912,13 @@ func nccEgressTargetRulesFromPb(pb *nccEgressTargetRulesPb) (*NccEgressTargetRul
 	st := &NccEgressTargetRules{}
 
 	var azurePrivateEndpointRulesField []NccAzurePrivateEndpointRule
-	for _, item := range pb.AzurePrivateEndpointRules {
-		itemField, err := nccAzurePrivateEndpointRuleFromPb(&item)
+	for _, itemPb := range pb.AzurePrivateEndpointRules {
+		item, err := nccAzurePrivateEndpointRuleFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			azurePrivateEndpointRulesField = append(azurePrivateEndpointRulesField, *itemField)
+		if item != nil {
+			azurePrivateEndpointRulesField = append(azurePrivateEndpointRulesField, *item)
 		}
 	}
 	st.AzurePrivateEndpointRules = azurePrivateEndpointRulesField
@@ -11952,27 +10929,34 @@ func nccEgressTargetRulesFromPb(pb *nccEgressTargetRulesPb) (*NccEgressTargetRul
 // Properties of the new network connectivity configuration.
 type NetworkConnectivityConfiguration struct {
 	// The Databricks account ID that hosts the credential.
+	// Wire name: 'account_id'
 	AccountId string
 	// Time in epoch milliseconds when this object was created.
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// The network connectivity rules that apply to network traffic from your
 	// serverless compute resources.
+	// Wire name: 'egress_config'
 	EgressConfig *NccEgressConfig
 	// The name of the network connectivity configuration. The name can contain
 	// alphanumeric characters, hyphens, and underscores. The length must be
 	// between 3 and 30 characters. The name must match the regular expression
 	// ^[0-9a-zA-Z-_]{3,30}$
+	// Wire name: 'name'
 	Name string
 	// Databricks network connectivity configuration ID.
+	// Wire name: 'network_connectivity_config_id'
 	NetworkConnectivityConfigId string
 	// The region for the network connectivity configuration. Only workspaces in
 	// the same region can be attached to the network connectivity
 	// configuration.
+	// Wire name: 'region'
 	Region string
 	// Time in epoch milliseconds when this object was updated.
+	// Wire name: 'updated_time'
 	UpdatedTime int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func networkConnectivityConfigurationToPb(st *NetworkConnectivityConfiguration) (*networkConnectivityConfigurationPb, error) {
@@ -11980,15 +10964,9 @@ func networkConnectivityConfigurationToPb(st *NetworkConnectivityConfiguration) 
 		return nil, nil
 	}
 	pb := &networkConnectivityConfigurationPb{}
-	accountIdPb := &st.AccountId
-	if accountIdPb != nil {
-		pb.AccountId = *accountIdPb
-	}
+	pb.AccountId = st.AccountId
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
 	egressConfigPb, err := nccEgressConfigToPb(st.EgressConfig)
 	if err != nil {
@@ -11998,25 +10976,13 @@ func networkConnectivityConfigurationToPb(st *NetworkConnectivityConfiguration) 
 		pb.EgressConfig = egressConfigPb
 	}
 
-	namePb := &st.Name
-	if namePb != nil {
-		pb.Name = *namePb
-	}
+	pb.Name = st.Name
 
-	networkConnectivityConfigIdPb := &st.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdPb != nil {
-		pb.NetworkConnectivityConfigId = *networkConnectivityConfigIdPb
-	}
+	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
 
-	regionPb := &st.Region
-	if regionPb != nil {
-		pb.Region = *regionPb
-	}
+	pb.Region = st.Region
 
-	updatedTimePb := &st.UpdatedTime
-	if updatedTimePb != nil {
-		pb.UpdatedTime = *updatedTimePb
-	}
+	pb.UpdatedTime = st.UpdatedTime
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12077,14 +11043,8 @@ func networkConnectivityConfigurationFromPb(pb *networkConnectivityConfiguration
 		return nil, nil
 	}
 	st := &NetworkConnectivityConfiguration{}
-	accountIdField := &pb.AccountId
-	if accountIdField != nil {
-		st.AccountId = *accountIdField
-	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
+	st.AccountId = pb.AccountId
+	st.CreationTime = pb.CreationTime
 	egressConfigField, err := nccEgressConfigFromPb(pb.EgressConfig)
 	if err != nil {
 		return nil, err
@@ -12092,22 +11052,10 @@ func networkConnectivityConfigurationFromPb(pb *networkConnectivityConfiguration
 	if egressConfigField != nil {
 		st.EgressConfig = egressConfigField
 	}
-	nameField := &pb.Name
-	if nameField != nil {
-		st.Name = *nameField
-	}
-	networkConnectivityConfigIdField := &pb.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdField != nil {
-		st.NetworkConnectivityConfigId = *networkConnectivityConfigIdField
-	}
-	regionField := &pb.Region
-	if regionField != nil {
-		st.Region = *regionField
-	}
-	updatedTimeField := &pb.UpdatedTime
-	if updatedTimeField != nil {
-		st.UpdatedTime = *updatedTimeField
-	}
+	st.Name = pb.Name
+	st.NetworkConnectivityConfigId = pb.NetworkConnectivityConfigId
+	st.Region = pb.Region
+	st.UpdatedTime = pb.UpdatedTime
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12125,16 +11073,20 @@ type NotificationDestination struct {
 	// The configuration for the notification destination. Will be exactly one
 	// of the nested configs. Only returns for users with workspace admin
 	// permissions.
+	// Wire name: 'config'
 	Config *Config
 	// [Output-only] The type of the notification destination. The type can not
 	// be changed once set.
+	// Wire name: 'destination_type'
 	DestinationType DestinationType
 	// The display name for the notification destination.
+	// Wire name: 'display_name'
 	DisplayName string
 	// UUID identifying notification destination.
+	// Wire name: 'id'
 	Id string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func notificationDestinationToPb(st *NotificationDestination) (*notificationDestinationPb, error) {
@@ -12150,20 +11102,11 @@ func notificationDestinationToPb(st *NotificationDestination) (*notificationDest
 		pb.Config = configPb
 	}
 
-	destinationTypePb := &st.DestinationType
-	if destinationTypePb != nil {
-		pb.DestinationType = *destinationTypePb
-	}
+	pb.DestinationType = st.DestinationType
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12222,18 +11165,9 @@ func notificationDestinationFromPb(pb *notificationDestinationPb) (*Notification
 	if configField != nil {
 		st.Config = configField
 	}
-	destinationTypeField := &pb.DestinationType
-	if destinationTypeField != nil {
-		st.DestinationType = *destinationTypeField
-	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.DestinationType = pb.DestinationType
+	st.DisplayName = pb.DisplayName
+	st.Id = pb.Id
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12249,11 +11183,13 @@ func (st notificationDestinationPb) MarshalJSON() ([]byte, error) {
 
 type PagerdutyConfig struct {
 	// [Input-Only] Integration key for PagerDuty.
+	// Wire name: 'integration_key'
 	IntegrationKey string
 	// [Output-Only] Whether integration key is set.
+	// Wire name: 'integration_key_set'
 	IntegrationKeySet bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func pagerdutyConfigToPb(st *PagerdutyConfig) (*pagerdutyConfigPb, error) {
@@ -12261,15 +11197,9 @@ func pagerdutyConfigToPb(st *PagerdutyConfig) (*pagerdutyConfigPb, error) {
 		return nil, nil
 	}
 	pb := &pagerdutyConfigPb{}
-	integrationKeyPb := &st.IntegrationKey
-	if integrationKeyPb != nil {
-		pb.IntegrationKey = *integrationKeyPb
-	}
+	pb.IntegrationKey = st.IntegrationKey
 
-	integrationKeySetPb := &st.IntegrationKeySet
-	if integrationKeySetPb != nil {
-		pb.IntegrationKeySet = *integrationKeySetPb
-	}
+	pb.IntegrationKeySet = st.IntegrationKeySet
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12314,14 +11244,8 @@ func pagerdutyConfigFromPb(pb *pagerdutyConfigPb) (*PagerdutyConfig, error) {
 		return nil, nil
 	}
 	st := &PagerdutyConfig{}
-	integrationKeyField := &pb.IntegrationKey
-	if integrationKeyField != nil {
-		st.IntegrationKey = *integrationKeyField
-	}
-	integrationKeySetField := &pb.IntegrationKeySet
-	if integrationKeySetField != nil {
-		st.IntegrationKeySet = *integrationKeySetField
-	}
+	st.IntegrationKey = pb.IntegrationKey
+	st.IntegrationKeySet = pb.IntegrationKeySet
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12338,9 +11262,10 @@ func (st pagerdutyConfigPb) MarshalJSON() ([]byte, error) {
 // Partition by workspace or account
 type PartitionId struct {
 	// The ID of the workspace.
+	// Wire name: 'workspaceId'
 	WorkspaceId int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func partitionIdToPb(st *PartitionId) (*partitionIdPb, error) {
@@ -12348,10 +11273,7 @@ func partitionIdToPb(st *PartitionId) (*partitionIdPb, error) {
 		return nil, nil
 	}
 	pb := &partitionIdPb{}
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12394,10 +11316,7 @@ func partitionIdFromPb(pb *partitionIdPb) (*PartitionId, error) {
 		return nil, nil
 	}
 	st := &PartitionId{}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.WorkspaceId = pb.WorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12419,6 +11338,7 @@ type PersonalComputeMessage struct {
 	// users or groups to be added to the ACLs of that workspace’s Personal
 	// Compute default policy before they will be able to create compute
 	// resources through that policy.
+	// Wire name: 'value'
 	Value PersonalComputeMessageEnum
 }
 
@@ -12427,10 +11347,7 @@ func personalComputeMessageToPb(st *PersonalComputeMessage) (*personalComputeMes
 		return nil, nil
 	}
 	pb := &personalComputeMessagePb{}
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	return pb, nil
 }
@@ -12476,10 +11393,7 @@ func personalComputeMessageFromPb(pb *personalComputeMessagePb) (*PersonalComput
 		return nil, nil
 	}
 	st := &PersonalComputeMessage{}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Value = pb.Value
 
 	return st, nil
 }
@@ -12542,17 +11456,20 @@ type PersonalComputeSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 
+	// Wire name: 'personal_compute'
 	PersonalCompute PersonalComputeMessage
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func personalComputeSettingToPb(st *PersonalComputeSetting) (*personalComputeSettingPb, error) {
@@ -12560,10 +11477,7 @@ func personalComputeSettingToPb(st *PersonalComputeSetting) (*personalComputeSet
 		return nil, nil
 	}
 	pb := &personalComputeSettingPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	personalComputePb, err := personalComputeMessageToPb(&st.PersonalCompute)
 	if err != nil {
@@ -12573,10 +11487,7 @@ func personalComputeSettingToPb(st *PersonalComputeSetting) (*personalComputeSet
 		pb.PersonalCompute = *personalComputePb
 	}
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12633,10 +11544,7 @@ func personalComputeSettingFromPb(pb *personalComputeSettingPb) (*PersonalComput
 		return nil, nil
 	}
 	st := &PersonalComputeSetting{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 	personalComputeField, err := personalComputeMessageFromPb(&pb.PersonalCompute)
 	if err != nil {
 		return nil, err
@@ -12644,10 +11552,7 @@ func personalComputeSettingFromPb(pb *personalComputeSettingPb) (*PersonalComput
 	if personalComputeField != nil {
 		st.PersonalCompute = *personalComputeField
 	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12663,16 +11568,20 @@ func (st personalComputeSettingPb) MarshalJSON() ([]byte, error) {
 
 type PublicTokenInfo struct {
 	// Comment the token was created with, if applicable.
+	// Wire name: 'comment'
 	Comment string
 	// Server time (in epoch milliseconds) when the token was created.
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// Server time (in epoch milliseconds) when the token will expire, or -1 if
 	// not applicable.
+	// Wire name: 'expiry_time'
 	ExpiryTime int64
 	// The ID of this token.
+	// Wire name: 'token_id'
 	TokenId string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func publicTokenInfoToPb(st *PublicTokenInfo) (*publicTokenInfoPb, error) {
@@ -12680,25 +11589,13 @@ func publicTokenInfoToPb(st *PublicTokenInfo) (*publicTokenInfoPb, error) {
 		return nil, nil
 	}
 	pb := &publicTokenInfoPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
-	expiryTimePb := &st.ExpiryTime
-	if expiryTimePb != nil {
-		pb.ExpiryTime = *expiryTimePb
-	}
+	pb.ExpiryTime = st.ExpiryTime
 
-	tokenIdPb := &st.TokenId
-	if tokenIdPb != nil {
-		pb.TokenId = *tokenIdPb
-	}
+	pb.TokenId = st.TokenId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -12748,22 +11645,10 @@ func publicTokenInfoFromPb(pb *publicTokenInfoPb) (*PublicTokenInfo, error) {
 		return nil, nil
 	}
 	st := &PublicTokenInfo{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
-	expiryTimeField := &pb.ExpiryTime
-	if expiryTimeField != nil {
-		st.ExpiryTime = *expiryTimeField
-	}
-	tokenIdField := &pb.TokenId
-	if tokenIdField != nil {
-		st.TokenId = *tokenIdField
-	}
+	st.Comment = pb.Comment
+	st.CreationTime = pb.CreationTime
+	st.ExpiryTime = pb.ExpiryTime
+	st.TokenId = pb.TokenId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -12780,12 +11665,16 @@ func (st publicTokenInfoPb) MarshalJSON() ([]byte, error) {
 // Details required to replace an IP access list.
 type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
+	// Wire name: 'enabled'
 	Enabled bool
 	// The ID for the corresponding IP access list
-	IpAccessListId string
+	// Wire name: 'ip_access_list_id'
+	IpAccessListId string `tf:"-"`
 
+	// Wire name: 'ip_addresses'
 	IpAddresses []string
 	// Label for the IP access list. This **cannot** be empty.
+	// Wire name: 'label'
 	Label string
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
@@ -12793,6 +11682,7 @@ type ReplaceIpAccessList struct {
 	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
+	// Wire name: 'list_type'
 	ListType ListType
 }
 
@@ -12801,34 +11691,15 @@ func replaceIpAccessListToPb(st *ReplaceIpAccessList) (*replaceIpAccessListPb, e
 		return nil, nil
 	}
 	pb := &replaceIpAccessListPb{}
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
-	ipAccessListIdPb := &st.IpAccessListId
-	if ipAccessListIdPb != nil {
-		pb.IpAccessListId = *ipAccessListIdPb
-	}
+	pb.IpAccessListId = st.IpAccessListId
 
-	var ipAddressesPb []string
-	for _, item := range st.IpAddresses {
-		itemPb := &item
-		if itemPb != nil {
-			ipAddressesPb = append(ipAddressesPb, *itemPb)
-		}
-	}
-	pb.IpAddresses = ipAddressesPb
+	pb.IpAddresses = st.IpAddresses
 
-	labelPb := &st.Label
-	if labelPb != nil {
-		pb.Label = *labelPb
-	}
+	pb.Label = st.Label
 
-	listTypePb := &st.ListType
-	if listTypePb != nil {
-		pb.ListType = *listTypePb
-	}
+	pb.ListType = st.ListType
 
 	return pb, nil
 }
@@ -12881,31 +11752,11 @@ func replaceIpAccessListFromPb(pb *replaceIpAccessListPb) (*ReplaceIpAccessList,
 		return nil, nil
 	}
 	st := &ReplaceIpAccessList{}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
-	ipAccessListIdField := &pb.IpAccessListId
-	if ipAccessListIdField != nil {
-		st.IpAccessListId = *ipAccessListIdField
-	}
-
-	var ipAddressesField []string
-	for _, item := range pb.IpAddresses {
-		itemField := &item
-		if itemField != nil {
-			ipAddressesField = append(ipAddressesField, *itemField)
-		}
-	}
-	st.IpAddresses = ipAddressesField
-	labelField := &pb.Label
-	if labelField != nil {
-		st.Label = *labelField
-	}
-	listTypeField := &pb.ListType
-	if listTypeField != nil {
-		st.ListType = *listTypeField
-	}
+	st.Enabled = pb.Enabled
+	st.IpAccessListId = pb.IpAccessListId
+	st.IpAddresses = pb.IpAddresses
+	st.Label = pb.Label
+	st.ListType = pb.ListType
 
 	return st, nil
 }
@@ -12960,6 +11811,8 @@ func replaceResponseFromPb(pb *replaceResponsePb) (*ReplaceResponse, error) {
 }
 
 type RestrictWorkspaceAdminsMessage struct {
+
+	// Wire name: 'status'
 	Status RestrictWorkspaceAdminsMessageStatus
 }
 
@@ -12968,10 +11821,7 @@ func restrictWorkspaceAdminsMessageToPb(st *RestrictWorkspaceAdminsMessage) (*re
 		return nil, nil
 	}
 	pb := &restrictWorkspaceAdminsMessagePb{}
-	statusPb := &st.Status
-	if statusPb != nil {
-		pb.Status = *statusPb
-	}
+	pb.Status = st.Status
 
 	return pb, nil
 }
@@ -13010,10 +11860,7 @@ func restrictWorkspaceAdminsMessageFromPb(pb *restrictWorkspaceAdminsMessagePb) 
 		return nil, nil
 	}
 	st := &RestrictWorkspaceAdminsMessage{}
-	statusField := &pb.Status
-	if statusField != nil {
-		st.Status = *statusField
-	}
+	st.Status = pb.Status
 
 	return st, nil
 }
@@ -13070,17 +11917,20 @@ type RestrictWorkspaceAdminsSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string
 
+	// Wire name: 'restrict_workspace_admins'
 	RestrictWorkspaceAdmins RestrictWorkspaceAdminsMessage
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func restrictWorkspaceAdminsSettingToPb(st *RestrictWorkspaceAdminsSetting) (*restrictWorkspaceAdminsSettingPb, error) {
@@ -13088,10 +11938,7 @@ func restrictWorkspaceAdminsSettingToPb(st *RestrictWorkspaceAdminsSetting) (*re
 		return nil, nil
 	}
 	pb := &restrictWorkspaceAdminsSettingPb{}
-	etagPb := &st.Etag
-	if etagPb != nil {
-		pb.Etag = *etagPb
-	}
+	pb.Etag = st.Etag
 
 	restrictWorkspaceAdminsPb, err := restrictWorkspaceAdminsMessageToPb(&st.RestrictWorkspaceAdmins)
 	if err != nil {
@@ -13101,10 +11948,7 @@ func restrictWorkspaceAdminsSettingToPb(st *RestrictWorkspaceAdminsSetting) (*re
 		pb.RestrictWorkspaceAdmins = *restrictWorkspaceAdminsPb
 	}
 
-	settingNamePb := &st.SettingName
-	if settingNamePb != nil {
-		pb.SettingName = *settingNamePb
-	}
+	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13161,10 +12005,7 @@ func restrictWorkspaceAdminsSettingFromPb(pb *restrictWorkspaceAdminsSettingPb) 
 		return nil, nil
 	}
 	st := &RestrictWorkspaceAdminsSetting{}
-	etagField := &pb.Etag
-	if etagField != nil {
-		st.Etag = *etagField
-	}
+	st.Etag = pb.Etag
 	restrictWorkspaceAdminsField, err := restrictWorkspaceAdminsMessageFromPb(&pb.RestrictWorkspaceAdmins)
 	if err != nil {
 		return nil, err
@@ -13172,10 +12013,7 @@ func restrictWorkspaceAdminsSettingFromPb(pb *restrictWorkspaceAdminsSettingPb) 
 	if restrictWorkspaceAdminsField != nil {
 		st.RestrictWorkspaceAdmins = *restrictWorkspaceAdminsField
 	}
-	settingNameField := &pb.SettingName
-	if settingNameField != nil {
-		st.SettingName = *settingNameField
-	}
+	st.SettingName = pb.SettingName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13191,6 +12029,7 @@ func (st restrictWorkspaceAdminsSettingPb) MarshalJSON() ([]byte, error) {
 
 type RevokeTokenRequest struct {
 	// The ID of the token to be revoked.
+	// Wire name: 'token_id'
 	TokenId string
 }
 
@@ -13199,10 +12038,7 @@ func revokeTokenRequestToPb(st *RevokeTokenRequest) (*revokeTokenRequestPb, erro
 		return nil, nil
 	}
 	pb := &revokeTokenRequestPb{}
-	tokenIdPb := &st.TokenId
-	if tokenIdPb != nil {
-		pb.TokenId = *tokenIdPb
-	}
+	pb.TokenId = st.TokenId
 
 	return pb, nil
 }
@@ -13242,10 +12078,7 @@ func revokeTokenRequestFromPb(pb *revokeTokenRequestPb) (*RevokeTokenRequest, er
 		return nil, nil
 	}
 	st := &RevokeTokenRequest{}
-	tokenIdField := &pb.TokenId
-	if tokenIdField != nil {
-		st.TokenId = *tokenIdField
-	}
+	st.TokenId = pb.TokenId
 
 	return st, nil
 }
@@ -13350,11 +12183,13 @@ func setStatusResponseFromPb(pb *setStatusResponsePb) (*SetStatusResponse, error
 
 type SlackConfig struct {
 	// [Input-Only] URL for Slack destination.
+	// Wire name: 'url'
 	Url string
 	// [Output-Only] Whether URL is set.
+	// Wire name: 'url_set'
 	UrlSet bool
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func slackConfigToPb(st *SlackConfig) (*slackConfigPb, error) {
@@ -13362,15 +12197,9 @@ func slackConfigToPb(st *SlackConfig) (*slackConfigPb, error) {
 		return nil, nil
 	}
 	pb := &slackConfigPb{}
-	urlPb := &st.Url
-	if urlPb != nil {
-		pb.Url = *urlPb
-	}
+	pb.Url = st.Url
 
-	urlSetPb := &st.UrlSet
-	if urlSetPb != nil {
-		pb.UrlSet = *urlSetPb
-	}
+	pb.UrlSet = st.UrlSet
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13415,14 +12244,8 @@ func slackConfigFromPb(pb *slackConfigPb) (*SlackConfig, error) {
 		return nil, nil
 	}
 	st := &SlackConfig{}
-	urlField := &pb.Url
-	if urlField != nil {
-		st.Url = *urlField
-	}
-	urlSetField := &pb.UrlSet
-	if urlSetField != nil {
-		st.UrlSet = *urlSetField
-	}
+	st.Url = pb.Url
+	st.UrlSet = pb.UrlSet
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13438,9 +12261,10 @@ func (st slackConfigPb) MarshalJSON() ([]byte, error) {
 
 type StringMessage struct {
 	// Represents a generic string value.
+	// Wire name: 'value'
 	Value string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func stringMessageToPb(st *StringMessage) (*stringMessagePb, error) {
@@ -13448,10 +12272,7 @@ func stringMessageToPb(st *StringMessage) (*stringMessagePb, error) {
 		return nil, nil
 	}
 	pb := &stringMessagePb{}
-	valuePb := &st.Value
-	if valuePb != nil {
-		pb.Value = *valuePb
-	}
+	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13494,10 +12315,7 @@ func stringMessageFromPb(pb *stringMessagePb) (*StringMessage, error) {
 		return nil, nil
 	}
 	st := &StringMessage{}
-	valueField := &pb.Value
-	if valueField != nil {
-		st.Value = *valueField
-	}
+	st.Value = pb.Value
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13513,15 +12331,19 @@ func (st stringMessagePb) MarshalJSON() ([]byte, error) {
 
 type TokenAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel TokenPermissionLevel
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tokenAccessControlRequestToPb(st *TokenAccessControlRequest) (*tokenAccessControlRequestPb, error) {
@@ -13529,25 +12351,13 @@ func tokenAccessControlRequestToPb(st *TokenAccessControlRequest) (*tokenAccessC
 		return nil, nil
 	}
 	pb := &tokenAccessControlRequestPb{}
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13596,22 +12406,10 @@ func tokenAccessControlRequestFromPb(pb *tokenAccessControlRequestPb) (*TokenAcc
 		return nil, nil
 	}
 	st := &TokenAccessControlRequest{}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.GroupName = pb.GroupName
+	st.PermissionLevel = pb.PermissionLevel
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13627,17 +12425,22 @@ func (st tokenAccessControlRequestPb) MarshalJSON() ([]byte, error) {
 
 type TokenAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []TokenPermission
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tokenAccessControlResponseToPb(st *TokenAccessControlResponse) (*tokenAccessControlResponsePb, error) {
@@ -13658,25 +12461,13 @@ func tokenAccessControlResponseToPb(st *TokenAccessControlResponse) (*tokenAcces
 	}
 	pb.AllPermissions = allPermissionsPb
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	groupNamePb := &st.GroupName
-	if groupNamePb != nil {
-		pb.GroupName = *groupNamePb
-	}
+	pb.GroupName = st.GroupName
 
-	servicePrincipalNamePb := &st.ServicePrincipalName
-	if servicePrincipalNamePb != nil {
-		pb.ServicePrincipalName = *servicePrincipalNamePb
-	}
+	pb.ServicePrincipalName = st.ServicePrincipalName
 
-	userNamePb := &st.UserName
-	if userNamePb != nil {
-		pb.UserName = *userNamePb
-	}
+	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13729,32 +12520,20 @@ func tokenAccessControlResponseFromPb(pb *tokenAccessControlResponsePb) (*TokenA
 	st := &TokenAccessControlResponse{}
 
 	var allPermissionsField []TokenPermission
-	for _, item := range pb.AllPermissions {
-		itemField, err := tokenPermissionFromPb(&item)
+	for _, itemPb := range pb.AllPermissions {
+		item, err := tokenPermissionFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			allPermissionsField = append(allPermissionsField, *itemField)
+		if item != nil {
+			allPermissionsField = append(allPermissionsField, *item)
 		}
 	}
 	st.AllPermissions = allPermissionsField
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	groupNameField := &pb.GroupName
-	if groupNameField != nil {
-		st.GroupName = *groupNameField
-	}
-	servicePrincipalNameField := &pb.ServicePrincipalName
-	if servicePrincipalNameField != nil {
-		st.ServicePrincipalName = *servicePrincipalNameField
-	}
-	userNameField := &pb.UserName
-	if userNameField != nil {
-		st.UserName = *userNameField
-	}
+	st.DisplayName = pb.DisplayName
+	st.GroupName = pb.GroupName
+	st.ServicePrincipalName = pb.ServicePrincipalName
+	st.UserName = pb.UserName
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13771,26 +12550,35 @@ func (st tokenAccessControlResponsePb) MarshalJSON() ([]byte, error) {
 type TokenInfo struct {
 	// Comment that describes the purpose of the token, specified by the token
 	// creator.
+	// Wire name: 'comment'
 	Comment string
 	// User ID of the user that created the token.
+	// Wire name: 'created_by_id'
 	CreatedById int64
 	// Username of the user that created the token.
+	// Wire name: 'created_by_username'
 	CreatedByUsername string
 	// Timestamp when the token was created.
+	// Wire name: 'creation_time'
 	CreationTime int64
 	// Timestamp when the token expires.
+	// Wire name: 'expiry_time'
 	ExpiryTime int64
 	// Approximate timestamp for the day the token was last used. Accurate up to
 	// 1 day.
+	// Wire name: 'last_used_day'
 	LastUsedDay int64
 	// User ID of the user that owns the token.
+	// Wire name: 'owner_id'
 	OwnerId int64
 	// ID of the token.
+	// Wire name: 'token_id'
 	TokenId string
 	// If applicable, the ID of the workspace that the token was created in.
+	// Wire name: 'workspace_id'
 	WorkspaceId int64
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tokenInfoToPb(st *TokenInfo) (*tokenInfoPb, error) {
@@ -13798,50 +12586,23 @@ func tokenInfoToPb(st *TokenInfo) (*tokenInfoPb, error) {
 		return nil, nil
 	}
 	pb := &tokenInfoPb{}
-	commentPb := &st.Comment
-	if commentPb != nil {
-		pb.Comment = *commentPb
-	}
+	pb.Comment = st.Comment
 
-	createdByIdPb := &st.CreatedById
-	if createdByIdPb != nil {
-		pb.CreatedById = *createdByIdPb
-	}
+	pb.CreatedById = st.CreatedById
 
-	createdByUsernamePb := &st.CreatedByUsername
-	if createdByUsernamePb != nil {
-		pb.CreatedByUsername = *createdByUsernamePb
-	}
+	pb.CreatedByUsername = st.CreatedByUsername
 
-	creationTimePb := &st.CreationTime
-	if creationTimePb != nil {
-		pb.CreationTime = *creationTimePb
-	}
+	pb.CreationTime = st.CreationTime
 
-	expiryTimePb := &st.ExpiryTime
-	if expiryTimePb != nil {
-		pb.ExpiryTime = *expiryTimePb
-	}
+	pb.ExpiryTime = st.ExpiryTime
 
-	lastUsedDayPb := &st.LastUsedDay
-	if lastUsedDayPb != nil {
-		pb.LastUsedDay = *lastUsedDayPb
-	}
+	pb.LastUsedDay = st.LastUsedDay
 
-	ownerIdPb := &st.OwnerId
-	if ownerIdPb != nil {
-		pb.OwnerId = *ownerIdPb
-	}
+	pb.OwnerId = st.OwnerId
 
-	tokenIdPb := &st.TokenId
-	if tokenIdPb != nil {
-		pb.TokenId = *tokenIdPb
-	}
+	pb.TokenId = st.TokenId
 
-	workspaceIdPb := &st.WorkspaceId
-	if workspaceIdPb != nil {
-		pb.WorkspaceId = *workspaceIdPb
-	}
+	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -13902,42 +12663,15 @@ func tokenInfoFromPb(pb *tokenInfoPb) (*TokenInfo, error) {
 		return nil, nil
 	}
 	st := &TokenInfo{}
-	commentField := &pb.Comment
-	if commentField != nil {
-		st.Comment = *commentField
-	}
-	createdByIdField := &pb.CreatedById
-	if createdByIdField != nil {
-		st.CreatedById = *createdByIdField
-	}
-	createdByUsernameField := &pb.CreatedByUsername
-	if createdByUsernameField != nil {
-		st.CreatedByUsername = *createdByUsernameField
-	}
-	creationTimeField := &pb.CreationTime
-	if creationTimeField != nil {
-		st.CreationTime = *creationTimeField
-	}
-	expiryTimeField := &pb.ExpiryTime
-	if expiryTimeField != nil {
-		st.ExpiryTime = *expiryTimeField
-	}
-	lastUsedDayField := &pb.LastUsedDay
-	if lastUsedDayField != nil {
-		st.LastUsedDay = *lastUsedDayField
-	}
-	ownerIdField := &pb.OwnerId
-	if ownerIdField != nil {
-		st.OwnerId = *ownerIdField
-	}
-	tokenIdField := &pb.TokenId
-	if tokenIdField != nil {
-		st.TokenId = *tokenIdField
-	}
-	workspaceIdField := &pb.WorkspaceId
-	if workspaceIdField != nil {
-		st.WorkspaceId = *workspaceIdField
-	}
+	st.Comment = pb.Comment
+	st.CreatedById = pb.CreatedById
+	st.CreatedByUsername = pb.CreatedByUsername
+	st.CreationTime = pb.CreationTime
+	st.ExpiryTime = pb.ExpiryTime
+	st.LastUsedDay = pb.LastUsedDay
+	st.OwnerId = pb.OwnerId
+	st.TokenId = pb.TokenId
+	st.WorkspaceId = pb.WorkspaceId
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -13952,13 +12686,17 @@ func (st tokenInfoPb) MarshalJSON() ([]byte, error) {
 }
 
 type TokenPermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel TokenPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tokenPermissionToPb(st *TokenPermission) (*tokenPermissionPb, error) {
@@ -13966,24 +12704,11 @@ func tokenPermissionToPb(st *TokenPermission) (*tokenPermissionPb, error) {
 		return nil, nil
 	}
 	pb := &tokenPermissionPb{}
-	inheritedPb := &st.Inherited
-	if inheritedPb != nil {
-		pb.Inherited = *inheritedPb
-	}
+	pb.Inherited = st.Inherited
 
-	var inheritedFromObjectPb []string
-	for _, item := range st.InheritedFromObject {
-		itemPb := &item
-		if itemPb != nil {
-			inheritedFromObjectPb = append(inheritedFromObjectPb, *itemPb)
-		}
-	}
-	pb.InheritedFromObject = inheritedFromObjectPb
+	pb.InheritedFromObject = st.InheritedFromObject
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14029,23 +12754,9 @@ func tokenPermissionFromPb(pb *tokenPermissionPb) (*TokenPermission, error) {
 		return nil, nil
 	}
 	st := &TokenPermission{}
-	inheritedField := &pb.Inherited
-	if inheritedField != nil {
-		st.Inherited = *inheritedField
-	}
-
-	var inheritedFromObjectField []string
-	for _, item := range pb.InheritedFromObject {
-		itemField := &item
-		if itemField != nil {
-			inheritedFromObjectField = append(inheritedFromObjectField, *itemField)
-		}
-	}
-	st.InheritedFromObject = inheritedFromObjectField
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Inherited = pb.Inherited
+	st.InheritedFromObject = pb.InheritedFromObject
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14103,13 +12814,17 @@ func tokenPermissionLevelFromPb(pb *tokenPermissionLevelPb) (*TokenPermissionLev
 }
 
 type TokenPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []TokenAccessControlResponse
 
+	// Wire name: 'object_id'
 	ObjectId string
 
+	// Wire name: 'object_type'
 	ObjectType string
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tokenPermissionsToPb(st *TokenPermissions) (*tokenPermissionsPb, error) {
@@ -14130,15 +12845,9 @@ func tokenPermissionsToPb(st *TokenPermissions) (*tokenPermissionsPb, error) {
 	}
 	pb.AccessControlList = accessControlListPb
 
-	objectIdPb := &st.ObjectId
-	if objectIdPb != nil {
-		pb.ObjectId = *objectIdPb
-	}
+	pb.ObjectId = st.ObjectId
 
-	objectTypePb := &st.ObjectType
-	if objectTypePb != nil {
-		pb.ObjectType = *objectTypePb
-	}
+	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14186,24 +12895,18 @@ func tokenPermissionsFromPb(pb *tokenPermissionsPb) (*TokenPermissions, error) {
 	st := &TokenPermissions{}
 
 	var accessControlListField []TokenAccessControlResponse
-	for _, item := range pb.AccessControlList {
-		itemField, err := tokenAccessControlResponseFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := tokenAccessControlResponseFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
-	objectIdField := &pb.ObjectId
-	if objectIdField != nil {
-		st.ObjectId = *objectIdField
-	}
-	objectTypeField := &pb.ObjectType
-	if objectTypeField != nil {
-		st.ObjectType = *objectTypeField
-	}
+	st.ObjectId = pb.ObjectId
+	st.ObjectType = pb.ObjectType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14218,11 +12921,14 @@ func (st tokenPermissionsPb) MarshalJSON() ([]byte, error) {
 }
 
 type TokenPermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel TokenPermissionLevel
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func tokenPermissionsDescriptionToPb(st *TokenPermissionsDescription) (*tokenPermissionsDescriptionPb, error) {
@@ -14230,15 +12936,9 @@ func tokenPermissionsDescriptionToPb(st *TokenPermissionsDescription) (*tokenPer
 		return nil, nil
 	}
 	pb := &tokenPermissionsDescriptionPb{}
-	descriptionPb := &st.Description
-	if descriptionPb != nil {
-		pb.Description = *descriptionPb
-	}
+	pb.Description = st.Description
 
-	permissionLevelPb := &st.PermissionLevel
-	if permissionLevelPb != nil {
-		pb.PermissionLevel = *permissionLevelPb
-	}
+	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -14282,14 +12982,8 @@ func tokenPermissionsDescriptionFromPb(pb *tokenPermissionsDescriptionPb) (*Toke
 		return nil, nil
 	}
 	st := &TokenPermissionsDescription{}
-	descriptionField := &pb.Description
-	if descriptionField != nil {
-		st.Description = *descriptionField
-	}
-	permissionLevelField := &pb.PermissionLevel
-	if permissionLevelField != nil {
-		st.PermissionLevel = *permissionLevelField
-	}
+	st.Description = pb.Description
+	st.PermissionLevel = pb.PermissionLevel
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -14304,6 +12998,8 @@ func (st tokenPermissionsDescriptionPb) MarshalJSON() ([]byte, error) {
 }
 
 type TokenPermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []TokenAccessControlRequest
 }
 
@@ -14364,13 +13060,13 @@ func tokenPermissionsRequestFromPb(pb *tokenPermissionsRequestPb) (*TokenPermiss
 	st := &TokenPermissionsRequest{}
 
 	var accessControlListField []TokenAccessControlRequest
-	for _, item := range pb.AccessControlList {
-		itemField, err := tokenAccessControlRequestFromPb(&item)
+	for _, itemPb := range pb.AccessControlList {
+		item, err := tokenAccessControlRequestFromPb(&itemPb)
 		if err != nil {
 			return nil, err
 		}
-		if itemField != nil {
-			accessControlListField = append(accessControlListField, *itemField)
+		if item != nil {
+			accessControlListField = append(accessControlListField, *item)
 		}
 	}
 	st.AccessControlList = accessControlListField
@@ -14434,6 +13130,7 @@ func tokenTypeFromPb(pb *tokenTypePb) (*TokenType, error) {
 type UpdateAccountIpAccessEnableRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -14446,8 +13143,10 @@ type UpdateAccountIpAccessEnableRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting AccountIpAccessEnable
 }
 
@@ -14456,15 +13155,9 @@ func updateAccountIpAccessEnableRequestToPb(st *UpdateAccountIpAccessEnableReque
 		return nil, nil
 	}
 	pb := &updateAccountIpAccessEnableRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := accountIpAccessEnableToPb(&st.Setting)
 	if err != nil {
@@ -14527,14 +13220,8 @@ func updateAccountIpAccessEnableRequestFromPb(pb *updateAccountIpAccessEnableReq
 		return nil, nil
 	}
 	st := &UpdateAccountIpAccessEnableRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := accountIpAccessEnableFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -14550,6 +13237,7 @@ func updateAccountIpAccessEnableRequestFromPb(pb *updateAccountIpAccessEnableReq
 type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -14562,8 +13250,10 @@ type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting AibiDashboardEmbeddingAccessPolicySetting
 }
 
@@ -14572,15 +13262,9 @@ func updateAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *UpdateAibiDa
 		return nil, nil
 	}
 	pb := &updateAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := aibiDashboardEmbeddingAccessPolicySettingToPb(&st.Setting)
 	if err != nil {
@@ -14643,14 +13327,8 @@ func updateAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb *updateAibi
 		return nil, nil
 	}
 	st := &UpdateAibiDashboardEmbeddingAccessPolicySettingRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := aibiDashboardEmbeddingAccessPolicySettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -14666,6 +13344,7 @@ func updateAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb *updateAibi
 type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -14678,8 +13357,10 @@ type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting AibiDashboardEmbeddingApprovedDomainsSetting
 }
 
@@ -14688,15 +13369,9 @@ func updateAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *UpdateAib
 		return nil, nil
 	}
 	pb := &updateAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := aibiDashboardEmbeddingApprovedDomainsSettingToPb(&st.Setting)
 	if err != nil {
@@ -14759,14 +13434,8 @@ func updateAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb *updateA
 		return nil, nil
 	}
 	st := &UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := aibiDashboardEmbeddingApprovedDomainsSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -14782,6 +13451,7 @@ func updateAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb *updateA
 type UpdateAutomaticClusterUpdateSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -14794,8 +13464,10 @@ type UpdateAutomaticClusterUpdateSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting AutomaticClusterUpdateSetting
 }
 
@@ -14804,15 +13476,9 @@ func updateAutomaticClusterUpdateSettingRequestToPb(st *UpdateAutomaticClusterUp
 		return nil, nil
 	}
 	pb := &updateAutomaticClusterUpdateSettingRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := automaticClusterUpdateSettingToPb(&st.Setting)
 	if err != nil {
@@ -14875,14 +13541,8 @@ func updateAutomaticClusterUpdateSettingRequestFromPb(pb *updateAutomaticCluster
 		return nil, nil
 	}
 	st := &UpdateAutomaticClusterUpdateSettingRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := automaticClusterUpdateSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -14898,6 +13558,7 @@ func updateAutomaticClusterUpdateSettingRequestFromPb(pb *updateAutomaticCluster
 type UpdateComplianceSecurityProfileSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -14910,8 +13571,10 @@ type UpdateComplianceSecurityProfileSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting ComplianceSecurityProfileSetting
 }
 
@@ -14920,15 +13583,9 @@ func updateComplianceSecurityProfileSettingRequestToPb(st *UpdateComplianceSecur
 		return nil, nil
 	}
 	pb := &updateComplianceSecurityProfileSettingRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := complianceSecurityProfileSettingToPb(&st.Setting)
 	if err != nil {
@@ -14991,14 +13648,8 @@ func updateComplianceSecurityProfileSettingRequestFromPb(pb *updateComplianceSec
 		return nil, nil
 	}
 	st := &UpdateComplianceSecurityProfileSettingRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := complianceSecurityProfileSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -15014,6 +13665,7 @@ func updateComplianceSecurityProfileSettingRequestFromPb(pb *updateComplianceSec
 type UpdateCspEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -15026,8 +13678,10 @@ type UpdateCspEnablementAccountSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting CspEnablementAccountSetting
 }
 
@@ -15036,15 +13690,9 @@ func updateCspEnablementAccountSettingRequestToPb(st *UpdateCspEnablementAccount
 		return nil, nil
 	}
 	pb := &updateCspEnablementAccountSettingRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := cspEnablementAccountSettingToPb(&st.Setting)
 	if err != nil {
@@ -15107,14 +13755,8 @@ func updateCspEnablementAccountSettingRequestFromPb(pb *updateCspEnablementAccou
 		return nil, nil
 	}
 	st := &UpdateCspEnablementAccountSettingRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := cspEnablementAccountSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -15130,6 +13772,7 @@ func updateCspEnablementAccountSettingRequestFromPb(pb *updateCspEnablementAccou
 type UpdateDefaultNamespaceSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -15142,6 +13785,7 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 	// This represents the setting configuration for the default namespace in
 	// the Databricks workspace. Setting the default catalog for the workspace
@@ -15152,6 +13796,7 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	// assumed). This setting requires a restart of clusters and SQL warehouses
 	// to take effect. Additionally, the default namespace only applies when
 	// using Unity Catalog-enabled compute.
+	// Wire name: 'setting'
 	Setting DefaultNamespaceSetting
 }
 
@@ -15160,15 +13805,9 @@ func updateDefaultNamespaceSettingRequestToPb(st *UpdateDefaultNamespaceSettingR
 		return nil, nil
 	}
 	pb := &updateDefaultNamespaceSettingRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := defaultNamespaceSettingToPb(&st.Setting)
 	if err != nil {
@@ -15239,14 +13878,8 @@ func updateDefaultNamespaceSettingRequestFromPb(pb *updateDefaultNamespaceSettin
 		return nil, nil
 	}
 	st := &UpdateDefaultNamespaceSettingRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := defaultNamespaceSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -15262,6 +13895,7 @@ func updateDefaultNamespaceSettingRequestFromPb(pb *updateDefaultNamespaceSettin
 type UpdateDisableLegacyAccessRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -15274,8 +13908,10 @@ type UpdateDisableLegacyAccessRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting DisableLegacyAccess
 }
 
@@ -15284,15 +13920,9 @@ func updateDisableLegacyAccessRequestToPb(st *UpdateDisableLegacyAccessRequest) 
 		return nil, nil
 	}
 	pb := &updateDisableLegacyAccessRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := disableLegacyAccessToPb(&st.Setting)
 	if err != nil {
@@ -15355,14 +13985,8 @@ func updateDisableLegacyAccessRequestFromPb(pb *updateDisableLegacyAccessRequest
 		return nil, nil
 	}
 	st := &UpdateDisableLegacyAccessRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := disableLegacyAccessFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -15378,6 +14002,7 @@ func updateDisableLegacyAccessRequestFromPb(pb *updateDisableLegacyAccessRequest
 type UpdateDisableLegacyDbfsRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -15390,8 +14015,10 @@ type UpdateDisableLegacyDbfsRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting DisableLegacyDbfs
 }
 
@@ -15400,15 +14027,9 @@ func updateDisableLegacyDbfsRequestToPb(st *UpdateDisableLegacyDbfsRequest) (*up
 		return nil, nil
 	}
 	pb := &updateDisableLegacyDbfsRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := disableLegacyDbfsToPb(&st.Setting)
 	if err != nil {
@@ -15471,14 +14092,8 @@ func updateDisableLegacyDbfsRequestFromPb(pb *updateDisableLegacyDbfsRequestPb) 
 		return nil, nil
 	}
 	st := &UpdateDisableLegacyDbfsRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := disableLegacyDbfsFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -15494,6 +14109,7 @@ func updateDisableLegacyDbfsRequestFromPb(pb *updateDisableLegacyDbfsRequestPb) 
 type UpdateDisableLegacyFeaturesRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -15506,8 +14122,10 @@ type UpdateDisableLegacyFeaturesRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting DisableLegacyFeatures
 }
 
@@ -15516,15 +14134,9 @@ func updateDisableLegacyFeaturesRequestToPb(st *UpdateDisableLegacyFeaturesReque
 		return nil, nil
 	}
 	pb := &updateDisableLegacyFeaturesRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := disableLegacyFeaturesToPb(&st.Setting)
 	if err != nil {
@@ -15587,14 +14199,8 @@ func updateDisableLegacyFeaturesRequestFromPb(pb *updateDisableLegacyFeaturesReq
 		return nil, nil
 	}
 	st := &UpdateDisableLegacyFeaturesRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := disableLegacyFeaturesFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -15610,6 +14216,7 @@ func updateDisableLegacyFeaturesRequestFromPb(pb *updateDisableLegacyFeaturesReq
 type UpdateEnableExportNotebookRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -15622,8 +14229,10 @@ type UpdateEnableExportNotebookRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
-	FieldMask []string
+	// Wire name: 'field_mask'
+	FieldMask string
 
+	// Wire name: 'setting'
 	Setting EnableExportNotebook
 }
 
@@ -15632,18 +14241,9 @@ func updateEnableExportNotebookRequestToPb(st *UpdateEnableExportNotebookRequest
 		return nil, nil
 	}
 	pb := &updateEnableExportNotebookRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := enableExportNotebookToPb(&st.Setting)
 	if err != nil {
@@ -15706,17 +14306,8 @@ func updateEnableExportNotebookRequestFromPb(pb *updateEnableExportNotebookReque
 		return nil, nil
 	}
 	st := &UpdateEnableExportNotebookRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := enableExportNotebookFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -15732,6 +14323,7 @@ func updateEnableExportNotebookRequestFromPb(pb *updateEnableExportNotebookReque
 type UpdateEnableNotebookTableClipboardRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -15744,8 +14336,10 @@ type UpdateEnableNotebookTableClipboardRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
-	FieldMask []string
+	// Wire name: 'field_mask'
+	FieldMask string
 
+	// Wire name: 'setting'
 	Setting EnableNotebookTableClipboard
 }
 
@@ -15754,18 +14348,9 @@ func updateEnableNotebookTableClipboardRequestToPb(st *UpdateEnableNotebookTable
 		return nil, nil
 	}
 	pb := &updateEnableNotebookTableClipboardRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb, err := fieldMaskToPb(&st.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := enableNotebookTableClipboardToPb(&st.Setting)
 	if err != nil {
@@ -15828,17 +14413,8 @@ func updateEnableNotebookTableClipboardRequestFromPb(pb *updateEnableNotebookTab
 		return nil, nil
 	}
 	st := &UpdateEnableNotebookTableClipboardRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField, err := fieldMaskFromPb(&pb.FieldMask)
-	if err != nil {
-		return nil, err
-	}
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := enableNotebookTableClipboardFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -15854,6 +14430,7 @@ func updateEnableNotebookTableClipboardRequestFromPb(pb *updateEnableNotebookTab
 type UpdateEnableResultsDownloadingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -15866,8 +14443,10 @@ type UpdateEnableResultsDownloadingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting EnableResultsDownloading
 }
 
@@ -15876,15 +14455,9 @@ func updateEnableResultsDownloadingRequestToPb(st *UpdateEnableResultsDownloadin
 		return nil, nil
 	}
 	pb := &updateEnableResultsDownloadingRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := enableResultsDownloadingToPb(&st.Setting)
 	if err != nil {
@@ -15947,14 +14520,8 @@ func updateEnableResultsDownloadingRequestFromPb(pb *updateEnableResultsDownload
 		return nil, nil
 	}
 	st := &UpdateEnableResultsDownloadingRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := enableResultsDownloadingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -15970,6 +14537,7 @@ func updateEnableResultsDownloadingRequestFromPb(pb *updateEnableResultsDownload
 type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -15982,8 +14550,10 @@ type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting EnhancedSecurityMonitoringSetting
 }
 
@@ -15992,15 +14562,9 @@ func updateEnhancedSecurityMonitoringSettingRequestToPb(st *UpdateEnhancedSecuri
 		return nil, nil
 	}
 	pb := &updateEnhancedSecurityMonitoringSettingRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := enhancedSecurityMonitoringSettingToPb(&st.Setting)
 	if err != nil {
@@ -16063,14 +14627,8 @@ func updateEnhancedSecurityMonitoringSettingRequestFromPb(pb *updateEnhancedSecu
 		return nil, nil
 	}
 	st := &UpdateEnhancedSecurityMonitoringSettingRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := enhancedSecurityMonitoringSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -16086,6 +14644,7 @@ func updateEnhancedSecurityMonitoringSettingRequestFromPb(pb *updateEnhancedSecu
 type UpdateEsmEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -16098,8 +14657,10 @@ type UpdateEsmEnablementAccountSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting EsmEnablementAccountSetting
 }
 
@@ -16108,15 +14669,9 @@ func updateEsmEnablementAccountSettingRequestToPb(st *UpdateEsmEnablementAccount
 		return nil, nil
 	}
 	pb := &updateEsmEnablementAccountSettingRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := esmEnablementAccountSettingToPb(&st.Setting)
 	if err != nil {
@@ -16179,14 +14734,8 @@ func updateEsmEnablementAccountSettingRequestFromPb(pb *updateEsmEnablementAccou
 		return nil, nil
 	}
 	st := &UpdateEsmEnablementAccountSettingRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := esmEnablementAccountSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -16201,12 +14750,16 @@ func updateEsmEnablementAccountSettingRequestFromPb(pb *updateEsmEnablementAccou
 // Details required to update an IP access list.
 type UpdateIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
+	// Wire name: 'enabled'
 	Enabled bool
 	// The ID for the corresponding IP access list
-	IpAccessListId string
+	// Wire name: 'ip_access_list_id'
+	IpAccessListId string `tf:"-"`
 
+	// Wire name: 'ip_addresses'
 	IpAddresses []string
 	// Label for the IP access list. This **cannot** be empty.
+	// Wire name: 'label'
 	Label string
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
@@ -16214,9 +14767,10 @@ type UpdateIpAccessList struct {
 	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
+	// Wire name: 'list_type'
 	ListType ListType
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateIpAccessListToPb(st *UpdateIpAccessList) (*updateIpAccessListPb, error) {
@@ -16224,34 +14778,15 @@ func updateIpAccessListToPb(st *UpdateIpAccessList) (*updateIpAccessListPb, erro
 		return nil, nil
 	}
 	pb := &updateIpAccessListPb{}
-	enabledPb := &st.Enabled
-	if enabledPb != nil {
-		pb.Enabled = *enabledPb
-	}
+	pb.Enabled = st.Enabled
 
-	ipAccessListIdPb := &st.IpAccessListId
-	if ipAccessListIdPb != nil {
-		pb.IpAccessListId = *ipAccessListIdPb
-	}
+	pb.IpAccessListId = st.IpAccessListId
 
-	var ipAddressesPb []string
-	for _, item := range st.IpAddresses {
-		itemPb := &item
-		if itemPb != nil {
-			ipAddressesPb = append(ipAddressesPb, *itemPb)
-		}
-	}
-	pb.IpAddresses = ipAddressesPb
+	pb.IpAddresses = st.IpAddresses
 
-	labelPb := &st.Label
-	if labelPb != nil {
-		pb.Label = *labelPb
-	}
+	pb.Label = st.Label
 
-	listTypePb := &st.ListType
-	if listTypePb != nil {
-		pb.ListType = *listTypePb
-	}
+	pb.ListType = st.ListType
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16307,31 +14842,11 @@ func updateIpAccessListFromPb(pb *updateIpAccessListPb) (*UpdateIpAccessList, er
 		return nil, nil
 	}
 	st := &UpdateIpAccessList{}
-	enabledField := &pb.Enabled
-	if enabledField != nil {
-		st.Enabled = *enabledField
-	}
-	ipAccessListIdField := &pb.IpAccessListId
-	if ipAccessListIdField != nil {
-		st.IpAccessListId = *ipAccessListIdField
-	}
-
-	var ipAddressesField []string
-	for _, item := range pb.IpAddresses {
-		itemField := &item
-		if itemField != nil {
-			ipAddressesField = append(ipAddressesField, *itemField)
-		}
-	}
-	st.IpAddresses = ipAddressesField
-	labelField := &pb.Label
-	if labelField != nil {
-		st.Label = *labelField
-	}
-	listTypeField := &pb.ListType
-	if listTypeField != nil {
-		st.ListType = *listTypeField
-	}
+	st.Enabled = pb.Enabled
+	st.IpAccessListId = pb.IpAccessListId
+	st.IpAddresses = pb.IpAddresses
+	st.Label = pb.Label
+	st.ListType = pb.ListType
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16348,19 +14863,23 @@ func (st updateIpAccessListPb) MarshalJSON() ([]byte, error) {
 // Update a private endpoint rule
 type UpdateNccAzurePrivateEndpointRulePublicRequest struct {
 	// Your Network Connectivity Configuration ID.
-	NetworkConnectivityConfigId string
+	// Wire name: 'network_connectivity_config_id'
+	NetworkConnectivityConfigId string `tf:"-"`
 	// Properties of the new private endpoint rule. Note that you must approve
 	// the endpoint in Azure portal after initialization.
+	// Wire name: 'private_endpoint_rule'
 	PrivateEndpointRule UpdatePrivateEndpointRule
 	// Your private endpoint rule ID.
-	PrivateEndpointRuleId string
+	// Wire name: 'private_endpoint_rule_id'
+	PrivateEndpointRuleId string `tf:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
 	// Specification of elements in sequence or map fields is not allowed, as
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
-	UpdateMask []string
+	// Wire name: 'update_mask'
+	UpdateMask string `tf:"-"`
 }
 
 func updateNccAzurePrivateEndpointRulePublicRequestToPb(st *UpdateNccAzurePrivateEndpointRulePublicRequest) (*updateNccAzurePrivateEndpointRulePublicRequestPb, error) {
@@ -16368,10 +14887,7 @@ func updateNccAzurePrivateEndpointRulePublicRequestToPb(st *UpdateNccAzurePrivat
 		return nil, nil
 	}
 	pb := &updateNccAzurePrivateEndpointRulePublicRequestPb{}
-	networkConnectivityConfigIdPb := &st.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdPb != nil {
-		pb.NetworkConnectivityConfigId = *networkConnectivityConfigIdPb
-	}
+	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
 
 	privateEndpointRulePb, err := updatePrivateEndpointRuleToPb(&st.PrivateEndpointRule)
 	if err != nil {
@@ -16381,18 +14897,9 @@ func updateNccAzurePrivateEndpointRulePublicRequestToPb(st *UpdateNccAzurePrivat
 		pb.PrivateEndpointRule = *privateEndpointRulePb
 	}
 
-	privateEndpointRuleIdPb := &st.PrivateEndpointRuleId
-	if privateEndpointRuleIdPb != nil {
-		pb.PrivateEndpointRuleId = *privateEndpointRuleIdPb
-	}
+	pb.PrivateEndpointRuleId = st.PrivateEndpointRuleId
 
-	updateMaskPb, err := fieldMaskToPb(&st.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskPb != nil {
-		pb.UpdateMask = *updateMaskPb
-	}
+	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
 }
@@ -16444,10 +14951,7 @@ func updateNccAzurePrivateEndpointRulePublicRequestFromPb(pb *updateNccAzurePriv
 		return nil, nil
 	}
 	st := &UpdateNccAzurePrivateEndpointRulePublicRequest{}
-	networkConnectivityConfigIdField := &pb.NetworkConnectivityConfigId
-	if networkConnectivityConfigIdField != nil {
-		st.NetworkConnectivityConfigId = *networkConnectivityConfigIdField
-	}
+	st.NetworkConnectivityConfigId = pb.NetworkConnectivityConfigId
 	privateEndpointRuleField, err := updatePrivateEndpointRuleFromPb(&pb.PrivateEndpointRule)
 	if err != nil {
 		return nil, err
@@ -16455,17 +14959,8 @@ func updateNccAzurePrivateEndpointRulePublicRequestFromPb(pb *updateNccAzurePriv
 	if privateEndpointRuleField != nil {
 		st.PrivateEndpointRule = *privateEndpointRuleField
 	}
-	privateEndpointRuleIdField := &pb.PrivateEndpointRuleId
-	if privateEndpointRuleIdField != nil {
-		st.PrivateEndpointRuleId = *privateEndpointRuleIdField
-	}
-	updateMaskField, err := fieldMaskFromPb(&pb.UpdateMask)
-	if err != nil {
-		return nil, err
-	}
-	if updateMaskField != nil {
-		st.UpdateMask = *updateMaskField
-	}
+	st.PrivateEndpointRuleId = pb.PrivateEndpointRuleId
+	st.UpdateMask = pb.UpdateMask
 
 	return st, nil
 }
@@ -16473,13 +14968,16 @@ func updateNccAzurePrivateEndpointRulePublicRequestFromPb(pb *updateNccAzurePriv
 type UpdateNotificationDestinationRequest struct {
 	// The configuration for the notification destination. Must wrap EXACTLY one
 	// of the nested configs.
+	// Wire name: 'config'
 	Config *Config
 	// The display name for the notification destination.
+	// Wire name: 'display_name'
 	DisplayName string
 	// UUID identifying notification destination.
-	Id string
+	// Wire name: 'id'
+	Id string `tf:"-"`
 
-	ForceSendFields []string
+	ForceSendFields []string `tf:"-"`
 }
 
 func updateNotificationDestinationRequestToPb(st *UpdateNotificationDestinationRequest) (*updateNotificationDestinationRequestPb, error) {
@@ -16495,15 +14993,9 @@ func updateNotificationDestinationRequestToPb(st *UpdateNotificationDestinationR
 		pb.Config = configPb
 	}
 
-	displayNamePb := &st.DisplayName
-	if displayNamePb != nil {
-		pb.DisplayName = *displayNamePb
-	}
+	pb.DisplayName = st.DisplayName
 
-	idPb := &st.Id
-	if idPb != nil {
-		pb.Id = *idPb
-	}
+	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
 	return pb, nil
@@ -16558,14 +15050,8 @@ func updateNotificationDestinationRequestFromPb(pb *updateNotificationDestinatio
 	if configField != nil {
 		st.Config = configField
 	}
-	displayNameField := &pb.DisplayName
-	if displayNameField != nil {
-		st.DisplayName = *displayNameField
-	}
-	idField := &pb.Id
-	if idField != nil {
-		st.Id = *idField
-	}
+	st.DisplayName = pb.DisplayName
+	st.Id = pb.Id
 
 	st.ForceSendFields = pb.ForceSendFields
 	return st, nil
@@ -16583,6 +15069,7 @@ func (st updateNotificationDestinationRequestPb) MarshalJSON() ([]byte, error) {
 type UpdatePersonalComputeSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -16595,8 +15082,10 @@ type UpdatePersonalComputeSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting PersonalComputeSetting
 }
 
@@ -16605,15 +15094,9 @@ func updatePersonalComputeSettingRequestToPb(st *UpdatePersonalComputeSettingReq
 		return nil, nil
 	}
 	pb := &updatePersonalComputeSettingRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := personalComputeSettingToPb(&st.Setting)
 	if err != nil {
@@ -16676,14 +15159,8 @@ func updatePersonalComputeSettingRequestFromPb(pb *updatePersonalComputeSettingR
 		return nil, nil
 	}
 	st := &UpdatePersonalComputeSettingRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := personalComputeSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -16702,6 +15179,7 @@ type UpdatePrivateEndpointRule struct {
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
+	// Wire name: 'domain_names'
 	DomainNames []string
 }
 
@@ -16710,15 +15188,7 @@ func updatePrivateEndpointRuleToPb(st *UpdatePrivateEndpointRule) (*updatePrivat
 		return nil, nil
 	}
 	pb := &updatePrivateEndpointRulePb{}
-
-	var domainNamesPb []string
-	for _, item := range st.DomainNames {
-		itemPb := &item
-		if itemPb != nil {
-			domainNamesPb = append(domainNamesPb, *itemPb)
-		}
-	}
-	pb.DomainNames = domainNamesPb
+	pb.DomainNames = st.DomainNames
 
 	return pb, nil
 }
@@ -16761,15 +15231,7 @@ func updatePrivateEndpointRuleFromPb(pb *updatePrivateEndpointRulePb) (*UpdatePr
 		return nil, nil
 	}
 	st := &UpdatePrivateEndpointRule{}
-
-	var domainNamesField []string
-	for _, item := range pb.DomainNames {
-		itemField := &item
-		if itemField != nil {
-			domainNamesField = append(domainNamesField, *itemField)
-		}
-	}
-	st.DomainNames = domainNamesField
+	st.DomainNames = pb.DomainNames
 
 	return st, nil
 }
@@ -16827,6 +15289,7 @@ func updateResponseFromPb(pb *updateResponsePb) (*UpdateResponse, error) {
 type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -16839,8 +15302,10 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string
 
+	// Wire name: 'setting'
 	Setting RestrictWorkspaceAdminsSetting
 }
 
@@ -16849,15 +15314,9 @@ func updateRestrictWorkspaceAdminsSettingRequestToPb(st *UpdateRestrictWorkspace
 		return nil, nil
 	}
 	pb := &updateRestrictWorkspaceAdminsSettingRequestPb{}
-	allowMissingPb := &st.AllowMissing
-	if allowMissingPb != nil {
-		pb.AllowMissing = *allowMissingPb
-	}
+	pb.AllowMissing = st.AllowMissing
 
-	fieldMaskPb := &st.FieldMask
-	if fieldMaskPb != nil {
-		pb.FieldMask = *fieldMaskPb
-	}
+	pb.FieldMask = st.FieldMask
 
 	settingPb, err := restrictWorkspaceAdminsSettingToPb(&st.Setting)
 	if err != nil {
@@ -16920,14 +15379,8 @@ func updateRestrictWorkspaceAdminsSettingRequestFromPb(pb *updateRestrictWorkspa
 		return nil, nil
 	}
 	st := &UpdateRestrictWorkspaceAdminsSettingRequest{}
-	allowMissingField := &pb.AllowMissing
-	if allowMissingField != nil {
-		st.AllowMissing = *allowMissingField
-	}
-	fieldMaskField := &pb.FieldMask
-	if fieldMaskField != nil {
-		st.FieldMask = *fieldMaskField
-	}
+	st.AllowMissing = pb.AllowMissing
+	st.FieldMask = pb.FieldMask
 	settingField, err := restrictWorkspaceAdminsSettingFromPb(&pb.Setting)
 	if err != nil {
 		return nil, err
@@ -16955,4 +15408,58 @@ func workspaceConfFromPb(stPb *workspaceConfPb) (*WorkspaceConf, error) {
 	}
 	st := WorkspaceConf(*stPb)
 	return &st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

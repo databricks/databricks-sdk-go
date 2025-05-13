@@ -29,7 +29,15 @@ func (a *jobsImpl) CancelAllRuns(ctx context.Context, request CancelAllRuns) err
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &cancelAllRunsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&cancelAllRunsResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -49,7 +57,15 @@ func (a *jobsImpl) CancelRun(ctx context.Context, request CancelRun) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &cancelRunResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&cancelRunResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -70,15 +86,22 @@ func (a *jobsImpl) Create(ctx context.Context, request CreateJob) (*CreateRespon
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &createResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&createResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := createResponseFromPb(&createResponsePb)
+	resp, err := createResponseFromPb(&createResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -95,7 +118,15 @@ func (a *jobsImpl) Delete(ctx context.Context, request DeleteJob) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -115,7 +146,15 @@ func (a *jobsImpl) DeleteRun(ctx context.Context, request DeleteRun) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &deleteRunResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteRunResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -135,15 +174,22 @@ func (a *jobsImpl) ExportRun(ctx context.Context, request ExportRunRequest) (*Ex
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &exportRunOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&exportRunOutputPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := exportRunOutputFromPb(&exportRunOutputPb)
+	resp, err := exportRunOutputFromPb(&exportRunOutputPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -160,15 +206,22 @@ func (a *jobsImpl) Get(ctx context.Context, request GetJobRequest) (*Job, error)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &jobPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&jobPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := jobFromPb(&jobPb)
+	resp, err := jobFromPb(&jobPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -185,15 +238,22 @@ func (a *jobsImpl) GetPermissionLevels(ctx context.Context, request GetJobPermis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getJobPermissionLevelsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getJobPermissionLevelsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getJobPermissionLevelsResponseFromPb(&getJobPermissionLevelsResponsePb)
+	resp, err := getJobPermissionLevelsResponseFromPb(&getJobPermissionLevelsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -210,15 +270,22 @@ func (a *jobsImpl) GetPermissions(ctx context.Context, request GetJobPermissions
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &jobPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&jobPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := jobPermissionsFromPb(&jobPermissionsPb)
+	resp, err := jobPermissionsFromPb(&jobPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -235,15 +302,22 @@ func (a *jobsImpl) GetRun(ctx context.Context, request GetRunRequest) (*Run, err
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &runPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&runPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := runFromPb(&runPb)
+	resp, err := runFromPb(&runPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -260,15 +334,22 @@ func (a *jobsImpl) GetRunOutput(ctx context.Context, request GetRunOutputRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &runOutputPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&runOutputPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := runOutputFromPb(&runOutputPb)
+	resp, err := runOutputFromPb(&runOutputPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -320,15 +401,22 @@ func (a *jobsImpl) internalList(ctx context.Context, request ListJobsRequest) (*
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listJobsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listJobsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listJobsResponseFromPb(&listJobsResponsePb)
+	resp, err := listJobsResponseFromPb(&listJobsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -380,15 +468,22 @@ func (a *jobsImpl) internalListRuns(ctx context.Context, request ListRunsRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listRunsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listRunsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listRunsResponseFromPb(&listRunsResponsePb)
+	resp, err := listRunsResponseFromPb(&listRunsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -406,15 +501,22 @@ func (a *jobsImpl) RepairRun(ctx context.Context, request RepairRun) (*RepairRun
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &repairRunResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&repairRunResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := repairRunResponseFromPb(&repairRunResponsePb)
+	resp, err := repairRunResponseFromPb(&repairRunResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -431,7 +533,15 @@ func (a *jobsImpl) Reset(ctx context.Context, request ResetJob) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &resetResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&resetResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -452,15 +562,22 @@ func (a *jobsImpl) RunNow(ctx context.Context, request RunNow) (*RunNowResponse,
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &runNowResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&runNowResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := runNowResponseFromPb(&runNowResponsePb)
+	resp, err := runNowResponseFromPb(&runNowResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -478,15 +595,22 @@ func (a *jobsImpl) SetPermissions(ctx context.Context, request JobPermissionsReq
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, (*requestPb), &jobPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&jobPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := jobPermissionsFromPb(&jobPermissionsPb)
+	resp, err := jobPermissionsFromPb(&jobPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -504,15 +628,22 @@ func (a *jobsImpl) Submit(ctx context.Context, request SubmitRun) (*SubmitRunRes
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &submitRunResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&submitRunResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := submitRunResponseFromPb(&submitRunResponsePb)
+	resp, err := submitRunResponseFromPb(&submitRunResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -529,7 +660,15 @@ func (a *jobsImpl) Update(ctx context.Context, request UpdateJob) error {
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &updateResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -550,15 +689,22 @@ func (a *jobsImpl) UpdatePermissions(ctx context.Context, request JobPermissions
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &jobPermissionsPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&jobPermissionsPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := jobPermissionsFromPb(&jobPermissionsPb)
+	resp, err := jobPermissionsFromPb(&jobPermissionsPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -581,15 +727,22 @@ func (a *policyComplianceForJobsImpl) EnforceCompliance(ctx context.Context, req
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &enforcePolicyComplianceResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&enforcePolicyComplianceResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := enforcePolicyComplianceResponseFromPb(&enforcePolicyComplianceResponsePb)
+	resp, err := enforcePolicyComplianceResponseFromPb(&enforcePolicyComplianceResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -606,15 +759,22 @@ func (a *policyComplianceForJobsImpl) GetCompliance(ctx context.Context, request
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getPolicyComplianceResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getPolicyComplianceResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getPolicyComplianceResponseFromPb(&getPolicyComplianceResponsePb)
+	resp, err := getPolicyComplianceResponseFromPb(&getPolicyComplianceResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -672,15 +832,22 @@ func (a *policyComplianceForJobsImpl) internalListCompliance(ctx context.Context
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listJobComplianceForPolicyResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listJobComplianceForPolicyResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listJobComplianceForPolicyResponseFromPb(&listJobComplianceForPolicyResponsePb)
+	resp, err := listJobComplianceForPolicyResponseFromPb(&listJobComplianceForPolicyResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }

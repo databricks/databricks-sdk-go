@@ -30,15 +30,22 @@ func (a *providersImpl) Create(ctx context.Context, request CreateProvider) (*Pr
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &providerInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&providerInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := providerInfoFromPb(&providerInfoPb)
+	resp, err := providerInfoFromPb(&providerInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -54,7 +61,15 @@ func (a *providersImpl) Delete(ctx context.Context, request DeleteProviderReques
 	path := fmt.Sprintf("/api/2.1/unity-catalog/providers/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -74,15 +89,22 @@ func (a *providersImpl) Get(ctx context.Context, request GetProviderRequest) (*P
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &providerInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&providerInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := providerInfoFromPb(&providerInfoPb)
+	resp, err := providerInfoFromPb(&providerInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -142,15 +164,22 @@ func (a *providersImpl) internalList(ctx context.Context, request ListProvidersR
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listProvidersResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listProvidersResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listProvidersResponseFromPb(&listProvidersResponsePb)
+	resp, err := listProvidersResponseFromPb(&listProvidersResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -167,15 +196,22 @@ func (a *providersImpl) ListProviderShareAssets(ctx context.Context, request Lis
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listProviderShareAssetsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listProviderShareAssetsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listProviderShareAssetsResponseFromPb(&listProviderShareAssetsResponsePb)
+	resp, err := listProviderShareAssetsResponseFromPb(&listProviderShareAssetsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -233,15 +269,22 @@ func (a *providersImpl) internalListShares(ctx context.Context, request ListShar
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listProviderSharesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listProviderSharesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listProviderSharesResponseFromPb(&listProviderSharesResponsePb)
+	resp, err := listProviderSharesResponseFromPb(&listProviderSharesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -259,15 +302,22 @@ func (a *providersImpl) Update(ctx context.Context, request UpdateProvider) (*Pr
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &providerInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&providerInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := providerInfoFromPb(&providerInfoPb)
+	resp, err := providerInfoFromPb(&providerInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -289,7 +339,15 @@ func (a *recipientActivationImpl) GetActivationUrlInfo(ctx context.Context, requ
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getActivationUrlInfoResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getActivationUrlInfoResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -309,15 +367,22 @@ func (a *recipientActivationImpl) RetrieveToken(ctx context.Context, request Ret
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &retrieveTokenResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&retrieveTokenResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := retrieveTokenResponseFromPb(&retrieveTokenResponsePb)
+	resp, err := retrieveTokenResponseFromPb(&retrieveTokenResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -340,15 +405,22 @@ func (a *recipientsImpl) Create(ctx context.Context, request CreateRecipient) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &recipientInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&recipientInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := recipientInfoFromPb(&recipientInfoPb)
+	resp, err := recipientInfoFromPb(&recipientInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -364,7 +436,15 @@ func (a *recipientsImpl) Delete(ctx context.Context, request DeleteRecipientRequ
 	path := fmt.Sprintf("/api/2.1/unity-catalog/recipients/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -384,15 +464,22 @@ func (a *recipientsImpl) Get(ctx context.Context, request GetRecipientRequest) (
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &recipientInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&recipientInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := recipientInfoFromPb(&recipientInfoPb)
+	resp, err := recipientInfoFromPb(&recipientInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -452,15 +539,22 @@ func (a *recipientsImpl) internalList(ctx context.Context, request ListRecipient
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listRecipientsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listRecipientsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listRecipientsResponseFromPb(&listRecipientsResponsePb)
+	resp, err := listRecipientsResponseFromPb(&listRecipientsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -478,15 +572,22 @@ func (a *recipientsImpl) RotateToken(ctx context.Context, request RotateRecipien
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &recipientInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&recipientInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := recipientInfoFromPb(&recipientInfoPb)
+	resp, err := recipientInfoFromPb(&recipientInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -503,15 +604,22 @@ func (a *recipientsImpl) SharePermissions(ctx context.Context, request SharePerm
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getRecipientSharePermissionsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getRecipientSharePermissionsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getRecipientSharePermissionsResponseFromPb(&getRecipientSharePermissionsResponsePb)
+	resp, err := getRecipientSharePermissionsResponseFromPb(&getRecipientSharePermissionsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -529,15 +637,22 @@ func (a *recipientsImpl) Update(ctx context.Context, request UpdateRecipient) (*
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &recipientInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&recipientInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := recipientInfoFromPb(&recipientInfoPb)
+	resp, err := recipientInfoFromPb(&recipientInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -560,15 +675,22 @@ func (a *sharesImpl) Create(ctx context.Context, request CreateShare) (*ShareInf
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, (*requestPb), &shareInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&shareInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := shareInfoFromPb(&shareInfoPb)
+	resp, err := shareInfoFromPb(&shareInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -584,7 +706,15 @@ func (a *sharesImpl) Delete(ctx context.Context, request DeleteShareRequest) err
 	path := fmt.Sprintf("/api/2.1/unity-catalog/shares/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, (*requestPb), &deleteResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteResponsePb,
+	)
 	if err != nil {
 		return err
 	}
@@ -604,15 +734,22 @@ func (a *sharesImpl) Get(ctx context.Context, request GetShareRequest) (*ShareIn
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &shareInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&shareInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := shareInfoFromPb(&shareInfoPb)
+	resp, err := shareInfoFromPb(&shareInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -670,15 +807,22 @@ func (a *sharesImpl) internalList(ctx context.Context, request ListSharesRequest
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &listSharesResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listSharesResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := listSharesResponseFromPb(&listSharesResponsePb)
+	resp, err := listSharesResponseFromPb(&listSharesResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -695,15 +839,22 @@ func (a *sharesImpl) SharePermissions(ctx context.Context, request SharePermissi
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, (*requestPb), &getSharePermissionsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getSharePermissionsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := getSharePermissionsResponseFromPb(&getSharePermissionsResponsePb)
+	resp, err := getSharePermissionsResponseFromPb(&getSharePermissionsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -721,15 +872,22 @@ func (a *sharesImpl) Update(ctx context.Context, request UpdateShare) (*ShareInf
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &shareInfoPb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&shareInfoPb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := shareInfoFromPb(&shareInfoPb)
+	resp, err := shareInfoFromPb(&shareInfoPb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
@@ -747,15 +905,22 @@ func (a *sharesImpl) UpdatePermissions(ctx context.Context, request UpdateShareP
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, (*requestPb), &updateSharePermissionsResponsePb)
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&updateSharePermissionsResponsePb,
+	)
 	if err != nil {
 		return nil, err
 	}
-	respField, err := updateSharePermissionsResponseFromPb(&updateSharePermissionsResponsePb)
+	resp, err := updateSharePermissionsResponseFromPb(&updateSharePermissionsResponsePb)
 	if err != nil {
 		return nil, err
 	}
-	resp := respField
 
 	return resp, err
 }
