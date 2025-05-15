@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enable Ip Access Lists, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
+// These APIs allow you to manage Account Ip Access Lists, Account Settings, Aibi Dashboard Embedding Access Policy, Aibi Dashboard Embedding Approved Domains, Automatic Cluster Update, Compliance Security Profile, Credentials Manager, Csp Enablement Account, Default Namespace, Disable Legacy Access, Disable Legacy Dbfs, Disable Legacy Features, Enable Export Notebook, Enable Ip Access Lists, Enable Notebook Table Clipboard, Enable Results Downloading, Enhanced Security Monitoring, Esm Enablement Account, Ip Access Lists, Llm Proxy Partner Powered Account, Llm Proxy Partner Powered Enforce, Llm Proxy Partner Powered Workspace, Network Connectivity, Notification Destinations, Personal Compute, Restrict Workspace Admins, Settings, Token Management, Tokens, Workspace Conf, etc.
 package settings
 
 import (
@@ -255,6 +255,14 @@ type AccountSettingsInterface interface {
 	// individually for each workspace.
 	EsmEnablementAccount() EsmEnablementAccountInterface
 
+	// Determines if partner powered models are enabled or not for a specific
+	// account
+	LlmProxyPartnerPoweredAccount() LlmProxyPartnerPoweredAccountInterface
+
+	// Determines if the account-level partner-powered setting value is enforced
+	// upon the workspace-level partner-powered setting
+	LlmProxyPartnerPoweredEnforce() LlmProxyPartnerPoweredEnforceInterface
+
 	// The Personal Compute enablement setting lets you control which users can
 	// use the Personal Compute default policy to create compute resources. By
 	// default all users in all workspaces have access (ON), but you can change
@@ -281,6 +289,10 @@ func NewAccountSettings(client *client.DatabricksClient) *AccountSettingsAPI {
 		enableIpAccessLists: NewEnableIpAccessLists(client),
 
 		esmEnablementAccount: NewEsmEnablementAccount(client),
+
+		llmProxyPartnerPoweredAccount: NewLlmProxyPartnerPoweredAccount(client),
+
+		llmProxyPartnerPoweredEnforce: NewLlmProxyPartnerPoweredEnforce(client),
 
 		personalCompute: NewPersonalCompute(client),
 	}
@@ -320,6 +332,14 @@ type AccountSettingsAPI struct {
 	// individually for each workspace.
 	esmEnablementAccount EsmEnablementAccountInterface
 
+	// Determines if partner powered models are enabled or not for a specific
+	// account
+	llmProxyPartnerPoweredAccount LlmProxyPartnerPoweredAccountInterface
+
+	// Determines if the account-level partner-powered setting value is enforced
+	// upon the workspace-level partner-powered setting
+	llmProxyPartnerPoweredEnforce LlmProxyPartnerPoweredEnforceInterface
+
 	// The Personal Compute enablement setting lets you control which users can
 	// use the Personal Compute default policy to create compute resources. By
 	// default all users in all workspaces have access (ON), but you can change
@@ -347,6 +367,14 @@ func (a *AccountSettingsAPI) EnableIpAccessLists() EnableIpAccessListsInterface 
 
 func (a *AccountSettingsAPI) EsmEnablementAccount() EsmEnablementAccountInterface {
 	return a.esmEnablementAccount
+}
+
+func (a *AccountSettingsAPI) LlmProxyPartnerPoweredAccount() LlmProxyPartnerPoweredAccountInterface {
+	return a.llmProxyPartnerPoweredAccount
+}
+
+func (a *AccountSettingsAPI) LlmProxyPartnerPoweredEnforce() LlmProxyPartnerPoweredEnforceInterface {
+	return a.llmProxyPartnerPoweredEnforce
 }
 
 func (a *AccountSettingsAPI) PersonalCompute() PersonalComputeInterface {
@@ -626,11 +654,10 @@ func NewDisableLegacyAccess(client *client.DatabricksClient) *DisableLegacyAcces
 
 // 'Disabling legacy access' has the following impacts:
 //
-// 1. Disables direct access to the Hive Metastore. However, you can still
-// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode (docs
-// link) on any External Location access from the workspace. 3. Alters DBFS path
-// access to use External Location permissions in place of legacy credentials.
-// 4. Enforces Unity Catalog access on all path based access.
+// 1. Disables direct access to Hive Metastores from the workspace. However, you
+// can still access a Hive Metastore through Hive Metastore federation. 2.
+// Disables fallback mode on external location access from the workspace. 3.
+// Disables Databricks Runtime versions prior to 13.3LTS.
 type DisableLegacyAccessAPI struct {
 	disableLegacyAccessImpl
 }
@@ -705,6 +732,35 @@ type DisableLegacyFeaturesAPI struct {
 	disableLegacyFeaturesImpl
 }
 
+type EnableExportNotebookInterface interface {
+
+	// Get the Notebook and File exporting setting.
+	//
+	// Gets the Notebook and File exporting setting.
+	GetEnableExportNotebook(ctx context.Context) (*EnableExportNotebook, error)
+
+	// Update the Notebook and File exporting setting.
+	//
+	// Updates the Notebook and File exporting setting. The model follows eventual
+	// consistency, which means the get after the update operation might receive
+	// stale values for some time.
+	PatchEnableExportNotebook(ctx context.Context, request UpdateEnableExportNotebookRequest) (*EnableExportNotebook, error)
+}
+
+func NewEnableExportNotebook(client *client.DatabricksClient) *EnableExportNotebookAPI {
+	return &EnableExportNotebookAPI{
+		enableExportNotebookImpl: enableExportNotebookImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls whether users can export notebooks and files from the Workspace UI.
+// By default, this setting is enabled.
+type EnableExportNotebookAPI struct {
+	enableExportNotebookImpl
+}
+
 type EnableIpAccessListsInterface interface {
 
 	// Delete the account IP access toggle setting.
@@ -736,6 +792,64 @@ func NewEnableIpAccessLists(client *client.DatabricksClient) *EnableIpAccessList
 // addresses.
 type EnableIpAccessListsAPI struct {
 	enableIpAccessListsImpl
+}
+
+type EnableNotebookTableClipboardInterface interface {
+
+	// Get the Results Table Clipboard features setting.
+	//
+	// Gets the Results Table Clipboard features setting.
+	GetEnableNotebookTableClipboard(ctx context.Context) (*EnableNotebookTableClipboard, error)
+
+	// Update the Results Table Clipboard features setting.
+	//
+	// Updates the Results Table Clipboard features setting. The model follows
+	// eventual consistency, which means the get after the update operation might
+	// receive stale values for some time.
+	PatchEnableNotebookTableClipboard(ctx context.Context, request UpdateEnableNotebookTableClipboardRequest) (*EnableNotebookTableClipboard, error)
+}
+
+func NewEnableNotebookTableClipboard(client *client.DatabricksClient) *EnableNotebookTableClipboardAPI {
+	return &EnableNotebookTableClipboardAPI{
+		enableNotebookTableClipboardImpl: enableNotebookTableClipboardImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls whether users can copy tabular data to the clipboard via the UI. By
+// default, this setting is enabled.
+type EnableNotebookTableClipboardAPI struct {
+	enableNotebookTableClipboardImpl
+}
+
+type EnableResultsDownloadingInterface interface {
+
+	// Get the Notebook results download setting.
+	//
+	// Gets the Notebook results download setting.
+	GetEnableResultsDownloading(ctx context.Context) (*EnableResultsDownloading, error)
+
+	// Update the Notebook results download setting.
+	//
+	// Updates the Notebook results download setting. The model follows eventual
+	// consistency, which means the get after the update operation might receive
+	// stale values for some time.
+	PatchEnableResultsDownloading(ctx context.Context, request UpdateEnableResultsDownloadingRequest) (*EnableResultsDownloading, error)
+}
+
+func NewEnableResultsDownloading(client *client.DatabricksClient) *EnableResultsDownloadingAPI {
+	return &EnableResultsDownloadingAPI{
+		enableResultsDownloadingImpl: enableResultsDownloadingImpl{
+			client: client,
+		},
+	}
+}
+
+// Controls whether users can download notebook results. By default, this
+// setting is enabled.
+type EnableResultsDownloadingAPI struct {
+	enableResultsDownloadingImpl
 }
 
 type EnhancedSecurityMonitoringInterface interface {
@@ -1021,9 +1135,111 @@ func (a *IpAccessListsAPI) GetByLabel(ctx context.Context, name string) (*IpAcce
 	return &alternatives[0], nil
 }
 
+type LlmProxyPartnerPoweredAccountInterface interface {
+
+	// Get the enable partner powered AI features account setting.
+	//
+	// Gets the enable partner powered AI features account setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error)
+
+	// Update the enable partner powered AI features account setting.
+	//
+	// Updates the enable partner powered AI features account setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error)
+}
+
+func NewLlmProxyPartnerPoweredAccount(client *client.DatabricksClient) *LlmProxyPartnerPoweredAccountAPI {
+	return &LlmProxyPartnerPoweredAccountAPI{
+		llmProxyPartnerPoweredAccountImpl: llmProxyPartnerPoweredAccountImpl{
+			client: client,
+		},
+	}
+}
+
+// Determines if partner powered models are enabled or not for a specific
+// account
+type LlmProxyPartnerPoweredAccountAPI struct {
+	llmProxyPartnerPoweredAccountImpl
+}
+
+type LlmProxyPartnerPoweredEnforceInterface interface {
+
+	// Get the enforcement status of partner powered AI features account setting.
+	//
+	// Gets the enforcement status of partner powered AI features account setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error)
+
+	// Update the enforcement status of partner powered AI features account setting.
+	//
+	// Updates the enable enforcement status of partner powered AI features account
+	// setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error)
+}
+
+func NewLlmProxyPartnerPoweredEnforce(client *client.DatabricksClient) *LlmProxyPartnerPoweredEnforceAPI {
+	return &LlmProxyPartnerPoweredEnforceAPI{
+		llmProxyPartnerPoweredEnforceImpl: llmProxyPartnerPoweredEnforceImpl{
+			client: client,
+		},
+	}
+}
+
+// Determines if the account-level partner-powered setting value is enforced
+// upon the workspace-level partner-powered setting
+type LlmProxyPartnerPoweredEnforceAPI struct {
+	llmProxyPartnerPoweredEnforceImpl
+}
+
+type LlmProxyPartnerPoweredWorkspaceInterface interface {
+
+	// Delete the enable partner powered AI features workspace setting.
+	//
+	// Reverts the enable partner powered AI features workspace setting to its
+	// default value.
+	Delete(ctx context.Context, request DeleteLlmProxyPartnerPoweredWorkspaceRequest) (*DeleteLlmProxyPartnerPoweredWorkspaceResponse, error)
+
+	// Get the enable partner powered AI features workspace setting.
+	//
+	// Gets the enable partner powered AI features workspace setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error)
+
+	// Update the enable partner powered AI features workspace setting.
+	//
+	// Updates the enable partner powered AI features workspace setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error)
+}
+
+func NewLlmProxyPartnerPoweredWorkspace(client *client.DatabricksClient) *LlmProxyPartnerPoweredWorkspaceAPI {
+	return &LlmProxyPartnerPoweredWorkspaceAPI{
+		llmProxyPartnerPoweredWorkspaceImpl: llmProxyPartnerPoweredWorkspaceImpl{
+			client: client,
+		},
+	}
+}
+
+// Determines if partner powered models are enabled or not for a specific
+// workspace
+type LlmProxyPartnerPoweredWorkspaceAPI struct {
+	llmProxyPartnerPoweredWorkspaceImpl
+}
+
 type NetworkConnectivityInterface interface {
 
 	// Create a network connectivity configuration.
+	//
+	// Creates a network connectivity configuration (NCC), which provides stable
+	// Azure service subnets when accessing your Azure Storage accounts. You can
+	// also use a network connectivity configuration to create Databricks managed
+	// private endpoints so that Databricks serverless compute resources privately
+	// access your resources.
+	//
+	// **IMPORTANT**: After you create the network connectivity configuration, you
+	// must assign one or more workspaces to the new network connectivity
+	// configuration. You can share one network connectivity configuration with
+	// multiple workspaces from the same Azure region within the same Databricks
+	// account. See [configure serverless secure connectivity].
+	//
+	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 	CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error)
 
 	// Create a private endpoint rule.
@@ -1080,12 +1296,12 @@ type NetworkConnectivityInterface interface {
 	// Gets a network connectivity configuration.
 	GetNetworkConnectivityConfigurationByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*NetworkConnectivityConfiguration, error)
 
-	// Get a private endpoint rule.
+	// Gets a private endpoint rule.
 	//
 	// Gets the private endpoint rule.
 	GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
 
-	// Get a private endpoint rule.
+	// Gets a private endpoint rule.
 	//
 	// Gets the private endpoint rule.
 	GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error)
@@ -1122,6 +1338,12 @@ type NetworkConnectivityInterface interface {
 	//
 	// Gets an array of private endpoint rules.
 	ListPrivateEndpointRulesByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*ListNccAzurePrivateEndpointRulesResponse, error)
+
+	// Update a private endpoint rule.
+	//
+	// Updates a private endpoint rule. Currently only a private endpoint rule to
+	// customer-managed resources is allowed to be updated.
+	UpdateNccAzurePrivateEndpointRulePublic(ctx context.Context, request UpdateNccAzurePrivateEndpointRulePublicRequest) (*NccAzurePrivateEndpointRule, error)
 }
 
 func NewNetworkConnectivity(client *client.DatabricksClient) *NetworkConnectivityAPI {
@@ -1133,7 +1355,14 @@ func NewNetworkConnectivity(client *client.DatabricksClient) *NetworkConnectivit
 }
 
 // These APIs provide configurations for the network connectivity of your
-// workspaces for serverless compute resources.
+// workspaces for serverless compute resources. This API provides stable subnets
+// for your workspace so that you can configure your firewalls on your Azure
+// Storage accounts to allow access from Databricks. You can also use the API to
+// provision private endpoints for Databricks to privately connect serverless
+// compute resources to your Azure resources using Azure Private Link. See
+// [configure serverless secure connectivity].
+//
+// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 type NetworkConnectivityAPI struct {
 	networkConnectivityImpl
 }
@@ -1171,7 +1400,7 @@ func (a *NetworkConnectivityAPI) GetNetworkConnectivityConfigurationByNetworkCon
 	})
 }
 
-// Get a private endpoint rule.
+// Gets a private endpoint rule.
 //
 // Gets the private endpoint rule.
 func (a *NetworkConnectivityAPI) GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*NccAzurePrivateEndpointRule, error) {
@@ -1403,17 +1632,28 @@ type SettingsInterface interface {
 
 	// 'Disabling legacy access' has the following impacts:
 	//
-	// 1. Disables direct access to the Hive Metastore. However, you can still
-	// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode
-	// (docs link) on any External Location access from the workspace. 3. Alters
-	// DBFS path access to use External Location permissions in place of legacy
-	// credentials. 4. Enforces Unity Catalog access on all path based access.
+	// 1. Disables direct access to Hive Metastores from the workspace. However,
+	// you can still access a Hive Metastore through Hive Metastore federation.
+	// 2. Disables fallback mode on external location access from the workspace.
+	// 3. Disables Databricks Runtime versions prior to 13.3LTS.
 	DisableLegacyAccess() DisableLegacyAccessInterface
 
 	// When this setting is on, access to DBFS root and DBFS mounts is
 	// disallowed (as well as creation of new mounts). When the setting is off,
 	// all DBFS functionality is enabled
 	DisableLegacyDbfs() DisableLegacyDbfsInterface
+
+	// Controls whether users can export notebooks and files from the Workspace
+	// UI. By default, this setting is enabled.
+	EnableExportNotebook() EnableExportNotebookInterface
+
+	// Controls whether users can copy tabular data to the clipboard via the UI.
+	// By default, this setting is enabled.
+	EnableNotebookTableClipboard() EnableNotebookTableClipboardInterface
+
+	// Controls whether users can download notebook results. By default, this
+	// setting is enabled.
+	EnableResultsDownloading() EnableResultsDownloadingInterface
 
 	// Controls whether enhanced security monitoring is enabled for the current
 	// workspace. If the compliance security profile is enabled, this is
@@ -1423,6 +1663,10 @@ type SettingsInterface interface {
 	// If the compliance security profile is disabled, you can enable or disable
 	// this setting and it is not permanent.
 	EnhancedSecurityMonitoring() EnhancedSecurityMonitoringInterface
+
+	// Determines if partner powered models are enabled or not for a specific
+	// workspace
+	LlmProxyPartnerPoweredWorkspace() LlmProxyPartnerPoweredWorkspaceInterface
 
 	// The Restrict Workspace Admins setting lets you control the capabilities
 	// of workspace admins. With the setting status set to ALLOW_ALL, workspace
@@ -1460,7 +1704,15 @@ func NewSettings(client *client.DatabricksClient) *SettingsAPI {
 
 		disableLegacyDbfs: NewDisableLegacyDbfs(client),
 
+		enableExportNotebook: NewEnableExportNotebook(client),
+
+		enableNotebookTableClipboard: NewEnableNotebookTableClipboard(client),
+
+		enableResultsDownloading: NewEnableResultsDownloading(client),
+
 		enhancedSecurityMonitoring: NewEnhancedSecurityMonitoring(client),
+
+		llmProxyPartnerPoweredWorkspace: NewLlmProxyPartnerPoweredWorkspace(client),
 
 		restrictWorkspaceAdmins: NewRestrictWorkspaceAdmins(client),
 	}
@@ -1509,17 +1761,28 @@ type SettingsAPI struct {
 
 	// 'Disabling legacy access' has the following impacts:
 	//
-	// 1. Disables direct access to the Hive Metastore. However, you can still
-	// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode
-	// (docs link) on any External Location access from the workspace. 3. Alters
-	// DBFS path access to use External Location permissions in place of legacy
-	// credentials. 4. Enforces Unity Catalog access on all path based access.
+	// 1. Disables direct access to Hive Metastores from the workspace. However,
+	// you can still access a Hive Metastore through Hive Metastore federation.
+	// 2. Disables fallback mode on external location access from the workspace.
+	// 3. Disables Databricks Runtime versions prior to 13.3LTS.
 	disableLegacyAccess DisableLegacyAccessInterface
 
 	// When this setting is on, access to DBFS root and DBFS mounts is
 	// disallowed (as well as creation of new mounts). When the setting is off,
 	// all DBFS functionality is enabled
 	disableLegacyDbfs DisableLegacyDbfsInterface
+
+	// Controls whether users can export notebooks and files from the Workspace
+	// UI. By default, this setting is enabled.
+	enableExportNotebook EnableExportNotebookInterface
+
+	// Controls whether users can copy tabular data to the clipboard via the UI.
+	// By default, this setting is enabled.
+	enableNotebookTableClipboard EnableNotebookTableClipboardInterface
+
+	// Controls whether users can download notebook results. By default, this
+	// setting is enabled.
+	enableResultsDownloading EnableResultsDownloadingInterface
 
 	// Controls whether enhanced security monitoring is enabled for the current
 	// workspace. If the compliance security profile is enabled, this is
@@ -1529,6 +1792,10 @@ type SettingsAPI struct {
 	// If the compliance security profile is disabled, you can enable or disable
 	// this setting and it is not permanent.
 	enhancedSecurityMonitoring EnhancedSecurityMonitoringInterface
+
+	// Determines if partner powered models are enabled or not for a specific
+	// workspace
+	llmProxyPartnerPoweredWorkspace LlmProxyPartnerPoweredWorkspaceInterface
 
 	// The Restrict Workspace Admins setting lets you control the capabilities
 	// of workspace admins. With the setting status set to ALLOW_ALL, workspace
@@ -1574,8 +1841,24 @@ func (a *SettingsAPI) DisableLegacyDbfs() DisableLegacyDbfsInterface {
 	return a.disableLegacyDbfs
 }
 
+func (a *SettingsAPI) EnableExportNotebook() EnableExportNotebookInterface {
+	return a.enableExportNotebook
+}
+
+func (a *SettingsAPI) EnableNotebookTableClipboard() EnableNotebookTableClipboardInterface {
+	return a.enableNotebookTableClipboard
+}
+
+func (a *SettingsAPI) EnableResultsDownloading() EnableResultsDownloadingInterface {
+	return a.enableResultsDownloading
+}
+
 func (a *SettingsAPI) EnhancedSecurityMonitoring() EnhancedSecurityMonitoringInterface {
 	return a.enhancedSecurityMonitoring
+}
+
+func (a *SettingsAPI) LlmProxyPartnerPoweredWorkspace() LlmProxyPartnerPoweredWorkspaceInterface {
+	return a.llmProxyPartnerPoweredWorkspace
 }
 
 func (a *SettingsAPI) RestrictWorkspaceAdmins() RestrictWorkspaceAdminsInterface {

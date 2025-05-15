@@ -505,10 +505,36 @@ func (s CohereConfig) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreatePtEndpointRequest struct {
+	// The AI Gateway configuration for the serving endpoint.
+	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// The budget policy associated with the endpoint.
+	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// The core config of the serving endpoint.
+	Config PtEndpointCoreConfig `json:"config"`
+	// The name of the serving endpoint. This field is required and must be
+	// unique across a Databricks workspace. An endpoint name can consist of
+	// alphanumeric characters, dashes, and underscores.
+	Name string `json:"name"`
+	// Tags to be attached to the serving endpoint and automatically propagated
+	// to billing logs.
+	Tags []EndpointTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreatePtEndpointRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreatePtEndpointRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type CreateServingEndpoint struct {
-	// The AI Gateway configuration for the serving endpoint. NOTE: Only
-	// external model and provisioned throughput endpoints are currently
-	// supported.
+	// The AI Gateway configuration for the serving endpoint. NOTE: External
+	// model, provisioned throughput, and pay-per-token endpoints are fully
+	// supported; agent endpoints currently only support inference tables.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
 	// The budget policy to be applied to the serving endpoint.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
@@ -1252,6 +1278,42 @@ func (s PayloadTable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type PtEndpointCoreConfig struct {
+	// The list of served entities under the serving endpoint config.
+	ServedEntities []PtServedModel `json:"served_entities,omitempty"`
+
+	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
+}
+
+type PtServedModel struct {
+	// The name of the entity to be served. The entity may be a model in the
+	// Databricks Model Registry, a model in the Unity Catalog (UC), or a
+	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full
+	// name of the object should be given in the form of
+	// **catalog_name.schema_name.model_name**.
+	EntityName string `json:"entity_name"`
+
+	EntityVersion string `json:"entity_version,omitempty"`
+	// The name of a served entity. It must be unique across an endpoint. A
+	// served entity name can consist of alphanumeric characters, dashes, and
+	// underscores. If not specified for an external model, this field defaults
+	// to external_model.name, with '.' and ':' replaced with '-', and if not
+	// specified for other entities, it defaults to entity_name-entity_version.
+	Name string `json:"name,omitempty"`
+	// The number of model units to be provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PtServedModel) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PtServedModel) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type PutAiGatewayRequest struct {
 	// Configuration for traffic fallback which auto fallbacks to other served
 	// entities if the request to a served entity fails with certain error
@@ -1553,6 +1615,8 @@ type ServedEntityInput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
@@ -1561,8 +1625,9 @@ type ServedEntityInput struct {
 	// single unit of provisioned concurrency can process one request at a time.
 	// Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
 	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
-	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
-	// the provisioned concurrency for each workload size is 0.
+	// provisioned concurrency). Additional custom workload sizes can also be
+	// used when available in the workspace. If scale-to-zero is enabled, the
+	// lower bound of the provisioned concurrency for each workload size is 0.
 	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -1628,6 +1693,8 @@ type ServedEntityOutput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
@@ -1638,8 +1705,9 @@ type ServedEntityOutput struct {
 	// single unit of provisioned concurrency can process one request at a time.
 	// Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
 	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
-	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
-	// the provisioned concurrency for each workload size is 0.
+	// provisioned concurrency). Additional custom workload sizes can also be
+	// used when available in the workspace. If scale-to-zero is enabled, the
+	// lower bound of the provisioned concurrency for each workload size is 0.
 	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -1709,6 +1777,8 @@ type ServedModelInput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled"`
@@ -1717,9 +1787,10 @@ type ServedModelInput struct {
 	// single unit of provisioned concurrency can process one request at a time.
 	// Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
 	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
-	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
-	// the provisioned concurrency for each workload size is 0.
-	WorkloadSize ServedModelInputWorkloadSize `json:"workload_size,omitempty"`
+	// provisioned concurrency). Additional custom workload sizes can also be
+	// used when available in the workspace. If scale-to-zero is enabled, the
+	// lower bound of the provisioned concurrency for each workload size is 0.
+	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
 	// parameter is "CPU". For deep learning workloads, GPU acceleration is
@@ -1738,35 +1809,6 @@ func (s *ServedModelInput) UnmarshalJSON(b []byte) error {
 
 func (s ServedModelInput) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type ServedModelInputWorkloadSize string
-
-const ServedModelInputWorkloadSizeLarge ServedModelInputWorkloadSize = `Large`
-
-const ServedModelInputWorkloadSizeMedium ServedModelInputWorkloadSize = `Medium`
-
-const ServedModelInputWorkloadSizeSmall ServedModelInputWorkloadSize = `Small`
-
-// String representation for [fmt.Print]
-func (f *ServedModelInputWorkloadSize) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ServedModelInputWorkloadSize) Set(v string) error {
-	switch v {
-	case `Large`, `Medium`, `Small`:
-		*f = ServedModelInputWorkloadSize(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "Large", "Medium", "Small"`, v)
-	}
-}
-
-// Type always returns ServedModelInputWorkloadSize to satisfy [pflag.Value] interface
-func (f *ServedModelInputWorkloadSize) Type() string {
-	return "ServedModelInputWorkloadSize"
 }
 
 // Please keep this in sync with with workload types in
@@ -1828,6 +1870,8 @@ type ServedModelOutput struct {
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
 	Name string `json:"name,omitempty"`
+	// The number of model units provisioned.
+	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
 	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
@@ -1838,8 +1882,9 @@ type ServedModelOutput struct {
 	// single unit of provisioned concurrency can process one request at a time.
 	// Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
 	// "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64
-	// provisioned concurrency). If scale-to-zero is enabled, the lower bound of
-	// the provisioned concurrency for each workload size is 0.
+	// provisioned concurrency). Additional custom workload sizes can also be
+	// used when available in the workspace. If scale-to-zero is enabled, the
+	// lower bound of the provisioned concurrency for each workload size is 0.
 	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -1936,9 +1981,9 @@ type ServerLogsResponse struct {
 }
 
 type ServingEndpoint struct {
-	// The AI Gateway configuration for the serving endpoint. NOTE: Only
-	// external model and provisioned throughput endpoints are currently
-	// supported.
+	// The AI Gateway configuration for the serving endpoint. NOTE: External
+	// model, provisioned throughput, and pay-per-token endpoints are fully
+	// supported; agent endpoints currently only support inference tables.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
 	// The budget policy associated with the endpoint.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
@@ -2018,9 +2063,9 @@ func (s ServingEndpointAccessControlResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ServingEndpointDetailed struct {
-	// The AI Gateway configuration for the serving endpoint. NOTE: Only
-	// external model and provisioned throughput endpoints are currently
-	// supported.
+	// The AI Gateway configuration for the serving endpoint. NOTE: External
+	// model, provisioned throughput, and pay-per-token endpoints are fully
+	// supported; agent endpoints currently only support inference tables.
 	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
 	// The budget policy associated with the endpoint.
 	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
@@ -2221,6 +2266,12 @@ func (f *ServingModelWorkloadType) Type() string {
 type TrafficConfig struct {
 	// The list of routes that define traffic to each served entity.
 	Routes []Route `json:"routes,omitempty"`
+}
+
+type UpdateProvisionedThroughputEndpointConfigRequest struct {
+	Config PtEndpointCoreConfig `json:"config"`
+	// The name of the pt endpoint to update. This field is required.
+	Name string `json:"-" url:"-"`
 }
 
 type V1ResponseChoiceElement struct {

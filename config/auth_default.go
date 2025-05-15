@@ -6,25 +6,81 @@ import (
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-var authProviders = []CredentialsStrategy{
-	PatCredentials{},
-	BasicCredentials{},
-	M2mCredentials{},
-	DatabricksCliCredentials,
-	MetadataServiceCredentials{},
+// Constructs all Databricks OIDC Credentials Strategies
+func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
+	type namedIdTokenSource struct {
+		name        string
+		tokenSource oidc.IDTokenSource
+	}
+	idTokenSources := []namedIdTokenSource{
+		{
+			name: "env-oidc",
+			// If the OIDCTokenEnv is not set, use DATABRICKS_OIDC_TOKEN as
+			// default value.
+			tokenSource: func() oidc.IDTokenSource {
+				v := cfg.OIDCTokenEnv
+				if v == "" {
+					v = "DATABRICKS_OIDC_TOKEN"
+				}
+				return oidc.NewEnvIDTokenSource(v)
+			}(),
+		},
+		{
+			name:        "file-oidc",
+			tokenSource: oidc.NewFileTokenSource(cfg.OIDCTokenFilepath),
+		},
+		{
+			name: "github-oidc",
+			tokenSource: oidc.NewGithubIDTokenSource(
+				cfg.refreshClient,
+				cfg.ActionsIDTokenRequestURL,
+				cfg.ActionsIDTokenRequestToken,
+			),
+		},
+		// Add new providers at the end of the list
+	}
 
-	// Attempt to configure auth from most specific to most generic (the Azure CLI).
-	AzureGithubOIDCCredentials{},
-	AzureMsiCredentials{},
-	AzureClientSecretCredentials{},
-	AzureCliCredentials{},
+	strategies := []CredentialsStrategy{}
+	for _, idTokenSource := range idTokenSources {
+		oidcConfig := oidc.DatabricksOIDCTokenSourceConfig{
+			ClientID:              cfg.ClientID,
+			Host:                  cfg.CanonicalHostName(),
+			TokenEndpointProvider: cfg.getOidcEndpoints,
+			Audience:              cfg.TokenAudience,
+			IDTokenSource:         idTokenSource.tokenSource,
+		}
+		if cfg.IsAccountClient() {
+			oidcConfig.AccountID = cfg.AccountID
+		}
+		tokenSource := oidc.NewDatabricksOIDCTokenSource(oidcConfig)
+		strategies = append(strategies, NewTokenSourceStrategy(idTokenSource.name, tokenSource))
+	}
+	return strategies
+}
 
-	// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
-	GoogleCredentials{},
-	GoogleDefaultCredentials{},
+func buildDefaultStrategies(cfg *Config) []CredentialsStrategy {
+	strategies := []CredentialsStrategy{}
+	strategies = append(strategies,
+		PatCredentials{},
+		BasicCredentials{},
+		M2mCredentials{},
+		DatabricksCliCredentials,
+		MetadataServiceCredentials{})
+	strategies = append(strategies, buildOidcTokenCredentialStrategies(cfg)...)
+	strategies = append(strategies,
+		// Attempt to configure auth from most specific to most generic (the Azure CLI).
+		AzureGithubOIDCCredentials{},
+		AzureMsiCredentials{},
+		AzureClientSecretCredentials{},
+		AzureCliCredentials{},
+		// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
+		GoogleCredentials{},
+		GoogleDefaultCredentials{})
+	return strategies
 }
 
 type DefaultCredentials struct {
@@ -45,7 +101,11 @@ var errorMessage = fmt.Sprintf("cannot configure default credentials, please che
 var ErrCannotConfigureAuth = errors.New(errorMessage)
 
 func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-	for _, p := range authProviders {
+	err := cfg.EnsureResolved()
+	if err != nil {
+		return nil, err
+	}
+	for _, p := range buildDefaultStrategies(cfg) {
 		if cfg.AuthType != "" && p.Name() != cfg.AuthType {
 			// ignore other auth types if one is explicitly enforced
 			logger.Infof(ctx, "Ignoring %s auth, because %s is preferred", p.Name(), cfg.AuthType)

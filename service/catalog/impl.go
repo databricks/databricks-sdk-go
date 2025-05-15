@@ -621,6 +621,169 @@ func (a *credentialsImpl) ValidateCredential(ctx context.Context, request Valida
 	return &validateCredentialResponse, err
 }
 
+// unexported type that holds implementations of just DatabaseInstances API methods
+type databaseInstancesImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *databaseInstancesImpl) CreateDatabaseCatalog(ctx context.Context, request CreateDatabaseCatalogRequest) (*DatabaseCatalog, error) {
+	var databaseCatalog DatabaseCatalog
+	path := "/api/2.0/database/catalogs"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Catalog, &databaseCatalog)
+	return &databaseCatalog, err
+}
+
+func (a *databaseInstancesImpl) CreateDatabaseInstance(ctx context.Context, request CreateDatabaseInstanceRequest) (*DatabaseInstance, error) {
+	var databaseInstance DatabaseInstance
+	path := "/api/2.0/database/instances"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.DatabaseInstance, &databaseInstance)
+	return &databaseInstance, err
+}
+
+func (a *databaseInstancesImpl) CreateSyncedDatabaseTable(ctx context.Context, request CreateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error) {
+	var syncedDatabaseTable SyncedDatabaseTable
+	path := "/api/2.0/database/synced_tables"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.SyncedTable, &syncedDatabaseTable)
+	return &syncedDatabaseTable, err
+}
+
+func (a *databaseInstancesImpl) DeleteDatabaseCatalog(ctx context.Context, request DeleteDatabaseCatalogRequest) error {
+	var deleteDatabaseCatalogResponse DeleteDatabaseCatalogResponse
+	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDatabaseCatalogResponse)
+	return err
+}
+
+func (a *databaseInstancesImpl) DeleteDatabaseInstance(ctx context.Context, request DeleteDatabaseInstanceRequest) error {
+	var deleteDatabaseInstanceResponse DeleteDatabaseInstanceResponse
+	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDatabaseInstanceResponse)
+	return err
+}
+
+func (a *databaseInstancesImpl) DeleteSyncedDatabaseTable(ctx context.Context, request DeleteSyncedDatabaseTableRequest) error {
+	var deleteSyncedDatabaseTableResponse DeleteSyncedDatabaseTableResponse
+	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteSyncedDatabaseTableResponse)
+	return err
+}
+
+func (a *databaseInstancesImpl) FindDatabaseInstanceByUid(ctx context.Context, request FindDatabaseInstanceByUidRequest) (*DatabaseInstance, error) {
+	var databaseInstance DatabaseInstance
+	path := "/api/2.0/database/instances:findByUid"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseInstance)
+	return &databaseInstance, err
+}
+
+func (a *databaseInstancesImpl) GetDatabaseCatalog(ctx context.Context, request GetDatabaseCatalogRequest) (*DatabaseCatalog, error) {
+	var databaseCatalog DatabaseCatalog
+	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseCatalog)
+	return &databaseCatalog, err
+}
+
+func (a *databaseInstancesImpl) GetDatabaseInstance(ctx context.Context, request GetDatabaseInstanceRequest) (*DatabaseInstance, error) {
+	var databaseInstance DatabaseInstance
+	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseInstance)
+	return &databaseInstance, err
+}
+
+func (a *databaseInstancesImpl) GetSyncedDatabaseTable(ctx context.Context, request GetSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error) {
+	var syncedDatabaseTable SyncedDatabaseTable
+	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &syncedDatabaseTable)
+	return &syncedDatabaseTable, err
+}
+
+// List Database Instances.
+func (a *databaseInstancesImpl) ListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) listing.Iterator[DatabaseInstance] {
+
+	getNextPage := func(ctx context.Context, req ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListDatabaseInstances(ctx, req)
+	}
+	getItems := func(resp *ListDatabaseInstancesResponse) []DatabaseInstance {
+		return resp.DatabaseInstances
+	}
+	getNextReq := func(resp *ListDatabaseInstancesResponse) *ListDatabaseInstancesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List Database Instances.
+func (a *databaseInstancesImpl) ListDatabaseInstancesAll(ctx context.Context, request ListDatabaseInstancesRequest) ([]DatabaseInstance, error) {
+	iterator := a.ListDatabaseInstances(ctx, request)
+	return listing.ToSlice[DatabaseInstance](ctx, iterator)
+}
+
+func (a *databaseInstancesImpl) internalListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error) {
+	var listDatabaseInstancesResponse ListDatabaseInstancesResponse
+	path := "/api/2.0/database/instances"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatabaseInstancesResponse)
+	return &listDatabaseInstancesResponse, err
+}
+
+func (a *databaseInstancesImpl) UpdateDatabaseInstance(ctx context.Context, request UpdateDatabaseInstanceRequest) (*DatabaseInstance, error) {
+	var databaseInstance DatabaseInstance
+	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DatabaseInstance, &databaseInstance)
+	return &databaseInstance, err
+}
+
 // unexported type that holds implementations of just ExternalLocations API methods
 type externalLocationsImpl struct {
 	client *client.DatabricksClient
@@ -1685,7 +1848,8 @@ func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) e
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, nil, &enableResponse)
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request, &enableResponse)
 	return err
 }
 
@@ -1694,8 +1858,6 @@ func (a *systemSchemasImpl) Enable(ctx context.Context, request EnableRequest) e
 // Gets an array of system schemas for a metastore. The caller must be an
 // account admin or a metastore admin.
 func (a *systemSchemasImpl) List(ctx context.Context, request ListSystemSchemasRequest) listing.Iterator[SystemSchemaInfo] {
-
-	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
 
 	getNextPage := func(ctx context.Context, req ListSystemSchemasRequest) (*ListSystemSchemasResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -2066,14 +2228,14 @@ type workspaceBindingsImpl struct {
 	client *client.DatabricksClient
 }
 
-func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error) {
-	var currentWorkspaceBindings CurrentWorkspaceBindings
+func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBindingRequest) (*GetCatalogWorkspaceBindingsResponse, error) {
+	var getCatalogWorkspaceBindingsResponse GetCatalogWorkspaceBindingsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &currentWorkspaceBindings)
-	return &currentWorkspaceBindings, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCatalogWorkspaceBindingsResponse)
+	return &getCatalogWorkspaceBindingsResponse, err
 }
 
 // Get securable workspace bindings.
@@ -2082,14 +2244,14 @@ func (a *workspaceBindingsImpl) Get(ctx context.Context, request GetWorkspaceBin
 // admin or an owner of the securable.
 func (a *workspaceBindingsImpl) GetBindings(ctx context.Context, request GetBindingsRequest) listing.Iterator[WorkspaceBinding] {
 
-	getNextPage := func(ctx context.Context, req GetBindingsRequest) (*WorkspaceBindingsResponse, error) {
+	getNextPage := func(ctx context.Context, req GetBindingsRequest) (*GetWorkspaceBindingsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalGetBindings(ctx, req)
 	}
-	getItems := func(resp *WorkspaceBindingsResponse) []WorkspaceBinding {
+	getItems := func(resp *GetWorkspaceBindingsResponse) []WorkspaceBinding {
 		return resp.Bindings
 	}
-	getNextReq := func(resp *WorkspaceBindingsResponse) *GetBindingsRequest {
+	getNextReq := func(resp *GetWorkspaceBindingsResponse) *GetBindingsRequest {
 		if resp.NextPageToken == "" {
 			return nil
 		}
@@ -2113,34 +2275,34 @@ func (a *workspaceBindingsImpl) GetBindingsAll(ctx context.Context, request GetB
 	return listing.ToSlice[WorkspaceBinding](ctx, iterator)
 }
 
-func (a *workspaceBindingsImpl) internalGetBindings(ctx context.Context, request GetBindingsRequest) (*WorkspaceBindingsResponse, error) {
-	var workspaceBindingsResponse WorkspaceBindingsResponse
+func (a *workspaceBindingsImpl) internalGetBindings(ctx context.Context, request GetBindingsRequest) (*GetWorkspaceBindingsResponse, error) {
+	var getWorkspaceBindingsResponse GetWorkspaceBindingsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", request.SecurableType, request.SecurableName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspaceBindingsResponse)
-	return &workspaceBindingsResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getWorkspaceBindingsResponse)
+	return &getWorkspaceBindingsResponse, err
 }
 
-func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error) {
-	var currentWorkspaceBindings CurrentWorkspaceBindings
+func (a *workspaceBindingsImpl) Update(ctx context.Context, request UpdateWorkspaceBindings) (*UpdateCatalogWorkspaceBindingsResponse, error) {
+	var updateCatalogWorkspaceBindingsResponse UpdateCatalogWorkspaceBindingsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/workspace-bindings/catalogs/%v", request.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &currentWorkspaceBindings)
-	return &currentWorkspaceBindings, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateCatalogWorkspaceBindingsResponse)
+	return &updateCatalogWorkspaceBindingsResponse, err
 }
 
-func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error) {
-	var workspaceBindingsResponse WorkspaceBindingsResponse
+func (a *workspaceBindingsImpl) UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*UpdateWorkspaceBindingsResponse, error) {
+	var updateWorkspaceBindingsResponse UpdateWorkspaceBindingsResponse
 	path := fmt.Sprintf("/api/2.1/unity-catalog/bindings/%v/%v", request.SecurableType, request.SecurableName)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &workspaceBindingsResponse)
-	return &workspaceBindingsResponse, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &updateWorkspaceBindingsResponse)
+	return &updateWorkspaceBindingsResponse, err
 }

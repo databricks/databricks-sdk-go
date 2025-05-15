@@ -108,6 +108,12 @@ type Config struct {
 	// specified by this argument. This argument also holds currently selected auth.
 	AuthType string `name:"auth_type" env:"DATABRICKS_AUTH_TYPE" auth:"-"`
 
+	// Path to the file containing an OIDC ID token.
+	OIDCTokenFilepath string `name:"databricks_id_token_filepath" env:"DATABRICKS_OIDC_TOKEN_FILEPATH" auth:"file-oidc"`
+
+	// Environment variable name that contains an OIDC ID token.
+	OIDCTokenEnv string `name:"oidc_token_env" env:"DATABRICKS_OIDC_TOKEN_ENV" auth:"env-oidc"`
+
 	// Skip SSL certificate verification for HTTP calls.
 	// Use at your own risk or for unit testing purposes.
 	InsecureSkipVerify bool `name:"skip_verify" auth:"-"`
@@ -133,6 +139,9 @@ type Config struct {
 
 	// Environment override to return when resolving the current environment.
 	DatabricksEnvironment *environment.DatabricksEnvironment
+
+	// When using Workload Identity Federation, the audience to specify when fetching an ID token from the ID token supplier.
+	TokenAudience string `name:"audience" env:"DATABRICKS_TOKEN_AUDIENCE" auth:"-"`
 
 	Loaders []Loader
 
@@ -458,15 +467,17 @@ func (c *Config) getOidcEndpoints(ctx context.Context) (*u2m.OAuthAuthorizationS
 	oauthClient := &u2m.BasicOAuthEndpointSupplier{
 		Client: c.refreshClient,
 	}
+	host := c.CanonicalHostName()
 	if c.IsAccountClient() {
-		return oauthClient.GetAccountOAuthEndpoints(ctx, c.Host, c.AccountID)
+		return oauthClient.GetAccountOAuthEndpoints(ctx, host, c.AccountID)
 	}
-	return oauthClient.GetWorkspaceOAuthEndpoints(ctx, c.Host)
+	return oauthClient.GetWorkspaceOAuthEndpoints(ctx, host)
 }
 
 func (c *Config) getOAuthArgument() (u2m.OAuthArgument, error) {
+	host := c.CanonicalHostName()
 	if c.IsAccountClient() {
-		return u2m.NewBasicAccountOAuthArgument(c.Host, c.AccountID)
+		return u2m.NewBasicAccountOAuthArgument(host, c.AccountID)
 	}
-	return u2m.NewBasicWorkspaceOAuthArgument(c.Host)
+	return u2m.NewBasicWorkspaceOAuthArgument(host)
 }

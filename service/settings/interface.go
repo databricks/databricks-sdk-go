@@ -275,11 +275,10 @@ type DefaultNamespaceService interface {
 
 // 'Disabling legacy access' has the following impacts:
 //
-// 1. Disables direct access to the Hive Metastore. However, you can still
-// access Hive Metastore through HMS Federation. 2. Disables Fallback Mode (docs
-// link) on any External Location access from the workspace. 3. Alters DBFS path
-// access to use External Location permissions in place of legacy credentials.
-// 4. Enforces Unity Catalog access on all path based access.
+// 1. Disables direct access to Hive Metastores from the workspace. However, you
+// can still access a Hive Metastore through Hive Metastore federation. 2.
+// Disables fallback mode on external location access from the workspace. 3.
+// Disables Databricks Runtime versions prior to 13.3LTS.
 type DisableLegacyAccessService interface {
 
 	// Delete Legacy Access Disablement Status.
@@ -344,6 +343,23 @@ type DisableLegacyFeaturesService interface {
 	Update(ctx context.Context, request UpdateDisableLegacyFeaturesRequest) (*DisableLegacyFeatures, error)
 }
 
+// Controls whether users can export notebooks and files from the Workspace UI.
+// By default, this setting is enabled.
+type EnableExportNotebookService interface {
+
+	// Get the Notebook and File exporting setting.
+	//
+	// Gets the Notebook and File exporting setting.
+	GetEnableExportNotebook(ctx context.Context) (*EnableExportNotebook, error)
+
+	// Update the Notebook and File exporting setting.
+	//
+	// Updates the Notebook and File exporting setting. The model follows
+	// eventual consistency, which means the get after the update operation
+	// might receive stale values for some time.
+	PatchEnableExportNotebook(ctx context.Context, request UpdateEnableExportNotebookRequest) (*EnableExportNotebook, error)
+}
+
 // Controls the enforcement of IP access lists for accessing the account
 // console. Allowing you to enable or disable restricted access based on IP
 // addresses.
@@ -363,6 +379,40 @@ type EnableIpAccessListsService interface {
 	//
 	// Updates the value of the account IP access toggle setting.
 	Update(ctx context.Context, request UpdateAccountIpAccessEnableRequest) (*AccountIpAccessEnable, error)
+}
+
+// Controls whether users can copy tabular data to the clipboard via the UI. By
+// default, this setting is enabled.
+type EnableNotebookTableClipboardService interface {
+
+	// Get the Results Table Clipboard features setting.
+	//
+	// Gets the Results Table Clipboard features setting.
+	GetEnableNotebookTableClipboard(ctx context.Context) (*EnableNotebookTableClipboard, error)
+
+	// Update the Results Table Clipboard features setting.
+	//
+	// Updates the Results Table Clipboard features setting. The model follows
+	// eventual consistency, which means the get after the update operation
+	// might receive stale values for some time.
+	PatchEnableNotebookTableClipboard(ctx context.Context, request UpdateEnableNotebookTableClipboardRequest) (*EnableNotebookTableClipboard, error)
+}
+
+// Controls whether users can download notebook results. By default, this
+// setting is enabled.
+type EnableResultsDownloadingService interface {
+
+	// Get the Notebook results download setting.
+	//
+	// Gets the Notebook results download setting.
+	GetEnableResultsDownloading(ctx context.Context) (*EnableResultsDownloading, error)
+
+	// Update the Notebook results download setting.
+	//
+	// Updates the Notebook results download setting. The model follows eventual
+	// consistency, which means the get after the update operation might receive
+	// stale values for some time.
+	PatchEnableResultsDownloading(ctx context.Context, request UpdateEnableResultsDownloadingRequest) (*EnableResultsDownloading, error)
 }
 
 // Controls whether enhanced security monitoring is enabled for the current
@@ -511,11 +561,87 @@ type IpAccessListsService interface {
 	Update(ctx context.Context, request UpdateIpAccessList) error
 }
 
+// Determines if partner powered models are enabled or not for a specific
+// account
+type LlmProxyPartnerPoweredAccountService interface {
+
+	// Get the enable partner powered AI features account setting.
+	//
+	// Gets the enable partner powered AI features account setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error)
+
+	// Update the enable partner powered AI features account setting.
+	//
+	// Updates the enable partner powered AI features account setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error)
+}
+
+// Determines if the account-level partner-powered setting value is enforced
+// upon the workspace-level partner-powered setting
+type LlmProxyPartnerPoweredEnforceService interface {
+
+	// Get the enforcement status of partner powered AI features account
+	// setting.
+	//
+	// Gets the enforcement status of partner powered AI features account
+	// setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error)
+
+	// Update the enforcement status of partner powered AI features account
+	// setting.
+	//
+	// Updates the enable enforcement status of partner powered AI features
+	// account setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error)
+}
+
+// Determines if partner powered models are enabled or not for a specific
+// workspace
+type LlmProxyPartnerPoweredWorkspaceService interface {
+
+	// Delete the enable partner powered AI features workspace setting.
+	//
+	// Reverts the enable partner powered AI features workspace setting to its
+	// default value.
+	Delete(ctx context.Context, request DeleteLlmProxyPartnerPoweredWorkspaceRequest) (*DeleteLlmProxyPartnerPoweredWorkspaceResponse, error)
+
+	// Get the enable partner powered AI features workspace setting.
+	//
+	// Gets the enable partner powered AI features workspace setting.
+	Get(ctx context.Context, request GetLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error)
+
+	// Update the enable partner powered AI features workspace setting.
+	//
+	// Updates the enable partner powered AI features workspace setting.
+	Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error)
+}
+
 // These APIs provide configurations for the network connectivity of your
-// workspaces for serverless compute resources.
+// workspaces for serverless compute resources. This API provides stable subnets
+// for your workspace so that you can configure your firewalls on your Azure
+// Storage accounts to allow access from Databricks. You can also use the API to
+// provision private endpoints for Databricks to privately connect serverless
+// compute resources to your Azure resources using Azure Private Link. See
+// [configure serverless secure connectivity].
+//
+// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 type NetworkConnectivityService interface {
 
 	// Create a network connectivity configuration.
+	//
+	// Creates a network connectivity configuration (NCC), which provides stable
+	// Azure service subnets when accessing your Azure Storage accounts. You can
+	// also use a network connectivity configuration to create Databricks
+	// managed private endpoints so that Databricks serverless compute resources
+	// privately access your resources.
+	//
+	// **IMPORTANT**: After you create the network connectivity configuration,
+	// you must assign one or more workspaces to the new network connectivity
+	// configuration. You can share one network connectivity configuration with
+	// multiple workspaces from the same Azure region within the same Databricks
+	// account. See [configure serverless secure connectivity].
+	//
+	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 	CreateNetworkConnectivityConfiguration(ctx context.Context, request CreateNetworkConnectivityConfigRequest) (*NetworkConnectivityConfiguration, error)
 
 	// Create a private endpoint rule.
@@ -552,7 +678,7 @@ type NetworkConnectivityService interface {
 	// Gets a network connectivity configuration.
 	GetNetworkConnectivityConfiguration(ctx context.Context, request GetNetworkConnectivityConfigurationRequest) (*NetworkConnectivityConfiguration, error)
 
-	// Get a private endpoint rule.
+	// Gets a private endpoint rule.
 	//
 	// Gets the private endpoint rule.
 	GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
@@ -570,6 +696,12 @@ type NetworkConnectivityService interface {
 	//
 	// Use ListPrivateEndpointRulesAll() to get all NccAzurePrivateEndpointRule instances, which will iterate over every result page.
 	ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error)
+
+	// Update a private endpoint rule.
+	//
+	// Updates a private endpoint rule. Currently only a private endpoint rule
+	// to customer-managed resources is allowed to be updated.
+	UpdateNccAzurePrivateEndpointRulePublic(ctx context.Context, request UpdateNccAzurePrivateEndpointRulePublicRequest) (*NccAzurePrivateEndpointRule, error)
 }
 
 // The notification destinations API lets you programmatically manage a

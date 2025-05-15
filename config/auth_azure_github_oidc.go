@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/httpclient"
-	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
 )
 
@@ -24,15 +24,20 @@ func (c AzureGithubOIDCCredentials) Name() string {
 // Configure implements [CredentialsStrategy.Configure].
 func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	// Sanity check that the config is configured for Azure Databricks.
-	if !cfg.IsAzure() || cfg.AzureClientID == "" || cfg.Host == "" || cfg.AzureTenantID == "" {
+	if !cfg.IsAzure() || cfg.AzureClientID == "" || cfg.Host == "" || cfg.AzureTenantID == "" || cfg.ActionsIDTokenRequestURL == "" || cfg.ActionsIDTokenRequestToken == "" {
 		return nil, nil
 	}
+	supplier := oidc.NewGithubIDTokenSource(
+		cfg.refreshClient,
+		cfg.ActionsIDTokenRequestURL,
+		cfg.ActionsIDTokenRequestToken,
+	)
 
-	idToken, err := requestIDToken(ctx, cfg)
+	idToken, err := supplier.IDToken(ctx, "api://AzureADTokenExchange")
 	if err != nil {
 		return nil, err
 	}
-	if idToken == "" {
+	if idToken.Value == "" {
 		return nil, nil
 	}
 
@@ -40,36 +45,11 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 		aadEndpoint:   fmt.Sprintf("%s%s/oauth2/token", cfg.Environment().AzureActiveDirectoryEndpoint(), cfg.AzureTenantID),
 		clientID:      cfg.AzureClientID,
 		applicationID: cfg.Environment().AzureApplicationID,
-		idToken:       idToken,
+		idToken:       idToken.Value,
 		httpClient:    cfg.refreshClient,
 	}
 
 	return credentials.NewOAuthCredentialsProvider(refreshableVisitor(ts), ts.Token), nil
-}
-
-// requestIDToken requests an ID token from the Github Action.
-func requestIDToken(ctx context.Context, cfg *Config) (string, error) {
-	if cfg.ActionsIDTokenRequestURL == "" {
-		logger.Debugf(ctx, "Missing cfg.ActionsIDTokenRequestURL, likely not calling from a Github action")
-		return "", nil
-	}
-	if cfg.ActionsIDTokenRequestToken == "" {
-		logger.Debugf(ctx, "Missing cfg.ActionsIDTokenRequestToken, likely not calling from a Github action")
-		return "", nil
-	}
-
-	resp := struct { // anonymous struct to parse the response
-		Value string `json:"value"`
-	}{}
-	err := cfg.refreshClient.Do(ctx, "GET", fmt.Sprintf("%s&audience=api://AzureADTokenExchange", cfg.ActionsIDTokenRequestURL),
-		httpclient.WithRequestHeader("Authorization", fmt.Sprintf("Bearer %s", cfg.ActionsIDTokenRequestToken)),
-		httpclient.WithResponseUnmarshal(&resp),
-	)
-	if err != nil {
-		return "", fmt.Errorf("failed to request ID token from %s: %w", cfg.ActionsIDTokenRequestURL, err)
-	}
-
-	return resp.Value, nil
 }
 
 // azureOIDCTokenSource implements [oauth2.TokenSource] to obtain Azure auth

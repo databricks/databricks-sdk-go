@@ -218,7 +218,7 @@ func ExampleSchemasAPI_Get_schemas() {
 
 }
 
-func ExampleSchemasAPI_ListAll_schemas() {
+func ExampleSchemasAPI_List_schemas() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

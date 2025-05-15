@@ -128,7 +128,7 @@ type DataPlaneId struct {
 	// The instance name of the data plane emitting an event.
 	Instance string `json:"instance,omitempty"`
 	// A sequence number, unique and increasing within the data plane instance.
-	SeqNo int `json:"seq_no,omitempty"`
+	SeqNo int64 `json:"seq_no,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -266,7 +266,7 @@ type EditPipeline struct {
 	// Whether Photon is enabled for this pipeline.
 	Photon bool `json:"photon,omitempty"`
 	// Unique identifier for this pipeline.
-	PipelineId string `json:"pipeline_id,omitempty" url:"-"`
+	PipelineId string `json:"-" url:"-"`
 	// Restart window of this pipeline.
 	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
 	// Write-only setting, available only in Create/Update calls. Specifies the
@@ -374,7 +374,7 @@ func (s EventLogSpec) MarshalJSON() ([]byte, error) {
 }
 
 type FileLibrary struct {
-	// The absolute path of the file.
+	// The absolute path of the source code.
 	Path string `json:"path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -513,10 +513,10 @@ type IngestionGatewayPipelineDefinition struct {
 	ConnectionId string `json:"connection_id,omitempty"`
 	// Immutable. The Unity Catalog connection that this gateway pipeline uses
 	// to communicate with the source.
-	ConnectionName string `json:"connection_name,omitempty"`
+	ConnectionName string `json:"connection_name"`
 	// Required, Immutable. The name of the catalog for the gateway pipeline's
 	// storage location.
-	GatewayStorageCatalog string `json:"gateway_storage_catalog,omitempty"`
+	GatewayStorageCatalog string `json:"gateway_storage_catalog"`
 	// Optional. The Unity Catalog-compatible name for the gateway storage
 	// location. This is the destination to use for the data that is extracted
 	// by the gateway. Delta Live Tables system will automatically create the
@@ -524,7 +524,7 @@ type IngestionGatewayPipelineDefinition struct {
 	GatewayStorageName string `json:"gateway_storage_name,omitempty"`
 	// Required, Immutable. The name of the schema for the gateway pipelines's
 	// storage location.
-	GatewayStorageSchema string `json:"gateway_storage_schema,omitempty"`
+	GatewayStorageSchema string `json:"gateway_storage_schema"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -549,6 +549,10 @@ type IngestionPipelineDefinition struct {
 	// Required. Settings specifying tables to replicate and the destination for
 	// the replicated tables.
 	Objects []IngestionConfig `json:"objects,omitempty"`
+	// The type of the foreign source. The source type will be inferred from the
+	// source connection or ingestion gateway. This field is output only and
+	// will be ignored if provided.
+	SourceType IngestionSourceType `json:"source_type,omitempty"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in the pipeline.
 	TableConfiguration *TableSpecificConfig `json:"table_configuration,omitempty"`
@@ -562,6 +566,53 @@ func (s *IngestionPipelineDefinition) UnmarshalJSON(b []byte) error {
 
 func (s IngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type IngestionSourceType string
+
+const IngestionSourceTypeDynamics365 IngestionSourceType = `DYNAMICS365`
+
+const IngestionSourceTypeGa4RawData IngestionSourceType = `GA4_RAW_DATA`
+
+const IngestionSourceTypeManagedPostgresql IngestionSourceType = `MANAGED_POSTGRESQL`
+
+const IngestionSourceTypeMysql IngestionSourceType = `MYSQL`
+
+const IngestionSourceTypeNetsuite IngestionSourceType = `NETSUITE`
+
+const IngestionSourceTypeOracle IngestionSourceType = `ORACLE`
+
+const IngestionSourceTypePostgresql IngestionSourceType = `POSTGRESQL`
+
+const IngestionSourceTypeSalesforce IngestionSourceType = `SALESFORCE`
+
+const IngestionSourceTypeServicenow IngestionSourceType = `SERVICENOW`
+
+const IngestionSourceTypeSharepoint IngestionSourceType = `SHAREPOINT`
+
+const IngestionSourceTypeSqlserver IngestionSourceType = `SQLSERVER`
+
+const IngestionSourceTypeWorkdayRaas IngestionSourceType = `WORKDAY_RAAS`
+
+// String representation for [fmt.Print]
+func (f *IngestionSourceType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *IngestionSourceType) Set(v string) error {
+	switch v {
+	case `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `WORKDAY_RAAS`:
+		*f = IngestionSourceType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "WORKDAY_RAAS"`, v)
+	}
+}
+
+// Type always returns IngestionSourceType to satisfy [pflag.Value] interface
+func (f *IngestionSourceType) Type() string {
+	return "IngestionSourceType"
 }
 
 // List pipeline events
@@ -587,7 +638,7 @@ type ListPipelineEventsRequest struct {
 	// with all fields in this request except max_results. An error is returned
 	// if any fields other than max_results are set when this field is set.
 	PageToken string `json:"-" url:"page_token,omitempty"`
-
+	// The pipeline to return events for.
 	PipelineId string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -749,7 +800,7 @@ func (f *MaturityLevel) Type() string {
 }
 
 type NotebookLibrary struct {
-	// The absolute path of the notebook.
+	// The absolute path of the source code.
 	Path string `json:"path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -778,7 +829,7 @@ type Notifications struct {
 
 type Origin struct {
 	// The id of a batch. Unique within a flow.
-	BatchId int `json:"batch_id,omitempty"`
+	BatchId int64 `json:"batch_id,omitempty"`
 	// The cloud provider, e.g., AWS or Azure.
 	Cloud string `json:"cloud,omitempty"`
 	// The id of the cluster where an execution happens. Unique within a region.
@@ -797,7 +848,7 @@ type Origin struct {
 	// Materialization name.
 	MaterializationName string `json:"materialization_name,omitempty"`
 	// The org id of the user. Unique within a cloud.
-	OrgId int `json:"org_id,omitempty"`
+	OrgId int64 `json:"org_id,omitempty"`
 	// The id of the pipeline. Globally unique.
 	PipelineId string `json:"pipeline_id,omitempty"`
 	// The name of the pipeline. Not unique.
@@ -821,6 +872,21 @@ func (s *Origin) UnmarshalJSON(b []byte) error {
 }
 
 func (s Origin) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type PathPattern struct {
+	// The source code to include for pipelines
+	Include string `json:"include,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *PathPattern) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s PathPattern) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1025,7 +1091,7 @@ func (f *PipelineClusterAutoscaleMode) Type() string {
 
 type PipelineDeployment struct {
 	// The deployment method that manages the pipeline.
-	Kind DeploymentKind `json:"kind,omitempty"`
+	Kind DeploymentKind `json:"kind"`
 	// The path to the file containing metadata about the deployment.
 	MetadataFilePath string `json:"metadata_file_path,omitempty"`
 
@@ -1075,6 +1141,10 @@ type PipelineLibrary struct {
 	// The path to a file that defines a pipeline and is stored in the
 	// Databricks Repos.
 	File *FileLibrary `json:"file,omitempty"`
+	// The unified field to include source codes. Each entry can be a notebook
+	// path, a file path, or a folder path that ends `/**`. This field cannot be
+	// used together with `notebook` or `file`.
+	Glob *PathPattern `json:"glob,omitempty"`
 	// URI of the jar to be installed. Currently only DBFS is supported.
 	Jar string `json:"jar,omitempty"`
 	// Specification of a maven library to be installed.
@@ -1364,14 +1434,14 @@ type PipelineTrigger struct {
 
 type ReportSpec struct {
 	// Required. Destination catalog to store table.
-	DestinationCatalog string `json:"destination_catalog,omitempty"`
+	DestinationCatalog string `json:"destination_catalog"`
 	// Required. Destination schema to store table.
-	DestinationSchema string `json:"destination_schema,omitempty"`
+	DestinationSchema string `json:"destination_schema"`
 	// Required. Destination table name. The pipeline fails if a table with that
 	// name already exists.
 	DestinationTable string `json:"destination_table,omitempty"`
 	// Required. Report URL in the source system.
-	SourceUrl string `json:"source_url,omitempty"`
+	SourceUrl string `json:"source_url"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
 	// IngestionPipelineDefinition object.
@@ -1440,16 +1510,16 @@ func (s RunAs) MarshalJSON() ([]byte, error) {
 
 type SchemaSpec struct {
 	// Required. Destination catalog to store tables.
-	DestinationCatalog string `json:"destination_catalog,omitempty"`
+	DestinationCatalog string `json:"destination_catalog"`
 	// Required. Destination schema to store tables in. Tables with the same
 	// name as the source tables are created in this destination schema. The
 	// pipeline fails If a table with the same name already exists.
-	DestinationSchema string `json:"destination_schema,omitempty"`
+	DestinationSchema string `json:"destination_schema"`
 	// The source catalog name. Might be optional depending on the type of
 	// source.
 	SourceCatalog string `json:"source_catalog,omitempty"`
 	// Required. Schema name in the source database.
-	SourceSchema string `json:"source_schema,omitempty"`
+	SourceSchema string `json:"source_schema"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// are applied to all tables in this schema and override the
 	// table_configuration defined in the IngestionPipelineDefinition object.
@@ -1468,7 +1538,7 @@ func (s SchemaSpec) MarshalJSON() ([]byte, error) {
 
 type Sequencing struct {
 	// A sequence number, unique and increasing within the control plane.
-	ControlPlaneSeqNo int `json:"control_plane_seq_no,omitempty"`
+	ControlPlaneSeqNo int64 `json:"control_plane_seq_no,omitempty"`
 	// the ID assigned by the data plane.
 	DataPlaneId *DataPlaneId `json:"data_plane_id,omitempty"`
 
@@ -1524,6 +1594,7 @@ func (s StackFrame) MarshalJSON() ([]byte, error) {
 }
 
 type StartUpdate struct {
+	// What triggered this update.
 	Cause StartUpdateCause `json:"cause,omitempty"`
 	// If true, this update will reset all tables before running.
 	FullRefresh bool `json:"full_refresh,omitempty"`
@@ -1554,9 +1625,12 @@ func (s StartUpdate) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// What triggered this update.
 type StartUpdateCause string
 
 const StartUpdateCauseApiCall StartUpdateCause = `API_CALL`
+
+const StartUpdateCauseInfrastructureMaintenance StartUpdateCause = `INFRASTRUCTURE_MAINTENANCE`
 
 const StartUpdateCauseJobTask StartUpdateCause = `JOB_TASK`
 
@@ -1576,11 +1650,11 @@ func (f *StartUpdateCause) String() string {
 // Set raw string value and validate it against allowed values
 func (f *StartUpdateCause) Set(v string) error {
 	switch v {
-	case `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
+	case `API_CALL`, `INFRASTRUCTURE_MAINTENANCE`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
 		*f = StartUpdateCause(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "API_CALL", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "API_CALL", "INFRASTRUCTURE_MAINTENANCE", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
 	}
 }
 
@@ -1613,9 +1687,9 @@ type StopRequest struct {
 
 type TableSpec struct {
 	// Required. Destination catalog to store table.
-	DestinationCatalog string `json:"destination_catalog,omitempty"`
+	DestinationCatalog string `json:"destination_catalog"`
 	// Required. Destination schema to store table.
-	DestinationSchema string `json:"destination_schema,omitempty"`
+	DestinationSchema string `json:"destination_schema"`
 	// Optional. Destination table name. The pipeline fails if a table with that
 	// name already exists. If not set, the source table name is used.
 	DestinationTable string `json:"destination_table,omitempty"`
@@ -1625,7 +1699,7 @@ type TableSpec struct {
 	// type of source.
 	SourceSchema string `json:"source_schema,omitempty"`
 	// Required. Table name in the source database.
-	SourceTable string `json:"source_table,omitempty"`
+	SourceTable string `json:"source_table"`
 	// Configuration settings to control the ingestion of tables. These settings
 	// override the table_configuration defined in the
 	// IngestionPipelineDefinition object and the SchemaSpec.
@@ -1643,6 +1717,18 @@ func (s TableSpec) MarshalJSON() ([]byte, error) {
 }
 
 type TableSpecificConfig struct {
+	// A list of column names to be excluded for the ingestion. When not
+	// specified, include_columns fully controls what columns to be ingested.
+	// When specified, all other columns including future ones will be
+	// automatically included for ingestion. This field in mutually exclusive
+	// with `include_columns`.
+	ExcludeColumns []string `json:"exclude_columns,omitempty"`
+	// A list of column names to be included for the ingestion. When not
+	// specified, all columns except ones in exclude_columns will be included.
+	// Future columns will be automatically included. When specified, all other
+	// future columns will be automatically excluded from ingestion. This field
+	// in mutually exclusive with `exclude_columns`.
+	IncludeColumns []string `json:"include_columns,omitempty"`
 	// The primary key of the table used to apply changes.
 	PrimaryKeys []string `json:"primary_keys,omitempty"`
 	// If true, formula fields defined in the table are included in the
@@ -1742,6 +1828,8 @@ type UpdateInfoCause string
 
 const UpdateInfoCauseApiCall UpdateInfoCause = `API_CALL`
 
+const UpdateInfoCauseInfrastructureMaintenance UpdateInfoCause = `INFRASTRUCTURE_MAINTENANCE`
+
 const UpdateInfoCauseJobTask UpdateInfoCause = `JOB_TASK`
 
 const UpdateInfoCauseRetryOnFailure UpdateInfoCause = `RETRY_ON_FAILURE`
@@ -1760,11 +1848,11 @@ func (f *UpdateInfoCause) String() string {
 // Set raw string value and validate it against allowed values
 func (f *UpdateInfoCause) Set(v string) error {
 	switch v {
-	case `API_CALL`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
+	case `API_CALL`, `INFRASTRUCTURE_MAINTENANCE`, `JOB_TASK`, `RETRY_ON_FAILURE`, `SCHEMA_CHANGE`, `SERVICE_UPGRADE`, `USER_ACTION`:
 		*f = UpdateInfoCause(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "API_CALL", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
+		return fmt.Errorf(`value "%s" is not one of "API_CALL", "INFRASTRUCTURE_MAINTENANCE", "JOB_TASK", "RETRY_ON_FAILURE", "SCHEMA_CHANGE", "SERVICE_UPGRADE", "USER_ACTION"`, v)
 	}
 }
 
@@ -1821,7 +1909,7 @@ func (f *UpdateInfoState) Type() string {
 
 type UpdateStateInfo struct {
 	CreationTime string `json:"creation_time,omitempty"`
-
+	// The update state.
 	State UpdateStateInfoState `json:"state,omitempty"`
 
 	UpdateId string `json:"update_id,omitempty"`
@@ -1837,6 +1925,7 @@ func (s UpdateStateInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The update state.
 type UpdateStateInfoState string
 
 const UpdateStateInfoStateCanceled UpdateStateInfoState = `CANCELED`

@@ -28,7 +28,6 @@ func NewEndpointTokenSource(c OAuthClient, cpts auth.TokenSource) *dataPlaneToke
 		client: c,
 		cpts: auth.NewCachedTokenSource(
 			cpts,
-			auth.WithAsyncRefresh(false), // TODO: Enable async refreshes once the feature is stable.
 		),
 	}
 }
@@ -65,7 +64,6 @@ func (dpts *dataPlaneTokenSource) Token(ctx context.Context, endpoint string, au
 			cpts:        dpts.cpts,
 			authDetails: authDetails,
 		},
-		auth.WithAsyncRefresh(false), // TODO: Enable async refresh once the feature is stable.
 	)
 	dpts.sources.Store(key, ts)
 

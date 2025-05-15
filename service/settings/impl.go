@@ -422,6 +422,32 @@ func (a *disableLegacyFeaturesImpl) Update(ctx context.Context, request UpdateDi
 	return &disableLegacyFeatures, err
 }
 
+// unexported type that holds implementations of just EnableExportNotebook API methods
+type enableExportNotebookImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *enableExportNotebookImpl) GetEnableExportNotebook(ctx context.Context) (*EnableExportNotebook, error) {
+	var enableExportNotebook EnableExportNotebook
+	path := "/api/2.0/settings/types/enable-export-notebook/names/default"
+
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableExportNotebook)
+	return &enableExportNotebook, err
+}
+
+func (a *enableExportNotebookImpl) PatchEnableExportNotebook(ctx context.Context, request UpdateEnableExportNotebookRequest) (*EnableExportNotebook, error) {
+	var enableExportNotebook EnableExportNotebook
+	path := "/api/2.0/settings/types/enable-export-notebook/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &enableExportNotebook)
+	return &enableExportNotebook, err
+}
+
 // unexported type that holds implementations of just EnableIpAccessLists API methods
 type enableIpAccessListsImpl struct {
 	client *client.DatabricksClient
@@ -456,6 +482,58 @@ func (a *enableIpAccessListsImpl) Update(ctx context.Context, request UpdateAcco
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &accountIpAccessEnable)
 	return &accountIpAccessEnable, err
+}
+
+// unexported type that holds implementations of just EnableNotebookTableClipboard API methods
+type enableNotebookTableClipboardImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *enableNotebookTableClipboardImpl) GetEnableNotebookTableClipboard(ctx context.Context) (*EnableNotebookTableClipboard, error) {
+	var enableNotebookTableClipboard EnableNotebookTableClipboard
+	path := "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default"
+
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableNotebookTableClipboard)
+	return &enableNotebookTableClipboard, err
+}
+
+func (a *enableNotebookTableClipboardImpl) PatchEnableNotebookTableClipboard(ctx context.Context, request UpdateEnableNotebookTableClipboardRequest) (*EnableNotebookTableClipboard, error) {
+	var enableNotebookTableClipboard EnableNotebookTableClipboard
+	path := "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &enableNotebookTableClipboard)
+	return &enableNotebookTableClipboard, err
+}
+
+// unexported type that holds implementations of just EnableResultsDownloading API methods
+type enableResultsDownloadingImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *enableResultsDownloadingImpl) GetEnableResultsDownloading(ctx context.Context) (*EnableResultsDownloading, error) {
+	var enableResultsDownloading EnableResultsDownloading
+	path := "/api/2.0/settings/types/enable-results-downloading/names/default"
+
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, nil, nil, &enableResultsDownloading)
+	return &enableResultsDownloading, err
+}
+
+func (a *enableResultsDownloadingImpl) PatchEnableResultsDownloading(ctx context.Context, request UpdateEnableResultsDownloadingRequest) (*EnableResultsDownloading, error) {
+	var enableResultsDownloading EnableResultsDownloading
+	path := "/api/2.0/settings/types/enable-results-downloading/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &enableResultsDownloading)
+	return &enableResultsDownloading, err
 }
 
 // unexported type that holds implementations of just EnhancedSecurityMonitoring API methods
@@ -605,6 +683,94 @@ func (a *ipAccessListsImpl) Update(ctx context.Context, request UpdateIpAccessLi
 	return err
 }
 
+// unexported type that holds implementations of just LlmProxyPartnerPoweredAccount API methods
+type llmProxyPartnerPoweredAccountImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *llmProxyPartnerPoweredAccountImpl) Get(ctx context.Context, request GetLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error) {
+	var llmProxyPartnerPoweredAccount LlmProxyPartnerPoweredAccount
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered/names/default", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &llmProxyPartnerPoweredAccount)
+	return &llmProxyPartnerPoweredAccount, err
+}
+
+func (a *llmProxyPartnerPoweredAccountImpl) Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredAccountRequest) (*LlmProxyPartnerPoweredAccount, error) {
+	var llmProxyPartnerPoweredAccount LlmProxyPartnerPoweredAccount
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered/names/default", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &llmProxyPartnerPoweredAccount)
+	return &llmProxyPartnerPoweredAccount, err
+}
+
+// unexported type that holds implementations of just LlmProxyPartnerPoweredEnforce API methods
+type llmProxyPartnerPoweredEnforceImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *llmProxyPartnerPoweredEnforceImpl) Get(ctx context.Context, request GetLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error) {
+	var llmProxyPartnerPoweredEnforce LlmProxyPartnerPoweredEnforce
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered_enforce/names/default", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &llmProxyPartnerPoweredEnforce)
+	return &llmProxyPartnerPoweredEnforce, err
+}
+
+func (a *llmProxyPartnerPoweredEnforceImpl) Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredEnforceRequest) (*LlmProxyPartnerPoweredEnforce, error) {
+	var llmProxyPartnerPoweredEnforce LlmProxyPartnerPoweredEnforce
+	path := fmt.Sprintf("/api/2.0/accounts/%v/settings/types/llm_proxy_partner_powered_enforce/names/default", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &llmProxyPartnerPoweredEnforce)
+	return &llmProxyPartnerPoweredEnforce, err
+}
+
+// unexported type that holds implementations of just LlmProxyPartnerPoweredWorkspace API methods
+type llmProxyPartnerPoweredWorkspaceImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *llmProxyPartnerPoweredWorkspaceImpl) Delete(ctx context.Context, request DeleteLlmProxyPartnerPoweredWorkspaceRequest) (*DeleteLlmProxyPartnerPoweredWorkspaceResponse, error) {
+	var deleteLlmProxyPartnerPoweredWorkspaceResponse DeleteLlmProxyPartnerPoweredWorkspaceResponse
+	path := "/api/2.0/settings/types/llm_proxy_partner_powered/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteLlmProxyPartnerPoweredWorkspaceResponse)
+	return &deleteLlmProxyPartnerPoweredWorkspaceResponse, err
+}
+
+func (a *llmProxyPartnerPoweredWorkspaceImpl) Get(ctx context.Context, request GetLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error) {
+	var llmProxyPartnerPoweredWorkspace LlmProxyPartnerPoweredWorkspace
+	path := "/api/2.0/settings/types/llm_proxy_partner_powered/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &llmProxyPartnerPoweredWorkspace)
+	return &llmProxyPartnerPoweredWorkspace, err
+}
+
+func (a *llmProxyPartnerPoweredWorkspaceImpl) Update(ctx context.Context, request UpdateLlmProxyPartnerPoweredWorkspaceRequest) (*LlmProxyPartnerPoweredWorkspace, error) {
+	var llmProxyPartnerPoweredWorkspace LlmProxyPartnerPoweredWorkspace
+	path := "/api/2.0/settings/types/llm_proxy_partner_powered/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &llmProxyPartnerPoweredWorkspace)
+	return &llmProxyPartnerPoweredWorkspace, err
+}
+
 // unexported type that holds implementations of just NetworkConnectivity API methods
 type networkConnectivityImpl struct {
 	client *client.DatabricksClient
@@ -617,7 +783,7 @@ func (a *networkConnectivityImpl) CreateNetworkConnectivityConfiguration(ctx con
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &networkConnectivityConfiguration)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.NetworkConnectivityConfig, &networkConnectivityConfiguration)
 	return &networkConnectivityConfiguration, err
 }
 
@@ -628,7 +794,7 @@ func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context,
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &nccAzurePrivateEndpointRule)
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.PrivateEndpointRule, &nccAzurePrivateEndpointRule)
 	return &nccAzurePrivateEndpointRule, err
 }
 
@@ -760,6 +926,20 @@ func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.C
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listNccAzurePrivateEndpointRulesResponse)
 	return &listNccAzurePrivateEndpointRulesResponse, err
+}
+
+func (a *networkConnectivityImpl) UpdateNccAzurePrivateEndpointRulePublic(ctx context.Context, request UpdateNccAzurePrivateEndpointRulePublicRequest) (*NccAzurePrivateEndpointRule, error) {
+	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.PrivateEndpointRule, &nccAzurePrivateEndpointRule)
+	return &nccAzurePrivateEndpointRule, err
 }
 
 // unexported type that holds implementations of just NotificationDestinations API methods

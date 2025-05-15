@@ -25,23 +25,23 @@ func (_m *MockVectorSearchIndexesInterface) EXPECT() *MockVectorSearchIndexesInt
 }
 
 // CreateIndex provides a mock function with given fields: ctx, request
-func (_m *MockVectorSearchIndexesInterface) CreateIndex(ctx context.Context, request vectorsearch.CreateVectorIndexRequest) (*vectorsearch.CreateVectorIndexResponse, error) {
+func (_m *MockVectorSearchIndexesInterface) CreateIndex(ctx context.Context, request vectorsearch.CreateVectorIndexRequest) (*vectorsearch.VectorIndex, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateIndex")
 	}
 
-	var r0 *vectorsearch.CreateVectorIndexResponse
+	var r0 *vectorsearch.VectorIndex
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.CreateVectorIndexRequest) (*vectorsearch.CreateVectorIndexResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.CreateVectorIndexRequest) (*vectorsearch.VectorIndex, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.CreateVectorIndexRequest) *vectorsearch.CreateVectorIndexResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, vectorsearch.CreateVectorIndexRequest) *vectorsearch.VectorIndex); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*vectorsearch.CreateVectorIndexResponse)
+			r0 = ret.Get(0).(*vectorsearch.VectorIndex)
 		}
 	}
 
@@ -73,12 +73,12 @@ func (_c *MockVectorSearchIndexesInterface_CreateIndex_Call) Run(run func(ctx co
 	return _c
 }
 
-func (_c *MockVectorSearchIndexesInterface_CreateIndex_Call) Return(_a0 *vectorsearch.CreateVectorIndexResponse, _a1 error) *MockVectorSearchIndexesInterface_CreateIndex_Call {
+func (_c *MockVectorSearchIndexesInterface_CreateIndex_Call) Return(_a0 *vectorsearch.VectorIndex, _a1 error) *MockVectorSearchIndexesInterface_CreateIndex_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockVectorSearchIndexesInterface_CreateIndex_Call) RunAndReturn(run func(context.Context, vectorsearch.CreateVectorIndexRequest) (*vectorsearch.CreateVectorIndexResponse, error)) *MockVectorSearchIndexesInterface_CreateIndex_Call {
+func (_c *MockVectorSearchIndexesInterface_CreateIndex_Call) RunAndReturn(run func(context.Context, vectorsearch.CreateVectorIndexRequest) (*vectorsearch.VectorIndex, error)) *MockVectorSearchIndexesInterface_CreateIndex_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -138,6 +138,65 @@ func (_c *MockVectorSearchIndexesInterface_DeleteDataVectorIndex_Call) Return(_a
 }
 
 func (_c *MockVectorSearchIndexesInterface_DeleteDataVectorIndex_Call) RunAndReturn(run func(context.Context, vectorsearch.DeleteDataVectorIndexRequest) (*vectorsearch.DeleteDataVectorIndexResponse, error)) *MockVectorSearchIndexesInterface_DeleteDataVectorIndex_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteDataVectorIndexByIndexName provides a mock function with given fields: ctx, indexName
+func (_m *MockVectorSearchIndexesInterface) DeleteDataVectorIndexByIndexName(ctx context.Context, indexName string) (*vectorsearch.DeleteDataVectorIndexResponse, error) {
+	ret := _m.Called(ctx, indexName)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteDataVectorIndexByIndexName")
+	}
+
+	var r0 *vectorsearch.DeleteDataVectorIndexResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*vectorsearch.DeleteDataVectorIndexResponse, error)); ok {
+		return rf(ctx, indexName)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *vectorsearch.DeleteDataVectorIndexResponse); ok {
+		r0 = rf(ctx, indexName)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*vectorsearch.DeleteDataVectorIndexResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, indexName)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockVectorSearchIndexesInterface_DeleteDataVectorIndexByIndexName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDataVectorIndexByIndexName'
+type MockVectorSearchIndexesInterface_DeleteDataVectorIndexByIndexName_Call struct {
+	*mock.Call
+}
+
+// DeleteDataVectorIndexByIndexName is a helper method to define mock.On call
+//   - ctx context.Context
+//   - indexName string
+func (_e *MockVectorSearchIndexesInterface_Expecter) DeleteDataVectorIndexByIndexName(ctx interface{}, indexName interface{}) *MockVectorSearchIndexesInterface_DeleteDataVectorIndexByIndexName_Call {
+	return &MockVectorSearchIndexesInterface_DeleteDataVectorIndexByIndexName_Call{Call: _e.mock.On("DeleteDataVectorIndexByIndexName", ctx, indexName)}
+}
+
+func (_c *MockVectorSearchIndexesInterface_DeleteDataVectorIndexByIndexName_Call) Run(run func(ctx context.Context, indexName string)) *MockVectorSearchIndexesInterface_DeleteDataVectorIndexByIndexName_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockVectorSearchIndexesInterface_DeleteDataVectorIndexByIndexName_Call) Return(_a0 *vectorsearch.DeleteDataVectorIndexResponse, _a1 error) *MockVectorSearchIndexesInterface_DeleteDataVectorIndexByIndexName_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockVectorSearchIndexesInterface_DeleteDataVectorIndexByIndexName_Call) RunAndReturn(run func(context.Context, string) (*vectorsearch.DeleteDataVectorIndexResponse, error)) *MockVectorSearchIndexesInterface_DeleteDataVectorIndexByIndexName_Call {
 	_c.Call.Return(run)
 	return _c
 }

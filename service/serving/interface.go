@@ -29,6 +29,9 @@ type ServingEndpointsService interface {
 	// Create a new serving endpoint.
 	Create(ctx context.Context, request CreateServingEndpoint) (*ServingEndpointDetailed, error)
 
+	// Create a new PT serving endpoint.
+	CreateProvisionedThroughputEndpoint(ctx context.Context, request CreatePtEndpointRequest) (*ServingEndpointDetailed, error)
+
 	// Delete a serving endpoint.
 	Delete(ctx context.Context, request DeleteServingEndpointRequest) error
 
@@ -83,15 +86,14 @@ type ServingEndpointsService interface {
 
 	// Update rate limits of a serving endpoint.
 	//
-	// Used to update the rate limits of a serving endpoint. NOTE: Only
-	// foundation model endpoints are currently supported. For external models,
-	// use AI Gateway to manage rate limits.
+	// Deprecated: Please use AI Gateway to manage rate limits instead.
 	Put(ctx context.Context, request PutRequest) (*PutResponse, error)
 
 	// Update AI Gateway of a serving endpoint.
 	//
-	// Used to update the AI Gateway of a serving endpoint. NOTE: Only external
-	// model and provisioned throughput endpoints are currently supported.
+	// Used to update the AI Gateway of a serving endpoint. NOTE: External
+	// model, provisioned throughput, and pay-per-token endpoints are fully
+	// supported; agent endpoints currently only support inference tables.
 	PutAiGateway(ctx context.Context, request PutAiGatewayRequest) (*PutAiGatewayResponse, error)
 
 	// Query a serving endpoint.
@@ -117,6 +119,14 @@ type ServingEndpointsService interface {
 	// Updates the permissions on a serving endpoint. Serving endpoints can
 	// inherit permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
+
+	// Update config of a PT serving endpoint.
+	//
+	// Updates any combination of the pt endpoint's served entities, the compute
+	// configuration of those served entities, and the endpoint's traffic
+	// config. Updates are instantaneous and endpoint should be updated
+	// instantly
+	UpdateProvisionedThroughputEndpointConfig(ctx context.Context, request UpdateProvisionedThroughputEndpointConfigRequest) (*ServingEndpointDetailed, error)
 }
 
 // Serving endpoints DataPlane provides a set of operations to interact with

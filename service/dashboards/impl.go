@@ -50,12 +50,22 @@ func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecut
 
 func (a *genieImpl) GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error) {
 	var genieGenerateDownloadFullQueryResultResponse GenieGenerateDownloadFullQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/generate-download", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGenerateDownloadFullQueryResultResponse)
 	return &genieGenerateDownloadFullQueryResultResponse, err
+}
+
+func (a *genieImpl) GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error) {
+	var genieGetDownloadFullQueryResultResponse GenieGetDownloadFullQueryResultResponse
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads/%v", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId, request.DownloadId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetDownloadFullQueryResultResponse)
+	return &genieGetDownloadFullQueryResultResponse, err
 }
 
 func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error) {
@@ -417,6 +427,16 @@ func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardEmbeddedResponse)
 	return err
+}
+
+func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error) {
+	var getPublishedDashboardTokenInfoResponse GetPublishedDashboardTokenInfoResponse
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/tokeninfo", request.DashboardId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardTokenInfoResponse)
+	return &getPublishedDashboardTokenInfoResponse, err
 }
 
 // unexported type that holds implementations of just QueryExecution API methods

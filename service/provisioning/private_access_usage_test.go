@@ -70,7 +70,7 @@ func ExamplePrivateAccessAPI_Get_privateAccess() {
 
 }
 
-func ExamplePrivateAccessAPI_ListAll_privateAccess() {
+func ExamplePrivateAccessAPI_List_privateAccess() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

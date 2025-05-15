@@ -27,6 +27,45 @@ func (s AccessControl) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type Aggregation string
+
+const AggregationAvg Aggregation = `AVG`
+
+const AggregationCount Aggregation = `COUNT`
+
+const AggregationCountDistinct Aggregation = `COUNT_DISTINCT`
+
+const AggregationMax Aggregation = `MAX`
+
+const AggregationMedian Aggregation = `MEDIAN`
+
+const AggregationMin Aggregation = `MIN`
+
+const AggregationStddev Aggregation = `STDDEV`
+
+const AggregationSum Aggregation = `SUM`
+
+// String representation for [fmt.Print]
+func (f *Aggregation) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *Aggregation) Set(v string) error {
+	switch v {
+	case `AVG`, `COUNT`, `COUNT_DISTINCT`, `MAX`, `MEDIAN`, `MIN`, `STDDEV`, `SUM`:
+		*f = Aggregation(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AVG", "COUNT", "COUNT_DISTINCT", "MAX", "MEDIAN", "MIN", "STDDEV", "SUM"`, v)
+	}
+}
+
+// Type always returns Aggregation to satisfy [pflag.Value] interface
+func (f *Aggregation) Type() string {
+	return "Aggregation"
+}
+
 type Alert struct {
 	// Trigger conditions of the alert.
 	Condition *AlertCondition `json:"condition,omitempty"`
@@ -101,6 +140,40 @@ type AlertConditionOperand struct {
 
 type AlertConditionThreshold struct {
 	Value *AlertOperandValue `json:"value,omitempty"`
+}
+
+// UNSPECIFIED - default unspecify value for proto enum, do not use it in the
+// code UNKNOWN - alert not yet evaluated TRIGGERED - alert is triggered OK -
+// alert is not triggered ERROR - alert evaluation failed
+type AlertEvaluationState string
+
+const AlertEvaluationStateError AlertEvaluationState = `ERROR`
+
+const AlertEvaluationStateOk AlertEvaluationState = `OK`
+
+const AlertEvaluationStateTriggered AlertEvaluationState = `TRIGGERED`
+
+const AlertEvaluationStateUnknown AlertEvaluationState = `UNKNOWN`
+
+// String representation for [fmt.Print]
+func (f *AlertEvaluationState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AlertEvaluationState) Set(v string) error {
+	switch v {
+	case `ERROR`, `OK`, `TRIGGERED`, `UNKNOWN`:
+		*f = AlertEvaluationState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "ERROR", "OK", "TRIGGERED", "UNKNOWN"`, v)
+	}
+}
+
+// Type always returns AlertEvaluationState to satisfy [pflag.Value] interface
+func (f *AlertEvaluationState) Type() string {
+	return "AlertEvaluationState"
 }
 
 type AlertOperandColumn struct {
@@ -319,6 +392,156 @@ func (f *AlertState) Set(v string) error {
 // Type always returns AlertState to satisfy [pflag.Value] interface
 func (f *AlertState) Type() string {
 	return "AlertState"
+}
+
+type AlertV2 struct {
+	// The timestamp indicating when the alert was created.
+	CreateTime string `json:"create_time,omitempty"`
+	// Custom description for the alert. support mustache template.
+	CustomDescription string `json:"custom_description,omitempty"`
+	// Custom summary for the alert. support mustache template.
+	CustomSummary string `json:"custom_summary,omitempty"`
+	// The display name of the alert.
+	DisplayName string `json:"display_name,omitempty"`
+
+	Evaluation *AlertV2Evaluation `json:"evaluation,omitempty"`
+	// UUID identifying the alert.
+	Id string `json:"id,omitempty"`
+	// Indicates whether the query is trashed.
+	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
+	// The owner's username. This field is set to "Unavailable" if the user has
+	// been deleted.
+	OwnerUserName string `json:"owner_user_name,omitempty"`
+	// The workspace path of the folder containing the alert. Can only be set on
+	// create, and cannot be updated.
+	ParentPath string `json:"parent_path,omitempty"`
+	// Text of the query to be run.
+	QueryText string `json:"query_text,omitempty"`
+	// The run as username. This field is set to "Unavailable" if the user has
+	// been deleted.
+	RunAsUserName string `json:"run_as_user_name,omitempty"`
+
+	Schedule *CronSchedule `json:"schedule,omitempty"`
+	// The timestamp indicating when the alert was updated.
+	UpdateTime string `json:"update_time,omitempty"`
+	// ID of the SQL warehouse attached to the alert.
+	WarehouseId string `json:"warehouse_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AlertV2) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertV2) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AlertV2Evaluation struct {
+	// Operator used for comparison in alert evaluation.
+	ComparisonOperator ComparisonOperator `json:"comparison_operator,omitempty"`
+	// Alert state if result is empty.
+	EmptyResultState AlertEvaluationState `json:"empty_result_state,omitempty"`
+	// Timestamp of the last evaluation.
+	LastEvaluatedAt string `json:"last_evaluated_at,omitempty"`
+	// User or Notification Destination to notify when alert is triggered.
+	Notification *AlertV2Notification `json:"notification,omitempty"`
+	// Source column from result to use to evaluate alert
+	Source *AlertV2OperandColumn `json:"source,omitempty"`
+	// Latest state of alert evaluation.
+	State AlertEvaluationState `json:"state,omitempty"`
+	// Threshold to user for alert evaluation, can be a column or a value.
+	Threshold *AlertV2Operand `json:"threshold,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AlertV2Evaluation) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertV2Evaluation) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AlertV2Notification struct {
+	// Whether to notify alert subscribers when alert returns back to normal.
+	NotifyOnOk bool `json:"notify_on_ok,omitempty"`
+	// Number of seconds an alert must wait after being triggered to rearm
+	// itself. After rearming, it can be triggered again. If 0 or not specified,
+	// the alert will not be triggered again.
+	RetriggerSeconds int `json:"retrigger_seconds,omitempty"`
+
+	Subscriptions []AlertV2Subscription `json:"subscriptions,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AlertV2Notification) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertV2Notification) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AlertV2Operand struct {
+	Column *AlertV2OperandColumn `json:"column,omitempty"`
+
+	Value *AlertV2OperandValue `json:"value,omitempty"`
+}
+
+type AlertV2OperandColumn struct {
+	Aggregation Aggregation `json:"aggregation,omitempty"`
+
+	Display string `json:"display,omitempty"`
+
+	Name string `json:"name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AlertV2OperandColumn) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertV2OperandColumn) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AlertV2OperandValue struct {
+	BoolValue bool `json:"bool_value,omitempty"`
+
+	DoubleValue float64 `json:"double_value,omitempty"`
+
+	StringValue string `json:"string_value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AlertV2OperandValue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertV2OperandValue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AlertV2Subscription struct {
+	DestinationId string `json:"destination_id,omitempty"`
+
+	UserEmail string `json:"user_email,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AlertV2Subscription) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AlertV2Subscription) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Describes metadata for a particular chunk, within a result set; this
@@ -548,6 +771,45 @@ func (f *ColumnInfoTypeName) Type() string {
 	return "ColumnInfoTypeName"
 }
 
+type ComparisonOperator string
+
+const ComparisonOperatorEqual ComparisonOperator = `EQUAL`
+
+const ComparisonOperatorGreaterThan ComparisonOperator = `GREATER_THAN`
+
+const ComparisonOperatorGreaterThanOrEqual ComparisonOperator = `GREATER_THAN_OR_EQUAL`
+
+const ComparisonOperatorIsNotNull ComparisonOperator = `IS_NOT_NULL`
+
+const ComparisonOperatorIsNull ComparisonOperator = `IS_NULL`
+
+const ComparisonOperatorLessThan ComparisonOperator = `LESS_THAN`
+
+const ComparisonOperatorLessThanOrEqual ComparisonOperator = `LESS_THAN_OR_EQUAL`
+
+const ComparisonOperatorNotEqual ComparisonOperator = `NOT_EQUAL`
+
+// String representation for [fmt.Print]
+func (f *ComparisonOperator) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *ComparisonOperator) Set(v string) error {
+	switch v {
+	case `EQUAL`, `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `IS_NOT_NULL`, `IS_NULL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL`, `NOT_EQUAL`:
+		*f = ComparisonOperator(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "EQUAL", "GREATER_THAN", "GREATER_THAN_OR_EQUAL", "IS_NOT_NULL", "IS_NULL", "LESS_THAN", "LESS_THAN_OR_EQUAL", "NOT_EQUAL"`, v)
+	}
+}
+
+// Type always returns ComparisonOperator to satisfy [pflag.Value] interface
+func (f *ComparisonOperator) Type() string {
+	return "ComparisonOperator"
+}
+
 type CreateAlert struct {
 	// Name of the alert.
 	Name string `json:"name"`
@@ -575,6 +837,20 @@ func (s CreateAlert) MarshalJSON() ([]byte, error) {
 
 type CreateAlertRequest struct {
 	Alert *CreateAlertRequestAlert `json:"alert,omitempty"`
+	// If true, automatically resolve alert display name conflicts. Otherwise,
+	// fail the request if the alert's display name conflicts with an existing
+	// alert's display name.
+	AutoResolveDisplayName bool `json:"auto_resolve_display_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateAlertRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateAlertRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateAlertRequestAlert struct {
@@ -615,8 +891,28 @@ func (s CreateAlertRequestAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Create an alert
+type CreateAlertV2Request struct {
+	Alert AlertV2 `json:"alert"`
+}
+
 type CreateQueryRequest struct {
+	// If true, automatically resolve query display name conflicts. Otherwise,
+	// fail the request if the query's display name conflicts with an existing
+	// query's display name.
+	AutoResolveDisplayName bool `json:"auto_resolve_display_name,omitempty"`
+
 	Query *CreateQueryRequestQuery `json:"query,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateQueryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateQueryRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type CreateQueryRequestQuery struct {
@@ -860,6 +1156,31 @@ func (s *CreateWidget) UnmarshalJSON(b []byte) error {
 }
 
 func (s CreateWidget) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CronSchedule struct {
+	// Indicate whether this schedule is paused or not.
+	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
+	// A cron expression using quartz syntax that specifies the schedule for
+	// this pipeline. Should use the quartz format described here:
+	// http://www.quartz-scheduler.org/documentation/quartz-2.1.7/tutorials/tutorial-lesson-06.html
+	QuartzCronSchedule string `json:"quartz_cron_schedule,omitempty"`
+	// A Java timezone id. The schedule will be resolved using this timezone.
+	// This will be combined with the quartz_cron_schedule to determine the
+	// schedule. See
+	// https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
+	// for details.
+	TimezoneId string `json:"timezone_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CronSchedule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CronSchedule) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -1496,7 +1817,7 @@ type EndpointInfo struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
-	// current number of active sessions for the warehouse
+	// Deprecated. current number of active sessions for the warehouse
 	NumActiveSessions int64 `json:"num_active_sessions,omitempty"`
 	// current number of clusters running for the service
 	NumClusters int `json:"num_clusters,omitempty"`
@@ -1893,6 +2214,11 @@ type GetAlertRequest struct {
 }
 
 // Get an alert
+type GetAlertV2Request struct {
+	Id string `json:"-" url:"-"`
+}
+
+// Get an alert
 type GetAlertsLegacyRequest struct {
 	AlertId string `json:"-" url:"-"`
 }
@@ -2032,7 +2358,7 @@ type GetWarehouseResponse struct {
 	// Supported values: - Must be unique within an org. - Must be less than 100
 	// characters.
 	Name string `json:"name,omitempty"`
-	// current number of active sessions for the warehouse
+	// Deprecated. current number of active sessions for the warehouse
 	NumActiveSessions int64 `json:"num_active_sessions,omitempty"`
 	// current number of clusters running for the service
 	NumClusters int `json:"num_clusters,omitempty"`
@@ -2463,6 +2789,39 @@ func (s *ListAlertsResponseAlert) UnmarshalJSON(b []byte) error {
 }
 
 func (s ListAlertsResponseAlert) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List alerts
+type ListAlertsV2Request struct {
+	PageSize int `json:"-" url:"page_size,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListAlertsV2Request) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAlertsV2Request) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListAlertsV2Response struct {
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Results []AlertV2 `json:"results,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListAlertsV2Response) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListAlertsV2Response) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3163,6 +3522,11 @@ type QueryFilter struct {
 type QueryInfo struct {
 	// SQL Warehouse channel information at the time of query execution
 	ChannelUsed *ChannelInfo `json:"channel_used,omitempty"`
+	// Client application that ran the statement. For example: Databricks SQL
+	// Editor, Tableau, and Power BI. This field is derived from information
+	// provided by client applications. While values are expected to remain
+	// static over time, this cannot be guaranteed.
+	ClientApplication string `json:"client_application,omitempty"`
 	// Total execution time of the statement ( excluding result fetch time ).
 	Duration int64 `json:"duration,omitempty"`
 	// Alias for `warehouse_id`.
@@ -3677,6 +4041,33 @@ func (f *RunAsRole) Set(v string) error {
 // Type always returns RunAsRole to satisfy [pflag.Value] interface
 func (f *RunAsRole) Type() string {
 	return "RunAsRole"
+}
+
+type SchedulePauseStatus string
+
+const SchedulePauseStatusPaused SchedulePauseStatus = `PAUSED`
+
+const SchedulePauseStatusUnpaused SchedulePauseStatus = `UNPAUSED`
+
+// String representation for [fmt.Print]
+func (f *SchedulePauseStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *SchedulePauseStatus) Set(v string) error {
+	switch v {
+	case `PAUSED`, `UNPAUSED`:
+		*f = SchedulePauseStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
+	}
+}
+
+// Type always returns SchedulePauseStatus to satisfy [pflag.Value] interface
+func (f *SchedulePauseStatus) Type() string {
+	return "SchedulePauseStatus"
 }
 
 type ServiceError struct {
@@ -4397,6 +4788,11 @@ type TrashAlertRequest struct {
 	Id string `json:"-" url:"-"`
 }
 
+// Delete an alert
+type TrashAlertV2Request struct {
+	Id string `json:"-" url:"-"`
+}
+
 // Delete a query
 type TrashQueryRequest struct {
 	Id string `json:"-" url:"-"`
@@ -4457,6 +4853,25 @@ func (s *UpdateAlertRequestAlert) UnmarshalJSON(b []byte) error {
 
 func (s UpdateAlertRequestAlert) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Update an alert
+type UpdateAlertV2Request struct {
+	Alert AlertV2 `json:"alert"`
+	// UUID identifying the alert.
+	Id string `json:"-" url:"-"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	UpdateMask string `json:"-" url:"update_mask"`
 }
 
 type UpdateQueryRequest struct {
@@ -4682,6 +5097,8 @@ const WarehousePermissionLevelCanMonitor WarehousePermissionLevel = `CAN_MONITOR
 
 const WarehousePermissionLevelCanUse WarehousePermissionLevel = `CAN_USE`
 
+const WarehousePermissionLevelCanView WarehousePermissionLevel = `CAN_VIEW`
+
 const WarehousePermissionLevelIsOwner WarehousePermissionLevel = `IS_OWNER`
 
 // String representation for [fmt.Print]
@@ -4692,11 +5109,11 @@ func (f *WarehousePermissionLevel) String() string {
 // Set raw string value and validate it against allowed values
 func (f *WarehousePermissionLevel) Set(v string) error {
 	switch v {
-	case `CAN_MANAGE`, `CAN_MONITOR`, `CAN_USE`, `IS_OWNER`:
+	case `CAN_MANAGE`, `CAN_MONITOR`, `CAN_USE`, `CAN_VIEW`, `IS_OWNER`:
 		*f = WarehousePermissionLevel(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MONITOR", "CAN_USE", "IS_OWNER"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MONITOR", "CAN_USE", "CAN_VIEW", "IS_OWNER"`, v)
 	}
 }
 

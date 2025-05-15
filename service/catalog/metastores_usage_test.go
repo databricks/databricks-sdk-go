@@ -135,7 +135,7 @@ func ExampleMetastoresAPI_Get_metastores() {
 
 }
 
-func ExampleMetastoresAPI_ListAll_metastores() {
+func ExampleMetastoresAPI_List_metastores() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

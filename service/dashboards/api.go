@@ -48,10 +48,42 @@ type GenieInterface interface {
 
 	// Generate full query result download.
 	//
-	// Initiate full SQL query result download and obtain a transient ID for
-	// tracking the download progress. This call initiates a new SQL execution to
-	// generate the query result.
+	// Initiates a new SQL execution and returns a `download_id` that you can use to
+	// track the progress of the download. The query result is stored in an external
+	// link and can be retrieved using the [Get Download Full Query
+	// Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
+	// strongly recommends that you protect the URLs that are returned by the
+	// `EXTERNAL_LINKS` disposition. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
 	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
+
+	// Get download full query result.
+	//
+	// After [Generating a Full Query Result
+	// Download](:method:genie/getdownloadfullqueryresult) and successfully
+	// receiving a `download_id`, use this API to poll the download progress. When
+	// the download is complete, the API returns one or more external links to the
+	// query result files. Warning: Databricks strongly recommends that you protect
+	// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
+	// set an Authorization header in download requests. When using the
+	// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
+	// temporary access to data. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
+	GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error)
+
+	// Get download full query result.
+	//
+	// After [Generating a Full Query Result
+	// Download](:method:genie/getdownloadfullqueryresult) and successfully
+	// receiving a `download_id`, use this API to poll the download progress. When
+	// the download is complete, the API returns one or more external links to the
+	// query result files. Warning: Databricks strongly recommends that you protect
+	// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
+	// set an Authorization header in download requests. When using the
+	// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
+	// temporary access to data. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
+	GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error)
 
 	// Get conversation message.
 	//
@@ -217,10 +249,10 @@ func (a *GenieAPI) CreateMessage(ctx context.Context, genieCreateConversationMes
 	return &WaitGetMessageGenieCompleted[GenieMessage]{
 		Response:       genieMessage,
 		ConversationId: genieCreateConversationMessageRequest.ConversationId,
-		MessageId:      genieMessage.Id,
+		MessageId:      genieMessage.MessageId,
 		SpaceId:        genieCreateConversationMessageRequest.SpaceId,
 		Poll: func(timeout time.Duration, callback func(*GenieMessage)) (*GenieMessage, error) {
-			return a.WaitGetMessageGenieCompleted(ctx, genieCreateConversationMessageRequest.ConversationId, genieMessage.Id, genieCreateConversationMessageRequest.SpaceId, timeout, callback)
+			return a.WaitGetMessageGenieCompleted(ctx, genieCreateConversationMessageRequest.ConversationId, genieMessage.MessageId, genieCreateConversationMessageRequest.SpaceId, timeout, callback)
 		},
 		timeout:  20 * time.Minute,
 		callback: nil,
@@ -252,6 +284,28 @@ func (a *GenieAPI) CreateMessageAndWait(ctx context.Context, genieCreateConversa
 		}
 	}
 	return wait.Get()
+}
+
+// Get download full query result.
+//
+// After [Generating a Full Query Result
+// Download](:method:genie/getdownloadfullqueryresult) and successfully
+// receiving a `download_id`, use this API to poll the download progress. When
+// the download is complete, the API returns one or more external links to the
+// query result files. Warning: Databricks strongly recommends that you protect
+// the URLs that are returned by the `EXTERNAL_LINKS` disposition. You must not
+// set an Authorization header in download requests. When using the
+// `EXTERNAL_LINKS` disposition, Databricks returns presigned URLs that grant
+// temporary access to data. See [Execute
+// Statement](:method:statementexecution/executestatement) for more details.
+func (a *GenieAPI) GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error) {
+	return a.genieImpl.GetDownloadFullQueryResult(ctx, GenieGetDownloadFullQueryResultRequest{
+		SpaceId:        spaceId,
+		ConversationId: conversationId,
+		MessageId:      messageId,
+		AttachmentId:   attachmentId,
+		DownloadId:     downloadId,
+	})
 }
 
 // Get conversation message.
@@ -606,6 +660,30 @@ type LakeviewEmbeddedInterface interface {
 	//
 	// Get the current published dashboard within an embedded context.
 	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error
+
+	// Read an information of a published dashboard to mint an OAuth token.
+	//
+	// Get a required authorization details and scopes of a published dashboard to
+	// mint an OAuth token. The `authorization_details` can be enriched to apply
+	// additional restriction.
+	//
+	// Example: Adding the following `authorization_details` object to downscope the
+	// viewer permission to specific table ``` { type: "unity_catalog_privileges",
+	// privileges: ["SELECT"], object_type: "TABLE", object_full_path:
+	// "main.default.testdata" } ```
+	GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error)
+
+	// Read an information of a published dashboard to mint an OAuth token.
+	//
+	// Get a required authorization details and scopes of a published dashboard to
+	// mint an OAuth token. The `authorization_details` can be enriched to apply
+	// additional restriction.
+	//
+	// Example: Adding the following `authorization_details` object to downscope the
+	// viewer permission to specific table ``` { type: "unity_catalog_privileges",
+	// privileges: ["SELECT"], object_type: "TABLE", object_full_path:
+	// "main.default.testdata" } ```
+	GetPublishedDashboardTokenInfoByDashboardId(ctx context.Context, dashboardId string) (*GetPublishedDashboardTokenInfoResponse, error)
 }
 
 func NewLakeviewEmbedded(client *client.DatabricksClient) *LakeviewEmbeddedAPI {
@@ -626,6 +704,22 @@ type LakeviewEmbeddedAPI struct {
 // Get the current published dashboard within an embedded context.
 func (a *LakeviewEmbeddedAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error {
 	return a.lakeviewEmbeddedImpl.GetPublishedDashboardEmbedded(ctx, GetPublishedDashboardEmbeddedRequest{
+		DashboardId: dashboardId,
+	})
+}
+
+// Read an information of a published dashboard to mint an OAuth token.
+//
+// Get a required authorization details and scopes of a published dashboard to
+// mint an OAuth token. The `authorization_details` can be enriched to apply
+// additional restriction.
+//
+// Example: Adding the following `authorization_details` object to downscope the
+// viewer permission to specific table ``` { type: "unity_catalog_privileges",
+// privileges: ["SELECT"], object_type: "TABLE", object_full_path:
+// "main.default.testdata" } ```
+func (a *LakeviewEmbeddedAPI) GetPublishedDashboardTokenInfoByDashboardId(ctx context.Context, dashboardId string) (*GetPublishedDashboardTokenInfoResponse, error) {
+	return a.lakeviewEmbeddedImpl.GetPublishedDashboardTokenInfo(ctx, GetPublishedDashboardTokenInfoRequest{
 		DashboardId: dashboardId,
 	})
 }

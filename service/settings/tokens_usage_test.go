@@ -38,7 +38,7 @@ func ExampleTokensAPI_Create_tokens() {
 
 }
 
-func ExampleTokensAPI_Get_tokens() {
+func ExampleTokensAPI_GetByComment_tokens() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {
@@ -69,7 +69,7 @@ func ExampleTokensAPI_Get_tokens() {
 
 }
 
-func ExampleTokensAPI_ListAll_tokens() {
+func ExampleTokensAPI_List_tokens() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

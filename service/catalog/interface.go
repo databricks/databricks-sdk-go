@@ -317,6 +317,48 @@ type CredentialsService interface {
 	ValidateCredential(ctx context.Context, request ValidateCredentialRequest) (*ValidateCredentialResponse, error)
 }
 
+// Database Instances provide access to a database via REST API or direct SQL.
+type DatabaseInstancesService interface {
+
+	// Create a Database Catalog.
+	CreateDatabaseCatalog(ctx context.Context, request CreateDatabaseCatalogRequest) (*DatabaseCatalog, error)
+
+	// Create a Database Instance.
+	CreateDatabaseInstance(ctx context.Context, request CreateDatabaseInstanceRequest) (*DatabaseInstance, error)
+
+	// Create a Synced Database Table.
+	CreateSyncedDatabaseTable(ctx context.Context, request CreateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
+
+	// Delete a Database Catalog.
+	DeleteDatabaseCatalog(ctx context.Context, request DeleteDatabaseCatalogRequest) error
+
+	// Delete a Database Instance.
+	DeleteDatabaseInstance(ctx context.Context, request DeleteDatabaseInstanceRequest) error
+
+	// Delete a Synced Database Table.
+	DeleteSyncedDatabaseTable(ctx context.Context, request DeleteSyncedDatabaseTableRequest) error
+
+	// Find a Database Instance by uid.
+	FindDatabaseInstanceByUid(ctx context.Context, request FindDatabaseInstanceByUidRequest) (*DatabaseInstance, error)
+
+	// Get a Database Catalog.
+	GetDatabaseCatalog(ctx context.Context, request GetDatabaseCatalogRequest) (*DatabaseCatalog, error)
+
+	// Get a Database Instance.
+	GetDatabaseInstance(ctx context.Context, request GetDatabaseInstanceRequest) (*DatabaseInstance, error)
+
+	// Get a Synced Database Table.
+	GetSyncedDatabaseTable(ctx context.Context, request GetSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
+
+	// List Database Instances.
+	//
+	// Use ListDatabaseInstancesAll() to get all DatabaseInstance instances, which will iterate over every result page.
+	ListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error)
+
+	// Update a Database Instance.
+	UpdateDatabaseInstance(ctx context.Context, request UpdateDatabaseInstanceRequest) (*DatabaseInstance, error)
+}
+
 // An external location is an object that combines a cloud storage path with a
 // storage credential that authorizes access to the cloud storage path. Each
 // external location is subject to Unity Catalog access-control policies that
@@ -1355,14 +1397,14 @@ type VolumesService interface {
 // introduces the ability to bind a securable in READ_ONLY mode (catalogs only).
 //
 // Securable types that support binding: - catalog - storage_credential -
-// external_location
+// credential - external_location
 type WorkspaceBindingsService interface {
 
 	// Get catalog workspace bindings.
 	//
 	// Gets workspace bindings of the catalog. The caller must be a metastore
 	// admin or an owner of the catalog.
-	Get(ctx context.Context, request GetWorkspaceBindingRequest) (*CurrentWorkspaceBindings, error)
+	Get(ctx context.Context, request GetWorkspaceBindingRequest) (*GetCatalogWorkspaceBindingsResponse, error)
 
 	// Get securable workspace bindings.
 	//
@@ -1370,17 +1412,17 @@ type WorkspaceBindingsService interface {
 	// admin or an owner of the securable.
 	//
 	// Use GetBindingsAll() to get all WorkspaceBinding instances, which will iterate over every result page.
-	GetBindings(ctx context.Context, request GetBindingsRequest) (*WorkspaceBindingsResponse, error)
+	GetBindings(ctx context.Context, request GetBindingsRequest) (*GetWorkspaceBindingsResponse, error)
 
 	// Update catalog workspace bindings.
 	//
 	// Updates workspace bindings of the catalog. The caller must be a metastore
 	// admin or an owner of the catalog.
-	Update(ctx context.Context, request UpdateWorkspaceBindings) (*CurrentWorkspaceBindings, error)
+	Update(ctx context.Context, request UpdateWorkspaceBindings) (*UpdateCatalogWorkspaceBindingsResponse, error)
 
 	// Update securable workspace bindings.
 	//
 	// Updates workspace bindings of the securable. The caller must be a
 	// metastore admin or an owner of the securable.
-	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*WorkspaceBindingsResponse, error)
+	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*UpdateWorkspaceBindingsResponse, error)
 }

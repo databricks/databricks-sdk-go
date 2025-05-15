@@ -14,6 +14,8 @@
 //
 // - [sql.AlertsLegacyAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
+// - [sql.AlertsV2API]: TODO: Add description.
+//
 // - [apps.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
 //
 // - [catalog.ArtifactAllowlistsAPI]: In Databricks Runtime 13.3 and above, you can add libraries and init scripts to the `allowlist` in UC so that users can leverage these artifacts on compute configured with shared access mode.
@@ -70,6 +72,8 @@
 //
 // - [sql.DataSourcesAPI]: This API is provided to assist you in making new query objects.
 //
+// - [catalog.DatabaseInstancesAPI]: Database Instances provide access to a database via REST API or direct SQL.
+//
 // - [files.DbfsAPI]: DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
 //
 // - [sql.DbsqlPermissionsAPI]: The SQL Permissions API is similar to the endpoints of the :method:permissions/set.
@@ -82,7 +86,13 @@
 //
 // - [settings.DisableLegacyFeaturesAPI]: Disable legacy features for new Databricks workspaces.
 //
+// - [settings.EnableExportNotebookAPI]: Controls whether users can export notebooks and files from the Workspace UI.
+//
 // - [settings.EnableIpAccessListsAPI]: Controls the enforcement of IP access lists for accessing the account console.
+//
+// - [settings.EnableNotebookTableClipboardAPI]: Controls whether users can copy tabular data to the clipboard via the UI.
+//
+// - [settings.EnableResultsDownloadingAPI]: Controls whether users can download notebook results.
 //
 // - [provisioning.EncryptionKeysAPI]: These APIs manage encryption key configurations for this workspace (optional).
 //
@@ -127,6 +137,12 @@
 // - [dashboards.LakeviewEmbeddedAPI]: Token-based Lakeview APIs for embedding dashboards in external applications.
 //
 // - [compute.LibrariesAPI]: The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster.
+//
+// - [settings.LlmProxyPartnerPoweredAccountAPI]: Determines if partner powered models are enabled or not for a specific account.
+//
+// - [settings.LlmProxyPartnerPoweredEnforceAPI]: Determines if the account-level partner-powered setting value is enforced upon the workspace-level partner-powered setting.
+//
+// - [settings.LlmProxyPartnerPoweredWorkspaceAPI]: Determines if partner powered models are enabled or not for a specific workspace.
 //
 // - [billing.LogDeliveryAPI]: These APIs manage log delivery configurations for this account.
 //
@@ -320,6 +336,7 @@ var (
 	_ *settings.AibiDashboardEmbeddingApprovedDomainsAPI  = nil
 	_ *sql.AlertsAPI                                      = nil
 	_ *sql.AlertsLegacyAPI                                = nil
+	_ *sql.AlertsV2API                                    = nil
 	_ *apps.AppsAPI                                       = nil
 	_ *catalog.ArtifactAllowlistsAPI                      = nil
 	_ *settings.AutomaticClusterUpdateAPI                 = nil
@@ -348,13 +365,17 @@ var (
 	_ *sql.DashboardWidgetsAPI                            = nil
 	_ *sql.DashboardsAPI                                  = nil
 	_ *sql.DataSourcesAPI                                 = nil
+	_ *catalog.DatabaseInstancesAPI                       = nil
 	_ *files.DbfsAPI                                      = nil
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil
 	_ *settings.DisableLegacyAccessAPI                    = nil
 	_ *settings.DisableLegacyDbfsAPI                      = nil
 	_ *settings.DisableLegacyFeaturesAPI                  = nil
+	_ *settings.EnableExportNotebookAPI                   = nil
 	_ *settings.EnableIpAccessListsAPI                    = nil
+	_ *settings.EnableNotebookTableClipboardAPI           = nil
+	_ *settings.EnableResultsDownloadingAPI               = nil
 	_ *provisioning.EncryptionKeysAPI                     = nil
 	_ *settings.EnhancedSecurityMonitoringAPI             = nil
 	_ *settings.EsmEnablementAccountAPI                   = nil
@@ -377,6 +398,9 @@ var (
 	_ *dashboards.LakeviewAPI                             = nil
 	_ *dashboards.LakeviewEmbeddedAPI                     = nil
 	_ *compute.LibrariesAPI                               = nil
+	_ *settings.LlmProxyPartnerPoweredAccountAPI          = nil
+	_ *settings.LlmProxyPartnerPoweredEnforceAPI          = nil
+	_ *settings.LlmProxyPartnerPoweredWorkspaceAPI        = nil
 	_ *billing.LogDeliveryAPI                             = nil
 	_ *catalog.AccountMetastoreAssignmentsAPI             = nil
 	_ *catalog.MetastoresAPI                              = nil

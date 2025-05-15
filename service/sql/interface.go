@@ -113,6 +113,39 @@ type AlertsLegacyService interface {
 	Update(ctx context.Context, request EditAlert) error
 }
 
+// TODO: Add description
+type AlertsV2Service interface {
+
+	// Create an alert.
+	//
+	// Create Alert
+	CreateAlert(ctx context.Context, request CreateAlertV2Request) (*AlertV2, error)
+
+	// Get an alert.
+	//
+	// Gets an alert.
+	GetAlert(ctx context.Context, request GetAlertV2Request) (*AlertV2, error)
+
+	// List alerts.
+	//
+	// Gets a list of alerts accessible to the user, ordered by creation time.
+	//
+	// Use ListAlertsAll() to get all AlertV2 instances, which will iterate over every result page.
+	ListAlerts(ctx context.Context, request ListAlertsV2Request) (*ListAlertsV2Response, error)
+
+	// Delete an alert.
+	//
+	// Moves an alert to the trash. Trashed alerts immediately disappear from
+	// list views, and can no longer trigger. You can restore a trashed alert
+	// through the UI. A trashed alert is permanently deleted after 30 days.
+	TrashAlert(ctx context.Context, request TrashAlertV2Request) error
+
+	// Update an alert.
+	//
+	// Update alert
+	UpdateAlert(ctx context.Context, request UpdateAlertV2Request) (*AlertV2, error)
+}
+
 // This is an evolving API that facilitates the addition and removal of widgets
 // from existing dashboards within the Databricks Workspace. Data structures may
 // change over time.

@@ -280,6 +280,139 @@ func (_c *MockServingEndpointsInterface_CreateAndWait_Call) RunAndReturn(run fun
 	return _c
 }
 
+// CreateProvisionedThroughputEndpoint provides a mock function with given fields: ctx, createPtEndpointRequest
+func (_m *MockServingEndpointsInterface) CreateProvisionedThroughputEndpoint(ctx context.Context, createPtEndpointRequest serving.CreatePtEndpointRequest) (*serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed], error) {
+	ret := _m.Called(ctx, createPtEndpointRequest)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateProvisionedThroughputEndpoint")
+	}
+
+	var r0 *serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed]
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.CreatePtEndpointRequest) (*serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed], error)); ok {
+		return rf(ctx, createPtEndpointRequest)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.CreatePtEndpointRequest) *serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed]); ok {
+		r0 = rf(ctx, createPtEndpointRequest)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed])
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.CreatePtEndpointRequest) error); ok {
+		r1 = rf(ctx, createPtEndpointRequest)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockServingEndpointsInterface_CreateProvisionedThroughputEndpoint_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateProvisionedThroughputEndpoint'
+type MockServingEndpointsInterface_CreateProvisionedThroughputEndpoint_Call struct {
+	*mock.Call
+}
+
+// CreateProvisionedThroughputEndpoint is a helper method to define mock.On call
+//   - ctx context.Context
+//   - createPtEndpointRequest serving.CreatePtEndpointRequest
+func (_e *MockServingEndpointsInterface_Expecter) CreateProvisionedThroughputEndpoint(ctx interface{}, createPtEndpointRequest interface{}) *MockServingEndpointsInterface_CreateProvisionedThroughputEndpoint_Call {
+	return &MockServingEndpointsInterface_CreateProvisionedThroughputEndpoint_Call{Call: _e.mock.On("CreateProvisionedThroughputEndpoint", ctx, createPtEndpointRequest)}
+}
+
+func (_c *MockServingEndpointsInterface_CreateProvisionedThroughputEndpoint_Call) Run(run func(ctx context.Context, createPtEndpointRequest serving.CreatePtEndpointRequest)) *MockServingEndpointsInterface_CreateProvisionedThroughputEndpoint_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(serving.CreatePtEndpointRequest))
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_CreateProvisionedThroughputEndpoint_Call) Return(_a0 *serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed], _a1 error) *MockServingEndpointsInterface_CreateProvisionedThroughputEndpoint_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_CreateProvisionedThroughputEndpoint_Call) RunAndReturn(run func(context.Context, serving.CreatePtEndpointRequest) (*serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed], error)) *MockServingEndpointsInterface_CreateProvisionedThroughputEndpoint_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// CreateProvisionedThroughputEndpointAndWait provides a mock function with given fields: ctx, createPtEndpointRequest, options
+func (_m *MockServingEndpointsInterface) CreateProvisionedThroughputEndpointAndWait(ctx context.Context, createPtEndpointRequest serving.CreatePtEndpointRequest, options ...retries.Option[serving.ServingEndpointDetailed]) (*serving.ServingEndpointDetailed, error) {
+	_va := make([]interface{}, len(options))
+	for _i := range options {
+		_va[_i] = options[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, createPtEndpointRequest)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateProvisionedThroughputEndpointAndWait")
+	}
+
+	var r0 *serving.ServingEndpointDetailed
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.CreatePtEndpointRequest, ...retries.Option[serving.ServingEndpointDetailed]) (*serving.ServingEndpointDetailed, error)); ok {
+		return rf(ctx, createPtEndpointRequest, options...)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.CreatePtEndpointRequest, ...retries.Option[serving.ServingEndpointDetailed]) *serving.ServingEndpointDetailed); ok {
+		r0 = rf(ctx, createPtEndpointRequest, options...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.ServingEndpointDetailed)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.CreatePtEndpointRequest, ...retries.Option[serving.ServingEndpointDetailed]) error); ok {
+		r1 = rf(ctx, createPtEndpointRequest, options...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockServingEndpointsInterface_CreateProvisionedThroughputEndpointAndWait_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateProvisionedThroughputEndpointAndWait'
+type MockServingEndpointsInterface_CreateProvisionedThroughputEndpointAndWait_Call struct {
+	*mock.Call
+}
+
+// CreateProvisionedThroughputEndpointAndWait is a helper method to define mock.On call
+//   - ctx context.Context
+//   - createPtEndpointRequest serving.CreatePtEndpointRequest
+//   - options ...retries.Option[serving.ServingEndpointDetailed]
+func (_e *MockServingEndpointsInterface_Expecter) CreateProvisionedThroughputEndpointAndWait(ctx interface{}, createPtEndpointRequest interface{}, options ...interface{}) *MockServingEndpointsInterface_CreateProvisionedThroughputEndpointAndWait_Call {
+	return &MockServingEndpointsInterface_CreateProvisionedThroughputEndpointAndWait_Call{Call: _e.mock.On("CreateProvisionedThroughputEndpointAndWait",
+		append([]interface{}{ctx, createPtEndpointRequest}, options...)...)}
+}
+
+func (_c *MockServingEndpointsInterface_CreateProvisionedThroughputEndpointAndWait_Call) Run(run func(ctx context.Context, createPtEndpointRequest serving.CreatePtEndpointRequest, options ...retries.Option[serving.ServingEndpointDetailed])) *MockServingEndpointsInterface_CreateProvisionedThroughputEndpointAndWait_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := make([]retries.Option[serving.ServingEndpointDetailed], len(args)-2)
+		for i, a := range args[2:] {
+			if a != nil {
+				variadicArgs[i] = a.(retries.Option[serving.ServingEndpointDetailed])
+			}
+		}
+		run(args[0].(context.Context), args[1].(serving.CreatePtEndpointRequest), variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_CreateProvisionedThroughputEndpointAndWait_Call) Return(_a0 *serving.ServingEndpointDetailed, _a1 error) *MockServingEndpointsInterface_CreateProvisionedThroughputEndpointAndWait_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_CreateProvisionedThroughputEndpointAndWait_Call) RunAndReturn(run func(context.Context, serving.CreatePtEndpointRequest, ...retries.Option[serving.ServingEndpointDetailed]) (*serving.ServingEndpointDetailed, error)) *MockServingEndpointsInterface_CreateProvisionedThroughputEndpointAndWait_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Delete provides a mock function with given fields: ctx, request
 func (_m *MockServingEndpointsInterface) Delete(ctx context.Context, request serving.DeleteServingEndpointRequest) error {
 	ret := _m.Called(ctx, request)
@@ -1731,6 +1864,139 @@ func (_c *MockServingEndpointsInterface_UpdatePermissions_Call) Return(_a0 *serv
 }
 
 func (_c *MockServingEndpointsInterface_UpdatePermissions_Call) RunAndReturn(run func(context.Context, serving.ServingEndpointPermissionsRequest) (*serving.ServingEndpointPermissions, error)) *MockServingEndpointsInterface_UpdatePermissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateProvisionedThroughputEndpointConfig provides a mock function with given fields: ctx, updateProvisionedThroughputEndpointConfigRequest
+func (_m *MockServingEndpointsInterface) UpdateProvisionedThroughputEndpointConfig(ctx context.Context, updateProvisionedThroughputEndpointConfigRequest serving.UpdateProvisionedThroughputEndpointConfigRequest) (*serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed], error) {
+	ret := _m.Called(ctx, updateProvisionedThroughputEndpointConfigRequest)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateProvisionedThroughputEndpointConfig")
+	}
+
+	var r0 *serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed]
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.UpdateProvisionedThroughputEndpointConfigRequest) (*serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed], error)); ok {
+		return rf(ctx, updateProvisionedThroughputEndpointConfigRequest)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.UpdateProvisionedThroughputEndpointConfigRequest) *serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed]); ok {
+		r0 = rf(ctx, updateProvisionedThroughputEndpointConfigRequest)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed])
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.UpdateProvisionedThroughputEndpointConfigRequest) error); ok {
+		r1 = rf(ctx, updateProvisionedThroughputEndpointConfigRequest)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfig_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateProvisionedThroughputEndpointConfig'
+type MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfig_Call struct {
+	*mock.Call
+}
+
+// UpdateProvisionedThroughputEndpointConfig is a helper method to define mock.On call
+//   - ctx context.Context
+//   - updateProvisionedThroughputEndpointConfigRequest serving.UpdateProvisionedThroughputEndpointConfigRequest
+func (_e *MockServingEndpointsInterface_Expecter) UpdateProvisionedThroughputEndpointConfig(ctx interface{}, updateProvisionedThroughputEndpointConfigRequest interface{}) *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfig_Call {
+	return &MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfig_Call{Call: _e.mock.On("UpdateProvisionedThroughputEndpointConfig", ctx, updateProvisionedThroughputEndpointConfigRequest)}
+}
+
+func (_c *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfig_Call) Run(run func(ctx context.Context, updateProvisionedThroughputEndpointConfigRequest serving.UpdateProvisionedThroughputEndpointConfigRequest)) *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfig_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(serving.UpdateProvisionedThroughputEndpointConfigRequest))
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfig_Call) Return(_a0 *serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed], _a1 error) *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfig_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfig_Call) RunAndReturn(run func(context.Context, serving.UpdateProvisionedThroughputEndpointConfigRequest) (*serving.WaitGetServingEndpointNotUpdating[serving.ServingEndpointDetailed], error)) *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfig_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateProvisionedThroughputEndpointConfigAndWait provides a mock function with given fields: ctx, updateProvisionedThroughputEndpointConfigRequest, options
+func (_m *MockServingEndpointsInterface) UpdateProvisionedThroughputEndpointConfigAndWait(ctx context.Context, updateProvisionedThroughputEndpointConfigRequest serving.UpdateProvisionedThroughputEndpointConfigRequest, options ...retries.Option[serving.ServingEndpointDetailed]) (*serving.ServingEndpointDetailed, error) {
+	_va := make([]interface{}, len(options))
+	for _i := range options {
+		_va[_i] = options[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, ctx, updateProvisionedThroughputEndpointConfigRequest)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateProvisionedThroughputEndpointConfigAndWait")
+	}
+
+	var r0 *serving.ServingEndpointDetailed
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, serving.UpdateProvisionedThroughputEndpointConfigRequest, ...retries.Option[serving.ServingEndpointDetailed]) (*serving.ServingEndpointDetailed, error)); ok {
+		return rf(ctx, updateProvisionedThroughputEndpointConfigRequest, options...)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, serving.UpdateProvisionedThroughputEndpointConfigRequest, ...retries.Option[serving.ServingEndpointDetailed]) *serving.ServingEndpointDetailed); ok {
+		r0 = rf(ctx, updateProvisionedThroughputEndpointConfigRequest, options...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*serving.ServingEndpointDetailed)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, serving.UpdateProvisionedThroughputEndpointConfigRequest, ...retries.Option[serving.ServingEndpointDetailed]) error); ok {
+		r1 = rf(ctx, updateProvisionedThroughputEndpointConfigRequest, options...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfigAndWait_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateProvisionedThroughputEndpointConfigAndWait'
+type MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfigAndWait_Call struct {
+	*mock.Call
+}
+
+// UpdateProvisionedThroughputEndpointConfigAndWait is a helper method to define mock.On call
+//   - ctx context.Context
+//   - updateProvisionedThroughputEndpointConfigRequest serving.UpdateProvisionedThroughputEndpointConfigRequest
+//   - options ...retries.Option[serving.ServingEndpointDetailed]
+func (_e *MockServingEndpointsInterface_Expecter) UpdateProvisionedThroughputEndpointConfigAndWait(ctx interface{}, updateProvisionedThroughputEndpointConfigRequest interface{}, options ...interface{}) *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfigAndWait_Call {
+	return &MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfigAndWait_Call{Call: _e.mock.On("UpdateProvisionedThroughputEndpointConfigAndWait",
+		append([]interface{}{ctx, updateProvisionedThroughputEndpointConfigRequest}, options...)...)}
+}
+
+func (_c *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfigAndWait_Call) Run(run func(ctx context.Context, updateProvisionedThroughputEndpointConfigRequest serving.UpdateProvisionedThroughputEndpointConfigRequest, options ...retries.Option[serving.ServingEndpointDetailed])) *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfigAndWait_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := make([]retries.Option[serving.ServingEndpointDetailed], len(args)-2)
+		for i, a := range args[2:] {
+			if a != nil {
+				variadicArgs[i] = a.(retries.Option[serving.ServingEndpointDetailed])
+			}
+		}
+		run(args[0].(context.Context), args[1].(serving.UpdateProvisionedThroughputEndpointConfigRequest), variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfigAndWait_Call) Return(_a0 *serving.ServingEndpointDetailed, _a1 error) *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfigAndWait_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfigAndWait_Call) RunAndReturn(run func(context.Context, serving.UpdateProvisionedThroughputEndpointConfigRequest, ...retries.Option[serving.ServingEndpointDetailed]) (*serving.ServingEndpointDetailed, error)) *MockServingEndpointsInterface_UpdateProvisionedThroughputEndpointConfigAndWait_Call {
 	_c.Call.Return(run)
 	return _c
 }

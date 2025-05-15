@@ -33,10 +33,28 @@ type GenieService interface {
 
 	// Generate full query result download.
 	//
-	// Initiate full SQL query result download and obtain a transient ID for
-	// tracking the download progress. This call initiates a new SQL execution
-	// to generate the query result.
+	// Initiates a new SQL execution and returns a `download_id` that you can
+	// use to track the progress of the download. The query result is stored in
+	// an external link and can be retrieved using the [Get Download Full Query
+	// Result](:method:genie/getdownloadfullqueryresult) API. Warning:
+	// Databricks strongly recommends that you protect the URLs that are
+	// returned by the `EXTERNAL_LINKS` disposition. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
 	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
+
+	// Get download full query result.
+	//
+	// After [Generating a Full Query Result
+	// Download](:method:genie/getdownloadfullqueryresult) and successfully
+	// receiving a `download_id`, use this API to poll the download progress.
+	// When the download is complete, the API returns one or more external links
+	// to the query result files. Warning: Databricks strongly recommends that
+	// you protect the URLs that are returned by the `EXTERNAL_LINKS`
+	// disposition. You must not set an Authorization header in download
+	// requests. When using the `EXTERNAL_LINKS` disposition, Databricks returns
+	// presigned URLs that grant temporary access to data. See [Execute
+	// Statement](:method:statementexecution/executestatement) for more details.
+	GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error)
 
 	// Get conversation message.
 	//
@@ -164,6 +182,18 @@ type LakeviewEmbeddedService interface {
 	//
 	// Get the current published dashboard within an embedded context.
 	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
+
+	// Read an information of a published dashboard to mint an OAuth token.
+	//
+	// Get a required authorization details and scopes of a published dashboard
+	// to mint an OAuth token. The `authorization_details` can be enriched to
+	// apply additional restriction.
+	//
+	// Example: Adding the following `authorization_details` object to downscope
+	// the viewer permission to specific table ``` { type:
+	// "unity_catalog_privileges", privileges: ["SELECT"], object_type: "TABLE",
+	// object_full_path: "main.default.testdata" } ```
+	GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error)
 }
 
 // Query execution APIs for AI / BI Dashboards

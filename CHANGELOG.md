@@ -1,5 +1,198 @@
 # Version changelog
 
+## Release v0.69.0
+
+### New Features and Improvements
+
+- Add support to authenticate with Account-wide token federation from the 
+  following auth methods: `env-oidc`, `file-oidc`, and `github-oidc`.  
+
+### API Changes
+* Added [a.LlmProxyPartnerPoweredAccount](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#LlmProxyPartnerPoweredAccountAPI) account-level service, [a.LlmProxyPartnerPoweredEnforce](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#LlmProxyPartnerPoweredEnforceAPI) account-level service and [w.LlmProxyPartnerPoweredWorkspace](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#LlmProxyPartnerPoweredWorkspaceAPI) workspace-level service.
+* Added [w.DatabaseInstances](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#DatabaseInstancesAPI) workspace-level service.
+* Added `CreateProvisionedThroughputEndpoint` and `UpdateProvisionedThroughputEndpointConfig` methods for [w.ServingEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServingEndpointsAPI) workspace-level service.
+* Added `CatalogName` field for [catalog.EnableRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#EnableRequest).
+* Added `SourceType` field for [pipelines.IngestionPipelineDefinition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionPipelineDefinition).
+* Added `Glob` field for [pipelines.PipelineLibrary](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineLibrary).
+* Added `ProvisionedModelUnits` field for [serving.ServedEntityInput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedEntityInput).
+* Added `ProvisionedModelUnits` field for [serving.ServedEntityOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedEntityOutput).
+* Added `ProvisionedModelUnits` field for [serving.ServedModelInput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelInput).
+* Added `ProvisionedModelUnits` field for [serving.ServedModelOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelOutput).
+* Added `DescribeQueryInvalidSqlError`, `DescribeQueryTimeout`, `DescribeQueryUnexpectedFailure`, `InvalidChatCompletionArgumentsJsonException`, `InvalidSqlMultipleDatasetReferencesException`, `InvalidSqlMultipleStatementsException` and `InvalidSqlUnknownTableException` enum values for [dashboards.MessageErrorType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#MessageErrorType).
+* Added `CanCreate` and `CanMonitorOnly` enum values for [iam.PermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionLevel).
+* Added `SuccessWithFailures` enum value for [jobs.TerminationCodeCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TerminationCodeCode).
+* Added `InfrastructureMaintenance` enum value for [pipelines.StartUpdateCause](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#StartUpdateCause).
+* Added `InfrastructureMaintenance` enum value for [pipelines.UpdateInfoCause](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#UpdateInfoCause).
+* [Breaking] Changed `CreateAlert` and `UpdateAlert` methods for [w.AlertsV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertsV2API) workspace-level service with new required argument order.
+* [Breaking] Changed `Set` method for [w.Permissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionsAPI) workspace-level service . New request type is [iam.SetObjectPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#SetObjectPermissions).
+* [Breaking] Changed `Update` method for [w.Permissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#PermissionsAPI) workspace-level service . New request type is [iam.UpdateObjectPermissions](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#UpdateObjectPermissions).
+* [Breaking] Changed `Get` method for [w.WorkspaceBindings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#WorkspaceBindingsAPI) workspace-level service to return [catalog.GetCatalogWorkspaceBindingsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetCatalogWorkspaceBindingsResponse).
+* [Breaking] Changed `GetBindings` method for [w.WorkspaceBindings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#WorkspaceBindingsAPI) workspace-level service to return [catalog.GetWorkspaceBindingsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetWorkspaceBindingsResponse).
+* [Breaking] Changed `Update` method for [w.WorkspaceBindings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#WorkspaceBindingsAPI) workspace-level service to return [catalog.UpdateCatalogWorkspaceBindingsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateCatalogWorkspaceBindingsResponse).
+* [Breaking] Changed `UpdateBindings` method for [w.WorkspaceBindings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#WorkspaceBindingsAPI) workspace-level service to return [catalog.UpdateWorkspaceBindingsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateWorkspaceBindingsResponse).
+* [Breaking] Changed `SecurableType` field for [catalog.GetBindingsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetBindingsRequest) to type `string`.
+* Changed `Schema` and `State` fields for [catalog.SystemSchemaInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SystemSchemaInfo) to be required.
+* [Breaking] Changed `State` field for [catalog.SystemSchemaInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SystemSchemaInfo) to type `string`.
+* [Breaking] Changed `SecurableType` field for [catalog.UpdateWorkspaceBindingsParameters](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateWorkspaceBindingsParameters) to type `string`.
+* [Breaking] Changed `WorkspaceId` field for [catalog.WorkspaceBinding](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#WorkspaceBinding) to be required.
+* [Breaking] Changed `GpuNodePoolId` field for [jobs.ComputeConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ComputeConfig) to no longer be required.
+* Changed `GpuNodePoolId` field for [jobs.ComputeConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ComputeConfig) to no longer be required.
+* [Breaking] Changed `Alert` field for [sql.CreateAlertV2Request](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateAlertV2Request) to be required.
+* [Breaking] Changed `Alert` field for [sql.UpdateAlertV2Request](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#UpdateAlertV2Request) to be required.
+* [Breaking] Removed `NodeTypeFlexibility` field for [compute.EditInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditInstancePool).
+* [Breaking] Removed `NodeTypeFlexibility` field for [compute.GetInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetInstancePool).
+* [Breaking] Removed `NodeTypeFlexibility` field for [compute.InstancePoolAndStats](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolAndStats).
+* [Breaking] Removed `Catalog`, `Credential`, `ExternalLocation` and `StorageCredential` enum values for [catalog.GetBindingsSecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#GetBindingsSecurableType).
+* [Breaking] Removed `Available`, `DisableInitialized`, `EnableCompleted`, `EnableInitialized` and `Unavailable` enum values for [catalog.SystemSchemaInfoState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SystemSchemaInfoState).
+* [Breaking] Removed `Catalog`, `Credential`, `ExternalLocation` and `StorageCredential` enum values for [catalog.UpdateBindingsSecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateBindingsSecurableType).
+
+
+## Release v0.68.0
+
+### New Features and Improvements
+
+- Add support for OIDC ID token authentication using a file
+  ([PR #1213](https://github.com/databricks/databricks-sdk-go/pull/1213)).
+- Add support for OIDC ID token authentication using an environment variable
+  ([PR #1215](https://github.com/databricks/databricks-sdk-go/pull/1215)).
+
+
+## Release v0.67.0
+
+### Bug Fixes
+* Fixed the deserialization of responses in VectorSearchAPI's `QueryIndex()` method ([#1214](https://github.com/databricks/databricks-sdk-py/pull/1214)).
+
+### API Changes
+* Added `FutureFeatureDataPath` field for [ml.CreateForecastingExperimentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#CreateForecastingExperimentRequest).
+* Added `ExcludeColumns` and `IncludeColumns` fields for [pipelines.TableSpecificConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpecificConfig).
+* Added `NetworkCheckControlPlaneFailure`, `NetworkCheckDnsServerFailure`, `NetworkCheckMetadataEndpointFailure`, `NetworkCheckMultipleComponentsFailure`, `NetworkCheckNicFailure`, `NetworkCheckStorageFailure` and `SecretPermissionDenied` enum values for [compute.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#TerminationReasonCode).
+* [Breaking] Changed [vectorsearch.ListValue](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#ListValue) to.
+* [Breaking] Changed `PipelineId` field for [pipelines.EditPipeline](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#EditPipeline) to be required.
+* Changed `ConnectionName`, `GatewayStorageCatalog` and `GatewayStorageSchema` fields for [pipelines.IngestionGatewayPipelineDefinition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionGatewayPipelineDefinition) to be required.
+* [Breaking] Changed `ConnectionName`, `GatewayStorageCatalog` and `GatewayStorageSchema` fields for [pipelines.IngestionGatewayPipelineDefinition](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#IngestionGatewayPipelineDefinition) to be required.
+* [Breaking] Changed `Kind` field for [pipelines.PipelineDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineDeployment) to be required.
+* Changed `Kind` field for [pipelines.PipelineDeployment](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelineDeployment) to be required.
+* [Breaking] Changed `DestinationCatalog`, `DestinationSchema` and `SourceUrl` fields for [pipelines.ReportSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ReportSpec) to be required.
+* Changed `DestinationCatalog`, `DestinationSchema` and `SourceUrl` fields for [pipelines.ReportSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#ReportSpec) to be required.
+* [Breaking] Changed `DestinationCatalog`, `DestinationSchema` and `SourceSchema` fields for [pipelines.SchemaSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#SchemaSpec) to be required.
+* Changed `DestinationCatalog`, `DestinationSchema` and `SourceSchema` fields for [pipelines.SchemaSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#SchemaSpec) to be required.
+* Changed `DestinationCatalog`, `DestinationSchema` and `SourceTable` fields for [pipelines.TableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpec) to be required.
+* [Breaking] Changed `DestinationCatalog`, `DestinationSchema` and `SourceTable` fields for [pipelines.TableSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#TableSpec) to be required.
+* [Breaking] Changed pagination for [AlertsV2API.ListAlerts](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertsV2API.ListAlerts).
+* [Breaking] Changed waiter for [GenieAPI.CreateMessage](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAPI.CreateMessage).
+
+
+## Release v0.66.0
+
+### Bug Fixes
+* Tolerate trailing slashes in hostnames in `Config`.
+
+### API Changes
+* Added [w.AlertsV2](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#AlertsV2API) workspace-level service.
+* Added `UpdateNccAzurePrivateEndpointRulePublic` method for [a.NetworkConnectivity](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NetworkConnectivityAPI) account-level service.
+* Added `CreatedAt`, `CreatedBy` and `MetastoreId` fields for [catalog.SetArtifactAllowlist](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SetArtifactAllowlist).
+* [Breaking] Added `NetworkConnectivityConfig` field for [settings.CreateNetworkConnectivityConfigRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CreateNetworkConnectivityConfigRequest).
+* [Breaking] Added `PrivateEndpointRule` field for [settings.CreatePrivateEndpointRuleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CreatePrivateEndpointRuleRequest).
+* Added `DomainNames` field for [settings.NccAzurePrivateEndpointRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccAzurePrivateEndpointRule).
+* Added `AutoResolveDisplayName` field for [sql.CreateAlertRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateAlertRequest).
+* Added `AutoResolveDisplayName` field for [sql.CreateQueryRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#CreateQueryRequest).
+* Added `CreateCleanRoom`, `ExecuteCleanRoomTask` and `ModifyCleanRoom` enum values for [catalog.Privilege](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#Privilege).
+* Added `DnsResolutionError` and `GcpDeniedByOrgPolicy` enum values for [compute.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#TerminationReasonCode).
+* Added `Expired` enum value for [settings.NccAzurePrivateEndpointRuleConnectionState](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccAzurePrivateEndpointRuleConnectionState).
+* [Breaking] Changed `CreateNetworkConnectivityConfiguration` and `CreatePrivateEndpointRule` methods for [a.NetworkConnectivity](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NetworkConnectivityAPI) account-level service with new required argument order.
+* [Breaking] Changed `WorkloadSize` field for [serving.ServedModelInput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelInput) to type `string`.
+* [Breaking] Changed `GroupId` field for [settings.NccAzurePrivateEndpointRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccAzurePrivateEndpointRule) to type `string`.
+* [Breaking] Changed `TargetServices` field for [settings.NccAzureServiceEndpointRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccAzureServiceEndpointRule) to type [settings.EgressResourceTypeList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EgressResourceTypeList).
+* [Breaking] Removed `Name` and `Region` fields for [settings.CreateNetworkConnectivityConfigRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CreateNetworkConnectivityConfigRequest).
+* [Breaking] Removed `GroupId` and `ResourceId` fields for [settings.CreatePrivateEndpointRuleRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#CreatePrivateEndpointRuleRequest).
+* [Breaking] Removed `Large`, `Medium` and `Small` enum values for [serving.ServedModelInputWorkloadSize](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ServedModelInputWorkloadSize).
+* [Breaking] Removed `Blob`, `Dfs`, `MysqlServer` and `SqlServer` enum values for [settings.NccAzurePrivateEndpointRuleGroupId](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#NccAzurePrivateEndpointRuleGroupId).
+* [Breaking] Field `AppDeployment` of `CreateAppDeploymentRequest` is changed from `*AppDeployment` to `AppDeployment`.
+* [Breaking] Field `App` of `CreateAppRequest` is changed from `*App` to `App`.
+* [Breaking] Field `App` of `UpdateAppRequest` is changed from `*App` to `App`.
+* [Breaking] Field `BudgetPolicy` of `UpdateBudgetPolicyRequest` is changed from `*BudgetPolicy` to `BudgetPolicy`.
+* [Breaking] Field `OnlineTable` of `CreateOnlineTableRequest` is changed from `*OnlineTable` to `OnlineTable`.
+* [Breaking] Field `CleanRoomAsset` of `CreateCleanRoomAssetRequest` is changed from `*CleanRoomAsset` to `CleanRoomAsset`.
+* [Breaking] Field `CleanRoom` of `CreateCleanRoomRequest` is changed from `*CleanRoom` to `CleanRoom`.
+* [Breaking] Field `CleanRoomAsset` of `UpdateCleanRoomAssetRequest` is changed from `*CleanRoomAsset` to `CleanRoomAsset`.
+* [Breaking] Field `Dashboard` of `CreateDashboardRequest` is changed from `*Dashboard` to `Dashboard`.
+* [Breaking] Field `Schedule` of `CreateScheduleRequest` is changed from `*Schedule` to `Schedule`.
+* [Breaking] Field `Subscription` of `CreateSubscriptionRequest` is changed from `*Subscription` to `Subscription`.
+* [Breaking] Field `Dashboard` of `UpdateDashboardRequest` is changed from `*Dashboard` to `Dashboard`.
+
+
+## Release v0.65.0
+
+### New Features and Improvements
+* Introduce support for Databricks Workload Identity Federation in GitHub workflows ([1177](https://github.com/databricks/databricks-sdk-go/pull/1177)).
+  See README.md for instructions.
+* [Breaking] Users running their worklows in GitHub Actions, which use Cloud native authentication and also have a `DATABRICKS_CLIENT_ID` and `DATABRICKS_HOST` 
+  environment variables set may see their authentication start failing due to the order in which the SDK tries different authentication methods.
+  In such case, the `DATABRICKS_AUTH_TYPE` environment variable must be set to match the previously used authentication method.
+
+
+## Release v0.64.0
+
+### New Features and Improvements
+* Enabled asynchronous token refreshes by default ([#1208](https://github.com/databricks/databricks-sdk-go/pull/1208)).
+
+### API Changes
+* Added `UpdateEndpointBudgetPolicy` and `UpdateEndpointCustomTags` methods for [w.VectorSearchEndpoints](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchEndpointsAPI) workspace-level service.
+* Added `NodeTypeFlexibility` field for [compute.EditInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#EditInstancePool).
+* Added `PageSize` and `PageToken` fields for [compute.GetEvents](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetEvents).
+* Added `NextPageToken` and `PrevPageToken` fields for [compute.GetEventsResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetEventsResponse).
+* Added `NodeTypeFlexibility` field for [compute.GetInstancePool](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#GetInstancePool).
+* Added `NodeTypeFlexibility` field for [compute.InstancePoolAndStats](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#InstancePoolAndStats).
+* Added `EffectivePerformanceTarget` field for [jobs.RepairHistoryItem](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RepairHistoryItem).
+* Added `PerformanceTarget` field for [jobs.RepairRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RepairRun).
+* Added `BudgetPolicyId` field for [vectorsearch.CreateEndpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#CreateEndpoint).
+* Added `CustomTags` and `EffectiveBudgetPolicyId` fields for [vectorsearch.EndpointInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#EndpointInfo).
+* Added `Disabled` enum value for [jobs.TerminationCodeCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TerminationCodeCode).
+* [Breaking] Changed `CreateIndex` method for [w.VectorSearchIndexes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchIndexesAPI) workspace-level service to return [vectorsearch.VectorIndex](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorIndex).
+* [Breaking] Changed `DeleteDataVectorIndex` method for [w.VectorSearchIndexes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchIndexesAPI) workspace-level service . HTTP method/verb has changed.
+* [Breaking] Changed `DeleteDataVectorIndex` method for [w.VectorSearchIndexes](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchIndexesAPI) workspace-level service with new required argument order.
+* [Breaking] Changed `DataArray` field for [vectorsearch.ResultData](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#ResultData) to type [vectorsearch.ListValueList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#ListValueList).
+* [Breaking] Changed waiter for [VectorSearchEndpointsAPI.CreateEndpoint](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#VectorSearchEndpointsAPI.CreateEndpoint).
+* [Breaking] Removed `NullValue` field for [vectorsearch.Value](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/vectorsearch#Value).
+
+
+## Release v0.63.0
+
+### API Changes
+* Added [w.EnableExportNotebook](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EnableExportNotebookAPI) workspace-level service, [w.EnableNotebookTableClipboard](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EnableNotebookTableClipboardAPI) workspace-level service and [w.EnableResultsDownloading](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#EnableResultsDownloadingAPI) workspace-level service.
+* Added `GetCredentialsForTraceDataDownload` and `GetCredentialsForTraceDataUpload` methods for [w.Experiments](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#ExperimentsAPI) workspace-level service.
+* Added `GetDownloadFullQueryResult` method for [w.Genie](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAPI) workspace-level service.
+* Added `GetPublishedDashboardTokenInfo` method for [w.LakeviewEmbedded](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewEmbeddedAPI) workspace-level service.
+* Added `BindingWorkspaceIds` field for [billing.BudgetPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/billing#BudgetPolicy).
+* Added `DownloadId` field for [dashboards.GenieGenerateDownloadFullQueryResultResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieGenerateDownloadFullQueryResultResponse).
+* Added `DashboardOutput` field for [jobs.RunOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunOutput).
+* Added `DashboardTask` and `PowerBiTask` fields for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+* Added `DashboardTask` and `PowerBiTask` fields for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+* Added `DashboardTask` and `PowerBiTask` fields for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+* Added `IncludeFeatures` field for [ml.CreateForecastingExperimentRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#CreateForecastingExperimentRequest).
+* Added `Models` field for [ml.LogInputs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#LogInputs).
+* Added `DatasetDigest`, `DatasetName` and `ModelId` fields for [ml.LogMetric](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#LogMetric).
+* Added `DatasetDigest`, `DatasetName`, `ModelId` and `RunId` fields for [ml.Metric](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#Metric).
+* Added `ModelInputs` field for [ml.RunInputs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/ml#RunInputs).
+* Added `ClientApplication` field for [sql.QueryInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#QueryInfo).
+* Added `Geography` and `Geometry` enum values for [catalog.ColumnTypeName](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ColumnTypeName).
+* Added `AllocationTimeoutNoHealthyAndWarmedUpClusters`, `DockerContainerCreationException`, `DockerImageTooLargeForInstanceException` and `DockerInvalidOsException` enum values for [compute.TerminationReasonCode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#TerminationReasonCode).
+* Added `Standard` enum value for [jobs.PerformanceTarget](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PerformanceTarget).
+* Added `CanView` enum value for [sql.WarehousePermissionLevel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/sql#WarehousePermissionLevel).
+* [Breaking] Changed `GenerateDownloadFullQueryResult` method for [w.Genie](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieAPI) workspace-level service . Method path has changed.
+* [Breaking] Changed waiter for [CommandExecutionAPI.Create](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#CommandExecutionAPI.Create).
+* [Breaking] Changed waiter for [CommandExecutionAPI.Execute](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/compute#CommandExecutionAPI.Execute).
+* [Breaking] Removed `Error`, `Status` and `TransientStatementId` fields for [dashboards.GenieGenerateDownloadFullQueryResultResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#GenieGenerateDownloadFullQueryResultResponse).
+* [Breaking] Removed `Balanced` and `CostOptimized` enum values for [jobs.PerformanceTarget](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PerformanceTarget).
+* [Breaking] Removed [PipelinesAPI.WaitGetPipelineRunning](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/pipelines#PipelinesAPI.WaitGetPipelineRunning) method.
+
+
+## Release v0.62.0
+
+### Internal Changes
+* Remove `TestAccDashboards` as legacy dashboard creation on has been discontinued ([#1205](https://github.com/databricks/databricks-sdk-go/pull/1205)).
+
+
 ## Release v0.61.0
 
 ### New Features and Improvements

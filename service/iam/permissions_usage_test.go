@@ -106,7 +106,7 @@ func ExamplePermissionsAPI_Set_genericPermissions() {
 	}
 	logger.Infof(ctx, "found %v", obj)
 
-	_, err = w.Permissions.Set(ctx, iam.PermissionsRequest{
+	_, err = w.Permissions.Set(ctx, iam.SetObjectPermissions{
 		RequestObjectType: "notebooks",
 		RequestObjectId:   fmt.Sprintf("%d", obj.ObjectId),
 		AccessControlList: []iam.AccessControlRequest{iam.AccessControlRequest{

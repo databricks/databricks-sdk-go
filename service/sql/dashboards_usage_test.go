@@ -96,7 +96,7 @@ func ExampleDashboardsAPI_Get_dashboards() {
 
 }
 
-func ExampleDashboardsAPI_ListAll_dashboards() {
+func ExampleDashboardsAPI_List_dashboards() {
 	ctx := context.Background()
 	w, err := databricks.NewWorkspaceClient()
 	if err != nil {

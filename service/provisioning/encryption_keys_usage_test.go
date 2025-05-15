@@ -74,7 +74,7 @@ func ExampleEncryptionKeysAPI_Get_encryptionKeys() {
 
 }
 
-func ExampleEncryptionKeysAPI_ListAll_encryptionKeys() {
+func ExampleEncryptionKeysAPI_List_encryptionKeys() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

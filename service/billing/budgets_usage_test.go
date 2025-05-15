@@ -109,7 +109,7 @@ func ExampleBudgetsAPI_Get_budgets() {
 
 }
 
-func ExampleBudgetsAPI_ListAll_budgets() {
+func ExampleBudgetsAPI_List_budgets() {
 	ctx := context.Background()
 	a, err := databricks.NewAccountClient()
 	if err != nil {

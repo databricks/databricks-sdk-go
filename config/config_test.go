@@ -70,34 +70,136 @@ func TestAuthenticate_InvalidHostSet(t *testing.T) {
 }
 
 func TestConfig_getOidcEndpoints_account(t *testing.T) {
-	c := &Config{
-		Host:      "https://accounts.cloud.databricks.com",
-		AccountID: "abc",
+	tests := []struct {
+		name      string
+		host      string
+		accountID string
+	}{
+		{
+			name:      "without trailing slash",
+			host:      "https://accounts.cloud.databricks.com",
+			accountID: "abc",
+		},
+		{
+			name:      "with trailing slash",
+			host:      "https://accounts.cloud.databricks.com/",
+			accountID: "abc",
+		},
 	}
-	got, err := c.getOidcEndpoints(context.Background())
-	assert.NoError(t, err)
-	assert.Equal(t, &u2m.OAuthAuthorizationServer{
-		AuthorizationEndpoint: "https://accounts.cloud.databricks.com/oidc/accounts/abc/v1/authorize",
-		TokenEndpoint:         "https://accounts.cloud.databricks.com/oidc/accounts/abc/v1/token",
-	}, got)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Config{
+				Host:      tt.host,
+				AccountID: tt.accountID,
+			}
+			got, err := c.getOidcEndpoints(context.Background())
+			assert.NoError(t, err)
+			assert.Equal(t, &u2m.OAuthAuthorizationServer{
+				AuthorizationEndpoint: "https://accounts.cloud.databricks.com/oidc/accounts/abc/v1/authorize",
+				TokenEndpoint:         "https://accounts.cloud.databricks.com/oidc/accounts/abc/v1/token",
+			}, got)
+		})
+	}
 }
 
 func TestConfig_getOidcEndpoints_workspace(t *testing.T) {
-	c := &Config{
-		Host: "https://myworkspace.cloud.databricks.com",
-		HTTPTransport: fixtures.SliceTransport{
-			{
-				Method:   "GET",
-				Resource: "/oidc/.well-known/oauth-authorization-server",
-				Status:   200,
-				Response: `{"authorization_endpoint": "https://myworkspace.cloud.databricks.com/oidc/v1/authorize", "token_endpoint": "https://myworkspace.cloud.databricks.com/oidc/v1/token"}`,
-			},
+	tests := []struct {
+		name string
+		host string
+	}{
+		{
+			name: "without trailing slash",
+			host: "https://myworkspace.cloud.databricks.com",
+		},
+		{
+			name: "with trailing slash",
+			host: "https://myworkspace.cloud.databricks.com/",
 		},
 	}
-	got, err := c.getOidcEndpoints(context.Background())
-	assert.NoError(t, err)
-	assert.Equal(t, &u2m.OAuthAuthorizationServer{
-		AuthorizationEndpoint: "https://myworkspace.cloud.databricks.com/oidc/v1/authorize",
-		TokenEndpoint:         "https://myworkspace.cloud.databricks.com/oidc/v1/token",
-	}, got)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Config{
+				Host: tt.host,
+				HTTPTransport: fixtures.SliceTransport{
+					{
+						Method:   "GET",
+						Resource: "/oidc/.well-known/oauth-authorization-server",
+						Status:   200,
+						Response: `{"authorization_endpoint": "https://myworkspace.cloud.databricks.com/oidc/v1/authorize", "token_endpoint": "https://myworkspace.cloud.databricks.com/oidc/v1/token"}`,
+					},
+				},
+			}
+			got, err := c.getOidcEndpoints(context.Background())
+			assert.NoError(t, err)
+			assert.Equal(t, &u2m.OAuthAuthorizationServer{
+				AuthorizationEndpoint: "https://myworkspace.cloud.databricks.com/oidc/v1/authorize",
+				TokenEndpoint:         "https://myworkspace.cloud.databricks.com/oidc/v1/token",
+			}, got)
+		})
+	}
+}
+
+func TestConfig_getOAuthArgument_account(t *testing.T) {
+	tests := []struct {
+		name      string
+		host      string
+		accountID string
+	}{
+		{
+			name:      "without trailing slash",
+			host:      "https://accounts.cloud.databricks.com",
+			accountID: "abc",
+		},
+		{
+			name:      "with trailing slash",
+			host:      "https://accounts.cloud.databricks.com/",
+			accountID: "abc",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Config{
+				Host:      tt.host,
+				AccountID: tt.accountID,
+			}
+			rawGot, err := c.getOAuthArgument()
+			assert.NoError(t, err)
+			got, ok := rawGot.(u2m.BasicAccountOAuthArgument)
+			assert.True(t, ok)
+			assert.Equal(t, "https://accounts.cloud.databricks.com", got.GetAccountHost())
+			assert.Equal(t, "abc", got.GetAccountId())
+		})
+	}
+}
+
+func TestConfig_getOAuthArgument_workspace(t *testing.T) {
+	tests := []struct {
+		name string
+		host string
+	}{
+		{
+			name: "without trailing slash",
+			host: "https://myworkspace.cloud.databricks.com",
+		},
+		{
+			name: "with trailing slash",
+			host: "https://myworkspace.cloud.databricks.com/",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Config{
+				Host: tt.host,
+			}
+			rawGot, err := c.getOAuthArgument()
+			assert.NoError(t, err)
+			got, ok := rawGot.(u2m.BasicWorkspaceOAuthArgument)
+			assert.True(t, ok)
+			assert.Equal(t, "https://myworkspace.cloud.databricks.com", got.GetWorkspaceHost())
+		})
+	}
 }

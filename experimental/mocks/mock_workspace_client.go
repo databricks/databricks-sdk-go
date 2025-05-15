@@ -45,6 +45,7 @@ func NewMockWorkspaceClient(t interface {
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
 			Alerts:                              sql.NewMockAlertsInterface(t),
 			AlertsLegacy:                        sql.NewMockAlertsLegacyInterface(t),
+			AlertsV2:                            sql.NewMockAlertsV2Interface(t),
 			Apps:                                apps.NewMockAppsInterface(t),
 			ArtifactAllowlists:                  catalog.NewMockArtifactAllowlistsInterface(t),
 			Catalogs:                            catalog.NewMockCatalogsInterface(t),
@@ -66,6 +67,7 @@ func NewMockWorkspaceClient(t interface {
 			DashboardWidgets:                    sql.NewMockDashboardWidgetsInterface(t),
 			Dashboards:                          sql.NewMockDashboardsInterface(t),
 			DataSources:                         sql.NewMockDataSourcesInterface(t),
+			DatabaseInstances:                   catalog.NewMockDatabaseInstancesInterface(t),
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
 			Experiments:                         ml.NewMockExperimentsInterface(t),
@@ -166,8 +168,20 @@ func NewMockWorkspaceClient(t interface {
 	mockdisableLegacyDbfs := settings.NewMockDisableLegacyDbfsInterface(t)
 	mocksettingsAPI.On("DisableLegacyDbfs").Return(mockdisableLegacyDbfs).Maybe()
 
+	mockenableExportNotebook := settings.NewMockEnableExportNotebookInterface(t)
+	mocksettingsAPI.On("EnableExportNotebook").Return(mockenableExportNotebook).Maybe()
+
+	mockenableNotebookTableClipboard := settings.NewMockEnableNotebookTableClipboardInterface(t)
+	mocksettingsAPI.On("EnableNotebookTableClipboard").Return(mockenableNotebookTableClipboard).Maybe()
+
+	mockenableResultsDownloading := settings.NewMockEnableResultsDownloadingInterface(t)
+	mocksettingsAPI.On("EnableResultsDownloading").Return(mockenableResultsDownloading).Maybe()
+
 	mockenhancedSecurityMonitoring := settings.NewMockEnhancedSecurityMonitoringInterface(t)
 	mocksettingsAPI.On("EnhancedSecurityMonitoring").Return(mockenhancedSecurityMonitoring).Maybe()
+
+	mockllmProxyPartnerPoweredWorkspace := settings.NewMockLlmProxyPartnerPoweredWorkspaceInterface(t)
+	mocksettingsAPI.On("LlmProxyPartnerPoweredWorkspace").Return(mockllmProxyPartnerPoweredWorkspace).Maybe()
 
 	mockrestrictWorkspaceAdmins := settings.NewMockRestrictWorkspaceAdminsInterface(t)
 	mocksettingsAPI.On("RestrictWorkspaceAdmins").Return(mockrestrictWorkspaceAdmins).Maybe()
@@ -231,10 +245,42 @@ func (m *MockWorkspaceClient) GetMockDisableLegacyDbfsAPI() *settings.MockDisabl
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockEnableExportNotebookAPI() *settings.MockEnableExportNotebookInterface {
+	api, ok := m.GetMockSettingsAPI().EnableExportNotebook().(*settings.MockEnableExportNotebookInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected EnableExportNotebook to be *settings.MockEnableExportNotebookInterface, actual was %T", m.GetMockSettingsAPI().EnableExportNotebook()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockEnableNotebookTableClipboardAPI() *settings.MockEnableNotebookTableClipboardInterface {
+	api, ok := m.GetMockSettingsAPI().EnableNotebookTableClipboard().(*settings.MockEnableNotebookTableClipboardInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected EnableNotebookTableClipboard to be *settings.MockEnableNotebookTableClipboardInterface, actual was %T", m.GetMockSettingsAPI().EnableNotebookTableClipboard()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockEnableResultsDownloadingAPI() *settings.MockEnableResultsDownloadingInterface {
+	api, ok := m.GetMockSettingsAPI().EnableResultsDownloading().(*settings.MockEnableResultsDownloadingInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected EnableResultsDownloading to be *settings.MockEnableResultsDownloadingInterface, actual was %T", m.GetMockSettingsAPI().EnableResultsDownloading()))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockEnhancedSecurityMonitoringAPI() *settings.MockEnhancedSecurityMonitoringInterface {
 	api, ok := m.GetMockSettingsAPI().EnhancedSecurityMonitoring().(*settings.MockEnhancedSecurityMonitoringInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected EnhancedSecurityMonitoring to be *settings.MockEnhancedSecurityMonitoringInterface, actual was %T", m.GetMockSettingsAPI().EnhancedSecurityMonitoring()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockLlmProxyPartnerPoweredWorkspaceAPI() *settings.MockLlmProxyPartnerPoweredWorkspaceInterface {
+	api, ok := m.GetMockSettingsAPI().LlmProxyPartnerPoweredWorkspace().(*settings.MockLlmProxyPartnerPoweredWorkspaceInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected LlmProxyPartnerPoweredWorkspace to be *settings.MockLlmProxyPartnerPoweredWorkspaceInterface, actual was %T", m.GetMockSettingsAPI().LlmProxyPartnerPoweredWorkspace()))
 	}
 	return api
 }
@@ -275,6 +321,14 @@ func (m *MockWorkspaceClient) GetMockAlertsLegacyAPI() *sql.MockAlertsLegacyInte
 	api, ok := m.WorkspaceClient.AlertsLegacy.(*sql.MockAlertsLegacyInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected AlertsLegacy to be *sql.MockAlertsLegacyInterface, actual was %T", m.WorkspaceClient.AlertsLegacy))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockAlertsV2API() *sql.MockAlertsV2Interface {
+	api, ok := m.WorkspaceClient.AlertsV2.(*sql.MockAlertsV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected AlertsV2 to be *sql.MockAlertsV2Interface, actual was %T", m.WorkspaceClient.AlertsV2))
 	}
 	return api
 }
@@ -443,6 +497,14 @@ func (m *MockWorkspaceClient) GetMockDataSourcesAPI() *sql.MockDataSourcesInterf
 	api, ok := m.WorkspaceClient.DataSources.(*sql.MockDataSourcesInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected DataSources to be *sql.MockDataSourcesInterface, actual was %T", m.WorkspaceClient.DataSources))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDatabaseInstancesAPI() *catalog.MockDatabaseInstancesInterface {
+	api, ok := m.WorkspaceClient.DatabaseInstances.(*catalog.MockDatabaseInstancesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DatabaseInstances to be *catalog.MockDatabaseInstancesInterface, actual was %T", m.WorkspaceClient.DatabaseInstances))
 	}
 	return api
 }
