@@ -69,6 +69,11 @@ func TestBodyLoggerNotJson(t *testing.T) {
 	assert.Equal(t, dump, "<html>")
 }
 
+func TestBodyLoggerNotAscii(t *testing.T) {
+	dump := bodyLogger{debugTruncateBytes: 20}.redactedDump("", []byte("\x01 🚀 🚀"))
+	assert.Equal(t, dump, ". . .")
+}
+
 func TestBodyLoggerNonJSONNewline(t *testing.T) {
 	dump := bodyLogger{debugTruncateBytes: 100}.redactedDump("< ", []byte(`<html>
 	<body>
