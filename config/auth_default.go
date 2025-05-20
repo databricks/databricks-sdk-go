@@ -42,16 +42,16 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		M2mCredentials{},
 		u2mCredentials{},
 		MetadataServiceCredentials{},
-		// OIDC Strategies from most specific to most generic.
-		oidcStrategy(cfg, "github-oidc", githubOIDCTokenSource(cfg)),
-		oidcStrategy(cfg, "env-oidc", envOIDCTokenSource(cfg)),
-		oidcStrategy(cfg, "file-oidc", fileOIDCTokenSource(cfg)),
-		// Azure strategies from most specific to most generic.
+		// OIDC Strategies.
+		githubOIDC(cfg),
+		envOIDC(cfg),
+		fileOIDC(cfg),
+		// Azure strategies.
 		AzureGithubOIDCCredentials{},
 		AzureMsiCredentials{},
 		AzureClientSecretCredentials{},
 		AzureCliCredentials{},
-		// Google strategies from most specific to most generic.
+		// Google strategies.
 		GoogleCredentials{},
 		GoogleDefaultCredentials{},
 	}
@@ -86,6 +86,26 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 	return nil, fmt.Errorf("cannot configure default credentials, please check %s to configure credentials for your preferred authentication method", authDocURL)
 }
 
+func githubOIDC(cfg *Config) CredentialsStrategy {
+	return oidcStrategy(cfg, "github-oidc", oidc.NewGithubIDTokenSource(
+		cfg.refreshClient,
+		cfg.ActionsIDTokenRequestURL,
+		cfg.ActionsIDTokenRequestToken,
+	))
+}
+
+func envOIDC(cfg *Config) CredentialsStrategy {
+	v := cfg.OIDCTokenEnv
+	if v == "" {
+		v = "DATABRICKS_OIDC_TOKEN"
+	}
+	return oidcStrategy(cfg, "env-oidc", oidc.NewEnvIDTokenSource(v))
+}
+
+func fileOIDC(cfg *Config) CredentialsStrategy {
+	return oidcStrategy(cfg, "file-oidc", oidc.NewFileTokenSource(cfg.OIDCTokenFilepath))
+}
+
 // oidcStrategy returns a new CredentialsStrategy to authenticate with
 // Databricks using the given OIDC IDTokenSource.
 func oidcStrategy(cfg *Config, name string, ts oidc.IDTokenSource) CredentialsStrategy {
@@ -101,24 +121,4 @@ func oidcStrategy(cfg *Config, name string, ts oidc.IDTokenSource) CredentialsSt
 	}
 	tokenSource := oidc.NewDatabricksOIDCTokenSource(oidcConfig)
 	return NewTokenSourceStrategy(name, tokenSource)
-}
-
-func githubOIDCTokenSource(cfg *Config) oidc.IDTokenSource {
-	return oidc.NewGithubIDTokenSource(
-		cfg.refreshClient,
-		cfg.ActionsIDTokenRequestURL,
-		cfg.ActionsIDTokenRequestToken,
-	)
-}
-
-func envOIDCTokenSource(cfg *Config) oidc.IDTokenSource {
-	v := cfg.OIDCTokenEnv
-	if v == "" {
-		v = "DATABRICKS_OIDC_TOKEN"
-	}
-	return oidc.NewEnvIDTokenSource(v)
-}
-
-func fileOIDCTokenSource(cfg *Config) oidc.IDTokenSource {
-	return oidc.NewFileTokenSource(cfg.OIDCTokenFilepath)
 }
