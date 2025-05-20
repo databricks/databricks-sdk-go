@@ -35,7 +35,7 @@ func TestDatabricksTokenSourceStrategy(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			strat := &tokenSourceStrategy{
 				name: "github-oidc",
-				tokenSource: auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
+				ts: auth.TokenSourceFn(func(_ context.Context) (*oauth2.Token, error) {
 					return tc.token, tc.tokenSourceError
 				}),
 			}

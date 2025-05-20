@@ -11,32 +11,26 @@ import (
 )
 
 // Creates a CredentialsStrategy from a TokenSource.
-func NewTokenSourceStrategy(
-	name string,
-	tokenSource auth.TokenSource,
-) CredentialsStrategy {
-	return &tokenSourceStrategy{
-		name:        name,
-		tokenSource: tokenSource,
-	}
+func NewTokenSourceStrategy(name string, ts auth.TokenSource) CredentialsStrategy {
+	return &tokenSourceStrategy{name: name, ts: ts}
 }
 
-// tokenSourceStrategy is wrapper on a auth.TokenSource which converts it into a CredentialsStrategy
+// tokenSourceStrategy is wrapper on a auth.TokenSource which converts it into
+// a CredentialsStrategy.
 type tokenSourceStrategy struct {
-	tokenSource auth.TokenSource
-	name        string
+	name string
+	ts   auth.TokenSource
 }
 
 // Configure implements [CredentialsStrategy.Configure].
-func (t *tokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
-
+func (tss *tokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	// If we cannot get a token, skip this CredentialsStrategy.
 	// We don't want to fail here because it's possible that the supplier is enabled
 	// without the user action. For instance, jobs running in GitHub will have
 	// OIDC environment variables added automatically
-	cached := auth.NewCachedTokenSource(t.tokenSource)
+	cached := auth.NewCachedTokenSource(tss.ts)
 	if _, err := cached.Token(ctx); err != nil {
-		logger.Debugf(ctx, fmt.Sprintf("Skipping %s due to error: %v", t.name, err))
+		logger.Debugf(ctx, fmt.Sprintf("Skipping %s due to error: %v", tss.name, err))
 		return nil, nil
 	}
 
