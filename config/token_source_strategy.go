@@ -24,6 +24,9 @@ func (tss *tokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (cre
 	cp := credentials.NewOAuthCredentialsProviderFromTokenSource(auth.NewCachedTokenSource(tss.ts))
 
 	// Sanity check that a token can be obtained.
+	//
+	// TODO: Move this outside of this function. If credentials providers have
+	// to be tested, this should be done in the main default loop, not here.
 	if _, err := cp.Token(); err != nil {
 		return nil, err
 	}
