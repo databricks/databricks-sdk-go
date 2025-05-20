@@ -4800,6 +4800,10 @@ type TrashQueryRequest struct {
 
 type UpdateAlertRequest struct {
 	Alert *UpdateAlertRequestAlert `json:"alert,omitempty"`
+	// If true, automatically resolve alert display name conflicts. Otherwise,
+	// fail the request if the alert's display name conflicts with an existing
+	// alert's display name.
+	AutoResolveDisplayName bool `json:"auto_resolve_display_name,omitempty"`
 
 	Id string `json:"-" url:"-"`
 	// The field mask must be a single string, with multiple fields separated by
@@ -4814,6 +4818,16 @@ type UpdateAlertRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	UpdateMask string `json:"update_mask"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateAlertRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateAlertRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateAlertRequestAlert struct {
@@ -4875,6 +4889,11 @@ type UpdateAlertV2Request struct {
 }
 
 type UpdateQueryRequest struct {
+	// If true, automatically resolve alert display name conflicts. Otherwise,
+	// fail the request if the alert's display name conflicts with an existing
+	// alert's display name.
+	AutoResolveDisplayName bool `json:"auto_resolve_display_name,omitempty"`
+
 	Id string `json:"-" url:"-"`
 
 	Query *UpdateQueryRequestQuery `json:"query,omitempty"`
@@ -4890,6 +4909,16 @@ type UpdateQueryRequest struct {
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
 	UpdateMask string `json:"update_mask"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateQueryRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateQueryRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateQueryRequestQuery struct {

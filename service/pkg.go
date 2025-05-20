@@ -54,9 +54,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
-//
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
+//
+// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -82,7 +82,7 @@
 //
 // - [settings.DisableLegacyAccessAPI]: 'Disabling legacy access' has the following impacts: 1.
 //
-// - [settings.DisableLegacyDbfsAPI]: When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new mounts).
+// - [settings.DisableLegacyDbfsAPI]: Disabling legacy DBFS has the following implications: 1.
 //
 // - [settings.DisableLegacyFeaturesAPI]: Disable legacy features for new Databricks workspaces.
 //
@@ -158,6 +158,8 @@
 //
 // - [settings.NetworkConnectivityAPI]: These APIs provide configurations for the network connectivity of your workspaces for serverless compute resources.
 //
+// - [settings.NetworkPoliciesAPI]: These APIs manage network policies for this account.
+//
 // - [provisioning.NetworksAPI]: These APIs manage network configurations for customer-managed VPCs (optional).
 //
 // - [settings.NotificationDestinationsAPI]: The notification destinations API lets you programmatically manage a workspace's notification destinations.
@@ -215,6 +217,8 @@
 // - [sql.QueryVisualizationsLegacyAPI]: This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace.
 //
 // - [sharing.RecipientActivationAPI]: The Recipient Activation API is only applicable in the open sharing model where the recipient object has the authentication type of `TOKEN`.
+//
+// - [sharing.RecipientFederationPoliciesAPI]: The Recipient Federation Policies APIs are only applicable in the open sharing model where the recipient object has the authentication type of `OIDC_RECIPIENT`, enabling data sharing from Databricks to non-Databricks recipients.
 //
 // - [sharing.RecipientsAPI]: A recipient is an object you create using :method:recipients/create to represent an organization which you want to allow access shares.
 //
@@ -294,6 +298,8 @@
 //
 // - [settings.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
 //
+// - [settings.WorkspaceNetworkConfigurationAPI]: These APIs allow configuration of network settings for Databricks workspaces.
+//
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
 //
 // - [billing.BudgetsAPI]: These APIs manage budget configurations for this account.
@@ -356,8 +362,8 @@ var (
 	_ *marketplace.ConsumerListingsAPI                    = nil
 	_ *marketplace.ConsumerPersonalizationRequestsAPI     = nil
 	_ *marketplace.ConsumerProvidersAPI                   = nil
-	_ *catalog.CredentialsAPI                             = nil
 	_ *provisioning.CredentialsAPI                        = nil
+	_ *catalog.CredentialsAPI                             = nil
 	_ *settings.CredentialsManagerAPI                     = nil
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
@@ -408,6 +414,7 @@ var (
 	_ *ml.ModelRegistryAPI                                = nil
 	_ *catalog.ModelVersionsAPI                           = nil
 	_ *settings.NetworkConnectivityAPI                    = nil
+	_ *settings.NetworkPoliciesAPI                        = nil
 	_ *provisioning.NetworksAPI                           = nil
 	_ *settings.NotificationDestinationsAPI               = nil
 	_ *oauth2.OAuthPublishedAppsAPI                       = nil
@@ -437,6 +444,7 @@ var (
 	_ *sql.QueryVisualizationsAPI                         = nil
 	_ *sql.QueryVisualizationsLegacyAPI                   = nil
 	_ *sharing.RecipientActivationAPI                     = nil
+	_ *sharing.RecipientFederationPoliciesAPI             = nil
 	_ *sharing.RecipientsAPI                              = nil
 	_ *sql.RedashConfigAPI                                = nil
 	_ *catalog.RegisteredModelsAPI                        = nil
@@ -476,6 +484,7 @@ var (
 	_ *iam.WorkspaceAssignmentAPI                         = nil
 	_ *catalog.WorkspaceBindingsAPI                       = nil
 	_ *settings.WorkspaceConfAPI                          = nil
+	_ *settings.WorkspaceNetworkConfigurationAPI          = nil
 	_ *provisioning.WorkspacesAPI                         = nil
 	_ *billing.BudgetsAPI                                 = nil
 	_ *ml.ForecastingAPI                                  = nil

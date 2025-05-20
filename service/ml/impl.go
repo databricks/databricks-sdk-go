@@ -28,6 +28,17 @@ func (a *experimentsImpl) CreateExperiment(ctx context.Context, request CreateEx
 	return &createExperimentResponse, err
 }
 
+func (a *experimentsImpl) CreateLoggedModel(ctx context.Context, request CreateLoggedModelRequest) (*CreateLoggedModelResponse, error) {
+	var createLoggedModelResponse CreateLoggedModelResponse
+	path := "/api/2.0/mlflow/logged-models"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &createLoggedModelResponse)
+	return &createLoggedModelResponse, err
+}
+
 func (a *experimentsImpl) CreateRun(ctx context.Context, request CreateRun) (*CreateRunResponse, error) {
 	var createRunResponse CreateRunResponse
 	path := "/api/2.0/mlflow/runs/create"
@@ -47,6 +58,26 @@ func (a *experimentsImpl) DeleteExperiment(ctx context.Context, request DeleteEx
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteExperimentResponse)
+	return err
+}
+
+func (a *experimentsImpl) DeleteLoggedModel(ctx context.Context, request DeleteLoggedModelRequest) error {
+	var deleteLoggedModelResponse DeleteLoggedModelResponse
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", request.ModelId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteLoggedModelResponse)
+	return err
+}
+
+func (a *experimentsImpl) DeleteLoggedModelTag(ctx context.Context, request DeleteLoggedModelTagRequest) error {
+	var deleteLoggedModelTagResponse DeleteLoggedModelTagResponse
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/tags/%v", request.ModelId, request.TagKey)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteLoggedModelTagResponse)
 	return err
 }
 
@@ -81,6 +112,17 @@ func (a *experimentsImpl) DeleteTag(ctx context.Context, request DeleteTag) erro
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &deleteTagResponse)
 	return err
+}
+
+func (a *experimentsImpl) FinalizeLoggedModel(ctx context.Context, request FinalizeLoggedModelRequest) (*FinalizeLoggedModelResponse, error) {
+	var finalizeLoggedModelResponse FinalizeLoggedModelResponse
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", request.ModelId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &finalizeLoggedModelResponse)
+	return &finalizeLoggedModelResponse, err
 }
 
 func (a *experimentsImpl) GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error) {
@@ -166,6 +208,16 @@ func (a *experimentsImpl) internalGetHistory(ctx context.Context, request GetHis
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getMetricHistoryResponse)
 	return &getMetricHistoryResponse, err
+}
+
+func (a *experimentsImpl) GetLoggedModel(ctx context.Context, request GetLoggedModelRequest) (*GetLoggedModelResponse, error) {
+	var getLoggedModelResponse GetLoggedModelResponse
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v", request.ModelId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getLoggedModelResponse)
+	return &getLoggedModelResponse, err
 }
 
 func (a *experimentsImpl) GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error) {
@@ -298,6 +350,16 @@ func (a *experimentsImpl) internalListExperiments(ctx context.Context, request L
 	return &listExperimentsResponse, err
 }
 
+func (a *experimentsImpl) ListLoggedModelArtifacts(ctx context.Context, request ListLoggedModelArtifactsRequest) (*ListLoggedModelArtifactsResponse, error) {
+	var listLoggedModelArtifactsResponse ListLoggedModelArtifactsResponse
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/artifacts/directories", request.ModelId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listLoggedModelArtifactsResponse)
+	return &listLoggedModelArtifactsResponse, err
+}
+
 func (a *experimentsImpl) LogBatch(ctx context.Context, request LogBatch) error {
 	var logBatchResponse LogBatchResponse
 	path := "/api/2.0/mlflow/runs/log-batch"
@@ -320,6 +382,17 @@ func (a *experimentsImpl) LogInputs(ctx context.Context, request LogInputs) erro
 	return err
 }
 
+func (a *experimentsImpl) LogLoggedModelParams(ctx context.Context, request LogLoggedModelParamsRequest) error {
+	var logLoggedModelParamsRequestResponse LogLoggedModelParamsRequestResponse
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/params", request.ModelId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &logLoggedModelParamsRequestResponse)
+	return err
+}
+
 func (a *experimentsImpl) LogMetric(ctx context.Context, request LogMetric) error {
 	var logMetricResponse LogMetricResponse
 	path := "/api/2.0/mlflow/runs/log-metric"
@@ -339,6 +412,17 @@ func (a *experimentsImpl) LogModel(ctx context.Context, request LogModel) error 
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &logModelResponse)
+	return err
+}
+
+func (a *experimentsImpl) LogOutputs(ctx context.Context, request LogOutputsRequest) error {
+	var logOutputsResponse LogOutputsResponse
+	path := "/api/2.0/mlflow/runs/outputs"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &logOutputsResponse)
 	return err
 }
 
@@ -432,6 +516,17 @@ func (a *experimentsImpl) internalSearchExperiments(ctx context.Context, request
 	return &searchExperimentsResponse, err
 }
 
+func (a *experimentsImpl) SearchLoggedModels(ctx context.Context, request SearchLoggedModelsRequest) (*SearchLoggedModelsResponse, error) {
+	var searchLoggedModelsResponse SearchLoggedModelsResponse
+	path := "/api/2.0/mlflow/logged-models/search"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &searchLoggedModelsResponse)
+	return &searchLoggedModelsResponse, err
+}
+
 // Search for runs.
 //
 // Searches for runs that satisfy expressions.
@@ -490,6 +585,17 @@ func (a *experimentsImpl) SetExperimentTag(ctx context.Context, request SetExper
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &setExperimentTagResponse)
+	return err
+}
+
+func (a *experimentsImpl) SetLoggedModelTags(ctx context.Context, request SetLoggedModelTagsRequest) error {
+	var setLoggedModelTagsResponse SetLoggedModelTagsResponse
+	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/tags", request.ModelId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &setLoggedModelTagsResponse)
 	return err
 }
 

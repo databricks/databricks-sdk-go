@@ -297,9 +297,15 @@ type DisableLegacyAccessService interface {
 	Update(ctx context.Context, request UpdateDisableLegacyAccessRequest) (*DisableLegacyAccess, error)
 }
 
-// When this setting is on, access to DBFS root and DBFS mounts is disallowed
-// (as well as creation of new mounts). When the setting is off, all DBFS
-// functionality is enabled
+// Disabling legacy DBFS has the following implications:
+//
+// 1. Access to DBFS root and DBFS mounts is disallowed (as well as the creation
+// of new mounts). 2. Disables Databricks Runtime versions prior to 13.3LTS.
+//
+// When the setting is off, all DBFS functionality is enabled and no
+// restrictions are imposed on Databricks Runtime versions. This setting can
+// take up to 20 minutes to take effect and requires a manual restart of
+// all-purpose compute clusters and SQL warehouses.
 type DisableLegacyDbfsService interface {
 
 	// Delete the disable legacy DBFS setting.
@@ -704,6 +710,45 @@ type NetworkConnectivityService interface {
 	UpdateNccAzurePrivateEndpointRulePublic(ctx context.Context, request UpdateNccAzurePrivateEndpointRulePublicRequest) (*NccAzurePrivateEndpointRule, error)
 }
 
+// These APIs manage network policies for this account. Network policies control
+// which network destinations can be accessed from the Databricks environment.
+// Each Databricks account includes a default policy named 'default-policy'.
+// 'default-policy' is associated with any workspace lacking an explicit network
+// policy assignment, and is automatically associated with each newly created
+// workspace. 'default-policy' is reserved and cannot be deleted, but it can be
+// updated to customize the default network access rules for your account.
+type NetworkPoliciesService interface {
+
+	// Create a network policy.
+	//
+	// Creates a new network policy to manage which network destinations can be
+	// accessed from the Databricks environment.
+	CreateNetworkPolicyRpc(ctx context.Context, request CreateNetworkPolicyRequest) (*AccountNetworkPolicy, error)
+
+	// Delete a network policy.
+	//
+	// Deletes a network policy. Cannot be called on 'default-policy'.
+	DeleteNetworkPolicyRpc(ctx context.Context, request DeleteNetworkPolicyRequest) error
+
+	// Get a network policy.
+	//
+	// Gets a network policy.
+	GetNetworkPolicyRpc(ctx context.Context, request GetNetworkPolicyRequest) (*AccountNetworkPolicy, error)
+
+	// List network policies.
+	//
+	// Gets an array of network policies.
+	//
+	// Use ListNetworkPoliciesRpcAll() to get all AccountNetworkPolicy instances, which will iterate over every result page.
+	ListNetworkPoliciesRpc(ctx context.Context, request ListNetworkPoliciesRequest) (*ListNetworkPoliciesResponse, error)
+
+	// Update a network policy.
+	//
+	// Updates a network policy. This allows you to modify the configuration of
+	// a network policy.
+	UpdateNetworkPolicyRpc(ctx context.Context, request UpdateNetworkPolicyRequest) (*AccountNetworkPolicy, error)
+}
+
 // The notification destinations API lets you programmatically manage a
 // workspace's notification destinations. Notification destinations are used to
 // send notifications for query alerts and jobs to destinations outside of
@@ -905,4 +950,28 @@ type WorkspaceConfService interface {
 	// Sets the configuration status for a workspace, including enabling or
 	// disabling it.
 	SetStatus(ctx context.Context, request WorkspaceConf) error
+}
+
+// These APIs allow configuration of network settings for Databricks workspaces.
+// Each workspace is always associated with exactly one network policy that
+// controls which network destinations can be accessed from the Databricks
+// environment. By default, workspaces are associated with the 'default-policy'
+// network policy. You cannot create or delete a workspace's network
+// configuration, only update it to associate the workspace with a different
+// policy.
+type WorkspaceNetworkConfigurationService interface {
+
+	// Get workspace network configuration.
+	//
+	// Gets the network configuration for a workspace. Every workspace has
+	// exactly one network policy binding, with 'default-policy' used if no
+	// explicit assignment exists.
+	GetWorkspaceNetworkOptionRpc(ctx context.Context, request GetWorkspaceNetworkOptionRequest) (*WorkspaceNetworkOption, error)
+
+	// Update workspace network configuration.
+	//
+	// Updates the network configuration for a workspace. This operation
+	// associates the workspace with the specified network policy. To revert to
+	// the default policy, specify 'default-policy' as the network_policy_id.
+	UpdateWorkspaceNetworkOptionRpc(ctx context.Context, request UpdateWorkspaceNetworkOptionRequest) (*WorkspaceNetworkOption, error)
 }

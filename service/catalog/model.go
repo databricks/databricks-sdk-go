@@ -378,8 +378,8 @@ type CatalogInfo struct {
 	ProviderName string `json:"provider_name,omitempty"`
 	// Status of an asynchronously provisioned resource.
 	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
-
-	SecurableType string `json:"securable_type,omitempty"`
+	// The type of Unity Catalog securable.
+	SecurableType SecurableType `json:"securable_type,omitempty"`
 	// The name of the share under the share provider.
 	ShareName string `json:"share_name,omitempty"`
 	// Storage Location URL (full path) for managed tables within catalog.
@@ -402,8 +402,6 @@ func (s CatalogInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Whether the current securable is accessible from all workspaces or a specific
-// set of workspaces.
 type CatalogIsolationMode string
 
 const CatalogIsolationModeIsolated CatalogIsolationMode = `ISOLATED`
@@ -438,9 +436,15 @@ const CatalogTypeDeltasharingCatalog CatalogType = `DELTASHARING_CATALOG`
 
 const CatalogTypeForeignCatalog CatalogType = `FOREIGN_CATALOG`
 
+const CatalogTypeInternalCatalog CatalogType = `INTERNAL_CATALOG`
+
 const CatalogTypeManagedCatalog CatalogType = `MANAGED_CATALOG`
 
+const CatalogTypeManagedOnlineCatalog CatalogType = `MANAGED_ONLINE_CATALOG`
+
 const CatalogTypeSystemCatalog CatalogType = `SYSTEM_CATALOG`
+
+const CatalogTypeUnknownCatalogType CatalogType = `UNKNOWN_CATALOG_TYPE`
 
 // String representation for [fmt.Print]
 func (f *CatalogType) String() string {
@@ -450,11 +454,11 @@ func (f *CatalogType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CatalogType) Set(v string) error {
 	switch v {
-	case `DELTASHARING_CATALOG`, `FOREIGN_CATALOG`, `MANAGED_CATALOG`, `SYSTEM_CATALOG`:
+	case `DELTASHARING_CATALOG`, `FOREIGN_CATALOG`, `INTERNAL_CATALOG`, `MANAGED_CATALOG`, `MANAGED_ONLINE_CATALOG`, `SYSTEM_CATALOG`, `UNKNOWN_CATALOG_TYPE`:
 		*f = CatalogType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DELTASHARING_CATALOG", "FOREIGN_CATALOG", "MANAGED_CATALOG", "SYSTEM_CATALOG"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DELTASHARING_CATALOG", "FOREIGN_CATALOG", "INTERNAL_CATALOG", "MANAGED_CATALOG", "MANAGED_ONLINE_CATALOG", "SYSTEM_CATALOG", "UNKNOWN_CATALOG_TYPE"`, v)
 	}
 }
 
@@ -2023,8 +2027,6 @@ func (s EffectivePrivilegeAssignment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Whether predictive optimization should be enabled for this object and objects
-// under it.
 type EnablePredictiveOptimization string
 
 const EnablePredictiveOptimizationDisable EnablePredictiveOptimization = `DISABLE`
@@ -4674,6 +4676,8 @@ type PrimaryKeyConstraint struct {
 	ChildColumns []string `json:"child_columns"`
 	// The name of the constraint.
 	Name string `json:"name"`
+	// Column names that represent a timeseries.
+	TimeseriesColumns []string `json:"timeseries_columns,omitempty"`
 }
 
 type Privilege string
@@ -4819,6 +4823,7 @@ type PropertiesKvPairs map[string]string
 
 // Status of an asynchronously provisioned resource.
 type ProvisioningInfo struct {
+	// The provisioning state of the resource.
 	State ProvisioningInfoState `json:"state,omitempty"`
 }
 
@@ -5053,8 +5058,7 @@ type SchemaInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
-	// Whether predictive optimization should be enabled for this object and
-	// objects under it.
+
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of schema, in form of __catalog_name__.__schema_name__.
 	FullName string `json:"full_name,omitempty"`
@@ -5094,7 +5098,7 @@ type SecurableOptionsMap map[string]string
 // A map of key-value properties attached to the securable.
 type SecurablePropertiesMap map[string]string
 
-// The type of Unity Catalog securable
+// The type of Unity Catalog securable.
 type SecurableType string
 
 const SecurableTypeCatalog SecurableType = `CATALOG`
@@ -5106,6 +5110,8 @@ const SecurableTypeConnection SecurableType = `CONNECTION`
 const SecurableTypeCredential SecurableType = `CREDENTIAL`
 
 const SecurableTypeExternalLocation SecurableType = `EXTERNAL_LOCATION`
+
+const SecurableTypeExternalMetadata SecurableType = `EXTERNAL_METADATA`
 
 const SecurableTypeFunction SecurableType = `FUNCTION`
 
@@ -5121,9 +5127,13 @@ const SecurableTypeSchema SecurableType = `SCHEMA`
 
 const SecurableTypeShare SecurableType = `SHARE`
 
+const SecurableTypeStagingTable SecurableType = `STAGING_TABLE`
+
 const SecurableTypeStorageCredential SecurableType = `STORAGE_CREDENTIAL`
 
 const SecurableTypeTable SecurableType = `TABLE`
+
+const SecurableTypeUnknownSecurableType SecurableType = `UNKNOWN_SECURABLE_TYPE`
 
 const SecurableTypeVolume SecurableType = `VOLUME`
 
@@ -5135,11 +5145,11 @@ func (f *SecurableType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *SecurableType) Set(v string) error {
 	switch v {
-	case `CATALOG`, `CLEAN_ROOM`, `CONNECTION`, `CREDENTIAL`, `EXTERNAL_LOCATION`, `FUNCTION`, `METASTORE`, `PIPELINE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STORAGE_CREDENTIAL`, `TABLE`, `VOLUME`:
+	case `CATALOG`, `CLEAN_ROOM`, `CONNECTION`, `CREDENTIAL`, `EXTERNAL_LOCATION`, `EXTERNAL_METADATA`, `FUNCTION`, `METASTORE`, `PIPELINE`, `PROVIDER`, `RECIPIENT`, `SCHEMA`, `SHARE`, `STAGING_TABLE`, `STORAGE_CREDENTIAL`, `TABLE`, `UNKNOWN_SECURABLE_TYPE`, `VOLUME`:
 		*f = SecurableType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "CATALOG", "CLEAN_ROOM", "CONNECTION", "CREDENTIAL", "EXTERNAL_LOCATION", "FUNCTION", "METASTORE", "PIPELINE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STORAGE_CREDENTIAL", "TABLE", "VOLUME"`, v)
+		return fmt.Errorf(`value "%s" is not one of "CATALOG", "CLEAN_ROOM", "CONNECTION", "CREDENTIAL", "EXTERNAL_LOCATION", "EXTERNAL_METADATA", "FUNCTION", "METASTORE", "PIPELINE", "PROVIDER", "RECIPIENT", "SCHEMA", "SHARE", "STAGING_TABLE", "STORAGE_CREDENTIAL", "TABLE", "UNKNOWN_SECURABLE_TYPE", "VOLUME"`, v)
 	}
 }
 
@@ -5456,8 +5466,7 @@ type TableInfo struct {
 	DeltaRuntimePropertiesKvpairs *DeltaRuntimePropertiesKvPairs `json:"delta_runtime_properties_kvpairs,omitempty"`
 
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
-	// Whether predictive optimization should be enabled for this object and
-	// objects under it.
+
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
@@ -6045,8 +6054,7 @@ type UpdateResponse struct {
 type UpdateSchema struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-	// Whether predictive optimization should be enabled for this object and
-	// objects under it.
+
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of the schema.
 	FullName string `json:"-" url:"-"`

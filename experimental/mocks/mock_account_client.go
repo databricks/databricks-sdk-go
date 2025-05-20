@@ -43,6 +43,7 @@ func NewMockAccountClient(t interface {
 			MetastoreAssignments:             catalog.NewMockAccountMetastoreAssignmentsInterface(t),
 			Metastores:                       catalog.NewMockAccountMetastoresInterface(t),
 			NetworkConnectivity:              settings.NewMockNetworkConnectivityInterface(t),
+			NetworkPolicies:                  settings.NewMockNetworkPoliciesInterface(t),
 			Networks:                         provisioning.NewMockNetworksInterface(t),
 			OAuthPublishedApps:               oauth2.NewMockOAuthPublishedAppsInterface(t),
 			PrivateAccess:                    provisioning.NewMockPrivateAccessInterface(t),
@@ -57,6 +58,7 @@ func NewMockAccountClient(t interface {
 			Users:                            iam.NewMockAccountUsersInterface(t),
 			VpcEndpoints:                     provisioning.NewMockVpcEndpointsInterface(t),
 			WorkspaceAssignment:              iam.NewMockWorkspaceAssignmentInterface(t),
+			WorkspaceNetworkConfiguration:    settings.NewMockWorkspaceNetworkConfigurationInterface(t),
 			Workspaces:                       provisioning.NewMockWorkspacesInterface(t),
 			Budgets:                          billing.NewMockBudgetsInterface(t),
 		},
@@ -248,6 +250,14 @@ func (m *MockAccountClient) GetMockNetworkConnectivityAPI() *settings.MockNetwor
 	return api
 }
 
+func (m *MockAccountClient) GetMockNetworkPoliciesAPI() *settings.MockNetworkPoliciesInterface {
+	api, ok := m.AccountClient.NetworkPolicies.(*settings.MockNetworkPoliciesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected NetworkPolicies to be *settings.MockNetworkPoliciesInterface, actual was %T", m.AccountClient.NetworkPolicies))
+	}
+	return api
+}
+
 func (m *MockAccountClient) GetMockNetworksAPI() *provisioning.MockNetworksInterface {
 	api, ok := m.AccountClient.Networks.(*provisioning.MockNetworksInterface)
 	if !ok {
@@ -356,6 +366,14 @@ func (m *MockAccountClient) GetMockWorkspaceAssignmentAPI() *iam.MockWorkspaceAs
 	api, ok := m.AccountClient.WorkspaceAssignment.(*iam.MockWorkspaceAssignmentInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected WorkspaceAssignment to be *iam.MockWorkspaceAssignmentInterface, actual was %T", m.AccountClient.WorkspaceAssignment))
+	}
+	return api
+}
+
+func (m *MockAccountClient) GetMockWorkspaceNetworkConfigurationAPI() *settings.MockWorkspaceNetworkConfigurationInterface {
+	api, ok := m.AccountClient.WorkspaceNetworkConfiguration.(*settings.MockWorkspaceNetworkConfigurationInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected WorkspaceNetworkConfiguration to be *settings.MockWorkspaceNetworkConfigurationInterface, actual was %T", m.AccountClient.WorkspaceNetworkConfiguration))
 	}
 	return api
 }
