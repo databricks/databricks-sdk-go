@@ -6,9 +6,21 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"golang.org/x/oauth2"
 )
+
+// authHeader returns the Authorization header set by the given credentials
+// provider. It returns an empty string if the provider is nil.
+func authHeader(cp credentials.CredentialsProvider) string {
+	if cp == nil {
+		return ""
+	}
+	req := &http.Request{Header: http.Header{}}
+	cp.SetHeaders(req)
+	return req.Header.Get("Authorization")
+}
 
 func TestTokenSourceStrategy_Configure(t *testing.T) {
 	testCases := []struct {
@@ -42,25 +54,17 @@ func TestTokenSourceStrategy_Configure(t *testing.T) {
 				ts:   tc.ts,
 			}
 
-			provider, err := start.Configure(context.Background(), &Config{})
+			cp, err := start.Configure(context.Background(), &Config{})
+			gotHeader := authHeader(cp)
 
-			if tc.wantError {
-				if err == nil {
-					t.Errorf("Expected error, but got none")
-				}
-				if provider != nil {
-					t.Errorf("Expected provider to be nil, but it's not")
-				}
-				return
+			if tc.wantError && err == nil {
+				t.Errorf("Expected error, but got none")
 			}
-
-			if err != nil {
+			if !tc.wantError && err != nil {
 				t.Errorf("Expected no error, but got %q", err)
 			}
-			req := &http.Request{Header: make(http.Header)}
-			provider.SetHeaders(req)
-			if req.Header.Get("Authorization") != tc.wantHeader {
-				t.Errorf("Expected header %q, but got %q", tc.wantHeader, req.Header.Get("Authorization"))
+			if gotHeader != tc.wantHeader {
+				t.Errorf("Expected header %q, but got %q", tc.wantHeader, gotHeader)
 			}
 		})
 	}
