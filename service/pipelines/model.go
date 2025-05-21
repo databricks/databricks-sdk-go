@@ -58,6 +58,10 @@ type CreatePipeline struct {
 	Photon bool `json:"photon,omitempty"`
 	// Restart window of this pipeline.
 	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
+	// Root path for this pipeline. This is used as the root directory when
+	// editing the pipeline in the Databricks user interface and it is added to
+	// sys.path when executing Python sources during pipeline execution.
+	RootPath string `json:"root_path,omitempty"`
 	// Write-only setting, available only in Create/Update calls. Specifies the
 	// user or service principal that the pipeline runs as. If not specified,
 	// the pipeline runs as the user who created the pipeline.
@@ -269,6 +273,10 @@ type EditPipeline struct {
 	PipelineId string `json:"-" url:"-"`
 	// Restart window of this pipeline.
 	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
+	// Root path for this pipeline. This is used as the root directory when
+	// editing the pipeline in the Databricks user interface and it is added to
+	// sys.path when executing Python sources during pipeline execution.
+	RootPath string `json:"root_path,omitempty"`
 	// Write-only setting, available only in Create/Update calls. Specifies the
 	// user or service principal that the pipeline runs as. If not specified,
 	// the pipeline runs as the user who created the pipeline.
@@ -1300,6 +1308,10 @@ type PipelineSpec struct {
 	Photon bool `json:"photon,omitempty"`
 	// Restart window of this pipeline.
 	RestartWindow *RestartWindow `json:"restart_window,omitempty"`
+	// Root path for this pipeline. This is used as the root directory when
+	// editing the pipeline in the Databricks user interface and it is added to
+	// sys.path when executing Python sources during pipeline execution.
+	RootPath string `json:"root_path,omitempty"`
 	// The default schema (database) where tables are read from or published to.
 	Schema string `json:"schema,omitempty"`
 	// Whether serverless compute is enabled for this pipeline.

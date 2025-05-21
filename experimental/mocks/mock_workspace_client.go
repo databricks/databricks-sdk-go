@@ -113,6 +113,7 @@ func NewMockWorkspaceClient(t interface {
 			QueryVisualizations:                 sql.NewMockQueryVisualizationsInterface(t),
 			QueryVisualizationsLegacy:           sql.NewMockQueryVisualizationsLegacyInterface(t),
 			RecipientActivation:                 sharing.NewMockRecipientActivationInterface(t),
+			RecipientFederationPolicies:         sharing.NewMockRecipientFederationPoliciesInterface(t),
 			Recipients:                          sharing.NewMockRecipientsInterface(t),
 			RedashConfig:                        sql.NewMockRedashConfigInterface(t),
 			RegisteredModels:                    catalog.NewMockRegisteredModelsInterface(t),
@@ -865,6 +866,14 @@ func (m *MockWorkspaceClient) GetMockRecipientActivationAPI() *sharing.MockRecip
 	api, ok := m.WorkspaceClient.RecipientActivation.(*sharing.MockRecipientActivationInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected RecipientActivation to be *sharing.MockRecipientActivationInterface, actual was %T", m.WorkspaceClient.RecipientActivation))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockRecipientFederationPoliciesAPI() *sharing.MockRecipientFederationPoliciesInterface {
+	api, ok := m.WorkspaceClient.RecipientFederationPolicies.(*sharing.MockRecipientFederationPoliciesInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected RecipientFederationPolicies to be *sharing.MockRecipientFederationPoliciesInterface, actual was %T", m.WorkspaceClient.RecipientFederationPolicies))
 	}
 	return api
 }

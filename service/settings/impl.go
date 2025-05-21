@@ -942,6 +942,98 @@ func (a *networkConnectivityImpl) UpdateNccAzurePrivateEndpointRulePublic(ctx co
 	return &nccAzurePrivateEndpointRule, err
 }
 
+// unexported type that holds implementations of just NetworkPolicies API methods
+type networkPoliciesImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *networkPoliciesImpl) CreateNetworkPolicyRpc(ctx context.Context, request CreateNetworkPolicyRequest) (*AccountNetworkPolicy, error) {
+	var accountNetworkPolicy AccountNetworkPolicy
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-policies", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.NetworkPolicy, &accountNetworkPolicy)
+	return &accountNetworkPolicy, err
+}
+
+func (a *networkPoliciesImpl) DeleteNetworkPolicyRpc(ctx context.Context, request DeleteNetworkPolicyRequest) error {
+	var deleteNetworkPolicyRpcResponse DeleteNetworkPolicyRpcResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-policies/%v", a.client.ConfiguredAccountID(), request.NetworkPolicyId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteNetworkPolicyRpcResponse)
+	return err
+}
+
+func (a *networkPoliciesImpl) GetNetworkPolicyRpc(ctx context.Context, request GetNetworkPolicyRequest) (*AccountNetworkPolicy, error) {
+	var accountNetworkPolicy AccountNetworkPolicy
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-policies/%v", a.client.ConfiguredAccountID(), request.NetworkPolicyId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &accountNetworkPolicy)
+	return &accountNetworkPolicy, err
+}
+
+// List network policies.
+//
+// Gets an array of network policies.
+func (a *networkPoliciesImpl) ListNetworkPoliciesRpc(ctx context.Context, request ListNetworkPoliciesRequest) listing.Iterator[AccountNetworkPolicy] {
+
+	getNextPage := func(ctx context.Context, req ListNetworkPoliciesRequest) (*ListNetworkPoliciesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalListNetworkPoliciesRpc(ctx, req)
+	}
+	getItems := func(resp *ListNetworkPoliciesResponse) []AccountNetworkPolicy {
+		return resp.Items
+	}
+	getNextReq := func(resp *ListNetworkPoliciesResponse) *ListNetworkPoliciesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List network policies.
+//
+// Gets an array of network policies.
+func (a *networkPoliciesImpl) ListNetworkPoliciesRpcAll(ctx context.Context, request ListNetworkPoliciesRequest) ([]AccountNetworkPolicy, error) {
+	iterator := a.ListNetworkPoliciesRpc(ctx, request)
+	return listing.ToSlice[AccountNetworkPolicy](ctx, iterator)
+}
+
+func (a *networkPoliciesImpl) internalListNetworkPoliciesRpc(ctx context.Context, request ListNetworkPoliciesRequest) (*ListNetworkPoliciesResponse, error) {
+	var listNetworkPoliciesResponse ListNetworkPoliciesResponse
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-policies", a.client.ConfiguredAccountID())
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listNetworkPoliciesResponse)
+	return &listNetworkPoliciesResponse, err
+}
+
+func (a *networkPoliciesImpl) UpdateNetworkPolicyRpc(ctx context.Context, request UpdateNetworkPolicyRequest) (*AccountNetworkPolicy, error) {
+	var accountNetworkPolicy AccountNetworkPolicy
+	path := fmt.Sprintf("/api/2.0/accounts/%v/network-policies/%v", a.client.ConfiguredAccountID(), request.NetworkPolicyId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.NetworkPolicy, &accountNetworkPolicy)
+	return &accountNetworkPolicy, err
+}
+
 // unexported type that holds implementations of just NotificationDestinations API methods
 type notificationDestinationsImpl struct {
 	client *client.DatabricksClient
@@ -1317,4 +1409,30 @@ func (a *workspaceConfImpl) SetStatus(ctx context.Context, request WorkspaceConf
 	headers["Content-Type"] = "application/json"
 	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &setStatusResponse)
 	return err
+}
+
+// unexported type that holds implementations of just WorkspaceNetworkConfiguration API methods
+type workspaceNetworkConfigurationImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *workspaceNetworkConfigurationImpl) GetWorkspaceNetworkOptionRpc(ctx context.Context, request GetWorkspaceNetworkOptionRequest) (*WorkspaceNetworkOption, error) {
+	var workspaceNetworkOption WorkspaceNetworkOption
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/network", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &workspaceNetworkOption)
+	return &workspaceNetworkOption, err
+}
+
+func (a *workspaceNetworkConfigurationImpl) UpdateWorkspaceNetworkOptionRpc(ctx context.Context, request UpdateWorkspaceNetworkOptionRequest) (*WorkspaceNetworkOption, error) {
+	var workspaceNetworkOption WorkspaceNetworkOption
+	path := fmt.Sprintf("/api/2.0/accounts/%v/workspaces/%v/network", a.client.ConfiguredAccountID(), request.WorkspaceId)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.WorkspaceNetworkOption, &workspaceNetworkOption)
+	return &workspaceNetworkOption, err
 }

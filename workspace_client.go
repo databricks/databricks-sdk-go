@@ -38,7 +38,7 @@ type WorkspaceClient struct {
 	// These APIs manage access rules on resources in an account. Currently,
 	// only grant rules are supported. A grant rule specifies a role assigned to
 	// a set of principals. A list of rules attached to a resource is called a
-	// rule set. A workspace must belong to an account for these APIs to work.
+	// rule set. A workspace must belong to an account for these APIs to work
 	AccountAccessControlProxy iam.AccountAccessControlProxyInterface
 
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
@@ -710,6 +710,35 @@ type WorkspaceClient struct {
 	// outside of their organization.
 	RecipientActivation sharing.RecipientActivationInterface
 
+	// The Recipient Federation Policies APIs are only applicable in the open
+	// sharing model where the recipient object has the authentication type of
+	// `OIDC_RECIPIENT`, enabling data sharing from Databricks to non-Databricks
+	// recipients. OIDC Token Federation enables secure, secret-less
+	// authentication for accessing Delta Sharing servers. Users and
+	// applications authenticate using short-lived OIDC tokens issued by their
+	// own Identity Provider (IdP), such as Azure Entra ID or Okta, without the
+	// need for managing static credentials or client secrets. A federation
+	// policy defines how non-Databricks recipients authenticate using OIDC
+	// tokens. It validates the OIDC claims in federated tokens and is set at
+	// the recipient level. The caller must be the owner of the recipient to
+	// create or manage a federation policy. Federation policies support the
+	// following scenarios: - User-to-Machine (U2M) flow: A user accesses Delta
+	// Shares using their own identity, such as connecting through PowerBI Delta
+	// Sharing Client. - Machine-to-Machine (M2M) flow: An application accesses
+	// Delta Shares using its own identity, typically for automation tasks like
+	// nightly jobs through Python Delta Sharing Client. OIDC Token Federation
+	// enables fine-grained access control, supports Multi-Factor Authentication
+	// (MFA), and enhances security by minimizing the risk of credential leakage
+	// through the use of short-lived, expiring tokens. It is designed for
+	// strong identity governance, secure cross-platform data sharing, and
+	// reduced operational overhead for credential management.
+	//
+	// For more information, see
+	// https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
+	// and
+	// https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed
+	RecipientFederationPolicies sharing.RecipientFederationPoliciesInterface
+
 	// A recipient is an object you create using :method:recipients/create to
 	// represent an organization which you want to allow access shares. The way
 	// how sharing works differs depending on whether or not your recipient has
@@ -1229,6 +1258,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
 		QueryVisualizationsLegacy:           sql.NewQueryVisualizationsLegacy(databricksClient),
 		RecipientActivation:                 sharing.NewRecipientActivation(databricksClient),
+		RecipientFederationPolicies:         sharing.NewRecipientFederationPolicies(databricksClient),
 		Recipients:                          sharing.NewRecipients(databricksClient),
 		RedashConfig:                        sql.NewRedashConfig(databricksClient),
 		RegisteredModels:                    catalog.NewRegisteredModels(databricksClient),

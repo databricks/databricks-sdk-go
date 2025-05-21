@@ -43,12 +43,12 @@ type AccountAccessControlService interface {
 // These APIs manage access rules on resources in an account. Currently, only
 // grant rules are supported. A grant rule specifies a role assigned to a set of
 // principals. A list of rules attached to a resource is called a rule set. A
-// workspace must belong to an account for these APIs to work.
+// workspace must belong to an account for these APIs to work
 type AccountAccessControlProxyService interface {
 
 	// Get assignable roles for a resource.
 	//
-	// Gets all the roles that can be granted on an account-level resource. A
+	// Gets all the roles that can be granted on an account level resource. A
 	// role is grantable if the rule set on the resource can contain an access
 	// rule of the role.
 	GetAssignableRolesForResource(ctx context.Context, request GetAssignableRolesForResourceRequest) (*GetAssignableRolesForResourceResponse, error)
@@ -62,9 +62,9 @@ type AccountAccessControlProxyService interface {
 
 	// Update a rule set.
 	//
-	// Replace the rules of a rule set. First, use a GET rule set request to
-	// read the current version of the rule set before modifying it. This
-	// pattern helps prevent conflicts between concurrent updates.
+	// Replace the rules of a rule set. First, use get to read the current
+	// version of the rule set before modifying it. This pattern helps prevent
+	// conflicts between concurrent updates.
 	UpdateRuleSet(ctx context.Context, request UpdateRuleSetRequest) (*RuleSetResponse, error)
 }
 

@@ -36,6 +36,25 @@ func (s AccountIpAccessEnable) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type AccountNetworkPolicy struct {
+	// The associated account ID for this Network Policy object.
+	AccountId string `json:"account_id,omitempty"`
+	// The network policies applying for egress traffic.
+	Egress *NetworkPolicyEgress `json:"egress,omitempty"`
+	// The unique identifier for the network policy.
+	NetworkPolicyId string `json:"network_policy_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AccountNetworkPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AccountNetworkPolicy) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type AibiDashboardEmbeddingAccessPolicy struct {
 	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType `json:"access_policy_type"`
 }
@@ -472,6 +491,11 @@ type CreateNetworkConnectivityConfiguration struct {
 	// the same region can be attached to the network connectivity
 	// configuration.
 	Region string `json:"region"`
+}
+
+// Create a network policy
+type CreateNetworkPolicyRequest struct {
+	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
 }
 
 type CreateNotificationDestinationRequest struct {
@@ -982,6 +1006,15 @@ type DeleteNetworkConnectivityConfigurationRequest struct {
 type DeleteNetworkConnectivityConfigurationResponse struct {
 }
 
+// Delete a network policy
+type DeleteNetworkPolicyRequest struct {
+	// The unique identifier of the network policy to delete.
+	NetworkPolicyId string `json:"-" url:"-"`
+}
+
+type DeleteNetworkPolicyRpcResponse struct {
+}
+
 // Delete a notification destination
 type DeleteNotificationDestinationRequest struct {
 	Id string `json:"-" url:"-"`
@@ -1448,6 +1481,217 @@ func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestina
 // Type always returns EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType) Type() string {
 	return "EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType"
+}
+
+type EgressNetworkPolicyNetworkAccessPolicy struct {
+	// List of internet destinations that serverless workloads are allowed to
+	// access when in RESTRICTED_ACCESS mode.
+	AllowedInternetDestinations []EgressNetworkPolicyNetworkAccessPolicyInternetDestination `json:"allowed_internet_destinations,omitempty"`
+	// List of storage destinations that serverless workloads are allowed to
+	// access when in RESTRICTED_ACCESS mode.
+	AllowedStorageDestinations []EgressNetworkPolicyNetworkAccessPolicyStorageDestination `json:"allowed_storage_destinations,omitempty"`
+	// Optional. When policy_enforcement is not provided, we default to
+	// ENFORCE_MODE_ALL_SERVICES
+	PolicyEnforcement *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement `json:"policy_enforcement,omitempty"`
+	// The restriction mode that controls how serverless workloads can access
+	// the internet.
+	RestrictionMode EgressNetworkPolicyNetworkAccessPolicyRestrictionMode `json:"restriction_mode"`
+}
+
+// Users can specify accessible internet destinations when outbound access is
+// restricted. We only support DNS_NAME (FQDN format) destinations for the time
+// being. Going forward we may extend support to host names and IP addresses.
+type EgressNetworkPolicyNetworkAccessPolicyInternetDestination struct {
+	// The internet destination to which access will be allowed. Format
+	// dependent on the destination type.
+	Destination string `json:"destination,omitempty"`
+	// The type of internet destination. Currently only DNS_NAME is supported.
+	InternetDestinationType EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType `json:"internet_destination_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EgressNetworkPolicyNetworkAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EgressNetworkPolicyNetworkAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType string
+
+const EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationTypeDnsName EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType = `DNS_NAME`
+
+// String representation for [fmt.Print]
+func (f *EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType) Set(v string) error {
+	switch v {
+	case `DNS_NAME`:
+		*f = EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DNS_NAME"`, v)
+	}
+}
+
+// Type always returns EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType to satisfy [pflag.Value] interface
+func (f *EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType) Type() string {
+	return "EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType"
+}
+
+type EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement struct {
+	// When empty, it means dry run for all products. When non-empty, it means
+	// dry run for specific products and for the other products, they will run
+	// in enforced mode.
+	DryRunModeProductFilter []EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter `json:"dry_run_mode_product_filter,omitempty"`
+	// The mode of policy enforcement. ENFORCED blocks traffic that violates
+	// policy, while DRY_RUN only logs violations without blocking. When not
+	// specified, defaults to ENFORCED.
+	EnforcementMode EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode `json:"enforcement_mode,omitempty"`
+}
+
+// The values should match the list of workloads used in networkconfig.proto
+type EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter string
+
+const EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilterDbsql EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter = `DBSQL`
+
+const EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilterMlServing EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter = `ML_SERVING`
+
+// String representation for [fmt.Print]
+func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter) Set(v string) error {
+	switch v {
+	case `DBSQL`, `ML_SERVING`:
+		*f = EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DBSQL", "ML_SERVING"`, v)
+	}
+}
+
+// Type always returns EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter to satisfy [pflag.Value] interface
+func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter) Type() string {
+	return "EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter"
+}
+
+type EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode string
+
+const EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementModeDryRun EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode = `DRY_RUN`
+
+const EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementModeEnforced EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode = `ENFORCED`
+
+// String representation for [fmt.Print]
+func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode) Set(v string) error {
+	switch v {
+	case `DRY_RUN`, `ENFORCED`:
+		*f = EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DRY_RUN", "ENFORCED"`, v)
+	}
+}
+
+// Type always returns EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode to satisfy [pflag.Value] interface
+func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode) Type() string {
+	return "EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode"
+}
+
+// At which level can Databricks and Databricks managed compute access Internet.
+// FULL_ACCESS: Databricks can access Internet. No blocking rules will apply.
+// RESTRICTED_ACCESS: Databricks can only access explicitly allowed internet and
+// storage destinations, as well as UC connections and external locations.
+type EgressNetworkPolicyNetworkAccessPolicyRestrictionMode string
+
+const EgressNetworkPolicyNetworkAccessPolicyRestrictionModeFullAccess EgressNetworkPolicyNetworkAccessPolicyRestrictionMode = `FULL_ACCESS`
+
+const EgressNetworkPolicyNetworkAccessPolicyRestrictionModeRestrictedAccess EgressNetworkPolicyNetworkAccessPolicyRestrictionMode = `RESTRICTED_ACCESS`
+
+// String representation for [fmt.Print]
+func (f *EgressNetworkPolicyNetworkAccessPolicyRestrictionMode) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressNetworkPolicyNetworkAccessPolicyRestrictionMode) Set(v string) error {
+	switch v {
+	case `FULL_ACCESS`, `RESTRICTED_ACCESS`:
+		*f = EgressNetworkPolicyNetworkAccessPolicyRestrictionMode(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "FULL_ACCESS", "RESTRICTED_ACCESS"`, v)
+	}
+}
+
+// Type always returns EgressNetworkPolicyNetworkAccessPolicyRestrictionMode to satisfy [pflag.Value] interface
+func (f *EgressNetworkPolicyNetworkAccessPolicyRestrictionMode) Type() string {
+	return "EgressNetworkPolicyNetworkAccessPolicyRestrictionMode"
+}
+
+// Users can specify accessible storage destinations.
+type EgressNetworkPolicyNetworkAccessPolicyStorageDestination struct {
+	// The Azure storage account name.
+	AzureStorageAccount string `json:"azure_storage_account,omitempty"`
+	// The Azure storage service type (blob, dfs, etc.).
+	AzureStorageService string `json:"azure_storage_service,omitempty"`
+
+	BucketName string `json:"bucket_name,omitempty"`
+	// The region of the S3 bucket.
+	Region string `json:"region,omitempty"`
+	// The type of storage destination.
+	StorageDestinationType EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType `json:"storage_destination_type,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EgressNetworkPolicyNetworkAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EgressNetworkPolicyNetworkAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType string
+
+const EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypeAwsS3 EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType = `AWS_S3`
+
+const EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypeAzureStorage EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType = `AZURE_STORAGE`
+
+const EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypeGoogleCloudStorage EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType = `GOOGLE_CLOUD_STORAGE`
+
+// String representation for [fmt.Print]
+func (f *EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType) Set(v string) error {
+	switch v {
+	case `AWS_S3`, `AZURE_STORAGE`, `GOOGLE_CLOUD_STORAGE`:
+		*f = EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "AWS_S3", "AZURE_STORAGE", "GOOGLE_CLOUD_STORAGE"`, v)
+	}
+}
+
+// Type always returns EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType to satisfy [pflag.Value] interface
+func (f *EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType) Type() string {
+	return "EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType"
 }
 
 // The target resources that are supported by Network Connectivity Config. Note:
@@ -2064,6 +2308,12 @@ type GetNetworkConnectivityConfigurationRequest struct {
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 }
 
+// Get a network policy
+type GetNetworkPolicyRequest struct {
+	// The unique identifier of the network policy to retrieve.
+	NetworkPolicyId string `json:"-" url:"-"`
+}
+
 // Get a notification destination
 type GetNotificationDestinationRequest struct {
 	Id string `json:"-" url:"-"`
@@ -2140,6 +2390,12 @@ type GetTokenPermissionLevelsResponse struct {
 // Token with specified Token ID was successfully returned.
 type GetTokenResponse struct {
 	TokenInfo *TokenInfo `json:"token_info,omitempty"`
+}
+
+// Get workspace network configuration
+type GetWorkspaceNetworkOptionRequest struct {
+	// The workspace ID.
+	WorkspaceId int64 `json:"-" url:"-"`
 }
 
 // Definition of an IP Access list
@@ -2235,6 +2491,40 @@ func (s *ListNetworkConnectivityConfigurationsResponse) UnmarshalJSON(b []byte) 
 }
 
 func (s ListNetworkConnectivityConfigurationsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// List network policies
+type ListNetworkPoliciesRequest struct {
+	// Pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListNetworkPoliciesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListNetworkPoliciesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListNetworkPoliciesResponse struct {
+	// List of network policies.
+	Items []AccountNetworkPolicy `json:"items,omitempty"`
+	// A token that can be used to get the next page of results. If null, there
+	// are no more results to show.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListNetworkPoliciesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListNetworkPoliciesResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -2658,6 +2948,18 @@ func (s *NetworkConnectivityConfiguration) UnmarshalJSON(b []byte) error {
 
 func (s NetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// The network policies applying for egress traffic. This message is used by the
+// UI/REST API. We translate this message to the format expected by the
+// dataplane in Lakehouse Network Manager (for the format expected by the
+// dataplane, see networkconfig.textproto). This policy should be consistent
+// with [[com.databricks.api.proto.settingspolicy.EgressNetworkPolicy]]. Details
+// see API-design:
+// https://docs.google.com/document/d/1DKWO_FpZMCY4cF2O62LpwII1lx8gsnDGG-qgE3t3TOA/
+type NetworkPolicyEgress struct {
+	// The access policy enforced for egress traffic to the internet.
+	NetworkAccess *EgressNetworkPolicyNetworkAccessPolicy `json:"network_access,omitempty"`
 }
 
 type NotificationDestination struct {
@@ -3564,6 +3866,13 @@ type UpdateNccAzurePrivateEndpointRulePublicRequest struct {
 	UpdateMask string `json:"-" url:"update_mask"`
 }
 
+// Update a network policy
+type UpdateNetworkPolicyRequest struct {
+	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
+	// The unique identifier for the network policy.
+	NetworkPolicyId string `json:"-" url:"-"`
+}
+
 type UpdateNotificationDestinationRequest struct {
 	// The configuration for the notification destination. Must wrap EXACTLY one
 	// of the nested configs.
@@ -3639,4 +3948,33 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	Setting RestrictWorkspaceAdminsSetting `json:"setting"`
 }
 
+// Update workspace network configuration
+type UpdateWorkspaceNetworkOptionRequest struct {
+	// The workspace ID.
+	WorkspaceId int64 `json:"-" url:"-"`
+
+	WorkspaceNetworkOption WorkspaceNetworkOption `json:"workspace_network_option"`
+}
+
 type WorkspaceConf map[string]string
+
+type WorkspaceNetworkOption struct {
+	// The network policy ID to apply to the workspace. This controls the
+	// network access rules for all serverless compute resources in the
+	// workspace. Each workspace can only be linked to one policy at a time. If
+	// no policy is explicitly assigned, the workspace will use
+	// 'default-policy'.
+	NetworkPolicyId string `json:"network_policy_id,omitempty"`
+	// The workspace ID.
+	WorkspaceId int64 `json:"workspace_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *WorkspaceNetworkOption) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WorkspaceNetworkOption) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}

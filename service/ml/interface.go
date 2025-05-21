@@ -28,6 +28,9 @@ type ExperimentsService interface {
 	// exists.
 	CreateExperiment(ctx context.Context, request CreateExperiment) (*CreateExperimentResponse, error)
 
+	// Create a logged model.
+	CreateLoggedModel(ctx context.Context, request CreateLoggedModelRequest) (*CreateLoggedModelResponse, error)
+
 	// Create a run.
 	//
 	// Creates a new run within an experiment. A run is usually a single
@@ -42,6 +45,12 @@ type ExperimentsService interface {
 	// tags for deletion. If the experiment uses FileStore, artifacts associated
 	// with the experiment are also deleted.
 	DeleteExperiment(ctx context.Context, request DeleteExperiment) error
+
+	// Delete a logged model.
+	DeleteLoggedModel(ctx context.Context, request DeleteLoggedModelRequest) error
+
+	// Delete a tag on a logged model.
+	DeleteLoggedModelTag(ctx context.Context, request DeleteLoggedModelTagRequest) error
 
 	// Delete a run.
 	//
@@ -61,6 +70,9 @@ type ExperimentsService interface {
 	// Deletes a tag on a run. Tags are run metadata that can be updated during
 	// a run and after a run completes.
 	DeleteTag(ctx context.Context, request DeleteTag) error
+
+	// Finalize a logged model.
+	FinalizeLoggedModel(ctx context.Context, request FinalizeLoggedModelRequest) (*FinalizeLoggedModelResponse, error)
 
 	// Get an experiment by name.
 	//
@@ -93,6 +105,9 @@ type ExperimentsService interface {
 	//
 	// Use GetHistoryAll() to get all Metric instances, which will iterate over every result page.
 	GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error)
+
+	// Get a logged model.
+	GetLoggedModel(ctx context.Context, request GetLoggedModelRequest) (*GetLoggedModelResponse, error)
 
 	// Get experiment permission levels.
 	//
@@ -133,6 +148,13 @@ type ExperimentsService interface {
 	//
 	// Use ListExperimentsAll() to get all Experiment instances, which will iterate over every result page.
 	ListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error)
+
+	// List artifacts for a logged model.
+	//
+	// List artifacts for a logged model. Takes an optional
+	// ``artifact_directory_path`` prefix which if specified, the response
+	// contains only artifacts with the specified prefix.
+	ListLoggedModelArtifacts(ctx context.Context, request ListLoggedModelArtifactsRequest) (*ListLoggedModelArtifactsResponse, error)
 
 	// Log a batch of metrics/params/tags for a run.
 	//
@@ -195,6 +217,15 @@ type ExperimentsService interface {
 	// Logs inputs, such as datasets and models, to an MLflow Run.
 	LogInputs(ctx context.Context, request LogInputs) error
 
+	// Log params for a logged model.
+	//
+	// Logs params for a logged model. A param is a key-value pair (string key,
+	// string value). Examples include hyperparameters used for ML model
+	// training. A param can be logged only once for a logged model, and
+	// attempting to overwrite an existing param with a different value will
+	// result in an error
+	LogLoggedModelParams(ctx context.Context, request LogLoggedModelParamsRequest) error
+
 	// Log a metric for a run.
 	//
 	// Log a metric for a run. A metric is a key-value pair (string key, float
@@ -207,6 +238,14 @@ type ExperimentsService interface {
 	// **NOTE:** Experimental: This API may change or be removed in a future
 	// release without warning.
 	LogModel(ctx context.Context, request LogModel) error
+
+	// Log outputs from a run.
+	//
+	// **NOTE**: Experimental: This API may change or be removed in a future
+	// release without warning.
+	//
+	// Logs outputs, such as models, from an MLflow Run.
+	LogOutputs(ctx context.Context, request LogOutputsRequest) error
 
 	// Log a param for a run.
 	//
@@ -250,6 +289,11 @@ type ExperimentsService interface {
 	// Use SearchExperimentsAll() to get all Experiment instances, which will iterate over every result page.
 	SearchExperiments(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error)
 
+	// Search logged models.
+	//
+	// Search for Logged Models that satisfy specified search criteria.
+	SearchLoggedModels(ctx context.Context, request SearchLoggedModelsRequest) (*SearchLoggedModelsResponse, error)
+
 	// Search for runs.
 	//
 	// Searches for runs that satisfy expressions.
@@ -264,6 +308,9 @@ type ExperimentsService interface {
 	// Sets a tag on an experiment. Experiment tags are metadata that can be
 	// updated.
 	SetExperimentTag(ctx context.Context, request SetExperimentTag) error
+
+	// Set a tag for a logged model.
+	SetLoggedModelTags(ctx context.Context, request SetLoggedModelTagsRequest) error
 
 	// Set experiment permissions.
 	//
