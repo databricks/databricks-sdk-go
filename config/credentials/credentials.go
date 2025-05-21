@@ -1,8 +1,11 @@
 package credentials
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"golang.org/x/oauth2"
 )
 
@@ -32,6 +35,41 @@ type OAuthCredentialsProvider interface {
 	Token() (*oauth2.Token, error)
 }
 
+// NewOAuthCredentialsProviderFromTokenSource returns a new OAuthCredentialsProvider
+// that uses the given TokenSource to get the token.
+//
+// The returned OAuthCredentialsProvider does not alter the behavior of the token
+// source. For example, it does not implement any caching or retrying logic. It
+// is the responsibility of the TokenSource to implement these behaviors.
+func NewOAuthCredentialsProviderFromTokenSource(ts auth.TokenSource) OAuthCredentialsProvider {
+	return &tsOAuthCredentialsProvider{ts}
+}
+
+type tsOAuthCredentialsProvider struct {
+	ts auth.TokenSource
+}
+
+func (cp tsOAuthCredentialsProvider) SetHeaders(r *http.Request) error {
+	token, err := cp.ts.Token(context.Background())
+	if err != nil {
+		return fmt.Errorf("error getting token: %w", err)
+	}
+	token.SetAuthHeader(r)
+	return nil
+}
+
+func (cp tsOAuthCredentialsProvider) Token() (*oauth2.Token, error) {
+	return cp.ts.Token(context.Background())
+}
+
+// DEPRECATED: Use NewOAuthCredentialsProviderFromTokenSource instead.
+func NewOAuthCredentialsProvider(visitor func(r *http.Request) error, tokenProvider func() (*oauth2.Token, error)) OAuthCredentialsProvider {
+	return &oauthCredentialsProvider{
+		setHeaders: visitor,
+		token:      tokenProvider,
+	}
+}
+
 type oauthCredentialsProvider struct {
 	setHeaders func(r *http.Request) error
 	token      func() (*oauth2.Token, error)
@@ -43,11 +81,4 @@ func (c *oauthCredentialsProvider) SetHeaders(r *http.Request) error {
 
 func (c *oauthCredentialsProvider) Token() (*oauth2.Token, error) {
 	return c.token()
-}
-
-func NewOAuthCredentialsProvider(visitor func(r *http.Request) error, tokenProvider func() (*oauth2.Token, error)) OAuthCredentialsProvider {
-	return &oauthCredentialsProvider{
-		setHeaders: visitor,
-		token:      tokenProvider,
-	}
 }

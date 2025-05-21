@@ -47,6 +47,7 @@ func TestMsiHappyFlow(t *testing.T) {
 	assertHeaders(t, &Config{
 		AzureUseMSI:     true,
 		AzureResourceID: "/a/b/c",
+		AuthType:        "azure-msi",
 		HTTPTransport: fixtures.MappingTransport{
 			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F": {
 				ExpectedHeaders: map[string]string{
@@ -86,6 +87,7 @@ func TestMsiFailsOnResolveWorkspace(t *testing.T) {
 	_, err := authenticateRequest(&Config{
 		AzureUseMSI:     true,
 		AzureResourceID: "/a/b/c",
+		AuthType:        "azure-msi",
 		HTTPTransport: fixtures.MappingTransport{
 			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F": {
 				Response: someValidToken("bcd"),
@@ -108,6 +110,7 @@ func TestMsiTokenNotFound(t *testing.T) {
 		AzureUseMSI:     true,
 		AzureClientID:   "abc",
 		AzureResourceID: "/a/b/c",
+		AuthType:        "azure-msi",
 		HTTPTransport: fixtures.MappingTransport{
 			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&client_id=abc&resource=https%3A%2F%2Fmanagement.azure.com%2F": {
 				Status:   404,
@@ -122,6 +125,7 @@ func TestMsiInvalidTokenExpiry(t *testing.T) {
 	_, err := authenticateRequest(&Config{
 		AzureUseMSI:     true,
 		AzureResourceID: "/a/b/c",
+		AuthType:        "azure-msi",
 		HTTPTransport: fixtures.MappingTransport{
 			"GET /metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F": {
 				Response: map[string]any{
