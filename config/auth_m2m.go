@@ -8,7 +8,6 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
-	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
@@ -33,8 +32,8 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		AuthStyle:    oauth2.AuthStyleInHeader,
 		TokenURL:     endpoints.TokenEndpoint,
 		Scopes:       []string{"all-apis"},
-	})
+	}).TokenSource(ctx)
 
-	cts := auth.NewCachedTokenSource(ts)
-	return credentials.NewOAuthCredentialsProviderFromTokenSource(cts), nil
+	visitor := refreshableVisitor(ts)
+	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
 }

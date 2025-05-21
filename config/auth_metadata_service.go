@@ -90,12 +90,12 @@ func (ms metadataService) Token(ctx context.Context) (*oauth2.Token, error) {
 	ctx, cancel := context.WithTimeout(ctx, metadataServiceTimeout)
 	defer cancel()
 
-	var mt *msiToken
+	var mt msiToken
 	err := ms.config.refreshClient.Do(ctx, http.MethodGet,
 		ms.metadataServiceURL.String(),
 		httpclient.WithRequestHeader(MetadataServiceVersionHeader, MetadataServiceVersion),
 		httpclient.WithRequestHeader(MetadataServiceHostHeader, ms.config.Host),
-		httpclient.WithResponseUnmarshal(mt),
+		httpclient.WithResponseUnmarshal(&mt),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("token request: %w", err)

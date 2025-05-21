@@ -11,62 +11,70 @@ import (
 )
 
 func TestM2mHappyFlow(t *testing.T) {
-	assertHeaders(t, &Config{
-		Host:         "a",
-		ClientID:     "b",
-		ClientSecret: "c",
-		HTTPTransport: fixtures.MappingTransport{
-			"GET /oidc/.well-known/oauth-authorization-server": {
-				Response: u2m.OAuthAuthorizationServer{
-					AuthorizationEndpoint: "https://localhost:1234/dummy/auth",
-					TokenEndpoint:         "https://localhost:1234/dummy/token",
+	assertHeaders(
+		t,
+		&Config{
+			Host:         "a",
+			ClientID:     "b",
+			ClientSecret: "c",
+			AuthType:     "oauth-m2m",
+			HTTPTransport: fixtures.MappingTransport{
+				"GET /oidc/.well-known/oauth-authorization-server": {
+					Response: u2m.OAuthAuthorizationServer{
+						AuthorizationEndpoint: "https://localhost:1234/dummy/auth",
+						TokenEndpoint:         "https://localhost:1234/dummy/token",
+					},
 				},
-			},
-			"POST /dummy/token": {
-				ExpectedHeaders: map[string]string{
-					"Authorization": "Basic Yjpj",
-					"Content-Type":  "application/x-www-form-urlencoded",
-				},
-				ExpectedRequest: url.Values{
-					"grant_type": {"client_credentials"},
-					"scope":      {"all-apis"},
-				},
-				Response: oauth2.Token{
-					TokenType:   "Some",
-					AccessToken: "cde",
+				"POST /dummy/token": {
+					ExpectedHeaders: map[string]string{
+						"Authorization": "Basic Yjpj",
+						"Content-Type":  "application/x-www-form-urlencoded",
+					},
+					ExpectedRequest: url.Values{
+						"grant_type": {"client_credentials"},
+						"scope":      {"all-apis"},
+					},
+					Response: oauth2.Token{
+						TokenType:   "Some",
+						AccessToken: "cde",
+					},
 				},
 			},
 		},
-	}, map[string]string{
-		"Authorization": "Some cde",
-	})
+		map[string]string{
+			"Authorization": "Some cde",
+		},
+	)
 }
 
 func TestM2mHappyFlowForAccount(t *testing.T) {
-	assertHeaders(t, &Config{
-		Host:         "accounts.cloud.databricks.com",
-		AccountID:    "a",
-		ClientID:     "b",
-		ClientSecret: "c",
-		HTTPTransport: fixtures.MappingTransport{
-			"POST /oidc/accounts/a/v1/token": {
-				ExpectedHeaders: map[string]string{
-					"Authorization": "Basic Yjpj",
-					"Content-Type":  "application/x-www-form-urlencoded",
-				},
-				ExpectedRequest: url.Values{
-					"grant_type": {"client_credentials"},
-					"scope":      {"all-apis"},
-				},
-				Response: oauth2.Token{
-					TokenType:   "Some",
-					AccessToken: "cde",
+	assertHeaders(t,
+		&Config{
+			Host:         "accounts.cloud.databricks.com",
+			AccountID:    "a",
+			ClientID:     "b",
+			ClientSecret: "c",
+			HTTPTransport: fixtures.MappingTransport{
+				"POST /oidc/accounts/a/v1/token": {
+					ExpectedHeaders: map[string]string{
+						"Authorization": "Basic Yjpj",
+						"Content-Type":  "application/x-www-form-urlencoded",
+					},
+					ExpectedRequest: url.Values{
+						"grant_type": {"client_credentials"},
+						"scope":      {"all-apis"},
+					},
+					Response: oauth2.Token{
+						TokenType:   "Some",
+						AccessToken: "cde",
+					},
 				},
 			},
 		},
-	}, map[string]string{
-		"Authorization": "Some cde",
-	})
+		map[string]string{
+			"Authorization": "Some cde",
+		},
+	)
 }
 
 func TestM2mNotSupported(t *testing.T) {
