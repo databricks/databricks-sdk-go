@@ -76,7 +76,7 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		logger.Tracef(ctx, "Attempting to configure auth: %q", s.Name())
 		cp, err := s.Configure(ctx, cfg)
 		if err != nil || cp == nil {
-			logger.Tracef(ctx, "Failed to configure auth: %q", s.Name())
+			logger.Debugf(ctx, "Failed to configure auth: %q", s.Name())
 			continue
 		}
 		c.name = s.Name()
