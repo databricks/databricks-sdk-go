@@ -827,8 +827,6 @@ func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLoca
 // array.
 func (a *externalLocationsImpl) List(ctx context.Context, request ListExternalLocationsRequest) listing.Iterator[ExternalLocationInfo] {
 
-	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
-
 	getNextPage := func(ctx context.Context, req ListExternalLocationsRequest) (*ListExternalLocationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)

@@ -29,3 +29,10 @@
 * Added `Catalog`, `CleanRoom`, `Connection`, `Credential`, `ExternalLocation`, `ExternalMetadata`, `Function`, `Metastore`, `Pipeline`, `Provider`, `Recipient`, `Schema`, `Share`, `StagingTable`, `StorageCredential`, `Table`, `UnknownSecurableType` and `Volume` enum values for [catalog.SecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SecurableType).
 * [Breaking] Changed `SecurableType` field for [catalog.CatalogInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CatalogInfo) to type [catalog.SecurableType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#SecurableType).
 * Changed `Etag` and `Name` fields for [iam.RuleSetResponse](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/iam#RuleSetResponse) to be required.
+* Added `EnableFileEvents` and `FileEventQueue` fields for [catalog.CreateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateExternalLocation).
+* Added `EnableFileEvents` and `FileEventQueue` fields for [catalog.ExternalLocationInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ExternalLocationInfo).
+* Added `EnableFileEvents` and `FileEventQueue` fields for [catalog.UpdateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateExternalLocation).
+* Added `PolicyId` and `ServicePrincipalId` fields for [oauth2.FederationPolicy](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/oauth2#FederationPolicy).
+* [Breaking] Removed `AccessPoint` field for [catalog.CreateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#CreateExternalLocation).
+* [Breaking] Removed `AccessPoint` field for [catalog.ExternalLocationInfo](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#ExternalLocationInfo).
+* [Breaking] Removed `AccessPoint` field for [catalog.UpdateExternalLocation](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/catalog#UpdateExternalLocation).

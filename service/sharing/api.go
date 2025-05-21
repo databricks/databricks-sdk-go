@@ -288,9 +288,18 @@ type RecipientFederationPoliciesInterface interface {
 	// a resource using its own identity, typically for tasks like running nightly
 	// jobs.
 	//
-	// For an overview, refer to: -
+	// For an overview, refer to: - Blog post: Overview of feature:
 	// https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
-	// - https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed
+	//
+	// For detailed configuration guides based on your use case: - Creating a
+	// Federation Policy as a provider:
+	// https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed -
+	// Configuration and usage for Machine-to-Machine (M2M) applications (e.g.,
+	// Python Delta Sharing Client):
+	// https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-m2m -
+	// Configuration and usage for User-to-Machine (U2M) applications (e.g.,
+	// PowerBI):
+	// https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-u2m
 	Create(ctx context.Context, request CreateFederationPolicyRequest) (*FederationPolicy, error)
 
 	// Delete recipient federation policy.

@@ -196,6 +196,26 @@ func (s AwsIamRoleResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type AwsSqsQueue struct {
+	// Unique identifier included in the name of file events managed cloud
+	// resources.
+	ManagedResourceId string `json:"managed_resource_id,omitempty"`
+	// The AQS queue url in the format
+	// https://sqs.{region}.amazonaws.com/{account id}/{queue name} REQUIRED for
+	// provided_sqs.
+	QueueUrl string `json:"queue_url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AwsSqsQueue) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AwsSqsQueue) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Azure Active Directory token, essentially the Oauth token for Azure Service
 // Principal or Managed Identity. Read more at
 // https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token
@@ -292,6 +312,33 @@ func (s *AzureManagedIdentityResponse) UnmarshalJSON(b []byte) error {
 }
 
 func (s AzureManagedIdentityResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type AzureQueueStorage struct {
+	// Unique identifier included in the name of file events managed cloud
+	// resources.
+	ManagedResourceId string `json:"managed_resource_id,omitempty"`
+	// The AQS queue url in the format https://{storage
+	// account}.queue.core.windows.net/{queue name} REQUIRED for provided_aqs.
+	QueueUrl string `json:"queue_url,omitempty"`
+	// The resource group for the queue, event grid subscription, and external
+	// location storage account. ONLY REQUIRED for locations with a service
+	// principal storage credential
+	ResourceGroup string `json:"resource_group,omitempty"`
+	// OPTIONAL: The subscription id for the queue, event grid subscription, and
+	// external location storage account. REQUIRED for locations with a service
+	// principal storage credential
+	SubscriptionId string `json:"subscription_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *AzureQueueStorage) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s AzureQueueStorage) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -835,18 +882,21 @@ type CreateDatabaseInstanceRequest struct {
 }
 
 type CreateExternalLocation struct {
-	// The AWS access point to use when accesing s3 for this external location.
-	AccessPoint string `json:"access_point,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name"`
+	// [Create:OPT Update:OPT] Whether to enable file events on this external
+	// location.
+	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
+	// [Create:OPT Update:OPT] File event queue settings.
+	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Name of the external location.
 	Name string `json:"name"`
 	// Indicates whether the external location is read-only.
@@ -2091,8 +2141,6 @@ type ExistsRequest struct {
 }
 
 type ExternalLocationInfo struct {
-	// The AWS access point to use when accesing s3 for this external location.
-	AccessPoint string `json:"access_point,omitempty"`
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
@@ -2107,12 +2155,17 @@ type ExternalLocationInfo struct {
 	CredentialId string `json:"credential_id,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
+	// [Create:OPT Update:OPT] Whether to enable file events on this external
+	// location.
+	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
+	// [Create:OPT Update:OPT] File event queue settings.
+	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 
 	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
 	// Unique identifier of metastore hosting the external location.
@@ -2164,6 +2217,20 @@ func (s *FailedStatus) UnmarshalJSON(b []byte) error {
 
 func (s FailedStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+type FileEventQueue struct {
+	ManagedAqs *AzureQueueStorage `json:"managed_aqs,omitempty"`
+
+	ManagedPubsub *GcpPubsub `json:"managed_pubsub,omitempty"`
+
+	ManagedSqs *AwsSqsQueue `json:"managed_sqs,omitempty"`
+
+	ProvidedAqs *AzureQueueStorage `json:"provided_aqs,omitempty"`
+
+	ProvidedPubsub *GcpPubsub `json:"provided_pubsub,omitempty"`
+
+	ProvidedSqs *AwsSqsQueue `json:"provided_sqs,omitempty"`
 }
 
 // Find a Database Instance by uid
@@ -2503,6 +2570,26 @@ func (s *GcpOauthToken) UnmarshalJSON(b []byte) error {
 }
 
 func (s GcpOauthToken) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type GcpPubsub struct {
+	// Unique identifier included in the name of file events managed cloud
+	// resources.
+	ManagedResourceId string `json:"managed_resource_id,omitempty"`
+	// The Pub/Sub subscription name in the format
+	// projects/{project}/subscriptions/{subscription name} REQUIRED for
+	// provided_pubsub.
+	SubscriptionName string `json:"subscription_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GcpPubsub) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GcpPubsub) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -5192,10 +5279,12 @@ type SetRegisteredModelAliasRequest struct {
 
 // Server-Side Encryption properties for clients communicating with AWS s3.
 type SseEncryptionDetails struct {
-	// The type of key encryption to use (affects headers from s3 client).
+	// Sets the value of the 'x-amz-server-side-encryption' header in S3
+	// request.
 	Algorithm SseEncryptionDetailsAlgorithm `json:"algorithm,omitempty"`
-	// When algorithm is **AWS_SSE_KMS** this field specifies the ARN of the SSE
-	// key to use.
+	// Optional. The ARN of the SSE-KMS key used with the S3 location, when
+	// algorithm = "SSE-KMS". Sets the value of the
+	// 'x-amz-server-side-encryption-aws-kms-key-id' header.
 	AwsKmsKeyArn string `json:"aws_kms_key_arn,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5209,7 +5298,6 @@ func (s SseEncryptionDetails) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The type of key encryption to use (affects headers from s3 client).
 type SseEncryptionDetailsAlgorithm string
 
 const SseEncryptionDetailsAlgorithmAwsSseKms SseEncryptionDetailsAlgorithm = `AWS_SSE_KMS`
@@ -5813,18 +5901,21 @@ type UpdateDatabaseInstanceRequest struct {
 }
 
 type UpdateExternalLocation struct {
-	// The AWS access point to use when accesing s3 for this external location.
-	AccessPoint string `json:"access_point,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// Name of the storage credential used with this location.
 	CredentialName string `json:"credential_name,omitempty"`
+	// [Create:OPT Update:OPT] Whether to enable file events on this external
+	// location.
+	EnableFileEvents bool `json:"enable_file_events,omitempty"`
 	// Encryption options that apply to clients connecting to cloud storage.
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
 	Fallback bool `json:"fallback,omitempty"`
+	// [Create:OPT Update:OPT] File event queue settings.
+	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
 	Force bool `json:"force,omitempty"`

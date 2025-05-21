@@ -122,6 +122,7 @@ experimental/mocks/service/settings/mock_llm_proxy_partner_powered_account_inter
 experimental/mocks/service/settings/mock_llm_proxy_partner_powered_enforce_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_llm_proxy_partner_powered_workspace_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_network_connectivity_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_network_policies_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_notification_destinations_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_personal_compute_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_restrict_workspace_admins_interface.go linguist-generated=true
@@ -129,8 +130,10 @@ experimental/mocks/service/settings/mock_settings_interface.go linguist-generate
 experimental/mocks/service/settings/mock_token_management_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_tokens_interface.go linguist-generated=true
 experimental/mocks/service/settings/mock_workspace_conf_interface.go linguist-generated=true
+experimental/mocks/service/settings/mock_workspace_network_configuration_interface.go linguist-generated=true
 experimental/mocks/service/sharing/mock_providers_interface.go linguist-generated=true
 experimental/mocks/service/sharing/mock_recipient_activation_interface.go linguist-generated=true
+experimental/mocks/service/sharing/mock_recipient_federation_policies_interface.go linguist-generated=true
 experimental/mocks/service/sharing/mock_recipients_interface.go linguist-generated=true
 experimental/mocks/service/sharing/mock_shares_interface.go linguist-generated=true
 experimental/mocks/service/sql/mock_alerts_interface.go linguist-generated=true
