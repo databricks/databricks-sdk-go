@@ -12,6 +12,7 @@ import (
 func TestAuthServerCheckHost(t *testing.T) {
 	assertHeaders(t, &Config{
 		Host:               "YYY",
+		AuthType:           "metadata-service",
 		MetadataServiceURL: "http://localhost:1234/metadata/token",
 		HTTPTransport: fixtures.MappingTransport{
 			"GET /metadata/token": {
@@ -31,6 +32,7 @@ func TestAuthServerCheckHost(t *testing.T) {
 func TestAuthServerRefresh(t *testing.T) {
 	assertHeaders(t, &Config{
 		Host:               "YYY",
+		AuthType:           "metadata-service",
 		MetadataServiceURL: "http://localhost:1234/metadata/token",
 		HTTPTransport: fixtures.SliceTransport{
 			{
@@ -56,6 +58,7 @@ func TestAuthServerRefresh(t *testing.T) {
 func TestAuthServerNotLocalhost(t *testing.T) {
 	_, err := authenticateRequest(&Config{
 		Host:               "YYY",
+		AuthType:           "metadata-service",
 		MetadataServiceURL: "http://otherhost/metadata/token",
 		HTTPTransport:      fixtures.Failures,
 	})
@@ -65,6 +68,7 @@ func TestAuthServerNotLocalhost(t *testing.T) {
 func TestAuthServerMalformed(t *testing.T) {
 	_, err := authenticateRequest(&Config{
 		Host:               "YYY",
+		AuthType:           "metadata-service",
 		MetadataServiceURL: "#$%^&*",
 		HTTPTransport:      fixtures.Failures,
 	})
@@ -74,6 +78,7 @@ func TestAuthServerMalformed(t *testing.T) {
 func TestAuthServerNoContent(t *testing.T) {
 	_, err := authenticateRequest(&Config{
 		Host:               "YYY",
+		AuthType:           "metadata-service",
 		MetadataServiceURL: "http://localhost:1234/metadata/token",
 		HTTPTransport: fixtures.MappingTransport{
 			"GET /metadata/token": {
@@ -87,6 +92,7 @@ func TestAuthServerNoContent(t *testing.T) {
 func TestAuthServerFailures(t *testing.T) {
 	_, err := authenticateRequest(&Config{
 		Host:               "YYY",
+		AuthType:           "metadata-service",
 		MetadataServiceURL: "http://localhost:1234/metadata/token",
 		HTTPTransport:      fixtures.Failures,
 	})

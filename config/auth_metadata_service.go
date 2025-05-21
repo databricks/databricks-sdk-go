@@ -66,15 +66,15 @@ func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) 
 		metadataServiceURL: parsedMetadataServiceURL,
 		config:             cfg,
 	}
-	response, err := ms.Get()
+	response, err := ms.Get(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if response == nil {
 		return nil, nil
 	}
-	visitor := refreshableVisitor(&ms)
-	return credentials.NewCredentialsProvider(visitor), nil
+
+	return credentials.NewOAuthCredentialsProviderFromTokenSource(ms), nil
 }
 
 type metadataService struct {
@@ -83,8 +83,8 @@ type metadataService struct {
 }
 
 // performs a request to the metadata service and returns the token
-func (s metadataService) Get() (*oauth2.Token, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), metadataServiceTimeout)
+func (s metadataService) Get(ctx context.Context) (*oauth2.Token, error) {
+	ctx, cancel := context.WithTimeout(ctx, metadataServiceTimeout)
 	defer cancel()
 	var inner msiToken
 	err := s.config.refreshClient.Do(ctx, http.MethodGet,
@@ -99,15 +99,15 @@ func (s metadataService) Get() (*oauth2.Token, error) {
 	return inner.Token()
 }
 
-func (t metadataService) Token() (*oauth2.Token, error) {
-	token, err := t.Get()
+func (t metadataService) Token(ctx context.Context) (*oauth2.Token, error) {
+	token, err := t.Get(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if token == nil {
 		return nil, fmt.Errorf("no token returned from metadata service")
 	}
-	logger.Debugf(context.Background(),
+	logger.Debugf(ctx,
 		"Refreshed access token from local metadata service, which expires on %s",
 		token.Expiry.Format(time.RFC3339))
 	return token, nil

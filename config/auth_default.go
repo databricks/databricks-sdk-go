@@ -2,7 +2,6 @@ package config
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
@@ -10,78 +9,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-// Constructs all Databricks OIDC Credentials Strategies
-func buildOidcTokenCredentialStrategies(cfg *Config) []CredentialsStrategy {
-	type namedIdTokenSource struct {
-		name        string
-		tokenSource oidc.IDTokenSource
-	}
-	idTokenSources := []namedIdTokenSource{
-		{
-			name: "env-oidc",
-			// If the OIDCTokenEnv is not set, use DATABRICKS_OIDC_TOKEN as
-			// default value.
-			tokenSource: func() oidc.IDTokenSource {
-				v := cfg.OIDCTokenEnv
-				if v == "" {
-					v = "DATABRICKS_OIDC_TOKEN"
-				}
-				return oidc.NewEnvIDTokenSource(v)
-			}(),
-		},
-		{
-			name:        "file-oidc",
-			tokenSource: oidc.NewFileTokenSource(cfg.OIDCTokenFilepath),
-		},
-		{
-			name: "github-oidc",
-			tokenSource: oidc.NewGithubIDTokenSource(
-				cfg.refreshClient,
-				cfg.ActionsIDTokenRequestURL,
-				cfg.ActionsIDTokenRequestToken,
-			),
-		},
-		// Add new providers at the end of the list
-	}
-
-	strategies := []CredentialsStrategy{}
-	for _, idTokenSource := range idTokenSources {
-		oidcConfig := oidc.DatabricksOIDCTokenSourceConfig{
-			ClientID:              cfg.ClientID,
-			Host:                  cfg.CanonicalHostName(),
-			TokenEndpointProvider: cfg.getOidcEndpoints,
-			Audience:              cfg.TokenAudience,
-			IDTokenSource:         idTokenSource.tokenSource,
-		}
-		if cfg.IsAccountClient() {
-			oidcConfig.AccountID = cfg.AccountID
-		}
-		tokenSource := oidc.NewDatabricksOIDCTokenSource(oidcConfig)
-		strategies = append(strategies, NewTokenSourceStrategy(idTokenSource.name, tokenSource))
-	}
-	return strategies
-}
-
-func buildDefaultStrategies(cfg *Config) []CredentialsStrategy {
-	strategies := []CredentialsStrategy{}
-	strategies = append(strategies,
-		PatCredentials{},
-		BasicCredentials{},
-		M2mCredentials{},
-		DatabricksCliCredentials,
-		MetadataServiceCredentials{})
-	strategies = append(strategies, buildOidcTokenCredentialStrategies(cfg)...)
-	strategies = append(strategies,
-		// Attempt to configure auth from most specific to most generic (the Azure CLI).
-		AzureGithubOIDCCredentials{},
-		AzureMsiCredentials{},
-		AzureClientSecretCredentials{},
-		AzureCliCredentials{},
-		// Attempt to configure auth from most specific to most generic (Google Application Default Credentials).
-		GoogleCredentials{},
-		GoogleDefaultCredentials{})
-	return strategies
-}
+const authDocURL = "https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication"
 
 type DefaultCredentials struct {
 	name string
@@ -94,33 +22,103 @@ func (c *DefaultCredentials) Name() string {
 	return c.name
 }
 
-var authFlowUrl = "https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication"
-var errorMessage = fmt.Sprintf("cannot configure default credentials, please check %s to configure credentials for your preferred authentication method", authFlowUrl)
-
-// ErrCannotConfigureAuth (experimental) is returned when no auth is configured
-var ErrCannotConfigureAuth = errors.New(errorMessage)
-
 func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (credentials.CredentialsProvider, error) {
 	err := cfg.EnsureResolved()
 	if err != nil {
 		return nil, err
 	}
-	for _, p := range buildDefaultStrategies(cfg) {
-		if cfg.AuthType != "" && p.Name() != cfg.AuthType {
-			// ignore other auth types if one is explicitly enforced
-			logger.Infof(ctx, "Ignoring %s auth, because %s is preferred", p.Name(), cfg.AuthType)
-			continue
-		}
-		logger.Tracef(ctx, "Attempting to configure auth: %s", p.Name())
-		credentialsProvider, err := p.Configure(ctx, cfg)
-		if err != nil {
-			return nil, fmt.Errorf("%s: %w", p.Name(), err)
-		}
-		if credentialsProvider == nil {
-			continue
-		}
-		c.name = p.Name()
-		return credentialsProvider, nil
+
+	// Order in which strategies are tested. Iteration proceeds from most
+	// specific to most generic, and the first strategy to return a non-nil
+	// credentials provider is selected.
+	//
+	// Modifying this order could break authentication for users whose
+	// environments are compatible with multiple strategies and who rely on the
+	// current priority for tie-breaking. While arguably an anti-pattern, this
+	// order is maintained for backward compatibility.
+	strategies := []CredentialsStrategy{
+		PatCredentials{},
+		BasicCredentials{},
+		M2mCredentials{},
+		u2mCredentials{},
+		MetadataServiceCredentials{},
+		// OIDC Strategies.
+		githubOIDC(cfg),
+		envOIDC(cfg),
+		fileOIDC(cfg),
+		// Azure strategies.
+		AzureGithubOIDCCredentials{},
+		AzureMsiCredentials{},
+		AzureClientSecretCredentials{},
+		AzureCliCredentials{},
+		// Google strategies.
+		GoogleCredentials{},
+		GoogleDefaultCredentials{},
 	}
-	return nil, ErrCannotConfigureAuth
+
+	// If an auth type is specified, try to configure the credentials for that
+	// specific auth type. If an error is encountered, return it.
+	if cfg.AuthType != "" {
+		for _, s := range strategies {
+			if s.Name() == cfg.AuthType {
+				logger.Tracef(ctx, "Attempting to configure auth: %q", s.Name())
+				c.name = s.Name()
+				return s.Configure(ctx, cfg)
+			}
+		}
+		return nil, fmt.Errorf("auth type %q not found, please check %s for a list of supported auth types", cfg.AuthType, authDocURL)
+	}
+
+	// If no auth type is specified, try the strategies in order. If a strategy
+	// succeeds, returns the credentials provider. If a strategy fails, swallow
+	// the error and try the next strategy.
+	for _, s := range strategies {
+		logger.Tracef(ctx, "Attempting to configure auth: %q", s.Name())
+		cp, err := s.Configure(ctx, cfg)
+		if err != nil || cp == nil {
+			logger.Debugf(ctx, "Failed to configure auth: %q", s.Name())
+			continue
+		}
+		c.name = s.Name()
+		return cp, nil
+	}
+
+	return nil, fmt.Errorf("cannot configure default credentials, please check %s to configure credentials for your preferred authentication method", authDocURL)
+}
+
+func githubOIDC(cfg *Config) CredentialsStrategy {
+	return oidcStrategy(cfg, "github-oidc", oidc.NewGithubIDTokenSource(
+		cfg.refreshClient,
+		cfg.ActionsIDTokenRequestURL,
+		cfg.ActionsIDTokenRequestToken,
+	))
+}
+
+func envOIDC(cfg *Config) CredentialsStrategy {
+	v := cfg.OIDCTokenEnv
+	if v == "" {
+		v = "DATABRICKS_OIDC_TOKEN"
+	}
+	return oidcStrategy(cfg, "env-oidc", oidc.NewEnvIDTokenSource(v))
+}
+
+func fileOIDC(cfg *Config) CredentialsStrategy {
+	return oidcStrategy(cfg, "file-oidc", oidc.NewFileTokenSource(cfg.OIDCTokenFilepath))
+}
+
+// oidcStrategy returns a new CredentialsStrategy to authenticate with
+// Databricks using the given OIDC IDTokenSource.
+func oidcStrategy(cfg *Config, name string, ts oidc.IDTokenSource) CredentialsStrategy {
+	oidcConfig := oidc.DatabricksOIDCTokenSourceConfig{
+		ClientID:              cfg.ClientID,
+		Host:                  cfg.CanonicalHostName(),
+		TokenEndpointProvider: cfg.getOidcEndpoints,
+		Audience:              cfg.TokenAudience,
+		IDTokenSource:         ts,
+	}
+	if cfg.IsAccountClient() {
+		oidcConfig.AccountID = cfg.AccountID
+	}
+	tokenSource := oidc.NewDatabricksOIDCTokenSource(oidcConfig)
+	return NewTokenSourceStrategy(name, tokenSource)
 }

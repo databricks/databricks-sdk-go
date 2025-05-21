@@ -385,7 +385,7 @@ func TestConfig_AzureCliHost_Fail(t *testing.T) {
 			"HOME": "testdata/azure",
 			"FAIL": "yes",
 		},
-		AssertError: "default auth: azure-cli: cannot get access token: This is just a failing script.\n. Config: azure_workspace_resource_id=/sub/rg/ws",
+		AssertError: fmt.Sprintf("%s. Config: azure_workspace_resource_id=/sub/rg/ws", defaultAuthBaseErrorMessage),
 	}.apply(t)
 }
 

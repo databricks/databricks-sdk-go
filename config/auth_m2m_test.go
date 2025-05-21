@@ -74,6 +74,7 @@ func TestM2mNotSupported(t *testing.T) {
 		Host:         "a",
 		ClientID:     "b",
 		ClientSecret: "c",
+		AuthType:     "oauth-m2m",
 		HTTPTransport: fixtures.MappingTransport{
 			"GET /oidc/.well-known/oauth-authorization-server": {
 				Status:   404,
