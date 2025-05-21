@@ -168,7 +168,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 					},
 				},
 			},
-			wantErrPrefix: errPrefix("inner token: http 500"),
+			wantErrPrefix: errPrefix("error getting token: http 500"),
 		},
 		{
 			desc: "invalid auth token",
@@ -204,7 +204,7 @@ func TestAzureGithubOIDCCredentials(t *testing.T) {
 					},
 				},
 			},
-			wantErrPrefix: errPrefix("inner token: invalid token"),
+			wantErrPrefix: errPrefix("error getting token: invalid token"),
 		},
 		{
 			desc: "success",

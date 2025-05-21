@@ -105,7 +105,6 @@ func (token msiToken) Token() (*oauth2.Token, error) {
 	}
 	epoch, err := token.ExpiresOn.Int64()
 	if err != nil {
-		// go 1.19 doesn't support multiple error unwraps
 		return nil, fmt.Errorf("%w: %s", errInvalidTokenExpiry, err)
 	}
 	return &oauth2.Token{

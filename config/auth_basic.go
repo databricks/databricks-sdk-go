@@ -26,5 +26,5 @@ func (c BasicCredentials) Configure(ctx context.Context, cfg *Config) (credentia
 		r.Header.Set("Authorization", fmt.Sprintf("Basic %s", b64))
 		return nil
 	}
-	return credentials.NewCredentialsProvider(visitor), nil
+	return credentials.CredentialsProviderFn(visitor), nil
 }

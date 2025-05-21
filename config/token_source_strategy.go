@@ -27,7 +27,7 @@ func (tss *tokenSourceStrategy) Configure(ctx context.Context, cfg *Config) (cre
 	//
 	// TODO: Move this outside of this function. If credentials providers have
 	// to be tested, this should be done in the main default loop, not here.
-	if _, err := cp.Token(); err != nil {
+	if _, err := cp.Token(ctx); err != nil {
 		return nil, err
 	}
 

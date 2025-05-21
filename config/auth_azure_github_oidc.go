@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth/oidc"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"golang.org/x/oauth2"
@@ -49,7 +50,8 @@ func (c AzureGithubOIDCCredentials) Configure(ctx context.Context, cfg *Config) 
 		httpClient:    cfg.refreshClient,
 	}
 
-	return credentials.NewOAuthCredentialsProvider(refreshableVisitor(ts), ts.Token), nil
+	cts := auth.NewCachedTokenSource(ts)
+	return credentials.NewOAuthCredentialsProviderFromTokenSource(cts), nil
 }
 
 // azureOIDCTokenSource implements [oauth2.TokenSource] to obtain Azure auth
@@ -65,8 +67,8 @@ type azureOIDCTokenSource struct {
 
 const azureOICDTimeout = 10 * time.Second
 
-func (ts *azureOIDCTokenSource) Token() (*oauth2.Token, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), azureOICDTimeout)
+func (ts *azureOIDCTokenSource) Token(ctx context.Context) (*oauth2.Token, error) {
+	ctx, cancel := context.WithTimeout(ctx, azureOICDTimeout)
 	defer cancel()
 
 	resp := struct { // anonymous struct to parse the response

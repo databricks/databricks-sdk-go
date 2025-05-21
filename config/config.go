@@ -15,7 +15,6 @@ import (
 	"github.com/databricks/databricks-sdk-go/common/environment"
 	"github.com/databricks/databricks-sdk-go/config/credentials"
 	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
-	"github.com/databricks/databricks-sdk-go/config/experimental/auth/authconv"
 	"github.com/databricks/databricks-sdk-go/credentials/u2m"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
@@ -252,7 +251,7 @@ func (c *Config) GetTokenSource() auth.TokenSource {
 		return errorTokenSource(err)
 	}
 	if h, ok := c.credentialsProvider.(credentials.OAuthCredentialsProvider); ok {
-		return authconv.AuthTokenSource(h)
+		return h
 	} else {
 		return errorTokenSource(fmt.Errorf("OAuth Token not supported for current auth type %s", c.AuthType))
 	}

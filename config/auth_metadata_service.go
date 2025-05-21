@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/databricks/databricks-sdk-go/config/credentials"
+	"github.com/databricks/databricks-sdk-go/config/experimental/auth"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 	"github.com/databricks/databricks-sdk-go/logger"
 	"golang.org/x/oauth2"
@@ -55,26 +56,29 @@ func (c MetadataServiceCredentials) Configure(ctx context.Context, cfg *Config) 
 	}
 	parsedMetadataServiceURL, err := url.Parse(cfg.MetadataServiceURL)
 	if err != nil {
-		// go 1.19 doesn't allow multiple error unwraping
 		return nil, fmt.Errorf("%w: %s", errMetadataServiceMalformed, err)
 	}
-	// only allow localhost URLs
+
+	// Only allow localhost URLs.
 	if parsedMetadataServiceURL.Hostname() != "localhost" && parsedMetadataServiceURL.Hostname() != "127.0.0.1" {
 		return nil, fmt.Errorf("%w: %s", errMetadataServiceNotLocalhost, cfg.MetadataServiceURL)
 	}
+
 	ms := metadataService{
 		metadataServiceURL: parsedMetadataServiceURL,
 		config:             cfg,
 	}
-	response, err := ms.Get(ctx)
-	if err != nil {
+
+	// Sanity check that a token can be obtained.
+	//
+	// TODO: Move this outside of this function. If credentials providers have
+	// to be tested, this should be done in the main default loop, not here.
+	if _, err := ms.Token(ctx); err != nil {
 		return nil, err
 	}
-	if response == nil {
-		return nil, nil
-	}
 
-	return credentials.NewOAuthCredentialsProviderFromTokenSource(ms), nil
+	cts := auth.NewCachedTokenSource(ms)
+	return credentials.NewOAuthCredentialsProviderFromTokenSource(cts), nil
 }
 
 type metadataService struct {
@@ -82,33 +86,26 @@ type metadataService struct {
 	config             *Config
 }
 
-// performs a request to the metadata service and returns the token
-func (s metadataService) Get(ctx context.Context) (*oauth2.Token, error) {
+func (ms metadataService) Token(ctx context.Context) (*oauth2.Token, error) {
 	ctx, cancel := context.WithTimeout(ctx, metadataServiceTimeout)
 	defer cancel()
-	var inner msiToken
-	err := s.config.refreshClient.Do(ctx, http.MethodGet,
-		s.metadataServiceURL.String(),
+
+	var mt *msiToken
+	err := ms.config.refreshClient.Do(ctx, http.MethodGet,
+		ms.metadataServiceURL.String(),
 		httpclient.WithRequestHeader(MetadataServiceVersionHeader, MetadataServiceVersion),
-		httpclient.WithRequestHeader(MetadataServiceHostHeader, s.config.Host),
-		httpclient.WithResponseUnmarshal(&inner),
+		httpclient.WithRequestHeader(MetadataServiceHostHeader, ms.config.Host),
+		httpclient.WithResponseUnmarshal(mt),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("token request: %w", err)
 	}
-	return inner.Token()
-}
 
-func (t metadataService) Token(ctx context.Context) (*oauth2.Token, error) {
-	token, err := t.Get(ctx)
+	token, err := mt.Token()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("token parse: %w", err)
 	}
-	if token == nil {
-		return nil, fmt.Errorf("no token returned from metadata service")
-	}
-	logger.Debugf(ctx,
-		"Refreshed access token from local metadata service, which expires on %s",
-		token.Expiry.Format(time.RFC3339))
+
+	logger.Debugf(ctx, "Refreshed access token from local metadata service, which expires on %s", token.Expiry.Format(time.RFC3339))
 	return token, nil
 }
