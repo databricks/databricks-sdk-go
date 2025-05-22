@@ -3,7 +3,10 @@
 package billing
 
 import (
+	"fmt"
 	"io"
+	"strings"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/compute"
@@ -15,9 +18,7 @@ func actionConfigurationToPb(st *ActionConfiguration) (*actionConfigurationPb, e
 	}
 	pb := &actionConfigurationPb{}
 	pb.ActionConfigurationId = st.ActionConfigurationId
-
 	pb.ActionType = st.ActionType
-
 	pb.Target = st.Target
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -25,11 +26,9 @@ func actionConfigurationToPb(st *ActionConfiguration) (*actionConfigurationPb, e
 }
 
 type actionConfigurationPb struct {
-	ActionConfigurationId string `json:"action_configuration_id,omitempty"`
-
-	ActionType ActionConfigurationType `json:"action_type,omitempty"`
-
-	Target string `json:"target,omitempty"`
+	ActionConfigurationId string                  `json:"action_configuration_id,omitempty"`
+	ActionType            ActionConfigurationType `json:"action_type,omitempty"`
+	Target                string                  `json:"target,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -61,15 +60,10 @@ func alertConfigurationToPb(st *AlertConfiguration) (*alertConfigurationPb, erro
 	}
 	pb := &alertConfigurationPb{}
 	pb.ActionConfigurations = st.ActionConfigurations
-
 	pb.AlertConfigurationId = st.AlertConfigurationId
-
 	pb.QuantityThreshold = st.QuantityThreshold
-
 	pb.QuantityType = st.QuantityType
-
 	pb.TimePeriod = st.TimePeriod
-
 	pb.TriggerType = st.TriggerType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -77,17 +71,12 @@ func alertConfigurationToPb(st *AlertConfiguration) (*alertConfigurationPb, erro
 }
 
 type alertConfigurationPb struct {
-	ActionConfigurations []ActionConfiguration `json:"action_configurations,omitempty"`
-
-	AlertConfigurationId string `json:"alert_configuration_id,omitempty"`
-
-	QuantityThreshold string `json:"quantity_threshold,omitempty"`
-
-	QuantityType AlertConfigurationQuantityType `json:"quantity_type,omitempty"`
-
-	TimePeriod AlertConfigurationTimePeriod `json:"time_period,omitempty"`
-
-	TriggerType AlertConfigurationTriggerType `json:"trigger_type,omitempty"`
+	ActionConfigurations []ActionConfiguration          `json:"action_configurations,omitempty"`
+	AlertConfigurationId string                         `json:"alert_configuration_id,omitempty"`
+	QuantityThreshold    string                         `json:"quantity_threshold,omitempty"`
+	QuantityType         AlertConfigurationQuantityType `json:"quantity_type,omitempty"`
+	TimePeriod           AlertConfigurationTimePeriod   `json:"time_period,omitempty"`
+	TriggerType          AlertConfigurationTriggerType  `json:"trigger_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -122,17 +111,11 @@ func budgetConfigurationToPb(st *BudgetConfiguration) (*budgetConfigurationPb, e
 	}
 	pb := &budgetConfigurationPb{}
 	pb.AccountId = st.AccountId
-
 	pb.AlertConfigurations = st.AlertConfigurations
-
 	pb.BudgetConfigurationId = st.BudgetConfigurationId
-
 	pb.CreateTime = st.CreateTime
-
 	pb.DisplayName = st.DisplayName
-
 	pb.Filter = st.Filter
-
 	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -140,19 +123,13 @@ func budgetConfigurationToPb(st *BudgetConfiguration) (*budgetConfigurationPb, e
 }
 
 type budgetConfigurationPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	AlertConfigurations []AlertConfiguration `json:"alert_configurations,omitempty"`
-
-	BudgetConfigurationId string `json:"budget_configuration_id,omitempty"`
-
-	CreateTime int64 `json:"create_time,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
-
-	UpdateTime int64 `json:"update_time,omitempty"`
+	AccountId             string                     `json:"account_id,omitempty"`
+	AlertConfigurations   []AlertConfiguration       `json:"alert_configurations,omitempty"`
+	BudgetConfigurationId string                     `json:"budget_configuration_id,omitempty"`
+	CreateTime            int64                      `json:"create_time,omitempty"`
+	DisplayName           string                     `json:"display_name,omitempty"`
+	Filter                *BudgetConfigurationFilter `json:"filter,omitempty"`
+	UpdateTime            int64                      `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -188,15 +165,13 @@ func budgetConfigurationFilterToPb(st *BudgetConfigurationFilter) (*budgetConfig
 	}
 	pb := &budgetConfigurationFilterPb{}
 	pb.Tags = st.Tags
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
 }
 
 type budgetConfigurationFilterPb struct {
-	Tags []BudgetConfigurationFilterTagClause `json:"tags,omitempty"`
-
+	Tags        []BudgetConfigurationFilterTagClause        `json:"tags,omitempty"`
 	WorkspaceId *BudgetConfigurationFilterWorkspaceIdClause `json:"workspace_id,omitempty"`
 }
 
@@ -217,7 +192,6 @@ func budgetConfigurationFilterClauseToPb(st *BudgetConfigurationFilterClause) (*
 	}
 	pb := &budgetConfigurationFilterClausePb{}
 	pb.Operator = st.Operator
-
 	pb.Values = st.Values
 
 	return pb, nil
@@ -225,8 +199,7 @@ func budgetConfigurationFilterClauseToPb(st *BudgetConfigurationFilterClause) (*
 
 type budgetConfigurationFilterClausePb struct {
 	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
-
-	Values []string `json:"values,omitempty"`
+	Values   []string                          `json:"values,omitempty"`
 }
 
 func budgetConfigurationFilterClauseFromPb(pb *budgetConfigurationFilterClausePb) (*BudgetConfigurationFilterClause, error) {
@@ -246,7 +219,6 @@ func budgetConfigurationFilterTagClauseToPb(st *BudgetConfigurationFilterTagClau
 	}
 	pb := &budgetConfigurationFilterTagClausePb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -254,8 +226,7 @@ func budgetConfigurationFilterTagClauseToPb(st *BudgetConfigurationFilterTagClau
 }
 
 type budgetConfigurationFilterTagClausePb struct {
-	Key string `json:"key,omitempty"`
-
+	Key   string                           `json:"key,omitempty"`
 	Value *BudgetConfigurationFilterClause `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -287,7 +258,6 @@ func budgetConfigurationFilterWorkspaceIdClauseToPb(st *BudgetConfigurationFilte
 	}
 	pb := &budgetConfigurationFilterWorkspaceIdClausePb{}
 	pb.Operator = st.Operator
-
 	pb.Values = st.Values
 
 	return pb, nil
@@ -295,8 +265,7 @@ func budgetConfigurationFilterWorkspaceIdClauseToPb(st *BudgetConfigurationFilte
 
 type budgetConfigurationFilterWorkspaceIdClausePb struct {
 	Operator BudgetConfigurationFilterOperator `json:"operator,omitempty"`
-
-	Values []int64 `json:"values,omitempty"`
+	Values   []int64                           `json:"values,omitempty"`
 }
 
 func budgetConfigurationFilterWorkspaceIdClauseFromPb(pb *budgetConfigurationFilterWorkspaceIdClausePb) (*BudgetConfigurationFilterWorkspaceIdClause, error) {
@@ -316,11 +285,8 @@ func budgetPolicyToPb(st *BudgetPolicy) (*budgetPolicyPb, error) {
 	}
 	pb := &budgetPolicyPb{}
 	pb.BindingWorkspaceIds = st.BindingWorkspaceIds
-
 	pb.CustomTags = st.CustomTags
-
 	pb.PolicyId = st.PolicyId
-
 	pb.PolicyName = st.PolicyName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -328,13 +294,10 @@ func budgetPolicyToPb(st *BudgetPolicy) (*budgetPolicyPb, error) {
 }
 
 type budgetPolicyPb struct {
-	BindingWorkspaceIds []int64 `json:"binding_workspace_ids,omitempty"`
-
-	CustomTags []compute.CustomPolicyTag `json:"custom_tags,omitempty"`
-
-	PolicyId string `json:"policy_id,omitempty"`
-
-	PolicyName string `json:"policy_name,omitempty"`
+	BindingWorkspaceIds []int64                   `json:"binding_workspace_ids,omitempty"`
+	CustomTags          []compute.CustomPolicyTag `json:"custom_tags,omitempty"`
+	PolicyId            string                    `json:"policy_id,omitempty"`
+	PolicyName          string                    `json:"policy_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -367,7 +330,6 @@ func createBillingUsageDashboardRequestToPb(st *CreateBillingUsageDashboardReque
 	}
 	pb := &createBillingUsageDashboardRequestPb{}
 	pb.DashboardType = st.DashboardType
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -376,8 +338,7 @@ func createBillingUsageDashboardRequestToPb(st *CreateBillingUsageDashboardReque
 
 type createBillingUsageDashboardRequestPb struct {
 	DashboardType UsageDashboardType `json:"dashboard_type,omitempty"`
-
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
+	WorkspaceId   int64              `json:"workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -444,11 +405,8 @@ func createBudgetConfigurationBudgetToPb(st *CreateBudgetConfigurationBudget) (*
 	}
 	pb := &createBudgetConfigurationBudgetPb{}
 	pb.AccountId = st.AccountId
-
 	pb.AlertConfigurations = st.AlertConfigurations
-
 	pb.DisplayName = st.DisplayName
-
 	pb.Filter = st.Filter
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -456,13 +414,10 @@ func createBudgetConfigurationBudgetToPb(st *CreateBudgetConfigurationBudget) (*
 }
 
 type createBudgetConfigurationBudgetPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
+	AccountId           string                                               `json:"account_id,omitempty"`
 	AlertConfigurations []CreateBudgetConfigurationBudgetAlertConfigurations `json:"alert_configurations,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	DisplayName         string                                               `json:"display_name,omitempty"`
+	Filter              *BudgetConfigurationFilter                           `json:"filter,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -495,7 +450,6 @@ func createBudgetConfigurationBudgetActionConfigurationsToPb(st *CreateBudgetCon
 	}
 	pb := &createBudgetConfigurationBudgetActionConfigurationsPb{}
 	pb.ActionType = st.ActionType
-
 	pb.Target = st.Target
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -504,8 +458,7 @@ func createBudgetConfigurationBudgetActionConfigurationsToPb(st *CreateBudgetCon
 
 type createBudgetConfigurationBudgetActionConfigurationsPb struct {
 	ActionType ActionConfigurationType `json:"action_type,omitempty"`
-
-	Target string `json:"target,omitempty"`
+	Target     string                  `json:"target,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -536,13 +489,9 @@ func createBudgetConfigurationBudgetAlertConfigurationsToPb(st *CreateBudgetConf
 	}
 	pb := &createBudgetConfigurationBudgetAlertConfigurationsPb{}
 	pb.ActionConfigurations = st.ActionConfigurations
-
 	pb.QuantityThreshold = st.QuantityThreshold
-
 	pb.QuantityType = st.QuantityType
-
 	pb.TimePeriod = st.TimePeriod
-
 	pb.TriggerType = st.TriggerType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -551,14 +500,10 @@ func createBudgetConfigurationBudgetAlertConfigurationsToPb(st *CreateBudgetConf
 
 type createBudgetConfigurationBudgetAlertConfigurationsPb struct {
 	ActionConfigurations []CreateBudgetConfigurationBudgetActionConfigurations `json:"action_configurations,omitempty"`
-
-	QuantityThreshold string `json:"quantity_threshold,omitempty"`
-
-	QuantityType AlertConfigurationQuantityType `json:"quantity_type,omitempty"`
-
-	TimePeriod AlertConfigurationTimePeriod `json:"time_period,omitempty"`
-
-	TriggerType AlertConfigurationTriggerType `json:"trigger_type,omitempty"`
+	QuantityThreshold    string                                                `json:"quantity_threshold,omitempty"`
+	QuantityType         AlertConfigurationQuantityType                        `json:"quantity_type,omitempty"`
+	TimePeriod           AlertConfigurationTimePeriod                          `json:"time_period,omitempty"`
+	TriggerType          AlertConfigurationTriggerType                         `json:"trigger_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -640,7 +585,6 @@ func createBudgetPolicyRequestToPb(st *CreateBudgetPolicyRequest) (*createBudget
 	}
 	pb := &createBudgetPolicyRequestPb{}
 	pb.Policy = st.Policy
-
 	pb.RequestId = st.RequestId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -648,9 +592,8 @@ func createBudgetPolicyRequestToPb(st *CreateBudgetPolicyRequest) (*createBudget
 }
 
 type createBudgetPolicyRequestPb struct {
-	Policy *BudgetPolicy `json:"policy,omitempty"`
-
-	RequestId string `json:"request_id,omitempty"`
+	Policy    *BudgetPolicy `json:"policy,omitempty"`
+	RequestId string        `json:"request_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -681,21 +624,13 @@ func createLogDeliveryConfigurationParamsToPb(st *CreateLogDeliveryConfiguration
 	}
 	pb := &createLogDeliveryConfigurationParamsPb{}
 	pb.ConfigName = st.ConfigName
-
 	pb.CredentialsId = st.CredentialsId
-
 	pb.DeliveryPathPrefix = st.DeliveryPathPrefix
-
 	pb.DeliveryStartTime = st.DeliveryStartTime
-
 	pb.LogType = st.LogType
-
 	pb.OutputFormat = st.OutputFormat
-
 	pb.Status = st.Status
-
 	pb.StorageConfigurationId = st.StorageConfigurationId
-
 	pb.WorkspaceIdsFilter = st.WorkspaceIdsFilter
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -703,23 +638,15 @@ func createLogDeliveryConfigurationParamsToPb(st *CreateLogDeliveryConfiguration
 }
 
 type createLogDeliveryConfigurationParamsPb struct {
-	ConfigName string `json:"config_name,omitempty"`
-
-	CredentialsId string `json:"credentials_id"`
-
-	DeliveryPathPrefix string `json:"delivery_path_prefix,omitempty"`
-
-	DeliveryStartTime string `json:"delivery_start_time,omitempty"`
-
-	LogType LogType `json:"log_type"`
-
-	OutputFormat OutputFormat `json:"output_format"`
-
-	Status LogDeliveryConfigStatus `json:"status,omitempty"`
-
-	StorageConfigurationId string `json:"storage_configuration_id"`
-
-	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
+	ConfigName             string                  `json:"config_name,omitempty"`
+	CredentialsId          string                  `json:"credentials_id"`
+	DeliveryPathPrefix     string                  `json:"delivery_path_prefix,omitempty"`
+	DeliveryStartTime      string                  `json:"delivery_start_time,omitempty"`
+	LogType                LogType                 `json:"log_type"`
+	OutputFormat           OutputFormat            `json:"output_format"`
+	Status                 LogDeliveryConfigStatus `json:"status,omitempty"`
+	StorageConfigurationId string                  `json:"storage_configuration_id"`
+	WorkspaceIdsFilter     []int64                 `json:"workspace_ids_filter,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -847,9 +774,7 @@ func downloadRequestToPb(st *DownloadRequest) (*downloadRequestPb, error) {
 	}
 	pb := &downloadRequestPb{}
 	pb.EndMonth = st.EndMonth
-
 	pb.PersonalData = st.PersonalData
-
 	pb.StartMonth = st.StartMonth
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -857,11 +782,9 @@ func downloadRequestToPb(st *DownloadRequest) (*downloadRequestPb, error) {
 }
 
 type downloadRequestPb struct {
-	EndMonth string `json:"-" url:"end_month"`
-
-	PersonalData bool `json:"-" url:"personal_data,omitempty"`
-
-	StartMonth string `json:"-" url:"start_month"`
+	EndMonth     string `json:"-" url:"end_month"`
+	PersonalData bool   `json:"-" url:"personal_data,omitempty"`
+	StartMonth   string `json:"-" url:"start_month"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -917,9 +840,7 @@ func filterToPb(st *Filter) (*filterPb, error) {
 	}
 	pb := &filterPb{}
 	pb.CreatorUserId = st.CreatorUserId
-
 	pb.CreatorUserName = st.CreatorUserName
-
 	pb.PolicyName = st.PolicyName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -927,11 +848,9 @@ func filterToPb(st *Filter) (*filterPb, error) {
 }
 
 type filterPb struct {
-	CreatorUserId int64 `json:"creator_user_id,omitempty" url:"creator_user_id,omitempty"`
-
+	CreatorUserId   int64  `json:"creator_user_id,omitempty" url:"creator_user_id,omitempty"`
 	CreatorUserName string `json:"creator_user_name,omitempty" url:"creator_user_name,omitempty"`
-
-	PolicyName string `json:"policy_name,omitempty" url:"policy_name,omitempty"`
+	PolicyName      string `json:"policy_name,omitempty" url:"policy_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -963,7 +882,6 @@ func getBillingUsageDashboardRequestToPb(st *GetBillingUsageDashboardRequest) (*
 	}
 	pb := &getBillingUsageDashboardRequestPb{}
 	pb.DashboardType = st.DashboardType
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -972,8 +890,7 @@ func getBillingUsageDashboardRequestToPb(st *GetBillingUsageDashboardRequest) (*
 
 type getBillingUsageDashboardRequestPb struct {
 	DashboardType UsageDashboardType `json:"-" url:"dashboard_type,omitempty"`
-
-	WorkspaceId int64 `json:"-" url:"workspace_id,omitempty"`
+	WorkspaceId   int64              `json:"-" url:"workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1004,7 +921,6 @@ func getBillingUsageDashboardResponseToPb(st *GetBillingUsageDashboardResponse) 
 	}
 	pb := &getBillingUsageDashboardResponsePb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.DashboardUrl = st.DashboardUrl
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1012,8 +928,7 @@ func getBillingUsageDashboardResponseToPb(st *GetBillingUsageDashboardResponse) 
 }
 
 type getBillingUsageDashboardResponsePb struct {
-	DashboardId string `json:"dashboard_id,omitempty"`
-
+	DashboardId  string `json:"dashboard_id,omitempty"`
 	DashboardUrl string `json:"dashboard_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1198,7 +1113,6 @@ func listBudgetConfigurationsResponseToPb(st *ListBudgetConfigurationsResponse) 
 	}
 	pb := &listBudgetConfigurationsResponsePb{}
 	pb.Budgets = st.Budgets
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1206,9 +1120,8 @@ func listBudgetConfigurationsResponseToPb(st *ListBudgetConfigurationsResponse) 
 }
 
 type listBudgetConfigurationsResponsePb struct {
-	Budgets []BudgetConfiguration `json:"budgets,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Budgets       []BudgetConfiguration `json:"budgets,omitempty"`
+	NextPageToken string                `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1239,11 +1152,8 @@ func listBudgetPoliciesRequestToPb(st *ListBudgetPoliciesRequest) (*listBudgetPo
 	}
 	pb := &listBudgetPoliciesRequestPb{}
 	pb.FilterBy = st.FilterBy
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
-
 	pb.SortSpec = st.SortSpec
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1251,13 +1161,10 @@ func listBudgetPoliciesRequestToPb(st *ListBudgetPoliciesRequest) (*listBudgetPo
 }
 
 type listBudgetPoliciesRequestPb struct {
-	FilterBy *Filter `json:"-" url:"filter_by,omitempty"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	SortSpec *SortSpec `json:"-" url:"sort_spec,omitempty"`
+	FilterBy  *Filter   `json:"-" url:"filter_by,omitempty"`
+	PageSize  int       `json:"-" url:"page_size,omitempty"`
+	PageToken string    `json:"-" url:"page_token,omitempty"`
+	SortSpec  *SortSpec `json:"-" url:"sort_spec,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1290,9 +1197,7 @@ func listBudgetPoliciesResponseToPb(st *ListBudgetPoliciesResponse) (*listBudget
 	}
 	pb := &listBudgetPoliciesResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Policies = st.Policies
-
 	pb.PreviousPageToken = st.PreviousPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1300,11 +1205,9 @@ func listBudgetPoliciesResponseToPb(st *ListBudgetPoliciesResponse) (*listBudget
 }
 
 type listBudgetPoliciesResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Policies []BudgetPolicy `json:"policies,omitempty"`
-
-	PreviousPageToken string `json:"previous_page_token,omitempty"`
+	NextPageToken     string         `json:"next_page_token,omitempty"`
+	Policies          []BudgetPolicy `json:"policies,omitempty"`
+	PreviousPageToken string         `json:"previous_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1336,9 +1239,7 @@ func listLogDeliveryRequestToPb(st *ListLogDeliveryRequest) (*listLogDeliveryReq
 	}
 	pb := &listLogDeliveryRequestPb{}
 	pb.CredentialsId = st.CredentialsId
-
 	pb.Status = st.Status
-
 	pb.StorageConfigurationId = st.StorageConfigurationId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1346,11 +1247,9 @@ func listLogDeliveryRequestToPb(st *ListLogDeliveryRequest) (*listLogDeliveryReq
 }
 
 type listLogDeliveryRequestPb struct {
-	CredentialsId string `json:"-" url:"credentials_id,omitempty"`
-
-	Status LogDeliveryConfigStatus `json:"-" url:"status,omitempty"`
-
-	StorageConfigurationId string `json:"-" url:"storage_configuration_id,omitempty"`
+	CredentialsId          string                  `json:"-" url:"credentials_id,omitempty"`
+	Status                 LogDeliveryConfigStatus `json:"-" url:"status,omitempty"`
+	StorageConfigurationId string                  `json:"-" url:"storage_configuration_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1382,31 +1281,18 @@ func logDeliveryConfigurationToPb(st *LogDeliveryConfiguration) (*logDeliveryCon
 	}
 	pb := &logDeliveryConfigurationPb{}
 	pb.AccountId = st.AccountId
-
 	pb.ConfigId = st.ConfigId
-
 	pb.ConfigName = st.ConfigName
-
 	pb.CreationTime = st.CreationTime
-
 	pb.CredentialsId = st.CredentialsId
-
 	pb.DeliveryPathPrefix = st.DeliveryPathPrefix
-
 	pb.DeliveryStartTime = st.DeliveryStartTime
-
 	pb.LogDeliveryStatus = st.LogDeliveryStatus
-
 	pb.LogType = st.LogType
-
 	pb.OutputFormat = st.OutputFormat
-
 	pb.Status = st.Status
-
 	pb.StorageConfigurationId = st.StorageConfigurationId
-
 	pb.UpdateTime = st.UpdateTime
-
 	pb.WorkspaceIdsFilter = st.WorkspaceIdsFilter
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1414,33 +1300,20 @@ func logDeliveryConfigurationToPb(st *LogDeliveryConfiguration) (*logDeliveryCon
 }
 
 type logDeliveryConfigurationPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	ConfigId string `json:"config_id,omitempty"`
-
-	ConfigName string `json:"config_name,omitempty"`
-
-	CreationTime int64 `json:"creation_time,omitempty"`
-
-	CredentialsId string `json:"credentials_id,omitempty"`
-
-	DeliveryPathPrefix string `json:"delivery_path_prefix,omitempty"`
-
-	DeliveryStartTime string `json:"delivery_start_time,omitempty"`
-
-	LogDeliveryStatus *LogDeliveryStatus `json:"log_delivery_status,omitempty"`
-
-	LogType LogType `json:"log_type,omitempty"`
-
-	OutputFormat OutputFormat `json:"output_format,omitempty"`
-
-	Status LogDeliveryConfigStatus `json:"status,omitempty"`
-
-	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
-
-	UpdateTime int64 `json:"update_time,omitempty"`
-
-	WorkspaceIdsFilter []int64 `json:"workspace_ids_filter,omitempty"`
+	AccountId              string                  `json:"account_id,omitempty"`
+	ConfigId               string                  `json:"config_id,omitempty"`
+	ConfigName             string                  `json:"config_name,omitempty"`
+	CreationTime           int64                   `json:"creation_time,omitempty"`
+	CredentialsId          string                  `json:"credentials_id,omitempty"`
+	DeliveryPathPrefix     string                  `json:"delivery_path_prefix,omitempty"`
+	DeliveryStartTime      string                  `json:"delivery_start_time,omitempty"`
+	LogDeliveryStatus      *LogDeliveryStatus      `json:"log_delivery_status,omitempty"`
+	LogType                LogType                 `json:"log_type,omitempty"`
+	OutputFormat           OutputFormat            `json:"output_format,omitempty"`
+	Status                 LogDeliveryConfigStatus `json:"status,omitempty"`
+	StorageConfigurationId string                  `json:"storage_configuration_id,omitempty"`
+	UpdateTime             int64                   `json:"update_time,omitempty"`
+	WorkspaceIdsFilter     []int64                 `json:"workspace_ids_filter,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1483,11 +1356,8 @@ func logDeliveryStatusToPb(st *LogDeliveryStatus) (*logDeliveryStatusPb, error) 
 	}
 	pb := &logDeliveryStatusPb{}
 	pb.LastAttemptTime = st.LastAttemptTime
-
 	pb.LastSuccessfulAttemptTime = st.LastSuccessfulAttemptTime
-
 	pb.Message = st.Message
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1495,13 +1365,10 @@ func logDeliveryStatusToPb(st *LogDeliveryStatus) (*logDeliveryStatusPb, error) 
 }
 
 type logDeliveryStatusPb struct {
-	LastAttemptTime string `json:"last_attempt_time,omitempty"`
-
-	LastSuccessfulAttemptTime string `json:"last_successful_attempt_time,omitempty"`
-
-	Message string `json:"message,omitempty"`
-
-	Status DeliveryStatus `json:"status,omitempty"`
+	LastAttemptTime           string         `json:"last_attempt_time,omitempty"`
+	LastSuccessfulAttemptTime string         `json:"last_successful_attempt_time,omitempty"`
+	Message                   string         `json:"message,omitempty"`
+	Status                    DeliveryStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1555,7 +1422,6 @@ func sortSpecToPb(st *SortSpec) (*sortSpecPb, error) {
 	}
 	pb := &sortSpecPb{}
 	pb.Descending = st.Descending
-
 	pb.Field = st.Field
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1563,9 +1429,8 @@ func sortSpecToPb(st *SortSpec) (*sortSpecPb, error) {
 }
 
 type sortSpecPb struct {
-	Descending bool `json:"descending,omitempty" url:"descending,omitempty"`
-
-	Field SortSpecField `json:"field,omitempty" url:"field,omitempty"`
+	Descending bool          `json:"descending,omitempty" url:"descending,omitempty"`
+	Field      SortSpecField `json:"field,omitempty" url:"field,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1596,13 +1461,9 @@ func updateBudgetConfigurationBudgetToPb(st *UpdateBudgetConfigurationBudget) (*
 	}
 	pb := &updateBudgetConfigurationBudgetPb{}
 	pb.AccountId = st.AccountId
-
 	pb.AlertConfigurations = st.AlertConfigurations
-
 	pb.BudgetConfigurationId = st.BudgetConfigurationId
-
 	pb.DisplayName = st.DisplayName
-
 	pb.Filter = st.Filter
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1610,15 +1471,11 @@ func updateBudgetConfigurationBudgetToPb(st *UpdateBudgetConfigurationBudget) (*
 }
 
 type updateBudgetConfigurationBudgetPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	AlertConfigurations []AlertConfiguration `json:"alert_configurations,omitempty"`
-
-	BudgetConfigurationId string `json:"budget_configuration_id,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	Filter *BudgetConfigurationFilter `json:"filter,omitempty"`
+	AccountId             string                     `json:"account_id,omitempty"`
+	AlertConfigurations   []AlertConfiguration       `json:"alert_configurations,omitempty"`
+	BudgetConfigurationId string                     `json:"budget_configuration_id,omitempty"`
+	DisplayName           string                     `json:"display_name,omitempty"`
+	Filter                *BudgetConfigurationFilter `json:"filter,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1652,16 +1509,14 @@ func updateBudgetConfigurationRequestToPb(st *UpdateBudgetConfigurationRequest) 
 	}
 	pb := &updateBudgetConfigurationRequestPb{}
 	pb.Budget = st.Budget
-
 	pb.BudgetId = st.BudgetId
 
 	return pb, nil
 }
 
 type updateBudgetConfigurationRequestPb struct {
-	Budget UpdateBudgetConfigurationBudget `json:"budget"`
-
-	BudgetId string `json:"-" url:"-"`
+	Budget   UpdateBudgetConfigurationBudget `json:"budget"`
+	BudgetId string                          `json:"-" url:"-"`
 }
 
 func updateBudgetConfigurationRequestFromPb(pb *updateBudgetConfigurationRequestPb) (*UpdateBudgetConfigurationRequest, error) {
@@ -1705,9 +1560,7 @@ func updateBudgetPolicyRequestToPb(st *UpdateBudgetPolicyRequest) (*updateBudget
 	}
 	pb := &updateBudgetPolicyRequestPb{}
 	pb.LimitConfig = st.LimitConfig
-
 	pb.Policy = st.Policy
-
 	pb.PolicyId = st.PolicyId
 
 	return pb, nil
@@ -1715,10 +1568,8 @@ func updateBudgetPolicyRequestToPb(st *UpdateBudgetPolicyRequest) (*updateBudget
 
 type updateBudgetPolicyRequestPb struct {
 	LimitConfig *LimitConfig `json:"-" url:"limit_config,omitempty"`
-
-	Policy BudgetPolicy `json:"policy"`
-
-	PolicyId string `json:"-" url:"-"`
+	Policy      BudgetPolicy `json:"policy"`
+	PolicyId    string       `json:"-" url:"-"`
 }
 
 func updateBudgetPolicyRequestFromPb(pb *updateBudgetPolicyRequestPb) (*UpdateBudgetPolicyRequest, error) {
@@ -1739,16 +1590,14 @@ func updateLogDeliveryConfigurationStatusRequestToPb(st *UpdateLogDeliveryConfig
 	}
 	pb := &updateLogDeliveryConfigurationStatusRequestPb{}
 	pb.LogDeliveryConfigurationId = st.LogDeliveryConfigurationId
-
 	pb.Status = st.Status
 
 	return pb, nil
 }
 
 type updateLogDeliveryConfigurationStatusRequestPb struct {
-	LogDeliveryConfigurationId string `json:"-" url:"-"`
-
-	Status LogDeliveryConfigStatus `json:"status"`
+	LogDeliveryConfigurationId string                  `json:"-" url:"-"`
+	Status                     LogDeliveryConfigStatus `json:"status"`
 }
 
 func updateLogDeliveryConfigurationStatusRequestFromPb(pb *updateLogDeliveryConfigurationStatusRequestPb) (*UpdateLogDeliveryConfigurationStatusRequest, error) {
@@ -1832,4 +1681,58 @@ func wrappedLogDeliveryConfigurationsFromPb(pb *wrappedLogDeliveryConfigurations
 	st.LogDeliveryConfigurations = pb.LogDeliveryConfigurations
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

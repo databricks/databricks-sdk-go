@@ -3,6 +3,10 @@
 package cleanrooms
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
@@ -16,23 +20,14 @@ func cleanRoomToPb(st *CleanRoom) (*cleanRoomPb, error) {
 	}
 	pb := &cleanRoomPb{}
 	pb.AccessRestricted = st.AccessRestricted
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.LocalCollaboratorAlias = st.LocalCollaboratorAlias
-
 	pb.Name = st.Name
-
 	pb.OutputCatalog = st.OutputCatalog
-
 	pb.Owner = st.Owner
-
 	pb.RemoteDetailedInfo = st.RemoteDetailedInfo
-
 	pb.Status = st.Status
-
 	pb.UpdatedAt = st.UpdatedAt
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -40,25 +35,16 @@ func cleanRoomToPb(st *CleanRoom) (*cleanRoomPb, error) {
 }
 
 type cleanRoomPb struct {
-	AccessRestricted CleanRoomAccessRestricted `json:"access_restricted,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	LocalCollaboratorAlias string `json:"local_collaborator_alias,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	OutputCatalog *CleanRoomOutputCatalog `json:"output_catalog,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	RemoteDetailedInfo *CleanRoomRemoteDetail `json:"remote_detailed_info,omitempty"`
-
-	Status CleanRoomStatusEnum `json:"status,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	AccessRestricted       CleanRoomAccessRestricted `json:"access_restricted,omitempty"`
+	Comment                string                    `json:"comment,omitempty"`
+	CreatedAt              int64                     `json:"created_at,omitempty"`
+	LocalCollaboratorAlias string                    `json:"local_collaborator_alias,omitempty"`
+	Name                   string                    `json:"name,omitempty"`
+	OutputCatalog          *CleanRoomOutputCatalog   `json:"output_catalog,omitempty"`
+	Owner                  string                    `json:"owner,omitempty"`
+	RemoteDetailedInfo     *CleanRoomRemoteDetail    `json:"remote_detailed_info,omitempty"`
+	Status                 CleanRoomStatusEnum       `json:"status,omitempty"`
+	UpdatedAt              int64                     `json:"updated_at,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -97,29 +83,17 @@ func cleanRoomAssetToPb(st *CleanRoomAsset) (*cleanRoomAssetPb, error) {
 	}
 	pb := &cleanRoomAssetPb{}
 	pb.AddedAt = st.AddedAt
-
 	pb.AssetType = st.AssetType
-
 	pb.ForeignTable = st.ForeignTable
-
 	pb.ForeignTableLocalDetails = st.ForeignTableLocalDetails
-
 	pb.Name = st.Name
-
 	pb.Notebook = st.Notebook
-
 	pb.OwnerCollaboratorAlias = st.OwnerCollaboratorAlias
-
 	pb.Status = st.Status
-
 	pb.Table = st.Table
-
 	pb.TableLocalDetails = st.TableLocalDetails
-
 	pb.View = st.View
-
 	pb.ViewLocalDetails = st.ViewLocalDetails
-
 	pb.VolumeLocalDetails = st.VolumeLocalDetails
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -127,31 +101,19 @@ func cleanRoomAssetToPb(st *CleanRoomAsset) (*cleanRoomAssetPb, error) {
 }
 
 type cleanRoomAssetPb struct {
-	AddedAt int64 `json:"added_at,omitempty"`
-
-	AssetType CleanRoomAssetAssetType `json:"asset_type,omitempty"`
-
-	ForeignTable *CleanRoomAssetForeignTable `json:"foreign_table,omitempty"`
-
+	AddedAt                  int64                                   `json:"added_at,omitempty"`
+	AssetType                CleanRoomAssetAssetType                 `json:"asset_type,omitempty"`
+	ForeignTable             *CleanRoomAssetForeignTable             `json:"foreign_table,omitempty"`
 	ForeignTableLocalDetails *CleanRoomAssetForeignTableLocalDetails `json:"foreign_table_local_details,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Notebook *CleanRoomAssetNotebook `json:"notebook,omitempty"`
-
-	OwnerCollaboratorAlias string `json:"owner_collaborator_alias,omitempty"`
-
-	Status CleanRoomAssetStatusEnum `json:"status,omitempty"`
-
-	Table *CleanRoomAssetTable `json:"table,omitempty"`
-
-	TableLocalDetails *CleanRoomAssetTableLocalDetails `json:"table_local_details,omitempty"`
-
-	View *CleanRoomAssetView `json:"view,omitempty"`
-
-	ViewLocalDetails *CleanRoomAssetViewLocalDetails `json:"view_local_details,omitempty"`
-
-	VolumeLocalDetails *CleanRoomAssetVolumeLocalDetails `json:"volume_local_details,omitempty"`
+	Name                     string                                  `json:"name,omitempty"`
+	Notebook                 *CleanRoomAssetNotebook                 `json:"notebook,omitempty"`
+	OwnerCollaboratorAlias   string                                  `json:"owner_collaborator_alias,omitempty"`
+	Status                   CleanRoomAssetStatusEnum                `json:"status,omitempty"`
+	Table                    *CleanRoomAssetTable                    `json:"table,omitempty"`
+	TableLocalDetails        *CleanRoomAssetTableLocalDetails        `json:"table_local_details,omitempty"`
+	View                     *CleanRoomAssetView                     `json:"view,omitempty"`
+	ViewLocalDetails         *CleanRoomAssetViewLocalDetails         `json:"view_local_details,omitempty"`
+	VolumeLocalDetails       *CleanRoomAssetVolumeLocalDetails       `json:"volume_local_details,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -253,13 +215,9 @@ func cleanRoomAssetNotebookToPb(st *CleanRoomAssetNotebook) (*cleanRoomAssetNote
 	}
 	pb := &cleanRoomAssetNotebookPb{}
 	pb.Etag = st.Etag
-
 	pb.NotebookContent = st.NotebookContent
-
 	pb.ReviewState = st.ReviewState
-
 	pb.Reviews = st.Reviews
-
 	pb.RunnerCollaboratorAliases = st.RunnerCollaboratorAliases
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -267,15 +225,11 @@ func cleanRoomAssetNotebookToPb(st *CleanRoomAssetNotebook) (*cleanRoomAssetNote
 }
 
 type cleanRoomAssetNotebookPb struct {
-	Etag string `json:"etag,omitempty"`
-
-	NotebookContent string `json:"notebook_content,omitempty"`
-
-	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
-
-	Reviews []CleanRoomNotebookReview `json:"reviews,omitempty"`
-
-	RunnerCollaboratorAliases []string `json:"runner_collaborator_aliases,omitempty"`
+	Etag                      string                                     `json:"etag,omitempty"`
+	NotebookContent           string                                     `json:"notebook_content,omitempty"`
+	ReviewState               CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
+	Reviews                   []CleanRoomNotebookReview                  `json:"reviews,omitempty"`
+	RunnerCollaboratorAliases []string                                   `json:"runner_collaborator_aliases,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -333,7 +287,6 @@ func cleanRoomAssetTableLocalDetailsToPb(st *CleanRoomAssetTableLocalDetails) (*
 	}
 	pb := &cleanRoomAssetTableLocalDetailsPb{}
 	pb.LocalName = st.LocalName
-
 	pb.Partitions = st.Partitions
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -341,8 +294,7 @@ func cleanRoomAssetTableLocalDetailsToPb(st *CleanRoomAssetTableLocalDetails) (*
 }
 
 type cleanRoomAssetTableLocalDetailsPb struct {
-	LocalName string `json:"local_name,omitempty"`
-
+	LocalName  string              `json:"local_name,omitempty"`
 	Partitions []sharing.Partition `json:"partitions,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -470,15 +422,10 @@ func cleanRoomCollaboratorToPb(st *CleanRoomCollaborator) (*cleanRoomCollaborato
 	}
 	pb := &cleanRoomCollaboratorPb{}
 	pb.CollaboratorAlias = st.CollaboratorAlias
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GlobalMetastoreId = st.GlobalMetastoreId
-
 	pb.InviteRecipientEmail = st.InviteRecipientEmail
-
 	pb.InviteRecipientWorkspaceId = st.InviteRecipientWorkspaceId
-
 	pb.OrganizationName = st.OrganizationName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -486,17 +433,12 @@ func cleanRoomCollaboratorToPb(st *CleanRoomCollaborator) (*cleanRoomCollaborato
 }
 
 type cleanRoomCollaboratorPb struct {
-	CollaboratorAlias string `json:"collaborator_alias"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
-
-	InviteRecipientEmail string `json:"invite_recipient_email,omitempty"`
-
-	InviteRecipientWorkspaceId int64 `json:"invite_recipient_workspace_id,omitempty"`
-
-	OrganizationName string `json:"organization_name,omitempty"`
+	CollaboratorAlias          string `json:"collaborator_alias"`
+	DisplayName                string `json:"display_name,omitempty"`
+	GlobalMetastoreId          string `json:"global_metastore_id,omitempty"`
+	InviteRecipientEmail       string `json:"invite_recipient_email,omitempty"`
+	InviteRecipientWorkspaceId int64  `json:"invite_recipient_workspace_id,omitempty"`
+	OrganizationName           string `json:"organization_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -531,13 +473,9 @@ func cleanRoomNotebookReviewToPb(st *CleanRoomNotebookReview) (*cleanRoomNoteboo
 	}
 	pb := &cleanRoomNotebookReviewPb{}
 	pb.Comment = st.Comment
-
 	pb.CreatedAtMillis = st.CreatedAtMillis
-
 	pb.ReviewState = st.ReviewState
-
 	pb.ReviewSubReason = st.ReviewSubReason
-
 	pb.ReviewerCollaboratorAlias = st.ReviewerCollaboratorAlias
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -545,15 +483,11 @@ func cleanRoomNotebookReviewToPb(st *CleanRoomNotebookReview) (*cleanRoomNoteboo
 }
 
 type cleanRoomNotebookReviewPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAtMillis int64 `json:"created_at_millis,omitempty"`
-
-	ReviewState CleanRoomNotebookReviewNotebookReviewState `json:"review_state,omitempty"`
-
-	ReviewSubReason CleanRoomNotebookReviewNotebookReviewSubReason `json:"review_sub_reason,omitempty"`
-
-	ReviewerCollaboratorAlias string `json:"reviewer_collaborator_alias,omitempty"`
+	Comment                   string                                         `json:"comment,omitempty"`
+	CreatedAtMillis           int64                                          `json:"created_at_millis,omitempty"`
+	ReviewState               CleanRoomNotebookReviewNotebookReviewState     `json:"review_state,omitempty"`
+	ReviewSubReason           CleanRoomNotebookReviewNotebookReviewSubReason `json:"review_sub_reason,omitempty"`
+	ReviewerCollaboratorAlias string                                         `json:"reviewer_collaborator_alias,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -587,21 +521,13 @@ func cleanRoomNotebookTaskRunToPb(st *CleanRoomNotebookTaskRun) (*cleanRoomNoteb
 	}
 	pb := &cleanRoomNotebookTaskRunPb{}
 	pb.CollaboratorJobRunInfo = st.CollaboratorJobRunInfo
-
 	pb.NotebookEtag = st.NotebookEtag
-
 	pb.NotebookJobRunState = st.NotebookJobRunState
-
 	pb.NotebookName = st.NotebookName
-
 	pb.NotebookUpdatedAt = st.NotebookUpdatedAt
-
 	pb.OutputSchemaExpirationTime = st.OutputSchemaExpirationTime
-
 	pb.OutputSchemaName = st.OutputSchemaName
-
 	pb.RunDuration = st.RunDuration
-
 	pb.StartTime = st.StartTime
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -609,23 +535,15 @@ func cleanRoomNotebookTaskRunToPb(st *CleanRoomNotebookTaskRun) (*cleanRoomNoteb
 }
 
 type cleanRoomNotebookTaskRunPb struct {
-	CollaboratorJobRunInfo *CollaboratorJobRunInfo `json:"collaborator_job_run_info,omitempty"`
-
-	NotebookEtag string `json:"notebook_etag,omitempty"`
-
-	NotebookJobRunState *jobs.CleanRoomTaskRunState `json:"notebook_job_run_state,omitempty"`
-
-	NotebookName string `json:"notebook_name,omitempty"`
-
-	NotebookUpdatedAt int64 `json:"notebook_updated_at,omitempty"`
-
-	OutputSchemaExpirationTime int64 `json:"output_schema_expiration_time,omitempty"`
-
-	OutputSchemaName string `json:"output_schema_name,omitempty"`
-
-	RunDuration int64 `json:"run_duration,omitempty"`
-
-	StartTime int64 `json:"start_time,omitempty"`
+	CollaboratorJobRunInfo     *CollaboratorJobRunInfo     `json:"collaborator_job_run_info,omitempty"`
+	NotebookEtag               string                      `json:"notebook_etag,omitempty"`
+	NotebookJobRunState        *jobs.CleanRoomTaskRunState `json:"notebook_job_run_state,omitempty"`
+	NotebookName               string                      `json:"notebook_name,omitempty"`
+	NotebookUpdatedAt          int64                       `json:"notebook_updated_at,omitempty"`
+	OutputSchemaExpirationTime int64                       `json:"output_schema_expiration_time,omitempty"`
+	OutputSchemaName           string                      `json:"output_schema_name,omitempty"`
+	RunDuration                int64                       `json:"run_duration,omitempty"`
+	StartTime                  int64                       `json:"start_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -663,7 +581,6 @@ func cleanRoomOutputCatalogToPb(st *CleanRoomOutputCatalog) (*cleanRoomOutputCat
 	}
 	pb := &cleanRoomOutputCatalogPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -671,9 +588,8 @@ func cleanRoomOutputCatalogToPb(st *CleanRoomOutputCatalog) (*cleanRoomOutputCat
 }
 
 type cleanRoomOutputCatalogPb struct {
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	Status CleanRoomOutputCatalogOutputCatalogStatus `json:"status,omitempty"`
+	CatalogName string                                    `json:"catalog_name,omitempty"`
+	Status      CleanRoomOutputCatalogOutputCatalogStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -704,17 +620,11 @@ func cleanRoomRemoteDetailToPb(st *CleanRoomRemoteDetail) (*cleanRoomRemoteDetai
 	}
 	pb := &cleanRoomRemoteDetailPb{}
 	pb.CentralCleanRoomId = st.CentralCleanRoomId
-
 	pb.CloudVendor = st.CloudVendor
-
 	pb.Collaborators = st.Collaborators
-
 	pb.ComplianceSecurityProfile = st.ComplianceSecurityProfile
-
 	pb.Creator = st.Creator
-
 	pb.EgressNetworkPolicy = st.EgressNetworkPolicy
-
 	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -722,19 +632,13 @@ func cleanRoomRemoteDetailToPb(st *CleanRoomRemoteDetail) (*cleanRoomRemoteDetai
 }
 
 type cleanRoomRemoteDetailPb struct {
-	CentralCleanRoomId string `json:"central_clean_room_id,omitempty"`
-
-	CloudVendor string `json:"cloud_vendor,omitempty"`
-
-	Collaborators []CleanRoomCollaborator `json:"collaborators,omitempty"`
-
-	ComplianceSecurityProfile *ComplianceSecurityProfile `json:"compliance_security_profile,omitempty"`
-
-	Creator *CleanRoomCollaborator `json:"creator,omitempty"`
-
-	EgressNetworkPolicy *settings.EgressNetworkPolicy `json:"egress_network_policy,omitempty"`
-
-	Region string `json:"region,omitempty"`
+	CentralCleanRoomId        string                        `json:"central_clean_room_id,omitempty"`
+	CloudVendor               string                        `json:"cloud_vendor,omitempty"`
+	Collaborators             []CleanRoomCollaborator       `json:"collaborators,omitempty"`
+	ComplianceSecurityProfile *ComplianceSecurityProfile    `json:"compliance_security_profile,omitempty"`
+	Creator                   *CleanRoomCollaborator        `json:"creator,omitempty"`
+	EgressNetworkPolicy       *settings.EgressNetworkPolicy `json:"egress_network_policy,omitempty"`
+	Region                    string                        `json:"region,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -770,13 +674,9 @@ func collaboratorJobRunInfoToPb(st *CollaboratorJobRunInfo) (*collaboratorJobRun
 	}
 	pb := &collaboratorJobRunInfoPb{}
 	pb.CollaboratorAlias = st.CollaboratorAlias
-
 	pb.CollaboratorJobId = st.CollaboratorJobId
-
 	pb.CollaboratorJobRunId = st.CollaboratorJobRunId
-
 	pb.CollaboratorTaskRunId = st.CollaboratorTaskRunId
-
 	pb.CollaboratorWorkspaceId = st.CollaboratorWorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -784,15 +684,11 @@ func collaboratorJobRunInfoToPb(st *CollaboratorJobRunInfo) (*collaboratorJobRun
 }
 
 type collaboratorJobRunInfoPb struct {
-	CollaboratorAlias string `json:"collaborator_alias,omitempty"`
-
-	CollaboratorJobId int64 `json:"collaborator_job_id,omitempty"`
-
-	CollaboratorJobRunId int64 `json:"collaborator_job_run_id,omitempty"`
-
-	CollaboratorTaskRunId int64 `json:"collaborator_task_run_id,omitempty"`
-
-	CollaboratorWorkspaceId int64 `json:"collaborator_workspace_id,omitempty"`
+	CollaboratorAlias       string `json:"collaborator_alias,omitempty"`
+	CollaboratorJobId       int64  `json:"collaborator_job_id,omitempty"`
+	CollaboratorJobRunId    int64  `json:"collaborator_job_run_id,omitempty"`
+	CollaboratorTaskRunId   int64  `json:"collaborator_task_run_id,omitempty"`
+	CollaboratorWorkspaceId int64  `json:"collaborator_workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -826,7 +722,6 @@ func complianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*complianceSe
 	}
 	pb := &complianceSecurityProfilePb{}
 	pb.ComplianceStandards = st.ComplianceStandards
-
 	pb.IsEnabled = st.IsEnabled
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -835,8 +730,7 @@ func complianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*complianceSe
 
 type complianceSecurityProfilePb struct {
 	ComplianceStandards []settings.ComplianceStandard `json:"compliance_standards,omitempty"`
-
-	IsEnabled bool `json:"is_enabled,omitempty"`
+	IsEnabled           bool                          `json:"is_enabled,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -867,16 +761,14 @@ func createCleanRoomAssetRequestToPb(st *CreateCleanRoomAssetRequest) (*createCl
 	}
 	pb := &createCleanRoomAssetRequestPb{}
 	pb.Asset = st.Asset
-
 	pb.CleanRoomName = st.CleanRoomName
 
 	return pb, nil
 }
 
 type createCleanRoomAssetRequestPb struct {
-	Asset CleanRoomAsset `json:"asset"`
-
-	CleanRoomName string `json:"-" url:"-"`
+	Asset         CleanRoomAsset `json:"asset"`
+	CleanRoomName string         `json:"-" url:"-"`
 }
 
 func createCleanRoomAssetRequestFromPb(pb *createCleanRoomAssetRequestPb) (*CreateCleanRoomAssetRequest, error) {
@@ -896,15 +788,13 @@ func createCleanRoomOutputCatalogRequestToPb(st *CreateCleanRoomOutputCatalogReq
 	}
 	pb := &createCleanRoomOutputCatalogRequestPb{}
 	pb.CleanRoomName = st.CleanRoomName
-
 	pb.OutputCatalog = st.OutputCatalog
 
 	return pb, nil
 }
 
 type createCleanRoomOutputCatalogRequestPb struct {
-	CleanRoomName string `json:"-" url:"-"`
-
+	CleanRoomName string                 `json:"-" url:"-"`
 	OutputCatalog CleanRoomOutputCatalog `json:"output_catalog"`
 }
 
@@ -973,20 +863,16 @@ func deleteCleanRoomAssetRequestToPb(st *DeleteCleanRoomAssetRequest) (*deleteCl
 	}
 	pb := &deleteCleanRoomAssetRequestPb{}
 	pb.AssetFullName = st.AssetFullName
-
 	pb.AssetType = st.AssetType
-
 	pb.CleanRoomName = st.CleanRoomName
 
 	return pb, nil
 }
 
 type deleteCleanRoomAssetRequestPb struct {
-	AssetFullName string `json:"-" url:"-"`
-
-	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
-
-	CleanRoomName string `json:"-" url:"-"`
+	AssetFullName string                  `json:"-" url:"-"`
+	AssetType     CleanRoomAssetAssetType `json:"-" url:"-"`
+	CleanRoomName string                  `json:"-" url:"-"`
 }
 
 func deleteCleanRoomAssetRequestFromPb(pb *deleteCleanRoomAssetRequestPb) (*DeleteCleanRoomAssetRequest, error) {
@@ -1073,20 +959,16 @@ func getCleanRoomAssetRequestToPb(st *GetCleanRoomAssetRequest) (*getCleanRoomAs
 	}
 	pb := &getCleanRoomAssetRequestPb{}
 	pb.AssetFullName = st.AssetFullName
-
 	pb.AssetType = st.AssetType
-
 	pb.CleanRoomName = st.CleanRoomName
 
 	return pb, nil
 }
 
 type getCleanRoomAssetRequestPb struct {
-	AssetFullName string `json:"-" url:"-"`
-
-	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
-
-	CleanRoomName string `json:"-" url:"-"`
+	AssetFullName string                  `json:"-" url:"-"`
+	AssetType     CleanRoomAssetAssetType `json:"-" url:"-"`
+	CleanRoomName string                  `json:"-" url:"-"`
 }
 
 func getCleanRoomAssetRequestFromPb(pb *getCleanRoomAssetRequestPb) (*GetCleanRoomAssetRequest, error) {
@@ -1131,7 +1013,6 @@ func listCleanRoomAssetsRequestToPb(st *ListCleanRoomAssetsRequest) (*listCleanR
 	}
 	pb := &listCleanRoomAssetsRequestPb{}
 	pb.CleanRoomName = st.CleanRoomName
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1140,8 +1021,7 @@ func listCleanRoomAssetsRequestToPb(st *ListCleanRoomAssetsRequest) (*listCleanR
 
 type listCleanRoomAssetsRequestPb struct {
 	CleanRoomName string `json:"-" url:"-"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1172,7 +1052,6 @@ func listCleanRoomAssetsResponseToPb(st *ListCleanRoomAssetsResponse) (*listClea
 	}
 	pb := &listCleanRoomAssetsResponsePb{}
 	pb.Assets = st.Assets
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1180,9 +1059,8 @@ func listCleanRoomAssetsResponseToPb(st *ListCleanRoomAssetsResponse) (*listClea
 }
 
 type listCleanRoomAssetsResponsePb struct {
-	Assets []CleanRoomAsset `json:"assets,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Assets        []CleanRoomAsset `json:"assets,omitempty"`
+	NextPageToken string           `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1213,11 +1091,8 @@ func listCleanRoomNotebookTaskRunsRequestToPb(st *ListCleanRoomNotebookTaskRunsR
 	}
 	pb := &listCleanRoomNotebookTaskRunsRequestPb{}
 	pb.CleanRoomName = st.CleanRoomName
-
 	pb.NotebookName = st.NotebookName
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1226,12 +1101,9 @@ func listCleanRoomNotebookTaskRunsRequestToPb(st *ListCleanRoomNotebookTaskRunsR
 
 type listCleanRoomNotebookTaskRunsRequestPb struct {
 	CleanRoomName string `json:"-" url:"-"`
-
-	NotebookName string `json:"-" url:"notebook_name,omitempty"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	NotebookName  string `json:"-" url:"notebook_name,omitempty"`
+	PageSize      int    `json:"-" url:"page_size,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1264,7 +1136,6 @@ func listCleanRoomNotebookTaskRunsResponseToPb(st *ListCleanRoomNotebookTaskRuns
 	}
 	pb := &listCleanRoomNotebookTaskRunsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Runs = st.Runs
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1272,9 +1143,8 @@ func listCleanRoomNotebookTaskRunsResponseToPb(st *ListCleanRoomNotebookTaskRuns
 }
 
 type listCleanRoomNotebookTaskRunsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Runs []CleanRoomNotebookTaskRun `json:"runs,omitempty"`
+	NextPageToken string                     `json:"next_page_token,omitempty"`
+	Runs          []CleanRoomNotebookTaskRun `json:"runs,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1305,7 +1175,6 @@ func listCleanRoomsRequestToPb(st *ListCleanRoomsRequest) (*listCleanRoomsReques
 	}
 	pb := &listCleanRoomsRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1313,8 +1182,7 @@ func listCleanRoomsRequestToPb(st *ListCleanRoomsRequest) (*listCleanRoomsReques
 }
 
 type listCleanRoomsRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1346,7 +1214,6 @@ func listCleanRoomsResponseToPb(st *ListCleanRoomsResponse) (*listCleanRoomsResp
 	}
 	pb := &listCleanRoomsResponsePb{}
 	pb.CleanRooms = st.CleanRooms
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1354,9 +1221,8 @@ func listCleanRoomsResponseToPb(st *ListCleanRoomsResponse) (*listCleanRoomsResp
 }
 
 type listCleanRoomsResponsePb struct {
-	CleanRooms []CleanRoom `json:"clean_rooms,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	CleanRooms    []CleanRoom `json:"clean_rooms,omitempty"`
+	NextPageToken string      `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1387,24 +1253,18 @@ func updateCleanRoomAssetRequestToPb(st *UpdateCleanRoomAssetRequest) (*updateCl
 	}
 	pb := &updateCleanRoomAssetRequestPb{}
 	pb.Asset = st.Asset
-
 	pb.AssetType = st.AssetType
-
 	pb.CleanRoomName = st.CleanRoomName
-
 	pb.Name = st.Name
 
 	return pb, nil
 }
 
 type updateCleanRoomAssetRequestPb struct {
-	Asset CleanRoomAsset `json:"asset"`
-
-	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
-
-	CleanRoomName string `json:"-" url:"-"`
-
-	Name string `json:"-" url:"-"`
+	Asset         CleanRoomAsset          `json:"asset"`
+	AssetType     CleanRoomAssetAssetType `json:"-" url:"-"`
+	CleanRoomName string                  `json:"-" url:"-"`
+	Name          string                  `json:"-" url:"-"`
 }
 
 func updateCleanRoomAssetRequestFromPb(pb *updateCleanRoomAssetRequestPb) (*UpdateCleanRoomAssetRequest, error) {
@@ -1426,7 +1286,6 @@ func updateCleanRoomRequestToPb(st *UpdateCleanRoomRequest) (*updateCleanRoomReq
 	}
 	pb := &updateCleanRoomRequestPb{}
 	pb.CleanRoom = st.CleanRoom
-
 	pb.Name = st.Name
 
 	return pb, nil
@@ -1434,8 +1293,7 @@ func updateCleanRoomRequestToPb(st *UpdateCleanRoomRequest) (*updateCleanRoomReq
 
 type updateCleanRoomRequestPb struct {
 	CleanRoom *CleanRoom `json:"clean_room,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	Name      string     `json:"-" url:"-"`
 }
 
 func updateCleanRoomRequestFromPb(pb *updateCleanRoomRequestPb) (*UpdateCleanRoomRequest, error) {
@@ -1447,4 +1305,58 @@ func updateCleanRoomRequestFromPb(pb *updateCleanRoomRequestPb) (*UpdateCleanRoo
 	st.Name = pb.Name
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

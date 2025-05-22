@@ -3,6 +3,10 @@
 package oauth2
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -12,7 +16,6 @@ func createAccountFederationPolicyRequestToPb(st *CreateAccountFederationPolicyR
 	}
 	pb := &createAccountFederationPolicyRequestPb{}
 	pb.Policy = st.Policy
-
 	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -20,9 +23,8 @@ func createAccountFederationPolicyRequestToPb(st *CreateAccountFederationPolicyR
 }
 
 type createAccountFederationPolicyRequestPb struct {
-	Policy FederationPolicy `json:"policy"`
-
-	PolicyId string `json:"-" url:"policy_id,omitempty"`
+	Policy   FederationPolicy `json:"policy"`
+	PolicyId string           `json:"-" url:"policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -53,15 +55,10 @@ func createCustomAppIntegrationToPb(st *CreateCustomAppIntegration) (*createCust
 	}
 	pb := &createCustomAppIntegrationPb{}
 	pb.Confidential = st.Confidential
-
 	pb.Name = st.Name
-
 	pb.RedirectUrls = st.RedirectUrls
-
 	pb.Scopes = st.Scopes
-
 	pb.TokenAccessPolicy = st.TokenAccessPolicy
-
 	pb.UserAuthorizedScopes = st.UserAuthorizedScopes
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -69,17 +66,12 @@ func createCustomAppIntegrationToPb(st *CreateCustomAppIntegration) (*createCust
 }
 
 type createCustomAppIntegrationPb struct {
-	Confidential bool `json:"confidential,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	RedirectUrls []string `json:"redirect_urls,omitempty"`
-
-	Scopes []string `json:"scopes,omitempty"`
-
-	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
-
-	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
+	Confidential         bool               `json:"confidential,omitempty"`
+	Name                 string             `json:"name,omitempty"`
+	RedirectUrls         []string           `json:"redirect_urls,omitempty"`
+	Scopes               []string           `json:"scopes,omitempty"`
+	TokenAccessPolicy    *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+	UserAuthorizedScopes []string           `json:"user_authorized_scopes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -114,9 +106,7 @@ func createCustomAppIntegrationOutputToPb(st *CreateCustomAppIntegrationOutput) 
 	}
 	pb := &createCustomAppIntegrationOutputPb{}
 	pb.ClientId = st.ClientId
-
 	pb.ClientSecret = st.ClientSecret
-
 	pb.IntegrationId = st.IntegrationId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -124,10 +114,8 @@ func createCustomAppIntegrationOutputToPb(st *CreateCustomAppIntegrationOutput) 
 }
 
 type createCustomAppIntegrationOutputPb struct {
-	ClientId string `json:"client_id,omitempty"`
-
-	ClientSecret string `json:"client_secret,omitempty"`
-
+	ClientId      string `json:"client_id,omitempty"`
+	ClientSecret  string `json:"client_secret,omitempty"`
 	IntegrationId string `json:"integration_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -160,7 +148,6 @@ func createPublishedAppIntegrationToPb(st *CreatePublishedAppIntegration) (*crea
 	}
 	pb := &createPublishedAppIntegrationPb{}
 	pb.AppId = st.AppId
-
 	pb.TokenAccessPolicy = st.TokenAccessPolicy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -168,8 +155,7 @@ func createPublishedAppIntegrationToPb(st *CreatePublishedAppIntegration) (*crea
 }
 
 type createPublishedAppIntegrationPb struct {
-	AppId string `json:"app_id,omitempty"`
-
+	AppId             string             `json:"app_id,omitempty"`
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -237,9 +223,7 @@ func createServicePrincipalFederationPolicyRequestToPb(st *CreateServicePrincipa
 	}
 	pb := &createServicePrincipalFederationPolicyRequestPb{}
 	pb.Policy = st.Policy
-
 	pb.PolicyId = st.PolicyId
-
 	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -247,11 +231,9 @@ func createServicePrincipalFederationPolicyRequestToPb(st *CreateServicePrincipa
 }
 
 type createServicePrincipalFederationPolicyRequestPb struct {
-	Policy FederationPolicy `json:"policy"`
-
-	PolicyId string `json:"-" url:"policy_id,omitempty"`
-
-	ServicePrincipalId int64 `json:"-" url:"-"`
+	Policy             FederationPolicy `json:"policy"`
+	PolicyId           string           `json:"-" url:"policy_id,omitempty"`
+	ServicePrincipalId int64            `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -283,7 +265,6 @@ func createServicePrincipalSecretRequestToPb(st *CreateServicePrincipalSecretReq
 	}
 	pb := &createServicePrincipalSecretRequestPb{}
 	pb.Lifetime = st.Lifetime
-
 	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -291,9 +272,8 @@ func createServicePrincipalSecretRequestToPb(st *CreateServicePrincipalSecretReq
 }
 
 type createServicePrincipalSecretRequestPb struct {
-	Lifetime string `json:"lifetime,omitempty"`
-
-	ServicePrincipalId int64 `json:"-" url:"-"`
+	Lifetime           string `json:"lifetime,omitempty"`
+	ServicePrincipalId int64  `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -324,17 +304,11 @@ func createServicePrincipalSecretResponseToPb(st *CreateServicePrincipalSecretRe
 	}
 	pb := &createServicePrincipalSecretResponsePb{}
 	pb.CreateTime = st.CreateTime
-
 	pb.ExpireTime = st.ExpireTime
-
 	pb.Id = st.Id
-
 	pb.Secret = st.Secret
-
 	pb.SecretHash = st.SecretHash
-
 	pb.Status = st.Status
-
 	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -343,17 +317,11 @@ func createServicePrincipalSecretResponseToPb(st *CreateServicePrincipalSecretRe
 
 type createServicePrincipalSecretResponsePb struct {
 	CreateTime string `json:"create_time,omitempty"`
-
 	ExpireTime string `json:"expire_time,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	Secret string `json:"secret,omitempty"`
-
+	Id         string `json:"id,omitempty"`
+	Secret     string `json:"secret,omitempty"`
 	SecretHash string `json:"secret_hash,omitempty"`
-
-	Status string `json:"status,omitempty"`
-
+	Status     string `json:"status,omitempty"`
 	UpdateTime string `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -525,16 +493,14 @@ func deleteServicePrincipalFederationPolicyRequestToPb(st *DeleteServicePrincipa
 	}
 	pb := &deleteServicePrincipalFederationPolicyRequestPb{}
 	pb.PolicyId = st.PolicyId
-
 	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	return pb, nil
 }
 
 type deleteServicePrincipalFederationPolicyRequestPb struct {
-	PolicyId string `json:"-" url:"-"`
-
-	ServicePrincipalId int64 `json:"-" url:"-"`
+	PolicyId           string `json:"-" url:"-"`
+	ServicePrincipalId int64  `json:"-" url:"-"`
 }
 
 func deleteServicePrincipalFederationPolicyRequestFromPb(pb *deleteServicePrincipalFederationPolicyRequestPb) (*DeleteServicePrincipalFederationPolicyRequest, error) {
@@ -554,16 +520,14 @@ func deleteServicePrincipalSecretRequestToPb(st *DeleteServicePrincipalSecretReq
 	}
 	pb := &deleteServicePrincipalSecretRequestPb{}
 	pb.SecretId = st.SecretId
-
 	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	return pb, nil
 }
 
 type deleteServicePrincipalSecretRequestPb struct {
-	SecretId string `json:"-" url:"-"`
-
-	ServicePrincipalId int64 `json:"-" url:"-"`
+	SecretId           string `json:"-" url:"-"`
+	ServicePrincipalId int64  `json:"-" url:"-"`
 }
 
 func deleteServicePrincipalSecretRequestFromPb(pb *deleteServicePrincipalSecretRequestPb) (*DeleteServicePrincipalSecretRequest, error) {
@@ -583,19 +547,12 @@ func federationPolicyToPb(st *FederationPolicy) (*federationPolicyPb, error) {
 	}
 	pb := &federationPolicyPb{}
 	pb.CreateTime = st.CreateTime
-
 	pb.Description = st.Description
-
 	pb.Name = st.Name
-
 	pb.OidcPolicy = st.OidcPolicy
-
 	pb.PolicyId = st.PolicyId
-
 	pb.ServicePrincipalId = st.ServicePrincipalId
-
 	pb.Uid = st.Uid
-
 	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -603,21 +560,14 @@ func federationPolicyToPb(st *FederationPolicy) (*federationPolicyPb, error) {
 }
 
 type federationPolicyPb struct {
-	CreateTime string `json:"create_time,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	OidcPolicy *OidcFederationPolicy `json:"oidc_policy,omitempty"`
-
-	PolicyId string `json:"policy_id,omitempty"`
-
-	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
-
-	Uid string `json:"uid,omitempty"`
-
-	UpdateTime string `json:"update_time,omitempty"`
+	CreateTime         string                `json:"create_time,omitempty"`
+	Description        string                `json:"description,omitempty"`
+	Name               string                `json:"name,omitempty"`
+	OidcPolicy         *OidcFederationPolicy `json:"oidc_policy,omitempty"`
+	PolicyId           string                `json:"policy_id,omitempty"`
+	ServicePrincipalId int64                 `json:"service_principal_id,omitempty"`
+	Uid                string                `json:"uid,omitempty"`
+	UpdateTime         string                `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -678,25 +628,15 @@ func getCustomAppIntegrationOutputToPb(st *GetCustomAppIntegrationOutput) (*getC
 	}
 	pb := &getCustomAppIntegrationOutputPb{}
 	pb.ClientId = st.ClientId
-
 	pb.Confidential = st.Confidential
-
 	pb.CreateTime = st.CreateTime
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.CreatorUsername = st.CreatorUsername
-
 	pb.IntegrationId = st.IntegrationId
-
 	pb.Name = st.Name
-
 	pb.RedirectUrls = st.RedirectUrls
-
 	pb.Scopes = st.Scopes
-
 	pb.TokenAccessPolicy = st.TokenAccessPolicy
-
 	pb.UserAuthorizedScopes = st.UserAuthorizedScopes
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -704,27 +644,17 @@ func getCustomAppIntegrationOutputToPb(st *GetCustomAppIntegrationOutput) (*getC
 }
 
 type getCustomAppIntegrationOutputPb struct {
-	ClientId string `json:"client_id,omitempty"`
-
-	Confidential bool `json:"confidential,omitempty"`
-
-	CreateTime string `json:"create_time,omitempty"`
-
-	CreatedBy int64 `json:"created_by,omitempty"`
-
-	CreatorUsername string `json:"creator_username,omitempty"`
-
-	IntegrationId string `json:"integration_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	RedirectUrls []string `json:"redirect_urls,omitempty"`
-
-	Scopes []string `json:"scopes,omitempty"`
-
-	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
-
-	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
+	ClientId             string             `json:"client_id,omitempty"`
+	Confidential         bool               `json:"confidential,omitempty"`
+	CreateTime           string             `json:"create_time,omitempty"`
+	CreatedBy            int64              `json:"created_by,omitempty"`
+	CreatorUsername      string             `json:"creator_username,omitempty"`
+	IntegrationId        string             `json:"integration_id,omitempty"`
+	Name                 string             `json:"name,omitempty"`
+	RedirectUrls         []string           `json:"redirect_urls,omitempty"`
+	Scopes               []string           `json:"scopes,omitempty"`
+	TokenAccessPolicy    *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+	UserAuthorizedScopes []string           `json:"user_authorized_scopes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -788,7 +718,6 @@ func getCustomAppIntegrationsOutputToPb(st *GetCustomAppIntegrationsOutput) (*ge
 	}
 	pb := &getCustomAppIntegrationsOutputPb{}
 	pb.Apps = st.Apps
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -796,9 +725,8 @@ func getCustomAppIntegrationsOutputToPb(st *GetCustomAppIntegrationsOutput) (*ge
 }
 
 type getCustomAppIntegrationsOutputPb struct {
-	Apps []GetCustomAppIntegrationOutput `json:"apps,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Apps          []GetCustomAppIntegrationOutput `json:"apps,omitempty"`
+	NextPageToken string                          `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -829,15 +757,10 @@ func getPublishedAppIntegrationOutputToPb(st *GetPublishedAppIntegrationOutput) 
 	}
 	pb := &getPublishedAppIntegrationOutputPb{}
 	pb.AppId = st.AppId
-
 	pb.CreateTime = st.CreateTime
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.IntegrationId = st.IntegrationId
-
 	pb.Name = st.Name
-
 	pb.TokenAccessPolicy = st.TokenAccessPolicy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -845,16 +768,11 @@ func getPublishedAppIntegrationOutputToPb(st *GetPublishedAppIntegrationOutput) 
 }
 
 type getPublishedAppIntegrationOutputPb struct {
-	AppId string `json:"app_id,omitempty"`
-
-	CreateTime string `json:"create_time,omitempty"`
-
-	CreatedBy int64 `json:"created_by,omitempty"`
-
-	IntegrationId string `json:"integration_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
+	AppId             string             `json:"app_id,omitempty"`
+	CreateTime        string             `json:"create_time,omitempty"`
+	CreatedBy         int64              `json:"created_by,omitempty"`
+	IntegrationId     string             `json:"integration_id,omitempty"`
+	Name              string             `json:"name,omitempty"`
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -914,7 +832,6 @@ func getPublishedAppIntegrationsOutputToPb(st *GetPublishedAppIntegrationsOutput
 	}
 	pb := &getPublishedAppIntegrationsOutputPb{}
 	pb.Apps = st.Apps
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -922,9 +839,8 @@ func getPublishedAppIntegrationsOutputToPb(st *GetPublishedAppIntegrationsOutput
 }
 
 type getPublishedAppIntegrationsOutputPb struct {
-	Apps []GetPublishedAppIntegrationOutput `json:"apps,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Apps          []GetPublishedAppIntegrationOutput `json:"apps,omitempty"`
+	NextPageToken string                             `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -955,7 +871,6 @@ func getPublishedAppsOutputToPb(st *GetPublishedAppsOutput) (*getPublishedAppsOu
 	}
 	pb := &getPublishedAppsOutputPb{}
 	pb.Apps = st.Apps
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -963,9 +878,8 @@ func getPublishedAppsOutputToPb(st *GetPublishedAppsOutput) (*getPublishedAppsOu
 }
 
 type getPublishedAppsOutputPb struct {
-	Apps []PublishedAppOutput `json:"apps,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Apps          []PublishedAppOutput `json:"apps,omitempty"`
+	NextPageToken string               `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -996,16 +910,14 @@ func getServicePrincipalFederationPolicyRequestToPb(st *GetServicePrincipalFeder
 	}
 	pb := &getServicePrincipalFederationPolicyRequestPb{}
 	pb.PolicyId = st.PolicyId
-
 	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	return pb, nil
 }
 
 type getServicePrincipalFederationPolicyRequestPb struct {
-	PolicyId string `json:"-" url:"-"`
-
-	ServicePrincipalId int64 `json:"-" url:"-"`
+	PolicyId           string `json:"-" url:"-"`
+	ServicePrincipalId int64  `json:"-" url:"-"`
 }
 
 func getServicePrincipalFederationPolicyRequestFromPb(pb *getServicePrincipalFederationPolicyRequestPb) (*GetServicePrincipalFederationPolicyRequest, error) {
@@ -1025,7 +937,6 @@ func listAccountFederationPoliciesRequestToPb(st *ListAccountFederationPoliciesR
 	}
 	pb := &listAccountFederationPoliciesRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1033,8 +944,7 @@ func listAccountFederationPoliciesRequestToPb(st *ListAccountFederationPoliciesR
 }
 
 type listAccountFederationPoliciesRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1066,9 +976,7 @@ func listCustomAppIntegrationsRequestToPb(st *ListCustomAppIntegrationsRequest) 
 	}
 	pb := &listCustomAppIntegrationsRequestPb{}
 	pb.IncludeCreatorUsername = st.IncludeCreatorUsername
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1076,11 +984,9 @@ func listCustomAppIntegrationsRequestToPb(st *ListCustomAppIntegrationsRequest) 
 }
 
 type listCustomAppIntegrationsRequestPb struct {
-	IncludeCreatorUsername bool `json:"-" url:"include_creator_username,omitempty"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	IncludeCreatorUsername bool   `json:"-" url:"include_creator_username,omitempty"`
+	PageSize               int    `json:"-" url:"page_size,omitempty"`
+	PageToken              string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1112,7 +1018,6 @@ func listFederationPoliciesResponseToPb(st *ListFederationPoliciesResponse) (*li
 	}
 	pb := &listFederationPoliciesResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Policies = st.Policies
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1120,9 +1025,8 @@ func listFederationPoliciesResponseToPb(st *ListFederationPoliciesResponse) (*li
 }
 
 type listFederationPoliciesResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Policies []FederationPolicy `json:"policies,omitempty"`
+	NextPageToken string             `json:"next_page_token,omitempty"`
+	Policies      []FederationPolicy `json:"policies,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1153,7 +1057,6 @@ func listOAuthPublishedAppsRequestToPb(st *ListOAuthPublishedAppsRequest) (*list
 	}
 	pb := &listOAuthPublishedAppsRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1161,8 +1064,7 @@ func listOAuthPublishedAppsRequestToPb(st *ListOAuthPublishedAppsRequest) (*list
 }
 
 type listOAuthPublishedAppsRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1194,7 +1096,6 @@ func listPublishedAppIntegrationsRequestToPb(st *ListPublishedAppIntegrationsReq
 	}
 	pb := &listPublishedAppIntegrationsRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1202,8 +1103,7 @@ func listPublishedAppIntegrationsRequestToPb(st *ListPublishedAppIntegrationsReq
 }
 
 type listPublishedAppIntegrationsRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1235,9 +1135,7 @@ func listServicePrincipalFederationPoliciesRequestToPb(st *ListServicePrincipalF
 	}
 	pb := &listServicePrincipalFederationPoliciesRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
-
 	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1245,11 +1143,9 @@ func listServicePrincipalFederationPoliciesRequestToPb(st *ListServicePrincipalF
 }
 
 type listServicePrincipalFederationPoliciesRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ServicePrincipalId int64 `json:"-" url:"-"`
+	PageSize           int    `json:"-" url:"page_size,omitempty"`
+	PageToken          string `json:"-" url:"page_token,omitempty"`
+	ServicePrincipalId int64  `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1281,7 +1177,6 @@ func listServicePrincipalSecretsRequestToPb(st *ListServicePrincipalSecretsReque
 	}
 	pb := &listServicePrincipalSecretsRequestPb{}
 	pb.PageToken = st.PageToken
-
 	pb.ServicePrincipalId = st.ServicePrincipalId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1289,9 +1184,8 @@ func listServicePrincipalSecretsRequestToPb(st *ListServicePrincipalSecretsReque
 }
 
 type listServicePrincipalSecretsRequestPb struct {
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ServicePrincipalId int64 `json:"-" url:"-"`
+	PageToken          string `json:"-" url:"page_token,omitempty"`
+	ServicePrincipalId int64  `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1322,7 +1216,6 @@ func listServicePrincipalSecretsResponseToPb(st *ListServicePrincipalSecretsResp
 	}
 	pb := &listServicePrincipalSecretsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Secrets = st.Secrets
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1330,9 +1223,8 @@ func listServicePrincipalSecretsResponseToPb(st *ListServicePrincipalSecretsResp
 }
 
 type listServicePrincipalSecretsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Secrets []SecretInfo `json:"secrets,omitempty"`
+	NextPageToken string       `json:"next_page_token,omitempty"`
+	Secrets       []SecretInfo `json:"secrets,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1363,15 +1255,10 @@ func oidcFederationPolicyToPb(st *OidcFederationPolicy) (*oidcFederationPolicyPb
 	}
 	pb := &oidcFederationPolicyPb{}
 	pb.Audiences = st.Audiences
-
 	pb.Issuer = st.Issuer
-
 	pb.JwksJson = st.JwksJson
-
 	pb.JwksUri = st.JwksUri
-
 	pb.Subject = st.Subject
-
 	pb.SubjectClaim = st.SubjectClaim
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1379,17 +1266,12 @@ func oidcFederationPolicyToPb(st *OidcFederationPolicy) (*oidcFederationPolicyPb
 }
 
 type oidcFederationPolicyPb struct {
-	Audiences []string `json:"audiences,omitempty"`
-
-	Issuer string `json:"issuer,omitempty"`
-
-	JwksJson string `json:"jwks_json,omitempty"`
-
-	JwksUri string `json:"jwks_uri,omitempty"`
-
-	Subject string `json:"subject,omitempty"`
-
-	SubjectClaim string `json:"subject_claim,omitempty"`
+	Audiences    []string `json:"audiences,omitempty"`
+	Issuer       string   `json:"issuer,omitempty"`
+	JwksJson     string   `json:"jwks_json,omitempty"`
+	JwksUri      string   `json:"jwks_uri,omitempty"`
+	Subject      string   `json:"subject,omitempty"`
+	SubjectClaim string   `json:"subject_claim,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1424,17 +1306,11 @@ func publishedAppOutputToPb(st *PublishedAppOutput) (*publishedAppOutputPb, erro
 	}
 	pb := &publishedAppOutputPb{}
 	pb.AppId = st.AppId
-
 	pb.ClientId = st.ClientId
-
 	pb.Description = st.Description
-
 	pb.IsConfidentialClient = st.IsConfidentialClient
-
 	pb.Name = st.Name
-
 	pb.RedirectUrls = st.RedirectUrls
-
 	pb.Scopes = st.Scopes
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1442,19 +1318,13 @@ func publishedAppOutputToPb(st *PublishedAppOutput) (*publishedAppOutputPb, erro
 }
 
 type publishedAppOutputPb struct {
-	AppId string `json:"app_id,omitempty"`
-
-	ClientId string `json:"client_id,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	IsConfidentialClient bool `json:"is_confidential_client,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	RedirectUrls []string `json:"redirect_urls,omitempty"`
-
-	Scopes []string `json:"scopes,omitempty"`
+	AppId                string   `json:"app_id,omitempty"`
+	ClientId             string   `json:"client_id,omitempty"`
+	Description          string   `json:"description,omitempty"`
+	IsConfidentialClient bool     `json:"is_confidential_client,omitempty"`
+	Name                 string   `json:"name,omitempty"`
+	RedirectUrls         []string `json:"redirect_urls,omitempty"`
+	Scopes               []string `json:"scopes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1490,15 +1360,10 @@ func secretInfoToPb(st *SecretInfo) (*secretInfoPb, error) {
 	}
 	pb := &secretInfoPb{}
 	pb.CreateTime = st.CreateTime
-
 	pb.ExpireTime = st.ExpireTime
-
 	pb.Id = st.Id
-
 	pb.SecretHash = st.SecretHash
-
 	pb.Status = st.Status
-
 	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1507,15 +1372,10 @@ func secretInfoToPb(st *SecretInfo) (*secretInfoPb, error) {
 
 type secretInfoPb struct {
 	CreateTime string `json:"create_time,omitempty"`
-
 	ExpireTime string `json:"expire_time,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
+	Id         string `json:"id,omitempty"`
 	SecretHash string `json:"secret_hash,omitempty"`
-
-	Status string `json:"status,omitempty"`
-
+	Status     string `json:"status,omitempty"`
 	UpdateTime string `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1551,7 +1411,6 @@ func tokenAccessPolicyToPb(st *TokenAccessPolicy) (*tokenAccessPolicyPb, error) 
 	}
 	pb := &tokenAccessPolicyPb{}
 	pb.AccessTokenTtlInMinutes = st.AccessTokenTtlInMinutes
-
 	pb.RefreshTokenTtlInMinutes = st.RefreshTokenTtlInMinutes
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1559,8 +1418,7 @@ func tokenAccessPolicyToPb(st *TokenAccessPolicy) (*tokenAccessPolicyPb, error) 
 }
 
 type tokenAccessPolicyPb struct {
-	AccessTokenTtlInMinutes int `json:"access_token_ttl_in_minutes,omitempty"`
-
+	AccessTokenTtlInMinutes  int `json:"access_token_ttl_in_minutes,omitempty"`
 	RefreshTokenTtlInMinutes int `json:"refresh_token_ttl_in_minutes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1592,9 +1450,7 @@ func updateAccountFederationPolicyRequestToPb(st *UpdateAccountFederationPolicyR
 	}
 	pb := &updateAccountFederationPolicyRequestPb{}
 	pb.Policy = st.Policy
-
 	pb.PolicyId = st.PolicyId
-
 	pb.UpdateMask = st.UpdateMask
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1602,11 +1458,9 @@ func updateAccountFederationPolicyRequestToPb(st *UpdateAccountFederationPolicyR
 }
 
 type updateAccountFederationPolicyRequestPb struct {
-	Policy FederationPolicy `json:"policy"`
-
-	PolicyId string `json:"-" url:"-"`
-
-	UpdateMask string `json:"-" url:"update_mask,omitempty"`
+	Policy     FederationPolicy `json:"policy"`
+	PolicyId   string           `json:"-" url:"-"`
+	UpdateMask string           `json:"-" url:"update_mask,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1638,28 +1492,20 @@ func updateCustomAppIntegrationToPb(st *UpdateCustomAppIntegration) (*updateCust
 	}
 	pb := &updateCustomAppIntegrationPb{}
 	pb.IntegrationId = st.IntegrationId
-
 	pb.RedirectUrls = st.RedirectUrls
-
 	pb.Scopes = st.Scopes
-
 	pb.TokenAccessPolicy = st.TokenAccessPolicy
-
 	pb.UserAuthorizedScopes = st.UserAuthorizedScopes
 
 	return pb, nil
 }
 
 type updateCustomAppIntegrationPb struct {
-	IntegrationId string `json:"-" url:"-"`
-
-	RedirectUrls []string `json:"redirect_urls,omitempty"`
-
-	Scopes []string `json:"scopes,omitempty"`
-
-	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
-
-	UserAuthorizedScopes []string `json:"user_authorized_scopes,omitempty"`
+	IntegrationId        string             `json:"-" url:"-"`
+	RedirectUrls         []string           `json:"redirect_urls,omitempty"`
+	Scopes               []string           `json:"scopes,omitempty"`
+	TokenAccessPolicy    *TokenAccessPolicy `json:"token_access_policy,omitempty"`
+	UserAuthorizedScopes []string           `json:"user_authorized_scopes,omitempty"`
 }
 
 func updateCustomAppIntegrationFromPb(pb *updateCustomAppIntegrationPb) (*UpdateCustomAppIntegration, error) {
@@ -1703,15 +1549,13 @@ func updatePublishedAppIntegrationToPb(st *UpdatePublishedAppIntegration) (*upda
 	}
 	pb := &updatePublishedAppIntegrationPb{}
 	pb.IntegrationId = st.IntegrationId
-
 	pb.TokenAccessPolicy = st.TokenAccessPolicy
 
 	return pb, nil
 }
 
 type updatePublishedAppIntegrationPb struct {
-	IntegrationId string `json:"-" url:"-"`
-
+	IntegrationId     string             `json:"-" url:"-"`
 	TokenAccessPolicy *TokenAccessPolicy `json:"token_access_policy,omitempty"`
 }
 
@@ -1753,11 +1597,8 @@ func updateServicePrincipalFederationPolicyRequestToPb(st *UpdateServicePrincipa
 	}
 	pb := &updateServicePrincipalFederationPolicyRequestPb{}
 	pb.Policy = st.Policy
-
 	pb.PolicyId = st.PolicyId
-
 	pb.ServicePrincipalId = st.ServicePrincipalId
-
 	pb.UpdateMask = st.UpdateMask
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1765,13 +1606,10 @@ func updateServicePrincipalFederationPolicyRequestToPb(st *UpdateServicePrincipa
 }
 
 type updateServicePrincipalFederationPolicyRequestPb struct {
-	Policy FederationPolicy `json:"policy"`
-
-	PolicyId string `json:"-" url:"-"`
-
-	ServicePrincipalId int64 `json:"-" url:"-"`
-
-	UpdateMask string `json:"-" url:"update_mask,omitempty"`
+	Policy             FederationPolicy `json:"policy"`
+	PolicyId           string           `json:"-" url:"-"`
+	ServicePrincipalId int64            `json:"-" url:"-"`
+	UpdateMask         string           `json:"-" url:"update_mask,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1796,4 +1634,58 @@ func (st *updateServicePrincipalFederationPolicyRequestPb) UnmarshalJSON(b []byt
 
 func (st updateServicePrincipalFederationPolicyRequestPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

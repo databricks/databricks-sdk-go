@@ -3,6 +3,10 @@
 package catalog
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -36,9 +40,7 @@ func accountsCreateMetastoreAssignmentToPb(st *AccountsCreateMetastoreAssignment
 	}
 	pb := &accountsCreateMetastoreAssignmentPb{}
 	pb.MetastoreAssignment = st.MetastoreAssignment
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
@@ -46,10 +48,8 @@ func accountsCreateMetastoreAssignmentToPb(st *AccountsCreateMetastoreAssignment
 
 type accountsCreateMetastoreAssignmentPb struct {
 	MetastoreAssignment *CreateMetastoreAssignment `json:"metastore_assignment,omitempty"`
-
-	MetastoreId string `json:"-" url:"-"`
-
-	WorkspaceId int64 `json:"-" url:"-"`
+	MetastoreId         string                     `json:"-" url:"-"`
+	WorkspaceId         int64                      `json:"-" url:"-"`
 }
 
 func accountsCreateMetastoreAssignmentFromPb(pb *accountsCreateMetastoreAssignmentPb) (*AccountsCreateMetastoreAssignment, error) {
@@ -70,7 +70,6 @@ func accountsCreateStorageCredentialToPb(st *AccountsCreateStorageCredential) (*
 	}
 	pb := &accountsCreateStorageCredentialPb{}
 	pb.CredentialInfo = st.CredentialInfo
-
 	pb.MetastoreId = st.MetastoreId
 
 	return pb, nil
@@ -78,8 +77,7 @@ func accountsCreateStorageCredentialToPb(st *AccountsCreateStorageCredential) (*
 
 type accountsCreateStorageCredentialPb struct {
 	CredentialInfo *CreateStorageCredential `json:"credential_info,omitempty"`
-
-	MetastoreId string `json:"-" url:"-"`
+	MetastoreId    string                   `json:"-" url:"-"`
 }
 
 func accountsCreateStorageCredentialFromPb(pb *accountsCreateStorageCredentialPb) (*AccountsCreateStorageCredential, error) {
@@ -171,15 +169,13 @@ func accountsUpdateMetastoreToPb(st *AccountsUpdateMetastore) (*accountsUpdateMe
 	}
 	pb := &accountsUpdateMetastorePb{}
 	pb.MetastoreId = st.MetastoreId
-
 	pb.MetastoreInfo = st.MetastoreInfo
 
 	return pb, nil
 }
 
 type accountsUpdateMetastorePb struct {
-	MetastoreId string `json:"-" url:"-"`
-
+	MetastoreId   string           `json:"-" url:"-"`
 	MetastoreInfo *UpdateMetastore `json:"metastore_info,omitempty"`
 }
 
@@ -200,9 +196,7 @@ func accountsUpdateMetastoreAssignmentToPb(st *AccountsUpdateMetastoreAssignment
 	}
 	pb := &accountsUpdateMetastoreAssignmentPb{}
 	pb.MetastoreAssignment = st.MetastoreAssignment
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
@@ -210,10 +204,8 @@ func accountsUpdateMetastoreAssignmentToPb(st *AccountsUpdateMetastoreAssignment
 
 type accountsUpdateMetastoreAssignmentPb struct {
 	MetastoreAssignment *UpdateMetastoreAssignment `json:"metastore_assignment,omitempty"`
-
-	MetastoreId string `json:"-" url:"-"`
-
-	WorkspaceId int64 `json:"-" url:"-"`
+	MetastoreId         string                     `json:"-" url:"-"`
+	WorkspaceId         int64                      `json:"-" url:"-"`
 }
 
 func accountsUpdateMetastoreAssignmentFromPb(pb *accountsUpdateMetastoreAssignmentPb) (*AccountsUpdateMetastoreAssignment, error) {
@@ -234,20 +226,16 @@ func accountsUpdateStorageCredentialToPb(st *AccountsUpdateStorageCredential) (*
 	}
 	pb := &accountsUpdateStorageCredentialPb{}
 	pb.CredentialInfo = st.CredentialInfo
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.StorageCredentialName = st.StorageCredentialName
 
 	return pb, nil
 }
 
 type accountsUpdateStorageCredentialPb struct {
-	CredentialInfo *UpdateStorageCredential `json:"credential_info,omitempty"`
-
-	MetastoreId string `json:"-" url:"-"`
-
-	StorageCredentialName string `json:"-" url:"-"`
+	CredentialInfo        *UpdateStorageCredential `json:"credential_info,omitempty"`
+	MetastoreId           string                   `json:"-" url:"-"`
+	StorageCredentialName string                   `json:"-" url:"-"`
 }
 
 func accountsUpdateStorageCredentialFromPb(pb *accountsUpdateStorageCredentialPb) (*AccountsUpdateStorageCredential, error) {
@@ -268,11 +256,8 @@ func artifactAllowlistInfoToPb(st *ArtifactAllowlistInfo) (*artifactAllowlistInf
 	}
 	pb := &artifactAllowlistInfoPb{}
 	pb.ArtifactMatchers = st.ArtifactMatchers
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.MetastoreId = st.MetastoreId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -281,12 +266,9 @@ func artifactAllowlistInfoToPb(st *ArtifactAllowlistInfo) (*artifactAllowlistInf
 
 type artifactAllowlistInfoPb struct {
 	ArtifactMatchers []ArtifactMatcher `json:"artifact_matchers,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
+	CreatedAt        int64             `json:"created_at,omitempty"`
+	CreatedBy        string            `json:"created_by,omitempty"`
+	MetastoreId      string            `json:"metastore_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -319,15 +301,13 @@ func artifactMatcherToPb(st *ArtifactMatcher) (*artifactMatcherPb, error) {
 	}
 	pb := &artifactMatcherPb{}
 	pb.Artifact = st.Artifact
-
 	pb.MatchType = st.MatchType
 
 	return pb, nil
 }
 
 type artifactMatcherPb struct {
-	Artifact string `json:"artifact"`
-
+	Artifact  string    `json:"artifact"`
 	MatchType MatchType `json:"match_type"`
 }
 
@@ -369,11 +349,8 @@ func awsCredentialsToPb(st *AwsCredentials) (*awsCredentialsPb, error) {
 	}
 	pb := &awsCredentialsPb{}
 	pb.AccessKeyId = st.AccessKeyId
-
 	pb.AccessPoint = st.AccessPoint
-
 	pb.SecretAccessKey = st.SecretAccessKey
-
 	pb.SessionToken = st.SessionToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -381,13 +358,10 @@ func awsCredentialsToPb(st *AwsCredentials) (*awsCredentialsPb, error) {
 }
 
 type awsCredentialsPb struct {
-	AccessKeyId string `json:"access_key_id,omitempty"`
-
-	AccessPoint string `json:"access_point,omitempty"`
-
+	AccessKeyId     string `json:"access_key_id,omitempty"`
+	AccessPoint     string `json:"access_point,omitempty"`
 	SecretAccessKey string `json:"secret_access_key,omitempty"`
-
-	SessionToken string `json:"session_token,omitempty"`
+	SessionToken    string `json:"session_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -420,9 +394,7 @@ func awsIamRoleToPb(st *AwsIamRole) (*awsIamRolePb, error) {
 	}
 	pb := &awsIamRolePb{}
 	pb.ExternalId = st.ExternalId
-
 	pb.RoleArn = st.RoleArn
-
 	pb.UnityCatalogIamArn = st.UnityCatalogIamArn
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -430,10 +402,8 @@ func awsIamRoleToPb(st *AwsIamRole) (*awsIamRolePb, error) {
 }
 
 type awsIamRolePb struct {
-	ExternalId string `json:"external_id,omitempty"`
-
-	RoleArn string `json:"role_arn,omitempty"`
-
+	ExternalId         string `json:"external_id,omitempty"`
+	RoleArn            string `json:"role_arn,omitempty"`
 	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -490,9 +460,7 @@ func awsIamRoleResponseToPb(st *AwsIamRoleResponse) (*awsIamRoleResponsePb, erro
 	}
 	pb := &awsIamRoleResponsePb{}
 	pb.ExternalId = st.ExternalId
-
 	pb.RoleArn = st.RoleArn
-
 	pb.UnityCatalogIamArn = st.UnityCatalogIamArn
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -500,10 +468,8 @@ func awsIamRoleResponseToPb(st *AwsIamRoleResponse) (*awsIamRoleResponsePb, erro
 }
 
 type awsIamRoleResponsePb struct {
-	ExternalId string `json:"external_id,omitempty"`
-
-	RoleArn string `json:"role_arn"`
-
+	ExternalId         string `json:"external_id,omitempty"`
+	RoleArn            string `json:"role_arn"`
 	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -536,7 +502,6 @@ func awsSqsQueueToPb(st *AwsSqsQueue) (*awsSqsQueuePb, error) {
 	}
 	pb := &awsSqsQueuePb{}
 	pb.ManagedResourceId = st.ManagedResourceId
-
 	pb.QueueUrl = st.QueueUrl
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -545,8 +510,7 @@ func awsSqsQueueToPb(st *AwsSqsQueue) (*awsSqsQueuePb, error) {
 
 type awsSqsQueuePb struct {
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
-
-	QueueUrl string `json:"queue_url,omitempty"`
+	QueueUrl          string `json:"queue_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -613,9 +577,7 @@ func azureManagedIdentityToPb(st *AzureManagedIdentity) (*azureManagedIdentityPb
 	}
 	pb := &azureManagedIdentityPb{}
 	pb.AccessConnectorId = st.AccessConnectorId
-
 	pb.CredentialId = st.CredentialId
-
 	pb.ManagedIdentityId = st.ManagedIdentityId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -624,9 +586,7 @@ func azureManagedIdentityToPb(st *AzureManagedIdentity) (*azureManagedIdentityPb
 
 type azureManagedIdentityPb struct {
 	AccessConnectorId string `json:"access_connector_id"`
-
-	CredentialId string `json:"credential_id,omitempty"`
-
+	CredentialId      string `json:"credential_id,omitempty"`
 	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -659,7 +619,6 @@ func azureManagedIdentityRequestToPb(st *AzureManagedIdentityRequest) (*azureMan
 	}
 	pb := &azureManagedIdentityRequestPb{}
 	pb.AccessConnectorId = st.AccessConnectorId
-
 	pb.ManagedIdentityId = st.ManagedIdentityId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -668,7 +627,6 @@ func azureManagedIdentityRequestToPb(st *AzureManagedIdentityRequest) (*azureMan
 
 type azureManagedIdentityRequestPb struct {
 	AccessConnectorId string `json:"access_connector_id"`
-
 	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -700,9 +658,7 @@ func azureManagedIdentityResponseToPb(st *AzureManagedIdentityResponse) (*azureM
 	}
 	pb := &azureManagedIdentityResponsePb{}
 	pb.AccessConnectorId = st.AccessConnectorId
-
 	pb.CredentialId = st.CredentialId
-
 	pb.ManagedIdentityId = st.ManagedIdentityId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -711,9 +667,7 @@ func azureManagedIdentityResponseToPb(st *AzureManagedIdentityResponse) (*azureM
 
 type azureManagedIdentityResponsePb struct {
 	AccessConnectorId string `json:"access_connector_id"`
-
-	CredentialId string `json:"credential_id,omitempty"`
-
+	CredentialId      string `json:"credential_id,omitempty"`
 	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -746,11 +700,8 @@ func azureQueueStorageToPb(st *AzureQueueStorage) (*azureQueueStoragePb, error) 
 	}
 	pb := &azureQueueStoragePb{}
 	pb.ManagedResourceId = st.ManagedResourceId
-
 	pb.QueueUrl = st.QueueUrl
-
 	pb.ResourceGroup = st.ResourceGroup
-
 	pb.SubscriptionId = st.SubscriptionId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -759,12 +710,9 @@ func azureQueueStorageToPb(st *AzureQueueStorage) (*azureQueueStoragePb, error) 
 
 type azureQueueStoragePb struct {
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
-
-	QueueUrl string `json:"queue_url,omitempty"`
-
-	ResourceGroup string `json:"resource_group,omitempty"`
-
-	SubscriptionId string `json:"subscription_id,omitempty"`
+	QueueUrl          string `json:"queue_url,omitempty"`
+	ResourceGroup     string `json:"resource_group,omitempty"`
+	SubscriptionId    string `json:"subscription_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -797,9 +745,7 @@ func azureServicePrincipalToPb(st *AzureServicePrincipal) (*azureServicePrincipa
 	}
 	pb := &azureServicePrincipalPb{}
 	pb.ApplicationId = st.ApplicationId
-
 	pb.ClientSecret = st.ClientSecret
-
 	pb.DirectoryId = st.DirectoryId
 
 	return pb, nil
@@ -807,10 +753,8 @@ func azureServicePrincipalToPb(st *AzureServicePrincipal) (*azureServicePrincipa
 
 type azureServicePrincipalPb struct {
 	ApplicationId string `json:"application_id"`
-
-	ClientSecret string `json:"client_secret"`
-
-	DirectoryId string `json:"directory_id"`
+	ClientSecret  string `json:"client_secret"`
+	DirectoryId   string `json:"directory_id"`
 }
 
 func azureServicePrincipalFromPb(pb *azureServicePrincipalPb) (*AzureServicePrincipal, error) {
@@ -867,7 +811,6 @@ func cancelRefreshRequestToPb(st *CancelRefreshRequest) (*cancelRefreshRequestPb
 	}
 	pb := &cancelRefreshRequestPb{}
 	pb.RefreshId = st.RefreshId
-
 	pb.TableName = st.TableName
 
 	return pb, nil
@@ -875,7 +818,6 @@ func cancelRefreshRequestToPb(st *CancelRefreshRequest) (*cancelRefreshRequestPb
 
 type cancelRefreshRequestPb struct {
 	RefreshId string `json:"-" url:"-"`
-
 	TableName string `json:"-" url:"-"`
 }
 
@@ -917,49 +859,27 @@ func catalogInfoToPb(st *CatalogInfo) (*catalogInfoPb, error) {
 	}
 	pb := &catalogInfoPb{}
 	pb.BrowseOnly = st.BrowseOnly
-
 	pb.CatalogType = st.CatalogType
-
 	pb.Comment = st.Comment
-
 	pb.ConnectionName = st.ConnectionName
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.EffectivePredictiveOptimizationFlag = st.EffectivePredictiveOptimizationFlag
-
 	pb.EnablePredictiveOptimization = st.EnablePredictiveOptimization
-
 	pb.FullName = st.FullName
-
 	pb.IsolationMode = st.IsolationMode
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Options = st.Options
-
 	pb.Owner = st.Owner
-
 	pb.Properties = st.Properties
-
 	pb.ProviderName = st.ProviderName
-
 	pb.ProvisioningInfo = st.ProvisioningInfo
-
 	pb.SecurableType = st.SecurableType
-
 	pb.ShareName = st.ShareName
-
 	pb.StorageLocation = st.StorageLocation
-
 	pb.StorageRoot = st.StorageRoot
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -967,51 +887,29 @@ func catalogInfoToPb(st *CatalogInfo) (*catalogInfoPb, error) {
 }
 
 type catalogInfoPb struct {
-	BrowseOnly bool `json:"browse_only,omitempty"`
-
-	CatalogType CatalogType `json:"catalog_type,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	ConnectionName string `json:"connection_name,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
+	BrowseOnly                          bool                                 `json:"browse_only,omitempty"`
+	CatalogType                         CatalogType                          `json:"catalog_type,omitempty"`
+	Comment                             string                               `json:"comment,omitempty"`
+	ConnectionName                      string                               `json:"connection_name,omitempty"`
+	CreatedAt                           int64                                `json:"created_at,omitempty"`
+	CreatedBy                           string                               `json:"created_by,omitempty"`
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
-
-	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
-
-	FullName string `json:"full_name,omitempty"`
-
-	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Options map[string]string `json:"options,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	Properties map[string]string `json:"properties,omitempty"`
-
-	ProviderName string `json:"provider_name,omitempty"`
-
-	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
-
-	SecurableType SecurableType `json:"securable_type,omitempty"`
-
-	ShareName string `json:"share_name,omitempty"`
-
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	StorageRoot string `json:"storage_root,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	EnablePredictiveOptimization        EnablePredictiveOptimization         `json:"enable_predictive_optimization,omitempty"`
+	FullName                            string                               `json:"full_name,omitempty"`
+	IsolationMode                       CatalogIsolationMode                 `json:"isolation_mode,omitempty"`
+	MetastoreId                         string                               `json:"metastore_id,omitempty"`
+	Name                                string                               `json:"name,omitempty"`
+	Options                             map[string]string                    `json:"options,omitempty"`
+	Owner                               string                               `json:"owner,omitempty"`
+	Properties                          map[string]string                    `json:"properties,omitempty"`
+	ProviderName                        string                               `json:"provider_name,omitempty"`
+	ProvisioningInfo                    *ProvisioningInfo                    `json:"provisioning_info,omitempty"`
+	SecurableType                       SecurableType                        `json:"securable_type,omitempty"`
+	ShareName                           string                               `json:"share_name,omitempty"`
+	StorageLocation                     string                               `json:"storage_location,omitempty"`
+	StorageRoot                         string                               `json:"storage_root,omitempty"`
+	UpdatedAt                           int64                                `json:"updated_at,omitempty"`
+	UpdatedBy                           string                               `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1063,19 +961,15 @@ func cloudflareApiTokenToPb(st *CloudflareApiToken) (*cloudflareApiTokenPb, erro
 	}
 	pb := &cloudflareApiTokenPb{}
 	pb.AccessKeyId = st.AccessKeyId
-
 	pb.AccountId = st.AccountId
-
 	pb.SecretAccessKey = st.SecretAccessKey
 
 	return pb, nil
 }
 
 type cloudflareApiTokenPb struct {
-	AccessKeyId string `json:"access_key_id"`
-
-	AccountId string `json:"account_id"`
-
+	AccessKeyId     string `json:"access_key_id"`
+	AccountId       string `json:"account_id"`
 	SecretAccessKey string `json:"secret_access_key"`
 }
 
@@ -1097,27 +991,16 @@ func columnInfoToPb(st *ColumnInfo) (*columnInfoPb, error) {
 	}
 	pb := &columnInfoPb{}
 	pb.Comment = st.Comment
-
 	pb.Mask = st.Mask
-
 	pb.Name = st.Name
-
 	pb.Nullable = st.Nullable
-
 	pb.PartitionIndex = st.PartitionIndex
-
 	pb.Position = st.Position
-
 	pb.TypeIntervalType = st.TypeIntervalType
-
 	pb.TypeJson = st.TypeJson
-
 	pb.TypeName = st.TypeName
-
 	pb.TypePrecision = st.TypePrecision
-
 	pb.TypeScale = st.TypeScale
-
 	pb.TypeText = st.TypeText
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1125,29 +1008,18 @@ func columnInfoToPb(st *ColumnInfo) (*columnInfoPb, error) {
 }
 
 type columnInfoPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	Mask *ColumnMask `json:"mask,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Nullable bool `json:"nullable,omitempty"`
-
-	PartitionIndex int `json:"partition_index,omitempty"`
-
-	Position int `json:"position,omitempty"`
-
-	TypeIntervalType string `json:"type_interval_type,omitempty"`
-
-	TypeJson string `json:"type_json,omitempty"`
-
-	TypeName ColumnTypeName `json:"type_name,omitempty"`
-
-	TypePrecision int `json:"type_precision,omitempty"`
-
-	TypeScale int `json:"type_scale,omitempty"`
-
-	TypeText string `json:"type_text,omitempty"`
+	Comment          string         `json:"comment,omitempty"`
+	Mask             *ColumnMask    `json:"mask,omitempty"`
+	Name             string         `json:"name,omitempty"`
+	Nullable         bool           `json:"nullable,omitempty"`
+	PartitionIndex   int            `json:"partition_index,omitempty"`
+	Position         int            `json:"position,omitempty"`
+	TypeIntervalType string         `json:"type_interval_type,omitempty"`
+	TypeJson         string         `json:"type_json,omitempty"`
+	TypeName         ColumnTypeName `json:"type_name,omitempty"`
+	TypePrecision    int            `json:"type_precision,omitempty"`
+	TypeScale        int            `json:"type_scale,omitempty"`
+	TypeText         string         `json:"type_text,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1188,7 +1060,6 @@ func columnMaskToPb(st *ColumnMask) (*columnMaskPb, error) {
 	}
 	pb := &columnMaskPb{}
 	pb.FunctionName = st.FunctionName
-
 	pb.UsingColumnNames = st.UsingColumnNames
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1196,8 +1067,7 @@ func columnMaskToPb(st *ColumnMask) (*columnMaskPb, error) {
 }
 
 type columnMaskPb struct {
-	FunctionName string `json:"function_name,omitempty"`
-
+	FunctionName     string   `json:"function_name,omitempty"`
 	UsingColumnNames []string `json:"using_column_names,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1229,39 +1099,22 @@ func connectionInfoToPb(st *ConnectionInfo) (*connectionInfoPb, error) {
 	}
 	pb := &connectionInfoPb{}
 	pb.Comment = st.Comment
-
 	pb.ConnectionId = st.ConnectionId
-
 	pb.ConnectionType = st.ConnectionType
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.CredentialType = st.CredentialType
-
 	pb.FullName = st.FullName
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Options = st.Options
-
 	pb.Owner = st.Owner
-
 	pb.Properties = st.Properties
-
 	pb.ProvisioningInfo = st.ProvisioningInfo
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.SecurableType = st.SecurableType
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1269,41 +1122,24 @@ func connectionInfoToPb(st *ConnectionInfo) (*connectionInfoPb, error) {
 }
 
 type connectionInfoPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	ConnectionId string `json:"connection_id,omitempty"`
-
-	ConnectionType ConnectionType `json:"connection_type,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	CredentialType CredentialType `json:"credential_type,omitempty"`
-
-	FullName string `json:"full_name,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Options map[string]string `json:"options,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	Properties map[string]string `json:"properties,omitempty"`
-
+	Comment          string            `json:"comment,omitempty"`
+	ConnectionId     string            `json:"connection_id,omitempty"`
+	ConnectionType   ConnectionType    `json:"connection_type,omitempty"`
+	CreatedAt        int64             `json:"created_at,omitempty"`
+	CreatedBy        string            `json:"created_by,omitempty"`
+	CredentialType   CredentialType    `json:"credential_type,omitempty"`
+	FullName         string            `json:"full_name,omitempty"`
+	MetastoreId      string            `json:"metastore_id,omitempty"`
+	Name             string            `json:"name,omitempty"`
+	Options          map[string]string `json:"options,omitempty"`
+	Owner            string            `json:"owner,omitempty"`
+	Properties       map[string]string `json:"properties,omitempty"`
 	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	SecurableType string `json:"securable_type,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	Url string `json:"url,omitempty"`
+	ReadOnly         bool              `json:"read_only,omitempty"`
+	SecurableType    string            `json:"securable_type,omitempty"`
+	UpdatedAt        int64             `json:"updated_at,omitempty"`
+	UpdatedBy        string            `json:"updated_by,omitempty"`
+	Url              string            `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1350,9 +1186,7 @@ func continuousUpdateStatusToPb(st *ContinuousUpdateStatus) (*continuousUpdateSt
 	}
 	pb := &continuousUpdateStatusPb{}
 	pb.InitialPipelineSyncProgress = st.InitialPipelineSyncProgress
-
 	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
-
 	pb.Timestamp = st.Timestamp
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1361,10 +1195,8 @@ func continuousUpdateStatusToPb(st *ContinuousUpdateStatus) (*continuousUpdateSt
 
 type continuousUpdateStatusPb struct {
 	InitialPipelineSyncProgress *PipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
-
-	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
-
-	Timestamp string `json:"timestamp,omitempty"`
+	LastProcessedCommitVersion  int64             `json:"last_processed_commit_version,omitempty"`
+	Timestamp                   string            `json:"timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1396,19 +1228,12 @@ func createCatalogToPb(st *CreateCatalog) (*createCatalogPb, error) {
 	}
 	pb := &createCatalogPb{}
 	pb.Comment = st.Comment
-
 	pb.ConnectionName = st.ConnectionName
-
 	pb.Name = st.Name
-
 	pb.Options = st.Options
-
 	pb.Properties = st.Properties
-
 	pb.ProviderName = st.ProviderName
-
 	pb.ShareName = st.ShareName
-
 	pb.StorageRoot = st.StorageRoot
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1416,21 +1241,14 @@ func createCatalogToPb(st *CreateCatalog) (*createCatalogPb, error) {
 }
 
 type createCatalogPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	ConnectionName string `json:"connection_name,omitempty"`
-
-	Name string `json:"name"`
-
-	Options map[string]string `json:"options,omitempty"`
-
-	Properties map[string]string `json:"properties,omitempty"`
-
-	ProviderName string `json:"provider_name,omitempty"`
-
-	ShareName string `json:"share_name,omitempty"`
-
-	StorageRoot string `json:"storage_root,omitempty"`
+	Comment        string            `json:"comment,omitempty"`
+	ConnectionName string            `json:"connection_name,omitempty"`
+	Name           string            `json:"name"`
+	Options        map[string]string `json:"options,omitempty"`
+	Properties     map[string]string `json:"properties,omitempty"`
+	ProviderName   string            `json:"provider_name,omitempty"`
+	ShareName      string            `json:"share_name,omitempty"`
+	StorageRoot    string            `json:"storage_root,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1467,15 +1285,10 @@ func createConnectionToPb(st *CreateConnection) (*createConnectionPb, error) {
 	}
 	pb := &createConnectionPb{}
 	pb.Comment = st.Comment
-
 	pb.ConnectionType = st.ConnectionType
-
 	pb.Name = st.Name
-
 	pb.Options = st.Options
-
 	pb.Properties = st.Properties
-
 	pb.ReadOnly = st.ReadOnly
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1483,17 +1296,12 @@ func createConnectionToPb(st *CreateConnection) (*createConnectionPb, error) {
 }
 
 type createConnectionPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	ConnectionType ConnectionType `json:"connection_type"`
-
-	Name string `json:"name"`
-
-	Options map[string]string `json:"options"`
-
-	Properties map[string]string `json:"properties,omitempty"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
+	Comment        string            `json:"comment,omitempty"`
+	ConnectionType ConnectionType    `json:"connection_type"`
+	Name           string            `json:"name"`
+	Options        map[string]string `json:"options"`
+	Properties     map[string]string `json:"properties,omitempty"`
+	ReadOnly       bool              `json:"read_only,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1528,21 +1336,13 @@ func createCredentialRequestToPb(st *CreateCredentialRequest) (*createCredential
 	}
 	pb := &createCredentialRequestPb{}
 	pb.AwsIamRole = st.AwsIamRole
-
 	pb.AzureManagedIdentity = st.AzureManagedIdentity
-
 	pb.AzureServicePrincipal = st.AzureServicePrincipal
-
 	pb.Comment = st.Comment
-
 	pb.DatabricksGcpServiceAccount = st.DatabricksGcpServiceAccount
-
 	pb.Name = st.Name
-
 	pb.Purpose = st.Purpose
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.SkipValidation = st.SkipValidation
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1550,23 +1350,15 @@ func createCredentialRequestToPb(st *CreateCredentialRequest) (*createCredential
 }
 
 type createCredentialRequestPb struct {
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
-
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
-
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
+	AwsIamRole                  *AwsIamRole                  `json:"aws_iam_role,omitempty"`
+	AzureManagedIdentity        *AzureManagedIdentity        `json:"azure_managed_identity,omitempty"`
+	AzureServicePrincipal       *AzureServicePrincipal       `json:"azure_service_principal,omitempty"`
+	Comment                     string                       `json:"comment,omitempty"`
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
-
-	Name string `json:"name"`
-
-	Purpose CredentialPurpose `json:"purpose,omitempty"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	Name                        string                       `json:"name"`
+	Purpose                     CredentialPurpose            `json:"purpose,omitempty"`
+	ReadOnly                    bool                         `json:"read_only,omitempty"`
+	SkipValidation              bool                         `json:"skip_validation,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1676,23 +1468,14 @@ func createExternalLocationToPb(st *CreateExternalLocation) (*createExternalLoca
 	}
 	pb := &createExternalLocationPb{}
 	pb.Comment = st.Comment
-
 	pb.CredentialName = st.CredentialName
-
 	pb.EnableFileEvents = st.EnableFileEvents
-
 	pb.EncryptionDetails = st.EncryptionDetails
-
 	pb.Fallback = st.Fallback
-
 	pb.FileEventQueue = st.FileEventQueue
-
 	pb.Name = st.Name
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.SkipValidation = st.SkipValidation
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1700,25 +1483,16 @@ func createExternalLocationToPb(st *CreateExternalLocation) (*createExternalLoca
 }
 
 type createExternalLocationPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	CredentialName string `json:"credential_name"`
-
-	EnableFileEvents bool `json:"enable_file_events,omitempty"`
-
+	Comment           string             `json:"comment,omitempty"`
+	CredentialName    string             `json:"credential_name"`
+	EnableFileEvents  bool               `json:"enable_file_events,omitempty"`
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
-
-	Fallback bool `json:"fallback,omitempty"`
-
-	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
-
-	Name string `json:"name"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	SkipValidation bool `json:"skip_validation,omitempty"`
-
-	Url string `json:"url"`
+	Fallback          bool               `json:"fallback,omitempty"`
+	FileEventQueue    *FileEventQueue    `json:"file_event_queue,omitempty"`
+	Name              string             `json:"name"`
+	ReadOnly          bool               `json:"read_only,omitempty"`
+	SkipValidation    bool               `json:"skip_validation,omitempty"`
+	Url               string             `json:"url"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1757,45 +1531,25 @@ func createFunctionToPb(st *CreateFunction) (*createFunctionPb, error) {
 	}
 	pb := &createFunctionPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.Comment = st.Comment
-
 	pb.DataType = st.DataType
-
 	pb.ExternalLanguage = st.ExternalLanguage
-
 	pb.ExternalName = st.ExternalName
-
 	pb.FullDataType = st.FullDataType
-
 	pb.InputParams = st.InputParams
-
 	pb.IsDeterministic = st.IsDeterministic
-
 	pb.IsNullCall = st.IsNullCall
-
 	pb.Name = st.Name
-
 	pb.ParameterStyle = st.ParameterStyle
-
 	pb.Properties = st.Properties
-
 	pb.ReturnParams = st.ReturnParams
-
 	pb.RoutineBody = st.RoutineBody
-
 	pb.RoutineDefinition = st.RoutineDefinition
-
 	pb.RoutineDependencies = st.RoutineDependencies
-
 	pb.SchemaName = st.SchemaName
-
 	pb.SecurityType = st.SecurityType
-
 	pb.SpecificName = st.SpecificName
-
 	pb.SqlDataAccess = st.SqlDataAccess
-
 	pb.SqlPath = st.SqlPath
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1803,47 +1557,27 @@ func createFunctionToPb(st *CreateFunction) (*createFunctionPb, error) {
 }
 
 type createFunctionPb struct {
-	CatalogName string `json:"catalog_name"`
-
-	Comment string `json:"comment,omitempty"`
-
-	DataType ColumnTypeName `json:"data_type"`
-
-	ExternalLanguage string `json:"external_language,omitempty"`
-
-	ExternalName string `json:"external_name,omitempty"`
-
-	FullDataType string `json:"full_data_type"`
-
-	InputParams FunctionParameterInfos `json:"input_params"`
-
-	IsDeterministic bool `json:"is_deterministic"`
-
-	IsNullCall bool `json:"is_null_call"`
-
-	Name string `json:"name"`
-
-	ParameterStyle CreateFunctionParameterStyle `json:"parameter_style"`
-
-	Properties string `json:"properties,omitempty"`
-
-	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
-
-	RoutineBody CreateFunctionRoutineBody `json:"routine_body"`
-
-	RoutineDefinition string `json:"routine_definition"`
-
-	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
-
-	SchemaName string `json:"schema_name"`
-
-	SecurityType CreateFunctionSecurityType `json:"security_type"`
-
-	SpecificName string `json:"specific_name"`
-
-	SqlDataAccess CreateFunctionSqlDataAccess `json:"sql_data_access"`
-
-	SqlPath string `json:"sql_path,omitempty"`
+	CatalogName         string                       `json:"catalog_name"`
+	Comment             string                       `json:"comment,omitempty"`
+	DataType            ColumnTypeName               `json:"data_type"`
+	ExternalLanguage    string                       `json:"external_language,omitempty"`
+	ExternalName        string                       `json:"external_name,omitempty"`
+	FullDataType        string                       `json:"full_data_type"`
+	InputParams         FunctionParameterInfos       `json:"input_params"`
+	IsDeterministic     bool                         `json:"is_deterministic"`
+	IsNullCall          bool                         `json:"is_null_call"`
+	Name                string                       `json:"name"`
+	ParameterStyle      CreateFunctionParameterStyle `json:"parameter_style"`
+	Properties          string                       `json:"properties,omitempty"`
+	ReturnParams        *FunctionParameterInfos      `json:"return_params,omitempty"`
+	RoutineBody         CreateFunctionRoutineBody    `json:"routine_body"`
+	RoutineDefinition   string                       `json:"routine_definition"`
+	RoutineDependencies *DependencyList              `json:"routine_dependencies,omitempty"`
+	SchemaName          string                       `json:"schema_name"`
+	SecurityType        CreateFunctionSecurityType   `json:"security_type"`
+	SpecificName        string                       `json:"specific_name"`
+	SqlDataAccess       CreateFunctionSqlDataAccess  `json:"sql_data_access"`
+	SqlPath             string                       `json:"sql_path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1917,9 +1651,7 @@ func createMetastoreToPb(st *CreateMetastore) (*createMetastorePb, error) {
 	}
 	pb := &createMetastorePb{}
 	pb.Name = st.Name
-
 	pb.Region = st.Region
-
 	pb.StorageRoot = st.StorageRoot
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1927,10 +1659,8 @@ func createMetastoreToPb(st *CreateMetastore) (*createMetastorePb, error) {
 }
 
 type createMetastorePb struct {
-	Name string `json:"name"`
-
-	Region string `json:"region,omitempty"`
-
+	Name        string `json:"name"`
+	Region      string `json:"region,omitempty"`
 	StorageRoot string `json:"storage_root,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1963,9 +1693,7 @@ func createMetastoreAssignmentToPb(st *CreateMetastoreAssignment) (*createMetast
 	}
 	pb := &createMetastoreAssignmentPb{}
 	pb.DefaultCatalogName = st.DefaultCatalogName
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
@@ -1973,10 +1701,8 @@ func createMetastoreAssignmentToPb(st *CreateMetastoreAssignment) (*createMetast
 
 type createMetastoreAssignmentPb struct {
 	DefaultCatalogName string `json:"default_catalog_name"`
-
-	MetastoreId string `json:"metastore_id"`
-
-	WorkspaceId int64 `json:"-" url:"-"`
+	MetastoreId        string `json:"metastore_id"`
+	WorkspaceId        int64  `json:"-" url:"-"`
 }
 
 func createMetastoreAssignmentFromPb(pb *createMetastoreAssignmentPb) (*CreateMetastoreAssignment, error) {
@@ -1997,31 +1723,18 @@ func createMonitorToPb(st *CreateMonitor) (*createMonitorPb, error) {
 	}
 	pb := &createMonitorPb{}
 	pb.AssetsDir = st.AssetsDir
-
 	pb.BaselineTableName = st.BaselineTableName
-
 	pb.CustomMetrics = st.CustomMetrics
-
 	pb.DataClassificationConfig = st.DataClassificationConfig
-
 	pb.InferenceLog = st.InferenceLog
-
 	pb.Notifications = st.Notifications
-
 	pb.OutputSchemaName = st.OutputSchemaName
-
 	pb.Schedule = st.Schedule
-
 	pb.SkipBuiltinDashboard = st.SkipBuiltinDashboard
-
 	pb.SlicingExprs = st.SlicingExprs
-
 	pb.Snapshot = st.Snapshot
-
 	pb.TableName = st.TableName
-
 	pb.TimeSeries = st.TimeSeries
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2029,33 +1742,20 @@ func createMonitorToPb(st *CreateMonitor) (*createMonitorPb, error) {
 }
 
 type createMonitorPb struct {
-	AssetsDir string `json:"assets_dir"`
-
-	BaselineTableName string `json:"baseline_table_name,omitempty"`
-
-	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
-
+	AssetsDir                string                           `json:"assets_dir"`
+	BaselineTableName        string                           `json:"baseline_table_name,omitempty"`
+	CustomMetrics            []MonitorMetric                  `json:"custom_metrics,omitempty"`
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
-
-	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
-
-	Notifications *MonitorNotifications `json:"notifications,omitempty"`
-
-	OutputSchemaName string `json:"output_schema_name"`
-
-	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
-
-	SkipBuiltinDashboard bool `json:"skip_builtin_dashboard,omitempty"`
-
-	SlicingExprs []string `json:"slicing_exprs,omitempty"`
-
-	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
-
-	TableName string `json:"-" url:"-"`
-
-	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
-
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	InferenceLog             *MonitorInferenceLog             `json:"inference_log,omitempty"`
+	Notifications            *MonitorNotifications            `json:"notifications,omitempty"`
+	OutputSchemaName         string                           `json:"output_schema_name"`
+	Schedule                 *MonitorCronSchedule             `json:"schedule,omitempty"`
+	SkipBuiltinDashboard     bool                             `json:"skip_builtin_dashboard,omitempty"`
+	SlicingExprs             []string                         `json:"slicing_exprs,omitempty"`
+	Snapshot                 *MonitorSnapshot                 `json:"snapshot,omitempty"`
+	TableName                string                           `json:"-" url:"-"`
+	TimeSeries               *MonitorTimeSeries               `json:"time_series,omitempty"`
+	WarehouseId              string                           `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2122,13 +1822,9 @@ func createRegisteredModelRequestToPb(st *CreateRegisteredModelRequest) (*create
 	}
 	pb := &createRegisteredModelRequestPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.SchemaName = st.SchemaName
-
 	pb.StorageLocation = st.StorageLocation
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2136,14 +1832,10 @@ func createRegisteredModelRequestToPb(st *CreateRegisteredModelRequest) (*create
 }
 
 type createRegisteredModelRequestPb struct {
-	CatalogName string `json:"catalog_name"`
-
-	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"name"`
-
-	SchemaName string `json:"schema_name"`
-
+	CatalogName     string `json:"catalog_name"`
+	Comment         string `json:"comment,omitempty"`
+	Name            string `json:"name"`
+	SchemaName      string `json:"schema_name"`
 	StorageLocation string `json:"storage_location,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2199,13 +1891,9 @@ func createSchemaToPb(st *CreateSchema) (*createSchemaPb, error) {
 	}
 	pb := &createSchemaPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.Properties = st.Properties
-
 	pb.StorageRoot = st.StorageRoot
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2213,15 +1901,11 @@ func createSchemaToPb(st *CreateSchema) (*createSchemaPb, error) {
 }
 
 type createSchemaPb struct {
-	CatalogName string `json:"catalog_name"`
-
-	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"name"`
-
-	Properties map[string]string `json:"properties,omitempty"`
-
-	StorageRoot string `json:"storage_root,omitempty"`
+	CatalogName string            `json:"catalog_name"`
+	Comment     string            `json:"comment,omitempty"`
+	Name        string            `json:"name"`
+	Properties  map[string]string `json:"properties,omitempty"`
+	StorageRoot string            `json:"storage_root,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2255,21 +1939,13 @@ func createStorageCredentialToPb(st *CreateStorageCredential) (*createStorageCre
 	}
 	pb := &createStorageCredentialPb{}
 	pb.AwsIamRole = st.AwsIamRole
-
 	pb.AzureManagedIdentity = st.AzureManagedIdentity
-
 	pb.AzureServicePrincipal = st.AzureServicePrincipal
-
 	pb.CloudflareApiToken = st.CloudflareApiToken
-
 	pb.Comment = st.Comment
-
 	pb.DatabricksGcpServiceAccount = st.DatabricksGcpServiceAccount
-
 	pb.Name = st.Name
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.SkipValidation = st.SkipValidation
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2277,23 +1953,15 @@ func createStorageCredentialToPb(st *CreateStorageCredential) (*createStorageCre
 }
 
 type createStorageCredentialPb struct {
-	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
-
-	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
-
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
-
-	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
+	AwsIamRole                  *AwsIamRoleRequest                  `json:"aws_iam_role,omitempty"`
+	AzureManagedIdentity        *AzureManagedIdentityRequest        `json:"azure_managed_identity,omitempty"`
+	AzureServicePrincipal       *AzureServicePrincipal              `json:"azure_service_principal,omitempty"`
+	CloudflareApiToken          *CloudflareApiToken                 `json:"cloudflare_api_token,omitempty"`
+	Comment                     string                              `json:"comment,omitempty"`
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
-
-	Name string `json:"name"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	Name                        string                              `json:"name"`
+	ReadOnly                    bool                                `json:"read_only,omitempty"`
+	SkipValidation              bool                                `json:"skip_validation,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2355,16 +2023,14 @@ func createTableConstraintToPb(st *CreateTableConstraint) (*createTableConstrain
 	}
 	pb := &createTableConstraintPb{}
 	pb.Constraint = st.Constraint
-
 	pb.FullNameArg = st.FullNameArg
 
 	return pb, nil
 }
 
 type createTableConstraintPb struct {
-	Constraint TableConstraint `json:"constraint"`
-
-	FullNameArg string `json:"full_name_arg"`
+	Constraint  TableConstraint `json:"constraint"`
+	FullNameArg string          `json:"full_name_arg"`
 }
 
 func createTableConstraintFromPb(pb *createTableConstraintPb) (*CreateTableConstraint, error) {
@@ -2384,15 +2050,10 @@ func createVolumeRequestContentToPb(st *CreateVolumeRequestContent) (*createVolu
 	}
 	pb := &createVolumeRequestContentPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.SchemaName = st.SchemaName
-
 	pb.StorageLocation = st.StorageLocation
-
 	pb.VolumeType = st.VolumeType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2400,17 +2061,12 @@ func createVolumeRequestContentToPb(st *CreateVolumeRequestContent) (*createVolu
 }
 
 type createVolumeRequestContentPb struct {
-	CatalogName string `json:"catalog_name"`
-
-	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"name"`
-
-	SchemaName string `json:"schema_name"`
-
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	VolumeType VolumeType `json:"volume_type"`
+	CatalogName     string     `json:"catalog_name"`
+	Comment         string     `json:"comment,omitempty"`
+	Name            string     `json:"name"`
+	SchemaName      string     `json:"schema_name"`
+	StorageLocation string     `json:"storage_location,omitempty"`
+	VolumeType      VolumeType `json:"volume_type"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2445,39 +2101,22 @@ func credentialInfoToPb(st *CredentialInfo) (*credentialInfoPb, error) {
 	}
 	pb := &credentialInfoPb{}
 	pb.AwsIamRole = st.AwsIamRole
-
 	pb.AzureManagedIdentity = st.AzureManagedIdentity
-
 	pb.AzureServicePrincipal = st.AzureServicePrincipal
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.DatabricksGcpServiceAccount = st.DatabricksGcpServiceAccount
-
 	pb.FullName = st.FullName
-
 	pb.Id = st.Id
-
 	pb.IsolationMode = st.IsolationMode
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.Purpose = st.Purpose
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
-
 	pb.UsedForManagedStorage = st.UsedForManagedStorage
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2485,41 +2124,24 @@ func credentialInfoToPb(st *CredentialInfo) (*credentialInfoPb, error) {
 }
 
 type credentialInfoPb struct {
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
-
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
-
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
+	AwsIamRole                  *AwsIamRole                  `json:"aws_iam_role,omitempty"`
+	AzureManagedIdentity        *AzureManagedIdentity        `json:"azure_managed_identity,omitempty"`
+	AzureServicePrincipal       *AzureServicePrincipal       `json:"azure_service_principal,omitempty"`
+	Comment                     string                       `json:"comment,omitempty"`
+	CreatedAt                   int64                        `json:"created_at,omitempty"`
+	CreatedBy                   string                       `json:"created_by,omitempty"`
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
-
-	FullName string `json:"full_name,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	Purpose CredentialPurpose `json:"purpose,omitempty"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
+	FullName                    string                       `json:"full_name,omitempty"`
+	Id                          string                       `json:"id,omitempty"`
+	IsolationMode               IsolationMode                `json:"isolation_mode,omitempty"`
+	MetastoreId                 string                       `json:"metastore_id,omitempty"`
+	Name                        string                       `json:"name,omitempty"`
+	Owner                       string                       `json:"owner,omitempty"`
+	Purpose                     CredentialPurpose            `json:"purpose,omitempty"`
+	ReadOnly                    bool                         `json:"read_only,omitempty"`
+	UpdatedAt                   int64                        `json:"updated_at,omitempty"`
+	UpdatedBy                   string                       `json:"updated_by,omitempty"`
+	UsedForManagedStorage       bool                         `json:"used_for_managed_storage,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2566,7 +2188,6 @@ func credentialValidationResultToPb(st *CredentialValidationResult) (*credential
 	}
 	pb := &credentialValidationResultPb{}
 	pb.Message = st.Message
-
 	pb.Result = st.Result
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2574,9 +2195,8 @@ func credentialValidationResultToPb(st *CredentialValidationResult) (*credential
 }
 
 type credentialValidationResultPb struct {
-	Message string `json:"message,omitempty"`
-
-	Result ValidateCredentialResult `json:"result,omitempty"`
+	Message string                   `json:"message,omitempty"`
+	Result  ValidateCredentialResult `json:"result,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2607,13 +2227,9 @@ func databaseCatalogToPb(st *DatabaseCatalog) (*databaseCatalogPb, error) {
 	}
 	pb := &databaseCatalogPb{}
 	pb.CreateDatabaseIfNotExists = st.CreateDatabaseIfNotExists
-
 	pb.DatabaseInstanceName = st.DatabaseInstanceName
-
 	pb.DatabaseName = st.DatabaseName
-
 	pb.Name = st.Name
-
 	pb.Uid = st.Uid
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2621,15 +2237,11 @@ func databaseCatalogToPb(st *DatabaseCatalog) (*databaseCatalogPb, error) {
 }
 
 type databaseCatalogPb struct {
-	CreateDatabaseIfNotExists bool `json:"create_database_if_not_exists,omitempty"`
-
-	DatabaseInstanceName string `json:"database_instance_name"`
-
-	DatabaseName string `json:"database_name"`
-
-	Name string `json:"name"`
-
-	Uid string `json:"uid,omitempty"`
+	CreateDatabaseIfNotExists bool   `json:"create_database_if_not_exists,omitempty"`
+	DatabaseInstanceName      string `json:"database_instance_name"`
+	DatabaseName              string `json:"database_name"`
+	Name                      string `json:"name"`
+	Uid                       string `json:"uid,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2699,37 +2311,21 @@ func databaseInstanceToPb(st *DatabaseInstance) (*databaseInstancePb, error) {
 	}
 	pb := &databaseInstancePb{}
 	pb.AdminPassword = st.AdminPassword
-
 	pb.AdminRolename = st.AdminRolename
-
 	pb.Capacity = st.Capacity
-
 	pb.ChildInstanceRefs = st.ChildInstanceRefs
-
 	pb.CreationTime = st.CreationTime
-
 	pb.Creator = st.Creator
-
 	pb.EnableReadableSecondaries = st.EnableReadableSecondaries
-
 	pb.Name = st.Name
-
 	pb.NodeCount = st.NodeCount
-
 	pb.ParentInstanceRef = st.ParentInstanceRef
-
 	pb.PgVersion = st.PgVersion
-
 	pb.ReadOnlyDns = st.ReadOnlyDns
-
 	pb.ReadWriteDns = st.ReadWriteDns
-
 	pb.RetentionWindowInDays = st.RetentionWindowInDays
-
 	pb.State = st.State
-
 	pb.Stopped = st.Stopped
-
 	pb.Uid = st.Uid
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2737,39 +2333,23 @@ func databaseInstanceToPb(st *DatabaseInstance) (*databaseInstancePb, error) {
 }
 
 type databaseInstancePb struct {
-	AdminPassword string `json:"admin_password,omitempty"`
-
-	AdminRolename string `json:"admin_rolename,omitempty"`
-
-	Capacity string `json:"capacity,omitempty"`
-
-	ChildInstanceRefs []DatabaseInstanceRef `json:"child_instance_refs,omitempty"`
-
-	CreationTime string `json:"creation_time,omitempty"`
-
-	Creator string `json:"creator,omitempty"`
-
-	EnableReadableSecondaries bool `json:"enable_readable_secondaries,omitempty"`
-
-	Name string `json:"name"`
-
-	NodeCount int `json:"node_count,omitempty"`
-
-	ParentInstanceRef *DatabaseInstanceRef `json:"parent_instance_ref,omitempty"`
-
-	PgVersion string `json:"pg_version,omitempty"`
-
-	ReadOnlyDns string `json:"read_only_dns,omitempty"`
-
-	ReadWriteDns string `json:"read_write_dns,omitempty"`
-
-	RetentionWindowInDays int `json:"retention_window_in_days,omitempty"`
-
-	State DatabaseInstanceState `json:"state,omitempty"`
-
-	Stopped bool `json:"stopped,omitempty"`
-
-	Uid string `json:"uid,omitempty"`
+	AdminPassword             string                `json:"admin_password,omitempty"`
+	AdminRolename             string                `json:"admin_rolename,omitempty"`
+	Capacity                  string                `json:"capacity,omitempty"`
+	ChildInstanceRefs         []DatabaseInstanceRef `json:"child_instance_refs,omitempty"`
+	CreationTime              string                `json:"creation_time,omitempty"`
+	Creator                   string                `json:"creator,omitempty"`
+	EnableReadableSecondaries bool                  `json:"enable_readable_secondaries,omitempty"`
+	Name                      string                `json:"name"`
+	NodeCount                 int                   `json:"node_count,omitempty"`
+	ParentInstanceRef         *DatabaseInstanceRef  `json:"parent_instance_ref,omitempty"`
+	PgVersion                 string                `json:"pg_version,omitempty"`
+	ReadOnlyDns               string                `json:"read_only_dns,omitempty"`
+	ReadWriteDns              string                `json:"read_write_dns,omitempty"`
+	RetentionWindowInDays     int                   `json:"retention_window_in_days,omitempty"`
+	State                     DatabaseInstanceState `json:"state,omitempty"`
+	Stopped                   bool                  `json:"stopped,omitempty"`
+	Uid                       string                `json:"uid,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2815,11 +2395,8 @@ func databaseInstanceRefToPb(st *DatabaseInstanceRef) (*databaseInstanceRefPb, e
 	}
 	pb := &databaseInstanceRefPb{}
 	pb.BranchTime = st.BranchTime
-
 	pb.Lsn = st.Lsn
-
 	pb.Name = st.Name
-
 	pb.Uid = st.Uid
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2828,12 +2405,9 @@ func databaseInstanceRefToPb(st *DatabaseInstanceRef) (*databaseInstanceRefPb, e
 
 type databaseInstanceRefPb struct {
 	BranchTime string `json:"branch_time,omitempty"`
-
-	Lsn string `json:"lsn,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Uid string `json:"uid,omitempty"`
+	Lsn        string `json:"lsn,omitempty"`
+	Name       string `json:"name,omitempty"`
+	Uid        string `json:"uid,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2866,11 +2440,8 @@ func databaseTableToPb(st *DatabaseTable) (*databaseTablePb, error) {
 	}
 	pb := &databaseTablePb{}
 	pb.DatabaseInstanceName = st.DatabaseInstanceName
-
 	pb.LogicalDatabaseName = st.LogicalDatabaseName
-
 	pb.Name = st.Name
-
 	pb.TableServingUrl = st.TableServingUrl
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2879,12 +2450,9 @@ func databaseTableToPb(st *DatabaseTable) (*databaseTablePb, error) {
 
 type databaseTablePb struct {
 	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
-
-	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
-
-	Name string `json:"name"`
-
-	TableServingUrl string `json:"table_serving_url,omitempty"`
+	LogicalDatabaseName  string `json:"logical_database_name,omitempty"`
+	Name                 string `json:"name"`
+	TableServingUrl      string `json:"table_serving_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2917,9 +2485,7 @@ func databricksGcpServiceAccountToPb(st *DatabricksGcpServiceAccount) (*databric
 	}
 	pb := &databricksGcpServiceAccountPb{}
 	pb.CredentialId = st.CredentialId
-
 	pb.Email = st.Email
-
 	pb.PrivateKeyId = st.PrivateKeyId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2928,9 +2494,7 @@ func databricksGcpServiceAccountToPb(st *DatabricksGcpServiceAccount) (*databric
 
 type databricksGcpServiceAccountPb struct {
 	CredentialId string `json:"credential_id,omitempty"`
-
-	Email string `json:"email,omitempty"`
-
+	Email        string `json:"email,omitempty"`
 	PrivateKeyId string `json:"private_key_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2984,7 +2548,6 @@ func databricksGcpServiceAccountResponseToPb(st *DatabricksGcpServiceAccountResp
 	}
 	pb := &databricksGcpServiceAccountResponsePb{}
 	pb.CredentialId = st.CredentialId
-
 	pb.Email = st.Email
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2993,8 +2556,7 @@ func databricksGcpServiceAccountResponseToPb(st *DatabricksGcpServiceAccountResp
 
 type databricksGcpServiceAccountResponsePb struct {
 	CredentialId string `json:"credential_id,omitempty"`
-
-	Email string `json:"email,omitempty"`
+	Email        string `json:"email,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3025,7 +2587,6 @@ func deleteAccountMetastoreAssignmentRequestToPb(st *DeleteAccountMetastoreAssig
 	}
 	pb := &deleteAccountMetastoreAssignmentRequestPb{}
 	pb.MetastoreId = st.MetastoreId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
@@ -3033,8 +2594,7 @@ func deleteAccountMetastoreAssignmentRequestToPb(st *DeleteAccountMetastoreAssig
 
 type deleteAccountMetastoreAssignmentRequestPb struct {
 	MetastoreId string `json:"-" url:"-"`
-
-	WorkspaceId int64 `json:"-" url:"-"`
+	WorkspaceId int64  `json:"-" url:"-"`
 }
 
 func deleteAccountMetastoreAssignmentRequestFromPb(pb *deleteAccountMetastoreAssignmentRequestPb) (*DeleteAccountMetastoreAssignmentRequest, error) {
@@ -3054,7 +2614,6 @@ func deleteAccountMetastoreRequestToPb(st *DeleteAccountMetastoreRequest) (*dele
 	}
 	pb := &deleteAccountMetastoreRequestPb{}
 	pb.Force = st.Force
-
 	pb.MetastoreId = st.MetastoreId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3062,8 +2621,7 @@ func deleteAccountMetastoreRequestToPb(st *DeleteAccountMetastoreRequest) (*dele
 }
 
 type deleteAccountMetastoreRequestPb struct {
-	Force bool `json:"-" url:"force,omitempty"`
-
+	Force       bool   `json:"-" url:"force,omitempty"`
 	MetastoreId string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3095,9 +2653,7 @@ func deleteAccountStorageCredentialRequestToPb(st *DeleteAccountStorageCredentia
 	}
 	pb := &deleteAccountStorageCredentialRequestPb{}
 	pb.Force = st.Force
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.StorageCredentialName = st.StorageCredentialName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3105,10 +2661,8 @@ func deleteAccountStorageCredentialRequestToPb(st *DeleteAccountStorageCredentia
 }
 
 type deleteAccountStorageCredentialRequestPb struct {
-	Force bool `json:"-" url:"force,omitempty"`
-
-	MetastoreId string `json:"-" url:"-"`
-
+	Force                 bool   `json:"-" url:"force,omitempty"`
+	MetastoreId           string `json:"-" url:"-"`
 	StorageCredentialName string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3141,15 +2695,13 @@ func deleteAliasRequestToPb(st *DeleteAliasRequest) (*deleteAliasRequestPb, erro
 	}
 	pb := &deleteAliasRequestPb{}
 	pb.Alias = st.Alias
-
 	pb.FullName = st.FullName
 
 	return pb, nil
 }
 
 type deleteAliasRequestPb struct {
-	Alias string `json:"-" url:"-"`
-
+	Alias    string `json:"-" url:"-"`
 	FullName string `json:"-" url:"-"`
 }
 
@@ -3191,7 +2743,6 @@ func deleteCatalogRequestToPb(st *DeleteCatalogRequest) (*deleteCatalogRequestPb
 	}
 	pb := &deleteCatalogRequestPb{}
 	pb.Force = st.Force
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3199,9 +2750,8 @@ func deleteCatalogRequestToPb(st *DeleteCatalogRequest) (*deleteCatalogRequestPb
 }
 
 type deleteCatalogRequestPb struct {
-	Force bool `json:"-" url:"force,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	Force bool   `json:"-" url:"force,omitempty"`
+	Name  string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3256,7 +2806,6 @@ func deleteCredentialRequestToPb(st *DeleteCredentialRequest) (*deleteCredential
 	}
 	pb := &deleteCredentialRequestPb{}
 	pb.Force = st.Force
-
 	pb.NameArg = st.NameArg
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3264,8 +2813,7 @@ func deleteCredentialRequestToPb(st *DeleteCredentialRequest) (*deleteCredential
 }
 
 type deleteCredentialRequestPb struct {
-	Force bool `json:"-" url:"force,omitempty"`
-
+	Force   bool   `json:"-" url:"force,omitempty"`
 	NameArg string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3363,9 +2911,7 @@ func deleteDatabaseInstanceRequestToPb(st *DeleteDatabaseInstanceRequest) (*dele
 	}
 	pb := &deleteDatabaseInstanceRequestPb{}
 	pb.Force = st.Force
-
 	pb.Name = st.Name
-
 	pb.Purge = st.Purge
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3373,11 +2919,9 @@ func deleteDatabaseInstanceRequestToPb(st *DeleteDatabaseInstanceRequest) (*dele
 }
 
 type deleteDatabaseInstanceRequestPb struct {
-	Force bool `json:"-" url:"force,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	Purge bool `json:"-" url:"purge,omitempty"`
+	Force bool   `json:"-" url:"force,omitempty"`
+	Name  string `json:"-" url:"-"`
+	Purge bool   `json:"-" url:"purge,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3475,7 +3019,6 @@ func deleteExternalLocationRequestToPb(st *DeleteExternalLocationRequest) (*dele
 	}
 	pb := &deleteExternalLocationRequestPb{}
 	pb.Force = st.Force
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3483,9 +3026,8 @@ func deleteExternalLocationRequestToPb(st *DeleteExternalLocationRequest) (*dele
 }
 
 type deleteExternalLocationRequestPb struct {
-	Force bool `json:"-" url:"force,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	Force bool   `json:"-" url:"force,omitempty"`
+	Name  string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3516,7 +3058,6 @@ func deleteFunctionRequestToPb(st *DeleteFunctionRequest) (*deleteFunctionReques
 	}
 	pb := &deleteFunctionRequestPb{}
 	pb.Force = st.Force
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3524,9 +3065,8 @@ func deleteFunctionRequestToPb(st *DeleteFunctionRequest) (*deleteFunctionReques
 }
 
 type deleteFunctionRequestPb struct {
-	Force bool `json:"-" url:"force,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	Force bool   `json:"-" url:"force,omitempty"`
+	Name  string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3557,7 +3097,6 @@ func deleteMetastoreRequestToPb(st *DeleteMetastoreRequest) (*deleteMetastoreReq
 	}
 	pb := &deleteMetastoreRequestPb{}
 	pb.Force = st.Force
-
 	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3565,9 +3104,8 @@ func deleteMetastoreRequestToPb(st *DeleteMetastoreRequest) (*deleteMetastoreReq
 }
 
 type deleteMetastoreRequestPb struct {
-	Force bool `json:"-" url:"force,omitempty"`
-
-	Id string `json:"-" url:"-"`
+	Force bool   `json:"-" url:"force,omitempty"`
+	Id    string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3598,7 +3136,6 @@ func deleteModelVersionRequestToPb(st *DeleteModelVersionRequest) (*deleteModelV
 	}
 	pb := &deleteModelVersionRequestPb{}
 	pb.FullName = st.FullName
-
 	pb.Version = st.Version
 
 	return pb, nil
@@ -3606,8 +3143,7 @@ func deleteModelVersionRequestToPb(st *DeleteModelVersionRequest) (*deleteModelV
 
 type deleteModelVersionRequestPb struct {
 	FullName string `json:"-" url:"-"`
-
-	Version int `json:"-" url:"-"`
+	Version  int    `json:"-" url:"-"`
 }
 
 func deleteModelVersionRequestFromPb(pb *deleteModelVersionRequestPb) (*DeleteModelVersionRequest, error) {
@@ -3720,7 +3256,6 @@ func deleteSchemaRequestToPb(st *DeleteSchemaRequest) (*deleteSchemaRequestPb, e
 	}
 	pb := &deleteSchemaRequestPb{}
 	pb.Force = st.Force
-
 	pb.FullName = st.FullName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3728,8 +3263,7 @@ func deleteSchemaRequestToPb(st *DeleteSchemaRequest) (*deleteSchemaRequestPb, e
 }
 
 type deleteSchemaRequestPb struct {
-	Force bool `json:"-" url:"force,omitempty"`
-
+	Force    bool   `json:"-" url:"force,omitempty"`
 	FullName string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3761,7 +3295,6 @@ func deleteStorageCredentialRequestToPb(st *DeleteStorageCredentialRequest) (*de
 	}
 	pb := &deleteStorageCredentialRequestPb{}
 	pb.Force = st.Force
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3769,9 +3302,8 @@ func deleteStorageCredentialRequestToPb(st *DeleteStorageCredentialRequest) (*de
 }
 
 type deleteStorageCredentialRequestPb struct {
-	Force bool `json:"-" url:"force,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	Force bool   `json:"-" url:"force,omitempty"`
+	Name  string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3847,20 +3379,16 @@ func deleteTableConstraintRequestToPb(st *DeleteTableConstraintRequest) (*delete
 	}
 	pb := &deleteTableConstraintRequestPb{}
 	pb.Cascade = st.Cascade
-
 	pb.ConstraintName = st.ConstraintName
-
 	pb.FullName = st.FullName
 
 	return pb, nil
 }
 
 type deleteTableConstraintRequestPb struct {
-	Cascade bool `json:"-" url:"cascade"`
-
+	Cascade        bool   `json:"-" url:"cascade"`
 	ConstraintName string `json:"-" url:"constraint_name"`
-
-	FullName string `json:"-" url:"-"`
+	FullName       string `json:"-" url:"-"`
 }
 
 func deleteTableConstraintRequestFromPb(pb *deleteTableConstraintRequestPb) (*DeleteTableConstraintRequest, error) {
@@ -3953,7 +3481,6 @@ func dependencyToPb(st *Dependency) (*dependencyPb, error) {
 	}
 	pb := &dependencyPb{}
 	pb.Function = st.Function
-
 	pb.Table = st.Table
 
 	return pb, nil
@@ -3961,8 +3488,7 @@ func dependencyToPb(st *Dependency) (*dependencyPb, error) {
 
 type dependencyPb struct {
 	Function *FunctionDependency `json:"function,omitempty"`
-
-	Table *TableDependency `json:"table,omitempty"`
+	Table    *TableDependency    `json:"table,omitempty"`
 }
 
 func dependencyFromPb(pb *dependencyPb) (*Dependency, error) {
@@ -4006,7 +3532,6 @@ func disableRequestToPb(st *DisableRequest) (*disableRequestPb, error) {
 	}
 	pb := &disableRequestPb{}
 	pb.MetastoreId = st.MetastoreId
-
 	pb.SchemaName = st.SchemaName
 
 	return pb, nil
@@ -4014,8 +3539,7 @@ func disableRequestToPb(st *DisableRequest) (*disableRequestPb, error) {
 
 type disableRequestPb struct {
 	MetastoreId string `json:"-" url:"-"`
-
-	SchemaName string `json:"-" url:"-"`
+	SchemaName  string `json:"-" url:"-"`
 }
 
 func disableRequestFromPb(pb *disableRequestPb) (*DisableRequest, error) {
@@ -4080,9 +3604,7 @@ func effectivePredictiveOptimizationFlagToPb(st *EffectivePredictiveOptimization
 	}
 	pb := &effectivePredictiveOptimizationFlagPb{}
 	pb.InheritedFromName = st.InheritedFromName
-
 	pb.InheritedFromType = st.InheritedFromType
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4090,11 +3612,9 @@ func effectivePredictiveOptimizationFlagToPb(st *EffectivePredictiveOptimization
 }
 
 type effectivePredictiveOptimizationFlagPb struct {
-	InheritedFromName string `json:"inherited_from_name,omitempty"`
-
+	InheritedFromName string                                               `json:"inherited_from_name,omitempty"`
 	InheritedFromType EffectivePredictiveOptimizationFlagInheritedFromType `json:"inherited_from_type,omitempty"`
-
-	Value EnablePredictiveOptimization `json:"value"`
+	Value             EnablePredictiveOptimization                         `json:"value"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4126,9 +3646,7 @@ func effectivePrivilegeToPb(st *EffectivePrivilege) (*effectivePrivilegePb, erro
 	}
 	pb := &effectivePrivilegePb{}
 	pb.InheritedFromName = st.InheritedFromName
-
 	pb.InheritedFromType = st.InheritedFromType
-
 	pb.Privilege = st.Privilege
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4136,11 +3654,9 @@ func effectivePrivilegeToPb(st *EffectivePrivilege) (*effectivePrivilegePb, erro
 }
 
 type effectivePrivilegePb struct {
-	InheritedFromName string `json:"inherited_from_name,omitempty"`
-
+	InheritedFromName string        `json:"inherited_from_name,omitempty"`
 	InheritedFromType SecurableType `json:"inherited_from_type,omitempty"`
-
-	Privilege Privilege `json:"privilege,omitempty"`
+	Privilege         Privilege     `json:"privilege,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4172,7 +3688,6 @@ func effectivePrivilegeAssignmentToPb(st *EffectivePrivilegeAssignment) (*effect
 	}
 	pb := &effectivePrivilegeAssignmentPb{}
 	pb.Principal = st.Principal
-
 	pb.Privileges = st.Privileges
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4180,8 +3695,7 @@ func effectivePrivilegeAssignmentToPb(st *EffectivePrivilegeAssignment) (*effect
 }
 
 type effectivePrivilegeAssignmentPb struct {
-	Principal string `json:"principal,omitempty"`
-
+	Principal  string               `json:"principal,omitempty"`
 	Privileges []EffectivePrivilege `json:"privileges,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4213,9 +3727,7 @@ func enableRequestToPb(st *EnableRequest) (*enableRequestPb, error) {
 	}
 	pb := &enableRequestPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4224,10 +3736,8 @@ func enableRequestToPb(st *EnableRequest) (*enableRequestPb, error) {
 
 type enableRequestPb struct {
 	CatalogName string `json:"catalog_name,omitempty"`
-
 	MetastoreId string `json:"-" url:"-"`
-
-	SchemaName string `json:"-" url:"-"`
+	SchemaName  string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4328,39 +3838,22 @@ func externalLocationInfoToPb(st *ExternalLocationInfo) (*externalLocationInfoPb
 	}
 	pb := &externalLocationInfoPb{}
 	pb.BrowseOnly = st.BrowseOnly
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.CredentialId = st.CredentialId
-
 	pb.CredentialName = st.CredentialName
-
 	pb.EnableFileEvents = st.EnableFileEvents
-
 	pb.EncryptionDetails = st.EncryptionDetails
-
 	pb.Fallback = st.Fallback
-
 	pb.FileEventQueue = st.FileEventQueue
-
 	pb.IsolationMode = st.IsolationMode
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4368,41 +3861,24 @@ func externalLocationInfoToPb(st *ExternalLocationInfo) (*externalLocationInfoPb
 }
 
 type externalLocationInfoPb struct {
-	BrowseOnly bool `json:"browse_only,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	CredentialId string `json:"credential_id,omitempty"`
-
-	CredentialName string `json:"credential_name,omitempty"`
-
-	EnableFileEvents bool `json:"enable_file_events,omitempty"`
-
+	BrowseOnly        bool               `json:"browse_only,omitempty"`
+	Comment           string             `json:"comment,omitempty"`
+	CreatedAt         int64              `json:"created_at,omitempty"`
+	CreatedBy         string             `json:"created_by,omitempty"`
+	CredentialId      string             `json:"credential_id,omitempty"`
+	CredentialName    string             `json:"credential_name,omitempty"`
+	EnableFileEvents  bool               `json:"enable_file_events,omitempty"`
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
-
-	Fallback bool `json:"fallback,omitempty"`
-
-	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
-
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	Url string `json:"url,omitempty"`
+	Fallback          bool               `json:"fallback,omitempty"`
+	FileEventQueue    *FileEventQueue    `json:"file_event_queue,omitempty"`
+	IsolationMode     IsolationMode      `json:"isolation_mode,omitempty"`
+	MetastoreId       string             `json:"metastore_id,omitempty"`
+	Name              string             `json:"name,omitempty"`
+	Owner             string             `json:"owner,omitempty"`
+	ReadOnly          bool               `json:"read_only,omitempty"`
+	UpdatedAt         int64              `json:"updated_at,omitempty"`
+	UpdatedBy         string             `json:"updated_by,omitempty"`
+	Url               string             `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4449,7 +3925,6 @@ func failedStatusToPb(st *FailedStatus) (*failedStatusPb, error) {
 	}
 	pb := &failedStatusPb{}
 	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
-
 	pb.Timestamp = st.Timestamp
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4457,9 +3932,8 @@ func failedStatusToPb(st *FailedStatus) (*failedStatusPb, error) {
 }
 
 type failedStatusPb struct {
-	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
-
-	Timestamp string `json:"timestamp,omitempty"`
+	LastProcessedCommitVersion int64  `json:"last_processed_commit_version,omitempty"`
+	Timestamp                  string `json:"timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4490,7 +3964,6 @@ func failoverDatabaseInstanceRequestToPb(st *FailoverDatabaseInstanceRequest) (*
 	}
 	pb := &failoverDatabaseInstanceRequestPb{}
 	pb.FailoverTargetDatabaseInstanceName = st.FailoverTargetDatabaseInstanceName
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4499,8 +3972,7 @@ func failoverDatabaseInstanceRequestToPb(st *FailoverDatabaseInstanceRequest) (*
 
 type failoverDatabaseInstanceRequestPb struct {
 	FailoverTargetDatabaseInstanceName string `json:"failover_target_database_instance_name,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	Name                               string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4531,32 +4003,22 @@ func fileEventQueueToPb(st *FileEventQueue) (*fileEventQueuePb, error) {
 	}
 	pb := &fileEventQueuePb{}
 	pb.ManagedAqs = st.ManagedAqs
-
 	pb.ManagedPubsub = st.ManagedPubsub
-
 	pb.ManagedSqs = st.ManagedSqs
-
 	pb.ProvidedAqs = st.ProvidedAqs
-
 	pb.ProvidedPubsub = st.ProvidedPubsub
-
 	pb.ProvidedSqs = st.ProvidedSqs
 
 	return pb, nil
 }
 
 type fileEventQueuePb struct {
-	ManagedAqs *AzureQueueStorage `json:"managed_aqs,omitempty"`
-
-	ManagedPubsub *GcpPubsub `json:"managed_pubsub,omitempty"`
-
-	ManagedSqs *AwsSqsQueue `json:"managed_sqs,omitempty"`
-
-	ProvidedAqs *AzureQueueStorage `json:"provided_aqs,omitempty"`
-
-	ProvidedPubsub *GcpPubsub `json:"provided_pubsub,omitempty"`
-
-	ProvidedSqs *AwsSqsQueue `json:"provided_sqs,omitempty"`
+	ManagedAqs     *AzureQueueStorage `json:"managed_aqs,omitempty"`
+	ManagedPubsub  *GcpPubsub         `json:"managed_pubsub,omitempty"`
+	ManagedSqs     *AwsSqsQueue       `json:"managed_sqs,omitempty"`
+	ProvidedAqs    *AzureQueueStorage `json:"provided_aqs,omitempty"`
+	ProvidedPubsub *GcpPubsub         `json:"provided_pubsub,omitempty"`
+	ProvidedSqs    *AwsSqsQueue       `json:"provided_sqs,omitempty"`
 }
 
 func fileEventQueueFromPb(pb *fileEventQueuePb) (*FileEventQueue, error) {
@@ -4616,24 +4078,18 @@ func foreignKeyConstraintToPb(st *ForeignKeyConstraint) (*foreignKeyConstraintPb
 	}
 	pb := &foreignKeyConstraintPb{}
 	pb.ChildColumns = st.ChildColumns
-
 	pb.Name = st.Name
-
 	pb.ParentColumns = st.ParentColumns
-
 	pb.ParentTable = st.ParentTable
 
 	return pb, nil
 }
 
 type foreignKeyConstraintPb struct {
-	ChildColumns []string `json:"child_columns"`
-
-	Name string `json:"name"`
-
+	ChildColumns  []string `json:"child_columns"`
+	Name          string   `json:"name"`
 	ParentColumns []string `json:"parent_columns"`
-
-	ParentTable string `json:"parent_table"`
+	ParentTable   string   `json:"parent_table"`
 }
 
 func foreignKeyConstraintFromPb(pb *foreignKeyConstraintPb) (*ForeignKeyConstraint, error) {
@@ -4679,63 +4135,34 @@ func functionInfoToPb(st *FunctionInfo) (*functionInfoPb, error) {
 	}
 	pb := &functionInfoPb{}
 	pb.BrowseOnly = st.BrowseOnly
-
 	pb.CatalogName = st.CatalogName
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.DataType = st.DataType
-
 	pb.ExternalLanguage = st.ExternalLanguage
-
 	pb.ExternalName = st.ExternalName
-
 	pb.FullDataType = st.FullDataType
-
 	pb.FullName = st.FullName
-
 	pb.FunctionId = st.FunctionId
-
 	pb.InputParams = st.InputParams
-
 	pb.IsDeterministic = st.IsDeterministic
-
 	pb.IsNullCall = st.IsNullCall
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.ParameterStyle = st.ParameterStyle
-
 	pb.Properties = st.Properties
-
 	pb.ReturnParams = st.ReturnParams
-
 	pb.RoutineBody = st.RoutineBody
-
 	pb.RoutineDefinition = st.RoutineDefinition
-
 	pb.RoutineDependencies = st.RoutineDependencies
-
 	pb.SchemaName = st.SchemaName
-
 	pb.SecurityType = st.SecurityType
-
 	pb.SpecificName = st.SpecificName
-
 	pb.SqlDataAccess = st.SqlDataAccess
-
 	pb.SqlPath = st.SqlPath
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4743,65 +4170,36 @@ func functionInfoToPb(st *FunctionInfo) (*functionInfoPb, error) {
 }
 
 type functionInfoPb struct {
-	BrowseOnly bool `json:"browse_only,omitempty"`
-
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	DataType ColumnTypeName `json:"data_type,omitempty"`
-
-	ExternalLanguage string `json:"external_language,omitempty"`
-
-	ExternalName string `json:"external_name,omitempty"`
-
-	FullDataType string `json:"full_data_type,omitempty"`
-
-	FullName string `json:"full_name,omitempty"`
-
-	FunctionId string `json:"function_id,omitempty"`
-
-	InputParams *FunctionParameterInfos `json:"input_params,omitempty"`
-
-	IsDeterministic bool `json:"is_deterministic,omitempty"`
-
-	IsNullCall bool `json:"is_null_call,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	ParameterStyle FunctionInfoParameterStyle `json:"parameter_style,omitempty"`
-
-	Properties string `json:"properties,omitempty"`
-
-	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
-
-	RoutineBody FunctionInfoRoutineBody `json:"routine_body,omitempty"`
-
-	RoutineDefinition string `json:"routine_definition,omitempty"`
-
-	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
-
-	SchemaName string `json:"schema_name,omitempty"`
-
-	SecurityType FunctionInfoSecurityType `json:"security_type,omitempty"`
-
-	SpecificName string `json:"specific_name,omitempty"`
-
-	SqlDataAccess FunctionInfoSqlDataAccess `json:"sql_data_access,omitempty"`
-
-	SqlPath string `json:"sql_path,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	BrowseOnly          bool                       `json:"browse_only,omitempty"`
+	CatalogName         string                     `json:"catalog_name,omitempty"`
+	Comment             string                     `json:"comment,omitempty"`
+	CreatedAt           int64                      `json:"created_at,omitempty"`
+	CreatedBy           string                     `json:"created_by,omitempty"`
+	DataType            ColumnTypeName             `json:"data_type,omitempty"`
+	ExternalLanguage    string                     `json:"external_language,omitempty"`
+	ExternalName        string                     `json:"external_name,omitempty"`
+	FullDataType        string                     `json:"full_data_type,omitempty"`
+	FullName            string                     `json:"full_name,omitempty"`
+	FunctionId          string                     `json:"function_id,omitempty"`
+	InputParams         *FunctionParameterInfos    `json:"input_params,omitempty"`
+	IsDeterministic     bool                       `json:"is_deterministic,omitempty"`
+	IsNullCall          bool                       `json:"is_null_call,omitempty"`
+	MetastoreId         string                     `json:"metastore_id,omitempty"`
+	Name                string                     `json:"name,omitempty"`
+	Owner               string                     `json:"owner,omitempty"`
+	ParameterStyle      FunctionInfoParameterStyle `json:"parameter_style,omitempty"`
+	Properties          string                     `json:"properties,omitempty"`
+	ReturnParams        *FunctionParameterInfos    `json:"return_params,omitempty"`
+	RoutineBody         FunctionInfoRoutineBody    `json:"routine_body,omitempty"`
+	RoutineDefinition   string                     `json:"routine_definition,omitempty"`
+	RoutineDependencies *DependencyList            `json:"routine_dependencies,omitempty"`
+	SchemaName          string                     `json:"schema_name,omitempty"`
+	SecurityType        FunctionInfoSecurityType   `json:"security_type,omitempty"`
+	SpecificName        string                     `json:"specific_name,omitempty"`
+	SqlDataAccess       FunctionInfoSqlDataAccess  `json:"sql_data_access,omitempty"`
+	SqlPath             string                     `json:"sql_path,omitempty"`
+	UpdatedAt           int64                      `json:"updated_at,omitempty"`
+	UpdatedBy           string                     `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4860,27 +4258,16 @@ func functionParameterInfoToPb(st *FunctionParameterInfo) (*functionParameterInf
 	}
 	pb := &functionParameterInfoPb{}
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.ParameterDefault = st.ParameterDefault
-
 	pb.ParameterMode = st.ParameterMode
-
 	pb.ParameterType = st.ParameterType
-
 	pb.Position = st.Position
-
 	pb.TypeIntervalType = st.TypeIntervalType
-
 	pb.TypeJson = st.TypeJson
-
 	pb.TypeName = st.TypeName
-
 	pb.TypePrecision = st.TypePrecision
-
 	pb.TypeScale = st.TypeScale
-
 	pb.TypeText = st.TypeText
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4888,29 +4275,18 @@ func functionParameterInfoToPb(st *FunctionParameterInfo) (*functionParameterInf
 }
 
 type functionParameterInfoPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"name"`
-
-	ParameterDefault string `json:"parameter_default,omitempty"`
-
-	ParameterMode FunctionParameterMode `json:"parameter_mode,omitempty"`
-
-	ParameterType FunctionParameterType `json:"parameter_type,omitempty"`
-
-	Position int `json:"position"`
-
-	TypeIntervalType string `json:"type_interval_type,omitempty"`
-
-	TypeJson string `json:"type_json,omitempty"`
-
-	TypeName ColumnTypeName `json:"type_name"`
-
-	TypePrecision int `json:"type_precision,omitempty"`
-
-	TypeScale int `json:"type_scale,omitempty"`
-
-	TypeText string `json:"type_text"`
+	Comment          string                `json:"comment,omitempty"`
+	Name             string                `json:"name"`
+	ParameterDefault string                `json:"parameter_default,omitempty"`
+	ParameterMode    FunctionParameterMode `json:"parameter_mode,omitempty"`
+	ParameterType    FunctionParameterType `json:"parameter_type,omitempty"`
+	Position         int                   `json:"position"`
+	TypeIntervalType string                `json:"type_interval_type,omitempty"`
+	TypeJson         string                `json:"type_json,omitempty"`
+	TypeName         ColumnTypeName        `json:"type_name"`
+	TypePrecision    int                   `json:"type_precision,omitempty"`
+	TypeScale        int                   `json:"type_scale,omitempty"`
+	TypeText         string                `json:"type_text"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5011,7 +4387,6 @@ func gcpPubsubToPb(st *GcpPubsub) (*gcpPubsubPb, error) {
 	}
 	pb := &gcpPubsubPb{}
 	pb.ManagedResourceId = st.ManagedResourceId
-
 	pb.SubscriptionName = st.SubscriptionName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5020,8 +4395,7 @@ func gcpPubsubToPb(st *GcpPubsub) (*gcpPubsubPb, error) {
 
 type gcpPubsubPb struct {
 	ManagedResourceId string `json:"managed_resource_id,omitempty"`
-
-	SubscriptionName string `json:"subscription_name,omitempty"`
+	SubscriptionName  string `json:"subscription_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5052,7 +4426,6 @@ func generateDatabaseCredentialRequestToPb(st *GenerateDatabaseCredentialRequest
 	}
 	pb := &generateDatabaseCredentialRequestPb{}
 	pb.InstanceNames = st.InstanceNames
-
 	pb.RequestId = st.RequestId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5061,8 +4434,7 @@ func generateDatabaseCredentialRequestToPb(st *GenerateDatabaseCredentialRequest
 
 type generateDatabaseCredentialRequestPb struct {
 	InstanceNames []string `json:"instance_names,omitempty"`
-
-	RequestId string `json:"request_id,omitempty"`
+	RequestId     string   `json:"request_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5141,20 +4513,16 @@ func generateTemporaryServiceCredentialRequestToPb(st *GenerateTemporaryServiceC
 	}
 	pb := &generateTemporaryServiceCredentialRequestPb{}
 	pb.AzureOptions = st.AzureOptions
-
 	pb.CredentialName = st.CredentialName
-
 	pb.GcpOptions = st.GcpOptions
 
 	return pb, nil
 }
 
 type generateTemporaryServiceCredentialRequestPb struct {
-	AzureOptions *GenerateTemporaryServiceCredentialAzureOptions `json:"azure_options,omitempty"`
-
-	CredentialName string `json:"credential_name"`
-
-	GcpOptions *GenerateTemporaryServiceCredentialGcpOptions `json:"gcp_options,omitempty"`
+	AzureOptions   *GenerateTemporaryServiceCredentialAzureOptions `json:"azure_options,omitempty"`
+	CredentialName string                                          `json:"credential_name"`
+	GcpOptions     *GenerateTemporaryServiceCredentialGcpOptions   `json:"gcp_options,omitempty"`
 }
 
 func generateTemporaryServiceCredentialRequestFromPb(pb *generateTemporaryServiceCredentialRequestPb) (*GenerateTemporaryServiceCredentialRequest, error) {
@@ -5175,7 +4543,6 @@ func generateTemporaryTableCredentialRequestToPb(st *GenerateTemporaryTableCrede
 	}
 	pb := &generateTemporaryTableCredentialRequestPb{}
 	pb.Operation = st.Operation
-
 	pb.TableId = st.TableId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5184,8 +4551,7 @@ func generateTemporaryTableCredentialRequestToPb(st *GenerateTemporaryTableCrede
 
 type generateTemporaryTableCredentialRequestPb struct {
 	Operation TableOperation `json:"operation,omitempty"`
-
-	TableId string `json:"table_id,omitempty"`
+	TableId   string         `json:"table_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5216,17 +4582,11 @@ func generateTemporaryTableCredentialResponseToPb(st *GenerateTemporaryTableCred
 	}
 	pb := &generateTemporaryTableCredentialResponsePb{}
 	pb.AwsTempCredentials = st.AwsTempCredentials
-
 	pb.AzureAad = st.AzureAad
-
 	pb.AzureUserDelegationSas = st.AzureUserDelegationSas
-
 	pb.ExpirationTime = st.ExpirationTime
-
 	pb.GcpOauthToken = st.GcpOauthToken
-
 	pb.R2TempCredentials = st.R2TempCredentials
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5234,19 +4594,13 @@ func generateTemporaryTableCredentialResponseToPb(st *GenerateTemporaryTableCred
 }
 
 type generateTemporaryTableCredentialResponsePb struct {
-	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
-
-	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
-
-	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
-
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
-	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
-
-	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
-
-	Url string `json:"url,omitempty"`
+	AwsTempCredentials     *AwsCredentials            `json:"aws_temp_credentials,omitempty"`
+	AzureAad               *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
+	AzureUserDelegationSas *AzureUserDelegationSas    `json:"azure_user_delegation_sas,omitempty"`
+	ExpirationTime         int64                      `json:"expiration_time,omitempty"`
+	GcpOauthToken          *GcpOauthToken             `json:"gcp_oauth_token,omitempty"`
+	R2TempCredentials      *R2Credentials             `json:"r2_temp_credentials,omitempty"`
+	Url                    string                     `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5330,15 +4684,13 @@ func getAccountStorageCredentialRequestToPb(st *GetAccountStorageCredentialReque
 	}
 	pb := &getAccountStorageCredentialRequestPb{}
 	pb.MetastoreId = st.MetastoreId
-
 	pb.StorageCredentialName = st.StorageCredentialName
 
 	return pb, nil
 }
 
 type getAccountStorageCredentialRequestPb struct {
-	MetastoreId string `json:"-" url:"-"`
-
+	MetastoreId           string `json:"-" url:"-"`
 	StorageCredentialName string `json:"-" url:"-"`
 }
 
@@ -5383,11 +4735,8 @@ func getBindingsRequestToPb(st *GetBindingsRequest) (*getBindingsRequestPb, erro
 	}
 	pb := &getBindingsRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
-
 	pb.SecurableName = st.SecurableName
-
 	pb.SecurableType = st.SecurableType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5395,12 +4744,9 @@ func getBindingsRequestToPb(st *GetBindingsRequest) (*getBindingsRequestPb, erro
 }
 
 type getBindingsRequestPb struct {
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
+	MaxResults    int    `json:"-" url:"max_results,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
 	SecurableName string `json:"-" url:"-"`
-
 	SecurableType string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5434,9 +4780,7 @@ func getByAliasRequestToPb(st *GetByAliasRequest) (*getByAliasRequestPb, error) 
 	}
 	pb := &getByAliasRequestPb{}
 	pb.Alias = st.Alias
-
 	pb.FullName = st.FullName
-
 	pb.IncludeAliases = st.IncludeAliases
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5444,11 +4788,9 @@ func getByAliasRequestToPb(st *GetByAliasRequest) (*getByAliasRequestPb, error) 
 }
 
 type getByAliasRequestPb struct {
-	Alias string `json:"-" url:"-"`
-
-	FullName string `json:"-" url:"-"`
-
-	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
+	Alias          string `json:"-" url:"-"`
+	FullName       string `json:"-" url:"-"`
+	IncludeAliases bool   `json:"-" url:"include_aliases,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5480,7 +4822,6 @@ func getCatalogRequestToPb(st *GetCatalogRequest) (*getCatalogRequestPb, error) 
 	}
 	pb := &getCatalogRequestPb{}
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5488,9 +4829,8 @@ func getCatalogRequestToPb(st *GetCatalogRequest) (*getCatalogRequestPb, error) 
 }
 
 type getCatalogRequestPb struct {
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
+	Name          string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5665,9 +5005,7 @@ func getEffectiveRequestToPb(st *GetEffectiveRequest) (*getEffectiveRequestPb, e
 	}
 	pb := &getEffectiveRequestPb{}
 	pb.FullName = st.FullName
-
 	pb.Principal = st.Principal
-
 	pb.SecurableType = st.SecurableType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5675,10 +5013,8 @@ func getEffectiveRequestToPb(st *GetEffectiveRequest) (*getEffectiveRequestPb, e
 }
 
 type getEffectiveRequestPb struct {
-	FullName string `json:"-" url:"-"`
-
-	Principal string `json:"-" url:"principal,omitempty"`
-
+	FullName      string        `json:"-" url:"-"`
+	Principal     string        `json:"-" url:"principal,omitempty"`
 	SecurableType SecurableType `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5711,7 +5047,6 @@ func getExternalLocationRequestToPb(st *GetExternalLocationRequest) (*getExterna
 	}
 	pb := &getExternalLocationRequestPb{}
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5719,9 +5054,8 @@ func getExternalLocationRequestToPb(st *GetExternalLocationRequest) (*getExterna
 }
 
 type getExternalLocationRequestPb struct {
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
+	Name          string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5752,7 +5086,6 @@ func getFunctionRequestToPb(st *GetFunctionRequest) (*getFunctionRequestPb, erro
 	}
 	pb := &getFunctionRequestPb{}
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5760,9 +5093,8 @@ func getFunctionRequestToPb(st *GetFunctionRequest) (*getFunctionRequestPb, erro
 }
 
 type getFunctionRequestPb struct {
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
+	Name          string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5793,9 +5125,7 @@ func getGrantRequestToPb(st *GetGrantRequest) (*getGrantRequestPb, error) {
 	}
 	pb := &getGrantRequestPb{}
 	pb.FullName = st.FullName
-
 	pb.Principal = st.Principal
-
 	pb.SecurableType = st.SecurableType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5803,10 +5133,8 @@ func getGrantRequestToPb(st *GetGrantRequest) (*getGrantRequestPb, error) {
 }
 
 type getGrantRequestPb struct {
-	FullName string `json:"-" url:"-"`
-
-	Principal string `json:"-" url:"principal,omitempty"`
-
+	FullName      string        `json:"-" url:"-"`
+	Principal     string        `json:"-" url:"principal,omitempty"`
 	SecurableType SecurableType `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5863,41 +5191,23 @@ func getMetastoreSummaryResponseToPb(st *GetMetastoreSummaryResponse) (*getMetas
 	}
 	pb := &getMetastoreSummaryResponsePb{}
 	pb.Cloud = st.Cloud
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.DefaultDataAccessConfigId = st.DefaultDataAccessConfigId
-
 	pb.DeltaSharingOrganizationName = st.DeltaSharingOrganizationName
-
 	pb.DeltaSharingRecipientTokenLifetimeInSeconds = st.DeltaSharingRecipientTokenLifetimeInSeconds
-
 	pb.DeltaSharingScope = st.DeltaSharingScope
-
 	pb.ExternalAccessEnabled = st.ExternalAccessEnabled
-
 	pb.GlobalMetastoreId = st.GlobalMetastoreId
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.PrivilegeModelVersion = st.PrivilegeModelVersion
-
 	pb.Region = st.Region
-
 	pb.StorageRoot = st.StorageRoot
-
 	pb.StorageRootCredentialId = st.StorageRootCredentialId
-
 	pb.StorageRootCredentialName = st.StorageRootCredentialName
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5905,43 +5215,25 @@ func getMetastoreSummaryResponseToPb(st *GetMetastoreSummaryResponse) (*getMetas
 }
 
 type getMetastoreSummaryResponsePb struct {
-	Cloud string `json:"cloud,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
-
-	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
-
-	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
-
-	DeltaSharingScope GetMetastoreSummaryResponseDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
-
-	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
-
-	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
-
-	Region string `json:"region,omitempty"`
-
-	StorageRoot string `json:"storage_root,omitempty"`
-
-	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
-
-	StorageRootCredentialName string `json:"storage_root_credential_name,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	Cloud                                       string                                       `json:"cloud,omitempty"`
+	CreatedAt                                   int64                                        `json:"created_at,omitempty"`
+	CreatedBy                                   string                                       `json:"created_by,omitempty"`
+	DefaultDataAccessConfigId                   string                                       `json:"default_data_access_config_id,omitempty"`
+	DeltaSharingOrganizationName                string                                       `json:"delta_sharing_organization_name,omitempty"`
+	DeltaSharingRecipientTokenLifetimeInSeconds int64                                        `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
+	DeltaSharingScope                           GetMetastoreSummaryResponseDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	ExternalAccessEnabled                       bool                                         `json:"external_access_enabled,omitempty"`
+	GlobalMetastoreId                           string                                       `json:"global_metastore_id,omitempty"`
+	MetastoreId                                 string                                       `json:"metastore_id,omitempty"`
+	Name                                        string                                       `json:"name,omitempty"`
+	Owner                                       string                                       `json:"owner,omitempty"`
+	PrivilegeModelVersion                       string                                       `json:"privilege_model_version,omitempty"`
+	Region                                      string                                       `json:"region,omitempty"`
+	StorageRoot                                 string                                       `json:"storage_root,omitempty"`
+	StorageRootCredentialId                     string                                       `json:"storage_root_credential_id,omitempty"`
+	StorageRootCredentialName                   string                                       `json:"storage_root_credential_name,omitempty"`
+	UpdatedAt                                   int64                                        `json:"updated_at,omitempty"`
+	UpdatedBy                                   string                                       `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5989,11 +5281,8 @@ func getModelVersionRequestToPb(st *GetModelVersionRequest) (*getModelVersionReq
 	}
 	pb := &getModelVersionRequestPb{}
 	pb.FullName = st.FullName
-
 	pb.IncludeAliases = st.IncludeAliases
-
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6001,13 +5290,10 @@ func getModelVersionRequestToPb(st *GetModelVersionRequest) (*getModelVersionReq
 }
 
 type getModelVersionRequestPb struct {
-	FullName string `json:"-" url:"-"`
-
-	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
-
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	Version int `json:"-" url:"-"`
+	FullName       string `json:"-" url:"-"`
+	IncludeAliases bool   `json:"-" url:"include_aliases,omitempty"`
+	IncludeBrowse  bool   `json:"-" url:"include_browse,omitempty"`
+	Version        int    `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6088,20 +5374,16 @@ func getQuotaRequestToPb(st *GetQuotaRequest) (*getQuotaRequestPb, error) {
 	}
 	pb := &getQuotaRequestPb{}
 	pb.ParentFullName = st.ParentFullName
-
 	pb.ParentSecurableType = st.ParentSecurableType
-
 	pb.QuotaName = st.QuotaName
 
 	return pb, nil
 }
 
 type getQuotaRequestPb struct {
-	ParentFullName string `json:"-" url:"-"`
-
+	ParentFullName      string `json:"-" url:"-"`
 	ParentSecurableType string `json:"-" url:"-"`
-
-	QuotaName string `json:"-" url:"-"`
+	QuotaName           string `json:"-" url:"-"`
 }
 
 func getQuotaRequestFromPb(pb *getQuotaRequestPb) (*GetQuotaRequest, error) {
@@ -6146,7 +5428,6 @@ func getRefreshRequestToPb(st *GetRefreshRequest) (*getRefreshRequestPb, error) 
 	}
 	pb := &getRefreshRequestPb{}
 	pb.RefreshId = st.RefreshId
-
 	pb.TableName = st.TableName
 
 	return pb, nil
@@ -6154,7 +5435,6 @@ func getRefreshRequestToPb(st *GetRefreshRequest) (*getRefreshRequestPb, error) 
 
 type getRefreshRequestPb struct {
 	RefreshId string `json:"-" url:"-"`
-
 	TableName string `json:"-" url:"-"`
 }
 
@@ -6175,9 +5455,7 @@ func getRegisteredModelRequestToPb(st *GetRegisteredModelRequest) (*getRegistere
 	}
 	pb := &getRegisteredModelRequestPb{}
 	pb.FullName = st.FullName
-
 	pb.IncludeAliases = st.IncludeAliases
-
 	pb.IncludeBrowse = st.IncludeBrowse
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6185,11 +5463,9 @@ func getRegisteredModelRequestToPb(st *GetRegisteredModelRequest) (*getRegistere
 }
 
 type getRegisteredModelRequestPb struct {
-	FullName string `json:"-" url:"-"`
-
-	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
-
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	FullName       string `json:"-" url:"-"`
+	IncludeAliases bool   `json:"-" url:"include_aliases,omitempty"`
+	IncludeBrowse  bool   `json:"-" url:"include_browse,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6221,7 +5497,6 @@ func getSchemaRequestToPb(st *GetSchemaRequest) (*getSchemaRequestPb, error) {
 	}
 	pb := &getSchemaRequestPb{}
 	pb.FullName = st.FullName
-
 	pb.IncludeBrowse = st.IncludeBrowse
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6229,9 +5504,8 @@ func getSchemaRequestToPb(st *GetSchemaRequest) (*getSchemaRequestPb, error) {
 }
 
 type getSchemaRequestPb struct {
-	FullName string `json:"-" url:"-"`
-
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	FullName      string `json:"-" url:"-"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6310,11 +5584,8 @@ func getTableRequestToPb(st *GetTableRequest) (*getTableRequestPb, error) {
 	}
 	pb := &getTableRequestPb{}
 	pb.FullName = st.FullName
-
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.IncludeDeltaMetadata = st.IncludeDeltaMetadata
-
 	pb.IncludeManifestCapabilities = st.IncludeManifestCapabilities
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6322,13 +5593,10 @@ func getTableRequestToPb(st *GetTableRequest) (*getTableRequestPb, error) {
 }
 
 type getTableRequestPb struct {
-	FullName string `json:"-" url:"-"`
-
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
-
-	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
+	FullName                    string `json:"-" url:"-"`
+	IncludeBrowse               bool   `json:"-" url:"include_browse,omitempty"`
+	IncludeDeltaMetadata        bool   `json:"-" url:"include_delta_metadata,omitempty"`
+	IncludeManifestCapabilities bool   `json:"-" url:"include_manifest_capabilities,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6385,7 +5653,6 @@ func getWorkspaceBindingsResponseToPb(st *GetWorkspaceBindingsResponse) (*getWor
 	}
 	pb := &getWorkspaceBindingsResponsePb{}
 	pb.Bindings = st.Bindings
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6393,9 +5660,8 @@ func getWorkspaceBindingsResponseToPb(st *GetWorkspaceBindingsResponse) (*getWor
 }
 
 type getWorkspaceBindingsResponsePb struct {
-	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Bindings      []WorkspaceBinding `json:"bindings,omitempty"`
+	NextPageToken string             `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6522,9 +5788,7 @@ func listCatalogsRequestToPb(st *ListCatalogsRequest) (*listCatalogsRequestPb, e
 	}
 	pb := &listCatalogsRequestPb{}
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6532,11 +5796,9 @@ func listCatalogsRequestToPb(st *ListCatalogsRequest) (*listCatalogsRequestPb, e
 }
 
 type listCatalogsRequestPb struct {
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
+	MaxResults    int    `json:"-" url:"max_results,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6568,7 +5830,6 @@ func listCatalogsResponseToPb(st *ListCatalogsResponse) (*listCatalogsResponsePb
 	}
 	pb := &listCatalogsResponsePb{}
 	pb.Catalogs = st.Catalogs
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6576,9 +5837,8 @@ func listCatalogsResponseToPb(st *ListCatalogsResponse) (*listCatalogsResponsePb
 }
 
 type listCatalogsResponsePb struct {
-	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Catalogs      []CatalogInfo `json:"catalogs,omitempty"`
+	NextPageToken string        `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6609,7 +5869,6 @@ func listConnectionsRequestToPb(st *ListConnectionsRequest) (*listConnectionsReq
 	}
 	pb := &listConnectionsRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6617,9 +5876,8 @@ func listConnectionsRequestToPb(st *ListConnectionsRequest) (*listConnectionsReq
 }
 
 type listConnectionsRequestPb struct {
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	MaxResults int    `json:"-" url:"max_results,omitempty"`
+	PageToken  string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6650,7 +5908,6 @@ func listConnectionsResponseToPb(st *ListConnectionsResponse) (*listConnectionsR
 	}
 	pb := &listConnectionsResponsePb{}
 	pb.Connections = st.Connections
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6658,9 +5915,8 @@ func listConnectionsResponseToPb(st *ListConnectionsResponse) (*listConnectionsR
 }
 
 type listConnectionsResponsePb struct {
-	Connections []ConnectionInfo `json:"connections,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Connections   []ConnectionInfo `json:"connections,omitempty"`
+	NextPageToken string           `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6691,9 +5947,7 @@ func listCredentialsRequestToPb(st *ListCredentialsRequest) (*listCredentialsReq
 	}
 	pb := &listCredentialsRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
-
 	pb.Purpose = st.Purpose
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6701,11 +5955,9 @@ func listCredentialsRequestToPb(st *ListCredentialsRequest) (*listCredentialsReq
 }
 
 type listCredentialsRequestPb struct {
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	Purpose CredentialPurpose `json:"-" url:"purpose,omitempty"`
+	MaxResults int               `json:"-" url:"max_results,omitempty"`
+	PageToken  string            `json:"-" url:"page_token,omitempty"`
+	Purpose    CredentialPurpose `json:"-" url:"purpose,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6737,7 +5989,6 @@ func listCredentialsResponseToPb(st *ListCredentialsResponse) (*listCredentialsR
 	}
 	pb := &listCredentialsResponsePb{}
 	pb.Credentials = st.Credentials
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6745,9 +5996,8 @@ func listCredentialsResponseToPb(st *ListCredentialsResponse) (*listCredentialsR
 }
 
 type listCredentialsResponsePb struct {
-	Credentials []CredentialInfo `json:"credentials,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Credentials   []CredentialInfo `json:"credentials,omitempty"`
+	NextPageToken string           `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6778,7 +6028,6 @@ func listDatabaseInstancesRequestToPb(st *ListDatabaseInstancesRequest) (*listDa
 	}
 	pb := &listDatabaseInstancesRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6786,8 +6035,7 @@ func listDatabaseInstancesRequestToPb(st *ListDatabaseInstancesRequest) (*listDa
 }
 
 type listDatabaseInstancesRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6819,7 +6067,6 @@ func listDatabaseInstancesResponseToPb(st *ListDatabaseInstancesResponse) (*list
 	}
 	pb := &listDatabaseInstancesResponsePb{}
 	pb.DatabaseInstances = st.DatabaseInstances
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6828,8 +6075,7 @@ func listDatabaseInstancesResponseToPb(st *ListDatabaseInstancesResponse) (*list
 
 type listDatabaseInstancesResponsePb struct {
 	DatabaseInstances []DatabaseInstance `json:"database_instances,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	NextPageToken     string             `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6860,9 +6106,7 @@ func listExternalLocationsRequestToPb(st *ListExternalLocationsRequest) (*listEx
 	}
 	pb := &listExternalLocationsRequestPb{}
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6870,11 +6114,9 @@ func listExternalLocationsRequestToPb(st *ListExternalLocationsRequest) (*listEx
 }
 
 type listExternalLocationsRequestPb struct {
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
+	MaxResults    int    `json:"-" url:"max_results,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6906,7 +6148,6 @@ func listExternalLocationsResponseToPb(st *ListExternalLocationsResponse) (*list
 	}
 	pb := &listExternalLocationsResponsePb{}
 	pb.ExternalLocations = st.ExternalLocations
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6915,8 +6156,7 @@ func listExternalLocationsResponseToPb(st *ListExternalLocationsResponse) (*list
 
 type listExternalLocationsResponsePb struct {
 	ExternalLocations []ExternalLocationInfo `json:"external_locations,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	NextPageToken     string                 `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6947,13 +6187,9 @@ func listFunctionsRequestToPb(st *ListFunctionsRequest) (*listFunctionsRequestPb
 	}
 	pb := &listFunctionsRequestPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
-
 	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6961,15 +6197,11 @@ func listFunctionsRequestToPb(st *ListFunctionsRequest) (*listFunctionsRequestPb
 }
 
 type listFunctionsRequestPb struct {
-	CatalogName string `json:"-" url:"catalog_name"`
-
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	SchemaName string `json:"-" url:"schema_name"`
+	CatalogName   string `json:"-" url:"catalog_name"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
+	MaxResults    int    `json:"-" url:"max_results,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
+	SchemaName    string `json:"-" url:"schema_name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7003,7 +6235,6 @@ func listFunctionsResponseToPb(st *ListFunctionsResponse) (*listFunctionsRespons
 	}
 	pb := &listFunctionsResponsePb{}
 	pb.Functions = st.Functions
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7011,9 +6242,8 @@ func listFunctionsResponseToPb(st *ListFunctionsResponse) (*listFunctionsRespons
 }
 
 type listFunctionsResponsePb struct {
-	Functions []FunctionInfo `json:"functions,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Functions     []FunctionInfo `json:"functions,omitempty"`
+	NextPageToken string         `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7068,11 +6298,8 @@ func listModelVersionsRequestToPb(st *ListModelVersionsRequest) (*listModelVersi
 	}
 	pb := &listModelVersionsRequestPb{}
 	pb.FullName = st.FullName
-
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7080,13 +6307,10 @@ func listModelVersionsRequestToPb(st *ListModelVersionsRequest) (*listModelVersi
 }
 
 type listModelVersionsRequestPb struct {
-	FullName string `json:"-" url:"-"`
-
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	FullName      string `json:"-" url:"-"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
+	MaxResults    int    `json:"-" url:"max_results,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7119,7 +6343,6 @@ func listModelVersionsResponseToPb(st *ListModelVersionsResponse) (*listModelVer
 	}
 	pb := &listModelVersionsResponsePb{}
 	pb.ModelVersions = st.ModelVersions
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7128,8 +6351,7 @@ func listModelVersionsResponseToPb(st *ListModelVersionsResponse) (*listModelVer
 
 type listModelVersionsResponsePb struct {
 	ModelVersions []ModelVersionInfo `json:"model_versions,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	NextPageToken string             `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7160,7 +6382,6 @@ func listQuotasRequestToPb(st *ListQuotasRequest) (*listQuotasRequestPb, error) 
 	}
 	pb := &listQuotasRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7168,9 +6389,8 @@ func listQuotasRequestToPb(st *ListQuotasRequest) (*listQuotasRequestPb, error) 
 }
 
 type listQuotasRequestPb struct {
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	MaxResults int    `json:"-" url:"max_results,omitempty"`
+	PageToken  string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7201,7 +6421,6 @@ func listQuotasResponseToPb(st *ListQuotasResponse) (*listQuotasResponsePb, erro
 	}
 	pb := &listQuotasResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Quotas = st.Quotas
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7209,9 +6428,8 @@ func listQuotasResponseToPb(st *ListQuotasResponse) (*listQuotasResponsePb, erro
 }
 
 type listQuotasResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Quotas []QuotaInfo `json:"quotas,omitempty"`
+	NextPageToken string      `json:"next_page_token,omitempty"`
+	Quotas        []QuotaInfo `json:"quotas,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7266,13 +6484,9 @@ func listRegisteredModelsRequestToPb(st *ListRegisteredModelsRequest) (*listRegi
 	}
 	pb := &listRegisteredModelsRequestPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
-
 	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7280,15 +6494,11 @@ func listRegisteredModelsRequestToPb(st *ListRegisteredModelsRequest) (*listRegi
 }
 
 type listRegisteredModelsRequestPb struct {
-	CatalogName string `json:"-" url:"catalog_name,omitempty"`
-
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	SchemaName string `json:"-" url:"schema_name,omitempty"`
+	CatalogName   string `json:"-" url:"catalog_name,omitempty"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
+	MaxResults    int    `json:"-" url:"max_results,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
+	SchemaName    string `json:"-" url:"schema_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7322,7 +6532,6 @@ func listRegisteredModelsResponseToPb(st *ListRegisteredModelsResponse) (*listRe
 	}
 	pb := &listRegisteredModelsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.RegisteredModels = st.RegisteredModels
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7330,8 +6539,7 @@ func listRegisteredModelsResponseToPb(st *ListRegisteredModelsResponse) (*listRe
 }
 
 type listRegisteredModelsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken    string                `json:"next_page_token,omitempty"`
 	RegisteredModels []RegisteredModelInfo `json:"registered_models,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7363,11 +6571,8 @@ func listSchemasRequestToPb(st *ListSchemasRequest) (*listSchemasRequestPb, erro
 	}
 	pb := &listSchemasRequestPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7375,13 +6580,10 @@ func listSchemasRequestToPb(st *ListSchemasRequest) (*listSchemasRequestPb, erro
 }
 
 type listSchemasRequestPb struct {
-	CatalogName string `json:"-" url:"catalog_name"`
-
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	CatalogName   string `json:"-" url:"catalog_name"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
+	MaxResults    int    `json:"-" url:"max_results,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7414,7 +6616,6 @@ func listSchemasResponseToPb(st *ListSchemasResponse) (*listSchemasResponsePb, e
 	}
 	pb := &listSchemasResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Schemas = st.Schemas
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7422,9 +6623,8 @@ func listSchemasResponseToPb(st *ListSchemasResponse) (*listSchemasResponsePb, e
 }
 
 type listSchemasResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Schemas []SchemaInfo `json:"schemas,omitempty"`
+	NextPageToken string       `json:"next_page_token,omitempty"`
+	Schemas       []SchemaInfo `json:"schemas,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7455,7 +6655,6 @@ func listStorageCredentialsRequestToPb(st *ListStorageCredentialsRequest) (*list
 	}
 	pb := &listStorageCredentialsRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7463,9 +6662,8 @@ func listStorageCredentialsRequestToPb(st *ListStorageCredentialsRequest) (*list
 }
 
 type listStorageCredentialsRequestPb struct {
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	MaxResults int    `json:"-" url:"max_results,omitempty"`
+	PageToken  string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7496,7 +6694,6 @@ func listStorageCredentialsResponseToPb(st *ListStorageCredentialsResponse) (*li
 	}
 	pb := &listStorageCredentialsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.StorageCredentials = st.StorageCredentials
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7504,8 +6701,7 @@ func listStorageCredentialsResponseToPb(st *ListStorageCredentialsResponse) (*li
 }
 
 type listStorageCredentialsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken      string                  `json:"next_page_token,omitempty"`
 	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7537,15 +6733,10 @@ func listSummariesRequestToPb(st *ListSummariesRequest) (*listSummariesRequestPb
 	}
 	pb := &listSummariesRequestPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.IncludeManifestCapabilities = st.IncludeManifestCapabilities
-
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
-
 	pb.SchemaNamePattern = st.SchemaNamePattern
-
 	pb.TableNamePattern = st.TableNamePattern
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7553,17 +6744,12 @@ func listSummariesRequestToPb(st *ListSummariesRequest) (*listSummariesRequestPb
 }
 
 type listSummariesRequestPb struct {
-	CatalogName string `json:"-" url:"catalog_name"`
-
-	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
-
-	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
+	CatalogName                 string `json:"-" url:"catalog_name"`
+	IncludeManifestCapabilities bool   `json:"-" url:"include_manifest_capabilities,omitempty"`
+	MaxResults                  int    `json:"-" url:"max_results,omitempty"`
+	PageToken                   string `json:"-" url:"page_token,omitempty"`
+	SchemaNamePattern           string `json:"-" url:"schema_name_pattern,omitempty"`
+	TableNamePattern            string `json:"-" url:"table_name_pattern,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7598,9 +6784,7 @@ func listSystemSchemasRequestToPb(st *ListSystemSchemasRequest) (*listSystemSche
 	}
 	pb := &listSystemSchemasRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7608,11 +6792,9 @@ func listSystemSchemasRequestToPb(st *ListSystemSchemasRequest) (*listSystemSche
 }
 
 type listSystemSchemasRequestPb struct {
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
+	MaxResults  int    `json:"-" url:"max_results,omitempty"`
 	MetastoreId string `json:"-" url:"-"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken   string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7644,7 +6826,6 @@ func listSystemSchemasResponseToPb(st *ListSystemSchemasResponse) (*listSystemSc
 	}
 	pb := &listSystemSchemasResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Schemas = st.Schemas
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7652,9 +6833,8 @@ func listSystemSchemasResponseToPb(st *ListSystemSchemasResponse) (*listSystemSc
 }
 
 type listSystemSchemasResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Schemas []SystemSchemaInfo `json:"schemas,omitempty"`
+	NextPageToken string             `json:"next_page_token,omitempty"`
+	Schemas       []SystemSchemaInfo `json:"schemas,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7685,7 +6865,6 @@ func listTableSummariesResponseToPb(st *ListTableSummariesResponse) (*listTableS
 	}
 	pb := &listTableSummariesResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Tables = st.Tables
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7693,9 +6872,8 @@ func listTableSummariesResponseToPb(st *ListTableSummariesResponse) (*listTableS
 }
 
 type listTableSummariesResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Tables []TableSummary `json:"tables,omitempty"`
+	NextPageToken string         `json:"next_page_token,omitempty"`
+	Tables        []TableSummary `json:"tables,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7726,23 +6904,14 @@ func listTablesRequestToPb(st *ListTablesRequest) (*listTablesRequestPb, error) 
 	}
 	pb := &listTablesRequestPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.IncludeDeltaMetadata = st.IncludeDeltaMetadata
-
 	pb.IncludeManifestCapabilities = st.IncludeManifestCapabilities
-
 	pb.MaxResults = st.MaxResults
-
 	pb.OmitColumns = st.OmitColumns
-
 	pb.OmitProperties = st.OmitProperties
-
 	pb.OmitUsername = st.OmitUsername
-
 	pb.PageToken = st.PageToken
-
 	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7750,25 +6919,16 @@ func listTablesRequestToPb(st *ListTablesRequest) (*listTablesRequestPb, error) 
 }
 
 type listTablesRequestPb struct {
-	CatalogName string `json:"-" url:"catalog_name"`
-
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
-
-	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	OmitColumns bool `json:"-" url:"omit_columns,omitempty"`
-
-	OmitProperties bool `json:"-" url:"omit_properties,omitempty"`
-
-	OmitUsername bool `json:"-" url:"omit_username,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	SchemaName string `json:"-" url:"schema_name"`
+	CatalogName                 string `json:"-" url:"catalog_name"`
+	IncludeBrowse               bool   `json:"-" url:"include_browse,omitempty"`
+	IncludeDeltaMetadata        bool   `json:"-" url:"include_delta_metadata,omitempty"`
+	IncludeManifestCapabilities bool   `json:"-" url:"include_manifest_capabilities,omitempty"`
+	MaxResults                  int    `json:"-" url:"max_results,omitempty"`
+	OmitColumns                 bool   `json:"-" url:"omit_columns,omitempty"`
+	OmitProperties              bool   `json:"-" url:"omit_properties,omitempty"`
+	OmitUsername                bool   `json:"-" url:"omit_username,omitempty"`
+	PageToken                   string `json:"-" url:"page_token,omitempty"`
+	SchemaName                  string `json:"-" url:"schema_name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7807,7 +6967,6 @@ func listTablesResponseToPb(st *ListTablesResponse) (*listTablesResponsePb, erro
 	}
 	pb := &listTablesResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Tables = st.Tables
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7815,9 +6974,8 @@ func listTablesResponseToPb(st *ListTablesResponse) (*listTablesResponsePb, erro
 }
 
 type listTablesResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Tables []TableInfo `json:"tables,omitempty"`
+	NextPageToken string      `json:"next_page_token,omitempty"`
+	Tables        []TableInfo `json:"tables,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7848,13 +7006,9 @@ func listVolumesRequestToPb(st *ListVolumesRequest) (*listVolumesRequestPb, erro
 	}
 	pb := &listVolumesRequestPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
-
 	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7862,15 +7016,11 @@ func listVolumesRequestToPb(st *ListVolumesRequest) (*listVolumesRequestPb, erro
 }
 
 type listVolumesRequestPb struct {
-	CatalogName string `json:"-" url:"catalog_name"`
-
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	SchemaName string `json:"-" url:"schema_name"`
+	CatalogName   string `json:"-" url:"catalog_name"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
+	MaxResults    int    `json:"-" url:"max_results,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
+	SchemaName    string `json:"-" url:"schema_name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7904,7 +7054,6 @@ func listVolumesResponseContentToPb(st *ListVolumesResponseContent) (*listVolume
 	}
 	pb := &listVolumesResponseContentPb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Volumes = st.Volumes
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7912,9 +7061,8 @@ func listVolumesResponseContentToPb(st *ListVolumesResponseContent) (*listVolume
 }
 
 type listVolumesResponseContentPb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Volumes []VolumeInfo `json:"volumes,omitempty"`
+	NextPageToken string       `json:"next_page_token,omitempty"`
+	Volumes       []VolumeInfo `json:"volumes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7945,9 +7093,7 @@ func metastoreAssignmentToPb(st *MetastoreAssignment) (*metastoreAssignmentPb, e
 	}
 	pb := &metastoreAssignmentPb{}
 	pb.DefaultCatalogName = st.DefaultCatalogName
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7956,10 +7102,8 @@ func metastoreAssignmentToPb(st *MetastoreAssignment) (*metastoreAssignmentPb, e
 
 type metastoreAssignmentPb struct {
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
-
-	MetastoreId string `json:"metastore_id"`
-
-	WorkspaceId int64 `json:"workspace_id"`
+	MetastoreId        string `json:"metastore_id"`
+	WorkspaceId        int64  `json:"workspace_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7991,41 +7135,23 @@ func metastoreInfoToPb(st *MetastoreInfo) (*metastoreInfoPb, error) {
 	}
 	pb := &metastoreInfoPb{}
 	pb.Cloud = st.Cloud
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.DefaultDataAccessConfigId = st.DefaultDataAccessConfigId
-
 	pb.DeltaSharingOrganizationName = st.DeltaSharingOrganizationName
-
 	pb.DeltaSharingRecipientTokenLifetimeInSeconds = st.DeltaSharingRecipientTokenLifetimeInSeconds
-
 	pb.DeltaSharingScope = st.DeltaSharingScope
-
 	pb.ExternalAccessEnabled = st.ExternalAccessEnabled
-
 	pb.GlobalMetastoreId = st.GlobalMetastoreId
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.PrivilegeModelVersion = st.PrivilegeModelVersion
-
 	pb.Region = st.Region
-
 	pb.StorageRoot = st.StorageRoot
-
 	pb.StorageRootCredentialId = st.StorageRootCredentialId
-
 	pb.StorageRootCredentialName = st.StorageRootCredentialName
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -8033,43 +7159,25 @@ func metastoreInfoToPb(st *MetastoreInfo) (*metastoreInfoPb, error) {
 }
 
 type metastoreInfoPb struct {
-	Cloud string `json:"cloud,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
-
-	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
-
-	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
-
-	DeltaSharingScope MetastoreInfoDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
-
-	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
-
-	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
-
-	Region string `json:"region,omitempty"`
-
-	StorageRoot string `json:"storage_root,omitempty"`
-
-	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
-
-	StorageRootCredentialName string `json:"storage_root_credential_name,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	Cloud                                       string                         `json:"cloud,omitempty"`
+	CreatedAt                                   int64                          `json:"created_at,omitempty"`
+	CreatedBy                                   string                         `json:"created_by,omitempty"`
+	DefaultDataAccessConfigId                   string                         `json:"default_data_access_config_id,omitempty"`
+	DeltaSharingOrganizationName                string                         `json:"delta_sharing_organization_name,omitempty"`
+	DeltaSharingRecipientTokenLifetimeInSeconds int64                          `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
+	DeltaSharingScope                           MetastoreInfoDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	ExternalAccessEnabled                       bool                           `json:"external_access_enabled,omitempty"`
+	GlobalMetastoreId                           string                         `json:"global_metastore_id,omitempty"`
+	MetastoreId                                 string                         `json:"metastore_id,omitempty"`
+	Name                                        string                         `json:"name,omitempty"`
+	Owner                                       string                         `json:"owner,omitempty"`
+	PrivilegeModelVersion                       string                         `json:"privilege_model_version,omitempty"`
+	Region                                      string                         `json:"region,omitempty"`
+	StorageRoot                                 string                         `json:"storage_root,omitempty"`
+	StorageRootCredentialId                     string                         `json:"storage_root_credential_id,omitempty"`
+	StorageRootCredentialName                   string                         `json:"storage_root_credential_name,omitempty"`
+	UpdatedAt                                   int64                          `json:"updated_at,omitempty"`
+	UpdatedBy                                   string                         `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -8117,41 +7225,23 @@ func modelVersionInfoToPb(st *ModelVersionInfo) (*modelVersionInfoPb, error) {
 	}
 	pb := &modelVersionInfoPb{}
 	pb.Aliases = st.Aliases
-
 	pb.BrowseOnly = st.BrowseOnly
-
 	pb.CatalogName = st.CatalogName
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.Id = st.Id
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.ModelName = st.ModelName
-
 	pb.ModelVersionDependencies = st.ModelVersionDependencies
-
 	pb.RunId = st.RunId
-
 	pb.RunWorkspaceId = st.RunWorkspaceId
-
 	pb.SchemaName = st.SchemaName
-
 	pb.Source = st.Source
-
 	pb.Status = st.Status
-
 	pb.StorageLocation = st.StorageLocation
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -8159,43 +7249,25 @@ func modelVersionInfoToPb(st *ModelVersionInfo) (*modelVersionInfoPb, error) {
 }
 
 type modelVersionInfoPb struct {
-	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
-
-	BrowseOnly bool `json:"browse_only,omitempty"`
-
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	ModelName string `json:"model_name,omitempty"`
-
-	ModelVersionDependencies *DependencyList `json:"model_version_dependencies,omitempty"`
-
-	RunId string `json:"run_id,omitempty"`
-
-	RunWorkspaceId int `json:"run_workspace_id,omitempty"`
-
-	SchemaName string `json:"schema_name,omitempty"`
-
-	Source string `json:"source,omitempty"`
-
-	Status ModelVersionInfoStatus `json:"status,omitempty"`
-
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	Version int `json:"version,omitempty"`
+	Aliases                  []RegisteredModelAlias `json:"aliases,omitempty"`
+	BrowseOnly               bool                   `json:"browse_only,omitempty"`
+	CatalogName              string                 `json:"catalog_name,omitempty"`
+	Comment                  string                 `json:"comment,omitempty"`
+	CreatedAt                int64                  `json:"created_at,omitempty"`
+	CreatedBy                string                 `json:"created_by,omitempty"`
+	Id                       string                 `json:"id,omitempty"`
+	MetastoreId              string                 `json:"metastore_id,omitempty"`
+	ModelName                string                 `json:"model_name,omitempty"`
+	ModelVersionDependencies *DependencyList        `json:"model_version_dependencies,omitempty"`
+	RunId                    string                 `json:"run_id,omitempty"`
+	RunWorkspaceId           int                    `json:"run_workspace_id,omitempty"`
+	SchemaName               string                 `json:"schema_name,omitempty"`
+	Source                   string                 `json:"source,omitempty"`
+	Status                   ModelVersionInfoStatus `json:"status,omitempty"`
+	StorageLocation          string                 `json:"storage_location,omitempty"`
+	UpdatedAt                int64                  `json:"updated_at,omitempty"`
+	UpdatedBy                string                 `json:"updated_by,omitempty"`
+	Version                  int                    `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -8243,20 +7315,16 @@ func monitorCronScheduleToPb(st *MonitorCronSchedule) (*monitorCronSchedulePb, e
 	}
 	pb := &monitorCronSchedulePb{}
 	pb.PauseStatus = st.PauseStatus
-
 	pb.QuartzCronExpression = st.QuartzCronExpression
-
 	pb.TimezoneId = st.TimezoneId
 
 	return pb, nil
 }
 
 type monitorCronSchedulePb struct {
-	PauseStatus MonitorCronSchedulePauseStatus `json:"pause_status,omitempty"`
-
-	QuartzCronExpression string `json:"quartz_cron_expression"`
-
-	TimezoneId string `json:"timezone_id"`
+	PauseStatus          MonitorCronSchedulePauseStatus `json:"pause_status,omitempty"`
+	QuartzCronExpression string                         `json:"quartz_cron_expression"`
+	TimezoneId           string                         `json:"timezone_id"`
 }
 
 func monitorCronScheduleFromPb(pb *monitorCronSchedulePb) (*MonitorCronSchedule, error) {
@@ -8337,17 +7405,11 @@ func monitorInferenceLogToPb(st *MonitorInferenceLog) (*monitorInferenceLogPb, e
 	}
 	pb := &monitorInferenceLogPb{}
 	pb.Granularities = st.Granularities
-
 	pb.LabelCol = st.LabelCol
-
 	pb.ModelIdCol = st.ModelIdCol
-
 	pb.PredictionCol = st.PredictionCol
-
 	pb.PredictionProbaCol = st.PredictionProbaCol
-
 	pb.ProblemType = st.ProblemType
-
 	pb.TimestampCol = st.TimestampCol
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -8355,19 +7417,13 @@ func monitorInferenceLogToPb(st *MonitorInferenceLog) (*monitorInferenceLogPb, e
 }
 
 type monitorInferenceLogPb struct {
-	Granularities []string `json:"granularities"`
-
-	LabelCol string `json:"label_col,omitempty"`
-
-	ModelIdCol string `json:"model_id_col"`
-
-	PredictionCol string `json:"prediction_col"`
-
-	PredictionProbaCol string `json:"prediction_proba_col,omitempty"`
-
-	ProblemType MonitorInferenceLogProblemType `json:"problem_type"`
-
-	TimestampCol string `json:"timestamp_col"`
+	Granularities      []string                       `json:"granularities"`
+	LabelCol           string                         `json:"label_col,omitempty"`
+	ModelIdCol         string                         `json:"model_id_col"`
+	PredictionCol      string                         `json:"prediction_col"`
+	PredictionProbaCol string                         `json:"prediction_proba_col,omitempty"`
+	ProblemType        MonitorInferenceLogProblemType `json:"problem_type"`
+	TimestampCol       string                         `json:"timestamp_col"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -8403,39 +7459,22 @@ func monitorInfoToPb(st *MonitorInfo) (*monitorInfoPb, error) {
 	}
 	pb := &monitorInfoPb{}
 	pb.AssetsDir = st.AssetsDir
-
 	pb.BaselineTableName = st.BaselineTableName
-
 	pb.CustomMetrics = st.CustomMetrics
-
 	pb.DashboardId = st.DashboardId
-
 	pb.DataClassificationConfig = st.DataClassificationConfig
-
 	pb.DriftMetricsTableName = st.DriftMetricsTableName
-
 	pb.InferenceLog = st.InferenceLog
-
 	pb.LatestMonitorFailureMsg = st.LatestMonitorFailureMsg
-
 	pb.MonitorVersion = st.MonitorVersion
-
 	pb.Notifications = st.Notifications
-
 	pb.OutputSchemaName = st.OutputSchemaName
-
 	pb.ProfileMetricsTableName = st.ProfileMetricsTableName
-
 	pb.Schedule = st.Schedule
-
 	pb.SlicingExprs = st.SlicingExprs
-
 	pb.Snapshot = st.Snapshot
-
 	pb.Status = st.Status
-
 	pb.TableName = st.TableName
-
 	pb.TimeSeries = st.TimeSeries
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -8443,41 +7482,24 @@ func monitorInfoToPb(st *MonitorInfo) (*monitorInfoPb, error) {
 }
 
 type monitorInfoPb struct {
-	AssetsDir string `json:"assets_dir,omitempty"`
-
-	BaselineTableName string `json:"baseline_table_name,omitempty"`
-
-	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
-
-	DashboardId string `json:"dashboard_id,omitempty"`
-
+	AssetsDir                string                           `json:"assets_dir,omitempty"`
+	BaselineTableName        string                           `json:"baseline_table_name,omitempty"`
+	CustomMetrics            []MonitorMetric                  `json:"custom_metrics,omitempty"`
+	DashboardId              string                           `json:"dashboard_id,omitempty"`
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
-
-	DriftMetricsTableName string `json:"drift_metrics_table_name"`
-
-	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
-
-	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
-
-	MonitorVersion string `json:"monitor_version"`
-
-	Notifications *MonitorNotifications `json:"notifications,omitempty"`
-
-	OutputSchemaName string `json:"output_schema_name,omitempty"`
-
-	ProfileMetricsTableName string `json:"profile_metrics_table_name"`
-
-	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
-
-	SlicingExprs []string `json:"slicing_exprs,omitempty"`
-
-	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
-
-	Status MonitorInfoStatus `json:"status"`
-
-	TableName string `json:"table_name"`
-
-	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
+	DriftMetricsTableName    string                           `json:"drift_metrics_table_name"`
+	InferenceLog             *MonitorInferenceLog             `json:"inference_log,omitempty"`
+	LatestMonitorFailureMsg  string                           `json:"latest_monitor_failure_msg,omitempty"`
+	MonitorVersion           string                           `json:"monitor_version"`
+	Notifications            *MonitorNotifications            `json:"notifications,omitempty"`
+	OutputSchemaName         string                           `json:"output_schema_name,omitempty"`
+	ProfileMetricsTableName  string                           `json:"profile_metrics_table_name"`
+	Schedule                 *MonitorCronSchedule             `json:"schedule,omitempty"`
+	SlicingExprs             []string                         `json:"slicing_exprs,omitempty"`
+	Snapshot                 *MonitorSnapshot                 `json:"snapshot,omitempty"`
+	Status                   MonitorInfoStatus                `json:"status"`
+	TableName                string                           `json:"table_name"`
+	TimeSeries               *MonitorTimeSeries               `json:"time_series,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -8524,28 +7546,20 @@ func monitorMetricToPb(st *MonitorMetric) (*monitorMetricPb, error) {
 	}
 	pb := &monitorMetricPb{}
 	pb.Definition = st.Definition
-
 	pb.InputColumns = st.InputColumns
-
 	pb.Name = st.Name
-
 	pb.OutputDataType = st.OutputDataType
-
 	pb.Type = st.Type
 
 	return pb, nil
 }
 
 type monitorMetricPb struct {
-	Definition string `json:"definition"`
-
-	InputColumns []string `json:"input_columns"`
-
-	Name string `json:"name"`
-
-	OutputDataType string `json:"output_data_type"`
-
-	Type MonitorMetricType `json:"type"`
+	Definition     string            `json:"definition"`
+	InputColumns   []string          `json:"input_columns"`
+	Name           string            `json:"name"`
+	OutputDataType string            `json:"output_data_type"`
+	Type           MonitorMetricType `json:"type"`
 }
 
 func monitorMetricFromPb(pb *monitorMetricPb) (*MonitorMetric, error) {
@@ -8568,15 +7582,13 @@ func monitorNotificationsToPb(st *MonitorNotifications) (*monitorNotificationsPb
 	}
 	pb := &monitorNotificationsPb{}
 	pb.OnFailure = st.OnFailure
-
 	pb.OnNewClassificationTagDetected = st.OnNewClassificationTagDetected
 
 	return pb, nil
 }
 
 type monitorNotificationsPb struct {
-	OnFailure *MonitorDestination `json:"on_failure,omitempty"`
-
+	OnFailure                      *MonitorDestination `json:"on_failure,omitempty"`
 	OnNewClassificationTagDetected *MonitorDestination `json:"on_new_classification_tag_detected,omitempty"`
 }
 
@@ -8597,15 +7609,10 @@ func monitorRefreshInfoToPb(st *MonitorRefreshInfo) (*monitorRefreshInfoPb, erro
 	}
 	pb := &monitorRefreshInfoPb{}
 	pb.EndTimeMs = st.EndTimeMs
-
 	pb.Message = st.Message
-
 	pb.RefreshId = st.RefreshId
-
 	pb.StartTimeMs = st.StartTimeMs
-
 	pb.State = st.State
-
 	pb.Trigger = st.Trigger
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -8613,17 +7620,12 @@ func monitorRefreshInfoToPb(st *MonitorRefreshInfo) (*monitorRefreshInfoPb, erro
 }
 
 type monitorRefreshInfoPb struct {
-	EndTimeMs int64 `json:"end_time_ms,omitempty"`
-
-	Message string `json:"message,omitempty"`
-
-	RefreshId int64 `json:"refresh_id"`
-
-	StartTimeMs int64 `json:"start_time_ms"`
-
-	State MonitorRefreshInfoState `json:"state"`
-
-	Trigger MonitorRefreshInfoTrigger `json:"trigger,omitempty"`
+	EndTimeMs   int64                     `json:"end_time_ms,omitempty"`
+	Message     string                    `json:"message,omitempty"`
+	RefreshId   int64                     `json:"refresh_id"`
+	StartTimeMs int64                     `json:"start_time_ms"`
+	State       MonitorRefreshInfoState   `json:"state"`
+	Trigger     MonitorRefreshInfoTrigger `json:"trigger,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -8703,7 +7705,6 @@ func monitorTimeSeriesToPb(st *MonitorTimeSeries) (*monitorTimeSeriesPb, error) 
 	}
 	pb := &monitorTimeSeriesPb{}
 	pb.Granularities = st.Granularities
-
 	pb.TimestampCol = st.TimestampCol
 
 	return pb, nil
@@ -8711,8 +7712,7 @@ func monitorTimeSeriesToPb(st *MonitorTimeSeries) (*monitorTimeSeriesPb, error) 
 
 type monitorTimeSeriesPb struct {
 	Granularities []string `json:"granularities"`
-
-	TimestampCol string `json:"timestamp_col"`
+	TimestampCol  string   `json:"timestamp_col"`
 }
 
 func monitorTimeSeriesFromPb(pb *monitorTimeSeriesPb) (*MonitorTimeSeries, error) {
@@ -8756,7 +7756,6 @@ func newPipelineSpecToPb(st *NewPipelineSpec) (*newPipelineSpecPb, error) {
 	}
 	pb := &newPipelineSpecPb{}
 	pb.StorageCatalog = st.StorageCatalog
-
 	pb.StorageSchema = st.StorageSchema
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -8765,8 +7764,7 @@ func newPipelineSpecToPb(st *NewPipelineSpec) (*newPipelineSpecPb, error) {
 
 type newPipelineSpecPb struct {
 	StorageCatalog string `json:"storage_catalog,omitempty"`
-
-	StorageSchema string `json:"storage_schema,omitempty"`
+	StorageSchema  string `json:"storage_schema,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -8797,13 +7795,9 @@ func onlineTableToPb(st *OnlineTable) (*onlineTablePb, error) {
 	}
 	pb := &onlineTablePb{}
 	pb.Name = st.Name
-
 	pb.Spec = st.Spec
-
 	pb.Status = st.Status
-
 	pb.TableServingUrl = st.TableServingUrl
-
 	pb.UnityCatalogProvisioningState = st.UnityCatalogProvisioningState
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -8811,14 +7805,10 @@ func onlineTableToPb(st *OnlineTable) (*onlineTablePb, error) {
 }
 
 type onlineTablePb struct {
-	Name string `json:"name,omitempty"`
-
-	Spec *OnlineTableSpec `json:"spec,omitempty"`
-
-	Status *OnlineTableStatus `json:"status,omitempty"`
-
-	TableServingUrl string `json:"table_serving_url,omitempty"`
-
+	Name                          string                `json:"name,omitempty"`
+	Spec                          *OnlineTableSpec      `json:"spec,omitempty"`
+	Status                        *OnlineTableStatus    `json:"status,omitempty"`
+	TableServingUrl               string                `json:"table_serving_url,omitempty"`
 	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -8853,17 +7843,11 @@ func onlineTableSpecToPb(st *OnlineTableSpec) (*onlineTableSpecPb, error) {
 	}
 	pb := &onlineTableSpecPb{}
 	pb.PerformFullCopy = st.PerformFullCopy
-
 	pb.PipelineId = st.PipelineId
-
 	pb.PrimaryKeyColumns = st.PrimaryKeyColumns
-
 	pb.RunContinuously = st.RunContinuously
-
 	pb.RunTriggered = st.RunTriggered
-
 	pb.SourceTableFullName = st.SourceTableFullName
-
 	pb.TimeseriesKey = st.TimeseriesKey
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -8871,19 +7855,13 @@ func onlineTableSpecToPb(st *OnlineTableSpec) (*onlineTableSpecPb, error) {
 }
 
 type onlineTableSpecPb struct {
-	PerformFullCopy bool `json:"perform_full_copy,omitempty"`
-
-	PipelineId string `json:"pipeline_id,omitempty"`
-
-	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
-
-	RunContinuously *OnlineTableSpecContinuousSchedulingPolicy `json:"run_continuously,omitempty"`
-
-	RunTriggered *OnlineTableSpecTriggeredSchedulingPolicy `json:"run_triggered,omitempty"`
-
-	SourceTableFullName string `json:"source_table_full_name,omitempty"`
-
-	TimeseriesKey string `json:"timeseries_key,omitempty"`
+	PerformFullCopy     bool                                       `json:"perform_full_copy,omitempty"`
+	PipelineId          string                                     `json:"pipeline_id,omitempty"`
+	PrimaryKeyColumns   []string                                   `json:"primary_key_columns,omitempty"`
+	RunContinuously     *OnlineTableSpecContinuousSchedulingPolicy `json:"run_continuously,omitempty"`
+	RunTriggered        *OnlineTableSpecTriggeredSchedulingPolicy  `json:"run_triggered,omitempty"`
+	SourceTableFullName string                                     `json:"source_table_full_name,omitempty"`
+	TimeseriesKey       string                                     `json:"timeseries_key,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -8961,15 +7939,10 @@ func onlineTableStatusToPb(st *OnlineTableStatus) (*onlineTableStatusPb, error) 
 	}
 	pb := &onlineTableStatusPb{}
 	pb.ContinuousUpdateStatus = st.ContinuousUpdateStatus
-
 	pb.DetailedState = st.DetailedState
-
 	pb.FailedStatus = st.FailedStatus
-
 	pb.Message = st.Message
-
 	pb.ProvisioningStatus = st.ProvisioningStatus
-
 	pb.TriggeredUpdateStatus = st.TriggeredUpdateStatus
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -8978,16 +7951,11 @@ func onlineTableStatusToPb(st *OnlineTableStatus) (*onlineTableStatusPb, error) 
 
 type onlineTableStatusPb struct {
 	ContinuousUpdateStatus *ContinuousUpdateStatus `json:"continuous_update_status,omitempty"`
-
-	DetailedState OnlineTableState `json:"detailed_state,omitempty"`
-
-	FailedStatus *FailedStatus `json:"failed_status,omitempty"`
-
-	Message string `json:"message,omitempty"`
-
-	ProvisioningStatus *ProvisioningStatus `json:"provisioning_status,omitempty"`
-
-	TriggeredUpdateStatus *TriggeredUpdateStatus `json:"triggered_update_status,omitempty"`
+	DetailedState          OnlineTableState        `json:"detailed_state,omitempty"`
+	FailedStatus           *FailedStatus           `json:"failed_status,omitempty"`
+	Message                string                  `json:"message,omitempty"`
+	ProvisioningStatus     *ProvisioningStatus     `json:"provisioning_status,omitempty"`
+	TriggeredUpdateStatus  *TriggeredUpdateStatus  `json:"triggered_update_status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9022,9 +7990,7 @@ func permissionsChangeToPb(st *PermissionsChange) (*permissionsChangePb, error) 
 	}
 	pb := &permissionsChangePb{}
 	pb.Add = st.Add
-
 	pb.Principal = st.Principal
-
 	pb.Remove = st.Remove
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9032,11 +7998,9 @@ func permissionsChangeToPb(st *PermissionsChange) (*permissionsChangePb, error) 
 }
 
 type permissionsChangePb struct {
-	Add []Privilege `json:"add,omitempty"`
-
-	Principal string `json:"principal,omitempty"`
-
-	Remove []Privilege `json:"remove,omitempty"`
+	Add       []Privilege `json:"add,omitempty"`
+	Principal string      `json:"principal,omitempty"`
+	Remove    []Privilege `json:"remove,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9092,13 +8056,9 @@ func pipelineProgressToPb(st *PipelineProgress) (*pipelineProgressPb, error) {
 	}
 	pb := &pipelineProgressPb{}
 	pb.EstimatedCompletionTimeSeconds = st.EstimatedCompletionTimeSeconds
-
 	pb.LatestVersionCurrentlyProcessing = st.LatestVersionCurrentlyProcessing
-
 	pb.SyncProgressCompletion = st.SyncProgressCompletion
-
 	pb.SyncedRowCount = st.SyncedRowCount
-
 	pb.TotalRowCount = st.TotalRowCount
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9106,15 +8066,11 @@ func pipelineProgressToPb(st *PipelineProgress) (*pipelineProgressPb, error) {
 }
 
 type pipelineProgressPb struct {
-	EstimatedCompletionTimeSeconds float64 `json:"estimated_completion_time_seconds,omitempty"`
-
-	LatestVersionCurrentlyProcessing int64 `json:"latest_version_currently_processing,omitempty"`
-
-	SyncProgressCompletion float64 `json:"sync_progress_completion,omitempty"`
-
-	SyncedRowCount int64 `json:"synced_row_count,omitempty"`
-
-	TotalRowCount int64 `json:"total_row_count,omitempty"`
+	EstimatedCompletionTimeSeconds   float64 `json:"estimated_completion_time_seconds,omitempty"`
+	LatestVersionCurrentlyProcessing int64   `json:"latest_version_currently_processing,omitempty"`
+	SyncProgressCompletion           float64 `json:"sync_progress_completion,omitempty"`
+	SyncedRowCount                   int64   `json:"synced_row_count,omitempty"`
+	TotalRowCount                    int64   `json:"total_row_count,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9148,19 +8104,15 @@ func primaryKeyConstraintToPb(st *PrimaryKeyConstraint) (*primaryKeyConstraintPb
 	}
 	pb := &primaryKeyConstraintPb{}
 	pb.ChildColumns = st.ChildColumns
-
 	pb.Name = st.Name
-
 	pb.TimeseriesColumns = st.TimeseriesColumns
 
 	return pb, nil
 }
 
 type primaryKeyConstraintPb struct {
-	ChildColumns []string `json:"child_columns"`
-
-	Name string `json:"name"`
-
+	ChildColumns      []string `json:"child_columns"`
+	Name              string   `json:"name"`
 	TimeseriesColumns []string `json:"timeseries_columns,omitempty"`
 }
 
@@ -9182,7 +8134,6 @@ func privilegeAssignmentToPb(st *PrivilegeAssignment) (*privilegeAssignmentPb, e
 	}
 	pb := &privilegeAssignmentPb{}
 	pb.Principal = st.Principal
-
 	pb.Privileges = st.Privileges
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9190,8 +8141,7 @@ func privilegeAssignmentToPb(st *PrivilegeAssignment) (*privilegeAssignmentPb, e
 }
 
 type privilegeAssignmentPb struct {
-	Principal string `json:"principal,omitempty"`
-
+	Principal  string      `json:"principal,omitempty"`
 	Privileges []Privilege `json:"privileges,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -9289,15 +8239,10 @@ func quotaInfoToPb(st *QuotaInfo) (*quotaInfoPb, error) {
 	}
 	pb := &quotaInfoPb{}
 	pb.LastRefreshedAt = st.LastRefreshedAt
-
 	pb.ParentFullName = st.ParentFullName
-
 	pb.ParentSecurableType = st.ParentSecurableType
-
 	pb.QuotaCount = st.QuotaCount
-
 	pb.QuotaLimit = st.QuotaLimit
-
 	pb.QuotaName = st.QuotaName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9305,17 +8250,12 @@ func quotaInfoToPb(st *QuotaInfo) (*quotaInfoPb, error) {
 }
 
 type quotaInfoPb struct {
-	LastRefreshedAt int64 `json:"last_refreshed_at,omitempty"`
-
-	ParentFullName string `json:"parent_full_name,omitempty"`
-
+	LastRefreshedAt     int64         `json:"last_refreshed_at,omitempty"`
+	ParentFullName      string        `json:"parent_full_name,omitempty"`
 	ParentSecurableType SecurableType `json:"parent_securable_type,omitempty"`
-
-	QuotaCount int `json:"quota_count,omitempty"`
-
-	QuotaLimit int `json:"quota_limit,omitempty"`
-
-	QuotaName string `json:"quota_name,omitempty"`
+	QuotaCount          int           `json:"quota_count,omitempty"`
+	QuotaLimit          int           `json:"quota_limit,omitempty"`
+	QuotaName           string        `json:"quota_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9350,9 +8290,7 @@ func r2CredentialsToPb(st *R2Credentials) (*r2CredentialsPb, error) {
 	}
 	pb := &r2CredentialsPb{}
 	pb.AccessKeyId = st.AccessKeyId
-
 	pb.SecretAccessKey = st.SecretAccessKey
-
 	pb.SessionToken = st.SessionToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9360,11 +8298,9 @@ func r2CredentialsToPb(st *R2Credentials) (*r2CredentialsPb, error) {
 }
 
 type r2CredentialsPb struct {
-	AccessKeyId string `json:"access_key_id,omitempty"`
-
+	AccessKeyId     string `json:"access_key_id,omitempty"`
 	SecretAccessKey string `json:"secret_access_key,omitempty"`
-
-	SessionToken string `json:"session_token,omitempty"`
+	SessionToken    string `json:"session_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9396,7 +8332,6 @@ func readVolumeRequestToPb(st *ReadVolumeRequest) (*readVolumeRequestPb, error) 
 	}
 	pb := &readVolumeRequestPb{}
 	pb.IncludeBrowse = st.IncludeBrowse
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9404,9 +8339,8 @@ func readVolumeRequestToPb(st *ReadVolumeRequest) (*readVolumeRequestPb, error) 
 }
 
 type readVolumeRequestPb struct {
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	IncludeBrowse bool   `json:"-" url:"include_browse,omitempty"`
+	Name          string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9437,7 +8371,6 @@ func regenerateDashboardRequestToPb(st *RegenerateDashboardRequest) (*regenerate
 	}
 	pb := &regenerateDashboardRequestPb{}
 	pb.TableName = st.TableName
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9445,8 +8378,7 @@ func regenerateDashboardRequestToPb(st *RegenerateDashboardRequest) (*regenerate
 }
 
 type regenerateDashboardRequestPb struct {
-	TableName string `json:"-" url:"-"`
-
+	TableName   string `json:"-" url:"-"`
 	WarehouseId string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -9478,7 +8410,6 @@ func regenerateDashboardResponseToPb(st *RegenerateDashboardResponse) (*regenera
 	}
 	pb := &regenerateDashboardResponsePb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.ParentFolder = st.ParentFolder
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9486,8 +8417,7 @@ func regenerateDashboardResponseToPb(st *RegenerateDashboardResponse) (*regenera
 }
 
 type regenerateDashboardResponsePb struct {
-	DashboardId string `json:"dashboard_id,omitempty"`
-
+	DashboardId  string `json:"dashboard_id,omitempty"`
 	ParentFolder string `json:"parent_folder,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -9519,7 +8449,6 @@ func registeredModelAliasToPb(st *RegisteredModelAlias) (*registeredModelAliasPb
 	}
 	pb := &registeredModelAliasPb{}
 	pb.AliasName = st.AliasName
-
 	pb.VersionNum = st.VersionNum
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9527,9 +8456,8 @@ func registeredModelAliasToPb(st *RegisteredModelAlias) (*registeredModelAliasPb
 }
 
 type registeredModelAliasPb struct {
-	AliasName string `json:"alias_name,omitempty"`
-
-	VersionNum int `json:"version_num,omitempty"`
+	AliasName  string `json:"alias_name,omitempty"`
+	VersionNum int    `json:"version_num,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9560,31 +8488,18 @@ func registeredModelInfoToPb(st *RegisteredModelInfo) (*registeredModelInfoPb, e
 	}
 	pb := &registeredModelInfoPb{}
 	pb.Aliases = st.Aliases
-
 	pb.BrowseOnly = st.BrowseOnly
-
 	pb.CatalogName = st.CatalogName
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.FullName = st.FullName
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.SchemaName = st.SchemaName
-
 	pb.StorageLocation = st.StorageLocation
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9592,33 +8507,20 @@ func registeredModelInfoToPb(st *RegisteredModelInfo) (*registeredModelInfoPb, e
 }
 
 type registeredModelInfoPb struct {
-	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
-
-	BrowseOnly bool `json:"browse_only,omitempty"`
-
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	FullName string `json:"full_name,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	SchemaName string `json:"schema_name,omitempty"`
-
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	Aliases         []RegisteredModelAlias `json:"aliases,omitempty"`
+	BrowseOnly      bool                   `json:"browse_only,omitempty"`
+	CatalogName     string                 `json:"catalog_name,omitempty"`
+	Comment         string                 `json:"comment,omitempty"`
+	CreatedAt       int64                  `json:"created_at,omitempty"`
+	CreatedBy       string                 `json:"created_by,omitempty"`
+	FullName        string                 `json:"full_name,omitempty"`
+	MetastoreId     string                 `json:"metastore_id,omitempty"`
+	Name            string                 `json:"name,omitempty"`
+	Owner           string                 `json:"owner,omitempty"`
+	SchemaName      string                 `json:"schema_name,omitempty"`
+	StorageLocation string                 `json:"storage_location,omitempty"`
+	UpdatedAt       int64                  `json:"updated_at,omitempty"`
+	UpdatedBy       string                 `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9685,39 +8587,22 @@ func schemaInfoToPb(st *SchemaInfo) (*schemaInfoPb, error) {
 	}
 	pb := &schemaInfoPb{}
 	pb.BrowseOnly = st.BrowseOnly
-
 	pb.CatalogName = st.CatalogName
-
 	pb.CatalogType = st.CatalogType
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.EffectivePredictiveOptimizationFlag = st.EffectivePredictiveOptimizationFlag
-
 	pb.EnablePredictiveOptimization = st.EnablePredictiveOptimization
-
 	pb.FullName = st.FullName
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.Properties = st.Properties
-
 	pb.SchemaId = st.SchemaId
-
 	pb.StorageLocation = st.StorageLocation
-
 	pb.StorageRoot = st.StorageRoot
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9725,41 +8610,24 @@ func schemaInfoToPb(st *SchemaInfo) (*schemaInfoPb, error) {
 }
 
 type schemaInfoPb struct {
-	BrowseOnly bool `json:"browse_only,omitempty"`
-
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	CatalogType string `json:"catalog_type,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
+	BrowseOnly                          bool                                 `json:"browse_only,omitempty"`
+	CatalogName                         string                               `json:"catalog_name,omitempty"`
+	CatalogType                         string                               `json:"catalog_type,omitempty"`
+	Comment                             string                               `json:"comment,omitempty"`
+	CreatedAt                           int64                                `json:"created_at,omitempty"`
+	CreatedBy                           string                               `json:"created_by,omitempty"`
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
-
-	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
-
-	FullName string `json:"full_name,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	Properties map[string]string `json:"properties,omitempty"`
-
-	SchemaId string `json:"schema_id,omitempty"`
-
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	StorageRoot string `json:"storage_root,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	EnablePredictiveOptimization        EnablePredictiveOptimization         `json:"enable_predictive_optimization,omitempty"`
+	FullName                            string                               `json:"full_name,omitempty"`
+	MetastoreId                         string                               `json:"metastore_id,omitempty"`
+	Name                                string                               `json:"name,omitempty"`
+	Owner                               string                               `json:"owner,omitempty"`
+	Properties                          map[string]string                    `json:"properties,omitempty"`
+	SchemaId                            string                               `json:"schema_id,omitempty"`
+	StorageLocation                     string                               `json:"storage_location,omitempty"`
+	StorageRoot                         string                               `json:"storage_root,omitempty"`
+	UpdatedAt                           int64                                `json:"updated_at,omitempty"`
+	UpdatedBy                           string                               `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9842,13 +8710,9 @@ func setArtifactAllowlistToPb(st *SetArtifactAllowlist) (*setArtifactAllowlistPb
 	}
 	pb := &setArtifactAllowlistPb{}
 	pb.ArtifactMatchers = st.ArtifactMatchers
-
 	pb.ArtifactType = st.ArtifactType
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.MetastoreId = st.MetastoreId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9857,14 +8721,10 @@ func setArtifactAllowlistToPb(st *SetArtifactAllowlist) (*setArtifactAllowlistPb
 
 type setArtifactAllowlistPb struct {
 	ArtifactMatchers []ArtifactMatcher `json:"artifact_matchers"`
-
-	ArtifactType ArtifactType `json:"-" url:"-"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
+	ArtifactType     ArtifactType      `json:"-" url:"-"`
+	CreatedAt        int64             `json:"created_at,omitempty"`
+	CreatedBy        string            `json:"created_by,omitempty"`
+	MetastoreId      string            `json:"metastore_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9898,20 +8758,16 @@ func setRegisteredModelAliasRequestToPb(st *SetRegisteredModelAliasRequest) (*se
 	}
 	pb := &setRegisteredModelAliasRequestPb{}
 	pb.Alias = st.Alias
-
 	pb.FullName = st.FullName
-
 	pb.VersionNum = st.VersionNum
 
 	return pb, nil
 }
 
 type setRegisteredModelAliasRequestPb struct {
-	Alias string `json:"alias" url:"-"`
-
-	FullName string `json:"full_name" url:"-"`
-
-	VersionNum int `json:"version_num"`
+	Alias      string `json:"alias" url:"-"`
+	FullName   string `json:"full_name" url:"-"`
+	VersionNum int    `json:"version_num"`
 }
 
 func setRegisteredModelAliasRequestFromPb(pb *setRegisteredModelAliasRequestPb) (*SetRegisteredModelAliasRequest, error) {
@@ -9932,7 +8788,6 @@ func sseEncryptionDetailsToPb(st *SseEncryptionDetails) (*sseEncryptionDetailsPb
 	}
 	pb := &sseEncryptionDetailsPb{}
 	pb.Algorithm = st.Algorithm
-
 	pb.AwsKmsKeyArn = st.AwsKmsKeyArn
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -9940,9 +8795,8 @@ func sseEncryptionDetailsToPb(st *SseEncryptionDetails) (*sseEncryptionDetailsPb
 }
 
 type sseEncryptionDetailsPb struct {
-	Algorithm SseEncryptionDetailsAlgorithm `json:"algorithm,omitempty"`
-
-	AwsKmsKeyArn string `json:"aws_kms_key_arn,omitempty"`
+	Algorithm    SseEncryptionDetailsAlgorithm `json:"algorithm,omitempty"`
+	AwsKmsKeyArn string                        `json:"aws_kms_key_arn,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -9973,39 +8827,22 @@ func storageCredentialInfoToPb(st *StorageCredentialInfo) (*storageCredentialInf
 	}
 	pb := &storageCredentialInfoPb{}
 	pb.AwsIamRole = st.AwsIamRole
-
 	pb.AzureManagedIdentity = st.AzureManagedIdentity
-
 	pb.AzureServicePrincipal = st.AzureServicePrincipal
-
 	pb.CloudflareApiToken = st.CloudflareApiToken
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.DatabricksGcpServiceAccount = st.DatabricksGcpServiceAccount
-
 	pb.FullName = st.FullName
-
 	pb.Id = st.Id
-
 	pb.IsolationMode = st.IsolationMode
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
-
 	pb.UsedForManagedStorage = st.UsedForManagedStorage
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -10013,41 +8850,24 @@ func storageCredentialInfoToPb(st *StorageCredentialInfo) (*storageCredentialInf
 }
 
 type storageCredentialInfoPb struct {
-	AwsIamRole *AwsIamRoleResponse `json:"aws_iam_role,omitempty"`
-
-	AzureManagedIdentity *AzureManagedIdentityResponse `json:"azure_managed_identity,omitempty"`
-
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
-
-	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
+	AwsIamRole                  *AwsIamRoleResponse                  `json:"aws_iam_role,omitempty"`
+	AzureManagedIdentity        *AzureManagedIdentityResponse        `json:"azure_managed_identity,omitempty"`
+	AzureServicePrincipal       *AzureServicePrincipal               `json:"azure_service_principal,omitempty"`
+	CloudflareApiToken          *CloudflareApiToken                  `json:"cloudflare_api_token,omitempty"`
+	Comment                     string                               `json:"comment,omitempty"`
+	CreatedAt                   int64                                `json:"created_at,omitempty"`
+	CreatedBy                   string                               `json:"created_by,omitempty"`
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountResponse `json:"databricks_gcp_service_account,omitempty"`
-
-	FullName string `json:"full_name,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
+	FullName                    string                               `json:"full_name,omitempty"`
+	Id                          string                               `json:"id,omitempty"`
+	IsolationMode               IsolationMode                        `json:"isolation_mode,omitempty"`
+	MetastoreId                 string                               `json:"metastore_id,omitempty"`
+	Name                        string                               `json:"name,omitempty"`
+	Owner                       string                               `json:"owner,omitempty"`
+	ReadOnly                    bool                                 `json:"read_only,omitempty"`
+	UpdatedAt                   int64                                `json:"updated_at,omitempty"`
+	UpdatedBy                   string                               `json:"updated_by,omitempty"`
+	UsedForManagedStorage       bool                                 `json:"used_for_managed_storage,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -10094,17 +8914,11 @@ func syncedDatabaseTableToPb(st *SyncedDatabaseTable) (*syncedDatabaseTablePb, e
 	}
 	pb := &syncedDatabaseTablePb{}
 	pb.DataSynchronizationStatus = st.DataSynchronizationStatus
-
 	pb.DatabaseInstanceName = st.DatabaseInstanceName
-
 	pb.LogicalDatabaseName = st.LogicalDatabaseName
-
 	pb.Name = st.Name
-
 	pb.Spec = st.Spec
-
 	pb.TableServingUrl = st.TableServingUrl
-
 	pb.UnityCatalogProvisioningState = st.UnityCatalogProvisioningState
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -10112,18 +8926,12 @@ func syncedDatabaseTableToPb(st *SyncedDatabaseTable) (*syncedDatabaseTablePb, e
 }
 
 type syncedDatabaseTablePb struct {
-	DataSynchronizationStatus *OnlineTableStatus `json:"data_synchronization_status,omitempty"`
-
-	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
-
-	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
-
-	Name string `json:"name"`
-
-	Spec *SyncedTableSpec `json:"spec,omitempty"`
-
-	TableServingUrl string `json:"table_serving_url,omitempty"`
-
+	DataSynchronizationStatus     *OnlineTableStatus    `json:"data_synchronization_status,omitempty"`
+	DatabaseInstanceName          string                `json:"database_instance_name,omitempty"`
+	LogicalDatabaseName           string                `json:"logical_database_name,omitempty"`
+	Name                          string                `json:"name"`
+	Spec                          *SyncedTableSpec      `json:"spec,omitempty"`
+	TableServingUrl               string                `json:"table_serving_url,omitempty"`
 	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -10160,17 +8968,11 @@ func syncedTableSpecToPb(st *SyncedTableSpec) (*syncedTableSpecPb, error) {
 	}
 	pb := &syncedTableSpecPb{}
 	pb.CreateDatabaseObjectsIfMissing = st.CreateDatabaseObjectsIfMissing
-
 	pb.NewPipelineSpec = st.NewPipelineSpec
-
 	pb.PipelineId = st.PipelineId
-
 	pb.PrimaryKeyColumns = st.PrimaryKeyColumns
-
 	pb.SchedulingPolicy = st.SchedulingPolicy
-
 	pb.SourceTableFullName = st.SourceTableFullName
-
 	pb.TimeseriesKey = st.TimeseriesKey
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -10178,19 +8980,13 @@ func syncedTableSpecToPb(st *SyncedTableSpec) (*syncedTableSpecPb, error) {
 }
 
 type syncedTableSpecPb struct {
-	CreateDatabaseObjectsIfMissing bool `json:"create_database_objects_if_missing,omitempty"`
-
-	NewPipelineSpec *NewPipelineSpec `json:"new_pipeline_spec,omitempty"`
-
-	PipelineId string `json:"pipeline_id,omitempty"`
-
-	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
-
-	SchedulingPolicy SyncedTableSchedulingPolicy `json:"scheduling_policy,omitempty"`
-
-	SourceTableFullName string `json:"source_table_full_name,omitempty"`
-
-	TimeseriesKey string `json:"timeseries_key,omitempty"`
+	CreateDatabaseObjectsIfMissing bool                        `json:"create_database_objects_if_missing,omitempty"`
+	NewPipelineSpec                *NewPipelineSpec            `json:"new_pipeline_spec,omitempty"`
+	PipelineId                     string                      `json:"pipeline_id,omitempty"`
+	PrimaryKeyColumns              []string                    `json:"primary_key_columns,omitempty"`
+	SchedulingPolicy               SyncedTableSchedulingPolicy `json:"scheduling_policy,omitempty"`
+	SourceTableFullName            string                      `json:"source_table_full_name,omitempty"`
+	TimeseriesKey                  string                      `json:"timeseries_key,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -10226,7 +9022,6 @@ func systemSchemaInfoToPb(st *SystemSchemaInfo) (*systemSchemaInfoPb, error) {
 	}
 	pb := &systemSchemaInfoPb{}
 	pb.Schema = st.Schema
-
 	pb.State = st.State
 
 	return pb, nil
@@ -10234,8 +9029,7 @@ func systemSchemaInfoToPb(st *SystemSchemaInfo) (*systemSchemaInfoPb, error) {
 
 type systemSchemaInfoPb struct {
 	Schema string `json:"schema"`
-
-	State string `json:"state"`
+	State  string `json:"state"`
 }
 
 func systemSchemaInfoFromPb(pb *systemSchemaInfoPb) (*SystemSchemaInfo, error) {
@@ -10255,9 +9049,7 @@ func tableConstraintToPb(st *TableConstraint) (*tableConstraintPb, error) {
 	}
 	pb := &tableConstraintPb{}
 	pb.ForeignKeyConstraint = st.ForeignKeyConstraint
-
 	pb.NamedTableConstraint = st.NamedTableConstraint
-
 	pb.PrimaryKeyConstraint = st.PrimaryKeyConstraint
 
 	return pb, nil
@@ -10265,9 +9057,7 @@ func tableConstraintToPb(st *TableConstraint) (*tableConstraintPb, error) {
 
 type tableConstraintPb struct {
 	ForeignKeyConstraint *ForeignKeyConstraint `json:"foreign_key_constraint,omitempty"`
-
 	NamedTableConstraint *NamedTableConstraint `json:"named_table_constraint,omitempty"`
-
 	PrimaryKeyConstraint *PrimaryKeyConstraint `json:"primary_key_constraint,omitempty"`
 }
 
@@ -10349,67 +9139,36 @@ func tableInfoToPb(st *TableInfo) (*tableInfoPb, error) {
 	}
 	pb := &tableInfoPb{}
 	pb.AccessPoint = st.AccessPoint
-
 	pb.BrowseOnly = st.BrowseOnly
-
 	pb.CatalogName = st.CatalogName
-
 	pb.Columns = st.Columns
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.DataAccessConfigurationId = st.DataAccessConfigurationId
-
 	pb.DataSourceFormat = st.DataSourceFormat
-
 	pb.DeletedAt = st.DeletedAt
-
 	pb.DeltaRuntimePropertiesKvpairs = st.DeltaRuntimePropertiesKvpairs
-
 	pb.EffectivePredictiveOptimizationFlag = st.EffectivePredictiveOptimizationFlag
-
 	pb.EnablePredictiveOptimization = st.EnablePredictiveOptimization
-
 	pb.EncryptionDetails = st.EncryptionDetails
-
 	pb.FullName = st.FullName
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.PipelineId = st.PipelineId
-
 	pb.Properties = st.Properties
-
 	pb.RowFilter = st.RowFilter
-
 	pb.SchemaName = st.SchemaName
-
 	pb.SqlPath = st.SqlPath
-
 	pb.StorageCredentialName = st.StorageCredentialName
-
 	pb.StorageLocation = st.StorageLocation
-
 	pb.TableConstraints = st.TableConstraints
-
 	pb.TableId = st.TableId
-
 	pb.TableType = st.TableType
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
-
 	pb.ViewDefinition = st.ViewDefinition
-
 	pb.ViewDependencies = st.ViewDependencies
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -10417,69 +9176,38 @@ func tableInfoToPb(st *TableInfo) (*tableInfoPb, error) {
 }
 
 type tableInfoPb struct {
-	AccessPoint string `json:"access_point,omitempty"`
-
-	BrowseOnly bool `json:"browse_only,omitempty"`
-
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	Columns []ColumnInfo `json:"columns,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
-
-	DataSourceFormat DataSourceFormat `json:"data_source_format,omitempty"`
-
-	DeletedAt int64 `json:"deleted_at,omitempty"`
-
-	DeltaRuntimePropertiesKvpairs *DeltaRuntimePropertiesKvPairs `json:"delta_runtime_properties_kvpairs,omitempty"`
-
+	AccessPoint                         string                               `json:"access_point,omitempty"`
+	BrowseOnly                          bool                                 `json:"browse_only,omitempty"`
+	CatalogName                         string                               `json:"catalog_name,omitempty"`
+	Columns                             []ColumnInfo                         `json:"columns,omitempty"`
+	Comment                             string                               `json:"comment,omitempty"`
+	CreatedAt                           int64                                `json:"created_at,omitempty"`
+	CreatedBy                           string                               `json:"created_by,omitempty"`
+	DataAccessConfigurationId           string                               `json:"data_access_configuration_id,omitempty"`
+	DataSourceFormat                    DataSourceFormat                     `json:"data_source_format,omitempty"`
+	DeletedAt                           int64                                `json:"deleted_at,omitempty"`
+	DeltaRuntimePropertiesKvpairs       *DeltaRuntimePropertiesKvPairs       `json:"delta_runtime_properties_kvpairs,omitempty"`
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
-
-	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
-
-	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
-
-	FullName string `json:"full_name,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	PipelineId string `json:"pipeline_id,omitempty"`
-
-	Properties map[string]string `json:"properties,omitempty"`
-
-	RowFilter *TableRowFilter `json:"row_filter,omitempty"`
-
-	SchemaName string `json:"schema_name,omitempty"`
-
-	SqlPath string `json:"sql_path,omitempty"`
-
-	StorageCredentialName string `json:"storage_credential_name,omitempty"`
-
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	TableConstraints []TableConstraint `json:"table_constraints,omitempty"`
-
-	TableId string `json:"table_id,omitempty"`
-
-	TableType TableType `json:"table_type,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	ViewDefinition string `json:"view_definition,omitempty"`
-
-	ViewDependencies *DependencyList `json:"view_dependencies,omitempty"`
+	EnablePredictiveOptimization        EnablePredictiveOptimization         `json:"enable_predictive_optimization,omitempty"`
+	EncryptionDetails                   *EncryptionDetails                   `json:"encryption_details,omitempty"`
+	FullName                            string                               `json:"full_name,omitempty"`
+	MetastoreId                         string                               `json:"metastore_id,omitempty"`
+	Name                                string                               `json:"name,omitempty"`
+	Owner                               string                               `json:"owner,omitempty"`
+	PipelineId                          string                               `json:"pipeline_id,omitempty"`
+	Properties                          map[string]string                    `json:"properties,omitempty"`
+	RowFilter                           *TableRowFilter                      `json:"row_filter,omitempty"`
+	SchemaName                          string                               `json:"schema_name,omitempty"`
+	SqlPath                             string                               `json:"sql_path,omitempty"`
+	StorageCredentialName               string                               `json:"storage_credential_name,omitempty"`
+	StorageLocation                     string                               `json:"storage_location,omitempty"`
+	TableConstraints                    []TableConstraint                    `json:"table_constraints,omitempty"`
+	TableId                             string                               `json:"table_id,omitempty"`
+	TableType                           TableType                            `json:"table_type,omitempty"`
+	UpdatedAt                           int64                                `json:"updated_at,omitempty"`
+	UpdatedBy                           string                               `json:"updated_by,omitempty"`
+	ViewDefinition                      string                               `json:"view_definition,omitempty"`
+	ViewDependencies                    *DependencyList                      `json:"view_dependencies,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -10540,15 +9268,13 @@ func tableRowFilterToPb(st *TableRowFilter) (*tableRowFilterPb, error) {
 	}
 	pb := &tableRowFilterPb{}
 	pb.FunctionName = st.FunctionName
-
 	pb.InputColumnNames = st.InputColumnNames
 
 	return pb, nil
 }
 
 type tableRowFilterPb struct {
-	FunctionName string `json:"function_name"`
-
+	FunctionName     string   `json:"function_name"`
 	InputColumnNames []string `json:"input_column_names"`
 }
 
@@ -10569,7 +9295,6 @@ func tableSummaryToPb(st *TableSummary) (*tableSummaryPb, error) {
 	}
 	pb := &tableSummaryPb{}
 	pb.FullName = st.FullName
-
 	pb.TableType = st.TableType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -10577,8 +9302,7 @@ func tableSummaryToPb(st *TableSummary) (*tableSummaryPb, error) {
 }
 
 type tableSummaryPb struct {
-	FullName string `json:"full_name,omitempty"`
-
+	FullName  string    `json:"full_name,omitempty"`
 	TableType TableType `json:"table_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -10610,7 +9334,6 @@ func tagKeyValueToPb(st *TagKeyValue) (*tagKeyValuePb, error) {
 	}
 	pb := &tagKeyValuePb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -10618,8 +9341,7 @@ func tagKeyValueToPb(st *TagKeyValue) (*tagKeyValuePb, error) {
 }
 
 type tagKeyValuePb struct {
-	Key string `json:"key,omitempty"`
-
+	Key   string `json:"key,omitempty"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -10651,11 +9373,8 @@ func temporaryCredentialsToPb(st *TemporaryCredentials) (*temporaryCredentialsPb
 	}
 	pb := &temporaryCredentialsPb{}
 	pb.AwsTempCredentials = st.AwsTempCredentials
-
 	pb.AzureAad = st.AzureAad
-
 	pb.ExpirationTime = st.ExpirationTime
-
 	pb.GcpOauthToken = st.GcpOauthToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -10663,13 +9382,10 @@ func temporaryCredentialsToPb(st *TemporaryCredentials) (*temporaryCredentialsPb
 }
 
 type temporaryCredentialsPb struct {
-	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
-
-	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
-
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
-	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
+	AwsTempCredentials *AwsCredentials            `json:"aws_temp_credentials,omitempty"`
+	AzureAad           *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
+	ExpirationTime     int64                      `json:"expiration_time,omitempty"`
+	GcpOauthToken      *GcpOauthToken             `json:"gcp_oauth_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -10702,9 +9418,7 @@ func triggeredUpdateStatusToPb(st *TriggeredUpdateStatus) (*triggeredUpdateStatu
 	}
 	pb := &triggeredUpdateStatusPb{}
 	pb.LastProcessedCommitVersion = st.LastProcessedCommitVersion
-
 	pb.Timestamp = st.Timestamp
-
 	pb.TriggeredUpdateProgress = st.TriggeredUpdateProgress
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -10712,11 +9426,9 @@ func triggeredUpdateStatusToPb(st *TriggeredUpdateStatus) (*triggeredUpdateStatu
 }
 
 type triggeredUpdateStatusPb struct {
-	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
-
-	Timestamp string `json:"timestamp,omitempty"`
-
-	TriggeredUpdateProgress *PipelineProgress `json:"triggered_update_progress,omitempty"`
+	LastProcessedCommitVersion int64             `json:"last_processed_commit_version,omitempty"`
+	Timestamp                  string            `json:"timestamp,omitempty"`
+	TriggeredUpdateProgress    *PipelineProgress `json:"triggered_update_progress,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -10748,7 +9460,6 @@ func unassignRequestToPb(st *UnassignRequest) (*unassignRequestPb, error) {
 	}
 	pb := &unassignRequestPb{}
 	pb.MetastoreId = st.MetastoreId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
@@ -10756,8 +9467,7 @@ func unassignRequestToPb(st *UnassignRequest) (*unassignRequestPb, error) {
 
 type unassignRequestPb struct {
 	MetastoreId string `json:"-" url:"metastore_id"`
-
-	WorkspaceId int64 `json:"-" url:"-"`
+	WorkspaceId int64  `json:"-" url:"-"`
 }
 
 func unassignRequestFromPb(pb *unassignRequestPb) (*UnassignRequest, error) {
@@ -10819,19 +9529,12 @@ func updateCatalogToPb(st *UpdateCatalog) (*updateCatalogPb, error) {
 	}
 	pb := &updateCatalogPb{}
 	pb.Comment = st.Comment
-
 	pb.EnablePredictiveOptimization = st.EnablePredictiveOptimization
-
 	pb.IsolationMode = st.IsolationMode
-
 	pb.Name = st.Name
-
 	pb.NewName = st.NewName
-
 	pb.Options = st.Options
-
 	pb.Owner = st.Owner
-
 	pb.Properties = st.Properties
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -10839,21 +9542,14 @@ func updateCatalogToPb(st *UpdateCatalog) (*updateCatalogPb, error) {
 }
 
 type updateCatalogPb struct {
-	Comment string `json:"comment,omitempty"`
-
+	Comment                      string                       `json:"comment,omitempty"`
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
-
-	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	NewName string `json:"new_name,omitempty"`
-
-	Options map[string]string `json:"options,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	Properties map[string]string `json:"properties,omitempty"`
+	IsolationMode                CatalogIsolationMode         `json:"isolation_mode,omitempty"`
+	Name                         string                       `json:"-" url:"-"`
+	NewName                      string                       `json:"new_name,omitempty"`
+	Options                      map[string]string            `json:"options,omitempty"`
+	Owner                        string                       `json:"owner,omitempty"`
+	Properties                   map[string]string            `json:"properties,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -10914,11 +9610,8 @@ func updateConnectionToPb(st *UpdateConnection) (*updateConnectionPb, error) {
 	}
 	pb := &updateConnectionPb{}
 	pb.Name = st.Name
-
 	pb.NewName = st.NewName
-
 	pb.Options = st.Options
-
 	pb.Owner = st.Owner
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -10926,13 +9619,10 @@ func updateConnectionToPb(st *UpdateConnection) (*updateConnectionPb, error) {
 }
 
 type updateConnectionPb struct {
-	Name string `json:"-" url:"-"`
-
-	NewName string `json:"new_name,omitempty"`
-
+	Name    string            `json:"-" url:"-"`
+	NewName string            `json:"new_name,omitempty"`
 	Options map[string]string `json:"options"`
-
-	Owner string `json:"owner,omitempty"`
+	Owner   string            `json:"owner,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -10965,27 +9655,16 @@ func updateCredentialRequestToPb(st *UpdateCredentialRequest) (*updateCredential
 	}
 	pb := &updateCredentialRequestPb{}
 	pb.AwsIamRole = st.AwsIamRole
-
 	pb.AzureManagedIdentity = st.AzureManagedIdentity
-
 	pb.AzureServicePrincipal = st.AzureServicePrincipal
-
 	pb.Comment = st.Comment
-
 	pb.DatabricksGcpServiceAccount = st.DatabricksGcpServiceAccount
-
 	pb.Force = st.Force
-
 	pb.IsolationMode = st.IsolationMode
-
 	pb.NameArg = st.NameArg
-
 	pb.NewName = st.NewName
-
 	pb.Owner = st.Owner
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.SkipValidation = st.SkipValidation
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -10993,29 +9672,18 @@ func updateCredentialRequestToPb(st *UpdateCredentialRequest) (*updateCredential
 }
 
 type updateCredentialRequestPb struct {
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
-
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
-
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
+	AwsIamRole                  *AwsIamRole                  `json:"aws_iam_role,omitempty"`
+	AzureManagedIdentity        *AzureManagedIdentity        `json:"azure_managed_identity,omitempty"`
+	AzureServicePrincipal       *AzureServicePrincipal       `json:"azure_service_principal,omitempty"`
+	Comment                     string                       `json:"comment,omitempty"`
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
-
-	Force bool `json:"force,omitempty"`
-
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
-
-	NameArg string `json:"-" url:"-"`
-
-	NewName string `json:"new_name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	Force                       bool                         `json:"force,omitempty"`
+	IsolationMode               IsolationMode                `json:"isolation_mode,omitempty"`
+	NameArg                     string                       `json:"-" url:"-"`
+	NewName                     string                       `json:"new_name,omitempty"`
+	Owner                       string                       `json:"owner,omitempty"`
+	ReadOnly                    bool                         `json:"read_only,omitempty"`
+	SkipValidation              bool                         `json:"skip_validation,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -11056,9 +9724,7 @@ func updateDatabaseInstanceRequestToPb(st *UpdateDatabaseInstanceRequest) (*upda
 	}
 	pb := &updateDatabaseInstanceRequestPb{}
 	pb.DatabaseInstance = st.DatabaseInstance
-
 	pb.Name = st.Name
-
 	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
@@ -11066,10 +9732,8 @@ func updateDatabaseInstanceRequestToPb(st *UpdateDatabaseInstanceRequest) (*upda
 
 type updateDatabaseInstanceRequestPb struct {
 	DatabaseInstance DatabaseInstance `json:"database_instance"`
-
-	Name string `json:"-" url:"-"`
-
-	UpdateMask string `json:"-" url:"update_mask"`
+	Name             string           `json:"-" url:"-"`
+	UpdateMask       string           `json:"-" url:"update_mask"`
 }
 
 func updateDatabaseInstanceRequestFromPb(pb *updateDatabaseInstanceRequestPb) (*UpdateDatabaseInstanceRequest, error) {
@@ -11090,31 +9754,18 @@ func updateExternalLocationToPb(st *UpdateExternalLocation) (*updateExternalLoca
 	}
 	pb := &updateExternalLocationPb{}
 	pb.Comment = st.Comment
-
 	pb.CredentialName = st.CredentialName
-
 	pb.EnableFileEvents = st.EnableFileEvents
-
 	pb.EncryptionDetails = st.EncryptionDetails
-
 	pb.Fallback = st.Fallback
-
 	pb.FileEventQueue = st.FileEventQueue
-
 	pb.Force = st.Force
-
 	pb.IsolationMode = st.IsolationMode
-
 	pb.Name = st.Name
-
 	pb.NewName = st.NewName
-
 	pb.Owner = st.Owner
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.SkipValidation = st.SkipValidation
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11122,33 +9773,20 @@ func updateExternalLocationToPb(st *UpdateExternalLocation) (*updateExternalLoca
 }
 
 type updateExternalLocationPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	CredentialName string `json:"credential_name,omitempty"`
-
-	EnableFileEvents bool `json:"enable_file_events,omitempty"`
-
+	Comment           string             `json:"comment,omitempty"`
+	CredentialName    string             `json:"credential_name,omitempty"`
+	EnableFileEvents  bool               `json:"enable_file_events,omitempty"`
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
-
-	Fallback bool `json:"fallback,omitempty"`
-
-	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
-
-	Force bool `json:"force,omitempty"`
-
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	NewName string `json:"new_name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	SkipValidation bool `json:"skip_validation,omitempty"`
-
-	Url string `json:"url,omitempty"`
+	Fallback          bool               `json:"fallback,omitempty"`
+	FileEventQueue    *FileEventQueue    `json:"file_event_queue,omitempty"`
+	Force             bool               `json:"force,omitempty"`
+	IsolationMode     IsolationMode      `json:"isolation_mode,omitempty"`
+	Name              string             `json:"-" url:"-"`
+	NewName           string             `json:"new_name,omitempty"`
+	Owner             string             `json:"owner,omitempty"`
+	ReadOnly          bool               `json:"read_only,omitempty"`
+	SkipValidation    bool               `json:"skip_validation,omitempty"`
+	Url               string             `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -11191,7 +9829,6 @@ func updateFunctionToPb(st *UpdateFunction) (*updateFunctionPb, error) {
 	}
 	pb := &updateFunctionPb{}
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11199,8 +9836,7 @@ func updateFunctionToPb(st *UpdateFunction) (*updateFunctionPb, error) {
 }
 
 type updateFunctionPb struct {
-	Name string `json:"-" url:"-"`
-
+	Name  string `json:"-" url:"-"`
 	Owner string `json:"owner,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -11232,19 +9868,12 @@ func updateMetastoreToPb(st *UpdateMetastore) (*updateMetastorePb, error) {
 	}
 	pb := &updateMetastorePb{}
 	pb.DeltaSharingOrganizationName = st.DeltaSharingOrganizationName
-
 	pb.DeltaSharingRecipientTokenLifetimeInSeconds = st.DeltaSharingRecipientTokenLifetimeInSeconds
-
 	pb.DeltaSharingScope = st.DeltaSharingScope
-
 	pb.Id = st.Id
-
 	pb.NewName = st.NewName
-
 	pb.Owner = st.Owner
-
 	pb.PrivilegeModelVersion = st.PrivilegeModelVersion
-
 	pb.StorageRootCredentialId = st.StorageRootCredentialId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11252,21 +9881,14 @@ func updateMetastoreToPb(st *UpdateMetastore) (*updateMetastorePb, error) {
 }
 
 type updateMetastorePb struct {
-	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
-
-	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
-
-	DeltaSharingScope UpdateMetastoreDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
-
-	Id string `json:"-" url:"-"`
-
-	NewName string `json:"new_name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
-
-	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
+	DeltaSharingOrganizationName                string                           `json:"delta_sharing_organization_name,omitempty"`
+	DeltaSharingRecipientTokenLifetimeInSeconds int64                            `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
+	DeltaSharingScope                           UpdateMetastoreDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	Id                                          string                           `json:"-" url:"-"`
+	NewName                                     string                           `json:"new_name,omitempty"`
+	Owner                                       string                           `json:"owner,omitempty"`
+	PrivilegeModelVersion                       string                           `json:"privilege_model_version,omitempty"`
+	StorageRootCredentialId                     string                           `json:"storage_root_credential_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -11303,9 +9925,7 @@ func updateMetastoreAssignmentToPb(st *UpdateMetastoreAssignment) (*updateMetast
 	}
 	pb := &updateMetastoreAssignmentPb{}
 	pb.DefaultCatalogName = st.DefaultCatalogName
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11314,10 +9934,8 @@ func updateMetastoreAssignmentToPb(st *UpdateMetastoreAssignment) (*updateMetast
 
 type updateMetastoreAssignmentPb struct {
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	WorkspaceId int64 `json:"-" url:"-"`
+	MetastoreId        string `json:"metastore_id,omitempty"`
+	WorkspaceId        int64  `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -11349,9 +9967,7 @@ func updateModelVersionRequestToPb(st *UpdateModelVersionRequest) (*updateModelV
 	}
 	pb := &updateModelVersionRequestPb{}
 	pb.Comment = st.Comment
-
 	pb.FullName = st.FullName
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11359,11 +9975,9 @@ func updateModelVersionRequestToPb(st *UpdateModelVersionRequest) (*updateModelV
 }
 
 type updateModelVersionRequestPb struct {
-	Comment string `json:"comment,omitempty"`
-
+	Comment  string `json:"comment,omitempty"`
 	FullName string `json:"-" url:"-"`
-
-	Version int `json:"-" url:"-"`
+	Version  int    `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -11395,27 +10009,16 @@ func updateMonitorToPb(st *UpdateMonitor) (*updateMonitorPb, error) {
 	}
 	pb := &updateMonitorPb{}
 	pb.BaselineTableName = st.BaselineTableName
-
 	pb.CustomMetrics = st.CustomMetrics
-
 	pb.DashboardId = st.DashboardId
-
 	pb.DataClassificationConfig = st.DataClassificationConfig
-
 	pb.InferenceLog = st.InferenceLog
-
 	pb.Notifications = st.Notifications
-
 	pb.OutputSchemaName = st.OutputSchemaName
-
 	pb.Schedule = st.Schedule
-
 	pb.SlicingExprs = st.SlicingExprs
-
 	pb.Snapshot = st.Snapshot
-
 	pb.TableName = st.TableName
-
 	pb.TimeSeries = st.TimeSeries
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11423,29 +10026,18 @@ func updateMonitorToPb(st *UpdateMonitor) (*updateMonitorPb, error) {
 }
 
 type updateMonitorPb struct {
-	BaselineTableName string `json:"baseline_table_name,omitempty"`
-
-	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
-
-	DashboardId string `json:"dashboard_id,omitempty"`
-
+	BaselineTableName        string                           `json:"baseline_table_name,omitempty"`
+	CustomMetrics            []MonitorMetric                  `json:"custom_metrics,omitempty"`
+	DashboardId              string                           `json:"dashboard_id,omitempty"`
 	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
-
-	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
-
-	Notifications *MonitorNotifications `json:"notifications,omitempty"`
-
-	OutputSchemaName string `json:"output_schema_name"`
-
-	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
-
-	SlicingExprs []string `json:"slicing_exprs,omitempty"`
-
-	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
-
-	TableName string `json:"-" url:"-"`
-
-	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
+	InferenceLog             *MonitorInferenceLog             `json:"inference_log,omitempty"`
+	Notifications            *MonitorNotifications            `json:"notifications,omitempty"`
+	OutputSchemaName         string                           `json:"output_schema_name"`
+	Schedule                 *MonitorCronSchedule             `json:"schedule,omitempty"`
+	SlicingExprs             []string                         `json:"slicing_exprs,omitempty"`
+	Snapshot                 *MonitorSnapshot                 `json:"snapshot,omitempty"`
+	TableName                string                           `json:"-" url:"-"`
+	TimeSeries               *MonitorTimeSeries               `json:"time_series,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -11486,20 +10078,16 @@ func updatePermissionsToPb(st *UpdatePermissions) (*updatePermissionsPb, error) 
 	}
 	pb := &updatePermissionsPb{}
 	pb.Changes = st.Changes
-
 	pb.FullName = st.FullName
-
 	pb.SecurableType = st.SecurableType
 
 	return pb, nil
 }
 
 type updatePermissionsPb struct {
-	Changes []PermissionsChange `json:"changes,omitempty"`
-
-	FullName string `json:"-" url:"-"`
-
-	SecurableType SecurableType `json:"-" url:"-"`
+	Changes       []PermissionsChange `json:"changes,omitempty"`
+	FullName      string              `json:"-" url:"-"`
+	SecurableType SecurableType       `json:"-" url:"-"`
 }
 
 func updatePermissionsFromPb(pb *updatePermissionsPb) (*UpdatePermissions, error) {
@@ -11520,11 +10108,8 @@ func updateRegisteredModelRequestToPb(st *UpdateRegisteredModelRequest) (*update
 	}
 	pb := &updateRegisteredModelRequestPb{}
 	pb.Comment = st.Comment
-
 	pb.FullName = st.FullName
-
 	pb.NewName = st.NewName
-
 	pb.Owner = st.Owner
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11532,13 +10117,10 @@ func updateRegisteredModelRequestToPb(st *UpdateRegisteredModelRequest) (*update
 }
 
 type updateRegisteredModelRequestPb struct {
-	Comment string `json:"comment,omitempty"`
-
+	Comment  string `json:"comment,omitempty"`
 	FullName string `json:"-" url:"-"`
-
-	NewName string `json:"new_name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
+	NewName  string `json:"new_name,omitempty"`
+	Owner    string `json:"owner,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -11592,15 +10174,10 @@ func updateSchemaToPb(st *UpdateSchema) (*updateSchemaPb, error) {
 	}
 	pb := &updateSchemaPb{}
 	pb.Comment = st.Comment
-
 	pb.EnablePredictiveOptimization = st.EnablePredictiveOptimization
-
 	pb.FullName = st.FullName
-
 	pb.NewName = st.NewName
-
 	pb.Owner = st.Owner
-
 	pb.Properties = st.Properties
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11608,17 +10185,12 @@ func updateSchemaToPb(st *UpdateSchema) (*updateSchemaPb, error) {
 }
 
 type updateSchemaPb struct {
-	Comment string `json:"comment,omitempty"`
-
+	Comment                      string                       `json:"comment,omitempty"`
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
-
-	FullName string `json:"-" url:"-"`
-
-	NewName string `json:"new_name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	Properties map[string]string `json:"properties,omitempty"`
+	FullName                     string                       `json:"-" url:"-"`
+	NewName                      string                       `json:"new_name,omitempty"`
+	Owner                        string                       `json:"owner,omitempty"`
+	Properties                   map[string]string            `json:"properties,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -11653,29 +10225,17 @@ func updateStorageCredentialToPb(st *UpdateStorageCredential) (*updateStorageCre
 	}
 	pb := &updateStorageCredentialPb{}
 	pb.AwsIamRole = st.AwsIamRole
-
 	pb.AzureManagedIdentity = st.AzureManagedIdentity
-
 	pb.AzureServicePrincipal = st.AzureServicePrincipal
-
 	pb.CloudflareApiToken = st.CloudflareApiToken
-
 	pb.Comment = st.Comment
-
 	pb.DatabricksGcpServiceAccount = st.DatabricksGcpServiceAccount
-
 	pb.Force = st.Force
-
 	pb.IsolationMode = st.IsolationMode
-
 	pb.Name = st.Name
-
 	pb.NewName = st.NewName
-
 	pb.Owner = st.Owner
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.SkipValidation = st.SkipValidation
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11683,31 +10243,19 @@ func updateStorageCredentialToPb(st *UpdateStorageCredential) (*updateStorageCre
 }
 
 type updateStorageCredentialPb struct {
-	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
-
-	AzureManagedIdentity *AzureManagedIdentityResponse `json:"azure_managed_identity,omitempty"`
-
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
-
-	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
+	AwsIamRole                  *AwsIamRoleRequest                  `json:"aws_iam_role,omitempty"`
+	AzureManagedIdentity        *AzureManagedIdentityResponse       `json:"azure_managed_identity,omitempty"`
+	AzureServicePrincipal       *AzureServicePrincipal              `json:"azure_service_principal,omitempty"`
+	CloudflareApiToken          *CloudflareApiToken                 `json:"cloudflare_api_token,omitempty"`
+	Comment                     string                              `json:"comment,omitempty"`
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
-
-	Force bool `json:"force,omitempty"`
-
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	NewName string `json:"new_name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	Force                       bool                                `json:"force,omitempty"`
+	IsolationMode               IsolationMode                       `json:"isolation_mode,omitempty"`
+	Name                        string                              `json:"-" url:"-"`
+	NewName                     string                              `json:"new_name,omitempty"`
+	Owner                       string                              `json:"owner,omitempty"`
+	ReadOnly                    bool                                `json:"read_only,omitempty"`
+	SkipValidation              bool                                `json:"skip_validation,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -11749,7 +10297,6 @@ func updateTableRequestToPb(st *UpdateTableRequest) (*updateTableRequestPb, erro
 	}
 	pb := &updateTableRequestPb{}
 	pb.FullName = st.FullName
-
 	pb.Owner = st.Owner
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11758,8 +10305,7 @@ func updateTableRequestToPb(st *UpdateTableRequest) (*updateTableRequestPb, erro
 
 type updateTableRequestPb struct {
 	FullName string `json:"-" url:"-"`
-
-	Owner string `json:"owner,omitempty"`
+	Owner    string `json:"owner,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -11790,11 +10336,8 @@ func updateVolumeRequestContentToPb(st *UpdateVolumeRequestContent) (*updateVolu
 	}
 	pb := &updateVolumeRequestContentPb{}
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.NewName = st.NewName
-
 	pb.Owner = st.Owner
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11803,12 +10346,9 @@ func updateVolumeRequestContentToPb(st *UpdateVolumeRequestContent) (*updateVolu
 
 type updateVolumeRequestContentPb struct {
 	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
+	Name    string `json:"-" url:"-"`
 	NewName string `json:"new_name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
+	Owner   string `json:"owner,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -11841,19 +10381,15 @@ func updateWorkspaceBindingsToPb(st *UpdateWorkspaceBindings) (*updateWorkspaceB
 	}
 	pb := &updateWorkspaceBindingsPb{}
 	pb.AssignWorkspaces = st.AssignWorkspaces
-
 	pb.Name = st.Name
-
 	pb.UnassignWorkspaces = st.UnassignWorkspaces
 
 	return pb, nil
 }
 
 type updateWorkspaceBindingsPb struct {
-	AssignWorkspaces []int64 `json:"assign_workspaces,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
+	AssignWorkspaces   []int64 `json:"assign_workspaces,omitempty"`
+	Name               string  `json:"-" url:"-"`
 	UnassignWorkspaces []int64 `json:"unassign_workspaces,omitempty"`
 }
 
@@ -11875,24 +10411,18 @@ func updateWorkspaceBindingsParametersToPb(st *UpdateWorkspaceBindingsParameters
 	}
 	pb := &updateWorkspaceBindingsParametersPb{}
 	pb.Add = st.Add
-
 	pb.Remove = st.Remove
-
 	pb.SecurableName = st.SecurableName
-
 	pb.SecurableType = st.SecurableType
 
 	return pb, nil
 }
 
 type updateWorkspaceBindingsParametersPb struct {
-	Add []WorkspaceBinding `json:"add,omitempty"`
-
-	Remove []WorkspaceBinding `json:"remove,omitempty"`
-
-	SecurableName string `json:"-" url:"-"`
-
-	SecurableType string `json:"-" url:"-"`
+	Add           []WorkspaceBinding `json:"add,omitempty"`
+	Remove        []WorkspaceBinding `json:"remove,omitempty"`
+	SecurableName string             `json:"-" url:"-"`
+	SecurableType string             `json:"-" url:"-"`
 }
 
 func updateWorkspaceBindingsParametersFromPb(pb *updateWorkspaceBindingsParametersPb) (*UpdateWorkspaceBindingsParameters, error) {
@@ -11938,19 +10468,12 @@ func validateCredentialRequestToPb(st *ValidateCredentialRequest) (*validateCred
 	}
 	pb := &validateCredentialRequestPb{}
 	pb.AwsIamRole = st.AwsIamRole
-
 	pb.AzureManagedIdentity = st.AzureManagedIdentity
-
 	pb.CredentialName = st.CredentialName
-
 	pb.DatabricksGcpServiceAccount = st.DatabricksGcpServiceAccount
-
 	pb.ExternalLocationName = st.ExternalLocationName
-
 	pb.Purpose = st.Purpose
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -11958,21 +10481,14 @@ func validateCredentialRequestToPb(st *ValidateCredentialRequest) (*validateCred
 }
 
 type validateCredentialRequestPb struct {
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
-
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
-
-	CredentialName string `json:"credential_name,omitempty"`
-
+	AwsIamRole                  *AwsIamRole                  `json:"aws_iam_role,omitempty"`
+	AzureManagedIdentity        *AzureManagedIdentity        `json:"azure_managed_identity,omitempty"`
+	CredentialName              string                       `json:"credential_name,omitempty"`
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
-
-	ExternalLocationName string `json:"external_location_name,omitempty"`
-
-	Purpose CredentialPurpose `json:"purpose,omitempty"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	Url string `json:"url,omitempty"`
+	ExternalLocationName        string                       `json:"external_location_name,omitempty"`
+	Purpose                     CredentialPurpose            `json:"purpose,omitempty"`
+	ReadOnly                    bool                         `json:"read_only,omitempty"`
+	Url                         string                       `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -12009,7 +10525,6 @@ func validateCredentialResponseToPb(st *ValidateCredentialResponse) (*validateCr
 	}
 	pb := &validateCredentialResponsePb{}
 	pb.IsDir = st.IsDir
-
 	pb.Results = st.Results
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -12017,8 +10532,7 @@ func validateCredentialResponseToPb(st *ValidateCredentialResponse) (*validateCr
 }
 
 type validateCredentialResponsePb struct {
-	IsDir bool `json:"isDir,omitempty"`
-
+	IsDir   bool                         `json:"isDir,omitempty"`
 	Results []CredentialValidationResult `json:"results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -12050,21 +10564,13 @@ func validateStorageCredentialToPb(st *ValidateStorageCredential) (*validateStor
 	}
 	pb := &validateStorageCredentialPb{}
 	pb.AwsIamRole = st.AwsIamRole
-
 	pb.AzureManagedIdentity = st.AzureManagedIdentity
-
 	pb.AzureServicePrincipal = st.AzureServicePrincipal
-
 	pb.CloudflareApiToken = st.CloudflareApiToken
-
 	pb.DatabricksGcpServiceAccount = st.DatabricksGcpServiceAccount
-
 	pb.ExternalLocationName = st.ExternalLocationName
-
 	pb.ReadOnly = st.ReadOnly
-
 	pb.StorageCredentialName = st.StorageCredentialName
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -12072,23 +10578,15 @@ func validateStorageCredentialToPb(st *ValidateStorageCredential) (*validateStor
 }
 
 type validateStorageCredentialPb struct {
-	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
-
-	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
-
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
-
-	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
-
+	AwsIamRole                  *AwsIamRoleRequest                  `json:"aws_iam_role,omitempty"`
+	AzureManagedIdentity        *AzureManagedIdentityRequest        `json:"azure_managed_identity,omitempty"`
+	AzureServicePrincipal       *AzureServicePrincipal              `json:"azure_service_principal,omitempty"`
+	CloudflareApiToken          *CloudflareApiToken                 `json:"cloudflare_api_token,omitempty"`
 	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
-
-	ExternalLocationName string `json:"external_location_name,omitempty"`
-
-	ReadOnly bool `json:"read_only,omitempty"`
-
-	StorageCredentialName string `json:"storage_credential_name,omitempty"`
-
-	Url string `json:"url,omitempty"`
+	ExternalLocationName        string                              `json:"external_location_name,omitempty"`
+	ReadOnly                    bool                                `json:"read_only,omitempty"`
+	StorageCredentialName       string                              `json:"storage_credential_name,omitempty"`
+	Url                         string                              `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -12126,7 +10624,6 @@ func validateStorageCredentialResponseToPb(st *ValidateStorageCredentialResponse
 	}
 	pb := &validateStorageCredentialResponsePb{}
 	pb.IsDir = st.IsDir
-
 	pb.Results = st.Results
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -12134,8 +10631,7 @@ func validateStorageCredentialResponseToPb(st *ValidateStorageCredentialResponse
 }
 
 type validateStorageCredentialResponsePb struct {
-	IsDir bool `json:"isDir,omitempty"`
-
+	IsDir   bool               `json:"isDir,omitempty"`
 	Results []ValidationResult `json:"results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -12167,9 +10663,7 @@ func validationResultToPb(st *ValidationResult) (*validationResultPb, error) {
 	}
 	pb := &validationResultPb{}
 	pb.Message = st.Message
-
 	pb.Operation = st.Operation
-
 	pb.Result = st.Result
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -12177,11 +10671,9 @@ func validationResultToPb(st *ValidationResult) (*validationResultPb, error) {
 }
 
 type validationResultPb struct {
-	Message string `json:"message,omitempty"`
-
+	Message   string                    `json:"message,omitempty"`
 	Operation ValidationResultOperation `json:"operation,omitempty"`
-
-	Result ValidationResultResult `json:"result,omitempty"`
+	Result    ValidationResultResult    `json:"result,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -12213,37 +10705,21 @@ func volumeInfoToPb(st *VolumeInfo) (*volumeInfoPb, error) {
 	}
 	pb := &volumeInfoPb{}
 	pb.AccessPoint = st.AccessPoint
-
 	pb.BrowseOnly = st.BrowseOnly
-
 	pb.CatalogName = st.CatalogName
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.EncryptionDetails = st.EncryptionDetails
-
 	pb.FullName = st.FullName
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.SchemaName = st.SchemaName
-
 	pb.StorageLocation = st.StorageLocation
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
-
 	pb.VolumeId = st.VolumeId
-
 	pb.VolumeType = st.VolumeType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -12251,39 +10727,23 @@ func volumeInfoToPb(st *VolumeInfo) (*volumeInfoPb, error) {
 }
 
 type volumeInfoPb struct {
-	AccessPoint string `json:"access_point,omitempty"`
-
-	BrowseOnly bool `json:"browse_only,omitempty"`
-
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
+	AccessPoint       string             `json:"access_point,omitempty"`
+	BrowseOnly        bool               `json:"browse_only,omitempty"`
+	CatalogName       string             `json:"catalog_name,omitempty"`
+	Comment           string             `json:"comment,omitempty"`
+	CreatedAt         int64              `json:"created_at,omitempty"`
+	CreatedBy         string             `json:"created_by,omitempty"`
 	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
-
-	FullName string `json:"full_name,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	SchemaName string `json:"schema_name,omitempty"`
-
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	VolumeId string `json:"volume_id,omitempty"`
-
-	VolumeType VolumeType `json:"volume_type,omitempty"`
+	FullName          string             `json:"full_name,omitempty"`
+	MetastoreId       string             `json:"metastore_id,omitempty"`
+	Name              string             `json:"name,omitempty"`
+	Owner             string             `json:"owner,omitempty"`
+	SchemaName        string             `json:"schema_name,omitempty"`
+	StorageLocation   string             `json:"storage_location,omitempty"`
+	UpdatedAt         int64              `json:"updated_at,omitempty"`
+	UpdatedBy         string             `json:"updated_by,omitempty"`
+	VolumeId          string             `json:"volume_id,omitempty"`
+	VolumeType        VolumeType         `json:"volume_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -12329,7 +10789,6 @@ func workspaceBindingToPb(st *WorkspaceBinding) (*workspaceBindingPb, error) {
 	}
 	pb := &workspaceBindingPb{}
 	pb.BindingType = st.BindingType
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
@@ -12337,8 +10796,7 @@ func workspaceBindingToPb(st *WorkspaceBinding) (*workspaceBindingPb, error) {
 
 type workspaceBindingPb struct {
 	BindingType WorkspaceBindingBindingType `json:"binding_type,omitempty"`
-
-	WorkspaceId int64 `json:"workspace_id"`
+	WorkspaceId int64                       `json:"workspace_id"`
 }
 
 func workspaceBindingFromPb(pb *workspaceBindingPb) (*WorkspaceBinding, error) {
@@ -12350,4 +10808,58 @@ func workspaceBindingFromPb(pb *workspaceBindingPb) (*WorkspaceBinding, error) {
 	st.WorkspaceId = pb.WorkspaceId
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

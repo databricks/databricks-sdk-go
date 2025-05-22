@@ -3,6 +3,10 @@
 package dashboards
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/sql"
 )
@@ -13,11 +17,8 @@ func authorizationDetailsToPb(st *AuthorizationDetails) (*authorizationDetailsPb
 	}
 	pb := &authorizationDetailsPb{}
 	pb.GrantRules = st.GrantRules
-
 	pb.ResourceLegacyAclPath = st.ResourceLegacyAclPath
-
 	pb.ResourceName = st.ResourceName
-
 	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -25,13 +26,10 @@ func authorizationDetailsToPb(st *AuthorizationDetails) (*authorizationDetailsPb
 }
 
 type authorizationDetailsPb struct {
-	GrantRules []AuthorizationDetailsGrantRule `json:"grant_rules,omitempty"`
-
-	ResourceLegacyAclPath string `json:"resource_legacy_acl_path,omitempty"`
-
-	ResourceName string `json:"resource_name,omitempty"`
-
-	Type string `json:"type,omitempty"`
+	GrantRules            []AuthorizationDetailsGrantRule `json:"grant_rules,omitempty"`
+	ResourceLegacyAclPath string                          `json:"resource_legacy_acl_path,omitempty"`
+	ResourceName          string                          `json:"resource_name,omitempty"`
+	Type                  string                          `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -100,20 +98,16 @@ func cancelPublishedQueryExecutionRequestToPb(st *CancelPublishedQueryExecutionR
 	}
 	pb := &cancelPublishedQueryExecutionRequestPb{}
 	pb.DashboardName = st.DashboardName
-
 	pb.DashboardRevisionId = st.DashboardRevisionId
-
 	pb.Tokens = st.Tokens
 
 	return pb, nil
 }
 
 type cancelPublishedQueryExecutionRequestPb struct {
-	DashboardName string `json:"-" url:"dashboard_name"`
-
-	DashboardRevisionId string `json:"-" url:"dashboard_revision_id"`
-
-	Tokens []string `json:"-" url:"tokens,omitempty"`
+	DashboardName       string   `json:"-" url:"dashboard_name"`
+	DashboardRevisionId string   `json:"-" url:"dashboard_revision_id"`
+	Tokens              []string `json:"-" url:"tokens,omitempty"`
 }
 
 func cancelPublishedQueryExecutionRequestFromPb(pb *cancelPublishedQueryExecutionRequestPb) (*CancelPublishedQueryExecutionRequest, error) {
@@ -158,9 +152,7 @@ func cancelQueryExecutionResponseStatusToPb(st *CancelQueryExecutionResponseStat
 	}
 	pb := &cancelQueryExecutionResponseStatusPb{}
 	pb.DataToken = st.DataToken
-
 	pb.Pending = st.Pending
-
 	pb.Success = st.Success
 
 	return pb, nil
@@ -168,10 +160,8 @@ func cancelQueryExecutionResponseStatusToPb(st *CancelQueryExecutionResponseStat
 
 type cancelQueryExecutionResponseStatusPb struct {
 	DataToken string `json:"data_token"`
-
-	Pending *Empty `json:"pending,omitempty"`
-
-	Success *Empty `json:"success,omitempty"`
+	Pending   *Empty `json:"pending,omitempty"`
+	Success   *Empty `json:"success,omitempty"`
 }
 
 func cancelQueryExecutionResponseStatusFromPb(pb *cancelQueryExecutionResponseStatusPb) (*CancelQueryExecutionResponseStatus, error) {
@@ -216,16 +206,14 @@ func createScheduleRequestToPb(st *CreateScheduleRequest) (*createScheduleReques
 	}
 	pb := &createScheduleRequestPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.Schedule = st.Schedule
 
 	return pb, nil
 }
 
 type createScheduleRequestPb struct {
-	DashboardId string `json:"-" url:"-"`
-
-	Schedule Schedule `json:"schedule"`
+	DashboardId string   `json:"-" url:"-"`
+	Schedule    Schedule `json:"schedule"`
 }
 
 func createScheduleRequestFromPb(pb *createScheduleRequestPb) (*CreateScheduleRequest, error) {
@@ -245,19 +233,15 @@ func createSubscriptionRequestToPb(st *CreateSubscriptionRequest) (*createSubscr
 	}
 	pb := &createSubscriptionRequestPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.ScheduleId = st.ScheduleId
-
 	pb.Subscription = st.Subscription
 
 	return pb, nil
 }
 
 type createSubscriptionRequestPb struct {
-	DashboardId string `json:"-" url:"-"`
-
-	ScheduleId string `json:"-" url:"-"`
-
+	DashboardId  string       `json:"-" url:"-"`
+	ScheduleId   string       `json:"-" url:"-"`
 	Subscription Subscription `json:"subscription"`
 }
 
@@ -279,7 +263,6 @@ func cronScheduleToPb(st *CronSchedule) (*cronSchedulePb, error) {
 	}
 	pb := &cronSchedulePb{}
 	pb.QuartzCronExpression = st.QuartzCronExpression
-
 	pb.TimezoneId = st.TimezoneId
 
 	return pb, nil
@@ -287,8 +270,7 @@ func cronScheduleToPb(st *CronSchedule) (*cronSchedulePb, error) {
 
 type cronSchedulePb struct {
 	QuartzCronExpression string `json:"quartz_cron_expression"`
-
-	TimezoneId string `json:"timezone_id"`
+	TimezoneId           string `json:"timezone_id"`
 }
 
 func cronScheduleFromPb(pb *cronSchedulePb) (*CronSchedule, error) {
@@ -308,23 +290,14 @@ func dashboardToPb(st *Dashboard) (*dashboardPb, error) {
 	}
 	pb := &dashboardPb{}
 	pb.CreateTime = st.CreateTime
-
 	pb.DashboardId = st.DashboardId
-
 	pb.DisplayName = st.DisplayName
-
 	pb.Etag = st.Etag
-
 	pb.LifecycleState = st.LifecycleState
-
 	pb.ParentPath = st.ParentPath
-
 	pb.Path = st.Path
-
 	pb.SerializedDashboard = st.SerializedDashboard
-
 	pb.UpdateTime = st.UpdateTime
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -332,25 +305,16 @@ func dashboardToPb(st *Dashboard) (*dashboardPb, error) {
 }
 
 type dashboardPb struct {
-	CreateTime string `json:"create_time,omitempty"`
-
-	DashboardId string `json:"dashboard_id,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	Etag string `json:"etag,omitempty"`
-
-	LifecycleState LifecycleState `json:"lifecycle_state,omitempty"`
-
-	ParentPath string `json:"parent_path,omitempty"`
-
-	Path string `json:"path,omitempty"`
-
-	SerializedDashboard string `json:"serialized_dashboard,omitempty"`
-
-	UpdateTime string `json:"update_time,omitempty"`
-
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	CreateTime          string         `json:"create_time,omitempty"`
+	DashboardId         string         `json:"dashboard_id,omitempty"`
+	DisplayName         string         `json:"display_name,omitempty"`
+	Etag                string         `json:"etag,omitempty"`
+	LifecycleState      LifecycleState `json:"lifecycle_state,omitempty"`
+	ParentPath          string         `json:"parent_path,omitempty"`
+	Path                string         `json:"path,omitempty"`
+	SerializedDashboard string         `json:"serialized_dashboard,omitempty"`
+	UpdateTime          string         `json:"update_time,omitempty"`
+	WarehouseId         string         `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -389,9 +353,7 @@ func deleteScheduleRequestToPb(st *DeleteScheduleRequest) (*deleteScheduleReques
 	}
 	pb := &deleteScheduleRequestPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.Etag = st.Etag
-
 	pb.ScheduleId = st.ScheduleId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -400,10 +362,8 @@ func deleteScheduleRequestToPb(st *DeleteScheduleRequest) (*deleteScheduleReques
 
 type deleteScheduleRequestPb struct {
 	DashboardId string `json:"-" url:"-"`
-
-	Etag string `json:"-" url:"etag,omitempty"`
-
-	ScheduleId string `json:"-" url:"-"`
+	Etag        string `json:"-" url:"etag,omitempty"`
+	ScheduleId  string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -456,11 +416,8 @@ func deleteSubscriptionRequestToPb(st *DeleteSubscriptionRequest) (*deleteSubscr
 	}
 	pb := &deleteSubscriptionRequestPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.Etag = st.Etag
-
 	pb.ScheduleId = st.ScheduleId
-
 	pb.SubscriptionId = st.SubscriptionId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -468,12 +425,9 @@ func deleteSubscriptionRequestToPb(st *DeleteSubscriptionRequest) (*deleteSubscr
 }
 
 type deleteSubscriptionRequestPb struct {
-	DashboardId string `json:"-" url:"-"`
-
-	Etag string `json:"-" url:"etag,omitempty"`
-
-	ScheduleId string `json:"-" url:"-"`
-
+	DashboardId    string `json:"-" url:"-"`
+	Etag           string `json:"-" url:"etag,omitempty"`
+	ScheduleId     string `json:"-" url:"-"`
 	SubscriptionId string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -549,9 +503,7 @@ func executePublishedDashboardQueryRequestToPb(st *ExecutePublishedDashboardQuer
 	}
 	pb := &executePublishedDashboardQueryRequestPb{}
 	pb.DashboardName = st.DashboardName
-
 	pb.DashboardRevisionId = st.DashboardRevisionId
-
 	pb.OverrideWarehouseId = st.OverrideWarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -559,10 +511,8 @@ func executePublishedDashboardQueryRequestToPb(st *ExecutePublishedDashboardQuer
 }
 
 type executePublishedDashboardQueryRequestPb struct {
-	DashboardName string `json:"dashboard_name"`
-
+	DashboardName       string `json:"dashboard_name"`
 	DashboardRevisionId string `json:"dashboard_revision_id"`
-
 	OverrideWarehouseId string `json:"override_warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -616,9 +566,7 @@ func genieAttachmentToPb(st *GenieAttachment) (*genieAttachmentPb, error) {
 	}
 	pb := &genieAttachmentPb{}
 	pb.AttachmentId = st.AttachmentId
-
 	pb.Query = st.Query
-
 	pb.Text = st.Text
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -626,11 +574,9 @@ func genieAttachmentToPb(st *GenieAttachment) (*genieAttachmentPb, error) {
 }
 
 type genieAttachmentPb struct {
-	AttachmentId string `json:"attachment_id,omitempty"`
-
-	Query *GenieQueryAttachment `json:"query,omitempty"`
-
-	Text *TextAttachment `json:"text,omitempty"`
+	AttachmentId string                `json:"attachment_id,omitempty"`
+	Query        *GenieQueryAttachment `json:"query,omitempty"`
+	Text         *TextAttachment       `json:"text,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -662,17 +608,11 @@ func genieConversationToPb(st *GenieConversation) (*genieConversationPb, error) 
 	}
 	pb := &genieConversationPb{}
 	pb.ConversationId = st.ConversationId
-
 	pb.CreatedTimestamp = st.CreatedTimestamp
-
 	pb.Id = st.Id
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.SpaceId = st.SpaceId
-
 	pb.Title = st.Title
-
 	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -680,19 +620,13 @@ func genieConversationToPb(st *GenieConversation) (*genieConversationPb, error) 
 }
 
 type genieConversationPb struct {
-	ConversationId string `json:"conversation_id"`
-
-	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
-
-	Id string `json:"id"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	SpaceId string `json:"space_id"`
-
-	Title string `json:"title"`
-
-	UserId int `json:"user_id"`
+	ConversationId       string `json:"conversation_id"`
+	CreatedTimestamp     int64  `json:"created_timestamp,omitempty"`
+	Id                   string `json:"id"`
+	LastUpdatedTimestamp int64  `json:"last_updated_timestamp,omitempty"`
+	SpaceId              string `json:"space_id"`
+	Title                string `json:"title"`
+	UserId               int    `json:"user_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -728,20 +662,16 @@ func genieCreateConversationMessageRequestToPb(st *GenieCreateConversationMessag
 	}
 	pb := &genieCreateConversationMessageRequestPb{}
 	pb.Content = st.Content
-
 	pb.ConversationId = st.ConversationId
-
 	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
 
 type genieCreateConversationMessageRequestPb struct {
-	Content string `json:"content"`
-
+	Content        string `json:"content"`
 	ConversationId string `json:"-" url:"-"`
-
-	SpaceId string `json:"-" url:"-"`
+	SpaceId        string `json:"-" url:"-"`
 }
 
 func genieCreateConversationMessageRequestFromPb(pb *genieCreateConversationMessageRequestPb) (*GenieCreateConversationMessageRequest, error) {
@@ -762,24 +692,18 @@ func genieExecuteMessageAttachmentQueryRequestToPb(st *GenieExecuteMessageAttach
 	}
 	pb := &genieExecuteMessageAttachmentQueryRequestPb{}
 	pb.AttachmentId = st.AttachmentId
-
 	pb.ConversationId = st.ConversationId
-
 	pb.MessageId = st.MessageId
-
 	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
 
 type genieExecuteMessageAttachmentQueryRequestPb struct {
-	AttachmentId string `json:"-" url:"-"`
-
+	AttachmentId   string `json:"-" url:"-"`
 	ConversationId string `json:"-" url:"-"`
-
-	MessageId string `json:"-" url:"-"`
-
-	SpaceId string `json:"-" url:"-"`
+	MessageId      string `json:"-" url:"-"`
+	SpaceId        string `json:"-" url:"-"`
 }
 
 func genieExecuteMessageAttachmentQueryRequestFromPb(pb *genieExecuteMessageAttachmentQueryRequestPb) (*GenieExecuteMessageAttachmentQueryRequest, error) {
@@ -801,9 +725,7 @@ func genieExecuteMessageQueryRequestToPb(st *GenieExecuteMessageQueryRequest) (*
 	}
 	pb := &genieExecuteMessageQueryRequestPb{}
 	pb.ConversationId = st.ConversationId
-
 	pb.MessageId = st.MessageId
-
 	pb.SpaceId = st.SpaceId
 
 	return pb, nil
@@ -811,10 +733,8 @@ func genieExecuteMessageQueryRequestToPb(st *GenieExecuteMessageQueryRequest) (*
 
 type genieExecuteMessageQueryRequestPb struct {
 	ConversationId string `json:"-" url:"-"`
-
-	MessageId string `json:"-" url:"-"`
-
-	SpaceId string `json:"-" url:"-"`
+	MessageId      string `json:"-" url:"-"`
+	SpaceId        string `json:"-" url:"-"`
 }
 
 func genieExecuteMessageQueryRequestFromPb(pb *genieExecuteMessageQueryRequestPb) (*GenieExecuteMessageQueryRequest, error) {
@@ -835,24 +755,18 @@ func genieGenerateDownloadFullQueryResultRequestToPb(st *GenieGenerateDownloadFu
 	}
 	pb := &genieGenerateDownloadFullQueryResultRequestPb{}
 	pb.AttachmentId = st.AttachmentId
-
 	pb.ConversationId = st.ConversationId
-
 	pb.MessageId = st.MessageId
-
 	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
 
 type genieGenerateDownloadFullQueryResultRequestPb struct {
-	AttachmentId string `json:"-" url:"-"`
-
+	AttachmentId   string `json:"-" url:"-"`
 	ConversationId string `json:"-" url:"-"`
-
-	MessageId string `json:"-" url:"-"`
-
-	SpaceId string `json:"-" url:"-"`
+	MessageId      string `json:"-" url:"-"`
+	SpaceId        string `json:"-" url:"-"`
 }
 
 func genieGenerateDownloadFullQueryResultRequestFromPb(pb *genieGenerateDownloadFullQueryResultRequestPb) (*GenieGenerateDownloadFullQueryResultRequest, error) {
@@ -910,9 +824,7 @@ func genieGetConversationMessageRequestToPb(st *GenieGetConversationMessageReque
 	}
 	pb := &genieGetConversationMessageRequestPb{}
 	pb.ConversationId = st.ConversationId
-
 	pb.MessageId = st.MessageId
-
 	pb.SpaceId = st.SpaceId
 
 	return pb, nil
@@ -920,10 +832,8 @@ func genieGetConversationMessageRequestToPb(st *GenieGetConversationMessageReque
 
 type genieGetConversationMessageRequestPb struct {
 	ConversationId string `json:"-" url:"-"`
-
-	MessageId string `json:"-" url:"-"`
-
-	SpaceId string `json:"-" url:"-"`
+	MessageId      string `json:"-" url:"-"`
+	SpaceId        string `json:"-" url:"-"`
 }
 
 func genieGetConversationMessageRequestFromPb(pb *genieGetConversationMessageRequestPb) (*GenieGetConversationMessageRequest, error) {
@@ -944,28 +854,20 @@ func genieGetDownloadFullQueryResultRequestToPb(st *GenieGetDownloadFullQueryRes
 	}
 	pb := &genieGetDownloadFullQueryResultRequestPb{}
 	pb.AttachmentId = st.AttachmentId
-
 	pb.ConversationId = st.ConversationId
-
 	pb.DownloadId = st.DownloadId
-
 	pb.MessageId = st.MessageId
-
 	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
 
 type genieGetDownloadFullQueryResultRequestPb struct {
-	AttachmentId string `json:"-" url:"-"`
-
+	AttachmentId   string `json:"-" url:"-"`
 	ConversationId string `json:"-" url:"-"`
-
-	DownloadId string `json:"-" url:"-"`
-
-	MessageId string `json:"-" url:"-"`
-
-	SpaceId string `json:"-" url:"-"`
+	DownloadId     string `json:"-" url:"-"`
+	MessageId      string `json:"-" url:"-"`
+	SpaceId        string `json:"-" url:"-"`
 }
 
 func genieGetDownloadFullQueryResultRequestFromPb(pb *genieGetDownloadFullQueryResultRequestPb) (*GenieGetDownloadFullQueryResultRequest, error) {
@@ -1012,24 +914,18 @@ func genieGetMessageAttachmentQueryResultRequestToPb(st *GenieGetMessageAttachme
 	}
 	pb := &genieGetMessageAttachmentQueryResultRequestPb{}
 	pb.AttachmentId = st.AttachmentId
-
 	pb.ConversationId = st.ConversationId
-
 	pb.MessageId = st.MessageId
-
 	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
 
 type genieGetMessageAttachmentQueryResultRequestPb struct {
-	AttachmentId string `json:"-" url:"-"`
-
+	AttachmentId   string `json:"-" url:"-"`
 	ConversationId string `json:"-" url:"-"`
-
-	MessageId string `json:"-" url:"-"`
-
-	SpaceId string `json:"-" url:"-"`
+	MessageId      string `json:"-" url:"-"`
+	SpaceId        string `json:"-" url:"-"`
 }
 
 func genieGetMessageAttachmentQueryResultRequestFromPb(pb *genieGetMessageAttachmentQueryResultRequestPb) (*GenieGetMessageAttachmentQueryResultRequest, error) {
@@ -1051,9 +947,7 @@ func genieGetMessageQueryResultRequestToPb(st *GenieGetMessageQueryResultRequest
 	}
 	pb := &genieGetMessageQueryResultRequestPb{}
 	pb.ConversationId = st.ConversationId
-
 	pb.MessageId = st.MessageId
-
 	pb.SpaceId = st.SpaceId
 
 	return pb, nil
@@ -1061,10 +955,8 @@ func genieGetMessageQueryResultRequestToPb(st *GenieGetMessageQueryResultRequest
 
 type genieGetMessageQueryResultRequestPb struct {
 	ConversationId string `json:"-" url:"-"`
-
-	MessageId string `json:"-" url:"-"`
-
-	SpaceId string `json:"-" url:"-"`
+	MessageId      string `json:"-" url:"-"`
+	SpaceId        string `json:"-" url:"-"`
 }
 
 func genieGetMessageQueryResultRequestFromPb(pb *genieGetMessageQueryResultRequestPb) (*GenieGetMessageQueryResultRequest, error) {
@@ -1109,24 +1001,18 @@ func genieGetQueryResultByAttachmentRequestToPb(st *GenieGetQueryResultByAttachm
 	}
 	pb := &genieGetQueryResultByAttachmentRequestPb{}
 	pb.AttachmentId = st.AttachmentId
-
 	pb.ConversationId = st.ConversationId
-
 	pb.MessageId = st.MessageId
-
 	pb.SpaceId = st.SpaceId
 
 	return pb, nil
 }
 
 type genieGetQueryResultByAttachmentRequestPb struct {
-	AttachmentId string `json:"-" url:"-"`
-
+	AttachmentId   string `json:"-" url:"-"`
 	ConversationId string `json:"-" url:"-"`
-
-	MessageId string `json:"-" url:"-"`
-
-	SpaceId string `json:"-" url:"-"`
+	MessageId      string `json:"-" url:"-"`
+	SpaceId        string `json:"-" url:"-"`
 }
 
 func genieGetQueryResultByAttachmentRequestFromPb(pb *genieGetQueryResultByAttachmentRequestPb) (*GenieGetQueryResultByAttachmentRequest, error) {
@@ -1172,27 +1058,16 @@ func genieMessageToPb(st *GenieMessage) (*genieMessagePb, error) {
 	}
 	pb := &genieMessagePb{}
 	pb.Attachments = st.Attachments
-
 	pb.Content = st.Content
-
 	pb.ConversationId = st.ConversationId
-
 	pb.CreatedTimestamp = st.CreatedTimestamp
-
 	pb.Error = st.Error
-
 	pb.Id = st.Id
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.MessageId = st.MessageId
-
 	pb.QueryResult = st.QueryResult
-
 	pb.SpaceId = st.SpaceId
-
 	pb.Status = st.Status
-
 	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1200,29 +1075,18 @@ func genieMessageToPb(st *GenieMessage) (*genieMessagePb, error) {
 }
 
 type genieMessagePb struct {
-	Attachments []GenieAttachment `json:"attachments,omitempty"`
-
-	Content string `json:"content"`
-
-	ConversationId string `json:"conversation_id"`
-
-	CreatedTimestamp int64 `json:"created_timestamp,omitempty"`
-
-	Error *MessageError `json:"error,omitempty"`
-
-	Id string `json:"id"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	MessageId string `json:"message_id"`
-
-	QueryResult *Result `json:"query_result,omitempty"`
-
-	SpaceId string `json:"space_id"`
-
-	Status MessageStatus `json:"status,omitempty"`
-
-	UserId int64 `json:"user_id,omitempty"`
+	Attachments          []GenieAttachment `json:"attachments,omitempty"`
+	Content              string            `json:"content"`
+	ConversationId       string            `json:"conversation_id"`
+	CreatedTimestamp     int64             `json:"created_timestamp,omitempty"`
+	Error                *MessageError     `json:"error,omitempty"`
+	Id                   string            `json:"id"`
+	LastUpdatedTimestamp int64             `json:"last_updated_timestamp,omitempty"`
+	MessageId            string            `json:"message_id"`
+	QueryResult          *Result           `json:"query_result,omitempty"`
+	SpaceId              string            `json:"space_id"`
+	Status               MessageStatus     `json:"status,omitempty"`
+	UserId               int64             `json:"user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1263,17 +1127,11 @@ func genieQueryAttachmentToPb(st *GenieQueryAttachment) (*genieQueryAttachmentPb
 	}
 	pb := &genieQueryAttachmentPb{}
 	pb.Description = st.Description
-
 	pb.Id = st.Id
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.Query = st.Query
-
 	pb.QueryResultMetadata = st.QueryResultMetadata
-
 	pb.StatementId = st.StatementId
-
 	pb.Title = st.Title
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1281,19 +1139,13 @@ func genieQueryAttachmentToPb(st *GenieQueryAttachment) (*genieQueryAttachmentPb
 }
 
 type genieQueryAttachmentPb struct {
-	Description string `json:"description,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	Query string `json:"query,omitempty"`
-
-	QueryResultMetadata *GenieResultMetadata `json:"query_result_metadata,omitempty"`
-
-	StatementId string `json:"statement_id,omitempty"`
-
-	Title string `json:"title,omitempty"`
+	Description          string               `json:"description,omitempty"`
+	Id                   string               `json:"id,omitempty"`
+	LastUpdatedTimestamp int64                `json:"last_updated_timestamp,omitempty"`
+	Query                string               `json:"query,omitempty"`
+	QueryResultMetadata  *GenieResultMetadata `json:"query_result_metadata,omitempty"`
+	StatementId          string               `json:"statement_id,omitempty"`
+	Title                string               `json:"title,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1329,7 +1181,6 @@ func genieResultMetadataToPb(st *GenieResultMetadata) (*genieResultMetadataPb, e
 	}
 	pb := &genieResultMetadataPb{}
 	pb.IsTruncated = st.IsTruncated
-
 	pb.RowCount = st.RowCount
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1337,9 +1188,8 @@ func genieResultMetadataToPb(st *GenieResultMetadata) (*genieResultMetadataPb, e
 }
 
 type genieResultMetadataPb struct {
-	IsTruncated bool `json:"is_truncated,omitempty"`
-
-	RowCount int64 `json:"row_count,omitempty"`
+	IsTruncated bool  `json:"is_truncated,omitempty"`
+	RowCount    int64 `json:"row_count,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1370,9 +1220,7 @@ func genieSpaceToPb(st *GenieSpace) (*genieSpacePb, error) {
 	}
 	pb := &genieSpacePb{}
 	pb.Description = st.Description
-
 	pb.SpaceId = st.SpaceId
-
 	pb.Title = st.Title
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1381,10 +1229,8 @@ func genieSpaceToPb(st *GenieSpace) (*genieSpacePb, error) {
 
 type genieSpacePb struct {
 	Description string `json:"description,omitempty"`
-
-	SpaceId string `json:"space_id"`
-
-	Title string `json:"title"`
+	SpaceId     string `json:"space_id"`
+	Title       string `json:"title"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1416,7 +1262,6 @@ func genieStartConversationMessageRequestToPb(st *GenieStartConversationMessageR
 	}
 	pb := &genieStartConversationMessageRequestPb{}
 	pb.Content = st.Content
-
 	pb.SpaceId = st.SpaceId
 
 	return pb, nil
@@ -1424,7 +1269,6 @@ func genieStartConversationMessageRequestToPb(st *GenieStartConversationMessageR
 
 type genieStartConversationMessageRequestPb struct {
 	Content string `json:"content"`
-
 	SpaceId string `json:"-" url:"-"`
 }
 
@@ -1445,24 +1289,18 @@ func genieStartConversationResponseToPb(st *GenieStartConversationResponse) (*ge
 	}
 	pb := &genieStartConversationResponsePb{}
 	pb.Conversation = st.Conversation
-
 	pb.ConversationId = st.ConversationId
-
 	pb.Message = st.Message
-
 	pb.MessageId = st.MessageId
 
 	return pb, nil
 }
 
 type genieStartConversationResponsePb struct {
-	Conversation *GenieConversation `json:"conversation,omitempty"`
-
-	ConversationId string `json:"conversation_id"`
-
-	Message *GenieMessage `json:"message,omitempty"`
-
-	MessageId string `json:"message_id"`
+	Conversation   *GenieConversation `json:"conversation,omitempty"`
+	ConversationId string             `json:"conversation_id"`
+	Message        *GenieMessage      `json:"message,omitempty"`
+	MessageId      string             `json:"message_id"`
 }
 
 func genieStartConversationResponseFromPb(pb *genieStartConversationResponsePb) (*GenieStartConversationResponse, error) {
@@ -1577,9 +1415,7 @@ func getPublishedDashboardTokenInfoRequestToPb(st *GetPublishedDashboardTokenInf
 	}
 	pb := &getPublishedDashboardTokenInfoRequestPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.ExternalValue = st.ExternalValue
-
 	pb.ExternalViewerId = st.ExternalViewerId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1587,10 +1423,8 @@ func getPublishedDashboardTokenInfoRequestToPb(st *GetPublishedDashboardTokenInf
 }
 
 type getPublishedDashboardTokenInfoRequestPb struct {
-	DashboardId string `json:"-" url:"-"`
-
-	ExternalValue string `json:"-" url:"external_value,omitempty"`
-
+	DashboardId      string `json:"-" url:"-"`
+	ExternalValue    string `json:"-" url:"external_value,omitempty"`
 	ExternalViewerId string `json:"-" url:"external_viewer_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1623,9 +1457,7 @@ func getPublishedDashboardTokenInfoResponseToPb(st *GetPublishedDashboardTokenIn
 	}
 	pb := &getPublishedDashboardTokenInfoResponsePb{}
 	pb.AuthorizationDetails = st.AuthorizationDetails
-
 	pb.CustomClaim = st.CustomClaim
-
 	pb.Scope = st.Scope
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1634,10 +1466,8 @@ func getPublishedDashboardTokenInfoResponseToPb(st *GetPublishedDashboardTokenIn
 
 type getPublishedDashboardTokenInfoResponsePb struct {
 	AuthorizationDetails []AuthorizationDetails `json:"authorization_details,omitempty"`
-
-	CustomClaim string `json:"custom_claim,omitempty"`
-
-	Scope string `json:"scope,omitempty"`
+	CustomClaim          string                 `json:"custom_claim,omitempty"`
+	Scope                string                 `json:"scope,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1669,7 +1499,6 @@ func getScheduleRequestToPb(st *GetScheduleRequest) (*getScheduleRequestPb, erro
 	}
 	pb := &getScheduleRequestPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.ScheduleId = st.ScheduleId
 
 	return pb, nil
@@ -1677,8 +1506,7 @@ func getScheduleRequestToPb(st *GetScheduleRequest) (*getScheduleRequestPb, erro
 
 type getScheduleRequestPb struct {
 	DashboardId string `json:"-" url:"-"`
-
-	ScheduleId string `json:"-" url:"-"`
+	ScheduleId  string `json:"-" url:"-"`
 }
 
 func getScheduleRequestFromPb(pb *getScheduleRequestPb) (*GetScheduleRequest, error) {
@@ -1698,19 +1526,15 @@ func getSubscriptionRequestToPb(st *GetSubscriptionRequest) (*getSubscriptionReq
 	}
 	pb := &getSubscriptionRequestPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.ScheduleId = st.ScheduleId
-
 	pb.SubscriptionId = st.SubscriptionId
 
 	return pb, nil
 }
 
 type getSubscriptionRequestPb struct {
-	DashboardId string `json:"-" url:"-"`
-
-	ScheduleId string `json:"-" url:"-"`
-
+	DashboardId    string `json:"-" url:"-"`
+	ScheduleId     string `json:"-" url:"-"`
 	SubscriptionId string `json:"-" url:"-"`
 }
 
@@ -1732,11 +1556,8 @@ func listDashboardsRequestToPb(st *ListDashboardsRequest) (*listDashboardsReques
 	}
 	pb := &listDashboardsRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
-
 	pb.ShowTrashed = st.ShowTrashed
-
 	pb.View = st.View
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1744,13 +1565,10 @@ func listDashboardsRequestToPb(st *ListDashboardsRequest) (*listDashboardsReques
 }
 
 type listDashboardsRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ShowTrashed bool `json:"-" url:"show_trashed,omitempty"`
-
-	View DashboardView `json:"-" url:"view,omitempty"`
+	PageSize    int           `json:"-" url:"page_size,omitempty"`
+	PageToken   string        `json:"-" url:"page_token,omitempty"`
+	ShowTrashed bool          `json:"-" url:"show_trashed,omitempty"`
+	View        DashboardView `json:"-" url:"view,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1783,7 +1601,6 @@ func listDashboardsResponseToPb(st *ListDashboardsResponse) (*listDashboardsResp
 	}
 	pb := &listDashboardsResponsePb{}
 	pb.Dashboards = st.Dashboards
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1791,9 +1608,8 @@ func listDashboardsResponseToPb(st *ListDashboardsResponse) (*listDashboardsResp
 }
 
 type listDashboardsResponsePb struct {
-	Dashboards []Dashboard `json:"dashboards,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Dashboards    []Dashboard `json:"dashboards,omitempty"`
+	NextPageToken string      `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1824,9 +1640,7 @@ func listSchedulesRequestToPb(st *ListSchedulesRequest) (*listSchedulesRequestPb
 	}
 	pb := &listSchedulesRequestPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1835,10 +1649,8 @@ func listSchedulesRequestToPb(st *ListSchedulesRequest) (*listSchedulesRequestPb
 
 type listSchedulesRequestPb struct {
 	DashboardId string `json:"-" url:"-"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageSize    int    `json:"-" url:"page_size,omitempty"`
+	PageToken   string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1870,7 +1682,6 @@ func listSchedulesResponseToPb(st *ListSchedulesResponse) (*listSchedulesRespons
 	}
 	pb := &listSchedulesResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Schedules = st.Schedules
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1878,9 +1689,8 @@ func listSchedulesResponseToPb(st *ListSchedulesResponse) (*listSchedulesRespons
 }
 
 type listSchedulesResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Schedules []Schedule `json:"schedules,omitempty"`
+	NextPageToken string     `json:"next_page_token,omitempty"`
+	Schedules     []Schedule `json:"schedules,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1911,11 +1721,8 @@ func listSubscriptionsRequestToPb(st *ListSubscriptionsRequest) (*listSubscripti
 	}
 	pb := &listSubscriptionsRequestPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
-
 	pb.ScheduleId = st.ScheduleId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1924,12 +1731,9 @@ func listSubscriptionsRequestToPb(st *ListSubscriptionsRequest) (*listSubscripti
 
 type listSubscriptionsRequestPb struct {
 	DashboardId string `json:"-" url:"-"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ScheduleId string `json:"-" url:"-"`
+	PageSize    int    `json:"-" url:"page_size,omitempty"`
+	PageToken   string `json:"-" url:"page_token,omitempty"`
+	ScheduleId  string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1962,7 +1766,6 @@ func listSubscriptionsResponseToPb(st *ListSubscriptionsResponse) (*listSubscrip
 	}
 	pb := &listSubscriptionsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Subscriptions = st.Subscriptions
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1970,8 +1773,7 @@ func listSubscriptionsResponseToPb(st *ListSubscriptionsResponse) (*listSubscrip
 }
 
 type listSubscriptionsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken string         `json:"next_page_token,omitempty"`
 	Subscriptions []Subscription `json:"subscriptions,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2003,7 +1805,6 @@ func messageErrorToPb(st *MessageError) (*messageErrorPb, error) {
 	}
 	pb := &messageErrorPb{}
 	pb.Error = st.Error
-
 	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2011,9 +1812,8 @@ func messageErrorToPb(st *MessageError) (*messageErrorPb, error) {
 }
 
 type messageErrorPb struct {
-	Error string `json:"error,omitempty"`
-
-	Type MessageErrorType `json:"type,omitempty"`
+	Error string           `json:"error,omitempty"`
+	Type  MessageErrorType `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2044,11 +1844,8 @@ func migrateDashboardRequestToPb(st *MigrateDashboardRequest) (*migrateDashboard
 	}
 	pb := &migrateDashboardRequestPb{}
 	pb.DisplayName = st.DisplayName
-
 	pb.ParentPath = st.ParentPath
-
 	pb.SourceDashboardId = st.SourceDashboardId
-
 	pb.UpdateParameterSyntax = st.UpdateParameterSyntax
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2056,13 +1853,10 @@ func migrateDashboardRequestToPb(st *MigrateDashboardRequest) (*migrateDashboard
 }
 
 type migrateDashboardRequestPb struct {
-	DisplayName string `json:"display_name,omitempty"`
-
-	ParentPath string `json:"parent_path,omitempty"`
-
-	SourceDashboardId string `json:"source_dashboard_id"`
-
-	UpdateParameterSyntax bool `json:"update_parameter_syntax,omitempty"`
+	DisplayName           string `json:"display_name,omitempty"`
+	ParentPath            string `json:"parent_path,omitempty"`
+	SourceDashboardId     string `json:"source_dashboard_id"`
+	UpdateParameterSyntax bool   `json:"update_parameter_syntax,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2119,20 +1913,16 @@ func pollPublishedQueryStatusRequestToPb(st *PollPublishedQueryStatusRequest) (*
 	}
 	pb := &pollPublishedQueryStatusRequestPb{}
 	pb.DashboardName = st.DashboardName
-
 	pb.DashboardRevisionId = st.DashboardRevisionId
-
 	pb.Tokens = st.Tokens
 
 	return pb, nil
 }
 
 type pollPublishedQueryStatusRequestPb struct {
-	DashboardName string `json:"-" url:"dashboard_name"`
-
-	DashboardRevisionId string `json:"-" url:"dashboard_revision_id"`
-
-	Tokens []string `json:"-" url:"tokens,omitempty"`
+	DashboardName       string   `json:"-" url:"dashboard_name"`
+	DashboardRevisionId string   `json:"-" url:"dashboard_revision_id"`
+	Tokens              []string `json:"-" url:"tokens,omitempty"`
 }
 
 func pollPublishedQueryStatusRequestFromPb(pb *pollPublishedQueryStatusRequestPb) (*PollPublishedQueryStatusRequest, error) {
@@ -2201,9 +1991,7 @@ func publishRequestToPb(st *PublishRequest) (*publishRequestPb, error) {
 	}
 	pb := &publishRequestPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.EmbedCredentials = st.EmbedCredentials
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2211,11 +1999,9 @@ func publishRequestToPb(st *PublishRequest) (*publishRequestPb, error) {
 }
 
 type publishRequestPb struct {
-	DashboardId string `json:"-" url:"-"`
-
-	EmbedCredentials bool `json:"embed_credentials,omitempty"`
-
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	DashboardId      string `json:"-" url:"-"`
+	EmbedCredentials bool   `json:"embed_credentials,omitempty"`
+	WarehouseId      string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2247,11 +2033,8 @@ func publishedDashboardToPb(st *PublishedDashboard) (*publishedDashboardPb, erro
 	}
 	pb := &publishedDashboardPb{}
 	pb.DisplayName = st.DisplayName
-
 	pb.EmbedCredentials = st.EmbedCredentials
-
 	pb.RevisionCreateTime = st.RevisionCreateTime
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2259,13 +2042,10 @@ func publishedDashboardToPb(st *PublishedDashboard) (*publishedDashboardPb, erro
 }
 
 type publishedDashboardPb struct {
-	DisplayName string `json:"display_name,omitempty"`
-
-	EmbedCredentials bool `json:"embed_credentials,omitempty"`
-
+	DisplayName        string `json:"display_name,omitempty"`
+	EmbedCredentials   bool   `json:"embed_credentials,omitempty"`
 	RevisionCreateTime string `json:"revision_create_time,omitempty"`
-
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	WarehouseId        string `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2298,13 +2078,9 @@ func queryResponseStatusToPb(st *QueryResponseStatus) (*queryResponseStatusPb, e
 	}
 	pb := &queryResponseStatusPb{}
 	pb.Canceled = st.Canceled
-
 	pb.Closed = st.Closed
-
 	pb.Pending = st.Pending
-
 	pb.StatementId = st.StatementId
-
 	pb.Success = st.Success
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2312,15 +2088,11 @@ func queryResponseStatusToPb(st *QueryResponseStatus) (*queryResponseStatusPb, e
 }
 
 type queryResponseStatusPb struct {
-	Canceled *Empty `json:"canceled,omitempty"`
-
-	Closed *Empty `json:"closed,omitempty"`
-
-	Pending *PendingStatus `json:"pending,omitempty"`
-
-	StatementId string `json:"statement_id,omitempty"`
-
-	Success *SuccessStatus `json:"success,omitempty"`
+	Canceled    *Empty         `json:"canceled,omitempty"`
+	Closed      *Empty         `json:"closed,omitempty"`
+	Pending     *PendingStatus `json:"pending,omitempty"`
+	StatementId string         `json:"statement_id,omitempty"`
+	Success     *SuccessStatus `json:"success,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2354,9 +2126,7 @@ func resultToPb(st *Result) (*resultPb, error) {
 	}
 	pb := &resultPb{}
 	pb.IsTruncated = st.IsTruncated
-
 	pb.RowCount = st.RowCount
-
 	pb.StatementId = st.StatementId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2364,10 +2134,8 @@ func resultToPb(st *Result) (*resultPb, error) {
 }
 
 type resultPb struct {
-	IsTruncated bool `json:"is_truncated,omitempty"`
-
-	RowCount int64 `json:"row_count,omitempty"`
-
+	IsTruncated bool   `json:"is_truncated,omitempty"`
+	RowCount    int64  `json:"row_count,omitempty"`
 	StatementId string `json:"statement_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2400,21 +2168,13 @@ func scheduleToPb(st *Schedule) (*schedulePb, error) {
 	}
 	pb := &schedulePb{}
 	pb.CreateTime = st.CreateTime
-
 	pb.CronSchedule = st.CronSchedule
-
 	pb.DashboardId = st.DashboardId
-
 	pb.DisplayName = st.DisplayName
-
 	pb.Etag = st.Etag
-
 	pb.PauseStatus = st.PauseStatus
-
 	pb.ScheduleId = st.ScheduleId
-
 	pb.UpdateTime = st.UpdateTime
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2422,23 +2182,15 @@ func scheduleToPb(st *Schedule) (*schedulePb, error) {
 }
 
 type schedulePb struct {
-	CreateTime string `json:"create_time,omitempty"`
-
-	CronSchedule CronSchedule `json:"cron_schedule"`
-
-	DashboardId string `json:"dashboard_id,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	Etag string `json:"etag,omitempty"`
-
-	PauseStatus SchedulePauseStatus `json:"pause_status,omitempty"`
-
-	ScheduleId string `json:"schedule_id,omitempty"`
-
-	UpdateTime string `json:"update_time,omitempty"`
-
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	CreateTime   string              `json:"create_time,omitempty"`
+	CronSchedule CronSchedule        `json:"cron_schedule"`
+	DashboardId  string              `json:"dashboard_id,omitempty"`
+	DisplayName  string              `json:"display_name,omitempty"`
+	Etag         string              `json:"etag,omitempty"`
+	PauseStatus  SchedulePauseStatus `json:"pause_status,omitempty"`
+	ScheduleId   string              `json:"schedule_id,omitempty"`
+	UpdateTime   string              `json:"update_time,omitempty"`
+	WarehouseId  string              `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2476,7 +2228,6 @@ func subscriberToPb(st *Subscriber) (*subscriberPb, error) {
 	}
 	pb := &subscriberPb{}
 	pb.DestinationSubscriber = st.DestinationSubscriber
-
 	pb.UserSubscriber = st.UserSubscriber
 
 	return pb, nil
@@ -2484,8 +2235,7 @@ func subscriberToPb(st *Subscriber) (*subscriberPb, error) {
 
 type subscriberPb struct {
 	DestinationSubscriber *SubscriptionSubscriberDestination `json:"destination_subscriber,omitempty"`
-
-	UserSubscriber *SubscriptionSubscriberUser `json:"user_subscriber,omitempty"`
+	UserSubscriber        *SubscriptionSubscriberUser        `json:"user_subscriber,omitempty"`
 }
 
 func subscriberFromPb(pb *subscriberPb) (*Subscriber, error) {
@@ -2505,19 +2255,12 @@ func subscriptionToPb(st *Subscription) (*subscriptionPb, error) {
 	}
 	pb := &subscriptionPb{}
 	pb.CreateTime = st.CreateTime
-
 	pb.CreatedByUserId = st.CreatedByUserId
-
 	pb.DashboardId = st.DashboardId
-
 	pb.Etag = st.Etag
-
 	pb.ScheduleId = st.ScheduleId
-
 	pb.Subscriber = st.Subscriber
-
 	pb.SubscriptionId = st.SubscriptionId
-
 	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2525,21 +2268,14 @@ func subscriptionToPb(st *Subscription) (*subscriptionPb, error) {
 }
 
 type subscriptionPb struct {
-	CreateTime string `json:"create_time,omitempty"`
-
-	CreatedByUserId int64 `json:"created_by_user_id,omitempty"`
-
-	DashboardId string `json:"dashboard_id,omitempty"`
-
-	Etag string `json:"etag,omitempty"`
-
-	ScheduleId string `json:"schedule_id,omitempty"`
-
-	Subscriber Subscriber `json:"subscriber"`
-
-	SubscriptionId string `json:"subscription_id,omitempty"`
-
-	UpdateTime string `json:"update_time,omitempty"`
+	CreateTime      string     `json:"create_time,omitempty"`
+	CreatedByUserId int64      `json:"created_by_user_id,omitempty"`
+	DashboardId     string     `json:"dashboard_id,omitempty"`
+	Etag            string     `json:"etag,omitempty"`
+	ScheduleId      string     `json:"schedule_id,omitempty"`
+	Subscriber      Subscriber `json:"subscriber"`
+	SubscriptionId  string     `json:"subscription_id,omitempty"`
+	UpdateTime      string     `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2624,7 +2360,6 @@ func successStatusToPb(st *SuccessStatus) (*successStatusPb, error) {
 	}
 	pb := &successStatusPb{}
 	pb.DataToken = st.DataToken
-
 	pb.Truncated = st.Truncated
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2633,8 +2368,7 @@ func successStatusToPb(st *SuccessStatus) (*successStatusPb, error) {
 
 type successStatusPb struct {
 	DataToken string `json:"data_token"`
-
-	Truncated bool `json:"truncated,omitempty"`
+	Truncated bool   `json:"truncated,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2665,7 +2399,6 @@ func textAttachmentToPb(st *TextAttachment) (*textAttachmentPb, error) {
 	}
 	pb := &textAttachmentPb{}
 	pb.Content = st.Content
-
 	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2674,8 +2407,7 @@ func textAttachmentToPb(st *TextAttachment) (*textAttachmentPb, error) {
 
 type textAttachmentPb struct {
 	Content string `json:"content,omitempty"`
-
-	Id string `json:"id,omitempty"`
+	Id      string `json:"id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2796,16 +2528,14 @@ func updateDashboardRequestToPb(st *UpdateDashboardRequest) (*updateDashboardReq
 	}
 	pb := &updateDashboardRequestPb{}
 	pb.Dashboard = st.Dashboard
-
 	pb.DashboardId = st.DashboardId
 
 	return pb, nil
 }
 
 type updateDashboardRequestPb struct {
-	Dashboard Dashboard `json:"dashboard"`
-
-	DashboardId string `json:"-" url:"-"`
+	Dashboard   Dashboard `json:"dashboard"`
+	DashboardId string    `json:"-" url:"-"`
 }
 
 func updateDashboardRequestFromPb(pb *updateDashboardRequestPb) (*UpdateDashboardRequest, error) {
@@ -2825,20 +2555,16 @@ func updateScheduleRequestToPb(st *UpdateScheduleRequest) (*updateScheduleReques
 	}
 	pb := &updateScheduleRequestPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.Schedule = st.Schedule
-
 	pb.ScheduleId = st.ScheduleId
 
 	return pb, nil
 }
 
 type updateScheduleRequestPb struct {
-	DashboardId string `json:"-" url:"-"`
-
-	Schedule Schedule `json:"schedule"`
-
-	ScheduleId string `json:"-" url:"-"`
+	DashboardId string   `json:"-" url:"-"`
+	Schedule    Schedule `json:"schedule"`
+	ScheduleId  string   `json:"-" url:"-"`
 }
 
 func updateScheduleRequestFromPb(pb *updateScheduleRequestPb) (*UpdateScheduleRequest, error) {
@@ -2851,4 +2577,58 @@ func updateScheduleRequestFromPb(pb *updateScheduleRequestPb) (*UpdateScheduleRe
 	st.ScheduleId = pb.ScheduleId
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

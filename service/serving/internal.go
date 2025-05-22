@@ -3,7 +3,10 @@
 package serving
 
 import (
+	"fmt"
 	"io"
+	"strings"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
@@ -14,7 +17,6 @@ func ai21LabsConfigToPb(st *Ai21LabsConfig) (*ai21LabsConfigPb, error) {
 	}
 	pb := &ai21LabsConfigPb{}
 	pb.Ai21labsApiKey = st.Ai21labsApiKey
-
 	pb.Ai21labsApiKeyPlaintext = st.Ai21labsApiKeyPlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -22,8 +24,7 @@ func ai21LabsConfigToPb(st *Ai21LabsConfig) (*ai21LabsConfigPb, error) {
 }
 
 type ai21LabsConfigPb struct {
-	Ai21labsApiKey string `json:"ai21labs_api_key,omitempty"`
-
+	Ai21labsApiKey          string `json:"ai21labs_api_key,omitempty"`
 	Ai21labsApiKeyPlaintext string `json:"ai21labs_api_key_plaintext,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -55,28 +56,20 @@ func aiGatewayConfigToPb(st *AiGatewayConfig) (*aiGatewayConfigPb, error) {
 	}
 	pb := &aiGatewayConfigPb{}
 	pb.FallbackConfig = st.FallbackConfig
-
 	pb.Guardrails = st.Guardrails
-
 	pb.InferenceTableConfig = st.InferenceTableConfig
-
 	pb.RateLimits = st.RateLimits
-
 	pb.UsageTrackingConfig = st.UsageTrackingConfig
 
 	return pb, nil
 }
 
 type aiGatewayConfigPb struct {
-	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
-
-	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
-
+	FallbackConfig       *FallbackConfig                `json:"fallback_config,omitempty"`
+	Guardrails           *AiGatewayGuardrails           `json:"guardrails,omitempty"`
 	InferenceTableConfig *AiGatewayInferenceTableConfig `json:"inference_table_config,omitempty"`
-
-	RateLimits []AiGatewayRateLimit `json:"rate_limits,omitempty"`
-
-	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
+	RateLimits           []AiGatewayRateLimit           `json:"rate_limits,omitempty"`
+	UsageTrackingConfig  *AiGatewayUsageTrackingConfig  `json:"usage_tracking_config,omitempty"`
 }
 
 func aiGatewayConfigFromPb(pb *aiGatewayConfigPb) (*AiGatewayConfig, error) {
@@ -99,11 +92,8 @@ func aiGatewayGuardrailParametersToPb(st *AiGatewayGuardrailParameters) (*aiGate
 	}
 	pb := &aiGatewayGuardrailParametersPb{}
 	pb.InvalidKeywords = st.InvalidKeywords
-
 	pb.Pii = st.Pii
-
 	pb.Safety = st.Safety
-
 	pb.ValidTopics = st.ValidTopics
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -111,13 +101,10 @@ func aiGatewayGuardrailParametersToPb(st *AiGatewayGuardrailParameters) (*aiGate
 }
 
 type aiGatewayGuardrailParametersPb struct {
-	InvalidKeywords []string `json:"invalid_keywords,omitempty"`
-
-	Pii *AiGatewayGuardrailPiiBehavior `json:"pii,omitempty"`
-
-	Safety bool `json:"safety,omitempty"`
-
-	ValidTopics []string `json:"valid_topics,omitempty"`
+	InvalidKeywords []string                       `json:"invalid_keywords,omitempty"`
+	Pii             *AiGatewayGuardrailPiiBehavior `json:"pii,omitempty"`
+	Safety          bool                           `json:"safety,omitempty"`
+	ValidTopics     []string                       `json:"valid_topics,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -174,15 +161,13 @@ func aiGatewayGuardrailsToPb(st *AiGatewayGuardrails) (*aiGatewayGuardrailsPb, e
 	}
 	pb := &aiGatewayGuardrailsPb{}
 	pb.Input = st.Input
-
 	pb.Output = st.Output
 
 	return pb, nil
 }
 
 type aiGatewayGuardrailsPb struct {
-	Input *AiGatewayGuardrailParameters `json:"input,omitempty"`
-
+	Input  *AiGatewayGuardrailParameters `json:"input,omitempty"`
 	Output *AiGatewayGuardrailParameters `json:"output,omitempty"`
 }
 
@@ -203,11 +188,8 @@ func aiGatewayInferenceTableConfigToPb(st *AiGatewayInferenceTableConfig) (*aiGa
 	}
 	pb := &aiGatewayInferenceTableConfigPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.Enabled = st.Enabled
-
 	pb.SchemaName = st.SchemaName
-
 	pb.TableNamePrefix = st.TableNamePrefix
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -215,12 +197,9 @@ func aiGatewayInferenceTableConfigToPb(st *AiGatewayInferenceTableConfig) (*aiGa
 }
 
 type aiGatewayInferenceTableConfigPb struct {
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	Enabled bool `json:"enabled,omitempty"`
-
-	SchemaName string `json:"schema_name,omitempty"`
-
+	CatalogName     string `json:"catalog_name,omitempty"`
+	Enabled         bool   `json:"enabled,omitempty"`
+	SchemaName      string `json:"schema_name,omitempty"`
 	TableNamePrefix string `json:"table_name_prefix,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -254,19 +233,15 @@ func aiGatewayRateLimitToPb(st *AiGatewayRateLimit) (*aiGatewayRateLimitPb, erro
 	}
 	pb := &aiGatewayRateLimitPb{}
 	pb.Calls = st.Calls
-
 	pb.Key = st.Key
-
 	pb.RenewalPeriod = st.RenewalPeriod
 
 	return pb, nil
 }
 
 type aiGatewayRateLimitPb struct {
-	Calls int64 `json:"calls"`
-
-	Key AiGatewayRateLimitKey `json:"key,omitempty"`
-
+	Calls         int64                           `json:"calls"`
+	Key           AiGatewayRateLimitKey           `json:"key,omitempty"`
 	RenewalPeriod AiGatewayRateLimitRenewalPeriod `json:"renewal_period"`
 }
 
@@ -324,17 +299,11 @@ func amazonBedrockConfigToPb(st *AmazonBedrockConfig) (*amazonBedrockConfigPb, e
 	}
 	pb := &amazonBedrockConfigPb{}
 	pb.AwsAccessKeyId = st.AwsAccessKeyId
-
 	pb.AwsAccessKeyIdPlaintext = st.AwsAccessKeyIdPlaintext
-
 	pb.AwsRegion = st.AwsRegion
-
 	pb.AwsSecretAccessKey = st.AwsSecretAccessKey
-
 	pb.AwsSecretAccessKeyPlaintext = st.AwsSecretAccessKeyPlaintext
-
 	pb.BedrockProvider = st.BedrockProvider
-
 	pb.InstanceProfileArn = st.InstanceProfileArn
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -342,19 +311,13 @@ func amazonBedrockConfigToPb(st *AmazonBedrockConfig) (*amazonBedrockConfigPb, e
 }
 
 type amazonBedrockConfigPb struct {
-	AwsAccessKeyId string `json:"aws_access_key_id,omitempty"`
-
-	AwsAccessKeyIdPlaintext string `json:"aws_access_key_id_plaintext,omitempty"`
-
-	AwsRegion string `json:"aws_region"`
-
-	AwsSecretAccessKey string `json:"aws_secret_access_key,omitempty"`
-
-	AwsSecretAccessKeyPlaintext string `json:"aws_secret_access_key_plaintext,omitempty"`
-
-	BedrockProvider AmazonBedrockConfigBedrockProvider `json:"bedrock_provider"`
-
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	AwsAccessKeyId              string                             `json:"aws_access_key_id,omitempty"`
+	AwsAccessKeyIdPlaintext     string                             `json:"aws_access_key_id_plaintext,omitempty"`
+	AwsRegion                   string                             `json:"aws_region"`
+	AwsSecretAccessKey          string                             `json:"aws_secret_access_key,omitempty"`
+	AwsSecretAccessKeyPlaintext string                             `json:"aws_secret_access_key_plaintext,omitempty"`
+	BedrockProvider             AmazonBedrockConfigBedrockProvider `json:"bedrock_provider"`
+	InstanceProfileArn          string                             `json:"instance_profile_arn,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -390,7 +353,6 @@ func anthropicConfigToPb(st *AnthropicConfig) (*anthropicConfigPb, error) {
 	}
 	pb := &anthropicConfigPb{}
 	pb.AnthropicApiKey = st.AnthropicApiKey
-
 	pb.AnthropicApiKeyPlaintext = st.AnthropicApiKeyPlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -398,8 +360,7 @@ func anthropicConfigToPb(st *AnthropicConfig) (*anthropicConfigPb, error) {
 }
 
 type anthropicConfigPb struct {
-	AnthropicApiKey string `json:"anthropic_api_key,omitempty"`
-
+	AnthropicApiKey          string `json:"anthropic_api_key,omitempty"`
 	AnthropicApiKeyPlaintext string `json:"anthropic_api_key_plaintext,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -431,9 +392,7 @@ func apiKeyAuthToPb(st *ApiKeyAuth) (*apiKeyAuthPb, error) {
 	}
 	pb := &apiKeyAuthPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
-
 	pb.ValuePlaintext = st.ValuePlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -441,10 +400,8 @@ func apiKeyAuthToPb(st *ApiKeyAuth) (*apiKeyAuthPb, error) {
 }
 
 type apiKeyAuthPb struct {
-	Key string `json:"key"`
-
-	Value string `json:"value,omitempty"`
-
+	Key            string `json:"key"`
+	Value          string `json:"value,omitempty"`
 	ValuePlaintext string `json:"value_plaintext,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -477,11 +434,8 @@ func autoCaptureConfigInputToPb(st *AutoCaptureConfigInput) (*autoCaptureConfigI
 	}
 	pb := &autoCaptureConfigInputPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.Enabled = st.Enabled
-
 	pb.SchemaName = st.SchemaName
-
 	pb.TableNamePrefix = st.TableNamePrefix
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -489,12 +443,9 @@ func autoCaptureConfigInputToPb(st *AutoCaptureConfigInput) (*autoCaptureConfigI
 }
 
 type autoCaptureConfigInputPb struct {
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	Enabled bool `json:"enabled,omitempty"`
-
-	SchemaName string `json:"schema_name,omitempty"`
-
+	CatalogName     string `json:"catalog_name,omitempty"`
+	Enabled         bool   `json:"enabled,omitempty"`
+	SchemaName      string `json:"schema_name,omitempty"`
 	TableNamePrefix string `json:"table_name_prefix,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -528,13 +479,9 @@ func autoCaptureConfigOutputToPb(st *AutoCaptureConfigOutput) (*autoCaptureConfi
 	}
 	pb := &autoCaptureConfigOutputPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.Enabled = st.Enabled
-
 	pb.SchemaName = st.SchemaName
-
 	pb.State = st.State
-
 	pb.TableNamePrefix = st.TableNamePrefix
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -542,15 +489,11 @@ func autoCaptureConfigOutputToPb(st *AutoCaptureConfigOutput) (*autoCaptureConfi
 }
 
 type autoCaptureConfigOutputPb struct {
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	Enabled bool `json:"enabled,omitempty"`
-
-	SchemaName string `json:"schema_name,omitempty"`
-
-	State *AutoCaptureState `json:"state,omitempty"`
-
-	TableNamePrefix string `json:"table_name_prefix,omitempty"`
+	CatalogName     string            `json:"catalog_name,omitempty"`
+	Enabled         bool              `json:"enabled,omitempty"`
+	SchemaName      string            `json:"schema_name,omitempty"`
+	State           *AutoCaptureState `json:"state,omitempty"`
+	TableNamePrefix string            `json:"table_name_prefix,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -608,7 +551,6 @@ func bearerTokenAuthToPb(st *BearerTokenAuth) (*bearerTokenAuthPb, error) {
 	}
 	pb := &bearerTokenAuthPb{}
 	pb.Token = st.Token
-
 	pb.TokenPlaintext = st.TokenPlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -616,8 +558,7 @@ func bearerTokenAuthToPb(st *BearerTokenAuth) (*bearerTokenAuthPb, error) {
 }
 
 type bearerTokenAuthPb struct {
-	Token string `json:"token,omitempty"`
-
+	Token          string `json:"token,omitempty"`
 	TokenPlaintext string `json:"token_plaintext,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -649,15 +590,13 @@ func buildLogsRequestToPb(st *BuildLogsRequest) (*buildLogsRequestPb, error) {
 	}
 	pb := &buildLogsRequestPb{}
 	pb.Name = st.Name
-
 	pb.ServedModelName = st.ServedModelName
 
 	return pb, nil
 }
 
 type buildLogsRequestPb struct {
-	Name string `json:"-" url:"-"`
-
+	Name            string `json:"-" url:"-"`
 	ServedModelName string `json:"-" url:"-"`
 }
 
@@ -702,7 +641,6 @@ func chatMessageToPb(st *ChatMessage) (*chatMessagePb, error) {
 	}
 	pb := &chatMessagePb{}
 	pb.Content = st.Content
-
 	pb.Role = st.Role
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -710,9 +648,8 @@ func chatMessageToPb(st *ChatMessage) (*chatMessagePb, error) {
 }
 
 type chatMessagePb struct {
-	Content string `json:"content,omitempty"`
-
-	Role ChatMessageRole `json:"role,omitempty"`
+	Content string          `json:"content,omitempty"`
+	Role    ChatMessageRole `json:"role,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -743,9 +680,7 @@ func cohereConfigToPb(st *CohereConfig) (*cohereConfigPb, error) {
 	}
 	pb := &cohereConfigPb{}
 	pb.CohereApiBase = st.CohereApiBase
-
 	pb.CohereApiKey = st.CohereApiKey
-
 	pb.CohereApiKeyPlaintext = st.CohereApiKeyPlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -753,10 +688,8 @@ func cohereConfigToPb(st *CohereConfig) (*cohereConfigPb, error) {
 }
 
 type cohereConfigPb struct {
-	CohereApiBase string `json:"cohere_api_base,omitempty"`
-
-	CohereApiKey string `json:"cohere_api_key,omitempty"`
-
+	CohereApiBase         string `json:"cohere_api_base,omitempty"`
+	CohereApiKey          string `json:"cohere_api_key,omitempty"`
 	CohereApiKeyPlaintext string `json:"cohere_api_key_plaintext,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -789,13 +722,9 @@ func createPtEndpointRequestToPb(st *CreatePtEndpointRequest) (*createPtEndpoint
 	}
 	pb := &createPtEndpointRequestPb{}
 	pb.AiGateway = st.AiGateway
-
 	pb.BudgetPolicyId = st.BudgetPolicyId
-
 	pb.Config = st.Config
-
 	pb.Name = st.Name
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -803,15 +732,11 @@ func createPtEndpointRequestToPb(st *CreatePtEndpointRequest) (*createPtEndpoint
 }
 
 type createPtEndpointRequestPb struct {
-	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
-
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-
-	Config PtEndpointCoreConfig `json:"config"`
-
-	Name string `json:"name"`
-
-	Tags []EndpointTag `json:"tags,omitempty"`
+	AiGateway      *AiGatewayConfig     `json:"ai_gateway,omitempty"`
+	BudgetPolicyId string               `json:"budget_policy_id,omitempty"`
+	Config         PtEndpointCoreConfig `json:"config"`
+	Name           string               `json:"name"`
+	Tags           []EndpointTag        `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -845,17 +770,11 @@ func createServingEndpointToPb(st *CreateServingEndpoint) (*createServingEndpoin
 	}
 	pb := &createServingEndpointPb{}
 	pb.AiGateway = st.AiGateway
-
 	pb.BudgetPolicyId = st.BudgetPolicyId
-
 	pb.Config = st.Config
-
 	pb.Name = st.Name
-
 	pb.RateLimits = st.RateLimits
-
 	pb.RouteOptimized = st.RouteOptimized
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -863,19 +782,13 @@ func createServingEndpointToPb(st *CreateServingEndpoint) (*createServingEndpoin
 }
 
 type createServingEndpointPb struct {
-	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
-
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-
-	Config *EndpointCoreConfigInput `json:"config,omitempty"`
-
-	Name string `json:"name"`
-
-	RateLimits []RateLimit `json:"rate_limits,omitempty"`
-
-	RouteOptimized bool `json:"route_optimized,omitempty"`
-
-	Tags []EndpointTag `json:"tags,omitempty"`
+	AiGateway      *AiGatewayConfig         `json:"ai_gateway,omitempty"`
+	BudgetPolicyId string                   `json:"budget_policy_id,omitempty"`
+	Config         *EndpointCoreConfigInput `json:"config,omitempty"`
+	Name           string                   `json:"name"`
+	RateLimits     []RateLimit              `json:"rate_limits,omitempty"`
+	RouteOptimized bool                     `json:"route_optimized,omitempty"`
+	Tags           []EndpointTag            `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -911,20 +824,16 @@ func customProviderConfigToPb(st *CustomProviderConfig) (*customProviderConfigPb
 	}
 	pb := &customProviderConfigPb{}
 	pb.ApiKeyAuth = st.ApiKeyAuth
-
 	pb.BearerTokenAuth = st.BearerTokenAuth
-
 	pb.CustomProviderUrl = st.CustomProviderUrl
 
 	return pb, nil
 }
 
 type customProviderConfigPb struct {
-	ApiKeyAuth *ApiKeyAuth `json:"api_key_auth,omitempty"`
-
-	BearerTokenAuth *BearerTokenAuth `json:"bearer_token_auth,omitempty"`
-
-	CustomProviderUrl string `json:"custom_provider_url"`
+	ApiKeyAuth        *ApiKeyAuth      `json:"api_key_auth,omitempty"`
+	BearerTokenAuth   *BearerTokenAuth `json:"bearer_token_auth,omitempty"`
+	CustomProviderUrl string           `json:"custom_provider_url"`
 }
 
 func customProviderConfigFromPb(pb *customProviderConfigPb) (*CustomProviderConfig, error) {
@@ -945,7 +854,6 @@ func dataPlaneInfoToPb(st *DataPlaneInfo) (*dataPlaneInfoPb, error) {
 	}
 	pb := &dataPlaneInfoPb{}
 	pb.AuthorizationDetails = st.AuthorizationDetails
-
 	pb.EndpointUrl = st.EndpointUrl
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -954,8 +862,7 @@ func dataPlaneInfoToPb(st *DataPlaneInfo) (*dataPlaneInfoPb, error) {
 
 type dataPlaneInfoPb struct {
 	AuthorizationDetails string `json:"authorization_details,omitempty"`
-
-	EndpointUrl string `json:"endpoint_url,omitempty"`
+	EndpointUrl          string `json:"endpoint_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -986,9 +893,7 @@ func databricksModelServingConfigToPb(st *DatabricksModelServingConfig) (*databr
 	}
 	pb := &databricksModelServingConfigPb{}
 	pb.DatabricksApiToken = st.DatabricksApiToken
-
 	pb.DatabricksApiTokenPlaintext = st.DatabricksApiTokenPlaintext
-
 	pb.DatabricksWorkspaceUrl = st.DatabricksWorkspaceUrl
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -996,11 +901,9 @@ func databricksModelServingConfigToPb(st *DatabricksModelServingConfig) (*databr
 }
 
 type databricksModelServingConfigPb struct {
-	DatabricksApiToken string `json:"databricks_api_token,omitempty"`
-
+	DatabricksApiToken          string `json:"databricks_api_token,omitempty"`
 	DatabricksApiTokenPlaintext string `json:"databricks_api_token_plaintext,omitempty"`
-
-	DatabricksWorkspaceUrl string `json:"databricks_workspace_url"`
+	DatabricksWorkspaceUrl      string `json:"databricks_workspace_url"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1032,9 +935,7 @@ func dataframeSplitInputToPb(st *DataframeSplitInput) (*dataframeSplitInputPb, e
 	}
 	pb := &dataframeSplitInputPb{}
 	pb.Columns = st.Columns
-
 	pb.Data = st.Data
-
 	pb.Index = st.Index
 
 	return pb, nil
@@ -1042,10 +943,8 @@ func dataframeSplitInputToPb(st *DataframeSplitInput) (*dataframeSplitInputPb, e
 
 type dataframeSplitInputPb struct {
 	Columns []any `json:"columns,omitempty"`
-
-	Data []any `json:"data,omitempty"`
-
-	Index []int `json:"index,omitempty"`
+	Data    []any `json:"data,omitempty"`
+	Index   []int `json:"index,omitempty"`
 }
 
 func dataframeSplitInputFromPb(pb *dataframeSplitInputPb) (*DataframeSplitInput, error) {
@@ -1111,9 +1010,7 @@ func embeddingsV1ResponseEmbeddingElementToPb(st *EmbeddingsV1ResponseEmbeddingE
 	}
 	pb := &embeddingsV1ResponseEmbeddingElementPb{}
 	pb.Embedding = st.Embedding
-
 	pb.Index = st.Index
-
 	pb.Object = st.Object
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1121,11 +1018,9 @@ func embeddingsV1ResponseEmbeddingElementToPb(st *EmbeddingsV1ResponseEmbeddingE
 }
 
 type embeddingsV1ResponseEmbeddingElementPb struct {
-	Embedding []float64 `json:"embedding,omitempty"`
-
-	Index int `json:"index,omitempty"`
-
-	Object EmbeddingsV1ResponseEmbeddingElementObject `json:"object,omitempty"`
+	Embedding []float64                                  `json:"embedding,omitempty"`
+	Index     int                                        `json:"index,omitempty"`
+	Object    EmbeddingsV1ResponseEmbeddingElementObject `json:"object,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1157,13 +1052,9 @@ func endpointCoreConfigInputToPb(st *EndpointCoreConfigInput) (*endpointCoreConf
 	}
 	pb := &endpointCoreConfigInputPb{}
 	pb.AutoCaptureConfig = st.AutoCaptureConfig
-
 	pb.Name = st.Name
-
 	pb.ServedEntities = st.ServedEntities
-
 	pb.ServedModels = st.ServedModels
-
 	pb.TrafficConfig = st.TrafficConfig
 
 	return pb, nil
@@ -1171,14 +1062,10 @@ func endpointCoreConfigInputToPb(st *EndpointCoreConfigInput) (*endpointCoreConf
 
 type endpointCoreConfigInputPb struct {
 	AutoCaptureConfig *AutoCaptureConfigInput `json:"auto_capture_config,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	ServedEntities []ServedEntityInput `json:"served_entities,omitempty"`
-
-	ServedModels []ServedModelInput `json:"served_models,omitempty"`
-
-	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
+	Name              string                  `json:"-" url:"-"`
+	ServedEntities    []ServedEntityInput     `json:"served_entities,omitempty"`
+	ServedModels      []ServedModelInput      `json:"served_models,omitempty"`
+	TrafficConfig     *TrafficConfig          `json:"traffic_config,omitempty"`
 }
 
 func endpointCoreConfigInputFromPb(pb *endpointCoreConfigInputPb) (*EndpointCoreConfigInput, error) {
@@ -1201,13 +1088,9 @@ func endpointCoreConfigOutputToPb(st *EndpointCoreConfigOutput) (*endpointCoreCo
 	}
 	pb := &endpointCoreConfigOutputPb{}
 	pb.AutoCaptureConfig = st.AutoCaptureConfig
-
 	pb.ConfigVersion = st.ConfigVersion
-
 	pb.ServedEntities = st.ServedEntities
-
 	pb.ServedModels = st.ServedModels
-
 	pb.TrafficConfig = st.TrafficConfig
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1216,14 +1099,10 @@ func endpointCoreConfigOutputToPb(st *EndpointCoreConfigOutput) (*endpointCoreCo
 
 type endpointCoreConfigOutputPb struct {
 	AutoCaptureConfig *AutoCaptureConfigOutput `json:"auto_capture_config,omitempty"`
-
-	ConfigVersion int64 `json:"config_version,omitempty"`
-
-	ServedEntities []ServedEntityOutput `json:"served_entities,omitempty"`
-
-	ServedModels []ServedModelOutput `json:"served_models,omitempty"`
-
-	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
+	ConfigVersion     int64                    `json:"config_version,omitempty"`
+	ServedEntities    []ServedEntityOutput     `json:"served_entities,omitempty"`
+	ServedModels      []ServedModelOutput      `json:"served_models,omitempty"`
+	TrafficConfig     *TrafficConfig           `json:"traffic_config,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1257,7 +1136,6 @@ func endpointCoreConfigSummaryToPb(st *EndpointCoreConfigSummary) (*endpointCore
 	}
 	pb := &endpointCoreConfigSummaryPb{}
 	pb.ServedEntities = st.ServedEntities
-
 	pb.ServedModels = st.ServedModels
 
 	return pb, nil
@@ -1265,8 +1143,7 @@ func endpointCoreConfigSummaryToPb(st *EndpointCoreConfigSummary) (*endpointCore
 
 type endpointCoreConfigSummaryPb struct {
 	ServedEntities []ServedEntitySpec `json:"served_entities,omitempty"`
-
-	ServedModels []ServedModelSpec `json:"served_models,omitempty"`
+	ServedModels   []ServedModelSpec  `json:"served_models,omitempty"`
 }
 
 func endpointCoreConfigSummaryFromPb(pb *endpointCoreConfigSummaryPb) (*EndpointCoreConfigSummary, error) {
@@ -1286,15 +1163,10 @@ func endpointPendingConfigToPb(st *EndpointPendingConfig) (*endpointPendingConfi
 	}
 	pb := &endpointPendingConfigPb{}
 	pb.AutoCaptureConfig = st.AutoCaptureConfig
-
 	pb.ConfigVersion = st.ConfigVersion
-
 	pb.ServedEntities = st.ServedEntities
-
 	pb.ServedModels = st.ServedModels
-
 	pb.StartTime = st.StartTime
-
 	pb.TrafficConfig = st.TrafficConfig
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1303,16 +1175,11 @@ func endpointPendingConfigToPb(st *EndpointPendingConfig) (*endpointPendingConfi
 
 type endpointPendingConfigPb struct {
 	AutoCaptureConfig *AutoCaptureConfigOutput `json:"auto_capture_config,omitempty"`
-
-	ConfigVersion int `json:"config_version,omitempty"`
-
-	ServedEntities []ServedEntityOutput `json:"served_entities,omitempty"`
-
-	ServedModels []ServedModelOutput `json:"served_models,omitempty"`
-
-	StartTime int64 `json:"start_time,omitempty"`
-
-	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
+	ConfigVersion     int                      `json:"config_version,omitempty"`
+	ServedEntities    []ServedEntityOutput     `json:"served_entities,omitempty"`
+	ServedModels      []ServedModelOutput      `json:"served_models,omitempty"`
+	StartTime         int64                    `json:"start_time,omitempty"`
+	TrafficConfig     *TrafficConfig           `json:"traffic_config,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1347,7 +1214,6 @@ func endpointStateToPb(st *EndpointState) (*endpointStatePb, error) {
 	}
 	pb := &endpointStatePb{}
 	pb.ConfigUpdate = st.ConfigUpdate
-
 	pb.Ready = st.Ready
 
 	return pb, nil
@@ -1355,8 +1221,7 @@ func endpointStateToPb(st *EndpointState) (*endpointStatePb, error) {
 
 type endpointStatePb struct {
 	ConfigUpdate EndpointStateConfigUpdate `json:"config_update,omitempty"`
-
-	Ready EndpointStateReady `json:"ready,omitempty"`
+	Ready        EndpointStateReady        `json:"ready,omitempty"`
 }
 
 func endpointStateFromPb(pb *endpointStatePb) (*EndpointState, error) {
@@ -1376,7 +1241,6 @@ func endpointTagToPb(st *EndpointTag) (*endpointTagPb, error) {
 	}
 	pb := &endpointTagPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1384,8 +1248,7 @@ func endpointTagToPb(st *EndpointTag) (*endpointTagPb, error) {
 }
 
 type endpointTagPb struct {
-	Key string `json:"key"`
-
+	Key   string `json:"key"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1489,15 +1352,10 @@ func externalFunctionRequestToPb(st *ExternalFunctionRequest) (*externalFunction
 	}
 	pb := &externalFunctionRequestPb{}
 	pb.ConnectionName = st.ConnectionName
-
 	pb.Headers = st.Headers
-
 	pb.Json = st.Json
-
 	pb.Method = st.Method
-
 	pb.Params = st.Params
-
 	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1505,17 +1363,12 @@ func externalFunctionRequestToPb(st *ExternalFunctionRequest) (*externalFunction
 }
 
 type externalFunctionRequestPb struct {
-	ConnectionName string `json:"connection_name"`
-
-	Headers string `json:"headers,omitempty"`
-
-	Json string `json:"json,omitempty"`
-
-	Method ExternalFunctionRequestHttpMethod `json:"method"`
-
-	Params string `json:"params,omitempty"`
-
-	Path string `json:"path"`
+	ConnectionName string                            `json:"connection_name"`
+	Headers        string                            `json:"headers,omitempty"`
+	Json           string                            `json:"json,omitempty"`
+	Method         ExternalFunctionRequestHttpMethod `json:"method"`
+	Params         string                            `json:"params,omitempty"`
+	Path           string                            `json:"path"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1550,56 +1403,34 @@ func externalModelToPb(st *ExternalModel) (*externalModelPb, error) {
 	}
 	pb := &externalModelPb{}
 	pb.Ai21labsConfig = st.Ai21labsConfig
-
 	pb.AmazonBedrockConfig = st.AmazonBedrockConfig
-
 	pb.AnthropicConfig = st.AnthropicConfig
-
 	pb.CohereConfig = st.CohereConfig
-
 	pb.CustomProviderConfig = st.CustomProviderConfig
-
 	pb.DatabricksModelServingConfig = st.DatabricksModelServingConfig
-
 	pb.GoogleCloudVertexAiConfig = st.GoogleCloudVertexAiConfig
-
 	pb.Name = st.Name
-
 	pb.OpenaiConfig = st.OpenaiConfig
-
 	pb.PalmConfig = st.PalmConfig
-
 	pb.Provider = st.Provider
-
 	pb.Task = st.Task
 
 	return pb, nil
 }
 
 type externalModelPb struct {
-	Ai21labsConfig *Ai21LabsConfig `json:"ai21labs_config,omitempty"`
-
-	AmazonBedrockConfig *AmazonBedrockConfig `json:"amazon_bedrock_config,omitempty"`
-
-	AnthropicConfig *AnthropicConfig `json:"anthropic_config,omitempty"`
-
-	CohereConfig *CohereConfig `json:"cohere_config,omitempty"`
-
-	CustomProviderConfig *CustomProviderConfig `json:"custom_provider_config,omitempty"`
-
+	Ai21labsConfig               *Ai21LabsConfig               `json:"ai21labs_config,omitempty"`
+	AmazonBedrockConfig          *AmazonBedrockConfig          `json:"amazon_bedrock_config,omitempty"`
+	AnthropicConfig              *AnthropicConfig              `json:"anthropic_config,omitempty"`
+	CohereConfig                 *CohereConfig                 `json:"cohere_config,omitempty"`
+	CustomProviderConfig         *CustomProviderConfig         `json:"custom_provider_config,omitempty"`
 	DatabricksModelServingConfig *DatabricksModelServingConfig `json:"databricks_model_serving_config,omitempty"`
-
-	GoogleCloudVertexAiConfig *GoogleCloudVertexAiConfig `json:"google_cloud_vertex_ai_config,omitempty"`
-
-	Name string `json:"name"`
-
-	OpenaiConfig *OpenAiConfig `json:"openai_config,omitempty"`
-
-	PalmConfig *PaLmConfig `json:"palm_config,omitempty"`
-
-	Provider ExternalModelProvider `json:"provider"`
-
-	Task string `json:"task"`
+	GoogleCloudVertexAiConfig    *GoogleCloudVertexAiConfig    `json:"google_cloud_vertex_ai_config,omitempty"`
+	Name                         string                        `json:"name"`
+	OpenaiConfig                 *OpenAiConfig                 `json:"openai_config,omitempty"`
+	PalmConfig                   *PaLmConfig                   `json:"palm_config,omitempty"`
+	Provider                     ExternalModelProvider         `json:"provider"`
+	Task                         string                        `json:"task"`
 }
 
 func externalModelFromPb(pb *externalModelPb) (*ExternalModel, error) {
@@ -1629,9 +1460,7 @@ func externalModelUsageElementToPb(st *ExternalModelUsageElement) (*externalMode
 	}
 	pb := &externalModelUsageElementPb{}
 	pb.CompletionTokens = st.CompletionTokens
-
 	pb.PromptTokens = st.PromptTokens
-
 	pb.TotalTokens = st.TotalTokens
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1640,10 +1469,8 @@ func externalModelUsageElementToPb(st *ExternalModelUsageElement) (*externalMode
 
 type externalModelUsageElementPb struct {
 	CompletionTokens int `json:"completion_tokens,omitempty"`
-
-	PromptTokens int `json:"prompt_tokens,omitempty"`
-
-	TotalTokens int `json:"total_tokens,omitempty"`
+	PromptTokens     int `json:"prompt_tokens,omitempty"`
+	TotalTokens      int `json:"total_tokens,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1699,11 +1526,8 @@ func foundationModelToPb(st *FoundationModel) (*foundationModelPb, error) {
 	}
 	pb := &foundationModelPb{}
 	pb.Description = st.Description
-
 	pb.DisplayName = st.DisplayName
-
 	pb.Docs = st.Docs
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1712,12 +1536,9 @@ func foundationModelToPb(st *FoundationModel) (*foundationModelPb, error) {
 
 type foundationModelPb struct {
 	Description string `json:"description,omitempty"`
-
 	DisplayName string `json:"display_name,omitempty"`
-
-	Docs string `json:"docs,omitempty"`
-
-	Name string `json:"name,omitempty"`
+	Docs        string `json:"docs,omitempty"`
+	Name        string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1894,11 +1715,8 @@ func googleCloudVertexAiConfigToPb(st *GoogleCloudVertexAiConfig) (*googleCloudV
 	}
 	pb := &googleCloudVertexAiConfigPb{}
 	pb.PrivateKey = st.PrivateKey
-
 	pb.PrivateKeyPlaintext = st.PrivateKeyPlaintext
-
 	pb.ProjectId = st.ProjectId
-
 	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1906,13 +1724,10 @@ func googleCloudVertexAiConfigToPb(st *GoogleCloudVertexAiConfig) (*googleCloudV
 }
 
 type googleCloudVertexAiConfigPb struct {
-	PrivateKey string `json:"private_key,omitempty"`
-
+	PrivateKey          string `json:"private_key,omitempty"`
 	PrivateKeyPlaintext string `json:"private_key_plaintext,omitempty"`
-
-	ProjectId string `json:"project_id"`
-
-	Region string `json:"region"`
+	ProjectId           string `json:"project_id"`
+	Region              string `json:"region"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1993,15 +1808,13 @@ func logsRequestToPb(st *LogsRequest) (*logsRequestPb, error) {
 	}
 	pb := &logsRequestPb{}
 	pb.Name = st.Name
-
 	pb.ServedModelName = st.ServedModelName
 
 	return pb, nil
 }
 
 type logsRequestPb struct {
-	Name string `json:"-" url:"-"`
-
+	Name            string `json:"-" url:"-"`
 	ServedModelName string `json:"-" url:"-"`
 }
 
@@ -2046,25 +1859,15 @@ func openAiConfigToPb(st *OpenAiConfig) (*openAiConfigPb, error) {
 	}
 	pb := &openAiConfigPb{}
 	pb.MicrosoftEntraClientId = st.MicrosoftEntraClientId
-
 	pb.MicrosoftEntraClientSecret = st.MicrosoftEntraClientSecret
-
 	pb.MicrosoftEntraClientSecretPlaintext = st.MicrosoftEntraClientSecretPlaintext
-
 	pb.MicrosoftEntraTenantId = st.MicrosoftEntraTenantId
-
 	pb.OpenaiApiBase = st.OpenaiApiBase
-
 	pb.OpenaiApiKey = st.OpenaiApiKey
-
 	pb.OpenaiApiKeyPlaintext = st.OpenaiApiKeyPlaintext
-
 	pb.OpenaiApiType = st.OpenaiApiType
-
 	pb.OpenaiApiVersion = st.OpenaiApiVersion
-
 	pb.OpenaiDeploymentName = st.OpenaiDeploymentName
-
 	pb.OpenaiOrganization = st.OpenaiOrganization
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2072,27 +1875,17 @@ func openAiConfigToPb(st *OpenAiConfig) (*openAiConfigPb, error) {
 }
 
 type openAiConfigPb struct {
-	MicrosoftEntraClientId string `json:"microsoft_entra_client_id,omitempty"`
-
-	MicrosoftEntraClientSecret string `json:"microsoft_entra_client_secret,omitempty"`
-
+	MicrosoftEntraClientId              string `json:"microsoft_entra_client_id,omitempty"`
+	MicrosoftEntraClientSecret          string `json:"microsoft_entra_client_secret,omitempty"`
 	MicrosoftEntraClientSecretPlaintext string `json:"microsoft_entra_client_secret_plaintext,omitempty"`
-
-	MicrosoftEntraTenantId string `json:"microsoft_entra_tenant_id,omitempty"`
-
-	OpenaiApiBase string `json:"openai_api_base,omitempty"`
-
-	OpenaiApiKey string `json:"openai_api_key,omitempty"`
-
-	OpenaiApiKeyPlaintext string `json:"openai_api_key_plaintext,omitempty"`
-
-	OpenaiApiType string `json:"openai_api_type,omitempty"`
-
-	OpenaiApiVersion string `json:"openai_api_version,omitempty"`
-
-	OpenaiDeploymentName string `json:"openai_deployment_name,omitempty"`
-
-	OpenaiOrganization string `json:"openai_organization,omitempty"`
+	MicrosoftEntraTenantId              string `json:"microsoft_entra_tenant_id,omitempty"`
+	OpenaiApiBase                       string `json:"openai_api_base,omitempty"`
+	OpenaiApiKey                        string `json:"openai_api_key,omitempty"`
+	OpenaiApiKeyPlaintext               string `json:"openai_api_key_plaintext,omitempty"`
+	OpenaiApiType                       string `json:"openai_api_type,omitempty"`
+	OpenaiApiVersion                    string `json:"openai_api_version,omitempty"`
+	OpenaiDeploymentName                string `json:"openai_deployment_name,omitempty"`
+	OpenaiOrganization                  string `json:"openai_organization,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2132,7 +1925,6 @@ func paLmConfigToPb(st *PaLmConfig) (*paLmConfigPb, error) {
 	}
 	pb := &paLmConfigPb{}
 	pb.PalmApiKey = st.PalmApiKey
-
 	pb.PalmApiKeyPlaintext = st.PalmApiKeyPlaintext
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2140,8 +1932,7 @@ func paLmConfigToPb(st *PaLmConfig) (*paLmConfigPb, error) {
 }
 
 type paLmConfigPb struct {
-	PalmApiKey string `json:"palm_api_key,omitempty"`
-
+	PalmApiKey          string `json:"palm_api_key,omitempty"`
 	PalmApiKeyPlaintext string `json:"palm_api_key_plaintext,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2173,20 +1964,16 @@ func patchServingEndpointTagsToPb(st *PatchServingEndpointTags) (*patchServingEn
 	}
 	pb := &patchServingEndpointTagsPb{}
 	pb.AddTags = st.AddTags
-
 	pb.DeleteTags = st.DeleteTags
-
 	pb.Name = st.Name
 
 	return pb, nil
 }
 
 type patchServingEndpointTagsPb struct {
-	AddTags []EndpointTag `json:"add_tags,omitempty"`
-
-	DeleteTags []string `json:"delete_tags,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	AddTags    []EndpointTag `json:"add_tags,omitempty"`
+	DeleteTags []string      `json:"delete_tags,omitempty"`
+	Name       string        `json:"-" url:"-"`
 }
 
 func patchServingEndpointTagsFromPb(pb *patchServingEndpointTagsPb) (*PatchServingEndpointTags, error) {
@@ -2207,9 +1994,7 @@ func payloadTableToPb(st *PayloadTable) (*payloadTablePb, error) {
 	}
 	pb := &payloadTablePb{}
 	pb.Name = st.Name
-
 	pb.Status = st.Status
-
 	pb.StatusMessage = st.StatusMessage
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2217,10 +2002,8 @@ func payloadTableToPb(st *PayloadTable) (*payloadTablePb, error) {
 }
 
 type payloadTablePb struct {
-	Name string `json:"name,omitempty"`
-
-	Status string `json:"status,omitempty"`
-
+	Name          string `json:"name,omitempty"`
+	Status        string `json:"status,omitempty"`
 	StatusMessage string `json:"status_message,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2253,7 +2036,6 @@ func ptEndpointCoreConfigToPb(st *PtEndpointCoreConfig) (*ptEndpointCoreConfigPb
 	}
 	pb := &ptEndpointCoreConfigPb{}
 	pb.ServedEntities = st.ServedEntities
-
 	pb.TrafficConfig = st.TrafficConfig
 
 	return pb, nil
@@ -2261,8 +2043,7 @@ func ptEndpointCoreConfigToPb(st *PtEndpointCoreConfig) (*ptEndpointCoreConfigPb
 
 type ptEndpointCoreConfigPb struct {
 	ServedEntities []PtServedModel `json:"served_entities,omitempty"`
-
-	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
+	TrafficConfig  *TrafficConfig  `json:"traffic_config,omitempty"`
 }
 
 func ptEndpointCoreConfigFromPb(pb *ptEndpointCoreConfigPb) (*PtEndpointCoreConfig, error) {
@@ -2282,11 +2063,8 @@ func ptServedModelToPb(st *PtServedModel) (*ptServedModelPb, error) {
 	}
 	pb := &ptServedModelPb{}
 	pb.EntityName = st.EntityName
-
 	pb.EntityVersion = st.EntityVersion
-
 	pb.Name = st.Name
-
 	pb.ProvisionedModelUnits = st.ProvisionedModelUnits
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2294,13 +2072,10 @@ func ptServedModelToPb(st *PtServedModel) (*ptServedModelPb, error) {
 }
 
 type ptServedModelPb struct {
-	EntityName string `json:"entity_name"`
-
-	EntityVersion string `json:"entity_version,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	ProvisionedModelUnits int64 `json:"provisioned_model_units"`
+	EntityName            string `json:"entity_name"`
+	EntityVersion         string `json:"entity_version,omitempty"`
+	Name                  string `json:"name,omitempty"`
+	ProvisionedModelUnits int64  `json:"provisioned_model_units"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2333,32 +2108,22 @@ func putAiGatewayRequestToPb(st *PutAiGatewayRequest) (*putAiGatewayRequestPb, e
 	}
 	pb := &putAiGatewayRequestPb{}
 	pb.FallbackConfig = st.FallbackConfig
-
 	pb.Guardrails = st.Guardrails
-
 	pb.InferenceTableConfig = st.InferenceTableConfig
-
 	pb.Name = st.Name
-
 	pb.RateLimits = st.RateLimits
-
 	pb.UsageTrackingConfig = st.UsageTrackingConfig
 
 	return pb, nil
 }
 
 type putAiGatewayRequestPb struct {
-	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
-
-	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
-
+	FallbackConfig       *FallbackConfig                `json:"fallback_config,omitempty"`
+	Guardrails           *AiGatewayGuardrails           `json:"guardrails,omitempty"`
 	InferenceTableConfig *AiGatewayInferenceTableConfig `json:"inference_table_config,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	RateLimits []AiGatewayRateLimit `json:"rate_limits,omitempty"`
-
-	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
+	Name                 string                         `json:"-" url:"-"`
+	RateLimits           []AiGatewayRateLimit           `json:"rate_limits,omitempty"`
+	UsageTrackingConfig  *AiGatewayUsageTrackingConfig  `json:"usage_tracking_config,omitempty"`
 }
 
 func putAiGatewayRequestFromPb(pb *putAiGatewayRequestPb) (*PutAiGatewayRequest, error) {
@@ -2382,28 +2147,20 @@ func putAiGatewayResponseToPb(st *PutAiGatewayResponse) (*putAiGatewayResponsePb
 	}
 	pb := &putAiGatewayResponsePb{}
 	pb.FallbackConfig = st.FallbackConfig
-
 	pb.Guardrails = st.Guardrails
-
 	pb.InferenceTableConfig = st.InferenceTableConfig
-
 	pb.RateLimits = st.RateLimits
-
 	pb.UsageTrackingConfig = st.UsageTrackingConfig
 
 	return pb, nil
 }
 
 type putAiGatewayResponsePb struct {
-	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
-
-	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
-
+	FallbackConfig       *FallbackConfig                `json:"fallback_config,omitempty"`
+	Guardrails           *AiGatewayGuardrails           `json:"guardrails,omitempty"`
 	InferenceTableConfig *AiGatewayInferenceTableConfig `json:"inference_table_config,omitempty"`
-
-	RateLimits []AiGatewayRateLimit `json:"rate_limits,omitempty"`
-
-	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
+	RateLimits           []AiGatewayRateLimit           `json:"rate_limits,omitempty"`
+	UsageTrackingConfig  *AiGatewayUsageTrackingConfig  `json:"usage_tracking_config,omitempty"`
 }
 
 func putAiGatewayResponseFromPb(pb *putAiGatewayResponsePb) (*PutAiGatewayResponse, error) {
@@ -2426,15 +2183,13 @@ func putRequestToPb(st *PutRequest) (*putRequestPb, error) {
 	}
 	pb := &putRequestPb{}
 	pb.Name = st.Name
-
 	pb.RateLimits = st.RateLimits
 
 	return pb, nil
 }
 
 type putRequestPb struct {
-	Name string `json:"-" url:"-"`
-
+	Name       string      `json:"-" url:"-"`
 	RateLimits []RateLimit `json:"rate_limits,omitempty"`
 }
 
@@ -2479,31 +2234,18 @@ func queryEndpointInputToPb(st *QueryEndpointInput) (*queryEndpointInputPb, erro
 	}
 	pb := &queryEndpointInputPb{}
 	pb.DataframeRecords = st.DataframeRecords
-
 	pb.DataframeSplit = st.DataframeSplit
-
 	pb.ExtraParams = st.ExtraParams
-
 	pb.Input = st.Input
-
 	pb.Inputs = st.Inputs
-
 	pb.Instances = st.Instances
-
 	pb.MaxTokens = st.MaxTokens
-
 	pb.Messages = st.Messages
-
 	pb.N = st.N
-
 	pb.Name = st.Name
-
 	pb.Prompt = st.Prompt
-
 	pb.Stop = st.Stop
-
 	pb.Stream = st.Stream
-
 	pb.Temperature = st.Temperature
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2511,33 +2253,20 @@ func queryEndpointInputToPb(st *QueryEndpointInput) (*queryEndpointInputPb, erro
 }
 
 type queryEndpointInputPb struct {
-	DataframeRecords []any `json:"dataframe_records,omitempty"`
-
-	DataframeSplit *DataframeSplitInput `json:"dataframe_split,omitempty"`
-
-	ExtraParams map[string]string `json:"extra_params,omitempty"`
-
-	Input any `json:"input,omitempty"`
-
-	Inputs any `json:"inputs,omitempty"`
-
-	Instances []any `json:"instances,omitempty"`
-
-	MaxTokens int `json:"max_tokens,omitempty"`
-
-	Messages []ChatMessage `json:"messages,omitempty"`
-
-	N int `json:"n,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	Prompt any `json:"prompt,omitempty"`
-
-	Stop []string `json:"stop,omitempty"`
-
-	Stream bool `json:"stream,omitempty"`
-
-	Temperature float64 `json:"temperature,omitempty"`
+	DataframeRecords []any                `json:"dataframe_records,omitempty"`
+	DataframeSplit   *DataframeSplitInput `json:"dataframe_split,omitempty"`
+	ExtraParams      map[string]string    `json:"extra_params,omitempty"`
+	Input            any                  `json:"input,omitempty"`
+	Inputs           any                  `json:"inputs,omitempty"`
+	Instances        []any                `json:"instances,omitempty"`
+	MaxTokens        int                  `json:"max_tokens,omitempty"`
+	Messages         []ChatMessage        `json:"messages,omitempty"`
+	N                int                  `json:"n,omitempty"`
+	Name             string               `json:"-" url:"-"`
+	Prompt           any                  `json:"prompt,omitempty"`
+	Stop             []string             `json:"stop,omitempty"`
+	Stream           bool                 `json:"stream,omitempty"`
+	Temperature      float64              `json:"temperature,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2580,21 +2309,13 @@ func queryEndpointResponseToPb(st *QueryEndpointResponse) (*queryEndpointRespons
 	}
 	pb := &queryEndpointResponsePb{}
 	pb.Choices = st.Choices
-
 	pb.Created = st.Created
-
 	pb.Data = st.Data
-
 	pb.Id = st.Id
-
 	pb.Model = st.Model
-
 	pb.Object = st.Object
-
 	pb.Predictions = st.Predictions
-
 	pb.ServedModelName = st.ServedModelName
-
 	pb.Usage = st.Usage
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2602,23 +2323,15 @@ func queryEndpointResponseToPb(st *QueryEndpointResponse) (*queryEndpointRespons
 }
 
 type queryEndpointResponsePb struct {
-	Choices []V1ResponseChoiceElement `json:"choices,omitempty"`
-
-	Created int64 `json:"created,omitempty"`
-
-	Data []EmbeddingsV1ResponseEmbeddingElement `json:"data,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	Model string `json:"model,omitempty"`
-
-	Object QueryEndpointResponseObject `json:"object,omitempty"`
-
-	Predictions []any `json:"predictions,omitempty"`
-
-	ServedModelName string `json:"-" url:"-" header:"served-model-name,omitempty"`
-
-	Usage *ExternalModelUsageElement `json:"usage,omitempty"`
+	Choices         []V1ResponseChoiceElement              `json:"choices,omitempty"`
+	Created         int64                                  `json:"created,omitempty"`
+	Data            []EmbeddingsV1ResponseEmbeddingElement `json:"data,omitempty"`
+	Id              string                                 `json:"id,omitempty"`
+	Model           string                                 `json:"model,omitempty"`
+	Object          QueryEndpointResponseObject            `json:"object,omitempty"`
+	Predictions     []any                                  `json:"predictions,omitempty"`
+	ServedModelName string                                 `json:"-" url:"-" header:"served-model-name,omitempty"`
+	Usage           *ExternalModelUsageElement             `json:"usage,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2656,19 +2369,15 @@ func rateLimitToPb(st *RateLimit) (*rateLimitPb, error) {
 	}
 	pb := &rateLimitPb{}
 	pb.Calls = st.Calls
-
 	pb.Key = st.Key
-
 	pb.RenewalPeriod = st.RenewalPeriod
 
 	return pb, nil
 }
 
 type rateLimitPb struct {
-	Calls int64 `json:"calls"`
-
-	Key RateLimitKey `json:"key,omitempty"`
-
+	Calls         int64                  `json:"calls"`
+	Key           RateLimitKey           `json:"key,omitempty"`
 	RenewalPeriod RateLimitRenewalPeriod `json:"renewal_period"`
 }
 
@@ -2690,16 +2399,14 @@ func routeToPb(st *Route) (*routePb, error) {
 	}
 	pb := &routePb{}
 	pb.ServedModelName = st.ServedModelName
-
 	pb.TrafficPercentage = st.TrafficPercentage
 
 	return pb, nil
 }
 
 type routePb struct {
-	ServedModelName string `json:"served_model_name"`
-
-	TrafficPercentage int `json:"traffic_percentage"`
+	ServedModelName   string `json:"served_model_name"`
+	TrafficPercentage int    `json:"traffic_percentage"`
 }
 
 func routeFromPb(pb *routePb) (*Route, error) {
@@ -2719,27 +2426,16 @@ func servedEntityInputToPb(st *ServedEntityInput) (*servedEntityInputPb, error) 
 	}
 	pb := &servedEntityInputPb{}
 	pb.EntityName = st.EntityName
-
 	pb.EntityVersion = st.EntityVersion
-
 	pb.EnvironmentVars = st.EnvironmentVars
-
 	pb.ExternalModel = st.ExternalModel
-
 	pb.InstanceProfileArn = st.InstanceProfileArn
-
 	pb.MaxProvisionedThroughput = st.MaxProvisionedThroughput
-
 	pb.MinProvisionedThroughput = st.MinProvisionedThroughput
-
 	pb.Name = st.Name
-
 	pb.ProvisionedModelUnits = st.ProvisionedModelUnits
-
 	pb.ScaleToZeroEnabled = st.ScaleToZeroEnabled
-
 	pb.WorkloadSize = st.WorkloadSize
-
 	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2747,29 +2443,18 @@ func servedEntityInputToPb(st *ServedEntityInput) (*servedEntityInputPb, error) 
 }
 
 type servedEntityInputPb struct {
-	EntityName string `json:"entity_name,omitempty"`
-
-	EntityVersion string `json:"entity_version,omitempty"`
-
-	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
-
-	ExternalModel *ExternalModel `json:"external_model,omitempty"`
-
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-
-	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
-
-	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
-
-	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
-
-	WorkloadSize string `json:"workload_size,omitempty"`
-
-	WorkloadType ServingModelWorkloadType `json:"workload_type,omitempty"`
+	EntityName               string                   `json:"entity_name,omitempty"`
+	EntityVersion            string                   `json:"entity_version,omitempty"`
+	EnvironmentVars          map[string]string        `json:"environment_vars,omitempty"`
+	ExternalModel            *ExternalModel           `json:"external_model,omitempty"`
+	InstanceProfileArn       string                   `json:"instance_profile_arn,omitempty"`
+	MaxProvisionedThroughput int                      `json:"max_provisioned_throughput,omitempty"`
+	MinProvisionedThroughput int                      `json:"min_provisioned_throughput,omitempty"`
+	Name                     string                   `json:"name,omitempty"`
+	ProvisionedModelUnits    int64                    `json:"provisioned_model_units,omitempty"`
+	ScaleToZeroEnabled       bool                     `json:"scale_to_zero_enabled,omitempty"`
+	WorkloadSize             string                   `json:"workload_size,omitempty"`
+	WorkloadType             ServingModelWorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2810,35 +2495,20 @@ func servedEntityOutputToPb(st *ServedEntityOutput) (*servedEntityOutputPb, erro
 	}
 	pb := &servedEntityOutputPb{}
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.Creator = st.Creator
-
 	pb.EntityName = st.EntityName
-
 	pb.EntityVersion = st.EntityVersion
-
 	pb.EnvironmentVars = st.EnvironmentVars
-
 	pb.ExternalModel = st.ExternalModel
-
 	pb.FoundationModel = st.FoundationModel
-
 	pb.InstanceProfileArn = st.InstanceProfileArn
-
 	pb.MaxProvisionedThroughput = st.MaxProvisionedThroughput
-
 	pb.MinProvisionedThroughput = st.MinProvisionedThroughput
-
 	pb.Name = st.Name
-
 	pb.ProvisionedModelUnits = st.ProvisionedModelUnits
-
 	pb.ScaleToZeroEnabled = st.ScaleToZeroEnabled
-
 	pb.State = st.State
-
 	pb.WorkloadSize = st.WorkloadSize
-
 	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2846,37 +2516,22 @@ func servedEntityOutputToPb(st *ServedEntityOutput) (*servedEntityOutputPb, erro
 }
 
 type servedEntityOutputPb struct {
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	Creator string `json:"creator,omitempty"`
-
-	EntityName string `json:"entity_name,omitempty"`
-
-	EntityVersion string `json:"entity_version,omitempty"`
-
-	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
-
-	ExternalModel *ExternalModel `json:"external_model,omitempty"`
-
-	FoundationModel *FoundationModel `json:"foundation_model,omitempty"`
-
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-
-	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
-
-	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
-
-	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
-
-	State *ServedModelState `json:"state,omitempty"`
-
-	WorkloadSize string `json:"workload_size,omitempty"`
-
-	WorkloadType ServingModelWorkloadType `json:"workload_type,omitempty"`
+	CreationTimestamp        int64                    `json:"creation_timestamp,omitempty"`
+	Creator                  string                   `json:"creator,omitempty"`
+	EntityName               string                   `json:"entity_name,omitempty"`
+	EntityVersion            string                   `json:"entity_version,omitempty"`
+	EnvironmentVars          map[string]string        `json:"environment_vars,omitempty"`
+	ExternalModel            *ExternalModel           `json:"external_model,omitempty"`
+	FoundationModel          *FoundationModel         `json:"foundation_model,omitempty"`
+	InstanceProfileArn       string                   `json:"instance_profile_arn,omitempty"`
+	MaxProvisionedThroughput int                      `json:"max_provisioned_throughput,omitempty"`
+	MinProvisionedThroughput int                      `json:"min_provisioned_throughput,omitempty"`
+	Name                     string                   `json:"name,omitempty"`
+	ProvisionedModelUnits    int64                    `json:"provisioned_model_units,omitempty"`
+	ScaleToZeroEnabled       bool                     `json:"scale_to_zero_enabled,omitempty"`
+	State                    *ServedModelState        `json:"state,omitempty"`
+	WorkloadSize             string                   `json:"workload_size,omitempty"`
+	WorkloadType             ServingModelWorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2921,13 +2576,9 @@ func servedEntitySpecToPb(st *ServedEntitySpec) (*servedEntitySpecPb, error) {
 	}
 	pb := &servedEntitySpecPb{}
 	pb.EntityName = st.EntityName
-
 	pb.EntityVersion = st.EntityVersion
-
 	pb.ExternalModel = st.ExternalModel
-
 	pb.FoundationModel = st.FoundationModel
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2935,15 +2586,11 @@ func servedEntitySpecToPb(st *ServedEntitySpec) (*servedEntitySpecPb, error) {
 }
 
 type servedEntitySpecPb struct {
-	EntityName string `json:"entity_name,omitempty"`
-
-	EntityVersion string `json:"entity_version,omitempty"`
-
-	ExternalModel *ExternalModel `json:"external_model,omitempty"`
-
+	EntityName      string           `json:"entity_name,omitempty"`
+	EntityVersion   string           `json:"entity_version,omitempty"`
+	ExternalModel   *ExternalModel   `json:"external_model,omitempty"`
 	FoundationModel *FoundationModel `json:"foundation_model,omitempty"`
-
-	Name string `json:"name,omitempty"`
+	Name            string           `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2977,25 +2624,15 @@ func servedModelInputToPb(st *ServedModelInput) (*servedModelInputPb, error) {
 	}
 	pb := &servedModelInputPb{}
 	pb.EnvironmentVars = st.EnvironmentVars
-
 	pb.InstanceProfileArn = st.InstanceProfileArn
-
 	pb.MaxProvisionedThroughput = st.MaxProvisionedThroughput
-
 	pb.MinProvisionedThroughput = st.MinProvisionedThroughput
-
 	pb.ModelName = st.ModelName
-
 	pb.ModelVersion = st.ModelVersion
-
 	pb.Name = st.Name
-
 	pb.ProvisionedModelUnits = st.ProvisionedModelUnits
-
 	pb.ScaleToZeroEnabled = st.ScaleToZeroEnabled
-
 	pb.WorkloadSize = st.WorkloadSize
-
 	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3003,27 +2640,17 @@ func servedModelInputToPb(st *ServedModelInput) (*servedModelInputPb, error) {
 }
 
 type servedModelInputPb struct {
-	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
-
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-
-	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
-
-	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
-
-	ModelName string `json:"model_name"`
-
-	ModelVersion string `json:"model_version"`
-
-	Name string `json:"name,omitempty"`
-
-	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
-
-	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled"`
-
-	WorkloadSize string `json:"workload_size,omitempty"`
-
-	WorkloadType ServedModelInputWorkloadType `json:"workload_type,omitempty"`
+	EnvironmentVars          map[string]string            `json:"environment_vars,omitempty"`
+	InstanceProfileArn       string                       `json:"instance_profile_arn,omitempty"`
+	MaxProvisionedThroughput int                          `json:"max_provisioned_throughput,omitempty"`
+	MinProvisionedThroughput int                          `json:"min_provisioned_throughput,omitempty"`
+	ModelName                string                       `json:"model_name"`
+	ModelVersion             string                       `json:"model_version"`
+	Name                     string                       `json:"name,omitempty"`
+	ProvisionedModelUnits    int64                        `json:"provisioned_model_units,omitempty"`
+	ScaleToZeroEnabled       bool                         `json:"scale_to_zero_enabled"`
+	WorkloadSize             string                       `json:"workload_size,omitempty"`
+	WorkloadType             ServedModelInputWorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3063,27 +2690,16 @@ func servedModelOutputToPb(st *ServedModelOutput) (*servedModelOutputPb, error) 
 	}
 	pb := &servedModelOutputPb{}
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.Creator = st.Creator
-
 	pb.EnvironmentVars = st.EnvironmentVars
-
 	pb.InstanceProfileArn = st.InstanceProfileArn
-
 	pb.ModelName = st.ModelName
-
 	pb.ModelVersion = st.ModelVersion
-
 	pb.Name = st.Name
-
 	pb.ProvisionedModelUnits = st.ProvisionedModelUnits
-
 	pb.ScaleToZeroEnabled = st.ScaleToZeroEnabled
-
 	pb.State = st.State
-
 	pb.WorkloadSize = st.WorkloadSize
-
 	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3091,29 +2707,18 @@ func servedModelOutputToPb(st *ServedModelOutput) (*servedModelOutputPb, error) 
 }
 
 type servedModelOutputPb struct {
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	Creator string `json:"creator,omitempty"`
-
-	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
-
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-
-	ModelName string `json:"model_name,omitempty"`
-
-	ModelVersion string `json:"model_version,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
-
-	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
-
-	State *ServedModelState `json:"state,omitempty"`
-
-	WorkloadSize string `json:"workload_size,omitempty"`
-
-	WorkloadType ServingModelWorkloadType `json:"workload_type,omitempty"`
+	CreationTimestamp     int64                    `json:"creation_timestamp,omitempty"`
+	Creator               string                   `json:"creator,omitempty"`
+	EnvironmentVars       map[string]string        `json:"environment_vars,omitempty"`
+	InstanceProfileArn    string                   `json:"instance_profile_arn,omitempty"`
+	ModelName             string                   `json:"model_name,omitempty"`
+	ModelVersion          string                   `json:"model_version,omitempty"`
+	Name                  string                   `json:"name,omitempty"`
+	ProvisionedModelUnits int64                    `json:"provisioned_model_units,omitempty"`
+	ScaleToZeroEnabled    bool                     `json:"scale_to_zero_enabled,omitempty"`
+	State                 *ServedModelState        `json:"state,omitempty"`
+	WorkloadSize          string                   `json:"workload_size,omitempty"`
+	WorkloadType          ServingModelWorkloadType `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3154,9 +2759,7 @@ func servedModelSpecToPb(st *ServedModelSpec) (*servedModelSpecPb, error) {
 	}
 	pb := &servedModelSpecPb{}
 	pb.ModelName = st.ModelName
-
 	pb.ModelVersion = st.ModelVersion
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3164,11 +2767,9 @@ func servedModelSpecToPb(st *ServedModelSpec) (*servedModelSpecPb, error) {
 }
 
 type servedModelSpecPb struct {
-	ModelName string `json:"model_name,omitempty"`
-
+	ModelName    string `json:"model_name,omitempty"`
 	ModelVersion string `json:"model_version,omitempty"`
-
-	Name string `json:"name,omitempty"`
+	Name         string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3200,7 +2801,6 @@ func servedModelStateToPb(st *ServedModelState) (*servedModelStatePb, error) {
 	}
 	pb := &servedModelStatePb{}
 	pb.Deployment = st.Deployment
-
 	pb.DeploymentStateMessage = st.DeploymentStateMessage
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3208,9 +2808,8 @@ func servedModelStateToPb(st *ServedModelState) (*servedModelStatePb, error) {
 }
 
 type servedModelStatePb struct {
-	Deployment ServedModelStateDeployment `json:"deployment,omitempty"`
-
-	DeploymentStateMessage string `json:"deployment_state_message,omitempty"`
+	Deployment             ServedModelStateDeployment `json:"deployment,omitempty"`
+	DeploymentStateMessage string                     `json:"deployment_state_message,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3265,25 +2864,15 @@ func servingEndpointToPb(st *ServingEndpoint) (*servingEndpointPb, error) {
 	}
 	pb := &servingEndpointPb{}
 	pb.AiGateway = st.AiGateway
-
 	pb.BudgetPolicyId = st.BudgetPolicyId
-
 	pb.Config = st.Config
-
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.Creator = st.Creator
-
 	pb.Id = st.Id
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.Name = st.Name
-
 	pb.State = st.State
-
 	pb.Tags = st.Tags
-
 	pb.Task = st.Task
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3291,27 +2880,17 @@ func servingEndpointToPb(st *ServingEndpoint) (*servingEndpointPb, error) {
 }
 
 type servingEndpointPb struct {
-	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
-
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-
-	Config *EndpointCoreConfigSummary `json:"config,omitempty"`
-
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	Creator string `json:"creator,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	State *EndpointState `json:"state,omitempty"`
-
-	Tags []EndpointTag `json:"tags,omitempty"`
-
-	Task string `json:"task,omitempty"`
+	AiGateway            *AiGatewayConfig           `json:"ai_gateway,omitempty"`
+	BudgetPolicyId       string                     `json:"budget_policy_id,omitempty"`
+	Config               *EndpointCoreConfigSummary `json:"config,omitempty"`
+	CreationTimestamp    int64                      `json:"creation_timestamp,omitempty"`
+	Creator              string                     `json:"creator,omitempty"`
+	Id                   string                     `json:"id,omitempty"`
+	LastUpdatedTimestamp int64                      `json:"last_updated_timestamp,omitempty"`
+	Name                 string                     `json:"name,omitempty"`
+	State                *EndpointState             `json:"state,omitempty"`
+	Tags                 []EndpointTag              `json:"tags,omitempty"`
+	Task                 string                     `json:"task,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3351,11 +2930,8 @@ func servingEndpointAccessControlRequestToPb(st *ServingEndpointAccessControlReq
 	}
 	pb := &servingEndpointAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3363,13 +2939,10 @@ func servingEndpointAccessControlRequestToPb(st *ServingEndpointAccessControlReq
 }
 
 type servingEndpointAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string                         `json:"group_name,omitempty"`
+	PermissionLevel      ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string                         `json:"service_principal_name,omitempty"`
+	UserName             string                         `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3402,13 +2975,9 @@ func servingEndpointAccessControlResponseToPb(st *ServingEndpointAccessControlRe
 	}
 	pb := &servingEndpointAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3416,15 +2985,11 @@ func servingEndpointAccessControlResponseToPb(st *ServingEndpointAccessControlRe
 }
 
 type servingEndpointAccessControlResponsePb struct {
-	AllPermissions []ServingEndpointPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []ServingEndpointPermission `json:"all_permissions,omitempty"`
+	DisplayName          string                      `json:"display_name,omitempty"`
+	GroupName            string                      `json:"group_name,omitempty"`
+	ServicePrincipalName string                      `json:"service_principal_name,omitempty"`
+	UserName             string                      `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3458,35 +3023,20 @@ func servingEndpointDetailedToPb(st *ServingEndpointDetailed) (*servingEndpointD
 	}
 	pb := &servingEndpointDetailedPb{}
 	pb.AiGateway = st.AiGateway
-
 	pb.BudgetPolicyId = st.BudgetPolicyId
-
 	pb.Config = st.Config
-
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.Creator = st.Creator
-
 	pb.DataPlaneInfo = st.DataPlaneInfo
-
 	pb.EndpointUrl = st.EndpointUrl
-
 	pb.Id = st.Id
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.Name = st.Name
-
 	pb.PendingConfig = st.PendingConfig
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.RouteOptimized = st.RouteOptimized
-
 	pb.State = st.State
-
 	pb.Tags = st.Tags
-
 	pb.Task = st.Task
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3494,37 +3044,22 @@ func servingEndpointDetailedToPb(st *ServingEndpointDetailed) (*servingEndpointD
 }
 
 type servingEndpointDetailedPb struct {
-	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
-
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-
-	Config *EndpointCoreConfigOutput `json:"config,omitempty"`
-
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	Creator string `json:"creator,omitempty"`
-
-	DataPlaneInfo *ModelDataPlaneInfo `json:"data_plane_info,omitempty"`
-
-	EndpointUrl string `json:"endpoint_url,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	PendingConfig *EndpointPendingConfig `json:"pending_config,omitempty"`
-
-	PermissionLevel ServingEndpointDetailedPermissionLevel `json:"permission_level,omitempty"`
-
-	RouteOptimized bool `json:"route_optimized,omitempty"`
-
-	State *EndpointState `json:"state,omitempty"`
-
-	Tags []EndpointTag `json:"tags,omitempty"`
-
-	Task string `json:"task,omitempty"`
+	AiGateway            *AiGatewayConfig                       `json:"ai_gateway,omitempty"`
+	BudgetPolicyId       string                                 `json:"budget_policy_id,omitempty"`
+	Config               *EndpointCoreConfigOutput              `json:"config,omitempty"`
+	CreationTimestamp    int64                                  `json:"creation_timestamp,omitempty"`
+	Creator              string                                 `json:"creator,omitempty"`
+	DataPlaneInfo        *ModelDataPlaneInfo                    `json:"data_plane_info,omitempty"`
+	EndpointUrl          string                                 `json:"endpoint_url,omitempty"`
+	Id                   string                                 `json:"id,omitempty"`
+	LastUpdatedTimestamp int64                                  `json:"last_updated_timestamp,omitempty"`
+	Name                 string                                 `json:"name,omitempty"`
+	PendingConfig        *EndpointPendingConfig                 `json:"pending_config,omitempty"`
+	PermissionLevel      ServingEndpointDetailedPermissionLevel `json:"permission_level,omitempty"`
+	RouteOptimized       bool                                   `json:"route_optimized,omitempty"`
+	State                *EndpointState                         `json:"state,omitempty"`
+	Tags                 []EndpointTag                          `json:"tags,omitempty"`
+	Task                 string                                 `json:"task,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3569,9 +3104,7 @@ func servingEndpointPermissionToPb(st *ServingEndpointPermission) (*servingEndpo
 	}
 	pb := &servingEndpointPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3579,11 +3112,9 @@ func servingEndpointPermissionToPb(st *ServingEndpointPermission) (*servingEndpo
 }
 
 type servingEndpointPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool                           `json:"inherited,omitempty"`
+	InheritedFromObject []string                       `json:"inherited_from_object,omitempty"`
+	PermissionLevel     ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3615,9 +3146,7 @@ func servingEndpointPermissionsToPb(st *ServingEndpointPermissions) (*servingEnd
 	}
 	pb := &servingEndpointPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3626,10 +3155,8 @@ func servingEndpointPermissionsToPb(st *ServingEndpointPermissions) (*servingEnd
 
 type servingEndpointPermissionsPb struct {
 	AccessControlList []ServingEndpointAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                                 `json:"object_id,omitempty"`
+	ObjectType        string                                 `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3661,7 +3188,6 @@ func servingEndpointPermissionsDescriptionToPb(st *ServingEndpointPermissionsDes
 	}
 	pb := &servingEndpointPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3669,8 +3195,7 @@ func servingEndpointPermissionsDescriptionToPb(st *ServingEndpointPermissionsDes
 }
 
 type servingEndpointPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string                         `json:"description,omitempty"`
 	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3702,7 +3227,6 @@ func servingEndpointPermissionsRequestToPb(st *ServingEndpointPermissionsRequest
 	}
 	pb := &servingEndpointPermissionsRequestPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ServingEndpointId = st.ServingEndpointId
 
 	return pb, nil
@@ -3710,8 +3234,7 @@ func servingEndpointPermissionsRequestToPb(st *ServingEndpointPermissionsRequest
 
 type servingEndpointPermissionsRequestPb struct {
 	AccessControlList []ServingEndpointAccessControlRequest `json:"access_control_list,omitempty"`
-
-	ServingEndpointId string `json:"-" url:"-"`
+	ServingEndpointId string                                `json:"-" url:"-"`
 }
 
 func servingEndpointPermissionsRequestFromPb(pb *servingEndpointPermissionsRequestPb) (*ServingEndpointPermissionsRequest, error) {
@@ -3755,7 +3278,6 @@ func updateProvisionedThroughputEndpointConfigRequestToPb(st *UpdateProvisionedT
 	}
 	pb := &updateProvisionedThroughputEndpointConfigRequestPb{}
 	pb.Config = st.Config
-
 	pb.Name = st.Name
 
 	return pb, nil
@@ -3763,8 +3285,7 @@ func updateProvisionedThroughputEndpointConfigRequestToPb(st *UpdateProvisionedT
 
 type updateProvisionedThroughputEndpointConfigRequestPb struct {
 	Config PtEndpointCoreConfig `json:"config"`
-
-	Name string `json:"-" url:"-"`
+	Name   string               `json:"-" url:"-"`
 }
 
 func updateProvisionedThroughputEndpointConfigRequestFromPb(pb *updateProvisionedThroughputEndpointConfigRequestPb) (*UpdateProvisionedThroughputEndpointConfigRequest, error) {
@@ -3784,13 +3305,9 @@ func v1ResponseChoiceElementToPb(st *V1ResponseChoiceElement) (*v1ResponseChoice
 	}
 	pb := &v1ResponseChoiceElementPb{}
 	pb.FinishReason = st.FinishReason
-
 	pb.Index = st.Index
-
 	pb.Logprobs = st.Logprobs
-
 	pb.Message = st.Message
-
 	pb.Text = st.Text
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3798,15 +3315,11 @@ func v1ResponseChoiceElementToPb(st *V1ResponseChoiceElement) (*v1ResponseChoice
 }
 
 type v1ResponseChoiceElementPb struct {
-	FinishReason string `json:"finishReason,omitempty"`
-
-	Index int `json:"index,omitempty"`
-
-	Logprobs int `json:"logprobs,omitempty"`
-
-	Message *ChatMessage `json:"message,omitempty"`
-
-	Text string `json:"text,omitempty"`
+	FinishReason string       `json:"finishReason,omitempty"`
+	Index        int          `json:"index,omitempty"`
+	Logprobs     int          `json:"logprobs,omitempty"`
+	Message      *ChatMessage `json:"message,omitempty"`
+	Text         string       `json:"text,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3832,4 +3345,58 @@ func (st *v1ResponseChoiceElementPb) UnmarshalJSON(b []byte) error {
 
 func (st v1ResponseChoiceElementPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

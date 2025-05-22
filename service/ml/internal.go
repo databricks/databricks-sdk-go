@@ -3,6 +3,10 @@
 package ml
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -12,21 +16,13 @@ func activityToPb(st *Activity) (*activityPb, error) {
 	}
 	pb := &activityPb{}
 	pb.ActivityType = st.ActivityType
-
 	pb.Comment = st.Comment
-
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.FromStage = st.FromStage
-
 	pb.Id = st.Id
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.SystemComment = st.SystemComment
-
 	pb.ToStage = st.ToStage
-
 	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -34,23 +30,15 @@ func activityToPb(st *Activity) (*activityPb, error) {
 }
 
 type activityPb struct {
-	ActivityType ActivityType `json:"activity_type,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	FromStage Stage `json:"from_stage,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	SystemComment string `json:"system_comment,omitempty"`
-
-	ToStage Stage `json:"to_stage,omitempty"`
-
-	UserId string `json:"user_id,omitempty"`
+	ActivityType         ActivityType `json:"activity_type,omitempty"`
+	Comment              string       `json:"comment,omitempty"`
+	CreationTimestamp    int64        `json:"creation_timestamp,omitempty"`
+	FromStage            Stage        `json:"from_stage,omitempty"`
+	Id                   string       `json:"id,omitempty"`
+	LastUpdatedTimestamp int64        `json:"last_updated_timestamp,omitempty"`
+	SystemComment        string       `json:"system_comment,omitempty"`
+	ToStage              Stage        `json:"to_stage,omitempty"`
+	UserId               string       `json:"user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -88,13 +76,9 @@ func approveTransitionRequestToPb(st *ApproveTransitionRequest) (*approveTransit
 	}
 	pb := &approveTransitionRequestPb{}
 	pb.ArchiveExistingVersions = st.ArchiveExistingVersions
-
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.Stage = st.Stage
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -102,15 +86,11 @@ func approveTransitionRequestToPb(st *ApproveTransitionRequest) (*approveTransit
 }
 
 type approveTransitionRequestPb struct {
-	ArchiveExistingVersions bool `json:"archive_existing_versions"`
-
-	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"name"`
-
-	Stage Stage `json:"stage"`
-
-	Version string `json:"version"`
+	ArchiveExistingVersions bool   `json:"archive_existing_versions"`
+	Comment                 string `json:"comment,omitempty"`
+	Name                    string `json:"name"`
+	Stage                   Stage  `json:"stage"`
+	Version                 string `json:"version"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -168,13 +148,9 @@ func artifactCredentialInfoToPb(st *ArtifactCredentialInfo) (*artifactCredential
 	}
 	pb := &artifactCredentialInfoPb{}
 	pb.Headers = st.Headers
-
 	pb.Path = st.Path
-
 	pb.RunId = st.RunId
-
 	pb.SignedUri = st.SignedUri
-
 	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -182,15 +158,11 @@ func artifactCredentialInfoToPb(st *ArtifactCredentialInfo) (*artifactCredential
 }
 
 type artifactCredentialInfoPb struct {
-	Headers []ArtifactCredentialInfoHttpHeader `json:"headers,omitempty"`
-
-	Path string `json:"path,omitempty"`
-
-	RunId string `json:"run_id,omitempty"`
-
-	SignedUri string `json:"signed_uri,omitempty"`
-
-	Type ArtifactCredentialType `json:"type,omitempty"`
+	Headers   []ArtifactCredentialInfoHttpHeader `json:"headers,omitempty"`
+	Path      string                             `json:"path,omitempty"`
+	RunId     string                             `json:"run_id,omitempty"`
+	SignedUri string                             `json:"signed_uri,omitempty"`
+	Type      ArtifactCredentialType             `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -224,7 +196,6 @@ func artifactCredentialInfoHttpHeaderToPb(st *ArtifactCredentialInfoHttpHeader) 
 	}
 	pb := &artifactCredentialInfoHttpHeaderPb{}
 	pb.Name = st.Name
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -232,8 +203,7 @@ func artifactCredentialInfoHttpHeaderToPb(st *ArtifactCredentialInfoHttpHeader) 
 }
 
 type artifactCredentialInfoHttpHeaderPb struct {
-	Name string `json:"name,omitempty"`
-
+	Name  string `json:"name,omitempty"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -265,15 +235,10 @@ func commentObjectToPb(st *CommentObject) (*commentObjectPb, error) {
 	}
 	pb := &commentObjectPb{}
 	pb.AvailableActions = st.AvailableActions
-
 	pb.Comment = st.Comment
-
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.Id = st.Id
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -281,17 +246,12 @@ func commentObjectToPb(st *CommentObject) (*commentObjectPb, error) {
 }
 
 type commentObjectPb struct {
-	AvailableActions []CommentActivityAction `json:"available_actions,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	UserId string `json:"user_id,omitempty"`
+	AvailableActions     []CommentActivityAction `json:"available_actions,omitempty"`
+	Comment              string                  `json:"comment,omitempty"`
+	CreationTimestamp    int64                   `json:"creation_timestamp,omitempty"`
+	Id                   string                  `json:"id,omitempty"`
+	LastUpdatedTimestamp int64                   `json:"last_updated_timestamp,omitempty"`
+	UserId               string                  `json:"user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -326,9 +286,7 @@ func createCommentToPb(st *CreateComment) (*createCommentPb, error) {
 	}
 	pb := &createCommentPb{}
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.Version = st.Version
 
 	return pb, nil
@@ -336,9 +294,7 @@ func createCommentToPb(st *CreateComment) (*createCommentPb, error) {
 
 type createCommentPb struct {
 	Comment string `json:"comment"`
-
-	Name string `json:"name"`
-
+	Name    string `json:"name"`
 	Version string `json:"version"`
 }
 
@@ -384,9 +340,7 @@ func createExperimentToPb(st *CreateExperiment) (*createExperimentPb, error) {
 	}
 	pb := &createExperimentPb{}
 	pb.ArtifactLocation = st.ArtifactLocation
-
 	pb.Name = st.Name
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -394,11 +348,9 @@ func createExperimentToPb(st *CreateExperiment) (*createExperimentPb, error) {
 }
 
 type createExperimentPb struct {
-	ArtifactLocation string `json:"artifact_location,omitempty"`
-
-	Name string `json:"name"`
-
-	Tags []ExperimentTag `json:"tags,omitempty"`
+	ArtifactLocation string          `json:"artifact_location,omitempty"`
+	Name             string          `json:"name"`
+	Tags             []ExperimentTag `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -466,37 +418,21 @@ func createForecastingExperimentRequestToPb(st *CreateForecastingExperimentReque
 	}
 	pb := &createForecastingExperimentRequestPb{}
 	pb.CustomWeightsColumn = st.CustomWeightsColumn
-
 	pb.ExperimentPath = st.ExperimentPath
-
 	pb.ForecastGranularity = st.ForecastGranularity
-
 	pb.ForecastHorizon = st.ForecastHorizon
-
 	pb.FutureFeatureDataPath = st.FutureFeatureDataPath
-
 	pb.HolidayRegions = st.HolidayRegions
-
 	pb.IncludeFeatures = st.IncludeFeatures
-
 	pb.MaxRuntime = st.MaxRuntime
-
 	pb.PredictionDataPath = st.PredictionDataPath
-
 	pb.PrimaryMetric = st.PrimaryMetric
-
 	pb.RegisterTo = st.RegisterTo
-
 	pb.SplitColumn = st.SplitColumn
-
 	pb.TargetColumn = st.TargetColumn
-
 	pb.TimeColumn = st.TimeColumn
-
 	pb.TimeseriesIdentifierColumns = st.TimeseriesIdentifierColumns
-
 	pb.TrainDataPath = st.TrainDataPath
-
 	pb.TrainingFrameworks = st.TrainingFrameworks
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -504,39 +440,23 @@ func createForecastingExperimentRequestToPb(st *CreateForecastingExperimentReque
 }
 
 type createForecastingExperimentRequestPb struct {
-	CustomWeightsColumn string `json:"custom_weights_column,omitempty"`
-
-	ExperimentPath string `json:"experiment_path,omitempty"`
-
-	ForecastGranularity string `json:"forecast_granularity"`
-
-	ForecastHorizon int64 `json:"forecast_horizon"`
-
-	FutureFeatureDataPath string `json:"future_feature_data_path,omitempty"`
-
-	HolidayRegions []string `json:"holiday_regions,omitempty"`
-
-	IncludeFeatures []string `json:"include_features,omitempty"`
-
-	MaxRuntime int64 `json:"max_runtime,omitempty"`
-
-	PredictionDataPath string `json:"prediction_data_path,omitempty"`
-
-	PrimaryMetric string `json:"primary_metric,omitempty"`
-
-	RegisterTo string `json:"register_to,omitempty"`
-
-	SplitColumn string `json:"split_column,omitempty"`
-
-	TargetColumn string `json:"target_column"`
-
-	TimeColumn string `json:"time_column"`
-
+	CustomWeightsColumn         string   `json:"custom_weights_column,omitempty"`
+	ExperimentPath              string   `json:"experiment_path,omitempty"`
+	ForecastGranularity         string   `json:"forecast_granularity"`
+	ForecastHorizon             int64    `json:"forecast_horizon"`
+	FutureFeatureDataPath       string   `json:"future_feature_data_path,omitempty"`
+	HolidayRegions              []string `json:"holiday_regions,omitempty"`
+	IncludeFeatures             []string `json:"include_features,omitempty"`
+	MaxRuntime                  int64    `json:"max_runtime,omitempty"`
+	PredictionDataPath          string   `json:"prediction_data_path,omitempty"`
+	PrimaryMetric               string   `json:"primary_metric,omitempty"`
+	RegisterTo                  string   `json:"register_to,omitempty"`
+	SplitColumn                 string   `json:"split_column,omitempty"`
+	TargetColumn                string   `json:"target_column"`
+	TimeColumn                  string   `json:"time_column"`
 	TimeseriesIdentifierColumns []string `json:"timeseries_identifier_columns,omitempty"`
-
-	TrainDataPath string `json:"train_data_path"`
-
-	TrainingFrameworks []string `json:"training_frameworks,omitempty"`
+	TrainDataPath               string   `json:"train_data_path"`
+	TrainingFrameworks          []string `json:"training_frameworks,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -618,15 +538,10 @@ func createLoggedModelRequestToPb(st *CreateLoggedModelRequest) (*createLoggedMo
 	}
 	pb := &createLoggedModelRequestPb{}
 	pb.ExperimentId = st.ExperimentId
-
 	pb.ModelType = st.ModelType
-
 	pb.Name = st.Name
-
 	pb.Params = st.Params
-
 	pb.SourceRunId = st.SourceRunId
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -634,17 +549,12 @@ func createLoggedModelRequestToPb(st *CreateLoggedModelRequest) (*createLoggedMo
 }
 
 type createLoggedModelRequestPb struct {
-	ExperimentId string `json:"experiment_id"`
-
-	ModelType string `json:"model_type,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Params []LoggedModelParameter `json:"params,omitempty"`
-
-	SourceRunId string `json:"source_run_id,omitempty"`
-
-	Tags []LoggedModelTag `json:"tags,omitempty"`
+	ExperimentId string                 `json:"experiment_id"`
+	ModelType    string                 `json:"model_type,omitempty"`
+	Name         string                 `json:"name,omitempty"`
+	Params       []LoggedModelParameter `json:"params,omitempty"`
+	SourceRunId  string                 `json:"source_run_id,omitempty"`
+	Tags         []LoggedModelTag       `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -703,9 +613,7 @@ func createModelRequestToPb(st *CreateModelRequest) (*createModelRequestPb, erro
 	}
 	pb := &createModelRequestPb{}
 	pb.Description = st.Description
-
 	pb.Name = st.Name
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -713,11 +621,9 @@ func createModelRequestToPb(st *CreateModelRequest) (*createModelRequestPb, erro
 }
 
 type createModelRequestPb struct {
-	Description string `json:"description,omitempty"`
-
-	Name string `json:"name"`
-
-	Tags []ModelTag `json:"tags,omitempty"`
+	Description string     `json:"description,omitempty"`
+	Name        string     `json:"name"`
+	Tags        []ModelTag `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -773,15 +679,10 @@ func createModelVersionRequestToPb(st *CreateModelVersionRequest) (*createModelV
 	}
 	pb := &createModelVersionRequestPb{}
 	pb.Description = st.Description
-
 	pb.Name = st.Name
-
 	pb.RunId = st.RunId
-
 	pb.RunLink = st.RunLink
-
 	pb.Source = st.Source
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -789,17 +690,12 @@ func createModelVersionRequestToPb(st *CreateModelVersionRequest) (*createModelV
 }
 
 type createModelVersionRequestPb struct {
-	Description string `json:"description,omitempty"`
-
-	Name string `json:"name"`
-
-	RunId string `json:"run_id,omitempty"`
-
-	RunLink string `json:"run_link,omitempty"`
-
-	Source string `json:"source"`
-
-	Tags []ModelVersionTag `json:"tags,omitempty"`
+	Description string            `json:"description,omitempty"`
+	Name        string            `json:"name"`
+	RunId       string            `json:"run_id,omitempty"`
+	RunLink     string            `json:"run_link,omitempty"`
+	Source      string            `json:"source"`
+	Tags        []ModelVersionTag `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -858,15 +754,10 @@ func createRegistryWebhookToPb(st *CreateRegistryWebhook) (*createRegistryWebhoo
 	}
 	pb := &createRegistryWebhookPb{}
 	pb.Description = st.Description
-
 	pb.Events = st.Events
-
 	pb.HttpUrlSpec = st.HttpUrlSpec
-
 	pb.JobSpec = st.JobSpec
-
 	pb.ModelName = st.ModelName
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -874,17 +765,12 @@ func createRegistryWebhookToPb(st *CreateRegistryWebhook) (*createRegistryWebhoo
 }
 
 type createRegistryWebhookPb struct {
-	Description string `json:"description,omitempty"`
-
-	Events []RegistryWebhookEvent `json:"events"`
-
-	HttpUrlSpec *HttpUrlSpec `json:"http_url_spec,omitempty"`
-
-	JobSpec *JobSpec `json:"job_spec,omitempty"`
-
-	ModelName string `json:"model_name,omitempty"`
-
-	Status RegistryWebhookStatus `json:"status,omitempty"`
+	Description string                 `json:"description,omitempty"`
+	Events      []RegistryWebhookEvent `json:"events"`
+	HttpUrlSpec *HttpUrlSpec           `json:"http_url_spec,omitempty"`
+	JobSpec     *JobSpec               `json:"job_spec,omitempty"`
+	ModelName   string                 `json:"model_name,omitempty"`
+	Status      RegistryWebhookStatus  `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -919,13 +805,9 @@ func createRunToPb(st *CreateRun) (*createRunPb, error) {
 	}
 	pb := &createRunPb{}
 	pb.ExperimentId = st.ExperimentId
-
 	pb.RunName = st.RunName
-
 	pb.StartTime = st.StartTime
-
 	pb.Tags = st.Tags
-
 	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -933,15 +815,11 @@ func createRunToPb(st *CreateRun) (*createRunPb, error) {
 }
 
 type createRunPb struct {
-	ExperimentId string `json:"experiment_id,omitempty"`
-
-	RunName string `json:"run_name,omitempty"`
-
-	StartTime int64 `json:"start_time,omitempty"`
-
-	Tags []RunTag `json:"tags,omitempty"`
-
-	UserId string `json:"user_id,omitempty"`
+	ExperimentId string   `json:"experiment_id,omitempty"`
+	RunName      string   `json:"run_name,omitempty"`
+	StartTime    int64    `json:"start_time,omitempty"`
+	Tags         []RunTag `json:"tags,omitempty"`
+	UserId       string   `json:"user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -999,11 +877,8 @@ func createTransitionRequestToPb(st *CreateTransitionRequest) (*createTransition
 	}
 	pb := &createTransitionRequestPb{}
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.Stage = st.Stage
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1012,11 +887,8 @@ func createTransitionRequestToPb(st *CreateTransitionRequest) (*createTransition
 
 type createTransitionRequestPb struct {
 	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"name"`
-
-	Stage Stage `json:"stage"`
-
+	Name    string `json:"name"`
+	Stage   Stage  `json:"stage"`
 	Version string `json:"version"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1098,15 +970,10 @@ func datasetToPb(st *Dataset) (*datasetPb, error) {
 	}
 	pb := &datasetPb{}
 	pb.Digest = st.Digest
-
 	pb.Name = st.Name
-
 	pb.Profile = st.Profile
-
 	pb.Schema = st.Schema
-
 	pb.Source = st.Source
-
 	pb.SourceType = st.SourceType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1114,16 +981,11 @@ func datasetToPb(st *Dataset) (*datasetPb, error) {
 }
 
 type datasetPb struct {
-	Digest string `json:"digest"`
-
-	Name string `json:"name"`
-
-	Profile string `json:"profile,omitempty"`
-
-	Schema string `json:"schema,omitempty"`
-
-	Source string `json:"source"`
-
+	Digest     string `json:"digest"`
+	Name       string `json:"name"`
+	Profile    string `json:"profile,omitempty"`
+	Schema     string `json:"schema,omitempty"`
+	Source     string `json:"source"`
 	SourceType string `json:"source_type"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1159,16 +1021,14 @@ func datasetInputToPb(st *DatasetInput) (*datasetInputPb, error) {
 	}
 	pb := &datasetInputPb{}
 	pb.Dataset = st.Dataset
-
 	pb.Tags = st.Tags
 
 	return pb, nil
 }
 
 type datasetInputPb struct {
-	Dataset Dataset `json:"dataset"`
-
-	Tags []InputTag `json:"tags,omitempty"`
+	Dataset Dataset    `json:"dataset"`
+	Tags    []InputTag `json:"tags,omitempty"`
 }
 
 func datasetInputFromPb(pb *datasetInputPb) (*DatasetInput, error) {
@@ -1323,7 +1183,6 @@ func deleteLoggedModelTagRequestToPb(st *DeleteLoggedModelTagRequest) (*deleteLo
 	}
 	pb := &deleteLoggedModelTagRequestPb{}
 	pb.ModelId = st.ModelId
-
 	pb.TagKey = st.TagKey
 
 	return pb, nil
@@ -1331,8 +1190,7 @@ func deleteLoggedModelTagRequestToPb(st *DeleteLoggedModelTagRequest) (*deleteLo
 
 type deleteLoggedModelTagRequestPb struct {
 	ModelId string `json:"-" url:"-"`
-
-	TagKey string `json:"-" url:"-"`
+	TagKey  string `json:"-" url:"-"`
 }
 
 func deleteLoggedModelTagRequestFromPb(pb *deleteLoggedModelTagRequestPb) (*DeleteLoggedModelTagRequest, error) {
@@ -1418,15 +1276,13 @@ func deleteModelTagRequestToPb(st *DeleteModelTagRequest) (*deleteModelTagReques
 	}
 	pb := &deleteModelTagRequestPb{}
 	pb.Key = st.Key
-
 	pb.Name = st.Name
 
 	return pb, nil
 }
 
 type deleteModelTagRequestPb struct {
-	Key string `json:"-" url:"key"`
-
+	Key  string `json:"-" url:"key"`
 	Name string `json:"-" url:"name"`
 }
 
@@ -1468,15 +1324,13 @@ func deleteModelVersionRequestToPb(st *DeleteModelVersionRequest) (*deleteModelV
 	}
 	pb := &deleteModelVersionRequestPb{}
 	pb.Name = st.Name
-
 	pb.Version = st.Version
 
 	return pb, nil
 }
 
 type deleteModelVersionRequestPb struct {
-	Name string `json:"-" url:"name"`
-
+	Name    string `json:"-" url:"name"`
 	Version string `json:"-" url:"version"`
 }
 
@@ -1518,19 +1372,15 @@ func deleteModelVersionTagRequestToPb(st *DeleteModelVersionTagRequest) (*delete
 	}
 	pb := &deleteModelVersionTagRequestPb{}
 	pb.Key = st.Key
-
 	pb.Name = st.Name
-
 	pb.Version = st.Version
 
 	return pb, nil
 }
 
 type deleteModelVersionTagRequestPb struct {
-	Key string `json:"-" url:"key"`
-
-	Name string `json:"-" url:"name"`
-
+	Key     string `json:"-" url:"key"`
+	Name    string `json:"-" url:"name"`
 	Version string `json:"-" url:"version"`
 }
 
@@ -1618,9 +1468,7 @@ func deleteRunsToPb(st *DeleteRuns) (*deleteRunsPb, error) {
 	}
 	pb := &deleteRunsPb{}
 	pb.ExperimentId = st.ExperimentId
-
 	pb.MaxRuns = st.MaxRuns
-
 	pb.MaxTimestampMillis = st.MaxTimestampMillis
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1628,11 +1476,9 @@ func deleteRunsToPb(st *DeleteRuns) (*deleteRunsPb, error) {
 }
 
 type deleteRunsPb struct {
-	ExperimentId string `json:"experiment_id"`
-
-	MaxRuns int `json:"max_runs,omitempty"`
-
-	MaxTimestampMillis int64 `json:"max_timestamp_millis"`
+	ExperimentId       string `json:"experiment_id"`
+	MaxRuns            int    `json:"max_runs,omitempty"`
+	MaxTimestampMillis int64  `json:"max_timestamp_millis"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1700,15 +1546,13 @@ func deleteTagToPb(st *DeleteTag) (*deleteTagPb, error) {
 	}
 	pb := &deleteTagPb{}
 	pb.Key = st.Key
-
 	pb.RunId = st.RunId
 
 	return pb, nil
 }
 
 type deleteTagPb struct {
-	Key string `json:"key"`
-
+	Key   string `json:"key"`
 	RunId string `json:"run_id"`
 }
 
@@ -1750,13 +1594,9 @@ func deleteTransitionRequestRequestToPb(st *DeleteTransitionRequestRequest) (*de
 	}
 	pb := &deleteTransitionRequestRequestPb{}
 	pb.Comment = st.Comment
-
 	pb.Creator = st.Creator
-
 	pb.Name = st.Name
-
 	pb.Stage = st.Stage
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1764,15 +1604,11 @@ func deleteTransitionRequestRequestToPb(st *DeleteTransitionRequestRequest) (*de
 }
 
 type deleteTransitionRequestRequestPb struct {
-	Comment string `json:"-" url:"comment,omitempty"`
-
-	Creator string `json:"-" url:"creator"`
-
-	Name string `json:"-" url:"name"`
-
-	Stage DeleteTransitionRequestStage `json:"-" url:"stage"`
-
-	Version string `json:"-" url:"version"`
+	Comment string                       `json:"-" url:"comment,omitempty"`
+	Creator string                       `json:"-" url:"creator"`
+	Name    string                       `json:"-" url:"name"`
+	Stage   DeleteTransitionRequestStage `json:"-" url:"stage"`
+	Version string                       `json:"-" url:"version"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1884,17 +1720,11 @@ func experimentToPb(st *Experiment) (*experimentPb, error) {
 	}
 	pb := &experimentPb{}
 	pb.ArtifactLocation = st.ArtifactLocation
-
 	pb.CreationTime = st.CreationTime
-
 	pb.ExperimentId = st.ExperimentId
-
 	pb.LastUpdateTime = st.LastUpdateTime
-
 	pb.LifecycleStage = st.LifecycleStage
-
 	pb.Name = st.Name
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1902,19 +1732,13 @@ func experimentToPb(st *Experiment) (*experimentPb, error) {
 }
 
 type experimentPb struct {
-	ArtifactLocation string `json:"artifact_location,omitempty"`
-
-	CreationTime int64 `json:"creation_time,omitempty"`
-
-	ExperimentId string `json:"experiment_id,omitempty"`
-
-	LastUpdateTime int64 `json:"last_update_time,omitempty"`
-
-	LifecycleStage string `json:"lifecycle_stage,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Tags []ExperimentTag `json:"tags,omitempty"`
+	ArtifactLocation string          `json:"artifact_location,omitempty"`
+	CreationTime     int64           `json:"creation_time,omitempty"`
+	ExperimentId     string          `json:"experiment_id,omitempty"`
+	LastUpdateTime   int64           `json:"last_update_time,omitempty"`
+	LifecycleStage   string          `json:"lifecycle_stage,omitempty"`
+	Name             string          `json:"name,omitempty"`
+	Tags             []ExperimentTag `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1950,11 +1774,8 @@ func experimentAccessControlRequestToPb(st *ExperimentAccessControlRequest) (*ex
 	}
 	pb := &experimentAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1962,13 +1783,10 @@ func experimentAccessControlRequestToPb(st *ExperimentAccessControlRequest) (*ex
 }
 
 type experimentAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string                    `json:"group_name,omitempty"`
+	PermissionLevel      ExperimentPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string                    `json:"service_principal_name,omitempty"`
+	UserName             string                    `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2001,13 +1819,9 @@ func experimentAccessControlResponseToPb(st *ExperimentAccessControlResponse) (*
 	}
 	pb := &experimentAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2015,15 +1829,11 @@ func experimentAccessControlResponseToPb(st *ExperimentAccessControlResponse) (*
 }
 
 type experimentAccessControlResponsePb struct {
-	AllPermissions []ExperimentPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []ExperimentPermission `json:"all_permissions,omitempty"`
+	DisplayName          string                 `json:"display_name,omitempty"`
+	GroupName            string                 `json:"group_name,omitempty"`
+	ServicePrincipalName string                 `json:"service_principal_name,omitempty"`
+	UserName             string                 `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2057,9 +1867,7 @@ func experimentPermissionToPb(st *ExperimentPermission) (*experimentPermissionPb
 	}
 	pb := &experimentPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2067,11 +1875,9 @@ func experimentPermissionToPb(st *ExperimentPermission) (*experimentPermissionPb
 }
 
 type experimentPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool                      `json:"inherited,omitempty"`
+	InheritedFromObject []string                  `json:"inherited_from_object,omitempty"`
+	PermissionLevel     ExperimentPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2103,9 +1909,7 @@ func experimentPermissionsToPb(st *ExperimentPermissions) (*experimentPermission
 	}
 	pb := &experimentPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2114,10 +1918,8 @@ func experimentPermissionsToPb(st *ExperimentPermissions) (*experimentPermission
 
 type experimentPermissionsPb struct {
 	AccessControlList []ExperimentAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                            `json:"object_id,omitempty"`
+	ObjectType        string                            `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2149,7 +1951,6 @@ func experimentPermissionsDescriptionToPb(st *ExperimentPermissionsDescription) 
 	}
 	pb := &experimentPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2157,8 +1958,7 @@ func experimentPermissionsDescriptionToPb(st *ExperimentPermissionsDescription) 
 }
 
 type experimentPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string                    `json:"description,omitempty"`
 	PermissionLevel ExperimentPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2190,7 +1990,6 @@ func experimentPermissionsRequestToPb(st *ExperimentPermissionsRequest) (*experi
 	}
 	pb := &experimentPermissionsRequestPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ExperimentId = st.ExperimentId
 
 	return pb, nil
@@ -2198,8 +1997,7 @@ func experimentPermissionsRequestToPb(st *ExperimentPermissionsRequest) (*experi
 
 type experimentPermissionsRequestPb struct {
 	AccessControlList []ExperimentAccessControlRequest `json:"access_control_list,omitempty"`
-
-	ExperimentId string `json:"-" url:"-"`
+	ExperimentId      string                           `json:"-" url:"-"`
 }
 
 func experimentPermissionsRequestFromPb(pb *experimentPermissionsRequestPb) (*ExperimentPermissionsRequest, error) {
@@ -2219,7 +2017,6 @@ func experimentTagToPb(st *ExperimentTag) (*experimentTagPb, error) {
 	}
 	pb := &experimentTagPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2227,8 +2024,7 @@ func experimentTagToPb(st *ExperimentTag) (*experimentTagPb, error) {
 }
 
 type experimentTagPb struct {
-	Key string `json:"key,omitempty"`
-
+	Key   string `json:"key,omitempty"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2260,9 +2056,7 @@ func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
 	}
 	pb := &fileInfoPb{}
 	pb.FileSize = st.FileSize
-
 	pb.IsDir = st.IsDir
-
 	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2270,11 +2064,9 @@ func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
 }
 
 type fileInfoPb struct {
-	FileSize int64 `json:"file_size,omitempty"`
-
-	IsDir bool `json:"is_dir,omitempty"`
-
-	Path string `json:"path,omitempty"`
+	FileSize int64  `json:"file_size,omitempty"`
+	IsDir    bool   `json:"is_dir,omitempty"`
+	Path     string `json:"path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2306,16 +2098,14 @@ func finalizeLoggedModelRequestToPb(st *FinalizeLoggedModelRequest) (*finalizeLo
 	}
 	pb := &finalizeLoggedModelRequestPb{}
 	pb.ModelId = st.ModelId
-
 	pb.Status = st.Status
 
 	return pb, nil
 }
 
 type finalizeLoggedModelRequestPb struct {
-	ModelId string `json:"-" url:"-"`
-
-	Status LoggedModelStatus `json:"status"`
+	ModelId string            `json:"-" url:"-"`
+	Status  LoggedModelStatus `json:"status"`
 }
 
 func finalizeLoggedModelRequestFromPb(pb *finalizeLoggedModelRequestPb) (*FinalizeLoggedModelRequest, error) {
@@ -2359,9 +2149,7 @@ func forecastingExperimentToPb(st *ForecastingExperiment) (*forecastingExperimen
 	}
 	pb := &forecastingExperimentPb{}
 	pb.ExperimentId = st.ExperimentId
-
 	pb.ExperimentPageUrl = st.ExperimentPageUrl
-
 	pb.State = st.State
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2369,11 +2157,9 @@ func forecastingExperimentToPb(st *ForecastingExperiment) (*forecastingExperimen
 }
 
 type forecastingExperimentPb struct {
-	ExperimentId string `json:"experiment_id,omitempty"`
-
-	ExperimentPageUrl string `json:"experiment_page_url,omitempty"`
-
-	State ForecastingExperimentState `json:"state,omitempty"`
+	ExperimentId      string                     `json:"experiment_id,omitempty"`
+	ExperimentPageUrl string                     `json:"experiment_page_url,omitempty"`
+	State             ForecastingExperimentState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2693,13 +2479,9 @@ func getHistoryRequestToPb(st *GetHistoryRequest) (*getHistoryRequestPb, error) 
 	}
 	pb := &getHistoryRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.MetricKey = st.MetricKey
-
 	pb.PageToken = st.PageToken
-
 	pb.RunId = st.RunId
-
 	pb.RunUuid = st.RunUuid
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2707,15 +2489,11 @@ func getHistoryRequestToPb(st *GetHistoryRequest) (*getHistoryRequestPb, error) 
 }
 
 type getHistoryRequestPb struct {
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	MetricKey string `json:"-" url:"metric_key"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	RunId string `json:"-" url:"run_id,omitempty"`
-
-	RunUuid string `json:"-" url:"run_uuid,omitempty"`
+	MaxResults int    `json:"-" url:"max_results,omitempty"`
+	MetricKey  string `json:"-" url:"metric_key"`
+	PageToken  string `json:"-" url:"page_token,omitempty"`
+	RunId      string `json:"-" url:"run_id,omitempty"`
+	RunUuid    string `json:"-" url:"run_uuid,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2749,15 +2527,13 @@ func getLatestVersionsRequestToPb(st *GetLatestVersionsRequest) (*getLatestVersi
 	}
 	pb := &getLatestVersionsRequestPb{}
 	pb.Name = st.Name
-
 	pb.Stages = st.Stages
 
 	return pb, nil
 }
 
 type getLatestVersionsRequestPb struct {
-	Name string `json:"name"`
-
+	Name   string   `json:"name"`
 	Stages []string `json:"stages,omitempty"`
 }
 
@@ -2850,7 +2626,6 @@ func getMetricHistoryResponseToPb(st *GetMetricHistoryResponse) (*getMetricHisto
 	}
 	pb := &getMetricHistoryResponsePb{}
 	pb.Metrics = st.Metrics
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2858,9 +2633,8 @@ func getMetricHistoryResponseToPb(st *GetMetricHistoryResponse) (*getMetricHisto
 }
 
 type getMetricHistoryResponsePb struct {
-	Metrics []Metric `json:"metrics,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Metrics       []Metric `json:"metrics,omitempty"`
+	NextPageToken string   `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2939,15 +2713,13 @@ func getModelVersionDownloadUriRequestToPb(st *GetModelVersionDownloadUriRequest
 	}
 	pb := &getModelVersionDownloadUriRequestPb{}
 	pb.Name = st.Name
-
 	pb.Version = st.Version
 
 	return pb, nil
 }
 
 type getModelVersionDownloadUriRequestPb struct {
-	Name string `json:"-" url:"name"`
-
+	Name    string `json:"-" url:"name"`
 	Version string `json:"-" url:"version"`
 }
 
@@ -3004,15 +2776,13 @@ func getModelVersionRequestToPb(st *GetModelVersionRequest) (*getModelVersionReq
 	}
 	pb := &getModelVersionRequestPb{}
 	pb.Name = st.Name
-
 	pb.Version = st.Version
 
 	return pb, nil
 }
 
 type getModelVersionRequestPb struct {
-	Name string `json:"-" url:"name"`
-
+	Name    string `json:"-" url:"name"`
 	Version string `json:"-" url:"version"`
 }
 
@@ -3129,7 +2899,6 @@ func getRunRequestToPb(st *GetRunRequest) (*getRunRequestPb, error) {
 	}
 	pb := &getRunRequestPb{}
 	pb.RunId = st.RunId
-
 	pb.RunUuid = st.RunUuid
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3137,8 +2906,7 @@ func getRunRequestToPb(st *GetRunRequest) (*getRunRequestPb, error) {
 }
 
 type getRunRequestPb struct {
-	RunId string `json:"-" url:"run_id"`
-
+	RunId   string `json:"-" url:"run_id"`
 	RunUuid string `json:"-" url:"run_uuid,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3194,11 +2962,8 @@ func httpUrlSpecToPb(st *HttpUrlSpec) (*httpUrlSpecPb, error) {
 	}
 	pb := &httpUrlSpecPb{}
 	pb.Authorization = st.Authorization
-
 	pb.EnableSslVerification = st.EnableSslVerification
-
 	pb.Secret = st.Secret
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3206,13 +2971,10 @@ func httpUrlSpecToPb(st *HttpUrlSpec) (*httpUrlSpecPb, error) {
 }
 
 type httpUrlSpecPb struct {
-	Authorization string `json:"authorization,omitempty"`
-
-	EnableSslVerification bool `json:"enable_ssl_verification,omitempty"`
-
-	Secret string `json:"secret,omitempty"`
-
-	Url string `json:"url"`
+	Authorization         string `json:"authorization,omitempty"`
+	EnableSslVerification bool   `json:"enable_ssl_verification,omitempty"`
+	Secret                string `json:"secret,omitempty"`
+	Url                   string `json:"url"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3245,7 +3007,6 @@ func httpUrlSpecWithoutSecretToPb(st *HttpUrlSpecWithoutSecret) (*httpUrlSpecWit
 	}
 	pb := &httpUrlSpecWithoutSecretPb{}
 	pb.EnableSslVerification = st.EnableSslVerification
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3253,9 +3014,8 @@ func httpUrlSpecWithoutSecretToPb(st *HttpUrlSpecWithoutSecret) (*httpUrlSpecWit
 }
 
 type httpUrlSpecWithoutSecretPb struct {
-	EnableSslVerification bool `json:"enable_ssl_verification,omitempty"`
-
-	Url string `json:"url,omitempty"`
+	EnableSslVerification bool   `json:"enable_ssl_verification,omitempty"`
+	Url                   string `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3286,15 +3046,13 @@ func inputTagToPb(st *InputTag) (*inputTagPb, error) {
 	}
 	pb := &inputTagPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	return pb, nil
 }
 
 type inputTagPb struct {
-	Key string `json:"key"`
-
+	Key   string `json:"key"`
 	Value string `json:"value"`
 }
 
@@ -3315,9 +3073,7 @@ func jobSpecToPb(st *JobSpec) (*jobSpecPb, error) {
 	}
 	pb := &jobSpecPb{}
 	pb.AccessToken = st.AccessToken
-
 	pb.JobId = st.JobId
-
 	pb.WorkspaceUrl = st.WorkspaceUrl
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3325,10 +3081,8 @@ func jobSpecToPb(st *JobSpec) (*jobSpecPb, error) {
 }
 
 type jobSpecPb struct {
-	AccessToken string `json:"access_token"`
-
-	JobId string `json:"job_id"`
-
+	AccessToken  string `json:"access_token"`
+	JobId        string `json:"job_id"`
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3361,7 +3115,6 @@ func jobSpecWithoutSecretToPb(st *JobSpecWithoutSecret) (*jobSpecWithoutSecretPb
 	}
 	pb := &jobSpecWithoutSecretPb{}
 	pb.JobId = st.JobId
-
 	pb.WorkspaceUrl = st.WorkspaceUrl
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3369,8 +3122,7 @@ func jobSpecWithoutSecretToPb(st *JobSpecWithoutSecret) (*jobSpecWithoutSecretPb
 }
 
 type jobSpecWithoutSecretPb struct {
-	JobId string `json:"job_id,omitempty"`
-
+	JobId        string `json:"job_id,omitempty"`
 	WorkspaceUrl string `json:"workspace_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3402,11 +3154,8 @@ func listArtifactsRequestToPb(st *ListArtifactsRequest) (*listArtifactsRequestPb
 	}
 	pb := &listArtifactsRequestPb{}
 	pb.PageToken = st.PageToken
-
 	pb.Path = st.Path
-
 	pb.RunId = st.RunId
-
 	pb.RunUuid = st.RunUuid
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3415,12 +3164,9 @@ func listArtifactsRequestToPb(st *ListArtifactsRequest) (*listArtifactsRequestPb
 
 type listArtifactsRequestPb struct {
 	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	Path string `json:"-" url:"path,omitempty"`
-
-	RunId string `json:"-" url:"run_id,omitempty"`
-
-	RunUuid string `json:"-" url:"run_uuid,omitempty"`
+	Path      string `json:"-" url:"path,omitempty"`
+	RunId     string `json:"-" url:"run_id,omitempty"`
+	RunUuid   string `json:"-" url:"run_uuid,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3453,9 +3199,7 @@ func listArtifactsResponseToPb(st *ListArtifactsResponse) (*listArtifactsRespons
 	}
 	pb := &listArtifactsResponsePb{}
 	pb.Files = st.Files
-
 	pb.NextPageToken = st.NextPageToken
-
 	pb.RootUri = st.RootUri
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3463,11 +3207,9 @@ func listArtifactsResponseToPb(st *ListArtifactsResponse) (*listArtifactsRespons
 }
 
 type listArtifactsResponsePb struct {
-	Files []FileInfo `json:"files,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	RootUri string `json:"root_uri,omitempty"`
+	Files         []FileInfo `json:"files,omitempty"`
+	NextPageToken string     `json:"next_page_token,omitempty"`
+	RootUri       string     `json:"root_uri,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3499,9 +3241,7 @@ func listExperimentsRequestToPb(st *ListExperimentsRequest) (*listExperimentsReq
 	}
 	pb := &listExperimentsRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
-
 	pb.ViewType = st.ViewType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3509,11 +3249,9 @@ func listExperimentsRequestToPb(st *ListExperimentsRequest) (*listExperimentsReq
 }
 
 type listExperimentsRequestPb struct {
-	MaxResults int64 `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ViewType ViewType `json:"-" url:"view_type,omitempty"`
+	MaxResults int64    `json:"-" url:"max_results,omitempty"`
+	PageToken  string   `json:"-" url:"page_token,omitempty"`
+	ViewType   ViewType `json:"-" url:"view_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3545,7 +3283,6 @@ func listExperimentsResponseToPb(st *ListExperimentsResponse) (*listExperimentsR
 	}
 	pb := &listExperimentsResponsePb{}
 	pb.Experiments = st.Experiments
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3553,9 +3290,8 @@ func listExperimentsResponseToPb(st *ListExperimentsResponse) (*listExperimentsR
 }
 
 type listExperimentsResponsePb struct {
-	Experiments []Experiment `json:"experiments,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Experiments   []Experiment `json:"experiments,omitempty"`
+	NextPageToken string       `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3586,9 +3322,7 @@ func listLoggedModelArtifactsRequestToPb(st *ListLoggedModelArtifactsRequest) (*
 	}
 	pb := &listLoggedModelArtifactsRequestPb{}
 	pb.ArtifactDirectoryPath = st.ArtifactDirectoryPath
-
 	pb.ModelId = st.ModelId
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3597,10 +3331,8 @@ func listLoggedModelArtifactsRequestToPb(st *ListLoggedModelArtifactsRequest) (*
 
 type listLoggedModelArtifactsRequestPb struct {
 	ArtifactDirectoryPath string `json:"-" url:"artifact_directory_path,omitempty"`
-
-	ModelId string `json:"-" url:"-"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	ModelId               string `json:"-" url:"-"`
+	PageToken             string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3632,9 +3364,7 @@ func listLoggedModelArtifactsResponseToPb(st *ListLoggedModelArtifactsResponse) 
 	}
 	pb := &listLoggedModelArtifactsResponsePb{}
 	pb.Files = st.Files
-
 	pb.NextPageToken = st.NextPageToken
-
 	pb.RootUri = st.RootUri
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3642,11 +3372,9 @@ func listLoggedModelArtifactsResponseToPb(st *ListLoggedModelArtifactsResponse) 
 }
 
 type listLoggedModelArtifactsResponsePb struct {
-	Files []FileInfo `json:"files,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	RootUri string `json:"root_uri,omitempty"`
+	Files         []FileInfo `json:"files,omitempty"`
+	NextPageToken string     `json:"next_page_token,omitempty"`
+	RootUri       string     `json:"root_uri,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3678,7 +3406,6 @@ func listModelsRequestToPb(st *ListModelsRequest) (*listModelsRequestPb, error) 
 	}
 	pb := &listModelsRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3686,9 +3413,8 @@ func listModelsRequestToPb(st *ListModelsRequest) (*listModelsRequestPb, error) 
 }
 
 type listModelsRequestPb struct {
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	MaxResults int    `json:"-" url:"max_results,omitempty"`
+	PageToken  string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3719,7 +3445,6 @@ func listModelsResponseToPb(st *ListModelsResponse) (*listModelsResponsePb, erro
 	}
 	pb := &listModelsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.RegisteredModels = st.RegisteredModels
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3727,8 +3452,7 @@ func listModelsResponseToPb(st *ListModelsResponse) (*listModelsResponsePb, erro
 }
 
 type listModelsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken    string  `json:"next_page_token,omitempty"`
 	RegisteredModels []Model `json:"registered_models,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3760,7 +3484,6 @@ func listRegistryWebhooksToPb(st *ListRegistryWebhooks) (*listRegistryWebhooksPb
 	}
 	pb := &listRegistryWebhooksPb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Webhooks = st.Webhooks
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3768,9 +3491,8 @@ func listRegistryWebhooksToPb(st *ListRegistryWebhooks) (*listRegistryWebhooksPb
 }
 
 type listRegistryWebhooksPb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Webhooks []RegistryWebhook `json:"webhooks,omitempty"`
+	NextPageToken string            `json:"next_page_token,omitempty"`
+	Webhooks      []RegistryWebhook `json:"webhooks,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3801,15 +3523,13 @@ func listTransitionRequestsRequestToPb(st *ListTransitionRequestsRequest) (*list
 	}
 	pb := &listTransitionRequestsRequestPb{}
 	pb.Name = st.Name
-
 	pb.Version = st.Version
 
 	return pb, nil
 }
 
 type listTransitionRequestsRequestPb struct {
-	Name string `json:"-" url:"name"`
-
+	Name    string `json:"-" url:"name"`
 	Version string `json:"-" url:"version"`
 }
 
@@ -3854,9 +3574,7 @@ func listWebhooksRequestToPb(st *ListWebhooksRequest) (*listWebhooksRequestPb, e
 	}
 	pb := &listWebhooksRequestPb{}
 	pb.Events = st.Events
-
 	pb.ModelName = st.ModelName
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3864,11 +3582,9 @@ func listWebhooksRequestToPb(st *ListWebhooksRequest) (*listWebhooksRequestPb, e
 }
 
 type listWebhooksRequestPb struct {
-	Events []RegistryWebhookEvent `json:"-" url:"events,omitempty"`
-
-	ModelName string `json:"-" url:"model_name,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	Events    []RegistryWebhookEvent `json:"-" url:"events,omitempty"`
+	ModelName string                 `json:"-" url:"model_name,omitempty"`
+	PageToken string                 `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3900,11 +3616,8 @@ func logBatchToPb(st *LogBatch) (*logBatchPb, error) {
 	}
 	pb := &logBatchPb{}
 	pb.Metrics = st.Metrics
-
 	pb.Params = st.Params
-
 	pb.RunId = st.RunId
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3913,12 +3626,9 @@ func logBatchToPb(st *LogBatch) (*logBatchPb, error) {
 
 type logBatchPb struct {
 	Metrics []Metric `json:"metrics,omitempty"`
-
-	Params []Param `json:"params,omitempty"`
-
-	RunId string `json:"run_id,omitempty"`
-
-	Tags []RunTag `json:"tags,omitempty"`
+	Params  []Param  `json:"params,omitempty"`
+	RunId   string   `json:"run_id,omitempty"`
+	Tags    []RunTag `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3972,9 +3682,7 @@ func logInputsToPb(st *LogInputs) (*logInputsPb, error) {
 	}
 	pb := &logInputsPb{}
 	pb.Datasets = st.Datasets
-
 	pb.Models = st.Models
-
 	pb.RunId = st.RunId
 
 	return pb, nil
@@ -3982,10 +3690,8 @@ func logInputsToPb(st *LogInputs) (*logInputsPb, error) {
 
 type logInputsPb struct {
 	Datasets []DatasetInput `json:"datasets,omitempty"`
-
-	Models []ModelInput `json:"models,omitempty"`
-
-	RunId string `json:"run_id"`
+	Models   []ModelInput   `json:"models,omitempty"`
+	RunId    string         `json:"run_id"`
 }
 
 func logInputsFromPb(pb *logInputsPb) (*LogInputs, error) {
@@ -4027,16 +3733,14 @@ func logLoggedModelParamsRequestToPb(st *LogLoggedModelParamsRequest) (*logLogge
 	}
 	pb := &logLoggedModelParamsRequestPb{}
 	pb.ModelId = st.ModelId
-
 	pb.Params = st.Params
 
 	return pb, nil
 }
 
 type logLoggedModelParamsRequestPb struct {
-	ModelId string `json:"-" url:"-"`
-
-	Params []LoggedModelParameter `json:"params,omitempty"`
+	ModelId string                 `json:"-" url:"-"`
+	Params  []LoggedModelParameter `json:"params,omitempty"`
 }
 
 func logLoggedModelParamsRequestFromPb(pb *logLoggedModelParamsRequestPb) (*LogLoggedModelParamsRequest, error) {
@@ -4077,21 +3781,13 @@ func logMetricToPb(st *LogMetric) (*logMetricPb, error) {
 	}
 	pb := &logMetricPb{}
 	pb.DatasetDigest = st.DatasetDigest
-
 	pb.DatasetName = st.DatasetName
-
 	pb.Key = st.Key
-
 	pb.ModelId = st.ModelId
-
 	pb.RunId = st.RunId
-
 	pb.RunUuid = st.RunUuid
-
 	pb.Step = st.Step
-
 	pb.Timestamp = st.Timestamp
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4099,23 +3795,15 @@ func logMetricToPb(st *LogMetric) (*logMetricPb, error) {
 }
 
 type logMetricPb struct {
-	DatasetDigest string `json:"dataset_digest,omitempty"`
-
-	DatasetName string `json:"dataset_name,omitempty"`
-
-	Key string `json:"key"`
-
-	ModelId string `json:"model_id,omitempty"`
-
-	RunId string `json:"run_id,omitempty"`
-
-	RunUuid string `json:"run_uuid,omitempty"`
-
-	Step int64 `json:"step,omitempty"`
-
-	Timestamp int64 `json:"timestamp"`
-
-	Value float64 `json:"value"`
+	DatasetDigest string  `json:"dataset_digest,omitempty"`
+	DatasetName   string  `json:"dataset_name,omitempty"`
+	Key           string  `json:"key"`
+	ModelId       string  `json:"model_id,omitempty"`
+	RunId         string  `json:"run_id,omitempty"`
+	RunUuid       string  `json:"run_uuid,omitempty"`
+	Step          int64   `json:"step,omitempty"`
+	Timestamp     int64   `json:"timestamp"`
+	Value         float64 `json:"value"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4174,7 +3862,6 @@ func logModelToPb(st *LogModel) (*logModelPb, error) {
 	}
 	pb := &logModelPb{}
 	pb.ModelJson = st.ModelJson
-
 	pb.RunId = st.RunId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4183,8 +3870,7 @@ func logModelToPb(st *LogModel) (*logModelPb, error) {
 
 type logModelPb struct {
 	ModelJson string `json:"model_json,omitempty"`
-
-	RunId string `json:"run_id,omitempty"`
+	RunId     string `json:"run_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4236,7 +3922,6 @@ func logOutputsRequestToPb(st *LogOutputsRequest) (*logOutputsRequestPb, error) 
 	}
 	pb := &logOutputsRequestPb{}
 	pb.Models = st.Models
-
 	pb.RunId = st.RunId
 
 	return pb, nil
@@ -4244,8 +3929,7 @@ func logOutputsRequestToPb(st *LogOutputsRequest) (*logOutputsRequestPb, error) 
 
 type logOutputsRequestPb struct {
 	Models []ModelOutput `json:"models,omitempty"`
-
-	RunId string `json:"run_id"`
+	RunId  string        `json:"run_id"`
 }
 
 func logOutputsRequestFromPb(pb *logOutputsRequestPb) (*LogOutputsRequest, error) {
@@ -4286,11 +3970,8 @@ func logParamToPb(st *LogParam) (*logParamPb, error) {
 	}
 	pb := &logParamPb{}
 	pb.Key = st.Key
-
 	pb.RunId = st.RunId
-
 	pb.RunUuid = st.RunUuid
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4298,13 +3979,10 @@ func logParamToPb(st *LogParam) (*logParamPb, error) {
 }
 
 type logParamPb struct {
-	Key string `json:"key"`
-
-	RunId string `json:"run_id,omitempty"`
-
+	Key     string `json:"key"`
+	RunId   string `json:"run_id,omitempty"`
 	RunUuid string `json:"run_uuid,omitempty"`
-
-	Value string `json:"value"`
+	Value   string `json:"value"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4358,7 +4036,6 @@ func loggedModelToPb(st *LoggedModel) (*loggedModelPb, error) {
 	}
 	pb := &loggedModelPb{}
 	pb.Data = st.Data
-
 	pb.Info = st.Info
 
 	return pb, nil
@@ -4366,7 +4043,6 @@ func loggedModelToPb(st *LoggedModel) (*loggedModelPb, error) {
 
 type loggedModelPb struct {
 	Data *LoggedModelData `json:"data,omitempty"`
-
 	Info *LoggedModelInfo `json:"info,omitempty"`
 }
 
@@ -4387,16 +4063,14 @@ func loggedModelDataToPb(st *LoggedModelData) (*loggedModelDataPb, error) {
 	}
 	pb := &loggedModelDataPb{}
 	pb.Metrics = st.Metrics
-
 	pb.Params = st.Params
 
 	return pb, nil
 }
 
 type loggedModelDataPb struct {
-	Metrics []Metric `json:"metrics,omitempty"`
-
-	Params []LoggedModelParameter `json:"params,omitempty"`
+	Metrics []Metric               `json:"metrics,omitempty"`
+	Params  []LoggedModelParameter `json:"params,omitempty"`
 }
 
 func loggedModelDataFromPb(pb *loggedModelDataPb) (*LoggedModelData, error) {
@@ -4416,27 +4090,16 @@ func loggedModelInfoToPb(st *LoggedModelInfo) (*loggedModelInfoPb, error) {
 	}
 	pb := &loggedModelInfoPb{}
 	pb.ArtifactUri = st.ArtifactUri
-
 	pb.CreationTimestampMs = st.CreationTimestampMs
-
 	pb.CreatorId = st.CreatorId
-
 	pb.ExperimentId = st.ExperimentId
-
 	pb.LastUpdatedTimestampMs = st.LastUpdatedTimestampMs
-
 	pb.ModelId = st.ModelId
-
 	pb.ModelType = st.ModelType
-
 	pb.Name = st.Name
-
 	pb.SourceRunId = st.SourceRunId
-
 	pb.Status = st.Status
-
 	pb.StatusMessage = st.StatusMessage
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4444,29 +4107,18 @@ func loggedModelInfoToPb(st *LoggedModelInfo) (*loggedModelInfoPb, error) {
 }
 
 type loggedModelInfoPb struct {
-	ArtifactUri string `json:"artifact_uri,omitempty"`
-
-	CreationTimestampMs int64 `json:"creation_timestamp_ms,omitempty"`
-
-	CreatorId int64 `json:"creator_id,omitempty"`
-
-	ExperimentId string `json:"experiment_id,omitempty"`
-
-	LastUpdatedTimestampMs int64 `json:"last_updated_timestamp_ms,omitempty"`
-
-	ModelId string `json:"model_id,omitempty"`
-
-	ModelType string `json:"model_type,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	SourceRunId string `json:"source_run_id,omitempty"`
-
-	Status LoggedModelStatus `json:"status,omitempty"`
-
-	StatusMessage string `json:"status_message,omitempty"`
-
-	Tags []LoggedModelTag `json:"tags,omitempty"`
+	ArtifactUri            string            `json:"artifact_uri,omitempty"`
+	CreationTimestampMs    int64             `json:"creation_timestamp_ms,omitempty"`
+	CreatorId              int64             `json:"creator_id,omitempty"`
+	ExperimentId           string            `json:"experiment_id,omitempty"`
+	LastUpdatedTimestampMs int64             `json:"last_updated_timestamp_ms,omitempty"`
+	ModelId                string            `json:"model_id,omitempty"`
+	ModelType              string            `json:"model_type,omitempty"`
+	Name                   string            `json:"name,omitempty"`
+	SourceRunId            string            `json:"source_run_id,omitempty"`
+	Status                 LoggedModelStatus `json:"status,omitempty"`
+	StatusMessage          string            `json:"status_message,omitempty"`
+	Tags                   []LoggedModelTag  `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4507,7 +4159,6 @@ func loggedModelParameterToPb(st *LoggedModelParameter) (*loggedModelParameterPb
 	}
 	pb := &loggedModelParameterPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4515,8 +4166,7 @@ func loggedModelParameterToPb(st *LoggedModelParameter) (*loggedModelParameterPb
 }
 
 type loggedModelParameterPb struct {
-	Key string `json:"key,omitempty"`
-
+	Key   string `json:"key,omitempty"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4548,7 +4198,6 @@ func loggedModelTagToPb(st *LoggedModelTag) (*loggedModelTagPb, error) {
 	}
 	pb := &loggedModelTagPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4556,8 +4205,7 @@ func loggedModelTagToPb(st *LoggedModelTag) (*loggedModelTagPb, error) {
 }
 
 type loggedModelTagPb struct {
-	Key string `json:"key,omitempty"`
-
+	Key   string `json:"key,omitempty"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4589,19 +4237,12 @@ func metricToPb(st *Metric) (*metricPb, error) {
 	}
 	pb := &metricPb{}
 	pb.DatasetDigest = st.DatasetDigest
-
 	pb.DatasetName = st.DatasetName
-
 	pb.Key = st.Key
-
 	pb.ModelId = st.ModelId
-
 	pb.RunId = st.RunId
-
 	pb.Step = st.Step
-
 	pb.Timestamp = st.Timestamp
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4609,21 +4250,14 @@ func metricToPb(st *Metric) (*metricPb, error) {
 }
 
 type metricPb struct {
-	DatasetDigest string `json:"dataset_digest,omitempty"`
-
-	DatasetName string `json:"dataset_name,omitempty"`
-
-	Key string `json:"key,omitempty"`
-
-	ModelId string `json:"model_id,omitempty"`
-
-	RunId string `json:"run_id,omitempty"`
-
-	Step int64 `json:"step,omitempty"`
-
-	Timestamp int64 `json:"timestamp,omitempty"`
-
-	Value float64 `json:"value,omitempty"`
+	DatasetDigest string  `json:"dataset_digest,omitempty"`
+	DatasetName   string  `json:"dataset_name,omitempty"`
+	Key           string  `json:"key,omitempty"`
+	ModelId       string  `json:"model_id,omitempty"`
+	RunId         string  `json:"run_id,omitempty"`
+	Step          int64   `json:"step,omitempty"`
+	Timestamp     int64   `json:"timestamp,omitempty"`
+	Value         float64 `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4660,17 +4294,11 @@ func modelToPb(st *Model) (*modelPb, error) {
 	}
 	pb := &modelPb{}
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.Description = st.Description
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.LatestVersions = st.LatestVersions
-
 	pb.Name = st.Name
-
 	pb.Tags = st.Tags
-
 	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4678,19 +4306,13 @@ func modelToPb(st *Model) (*modelPb, error) {
 }
 
 type modelPb struct {
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	LatestVersions []ModelVersion `json:"latest_versions,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Tags []ModelTag `json:"tags,omitempty"`
-
-	UserId string `json:"user_id,omitempty"`
+	CreationTimestamp    int64          `json:"creation_timestamp,omitempty"`
+	Description          string         `json:"description,omitempty"`
+	LastUpdatedTimestamp int64          `json:"last_updated_timestamp,omitempty"`
+	LatestVersions       []ModelVersion `json:"latest_versions,omitempty"`
+	Name                 string         `json:"name,omitempty"`
+	Tags                 []ModelTag     `json:"tags,omitempty"`
+	UserId               string         `json:"user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4726,21 +4348,13 @@ func modelDatabricksToPb(st *ModelDatabricks) (*modelDatabricksPb, error) {
 	}
 	pb := &modelDatabricksPb{}
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.Description = st.Description
-
 	pb.Id = st.Id
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.LatestVersions = st.LatestVersions
-
 	pb.Name = st.Name
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.Tags = st.Tags
-
 	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4748,23 +4362,15 @@ func modelDatabricksToPb(st *ModelDatabricks) (*modelDatabricksPb, error) {
 }
 
 type modelDatabricksPb struct {
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	LatestVersions []ModelVersion `json:"latest_versions,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
-
-	Tags []ModelTag `json:"tags,omitempty"`
-
-	UserId string `json:"user_id,omitempty"`
+	CreationTimestamp    int64           `json:"creation_timestamp,omitempty"`
+	Description          string          `json:"description,omitempty"`
+	Id                   string          `json:"id,omitempty"`
+	LastUpdatedTimestamp int64           `json:"last_updated_timestamp,omitempty"`
+	LatestVersions       []ModelVersion  `json:"latest_versions,omitempty"`
+	Name                 string          `json:"name,omitempty"`
+	PermissionLevel      PermissionLevel `json:"permission_level,omitempty"`
+	Tags                 []ModelTag      `json:"tags,omitempty"`
+	UserId               string          `json:"user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4826,7 +4432,6 @@ func modelOutputToPb(st *ModelOutput) (*modelOutputPb, error) {
 	}
 	pb := &modelOutputPb{}
 	pb.ModelId = st.ModelId
-
 	pb.Step = st.Step
 
 	return pb, nil
@@ -4834,8 +4439,7 @@ func modelOutputToPb(st *ModelOutput) (*modelOutputPb, error) {
 
 type modelOutputPb struct {
 	ModelId string `json:"model_id"`
-
-	Step int64 `json:"step"`
+	Step    int64  `json:"step"`
 }
 
 func modelOutputFromPb(pb *modelOutputPb) (*ModelOutput, error) {
@@ -4855,7 +4459,6 @@ func modelTagToPb(st *ModelTag) (*modelTagPb, error) {
 	}
 	pb := &modelTagPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4863,8 +4466,7 @@ func modelTagToPb(st *ModelTag) (*modelTagPb, error) {
 }
 
 type modelTagPb struct {
-	Key string `json:"key,omitempty"`
-
+	Key   string `json:"key,omitempty"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4896,29 +4498,17 @@ func modelVersionToPb(st *ModelVersion) (*modelVersionPb, error) {
 	}
 	pb := &modelVersionPb{}
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.CurrentStage = st.CurrentStage
-
 	pb.Description = st.Description
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.Name = st.Name
-
 	pb.RunId = st.RunId
-
 	pb.RunLink = st.RunLink
-
 	pb.Source = st.Source
-
 	pb.Status = st.Status
-
 	pb.StatusMessage = st.StatusMessage
-
 	pb.Tags = st.Tags
-
 	pb.UserId = st.UserId
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4926,31 +4516,19 @@ func modelVersionToPb(st *ModelVersion) (*modelVersionPb, error) {
 }
 
 type modelVersionPb struct {
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	CurrentStage string `json:"current_stage,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	RunId string `json:"run_id,omitempty"`
-
-	RunLink string `json:"run_link,omitempty"`
-
-	Source string `json:"source,omitempty"`
-
-	Status ModelVersionStatus `json:"status,omitempty"`
-
-	StatusMessage string `json:"status_message,omitempty"`
-
-	Tags []ModelVersionTag `json:"tags,omitempty"`
-
-	UserId string `json:"user_id,omitempty"`
-
-	Version string `json:"version,omitempty"`
+	CreationTimestamp    int64              `json:"creation_timestamp,omitempty"`
+	CurrentStage         string             `json:"current_stage,omitempty"`
+	Description          string             `json:"description,omitempty"`
+	LastUpdatedTimestamp int64              `json:"last_updated_timestamp,omitempty"`
+	Name                 string             `json:"name,omitempty"`
+	RunId                string             `json:"run_id,omitempty"`
+	RunLink              string             `json:"run_link,omitempty"`
+	Source               string             `json:"source,omitempty"`
+	Status               ModelVersionStatus `json:"status,omitempty"`
+	StatusMessage        string             `json:"status_message,omitempty"`
+	Tags                 []ModelVersionTag  `json:"tags,omitempty"`
+	UserId               string             `json:"user_id,omitempty"`
+	Version              string             `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4992,31 +4570,18 @@ func modelVersionDatabricksToPb(st *ModelVersionDatabricks) (*modelVersionDatabr
 	}
 	pb := &modelVersionDatabricksPb{}
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.CurrentStage = st.CurrentStage
-
 	pb.Description = st.Description
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.Name = st.Name
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.RunId = st.RunId
-
 	pb.RunLink = st.RunLink
-
 	pb.Source = st.Source
-
 	pb.Status = st.Status
-
 	pb.StatusMessage = st.StatusMessage
-
 	pb.Tags = st.Tags
-
 	pb.UserId = st.UserId
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5024,33 +4589,20 @@ func modelVersionDatabricksToPb(st *ModelVersionDatabricks) (*modelVersionDatabr
 }
 
 type modelVersionDatabricksPb struct {
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	CurrentStage Stage `json:"current_stage,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
-
-	RunId string `json:"run_id,omitempty"`
-
-	RunLink string `json:"run_link,omitempty"`
-
-	Source string `json:"source,omitempty"`
-
-	Status Status `json:"status,omitempty"`
-
-	StatusMessage string `json:"status_message,omitempty"`
-
-	Tags []ModelVersionTag `json:"tags,omitempty"`
-
-	UserId string `json:"user_id,omitempty"`
-
-	Version string `json:"version,omitempty"`
+	CreationTimestamp    int64             `json:"creation_timestamp,omitempty"`
+	CurrentStage         Stage             `json:"current_stage,omitempty"`
+	Description          string            `json:"description,omitempty"`
+	LastUpdatedTimestamp int64             `json:"last_updated_timestamp,omitempty"`
+	Name                 string            `json:"name,omitempty"`
+	PermissionLevel      PermissionLevel   `json:"permission_level,omitempty"`
+	RunId                string            `json:"run_id,omitempty"`
+	RunLink              string            `json:"run_link,omitempty"`
+	Source               string            `json:"source,omitempty"`
+	Status               Status            `json:"status,omitempty"`
+	StatusMessage        string            `json:"status_message,omitempty"`
+	Tags                 []ModelVersionTag `json:"tags,omitempty"`
+	UserId               string            `json:"user_id,omitempty"`
+	Version              string            `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5093,7 +4645,6 @@ func modelVersionTagToPb(st *ModelVersionTag) (*modelVersionTagPb, error) {
 	}
 	pb := &modelVersionTagPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5101,8 +4652,7 @@ func modelVersionTagToPb(st *ModelVersionTag) (*modelVersionTagPb, error) {
 }
 
 type modelVersionTagPb struct {
-	Key string `json:"key,omitempty"`
-
+	Key   string `json:"key,omitempty"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5134,7 +4684,6 @@ func paramToPb(st *Param) (*paramPb, error) {
 	}
 	pb := &paramPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5142,8 +4691,7 @@ func paramToPb(st *Param) (*paramPb, error) {
 }
 
 type paramPb struct {
-	Key string `json:"key,omitempty"`
-
+	Key   string `json:"key,omitempty"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5175,11 +4723,8 @@ func registeredModelAccessControlRequestToPb(st *RegisteredModelAccessControlReq
 	}
 	pb := &registeredModelAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5187,13 +4732,10 @@ func registeredModelAccessControlRequestToPb(st *RegisteredModelAccessControlReq
 }
 
 type registeredModelAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string                         `json:"group_name,omitempty"`
+	PermissionLevel      RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string                         `json:"service_principal_name,omitempty"`
+	UserName             string                         `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5226,13 +4768,9 @@ func registeredModelAccessControlResponseToPb(st *RegisteredModelAccessControlRe
 	}
 	pb := &registeredModelAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5240,15 +4778,11 @@ func registeredModelAccessControlResponseToPb(st *RegisteredModelAccessControlRe
 }
 
 type registeredModelAccessControlResponsePb struct {
-	AllPermissions []RegisteredModelPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []RegisteredModelPermission `json:"all_permissions,omitempty"`
+	DisplayName          string                      `json:"display_name,omitempty"`
+	GroupName            string                      `json:"group_name,omitempty"`
+	ServicePrincipalName string                      `json:"service_principal_name,omitempty"`
+	UserName             string                      `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5282,9 +4816,7 @@ func registeredModelPermissionToPb(st *RegisteredModelPermission) (*registeredMo
 	}
 	pb := &registeredModelPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5292,11 +4824,9 @@ func registeredModelPermissionToPb(st *RegisteredModelPermission) (*registeredMo
 }
 
 type registeredModelPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool                           `json:"inherited,omitempty"`
+	InheritedFromObject []string                       `json:"inherited_from_object,omitempty"`
+	PermissionLevel     RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5328,9 +4858,7 @@ func registeredModelPermissionsToPb(st *RegisteredModelPermissions) (*registered
 	}
 	pb := &registeredModelPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5339,10 +4867,8 @@ func registeredModelPermissionsToPb(st *RegisteredModelPermissions) (*registered
 
 type registeredModelPermissionsPb struct {
 	AccessControlList []RegisteredModelAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                                 `json:"object_id,omitempty"`
+	ObjectType        string                                 `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5374,7 +4900,6 @@ func registeredModelPermissionsDescriptionToPb(st *RegisteredModelPermissionsDes
 	}
 	pb := &registeredModelPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5382,8 +4907,7 @@ func registeredModelPermissionsDescriptionToPb(st *RegisteredModelPermissionsDes
 }
 
 type registeredModelPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string                         `json:"description,omitempty"`
 	PermissionLevel RegisteredModelPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5415,7 +4939,6 @@ func registeredModelPermissionsRequestToPb(st *RegisteredModelPermissionsRequest
 	}
 	pb := &registeredModelPermissionsRequestPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.RegisteredModelId = st.RegisteredModelId
 
 	return pb, nil
@@ -5423,8 +4946,7 @@ func registeredModelPermissionsRequestToPb(st *RegisteredModelPermissionsRequest
 
 type registeredModelPermissionsRequestPb struct {
 	AccessControlList []RegisteredModelAccessControlRequest `json:"access_control_list,omitempty"`
-
-	RegisteredModelId string `json:"-" url:"-"`
+	RegisteredModelId string                                `json:"-" url:"-"`
 }
 
 func registeredModelPermissionsRequestFromPb(pb *registeredModelPermissionsRequestPb) (*RegisteredModelPermissionsRequest, error) {
@@ -5444,21 +4966,13 @@ func registryWebhookToPb(st *RegistryWebhook) (*registryWebhookPb, error) {
 	}
 	pb := &registryWebhookPb{}
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.Description = st.Description
-
 	pb.Events = st.Events
-
 	pb.HttpUrlSpec = st.HttpUrlSpec
-
 	pb.Id = st.Id
-
 	pb.JobSpec = st.JobSpec
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.ModelName = st.ModelName
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5466,23 +4980,15 @@ func registryWebhookToPb(st *RegistryWebhook) (*registryWebhookPb, error) {
 }
 
 type registryWebhookPb struct {
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	Events []RegistryWebhookEvent `json:"events,omitempty"`
-
-	HttpUrlSpec *HttpUrlSpecWithoutSecret `json:"http_url_spec,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	JobSpec *JobSpecWithoutSecret `json:"job_spec,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	ModelName string `json:"model_name,omitempty"`
-
-	Status RegistryWebhookStatus `json:"status,omitempty"`
+	CreationTimestamp    int64                     `json:"creation_timestamp,omitempty"`
+	Description          string                    `json:"description,omitempty"`
+	Events               []RegistryWebhookEvent    `json:"events,omitempty"`
+	HttpUrlSpec          *HttpUrlSpecWithoutSecret `json:"http_url_spec,omitempty"`
+	Id                   string                    `json:"id,omitempty"`
+	JobSpec              *JobSpecWithoutSecret     `json:"job_spec,omitempty"`
+	LastUpdatedTimestamp int64                     `json:"last_updated_timestamp,omitempty"`
+	ModelName            string                    `json:"model_name,omitempty"`
+	Status               RegistryWebhookStatus     `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5520,11 +5026,8 @@ func rejectTransitionRequestToPb(st *RejectTransitionRequest) (*rejectTransition
 	}
 	pb := &rejectTransitionRequestPb{}
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.Stage = st.Stage
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5533,11 +5036,8 @@ func rejectTransitionRequestToPb(st *RejectTransitionRequest) (*rejectTransition
 
 type rejectTransitionRequestPb struct {
 	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"name"`
-
-	Stage Stage `json:"stage"`
-
+	Name    string `json:"name"`
+	Stage   Stage  `json:"stage"`
 	Version string `json:"version"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5595,7 +5095,6 @@ func renameModelRequestToPb(st *RenameModelRequest) (*renameModelRequestPb, erro
 	}
 	pb := &renameModelRequestPb{}
 	pb.Name = st.Name
-
 	pb.NewName = st.NewName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5603,8 +5102,7 @@ func renameModelRequestToPb(st *RenameModelRequest) (*renameModelRequestPb, erro
 }
 
 type renameModelRequestPb struct {
-	Name string `json:"name"`
-
+	Name    string `json:"name"`
 	NewName string `json:"new_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5750,9 +5248,7 @@ func restoreRunsToPb(st *RestoreRuns) (*restoreRunsPb, error) {
 	}
 	pb := &restoreRunsPb{}
 	pb.ExperimentId = st.ExperimentId
-
 	pb.MaxRuns = st.MaxRuns
-
 	pb.MinTimestampMillis = st.MinTimestampMillis
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5760,11 +5256,9 @@ func restoreRunsToPb(st *RestoreRuns) (*restoreRunsPb, error) {
 }
 
 type restoreRunsPb struct {
-	ExperimentId string `json:"experiment_id"`
-
-	MaxRuns int `json:"max_runs,omitempty"`
-
-	MinTimestampMillis int64 `json:"min_timestamp_millis"`
+	ExperimentId       string `json:"experiment_id"`
+	MaxRuns            int    `json:"max_runs,omitempty"`
+	MinTimestampMillis int64  `json:"min_timestamp_millis"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5832,19 +5326,15 @@ func runToPb(st *Run) (*runPb, error) {
 	}
 	pb := &runPb{}
 	pb.Data = st.Data
-
 	pb.Info = st.Info
-
 	pb.Inputs = st.Inputs
 
 	return pb, nil
 }
 
 type runPb struct {
-	Data *RunData `json:"data,omitempty"`
-
-	Info *RunInfo `json:"info,omitempty"`
-
+	Data   *RunData   `json:"data,omitempty"`
+	Info   *RunInfo   `json:"info,omitempty"`
 	Inputs *RunInputs `json:"inputs,omitempty"`
 }
 
@@ -5866,9 +5356,7 @@ func runDataToPb(st *RunData) (*runDataPb, error) {
 	}
 	pb := &runDataPb{}
 	pb.Metrics = st.Metrics
-
 	pb.Params = st.Params
-
 	pb.Tags = st.Tags
 
 	return pb, nil
@@ -5876,10 +5364,8 @@ func runDataToPb(st *RunData) (*runDataPb, error) {
 
 type runDataPb struct {
 	Metrics []Metric `json:"metrics,omitempty"`
-
-	Params []Param `json:"params,omitempty"`
-
-	Tags []RunTag `json:"tags,omitempty"`
+	Params  []Param  `json:"params,omitempty"`
+	Tags    []RunTag `json:"tags,omitempty"`
 }
 
 func runDataFromPb(pb *runDataPb) (*RunData, error) {
@@ -5900,23 +5386,14 @@ func runInfoToPb(st *RunInfo) (*runInfoPb, error) {
 	}
 	pb := &runInfoPb{}
 	pb.ArtifactUri = st.ArtifactUri
-
 	pb.EndTime = st.EndTime
-
 	pb.ExperimentId = st.ExperimentId
-
 	pb.LifecycleStage = st.LifecycleStage
-
 	pb.RunId = st.RunId
-
 	pb.RunName = st.RunName
-
 	pb.RunUuid = st.RunUuid
-
 	pb.StartTime = st.StartTime
-
 	pb.Status = st.Status
-
 	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5924,25 +5401,16 @@ func runInfoToPb(st *RunInfo) (*runInfoPb, error) {
 }
 
 type runInfoPb struct {
-	ArtifactUri string `json:"artifact_uri,omitempty"`
-
-	EndTime int64 `json:"end_time,omitempty"`
-
-	ExperimentId string `json:"experiment_id,omitempty"`
-
-	LifecycleStage string `json:"lifecycle_stage,omitempty"`
-
-	RunId string `json:"run_id,omitempty"`
-
-	RunName string `json:"run_name,omitempty"`
-
-	RunUuid string `json:"run_uuid,omitempty"`
-
-	StartTime int64 `json:"start_time,omitempty"`
-
-	Status RunInfoStatus `json:"status,omitempty"`
-
-	UserId string `json:"user_id,omitempty"`
+	ArtifactUri    string        `json:"artifact_uri,omitempty"`
+	EndTime        int64         `json:"end_time,omitempty"`
+	ExperimentId   string        `json:"experiment_id,omitempty"`
+	LifecycleStage string        `json:"lifecycle_stage,omitempty"`
+	RunId          string        `json:"run_id,omitempty"`
+	RunName        string        `json:"run_name,omitempty"`
+	RunUuid        string        `json:"run_uuid,omitempty"`
+	StartTime      int64         `json:"start_time,omitempty"`
+	Status         RunInfoStatus `json:"status,omitempty"`
+	UserId         string        `json:"user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5981,7 +5449,6 @@ func runInputsToPb(st *RunInputs) (*runInputsPb, error) {
 	}
 	pb := &runInputsPb{}
 	pb.DatasetInputs = st.DatasetInputs
-
 	pb.ModelInputs = st.ModelInputs
 
 	return pb, nil
@@ -5989,8 +5456,7 @@ func runInputsToPb(st *RunInputs) (*runInputsPb, error) {
 
 type runInputsPb struct {
 	DatasetInputs []DatasetInput `json:"dataset_inputs,omitempty"`
-
-	ModelInputs []ModelInput `json:"model_inputs,omitempty"`
+	ModelInputs   []ModelInput   `json:"model_inputs,omitempty"`
 }
 
 func runInputsFromPb(pb *runInputsPb) (*RunInputs, error) {
@@ -6010,7 +5476,6 @@ func runTagToPb(st *RunTag) (*runTagPb, error) {
 	}
 	pb := &runTagPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6018,8 +5483,7 @@ func runTagToPb(st *RunTag) (*runTagPb, error) {
 }
 
 type runTagPb struct {
-	Key string `json:"key,omitempty"`
-
+	Key   string `json:"key,omitempty"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6051,13 +5515,9 @@ func searchExperimentsToPb(st *SearchExperiments) (*searchExperimentsPb, error) 
 	}
 	pb := &searchExperimentsPb{}
 	pb.Filter = st.Filter
-
 	pb.MaxResults = st.MaxResults
-
 	pb.OrderBy = st.OrderBy
-
 	pb.PageToken = st.PageToken
-
 	pb.ViewType = st.ViewType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6065,15 +5525,11 @@ func searchExperimentsToPb(st *SearchExperiments) (*searchExperimentsPb, error) 
 }
 
 type searchExperimentsPb struct {
-	Filter string `json:"filter,omitempty"`
-
-	MaxResults int64 `json:"max_results,omitempty"`
-
-	OrderBy []string `json:"order_by,omitempty"`
-
-	PageToken string `json:"page_token,omitempty"`
-
-	ViewType ViewType `json:"view_type,omitempty"`
+	Filter     string   `json:"filter,omitempty"`
+	MaxResults int64    `json:"max_results,omitempty"`
+	OrderBy    []string `json:"order_by,omitempty"`
+	PageToken  string   `json:"page_token,omitempty"`
+	ViewType   ViewType `json:"view_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6107,7 +5563,6 @@ func searchExperimentsResponseToPb(st *SearchExperimentsResponse) (*searchExperi
 	}
 	pb := &searchExperimentsResponsePb{}
 	pb.Experiments = st.Experiments
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6115,9 +5570,8 @@ func searchExperimentsResponseToPb(st *SearchExperimentsResponse) (*searchExperi
 }
 
 type searchExperimentsResponsePb struct {
-	Experiments []Experiment `json:"experiments,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Experiments   []Experiment `json:"experiments,omitempty"`
+	NextPageToken string       `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6148,7 +5602,6 @@ func searchLoggedModelsDatasetToPb(st *SearchLoggedModelsDataset) (*searchLogged
 	}
 	pb := &searchLoggedModelsDatasetPb{}
 	pb.DatasetDigest = st.DatasetDigest
-
 	pb.DatasetName = st.DatasetName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6157,8 +5610,7 @@ func searchLoggedModelsDatasetToPb(st *SearchLoggedModelsDataset) (*searchLogged
 
 type searchLoggedModelsDatasetPb struct {
 	DatasetDigest string `json:"dataset_digest,omitempty"`
-
-	DatasetName string `json:"dataset_name"`
+	DatasetName   string `json:"dataset_name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6189,11 +5641,8 @@ func searchLoggedModelsOrderByToPb(st *SearchLoggedModelsOrderBy) (*searchLogged
 	}
 	pb := &searchLoggedModelsOrderByPb{}
 	pb.Ascending = st.Ascending
-
 	pb.DatasetDigest = st.DatasetDigest
-
 	pb.DatasetName = st.DatasetName
-
 	pb.FieldName = st.FieldName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6201,13 +5650,10 @@ func searchLoggedModelsOrderByToPb(st *SearchLoggedModelsOrderBy) (*searchLogged
 }
 
 type searchLoggedModelsOrderByPb struct {
-	Ascending bool `json:"ascending,omitempty"`
-
+	Ascending     bool   `json:"ascending,omitempty"`
 	DatasetDigest string `json:"dataset_digest,omitempty"`
-
-	DatasetName string `json:"dataset_name,omitempty"`
-
-	FieldName string `json:"field_name"`
+	DatasetName   string `json:"dataset_name,omitempty"`
+	FieldName     string `json:"field_name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6240,15 +5686,10 @@ func searchLoggedModelsRequestToPb(st *SearchLoggedModelsRequest) (*searchLogged
 	}
 	pb := &searchLoggedModelsRequestPb{}
 	pb.Datasets = st.Datasets
-
 	pb.ExperimentIds = st.ExperimentIds
-
 	pb.Filter = st.Filter
-
 	pb.MaxResults = st.MaxResults
-
 	pb.OrderBy = st.OrderBy
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6256,17 +5697,12 @@ func searchLoggedModelsRequestToPb(st *SearchLoggedModelsRequest) (*searchLogged
 }
 
 type searchLoggedModelsRequestPb struct {
-	Datasets []SearchLoggedModelsDataset `json:"datasets,omitempty"`
-
-	ExperimentIds []string `json:"experiment_ids,omitempty"`
-
-	Filter string `json:"filter,omitempty"`
-
-	MaxResults int `json:"max_results,omitempty"`
-
-	OrderBy []SearchLoggedModelsOrderBy `json:"order_by,omitempty"`
-
-	PageToken string `json:"page_token,omitempty"`
+	Datasets      []SearchLoggedModelsDataset `json:"datasets,omitempty"`
+	ExperimentIds []string                    `json:"experiment_ids,omitempty"`
+	Filter        string                      `json:"filter,omitempty"`
+	MaxResults    int                         `json:"max_results,omitempty"`
+	OrderBy       []SearchLoggedModelsOrderBy `json:"order_by,omitempty"`
+	PageToken     string                      `json:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6301,7 +5737,6 @@ func searchLoggedModelsResponseToPb(st *SearchLoggedModelsResponse) (*searchLogg
 	}
 	pb := &searchLoggedModelsResponsePb{}
 	pb.Models = st.Models
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6309,9 +5744,8 @@ func searchLoggedModelsResponseToPb(st *SearchLoggedModelsResponse) (*searchLogg
 }
 
 type searchLoggedModelsResponsePb struct {
-	Models []LoggedModel `json:"models,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Models        []LoggedModel `json:"models,omitempty"`
+	NextPageToken string        `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6342,11 +5776,8 @@ func searchModelVersionsRequestToPb(st *SearchModelVersionsRequest) (*searchMode
 	}
 	pb := &searchModelVersionsRequestPb{}
 	pb.Filter = st.Filter
-
 	pb.MaxResults = st.MaxResults
-
 	pb.OrderBy = st.OrderBy
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6354,13 +5785,10 @@ func searchModelVersionsRequestToPb(st *SearchModelVersionsRequest) (*searchMode
 }
 
 type searchModelVersionsRequestPb struct {
-	Filter string `json:"-" url:"filter,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	OrderBy []string `json:"-" url:"order_by,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	Filter     string   `json:"-" url:"filter,omitempty"`
+	MaxResults int      `json:"-" url:"max_results,omitempty"`
+	OrderBy    []string `json:"-" url:"order_by,omitempty"`
+	PageToken  string   `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6393,7 +5821,6 @@ func searchModelVersionsResponseToPb(st *SearchModelVersionsResponse) (*searchMo
 	}
 	pb := &searchModelVersionsResponsePb{}
 	pb.ModelVersions = st.ModelVersions
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6402,8 +5829,7 @@ func searchModelVersionsResponseToPb(st *SearchModelVersionsResponse) (*searchMo
 
 type searchModelVersionsResponsePb struct {
 	ModelVersions []ModelVersion `json:"model_versions,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	NextPageToken string         `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6434,11 +5860,8 @@ func searchModelsRequestToPb(st *SearchModelsRequest) (*searchModelsRequestPb, e
 	}
 	pb := &searchModelsRequestPb{}
 	pb.Filter = st.Filter
-
 	pb.MaxResults = st.MaxResults
-
 	pb.OrderBy = st.OrderBy
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6446,13 +5869,10 @@ func searchModelsRequestToPb(st *SearchModelsRequest) (*searchModelsRequestPb, e
 }
 
 type searchModelsRequestPb struct {
-	Filter string `json:"-" url:"filter,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	OrderBy []string `json:"-" url:"order_by,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	Filter     string   `json:"-" url:"filter,omitempty"`
+	MaxResults int      `json:"-" url:"max_results,omitempty"`
+	OrderBy    []string `json:"-" url:"order_by,omitempty"`
+	PageToken  string   `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6485,7 +5905,6 @@ func searchModelsResponseToPb(st *SearchModelsResponse) (*searchModelsResponsePb
 	}
 	pb := &searchModelsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.RegisteredModels = st.RegisteredModels
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6493,8 +5912,7 @@ func searchModelsResponseToPb(st *SearchModelsResponse) (*searchModelsResponsePb
 }
 
 type searchModelsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken    string  `json:"next_page_token,omitempty"`
 	RegisteredModels []Model `json:"registered_models,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6526,15 +5944,10 @@ func searchRunsToPb(st *SearchRuns) (*searchRunsPb, error) {
 	}
 	pb := &searchRunsPb{}
 	pb.ExperimentIds = st.ExperimentIds
-
 	pb.Filter = st.Filter
-
 	pb.MaxResults = st.MaxResults
-
 	pb.OrderBy = st.OrderBy
-
 	pb.PageToken = st.PageToken
-
 	pb.RunViewType = st.RunViewType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6543,16 +5956,11 @@ func searchRunsToPb(st *SearchRuns) (*searchRunsPb, error) {
 
 type searchRunsPb struct {
 	ExperimentIds []string `json:"experiment_ids,omitempty"`
-
-	Filter string `json:"filter,omitempty"`
-
-	MaxResults int `json:"max_results,omitempty"`
-
-	OrderBy []string `json:"order_by,omitempty"`
-
-	PageToken string `json:"page_token,omitempty"`
-
-	RunViewType ViewType `json:"run_view_type,omitempty"`
+	Filter        string   `json:"filter,omitempty"`
+	MaxResults    int      `json:"max_results,omitempty"`
+	OrderBy       []string `json:"order_by,omitempty"`
+	PageToken     string   `json:"page_token,omitempty"`
+	RunViewType   ViewType `json:"run_view_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6587,7 +5995,6 @@ func searchRunsResponseToPb(st *SearchRunsResponse) (*searchRunsResponsePb, erro
 	}
 	pb := &searchRunsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Runs = st.Runs
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6596,8 +6003,7 @@ func searchRunsResponseToPb(st *SearchRunsResponse) (*searchRunsResponsePb, erro
 
 type searchRunsResponsePb struct {
 	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Runs []Run `json:"runs,omitempty"`
+	Runs          []Run  `json:"runs,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6628,9 +6034,7 @@ func setExperimentTagToPb(st *SetExperimentTag) (*setExperimentTagPb, error) {
 	}
 	pb := &setExperimentTagPb{}
 	pb.ExperimentId = st.ExperimentId
-
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	return pb, nil
@@ -6638,10 +6042,8 @@ func setExperimentTagToPb(st *SetExperimentTag) (*setExperimentTagPb, error) {
 
 type setExperimentTagPb struct {
 	ExperimentId string `json:"experiment_id"`
-
-	Key string `json:"key"`
-
-	Value string `json:"value"`
+	Key          string `json:"key"`
+	Value        string `json:"value"`
 }
 
 func setExperimentTagFromPb(pb *setExperimentTagPb) (*SetExperimentTag, error) {
@@ -6683,16 +6085,14 @@ func setLoggedModelTagsRequestToPb(st *SetLoggedModelTagsRequest) (*setLoggedMod
 	}
 	pb := &setLoggedModelTagsRequestPb{}
 	pb.ModelId = st.ModelId
-
 	pb.Tags = st.Tags
 
 	return pb, nil
 }
 
 type setLoggedModelTagsRequestPb struct {
-	ModelId string `json:"-" url:"-"`
-
-	Tags []LoggedModelTag `json:"tags,omitempty"`
+	ModelId string           `json:"-" url:"-"`
+	Tags    []LoggedModelTag `json:"tags,omitempty"`
 }
 
 func setLoggedModelTagsRequestFromPb(pb *setLoggedModelTagsRequestPb) (*SetLoggedModelTagsRequest, error) {
@@ -6733,19 +6133,15 @@ func setModelTagRequestToPb(st *SetModelTagRequest) (*setModelTagRequestPb, erro
 	}
 	pb := &setModelTagRequestPb{}
 	pb.Key = st.Key
-
 	pb.Name = st.Name
-
 	pb.Value = st.Value
 
 	return pb, nil
 }
 
 type setModelTagRequestPb struct {
-	Key string `json:"key"`
-
-	Name string `json:"name"`
-
+	Key   string `json:"key"`
+	Name  string `json:"name"`
 	Value string `json:"value"`
 }
 
@@ -6788,23 +6184,17 @@ func setModelVersionTagRequestToPb(st *SetModelVersionTagRequest) (*setModelVers
 	}
 	pb := &setModelVersionTagRequestPb{}
 	pb.Key = st.Key
-
 	pb.Name = st.Name
-
 	pb.Value = st.Value
-
 	pb.Version = st.Version
 
 	return pb, nil
 }
 
 type setModelVersionTagRequestPb struct {
-	Key string `json:"key"`
-
-	Name string `json:"name"`
-
-	Value string `json:"value"`
-
+	Key     string `json:"key"`
+	Name    string `json:"name"`
+	Value   string `json:"value"`
 	Version string `json:"version"`
 }
 
@@ -6848,11 +6238,8 @@ func setTagToPb(st *SetTag) (*setTagPb, error) {
 	}
 	pb := &setTagPb{}
 	pb.Key = st.Key
-
 	pb.RunId = st.RunId
-
 	pb.RunUuid = st.RunUuid
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6860,13 +6247,10 @@ func setTagToPb(st *SetTag) (*setTagPb, error) {
 }
 
 type setTagPb struct {
-	Key string `json:"key"`
-
-	RunId string `json:"run_id,omitempty"`
-
+	Key     string `json:"key"`
+	RunId   string `json:"run_id,omitempty"`
 	RunUuid string `json:"run_uuid,omitempty"`
-
-	Value string `json:"value"`
+	Value   string `json:"value"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6920,7 +6304,6 @@ func testRegistryWebhookToPb(st *TestRegistryWebhook) (*testRegistryWebhookPb, e
 	}
 	pb := &testRegistryWebhookPb{}
 	pb.Body = st.Body
-
 	pb.StatusCode = st.StatusCode
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6928,9 +6311,8 @@ func testRegistryWebhookToPb(st *TestRegistryWebhook) (*testRegistryWebhookPb, e
 }
 
 type testRegistryWebhookPb struct {
-	Body string `json:"body,omitempty"`
-
-	StatusCode int `json:"status_code,omitempty"`
+	Body       string `json:"body,omitempty"`
+	StatusCode int    `json:"status_code,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6961,7 +6343,6 @@ func testRegistryWebhookRequestToPb(st *TestRegistryWebhookRequest) (*testRegist
 	}
 	pb := &testRegistryWebhookRequestPb{}
 	pb.Event = st.Event
-
 	pb.Id = st.Id
 
 	return pb, nil
@@ -6969,8 +6350,7 @@ func testRegistryWebhookRequestToPb(st *TestRegistryWebhookRequest) (*testRegist
 
 type testRegistryWebhookRequestPb struct {
 	Event RegistryWebhookEvent `json:"event,omitempty"`
-
-	Id string `json:"id"`
+	Id    string               `json:"id"`
 }
 
 func testRegistryWebhookRequestFromPb(pb *testRegistryWebhookRequestPb) (*TestRegistryWebhookRequest, error) {
@@ -7014,13 +6394,9 @@ func transitionModelVersionStageDatabricksToPb(st *TransitionModelVersionStageDa
 	}
 	pb := &transitionModelVersionStageDatabricksPb{}
 	pb.ArchiveExistingVersions = st.ArchiveExistingVersions
-
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.Stage = st.Stage
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7028,15 +6404,11 @@ func transitionModelVersionStageDatabricksToPb(st *TransitionModelVersionStageDa
 }
 
 type transitionModelVersionStageDatabricksPb struct {
-	ArchiveExistingVersions bool `json:"archive_existing_versions"`
-
-	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"name"`
-
-	Stage Stage `json:"stage"`
-
-	Version string `json:"version"`
+	ArchiveExistingVersions bool   `json:"archive_existing_versions"`
+	Comment                 string `json:"comment,omitempty"`
+	Name                    string `json:"name"`
+	Stage                   Stage  `json:"stage"`
+	Version                 string `json:"version"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7070,13 +6442,9 @@ func transitionRequestToPb(st *TransitionRequest) (*transitionRequestPb, error) 
 	}
 	pb := &transitionRequestPb{}
 	pb.AvailableActions = st.AvailableActions
-
 	pb.Comment = st.Comment
-
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.ToStage = st.ToStage
-
 	pb.UserId = st.UserId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7084,15 +6452,11 @@ func transitionRequestToPb(st *TransitionRequest) (*transitionRequestPb, error) 
 }
 
 type transitionRequestPb struct {
-	AvailableActions []ActivityAction `json:"available_actions,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	ToStage Stage `json:"to_stage,omitempty"`
-
-	UserId string `json:"user_id,omitempty"`
+	AvailableActions  []ActivityAction `json:"available_actions,omitempty"`
+	Comment           string           `json:"comment,omitempty"`
+	CreationTimestamp int64            `json:"creation_timestamp,omitempty"`
+	ToStage           Stage            `json:"to_stage,omitempty"`
+	UserId            string           `json:"user_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7150,7 +6514,6 @@ func updateCommentToPb(st *UpdateComment) (*updateCommentPb, error) {
 	}
 	pb := &updateCommentPb{}
 	pb.Comment = st.Comment
-
 	pb.Id = st.Id
 
 	return pb, nil
@@ -7158,8 +6521,7 @@ func updateCommentToPb(st *UpdateComment) (*updateCommentPb, error) {
 
 type updateCommentPb struct {
 	Comment string `json:"comment"`
-
-	Id string `json:"id"`
+	Id      string `json:"id"`
 }
 
 func updateCommentFromPb(pb *updateCommentPb) (*UpdateComment, error) {
@@ -7203,7 +6565,6 @@ func updateExperimentToPb(st *UpdateExperiment) (*updateExperimentPb, error) {
 	}
 	pb := &updateExperimentPb{}
 	pb.ExperimentId = st.ExperimentId
-
 	pb.NewName = st.NewName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7212,8 +6573,7 @@ func updateExperimentToPb(st *UpdateExperiment) (*updateExperimentPb, error) {
 
 type updateExperimentPb struct {
 	ExperimentId string `json:"experiment_id"`
-
-	NewName string `json:"new_name,omitempty"`
+	NewName      string `json:"new_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7265,7 +6625,6 @@ func updateModelRequestToPb(st *UpdateModelRequest) (*updateModelRequestPb, erro
 	}
 	pb := &updateModelRequestPb{}
 	pb.Description = st.Description
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7274,8 +6633,7 @@ func updateModelRequestToPb(st *UpdateModelRequest) (*updateModelRequestPb, erro
 
 type updateModelRequestPb struct {
 	Description string `json:"description,omitempty"`
-
-	Name string `json:"name"`
+	Name        string `json:"name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7327,9 +6685,7 @@ func updateModelVersionRequestToPb(st *UpdateModelVersionRequest) (*updateModelV
 	}
 	pb := &updateModelVersionRequestPb{}
 	pb.Description = st.Description
-
 	pb.Name = st.Name
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7338,10 +6694,8 @@ func updateModelVersionRequestToPb(st *UpdateModelVersionRequest) (*updateModelV
 
 type updateModelVersionRequestPb struct {
 	Description string `json:"description,omitempty"`
-
-	Name string `json:"name"`
-
-	Version string `json:"version"`
+	Name        string `json:"name"`
+	Version     string `json:"version"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7394,15 +6748,10 @@ func updateRegistryWebhookToPb(st *UpdateRegistryWebhook) (*updateRegistryWebhoo
 	}
 	pb := &updateRegistryWebhookPb{}
 	pb.Description = st.Description
-
 	pb.Events = st.Events
-
 	pb.HttpUrlSpec = st.HttpUrlSpec
-
 	pb.Id = st.Id
-
 	pb.JobSpec = st.JobSpec
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7410,17 +6759,12 @@ func updateRegistryWebhookToPb(st *UpdateRegistryWebhook) (*updateRegistryWebhoo
 }
 
 type updateRegistryWebhookPb struct {
-	Description string `json:"description,omitempty"`
-
-	Events []RegistryWebhookEvent `json:"events,omitempty"`
-
-	HttpUrlSpec *HttpUrlSpec `json:"http_url_spec,omitempty"`
-
-	Id string `json:"id"`
-
-	JobSpec *JobSpec `json:"job_spec,omitempty"`
-
-	Status RegistryWebhookStatus `json:"status,omitempty"`
+	Description string                 `json:"description,omitempty"`
+	Events      []RegistryWebhookEvent `json:"events,omitempty"`
+	HttpUrlSpec *HttpUrlSpec           `json:"http_url_spec,omitempty"`
+	Id          string                 `json:"id"`
+	JobSpec     *JobSpec               `json:"job_spec,omitempty"`
+	Status      RegistryWebhookStatus  `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7455,13 +6799,9 @@ func updateRunToPb(st *UpdateRun) (*updateRunPb, error) {
 	}
 	pb := &updateRunPb{}
 	pb.EndTime = st.EndTime
-
 	pb.RunId = st.RunId
-
 	pb.RunName = st.RunName
-
 	pb.RunUuid = st.RunUuid
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7469,15 +6809,11 @@ func updateRunToPb(st *UpdateRun) (*updateRunPb, error) {
 }
 
 type updateRunPb struct {
-	EndTime int64 `json:"end_time,omitempty"`
-
-	RunId string `json:"run_id,omitempty"`
-
-	RunName string `json:"run_name,omitempty"`
-
-	RunUuid string `json:"run_uuid,omitempty"`
-
-	Status UpdateRunStatus `json:"status,omitempty"`
+	EndTime int64           `json:"end_time,omitempty"`
+	RunId   string          `json:"run_id,omitempty"`
+	RunName string          `json:"run_name,omitempty"`
+	RunUuid string          `json:"run_uuid,omitempty"`
+	Status  UpdateRunStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7548,4 +6884,58 @@ func updateWebhookResponseFromPb(pb *updateWebhookResponsePb) (*UpdateWebhookRes
 	st := &UpdateWebhookResponse{}
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

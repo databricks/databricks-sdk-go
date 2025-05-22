@@ -3,6 +3,10 @@
 package vectorsearch
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -48,9 +52,7 @@ func createEndpointToPb(st *CreateEndpoint) (*createEndpointPb, error) {
 	}
 	pb := &createEndpointPb{}
 	pb.BudgetPolicyId = st.BudgetPolicyId
-
 	pb.EndpointType = st.EndpointType
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -58,11 +60,9 @@ func createEndpointToPb(st *CreateEndpoint) (*createEndpointPb, error) {
 }
 
 type createEndpointPb struct {
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-
-	EndpointType EndpointType `json:"endpoint_type"`
-
-	Name string `json:"name"`
+	BudgetPolicyId string       `json:"budget_policy_id,omitempty"`
+	EndpointType   EndpointType `json:"endpoint_type"`
+	Name           string       `json:"name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -94,32 +94,22 @@ func createVectorIndexRequestToPb(st *CreateVectorIndexRequest) (*createVectorIn
 	}
 	pb := &createVectorIndexRequestPb{}
 	pb.DeltaSyncIndexSpec = st.DeltaSyncIndexSpec
-
 	pb.DirectAccessIndexSpec = st.DirectAccessIndexSpec
-
 	pb.EndpointName = st.EndpointName
-
 	pb.IndexType = st.IndexType
-
 	pb.Name = st.Name
-
 	pb.PrimaryKey = st.PrimaryKey
 
 	return pb, nil
 }
 
 type createVectorIndexRequestPb struct {
-	DeltaSyncIndexSpec *DeltaSyncVectorIndexSpecRequest `json:"delta_sync_index_spec,omitempty"`
-
-	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
-
-	EndpointName string `json:"endpoint_name"`
-
-	IndexType VectorIndexType `json:"index_type"`
-
-	Name string `json:"name"`
-
-	PrimaryKey string `json:"primary_key"`
+	DeltaSyncIndexSpec    *DeltaSyncVectorIndexSpecRequest `json:"delta_sync_index_spec,omitempty"`
+	DirectAccessIndexSpec *DirectAccessVectorIndexSpec     `json:"direct_access_index_spec,omitempty"`
+	EndpointName          string                           `json:"endpoint_name"`
+	IndexType             VectorIndexType                  `json:"index_type"`
+	Name                  string                           `json:"name"`
+	PrimaryKey            string                           `json:"primary_key"`
 }
 
 func createVectorIndexRequestFromPb(pb *createVectorIndexRequestPb) (*CreateVectorIndexRequest, error) {
@@ -143,7 +133,6 @@ func customTagToPb(st *CustomTag) (*customTagPb, error) {
 	}
 	pb := &customTagPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -151,8 +140,7 @@ func customTagToPb(st *CustomTag) (*customTagPb, error) {
 }
 
 type customTagPb struct {
-	Key string `json:"key"`
-
+	Key   string `json:"key"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -184,7 +172,6 @@ func deleteDataResultToPb(st *DeleteDataResult) (*deleteDataResultPb, error) {
 	}
 	pb := &deleteDataResultPb{}
 	pb.FailedPrimaryKeys = st.FailedPrimaryKeys
-
 	pb.SuccessRowCount = st.SuccessRowCount
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -193,8 +180,7 @@ func deleteDataResultToPb(st *DeleteDataResult) (*deleteDataResultPb, error) {
 
 type deleteDataResultPb struct {
 	FailedPrimaryKeys []string `json:"failed_primary_keys,omitempty"`
-
-	SuccessRowCount int64 `json:"success_row_count,omitempty"`
+	SuccessRowCount   int64    `json:"success_row_count,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -225,15 +211,13 @@ func deleteDataVectorIndexRequestToPb(st *DeleteDataVectorIndexRequest) (*delete
 	}
 	pb := &deleteDataVectorIndexRequestPb{}
 	pb.IndexName = st.IndexName
-
 	pb.PrimaryKeys = st.PrimaryKeys
 
 	return pb, nil
 }
 
 type deleteDataVectorIndexRequestPb struct {
-	IndexName string `json:"-" url:"-"`
-
+	IndexName   string   `json:"-" url:"-"`
 	PrimaryKeys []string `json:"-" url:"primary_keys"`
 }
 
@@ -254,7 +238,6 @@ func deleteDataVectorIndexResponseToPb(st *DeleteDataVectorIndexResponse) (*dele
 	}
 	pb := &deleteDataVectorIndexResponsePb{}
 	pb.Result = st.Result
-
 	pb.Status = st.Status
 
 	return pb, nil
@@ -262,8 +245,7 @@ func deleteDataVectorIndexResponseToPb(st *DeleteDataVectorIndexResponse) (*dele
 
 type deleteDataVectorIndexResponsePb struct {
 	Result *DeleteDataResult `json:"result,omitempty"`
-
-	Status DeleteDataStatus `json:"status,omitempty"`
+	Status DeleteDataStatus  `json:"status,omitempty"`
 }
 
 func deleteDataVectorIndexResponseFromPb(pb *deleteDataVectorIndexResponsePb) (*DeleteDataVectorIndexResponse, error) {
@@ -373,15 +355,10 @@ func deltaSyncVectorIndexSpecRequestToPb(st *DeltaSyncVectorIndexSpecRequest) (*
 	}
 	pb := &deltaSyncVectorIndexSpecRequestPb{}
 	pb.ColumnsToSync = st.ColumnsToSync
-
 	pb.EmbeddingSourceColumns = st.EmbeddingSourceColumns
-
 	pb.EmbeddingVectorColumns = st.EmbeddingVectorColumns
-
 	pb.EmbeddingWritebackTable = st.EmbeddingWritebackTable
-
 	pb.PipelineType = st.PipelineType
-
 	pb.SourceTable = st.SourceTable
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -389,17 +366,12 @@ func deltaSyncVectorIndexSpecRequestToPb(st *DeltaSyncVectorIndexSpecRequest) (*
 }
 
 type deltaSyncVectorIndexSpecRequestPb struct {
-	ColumnsToSync []string `json:"columns_to_sync,omitempty"`
-
-	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
-
-	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
-
-	EmbeddingWritebackTable string `json:"embedding_writeback_table,omitempty"`
-
-	PipelineType PipelineType `json:"pipeline_type,omitempty"`
-
-	SourceTable string `json:"source_table,omitempty"`
+	ColumnsToSync           []string                `json:"columns_to_sync,omitempty"`
+	EmbeddingSourceColumns  []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
+	EmbeddingVectorColumns  []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
+	EmbeddingWritebackTable string                  `json:"embedding_writeback_table,omitempty"`
+	PipelineType            PipelineType            `json:"pipeline_type,omitempty"`
+	SourceTable             string                  `json:"source_table,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -434,15 +406,10 @@ func deltaSyncVectorIndexSpecResponseToPb(st *DeltaSyncVectorIndexSpecResponse) 
 	}
 	pb := &deltaSyncVectorIndexSpecResponsePb{}
 	pb.EmbeddingSourceColumns = st.EmbeddingSourceColumns
-
 	pb.EmbeddingVectorColumns = st.EmbeddingVectorColumns
-
 	pb.EmbeddingWritebackTable = st.EmbeddingWritebackTable
-
 	pb.PipelineId = st.PipelineId
-
 	pb.PipelineType = st.PipelineType
-
 	pb.SourceTable = st.SourceTable
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -450,17 +417,12 @@ func deltaSyncVectorIndexSpecResponseToPb(st *DeltaSyncVectorIndexSpecResponse) 
 }
 
 type deltaSyncVectorIndexSpecResponsePb struct {
-	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
-
-	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
-
-	EmbeddingWritebackTable string `json:"embedding_writeback_table,omitempty"`
-
-	PipelineId string `json:"pipeline_id,omitempty"`
-
-	PipelineType PipelineType `json:"pipeline_type,omitempty"`
-
-	SourceTable string `json:"source_table,omitempty"`
+	EmbeddingSourceColumns  []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
+	EmbeddingVectorColumns  []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
+	EmbeddingWritebackTable string                  `json:"embedding_writeback_table,omitempty"`
+	PipelineId              string                  `json:"pipeline_id,omitempty"`
+	PipelineType            PipelineType            `json:"pipeline_type,omitempty"`
+	SourceTable             string                  `json:"source_table,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -495,9 +457,7 @@ func directAccessVectorIndexSpecToPb(st *DirectAccessVectorIndexSpec) (*directAc
 	}
 	pb := &directAccessVectorIndexSpecPb{}
 	pb.EmbeddingSourceColumns = st.EmbeddingSourceColumns
-
 	pb.EmbeddingVectorColumns = st.EmbeddingVectorColumns
-
 	pb.SchemaJson = st.SchemaJson
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -506,10 +466,8 @@ func directAccessVectorIndexSpecToPb(st *DirectAccessVectorIndexSpec) (*directAc
 
 type directAccessVectorIndexSpecPb struct {
 	EmbeddingSourceColumns []EmbeddingSourceColumn `json:"embedding_source_columns,omitempty"`
-
 	EmbeddingVectorColumns []EmbeddingVectorColumn `json:"embedding_vector_columns,omitempty"`
-
-	SchemaJson string `json:"schema_json,omitempty"`
+	SchemaJson             string                  `json:"schema_json,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -541,7 +499,6 @@ func embeddingSourceColumnToPb(st *EmbeddingSourceColumn) (*embeddingSourceColum
 	}
 	pb := &embeddingSourceColumnPb{}
 	pb.EmbeddingModelEndpointName = st.EmbeddingModelEndpointName
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -550,8 +507,7 @@ func embeddingSourceColumnToPb(st *EmbeddingSourceColumn) (*embeddingSourceColum
 
 type embeddingSourceColumnPb struct {
 	EmbeddingModelEndpointName string `json:"embedding_model_endpoint_name,omitempty"`
-
-	Name string `json:"name,omitempty"`
+	Name                       string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -582,7 +538,6 @@ func embeddingVectorColumnToPb(st *EmbeddingVectorColumn) (*embeddingVectorColum
 	}
 	pb := &embeddingVectorColumnPb{}
 	pb.EmbeddingDimension = st.EmbeddingDimension
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -590,9 +545,8 @@ func embeddingVectorColumnToPb(st *EmbeddingVectorColumn) (*embeddingVectorColum
 }
 
 type embeddingVectorColumnPb struct {
-	EmbeddingDimension int `json:"embedding_dimension,omitempty"`
-
-	Name string `json:"name,omitempty"`
+	EmbeddingDimension int    `json:"embedding_dimension,omitempty"`
+	Name               string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -623,25 +577,15 @@ func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
 	}
 	pb := &endpointInfoPb{}
 	pb.CreationTimestamp = st.CreationTimestamp
-
 	pb.Creator = st.Creator
-
 	pb.CustomTags = st.CustomTags
-
 	pb.EffectiveBudgetPolicyId = st.EffectiveBudgetPolicyId
-
 	pb.EndpointStatus = st.EndpointStatus
-
 	pb.EndpointType = st.EndpointType
-
 	pb.Id = st.Id
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
-
 	pb.LastUpdatedUser = st.LastUpdatedUser
-
 	pb.Name = st.Name
-
 	pb.NumIndexes = st.NumIndexes
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -649,27 +593,17 @@ func endpointInfoToPb(st *EndpointInfo) (*endpointInfoPb, error) {
 }
 
 type endpointInfoPb struct {
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
-
-	Creator string `json:"creator,omitempty"`
-
-	CustomTags []CustomTag `json:"custom_tags,omitempty"`
-
-	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
-
-	EndpointStatus *EndpointStatus `json:"endpoint_status,omitempty"`
-
-	EndpointType EndpointType `json:"endpoint_type,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
-
-	LastUpdatedUser string `json:"last_updated_user,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	NumIndexes int `json:"num_indexes,omitempty"`
+	CreationTimestamp       int64           `json:"creation_timestamp,omitempty"`
+	Creator                 string          `json:"creator,omitempty"`
+	CustomTags              []CustomTag     `json:"custom_tags,omitempty"`
+	EffectiveBudgetPolicyId string          `json:"effective_budget_policy_id,omitempty"`
+	EndpointStatus          *EndpointStatus `json:"endpoint_status,omitempty"`
+	EndpointType            EndpointType    `json:"endpoint_type,omitempty"`
+	Id                      string          `json:"id,omitempty"`
+	LastUpdatedTimestamp    int64           `json:"last_updated_timestamp,omitempty"`
+	LastUpdatedUser         string          `json:"last_updated_user,omitempty"`
+	Name                    string          `json:"name,omitempty"`
+	NumIndexes              int             `json:"num_indexes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -709,7 +643,6 @@ func endpointStatusToPb(st *EndpointStatus) (*endpointStatusPb, error) {
 	}
 	pb := &endpointStatusPb{}
 	pb.Message = st.Message
-
 	pb.State = st.State
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -717,9 +650,8 @@ func endpointStatusToPb(st *EndpointStatus) (*endpointStatusPb, error) {
 }
 
 type endpointStatusPb struct {
-	Message string `json:"message,omitempty"`
-
-	State EndpointStatusState `json:"state,omitempty"`
+	Message string              `json:"message,omitempty"`
+	State   EndpointStatusState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -798,7 +730,6 @@ func listEndpointResponseToPb(st *ListEndpointResponse) (*listEndpointResponsePb
 	}
 	pb := &listEndpointResponsePb{}
 	pb.Endpoints = st.Endpoints
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -806,9 +737,8 @@ func listEndpointResponseToPb(st *ListEndpointResponse) (*listEndpointResponsePb
 }
 
 type listEndpointResponsePb struct {
-	Endpoints []EndpointInfo `json:"endpoints,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Endpoints     []EndpointInfo `json:"endpoints,omitempty"`
+	NextPageToken string         `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -875,7 +805,6 @@ func listIndexesRequestToPb(st *ListIndexesRequest) (*listIndexesRequestPb, erro
 	}
 	pb := &listIndexesRequestPb{}
 	pb.EndpointName = st.EndpointName
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -884,8 +813,7 @@ func listIndexesRequestToPb(st *ListIndexesRequest) (*listIndexesRequestPb, erro
 
 type listIndexesRequestPb struct {
 	EndpointName string `json:"-" url:"endpoint_name"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken    string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -940,7 +868,6 @@ func listVectorIndexesResponseToPb(st *ListVectorIndexesResponse) (*listVectorIn
 	}
 	pb := &listVectorIndexesResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.VectorIndexes = st.VectorIndexes
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -948,8 +875,7 @@ func listVectorIndexesResponseToPb(st *ListVectorIndexesResponse) (*listVectorIn
 }
 
 type listVectorIndexesResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken string            `json:"next_page_token,omitempty"`
 	VectorIndexes []MiniVectorIndex `json:"vector_indexes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -981,7 +907,6 @@ func mapStringValueEntryToPb(st *MapStringValueEntry) (*mapStringValueEntryPb, e
 	}
 	pb := &mapStringValueEntryPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -989,8 +914,7 @@ func mapStringValueEntryToPb(st *MapStringValueEntry) (*mapStringValueEntryPb, e
 }
 
 type mapStringValueEntryPb struct {
-	Key string `json:"key,omitempty"`
-
+	Key   string `json:"key,omitempty"`
 	Value *Value `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1022,13 +946,9 @@ func miniVectorIndexToPb(st *MiniVectorIndex) (*miniVectorIndexPb, error) {
 	}
 	pb := &miniVectorIndexPb{}
 	pb.Creator = st.Creator
-
 	pb.EndpointName = st.EndpointName
-
 	pb.IndexType = st.IndexType
-
 	pb.Name = st.Name
-
 	pb.PrimaryKey = st.PrimaryKey
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1036,15 +956,11 @@ func miniVectorIndexToPb(st *MiniVectorIndex) (*miniVectorIndexPb, error) {
 }
 
 type miniVectorIndexPb struct {
-	Creator string `json:"creator,omitempty"`
-
-	EndpointName string `json:"endpoint_name,omitempty"`
-
-	IndexType VectorIndexType `json:"index_type,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	PrimaryKey string `json:"primary_key,omitempty"`
+	Creator      string          `json:"creator,omitempty"`
+	EndpointName string          `json:"endpoint_name,omitempty"`
+	IndexType    VectorIndexType `json:"index_type,omitempty"`
+	Name         string          `json:"name,omitempty"`
+	PrimaryKey   string          `json:"primary_key,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1078,7 +994,6 @@ func patchEndpointBudgetPolicyRequestToPb(st *PatchEndpointBudgetPolicyRequest) 
 	}
 	pb := &patchEndpointBudgetPolicyRequestPb{}
 	pb.BudgetPolicyId = st.BudgetPolicyId
-
 	pb.EndpointName = st.EndpointName
 
 	return pb, nil
@@ -1086,8 +1001,7 @@ func patchEndpointBudgetPolicyRequestToPb(st *PatchEndpointBudgetPolicyRequest) 
 
 type patchEndpointBudgetPolicyRequestPb struct {
 	BudgetPolicyId string `json:"budget_policy_id"`
-
-	EndpointName string `json:"-" url:"-"`
+	EndpointName   string `json:"-" url:"-"`
 }
 
 func patchEndpointBudgetPolicyRequestFromPb(pb *patchEndpointBudgetPolicyRequestPb) (*PatchEndpointBudgetPolicyRequest, error) {
@@ -1143,9 +1057,7 @@ func queryVectorIndexNextPageRequestToPb(st *QueryVectorIndexNextPageRequest) (*
 	}
 	pb := &queryVectorIndexNextPageRequestPb{}
 	pb.EndpointName = st.EndpointName
-
 	pb.IndexName = st.IndexName
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1154,10 +1066,8 @@ func queryVectorIndexNextPageRequestToPb(st *QueryVectorIndexNextPageRequest) (*
 
 type queryVectorIndexNextPageRequestPb struct {
 	EndpointName string `json:"endpoint_name,omitempty"`
-
-	IndexName string `json:"-" url:"-"`
-
-	PageToken string `json:"page_token,omitempty"`
+	IndexName    string `json:"-" url:"-"`
+	PageToken    string `json:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1189,21 +1099,13 @@ func queryVectorIndexRequestToPb(st *QueryVectorIndexRequest) (*queryVectorIndex
 	}
 	pb := &queryVectorIndexRequestPb{}
 	pb.Columns = st.Columns
-
 	pb.ColumnsToRerank = st.ColumnsToRerank
-
 	pb.FiltersJson = st.FiltersJson
-
 	pb.IndexName = st.IndexName
-
 	pb.NumResults = st.NumResults
-
 	pb.QueryText = st.QueryText
-
 	pb.QueryType = st.QueryType
-
 	pb.QueryVector = st.QueryVector
-
 	pb.ScoreThreshold = st.ScoreThreshold
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1211,23 +1113,15 @@ func queryVectorIndexRequestToPb(st *QueryVectorIndexRequest) (*queryVectorIndex
 }
 
 type queryVectorIndexRequestPb struct {
-	Columns []string `json:"columns"`
-
-	ColumnsToRerank []string `json:"columns_to_rerank,omitempty"`
-
-	FiltersJson string `json:"filters_json,omitempty"`
-
-	IndexName string `json:"-" url:"-"`
-
-	NumResults int `json:"num_results,omitempty"`
-
-	QueryText string `json:"query_text,omitempty"`
-
-	QueryType string `json:"query_type,omitempty"`
-
-	QueryVector []float64 `json:"query_vector,omitempty"`
-
-	ScoreThreshold float64 `json:"score_threshold,omitempty"`
+	Columns         []string  `json:"columns"`
+	ColumnsToRerank []string  `json:"columns_to_rerank,omitempty"`
+	FiltersJson     string    `json:"filters_json,omitempty"`
+	IndexName       string    `json:"-" url:"-"`
+	NumResults      int       `json:"num_results,omitempty"`
+	QueryText       string    `json:"query_text,omitempty"`
+	QueryType       string    `json:"query_type,omitempty"`
+	QueryVector     []float64 `json:"query_vector,omitempty"`
+	ScoreThreshold  float64   `json:"score_threshold,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1265,9 +1159,7 @@ func queryVectorIndexResponseToPb(st *QueryVectorIndexResponse) (*queryVectorInd
 	}
 	pb := &queryVectorIndexResponsePb{}
 	pb.Manifest = st.Manifest
-
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Result = st.Result
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1275,11 +1167,9 @@ func queryVectorIndexResponseToPb(st *QueryVectorIndexResponse) (*queryVectorInd
 }
 
 type queryVectorIndexResponsePb struct {
-	Manifest *ResultManifest `json:"manifest,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Result *ResultData `json:"result,omitempty"`
+	Manifest      *ResultManifest `json:"manifest,omitempty"`
+	NextPageToken string          `json:"next_page_token,omitempty"`
+	Result        *ResultData     `json:"result,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1311,7 +1201,6 @@ func resultDataToPb(st *ResultData) (*resultDataPb, error) {
 	}
 	pb := &resultDataPb{}
 	pb.DataArray = st.DataArray
-
 	pb.RowCount = st.RowCount
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1320,8 +1209,7 @@ func resultDataToPb(st *ResultData) (*resultDataPb, error) {
 
 type resultDataPb struct {
 	DataArray [][]string `json:"data_array,omitempty"`
-
-	RowCount int `json:"row_count,omitempty"`
+	RowCount  int        `json:"row_count,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1352,7 +1240,6 @@ func resultManifestToPb(st *ResultManifest) (*resultManifestPb, error) {
 	}
 	pb := &resultManifestPb{}
 	pb.ColumnCount = st.ColumnCount
-
 	pb.Columns = st.Columns
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1360,9 +1247,8 @@ func resultManifestToPb(st *ResultManifest) (*resultManifestPb, error) {
 }
 
 type resultManifestPb struct {
-	ColumnCount int `json:"column_count,omitempty"`
-
-	Columns []ColumnInfo `json:"columns,omitempty"`
+	ColumnCount int          `json:"column_count,omitempty"`
+	Columns     []ColumnInfo `json:"columns,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1393,9 +1279,7 @@ func scanVectorIndexRequestToPb(st *ScanVectorIndexRequest) (*scanVectorIndexReq
 	}
 	pb := &scanVectorIndexRequestPb{}
 	pb.IndexName = st.IndexName
-
 	pb.LastPrimaryKey = st.LastPrimaryKey
-
 	pb.NumResults = st.NumResults
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1403,11 +1287,9 @@ func scanVectorIndexRequestToPb(st *ScanVectorIndexRequest) (*scanVectorIndexReq
 }
 
 type scanVectorIndexRequestPb struct {
-	IndexName string `json:"-" url:"-"`
-
+	IndexName      string `json:"-" url:"-"`
 	LastPrimaryKey string `json:"last_primary_key,omitempty"`
-
-	NumResults int `json:"num_results,omitempty"`
+	NumResults     int    `json:"num_results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1439,7 +1321,6 @@ func scanVectorIndexResponseToPb(st *ScanVectorIndexResponse) (*scanVectorIndexR
 	}
 	pb := &scanVectorIndexResponsePb{}
 	pb.Data = st.Data
-
 	pb.LastPrimaryKey = st.LastPrimaryKey
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1447,9 +1328,8 @@ func scanVectorIndexResponseToPb(st *ScanVectorIndexResponse) (*scanVectorIndexR
 }
 
 type scanVectorIndexResponsePb struct {
-	Data []Struct `json:"data,omitempty"`
-
-	LastPrimaryKey string `json:"last_primary_key,omitempty"`
+	Data           []Struct `json:"data,omitempty"`
+	LastPrimaryKey string   `json:"last_primary_key,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1549,16 +1429,14 @@ func updateEndpointCustomTagsRequestToPb(st *UpdateEndpointCustomTagsRequest) (*
 	}
 	pb := &updateEndpointCustomTagsRequestPb{}
 	pb.CustomTags = st.CustomTags
-
 	pb.EndpointName = st.EndpointName
 
 	return pb, nil
 }
 
 type updateEndpointCustomTagsRequestPb struct {
-	CustomTags []CustomTag `json:"custom_tags"`
-
-	EndpointName string `json:"-" url:"-"`
+	CustomTags   []CustomTag `json:"custom_tags"`
+	EndpointName string      `json:"-" url:"-"`
 }
 
 func updateEndpointCustomTagsRequestFromPb(pb *updateEndpointCustomTagsRequestPb) (*UpdateEndpointCustomTagsRequest, error) {
@@ -1578,7 +1456,6 @@ func updateEndpointCustomTagsResponseToPb(st *UpdateEndpointCustomTagsResponse) 
 	}
 	pb := &updateEndpointCustomTagsResponsePb{}
 	pb.CustomTags = st.CustomTags
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1587,8 +1464,7 @@ func updateEndpointCustomTagsResponseToPb(st *UpdateEndpointCustomTagsResponse) 
 
 type updateEndpointCustomTagsResponsePb struct {
 	CustomTags []CustomTag `json:"custom_tags,omitempty"`
-
-	Name string `json:"name,omitempty"`
+	Name       string      `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1619,7 +1495,6 @@ func upsertDataResultToPb(st *UpsertDataResult) (*upsertDataResultPb, error) {
 	}
 	pb := &upsertDataResultPb{}
 	pb.FailedPrimaryKeys = st.FailedPrimaryKeys
-
 	pb.SuccessRowCount = st.SuccessRowCount
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1628,8 +1503,7 @@ func upsertDataResultToPb(st *UpsertDataResult) (*upsertDataResultPb, error) {
 
 type upsertDataResultPb struct {
 	FailedPrimaryKeys []string `json:"failed_primary_keys,omitempty"`
-
-	SuccessRowCount int64 `json:"success_row_count,omitempty"`
+	SuccessRowCount   int64    `json:"success_row_count,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1660,15 +1534,13 @@ func upsertDataVectorIndexRequestToPb(st *UpsertDataVectorIndexRequest) (*upsert
 	}
 	pb := &upsertDataVectorIndexRequestPb{}
 	pb.IndexName = st.IndexName
-
 	pb.InputsJson = st.InputsJson
 
 	return pb, nil
 }
 
 type upsertDataVectorIndexRequestPb struct {
-	IndexName string `json:"-" url:"-"`
-
+	IndexName  string `json:"-" url:"-"`
 	InputsJson string `json:"inputs_json"`
 }
 
@@ -1689,7 +1561,6 @@ func upsertDataVectorIndexResponseToPb(st *UpsertDataVectorIndexResponse) (*upse
 	}
 	pb := &upsertDataVectorIndexResponsePb{}
 	pb.Result = st.Result
-
 	pb.Status = st.Status
 
 	return pb, nil
@@ -1697,8 +1568,7 @@ func upsertDataVectorIndexResponseToPb(st *UpsertDataVectorIndexResponse) (*upse
 
 type upsertDataVectorIndexResponsePb struct {
 	Result *UpsertDataResult `json:"result,omitempty"`
-
-	Status UpsertDataStatus `json:"status,omitempty"`
+	Status UpsertDataStatus  `json:"status,omitempty"`
 }
 
 func upsertDataVectorIndexResponseFromPb(pb *upsertDataVectorIndexResponsePb) (*UpsertDataVectorIndexResponse, error) {
@@ -1718,13 +1588,9 @@ func valueToPb(st *Value) (*valuePb, error) {
 	}
 	pb := &valuePb{}
 	pb.BoolValue = st.BoolValue
-
 	pb.ListValue = st.ListValue
-
 	pb.NumberValue = st.NumberValue
-
 	pb.StringValue = st.StringValue
-
 	pb.StructValue = st.StructValue
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1732,15 +1598,11 @@ func valueToPb(st *Value) (*valuePb, error) {
 }
 
 type valuePb struct {
-	BoolValue bool `json:"bool_value,omitempty"`
-
-	ListValue *ListValue `json:"list_value,omitempty"`
-
-	NumberValue float64 `json:"number_value,omitempty"`
-
-	StringValue string `json:"string_value,omitempty"`
-
-	StructValue *Struct `json:"struct_value,omitempty"`
+	BoolValue   bool       `json:"bool_value,omitempty"`
+	ListValue   *ListValue `json:"list_value,omitempty"`
+	NumberValue float64    `json:"number_value,omitempty"`
+	StringValue string     `json:"string_value,omitempty"`
+	StructValue *Struct    `json:"struct_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1774,19 +1636,12 @@ func vectorIndexToPb(st *VectorIndex) (*vectorIndexPb, error) {
 	}
 	pb := &vectorIndexPb{}
 	pb.Creator = st.Creator
-
 	pb.DeltaSyncIndexSpec = st.DeltaSyncIndexSpec
-
 	pb.DirectAccessIndexSpec = st.DirectAccessIndexSpec
-
 	pb.EndpointName = st.EndpointName
-
 	pb.IndexType = st.IndexType
-
 	pb.Name = st.Name
-
 	pb.PrimaryKey = st.PrimaryKey
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1794,21 +1649,14 @@ func vectorIndexToPb(st *VectorIndex) (*vectorIndexPb, error) {
 }
 
 type vectorIndexPb struct {
-	Creator string `json:"creator,omitempty"`
-
-	DeltaSyncIndexSpec *DeltaSyncVectorIndexSpecResponse `json:"delta_sync_index_spec,omitempty"`
-
-	DirectAccessIndexSpec *DirectAccessVectorIndexSpec `json:"direct_access_index_spec,omitempty"`
-
-	EndpointName string `json:"endpoint_name,omitempty"`
-
-	IndexType VectorIndexType `json:"index_type,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	PrimaryKey string `json:"primary_key,omitempty"`
-
-	Status *VectorIndexStatus `json:"status,omitempty"`
+	Creator               string                            `json:"creator,omitempty"`
+	DeltaSyncIndexSpec    *DeltaSyncVectorIndexSpecResponse `json:"delta_sync_index_spec,omitempty"`
+	DirectAccessIndexSpec *DirectAccessVectorIndexSpec      `json:"direct_access_index_spec,omitempty"`
+	EndpointName          string                            `json:"endpoint_name,omitempty"`
+	IndexType             VectorIndexType                   `json:"index_type,omitempty"`
+	Name                  string                            `json:"name,omitempty"`
+	PrimaryKey            string                            `json:"primary_key,omitempty"`
+	Status                *VectorIndexStatus                `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1845,11 +1693,8 @@ func vectorIndexStatusToPb(st *VectorIndexStatus) (*vectorIndexStatusPb, error) 
 	}
 	pb := &vectorIndexStatusPb{}
 	pb.IndexUrl = st.IndexUrl
-
 	pb.IndexedRowCount = st.IndexedRowCount
-
 	pb.Message = st.Message
-
 	pb.Ready = st.Ready
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1857,13 +1702,10 @@ func vectorIndexStatusToPb(st *VectorIndexStatus) (*vectorIndexStatusPb, error) 
 }
 
 type vectorIndexStatusPb struct {
-	IndexUrl string `json:"index_url,omitempty"`
-
-	IndexedRowCount int64 `json:"indexed_row_count,omitempty"`
-
-	Message string `json:"message,omitempty"`
-
-	Ready bool `json:"ready,omitempty"`
+	IndexUrl        string `json:"index_url,omitempty"`
+	IndexedRowCount int64  `json:"indexed_row_count,omitempty"`
+	Message         string `json:"message,omitempty"`
+	Ready           bool   `json:"ready,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1888,4 +1730,58 @@ func (st *vectorIndexStatusPb) UnmarshalJSON(b []byte) error {
 
 func (st vectorIndexStatusPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

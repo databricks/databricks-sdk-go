@@ -5,8 +5,6 @@ package apps
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
-	"time"
 )
 
 type App struct {
@@ -1620,58 +1618,4 @@ func (st UpdateAppRequest) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	return json.Marshal(pb)
-}
-
-func durationToPb(d *time.Duration) (*string, error) {
-	if d == nil {
-		return nil, nil
-	}
-	s := fmt.Sprintf("%fs", d.Seconds())
-	return &s, nil
-}
-
-func durationFromPb(s *string) (*time.Duration, error) {
-	if s == nil {
-		return nil, nil
-	}
-	d, err := time.ParseDuration(*s)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
-
-func timestampToPb(t *time.Time) (*string, error) {
-	if t == nil {
-		return nil, nil
-	}
-	s := t.Format(time.RFC3339)
-	return &s, nil
-}
-
-func timestampFromPb(s *string) (*time.Time, error) {
-	if s == nil {
-		return nil, nil
-	}
-	t, err := time.Parse(time.RFC3339, *s)
-	if err != nil {
-		return nil, err
-	}
-	return &t, nil
-}
-
-func fieldMaskToPb(fm *[]string) (*string, error) {
-	if fm == nil {
-		return nil, nil
-	}
-	s := strings.Join(*fm, ",")
-	return &s, nil
-}
-
-func fieldMaskFromPb(s *string) (*[]string, error) {
-	if s == nil {
-		return nil, nil
-	}
-	fm := strings.Split(*s, ",")
-	return &fm, nil
 }

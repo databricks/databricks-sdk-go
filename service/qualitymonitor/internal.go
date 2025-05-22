@@ -3,6 +3,10 @@
 package qualitymonitor
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -12,11 +16,8 @@ func anomalyDetectionConfigToPb(st *AnomalyDetectionConfig) (*anomalyDetectionCo
 	}
 	pb := &anomalyDetectionConfigPb{}
 	pb.AnomalyDetectionWorkflowId = st.AnomalyDetectionWorkflowId
-
 	pb.LastRunId = st.LastRunId
-
 	pb.LatestRunStatus = st.LatestRunStatus
-
 	pb.PublishHealthIndicator = st.PublishHealthIndicator
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -24,13 +25,10 @@ func anomalyDetectionConfigToPb(st *AnomalyDetectionConfig) (*anomalyDetectionCo
 }
 
 type anomalyDetectionConfigPb struct {
-	AnomalyDetectionWorkflowId int64 `json:"anomaly_detection_workflow_id,omitempty"`
-
-	LastRunId string `json:"last_run_id,omitempty"`
-
-	LatestRunStatus AnomalyDetectionRunStatus `json:"latest_run_status,omitempty"`
-
-	PublishHealthIndicator bool `json:"publish_health_indicator,omitempty"`
+	AnomalyDetectionWorkflowId int64                     `json:"anomaly_detection_workflow_id,omitempty"`
+	LastRunId                  string                    `json:"last_run_id,omitempty"`
+	LatestRunStatus            AnomalyDetectionRunStatus `json:"latest_run_status,omitempty"`
+	PublishHealthIndicator     bool                      `json:"publish_health_indicator,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -87,15 +85,13 @@ func deleteQualityMonitorRequestToPb(st *DeleteQualityMonitorRequest) (*deleteQu
 	}
 	pb := &deleteQualityMonitorRequestPb{}
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	return pb, nil
 }
 
 type deleteQualityMonitorRequestPb struct {
-	ObjectId string `json:"-" url:"-"`
-
+	ObjectId   string `json:"-" url:"-"`
 	ObjectType string `json:"-" url:"-"`
 }
 
@@ -137,15 +133,13 @@ func getQualityMonitorRequestToPb(st *GetQualityMonitorRequest) (*getQualityMoni
 	}
 	pb := &getQualityMonitorRequestPb{}
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	return pb, nil
 }
 
 type getQualityMonitorRequestPb struct {
-	ObjectId string `json:"-" url:"-"`
-
+	ObjectId   string `json:"-" url:"-"`
 	ObjectType string `json:"-" url:"-"`
 }
 
@@ -166,7 +160,6 @@ func listQualityMonitorRequestToPb(st *ListQualityMonitorRequest) (*listQualityM
 	}
 	pb := &listQualityMonitorRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -174,8 +167,7 @@ func listQualityMonitorRequestToPb(st *ListQualityMonitorRequest) (*listQualityM
 }
 
 type listQualityMonitorRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -207,7 +199,6 @@ func listQualityMonitorResponseToPb(st *ListQualityMonitorResponse) (*listQualit
 	}
 	pb := &listQualityMonitorResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.QualityMonitors = st.QualityMonitors
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -215,8 +206,7 @@ func listQualityMonitorResponseToPb(st *ListQualityMonitorResponse) (*listQualit
 }
 
 type listQualityMonitorResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken   string           `json:"next_page_token,omitempty"`
 	QualityMonitors []QualityMonitor `json:"quality_monitors,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -248,9 +238,7 @@ func qualityMonitorToPb(st *QualityMonitor) (*qualityMonitorPb, error) {
 	}
 	pb := &qualityMonitorPb{}
 	pb.AnomalyDetectionConfig = st.AnomalyDetectionConfig
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	return pb, nil
@@ -258,10 +246,8 @@ func qualityMonitorToPb(st *QualityMonitor) (*qualityMonitorPb, error) {
 
 type qualityMonitorPb struct {
 	AnomalyDetectionConfig *AnomalyDetectionConfig `json:"anomaly_detection_config,omitempty"`
-
-	ObjectId string `json:"object_id"`
-
-	ObjectType string `json:"object_type"`
+	ObjectId               string                  `json:"object_id"`
+	ObjectType             string                  `json:"object_type"`
 }
 
 func qualityMonitorFromPb(pb *qualityMonitorPb) (*QualityMonitor, error) {
@@ -282,19 +268,15 @@ func updateQualityMonitorRequestToPb(st *UpdateQualityMonitorRequest) (*updateQu
 	}
 	pb := &updateQualityMonitorRequestPb{}
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
-
 	pb.QualityMonitor = st.QualityMonitor
 
 	return pb, nil
 }
 
 type updateQualityMonitorRequestPb struct {
-	ObjectId string `json:"-" url:"-"`
-
-	ObjectType string `json:"-" url:"-"`
-
+	ObjectId       string         `json:"-" url:"-"`
+	ObjectType     string         `json:"-" url:"-"`
 	QualityMonitor QualityMonitor `json:"quality_monitor"`
 }
 
@@ -308,4 +290,58 @@ func updateQualityMonitorRequestFromPb(pb *updateQualityMonitorRequestPb) (*Upda
 	st.QualityMonitor = pb.QualityMonitor
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

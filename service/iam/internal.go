@@ -3,6 +3,10 @@
 package iam
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -12,11 +16,8 @@ func accessControlRequestToPb(st *AccessControlRequest) (*accessControlRequestPb
 	}
 	pb := &accessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -24,13 +25,10 @@ func accessControlRequestToPb(st *AccessControlRequest) (*accessControlRequestPb
 }
 
 type accessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string          `json:"group_name,omitempty"`
+	PermissionLevel      PermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string          `json:"service_principal_name,omitempty"`
+	UserName             string          `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -63,13 +61,9 @@ func accessControlResponseToPb(st *AccessControlResponse) (*accessControlRespons
 	}
 	pb := &accessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -77,15 +71,11 @@ func accessControlResponseToPb(st *AccessControlResponse) (*accessControlRespons
 }
 
 type accessControlResponsePb struct {
-	AllPermissions []Permission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []Permission `json:"all_permissions,omitempty"`
+	DisplayName          string       `json:"display_name,omitempty"`
+	GroupName            string       `json:"group_name,omitempty"`
+	ServicePrincipalName string       `json:"service_principal_name,omitempty"`
+	UserName             string       `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -155,32 +145,22 @@ func checkPolicyRequestToPb(st *CheckPolicyRequest) (*checkPolicyRequestPb, erro
 	}
 	pb := &checkPolicyRequestPb{}
 	pb.Actor = st.Actor
-
 	pb.AuthzIdentity = st.AuthzIdentity
-
 	pb.ConsistencyToken = st.ConsistencyToken
-
 	pb.Permission = st.Permission
-
 	pb.Resource = st.Resource
-
 	pb.ResourceInfo = st.ResourceInfo
 
 	return pb, nil
 }
 
 type checkPolicyRequestPb struct {
-	Actor Actor `json:"-" url:"actor"`
-
-	AuthzIdentity RequestAuthzIdentity `json:"-" url:"authz_identity"`
-
-	ConsistencyToken ConsistencyToken `json:"-" url:"consistency_token"`
-
-	Permission string `json:"-" url:"permission"`
-
-	Resource string `json:"-" url:"resource"`
-
-	ResourceInfo *ResourceInfo `json:"-" url:"resource_info,omitempty"`
+	Actor            Actor                `json:"-" url:"actor"`
+	AuthzIdentity    RequestAuthzIdentity `json:"-" url:"authz_identity"`
+	ConsistencyToken ConsistencyToken     `json:"-" url:"consistency_token"`
+	Permission       string               `json:"-" url:"permission"`
+	Resource         string               `json:"-" url:"resource"`
+	ResourceInfo     *ResourceInfo        `json:"-" url:"resource_info,omitempty"`
 }
 
 func checkPolicyRequestFromPb(pb *checkPolicyRequestPb) (*CheckPolicyRequest, error) {
@@ -204,7 +184,6 @@ func checkPolicyResponseToPb(st *CheckPolicyResponse) (*checkPolicyResponsePb, e
 	}
 	pb := &checkPolicyResponsePb{}
 	pb.ConsistencyToken = st.ConsistencyToken
-
 	pb.IsPermitted = st.IsPermitted
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -213,8 +192,7 @@ func checkPolicyResponseToPb(st *CheckPolicyResponse) (*checkPolicyResponsePb, e
 
 type checkPolicyResponsePb struct {
 	ConsistencyToken ConsistencyToken `json:"consistency_token"`
-
-	IsPermitted bool `json:"is_permitted,omitempty"`
+	IsPermitted      bool             `json:"is_permitted,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -245,13 +223,9 @@ func complexValueToPb(st *ComplexValue) (*complexValuePb, error) {
 	}
 	pb := &complexValuePb{}
 	pb.Display = st.Display
-
 	pb.Primary = st.Primary
-
 	pb.Ref = st.Ref
-
 	pb.Type = st.Type
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -260,14 +234,10 @@ func complexValueToPb(st *ComplexValue) (*complexValuePb, error) {
 
 type complexValuePb struct {
 	Display string `json:"display,omitempty"`
-
-	Primary bool `json:"primary,omitempty"`
-
-	Ref string `json:"$ref,omitempty"`
-
-	Type string `json:"type,omitempty"`
-
-	Value string `json:"value,omitempty"`
+	Primary bool   `json:"primary,omitempty"`
+	Ref     string `json:"$ref,omitempty"`
+	Type    string `json:"type,omitempty"`
+	Value   string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -490,7 +460,6 @@ func deleteWorkspaceAssignmentRequestToPb(st *DeleteWorkspaceAssignmentRequest) 
 	}
 	pb := &deleteWorkspaceAssignmentRequestPb{}
 	pb.PrincipalId = st.PrincipalId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
@@ -498,7 +467,6 @@ func deleteWorkspaceAssignmentRequestToPb(st *DeleteWorkspaceAssignmentRequest) 
 
 type deleteWorkspaceAssignmentRequestPb struct {
 	PrincipalId int64 `json:"-" url:"-"`
-
 	WorkspaceId int64 `json:"-" url:"-"`
 }
 
@@ -588,19 +556,12 @@ func getAccountUserRequestToPb(st *GetAccountUserRequest) (*getAccountUserReques
 	}
 	pb := &getAccountUserRequestPb{}
 	pb.Attributes = st.Attributes
-
 	pb.Count = st.Count
-
 	pb.ExcludedAttributes = st.ExcludedAttributes
-
 	pb.Filter = st.Filter
-
 	pb.Id = st.Id
-
 	pb.SortBy = st.SortBy
-
 	pb.SortOrder = st.SortOrder
-
 	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -608,21 +569,14 @@ func getAccountUserRequestToPb(st *GetAccountUserRequest) (*getAccountUserReques
 }
 
 type getAccountUserRequestPb struct {
-	Attributes string `json:"-" url:"attributes,omitempty"`
-
-	Count int `json:"-" url:"count,omitempty"`
-
-	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
-
-	Filter string `json:"-" url:"filter,omitempty"`
-
-	Id string `json:"-" url:"-"`
-
-	SortBy string `json:"-" url:"sortBy,omitempty"`
-
-	SortOrder GetSortOrder `json:"-" url:"sortOrder,omitempty"`
-
-	StartIndex int `json:"-" url:"startIndex,omitempty"`
+	Attributes         string       `json:"-" url:"attributes,omitempty"`
+	Count              int          `json:"-" url:"count,omitempty"`
+	ExcludedAttributes string       `json:"-" url:"excludedAttributes,omitempty"`
+	Filter             string       `json:"-" url:"filter,omitempty"`
+	Id                 string       `json:"-" url:"-"`
+	SortBy             string       `json:"-" url:"sortBy,omitempty"`
+	SortOrder          GetSortOrder `json:"-" url:"sortOrder,omitempty"`
+	StartIndex         int          `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -755,15 +709,13 @@ func getPermissionLevelsRequestToPb(st *GetPermissionLevelsRequest) (*getPermiss
 	}
 	pb := &getPermissionLevelsRequestPb{}
 	pb.RequestObjectId = st.RequestObjectId
-
 	pb.RequestObjectType = st.RequestObjectType
 
 	return pb, nil
 }
 
 type getPermissionLevelsRequestPb struct {
-	RequestObjectId string `json:"-" url:"-"`
-
+	RequestObjectId   string `json:"-" url:"-"`
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -808,15 +760,13 @@ func getPermissionRequestToPb(st *GetPermissionRequest) (*getPermissionRequestPb
 	}
 	pb := &getPermissionRequestPb{}
 	pb.RequestObjectId = st.RequestObjectId
-
 	pb.RequestObjectType = st.RequestObjectType
 
 	return pb, nil
 }
 
 type getPermissionRequestPb struct {
-	RequestObjectId string `json:"-" url:"-"`
-
+	RequestObjectId   string `json:"-" url:"-"`
 	RequestObjectType string `json:"-" url:"-"`
 }
 
@@ -837,7 +787,6 @@ func getRuleSetRequestToPb(st *GetRuleSetRequest) (*getRuleSetRequestPb, error) 
 	}
 	pb := &getRuleSetRequestPb{}
 	pb.Etag = st.Etag
-
 	pb.Name = st.Name
 
 	return pb, nil
@@ -845,7 +794,6 @@ func getRuleSetRequestToPb(st *GetRuleSetRequest) (*getRuleSetRequestPb, error) 
 
 type getRuleSetRequestPb struct {
 	Etag string `json:"-" url:"etag"`
-
 	Name string `json:"-" url:"name"`
 }
 
@@ -890,19 +838,12 @@ func getUserRequestToPb(st *GetUserRequest) (*getUserRequestPb, error) {
 	}
 	pb := &getUserRequestPb{}
 	pb.Attributes = st.Attributes
-
 	pb.Count = st.Count
-
 	pb.ExcludedAttributes = st.ExcludedAttributes
-
 	pb.Filter = st.Filter
-
 	pb.Id = st.Id
-
 	pb.SortBy = st.SortBy
-
 	pb.SortOrder = st.SortOrder
-
 	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -910,21 +851,14 @@ func getUserRequestToPb(st *GetUserRequest) (*getUserRequestPb, error) {
 }
 
 type getUserRequestPb struct {
-	Attributes string `json:"-" url:"attributes,omitempty"`
-
-	Count int `json:"-" url:"count,omitempty"`
-
-	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
-
-	Filter string `json:"-" url:"filter,omitempty"`
-
-	Id string `json:"-" url:"-"`
-
-	SortBy string `json:"-" url:"sortBy,omitempty"`
-
-	SortOrder GetSortOrder `json:"-" url:"sortOrder,omitempty"`
-
-	StartIndex int `json:"-" url:"startIndex,omitempty"`
+	Attributes         string       `json:"-" url:"attributes,omitempty"`
+	Count              int          `json:"-" url:"count,omitempty"`
+	ExcludedAttributes string       `json:"-" url:"excludedAttributes,omitempty"`
+	Filter             string       `json:"-" url:"filter,omitempty"`
+	Id                 string       `json:"-" url:"-"`
+	SortBy             string       `json:"-" url:"sortBy,omitempty"`
+	SortOrder          GetSortOrder `json:"-" url:"sortOrder,omitempty"`
+	StartIndex         int          `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -985,7 +919,6 @@ func grantRuleToPb(st *GrantRule) (*grantRulePb, error) {
 	}
 	pb := &grantRulePb{}
 	pb.Principals = st.Principals
-
 	pb.Role = st.Role
 
 	return pb, nil
@@ -993,8 +926,7 @@ func grantRuleToPb(st *GrantRule) (*grantRulePb, error) {
 
 type grantRulePb struct {
 	Principals []string `json:"principals,omitempty"`
-
-	Role string `json:"role"`
+	Role       string   `json:"role"`
 }
 
 func grantRuleFromPb(pb *grantRulePb) (*GrantRule, error) {
@@ -1014,21 +946,13 @@ func groupToPb(st *Group) (*groupPb, error) {
 	}
 	pb := &groupPb{}
 	pb.DisplayName = st.DisplayName
-
 	pb.Entitlements = st.Entitlements
-
 	pb.ExternalId = st.ExternalId
-
 	pb.Groups = st.Groups
-
 	pb.Id = st.Id
-
 	pb.Members = st.Members
-
 	pb.Meta = st.Meta
-
 	pb.Roles = st.Roles
-
 	pb.Schemas = st.Schemas
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1036,23 +960,15 @@ func groupToPb(st *Group) (*groupPb, error) {
 }
 
 type groupPb struct {
-	DisplayName string `json:"displayName,omitempty"`
-
+	DisplayName  string         `json:"displayName,omitempty"`
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
-
-	ExternalId string `json:"externalId,omitempty"`
-
-	Groups []ComplexValue `json:"groups,omitempty"`
-
-	Id string `json:"id,omitempty" url:"-"`
-
-	Members []ComplexValue `json:"members,omitempty"`
-
-	Meta *ResourceMeta `json:"meta,omitempty"`
-
-	Roles []ComplexValue `json:"roles,omitempty"`
-
-	Schemas []GroupSchema `json:"schemas,omitempty"`
+	ExternalId   string         `json:"externalId,omitempty"`
+	Groups       []ComplexValue `json:"groups,omitempty"`
+	Id           string         `json:"id,omitempty" url:"-"`
+	Members      []ComplexValue `json:"members,omitempty"`
+	Meta         *ResourceMeta  `json:"meta,omitempty"`
+	Roles        []ComplexValue `json:"roles,omitempty"`
+	Schemas      []GroupSchema  `json:"schemas,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1090,17 +1006,11 @@ func listAccountGroupsRequestToPb(st *ListAccountGroupsRequest) (*listAccountGro
 	}
 	pb := &listAccountGroupsRequestPb{}
 	pb.Attributes = st.Attributes
-
 	pb.Count = st.Count
-
 	pb.ExcludedAttributes = st.ExcludedAttributes
-
 	pb.Filter = st.Filter
-
 	pb.SortBy = st.SortBy
-
 	pb.SortOrder = st.SortOrder
-
 	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1108,19 +1018,13 @@ func listAccountGroupsRequestToPb(st *ListAccountGroupsRequest) (*listAccountGro
 }
 
 type listAccountGroupsRequestPb struct {
-	Attributes string `json:"-" url:"attributes,omitempty"`
-
-	Count int64 `json:"-" url:"count,omitempty"`
-
-	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
-
-	Filter string `json:"-" url:"filter,omitempty"`
-
-	SortBy string `json:"-" url:"sortBy,omitempty"`
-
-	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
-
-	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
+	Attributes         string        `json:"-" url:"attributes,omitempty"`
+	Count              int64         `json:"-" url:"count,omitempty"`
+	ExcludedAttributes string        `json:"-" url:"excludedAttributes,omitempty"`
+	Filter             string        `json:"-" url:"filter,omitempty"`
+	SortBy             string        `json:"-" url:"sortBy,omitempty"`
+	SortOrder          ListSortOrder `json:"-" url:"sortOrder,omitempty"`
+	StartIndex         int64         `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1156,17 +1060,11 @@ func listAccountServicePrincipalsRequestToPb(st *ListAccountServicePrincipalsReq
 	}
 	pb := &listAccountServicePrincipalsRequestPb{}
 	pb.Attributes = st.Attributes
-
 	pb.Count = st.Count
-
 	pb.ExcludedAttributes = st.ExcludedAttributes
-
 	pb.Filter = st.Filter
-
 	pb.SortBy = st.SortBy
-
 	pb.SortOrder = st.SortOrder
-
 	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1174,19 +1072,13 @@ func listAccountServicePrincipalsRequestToPb(st *ListAccountServicePrincipalsReq
 }
 
 type listAccountServicePrincipalsRequestPb struct {
-	Attributes string `json:"-" url:"attributes,omitempty"`
-
-	Count int64 `json:"-" url:"count,omitempty"`
-
-	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
-
-	Filter string `json:"-" url:"filter,omitempty"`
-
-	SortBy string `json:"-" url:"sortBy,omitempty"`
-
-	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
-
-	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
+	Attributes         string        `json:"-" url:"attributes,omitempty"`
+	Count              int64         `json:"-" url:"count,omitempty"`
+	ExcludedAttributes string        `json:"-" url:"excludedAttributes,omitempty"`
+	Filter             string        `json:"-" url:"filter,omitempty"`
+	SortBy             string        `json:"-" url:"sortBy,omitempty"`
+	SortOrder          ListSortOrder `json:"-" url:"sortOrder,omitempty"`
+	StartIndex         int64         `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1222,17 +1114,11 @@ func listAccountUsersRequestToPb(st *ListAccountUsersRequest) (*listAccountUsers
 	}
 	pb := &listAccountUsersRequestPb{}
 	pb.Attributes = st.Attributes
-
 	pb.Count = st.Count
-
 	pb.ExcludedAttributes = st.ExcludedAttributes
-
 	pb.Filter = st.Filter
-
 	pb.SortBy = st.SortBy
-
 	pb.SortOrder = st.SortOrder
-
 	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1240,19 +1126,13 @@ func listAccountUsersRequestToPb(st *ListAccountUsersRequest) (*listAccountUsers
 }
 
 type listAccountUsersRequestPb struct {
-	Attributes string `json:"-" url:"attributes,omitempty"`
-
-	Count int64 `json:"-" url:"count,omitempty"`
-
-	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
-
-	Filter string `json:"-" url:"filter,omitempty"`
-
-	SortBy string `json:"-" url:"sortBy,omitempty"`
-
-	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
-
-	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
+	Attributes         string        `json:"-" url:"attributes,omitempty"`
+	Count              int64         `json:"-" url:"count,omitempty"`
+	ExcludedAttributes string        `json:"-" url:"excludedAttributes,omitempty"`
+	Filter             string        `json:"-" url:"filter,omitempty"`
+	SortBy             string        `json:"-" url:"sortBy,omitempty"`
+	SortOrder          ListSortOrder `json:"-" url:"sortOrder,omitempty"`
+	StartIndex         int64         `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1288,17 +1168,11 @@ func listGroupsRequestToPb(st *ListGroupsRequest) (*listGroupsRequestPb, error) 
 	}
 	pb := &listGroupsRequestPb{}
 	pb.Attributes = st.Attributes
-
 	pb.Count = st.Count
-
 	pb.ExcludedAttributes = st.ExcludedAttributes
-
 	pb.Filter = st.Filter
-
 	pb.SortBy = st.SortBy
-
 	pb.SortOrder = st.SortOrder
-
 	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1306,19 +1180,13 @@ func listGroupsRequestToPb(st *ListGroupsRequest) (*listGroupsRequestPb, error) 
 }
 
 type listGroupsRequestPb struct {
-	Attributes string `json:"-" url:"attributes,omitempty"`
-
-	Count int64 `json:"-" url:"count,omitempty"`
-
-	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
-
-	Filter string `json:"-" url:"filter,omitempty"`
-
-	SortBy string `json:"-" url:"sortBy,omitempty"`
-
-	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
-
-	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
+	Attributes         string        `json:"-" url:"attributes,omitempty"`
+	Count              int64         `json:"-" url:"count,omitempty"`
+	ExcludedAttributes string        `json:"-" url:"excludedAttributes,omitempty"`
+	Filter             string        `json:"-" url:"filter,omitempty"`
+	SortBy             string        `json:"-" url:"sortBy,omitempty"`
+	SortOrder          ListSortOrder `json:"-" url:"sortOrder,omitempty"`
+	StartIndex         int64         `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1354,13 +1222,9 @@ func listGroupsResponseToPb(st *ListGroupsResponse) (*listGroupsResponsePb, erro
 	}
 	pb := &listGroupsResponsePb{}
 	pb.ItemsPerPage = st.ItemsPerPage
-
 	pb.Resources = st.Resources
-
 	pb.Schemas = st.Schemas
-
 	pb.StartIndex = st.StartIndex
-
 	pb.TotalResults = st.TotalResults
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1368,15 +1232,11 @@ func listGroupsResponseToPb(st *ListGroupsResponse) (*listGroupsResponsePb, erro
 }
 
 type listGroupsResponsePb struct {
-	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
-
-	Resources []Group `json:"Resources,omitempty"`
-
-	Schemas []ListResponseSchema `json:"schemas,omitempty"`
-
-	StartIndex int64 `json:"startIndex,omitempty"`
-
-	TotalResults int64 `json:"totalResults,omitempty"`
+	ItemsPerPage int64                `json:"itemsPerPage,omitempty"`
+	Resources    []Group              `json:"Resources,omitempty"`
+	Schemas      []ListResponseSchema `json:"schemas,omitempty"`
+	StartIndex   int64                `json:"startIndex,omitempty"`
+	TotalResults int64                `json:"totalResults,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1410,13 +1270,9 @@ func listServicePrincipalResponseToPb(st *ListServicePrincipalResponse) (*listSe
 	}
 	pb := &listServicePrincipalResponsePb{}
 	pb.ItemsPerPage = st.ItemsPerPage
-
 	pb.Resources = st.Resources
-
 	pb.Schemas = st.Schemas
-
 	pb.StartIndex = st.StartIndex
-
 	pb.TotalResults = st.TotalResults
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1424,15 +1280,11 @@ func listServicePrincipalResponseToPb(st *ListServicePrincipalResponse) (*listSe
 }
 
 type listServicePrincipalResponsePb struct {
-	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
-
-	Resources []ServicePrincipal `json:"Resources,omitempty"`
-
-	Schemas []ListResponseSchema `json:"schemas,omitempty"`
-
-	StartIndex int64 `json:"startIndex,omitempty"`
-
-	TotalResults int64 `json:"totalResults,omitempty"`
+	ItemsPerPage int64                `json:"itemsPerPage,omitempty"`
+	Resources    []ServicePrincipal   `json:"Resources,omitempty"`
+	Schemas      []ListResponseSchema `json:"schemas,omitempty"`
+	StartIndex   int64                `json:"startIndex,omitempty"`
+	TotalResults int64                `json:"totalResults,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1466,17 +1318,11 @@ func listServicePrincipalsRequestToPb(st *ListServicePrincipalsRequest) (*listSe
 	}
 	pb := &listServicePrincipalsRequestPb{}
 	pb.Attributes = st.Attributes
-
 	pb.Count = st.Count
-
 	pb.ExcludedAttributes = st.ExcludedAttributes
-
 	pb.Filter = st.Filter
-
 	pb.SortBy = st.SortBy
-
 	pb.SortOrder = st.SortOrder
-
 	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1484,19 +1330,13 @@ func listServicePrincipalsRequestToPb(st *ListServicePrincipalsRequest) (*listSe
 }
 
 type listServicePrincipalsRequestPb struct {
-	Attributes string `json:"-" url:"attributes,omitempty"`
-
-	Count int64 `json:"-" url:"count,omitempty"`
-
-	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
-
-	Filter string `json:"-" url:"filter,omitempty"`
-
-	SortBy string `json:"-" url:"sortBy,omitempty"`
-
-	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
-
-	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
+	Attributes         string        `json:"-" url:"attributes,omitempty"`
+	Count              int64         `json:"-" url:"count,omitempty"`
+	ExcludedAttributes string        `json:"-" url:"excludedAttributes,omitempty"`
+	Filter             string        `json:"-" url:"filter,omitempty"`
+	SortBy             string        `json:"-" url:"sortBy,omitempty"`
+	SortOrder          ListSortOrder `json:"-" url:"sortOrder,omitempty"`
+	StartIndex         int64         `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1532,17 +1372,11 @@ func listUsersRequestToPb(st *ListUsersRequest) (*listUsersRequestPb, error) {
 	}
 	pb := &listUsersRequestPb{}
 	pb.Attributes = st.Attributes
-
 	pb.Count = st.Count
-
 	pb.ExcludedAttributes = st.ExcludedAttributes
-
 	pb.Filter = st.Filter
-
 	pb.SortBy = st.SortBy
-
 	pb.SortOrder = st.SortOrder
-
 	pb.StartIndex = st.StartIndex
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1550,19 +1384,13 @@ func listUsersRequestToPb(st *ListUsersRequest) (*listUsersRequestPb, error) {
 }
 
 type listUsersRequestPb struct {
-	Attributes string `json:"-" url:"attributes,omitempty"`
-
-	Count int64 `json:"-" url:"count,omitempty"`
-
-	ExcludedAttributes string `json:"-" url:"excludedAttributes,omitempty"`
-
-	Filter string `json:"-" url:"filter,omitempty"`
-
-	SortBy string `json:"-" url:"sortBy,omitempty"`
-
-	SortOrder ListSortOrder `json:"-" url:"sortOrder,omitempty"`
-
-	StartIndex int64 `json:"-" url:"startIndex,omitempty"`
+	Attributes         string        `json:"-" url:"attributes,omitempty"`
+	Count              int64         `json:"-" url:"count,omitempty"`
+	ExcludedAttributes string        `json:"-" url:"excludedAttributes,omitempty"`
+	Filter             string        `json:"-" url:"filter,omitempty"`
+	SortBy             string        `json:"-" url:"sortBy,omitempty"`
+	SortOrder          ListSortOrder `json:"-" url:"sortOrder,omitempty"`
+	StartIndex         int64         `json:"-" url:"startIndex,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1598,13 +1426,9 @@ func listUsersResponseToPb(st *ListUsersResponse) (*listUsersResponsePb, error) 
 	}
 	pb := &listUsersResponsePb{}
 	pb.ItemsPerPage = st.ItemsPerPage
-
 	pb.Resources = st.Resources
-
 	pb.Schemas = st.Schemas
-
 	pb.StartIndex = st.StartIndex
-
 	pb.TotalResults = st.TotalResults
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1612,15 +1436,11 @@ func listUsersResponseToPb(st *ListUsersResponse) (*listUsersResponsePb, error) 
 }
 
 type listUsersResponsePb struct {
-	ItemsPerPage int64 `json:"itemsPerPage,omitempty"`
-
-	Resources []User `json:"Resources,omitempty"`
-
-	Schemas []ListResponseSchema `json:"schemas,omitempty"`
-
-	StartIndex int64 `json:"startIndex,omitempty"`
-
-	TotalResults int64 `json:"totalResults,omitempty"`
+	ItemsPerPage int64                `json:"itemsPerPage,omitempty"`
+	Resources    []User               `json:"Resources,omitempty"`
+	Schemas      []ListResponseSchema `json:"schemas,omitempty"`
+	StartIndex   int64                `json:"startIndex,omitempty"`
+	TotalResults int64                `json:"totalResults,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1678,11 +1498,8 @@ func migratePermissionsRequestToPb(st *MigratePermissionsRequest) (*migratePermi
 	}
 	pb := &migratePermissionsRequestPb{}
 	pb.FromWorkspaceGroupName = st.FromWorkspaceGroupName
-
 	pb.Size = st.Size
-
 	pb.ToAccountGroupName = st.ToAccountGroupName
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1691,12 +1508,9 @@ func migratePermissionsRequestToPb(st *MigratePermissionsRequest) (*migratePermi
 
 type migratePermissionsRequestPb struct {
 	FromWorkspaceGroupName string `json:"from_workspace_group_name"`
-
-	Size int `json:"size,omitempty"`
-
-	ToAccountGroupName string `json:"to_account_group_name"`
-
-	WorkspaceId int64 `json:"workspace_id"`
+	Size                   int    `json:"size,omitempty"`
+	ToAccountGroupName     string `json:"to_account_group_name"`
+	WorkspaceId            int64  `json:"workspace_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1765,7 +1579,6 @@ func nameToPb(st *Name) (*namePb, error) {
 	}
 	pb := &namePb{}
 	pb.FamilyName = st.FamilyName
-
 	pb.GivenName = st.GivenName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1774,8 +1587,7 @@ func nameToPb(st *Name) (*namePb, error) {
 
 type namePb struct {
 	FamilyName string `json:"familyName,omitempty"`
-
-	GivenName string `json:"givenName,omitempty"`
+	GivenName  string `json:"givenName,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1806,9 +1618,7 @@ func objectPermissionsToPb(st *ObjectPermissions) (*objectPermissionsPb, error) 
 	}
 	pb := &objectPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1817,10 +1627,8 @@ func objectPermissionsToPb(st *ObjectPermissions) (*objectPermissionsPb, error) 
 
 type objectPermissionsPb struct {
 	AccessControlList []AccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                  `json:"object_id,omitempty"`
+	ObjectType        string                  `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1852,20 +1660,16 @@ func partialUpdateToPb(st *PartialUpdate) (*partialUpdatePb, error) {
 	}
 	pb := &partialUpdatePb{}
 	pb.Id = st.Id
-
 	pb.Operations = st.Operations
-
 	pb.Schemas = st.Schemas
 
 	return pb, nil
 }
 
 type partialUpdatePb struct {
-	Id string `json:"-" url:"-"`
-
-	Operations []Patch `json:"Operations,omitempty"`
-
-	Schemas []PatchSchema `json:"schemas,omitempty"`
+	Id         string        `json:"-" url:"-"`
+	Operations []Patch       `json:"Operations,omitempty"`
+	Schemas    []PatchSchema `json:"schemas,omitempty"`
 }
 
 func partialUpdateFromPb(pb *partialUpdatePb) (*PartialUpdate, error) {
@@ -1886,11 +1690,8 @@ func passwordAccessControlRequestToPb(st *PasswordAccessControlRequest) (*passwo
 	}
 	pb := &passwordAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1898,13 +1699,10 @@ func passwordAccessControlRequestToPb(st *PasswordAccessControlRequest) (*passwo
 }
 
 type passwordAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string                  `json:"group_name,omitempty"`
+	PermissionLevel      PasswordPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string                  `json:"service_principal_name,omitempty"`
+	UserName             string                  `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1937,13 +1735,9 @@ func passwordAccessControlResponseToPb(st *PasswordAccessControlResponse) (*pass
 	}
 	pb := &passwordAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1951,15 +1745,11 @@ func passwordAccessControlResponseToPb(st *PasswordAccessControlResponse) (*pass
 }
 
 type passwordAccessControlResponsePb struct {
-	AllPermissions []PasswordPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []PasswordPermission `json:"all_permissions,omitempty"`
+	DisplayName          string               `json:"display_name,omitempty"`
+	GroupName            string               `json:"group_name,omitempty"`
+	ServicePrincipalName string               `json:"service_principal_name,omitempty"`
+	UserName             string               `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1993,9 +1783,7 @@ func passwordPermissionToPb(st *PasswordPermission) (*passwordPermissionPb, erro
 	}
 	pb := &passwordPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2003,11 +1791,9 @@ func passwordPermissionToPb(st *PasswordPermission) (*passwordPermissionPb, erro
 }
 
 type passwordPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool                    `json:"inherited,omitempty"`
+	InheritedFromObject []string                `json:"inherited_from_object,omitempty"`
+	PermissionLevel     PasswordPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2039,9 +1825,7 @@ func passwordPermissionsToPb(st *PasswordPermissions) (*passwordPermissionsPb, e
 	}
 	pb := &passwordPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2050,10 +1834,8 @@ func passwordPermissionsToPb(st *PasswordPermissions) (*passwordPermissionsPb, e
 
 type passwordPermissionsPb struct {
 	AccessControlList []PasswordAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                          `json:"object_id,omitempty"`
+	ObjectType        string                          `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2085,7 +1867,6 @@ func passwordPermissionsDescriptionToPb(st *PasswordPermissionsDescription) (*pa
 	}
 	pb := &passwordPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2093,8 +1874,7 @@ func passwordPermissionsDescriptionToPb(st *PasswordPermissionsDescription) (*pa
 }
 
 type passwordPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string                  `json:"description,omitempty"`
 	PermissionLevel PasswordPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2150,9 +1930,7 @@ func patchToPb(st *Patch) (*patchPb, error) {
 	}
 	pb := &patchPb{}
 	pb.Op = st.Op
-
 	pb.Path = st.Path
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2160,11 +1938,9 @@ func patchToPb(st *Patch) (*patchPb, error) {
 }
 
 type patchPb struct {
-	Op PatchOp `json:"op,omitempty"`
-
-	Path string `json:"path,omitempty"`
-
-	Value any `json:"value,omitempty"`
+	Op    PatchOp `json:"op,omitempty"`
+	Path  string  `json:"path,omitempty"`
+	Value any     `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2217,9 +1993,7 @@ func permissionToPb(st *Permission) (*permissionPb, error) {
 	}
 	pb := &permissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2227,11 +2001,9 @@ func permissionToPb(st *Permission) (*permissionPb, error) {
 }
 
 type permissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool            `json:"inherited,omitempty"`
+	InheritedFromObject []string        `json:"inherited_from_object,omitempty"`
+	PermissionLevel     PermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2263,9 +2035,7 @@ func permissionAssignmentToPb(st *PermissionAssignment) (*permissionAssignmentPb
 	}
 	pb := &permissionAssignmentPb{}
 	pb.Error = st.Error
-
 	pb.Permissions = st.Permissions
-
 	pb.Principal = st.Principal
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2273,11 +2043,9 @@ func permissionAssignmentToPb(st *PermissionAssignment) (*permissionAssignmentPb
 }
 
 type permissionAssignmentPb struct {
-	Error string `json:"error,omitempty"`
-
+	Error       string                `json:"error,omitempty"`
 	Permissions []WorkspacePermission `json:"permissions,omitempty"`
-
-	Principal *PrincipalOutput `json:"principal,omitempty"`
+	Principal   *PrincipalOutput      `json:"principal,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2333,7 +2101,6 @@ func permissionOutputToPb(st *PermissionOutput) (*permissionOutputPb, error) {
 	}
 	pb := &permissionOutputPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2341,8 +2108,7 @@ func permissionOutputToPb(st *PermissionOutput) (*permissionOutputPb, error) {
 }
 
 type permissionOutputPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string              `json:"description,omitempty"`
 	PermissionLevel WorkspacePermission `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2374,7 +2140,6 @@ func permissionsDescriptionToPb(st *PermissionsDescription) (*permissionsDescrip
 	}
 	pb := &permissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2382,8 +2147,7 @@ func permissionsDescriptionToPb(st *PermissionsDescription) (*permissionsDescrip
 }
 
 type permissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string          `json:"description,omitempty"`
 	PermissionLevel PermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2415,13 +2179,9 @@ func principalOutputToPb(st *PrincipalOutput) (*principalOutputPb, error) {
 	}
 	pb := &principalOutputPb{}
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.PrincipalId = st.PrincipalId
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2429,15 +2189,11 @@ func principalOutputToPb(st *PrincipalOutput) (*principalOutputPb, error) {
 }
 
 type principalOutputPb struct {
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	PrincipalId int64 `json:"principal_id,omitempty"`
-
+	DisplayName          string `json:"display_name,omitempty"`
+	GroupName            string `json:"group_name,omitempty"`
+	PrincipalId          int64  `json:"principal_id,omitempty"`
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	UserName             string `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2471,9 +2227,7 @@ func resourceInfoToPb(st *ResourceInfo) (*resourceInfoPb, error) {
 	}
 	pb := &resourceInfoPb{}
 	pb.Id = st.Id
-
 	pb.LegacyAclPath = st.LegacyAclPath
-
 	pb.ParentResourceInfo = st.ParentResourceInfo
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2481,10 +2235,8 @@ func resourceInfoToPb(st *ResourceInfo) (*resourceInfoPb, error) {
 }
 
 type resourceInfoPb struct {
-	Id string `json:"id" url:"id"`
-
-	LegacyAclPath string `json:"legacy_acl_path,omitempty" url:"legacy_acl_path,omitempty"`
-
+	Id                 string        `json:"id" url:"id"`
+	LegacyAclPath      string        `json:"legacy_acl_path,omitempty" url:"legacy_acl_path,omitempty"`
 	ParentResourceInfo *ResourceInfo `json:"parent_resource_info,omitempty" url:"parent_resource_info,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2577,20 +2329,16 @@ func ruleSetResponseToPb(st *RuleSetResponse) (*ruleSetResponsePb, error) {
 	}
 	pb := &ruleSetResponsePb{}
 	pb.Etag = st.Etag
-
 	pb.GrantRules = st.GrantRules
-
 	pb.Name = st.Name
 
 	return pb, nil
 }
 
 type ruleSetResponsePb struct {
-	Etag string `json:"etag"`
-
+	Etag       string      `json:"etag"`
 	GrantRules []GrantRule `json:"grant_rules,omitempty"`
-
-	Name string `json:"name"`
+	Name       string      `json:"name"`
 }
 
 func ruleSetResponseFromPb(pb *ruleSetResponsePb) (*RuleSetResponse, error) {
@@ -2611,20 +2359,16 @@ func ruleSetUpdateRequestToPb(st *RuleSetUpdateRequest) (*ruleSetUpdateRequestPb
 	}
 	pb := &ruleSetUpdateRequestPb{}
 	pb.Etag = st.Etag
-
 	pb.GrantRules = st.GrantRules
-
 	pb.Name = st.Name
 
 	return pb, nil
 }
 
 type ruleSetUpdateRequestPb struct {
-	Etag string `json:"etag"`
-
+	Etag       string      `json:"etag"`
 	GrantRules []GrantRule `json:"grant_rules,omitempty"`
-
-	Name string `json:"name"`
+	Name       string      `json:"name"`
 }
 
 func ruleSetUpdateRequestFromPb(pb *ruleSetUpdateRequestPb) (*RuleSetUpdateRequest, error) {
@@ -2645,21 +2389,13 @@ func servicePrincipalToPb(st *ServicePrincipal) (*servicePrincipalPb, error) {
 	}
 	pb := &servicePrincipalPb{}
 	pb.Active = st.Active
-
 	pb.ApplicationId = st.ApplicationId
-
 	pb.DisplayName = st.DisplayName
-
 	pb.Entitlements = st.Entitlements
-
 	pb.ExternalId = st.ExternalId
-
 	pb.Groups = st.Groups
-
 	pb.Id = st.Id
-
 	pb.Roles = st.Roles
-
 	pb.Schemas = st.Schemas
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2667,23 +2403,15 @@ func servicePrincipalToPb(st *ServicePrincipal) (*servicePrincipalPb, error) {
 }
 
 type servicePrincipalPb struct {
-	Active bool `json:"active,omitempty"`
-
-	ApplicationId string `json:"applicationId,omitempty"`
-
-	DisplayName string `json:"displayName,omitempty"`
-
-	Entitlements []ComplexValue `json:"entitlements,omitempty"`
-
-	ExternalId string `json:"externalId,omitempty"`
-
-	Groups []ComplexValue `json:"groups,omitempty"`
-
-	Id string `json:"id,omitempty" url:"-"`
-
-	Roles []ComplexValue `json:"roles,omitempty"`
-
-	Schemas []ServicePrincipalSchema `json:"schemas,omitempty"`
+	Active        bool                     `json:"active,omitempty"`
+	ApplicationId string                   `json:"applicationId,omitempty"`
+	DisplayName   string                   `json:"displayName,omitempty"`
+	Entitlements  []ComplexValue           `json:"entitlements,omitempty"`
+	ExternalId    string                   `json:"externalId,omitempty"`
+	Groups        []ComplexValue           `json:"groups,omitempty"`
+	Id            string                   `json:"id,omitempty" url:"-"`
+	Roles         []ComplexValue           `json:"roles,omitempty"`
+	Schemas       []ServicePrincipalSchema `json:"schemas,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2721,9 +2449,7 @@ func setObjectPermissionsToPb(st *SetObjectPermissions) (*setObjectPermissionsPb
 	}
 	pb := &setObjectPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.RequestObjectId = st.RequestObjectId
-
 	pb.RequestObjectType = st.RequestObjectType
 
 	return pb, nil
@@ -2731,10 +2457,8 @@ func setObjectPermissionsToPb(st *SetObjectPermissions) (*setObjectPermissionsPb
 
 type setObjectPermissionsPb struct {
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
-
-	RequestObjectId string `json:"-" url:"-"`
-
-	RequestObjectType string `json:"-" url:"-"`
+	RequestObjectId   string                 `json:"-" url:"-"`
+	RequestObjectType string                 `json:"-" url:"-"`
 }
 
 func setObjectPermissionsFromPb(pb *setObjectPermissionsPb) (*SetObjectPermissions, error) {
@@ -2755,9 +2479,7 @@ func updateObjectPermissionsToPb(st *UpdateObjectPermissions) (*updateObjectPerm
 	}
 	pb := &updateObjectPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.RequestObjectId = st.RequestObjectId
-
 	pb.RequestObjectType = st.RequestObjectType
 
 	return pb, nil
@@ -2765,10 +2487,8 @@ func updateObjectPermissionsToPb(st *UpdateObjectPermissions) (*updateObjectPerm
 
 type updateObjectPermissionsPb struct {
 	AccessControlList []AccessControlRequest `json:"access_control_list,omitempty"`
-
-	RequestObjectId string `json:"-" url:"-"`
-
-	RequestObjectType string `json:"-" url:"-"`
+	RequestObjectId   string                 `json:"-" url:"-"`
+	RequestObjectType string                 `json:"-" url:"-"`
 }
 
 func updateObjectPermissionsFromPb(pb *updateObjectPermissionsPb) (*UpdateObjectPermissions, error) {
@@ -2810,15 +2530,13 @@ func updateRuleSetRequestToPb(st *UpdateRuleSetRequest) (*updateRuleSetRequestPb
 	}
 	pb := &updateRuleSetRequestPb{}
 	pb.Name = st.Name
-
 	pb.RuleSet = st.RuleSet
 
 	return pb, nil
 }
 
 type updateRuleSetRequestPb struct {
-	Name string `json:"name"`
-
+	Name    string               `json:"name"`
 	RuleSet RuleSetUpdateRequest `json:"rule_set"`
 }
 
@@ -2839,9 +2557,7 @@ func updateWorkspaceAssignmentsToPb(st *UpdateWorkspaceAssignments) (*updateWork
 	}
 	pb := &updateWorkspaceAssignmentsPb{}
 	pb.Permissions = st.Permissions
-
 	pb.PrincipalId = st.PrincipalId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	return pb, nil
@@ -2849,10 +2565,8 @@ func updateWorkspaceAssignmentsToPb(st *UpdateWorkspaceAssignments) (*updateWork
 
 type updateWorkspaceAssignmentsPb struct {
 	Permissions []WorkspacePermission `json:"permissions,omitempty"`
-
-	PrincipalId int64 `json:"-" url:"-"`
-
-	WorkspaceId int64 `json:"-" url:"-"`
+	PrincipalId int64                 `json:"-" url:"-"`
+	WorkspaceId int64                 `json:"-" url:"-"`
 }
 
 func updateWorkspaceAssignmentsFromPb(pb *updateWorkspaceAssignmentsPb) (*UpdateWorkspaceAssignments, error) {
@@ -2873,25 +2587,15 @@ func userToPb(st *User) (*userPb, error) {
 	}
 	pb := &userPb{}
 	pb.Active = st.Active
-
 	pb.DisplayName = st.DisplayName
-
 	pb.Emails = st.Emails
-
 	pb.Entitlements = st.Entitlements
-
 	pb.ExternalId = st.ExternalId
-
 	pb.Groups = st.Groups
-
 	pb.Id = st.Id
-
 	pb.Name = st.Name
-
 	pb.Roles = st.Roles
-
 	pb.Schemas = st.Schemas
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2899,27 +2603,17 @@ func userToPb(st *User) (*userPb, error) {
 }
 
 type userPb struct {
-	Active bool `json:"active,omitempty"`
-
-	DisplayName string `json:"displayName,omitempty"`
-
-	Emails []ComplexValue `json:"emails,omitempty"`
-
+	Active       bool           `json:"active,omitempty"`
+	DisplayName  string         `json:"displayName,omitempty"`
+	Emails       []ComplexValue `json:"emails,omitempty"`
 	Entitlements []ComplexValue `json:"entitlements,omitempty"`
-
-	ExternalId string `json:"externalId,omitempty"`
-
-	Groups []ComplexValue `json:"groups,omitempty"`
-
-	Id string `json:"id,omitempty" url:"-"`
-
-	Name *Name `json:"name,omitempty"`
-
-	Roles []ComplexValue `json:"roles,omitempty"`
-
-	Schemas []UserSchema `json:"schemas,omitempty"`
-
-	UserName string `json:"userName,omitempty"`
+	ExternalId   string         `json:"externalId,omitempty"`
+	Groups       []ComplexValue `json:"groups,omitempty"`
+	Id           string         `json:"id,omitempty" url:"-"`
+	Name         *Name          `json:"name,omitempty"`
+	Roles        []ComplexValue `json:"roles,omitempty"`
+	Schemas      []UserSchema   `json:"schemas,omitempty"`
+	UserName     string         `json:"userName,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2975,4 +2669,58 @@ func workspacePermissionsFromPb(pb *workspacePermissionsPb) (*WorkspacePermissio
 	st.Permissions = pb.Permissions
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

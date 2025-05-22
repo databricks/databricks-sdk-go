@@ -3,6 +3,10 @@
 package jobs
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 )
@@ -13,15 +17,10 @@ func baseJobToPb(st *BaseJob) (*baseJobPb, error) {
 	}
 	pb := &baseJobPb{}
 	pb.CreatedTime = st.CreatedTime
-
 	pb.CreatorUserName = st.CreatorUserName
-
 	pb.EffectiveBudgetPolicyId = st.EffectiveBudgetPolicyId
-
 	pb.HasMore = st.HasMore
-
 	pb.JobId = st.JobId
-
 	pb.Settings = st.Settings
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -29,17 +28,12 @@ func baseJobToPb(st *BaseJob) (*baseJobPb, error) {
 }
 
 type baseJobPb struct {
-	CreatedTime int64 `json:"created_time,omitempty"`
-
-	CreatorUserName string `json:"creator_user_name,omitempty"`
-
-	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
-
-	HasMore bool `json:"has_more,omitempty"`
-
-	JobId int64 `json:"job_id,omitempty"`
-
-	Settings *JobSettings `json:"settings,omitempty"`
+	CreatedTime             int64        `json:"created_time,omitempty"`
+	CreatorUserName         string       `json:"creator_user_name,omitempty"`
+	EffectiveBudgetPolicyId string       `json:"effective_budget_policy_id,omitempty"`
+	HasMore                 bool         `json:"has_more,omitempty"`
+	JobId                   int64        `json:"job_id,omitempty"`
+	Settings                *JobSettings `json:"settings,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -74,69 +68,37 @@ func baseRunToPb(st *BaseRun) (*baseRunPb, error) {
 	}
 	pb := &baseRunPb{}
 	pb.AttemptNumber = st.AttemptNumber
-
 	pb.CleanupDuration = st.CleanupDuration
-
 	pb.ClusterInstance = st.ClusterInstance
-
 	pb.ClusterSpec = st.ClusterSpec
-
 	pb.CreatorUserName = st.CreatorUserName
-
 	pb.Description = st.Description
-
 	pb.EffectivePerformanceTarget = st.EffectivePerformanceTarget
-
 	pb.EndTime = st.EndTime
-
 	pb.ExecutionDuration = st.ExecutionDuration
-
 	pb.GitSource = st.GitSource
-
 	pb.HasMore = st.HasMore
-
 	pb.JobClusters = st.JobClusters
-
 	pb.JobId = st.JobId
-
 	pb.JobParameters = st.JobParameters
-
 	pb.JobRunId = st.JobRunId
-
 	pb.NumberInJob = st.NumberInJob
-
 	pb.OriginalAttemptRunId = st.OriginalAttemptRunId
-
 	pb.OverridingParameters = st.OverridingParameters
-
 	pb.QueueDuration = st.QueueDuration
-
 	pb.RepairHistory = st.RepairHistory
-
 	pb.RunDuration = st.RunDuration
-
 	pb.RunId = st.RunId
-
 	pb.RunName = st.RunName
-
 	pb.RunPageUrl = st.RunPageUrl
-
 	pb.RunType = st.RunType
-
 	pb.Schedule = st.Schedule
-
 	pb.SetupDuration = st.SetupDuration
-
 	pb.StartTime = st.StartTime
-
 	pb.State = st.State
-
 	pb.Status = st.Status
-
 	pb.Tasks = st.Tasks
-
 	pb.Trigger = st.Trigger
-
 	pb.TriggerInfo = st.TriggerInfo
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -144,71 +106,39 @@ func baseRunToPb(st *BaseRun) (*baseRunPb, error) {
 }
 
 type baseRunPb struct {
-	AttemptNumber int `json:"attempt_number,omitempty"`
-
-	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
-
-	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
-
-	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
-
-	CreatorUserName string `json:"creator_user_name,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
-
-	EndTime int64 `json:"end_time,omitempty"`
-
-	ExecutionDuration int64 `json:"execution_duration,omitempty"`
-
-	GitSource *GitSource `json:"git_source,omitempty"`
-
-	HasMore bool `json:"has_more,omitempty"`
-
-	JobClusters []JobCluster `json:"job_clusters,omitempty"`
-
-	JobId int64 `json:"job_id,omitempty"`
-
-	JobParameters []JobParameter `json:"job_parameters,omitempty"`
-
-	JobRunId int64 `json:"job_run_id,omitempty"`
-
-	NumberInJob int64 `json:"number_in_job,omitempty"`
-
-	OriginalAttemptRunId int64 `json:"original_attempt_run_id,omitempty"`
-
-	OverridingParameters *RunParameters `json:"overriding_parameters,omitempty"`
-
-	QueueDuration int64 `json:"queue_duration,omitempty"`
-
-	RepairHistory []RepairHistoryItem `json:"repair_history,omitempty"`
-
-	RunDuration int64 `json:"run_duration,omitempty"`
-
-	RunId int64 `json:"run_id,omitempty"`
-
-	RunName string `json:"run_name,omitempty"`
-
-	RunPageUrl string `json:"run_page_url,omitempty"`
-
-	RunType RunType `json:"run_type,omitempty"`
-
-	Schedule *CronSchedule `json:"schedule,omitempty"`
-
-	SetupDuration int64 `json:"setup_duration,omitempty"`
-
-	StartTime int64 `json:"start_time,omitempty"`
-
-	State *RunState `json:"state,omitempty"`
-
-	Status *RunStatus `json:"status,omitempty"`
-
-	Tasks []RunTask `json:"tasks,omitempty"`
-
-	Trigger TriggerType `json:"trigger,omitempty"`
-
-	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
+	AttemptNumber              int                 `json:"attempt_number,omitempty"`
+	CleanupDuration            int64               `json:"cleanup_duration,omitempty"`
+	ClusterInstance            *ClusterInstance    `json:"cluster_instance,omitempty"`
+	ClusterSpec                *ClusterSpec        `json:"cluster_spec,omitempty"`
+	CreatorUserName            string              `json:"creator_user_name,omitempty"`
+	Description                string              `json:"description,omitempty"`
+	EffectivePerformanceTarget PerformanceTarget   `json:"effective_performance_target,omitempty"`
+	EndTime                    int64               `json:"end_time,omitempty"`
+	ExecutionDuration          int64               `json:"execution_duration,omitempty"`
+	GitSource                  *GitSource          `json:"git_source,omitempty"`
+	HasMore                    bool                `json:"has_more,omitempty"`
+	JobClusters                []JobCluster        `json:"job_clusters,omitempty"`
+	JobId                      int64               `json:"job_id,omitempty"`
+	JobParameters              []JobParameter      `json:"job_parameters,omitempty"`
+	JobRunId                   int64               `json:"job_run_id,omitempty"`
+	NumberInJob                int64               `json:"number_in_job,omitempty"`
+	OriginalAttemptRunId       int64               `json:"original_attempt_run_id,omitempty"`
+	OverridingParameters       *RunParameters      `json:"overriding_parameters,omitempty"`
+	QueueDuration              int64               `json:"queue_duration,omitempty"`
+	RepairHistory              []RepairHistoryItem `json:"repair_history,omitempty"`
+	RunDuration                int64               `json:"run_duration,omitempty"`
+	RunId                      int64               `json:"run_id,omitempty"`
+	RunName                    string              `json:"run_name,omitempty"`
+	RunPageUrl                 string              `json:"run_page_url,omitempty"`
+	RunType                    RunType             `json:"run_type,omitempty"`
+	Schedule                   *CronSchedule       `json:"schedule,omitempty"`
+	SetupDuration              int64               `json:"setup_duration,omitempty"`
+	StartTime                  int64               `json:"start_time,omitempty"`
+	State                      *RunState           `json:"state,omitempty"`
+	Status                     *RunStatus          `json:"status,omitempty"`
+	Tasks                      []RunTask           `json:"tasks,omitempty"`
+	Trigger                    TriggerType         `json:"trigger,omitempty"`
+	TriggerInfo                *TriggerInfo        `json:"trigger_info,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -270,7 +200,6 @@ func cancelAllRunsToPb(st *CancelAllRuns) (*cancelAllRunsPb, error) {
 	}
 	pb := &cancelAllRunsPb{}
 	pb.AllQueuedRuns = st.AllQueuedRuns
-
 	pb.JobId = st.JobId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -278,9 +207,8 @@ func cancelAllRunsToPb(st *CancelAllRuns) (*cancelAllRunsPb, error) {
 }
 
 type cancelAllRunsPb struct {
-	AllQueuedRuns bool `json:"all_queued_runs,omitempty"`
-
-	JobId int64 `json:"job_id,omitempty"`
+	AllQueuedRuns bool  `json:"all_queued_runs,omitempty"`
+	JobId         int64 `json:"job_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -377,7 +305,6 @@ func cleanRoomTaskRunStateToPb(st *CleanRoomTaskRunState) (*cleanRoomTaskRunStat
 	}
 	pb := &cleanRoomTaskRunStatePb{}
 	pb.LifeCycleState = st.LifeCycleState
-
 	pb.ResultState = st.ResultState
 
 	return pb, nil
@@ -385,8 +312,7 @@ func cleanRoomTaskRunStateToPb(st *CleanRoomTaskRunState) (*cleanRoomTaskRunStat
 
 type cleanRoomTaskRunStatePb struct {
 	LifeCycleState CleanRoomTaskRunLifeCycleState `json:"life_cycle_state,omitempty"`
-
-	ResultState CleanRoomTaskRunResultState `json:"result_state,omitempty"`
+	ResultState    CleanRoomTaskRunResultState    `json:"result_state,omitempty"`
 }
 
 func cleanRoomTaskRunStateFromPb(pb *cleanRoomTaskRunStatePb) (*CleanRoomTaskRunState, error) {
@@ -406,11 +332,8 @@ func cleanRoomsNotebookTaskToPb(st *CleanRoomsNotebookTask) (*cleanRoomsNotebook
 	}
 	pb := &cleanRoomsNotebookTaskPb{}
 	pb.CleanRoomName = st.CleanRoomName
-
 	pb.Etag = st.Etag
-
 	pb.NotebookBaseParameters = st.NotebookBaseParameters
-
 	pb.NotebookName = st.NotebookName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -418,13 +341,10 @@ func cleanRoomsNotebookTaskToPb(st *CleanRoomsNotebookTask) (*cleanRoomsNotebook
 }
 
 type cleanRoomsNotebookTaskPb struct {
-	CleanRoomName string `json:"clean_room_name"`
-
-	Etag string `json:"etag,omitempty"`
-
+	CleanRoomName          string            `json:"clean_room_name"`
+	Etag                   string            `json:"etag,omitempty"`
 	NotebookBaseParameters map[string]string `json:"notebook_base_parameters,omitempty"`
-
-	NotebookName string `json:"notebook_name"`
+	NotebookName           string            `json:"notebook_name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -457,9 +377,7 @@ func cleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputToPb(st *CleanRoomsNotebo
 	}
 	pb := &cleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputPb{}
 	pb.CleanRoomJobRunState = st.CleanRoomJobRunState
-
 	pb.NotebookOutput = st.NotebookOutput
-
 	pb.OutputSchemaInfo = st.OutputSchemaInfo
 
 	return pb, nil
@@ -467,10 +385,8 @@ func cleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputToPb(st *CleanRoomsNotebo
 
 type cleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputPb struct {
 	CleanRoomJobRunState *CleanRoomTaskRunState `json:"clean_room_job_run_state,omitempty"`
-
-	NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
-
-	OutputSchemaInfo *OutputSchemaInfo `json:"output_schema_info,omitempty"`
+	NotebookOutput       *NotebookOutput        `json:"notebook_output,omitempty"`
+	OutputSchemaInfo     *OutputSchemaInfo      `json:"output_schema_info,omitempty"`
 }
 
 func cleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputFromPb(pb *cleanRoomsNotebookTaskCleanRoomsNotebookTaskOutputPb) (*CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput, error) {
@@ -491,7 +407,6 @@ func clusterInstanceToPb(st *ClusterInstance) (*clusterInstancePb, error) {
 	}
 	pb := &clusterInstancePb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.SparkContextId = st.SparkContextId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -499,8 +414,7 @@ func clusterInstanceToPb(st *ClusterInstance) (*clusterInstancePb, error) {
 }
 
 type clusterInstancePb struct {
-	ClusterId string `json:"cluster_id,omitempty"`
-
+	ClusterId      string `json:"cluster_id,omitempty"`
 	SparkContextId string `json:"spark_context_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -532,11 +446,8 @@ func clusterSpecToPb(st *ClusterSpec) (*clusterSpecPb, error) {
 	}
 	pb := &clusterSpecPb{}
 	pb.ExistingClusterId = st.ExistingClusterId
-
 	pb.JobClusterKey = st.JobClusterKey
-
 	pb.Libraries = st.Libraries
-
 	pb.NewCluster = st.NewCluster
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -544,13 +455,10 @@ func clusterSpecToPb(st *ClusterSpec) (*clusterSpecPb, error) {
 }
 
 type clusterSpecPb struct {
-	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-
-	JobClusterKey string `json:"job_cluster_key,omitempty"`
-
-	Libraries []compute.Library `json:"libraries,omitempty"`
-
-	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
+	ExistingClusterId string               `json:"existing_cluster_id,omitempty"`
+	JobClusterKey     string               `json:"job_cluster_key,omitempty"`
+	Libraries         []compute.Library    `json:"libraries,omitempty"`
+	NewCluster        *compute.ClusterSpec `json:"new_cluster,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -583,9 +491,7 @@ func computeConfigToPb(st *ComputeConfig) (*computeConfigPb, error) {
 	}
 	pb := &computeConfigPb{}
 	pb.GpuNodePoolId = st.GpuNodePoolId
-
 	pb.GpuType = st.GpuType
-
 	pb.NumGpus = st.NumGpus
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -594,10 +500,8 @@ func computeConfigToPb(st *ComputeConfig) (*computeConfigPb, error) {
 
 type computeConfigPb struct {
 	GpuNodePoolId string `json:"gpu_node_pool_id,omitempty"`
-
-	GpuType string `json:"gpu_type,omitempty"`
-
-	NumGpus int `json:"num_gpus"`
+	GpuType       string `json:"gpu_type,omitempty"`
+	NumGpus       int    `json:"num_gpus"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -629,20 +533,16 @@ func conditionTaskToPb(st *ConditionTask) (*conditionTaskPb, error) {
 	}
 	pb := &conditionTaskPb{}
 	pb.Left = st.Left
-
 	pb.Op = st.Op
-
 	pb.Right = st.Right
 
 	return pb, nil
 }
 
 type conditionTaskPb struct {
-	Left string `json:"left"`
-
-	Op ConditionTaskOp `json:"op"`
-
-	Right string `json:"right"`
+	Left  string          `json:"left"`
+	Op    ConditionTaskOp `json:"op"`
+	Right string          `json:"right"`
 }
 
 func conditionTaskFromPb(pb *conditionTaskPb) (*ConditionTask, error) {
@@ -687,53 +587,29 @@ func createJobToPb(st *CreateJob) (*createJobPb, error) {
 	}
 	pb := &createJobPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.BudgetPolicyId = st.BudgetPolicyId
-
 	pb.Continuous = st.Continuous
-
 	pb.Deployment = st.Deployment
-
 	pb.Description = st.Description
-
 	pb.EditMode = st.EditMode
-
 	pb.EmailNotifications = st.EmailNotifications
-
 	pb.Environments = st.Environments
-
 	pb.Format = st.Format
-
 	pb.GitSource = st.GitSource
-
 	pb.Health = st.Health
-
 	pb.JobClusters = st.JobClusters
-
 	pb.MaxConcurrentRuns = st.MaxConcurrentRuns
-
 	pb.Name = st.Name
-
 	pb.NotificationSettings = st.NotificationSettings
-
 	pb.Parameters = st.Parameters
-
 	pb.PerformanceTarget = st.PerformanceTarget
-
 	pb.Queue = st.Queue
-
 	pb.RunAs = st.RunAs
-
 	pb.Schedule = st.Schedule
-
 	pb.Tags = st.Tags
-
 	pb.Tasks = st.Tasks
-
 	pb.TimeoutSeconds = st.TimeoutSeconds
-
 	pb.Trigger = st.Trigger
-
 	pb.WebhookNotifications = st.WebhookNotifications
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -741,55 +617,31 @@ func createJobToPb(st *CreateJob) (*createJobPb, error) {
 }
 
 type createJobPb struct {
-	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
-
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-
-	Continuous *Continuous `json:"continuous,omitempty"`
-
-	Deployment *JobDeployment `json:"deployment,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	EditMode JobEditMode `json:"edit_mode,omitempty"`
-
-	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
-
-	Environments []JobEnvironment `json:"environments,omitempty"`
-
-	Format Format `json:"format,omitempty"`
-
-	GitSource *GitSource `json:"git_source,omitempty"`
-
-	Health *JobsHealthRules `json:"health,omitempty"`
-
-	JobClusters []JobCluster `json:"job_clusters,omitempty"`
-
-	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
-
-	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
-
-	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
-
-	Queue *QueueSettings `json:"queue,omitempty"`
-
-	RunAs *JobRunAs `json:"run_as,omitempty"`
-
-	Schedule *CronSchedule `json:"schedule,omitempty"`
-
-	Tags map[string]string `json:"tags,omitempty"`
-
-	Tasks []Task `json:"tasks,omitempty"`
-
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
-
-	Trigger *TriggerSettings `json:"trigger,omitempty"`
-
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	AccessControlList    []JobAccessControlRequest `json:"access_control_list,omitempty"`
+	BudgetPolicyId       string                    `json:"budget_policy_id,omitempty"`
+	Continuous           *Continuous               `json:"continuous,omitempty"`
+	Deployment           *JobDeployment            `json:"deployment,omitempty"`
+	Description          string                    `json:"description,omitempty"`
+	EditMode             JobEditMode               `json:"edit_mode,omitempty"`
+	EmailNotifications   *JobEmailNotifications    `json:"email_notifications,omitempty"`
+	Environments         []JobEnvironment          `json:"environments,omitempty"`
+	Format               Format                    `json:"format,omitempty"`
+	GitSource            *GitSource                `json:"git_source,omitempty"`
+	Health               *JobsHealthRules          `json:"health,omitempty"`
+	JobClusters          []JobCluster              `json:"job_clusters,omitempty"`
+	MaxConcurrentRuns    int                       `json:"max_concurrent_runs,omitempty"`
+	Name                 string                    `json:"name,omitempty"`
+	NotificationSettings *JobNotificationSettings  `json:"notification_settings,omitempty"`
+	Parameters           []JobParameterDefinition  `json:"parameters,omitempty"`
+	PerformanceTarget    PerformanceTarget         `json:"performance_target,omitempty"`
+	Queue                *QueueSettings            `json:"queue,omitempty"`
+	RunAs                *JobRunAs                 `json:"run_as,omitempty"`
+	Schedule             *CronSchedule             `json:"schedule,omitempty"`
+	Tags                 map[string]string         `json:"tags,omitempty"`
+	Tasks                []Task                    `json:"tasks,omitempty"`
+	TimeoutSeconds       int                       `json:"timeout_seconds,omitempty"`
+	Trigger              *TriggerSettings          `json:"trigger,omitempty"`
+	WebhookNotifications *WebhookNotifications     `json:"webhook_notifications,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -879,20 +731,16 @@ func cronScheduleToPb(st *CronSchedule) (*cronSchedulePb, error) {
 	}
 	pb := &cronSchedulePb{}
 	pb.PauseStatus = st.PauseStatus
-
 	pb.QuartzCronExpression = st.QuartzCronExpression
-
 	pb.TimezoneId = st.TimezoneId
 
 	return pb, nil
 }
 
 type cronSchedulePb struct {
-	PauseStatus PauseStatus `json:"pause_status,omitempty"`
-
-	QuartzCronExpression string `json:"quartz_cron_expression"`
-
-	TimezoneId string `json:"timezone_id"`
+	PauseStatus          PauseStatus `json:"pause_status,omitempty"`
+	QuartzCronExpression string      `json:"quartz_cron_expression"`
+	TimezoneId           string      `json:"timezone_id"`
 }
 
 func cronScheduleFromPb(pb *cronSchedulePb) (*CronSchedule, error) {
@@ -913,7 +761,6 @@ func dashboardPageSnapshotToPb(st *DashboardPageSnapshot) (*dashboardPageSnapsho
 	}
 	pb := &dashboardPageSnapshotPb{}
 	pb.PageDisplayName = st.PageDisplayName
-
 	pb.WidgetErrorDetails = st.WidgetErrorDetails
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -921,8 +768,7 @@ func dashboardPageSnapshotToPb(st *DashboardPageSnapshot) (*dashboardPageSnapsho
 }
 
 type dashboardPageSnapshotPb struct {
-	PageDisplayName string `json:"page_display_name,omitempty"`
-
+	PageDisplayName    string              `json:"page_display_name,omitempty"`
 	WidgetErrorDetails []WidgetErrorDetail `json:"widget_error_details,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -954,9 +800,7 @@ func dashboardTaskToPb(st *DashboardTask) (*dashboardTaskPb, error) {
 	}
 	pb := &dashboardTaskPb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.Subscription = st.Subscription
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -964,11 +808,9 @@ func dashboardTaskToPb(st *DashboardTask) (*dashboardTaskPb, error) {
 }
 
 type dashboardTaskPb struct {
-	DashboardId string `json:"dashboard_id,omitempty"`
-
+	DashboardId  string        `json:"dashboard_id,omitempty"`
 	Subscription *Subscription `json:"subscription,omitempty"`
-
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	WarehouseId  string        `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1024,7 +866,6 @@ func dbtOutputToPb(st *DbtOutput) (*dbtOutputPb, error) {
 	}
 	pb := &dbtOutputPb{}
 	pb.ArtifactsHeaders = st.ArtifactsHeaders
-
 	pb.ArtifactsLink = st.ArtifactsLink
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1033,8 +874,7 @@ func dbtOutputToPb(st *DbtOutput) (*dbtOutputPb, error) {
 
 type dbtOutputPb struct {
 	ArtifactsHeaders map[string]string `json:"artifacts_headers,omitempty"`
-
-	ArtifactsLink string `json:"artifacts_link,omitempty"`
+	ArtifactsLink    string            `json:"artifacts_link,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1065,17 +905,11 @@ func dbtTaskToPb(st *DbtTask) (*dbtTaskPb, error) {
 	}
 	pb := &dbtTaskPb{}
 	pb.Catalog = st.Catalog
-
 	pb.Commands = st.Commands
-
 	pb.ProfilesDirectory = st.ProfilesDirectory
-
 	pb.ProjectDirectory = st.ProjectDirectory
-
 	pb.Schema = st.Schema
-
 	pb.Source = st.Source
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1083,19 +917,13 @@ func dbtTaskToPb(st *DbtTask) (*dbtTaskPb, error) {
 }
 
 type dbtTaskPb struct {
-	Catalog string `json:"catalog,omitempty"`
-
-	Commands []string `json:"commands"`
-
-	ProfilesDirectory string `json:"profiles_directory,omitempty"`
-
-	ProjectDirectory string `json:"project_directory,omitempty"`
-
-	Schema string `json:"schema,omitempty"`
-
-	Source Source `json:"source,omitempty"`
-
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	Catalog           string   `json:"catalog,omitempty"`
+	Commands          []string `json:"commands"`
+	ProfilesDirectory string   `json:"profiles_directory,omitempty"`
+	ProjectDirectory  string   `json:"project_directory,omitempty"`
+	Schema            string   `json:"schema,omitempty"`
+	Source            Source   `json:"source,omitempty"`
+	WarehouseId       string   `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1221,9 +1049,7 @@ func enforcePolicyComplianceForJobResponseJobClusterSettingsChangeToPb(st *Enfor
 	}
 	pb := &enforcePolicyComplianceForJobResponseJobClusterSettingsChangePb{}
 	pb.Field = st.Field
-
 	pb.NewValue = st.NewValue
-
 	pb.PreviousValue = st.PreviousValue
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1231,10 +1057,8 @@ func enforcePolicyComplianceForJobResponseJobClusterSettingsChangeToPb(st *Enfor
 }
 
 type enforcePolicyComplianceForJobResponseJobClusterSettingsChangePb struct {
-	Field string `json:"field,omitempty"`
-
-	NewValue string `json:"new_value,omitempty"`
-
+	Field         string `json:"field,omitempty"`
+	NewValue      string `json:"new_value,omitempty"`
 	PreviousValue string `json:"previous_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1267,7 +1091,6 @@ func enforcePolicyComplianceRequestToPb(st *EnforcePolicyComplianceRequest) (*en
 	}
 	pb := &enforcePolicyComplianceRequestPb{}
 	pb.JobId = st.JobId
-
 	pb.ValidateOnly = st.ValidateOnly
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1275,9 +1098,8 @@ func enforcePolicyComplianceRequestToPb(st *EnforcePolicyComplianceRequest) (*en
 }
 
 type enforcePolicyComplianceRequestPb struct {
-	JobId int64 `json:"job_id"`
-
-	ValidateOnly bool `json:"validate_only,omitempty"`
+	JobId        int64 `json:"job_id"`
+	ValidateOnly bool  `json:"validate_only,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1308,9 +1130,7 @@ func enforcePolicyComplianceResponseToPb(st *EnforcePolicyComplianceResponse) (*
 	}
 	pb := &enforcePolicyComplianceResponsePb{}
 	pb.HasChanges = st.HasChanges
-
 	pb.JobClusterChanges = st.JobClusterChanges
-
 	pb.Settings = st.Settings
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1318,11 +1138,9 @@ func enforcePolicyComplianceResponseToPb(st *EnforcePolicyComplianceResponse) (*
 }
 
 type enforcePolicyComplianceResponsePb struct {
-	HasChanges bool `json:"has_changes,omitempty"`
-
+	HasChanges        bool                                                            `json:"has_changes,omitempty"`
 	JobClusterChanges []EnforcePolicyComplianceForJobResponseJobClusterSettingsChange `json:"job_cluster_changes,omitempty"`
-
-	Settings *JobSettings `json:"settings,omitempty"`
+	Settings          *JobSettings                                                    `json:"settings,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1378,15 +1196,13 @@ func exportRunRequestToPb(st *ExportRunRequest) (*exportRunRequestPb, error) {
 	}
 	pb := &exportRunRequestPb{}
 	pb.RunId = st.RunId
-
 	pb.ViewsToExport = st.ViewsToExport
 
 	return pb, nil
 }
 
 type exportRunRequestPb struct {
-	RunId int64 `json:"-" url:"run_id"`
-
+	RunId         int64         `json:"-" url:"run_id"`
 	ViewsToExport ViewsToExport `json:"-" url:"views_to_export,omitempty"`
 }
 
@@ -1407,9 +1223,7 @@ func fileArrivalTriggerConfigurationToPb(st *FileArrivalTriggerConfiguration) (*
 	}
 	pb := &fileArrivalTriggerConfigurationPb{}
 	pb.MinTimeBetweenTriggersSeconds = st.MinTimeBetweenTriggersSeconds
-
 	pb.Url = st.Url
-
 	pb.WaitAfterLastChangeSeconds = st.WaitAfterLastChangeSeconds
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1417,11 +1231,9 @@ func fileArrivalTriggerConfigurationToPb(st *FileArrivalTriggerConfiguration) (*
 }
 
 type fileArrivalTriggerConfigurationPb struct {
-	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
-
-	Url string `json:"url"`
-
-	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
+	MinTimeBetweenTriggersSeconds int    `json:"min_time_between_triggers_seconds,omitempty"`
+	Url                           string `json:"url"`
+	WaitAfterLastChangeSeconds    int    `json:"wait_after_last_change_seconds,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1453,7 +1265,6 @@ func forEachStatsToPb(st *ForEachStats) (*forEachStatsPb, error) {
 	}
 	pb := &forEachStatsPb{}
 	pb.ErrorMessageStats = st.ErrorMessageStats
-
 	pb.TaskRunStats = st.TaskRunStats
 
 	return pb, nil
@@ -1461,8 +1272,7 @@ func forEachStatsToPb(st *ForEachStats) (*forEachStatsPb, error) {
 
 type forEachStatsPb struct {
 	ErrorMessageStats []ForEachTaskErrorMessageStats `json:"error_message_stats,omitempty"`
-
-	TaskRunStats *ForEachTaskTaskRunStats `json:"task_run_stats,omitempty"`
+	TaskRunStats      *ForEachTaskTaskRunStats       `json:"task_run_stats,omitempty"`
 }
 
 func forEachStatsFromPb(pb *forEachStatsPb) (*ForEachStats, error) {
@@ -1482,9 +1292,7 @@ func forEachTaskToPb(st *ForEachTask) (*forEachTaskPb, error) {
 	}
 	pb := &forEachTaskPb{}
 	pb.Concurrency = st.Concurrency
-
 	pb.Inputs = st.Inputs
-
 	pb.Task = st.Task
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1492,11 +1300,9 @@ func forEachTaskToPb(st *ForEachTask) (*forEachTaskPb, error) {
 }
 
 type forEachTaskPb struct {
-	Concurrency int `json:"concurrency,omitempty"`
-
-	Inputs string `json:"inputs"`
-
-	Task Task `json:"task"`
+	Concurrency int    `json:"concurrency,omitempty"`
+	Inputs      string `json:"inputs"`
+	Task        Task   `json:"task"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1528,9 +1334,7 @@ func forEachTaskErrorMessageStatsToPb(st *ForEachTaskErrorMessageStats) (*forEac
 	}
 	pb := &forEachTaskErrorMessageStatsPb{}
 	pb.Count = st.Count
-
 	pb.ErrorMessage = st.ErrorMessage
-
 	pb.TerminationCategory = st.TerminationCategory
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1538,10 +1342,8 @@ func forEachTaskErrorMessageStatsToPb(st *ForEachTaskErrorMessageStats) (*forEac
 }
 
 type forEachTaskErrorMessageStatsPb struct {
-	Count int `json:"count,omitempty"`
-
-	ErrorMessage string `json:"error_message,omitempty"`
-
+	Count               int    `json:"count,omitempty"`
+	ErrorMessage        string `json:"error_message,omitempty"`
 	TerminationCategory string `json:"termination_category,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1574,15 +1376,10 @@ func forEachTaskTaskRunStatsToPb(st *ForEachTaskTaskRunStats) (*forEachTaskTaskR
 	}
 	pb := &forEachTaskTaskRunStatsPb{}
 	pb.ActiveIterations = st.ActiveIterations
-
 	pb.CompletedIterations = st.CompletedIterations
-
 	pb.FailedIterations = st.FailedIterations
-
 	pb.ScheduledIterations = st.ScheduledIterations
-
 	pb.SucceededIterations = st.SucceededIterations
-
 	pb.TotalIterations = st.TotalIterations
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1590,17 +1387,12 @@ func forEachTaskTaskRunStatsToPb(st *ForEachTaskTaskRunStats) (*forEachTaskTaskR
 }
 
 type forEachTaskTaskRunStatsPb struct {
-	ActiveIterations int `json:"active_iterations,omitempty"`
-
+	ActiveIterations    int `json:"active_iterations,omitempty"`
 	CompletedIterations int `json:"completed_iterations,omitempty"`
-
-	FailedIterations int `json:"failed_iterations,omitempty"`
-
+	FailedIterations    int `json:"failed_iterations,omitempty"`
 	ScheduledIterations int `json:"scheduled_iterations,omitempty"`
-
 	SucceededIterations int `json:"succeeded_iterations,omitempty"`
-
-	TotalIterations int `json:"total_iterations,omitempty"`
+	TotalIterations     int `json:"total_iterations,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1635,19 +1427,12 @@ func genAiComputeTaskToPb(st *GenAiComputeTask) (*genAiComputeTaskPb, error) {
 	}
 	pb := &genAiComputeTaskPb{}
 	pb.Command = st.Command
-
 	pb.Compute = st.Compute
-
 	pb.DlRuntimeImage = st.DlRuntimeImage
-
 	pb.MlflowExperimentName = st.MlflowExperimentName
-
 	pb.Source = st.Source
-
 	pb.TrainingScriptPath = st.TrainingScriptPath
-
 	pb.YamlParameters = st.YamlParameters
-
 	pb.YamlParametersFilePath = st.YamlParametersFilePath
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1655,21 +1440,14 @@ func genAiComputeTaskToPb(st *GenAiComputeTask) (*genAiComputeTaskPb, error) {
 }
 
 type genAiComputeTaskPb struct {
-	Command string `json:"command,omitempty"`
-
-	Compute *ComputeConfig `json:"compute,omitempty"`
-
-	DlRuntimeImage string `json:"dl_runtime_image"`
-
-	MlflowExperimentName string `json:"mlflow_experiment_name,omitempty"`
-
-	Source Source `json:"source,omitempty"`
-
-	TrainingScriptPath string `json:"training_script_path,omitempty"`
-
-	YamlParameters string `json:"yaml_parameters,omitempty"`
-
-	YamlParametersFilePath string `json:"yaml_parameters_file_path,omitempty"`
+	Command                string         `json:"command,omitempty"`
+	Compute                *ComputeConfig `json:"compute,omitempty"`
+	DlRuntimeImage         string         `json:"dl_runtime_image"`
+	MlflowExperimentName   string         `json:"mlflow_experiment_name,omitempty"`
+	Source                 Source         `json:"source,omitempty"`
+	TrainingScriptPath     string         `json:"training_script_path,omitempty"`
+	YamlParameters         string         `json:"yaml_parameters,omitempty"`
+	YamlParametersFilePath string         `json:"yaml_parameters_file_path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1778,7 +1556,6 @@ func getJobRequestToPb(st *GetJobRequest) (*getJobRequestPb, error) {
 	}
 	pb := &getJobRequestPb{}
 	pb.JobId = st.JobId
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1786,8 +1563,7 @@ func getJobRequestToPb(st *GetJobRequest) (*getJobRequestPb, error) {
 }
 
 type getJobRequestPb struct {
-	JobId int64 `json:"-" url:"job_id"`
-
+	JobId     int64  `json:"-" url:"job_id"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1843,7 +1619,6 @@ func getPolicyComplianceResponseToPb(st *GetPolicyComplianceResponse) (*getPolic
 	}
 	pb := &getPolicyComplianceResponsePb{}
 	pb.IsCompliant = st.IsCompliant
-
 	pb.Violations = st.Violations
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1851,9 +1626,8 @@ func getPolicyComplianceResponseToPb(st *GetPolicyComplianceResponse) (*getPolic
 }
 
 type getPolicyComplianceResponsePb struct {
-	IsCompliant bool `json:"is_compliant,omitempty"`
-
-	Violations map[string]string `json:"violations,omitempty"`
+	IsCompliant bool              `json:"is_compliant,omitempty"`
+	Violations  map[string]string `json:"violations,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1908,11 +1682,8 @@ func getRunRequestToPb(st *GetRunRequest) (*getRunRequestPb, error) {
 	}
 	pb := &getRunRequestPb{}
 	pb.IncludeHistory = st.IncludeHistory
-
 	pb.IncludeResolvedValues = st.IncludeResolvedValues
-
 	pb.PageToken = st.PageToken
-
 	pb.RunId = st.RunId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1920,13 +1691,10 @@ func getRunRequestToPb(st *GetRunRequest) (*getRunRequestPb, error) {
 }
 
 type getRunRequestPb struct {
-	IncludeHistory bool `json:"-" url:"include_history,omitempty"`
-
-	IncludeResolvedValues bool `json:"-" url:"include_resolved_values,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	RunId int64 `json:"-" url:"run_id"`
+	IncludeHistory        bool   `json:"-" url:"include_history,omitempty"`
+	IncludeResolvedValues bool   `json:"-" url:"include_resolved_values,omitempty"`
+	PageToken             string `json:"-" url:"page_token,omitempty"`
+	RunId                 int64  `json:"-" url:"run_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1995,17 +1763,11 @@ func gitSourceToPb(st *GitSource) (*gitSourcePb, error) {
 	}
 	pb := &gitSourcePb{}
 	pb.GitBranch = st.GitBranch
-
 	pb.GitCommit = st.GitCommit
-
 	pb.GitProvider = st.GitProvider
-
 	pb.GitSnapshot = st.GitSnapshot
-
 	pb.GitTag = st.GitTag
-
 	pb.GitUrl = st.GitUrl
-
 	pb.JobSource = st.JobSource
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2013,19 +1775,13 @@ func gitSourceToPb(st *GitSource) (*gitSourcePb, error) {
 }
 
 type gitSourcePb struct {
-	GitBranch string `json:"git_branch,omitempty"`
-
-	GitCommit string `json:"git_commit,omitempty"`
-
-	GitProvider GitProvider `json:"git_provider"`
-
+	GitBranch   string       `json:"git_branch,omitempty"`
+	GitCommit   string       `json:"git_commit,omitempty"`
+	GitProvider GitProvider  `json:"git_provider"`
 	GitSnapshot *GitSnapshot `json:"git_snapshot,omitempty"`
-
-	GitTag string `json:"git_tag,omitempty"`
-
-	GitUrl string `json:"git_url"`
-
-	JobSource *JobSource `json:"job_source,omitempty"`
+	GitTag      string       `json:"git_tag,omitempty"`
+	GitUrl      string       `json:"git_url"`
+	JobSource   *JobSource   `json:"job_source,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2061,19 +1817,12 @@ func jobToPb(st *Job) (*jobPb, error) {
 	}
 	pb := &jobPb{}
 	pb.CreatedTime = st.CreatedTime
-
 	pb.CreatorUserName = st.CreatorUserName
-
 	pb.EffectiveBudgetPolicyId = st.EffectiveBudgetPolicyId
-
 	pb.HasMore = st.HasMore
-
 	pb.JobId = st.JobId
-
 	pb.NextPageToken = st.NextPageToken
-
 	pb.RunAsUserName = st.RunAsUserName
-
 	pb.Settings = st.Settings
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2081,21 +1830,14 @@ func jobToPb(st *Job) (*jobPb, error) {
 }
 
 type jobPb struct {
-	CreatedTime int64 `json:"created_time,omitempty"`
-
-	CreatorUserName string `json:"creator_user_name,omitempty"`
-
-	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
-
-	HasMore bool `json:"has_more,omitempty"`
-
-	JobId int64 `json:"job_id,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	RunAsUserName string `json:"run_as_user_name,omitempty"`
-
-	Settings *JobSettings `json:"settings,omitempty"`
+	CreatedTime             int64        `json:"created_time,omitempty"`
+	CreatorUserName         string       `json:"creator_user_name,omitempty"`
+	EffectiveBudgetPolicyId string       `json:"effective_budget_policy_id,omitempty"`
+	HasMore                 bool         `json:"has_more,omitempty"`
+	JobId                   int64        `json:"job_id,omitempty"`
+	NextPageToken           string       `json:"next_page_token,omitempty"`
+	RunAsUserName           string       `json:"run_as_user_name,omitempty"`
+	Settings                *JobSettings `json:"settings,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2132,11 +1874,8 @@ func jobAccessControlRequestToPb(st *JobAccessControlRequest) (*jobAccessControl
 	}
 	pb := &jobAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2144,13 +1883,10 @@ func jobAccessControlRequestToPb(st *JobAccessControlRequest) (*jobAccessControl
 }
 
 type jobAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string             `json:"group_name,omitempty"`
+	PermissionLevel      JobPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string             `json:"service_principal_name,omitempty"`
+	UserName             string             `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2183,13 +1919,9 @@ func jobAccessControlResponseToPb(st *JobAccessControlResponse) (*jobAccessContr
 	}
 	pb := &jobAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2197,15 +1929,11 @@ func jobAccessControlResponseToPb(st *JobAccessControlResponse) (*jobAccessContr
 }
 
 type jobAccessControlResponsePb struct {
-	AllPermissions []JobPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []JobPermission `json:"all_permissions,omitempty"`
+	DisplayName          string          `json:"display_name,omitempty"`
+	GroupName            string          `json:"group_name,omitempty"`
+	ServicePrincipalName string          `json:"service_principal_name,omitempty"`
+	UserName             string          `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2239,16 +1967,14 @@ func jobClusterToPb(st *JobCluster) (*jobClusterPb, error) {
 	}
 	pb := &jobClusterPb{}
 	pb.JobClusterKey = st.JobClusterKey
-
 	pb.NewCluster = st.NewCluster
 
 	return pb, nil
 }
 
 type jobClusterPb struct {
-	JobClusterKey string `json:"job_cluster_key"`
-
-	NewCluster compute.ClusterSpec `json:"new_cluster"`
+	JobClusterKey string              `json:"job_cluster_key"`
+	NewCluster    compute.ClusterSpec `json:"new_cluster"`
 }
 
 func jobClusterFromPb(pb *jobClusterPb) (*JobCluster, error) {
@@ -2268,9 +1994,7 @@ func jobComplianceToPb(st *JobCompliance) (*jobCompliancePb, error) {
 	}
 	pb := &jobCompliancePb{}
 	pb.IsCompliant = st.IsCompliant
-
 	pb.JobId = st.JobId
-
 	pb.Violations = st.Violations
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2278,11 +2002,9 @@ func jobComplianceToPb(st *JobCompliance) (*jobCompliancePb, error) {
 }
 
 type jobCompliancePb struct {
-	IsCompliant bool `json:"is_compliant,omitempty"`
-
-	JobId int64 `json:"job_id"`
-
-	Violations map[string]string `json:"violations,omitempty"`
+	IsCompliant bool              `json:"is_compliant,omitempty"`
+	JobId       int64             `json:"job_id"`
+	Violations  map[string]string `json:"violations,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2314,7 +2036,6 @@ func jobDeploymentToPb(st *JobDeployment) (*jobDeploymentPb, error) {
 	}
 	pb := &jobDeploymentPb{}
 	pb.Kind = st.Kind
-
 	pb.MetadataFilePath = st.MetadataFilePath
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2322,9 +2043,8 @@ func jobDeploymentToPb(st *JobDeployment) (*jobDeploymentPb, error) {
 }
 
 type jobDeploymentPb struct {
-	Kind JobDeploymentKind `json:"kind"`
-
-	MetadataFilePath string `json:"metadata_file_path,omitempty"`
+	Kind             JobDeploymentKind `json:"kind"`
+	MetadataFilePath string            `json:"metadata_file_path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2355,15 +2075,10 @@ func jobEmailNotificationsToPb(st *JobEmailNotifications) (*jobEmailNotification
 	}
 	pb := &jobEmailNotificationsPb{}
 	pb.NoAlertForSkippedRuns = st.NoAlertForSkippedRuns
-
 	pb.OnDurationWarningThresholdExceeded = st.OnDurationWarningThresholdExceeded
-
 	pb.OnFailure = st.OnFailure
-
 	pb.OnStart = st.OnStart
-
 	pb.OnStreamingBacklogExceeded = st.OnStreamingBacklogExceeded
-
 	pb.OnSuccess = st.OnSuccess
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2371,17 +2086,12 @@ func jobEmailNotificationsToPb(st *JobEmailNotifications) (*jobEmailNotification
 }
 
 type jobEmailNotificationsPb struct {
-	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
-
+	NoAlertForSkippedRuns              bool     `json:"no_alert_for_skipped_runs,omitempty"`
 	OnDurationWarningThresholdExceeded []string `json:"on_duration_warning_threshold_exceeded,omitempty"`
-
-	OnFailure []string `json:"on_failure,omitempty"`
-
-	OnStart []string `json:"on_start,omitempty"`
-
-	OnStreamingBacklogExceeded []string `json:"on_streaming_backlog_exceeded,omitempty"`
-
-	OnSuccess []string `json:"on_success,omitempty"`
+	OnFailure                          []string `json:"on_failure,omitempty"`
+	OnStart                            []string `json:"on_start,omitempty"`
+	OnStreamingBacklogExceeded         []string `json:"on_streaming_backlog_exceeded,omitempty"`
+	OnSuccess                          []string `json:"on_success,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2416,16 +2126,14 @@ func jobEnvironmentToPb(st *JobEnvironment) (*jobEnvironmentPb, error) {
 	}
 	pb := &jobEnvironmentPb{}
 	pb.EnvironmentKey = st.EnvironmentKey
-
 	pb.Spec = st.Spec
 
 	return pb, nil
 }
 
 type jobEnvironmentPb struct {
-	EnvironmentKey string `json:"environment_key"`
-
-	Spec *compute.Environment `json:"spec,omitempty"`
+	EnvironmentKey string               `json:"environment_key"`
+	Spec           *compute.Environment `json:"spec,omitempty"`
 }
 
 func jobEnvironmentFromPb(pb *jobEnvironmentPb) (*JobEnvironment, error) {
@@ -2445,7 +2153,6 @@ func jobNotificationSettingsToPb(st *JobNotificationSettings) (*jobNotificationS
 	}
 	pb := &jobNotificationSettingsPb{}
 	pb.NoAlertForCanceledRuns = st.NoAlertForCanceledRuns
-
 	pb.NoAlertForSkippedRuns = st.NoAlertForSkippedRuns
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2454,8 +2161,7 @@ func jobNotificationSettingsToPb(st *JobNotificationSettings) (*jobNotificationS
 
 type jobNotificationSettingsPb struct {
 	NoAlertForCanceledRuns bool `json:"no_alert_for_canceled_runs,omitempty"`
-
-	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
+	NoAlertForSkippedRuns  bool `json:"no_alert_for_skipped_runs,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2486,9 +2192,7 @@ func jobParameterToPb(st *JobParameter) (*jobParameterPb, error) {
 	}
 	pb := &jobParameterPb{}
 	pb.Default = st.Default
-
 	pb.Name = st.Name
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2497,10 +2201,8 @@ func jobParameterToPb(st *JobParameter) (*jobParameterPb, error) {
 
 type jobParameterPb struct {
 	Default string `json:"default,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Value string `json:"value,omitempty"`
+	Name    string `json:"name,omitempty"`
+	Value   string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2532,7 +2234,6 @@ func jobParameterDefinitionToPb(st *JobParameterDefinition) (*jobParameterDefini
 	}
 	pb := &jobParameterDefinitionPb{}
 	pb.Default = st.Default
-
 	pb.Name = st.Name
 
 	return pb, nil
@@ -2540,8 +2241,7 @@ func jobParameterDefinitionToPb(st *JobParameterDefinition) (*jobParameterDefini
 
 type jobParameterDefinitionPb struct {
 	Default string `json:"default"`
-
-	Name string `json:"name"`
+	Name    string `json:"name"`
 }
 
 func jobParameterDefinitionFromPb(pb *jobParameterDefinitionPb) (*JobParameterDefinition, error) {
@@ -2561,9 +2261,7 @@ func jobPermissionToPb(st *JobPermission) (*jobPermissionPb, error) {
 	}
 	pb := &jobPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2571,11 +2269,9 @@ func jobPermissionToPb(st *JobPermission) (*jobPermissionPb, error) {
 }
 
 type jobPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool               `json:"inherited,omitempty"`
+	InheritedFromObject []string           `json:"inherited_from_object,omitempty"`
+	PermissionLevel     JobPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2607,9 +2303,7 @@ func jobPermissionsToPb(st *JobPermissions) (*jobPermissionsPb, error) {
 	}
 	pb := &jobPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2618,10 +2312,8 @@ func jobPermissionsToPb(st *JobPermissions) (*jobPermissionsPb, error) {
 
 type jobPermissionsPb struct {
 	AccessControlList []JobAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                     `json:"object_id,omitempty"`
+	ObjectType        string                     `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2653,7 +2345,6 @@ func jobPermissionsDescriptionToPb(st *JobPermissionsDescription) (*jobPermissio
 	}
 	pb := &jobPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2661,8 +2352,7 @@ func jobPermissionsDescriptionToPb(st *JobPermissionsDescription) (*jobPermissio
 }
 
 type jobPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string             `json:"description,omitempty"`
 	PermissionLevel JobPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2694,7 +2384,6 @@ func jobPermissionsRequestToPb(st *JobPermissionsRequest) (*jobPermissionsReques
 	}
 	pb := &jobPermissionsRequestPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.JobId = st.JobId
 
 	return pb, nil
@@ -2702,8 +2391,7 @@ func jobPermissionsRequestToPb(st *JobPermissionsRequest) (*jobPermissionsReques
 
 type jobPermissionsRequestPb struct {
 	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
-
-	JobId string `json:"-" url:"-"`
+	JobId             string                    `json:"-" url:"-"`
 }
 
 func jobPermissionsRequestFromPb(pb *jobPermissionsRequestPb) (*JobPermissionsRequest, error) {
@@ -2723,7 +2411,6 @@ func jobRunAsToPb(st *JobRunAs) (*jobRunAsPb, error) {
 	}
 	pb := &jobRunAsPb{}
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2732,8 +2419,7 @@ func jobRunAsToPb(st *JobRunAs) (*jobRunAsPb, error) {
 
 type jobRunAsPb struct {
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	UserName             string `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2764,51 +2450,28 @@ func jobSettingsToPb(st *JobSettings) (*jobSettingsPb, error) {
 	}
 	pb := &jobSettingsPb{}
 	pb.BudgetPolicyId = st.BudgetPolicyId
-
 	pb.Continuous = st.Continuous
-
 	pb.Deployment = st.Deployment
-
 	pb.Description = st.Description
-
 	pb.EditMode = st.EditMode
-
 	pb.EmailNotifications = st.EmailNotifications
-
 	pb.Environments = st.Environments
-
 	pb.Format = st.Format
-
 	pb.GitSource = st.GitSource
-
 	pb.Health = st.Health
-
 	pb.JobClusters = st.JobClusters
-
 	pb.MaxConcurrentRuns = st.MaxConcurrentRuns
-
 	pb.Name = st.Name
-
 	pb.NotificationSettings = st.NotificationSettings
-
 	pb.Parameters = st.Parameters
-
 	pb.PerformanceTarget = st.PerformanceTarget
-
 	pb.Queue = st.Queue
-
 	pb.RunAs = st.RunAs
-
 	pb.Schedule = st.Schedule
-
 	pb.Tags = st.Tags
-
 	pb.Tasks = st.Tasks
-
 	pb.TimeoutSeconds = st.TimeoutSeconds
-
 	pb.Trigger = st.Trigger
-
 	pb.WebhookNotifications = st.WebhookNotifications
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2816,53 +2479,30 @@ func jobSettingsToPb(st *JobSettings) (*jobSettingsPb, error) {
 }
 
 type jobSettingsPb struct {
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-
-	Continuous *Continuous `json:"continuous,omitempty"`
-
-	Deployment *JobDeployment `json:"deployment,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	EditMode JobEditMode `json:"edit_mode,omitempty"`
-
-	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
-
-	Environments []JobEnvironment `json:"environments,omitempty"`
-
-	Format Format `json:"format,omitempty"`
-
-	GitSource *GitSource `json:"git_source,omitempty"`
-
-	Health *JobsHealthRules `json:"health,omitempty"`
-
-	JobClusters []JobCluster `json:"job_clusters,omitempty"`
-
-	MaxConcurrentRuns int `json:"max_concurrent_runs,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
+	BudgetPolicyId       string                   `json:"budget_policy_id,omitempty"`
+	Continuous           *Continuous              `json:"continuous,omitempty"`
+	Deployment           *JobDeployment           `json:"deployment,omitempty"`
+	Description          string                   `json:"description,omitempty"`
+	EditMode             JobEditMode              `json:"edit_mode,omitempty"`
+	EmailNotifications   *JobEmailNotifications   `json:"email_notifications,omitempty"`
+	Environments         []JobEnvironment         `json:"environments,omitempty"`
+	Format               Format                   `json:"format,omitempty"`
+	GitSource            *GitSource               `json:"git_source,omitempty"`
+	Health               *JobsHealthRules         `json:"health,omitempty"`
+	JobClusters          []JobCluster             `json:"job_clusters,omitempty"`
+	MaxConcurrentRuns    int                      `json:"max_concurrent_runs,omitempty"`
+	Name                 string                   `json:"name,omitempty"`
 	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
-
-	Parameters []JobParameterDefinition `json:"parameters,omitempty"`
-
-	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
-
-	Queue *QueueSettings `json:"queue,omitempty"`
-
-	RunAs *JobRunAs `json:"run_as,omitempty"`
-
-	Schedule *CronSchedule `json:"schedule,omitempty"`
-
-	Tags map[string]string `json:"tags,omitempty"`
-
-	Tasks []Task `json:"tasks,omitempty"`
-
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
-
-	Trigger *TriggerSettings `json:"trigger,omitempty"`
-
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	Parameters           []JobParameterDefinition `json:"parameters,omitempty"`
+	PerformanceTarget    PerformanceTarget        `json:"performance_target,omitempty"`
+	Queue                *QueueSettings           `json:"queue,omitempty"`
+	RunAs                *JobRunAs                `json:"run_as,omitempty"`
+	Schedule             *CronSchedule            `json:"schedule,omitempty"`
+	Tags                 map[string]string        `json:"tags,omitempty"`
+	Tasks                []Task                   `json:"tasks,omitempty"`
+	TimeoutSeconds       int                      `json:"timeout_seconds,omitempty"`
+	Trigger              *TriggerSettings         `json:"trigger,omitempty"`
+	WebhookNotifications *WebhookNotifications    `json:"webhook_notifications,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2915,20 +2555,16 @@ func jobSourceToPb(st *JobSource) (*jobSourcePb, error) {
 	}
 	pb := &jobSourcePb{}
 	pb.DirtyState = st.DirtyState
-
 	pb.ImportFromGitBranch = st.ImportFromGitBranch
-
 	pb.JobConfigPath = st.JobConfigPath
 
 	return pb, nil
 }
 
 type jobSourcePb struct {
-	DirtyState JobSourceDirtyState `json:"dirty_state,omitempty"`
-
-	ImportFromGitBranch string `json:"import_from_git_branch"`
-
-	JobConfigPath string `json:"job_config_path"`
+	DirtyState          JobSourceDirtyState `json:"dirty_state,omitempty"`
+	ImportFromGitBranch string              `json:"import_from_git_branch"`
+	JobConfigPath       string              `json:"job_config_path"`
 }
 
 func jobSourceFromPb(pb *jobSourcePb) (*JobSource, error) {
@@ -2949,20 +2585,16 @@ func jobsHealthRuleToPb(st *JobsHealthRule) (*jobsHealthRulePb, error) {
 	}
 	pb := &jobsHealthRulePb{}
 	pb.Metric = st.Metric
-
 	pb.Op = st.Op
-
 	pb.Value = st.Value
 
 	return pb, nil
 }
 
 type jobsHealthRulePb struct {
-	Metric JobsHealthMetric `json:"metric"`
-
-	Op JobsHealthOperator `json:"op"`
-
-	Value int64 `json:"value"`
+	Metric JobsHealthMetric   `json:"metric"`
+	Op     JobsHealthOperator `json:"op"`
+	Value  int64              `json:"value"`
 }
 
 func jobsHealthRuleFromPb(pb *jobsHealthRulePb) (*JobsHealthRule, error) {
@@ -3007,9 +2639,7 @@ func listJobComplianceForPolicyResponseToPb(st *ListJobComplianceForPolicyRespon
 	}
 	pb := &listJobComplianceForPolicyResponsePb{}
 	pb.Jobs = st.Jobs
-
 	pb.NextPageToken = st.NextPageToken
-
 	pb.PrevPageToken = st.PrevPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3017,11 +2647,9 @@ func listJobComplianceForPolicyResponseToPb(st *ListJobComplianceForPolicyRespon
 }
 
 type listJobComplianceForPolicyResponsePb struct {
-	Jobs []JobCompliance `json:"jobs,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	PrevPageToken string `json:"prev_page_token,omitempty"`
+	Jobs          []JobCompliance `json:"jobs,omitempty"`
+	NextPageToken string          `json:"next_page_token,omitempty"`
+	PrevPageToken string          `json:"prev_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3053,9 +2681,7 @@ func listJobComplianceRequestToPb(st *ListJobComplianceRequest) (*listJobComplia
 	}
 	pb := &listJobComplianceRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
-
 	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3063,11 +2689,9 @@ func listJobComplianceRequestToPb(st *ListJobComplianceRequest) (*listJobComplia
 }
 
 type listJobComplianceRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	PolicyId string `json:"-" url:"policy_id"`
+	PolicyId  string `json:"-" url:"policy_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3099,13 +2723,9 @@ func listJobsRequestToPb(st *ListJobsRequest) (*listJobsRequestPb, error) {
 	}
 	pb := &listJobsRequestPb{}
 	pb.ExpandTasks = st.ExpandTasks
-
 	pb.Limit = st.Limit
-
 	pb.Name = st.Name
-
 	pb.Offset = st.Offset
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3113,15 +2733,11 @@ func listJobsRequestToPb(st *ListJobsRequest) (*listJobsRequestPb, error) {
 }
 
 type listJobsRequestPb struct {
-	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
-
-	Limit int `json:"-" url:"limit,omitempty"`
-
-	Name string `json:"-" url:"name,omitempty"`
-
-	Offset int `json:"-" url:"offset,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	ExpandTasks bool   `json:"-" url:"expand_tasks,omitempty"`
+	Limit       int    `json:"-" url:"limit,omitempty"`
+	Name        string `json:"-" url:"name,omitempty"`
+	Offset      int    `json:"-" url:"offset,omitempty"`
+	PageToken   string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3155,11 +2771,8 @@ func listJobsResponseToPb(st *ListJobsResponse) (*listJobsResponsePb, error) {
 	}
 	pb := &listJobsResponsePb{}
 	pb.HasMore = st.HasMore
-
 	pb.Jobs = st.Jobs
-
 	pb.NextPageToken = st.NextPageToken
-
 	pb.PrevPageToken = st.PrevPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3167,13 +2780,10 @@ func listJobsResponseToPb(st *ListJobsResponse) (*listJobsResponsePb, error) {
 }
 
 type listJobsResponsePb struct {
-	HasMore bool `json:"has_more,omitempty"`
-
-	Jobs []BaseJob `json:"jobs,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	PrevPageToken string `json:"prev_page_token,omitempty"`
+	HasMore       bool      `json:"has_more,omitempty"`
+	Jobs          []BaseJob `json:"jobs,omitempty"`
+	NextPageToken string    `json:"next_page_token,omitempty"`
+	PrevPageToken string    `json:"prev_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3206,23 +2816,14 @@ func listRunsRequestToPb(st *ListRunsRequest) (*listRunsRequestPb, error) {
 	}
 	pb := &listRunsRequestPb{}
 	pb.ActiveOnly = st.ActiveOnly
-
 	pb.CompletedOnly = st.CompletedOnly
-
 	pb.ExpandTasks = st.ExpandTasks
-
 	pb.JobId = st.JobId
-
 	pb.Limit = st.Limit
-
 	pb.Offset = st.Offset
-
 	pb.PageToken = st.PageToken
-
 	pb.RunType = st.RunType
-
 	pb.StartTimeFrom = st.StartTimeFrom
-
 	pb.StartTimeTo = st.StartTimeTo
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3230,25 +2831,16 @@ func listRunsRequestToPb(st *ListRunsRequest) (*listRunsRequestPb, error) {
 }
 
 type listRunsRequestPb struct {
-	ActiveOnly bool `json:"-" url:"active_only,omitempty"`
-
-	CompletedOnly bool `json:"-" url:"completed_only,omitempty"`
-
-	ExpandTasks bool `json:"-" url:"expand_tasks,omitempty"`
-
-	JobId int64 `json:"-" url:"job_id,omitempty"`
-
-	Limit int `json:"-" url:"limit,omitempty"`
-
-	Offset int `json:"-" url:"offset,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	RunType RunType `json:"-" url:"run_type,omitempty"`
-
-	StartTimeFrom int64 `json:"-" url:"start_time_from,omitempty"`
-
-	StartTimeTo int64 `json:"-" url:"start_time_to,omitempty"`
+	ActiveOnly    bool    `json:"-" url:"active_only,omitempty"`
+	CompletedOnly bool    `json:"-" url:"completed_only,omitempty"`
+	ExpandTasks   bool    `json:"-" url:"expand_tasks,omitempty"`
+	JobId         int64   `json:"-" url:"job_id,omitempty"`
+	Limit         int     `json:"-" url:"limit,omitempty"`
+	Offset        int     `json:"-" url:"offset,omitempty"`
+	PageToken     string  `json:"-" url:"page_token,omitempty"`
+	RunType       RunType `json:"-" url:"run_type,omitempty"`
+	StartTimeFrom int64   `json:"-" url:"start_time_from,omitempty"`
+	StartTimeTo   int64   `json:"-" url:"start_time_to,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3287,11 +2879,8 @@ func listRunsResponseToPb(st *ListRunsResponse) (*listRunsResponsePb, error) {
 	}
 	pb := &listRunsResponsePb{}
 	pb.HasMore = st.HasMore
-
 	pb.NextPageToken = st.NextPageToken
-
 	pb.PrevPageToken = st.PrevPageToken
-
 	pb.Runs = st.Runs
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3299,13 +2888,10 @@ func listRunsResponseToPb(st *ListRunsResponse) (*listRunsResponsePb, error) {
 }
 
 type listRunsResponsePb struct {
-	HasMore bool `json:"has_more,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	PrevPageToken string `json:"prev_page_token,omitempty"`
-
-	Runs []BaseRun `json:"runs,omitempty"`
+	HasMore       bool      `json:"has_more,omitempty"`
+	NextPageToken string    `json:"next_page_token,omitempty"`
+	PrevPageToken string    `json:"prev_page_token,omitempty"`
+	Runs          []BaseRun `json:"runs,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3338,7 +2924,6 @@ func notebookOutputToPb(st *NotebookOutput) (*notebookOutputPb, error) {
 	}
 	pb := &notebookOutputPb{}
 	pb.Result = st.Result
-
 	pb.Truncated = st.Truncated
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3346,9 +2931,8 @@ func notebookOutputToPb(st *NotebookOutput) (*notebookOutputPb, error) {
 }
 
 type notebookOutputPb struct {
-	Result string `json:"result,omitempty"`
-
-	Truncated bool `json:"truncated,omitempty"`
+	Result    string `json:"result,omitempty"`
+	Truncated bool   `json:"truncated,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3379,11 +2963,8 @@ func notebookTaskToPb(st *NotebookTask) (*notebookTaskPb, error) {
 	}
 	pb := &notebookTaskPb{}
 	pb.BaseParameters = st.BaseParameters
-
 	pb.NotebookPath = st.NotebookPath
-
 	pb.Source = st.Source
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3392,12 +2973,9 @@ func notebookTaskToPb(st *NotebookTask) (*notebookTaskPb, error) {
 
 type notebookTaskPb struct {
 	BaseParameters map[string]string `json:"base_parameters,omitempty"`
-
-	NotebookPath string `json:"notebook_path"`
-
-	Source Source `json:"source,omitempty"`
-
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	NotebookPath   string            `json:"notebook_path"`
+	Source         Source            `json:"source,omitempty"`
+	WarehouseId    string            `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3430,9 +3008,7 @@ func outputSchemaInfoToPb(st *OutputSchemaInfo) (*outputSchemaInfoPb, error) {
 	}
 	pb := &outputSchemaInfoPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.ExpirationTime = st.ExpirationTime
-
 	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3440,11 +3016,9 @@ func outputSchemaInfoToPb(st *OutputSchemaInfo) (*outputSchemaInfoPb, error) {
 }
 
 type outputSchemaInfoPb struct {
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
-	SchemaName string `json:"schema_name,omitempty"`
+	CatalogName    string `json:"catalog_name,omitempty"`
+	ExpirationTime int64  `json:"expiration_time,omitempty"`
+	SchemaName     string `json:"schema_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3476,16 +3050,14 @@ func periodicTriggerConfigurationToPb(st *PeriodicTriggerConfiguration) (*period
 	}
 	pb := &periodicTriggerConfigurationPb{}
 	pb.Interval = st.Interval
-
 	pb.Unit = st.Unit
 
 	return pb, nil
 }
 
 type periodicTriggerConfigurationPb struct {
-	Interval int `json:"interval"`
-
-	Unit PeriodicTriggerConfigurationTimeUnit `json:"unit"`
+	Interval int                                  `json:"interval"`
+	Unit     PeriodicTriggerConfigurationTimeUnit `json:"unit"`
 }
 
 func periodicTriggerConfigurationFromPb(pb *periodicTriggerConfigurationPb) (*PeriodicTriggerConfiguration, error) {
@@ -3541,7 +3113,6 @@ func pipelineTaskToPb(st *PipelineTask) (*pipelineTaskPb, error) {
 	}
 	pb := &pipelineTaskPb{}
 	pb.FullRefresh = st.FullRefresh
-
 	pb.PipelineId = st.PipelineId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3549,9 +3120,8 @@ func pipelineTaskToPb(st *PipelineTask) (*pipelineTaskPb, error) {
 }
 
 type pipelineTaskPb struct {
-	FullRefresh bool `json:"full_refresh,omitempty"`
-
-	PipelineId string `json:"pipeline_id"`
+	FullRefresh bool   `json:"full_refresh,omitempty"`
+	PipelineId  string `json:"pipeline_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3582,13 +3152,9 @@ func powerBiModelToPb(st *PowerBiModel) (*powerBiModelPb, error) {
 	}
 	pb := &powerBiModelPb{}
 	pb.AuthenticationMethod = st.AuthenticationMethod
-
 	pb.ModelName = st.ModelName
-
 	pb.OverwriteExisting = st.OverwriteExisting
-
 	pb.StorageMode = st.StorageMode
-
 	pb.WorkspaceName = st.WorkspaceName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3597,14 +3163,10 @@ func powerBiModelToPb(st *PowerBiModel) (*powerBiModelPb, error) {
 
 type powerBiModelPb struct {
 	AuthenticationMethod AuthenticationMethod `json:"authentication_method,omitempty"`
-
-	ModelName string `json:"model_name,omitempty"`
-
-	OverwriteExisting bool `json:"overwrite_existing,omitempty"`
-
-	StorageMode StorageMode `json:"storage_mode,omitempty"`
-
-	WorkspaceName string `json:"workspace_name,omitempty"`
+	ModelName            string               `json:"model_name,omitempty"`
+	OverwriteExisting    bool                 `json:"overwrite_existing,omitempty"`
+	StorageMode          StorageMode          `json:"storage_mode,omitempty"`
+	WorkspaceName        string               `json:"workspace_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3638,11 +3200,8 @@ func powerBiTableToPb(st *PowerBiTable) (*powerBiTablePb, error) {
 	}
 	pb := &powerBiTablePb{}
 	pb.Catalog = st.Catalog
-
 	pb.Name = st.Name
-
 	pb.Schema = st.Schema
-
 	pb.StorageMode = st.StorageMode
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3650,12 +3209,9 @@ func powerBiTableToPb(st *PowerBiTable) (*powerBiTablePb, error) {
 }
 
 type powerBiTablePb struct {
-	Catalog string `json:"catalog,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Schema string `json:"schema,omitempty"`
-
+	Catalog     string      `json:"catalog,omitempty"`
+	Name        string      `json:"name,omitempty"`
+	Schema      string      `json:"schema,omitempty"`
 	StorageMode StorageMode `json:"storage_mode,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3689,13 +3245,9 @@ func powerBiTaskToPb(st *PowerBiTask) (*powerBiTaskPb, error) {
 	}
 	pb := &powerBiTaskPb{}
 	pb.ConnectionResourceName = st.ConnectionResourceName
-
 	pb.PowerBiModel = st.PowerBiModel
-
 	pb.RefreshAfterUpdate = st.RefreshAfterUpdate
-
 	pb.Tables = st.Tables
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3703,15 +3255,11 @@ func powerBiTaskToPb(st *PowerBiTask) (*powerBiTaskPb, error) {
 }
 
 type powerBiTaskPb struct {
-	ConnectionResourceName string `json:"connection_resource_name,omitempty"`
-
-	PowerBiModel *PowerBiModel `json:"power_bi_model,omitempty"`
-
-	RefreshAfterUpdate bool `json:"refresh_after_update,omitempty"`
-
-	Tables []PowerBiTable `json:"tables,omitempty"`
-
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	ConnectionResourceName string         `json:"connection_resource_name,omitempty"`
+	PowerBiModel           *PowerBiModel  `json:"power_bi_model,omitempty"`
+	RefreshAfterUpdate     bool           `json:"refresh_after_update,omitempty"`
+	Tables                 []PowerBiTable `json:"tables,omitempty"`
+	WarehouseId            string         `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3745,24 +3293,18 @@ func pythonWheelTaskToPb(st *PythonWheelTask) (*pythonWheelTaskPb, error) {
 	}
 	pb := &pythonWheelTaskPb{}
 	pb.EntryPoint = st.EntryPoint
-
 	pb.NamedParameters = st.NamedParameters
-
 	pb.PackageName = st.PackageName
-
 	pb.Parameters = st.Parameters
 
 	return pb, nil
 }
 
 type pythonWheelTaskPb struct {
-	EntryPoint string `json:"entry_point"`
-
+	EntryPoint      string            `json:"entry_point"`
 	NamedParameters map[string]string `json:"named_parameters,omitempty"`
-
-	PackageName string `json:"package_name"`
-
-	Parameters []string `json:"parameters,omitempty"`
+	PackageName     string            `json:"package_name"`
+	Parameters      []string          `json:"parameters,omitempty"`
 }
 
 func pythonWheelTaskFromPb(pb *pythonWheelTaskPb) (*PythonWheelTask, error) {
@@ -3784,7 +3326,6 @@ func queueDetailsToPb(st *QueueDetails) (*queueDetailsPb, error) {
 	}
 	pb := &queueDetailsPb{}
 	pb.Code = st.Code
-
 	pb.Message = st.Message
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3792,9 +3333,8 @@ func queueDetailsToPb(st *QueueDetails) (*queueDetailsPb, error) {
 }
 
 type queueDetailsPb struct {
-	Code QueueDetailsCodeCode `json:"code,omitempty"`
-
-	Message string `json:"message,omitempty"`
+	Code    QueueDetailsCodeCode `json:"code,omitempty"`
+	Message string               `json:"message,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3849,19 +3389,12 @@ func repairHistoryItemToPb(st *RepairHistoryItem) (*repairHistoryItemPb, error) 
 	}
 	pb := &repairHistoryItemPb{}
 	pb.EffectivePerformanceTarget = st.EffectivePerformanceTarget
-
 	pb.EndTime = st.EndTime
-
 	pb.Id = st.Id
-
 	pb.StartTime = st.StartTime
-
 	pb.State = st.State
-
 	pb.Status = st.Status
-
 	pb.TaskRunIds = st.TaskRunIds
-
 	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3869,21 +3402,14 @@ func repairHistoryItemToPb(st *RepairHistoryItem) (*repairHistoryItemPb, error) 
 }
 
 type repairHistoryItemPb struct {
-	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
-
-	EndTime int64 `json:"end_time,omitempty"`
-
-	Id int64 `json:"id,omitempty"`
-
-	StartTime int64 `json:"start_time,omitempty"`
-
-	State *RunState `json:"state,omitempty"`
-
-	Status *RunStatus `json:"status,omitempty"`
-
-	TaskRunIds []int64 `json:"task_run_ids,omitempty"`
-
-	Type RepairHistoryItemType `json:"type,omitempty"`
+	EffectivePerformanceTarget PerformanceTarget     `json:"effective_performance_target,omitempty"`
+	EndTime                    int64                 `json:"end_time,omitempty"`
+	Id                         int64                 `json:"id,omitempty"`
+	StartTime                  int64                 `json:"start_time,omitempty"`
+	State                      *RunState             `json:"state,omitempty"`
+	Status                     *RunStatus            `json:"status,omitempty"`
+	TaskRunIds                 []int64               `json:"task_run_ids,omitempty"`
+	Type                       RepairHistoryItemType `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3920,33 +3446,19 @@ func repairRunToPb(st *RepairRun) (*repairRunPb, error) {
 	}
 	pb := &repairRunPb{}
 	pb.DbtCommands = st.DbtCommands
-
 	pb.JarParams = st.JarParams
-
 	pb.JobParameters = st.JobParameters
-
 	pb.LatestRepairId = st.LatestRepairId
-
 	pb.NotebookParams = st.NotebookParams
-
 	pb.PerformanceTarget = st.PerformanceTarget
-
 	pb.PipelineParams = st.PipelineParams
-
 	pb.PythonNamedParams = st.PythonNamedParams
-
 	pb.PythonParams = st.PythonParams
-
 	pb.RerunAllFailedTasks = st.RerunAllFailedTasks
-
 	pb.RerunDependentTasks = st.RerunDependentTasks
-
 	pb.RerunTasks = st.RerunTasks
-
 	pb.RunId = st.RunId
-
 	pb.SparkSubmitParams = st.SparkSubmitParams
-
 	pb.SqlParams = st.SqlParams
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3954,35 +3466,21 @@ func repairRunToPb(st *RepairRun) (*repairRunPb, error) {
 }
 
 type repairRunPb struct {
-	DbtCommands []string `json:"dbt_commands,omitempty"`
-
-	JarParams []string `json:"jar_params,omitempty"`
-
-	JobParameters map[string]string `json:"job_parameters,omitempty"`
-
-	LatestRepairId int64 `json:"latest_repair_id,omitempty"`
-
-	NotebookParams map[string]string `json:"notebook_params,omitempty"`
-
-	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
-
-	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-
-	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
-
-	PythonParams []string `json:"python_params,omitempty"`
-
-	RerunAllFailedTasks bool `json:"rerun_all_failed_tasks,omitempty"`
-
-	RerunDependentTasks bool `json:"rerun_dependent_tasks,omitempty"`
-
-	RerunTasks []string `json:"rerun_tasks,omitempty"`
-
-	RunId int64 `json:"run_id"`
-
-	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
-
-	SqlParams map[string]string `json:"sql_params,omitempty"`
+	DbtCommands         []string          `json:"dbt_commands,omitempty"`
+	JarParams           []string          `json:"jar_params,omitempty"`
+	JobParameters       map[string]string `json:"job_parameters,omitempty"`
+	LatestRepairId      int64             `json:"latest_repair_id,omitempty"`
+	NotebookParams      map[string]string `json:"notebook_params,omitempty"`
+	PerformanceTarget   PerformanceTarget `json:"performance_target,omitempty"`
+	PipelineParams      *PipelineParams   `json:"pipeline_params,omitempty"`
+	PythonNamedParams   map[string]string `json:"python_named_params,omitempty"`
+	PythonParams        []string          `json:"python_params,omitempty"`
+	RerunAllFailedTasks bool              `json:"rerun_all_failed_tasks,omitempty"`
+	RerunDependentTasks bool              `json:"rerun_dependent_tasks,omitempty"`
+	RerunTasks          []string          `json:"rerun_tasks,omitempty"`
+	RunId               int64             `json:"run_id"`
+	SparkSubmitParams   []string          `json:"spark_submit_params,omitempty"`
+	SqlParams           map[string]string `json:"sql_params,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4062,15 +3560,13 @@ func resetJobToPb(st *ResetJob) (*resetJobPb, error) {
 	}
 	pb := &resetJobPb{}
 	pb.JobId = st.JobId
-
 	pb.NewSettings = st.NewSettings
 
 	return pb, nil
 }
 
 type resetJobPb struct {
-	JobId int64 `json:"job_id"`
-
+	JobId       int64       `json:"job_id"`
 	NewSettings JobSettings `json:"new_settings"`
 }
 
@@ -4112,7 +3608,6 @@ func resolvedConditionTaskValuesToPb(st *ResolvedConditionTaskValues) (*resolved
 	}
 	pb := &resolvedConditionTaskValuesPb{}
 	pb.Left = st.Left
-
 	pb.Right = st.Right
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4120,8 +3615,7 @@ func resolvedConditionTaskValuesToPb(st *ResolvedConditionTaskValues) (*resolved
 }
 
 type resolvedConditionTaskValuesPb struct {
-	Left string `json:"left,omitempty"`
-
+	Left  string `json:"left,omitempty"`
 	Right string `json:"right,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4225,7 +3719,6 @@ func resolvedPythonWheelTaskValuesToPb(st *ResolvedPythonWheelTaskValues) (*reso
 	}
 	pb := &resolvedPythonWheelTaskValuesPb{}
 	pb.NamedParameters = st.NamedParameters
-
 	pb.Parameters = st.Parameters
 
 	return pb, nil
@@ -4233,8 +3726,7 @@ func resolvedPythonWheelTaskValuesToPb(st *ResolvedPythonWheelTaskValues) (*reso
 
 type resolvedPythonWheelTaskValuesPb struct {
 	NamedParameters map[string]string `json:"named_parameters,omitempty"`
-
-	Parameters []string `json:"parameters,omitempty"`
+	Parameters      []string          `json:"parameters,omitempty"`
 }
 
 func resolvedPythonWheelTaskValuesFromPb(pb *resolvedPythonWheelTaskValuesPb) (*ResolvedPythonWheelTaskValues, error) {
@@ -4254,7 +3746,6 @@ func resolvedRunJobTaskValuesToPb(st *ResolvedRunJobTaskValues) (*resolvedRunJob
 	}
 	pb := &resolvedRunJobTaskValuesPb{}
 	pb.JobParameters = st.JobParameters
-
 	pb.Parameters = st.Parameters
 
 	return pb, nil
@@ -4262,8 +3753,7 @@ func resolvedRunJobTaskValuesToPb(st *ResolvedRunJobTaskValues) (*resolvedRunJob
 
 type resolvedRunJobTaskValuesPb struct {
 	JobParameters map[string]string `json:"job_parameters,omitempty"`
-
-	Parameters map[string]string `json:"parameters,omitempty"`
+	Parameters    map[string]string `json:"parameters,omitempty"`
 }
 
 func resolvedRunJobTaskValuesFromPb(pb *resolvedRunJobTaskValuesPb) (*ResolvedRunJobTaskValues, error) {
@@ -4307,48 +3797,30 @@ func resolvedValuesToPb(st *ResolvedValues) (*resolvedValuesPb, error) {
 	}
 	pb := &resolvedValuesPb{}
 	pb.ConditionTask = st.ConditionTask
-
 	pb.DbtTask = st.DbtTask
-
 	pb.NotebookTask = st.NotebookTask
-
 	pb.PythonWheelTask = st.PythonWheelTask
-
 	pb.RunJobTask = st.RunJobTask
-
 	pb.SimulationTask = st.SimulationTask
-
 	pb.SparkJarTask = st.SparkJarTask
-
 	pb.SparkPythonTask = st.SparkPythonTask
-
 	pb.SparkSubmitTask = st.SparkSubmitTask
-
 	pb.SqlTask = st.SqlTask
 
 	return pb, nil
 }
 
 type resolvedValuesPb struct {
-	ConditionTask *ResolvedConditionTaskValues `json:"condition_task,omitempty"`
-
-	DbtTask *ResolvedDbtTaskValues `json:"dbt_task,omitempty"`
-
-	NotebookTask *ResolvedNotebookTaskValues `json:"notebook_task,omitempty"`
-
+	ConditionTask   *ResolvedConditionTaskValues   `json:"condition_task,omitempty"`
+	DbtTask         *ResolvedDbtTaskValues         `json:"dbt_task,omitempty"`
+	NotebookTask    *ResolvedNotebookTaskValues    `json:"notebook_task,omitempty"`
 	PythonWheelTask *ResolvedPythonWheelTaskValues `json:"python_wheel_task,omitempty"`
-
-	RunJobTask *ResolvedRunJobTaskValues `json:"run_job_task,omitempty"`
-
-	SimulationTask *ResolvedParamPairValues `json:"simulation_task,omitempty"`
-
-	SparkJarTask *ResolvedStringParamsValues `json:"spark_jar_task,omitempty"`
-
-	SparkPythonTask *ResolvedStringParamsValues `json:"spark_python_task,omitempty"`
-
-	SparkSubmitTask *ResolvedStringParamsValues `json:"spark_submit_task,omitempty"`
-
-	SqlTask *ResolvedParamPairValues `json:"sql_task,omitempty"`
+	RunJobTask      *ResolvedRunJobTaskValues      `json:"run_job_task,omitempty"`
+	SimulationTask  *ResolvedParamPairValues       `json:"simulation_task,omitempty"`
+	SparkJarTask    *ResolvedStringParamsValues    `json:"spark_jar_task,omitempty"`
+	SparkPythonTask *ResolvedStringParamsValues    `json:"spark_python_task,omitempty"`
+	SparkSubmitTask *ResolvedStringParamsValues    `json:"spark_submit_task,omitempty"`
+	SqlTask         *ResolvedParamPairValues       `json:"sql_task,omitempty"`
 }
 
 func resolvedValuesFromPb(pb *resolvedValuesPb) (*ResolvedValues, error) {
@@ -4376,73 +3848,39 @@ func runToPb(st *Run) (*runPb, error) {
 	}
 	pb := &runPb{}
 	pb.AttemptNumber = st.AttemptNumber
-
 	pb.CleanupDuration = st.CleanupDuration
-
 	pb.ClusterInstance = st.ClusterInstance
-
 	pb.ClusterSpec = st.ClusterSpec
-
 	pb.CreatorUserName = st.CreatorUserName
-
 	pb.Description = st.Description
-
 	pb.EffectivePerformanceTarget = st.EffectivePerformanceTarget
-
 	pb.EndTime = st.EndTime
-
 	pb.ExecutionDuration = st.ExecutionDuration
-
 	pb.GitSource = st.GitSource
-
 	pb.HasMore = st.HasMore
-
 	pb.Iterations = st.Iterations
-
 	pb.JobClusters = st.JobClusters
-
 	pb.JobId = st.JobId
-
 	pb.JobParameters = st.JobParameters
-
 	pb.JobRunId = st.JobRunId
-
 	pb.NextPageToken = st.NextPageToken
-
 	pb.NumberInJob = st.NumberInJob
-
 	pb.OriginalAttemptRunId = st.OriginalAttemptRunId
-
 	pb.OverridingParameters = st.OverridingParameters
-
 	pb.QueueDuration = st.QueueDuration
-
 	pb.RepairHistory = st.RepairHistory
-
 	pb.RunDuration = st.RunDuration
-
 	pb.RunId = st.RunId
-
 	pb.RunName = st.RunName
-
 	pb.RunPageUrl = st.RunPageUrl
-
 	pb.RunType = st.RunType
-
 	pb.Schedule = st.Schedule
-
 	pb.SetupDuration = st.SetupDuration
-
 	pb.StartTime = st.StartTime
-
 	pb.State = st.State
-
 	pb.Status = st.Status
-
 	pb.Tasks = st.Tasks
-
 	pb.Trigger = st.Trigger
-
 	pb.TriggerInfo = st.TriggerInfo
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4450,75 +3888,41 @@ func runToPb(st *Run) (*runPb, error) {
 }
 
 type runPb struct {
-	AttemptNumber int `json:"attempt_number,omitempty"`
-
-	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
-
-	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
-
-	ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
-
-	CreatorUserName string `json:"creator_user_name,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
-
-	EndTime int64 `json:"end_time,omitempty"`
-
-	ExecutionDuration int64 `json:"execution_duration,omitempty"`
-
-	GitSource *GitSource `json:"git_source,omitempty"`
-
-	HasMore bool `json:"has_more,omitempty"`
-
-	Iterations []RunTask `json:"iterations,omitempty"`
-
-	JobClusters []JobCluster `json:"job_clusters,omitempty"`
-
-	JobId int64 `json:"job_id,omitempty"`
-
-	JobParameters []JobParameter `json:"job_parameters,omitempty"`
-
-	JobRunId int64 `json:"job_run_id,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	NumberInJob int64 `json:"number_in_job,omitempty"`
-
-	OriginalAttemptRunId int64 `json:"original_attempt_run_id,omitempty"`
-
-	OverridingParameters *RunParameters `json:"overriding_parameters,omitempty"`
-
-	QueueDuration int64 `json:"queue_duration,omitempty"`
-
-	RepairHistory []RepairHistoryItem `json:"repair_history,omitempty"`
-
-	RunDuration int64 `json:"run_duration,omitempty"`
-
-	RunId int64 `json:"run_id,omitempty"`
-
-	RunName string `json:"run_name,omitempty"`
-
-	RunPageUrl string `json:"run_page_url,omitempty"`
-
-	RunType RunType `json:"run_type,omitempty"`
-
-	Schedule *CronSchedule `json:"schedule,omitempty"`
-
-	SetupDuration int64 `json:"setup_duration,omitempty"`
-
-	StartTime int64 `json:"start_time,omitempty"`
-
-	State *RunState `json:"state,omitempty"`
-
-	Status *RunStatus `json:"status,omitempty"`
-
-	Tasks []RunTask `json:"tasks,omitempty"`
-
-	Trigger TriggerType `json:"trigger,omitempty"`
-
-	TriggerInfo *TriggerInfo `json:"trigger_info,omitempty"`
+	AttemptNumber              int                 `json:"attempt_number,omitempty"`
+	CleanupDuration            int64               `json:"cleanup_duration,omitempty"`
+	ClusterInstance            *ClusterInstance    `json:"cluster_instance,omitempty"`
+	ClusterSpec                *ClusterSpec        `json:"cluster_spec,omitempty"`
+	CreatorUserName            string              `json:"creator_user_name,omitempty"`
+	Description                string              `json:"description,omitempty"`
+	EffectivePerformanceTarget PerformanceTarget   `json:"effective_performance_target,omitempty"`
+	EndTime                    int64               `json:"end_time,omitempty"`
+	ExecutionDuration          int64               `json:"execution_duration,omitempty"`
+	GitSource                  *GitSource          `json:"git_source,omitempty"`
+	HasMore                    bool                `json:"has_more,omitempty"`
+	Iterations                 []RunTask           `json:"iterations,omitempty"`
+	JobClusters                []JobCluster        `json:"job_clusters,omitempty"`
+	JobId                      int64               `json:"job_id,omitempty"`
+	JobParameters              []JobParameter      `json:"job_parameters,omitempty"`
+	JobRunId                   int64               `json:"job_run_id,omitempty"`
+	NextPageToken              string              `json:"next_page_token,omitempty"`
+	NumberInJob                int64               `json:"number_in_job,omitempty"`
+	OriginalAttemptRunId       int64               `json:"original_attempt_run_id,omitempty"`
+	OverridingParameters       *RunParameters      `json:"overriding_parameters,omitempty"`
+	QueueDuration              int64               `json:"queue_duration,omitempty"`
+	RepairHistory              []RepairHistoryItem `json:"repair_history,omitempty"`
+	RunDuration                int64               `json:"run_duration,omitempty"`
+	RunId                      int64               `json:"run_id,omitempty"`
+	RunName                    string              `json:"run_name,omitempty"`
+	RunPageUrl                 string              `json:"run_page_url,omitempty"`
+	RunType                    RunType             `json:"run_type,omitempty"`
+	Schedule                   *CronSchedule       `json:"schedule,omitempty"`
+	SetupDuration              int64               `json:"setup_duration,omitempty"`
+	StartTime                  int64               `json:"start_time,omitempty"`
+	State                      *RunState           `json:"state,omitempty"`
+	Status                     *RunStatus          `json:"status,omitempty"`
+	Tasks                      []RunTask           `json:"tasks,omitempty"`
+	Trigger                    TriggerType         `json:"trigger,omitempty"`
+	TriggerInfo                *TriggerInfo        `json:"trigger_info,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4582,11 +3986,8 @@ func runConditionTaskToPb(st *RunConditionTask) (*runConditionTaskPb, error) {
 	}
 	pb := &runConditionTaskPb{}
 	pb.Left = st.Left
-
 	pb.Op = st.Op
-
 	pb.Outcome = st.Outcome
-
 	pb.Right = st.Right
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4594,13 +3995,10 @@ func runConditionTaskToPb(st *RunConditionTask) (*runConditionTaskPb, error) {
 }
 
 type runConditionTaskPb struct {
-	Left string `json:"left"`
-
-	Op ConditionTaskOp `json:"op"`
-
-	Outcome string `json:"outcome,omitempty"`
-
-	Right string `json:"right"`
+	Left    string          `json:"left"`
+	Op      ConditionTaskOp `json:"op"`
+	Outcome string          `json:"outcome,omitempty"`
+	Right   string          `json:"right"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4633,11 +4031,8 @@ func runForEachTaskToPb(st *RunForEachTask) (*runForEachTaskPb, error) {
 	}
 	pb := &runForEachTaskPb{}
 	pb.Concurrency = st.Concurrency
-
 	pb.Inputs = st.Inputs
-
 	pb.Stats = st.Stats
-
 	pb.Task = st.Task
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4645,13 +4040,10 @@ func runForEachTaskToPb(st *RunForEachTask) (*runForEachTaskPb, error) {
 }
 
 type runForEachTaskPb struct {
-	Concurrency int `json:"concurrency,omitempty"`
-
-	Inputs string `json:"inputs"`
-
-	Stats *ForEachStats `json:"stats,omitempty"`
-
-	Task Task `json:"task"`
+	Concurrency int           `json:"concurrency,omitempty"`
+	Inputs      string        `json:"inputs"`
+	Stats       *ForEachStats `json:"stats,omitempty"`
+	Task        Task          `json:"task"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4720,48 +4112,30 @@ func runJobTaskToPb(st *RunJobTask) (*runJobTaskPb, error) {
 	}
 	pb := &runJobTaskPb{}
 	pb.DbtCommands = st.DbtCommands
-
 	pb.JarParams = st.JarParams
-
 	pb.JobId = st.JobId
-
 	pb.JobParameters = st.JobParameters
-
 	pb.NotebookParams = st.NotebookParams
-
 	pb.PipelineParams = st.PipelineParams
-
 	pb.PythonNamedParams = st.PythonNamedParams
-
 	pb.PythonParams = st.PythonParams
-
 	pb.SparkSubmitParams = st.SparkSubmitParams
-
 	pb.SqlParams = st.SqlParams
 
 	return pb, nil
 }
 
 type runJobTaskPb struct {
-	DbtCommands []string `json:"dbt_commands,omitempty"`
-
-	JarParams []string `json:"jar_params,omitempty"`
-
-	JobId int64 `json:"job_id"`
-
-	JobParameters map[string]string `json:"job_parameters,omitempty"`
-
-	NotebookParams map[string]string `json:"notebook_params,omitempty"`
-
-	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-
+	DbtCommands       []string          `json:"dbt_commands,omitempty"`
+	JarParams         []string          `json:"jar_params,omitempty"`
+	JobId             int64             `json:"job_id"`
+	JobParameters     map[string]string `json:"job_parameters,omitempty"`
+	NotebookParams    map[string]string `json:"notebook_params,omitempty"`
+	PipelineParams    *PipelineParams   `json:"pipeline_params,omitempty"`
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
-
-	PythonParams []string `json:"python_params,omitempty"`
-
-	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
-
-	SqlParams map[string]string `json:"sql_params,omitempty"`
+	PythonParams      []string          `json:"python_params,omitempty"`
+	SparkSubmitParams []string          `json:"spark_submit_params,omitempty"`
+	SqlParams         map[string]string `json:"sql_params,omitempty"`
 }
 
 func runJobTaskFromPb(pb *runJobTaskPb) (*RunJobTask, error) {
@@ -4789,31 +4163,18 @@ func runNowToPb(st *RunNow) (*runNowPb, error) {
 	}
 	pb := &runNowPb{}
 	pb.DbtCommands = st.DbtCommands
-
 	pb.IdempotencyToken = st.IdempotencyToken
-
 	pb.JarParams = st.JarParams
-
 	pb.JobId = st.JobId
-
 	pb.JobParameters = st.JobParameters
-
 	pb.NotebookParams = st.NotebookParams
-
 	pb.Only = st.Only
-
 	pb.PerformanceTarget = st.PerformanceTarget
-
 	pb.PipelineParams = st.PipelineParams
-
 	pb.PythonNamedParams = st.PythonNamedParams
-
 	pb.PythonParams = st.PythonParams
-
 	pb.Queue = st.Queue
-
 	pb.SparkSubmitParams = st.SparkSubmitParams
-
 	pb.SqlParams = st.SqlParams
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4821,33 +4182,20 @@ func runNowToPb(st *RunNow) (*runNowPb, error) {
 }
 
 type runNowPb struct {
-	DbtCommands []string `json:"dbt_commands,omitempty"`
-
-	IdempotencyToken string `json:"idempotency_token,omitempty"`
-
-	JarParams []string `json:"jar_params,omitempty"`
-
-	JobId int64 `json:"job_id"`
-
-	JobParameters map[string]string `json:"job_parameters,omitempty"`
-
-	NotebookParams map[string]string `json:"notebook_params,omitempty"`
-
-	Only []string `json:"only,omitempty"`
-
+	DbtCommands       []string          `json:"dbt_commands,omitempty"`
+	IdempotencyToken  string            `json:"idempotency_token,omitempty"`
+	JarParams         []string          `json:"jar_params,omitempty"`
+	JobId             int64             `json:"job_id"`
+	JobParameters     map[string]string `json:"job_parameters,omitempty"`
+	NotebookParams    map[string]string `json:"notebook_params,omitempty"`
+	Only              []string          `json:"only,omitempty"`
 	PerformanceTarget PerformanceTarget `json:"performance_target,omitempty"`
-
-	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-
+	PipelineParams    *PipelineParams   `json:"pipeline_params,omitempty"`
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
-
-	PythonParams []string `json:"python_params,omitempty"`
-
-	Queue *QueueSettings `json:"queue,omitempty"`
-
-	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
-
-	SqlParams map[string]string `json:"sql_params,omitempty"`
+	PythonParams      []string          `json:"python_params,omitempty"`
+	Queue             *QueueSettings    `json:"queue,omitempty"`
+	SparkSubmitParams []string          `json:"spark_submit_params,omitempty"`
+	SqlParams         map[string]string `json:"sql_params,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4890,7 +4238,6 @@ func runNowResponseToPb(st *RunNowResponse) (*runNowResponsePb, error) {
 	}
 	pb := &runNowResponsePb{}
 	pb.NumberInJob = st.NumberInJob
-
 	pb.RunId = st.RunId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4899,8 +4246,7 @@ func runNowResponseToPb(st *RunNowResponse) (*runNowResponsePb, error) {
 
 type runNowResponsePb struct {
 	NumberInJob int64 `json:"number_in_job,omitempty"`
-
-	RunId int64 `json:"run_id,omitempty"`
+	RunId       int64 `json:"run_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4931,27 +4277,16 @@ func runOutputToPb(st *RunOutput) (*runOutputPb, error) {
 	}
 	pb := &runOutputPb{}
 	pb.CleanRoomsNotebookOutput = st.CleanRoomsNotebookOutput
-
 	pb.DashboardOutput = st.DashboardOutput
-
 	pb.DbtOutput = st.DbtOutput
-
 	pb.Error = st.Error
-
 	pb.ErrorTrace = st.ErrorTrace
-
 	pb.Info = st.Info
-
 	pb.Logs = st.Logs
-
 	pb.LogsTruncated = st.LogsTruncated
-
 	pb.Metadata = st.Metadata
-
 	pb.NotebookOutput = st.NotebookOutput
-
 	pb.RunJobOutput = st.RunJobOutput
-
 	pb.SqlOutput = st.SqlOutput
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4960,28 +4295,17 @@ func runOutputToPb(st *RunOutput) (*runOutputPb, error) {
 
 type runOutputPb struct {
 	CleanRoomsNotebookOutput *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput `json:"clean_rooms_notebook_output,omitempty"`
-
-	DashboardOutput *DashboardTaskOutput `json:"dashboard_output,omitempty"`
-
-	DbtOutput *DbtOutput `json:"dbt_output,omitempty"`
-
-	Error string `json:"error,omitempty"`
-
-	ErrorTrace string `json:"error_trace,omitempty"`
-
-	Info string `json:"info,omitempty"`
-
-	Logs string `json:"logs,omitempty"`
-
-	LogsTruncated bool `json:"logs_truncated,omitempty"`
-
-	Metadata *Run `json:"metadata,omitempty"`
-
-	NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
-
-	RunJobOutput *RunJobOutput `json:"run_job_output,omitempty"`
-
-	SqlOutput *SqlOutput `json:"sql_output,omitempty"`
+	DashboardOutput          *DashboardTaskOutput                                `json:"dashboard_output,omitempty"`
+	DbtOutput                *DbtOutput                                          `json:"dbt_output,omitempty"`
+	Error                    string                                              `json:"error,omitempty"`
+	ErrorTrace               string                                              `json:"error_trace,omitempty"`
+	Info                     string                                              `json:"info,omitempty"`
+	Logs                     string                                              `json:"logs,omitempty"`
+	LogsTruncated            bool                                                `json:"logs_truncated,omitempty"`
+	Metadata                 *Run                                                `json:"metadata,omitempty"`
+	NotebookOutput           *NotebookOutput                                     `json:"notebook_output,omitempty"`
+	RunJobOutput             *RunJobOutput                                       `json:"run_job_output,omitempty"`
+	SqlOutput                *SqlOutput                                          `json:"sql_output,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5022,40 +4346,26 @@ func runParametersToPb(st *RunParameters) (*runParametersPb, error) {
 	}
 	pb := &runParametersPb{}
 	pb.DbtCommands = st.DbtCommands
-
 	pb.JarParams = st.JarParams
-
 	pb.NotebookParams = st.NotebookParams
-
 	pb.PipelineParams = st.PipelineParams
-
 	pb.PythonNamedParams = st.PythonNamedParams
-
 	pb.PythonParams = st.PythonParams
-
 	pb.SparkSubmitParams = st.SparkSubmitParams
-
 	pb.SqlParams = st.SqlParams
 
 	return pb, nil
 }
 
 type runParametersPb struct {
-	DbtCommands []string `json:"dbt_commands,omitempty"`
-
-	JarParams []string `json:"jar_params,omitempty"`
-
-	NotebookParams map[string]string `json:"notebook_params,omitempty"`
-
-	PipelineParams *PipelineParams `json:"pipeline_params,omitempty"`
-
+	DbtCommands       []string          `json:"dbt_commands,omitempty"`
+	JarParams         []string          `json:"jar_params,omitempty"`
+	NotebookParams    map[string]string `json:"notebook_params,omitempty"`
+	PipelineParams    *PipelineParams   `json:"pipeline_params,omitempty"`
 	PythonNamedParams map[string]string `json:"python_named_params,omitempty"`
-
-	PythonParams []string `json:"python_params,omitempty"`
-
-	SparkSubmitParams []string `json:"spark_submit_params,omitempty"`
-
-	SqlParams map[string]string `json:"sql_params,omitempty"`
+	PythonParams      []string          `json:"python_params,omitempty"`
+	SparkSubmitParams []string          `json:"spark_submit_params,omitempty"`
+	SqlParams         map[string]string `json:"sql_params,omitempty"`
 }
 
 func runParametersFromPb(pb *runParametersPb) (*RunParameters, error) {
@@ -5081,13 +4391,9 @@ func runStateToPb(st *RunState) (*runStatePb, error) {
 	}
 	pb := &runStatePb{}
 	pb.LifeCycleState = st.LifeCycleState
-
 	pb.QueueReason = st.QueueReason
-
 	pb.ResultState = st.ResultState
-
 	pb.StateMessage = st.StateMessage
-
 	pb.UserCancelledOrTimedout = st.UserCancelledOrTimedout
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5095,15 +4401,11 @@ func runStateToPb(st *RunState) (*runStatePb, error) {
 }
 
 type runStatePb struct {
-	LifeCycleState RunLifeCycleState `json:"life_cycle_state,omitempty"`
-
-	QueueReason string `json:"queue_reason,omitempty"`
-
-	ResultState RunResultState `json:"result_state,omitempty"`
-
-	StateMessage string `json:"state_message,omitempty"`
-
-	UserCancelledOrTimedout bool `json:"user_cancelled_or_timedout,omitempty"`
+	LifeCycleState          RunLifeCycleState `json:"life_cycle_state,omitempty"`
+	QueueReason             string            `json:"queue_reason,omitempty"`
+	ResultState             RunResultState    `json:"result_state,omitempty"`
+	StateMessage            string            `json:"state_message,omitempty"`
+	UserCancelledOrTimedout bool              `json:"user_cancelled_or_timedout,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5137,20 +4439,16 @@ func runStatusToPb(st *RunStatus) (*runStatusPb, error) {
 	}
 	pb := &runStatusPb{}
 	pb.QueueDetails = st.QueueDetails
-
 	pb.State = st.State
-
 	pb.TerminationDetails = st.TerminationDetails
 
 	return pb, nil
 }
 
 type runStatusPb struct {
-	QueueDetails *QueueDetails `json:"queue_details,omitempty"`
-
-	State RunLifecycleStateV2State `json:"state,omitempty"`
-
-	TerminationDetails *TerminationDetails `json:"termination_details,omitempty"`
+	QueueDetails       *QueueDetails            `json:"queue_details,omitempty"`
+	State              RunLifecycleStateV2State `json:"state,omitempty"`
+	TerminationDetails *TerminationDetails      `json:"termination_details,omitempty"`
 }
 
 func runStatusFromPb(pb *runStatusPb) (*RunStatus, error) {
@@ -5171,93 +4469,49 @@ func runTaskToPb(st *RunTask) (*runTaskPb, error) {
 	}
 	pb := &runTaskPb{}
 	pb.AttemptNumber = st.AttemptNumber
-
 	pb.CleanRoomsNotebookTask = st.CleanRoomsNotebookTask
-
 	pb.CleanupDuration = st.CleanupDuration
-
 	pb.ClusterInstance = st.ClusterInstance
-
 	pb.ConditionTask = st.ConditionTask
-
 	pb.DashboardTask = st.DashboardTask
-
 	pb.DbtTask = st.DbtTask
-
 	pb.DependsOn = st.DependsOn
-
 	pb.Description = st.Description
-
 	pb.Disabled = st.Disabled
-
 	pb.EffectivePerformanceTarget = st.EffectivePerformanceTarget
-
 	pb.EmailNotifications = st.EmailNotifications
-
 	pb.EndTime = st.EndTime
-
 	pb.EnvironmentKey = st.EnvironmentKey
-
 	pb.ExecutionDuration = st.ExecutionDuration
-
 	pb.ExistingClusterId = st.ExistingClusterId
-
 	pb.ForEachTask = st.ForEachTask
-
 	pb.GenAiComputeTask = st.GenAiComputeTask
-
 	pb.GitSource = st.GitSource
-
 	pb.JobClusterKey = st.JobClusterKey
-
 	pb.Libraries = st.Libraries
-
 	pb.NewCluster = st.NewCluster
-
 	pb.NotebookTask = st.NotebookTask
-
 	pb.NotificationSettings = st.NotificationSettings
-
 	pb.PipelineTask = st.PipelineTask
-
 	pb.PowerBiTask = st.PowerBiTask
-
 	pb.PythonWheelTask = st.PythonWheelTask
-
 	pb.QueueDuration = st.QueueDuration
-
 	pb.ResolvedValues = st.ResolvedValues
-
 	pb.RunDuration = st.RunDuration
-
 	pb.RunId = st.RunId
-
 	pb.RunIf = st.RunIf
-
 	pb.RunJobTask = st.RunJobTask
-
 	pb.RunPageUrl = st.RunPageUrl
-
 	pb.SetupDuration = st.SetupDuration
-
 	pb.SparkJarTask = st.SparkJarTask
-
 	pb.SparkPythonTask = st.SparkPythonTask
-
 	pb.SparkSubmitTask = st.SparkSubmitTask
-
 	pb.SqlTask = st.SqlTask
-
 	pb.StartTime = st.StartTime
-
 	pb.State = st.State
-
 	pb.Status = st.Status
-
 	pb.TaskKey = st.TaskKey
-
 	pb.TimeoutSeconds = st.TimeoutSeconds
-
 	pb.WebhookNotifications = st.WebhookNotifications
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5265,95 +4519,51 @@ func runTaskToPb(st *RunTask) (*runTaskPb, error) {
 }
 
 type runTaskPb struct {
-	AttemptNumber int `json:"attempt_number,omitempty"`
-
-	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
-
-	CleanupDuration int64 `json:"cleanup_duration,omitempty"`
-
-	ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
-
-	ConditionTask *RunConditionTask `json:"condition_task,omitempty"`
-
-	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
-
-	DbtTask *DbtTask `json:"dbt_task,omitempty"`
-
-	DependsOn []TaskDependency `json:"depends_on,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	Disabled bool `json:"disabled,omitempty"`
-
-	EffectivePerformanceTarget PerformanceTarget `json:"effective_performance_target,omitempty"`
-
-	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
-
-	EndTime int64 `json:"end_time,omitempty"`
-
-	EnvironmentKey string `json:"environment_key,omitempty"`
-
-	ExecutionDuration int64 `json:"execution_duration,omitempty"`
-
-	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-
-	ForEachTask *RunForEachTask `json:"for_each_task,omitempty"`
-
-	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
-
-	GitSource *GitSource `json:"git_source,omitempty"`
-
-	JobClusterKey string `json:"job_cluster_key,omitempty"`
-
-	Libraries []compute.Library `json:"libraries,omitempty"`
-
-	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
-
-	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
-
-	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
-
-	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
-
-	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
-
-	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
-
-	QueueDuration int64 `json:"queue_duration,omitempty"`
-
-	ResolvedValues *ResolvedValues `json:"resolved_values,omitempty"`
-
-	RunDuration int64 `json:"run_duration,omitempty"`
-
-	RunId int64 `json:"run_id,omitempty"`
-
-	RunIf RunIf `json:"run_if,omitempty"`
-
-	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
-
-	RunPageUrl string `json:"run_page_url,omitempty"`
-
-	SetupDuration int64 `json:"setup_duration,omitempty"`
-
-	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
-
-	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-
-	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-
-	SqlTask *SqlTask `json:"sql_task,omitempty"`
-
-	StartTime int64 `json:"start_time,omitempty"`
-
-	State *RunState `json:"state,omitempty"`
-
-	Status *RunStatus `json:"status,omitempty"`
-
-	TaskKey string `json:"task_key"`
-
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
-
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	AttemptNumber              int                       `json:"attempt_number,omitempty"`
+	CleanRoomsNotebookTask     *CleanRoomsNotebookTask   `json:"clean_rooms_notebook_task,omitempty"`
+	CleanupDuration            int64                     `json:"cleanup_duration,omitempty"`
+	ClusterInstance            *ClusterInstance          `json:"cluster_instance,omitempty"`
+	ConditionTask              *RunConditionTask         `json:"condition_task,omitempty"`
+	DashboardTask              *DashboardTask            `json:"dashboard_task,omitempty"`
+	DbtTask                    *DbtTask                  `json:"dbt_task,omitempty"`
+	DependsOn                  []TaskDependency          `json:"depends_on,omitempty"`
+	Description                string                    `json:"description,omitempty"`
+	Disabled                   bool                      `json:"disabled,omitempty"`
+	EffectivePerformanceTarget PerformanceTarget         `json:"effective_performance_target,omitempty"`
+	EmailNotifications         *JobEmailNotifications    `json:"email_notifications,omitempty"`
+	EndTime                    int64                     `json:"end_time,omitempty"`
+	EnvironmentKey             string                    `json:"environment_key,omitempty"`
+	ExecutionDuration          int64                     `json:"execution_duration,omitempty"`
+	ExistingClusterId          string                    `json:"existing_cluster_id,omitempty"`
+	ForEachTask                *RunForEachTask           `json:"for_each_task,omitempty"`
+	GenAiComputeTask           *GenAiComputeTask         `json:"gen_ai_compute_task,omitempty"`
+	GitSource                  *GitSource                `json:"git_source,omitempty"`
+	JobClusterKey              string                    `json:"job_cluster_key,omitempty"`
+	Libraries                  []compute.Library         `json:"libraries,omitempty"`
+	NewCluster                 *compute.ClusterSpec      `json:"new_cluster,omitempty"`
+	NotebookTask               *NotebookTask             `json:"notebook_task,omitempty"`
+	NotificationSettings       *TaskNotificationSettings `json:"notification_settings,omitempty"`
+	PipelineTask               *PipelineTask             `json:"pipeline_task,omitempty"`
+	PowerBiTask                *PowerBiTask              `json:"power_bi_task,omitempty"`
+	PythonWheelTask            *PythonWheelTask          `json:"python_wheel_task,omitempty"`
+	QueueDuration              int64                     `json:"queue_duration,omitempty"`
+	ResolvedValues             *ResolvedValues           `json:"resolved_values,omitempty"`
+	RunDuration                int64                     `json:"run_duration,omitempty"`
+	RunId                      int64                     `json:"run_id,omitempty"`
+	RunIf                      RunIf                     `json:"run_if,omitempty"`
+	RunJobTask                 *RunJobTask               `json:"run_job_task,omitempty"`
+	RunPageUrl                 string                    `json:"run_page_url,omitempty"`
+	SetupDuration              int64                     `json:"setup_duration,omitempty"`
+	SparkJarTask               *SparkJarTask             `json:"spark_jar_task,omitempty"`
+	SparkPythonTask            *SparkPythonTask          `json:"spark_python_task,omitempty"`
+	SparkSubmitTask            *SparkSubmitTask          `json:"spark_submit_task,omitempty"`
+	SqlTask                    *SqlTask                  `json:"sql_task,omitempty"`
+	StartTime                  int64                     `json:"start_time,omitempty"`
+	State                      *RunState                 `json:"state,omitempty"`
+	Status                     *RunStatus                `json:"status,omitempty"`
+	TaskKey                    string                    `json:"task_key"`
+	TimeoutSeconds             int                       `json:"timeout_seconds,omitempty"`
+	WebhookNotifications       *WebhookNotifications     `json:"webhook_notifications,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5427,11 +4637,8 @@ func sparkJarTaskToPb(st *SparkJarTask) (*sparkJarTaskPb, error) {
 	}
 	pb := &sparkJarTaskPb{}
 	pb.JarUri = st.JarUri
-
 	pb.MainClassName = st.MainClassName
-
 	pb.Parameters = st.Parameters
-
 	pb.RunAsRepl = st.RunAsRepl
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5439,13 +4646,10 @@ func sparkJarTaskToPb(st *SparkJarTask) (*sparkJarTaskPb, error) {
 }
 
 type sparkJarTaskPb struct {
-	JarUri string `json:"jar_uri,omitempty"`
-
-	MainClassName string `json:"main_class_name,omitempty"`
-
-	Parameters []string `json:"parameters,omitempty"`
-
-	RunAsRepl bool `json:"run_as_repl,omitempty"`
+	JarUri        string   `json:"jar_uri,omitempty"`
+	MainClassName string   `json:"main_class_name,omitempty"`
+	Parameters    []string `json:"parameters,omitempty"`
+	RunAsRepl     bool     `json:"run_as_repl,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5478,9 +4682,7 @@ func sparkPythonTaskToPb(st *SparkPythonTask) (*sparkPythonTaskPb, error) {
 	}
 	pb := &sparkPythonTaskPb{}
 	pb.Parameters = st.Parameters
-
 	pb.PythonFile = st.PythonFile
-
 	pb.Source = st.Source
 
 	return pb, nil
@@ -5488,10 +4690,8 @@ func sparkPythonTaskToPb(st *SparkPythonTask) (*sparkPythonTaskPb, error) {
 
 type sparkPythonTaskPb struct {
 	Parameters []string `json:"parameters,omitempty"`
-
-	PythonFile string `json:"python_file"`
-
-	Source Source `json:"source,omitempty"`
+	PythonFile string   `json:"python_file"`
+	Source     Source   `json:"source,omitempty"`
 }
 
 func sparkPythonTaskFromPb(pb *sparkPythonTaskPb) (*SparkPythonTask, error) {
@@ -5536,13 +4736,9 @@ func sqlAlertOutputToPb(st *SqlAlertOutput) (*sqlAlertOutputPb, error) {
 	}
 	pb := &sqlAlertOutputPb{}
 	pb.AlertState = st.AlertState
-
 	pb.OutputLink = st.OutputLink
-
 	pb.QueryText = st.QueryText
-
 	pb.SqlStatements = st.SqlStatements
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5550,15 +4746,11 @@ func sqlAlertOutputToPb(st *SqlAlertOutput) (*sqlAlertOutputPb, error) {
 }
 
 type sqlAlertOutputPb struct {
-	AlertState SqlAlertState `json:"alert_state,omitempty"`
-
-	OutputLink string `json:"output_link,omitempty"`
-
-	QueryText string `json:"query_text,omitempty"`
-
+	AlertState    SqlAlertState        `json:"alert_state,omitempty"`
+	OutputLink    string               `json:"output_link,omitempty"`
+	QueryText     string               `json:"query_text,omitempty"`
 	SqlStatements []SqlStatementOutput `json:"sql_statements,omitempty"`
-
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	WarehouseId   string               `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5592,7 +4784,6 @@ func sqlDashboardOutputToPb(st *SqlDashboardOutput) (*sqlDashboardOutputPb, erro
 	}
 	pb := &sqlDashboardOutputPb{}
 	pb.WarehouseId = st.WarehouseId
-
 	pb.Widgets = st.Widgets
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5600,9 +4791,8 @@ func sqlDashboardOutputToPb(st *SqlDashboardOutput) (*sqlDashboardOutputPb, erro
 }
 
 type sqlDashboardOutputPb struct {
-	WarehouseId string `json:"warehouse_id,omitempty"`
-
-	Widgets []SqlDashboardWidgetOutput `json:"widgets,omitempty"`
+	WarehouseId string                     `json:"warehouse_id,omitempty"`
+	Widgets     []SqlDashboardWidgetOutput `json:"widgets,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5633,17 +4823,11 @@ func sqlDashboardWidgetOutputToPb(st *SqlDashboardWidgetOutput) (*sqlDashboardWi
 	}
 	pb := &sqlDashboardWidgetOutputPb{}
 	pb.EndTime = st.EndTime
-
 	pb.Error = st.Error
-
 	pb.OutputLink = st.OutputLink
-
 	pb.StartTime = st.StartTime
-
 	pb.Status = st.Status
-
 	pb.WidgetId = st.WidgetId
-
 	pb.WidgetTitle = st.WidgetTitle
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5651,19 +4835,13 @@ func sqlDashboardWidgetOutputToPb(st *SqlDashboardWidgetOutput) (*sqlDashboardWi
 }
 
 type sqlDashboardWidgetOutputPb struct {
-	EndTime int64 `json:"end_time,omitempty"`
-
-	Error *SqlOutputError `json:"error,omitempty"`
-
-	OutputLink string `json:"output_link,omitempty"`
-
-	StartTime int64 `json:"start_time,omitempty"`
-
-	Status SqlDashboardWidgetOutputStatus `json:"status,omitempty"`
-
-	WidgetId string `json:"widget_id,omitempty"`
-
-	WidgetTitle string `json:"widget_title,omitempty"`
+	EndTime     int64                          `json:"end_time,omitempty"`
+	Error       *SqlOutputError                `json:"error,omitempty"`
+	OutputLink  string                         `json:"output_link,omitempty"`
+	StartTime   int64                          `json:"start_time,omitempty"`
+	Status      SqlDashboardWidgetOutputStatus `json:"status,omitempty"`
+	WidgetId    string                         `json:"widget_id,omitempty"`
+	WidgetTitle string                         `json:"widget_title,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5699,20 +4877,16 @@ func sqlOutputToPb(st *SqlOutput) (*sqlOutputPb, error) {
 	}
 	pb := &sqlOutputPb{}
 	pb.AlertOutput = st.AlertOutput
-
 	pb.DashboardOutput = st.DashboardOutput
-
 	pb.QueryOutput = st.QueryOutput
 
 	return pb, nil
 }
 
 type sqlOutputPb struct {
-	AlertOutput *SqlAlertOutput `json:"alert_output,omitempty"`
-
+	AlertOutput     *SqlAlertOutput     `json:"alert_output,omitempty"`
 	DashboardOutput *SqlDashboardOutput `json:"dashboard_output,omitempty"`
-
-	QueryOutput *SqlQueryOutput `json:"query_output,omitempty"`
+	QueryOutput     *SqlQueryOutput     `json:"query_output,omitempty"`
 }
 
 func sqlOutputFromPb(pb *sqlOutputPb) (*SqlOutput, error) {
@@ -5769,13 +4943,9 @@ func sqlQueryOutputToPb(st *SqlQueryOutput) (*sqlQueryOutputPb, error) {
 	}
 	pb := &sqlQueryOutputPb{}
 	pb.EndpointId = st.EndpointId
-
 	pb.OutputLink = st.OutputLink
-
 	pb.QueryText = st.QueryText
-
 	pb.SqlStatements = st.SqlStatements
-
 	pb.WarehouseId = st.WarehouseId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5783,15 +4953,11 @@ func sqlQueryOutputToPb(st *SqlQueryOutput) (*sqlQueryOutputPb, error) {
 }
 
 type sqlQueryOutputPb struct {
-	EndpointId string `json:"endpoint_id,omitempty"`
-
-	OutputLink string `json:"output_link,omitempty"`
-
-	QueryText string `json:"query_text,omitempty"`
-
+	EndpointId    string               `json:"endpoint_id,omitempty"`
+	OutputLink    string               `json:"output_link,omitempty"`
+	QueryText     string               `json:"query_text,omitempty"`
 	SqlStatements []SqlStatementOutput `json:"sql_statements,omitempty"`
-
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	WarehouseId   string               `json:"warehouse_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5861,32 +5027,22 @@ func sqlTaskToPb(st *SqlTask) (*sqlTaskPb, error) {
 	}
 	pb := &sqlTaskPb{}
 	pb.Alert = st.Alert
-
 	pb.Dashboard = st.Dashboard
-
 	pb.File = st.File
-
 	pb.Parameters = st.Parameters
-
 	pb.Query = st.Query
-
 	pb.WarehouseId = st.WarehouseId
 
 	return pb, nil
 }
 
 type sqlTaskPb struct {
-	Alert *SqlTaskAlert `json:"alert,omitempty"`
-
-	Dashboard *SqlTaskDashboard `json:"dashboard,omitempty"`
-
-	File *SqlTaskFile `json:"file,omitempty"`
-
-	Parameters map[string]string `json:"parameters,omitempty"`
-
-	Query *SqlTaskQuery `json:"query,omitempty"`
-
-	WarehouseId string `json:"warehouse_id"`
+	Alert       *SqlTaskAlert     `json:"alert,omitempty"`
+	Dashboard   *SqlTaskDashboard `json:"dashboard,omitempty"`
+	File        *SqlTaskFile      `json:"file,omitempty"`
+	Parameters  map[string]string `json:"parameters,omitempty"`
+	Query       *SqlTaskQuery     `json:"query,omitempty"`
+	WarehouseId string            `json:"warehouse_id"`
 }
 
 func sqlTaskFromPb(pb *sqlTaskPb) (*SqlTask, error) {
@@ -5910,9 +5066,7 @@ func sqlTaskAlertToPb(st *SqlTaskAlert) (*sqlTaskAlertPb, error) {
 	}
 	pb := &sqlTaskAlertPb{}
 	pb.AlertId = st.AlertId
-
 	pb.PauseSubscriptions = st.PauseSubscriptions
-
 	pb.Subscriptions = st.Subscriptions
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5920,11 +5074,9 @@ func sqlTaskAlertToPb(st *SqlTaskAlert) (*sqlTaskAlertPb, error) {
 }
 
 type sqlTaskAlertPb struct {
-	AlertId string `json:"alert_id"`
-
-	PauseSubscriptions bool `json:"pause_subscriptions,omitempty"`
-
-	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
+	AlertId            string                `json:"alert_id"`
+	PauseSubscriptions bool                  `json:"pause_subscriptions,omitempty"`
+	Subscriptions      []SqlTaskSubscription `json:"subscriptions,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5956,11 +5108,8 @@ func sqlTaskDashboardToPb(st *SqlTaskDashboard) (*sqlTaskDashboardPb, error) {
 	}
 	pb := &sqlTaskDashboardPb{}
 	pb.CustomSubject = st.CustomSubject
-
 	pb.DashboardId = st.DashboardId
-
 	pb.PauseSubscriptions = st.PauseSubscriptions
-
 	pb.Subscriptions = st.Subscriptions
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5968,13 +5117,10 @@ func sqlTaskDashboardToPb(st *SqlTaskDashboard) (*sqlTaskDashboardPb, error) {
 }
 
 type sqlTaskDashboardPb struct {
-	CustomSubject string `json:"custom_subject,omitempty"`
-
-	DashboardId string `json:"dashboard_id"`
-
-	PauseSubscriptions bool `json:"pause_subscriptions,omitempty"`
-
-	Subscriptions []SqlTaskSubscription `json:"subscriptions,omitempty"`
+	CustomSubject      string                `json:"custom_subject,omitempty"`
+	DashboardId        string                `json:"dashboard_id"`
+	PauseSubscriptions bool                  `json:"pause_subscriptions,omitempty"`
+	Subscriptions      []SqlTaskSubscription `json:"subscriptions,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6007,15 +5153,13 @@ func sqlTaskFileToPb(st *SqlTaskFile) (*sqlTaskFilePb, error) {
 	}
 	pb := &sqlTaskFilePb{}
 	pb.Path = st.Path
-
 	pb.Source = st.Source
 
 	return pb, nil
 }
 
 type sqlTaskFilePb struct {
-	Path string `json:"path"`
-
+	Path   string `json:"path"`
 	Source Source `json:"source,omitempty"`
 }
 
@@ -6060,7 +5204,6 @@ func sqlTaskSubscriptionToPb(st *SqlTaskSubscription) (*sqlTaskSubscriptionPb, e
 	}
 	pb := &sqlTaskSubscriptionPb{}
 	pb.DestinationId = st.DestinationId
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6069,8 +5212,7 @@ func sqlTaskSubscriptionToPb(st *SqlTaskSubscription) (*sqlTaskSubscriptionPb, e
 
 type sqlTaskSubscriptionPb struct {
 	DestinationId string `json:"destination_id,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	UserName      string `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6101,31 +5243,18 @@ func submitRunToPb(st *SubmitRun) (*submitRunPb, error) {
 	}
 	pb := &submitRunPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.BudgetPolicyId = st.BudgetPolicyId
-
 	pb.EmailNotifications = st.EmailNotifications
-
 	pb.Environments = st.Environments
-
 	pb.GitSource = st.GitSource
-
 	pb.Health = st.Health
-
 	pb.IdempotencyToken = st.IdempotencyToken
-
 	pb.NotificationSettings = st.NotificationSettings
-
 	pb.Queue = st.Queue
-
 	pb.RunAs = st.RunAs
-
 	pb.RunName = st.RunName
-
 	pb.Tasks = st.Tasks
-
 	pb.TimeoutSeconds = st.TimeoutSeconds
-
 	pb.WebhookNotifications = st.WebhookNotifications
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6133,33 +5262,20 @@ func submitRunToPb(st *SubmitRun) (*submitRunPb, error) {
 }
 
 type submitRunPb struct {
-	AccessControlList []JobAccessControlRequest `json:"access_control_list,omitempty"`
-
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-
-	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
-
-	Environments []JobEnvironment `json:"environments,omitempty"`
-
-	GitSource *GitSource `json:"git_source,omitempty"`
-
-	Health *JobsHealthRules `json:"health,omitempty"`
-
-	IdempotencyToken string `json:"idempotency_token,omitempty"`
-
-	NotificationSettings *JobNotificationSettings `json:"notification_settings,omitempty"`
-
-	Queue *QueueSettings `json:"queue,omitempty"`
-
-	RunAs *JobRunAs `json:"run_as,omitempty"`
-
-	RunName string `json:"run_name,omitempty"`
-
-	Tasks []SubmitTask `json:"tasks,omitempty"`
-
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
-
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	AccessControlList    []JobAccessControlRequest `json:"access_control_list,omitempty"`
+	BudgetPolicyId       string                    `json:"budget_policy_id,omitempty"`
+	EmailNotifications   *JobEmailNotifications    `json:"email_notifications,omitempty"`
+	Environments         []JobEnvironment          `json:"environments,omitempty"`
+	GitSource            *GitSource                `json:"git_source,omitempty"`
+	Health               *JobsHealthRules          `json:"health,omitempty"`
+	IdempotencyToken     string                    `json:"idempotency_token,omitempty"`
+	NotificationSettings *JobNotificationSettings  `json:"notification_settings,omitempty"`
+	Queue                *QueueSettings            `json:"queue,omitempty"`
+	RunAs                *JobRunAs                 `json:"run_as,omitempty"`
+	RunName              string                    `json:"run_name,omitempty"`
+	Tasks                []SubmitTask              `json:"tasks,omitempty"`
+	TimeoutSeconds       int                       `json:"timeout_seconds,omitempty"`
+	WebhookNotifications *WebhookNotifications     `json:"webhook_notifications,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6238,59 +5354,32 @@ func submitTaskToPb(st *SubmitTask) (*submitTaskPb, error) {
 	}
 	pb := &submitTaskPb{}
 	pb.CleanRoomsNotebookTask = st.CleanRoomsNotebookTask
-
 	pb.ConditionTask = st.ConditionTask
-
 	pb.DashboardTask = st.DashboardTask
-
 	pb.DbtTask = st.DbtTask
-
 	pb.DependsOn = st.DependsOn
-
 	pb.Description = st.Description
-
 	pb.EmailNotifications = st.EmailNotifications
-
 	pb.EnvironmentKey = st.EnvironmentKey
-
 	pb.ExistingClusterId = st.ExistingClusterId
-
 	pb.ForEachTask = st.ForEachTask
-
 	pb.GenAiComputeTask = st.GenAiComputeTask
-
 	pb.Health = st.Health
-
 	pb.Libraries = st.Libraries
-
 	pb.NewCluster = st.NewCluster
-
 	pb.NotebookTask = st.NotebookTask
-
 	pb.NotificationSettings = st.NotificationSettings
-
 	pb.PipelineTask = st.PipelineTask
-
 	pb.PowerBiTask = st.PowerBiTask
-
 	pb.PythonWheelTask = st.PythonWheelTask
-
 	pb.RunIf = st.RunIf
-
 	pb.RunJobTask = st.RunJobTask
-
 	pb.SparkJarTask = st.SparkJarTask
-
 	pb.SparkPythonTask = st.SparkPythonTask
-
 	pb.SparkSubmitTask = st.SparkSubmitTask
-
 	pb.SqlTask = st.SqlTask
-
 	pb.TaskKey = st.TaskKey
-
 	pb.TimeoutSeconds = st.TimeoutSeconds
-
 	pb.WebhookNotifications = st.WebhookNotifications
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6298,61 +5387,34 @@ func submitTaskToPb(st *SubmitTask) (*submitTaskPb, error) {
 }
 
 type submitTaskPb struct {
-	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
-
-	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
-
-	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
-
-	DbtTask *DbtTask `json:"dbt_task,omitempty"`
-
-	DependsOn []TaskDependency `json:"depends_on,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	EmailNotifications *JobEmailNotifications `json:"email_notifications,omitempty"`
-
-	EnvironmentKey string `json:"environment_key,omitempty"`
-
-	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-
-	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
-
-	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
-
-	Health *JobsHealthRules `json:"health,omitempty"`
-
-	Libraries []compute.Library `json:"libraries,omitempty"`
-
-	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
-
-	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
-
-	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
-
-	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
-
-	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
-
-	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
-
-	RunIf RunIf `json:"run_if,omitempty"`
-
-	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
-
-	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
-
-	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-
-	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-
-	SqlTask *SqlTask `json:"sql_task,omitempty"`
-
-	TaskKey string `json:"task_key"`
-
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
-
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	CleanRoomsNotebookTask *CleanRoomsNotebookTask   `json:"clean_rooms_notebook_task,omitempty"`
+	ConditionTask          *ConditionTask            `json:"condition_task,omitempty"`
+	DashboardTask          *DashboardTask            `json:"dashboard_task,omitempty"`
+	DbtTask                *DbtTask                  `json:"dbt_task,omitempty"`
+	DependsOn              []TaskDependency          `json:"depends_on,omitempty"`
+	Description            string                    `json:"description,omitempty"`
+	EmailNotifications     *JobEmailNotifications    `json:"email_notifications,omitempty"`
+	EnvironmentKey         string                    `json:"environment_key,omitempty"`
+	ExistingClusterId      string                    `json:"existing_cluster_id,omitempty"`
+	ForEachTask            *ForEachTask              `json:"for_each_task,omitempty"`
+	GenAiComputeTask       *GenAiComputeTask         `json:"gen_ai_compute_task,omitempty"`
+	Health                 *JobsHealthRules          `json:"health,omitempty"`
+	Libraries              []compute.Library         `json:"libraries,omitempty"`
+	NewCluster             *compute.ClusterSpec      `json:"new_cluster,omitempty"`
+	NotebookTask           *NotebookTask             `json:"notebook_task,omitempty"`
+	NotificationSettings   *TaskNotificationSettings `json:"notification_settings,omitempty"`
+	PipelineTask           *PipelineTask             `json:"pipeline_task,omitempty"`
+	PowerBiTask            *PowerBiTask              `json:"power_bi_task,omitempty"`
+	PythonWheelTask        *PythonWheelTask          `json:"python_wheel_task,omitempty"`
+	RunIf                  RunIf                     `json:"run_if,omitempty"`
+	RunJobTask             *RunJobTask               `json:"run_job_task,omitempty"`
+	SparkJarTask           *SparkJarTask             `json:"spark_jar_task,omitempty"`
+	SparkPythonTask        *SparkPythonTask          `json:"spark_python_task,omitempty"`
+	SparkSubmitTask        *SparkSubmitTask          `json:"spark_submit_task,omitempty"`
+	SqlTask                *SqlTask                  `json:"sql_task,omitempty"`
+	TaskKey                string                    `json:"task_key"`
+	TimeoutSeconds         int                       `json:"timeout_seconds,omitempty"`
+	WebhookNotifications   *WebhookNotifications     `json:"webhook_notifications,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6409,9 +5471,7 @@ func subscriptionToPb(st *Subscription) (*subscriptionPb, error) {
 	}
 	pb := &subscriptionPb{}
 	pb.CustomSubject = st.CustomSubject
-
 	pb.Paused = st.Paused
-
 	pb.Subscribers = st.Subscribers
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6419,11 +5479,9 @@ func subscriptionToPb(st *Subscription) (*subscriptionPb, error) {
 }
 
 type subscriptionPb struct {
-	CustomSubject string `json:"custom_subject,omitempty"`
-
-	Paused bool `json:"paused,omitempty"`
-
-	Subscribers []SubscriptionSubscriber `json:"subscribers,omitempty"`
+	CustomSubject string                   `json:"custom_subject,omitempty"`
+	Paused        bool                     `json:"paused,omitempty"`
+	Subscribers   []SubscriptionSubscriber `json:"subscribers,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6455,7 +5513,6 @@ func subscriptionSubscriberToPb(st *SubscriptionSubscriber) (*subscriptionSubscr
 	}
 	pb := &subscriptionSubscriberPb{}
 	pb.DestinationId = st.DestinationId
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6464,8 +5521,7 @@ func subscriptionSubscriberToPb(st *SubscriptionSubscriber) (*subscriptionSubscr
 
 type subscriptionSubscriberPb struct {
 	DestinationId string `json:"destination_id,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	UserName      string `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6496,11 +5552,8 @@ func tableUpdateTriggerConfigurationToPb(st *TableUpdateTriggerConfiguration) (*
 	}
 	pb := &tableUpdateTriggerConfigurationPb{}
 	pb.Condition = st.Condition
-
 	pb.MinTimeBetweenTriggersSeconds = st.MinTimeBetweenTriggersSeconds
-
 	pb.TableNames = st.TableNames
-
 	pb.WaitAfterLastChangeSeconds = st.WaitAfterLastChangeSeconds
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6508,13 +5561,10 @@ func tableUpdateTriggerConfigurationToPb(st *TableUpdateTriggerConfiguration) (*
 }
 
 type tableUpdateTriggerConfigurationPb struct {
-	Condition Condition `json:"condition,omitempty"`
-
-	MinTimeBetweenTriggersSeconds int `json:"min_time_between_triggers_seconds,omitempty"`
-
-	TableNames []string `json:"table_names,omitempty"`
-
-	WaitAfterLastChangeSeconds int `json:"wait_after_last_change_seconds,omitempty"`
+	Condition                     Condition `json:"condition,omitempty"`
+	MinTimeBetweenTriggersSeconds int       `json:"min_time_between_triggers_seconds,omitempty"`
+	TableNames                    []string  `json:"table_names,omitempty"`
+	WaitAfterLastChangeSeconds    int       `json:"wait_after_last_change_seconds,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6547,69 +5597,37 @@ func taskToPb(st *Task) (*taskPb, error) {
 	}
 	pb := &taskPb{}
 	pb.CleanRoomsNotebookTask = st.CleanRoomsNotebookTask
-
 	pb.ConditionTask = st.ConditionTask
-
 	pb.DashboardTask = st.DashboardTask
-
 	pb.DbtTask = st.DbtTask
-
 	pb.DependsOn = st.DependsOn
-
 	pb.Description = st.Description
-
 	pb.DisableAutoOptimization = st.DisableAutoOptimization
-
 	pb.EmailNotifications = st.EmailNotifications
-
 	pb.EnvironmentKey = st.EnvironmentKey
-
 	pb.ExistingClusterId = st.ExistingClusterId
-
 	pb.ForEachTask = st.ForEachTask
-
 	pb.GenAiComputeTask = st.GenAiComputeTask
-
 	pb.Health = st.Health
-
 	pb.JobClusterKey = st.JobClusterKey
-
 	pb.Libraries = st.Libraries
-
 	pb.MaxRetries = st.MaxRetries
-
 	pb.MinRetryIntervalMillis = st.MinRetryIntervalMillis
-
 	pb.NewCluster = st.NewCluster
-
 	pb.NotebookTask = st.NotebookTask
-
 	pb.NotificationSettings = st.NotificationSettings
-
 	pb.PipelineTask = st.PipelineTask
-
 	pb.PowerBiTask = st.PowerBiTask
-
 	pb.PythonWheelTask = st.PythonWheelTask
-
 	pb.RetryOnTimeout = st.RetryOnTimeout
-
 	pb.RunIf = st.RunIf
-
 	pb.RunJobTask = st.RunJobTask
-
 	pb.SparkJarTask = st.SparkJarTask
-
 	pb.SparkPythonTask = st.SparkPythonTask
-
 	pb.SparkSubmitTask = st.SparkSubmitTask
-
 	pb.SqlTask = st.SqlTask
-
 	pb.TaskKey = st.TaskKey
-
 	pb.TimeoutSeconds = st.TimeoutSeconds
-
 	pb.WebhookNotifications = st.WebhookNotifications
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6617,71 +5635,39 @@ func taskToPb(st *Task) (*taskPb, error) {
 }
 
 type taskPb struct {
-	CleanRoomsNotebookTask *CleanRoomsNotebookTask `json:"clean_rooms_notebook_task,omitempty"`
-
-	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
-
-	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
-
-	DbtTask *DbtTask `json:"dbt_task,omitempty"`
-
-	DependsOn []TaskDependency `json:"depends_on,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	DisableAutoOptimization bool `json:"disable_auto_optimization,omitempty"`
-
-	EmailNotifications *TaskEmailNotifications `json:"email_notifications,omitempty"`
-
-	EnvironmentKey string `json:"environment_key,omitempty"`
-
-	ExistingClusterId string `json:"existing_cluster_id,omitempty"`
-
-	ForEachTask *ForEachTask `json:"for_each_task,omitempty"`
-
-	GenAiComputeTask *GenAiComputeTask `json:"gen_ai_compute_task,omitempty"`
-
-	Health *JobsHealthRules `json:"health,omitempty"`
-
-	JobClusterKey string `json:"job_cluster_key,omitempty"`
-
-	Libraries []compute.Library `json:"libraries,omitempty"`
-
-	MaxRetries int `json:"max_retries,omitempty"`
-
-	MinRetryIntervalMillis int `json:"min_retry_interval_millis,omitempty"`
-
-	NewCluster *compute.ClusterSpec `json:"new_cluster,omitempty"`
-
-	NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
-
-	NotificationSettings *TaskNotificationSettings `json:"notification_settings,omitempty"`
-
-	PipelineTask *PipelineTask `json:"pipeline_task,omitempty"`
-
-	PowerBiTask *PowerBiTask `json:"power_bi_task,omitempty"`
-
-	PythonWheelTask *PythonWheelTask `json:"python_wheel_task,omitempty"`
-
-	RetryOnTimeout bool `json:"retry_on_timeout,omitempty"`
-
-	RunIf RunIf `json:"run_if,omitempty"`
-
-	RunJobTask *RunJobTask `json:"run_job_task,omitempty"`
-
-	SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
-
-	SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-
-	SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
-
-	SqlTask *SqlTask `json:"sql_task,omitempty"`
-
-	TaskKey string `json:"task_key"`
-
-	TimeoutSeconds int `json:"timeout_seconds,omitempty"`
-
-	WebhookNotifications *WebhookNotifications `json:"webhook_notifications,omitempty"`
+	CleanRoomsNotebookTask  *CleanRoomsNotebookTask   `json:"clean_rooms_notebook_task,omitempty"`
+	ConditionTask           *ConditionTask            `json:"condition_task,omitempty"`
+	DashboardTask           *DashboardTask            `json:"dashboard_task,omitempty"`
+	DbtTask                 *DbtTask                  `json:"dbt_task,omitempty"`
+	DependsOn               []TaskDependency          `json:"depends_on,omitempty"`
+	Description             string                    `json:"description,omitempty"`
+	DisableAutoOptimization bool                      `json:"disable_auto_optimization,omitempty"`
+	EmailNotifications      *TaskEmailNotifications   `json:"email_notifications,omitempty"`
+	EnvironmentKey          string                    `json:"environment_key,omitempty"`
+	ExistingClusterId       string                    `json:"existing_cluster_id,omitempty"`
+	ForEachTask             *ForEachTask              `json:"for_each_task,omitempty"`
+	GenAiComputeTask        *GenAiComputeTask         `json:"gen_ai_compute_task,omitempty"`
+	Health                  *JobsHealthRules          `json:"health,omitempty"`
+	JobClusterKey           string                    `json:"job_cluster_key,omitempty"`
+	Libraries               []compute.Library         `json:"libraries,omitempty"`
+	MaxRetries              int                       `json:"max_retries,omitempty"`
+	MinRetryIntervalMillis  int                       `json:"min_retry_interval_millis,omitempty"`
+	NewCluster              *compute.ClusterSpec      `json:"new_cluster,omitempty"`
+	NotebookTask            *NotebookTask             `json:"notebook_task,omitempty"`
+	NotificationSettings    *TaskNotificationSettings `json:"notification_settings,omitempty"`
+	PipelineTask            *PipelineTask             `json:"pipeline_task,omitempty"`
+	PowerBiTask             *PowerBiTask              `json:"power_bi_task,omitempty"`
+	PythonWheelTask         *PythonWheelTask          `json:"python_wheel_task,omitempty"`
+	RetryOnTimeout          bool                      `json:"retry_on_timeout,omitempty"`
+	RunIf                   RunIf                     `json:"run_if,omitempty"`
+	RunJobTask              *RunJobTask               `json:"run_job_task,omitempty"`
+	SparkJarTask            *SparkJarTask             `json:"spark_jar_task,omitempty"`
+	SparkPythonTask         *SparkPythonTask          `json:"spark_python_task,omitempty"`
+	SparkSubmitTask         *SparkSubmitTask          `json:"spark_submit_task,omitempty"`
+	SqlTask                 *SqlTask                  `json:"sql_task,omitempty"`
+	TaskKey                 string                    `json:"task_key"`
+	TimeoutSeconds          int                       `json:"timeout_seconds,omitempty"`
+	WebhookNotifications    *WebhookNotifications     `json:"webhook_notifications,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6743,7 +5729,6 @@ func taskDependencyToPb(st *TaskDependency) (*taskDependencyPb, error) {
 	}
 	pb := &taskDependencyPb{}
 	pb.Outcome = st.Outcome
-
 	pb.TaskKey = st.TaskKey
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6752,7 +5737,6 @@ func taskDependencyToPb(st *TaskDependency) (*taskDependencyPb, error) {
 
 type taskDependencyPb struct {
 	Outcome string `json:"outcome,omitempty"`
-
 	TaskKey string `json:"task_key"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6784,15 +5768,10 @@ func taskEmailNotificationsToPb(st *TaskEmailNotifications) (*taskEmailNotificat
 	}
 	pb := &taskEmailNotificationsPb{}
 	pb.NoAlertForSkippedRuns = st.NoAlertForSkippedRuns
-
 	pb.OnDurationWarningThresholdExceeded = st.OnDurationWarningThresholdExceeded
-
 	pb.OnFailure = st.OnFailure
-
 	pb.OnStart = st.OnStart
-
 	pb.OnStreamingBacklogExceeded = st.OnStreamingBacklogExceeded
-
 	pb.OnSuccess = st.OnSuccess
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6800,17 +5779,12 @@ func taskEmailNotificationsToPb(st *TaskEmailNotifications) (*taskEmailNotificat
 }
 
 type taskEmailNotificationsPb struct {
-	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
-
+	NoAlertForSkippedRuns              bool     `json:"no_alert_for_skipped_runs,omitempty"`
 	OnDurationWarningThresholdExceeded []string `json:"on_duration_warning_threshold_exceeded,omitempty"`
-
-	OnFailure []string `json:"on_failure,omitempty"`
-
-	OnStart []string `json:"on_start,omitempty"`
-
-	OnStreamingBacklogExceeded []string `json:"on_streaming_backlog_exceeded,omitempty"`
-
-	OnSuccess []string `json:"on_success,omitempty"`
+	OnFailure                          []string `json:"on_failure,omitempty"`
+	OnStart                            []string `json:"on_start,omitempty"`
+	OnStreamingBacklogExceeded         []string `json:"on_streaming_backlog_exceeded,omitempty"`
+	OnSuccess                          []string `json:"on_success,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6845,9 +5819,7 @@ func taskNotificationSettingsToPb(st *TaskNotificationSettings) (*taskNotificati
 	}
 	pb := &taskNotificationSettingsPb{}
 	pb.AlertOnLastAttempt = st.AlertOnLastAttempt
-
 	pb.NoAlertForCanceledRuns = st.NoAlertForCanceledRuns
-
 	pb.NoAlertForSkippedRuns = st.NoAlertForSkippedRuns
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6855,11 +5827,9 @@ func taskNotificationSettingsToPb(st *TaskNotificationSettings) (*taskNotificati
 }
 
 type taskNotificationSettingsPb struct {
-	AlertOnLastAttempt bool `json:"alert_on_last_attempt,omitempty"`
-
+	AlertOnLastAttempt     bool `json:"alert_on_last_attempt,omitempty"`
 	NoAlertForCanceledRuns bool `json:"no_alert_for_canceled_runs,omitempty"`
-
-	NoAlertForSkippedRuns bool `json:"no_alert_for_skipped_runs,omitempty"`
+	NoAlertForSkippedRuns  bool `json:"no_alert_for_skipped_runs,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6891,9 +5861,7 @@ func terminationDetailsToPb(st *TerminationDetails) (*terminationDetailsPb, erro
 	}
 	pb := &terminationDetailsPb{}
 	pb.Code = st.Code
-
 	pb.Message = st.Message
-
 	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6901,11 +5869,9 @@ func terminationDetailsToPb(st *TerminationDetails) (*terminationDetailsPb, erro
 }
 
 type terminationDetailsPb struct {
-	Code TerminationCodeCode `json:"code,omitempty"`
-
-	Message string `json:"message,omitempty"`
-
-	Type TerminationTypeType `json:"type,omitempty"`
+	Code    TerminationCodeCode `json:"code,omitempty"`
+	Message string              `json:"message,omitempty"`
+	Type    TerminationTypeType `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6973,13 +5939,9 @@ func triggerSettingsToPb(st *TriggerSettings) (*triggerSettingsPb, error) {
 	}
 	pb := &triggerSettingsPb{}
 	pb.FileArrival = st.FileArrival
-
 	pb.PauseStatus = st.PauseStatus
-
 	pb.Periodic = st.Periodic
-
 	pb.Table = st.Table
-
 	pb.TableUpdate = st.TableUpdate
 
 	return pb, nil
@@ -6987,13 +5949,9 @@ func triggerSettingsToPb(st *TriggerSettings) (*triggerSettingsPb, error) {
 
 type triggerSettingsPb struct {
 	FileArrival *FileArrivalTriggerConfiguration `json:"file_arrival,omitempty"`
-
-	PauseStatus PauseStatus `json:"pause_status,omitempty"`
-
-	Periodic *PeriodicTriggerConfiguration `json:"periodic,omitempty"`
-
-	Table *TableUpdateTriggerConfiguration `json:"table,omitempty"`
-
+	PauseStatus PauseStatus                      `json:"pause_status,omitempty"`
+	Periodic    *PeriodicTriggerConfiguration    `json:"periodic,omitempty"`
+	Table       *TableUpdateTriggerConfiguration `json:"table,omitempty"`
 	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
 }
 
@@ -7017,20 +5975,16 @@ func updateJobToPb(st *UpdateJob) (*updateJobPb, error) {
 	}
 	pb := &updateJobPb{}
 	pb.FieldsToRemove = st.FieldsToRemove
-
 	pb.JobId = st.JobId
-
 	pb.NewSettings = st.NewSettings
 
 	return pb, nil
 }
 
 type updateJobPb struct {
-	FieldsToRemove []string `json:"fields_to_remove,omitempty"`
-
-	JobId int64 `json:"job_id"`
-
-	NewSettings *JobSettings `json:"new_settings,omitempty"`
+	FieldsToRemove []string     `json:"fields_to_remove,omitempty"`
+	JobId          int64        `json:"job_id"`
+	NewSettings    *JobSettings `json:"new_settings,omitempty"`
 }
 
 func updateJobFromPb(pb *updateJobPb) (*UpdateJob, error) {
@@ -7072,9 +6026,7 @@ func viewItemToPb(st *ViewItem) (*viewItemPb, error) {
 	}
 	pb := &viewItemPb{}
 	pb.Content = st.Content
-
 	pb.Name = st.Name
-
 	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7082,11 +6034,9 @@ func viewItemToPb(st *ViewItem) (*viewItemPb, error) {
 }
 
 type viewItemPb struct {
-	Content string `json:"content,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Type ViewType `json:"type,omitempty"`
+	Content string   `json:"content,omitempty"`
+	Name    string   `json:"name,omitempty"`
+	Type    ViewType `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7142,13 +6092,9 @@ func webhookNotificationsToPb(st *WebhookNotifications) (*webhookNotificationsPb
 	}
 	pb := &webhookNotificationsPb{}
 	pb.OnDurationWarningThresholdExceeded = st.OnDurationWarningThresholdExceeded
-
 	pb.OnFailure = st.OnFailure
-
 	pb.OnStart = st.OnStart
-
 	pb.OnStreamingBacklogExceeded = st.OnStreamingBacklogExceeded
-
 	pb.OnSuccess = st.OnSuccess
 
 	return pb, nil
@@ -7156,14 +6102,10 @@ func webhookNotificationsToPb(st *WebhookNotifications) (*webhookNotificationsPb
 
 type webhookNotificationsPb struct {
 	OnDurationWarningThresholdExceeded []Webhook `json:"on_duration_warning_threshold_exceeded,omitempty"`
-
-	OnFailure []Webhook `json:"on_failure,omitempty"`
-
-	OnStart []Webhook `json:"on_start,omitempty"`
-
-	OnStreamingBacklogExceeded []Webhook `json:"on_streaming_backlog_exceeded,omitempty"`
-
-	OnSuccess []Webhook `json:"on_success,omitempty"`
+	OnFailure                          []Webhook `json:"on_failure,omitempty"`
+	OnStart                            []Webhook `json:"on_start,omitempty"`
+	OnStreamingBacklogExceeded         []Webhook `json:"on_streaming_backlog_exceeded,omitempty"`
+	OnSuccess                          []Webhook `json:"on_success,omitempty"`
 }
 
 func webhookNotificationsFromPb(pb *webhookNotificationsPb) (*WebhookNotifications, error) {
@@ -7214,4 +6156,58 @@ func (st *widgetErrorDetailPb) UnmarshalJSON(b []byte) error {
 
 func (st widgetErrorDetailPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

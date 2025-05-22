@@ -3,6 +3,10 @@
 package sharing
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 )
@@ -13,16 +17,14 @@ func createFederationPolicyRequestToPb(st *CreateFederationPolicyRequest) (*crea
 	}
 	pb := &createFederationPolicyRequestPb{}
 	pb.Policy = st.Policy
-
 	pb.RecipientName = st.RecipientName
 
 	return pb, nil
 }
 
 type createFederationPolicyRequestPb struct {
-	Policy FederationPolicy `json:"policy"`
-
-	RecipientName string `json:"-" url:"-"`
+	Policy        FederationPolicy `json:"policy"`
+	RecipientName string           `json:"-" url:"-"`
 }
 
 func createFederationPolicyRequestFromPb(pb *createFederationPolicyRequestPb) (*CreateFederationPolicyRequest, error) {
@@ -42,11 +44,8 @@ func createProviderToPb(st *CreateProvider) (*createProviderPb, error) {
 	}
 	pb := &createProviderPb{}
 	pb.AuthenticationType = st.AuthenticationType
-
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.RecipientProfileStr = st.RecipientProfileStr
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -54,13 +53,10 @@ func createProviderToPb(st *CreateProvider) (*createProviderPb, error) {
 }
 
 type createProviderPb struct {
-	AuthenticationType AuthenticationType `json:"authentication_type"`
-
-	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"name"`
-
-	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
+	AuthenticationType  AuthenticationType `json:"authentication_type"`
+	Comment             string             `json:"comment,omitempty"`
+	Name                string             `json:"name"`
+	RecipientProfileStr string             `json:"recipient_profile_str,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -93,21 +89,13 @@ func createRecipientToPb(st *CreateRecipient) (*createRecipientPb, error) {
 	}
 	pb := &createRecipientPb{}
 	pb.AuthenticationType = st.AuthenticationType
-
 	pb.Comment = st.Comment
-
 	pb.DataRecipientGlobalMetastoreId = st.DataRecipientGlobalMetastoreId
-
 	pb.ExpirationTime = st.ExpirationTime
-
 	pb.IpAccessList = st.IpAccessList
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.PropertiesKvpairs = st.PropertiesKvpairs
-
 	pb.SharingCode = st.SharingCode
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -115,23 +103,15 @@ func createRecipientToPb(st *CreateRecipient) (*createRecipientPb, error) {
 }
 
 type createRecipientPb struct {
-	AuthenticationType AuthenticationType `json:"authentication_type"`
-
-	Comment string `json:"comment,omitempty"`
-
-	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
-
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
-	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
-
-	Name string `json:"name"`
-
-	Owner string `json:"owner,omitempty"`
-
-	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
-
-	SharingCode string `json:"sharing_code,omitempty"`
+	AuthenticationType             AuthenticationType          `json:"authentication_type"`
+	Comment                        string                      `json:"comment,omitempty"`
+	DataRecipientGlobalMetastoreId string                      `json:"data_recipient_global_metastore_id,omitempty"`
+	ExpirationTime                 int64                       `json:"expiration_time,omitempty"`
+	IpAccessList                   *IpAccessList               `json:"ip_access_list,omitempty"`
+	Name                           string                      `json:"name"`
+	Owner                          string                      `json:"owner,omitempty"`
+	PropertiesKvpairs              *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
+	SharingCode                    string                      `json:"sharing_code,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -169,9 +149,7 @@ func createShareToPb(st *CreateShare) (*createSharePb, error) {
 	}
 	pb := &createSharePb{}
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.StorageRoot = st.StorageRoot
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -179,10 +157,8 @@ func createShareToPb(st *CreateShare) (*createSharePb, error) {
 }
 
 type createSharePb struct {
-	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"name"`
-
+	Comment     string `json:"comment,omitempty"`
+	Name        string `json:"name"`
 	StorageRoot string `json:"storage_root,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -215,15 +191,13 @@ func deleteFederationPolicyRequestToPb(st *DeleteFederationPolicyRequest) (*dele
 	}
 	pb := &deleteFederationPolicyRequestPb{}
 	pb.Name = st.Name
-
 	pb.RecipientName = st.RecipientName
 
 	return pb, nil
 }
 
 type deleteFederationPolicyRequestPb struct {
-	Name string `json:"-" url:"-"`
-
+	Name          string `json:"-" url:"-"`
 	RecipientName string `json:"-" url:"-"`
 }
 
@@ -337,7 +311,6 @@ func deltaSharingDependencyToPb(st *DeltaSharingDependency) (*deltaSharingDepend
 	}
 	pb := &deltaSharingDependencyPb{}
 	pb.Function = st.Function
-
 	pb.Table = st.Table
 
 	return pb, nil
@@ -345,8 +318,7 @@ func deltaSharingDependencyToPb(st *DeltaSharingDependency) (*deltaSharingDepend
 
 type deltaSharingDependencyPb struct {
 	Function *DeltaSharingFunctionDependency `json:"function,omitempty"`
-
-	Table *DeltaSharingTableDependency `json:"table,omitempty"`
+	Table    *DeltaSharingTableDependency    `json:"table,omitempty"`
 }
 
 func deltaSharingDependencyFromPb(pb *deltaSharingDependencyPb) (*DeltaSharingDependency, error) {
@@ -390,35 +362,20 @@ func deltaSharingFunctionToPb(st *DeltaSharingFunction) (*deltaSharingFunctionPb
 	}
 	pb := &deltaSharingFunctionPb{}
 	pb.Aliases = st.Aliases
-
 	pb.Comment = st.Comment
-
 	pb.DataType = st.DataType
-
 	pb.DependencyList = st.DependencyList
-
 	pb.FullDataType = st.FullDataType
-
 	pb.Id = st.Id
-
 	pb.InputParams = st.InputParams
-
 	pb.Name = st.Name
-
 	pb.Properties = st.Properties
-
 	pb.RoutineDefinition = st.RoutineDefinition
-
 	pb.Schema = st.Schema
-
 	pb.SecurableKind = st.SecurableKind
-
 	pb.Share = st.Share
-
 	pb.ShareId = st.ShareId
-
 	pb.StorageLocation = st.StorageLocation
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -426,37 +383,22 @@ func deltaSharingFunctionToPb(st *DeltaSharingFunction) (*deltaSharingFunctionPb
 }
 
 type deltaSharingFunctionPb struct {
-	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	DataType ColumnTypeName `json:"data_type,omitempty"`
-
-	DependencyList *DeltaSharingDependencyList `json:"dependency_list,omitempty"`
-
-	FullDataType string `json:"full_data_type,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	InputParams *FunctionParameterInfos `json:"input_params,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Properties string `json:"properties,omitempty"`
-
-	RoutineDefinition string `json:"routine_definition,omitempty"`
-
-	Schema string `json:"schema,omitempty"`
-
-	SecurableKind SharedSecurableKind `json:"securable_kind,omitempty"`
-
-	Share string `json:"share,omitempty"`
-
-	ShareId string `json:"share_id,omitempty"`
-
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	Tags []catalog.TagKeyValue `json:"tags,omitempty"`
+	Aliases           []RegisteredModelAlias      `json:"aliases,omitempty"`
+	Comment           string                      `json:"comment,omitempty"`
+	DataType          ColumnTypeName              `json:"data_type,omitempty"`
+	DependencyList    *DeltaSharingDependencyList `json:"dependency_list,omitempty"`
+	FullDataType      string                      `json:"full_data_type,omitempty"`
+	Id                string                      `json:"id,omitempty"`
+	InputParams       *FunctionParameterInfos     `json:"input_params,omitempty"`
+	Name              string                      `json:"name,omitempty"`
+	Properties        string                      `json:"properties,omitempty"`
+	RoutineDefinition string                      `json:"routine_definition,omitempty"`
+	Schema            string                      `json:"schema,omitempty"`
+	SecurableKind     SharedSecurableKind         `json:"securable_kind,omitempty"`
+	Share             string                      `json:"share,omitempty"`
+	ShareId           string                      `json:"share_id,omitempty"`
+	StorageLocation   string                      `json:"storage_location,omitempty"`
+	Tags              []catalog.TagKeyValue       `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -501,7 +443,6 @@ func deltaSharingFunctionDependencyToPb(st *DeltaSharingFunctionDependency) (*de
 	}
 	pb := &deltaSharingFunctionDependencyPb{}
 	pb.FunctionName = st.FunctionName
-
 	pb.SchemaName = st.SchemaName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -510,8 +451,7 @@ func deltaSharingFunctionDependencyToPb(st *DeltaSharingFunctionDependency) (*de
 
 type deltaSharingFunctionDependencyPb struct {
 	FunctionName string `json:"function_name,omitempty"`
-
-	SchemaName string `json:"schema_name,omitempty"`
+	SchemaName   string `json:"schema_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -542,7 +482,6 @@ func deltaSharingTableDependencyToPb(st *DeltaSharingTableDependency) (*deltaSha
 	}
 	pb := &deltaSharingTableDependencyPb{}
 	pb.SchemaName = st.SchemaName
-
 	pb.TableName = st.TableName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -551,8 +490,7 @@ func deltaSharingTableDependencyToPb(st *DeltaSharingTableDependency) (*deltaSha
 
 type deltaSharingTableDependencyPb struct {
 	SchemaName string `json:"schema_name,omitempty"`
-
-	TableName string `json:"table_name,omitempty"`
+	TableName  string `json:"table_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -583,15 +521,10 @@ func federationPolicyToPb(st *FederationPolicy) (*federationPolicyPb, error) {
 	}
 	pb := &federationPolicyPb{}
 	pb.Comment = st.Comment
-
 	pb.CreateTime = st.CreateTime
-
 	pb.Id = st.Id
-
 	pb.Name = st.Name
-
 	pb.OidcPolicy = st.OidcPolicy
-
 	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -599,17 +532,12 @@ func federationPolicyToPb(st *FederationPolicy) (*federationPolicyPb, error) {
 }
 
 type federationPolicyPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	CreateTime string `json:"create_time,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
+	Comment    string                `json:"comment,omitempty"`
+	CreateTime string                `json:"create_time,omitempty"`
+	Id         string                `json:"id,omitempty"`
+	Name       string                `json:"name,omitempty"`
 	OidcPolicy *OidcFederationPolicy `json:"oidc_policy,omitempty"`
-
-	UpdateTime string `json:"update_time,omitempty"`
+	UpdateTime string                `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -644,27 +572,16 @@ func functionParameterInfoToPb(st *FunctionParameterInfo) (*functionParameterInf
 	}
 	pb := &functionParameterInfoPb{}
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.ParameterDefault = st.ParameterDefault
-
 	pb.ParameterMode = st.ParameterMode
-
 	pb.ParameterType = st.ParameterType
-
 	pb.Position = st.Position
-
 	pb.TypeIntervalType = st.TypeIntervalType
-
 	pb.TypeJson = st.TypeJson
-
 	pb.TypeName = st.TypeName
-
 	pb.TypePrecision = st.TypePrecision
-
 	pb.TypeScale = st.TypeScale
-
 	pb.TypeText = st.TypeText
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -672,29 +589,18 @@ func functionParameterInfoToPb(st *FunctionParameterInfo) (*functionParameterInf
 }
 
 type functionParameterInfoPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	ParameterDefault string `json:"parameter_default,omitempty"`
-
-	ParameterMode FunctionParameterMode `json:"parameter_mode,omitempty"`
-
-	ParameterType FunctionParameterType `json:"parameter_type,omitempty"`
-
-	Position int `json:"position,omitempty"`
-
-	TypeIntervalType string `json:"type_interval_type,omitempty"`
-
-	TypeJson string `json:"type_json,omitempty"`
-
-	TypeName ColumnTypeName `json:"type_name,omitempty"`
-
-	TypePrecision int `json:"type_precision,omitempty"`
-
-	TypeScale int `json:"type_scale,omitempty"`
-
-	TypeText string `json:"type_text,omitempty"`
+	Comment          string                `json:"comment,omitempty"`
+	Name             string                `json:"name,omitempty"`
+	ParameterDefault string                `json:"parameter_default,omitempty"`
+	ParameterMode    FunctionParameterMode `json:"parameter_mode,omitempty"`
+	ParameterType    FunctionParameterType `json:"parameter_type,omitempty"`
+	Position         int                   `json:"position,omitempty"`
+	TypeIntervalType string                `json:"type_interval_type,omitempty"`
+	TypeJson         string                `json:"type_json,omitempty"`
+	TypeName         ColumnTypeName        `json:"type_name,omitempty"`
+	TypePrecision    int                   `json:"type_precision,omitempty"`
+	TypeScale        int                   `json:"type_scale,omitempty"`
+	TypeText         string                `json:"type_text,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -804,15 +710,13 @@ func getFederationPolicyRequestToPb(st *GetFederationPolicyRequest) (*getFederat
 	}
 	pb := &getFederationPolicyRequestPb{}
 	pb.Name = st.Name
-
 	pb.RecipientName = st.RecipientName
 
 	return pb, nil
 }
 
 type getFederationPolicyRequestPb struct {
-	Name string `json:"-" url:"-"`
-
+	Name          string `json:"-" url:"-"`
 	RecipientName string `json:"-" url:"-"`
 }
 
@@ -881,7 +785,6 @@ func getRecipientSharePermissionsResponseToPb(st *GetRecipientSharePermissionsRe
 	}
 	pb := &getRecipientSharePermissionsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.PermissionsOut = st.PermissionsOut
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -889,8 +792,7 @@ func getRecipientSharePermissionsResponseToPb(st *GetRecipientSharePermissionsRe
 }
 
 type getRecipientSharePermissionsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken  string                       `json:"next_page_token,omitempty"`
 	PermissionsOut []ShareToPrivilegeAssignment `json:"permissions_out,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -922,7 +824,6 @@ func getSharePermissionsResponseToPb(st *GetSharePermissionsResponse) (*getShare
 	}
 	pb := &getSharePermissionsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.PrivilegeAssignments = st.PrivilegeAssignments
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -930,8 +831,7 @@ func getSharePermissionsResponseToPb(st *GetSharePermissionsResponse) (*getShare
 }
 
 type getSharePermissionsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken        string                `json:"next_page_token,omitempty"`
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -963,7 +863,6 @@ func getShareRequestToPb(st *GetShareRequest) (*getShareRequestPb, error) {
 	}
 	pb := &getShareRequestPb{}
 	pb.IncludeSharedData = st.IncludeSharedData
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -971,9 +870,8 @@ func getShareRequestToPb(st *GetShareRequest) (*getShareRequestPb, error) {
 }
 
 type getShareRequestPb struct {
-	IncludeSharedData bool `json:"-" url:"include_shared_data,omitempty"`
-
-	Name string `json:"-" url:"-"`
+	IncludeSharedData bool   `json:"-" url:"include_shared_data,omitempty"`
+	Name              string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1028,9 +926,7 @@ func listFederationPoliciesRequestToPb(st *ListFederationPoliciesRequest) (*list
 	}
 	pb := &listFederationPoliciesRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
-
 	pb.RecipientName = st.RecipientName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1038,10 +934,8 @@ func listFederationPoliciesRequestToPb(st *ListFederationPoliciesRequest) (*list
 }
 
 type listFederationPoliciesRequestPb struct {
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
+	MaxResults    int    `json:"-" url:"max_results,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
 	RecipientName string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1074,7 +968,6 @@ func listFederationPoliciesResponseToPb(st *ListFederationPoliciesResponse) (*li
 	}
 	pb := &listFederationPoliciesResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Policies = st.Policies
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1082,9 +975,8 @@ func listFederationPoliciesResponseToPb(st *ListFederationPoliciesResponse) (*li
 }
 
 type listFederationPoliciesResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Policies []FederationPolicy `json:"policies,omitempty"`
+	NextPageToken string             `json:"next_page_token,omitempty"`
+	Policies      []FederationPolicy `json:"policies,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1115,15 +1007,10 @@ func listProviderShareAssetsRequestToPb(st *ListProviderShareAssetsRequest) (*li
 	}
 	pb := &listProviderShareAssetsRequestPb{}
 	pb.FunctionMaxResults = st.FunctionMaxResults
-
 	pb.NotebookMaxResults = st.NotebookMaxResults
-
 	pb.ProviderName = st.ProviderName
-
 	pb.ShareName = st.ShareName
-
 	pb.TableMaxResults = st.TableMaxResults
-
 	pb.VolumeMaxResults = st.VolumeMaxResults
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1131,17 +1018,12 @@ func listProviderShareAssetsRequestToPb(st *ListProviderShareAssetsRequest) (*li
 }
 
 type listProviderShareAssetsRequestPb struct {
-	FunctionMaxResults int `json:"-" url:"function_max_results,omitempty"`
-
-	NotebookMaxResults int `json:"-" url:"notebook_max_results,omitempty"`
-
-	ProviderName string `json:"-" url:"-"`
-
-	ShareName string `json:"-" url:"-"`
-
-	TableMaxResults int `json:"-" url:"table_max_results,omitempty"`
-
-	VolumeMaxResults int `json:"-" url:"volume_max_results,omitempty"`
+	FunctionMaxResults int    `json:"-" url:"function_max_results,omitempty"`
+	NotebookMaxResults int    `json:"-" url:"notebook_max_results,omitempty"`
+	ProviderName       string `json:"-" url:"-"`
+	ShareName          string `json:"-" url:"-"`
+	TableMaxResults    int    `json:"-" url:"table_max_results,omitempty"`
+	VolumeMaxResults   int    `json:"-" url:"volume_max_results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1176,11 +1058,8 @@ func listProviderShareAssetsResponseToPb(st *ListProviderShareAssetsResponse) (*
 	}
 	pb := &listProviderShareAssetsResponsePb{}
 	pb.Functions = st.Functions
-
 	pb.Notebooks = st.Notebooks
-
 	pb.Tables = st.Tables
-
 	pb.Volumes = st.Volumes
 
 	return pb, nil
@@ -1188,12 +1067,9 @@ func listProviderShareAssetsResponseToPb(st *ListProviderShareAssetsResponse) (*
 
 type listProviderShareAssetsResponsePb struct {
 	Functions []DeltaSharingFunction `json:"functions,omitempty"`
-
-	Notebooks []NotebookFile `json:"notebooks,omitempty"`
-
-	Tables []Table `json:"tables,omitempty"`
-
-	Volumes []Volume `json:"volumes,omitempty"`
+	Notebooks []NotebookFile         `json:"notebooks,omitempty"`
+	Tables    []Table                `json:"tables,omitempty"`
+	Volumes   []Volume               `json:"volumes,omitempty"`
 }
 
 func listProviderShareAssetsResponseFromPb(pb *listProviderShareAssetsResponsePb) (*ListProviderShareAssetsResponse, error) {
@@ -1215,7 +1091,6 @@ func listProviderSharesResponseToPb(st *ListProviderSharesResponse) (*listProvid
 	}
 	pb := &listProviderSharesResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Shares = st.Shares
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1223,9 +1098,8 @@ func listProviderSharesResponseToPb(st *ListProviderSharesResponse) (*listProvid
 }
 
 type listProviderSharesResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Shares []ProviderShare `json:"shares,omitempty"`
+	NextPageToken string          `json:"next_page_token,omitempty"`
+	Shares        []ProviderShare `json:"shares,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1256,9 +1130,7 @@ func listProvidersRequestToPb(st *ListProvidersRequest) (*listProvidersRequestPb
 	}
 	pb := &listProvidersRequestPb{}
 	pb.DataProviderGlobalMetastoreId = st.DataProviderGlobalMetastoreId
-
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1267,10 +1139,8 @@ func listProvidersRequestToPb(st *ListProvidersRequest) (*listProvidersRequestPb
 
 type listProvidersRequestPb struct {
 	DataProviderGlobalMetastoreId string `json:"-" url:"data_provider_global_metastore_id,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	MaxResults                    int    `json:"-" url:"max_results,omitempty"`
+	PageToken                     string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1302,7 +1172,6 @@ func listProvidersResponseToPb(st *ListProvidersResponse) (*listProvidersRespons
 	}
 	pb := &listProvidersResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Providers = st.Providers
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1310,9 +1179,8 @@ func listProvidersResponseToPb(st *ListProvidersResponse) (*listProvidersRespons
 }
 
 type listProvidersResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Providers []ProviderInfo `json:"providers,omitempty"`
+	NextPageToken string         `json:"next_page_token,omitempty"`
+	Providers     []ProviderInfo `json:"providers,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1343,9 +1211,7 @@ func listRecipientsRequestToPb(st *ListRecipientsRequest) (*listRecipientsReques
 	}
 	pb := &listRecipientsRequestPb{}
 	pb.DataRecipientGlobalMetastoreId = st.DataRecipientGlobalMetastoreId
-
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1354,10 +1220,8 @@ func listRecipientsRequestToPb(st *ListRecipientsRequest) (*listRecipientsReques
 
 type listRecipientsRequestPb struct {
 	DataRecipientGlobalMetastoreId string `json:"-" url:"data_recipient_global_metastore_id,omitempty"`
-
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	MaxResults                     int    `json:"-" url:"max_results,omitempty"`
+	PageToken                      string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1389,7 +1253,6 @@ func listRecipientsResponseToPb(st *ListRecipientsResponse) (*listRecipientsResp
 	}
 	pb := &listRecipientsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Recipients = st.Recipients
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1397,9 +1260,8 @@ func listRecipientsResponseToPb(st *ListRecipientsResponse) (*listRecipientsResp
 }
 
 type listRecipientsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Recipients []RecipientInfo `json:"recipients,omitempty"`
+	NextPageToken string          `json:"next_page_token,omitempty"`
+	Recipients    []RecipientInfo `json:"recipients,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1430,9 +1292,7 @@ func listSharesRequestToPb(st *ListSharesRequest) (*listSharesRequestPb, error) 
 	}
 	pb := &listSharesRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.Name = st.Name
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1440,11 +1300,9 @@ func listSharesRequestToPb(st *ListSharesRequest) (*listSharesRequestPb, error) 
 }
 
 type listSharesRequestPb struct {
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	MaxResults int    `json:"-" url:"max_results,omitempty"`
+	Name       string `json:"-" url:"-"`
+	PageToken  string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1476,7 +1334,6 @@ func listSharesResponseToPb(st *ListSharesResponse) (*listSharesResponsePb, erro
 	}
 	pb := &listSharesResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Shares = st.Shares
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1484,9 +1341,8 @@ func listSharesResponseToPb(st *ListSharesResponse) (*listSharesResponsePb, erro
 }
 
 type listSharesResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Shares []ShareInfo `json:"shares,omitempty"`
+	NextPageToken string      `json:"next_page_token,omitempty"`
+	Shares        []ShareInfo `json:"shares,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1517,15 +1373,10 @@ func notebookFileToPb(st *NotebookFile) (*notebookFilePb, error) {
 	}
 	pb := &notebookFilePb{}
 	pb.Comment = st.Comment
-
 	pb.Id = st.Id
-
 	pb.Name = st.Name
-
 	pb.Share = st.Share
-
 	pb.ShareId = st.ShareId
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1533,17 +1384,12 @@ func notebookFileToPb(st *NotebookFile) (*notebookFilePb, error) {
 }
 
 type notebookFilePb struct {
-	Comment string `json:"comment,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Share string `json:"share,omitempty"`
-
-	ShareId string `json:"share_id,omitempty"`
-
-	Tags []catalog.TagKeyValue `json:"tags,omitempty"`
+	Comment string                `json:"comment,omitempty"`
+	Id      string                `json:"id,omitempty"`
+	Name    string                `json:"name,omitempty"`
+	Share   string                `json:"share,omitempty"`
+	ShareId string                `json:"share_id,omitempty"`
+	Tags    []catalog.TagKeyValue `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1578,24 +1424,18 @@ func oidcFederationPolicyToPb(st *OidcFederationPolicy) (*oidcFederationPolicyPb
 	}
 	pb := &oidcFederationPolicyPb{}
 	pb.Audiences = st.Audiences
-
 	pb.Issuer = st.Issuer
-
 	pb.Subject = st.Subject
-
 	pb.SubjectClaim = st.SubjectClaim
 
 	return pb, nil
 }
 
 type oidcFederationPolicyPb struct {
-	Audiences []string `json:"audiences,omitempty"`
-
-	Issuer string `json:"issuer"`
-
-	Subject string `json:"subject"`
-
-	SubjectClaim string `json:"subject_claim"`
+	Audiences    []string `json:"audiences,omitempty"`
+	Issuer       string   `json:"issuer"`
+	Subject      string   `json:"subject"`
+	SubjectClaim string   `json:"subject_claim"`
 }
 
 func oidcFederationPolicyFromPb(pb *oidcFederationPolicyPb) (*OidcFederationPolicy, error) {
@@ -1641,11 +1481,8 @@ func partitionValueToPb(st *PartitionValue) (*partitionValuePb, error) {
 	}
 	pb := &partitionValuePb{}
 	pb.Name = st.Name
-
 	pb.Op = st.Op
-
 	pb.RecipientPropertyKey = st.RecipientPropertyKey
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1653,13 +1490,10 @@ func partitionValueToPb(st *PartitionValue) (*partitionValuePb, error) {
 }
 
 type partitionValuePb struct {
-	Name string `json:"name,omitempty"`
-
-	Op PartitionValueOp `json:"op,omitempty"`
-
-	RecipientPropertyKey string `json:"recipient_property_key,omitempty"`
-
-	Value string `json:"value,omitempty"`
+	Name                 string           `json:"name,omitempty"`
+	Op                   PartitionValueOp `json:"op,omitempty"`
+	RecipientPropertyKey string           `json:"recipient_property_key,omitempty"`
+	Value                string           `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1692,9 +1526,7 @@ func permissionsChangeToPb(st *PermissionsChange) (*permissionsChangePb, error) 
 	}
 	pb := &permissionsChangePb{}
 	pb.Add = st.Add
-
 	pb.Principal = st.Principal
-
 	pb.Remove = st.Remove
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1702,11 +1534,9 @@ func permissionsChangeToPb(st *PermissionsChange) (*permissionsChangePb, error) 
 }
 
 type permissionsChangePb struct {
-	Add []string `json:"add,omitempty"`
-
-	Principal string `json:"principal,omitempty"`
-
-	Remove []string `json:"remove,omitempty"`
+	Add       []string `json:"add,omitempty"`
+	Principal string   `json:"principal,omitempty"`
+	Remove    []string `json:"remove,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1738,7 +1568,6 @@ func privilegeAssignmentToPb(st *PrivilegeAssignment) (*privilegeAssignmentPb, e
 	}
 	pb := &privilegeAssignmentPb{}
 	pb.Principal = st.Principal
-
 	pb.Privileges = st.Privileges
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1746,8 +1575,7 @@ func privilegeAssignmentToPb(st *PrivilegeAssignment) (*privilegeAssignmentPb, e
 }
 
 type privilegeAssignmentPb struct {
-	Principal string `json:"principal,omitempty"`
-
+	Principal  string      `json:"principal,omitempty"`
 	Privileges []Privilege `json:"privileges,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1779,31 +1607,18 @@ func providerInfoToPb(st *ProviderInfo) (*providerInfoPb, error) {
 	}
 	pb := &providerInfoPb{}
 	pb.AuthenticationType = st.AuthenticationType
-
 	pb.Cloud = st.Cloud
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.DataProviderGlobalMetastoreId = st.DataProviderGlobalMetastoreId
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.RecipientProfile = st.RecipientProfile
-
 	pb.RecipientProfileStr = st.RecipientProfileStr
-
 	pb.Region = st.Region
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1811,33 +1626,20 @@ func providerInfoToPb(st *ProviderInfo) (*providerInfoPb, error) {
 }
 
 type providerInfoPb struct {
-	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
-
-	Cloud string `json:"cloud,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	DataProviderGlobalMetastoreId string `json:"data_provider_global_metastore_id,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	RecipientProfile *RecipientProfile `json:"recipient_profile,omitempty"`
-
-	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
-
-	Region string `json:"region,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	AuthenticationType            AuthenticationType `json:"authentication_type,omitempty"`
+	Cloud                         string             `json:"cloud,omitempty"`
+	Comment                       string             `json:"comment,omitempty"`
+	CreatedAt                     int64              `json:"created_at,omitempty"`
+	CreatedBy                     string             `json:"created_by,omitempty"`
+	DataProviderGlobalMetastoreId string             `json:"data_provider_global_metastore_id,omitempty"`
+	MetastoreId                   string             `json:"metastore_id,omitempty"`
+	Name                          string             `json:"name,omitempty"`
+	Owner                         string             `json:"owner,omitempty"`
+	RecipientProfile              *RecipientProfile  `json:"recipient_profile,omitempty"`
+	RecipientProfileStr           string             `json:"recipient_profile_str,omitempty"`
+	Region                        string             `json:"region,omitempty"`
+	UpdatedAt                     int64              `json:"updated_at,omitempty"`
+	UpdatedBy                     string             `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1916,41 +1718,23 @@ func recipientInfoToPb(st *RecipientInfo) (*recipientInfoPb, error) {
 	}
 	pb := &recipientInfoPb{}
 	pb.Activated = st.Activated
-
 	pb.ActivationUrl = st.ActivationUrl
-
 	pb.AuthenticationType = st.AuthenticationType
-
 	pb.Cloud = st.Cloud
-
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.DataRecipientGlobalMetastoreId = st.DataRecipientGlobalMetastoreId
-
 	pb.ExpirationTime = st.ExpirationTime
-
 	pb.IpAccessList = st.IpAccessList
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.Name = st.Name
-
 	pb.Owner = st.Owner
-
 	pb.PropertiesKvpairs = st.PropertiesKvpairs
-
 	pb.Region = st.Region
-
 	pb.SharingCode = st.SharingCode
-
 	pb.Tokens = st.Tokens
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1958,43 +1742,25 @@ func recipientInfoToPb(st *RecipientInfo) (*recipientInfoPb, error) {
 }
 
 type recipientInfoPb struct {
-	Activated bool `json:"activated,omitempty"`
-
-	ActivationUrl string `json:"activation_url,omitempty"`
-
-	AuthenticationType AuthenticationType `json:"authentication_type,omitempty"`
-
-	Cloud string `json:"cloud,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	DataRecipientGlobalMetastoreId string `json:"data_recipient_global_metastore_id,omitempty"`
-
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
-	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
-
-	Region string `json:"region,omitempty"`
-
-	SharingCode string `json:"sharing_code,omitempty"`
-
-	Tokens []RecipientTokenInfo `json:"tokens,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	Activated                      bool                        `json:"activated,omitempty"`
+	ActivationUrl                  string                      `json:"activation_url,omitempty"`
+	AuthenticationType             AuthenticationType          `json:"authentication_type,omitempty"`
+	Cloud                          string                      `json:"cloud,omitempty"`
+	Comment                        string                      `json:"comment,omitempty"`
+	CreatedAt                      int64                       `json:"created_at,omitempty"`
+	CreatedBy                      string                      `json:"created_by,omitempty"`
+	DataRecipientGlobalMetastoreId string                      `json:"data_recipient_global_metastore_id,omitempty"`
+	ExpirationTime                 int64                       `json:"expiration_time,omitempty"`
+	IpAccessList                   *IpAccessList               `json:"ip_access_list,omitempty"`
+	MetastoreId                    string                      `json:"metastore_id,omitempty"`
+	Name                           string                      `json:"name,omitempty"`
+	Owner                          string                      `json:"owner,omitempty"`
+	PropertiesKvpairs              *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
+	Region                         string                      `json:"region,omitempty"`
+	SharingCode                    string                      `json:"sharing_code,omitempty"`
+	Tokens                         []RecipientTokenInfo        `json:"tokens,omitempty"`
+	UpdatedAt                      int64                       `json:"updated_at,omitempty"`
+	UpdatedBy                      string                      `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2042,9 +1808,7 @@ func recipientProfileToPb(st *RecipientProfile) (*recipientProfilePb, error) {
 	}
 	pb := &recipientProfilePb{}
 	pb.BearerToken = st.BearerToken
-
 	pb.Endpoint = st.Endpoint
-
 	pb.ShareCredentialsVersion = st.ShareCredentialsVersion
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2052,11 +1816,9 @@ func recipientProfileToPb(st *RecipientProfile) (*recipientProfilePb, error) {
 }
 
 type recipientProfilePb struct {
-	BearerToken string `json:"bearer_token,omitempty"`
-
-	Endpoint string `json:"endpoint,omitempty"`
-
-	ShareCredentialsVersion int `json:"share_credentials_version,omitempty"`
+	BearerToken             string `json:"bearer_token,omitempty"`
+	Endpoint                string `json:"endpoint,omitempty"`
+	ShareCredentialsVersion int    `json:"share_credentials_version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2088,17 +1850,11 @@ func recipientTokenInfoToPb(st *RecipientTokenInfo) (*recipientTokenInfoPb, erro
 	}
 	pb := &recipientTokenInfoPb{}
 	pb.ActivationUrl = st.ActivationUrl
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.ExpirationTime = st.ExpirationTime
-
 	pb.Id = st.Id
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2106,19 +1862,13 @@ func recipientTokenInfoToPb(st *RecipientTokenInfo) (*recipientTokenInfoPb, erro
 }
 
 type recipientTokenInfoPb struct {
-	ActivationUrl string `json:"activation_url,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	ActivationUrl  string `json:"activation_url,omitempty"`
+	CreatedAt      int64  `json:"created_at,omitempty"`
+	CreatedBy      string `json:"created_by,omitempty"`
+	ExpirationTime int64  `json:"expiration_time,omitempty"`
+	Id             string `json:"id,omitempty"`
+	UpdatedAt      int64  `json:"updated_at,omitempty"`
+	UpdatedBy      string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2154,7 +1904,6 @@ func registeredModelAliasToPb(st *RegisteredModelAlias) (*registeredModelAliasPb
 	}
 	pb := &registeredModelAliasPb{}
 	pb.AliasName = st.AliasName
-
 	pb.VersionNum = st.VersionNum
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2162,9 +1911,8 @@ func registeredModelAliasToPb(st *RegisteredModelAlias) (*registeredModelAliasPb
 }
 
 type registeredModelAliasPb struct {
-	AliasName string `json:"alias_name,omitempty"`
-
-	VersionNum int64 `json:"version_num,omitempty"`
+	AliasName  string `json:"alias_name,omitempty"`
+	VersionNum int64  `json:"version_num,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2219,11 +1967,8 @@ func retrieveTokenResponseToPb(st *RetrieveTokenResponse) (*retrieveTokenRespons
 	}
 	pb := &retrieveTokenResponsePb{}
 	pb.BearerToken = st.BearerToken
-
 	pb.Endpoint = st.Endpoint
-
 	pb.ExpirationTime = st.ExpirationTime
-
 	pb.ShareCredentialsVersion = st.ShareCredentialsVersion
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2231,13 +1976,10 @@ func retrieveTokenResponseToPb(st *RetrieveTokenResponse) (*retrieveTokenRespons
 }
 
 type retrieveTokenResponsePb struct {
-	BearerToken string `json:"bearerToken,omitempty"`
-
-	Endpoint string `json:"endpoint,omitempty"`
-
-	ExpirationTime string `json:"expirationTime,omitempty"`
-
-	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
+	BearerToken             string `json:"bearerToken,omitempty"`
+	Endpoint                string `json:"endpoint,omitempty"`
+	ExpirationTime          string `json:"expirationTime,omitempty"`
+	ShareCredentialsVersion int    `json:"shareCredentialsVersion,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2270,16 +2012,14 @@ func rotateRecipientTokenToPb(st *RotateRecipientToken) (*rotateRecipientTokenPb
 	}
 	pb := &rotateRecipientTokenPb{}
 	pb.ExistingTokenExpireInSeconds = st.ExistingTokenExpireInSeconds
-
 	pb.Name = st.Name
 
 	return pb, nil
 }
 
 type rotateRecipientTokenPb struct {
-	ExistingTokenExpireInSeconds int64 `json:"existing_token_expire_in_seconds"`
-
-	Name string `json:"-" url:"-"`
+	ExistingTokenExpireInSeconds int64  `json:"existing_token_expire_in_seconds"`
+	Name                         string `json:"-" url:"-"`
 }
 
 func rotateRecipientTokenFromPb(pb *rotateRecipientTokenPb) (*RotateRecipientToken, error) {
@@ -2323,23 +2063,14 @@ func shareInfoToPb(st *ShareInfo) (*shareInfoPb, error) {
 	}
 	pb := &shareInfoPb{}
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.Name = st.Name
-
 	pb.Objects = st.Objects
-
 	pb.Owner = st.Owner
-
 	pb.StorageLocation = st.StorageLocation
-
 	pb.StorageRoot = st.StorageRoot
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2347,25 +2078,16 @@ func shareInfoToPb(st *ShareInfo) (*shareInfoPb, error) {
 }
 
 type shareInfoPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Objects []SharedDataObject `json:"objects,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	StorageRoot string `json:"storage_root,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	Comment         string             `json:"comment,omitempty"`
+	CreatedAt       int64              `json:"created_at,omitempty"`
+	CreatedBy       string             `json:"created_by,omitempty"`
+	Name            string             `json:"name,omitempty"`
+	Objects         []SharedDataObject `json:"objects,omitempty"`
+	Owner           string             `json:"owner,omitempty"`
+	StorageLocation string             `json:"storage_location,omitempty"`
+	StorageRoot     string             `json:"storage_root,omitempty"`
+	UpdatedAt       int64              `json:"updated_at,omitempty"`
+	UpdatedBy       string             `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2404,9 +2126,7 @@ func sharePermissionsRequestToPb(st *SharePermissionsRequest) (*sharePermissions
 	}
 	pb := &sharePermissionsRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.Name = st.Name
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2414,11 +2134,9 @@ func sharePermissionsRequestToPb(st *SharePermissionsRequest) (*sharePermissions
 }
 
 type sharePermissionsRequestPb struct {
-	MaxResults int `json:"-" url:"max_results,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	MaxResults int    `json:"-" url:"max_results,omitempty"`
+	Name       string `json:"-" url:"-"`
+	PageToken  string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2450,7 +2168,6 @@ func shareToPrivilegeAssignmentToPb(st *ShareToPrivilegeAssignment) (*shareToPri
 	}
 	pb := &shareToPrivilegeAssignmentPb{}
 	pb.PrivilegeAssignments = st.PrivilegeAssignments
-
 	pb.ShareName = st.ShareName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2459,8 +2176,7 @@ func shareToPrivilegeAssignmentToPb(st *ShareToPrivilegeAssignment) (*shareToPri
 
 type shareToPrivilegeAssignmentPb struct {
 	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
-
-	ShareName string `json:"share_name,omitempty"`
+	ShareName            string                `json:"share_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2491,29 +2207,17 @@ func sharedDataObjectToPb(st *SharedDataObject) (*sharedDataObjectPb, error) {
 	}
 	pb := &sharedDataObjectPb{}
 	pb.AddedAt = st.AddedAt
-
 	pb.AddedBy = st.AddedBy
-
 	pb.CdfEnabled = st.CdfEnabled
-
 	pb.Comment = st.Comment
-
 	pb.Content = st.Content
-
 	pb.DataObjectType = st.DataObjectType
-
 	pb.HistoryDataSharingStatus = st.HistoryDataSharingStatus
-
 	pb.Name = st.Name
-
 	pb.Partitions = st.Partitions
-
 	pb.SharedAs = st.SharedAs
-
 	pb.StartVersion = st.StartVersion
-
 	pb.Status = st.Status
-
 	pb.StringSharedAs = st.StringSharedAs
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2521,31 +2225,19 @@ func sharedDataObjectToPb(st *SharedDataObject) (*sharedDataObjectPb, error) {
 }
 
 type sharedDataObjectPb struct {
-	AddedAt int64 `json:"added_at,omitempty"`
-
-	AddedBy string `json:"added_by,omitempty"`
-
-	CdfEnabled bool `json:"cdf_enabled,omitempty"`
-
-	Comment string `json:"comment,omitempty"`
-
-	Content string `json:"content,omitempty"`
-
-	DataObjectType SharedDataObjectDataObjectType `json:"data_object_type,omitempty"`
-
+	AddedAt                  int64                                    `json:"added_at,omitempty"`
+	AddedBy                  string                                   `json:"added_by,omitempty"`
+	CdfEnabled               bool                                     `json:"cdf_enabled,omitempty"`
+	Comment                  string                                   `json:"comment,omitempty"`
+	Content                  string                                   `json:"content,omitempty"`
+	DataObjectType           SharedDataObjectDataObjectType           `json:"data_object_type,omitempty"`
 	HistoryDataSharingStatus SharedDataObjectHistoryDataSharingStatus `json:"history_data_sharing_status,omitempty"`
-
-	Name string `json:"name"`
-
-	Partitions []Partition `json:"partitions,omitempty"`
-
-	SharedAs string `json:"shared_as,omitempty"`
-
-	StartVersion int64 `json:"start_version,omitempty"`
-
-	Status SharedDataObjectStatus `json:"status,omitempty"`
-
-	StringSharedAs string `json:"string_shared_as,omitempty"`
+	Name                     string                                   `json:"name"`
+	Partitions               []Partition                              `json:"partitions,omitempty"`
+	SharedAs                 string                                   `json:"shared_as,omitempty"`
+	StartVersion             int64                                    `json:"start_version,omitempty"`
+	Status                   SharedDataObjectStatus                   `json:"status,omitempty"`
+	StringSharedAs           string                                   `json:"string_shared_as,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2587,16 +2279,14 @@ func sharedDataObjectUpdateToPb(st *SharedDataObjectUpdate) (*sharedDataObjectUp
 	}
 	pb := &sharedDataObjectUpdatePb{}
 	pb.Action = st.Action
-
 	pb.DataObject = st.DataObject
 
 	return pb, nil
 }
 
 type sharedDataObjectUpdatePb struct {
-	Action SharedDataObjectUpdateAction `json:"action,omitempty"`
-
-	DataObject *SharedDataObject `json:"data_object,omitempty"`
+	Action     SharedDataObjectUpdateAction `json:"action,omitempty"`
+	DataObject *SharedDataObject            `json:"data_object,omitempty"`
 }
 
 func sharedDataObjectUpdateFromPb(pb *sharedDataObjectUpdatePb) (*SharedDataObjectUpdate, error) {
@@ -2616,23 +2306,14 @@ func tableToPb(st *Table) (*tablePb, error) {
 	}
 	pb := &tablePb{}
 	pb.Comment = st.Comment
-
 	pb.Id = st.Id
-
 	pb.InternalAttributes = st.InternalAttributes
-
 	pb.MaterializationNamespace = st.MaterializationNamespace
-
 	pb.MaterializedTableName = st.MaterializedTableName
-
 	pb.Name = st.Name
-
 	pb.Schema = st.Schema
-
 	pb.Share = st.Share
-
 	pb.ShareId = st.ShareId
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2640,25 +2321,16 @@ func tableToPb(st *Table) (*tablePb, error) {
 }
 
 type tablePb struct {
-	Comment string `json:"comment,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	InternalAttributes *TableInternalAttributes `json:"internal_attributes,omitempty"`
-
-	MaterializationNamespace string `json:"materialization_namespace,omitempty"`
-
-	MaterializedTableName string `json:"materialized_table_name,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Schema string `json:"schema,omitempty"`
-
-	Share string `json:"share,omitempty"`
-
-	ShareId string `json:"share_id,omitempty"`
-
-	Tags []catalog.TagKeyValue `json:"tags,omitempty"`
+	Comment                  string                   `json:"comment,omitempty"`
+	Id                       string                   `json:"id,omitempty"`
+	InternalAttributes       *TableInternalAttributes `json:"internal_attributes,omitempty"`
+	MaterializationNamespace string                   `json:"materialization_namespace,omitempty"`
+	MaterializedTableName    string                   `json:"materialized_table_name,omitempty"`
+	Name                     string                   `json:"name,omitempty"`
+	Schema                   string                   `json:"schema,omitempty"`
+	Share                    string                   `json:"share,omitempty"`
+	ShareId                  string                   `json:"share_id,omitempty"`
+	Tags                     []catalog.TagKeyValue    `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2697,11 +2369,8 @@ func tableInternalAttributesToPb(st *TableInternalAttributes) (*tableInternalAtt
 	}
 	pb := &tableInternalAttributesPb{}
 	pb.ParentStorageLocation = st.ParentStorageLocation
-
 	pb.StorageLocation = st.StorageLocation
-
 	pb.Type = st.Type
-
 	pb.ViewDefinition = st.ViewDefinition
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2709,13 +2378,10 @@ func tableInternalAttributesToPb(st *TableInternalAttributes) (*tableInternalAtt
 }
 
 type tableInternalAttributesPb struct {
-	ParentStorageLocation string `json:"parent_storage_location,omitempty"`
-
-	StorageLocation string `json:"storage_location,omitempty"`
-
-	Type TableInternalAttributesSharedTableType `json:"type,omitempty"`
-
-	ViewDefinition string `json:"view_definition,omitempty"`
+	ParentStorageLocation string                                 `json:"parent_storage_location,omitempty"`
+	StorageLocation       string                                 `json:"storage_location,omitempty"`
+	Type                  TableInternalAttributesSharedTableType `json:"type,omitempty"`
+	ViewDefinition        string                                 `json:"view_definition,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2748,11 +2414,8 @@ func updateFederationPolicyRequestToPb(st *UpdateFederationPolicyRequest) (*upda
 	}
 	pb := &updateFederationPolicyRequestPb{}
 	pb.Name = st.Name
-
 	pb.Policy = st.Policy
-
 	pb.RecipientName = st.RecipientName
-
 	pb.UpdateMask = st.UpdateMask
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2760,13 +2423,10 @@ func updateFederationPolicyRequestToPb(st *UpdateFederationPolicyRequest) (*upda
 }
 
 type updateFederationPolicyRequestPb struct {
-	Name string `json:"-" url:"-"`
-
-	Policy FederationPolicy `json:"policy"`
-
-	RecipientName string `json:"-" url:"-"`
-
-	UpdateMask string `json:"-" url:"update_mask,omitempty"`
+	Name          string           `json:"-" url:"-"`
+	Policy        FederationPolicy `json:"policy"`
+	RecipientName string           `json:"-" url:"-"`
+	UpdateMask    string           `json:"-" url:"update_mask,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2799,13 +2459,9 @@ func updateProviderToPb(st *UpdateProvider) (*updateProviderPb, error) {
 	}
 	pb := &updateProviderPb{}
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.NewName = st.NewName
-
 	pb.Owner = st.Owner
-
 	pb.RecipientProfileStr = st.RecipientProfileStr
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2813,14 +2469,10 @@ func updateProviderToPb(st *UpdateProvider) (*updateProviderPb, error) {
 }
 
 type updateProviderPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	NewName string `json:"new_name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
+	Comment             string `json:"comment,omitempty"`
+	Name                string `json:"-" url:"-"`
+	NewName             string `json:"new_name,omitempty"`
+	Owner               string `json:"owner,omitempty"`
 	RecipientProfileStr string `json:"recipient_profile_str,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2855,17 +2507,11 @@ func updateRecipientToPb(st *UpdateRecipient) (*updateRecipientPb, error) {
 	}
 	pb := &updateRecipientPb{}
 	pb.Comment = st.Comment
-
 	pb.ExpirationTime = st.ExpirationTime
-
 	pb.IpAccessList = st.IpAccessList
-
 	pb.Name = st.Name
-
 	pb.NewName = st.NewName
-
 	pb.Owner = st.Owner
-
 	pb.PropertiesKvpairs = st.PropertiesKvpairs
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2873,18 +2519,12 @@ func updateRecipientToPb(st *UpdateRecipient) (*updateRecipientPb, error) {
 }
 
 type updateRecipientPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
-	IpAccessList *IpAccessList `json:"ip_access_list,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	NewName string `json:"new_name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
+	Comment           string                      `json:"comment,omitempty"`
+	ExpirationTime    int64                       `json:"expiration_time,omitempty"`
+	IpAccessList      *IpAccessList               `json:"ip_access_list,omitempty"`
+	Name              string                      `json:"-" url:"-"`
+	NewName           string                      `json:"new_name,omitempty"`
+	Owner             string                      `json:"owner,omitempty"`
 	PropertiesKvpairs *SecurablePropertiesKvPairs `json:"properties_kvpairs,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2921,15 +2561,10 @@ func updateShareToPb(st *UpdateShare) (*updateSharePb, error) {
 	}
 	pb := &updateSharePb{}
 	pb.Comment = st.Comment
-
 	pb.Name = st.Name
-
 	pb.NewName = st.NewName
-
 	pb.Owner = st.Owner
-
 	pb.StorageRoot = st.StorageRoot
-
 	pb.Updates = st.Updates
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2937,17 +2572,12 @@ func updateShareToPb(st *UpdateShare) (*updateSharePb, error) {
 }
 
 type updateSharePb struct {
-	Comment string `json:"comment,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	NewName string `json:"new_name,omitempty"`
-
-	Owner string `json:"owner,omitempty"`
-
-	StorageRoot string `json:"storage_root,omitempty"`
-
-	Updates []SharedDataObjectUpdate `json:"updates,omitempty"`
+	Comment     string                   `json:"comment,omitempty"`
+	Name        string                   `json:"-" url:"-"`
+	NewName     string                   `json:"new_name,omitempty"`
+	Owner       string                   `json:"owner,omitempty"`
+	StorageRoot string                   `json:"storage_root,omitempty"`
+	Updates     []SharedDataObjectUpdate `json:"updates,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2982,9 +2612,7 @@ func updateSharePermissionsToPb(st *UpdateSharePermissions) (*updateSharePermiss
 	}
 	pb := &updateSharePermissionsPb{}
 	pb.Changes = st.Changes
-
 	pb.Name = st.Name
-
 	pb.OmitPermissionsList = st.OmitPermissionsList
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2992,11 +2620,9 @@ func updateSharePermissionsToPb(st *UpdateSharePermissions) (*updateSharePermiss
 }
 
 type updateSharePermissionsPb struct {
-	Changes []PermissionsChange `json:"changes,omitempty"`
-
-	Name string `json:"-" url:"-"`
-
-	OmitPermissionsList bool `json:"omit_permissions_list,omitempty"`
+	Changes             []PermissionsChange `json:"changes,omitempty"`
+	Name                string              `json:"-" url:"-"`
+	OmitPermissionsList bool                `json:"omit_permissions_list,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3052,19 +2678,12 @@ func volumeToPb(st *Volume) (*volumePb, error) {
 	}
 	pb := &volumePb{}
 	pb.Comment = st.Comment
-
 	pb.Id = st.Id
-
 	pb.InternalAttributes = st.InternalAttributes
-
 	pb.Name = st.Name
-
 	pb.Schema = st.Schema
-
 	pb.Share = st.Share
-
 	pb.ShareId = st.ShareId
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3072,21 +2691,14 @@ func volumeToPb(st *Volume) (*volumePb, error) {
 }
 
 type volumePb struct {
-	Comment string `json:"comment,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
+	Comment            string                    `json:"comment,omitempty"`
+	Id                 string                    `json:"id,omitempty"`
 	InternalAttributes *VolumeInternalAttributes `json:"internal_attributes,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Schema string `json:"schema,omitempty"`
-
-	Share string `json:"share,omitempty"`
-
-	ShareId string `json:"share_id,omitempty"`
-
-	Tags []catalog.TagKeyValue `json:"tags,omitempty"`
+	Name               string                    `json:"name,omitempty"`
+	Schema             string                    `json:"schema,omitempty"`
+	Share              string                    `json:"share,omitempty"`
+	ShareId            string                    `json:"share_id,omitempty"`
+	Tags               []catalog.TagKeyValue     `json:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3123,7 +2735,6 @@ func volumeInternalAttributesToPb(st *VolumeInternalAttributes) (*volumeInternal
 	}
 	pb := &volumeInternalAttributesPb{}
 	pb.StorageLocation = st.StorageLocation
-
 	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3132,8 +2743,7 @@ func volumeInternalAttributesToPb(st *VolumeInternalAttributes) (*volumeInternal
 
 type volumeInternalAttributesPb struct {
 	StorageLocation string `json:"storage_location,omitempty"`
-
-	Type string `json:"type,omitempty"`
+	Type            string `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3156,4 +2766,58 @@ func (st *volumeInternalAttributesPb) UnmarshalJSON(b []byte) error {
 
 func (st volumeInternalAttributesPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

@@ -3,6 +3,10 @@
 package provisioning
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -36,11 +40,8 @@ func awsKeyInfoToPb(st *AwsKeyInfo) (*awsKeyInfoPb, error) {
 	}
 	pb := &awsKeyInfoPb{}
 	pb.KeyAlias = st.KeyAlias
-
 	pb.KeyArn = st.KeyArn
-
 	pb.KeyRegion = st.KeyRegion
-
 	pb.ReuseKeyForClusterVolumes = st.ReuseKeyForClusterVolumes
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -48,13 +49,10 @@ func awsKeyInfoToPb(st *AwsKeyInfo) (*awsKeyInfoPb, error) {
 }
 
 type awsKeyInfoPb struct {
-	KeyAlias string `json:"key_alias,omitempty"`
-
-	KeyArn string `json:"key_arn"`
-
-	KeyRegion string `json:"key_region"`
-
-	ReuseKeyForClusterVolumes bool `json:"reuse_key_for_cluster_volumes,omitempty"`
+	KeyAlias                  string `json:"key_alias,omitempty"`
+	KeyArn                    string `json:"key_arn"`
+	KeyRegion                 string `json:"key_region"`
+	ReuseKeyForClusterVolumes bool   `json:"reuse_key_for_cluster_volumes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -87,7 +85,6 @@ func azureWorkspaceInfoToPb(st *AzureWorkspaceInfo) (*azureWorkspaceInfoPb, erro
 	}
 	pb := &azureWorkspaceInfoPb{}
 	pb.ResourceGroup = st.ResourceGroup
-
 	pb.SubscriptionId = st.SubscriptionId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -95,8 +92,7 @@ func azureWorkspaceInfoToPb(st *AzureWorkspaceInfo) (*azureWorkspaceInfoPb, erro
 }
 
 type azureWorkspaceInfoPb struct {
-	ResourceGroup string `json:"resource_group,omitempty"`
-
+	ResourceGroup  string `json:"resource_group,omitempty"`
 	SubscriptionId string `json:"subscription_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -152,9 +148,7 @@ func createAwsKeyInfoToPb(st *CreateAwsKeyInfo) (*createAwsKeyInfoPb, error) {
 	}
 	pb := &createAwsKeyInfoPb{}
 	pb.KeyAlias = st.KeyAlias
-
 	pb.KeyArn = st.KeyArn
-
 	pb.ReuseKeyForClusterVolumes = st.ReuseKeyForClusterVolumes
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -162,11 +156,9 @@ func createAwsKeyInfoToPb(st *CreateAwsKeyInfo) (*createAwsKeyInfoPb, error) {
 }
 
 type createAwsKeyInfoPb struct {
-	KeyAlias string `json:"key_alias,omitempty"`
-
-	KeyArn string `json:"key_arn"`
-
-	ReuseKeyForClusterVolumes bool `json:"reuse_key_for_cluster_volumes,omitempty"`
+	KeyAlias                  string `json:"key_alias,omitempty"`
+	KeyArn                    string `json:"key_arn"`
+	ReuseKeyForClusterVolumes bool   `json:"reuse_key_for_cluster_volumes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -222,16 +214,14 @@ func createCredentialRequestToPb(st *CreateCredentialRequest) (*createCredential
 	}
 	pb := &createCredentialRequestPb{}
 	pb.AwsCredentials = st.AwsCredentials
-
 	pb.CredentialsName = st.CredentialsName
 
 	return pb, nil
 }
 
 type createCredentialRequestPb struct {
-	AwsCredentials CreateCredentialAwsCredentials `json:"aws_credentials"`
-
-	CredentialsName string `json:"credentials_name"`
+	AwsCredentials  CreateCredentialAwsCredentials `json:"aws_credentials"`
+	CredentialsName string                         `json:"credentials_name"`
 }
 
 func createCredentialRequestFromPb(pb *createCredentialRequestPb) (*CreateCredentialRequest, error) {
@@ -287,9 +277,7 @@ func createCustomerManagedKeyRequestToPb(st *CreateCustomerManagedKeyRequest) (*
 	}
 	pb := &createCustomerManagedKeyRequestPb{}
 	pb.AwsKeyInfo = st.AwsKeyInfo
-
 	pb.GcpKeyInfo = st.GcpKeyInfo
-
 	pb.UseCases = st.UseCases
 
 	return pb, nil
@@ -297,10 +285,8 @@ func createCustomerManagedKeyRequestToPb(st *CreateCustomerManagedKeyRequest) (*
 
 type createCustomerManagedKeyRequestPb struct {
 	AwsKeyInfo *CreateAwsKeyInfo `json:"aws_key_info,omitempty"`
-
 	GcpKeyInfo *CreateGcpKeyInfo `json:"gcp_key_info,omitempty"`
-
-	UseCases []KeyUseCase `json:"use_cases"`
+	UseCases   []KeyUseCase      `json:"use_cases"`
 }
 
 func createCustomerManagedKeyRequestFromPb(pb *createCustomerManagedKeyRequestPb) (*CreateCustomerManagedKeyRequest, error) {
@@ -345,15 +331,10 @@ func createNetworkRequestToPb(st *CreateNetworkRequest) (*createNetworkRequestPb
 	}
 	pb := &createNetworkRequestPb{}
 	pb.GcpNetworkInfo = st.GcpNetworkInfo
-
 	pb.NetworkName = st.NetworkName
-
 	pb.SecurityGroupIds = st.SecurityGroupIds
-
 	pb.SubnetIds = st.SubnetIds
-
 	pb.VpcEndpoints = st.VpcEndpoints
-
 	pb.VpcId = st.VpcId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -361,17 +342,12 @@ func createNetworkRequestToPb(st *CreateNetworkRequest) (*createNetworkRequestPb
 }
 
 type createNetworkRequestPb struct {
-	GcpNetworkInfo *GcpNetworkInfo `json:"gcp_network_info,omitempty"`
-
-	NetworkName string `json:"network_name"`
-
-	SecurityGroupIds []string `json:"security_group_ids,omitempty"`
-
-	SubnetIds []string `json:"subnet_ids,omitempty"`
-
-	VpcEndpoints *NetworkVpcEndpoints `json:"vpc_endpoints,omitempty"`
-
-	VpcId string `json:"vpc_id,omitempty"`
+	GcpNetworkInfo   *GcpNetworkInfo      `json:"gcp_network_info,omitempty"`
+	NetworkName      string               `json:"network_name"`
+	SecurityGroupIds []string             `json:"security_group_ids,omitempty"`
+	SubnetIds        []string             `json:"subnet_ids,omitempty"`
+	VpcEndpoints     *NetworkVpcEndpoints `json:"vpc_endpoints,omitempty"`
+	VpcId            string               `json:"vpc_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -406,16 +382,14 @@ func createStorageConfigurationRequestToPb(st *CreateStorageConfigurationRequest
 	}
 	pb := &createStorageConfigurationRequestPb{}
 	pb.RootBucketInfo = st.RootBucketInfo
-
 	pb.StorageConfigurationName = st.StorageConfigurationName
 
 	return pb, nil
 }
 
 type createStorageConfigurationRequestPb struct {
-	RootBucketInfo RootBucketInfo `json:"root_bucket_info"`
-
-	StorageConfigurationName string `json:"storage_configuration_name"`
+	RootBucketInfo           RootBucketInfo `json:"root_bucket_info"`
+	StorageConfigurationName string         `json:"storage_configuration_name"`
 }
 
 func createStorageConfigurationRequestFromPb(pb *createStorageConfigurationRequestPb) (*CreateStorageConfigurationRequest, error) {
@@ -435,11 +409,8 @@ func createVpcEndpointRequestToPb(st *CreateVpcEndpointRequest) (*createVpcEndpo
 	}
 	pb := &createVpcEndpointRequestPb{}
 	pb.AwsVpcEndpointId = st.AwsVpcEndpointId
-
 	pb.GcpVpcEndpointInfo = st.GcpVpcEndpointInfo
-
 	pb.Region = st.Region
-
 	pb.VpcEndpointName = st.VpcEndpointName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -447,13 +418,10 @@ func createVpcEndpointRequestToPb(st *CreateVpcEndpointRequest) (*createVpcEndpo
 }
 
 type createVpcEndpointRequestPb struct {
-	AwsVpcEndpointId string `json:"aws_vpc_endpoint_id,omitempty"`
-
+	AwsVpcEndpointId   string              `json:"aws_vpc_endpoint_id,omitempty"`
 	GcpVpcEndpointInfo *GcpVpcEndpointInfo `json:"gcp_vpc_endpoint_info,omitempty"`
-
-	Region string `json:"region,omitempty"`
-
-	VpcEndpointName string `json:"vpc_endpoint_name"`
+	Region             string              `json:"region,omitempty"`
+	VpcEndpointName    string              `json:"vpc_endpoint_name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -486,37 +454,21 @@ func createWorkspaceRequestToPb(st *CreateWorkspaceRequest) (*createWorkspaceReq
 	}
 	pb := &createWorkspaceRequestPb{}
 	pb.AwsRegion = st.AwsRegion
-
 	pb.Cloud = st.Cloud
-
 	pb.CloudResourceContainer = st.CloudResourceContainer
-
 	pb.CredentialsId = st.CredentialsId
-
 	pb.CustomTags = st.CustomTags
-
 	pb.DeploymentName = st.DeploymentName
-
 	pb.GcpManagedNetworkConfig = st.GcpManagedNetworkConfig
-
 	pb.GkeConfig = st.GkeConfig
-
 	pb.IsNoPublicIpEnabled = st.IsNoPublicIpEnabled
-
 	pb.Location = st.Location
-
 	pb.ManagedServicesCustomerManagedKeyId = st.ManagedServicesCustomerManagedKeyId
-
 	pb.NetworkId = st.NetworkId
-
 	pb.PricingTier = st.PricingTier
-
 	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
-
 	pb.StorageConfigurationId = st.StorageConfigurationId
-
 	pb.StorageCustomerManagedKeyId = st.StorageCustomerManagedKeyId
-
 	pb.WorkspaceName = st.WorkspaceName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -524,39 +476,23 @@ func createWorkspaceRequestToPb(st *CreateWorkspaceRequest) (*createWorkspaceReq
 }
 
 type createWorkspaceRequestPb struct {
-	AwsRegion string `json:"aws_region,omitempty"`
-
-	Cloud string `json:"cloud,omitempty"`
-
-	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
-
-	CredentialsId string `json:"credentials_id,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	DeploymentName string `json:"deployment_name,omitempty"`
-
-	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
-
-	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
-
-	IsNoPublicIpEnabled bool `json:"is_no_public_ip_enabled,omitempty"`
-
-	Location string `json:"location,omitempty"`
-
-	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
-
-	NetworkId string `json:"network_id,omitempty"`
-
-	PricingTier PricingTier `json:"pricing_tier,omitempty"`
-
-	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
-
-	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
-
-	StorageCustomerManagedKeyId string `json:"storage_customer_managed_key_id,omitempty"`
-
-	WorkspaceName string `json:"workspace_name"`
+	AwsRegion                           string                   `json:"aws_region,omitempty"`
+	Cloud                               string                   `json:"cloud,omitempty"`
+	CloudResourceContainer              *CloudResourceContainer  `json:"cloud_resource_container,omitempty"`
+	CredentialsId                       string                   `json:"credentials_id,omitempty"`
+	CustomTags                          map[string]string        `json:"custom_tags,omitempty"`
+	DeploymentName                      string                   `json:"deployment_name,omitempty"`
+	GcpManagedNetworkConfig             *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
+	GkeConfig                           *GkeConfig               `json:"gke_config,omitempty"`
+	IsNoPublicIpEnabled                 bool                     `json:"is_no_public_ip_enabled,omitempty"`
+	Location                            string                   `json:"location,omitempty"`
+	ManagedServicesCustomerManagedKeyId string                   `json:"managed_services_customer_managed_key_id,omitempty"`
+	NetworkId                           string                   `json:"network_id,omitempty"`
+	PricingTier                         PricingTier              `json:"pricing_tier,omitempty"`
+	PrivateAccessSettingsId             string                   `json:"private_access_settings_id,omitempty"`
+	StorageConfigurationId              string                   `json:"storage_configuration_id,omitempty"`
+	StorageCustomerManagedKeyId         string                   `json:"storage_customer_managed_key_id,omitempty"`
+	WorkspaceName                       string                   `json:"workspace_name"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -602,13 +538,9 @@ func credentialToPb(st *Credential) (*credentialPb, error) {
 	}
 	pb := &credentialPb{}
 	pb.AccountId = st.AccountId
-
 	pb.AwsCredentials = st.AwsCredentials
-
 	pb.CreationTime = st.CreationTime
-
 	pb.CredentialsId = st.CredentialsId
-
 	pb.CredentialsName = st.CredentialsName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -616,15 +548,11 @@ func credentialToPb(st *Credential) (*credentialPb, error) {
 }
 
 type credentialPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	AwsCredentials *AwsCredentials `json:"aws_credentials,omitempty"`
-
-	CreationTime int64 `json:"creation_time,omitempty"`
-
-	CredentialsId string `json:"credentials_id,omitempty"`
-
-	CredentialsName string `json:"credentials_name,omitempty"`
+	AccountId       string          `json:"account_id,omitempty"`
+	AwsCredentials  *AwsCredentials `json:"aws_credentials,omitempty"`
+	CreationTime    int64           `json:"creation_time,omitempty"`
+	CredentialsId   string          `json:"credentials_id,omitempty"`
+	CredentialsName string          `json:"credentials_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -712,15 +640,10 @@ func customerManagedKeyToPb(st *CustomerManagedKey) (*customerManagedKeyPb, erro
 	}
 	pb := &customerManagedKeyPb{}
 	pb.AccountId = st.AccountId
-
 	pb.AwsKeyInfo = st.AwsKeyInfo
-
 	pb.CreationTime = st.CreationTime
-
 	pb.CustomerManagedKeyId = st.CustomerManagedKeyId
-
 	pb.GcpKeyInfo = st.GcpKeyInfo
-
 	pb.UseCases = st.UseCases
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -728,17 +651,12 @@ func customerManagedKeyToPb(st *CustomerManagedKey) (*customerManagedKeyPb, erro
 }
 
 type customerManagedKeyPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	AwsKeyInfo *AwsKeyInfo `json:"aws_key_info,omitempty"`
-
-	CreationTime int64 `json:"creation_time,omitempty"`
-
-	CustomerManagedKeyId string `json:"customer_managed_key_id,omitempty"`
-
-	GcpKeyInfo *GcpKeyInfo `json:"gcp_key_info,omitempty"`
-
-	UseCases []KeyUseCase `json:"use_cases,omitempty"`
+	AccountId            string       `json:"account_id,omitempty"`
+	AwsKeyInfo           *AwsKeyInfo  `json:"aws_key_info,omitempty"`
+	CreationTime         int64        `json:"creation_time,omitempty"`
+	CustomerManagedKeyId string       `json:"customer_managed_key_id,omitempty"`
+	GcpKeyInfo           *GcpKeyInfo  `json:"gcp_key_info,omitempty"`
+	UseCases             []KeyUseCase `json:"use_cases,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -962,9 +880,7 @@ func externalCustomerInfoToPb(st *ExternalCustomerInfo) (*externalCustomerInfoPb
 	}
 	pb := &externalCustomerInfoPb{}
 	pb.AuthoritativeUserEmail = st.AuthoritativeUserEmail
-
 	pb.AuthoritativeUserFullName = st.AuthoritativeUserFullName
-
 	pb.CustomerName = st.CustomerName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -972,11 +888,9 @@ func externalCustomerInfoToPb(st *ExternalCustomerInfo) (*externalCustomerInfoPb
 }
 
 type externalCustomerInfoPb struct {
-	AuthoritativeUserEmail string `json:"authoritative_user_email,omitempty"`
-
+	AuthoritativeUserEmail    string `json:"authoritative_user_email,omitempty"`
 	AuthoritativeUserFullName string `json:"authoritative_user_full_name,omitempty"`
-
-	CustomerName string `json:"customer_name,omitempty"`
+	CustomerName              string `json:"customer_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1032,9 +946,7 @@ func gcpManagedNetworkConfigToPb(st *GcpManagedNetworkConfig) (*gcpManagedNetwor
 	}
 	pb := &gcpManagedNetworkConfigPb{}
 	pb.GkeClusterPodIpRange = st.GkeClusterPodIpRange
-
 	pb.GkeClusterServiceIpRange = st.GkeClusterServiceIpRange
-
 	pb.SubnetCidr = st.SubnetCidr
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1042,11 +954,9 @@ func gcpManagedNetworkConfigToPb(st *GcpManagedNetworkConfig) (*gcpManagedNetwor
 }
 
 type gcpManagedNetworkConfigPb struct {
-	GkeClusterPodIpRange string `json:"gke_cluster_pod_ip_range,omitempty"`
-
+	GkeClusterPodIpRange     string `json:"gke_cluster_pod_ip_range,omitempty"`
 	GkeClusterServiceIpRange string `json:"gke_cluster_service_ip_range,omitempty"`
-
-	SubnetCidr string `json:"subnet_cidr,omitempty"`
+	SubnetCidr               string `json:"subnet_cidr,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1078,32 +988,22 @@ func gcpNetworkInfoToPb(st *GcpNetworkInfo) (*gcpNetworkInfoPb, error) {
 	}
 	pb := &gcpNetworkInfoPb{}
 	pb.NetworkProjectId = st.NetworkProjectId
-
 	pb.PodIpRangeName = st.PodIpRangeName
-
 	pb.ServiceIpRangeName = st.ServiceIpRangeName
-
 	pb.SubnetId = st.SubnetId
-
 	pb.SubnetRegion = st.SubnetRegion
-
 	pb.VpcId = st.VpcId
 
 	return pb, nil
 }
 
 type gcpNetworkInfoPb struct {
-	NetworkProjectId string `json:"network_project_id"`
-
-	PodIpRangeName string `json:"pod_ip_range_name"`
-
+	NetworkProjectId   string `json:"network_project_id"`
+	PodIpRangeName     string `json:"pod_ip_range_name"`
 	ServiceIpRangeName string `json:"service_ip_range_name"`
-
-	SubnetId string `json:"subnet_id"`
-
-	SubnetRegion string `json:"subnet_region"`
-
-	VpcId string `json:"vpc_id"`
+	SubnetId           string `json:"subnet_id"`
+	SubnetRegion       string `json:"subnet_region"`
+	VpcId              string `json:"vpc_id"`
 }
 
 func gcpNetworkInfoFromPb(pb *gcpNetworkInfoPb) (*GcpNetworkInfo, error) {
@@ -1127,13 +1027,9 @@ func gcpVpcEndpointInfoToPb(st *GcpVpcEndpointInfo) (*gcpVpcEndpointInfoPb, erro
 	}
 	pb := &gcpVpcEndpointInfoPb{}
 	pb.EndpointRegion = st.EndpointRegion
-
 	pb.ProjectId = st.ProjectId
-
 	pb.PscConnectionId = st.PscConnectionId
-
 	pb.PscEndpointName = st.PscEndpointName
-
 	pb.ServiceAttachmentId = st.ServiceAttachmentId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1141,14 +1037,10 @@ func gcpVpcEndpointInfoToPb(st *GcpVpcEndpointInfo) (*gcpVpcEndpointInfoPb, erro
 }
 
 type gcpVpcEndpointInfoPb struct {
-	EndpointRegion string `json:"endpoint_region"`
-
-	ProjectId string `json:"project_id"`
-
-	PscConnectionId string `json:"psc_connection_id,omitempty"`
-
-	PscEndpointName string `json:"psc_endpoint_name"`
-
+	EndpointRegion      string `json:"endpoint_region"`
+	ProjectId           string `json:"project_id"`
+	PscConnectionId     string `json:"psc_connection_id,omitempty"`
+	PscEndpointName     string `json:"psc_endpoint_name"`
 	ServiceAttachmentId string `json:"service_attachment_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1351,7 +1243,6 @@ func gkeConfigToPb(st *GkeConfig) (*gkeConfigPb, error) {
 	}
 	pb := &gkeConfigPb{}
 	pb.ConnectivityType = st.ConnectivityType
-
 	pb.MasterIpRange = st.MasterIpRange
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1360,8 +1251,7 @@ func gkeConfigToPb(st *GkeConfig) (*gkeConfigPb, error) {
 
 type gkeConfigPb struct {
 	ConnectivityType GkeConfigConnectivityType `json:"connectivity_type,omitempty"`
-
-	MasterIpRange string `json:"master_ip_range,omitempty"`
+	MasterIpRange    string                    `json:"master_ip_range,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1392,29 +1282,17 @@ func networkToPb(st *Network) (*networkPb, error) {
 	}
 	pb := &networkPb{}
 	pb.AccountId = st.AccountId
-
 	pb.CreationTime = st.CreationTime
-
 	pb.ErrorMessages = st.ErrorMessages
-
 	pb.GcpNetworkInfo = st.GcpNetworkInfo
-
 	pb.NetworkId = st.NetworkId
-
 	pb.NetworkName = st.NetworkName
-
 	pb.SecurityGroupIds = st.SecurityGroupIds
-
 	pb.SubnetIds = st.SubnetIds
-
 	pb.VpcEndpoints = st.VpcEndpoints
-
 	pb.VpcId = st.VpcId
-
 	pb.VpcStatus = st.VpcStatus
-
 	pb.WarningMessages = st.WarningMessages
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1422,31 +1300,19 @@ func networkToPb(st *Network) (*networkPb, error) {
 }
 
 type networkPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	CreationTime int64 `json:"creation_time,omitempty"`
-
-	ErrorMessages []NetworkHealth `json:"error_messages,omitempty"`
-
-	GcpNetworkInfo *GcpNetworkInfo `json:"gcp_network_info,omitempty"`
-
-	NetworkId string `json:"network_id,omitempty"`
-
-	NetworkName string `json:"network_name,omitempty"`
-
-	SecurityGroupIds []string `json:"security_group_ids,omitempty"`
-
-	SubnetIds []string `json:"subnet_ids,omitempty"`
-
-	VpcEndpoints *NetworkVpcEndpoints `json:"vpc_endpoints,omitempty"`
-
-	VpcId string `json:"vpc_id,omitempty"`
-
-	VpcStatus VpcStatus `json:"vpc_status,omitempty"`
-
-	WarningMessages []NetworkWarning `json:"warning_messages,omitempty"`
-
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
+	AccountId        string               `json:"account_id,omitempty"`
+	CreationTime     int64                `json:"creation_time,omitempty"`
+	ErrorMessages    []NetworkHealth      `json:"error_messages,omitempty"`
+	GcpNetworkInfo   *GcpNetworkInfo      `json:"gcp_network_info,omitempty"`
+	NetworkId        string               `json:"network_id,omitempty"`
+	NetworkName      string               `json:"network_name,omitempty"`
+	SecurityGroupIds []string             `json:"security_group_ids,omitempty"`
+	SubnetIds        []string             `json:"subnet_ids,omitempty"`
+	VpcEndpoints     *NetworkVpcEndpoints `json:"vpc_endpoints,omitempty"`
+	VpcId            string               `json:"vpc_id,omitempty"`
+	VpcStatus        VpcStatus            `json:"vpc_status,omitempty"`
+	WarningMessages  []NetworkWarning     `json:"warning_messages,omitempty"`
+	WorkspaceId      int64                `json:"workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1488,7 +1354,6 @@ func networkHealthToPb(st *NetworkHealth) (*networkHealthPb, error) {
 	}
 	pb := &networkHealthPb{}
 	pb.ErrorMessage = st.ErrorMessage
-
 	pb.ErrorType = st.ErrorType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1496,9 +1361,8 @@ func networkHealthToPb(st *NetworkHealth) (*networkHealthPb, error) {
 }
 
 type networkHealthPb struct {
-	ErrorMessage string `json:"error_message,omitempty"`
-
-	ErrorType ErrorType `json:"error_type,omitempty"`
+	ErrorMessage string    `json:"error_message,omitempty"`
+	ErrorType    ErrorType `json:"error_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1529,7 +1393,6 @@ func networkVpcEndpointsToPb(st *NetworkVpcEndpoints) (*networkVpcEndpointsPb, e
 	}
 	pb := &networkVpcEndpointsPb{}
 	pb.DataplaneRelay = st.DataplaneRelay
-
 	pb.RestApi = st.RestApi
 
 	return pb, nil
@@ -1537,8 +1400,7 @@ func networkVpcEndpointsToPb(st *NetworkVpcEndpoints) (*networkVpcEndpointsPb, e
 
 type networkVpcEndpointsPb struct {
 	DataplaneRelay []string `json:"dataplane_relay"`
-
-	RestApi []string `json:"rest_api"`
+	RestApi        []string `json:"rest_api"`
 }
 
 func networkVpcEndpointsFromPb(pb *networkVpcEndpointsPb) (*NetworkVpcEndpoints, error) {
@@ -1558,7 +1420,6 @@ func networkWarningToPb(st *NetworkWarning) (*networkWarningPb, error) {
 	}
 	pb := &networkWarningPb{}
 	pb.WarningMessage = st.WarningMessage
-
 	pb.WarningType = st.WarningType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1566,9 +1427,8 @@ func networkWarningToPb(st *NetworkWarning) (*networkWarningPb, error) {
 }
 
 type networkWarningPb struct {
-	WarningMessage string `json:"warning_message,omitempty"`
-
-	WarningType WarningType `json:"warning_type,omitempty"`
+	WarningMessage string      `json:"warning_message,omitempty"`
+	WarningType    WarningType `json:"warning_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1599,17 +1459,11 @@ func privateAccessSettingsToPb(st *PrivateAccessSettings) (*privateAccessSetting
 	}
 	pb := &privateAccessSettingsPb{}
 	pb.AccountId = st.AccountId
-
 	pb.AllowedVpcEndpointIds = st.AllowedVpcEndpointIds
-
 	pb.PrivateAccessLevel = st.PrivateAccessLevel
-
 	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
-
 	pb.PrivateAccessSettingsName = st.PrivateAccessSettingsName
-
 	pb.PublicAccessEnabled = st.PublicAccessEnabled
-
 	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1617,19 +1471,13 @@ func privateAccessSettingsToPb(st *PrivateAccessSettings) (*privateAccessSetting
 }
 
 type privateAccessSettingsPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
-
-	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
-
-	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
-
-	PrivateAccessSettingsName string `json:"private_access_settings_name,omitempty"`
-
-	PublicAccessEnabled bool `json:"public_access_enabled,omitempty"`
-
-	Region string `json:"region,omitempty"`
+	AccountId                 string             `json:"account_id,omitempty"`
+	AllowedVpcEndpointIds     []string           `json:"allowed_vpc_endpoint_ids,omitempty"`
+	PrivateAccessLevel        PrivateAccessLevel `json:"private_access_level,omitempty"`
+	PrivateAccessSettingsId   string             `json:"private_access_settings_id,omitempty"`
+	PrivateAccessSettingsName string             `json:"private_access_settings_name,omitempty"`
+	PublicAccessEnabled       bool               `json:"public_access_enabled,omitempty"`
+	Region                    string             `json:"region,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1722,13 +1570,9 @@ func storageConfigurationToPb(st *StorageConfiguration) (*storageConfigurationPb
 	}
 	pb := &storageConfigurationPb{}
 	pb.AccountId = st.AccountId
-
 	pb.CreationTime = st.CreationTime
-
 	pb.RootBucketInfo = st.RootBucketInfo
-
 	pb.StorageConfigurationId = st.StorageConfigurationId
-
 	pb.StorageConfigurationName = st.StorageConfigurationName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1736,15 +1580,11 @@ func storageConfigurationToPb(st *StorageConfiguration) (*storageConfigurationPb
 }
 
 type storageConfigurationPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	CreationTime int64 `json:"creation_time,omitempty"`
-
-	RootBucketInfo *RootBucketInfo `json:"root_bucket_info,omitempty"`
-
-	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
-
-	StorageConfigurationName string `json:"storage_configuration_name,omitempty"`
+	AccountId                string          `json:"account_id,omitempty"`
+	CreationTime             int64           `json:"creation_time,omitempty"`
+	RootBucketInfo           *RootBucketInfo `json:"root_bucket_info,omitempty"`
+	StorageConfigurationId   string          `json:"storage_configuration_id,omitempty"`
+	StorageConfigurationName string          `json:"storage_configuration_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1778,7 +1618,6 @@ func stsRoleToPb(st *StsRole) (*stsRolePb, error) {
 	}
 	pb := &stsRolePb{}
 	pb.ExternalId = st.ExternalId
-
 	pb.RoleArn = st.RoleArn
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1787,8 +1626,7 @@ func stsRoleToPb(st *StsRole) (*stsRolePb, error) {
 
 type stsRolePb struct {
 	ExternalId string `json:"external_id,omitempty"`
-
-	RoleArn string `json:"role_arn,omitempty"`
+	RoleArn    string `json:"role_arn,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1840,23 +1678,14 @@ func updateWorkspaceRequestToPb(st *UpdateWorkspaceRequest) (*updateWorkspaceReq
 	}
 	pb := &updateWorkspaceRequestPb{}
 	pb.AwsRegion = st.AwsRegion
-
 	pb.CredentialsId = st.CredentialsId
-
 	pb.CustomTags = st.CustomTags
-
 	pb.ManagedServicesCustomerManagedKeyId = st.ManagedServicesCustomerManagedKeyId
-
 	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
-
 	pb.NetworkId = st.NetworkId
-
 	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
-
 	pb.StorageConfigurationId = st.StorageConfigurationId
-
 	pb.StorageCustomerManagedKeyId = st.StorageCustomerManagedKeyId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1864,25 +1693,16 @@ func updateWorkspaceRequestToPb(st *UpdateWorkspaceRequest) (*updateWorkspaceReq
 }
 
 type updateWorkspaceRequestPb struct {
-	AwsRegion string `json:"aws_region,omitempty"`
-
-	CredentialsId string `json:"credentials_id,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
-
-	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
-
-	NetworkId string `json:"network_id,omitempty"`
-
-	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
-
-	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
-
-	StorageCustomerManagedKeyId string `json:"storage_customer_managed_key_id,omitempty"`
-
-	WorkspaceId int64 `json:"-" url:"-"`
+	AwsRegion                           string            `json:"aws_region,omitempty"`
+	CredentialsId                       string            `json:"credentials_id,omitempty"`
+	CustomTags                          map[string]string `json:"custom_tags,omitempty"`
+	ManagedServicesCustomerManagedKeyId string            `json:"managed_services_customer_managed_key_id,omitempty"`
+	NetworkConnectivityConfigId         string            `json:"network_connectivity_config_id,omitempty"`
+	NetworkId                           string            `json:"network_id,omitempty"`
+	PrivateAccessSettingsId             string            `json:"private_access_settings_id,omitempty"`
+	StorageConfigurationId              string            `json:"storage_configuration_id,omitempty"`
+	StorageCustomerManagedKeyId         string            `json:"storage_customer_managed_key_id,omitempty"`
+	WorkspaceId                         int64             `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1921,15 +1741,10 @@ func upsertPrivateAccessSettingsRequestToPb(st *UpsertPrivateAccessSettingsReque
 	}
 	pb := &upsertPrivateAccessSettingsRequestPb{}
 	pb.AllowedVpcEndpointIds = st.AllowedVpcEndpointIds
-
 	pb.PrivateAccessLevel = st.PrivateAccessLevel
-
 	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
-
 	pb.PrivateAccessSettingsName = st.PrivateAccessSettingsName
-
 	pb.PublicAccessEnabled = st.PublicAccessEnabled
-
 	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1937,17 +1752,12 @@ func upsertPrivateAccessSettingsRequestToPb(st *UpsertPrivateAccessSettingsReque
 }
 
 type upsertPrivateAccessSettingsRequestPb struct {
-	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
-
-	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
-
-	PrivateAccessSettingsId string `json:"-" url:"-"`
-
-	PrivateAccessSettingsName string `json:"private_access_settings_name"`
-
-	PublicAccessEnabled bool `json:"public_access_enabled,omitempty"`
-
-	Region string `json:"region"`
+	AllowedVpcEndpointIds     []string           `json:"allowed_vpc_endpoint_ids,omitempty"`
+	PrivateAccessLevel        PrivateAccessLevel `json:"private_access_level,omitempty"`
+	PrivateAccessSettingsId   string             `json:"-" url:"-"`
+	PrivateAccessSettingsName string             `json:"private_access_settings_name"`
+	PublicAccessEnabled       bool               `json:"public_access_enabled,omitempty"`
+	Region                    string             `json:"region"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1982,23 +1792,14 @@ func vpcEndpointToPb(st *VpcEndpoint) (*vpcEndpointPb, error) {
 	}
 	pb := &vpcEndpointPb{}
 	pb.AccountId = st.AccountId
-
 	pb.AwsAccountId = st.AwsAccountId
-
 	pb.AwsEndpointServiceId = st.AwsEndpointServiceId
-
 	pb.AwsVpcEndpointId = st.AwsVpcEndpointId
-
 	pb.GcpVpcEndpointInfo = st.GcpVpcEndpointInfo
-
 	pb.Region = st.Region
-
 	pb.State = st.State
-
 	pb.UseCase = st.UseCase
-
 	pb.VpcEndpointId = st.VpcEndpointId
-
 	pb.VpcEndpointName = st.VpcEndpointName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2006,25 +1807,16 @@ func vpcEndpointToPb(st *VpcEndpoint) (*vpcEndpointPb, error) {
 }
 
 type vpcEndpointPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	AwsAccountId string `json:"aws_account_id,omitempty"`
-
-	AwsEndpointServiceId string `json:"aws_endpoint_service_id,omitempty"`
-
-	AwsVpcEndpointId string `json:"aws_vpc_endpoint_id,omitempty"`
-
-	GcpVpcEndpointInfo *GcpVpcEndpointInfo `json:"gcp_vpc_endpoint_info,omitempty"`
-
-	Region string `json:"region,omitempty"`
-
-	State string `json:"state,omitempty"`
-
-	UseCase EndpointUseCase `json:"use_case,omitempty"`
-
-	VpcEndpointId string `json:"vpc_endpoint_id,omitempty"`
-
-	VpcEndpointName string `json:"vpc_endpoint_name,omitempty"`
+	AccountId            string              `json:"account_id,omitempty"`
+	AwsAccountId         string              `json:"aws_account_id,omitempty"`
+	AwsEndpointServiceId string              `json:"aws_endpoint_service_id,omitempty"`
+	AwsVpcEndpointId     string              `json:"aws_vpc_endpoint_id,omitempty"`
+	GcpVpcEndpointInfo   *GcpVpcEndpointInfo `json:"gcp_vpc_endpoint_info,omitempty"`
+	Region               string              `json:"region,omitempty"`
+	State                string              `json:"state,omitempty"`
+	UseCase              EndpointUseCase     `json:"use_case,omitempty"`
+	VpcEndpointId        string              `json:"vpc_endpoint_id,omitempty"`
+	VpcEndpointName      string              `json:"vpc_endpoint_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2063,51 +1855,28 @@ func workspaceToPb(st *Workspace) (*workspacePb, error) {
 	}
 	pb := &workspacePb{}
 	pb.AccountId = st.AccountId
-
 	pb.AwsRegion = st.AwsRegion
-
 	pb.AzureWorkspaceInfo = st.AzureWorkspaceInfo
-
 	pb.Cloud = st.Cloud
-
 	pb.CloudResourceContainer = st.CloudResourceContainer
-
 	pb.CreationTime = st.CreationTime
-
 	pb.CredentialsId = st.CredentialsId
-
 	pb.CustomTags = st.CustomTags
-
 	pb.DeploymentName = st.DeploymentName
-
 	pb.ExternalCustomerInfo = st.ExternalCustomerInfo
-
 	pb.GcpManagedNetworkConfig = st.GcpManagedNetworkConfig
-
 	pb.GkeConfig = st.GkeConfig
-
 	pb.IsNoPublicIpEnabled = st.IsNoPublicIpEnabled
-
 	pb.Location = st.Location
-
 	pb.ManagedServicesCustomerManagedKeyId = st.ManagedServicesCustomerManagedKeyId
-
 	pb.NetworkId = st.NetworkId
-
 	pb.PricingTier = st.PricingTier
-
 	pb.PrivateAccessSettingsId = st.PrivateAccessSettingsId
-
 	pb.StorageConfigurationId = st.StorageConfigurationId
-
 	pb.StorageCustomerManagedKeyId = st.StorageCustomerManagedKeyId
-
 	pb.WorkspaceId = st.WorkspaceId
-
 	pb.WorkspaceName = st.WorkspaceName
-
 	pb.WorkspaceStatus = st.WorkspaceStatus
-
 	pb.WorkspaceStatusMessage = st.WorkspaceStatusMessage
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2115,53 +1884,30 @@ func workspaceToPb(st *Workspace) (*workspacePb, error) {
 }
 
 type workspacePb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	AwsRegion string `json:"aws_region,omitempty"`
-
-	AzureWorkspaceInfo *AzureWorkspaceInfo `json:"azure_workspace_info,omitempty"`
-
-	Cloud string `json:"cloud,omitempty"`
-
-	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
-
-	CreationTime int64 `json:"creation_time,omitempty"`
-
-	CredentialsId string `json:"credentials_id,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	DeploymentName string `json:"deployment_name,omitempty"`
-
-	ExternalCustomerInfo *ExternalCustomerInfo `json:"external_customer_info,omitempty"`
-
-	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
-
-	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
-
-	IsNoPublicIpEnabled bool `json:"is_no_public_ip_enabled,omitempty"`
-
-	Location string `json:"location,omitempty"`
-
-	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
-
-	NetworkId string `json:"network_id,omitempty"`
-
-	PricingTier PricingTier `json:"pricing_tier,omitempty"`
-
-	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
-
-	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
-
-	StorageCustomerManagedKeyId string `json:"storage_customer_managed_key_id,omitempty"`
-
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
-
-	WorkspaceName string `json:"workspace_name,omitempty"`
-
-	WorkspaceStatus WorkspaceStatus `json:"workspace_status,omitempty"`
-
-	WorkspaceStatusMessage string `json:"workspace_status_message,omitempty"`
+	AccountId                           string                   `json:"account_id,omitempty"`
+	AwsRegion                           string                   `json:"aws_region,omitempty"`
+	AzureWorkspaceInfo                  *AzureWorkspaceInfo      `json:"azure_workspace_info,omitempty"`
+	Cloud                               string                   `json:"cloud,omitempty"`
+	CloudResourceContainer              *CloudResourceContainer  `json:"cloud_resource_container,omitempty"`
+	CreationTime                        int64                    `json:"creation_time,omitempty"`
+	CredentialsId                       string                   `json:"credentials_id,omitempty"`
+	CustomTags                          map[string]string        `json:"custom_tags,omitempty"`
+	DeploymentName                      string                   `json:"deployment_name,omitempty"`
+	ExternalCustomerInfo                *ExternalCustomerInfo    `json:"external_customer_info,omitempty"`
+	GcpManagedNetworkConfig             *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
+	GkeConfig                           *GkeConfig               `json:"gke_config,omitempty"`
+	IsNoPublicIpEnabled                 bool                     `json:"is_no_public_ip_enabled,omitempty"`
+	Location                            string                   `json:"location,omitempty"`
+	ManagedServicesCustomerManagedKeyId string                   `json:"managed_services_customer_managed_key_id,omitempty"`
+	NetworkId                           string                   `json:"network_id,omitempty"`
+	PricingTier                         PricingTier              `json:"pricing_tier,omitempty"`
+	PrivateAccessSettingsId             string                   `json:"private_access_settings_id,omitempty"`
+	StorageConfigurationId              string                   `json:"storage_configuration_id,omitempty"`
+	StorageCustomerManagedKeyId         string                   `json:"storage_customer_managed_key_id,omitempty"`
+	WorkspaceId                         int64                    `json:"workspace_id,omitempty"`
+	WorkspaceName                       string                   `json:"workspace_name,omitempty"`
+	WorkspaceStatus                     WorkspaceStatus          `json:"workspace_status,omitempty"`
+	WorkspaceStatusMessage              string                   `json:"workspace_status_message,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2206,4 +1952,58 @@ func (st *workspacePb) UnmarshalJSON(b []byte) error {
 
 func (st workspacePb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

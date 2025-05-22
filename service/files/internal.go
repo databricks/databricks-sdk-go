@@ -3,7 +3,10 @@
 package files
 
 import (
+	"fmt"
 	"io"
+	"strings"
+	"time"
 
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
@@ -14,16 +17,14 @@ func addBlockToPb(st *AddBlock) (*addBlockPb, error) {
 	}
 	pb := &addBlockPb{}
 	pb.Data = st.Data
-
 	pb.Handle = st.Handle
 
 	return pb, nil
 }
 
 type addBlockPb struct {
-	Data string `json:"data"`
-
-	Handle int64 `json:"handle"`
+	Data   string `json:"data"`
+	Handle int64  `json:"handle"`
 }
 
 func addBlockFromPb(pb *addBlockPb) (*AddBlock, error) {
@@ -109,7 +110,6 @@ func createToPb(st *Create) (*createPb, error) {
 	}
 	pb := &createPb{}
 	pb.Overwrite = st.Overwrite
-
 	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -117,9 +117,8 @@ func createToPb(st *Create) (*createPb, error) {
 }
 
 type createPb struct {
-	Overwrite bool `json:"overwrite,omitempty"`
-
-	Path string `json:"path"`
+	Overwrite bool   `json:"overwrite,omitempty"`
+	Path      string `json:"path"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -231,7 +230,6 @@ func deleteToPb(st *Delete) (*deletePb, error) {
 	}
 	pb := &deletePb{}
 	pb.Path = st.Path
-
 	pb.Recursive = st.Recursive
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -239,9 +237,8 @@ func deleteToPb(st *Delete) (*deletePb, error) {
 }
 
 type deletePb struct {
-	Path string `json:"path"`
-
-	Recursive bool `json:"recursive,omitempty"`
+	Path      string `json:"path"`
+	Recursive bool   `json:"recursive,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -362,13 +359,9 @@ func directoryEntryToPb(st *DirectoryEntry) (*directoryEntryPb, error) {
 	}
 	pb := &directoryEntryPb{}
 	pb.FileSize = st.FileSize
-
 	pb.IsDirectory = st.IsDirectory
-
 	pb.LastModified = st.LastModified
-
 	pb.Name = st.Name
-
 	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -376,15 +369,11 @@ func directoryEntryToPb(st *DirectoryEntry) (*directoryEntryPb, error) {
 }
 
 type directoryEntryPb struct {
-	FileSize int64 `json:"file_size,omitempty"`
-
-	IsDirectory bool `json:"is_directory,omitempty"`
-
-	LastModified int64 `json:"last_modified,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Path string `json:"path,omitempty"`
+	FileSize     int64  `json:"file_size,omitempty"`
+	IsDirectory  bool   `json:"is_directory,omitempty"`
+	LastModified int64  `json:"last_modified,omitempty"`
+	Name         string `json:"name,omitempty"`
+	Path         string `json:"path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -442,11 +431,8 @@ func downloadResponseToPb(st *DownloadResponse) (*downloadResponsePb, error) {
 	}
 	pb := &downloadResponsePb{}
 	pb.ContentLength = st.ContentLength
-
 	pb.ContentType = st.ContentType
-
 	pb.Contents = st.Contents
-
 	pb.LastModified = st.LastModified
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -454,13 +440,10 @@ func downloadResponseToPb(st *DownloadResponse) (*downloadResponsePb, error) {
 }
 
 type downloadResponsePb struct {
-	ContentLength int64 `json:"-" url:"-" header:"content-length,omitempty"`
-
-	ContentType string `json:"-" url:"-" header:"content-type,omitempty"`
-
-	Contents io.ReadCloser `json:"-"`
-
-	LastModified string `json:"-" url:"-" header:"last-modified,omitempty"`
+	ContentLength int64         `json:"-" url:"-" header:"content-length,omitempty"`
+	ContentType   string        `json:"-" url:"-" header:"content-type,omitempty"`
+	Contents      io.ReadCloser `json:"-"`
+	LastModified  string        `json:"-" url:"-" header:"last-modified,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -493,11 +476,8 @@ func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
 	}
 	pb := &fileInfoPb{}
 	pb.FileSize = st.FileSize
-
 	pb.IsDir = st.IsDir
-
 	pb.ModificationTime = st.ModificationTime
-
 	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -505,13 +485,10 @@ func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
 }
 
 type fileInfoPb struct {
-	FileSize int64 `json:"file_size,omitempty"`
-
-	IsDir bool `json:"is_dir,omitempty"`
-
-	ModificationTime int64 `json:"modification_time,omitempty"`
-
-	Path string `json:"path,omitempty"`
+	FileSize         int64  `json:"file_size,omitempty"`
+	IsDir            bool   `json:"is_dir,omitempty"`
+	ModificationTime int64  `json:"modification_time,omitempty"`
+	Path             string `json:"path,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -613,9 +590,7 @@ func getMetadataResponseToPb(st *GetMetadataResponse) (*getMetadataResponsePb, e
 	}
 	pb := &getMetadataResponsePb{}
 	pb.ContentLength = st.ContentLength
-
 	pb.ContentType = st.ContentType
-
 	pb.LastModified = st.LastModified
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -623,11 +598,9 @@ func getMetadataResponseToPb(st *GetMetadataResponse) (*getMetadataResponsePb, e
 }
 
 type getMetadataResponsePb struct {
-	ContentLength int64 `json:"-" url:"-" header:"content-length,omitempty"`
-
-	ContentType string `json:"-" url:"-" header:"content-type,omitempty"`
-
-	LastModified string `json:"-" url:"-" header:"last-modified,omitempty"`
+	ContentLength int64  `json:"-" url:"-" header:"content-length,omitempty"`
+	ContentType   string `json:"-" url:"-" header:"content-type,omitempty"`
+	LastModified  string `json:"-" url:"-" header:"last-modified,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -707,9 +680,7 @@ func listDirectoryContentsRequestToPb(st *ListDirectoryContentsRequest) (*listDi
 	}
 	pb := &listDirectoryContentsRequestPb{}
 	pb.DirectoryPath = st.DirectoryPath
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -718,10 +689,8 @@ func listDirectoryContentsRequestToPb(st *ListDirectoryContentsRequest) (*listDi
 
 type listDirectoryContentsRequestPb struct {
 	DirectoryPath string `json:"-" url:"-"`
-
-	PageSize int64 `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageSize      int64  `json:"-" url:"page_size,omitempty"`
+	PageToken     string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -753,7 +722,6 @@ func listDirectoryResponseToPb(st *ListDirectoryResponse) (*listDirectoryRespons
 	}
 	pb := &listDirectoryResponsePb{}
 	pb.Contents = st.Contents
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -761,9 +729,8 @@ func listDirectoryResponseToPb(st *ListDirectoryResponse) (*listDirectoryRespons
 }
 
 type listDirectoryResponsePb struct {
-	Contents []DirectoryEntry `json:"contents,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Contents      []DirectoryEntry `json:"contents,omitempty"`
+	NextPageToken string           `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -863,7 +830,6 @@ func moveToPb(st *Move) (*movePb, error) {
 	}
 	pb := &movePb{}
 	pb.DestinationPath = st.DestinationPath
-
 	pb.SourcePath = st.SourcePath
 
 	return pb, nil
@@ -871,8 +837,7 @@ func moveToPb(st *Move) (*movePb, error) {
 
 type movePb struct {
 	DestinationPath string `json:"destination_path"`
-
-	SourcePath string `json:"source_path"`
+	SourcePath      string `json:"source_path"`
 }
 
 func moveFromPb(pb *movePb) (*Move, error) {
@@ -913,9 +878,7 @@ func putToPb(st *Put) (*putPb, error) {
 	}
 	pb := &putPb{}
 	pb.Contents = st.Contents
-
 	pb.Overwrite = st.Overwrite
-
 	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -923,11 +886,9 @@ func putToPb(st *Put) (*putPb, error) {
 }
 
 type putPb struct {
-	Contents string `json:"contents,omitempty"`
-
-	Overwrite bool `json:"overwrite,omitempty"`
-
-	Path string `json:"path"`
+	Contents  string `json:"contents,omitempty"`
+	Overwrite bool   `json:"overwrite,omitempty"`
+	Path      string `json:"path"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -980,9 +941,7 @@ func readDbfsRequestToPb(st *ReadDbfsRequest) (*readDbfsRequestPb, error) {
 	}
 	pb := &readDbfsRequestPb{}
 	pb.Length = st.Length
-
 	pb.Offset = st.Offset
-
 	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -990,11 +949,9 @@ func readDbfsRequestToPb(st *ReadDbfsRequest) (*readDbfsRequestPb, error) {
 }
 
 type readDbfsRequestPb struct {
-	Length int64 `json:"-" url:"length,omitempty"`
-
-	Offset int64 `json:"-" url:"offset,omitempty"`
-
-	Path string `json:"-" url:"path"`
+	Length int64  `json:"-" url:"length,omitempty"`
+	Offset int64  `json:"-" url:"offset,omitempty"`
+	Path   string `json:"-" url:"path"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1026,7 +983,6 @@ func readResponseToPb(st *ReadResponse) (*readResponsePb, error) {
 	}
 	pb := &readResponsePb{}
 	pb.BytesRead = st.BytesRead
-
 	pb.Data = st.Data
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1034,9 +990,8 @@ func readResponseToPb(st *ReadResponse) (*readResponsePb, error) {
 }
 
 type readResponsePb struct {
-	BytesRead int64 `json:"bytes_read,omitempty"`
-
-	Data string `json:"data,omitempty"`
+	BytesRead int64  `json:"bytes_read,omitempty"`
+	Data      string `json:"data,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1067,9 +1022,7 @@ func uploadRequestToPb(st *UploadRequest) (*uploadRequestPb, error) {
 	}
 	pb := &uploadRequestPb{}
 	pb.Contents = st.Contents
-
 	pb.FilePath = st.FilePath
-
 	pb.Overwrite = st.Overwrite
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1077,11 +1030,9 @@ func uploadRequestToPb(st *UploadRequest) (*uploadRequestPb, error) {
 }
 
 type uploadRequestPb struct {
-	Contents io.ReadCloser `json:"-"`
-
-	FilePath string `json:"-" url:"-"`
-
-	Overwrite bool `json:"-" url:"overwrite,omitempty"`
+	Contents  io.ReadCloser `json:"-"`
+	FilePath  string        `json:"-" url:"-"`
+	Overwrite bool          `json:"-" url:"overwrite,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1126,4 +1077,58 @@ func uploadResponseFromPb(pb *uploadResponsePb) (*UploadResponse, error) {
 	st := &UploadResponse{}
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

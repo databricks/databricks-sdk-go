@@ -3,6 +3,10 @@
 package marketplace
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -12,7 +16,6 @@ func addExchangeForListingRequestToPb(st *AddExchangeForListingRequest) (*addExc
 	}
 	pb := &addExchangeForListingRequestPb{}
 	pb.ExchangeId = st.ExchangeId
-
 	pb.ListingId = st.ListingId
 
 	return pb, nil
@@ -20,8 +23,7 @@ func addExchangeForListingRequestToPb(st *AddExchangeForListingRequest) (*addExc
 
 type addExchangeForListingRequestPb struct {
 	ExchangeId string `json:"exchange_id"`
-
-	ListingId string `json:"listing_id"`
+	ListingId  string `json:"listing_id"`
 }
 
 func addExchangeForListingRequestFromPb(pb *addExchangeForListingRequestPb) (*AddExchangeForListingRequest, error) {
@@ -185,11 +187,8 @@ func contactInfoToPb(st *ContactInfo) (*contactInfoPb, error) {
 	}
 	pb := &contactInfoPb{}
 	pb.Company = st.Company
-
 	pb.Email = st.Email
-
 	pb.FirstName = st.FirstName
-
 	pb.LastName = st.LastName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -197,13 +196,10 @@ func contactInfoToPb(st *ContactInfo) (*contactInfoPb, error) {
 }
 
 type contactInfoPb struct {
-	Company string `json:"company,omitempty"`
-
-	Email string `json:"email,omitempty"`
-
+	Company   string `json:"company,omitempty"`
+	Email     string `json:"email,omitempty"`
 	FirstName string `json:"first_name,omitempty"`
-
-	LastName string `json:"last_name,omitempty"`
+	LastName  string `json:"last_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -356,11 +352,8 @@ func createFileRequestToPb(st *CreateFileRequest) (*createFileRequestPb, error) 
 	}
 	pb := &createFileRequestPb{}
 	pb.DisplayName = st.DisplayName
-
 	pb.FileParent = st.FileParent
-
 	pb.MarketplaceFileType = st.MarketplaceFileType
-
 	pb.MimeType = st.MimeType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -368,13 +361,10 @@ func createFileRequestToPb(st *CreateFileRequest) (*createFileRequestPb, error) 
 }
 
 type createFileRequestPb struct {
-	DisplayName string `json:"display_name,omitempty"`
-
-	FileParent FileParent `json:"file_parent"`
-
+	DisplayName         string              `json:"display_name,omitempty"`
+	FileParent          FileParent          `json:"file_parent"`
 	MarketplaceFileType MarketplaceFileType `json:"marketplace_file_type"`
-
-	MimeType string `json:"mime_type"`
+	MimeType            string              `json:"mime_type"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -407,7 +397,6 @@ func createFileResponseToPb(st *CreateFileResponse) (*createFileResponsePb, erro
 	}
 	pb := &createFileResponsePb{}
 	pb.FileInfo = st.FileInfo
-
 	pb.UploadUrl = st.UploadUrl
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -415,9 +404,8 @@ func createFileResponseToPb(st *CreateFileResponse) (*createFileResponsePb, erro
 }
 
 type createFileResponsePb struct {
-	FileInfo *FileInfo `json:"file_info,omitempty"`
-
-	UploadUrl string `json:"upload_url,omitempty"`
+	FileInfo  *FileInfo `json:"file_info,omitempty"`
+	UploadUrl string    `json:"upload_url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -448,15 +436,10 @@ func createInstallationRequestToPb(st *CreateInstallationRequest) (*createInstal
 	}
 	pb := &createInstallationRequestPb{}
 	pb.AcceptedConsumerTerms = st.AcceptedConsumerTerms
-
 	pb.CatalogName = st.CatalogName
-
 	pb.ListingId = st.ListingId
-
 	pb.RecipientType = st.RecipientType
-
 	pb.RepoDetail = st.RepoDetail
-
 	pb.ShareName = st.ShareName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -464,17 +447,12 @@ func createInstallationRequestToPb(st *CreateInstallationRequest) (*createInstal
 }
 
 type createInstallationRequestPb struct {
-	AcceptedConsumerTerms *ConsumerTerms `json:"accepted_consumer_terms,omitempty"`
-
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	ListingId string `json:"-" url:"-"`
-
-	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
-
-	RepoDetail *RepoInstallation `json:"repo_detail,omitempty"`
-
-	ShareName string `json:"share_name,omitempty"`
+	AcceptedConsumerTerms *ConsumerTerms            `json:"accepted_consumer_terms,omitempty"`
+	CatalogName           string                    `json:"catalog_name,omitempty"`
+	ListingId             string                    `json:"-" url:"-"`
+	RecipientType         DeltaSharingRecipientType `json:"recipient_type,omitempty"`
+	RepoDetail            *RepoInstallation         `json:"repo_detail,omitempty"`
+	ShareName             string                    `json:"share_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -569,21 +547,13 @@ func createPersonalizationRequestToPb(st *CreatePersonalizationRequest) (*create
 	}
 	pb := &createPersonalizationRequestPb{}
 	pb.AcceptedConsumerTerms = st.AcceptedConsumerTerms
-
 	pb.Comment = st.Comment
-
 	pb.Company = st.Company
-
 	pb.FirstName = st.FirstName
-
 	pb.IntendedUse = st.IntendedUse
-
 	pb.IsFromLighthouse = st.IsFromLighthouse
-
 	pb.LastName = st.LastName
-
 	pb.ListingId = st.ListingId
-
 	pb.RecipientType = st.RecipientType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -591,23 +561,15 @@ func createPersonalizationRequestToPb(st *CreatePersonalizationRequest) (*create
 }
 
 type createPersonalizationRequestPb struct {
-	AcceptedConsumerTerms ConsumerTerms `json:"accepted_consumer_terms"`
-
-	Comment string `json:"comment,omitempty"`
-
-	Company string `json:"company,omitempty"`
-
-	FirstName string `json:"first_name,omitempty"`
-
-	IntendedUse string `json:"intended_use"`
-
-	IsFromLighthouse bool `json:"is_from_lighthouse,omitempty"`
-
-	LastName string `json:"last_name,omitempty"`
-
-	ListingId string `json:"-" url:"-"`
-
-	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
+	AcceptedConsumerTerms ConsumerTerms             `json:"accepted_consumer_terms"`
+	Comment               string                    `json:"comment,omitempty"`
+	Company               string                    `json:"company,omitempty"`
+	FirstName             string                    `json:"first_name,omitempty"`
+	IntendedUse           string                    `json:"intended_use"`
+	IsFromLighthouse      bool                      `json:"is_from_lighthouse,omitempty"`
+	LastName              string                    `json:"last_name,omitempty"`
+	ListingId             string                    `json:"-" url:"-"`
+	RecipientType         DeltaSharingRecipientType `json:"recipient_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -741,16 +703,14 @@ func dataRefreshInfoToPb(st *DataRefreshInfo) (*dataRefreshInfoPb, error) {
 	}
 	pb := &dataRefreshInfoPb{}
 	pb.Interval = st.Interval
-
 	pb.Unit = st.Unit
 
 	return pb, nil
 }
 
 type dataRefreshInfoPb struct {
-	Interval int64 `json:"interval"`
-
-	Unit DataRefresh `json:"unit"`
+	Interval int64       `json:"interval"`
+	Unit     DataRefresh `json:"unit"`
 }
 
 func dataRefreshInfoFromPb(pb *dataRefreshInfoPb) (*DataRefreshInfo, error) {
@@ -905,7 +865,6 @@ func deleteInstallationRequestToPb(st *DeleteInstallationRequest) (*deleteInstal
 	}
 	pb := &deleteInstallationRequestPb{}
 	pb.InstallationId = st.InstallationId
-
 	pb.ListingId = st.ListingId
 
 	return pb, nil
@@ -913,8 +872,7 @@ func deleteInstallationRequestToPb(st *DeleteInstallationRequest) (*deleteInstal
 
 type deleteInstallationRequestPb struct {
 	InstallationId string `json:"-" url:"-"`
-
-	ListingId string `json:"-" url:"-"`
+	ListingId      string `json:"-" url:"-"`
 }
 
 func deleteInstallationRequestFromPb(pb *deleteInstallationRequestPb) (*DeleteInstallationRequest, error) {
@@ -1045,21 +1003,13 @@ func exchangeToPb(st *Exchange) (*exchangePb, error) {
 	}
 	pb := &exchangePb{}
 	pb.Comment = st.Comment
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.Filters = st.Filters
-
 	pb.Id = st.Id
-
 	pb.LinkedListings = st.LinkedListings
-
 	pb.Name = st.Name
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1067,23 +1017,15 @@ func exchangeToPb(st *Exchange) (*exchangePb, error) {
 }
 
 type exchangePb struct {
-	Comment string `json:"comment,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	Filters []ExchangeFilter `json:"filters,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
+	Comment        string            `json:"comment,omitempty"`
+	CreatedAt      int64             `json:"created_at,omitempty"`
+	CreatedBy      string            `json:"created_by,omitempty"`
+	Filters        []ExchangeFilter  `json:"filters,omitempty"`
+	Id             string            `json:"id,omitempty"`
 	LinkedListings []ExchangeListing `json:"linked_listings,omitempty"`
-
-	Name string `json:"name"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	Name           string            `json:"name"`
+	UpdatedAt      int64             `json:"updated_at,omitempty"`
+	UpdatedBy      string            `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1121,21 +1063,13 @@ func exchangeFilterToPb(st *ExchangeFilter) (*exchangeFilterPb, error) {
 	}
 	pb := &exchangeFilterPb{}
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.ExchangeId = st.ExchangeId
-
 	pb.FilterType = st.FilterType
-
 	pb.FilterValue = st.FilterValue
-
 	pb.Id = st.Id
-
 	pb.Name = st.Name
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1143,23 +1077,15 @@ func exchangeFilterToPb(st *ExchangeFilter) (*exchangeFilterPb, error) {
 }
 
 type exchangeFilterPb struct {
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	ExchangeId string `json:"exchange_id"`
-
-	FilterType ExchangeFilterType `json:"filter_type"`
-
-	FilterValue string `json:"filter_value"`
-
-	Id string `json:"id,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	CreatedAt   int64              `json:"created_at,omitempty"`
+	CreatedBy   string             `json:"created_by,omitempty"`
+	ExchangeId  string             `json:"exchange_id"`
+	FilterType  ExchangeFilterType `json:"filter_type"`
+	FilterValue string             `json:"filter_value"`
+	Id          string             `json:"id,omitempty"`
+	Name        string             `json:"name,omitempty"`
+	UpdatedAt   int64              `json:"updated_at,omitempty"`
+	UpdatedBy   string             `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1197,17 +1123,11 @@ func exchangeListingToPb(st *ExchangeListing) (*exchangeListingPb, error) {
 	}
 	pb := &exchangeListingPb{}
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.ExchangeId = st.ExchangeId
-
 	pb.ExchangeName = st.ExchangeName
-
 	pb.Id = st.Id
-
 	pb.ListingId = st.ListingId
-
 	pb.ListingName = st.ListingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1215,19 +1135,13 @@ func exchangeListingToPb(st *ExchangeListing) (*exchangeListingPb, error) {
 }
 
 type exchangeListingPb struct {
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	ExchangeId string `json:"exchange_id,omitempty"`
-
+	CreatedAt    int64  `json:"created_at,omitempty"`
+	CreatedBy    string `json:"created_by,omitempty"`
+	ExchangeId   string `json:"exchange_id,omitempty"`
 	ExchangeName string `json:"exchange_name,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	ListingId string `json:"listing_id,omitempty"`
-
-	ListingName string `json:"listing_name,omitempty"`
+	Id           string `json:"id,omitempty"`
+	ListingId    string `json:"listing_id,omitempty"`
+	ListingName  string `json:"listing_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1263,23 +1177,14 @@ func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
 	}
 	pb := &fileInfoPb{}
 	pb.CreatedAt = st.CreatedAt
-
 	pb.DisplayName = st.DisplayName
-
 	pb.DownloadLink = st.DownloadLink
-
 	pb.FileParent = st.FileParent
-
 	pb.Id = st.Id
-
 	pb.MarketplaceFileType = st.MarketplaceFileType
-
 	pb.MimeType = st.MimeType
-
 	pb.Status = st.Status
-
 	pb.StatusMessage = st.StatusMessage
-
 	pb.UpdatedAt = st.UpdatedAt
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1287,25 +1192,16 @@ func fileInfoToPb(st *FileInfo) (*fileInfoPb, error) {
 }
 
 type fileInfoPb struct {
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	DownloadLink string `json:"download_link,omitempty"`
-
-	FileParent *FileParent `json:"file_parent,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
+	CreatedAt           int64               `json:"created_at,omitempty"`
+	DisplayName         string              `json:"display_name,omitempty"`
+	DownloadLink        string              `json:"download_link,omitempty"`
+	FileParent          *FileParent         `json:"file_parent,omitempty"`
+	Id                  string              `json:"id,omitempty"`
 	MarketplaceFileType MarketplaceFileType `json:"marketplace_file_type,omitempty"`
-
-	MimeType string `json:"mime_type,omitempty"`
-
-	Status FileStatus `json:"status,omitempty"`
-
-	StatusMessage string `json:"status_message,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	MimeType            string              `json:"mime_type,omitempty"`
+	Status              FileStatus          `json:"status,omitempty"`
+	StatusMessage       string              `json:"status_message,omitempty"`
+	UpdatedAt           int64               `json:"updated_at,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1344,7 +1240,6 @@ func fileParentToPb(st *FileParent) (*fileParentPb, error) {
 	}
 	pb := &fileParentPb{}
 	pb.FileParentType = st.FileParentType
-
 	pb.ParentId = st.ParentId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1353,8 +1248,7 @@ func fileParentToPb(st *FileParent) (*fileParentPb, error) {
 
 type fileParentPb struct {
 	FileParentType FileParentType `json:"file_parent_type,omitempty"`
-
-	ParentId string `json:"parent_id,omitempty"`
+	ParentId       string         `json:"parent_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1517,9 +1411,7 @@ func getListingContentMetadataRequestToPb(st *GetListingContentMetadataRequest) 
 	}
 	pb := &getListingContentMetadataRequestPb{}
 	pb.ListingId = st.ListingId
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1528,9 +1420,7 @@ func getListingContentMetadataRequestToPb(st *GetListingContentMetadataRequest) 
 
 type getListingContentMetadataRequestPb struct {
 	ListingId string `json:"-" url:"-"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1563,7 +1453,6 @@ func getListingContentMetadataResponseToPb(st *GetListingContentMetadataResponse
 	}
 	pb := &getListingContentMetadataResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.SharedDataObjects = st.SharedDataObjects
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1571,8 +1460,7 @@ func getListingContentMetadataResponseToPb(st *GetListingContentMetadataResponse
 }
 
 type getListingContentMetadataResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken     string             `json:"next_page_token,omitempty"`
 	SharedDataObjects []SharedDataObject `json:"shared_data_objects,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1652,7 +1540,6 @@ func getListingsRequestToPb(st *GetListingsRequest) (*getListingsRequestPb, erro
 	}
 	pb := &getListingsRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1660,8 +1547,7 @@ func getListingsRequestToPb(st *GetListingsRequest) (*getListingsRequestPb, erro
 }
 
 type getListingsRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1693,7 +1579,6 @@ func getListingsResponseToPb(st *GetListingsResponse) (*getListingsResponsePb, e
 	}
 	pb := &getListingsResponsePb{}
 	pb.Listings = st.Listings
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1701,9 +1586,8 @@ func getListingsResponseToPb(st *GetListingsResponse) (*getListingsResponsePb, e
 }
 
 type getListingsResponsePb struct {
-	Listings []Listing `json:"listings,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Listings      []Listing `json:"listings,omitempty"`
+	NextPageToken string    `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1854,29 +1738,17 @@ func installationDetailToPb(st *InstallationDetail) (*installationDetailPb, erro
 	}
 	pb := &installationDetailPb{}
 	pb.CatalogName = st.CatalogName
-
 	pb.ErrorMessage = st.ErrorMessage
-
 	pb.Id = st.Id
-
 	pb.InstalledOn = st.InstalledOn
-
 	pb.ListingId = st.ListingId
-
 	pb.ListingName = st.ListingName
-
 	pb.RecipientType = st.RecipientType
-
 	pb.RepoName = st.RepoName
-
 	pb.RepoPath = st.RepoPath
-
 	pb.ShareName = st.ShareName
-
 	pb.Status = st.Status
-
 	pb.TokenDetail = st.TokenDetail
-
 	pb.Tokens = st.Tokens
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1884,31 +1756,19 @@ func installationDetailToPb(st *InstallationDetail) (*installationDetailPb, erro
 }
 
 type installationDetailPb struct {
-	CatalogName string `json:"catalog_name,omitempty"`
-
-	ErrorMessage string `json:"error_message,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	InstalledOn int64 `json:"installed_on,omitempty"`
-
-	ListingId string `json:"listing_id,omitempty"`
-
-	ListingName string `json:"listing_name,omitempty"`
-
+	CatalogName   string                    `json:"catalog_name,omitempty"`
+	ErrorMessage  string                    `json:"error_message,omitempty"`
+	Id            string                    `json:"id,omitempty"`
+	InstalledOn   int64                     `json:"installed_on,omitempty"`
+	ListingId     string                    `json:"listing_id,omitempty"`
+	ListingName   string                    `json:"listing_name,omitempty"`
 	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
-
-	RepoName string `json:"repo_name,omitempty"`
-
-	RepoPath string `json:"repo_path,omitempty"`
-
-	ShareName string `json:"share_name,omitempty"`
-
-	Status InstallationStatus `json:"status,omitempty"`
-
-	TokenDetail *TokenDetail `json:"token_detail,omitempty"`
-
-	Tokens []TokenInfo `json:"tokens,omitempty"`
+	RepoName      string                    `json:"repo_name,omitempty"`
+	RepoPath      string                    `json:"repo_path,omitempty"`
+	ShareName     string                    `json:"share_name,omitempty"`
+	Status        InstallationStatus        `json:"status,omitempty"`
+	TokenDetail   *TokenDetail              `json:"token_detail,omitempty"`
+	Tokens        []TokenInfo               `json:"tokens,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1950,7 +1810,6 @@ func listAllInstallationsRequestToPb(st *ListAllInstallationsRequest) (*listAllI
 	}
 	pb := &listAllInstallationsRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1958,8 +1817,7 @@ func listAllInstallationsRequestToPb(st *ListAllInstallationsRequest) (*listAllI
 }
 
 type listAllInstallationsRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1991,7 +1849,6 @@ func listAllInstallationsResponseToPb(st *ListAllInstallationsResponse) (*listAl
 	}
 	pb := &listAllInstallationsResponsePb{}
 	pb.Installations = st.Installations
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2000,8 +1857,7 @@ func listAllInstallationsResponseToPb(st *ListAllInstallationsResponse) (*listAl
 
 type listAllInstallationsResponsePb struct {
 	Installations []InstallationDetail `json:"installations,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	NextPageToken string               `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2032,7 +1888,6 @@ func listAllPersonalizationRequestsRequestToPb(st *ListAllPersonalizationRequest
 	}
 	pb := &listAllPersonalizationRequestsRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2040,8 +1895,7 @@ func listAllPersonalizationRequestsRequestToPb(st *ListAllPersonalizationRequest
 }
 
 type listAllPersonalizationRequestsRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2073,7 +1927,6 @@ func listAllPersonalizationRequestsResponseToPb(st *ListAllPersonalizationReques
 	}
 	pb := &listAllPersonalizationRequestsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.PersonalizationRequests = st.PersonalizationRequests
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2081,8 +1934,7 @@ func listAllPersonalizationRequestsResponseToPb(st *ListAllPersonalizationReques
 }
 
 type listAllPersonalizationRequestsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken           string                   `json:"next_page_token,omitempty"`
 	PersonalizationRequests []PersonalizationRequest `json:"personalization_requests,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2114,9 +1966,7 @@ func listExchangeFiltersRequestToPb(st *ListExchangeFiltersRequest) (*listExchan
 	}
 	pb := &listExchangeFiltersRequestPb{}
 	pb.ExchangeId = st.ExchangeId
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2125,10 +1975,8 @@ func listExchangeFiltersRequestToPb(st *ListExchangeFiltersRequest) (*listExchan
 
 type listExchangeFiltersRequestPb struct {
 	ExchangeId string `json:"-" url:"exchange_id"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageSize   int    `json:"-" url:"page_size,omitempty"`
+	PageToken  string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2160,7 +2008,6 @@ func listExchangeFiltersResponseToPb(st *ListExchangeFiltersResponse) (*listExch
 	}
 	pb := &listExchangeFiltersResponsePb{}
 	pb.Filters = st.Filters
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2168,9 +2015,8 @@ func listExchangeFiltersResponseToPb(st *ListExchangeFiltersResponse) (*listExch
 }
 
 type listExchangeFiltersResponsePb struct {
-	Filters []ExchangeFilter `json:"filters,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Filters       []ExchangeFilter `json:"filters,omitempty"`
+	NextPageToken string           `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2201,9 +2047,7 @@ func listExchangesForListingRequestToPb(st *ListExchangesForListingRequest) (*li
 	}
 	pb := &listExchangesForListingRequestPb{}
 	pb.ListingId = st.ListingId
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2212,9 +2056,7 @@ func listExchangesForListingRequestToPb(st *ListExchangesForListingRequest) (*li
 
 type listExchangesForListingRequestPb struct {
 	ListingId string `json:"-" url:"listing_id"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2247,7 +2089,6 @@ func listExchangesForListingResponseToPb(st *ListExchangesForListingResponse) (*
 	}
 	pb := &listExchangesForListingResponsePb{}
 	pb.ExchangeListing = st.ExchangeListing
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2256,8 +2097,7 @@ func listExchangesForListingResponseToPb(st *ListExchangesForListingResponse) (*
 
 type listExchangesForListingResponsePb struct {
 	ExchangeListing []ExchangeListing `json:"exchange_listing,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	NextPageToken   string            `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2288,7 +2128,6 @@ func listExchangesRequestToPb(st *ListExchangesRequest) (*listExchangesRequestPb
 	}
 	pb := &listExchangesRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2296,8 +2135,7 @@ func listExchangesRequestToPb(st *ListExchangesRequest) (*listExchangesRequestPb
 }
 
 type listExchangesRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2329,7 +2167,6 @@ func listExchangesResponseToPb(st *ListExchangesResponse) (*listExchangesRespons
 	}
 	pb := &listExchangesResponsePb{}
 	pb.Exchanges = st.Exchanges
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2337,9 +2174,8 @@ func listExchangesResponseToPb(st *ListExchangesResponse) (*listExchangesRespons
 }
 
 type listExchangesResponsePb struct {
-	Exchanges []Exchange `json:"exchanges,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Exchanges     []Exchange `json:"exchanges,omitempty"`
+	NextPageToken string     `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2370,9 +2206,7 @@ func listFilesRequestToPb(st *ListFilesRequest) (*listFilesRequestPb, error) {
 	}
 	pb := &listFilesRequestPb{}
 	pb.FileParent = st.FileParent
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2381,10 +2215,8 @@ func listFilesRequestToPb(st *ListFilesRequest) (*listFilesRequestPb, error) {
 
 type listFilesRequestPb struct {
 	FileParent FileParent `json:"-" url:"file_parent"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageSize   int        `json:"-" url:"page_size,omitempty"`
+	PageToken  string     `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2416,7 +2248,6 @@ func listFilesResponseToPb(st *ListFilesResponse) (*listFilesResponsePb, error) 
 	}
 	pb := &listFilesResponsePb{}
 	pb.FileInfos = st.FileInfos
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2424,9 +2255,8 @@ func listFilesResponseToPb(st *ListFilesResponse) (*listFilesResponsePb, error) 
 }
 
 type listFilesResponsePb struct {
-	FileInfos []FileInfo `json:"file_infos,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	FileInfos     []FileInfo `json:"file_infos,omitempty"`
+	NextPageToken string     `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2457,9 +2287,7 @@ func listFulfillmentsRequestToPb(st *ListFulfillmentsRequest) (*listFulfillments
 	}
 	pb := &listFulfillmentsRequestPb{}
 	pb.ListingId = st.ListingId
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2468,9 +2296,7 @@ func listFulfillmentsRequestToPb(st *ListFulfillmentsRequest) (*listFulfillments
 
 type listFulfillmentsRequestPb struct {
 	ListingId string `json:"-" url:"-"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2503,7 +2329,6 @@ func listFulfillmentsResponseToPb(st *ListFulfillmentsResponse) (*listFulfillmen
 	}
 	pb := &listFulfillmentsResponsePb{}
 	pb.Fulfillments = st.Fulfillments
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2511,9 +2336,8 @@ func listFulfillmentsResponseToPb(st *ListFulfillmentsResponse) (*listFulfillmen
 }
 
 type listFulfillmentsResponsePb struct {
-	Fulfillments []ListingFulfillment `json:"fulfillments,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Fulfillments  []ListingFulfillment `json:"fulfillments,omitempty"`
+	NextPageToken string               `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2544,9 +2368,7 @@ func listInstallationsRequestToPb(st *ListInstallationsRequest) (*listInstallati
 	}
 	pb := &listInstallationsRequestPb{}
 	pb.ListingId = st.ListingId
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2555,9 +2377,7 @@ func listInstallationsRequestToPb(st *ListInstallationsRequest) (*listInstallati
 
 type listInstallationsRequestPb struct {
 	ListingId string `json:"-" url:"-"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2590,7 +2410,6 @@ func listInstallationsResponseToPb(st *ListInstallationsResponse) (*listInstalla
 	}
 	pb := &listInstallationsResponsePb{}
 	pb.Installations = st.Installations
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2599,8 +2418,7 @@ func listInstallationsResponseToPb(st *ListInstallationsResponse) (*listInstalla
 
 type listInstallationsResponsePb struct {
 	Installations []InstallationDetail `json:"installations,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	NextPageToken string               `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2631,9 +2449,7 @@ func listListingsForExchangeRequestToPb(st *ListListingsForExchangeRequest) (*li
 	}
 	pb := &listListingsForExchangeRequestPb{}
 	pb.ExchangeId = st.ExchangeId
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2642,10 +2458,8 @@ func listListingsForExchangeRequestToPb(st *ListListingsForExchangeRequest) (*li
 
 type listListingsForExchangeRequestPb struct {
 	ExchangeId string `json:"-" url:"exchange_id"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageSize   int    `json:"-" url:"page_size,omitempty"`
+	PageToken  string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2677,7 +2491,6 @@ func listListingsForExchangeResponseToPb(st *ListListingsForExchangeResponse) (*
 	}
 	pb := &listListingsForExchangeResponsePb{}
 	pb.ExchangeListings = st.ExchangeListings
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2686,8 +2499,7 @@ func listListingsForExchangeResponseToPb(st *ListListingsForExchangeResponse) (*
 
 type listListingsForExchangeResponsePb struct {
 	ExchangeListings []ExchangeListing `json:"exchange_listings,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	NextPageToken    string            `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2718,21 +2530,13 @@ func listListingsRequestToPb(st *ListListingsRequest) (*listListingsRequestPb, e
 	}
 	pb := &listListingsRequestPb{}
 	pb.Assets = st.Assets
-
 	pb.Categories = st.Categories
-
 	pb.IsFree = st.IsFree
-
 	pb.IsPrivateExchange = st.IsPrivateExchange
-
 	pb.IsStaffPick = st.IsStaffPick
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
-
 	pb.ProviderIds = st.ProviderIds
-
 	pb.Tags = st.Tags
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2740,23 +2544,15 @@ func listListingsRequestToPb(st *ListListingsRequest) (*listListingsRequestPb, e
 }
 
 type listListingsRequestPb struct {
-	Assets []AssetType `json:"-" url:"assets,omitempty"`
-
-	Categories []Category `json:"-" url:"categories,omitempty"`
-
-	IsFree bool `json:"-" url:"is_free,omitempty"`
-
-	IsPrivateExchange bool `json:"-" url:"is_private_exchange,omitempty"`
-
-	IsStaffPick bool `json:"-" url:"is_staff_pick,omitempty"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ProviderIds []string `json:"-" url:"provider_ids,omitempty"`
-
-	Tags []ListingTag `json:"-" url:"tags,omitempty"`
+	Assets            []AssetType  `json:"-" url:"assets,omitempty"`
+	Categories        []Category   `json:"-" url:"categories,omitempty"`
+	IsFree            bool         `json:"-" url:"is_free,omitempty"`
+	IsPrivateExchange bool         `json:"-" url:"is_private_exchange,omitempty"`
+	IsStaffPick       bool         `json:"-" url:"is_staff_pick,omitempty"`
+	PageSize          int          `json:"-" url:"page_size,omitempty"`
+	PageToken         string       `json:"-" url:"page_token,omitempty"`
+	ProviderIds       []string     `json:"-" url:"provider_ids,omitempty"`
+	Tags              []ListingTag `json:"-" url:"tags,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2794,7 +2590,6 @@ func listListingsResponseToPb(st *ListListingsResponse) (*listListingsResponsePb
 	}
 	pb := &listListingsResponsePb{}
 	pb.Listings = st.Listings
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2802,9 +2597,8 @@ func listListingsResponseToPb(st *ListListingsResponse) (*listListingsResponsePb
 }
 
 type listListingsResponsePb struct {
-	Listings []Listing `json:"listings,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Listings      []Listing `json:"listings,omitempty"`
+	NextPageToken string    `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2835,9 +2629,7 @@ func listProviderAnalyticsDashboardResponseToPb(st *ListProviderAnalyticsDashboa
 	}
 	pb := &listProviderAnalyticsDashboardResponsePb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.Id = st.Id
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2846,10 +2638,8 @@ func listProviderAnalyticsDashboardResponseToPb(st *ListProviderAnalyticsDashboa
 
 type listProviderAnalyticsDashboardResponsePb struct {
 	DashboardId string `json:"dashboard_id"`
-
-	Id string `json:"id"`
-
-	Version int64 `json:"version,omitempty"`
+	Id          string `json:"id"`
+	Version     int64  `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2881,9 +2671,7 @@ func listProvidersRequestToPb(st *ListProvidersRequest) (*listProvidersRequestPb
 	}
 	pb := &listProvidersRequestPb{}
 	pb.IsFeatured = st.IsFeatured
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2891,11 +2679,9 @@ func listProvidersRequestToPb(st *ListProvidersRequest) (*listProvidersRequestPb
 }
 
 type listProvidersRequestPb struct {
-	IsFeatured bool `json:"-" url:"is_featured,omitempty"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	IsFeatured bool   `json:"-" url:"is_featured,omitempty"`
+	PageSize   int    `json:"-" url:"page_size,omitempty"`
+	PageToken  string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2927,7 +2713,6 @@ func listProvidersResponseToPb(st *ListProvidersResponse) (*listProvidersRespons
 	}
 	pb := &listProvidersResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Providers = st.Providers
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2935,9 +2720,8 @@ func listProvidersResponseToPb(st *ListProvidersResponse) (*listProvidersRespons
 }
 
 type listProvidersResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Providers []ProviderInfo `json:"providers,omitempty"`
+	NextPageToken string         `json:"next_page_token,omitempty"`
+	Providers     []ProviderInfo `json:"providers,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2968,9 +2752,7 @@ func listingToPb(st *Listing) (*listingPb, error) {
 	}
 	pb := &listingPb{}
 	pb.Detail = st.Detail
-
 	pb.Id = st.Id
-
 	pb.Summary = st.Summary
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2978,10 +2760,8 @@ func listingToPb(st *Listing) (*listingPb, error) {
 }
 
 type listingPb struct {
-	Detail *ListingDetail `json:"detail,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
+	Detail  *ListingDetail `json:"detail,omitempty"`
+	Id      string         `json:"id,omitempty"`
 	Summary ListingSummary `json:"summary"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3014,41 +2794,23 @@ func listingDetailToPb(st *ListingDetail) (*listingDetailPb, error) {
 	}
 	pb := &listingDetailPb{}
 	pb.Assets = st.Assets
-
 	pb.CollectionDateEnd = st.CollectionDateEnd
-
 	pb.CollectionDateStart = st.CollectionDateStart
-
 	pb.CollectionGranularity = st.CollectionGranularity
-
 	pb.Cost = st.Cost
-
 	pb.DataSource = st.DataSource
-
 	pb.Description = st.Description
-
 	pb.DocumentationLink = st.DocumentationLink
-
 	pb.EmbeddedNotebookFileInfos = st.EmbeddedNotebookFileInfos
-
 	pb.FileIds = st.FileIds
-
 	pb.GeographicalCoverage = st.GeographicalCoverage
-
 	pb.License = st.License
-
 	pb.PricingModel = st.PricingModel
-
 	pb.PrivacyPolicyLink = st.PrivacyPolicyLink
-
 	pb.Size = st.Size
-
 	pb.SupportLink = st.SupportLink
-
 	pb.Tags = st.Tags
-
 	pb.TermsOfService = st.TermsOfService
-
 	pb.UpdateFrequency = st.UpdateFrequency
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3056,43 +2818,25 @@ func listingDetailToPb(st *ListingDetail) (*listingDetailPb, error) {
 }
 
 type listingDetailPb struct {
-	Assets []AssetType `json:"assets,omitempty"`
-
-	CollectionDateEnd int64 `json:"collection_date_end,omitempty"`
-
-	CollectionDateStart int64 `json:"collection_date_start,omitempty"`
-
-	CollectionGranularity *DataRefreshInfo `json:"collection_granularity,omitempty"`
-
-	Cost Cost `json:"cost,omitempty"`
-
-	DataSource string `json:"data_source,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	DocumentationLink string `json:"documentation_link,omitempty"`
-
-	EmbeddedNotebookFileInfos []FileInfo `json:"embedded_notebook_file_infos,omitempty"`
-
-	FileIds []string `json:"file_ids,omitempty"`
-
-	GeographicalCoverage string `json:"geographical_coverage,omitempty"`
-
-	License string `json:"license,omitempty"`
-
-	PricingModel string `json:"pricing_model,omitempty"`
-
-	PrivacyPolicyLink string `json:"privacy_policy_link,omitempty"`
-
-	Size float64 `json:"size,omitempty"`
-
-	SupportLink string `json:"support_link,omitempty"`
-
-	Tags []ListingTag `json:"tags,omitempty"`
-
-	TermsOfService string `json:"terms_of_service,omitempty"`
-
-	UpdateFrequency *DataRefreshInfo `json:"update_frequency,omitempty"`
+	Assets                    []AssetType      `json:"assets,omitempty"`
+	CollectionDateEnd         int64            `json:"collection_date_end,omitempty"`
+	CollectionDateStart       int64            `json:"collection_date_start,omitempty"`
+	CollectionGranularity     *DataRefreshInfo `json:"collection_granularity,omitempty"`
+	Cost                      Cost             `json:"cost,omitempty"`
+	DataSource                string           `json:"data_source,omitempty"`
+	Description               string           `json:"description,omitempty"`
+	DocumentationLink         string           `json:"documentation_link,omitempty"`
+	EmbeddedNotebookFileInfos []FileInfo       `json:"embedded_notebook_file_infos,omitempty"`
+	FileIds                   []string         `json:"file_ids,omitempty"`
+	GeographicalCoverage      string           `json:"geographical_coverage,omitempty"`
+	License                   string           `json:"license,omitempty"`
+	PricingModel              string           `json:"pricing_model,omitempty"`
+	PrivacyPolicyLink         string           `json:"privacy_policy_link,omitempty"`
+	Size                      float64          `json:"size,omitempty"`
+	SupportLink               string           `json:"support_link,omitempty"`
+	Tags                      []ListingTag     `json:"tags,omitempty"`
+	TermsOfService            string           `json:"terms_of_service,omitempty"`
+	UpdateFrequency           *DataRefreshInfo `json:"update_frequency,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3140,28 +2884,20 @@ func listingFulfillmentToPb(st *ListingFulfillment) (*listingFulfillmentPb, erro
 	}
 	pb := &listingFulfillmentPb{}
 	pb.FulfillmentType = st.FulfillmentType
-
 	pb.ListingId = st.ListingId
-
 	pb.RecipientType = st.RecipientType
-
 	pb.RepoInfo = st.RepoInfo
-
 	pb.ShareInfo = st.ShareInfo
 
 	return pb, nil
 }
 
 type listingFulfillmentPb struct {
-	FulfillmentType FulfillmentType `json:"fulfillment_type,omitempty"`
-
-	ListingId string `json:"listing_id"`
-
-	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
-
-	RepoInfo *RepoInfo `json:"repo_info,omitempty"`
-
-	ShareInfo *ShareInfo `json:"share_info,omitempty"`
+	FulfillmentType FulfillmentType           `json:"fulfillment_type,omitempty"`
+	ListingId       string                    `json:"listing_id"`
+	RecipientType   DeltaSharingRecipientType `json:"recipient_type,omitempty"`
+	RepoInfo        *RepoInfo                 `json:"repo_info,omitempty"`
+	ShareInfo       *ShareInfo                `json:"share_info,omitempty"`
 }
 
 func listingFulfillmentFromPb(pb *listingFulfillmentPb) (*ListingFulfillment, error) {
@@ -3208,41 +2944,23 @@ func listingSummaryToPb(st *ListingSummary) (*listingSummaryPb, error) {
 	}
 	pb := &listingSummaryPb{}
 	pb.Categories = st.Categories
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.CreatedById = st.CreatedById
-
 	pb.ExchangeIds = st.ExchangeIds
-
 	pb.GitRepo = st.GitRepo
-
 	pb.ListingType = st.ListingType
-
 	pb.Name = st.Name
-
 	pb.ProviderId = st.ProviderId
-
 	pb.ProviderRegion = st.ProviderRegion
-
 	pb.PublishedAt = st.PublishedAt
-
 	pb.PublishedBy = st.PublishedBy
-
 	pb.Setting = st.Setting
-
 	pb.Share = st.Share
-
 	pb.Status = st.Status
-
 	pb.Subtitle = st.Subtitle
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
-
 	pb.UpdatedById = st.UpdatedById
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3250,43 +2968,25 @@ func listingSummaryToPb(st *ListingSummary) (*listingSummaryPb, error) {
 }
 
 type listingSummaryPb struct {
-	Categories []Category `json:"categories,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	CreatedById int64 `json:"created_by_id,omitempty"`
-
-	ExchangeIds []string `json:"exchange_ids,omitempty"`
-
-	GitRepo *RepoInfo `json:"git_repo,omitempty"`
-
-	ListingType ListingType `json:"listingType"`
-
-	Name string `json:"name"`
-
-	ProviderId string `json:"provider_id,omitempty"`
-
-	ProviderRegion *RegionInfo `json:"provider_region,omitempty"`
-
-	PublishedAt int64 `json:"published_at,omitempty"`
-
-	PublishedBy string `json:"published_by,omitempty"`
-
-	Setting *ListingSetting `json:"setting,omitempty"`
-
-	Share *ShareInfo `json:"share,omitempty"`
-
-	Status ListingStatus `json:"status,omitempty"`
-
-	Subtitle string `json:"subtitle,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
-
-	UpdatedById int64 `json:"updated_by_id,omitempty"`
+	Categories     []Category      `json:"categories,omitempty"`
+	CreatedAt      int64           `json:"created_at,omitempty"`
+	CreatedBy      string          `json:"created_by,omitempty"`
+	CreatedById    int64           `json:"created_by_id,omitempty"`
+	ExchangeIds    []string        `json:"exchange_ids,omitempty"`
+	GitRepo        *RepoInfo       `json:"git_repo,omitempty"`
+	ListingType    ListingType     `json:"listingType"`
+	Name           string          `json:"name"`
+	ProviderId     string          `json:"provider_id,omitempty"`
+	ProviderRegion *RegionInfo     `json:"provider_region,omitempty"`
+	PublishedAt    int64           `json:"published_at,omitempty"`
+	PublishedBy    string          `json:"published_by,omitempty"`
+	Setting        *ListingSetting `json:"setting,omitempty"`
+	Share          *ShareInfo      `json:"share,omitempty"`
+	Status         ListingStatus   `json:"status,omitempty"`
+	Subtitle       string          `json:"subtitle,omitempty"`
+	UpdatedAt      int64           `json:"updated_at,omitempty"`
+	UpdatedBy      string          `json:"updated_by,omitempty"`
+	UpdatedById    int64           `json:"updated_by_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3334,16 +3034,14 @@ func listingTagToPb(st *ListingTag) (*listingTagPb, error) {
 	}
 	pb := &listingTagPb{}
 	pb.TagName = st.TagName
-
 	pb.TagValues = st.TagValues
 
 	return pb, nil
 }
 
 type listingTagPb struct {
-	TagName ListingTagType `json:"tag_name,omitempty"`
-
-	TagValues []string `json:"tag_values,omitempty"`
+	TagName   ListingTagType `json:"tag_name,omitempty"`
+	TagValues []string       `json:"tag_values,omitempty"`
 }
 
 func listingTagFromPb(pb *listingTagPb) (*ListingTag, error) {
@@ -3363,35 +3061,20 @@ func personalizationRequestToPb(st *PersonalizationRequest) (*personalizationReq
 	}
 	pb := &personalizationRequestPb{}
 	pb.Comment = st.Comment
-
 	pb.ConsumerRegion = st.ConsumerRegion
-
 	pb.ContactInfo = st.ContactInfo
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.Id = st.Id
-
 	pb.IntendedUse = st.IntendedUse
-
 	pb.IsFromLighthouse = st.IsFromLighthouse
-
 	pb.ListingId = st.ListingId
-
 	pb.ListingName = st.ListingName
-
 	pb.MetastoreId = st.MetastoreId
-
 	pb.ProviderId = st.ProviderId
-
 	pb.RecipientType = st.RecipientType
-
 	pb.Share = st.Share
-
 	pb.Status = st.Status
-
 	pb.StatusMessage = st.StatusMessage
-
 	pb.UpdatedAt = st.UpdatedAt
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3399,37 +3082,22 @@ func personalizationRequestToPb(st *PersonalizationRequest) (*personalizationReq
 }
 
 type personalizationRequestPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	ConsumerRegion RegionInfo `json:"consumer_region"`
-
-	ContactInfo *ContactInfo `json:"contact_info,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	IntendedUse string `json:"intended_use,omitempty"`
-
-	IsFromLighthouse bool `json:"is_from_lighthouse,omitempty"`
-
-	ListingId string `json:"listing_id,omitempty"`
-
-	ListingName string `json:"listing_name,omitempty"`
-
-	MetastoreId string `json:"metastore_id,omitempty"`
-
-	ProviderId string `json:"provider_id,omitempty"`
-
-	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
-
-	Share *ShareInfo `json:"share,omitempty"`
-
-	Status PersonalizationRequestStatus `json:"status,omitempty"`
-
-	StatusMessage string `json:"status_message,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	Comment          string                       `json:"comment,omitempty"`
+	ConsumerRegion   RegionInfo                   `json:"consumer_region"`
+	ContactInfo      *ContactInfo                 `json:"contact_info,omitempty"`
+	CreatedAt        int64                        `json:"created_at,omitempty"`
+	Id               string                       `json:"id,omitempty"`
+	IntendedUse      string                       `json:"intended_use,omitempty"`
+	IsFromLighthouse bool                         `json:"is_from_lighthouse,omitempty"`
+	ListingId        string                       `json:"listing_id,omitempty"`
+	ListingName      string                       `json:"listing_name,omitempty"`
+	MetastoreId      string                       `json:"metastore_id,omitempty"`
+	ProviderId       string                       `json:"provider_id,omitempty"`
+	RecipientType    DeltaSharingRecipientType    `json:"recipient_type,omitempty"`
+	Share            *ShareInfo                   `json:"share,omitempty"`
+	Status           PersonalizationRequestStatus `json:"status,omitempty"`
+	StatusMessage    string                       `json:"status_message,omitempty"`
+	UpdatedAt        int64                        `json:"updated_at,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3498,31 +3166,18 @@ func providerInfoToPb(st *ProviderInfo) (*providerInfoPb, error) {
 	}
 	pb := &providerInfoPb{}
 	pb.BusinessContactEmail = st.BusinessContactEmail
-
 	pb.CompanyWebsiteLink = st.CompanyWebsiteLink
-
 	pb.DarkModeIconFileId = st.DarkModeIconFileId
-
 	pb.DarkModeIconFilePath = st.DarkModeIconFilePath
-
 	pb.Description = st.Description
-
 	pb.IconFileId = st.IconFileId
-
 	pb.IconFilePath = st.IconFilePath
-
 	pb.Id = st.Id
-
 	pb.IsFeatured = st.IsFeatured
-
 	pb.Name = st.Name
-
 	pb.PrivacyPolicyLink = st.PrivacyPolicyLink
-
 	pb.PublishedBy = st.PublishedBy
-
 	pb.SupportContactEmail = st.SupportContactEmail
-
 	pb.TermOfServiceLink = st.TermOfServiceLink
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3531,32 +3186,19 @@ func providerInfoToPb(st *ProviderInfo) (*providerInfoPb, error) {
 
 type providerInfoPb struct {
 	BusinessContactEmail string `json:"business_contact_email"`
-
-	CompanyWebsiteLink string `json:"company_website_link,omitempty"`
-
-	DarkModeIconFileId string `json:"dark_mode_icon_file_id,omitempty"`
-
+	CompanyWebsiteLink   string `json:"company_website_link,omitempty"`
+	DarkModeIconFileId   string `json:"dark_mode_icon_file_id,omitempty"`
 	DarkModeIconFilePath string `json:"dark_mode_icon_file_path,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	IconFileId string `json:"icon_file_id,omitempty"`
-
-	IconFilePath string `json:"icon_file_path,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	IsFeatured bool `json:"is_featured,omitempty"`
-
-	Name string `json:"name"`
-
-	PrivacyPolicyLink string `json:"privacy_policy_link"`
-
-	PublishedBy string `json:"published_by,omitempty"`
-
-	SupportContactEmail string `json:"support_contact_email,omitempty"`
-
-	TermOfServiceLink string `json:"term_of_service_link"`
+	Description          string `json:"description,omitempty"`
+	IconFileId           string `json:"icon_file_id,omitempty"`
+	IconFilePath         string `json:"icon_file_path,omitempty"`
+	Id                   string `json:"id,omitempty"`
+	IsFeatured           bool   `json:"is_featured,omitempty"`
+	Name                 string `json:"name"`
+	PrivacyPolicyLink    string `json:"privacy_policy_link"`
+	PublishedBy          string `json:"published_by,omitempty"`
+	SupportContactEmail  string `json:"support_contact_email,omitempty"`
+	TermOfServiceLink    string `json:"term_of_service_link"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3599,7 +3241,6 @@ func regionInfoToPb(st *RegionInfo) (*regionInfoPb, error) {
 	}
 	pb := &regionInfoPb{}
 	pb.Cloud = st.Cloud
-
 	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3607,8 +3248,7 @@ func regionInfoToPb(st *RegionInfo) (*regionInfoPb, error) {
 }
 
 type regionInfoPb struct {
-	Cloud string `json:"cloud,omitempty"`
-
+	Cloud  string `json:"cloud,omitempty"`
 	Region string `json:"region,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3709,7 +3349,6 @@ func repoInstallationToPb(st *RepoInstallation) (*repoInstallationPb, error) {
 	}
 	pb := &repoInstallationPb{}
 	pb.RepoName = st.RepoName
-
 	pb.RepoPath = st.RepoPath
 
 	return pb, nil
@@ -3717,7 +3356,6 @@ func repoInstallationToPb(st *RepoInstallation) (*repoInstallationPb, error) {
 
 type repoInstallationPb struct {
 	RepoName string `json:"repo_name"`
-
 	RepoPath string `json:"repo_path"`
 }
 
@@ -3738,19 +3376,12 @@ func searchListingsRequestToPb(st *SearchListingsRequest) (*searchListingsReques
 	}
 	pb := &searchListingsRequestPb{}
 	pb.Assets = st.Assets
-
 	pb.Categories = st.Categories
-
 	pb.IsFree = st.IsFree
-
 	pb.IsPrivateExchange = st.IsPrivateExchange
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
-
 	pb.ProviderIds = st.ProviderIds
-
 	pb.Query = st.Query
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3758,21 +3389,14 @@ func searchListingsRequestToPb(st *SearchListingsRequest) (*searchListingsReques
 }
 
 type searchListingsRequestPb struct {
-	Assets []AssetType `json:"-" url:"assets,omitempty"`
-
-	Categories []Category `json:"-" url:"categories,omitempty"`
-
-	IsFree bool `json:"-" url:"is_free,omitempty"`
-
-	IsPrivateExchange bool `json:"-" url:"is_private_exchange,omitempty"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ProviderIds []string `json:"-" url:"provider_ids,omitempty"`
-
-	Query string `json:"-" url:"query"`
+	Assets            []AssetType `json:"-" url:"assets,omitempty"`
+	Categories        []Category  `json:"-" url:"categories,omitempty"`
+	IsFree            bool        `json:"-" url:"is_free,omitempty"`
+	IsPrivateExchange bool        `json:"-" url:"is_private_exchange,omitempty"`
+	PageSize          int         `json:"-" url:"page_size,omitempty"`
+	PageToken         string      `json:"-" url:"page_token,omitempty"`
+	ProviderIds       []string    `json:"-" url:"provider_ids,omitempty"`
+	Query             string      `json:"-" url:"query"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3809,7 +3433,6 @@ func searchListingsResponseToPb(st *SearchListingsResponse) (*searchListingsResp
 	}
 	pb := &searchListingsResponsePb{}
 	pb.Listings = st.Listings
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3817,9 +3440,8 @@ func searchListingsResponseToPb(st *SearchListingsResponse) (*searchListingsResp
 }
 
 type searchListingsResponsePb struct {
-	Listings []Listing `json:"listings,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Listings      []Listing `json:"listings,omitempty"`
+	NextPageToken string    `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3850,15 +3472,13 @@ func shareInfoToPb(st *ShareInfo) (*shareInfoPb, error) {
 	}
 	pb := &shareInfoPb{}
 	pb.Name = st.Name
-
 	pb.Type = st.Type
 
 	return pb, nil
 }
 
 type shareInfoPb struct {
-	Name string `json:"name"`
-
+	Name string           `json:"name"`
 	Type ListingShareType `json:"type"`
 }
 
@@ -3879,7 +3499,6 @@ func sharedDataObjectToPb(st *SharedDataObject) (*sharedDataObjectPb, error) {
 	}
 	pb := &sharedDataObjectPb{}
 	pb.DataObjectType = st.DataObjectType
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3888,8 +3507,7 @@ func sharedDataObjectToPb(st *SharedDataObject) (*sharedDataObjectPb, error) {
 
 type sharedDataObjectPb struct {
 	DataObjectType string `json:"data_object_type,omitempty"`
-
-	Name string `json:"name,omitempty"`
+	Name           string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3920,11 +3538,8 @@ func tokenDetailToPb(st *TokenDetail) (*tokenDetailPb, error) {
 	}
 	pb := &tokenDetailPb{}
 	pb.BearerToken = st.BearerToken
-
 	pb.Endpoint = st.Endpoint
-
 	pb.ExpirationTime = st.ExpirationTime
-
 	pb.ShareCredentialsVersion = st.ShareCredentialsVersion
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3932,13 +3547,10 @@ func tokenDetailToPb(st *TokenDetail) (*tokenDetailPb, error) {
 }
 
 type tokenDetailPb struct {
-	BearerToken string `json:"bearerToken,omitempty"`
-
-	Endpoint string `json:"endpoint,omitempty"`
-
-	ExpirationTime string `json:"expirationTime,omitempty"`
-
-	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
+	BearerToken             string `json:"bearerToken,omitempty"`
+	Endpoint                string `json:"endpoint,omitempty"`
+	ExpirationTime          string `json:"expirationTime,omitempty"`
+	ShareCredentialsVersion int    `json:"shareCredentialsVersion,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3971,17 +3583,11 @@ func tokenInfoToPb(st *TokenInfo) (*tokenInfoPb, error) {
 	}
 	pb := &tokenInfoPb{}
 	pb.ActivationUrl = st.ActivationUrl
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.ExpirationTime = st.ExpirationTime
-
 	pb.Id = st.Id
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3989,19 +3595,13 @@ func tokenInfoToPb(st *TokenInfo) (*tokenInfoPb, error) {
 }
 
 type tokenInfoPb struct {
-	ActivationUrl string `json:"activation_url,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy string `json:"created_by,omitempty"`
-
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy string `json:"updated_by,omitempty"`
+	ActivationUrl  string `json:"activation_url,omitempty"`
+	CreatedAt      int64  `json:"created_at,omitempty"`
+	CreatedBy      string `json:"created_by,omitempty"`
+	ExpirationTime int64  `json:"expiration_time,omitempty"`
+	Id             string `json:"id,omitempty"`
+	UpdatedAt      int64  `json:"updated_at,omitempty"`
+	UpdatedBy      string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4037,7 +3637,6 @@ func updateExchangeFilterRequestToPb(st *UpdateExchangeFilterRequest) (*updateEx
 	}
 	pb := &updateExchangeFilterRequestPb{}
 	pb.Filter = st.Filter
-
 	pb.Id = st.Id
 
 	return pb, nil
@@ -4045,8 +3644,7 @@ func updateExchangeFilterRequestToPb(st *UpdateExchangeFilterRequest) (*updateEx
 
 type updateExchangeFilterRequestPb struct {
 	Filter ExchangeFilter `json:"filter"`
-
-	Id string `json:"-" url:"-"`
+	Id     string         `json:"-" url:"-"`
 }
 
 func updateExchangeFilterRequestFromPb(pb *updateExchangeFilterRequestPb) (*UpdateExchangeFilterRequest, error) {
@@ -4090,7 +3688,6 @@ func updateExchangeRequestToPb(st *UpdateExchangeRequest) (*updateExchangeReques
 	}
 	pb := &updateExchangeRequestPb{}
 	pb.Exchange = st.Exchange
-
 	pb.Id = st.Id
 
 	return pb, nil
@@ -4098,8 +3695,7 @@ func updateExchangeRequestToPb(st *UpdateExchangeRequest) (*updateExchangeReques
 
 type updateExchangeRequestPb struct {
 	Exchange Exchange `json:"exchange"`
-
-	Id string `json:"-" url:"-"`
+	Id       string   `json:"-" url:"-"`
 }
 
 func updateExchangeRequestFromPb(pb *updateExchangeRequestPb) (*UpdateExchangeRequest, error) {
@@ -4143,11 +3739,8 @@ func updateInstallationRequestToPb(st *UpdateInstallationRequest) (*updateInstal
 	}
 	pb := &updateInstallationRequestPb{}
 	pb.Installation = st.Installation
-
 	pb.InstallationId = st.InstallationId
-
 	pb.ListingId = st.ListingId
-
 	pb.RotateToken = st.RotateToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4155,13 +3748,10 @@ func updateInstallationRequestToPb(st *UpdateInstallationRequest) (*updateInstal
 }
 
 type updateInstallationRequestPb struct {
-	Installation InstallationDetail `json:"installation"`
-
-	InstallationId string `json:"-" url:"-"`
-
-	ListingId string `json:"-" url:"-"`
-
-	RotateToken bool `json:"rotate_token,omitempty"`
+	Installation   InstallationDetail `json:"installation"`
+	InstallationId string             `json:"-" url:"-"`
+	ListingId      string             `json:"-" url:"-"`
+	RotateToken    bool               `json:"rotate_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4218,15 +3808,13 @@ func updateListingRequestToPb(st *UpdateListingRequest) (*updateListingRequestPb
 	}
 	pb := &updateListingRequestPb{}
 	pb.Id = st.Id
-
 	pb.Listing = st.Listing
 
 	return pb, nil
 }
 
 type updateListingRequestPb struct {
-	Id string `json:"-" url:"-"`
-
+	Id      string  `json:"-" url:"-"`
 	Listing Listing `json:"listing"`
 }
 
@@ -4271,13 +3859,9 @@ func updatePersonalizationRequestRequestToPb(st *UpdatePersonalizationRequestReq
 	}
 	pb := &updatePersonalizationRequestRequestPb{}
 	pb.ListingId = st.ListingId
-
 	pb.Reason = st.Reason
-
 	pb.RequestId = st.RequestId
-
 	pb.Share = st.Share
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4285,15 +3869,11 @@ func updatePersonalizationRequestRequestToPb(st *UpdatePersonalizationRequestReq
 }
 
 type updatePersonalizationRequestRequestPb struct {
-	ListingId string `json:"-" url:"-"`
-
-	Reason string `json:"reason,omitempty"`
-
-	RequestId string `json:"-" url:"-"`
-
-	Share *ShareInfo `json:"share,omitempty"`
-
-	Status PersonalizationRequestStatus `json:"status"`
+	ListingId string                       `json:"-" url:"-"`
+	Reason    string                       `json:"reason,omitempty"`
+	RequestId string                       `json:"-" url:"-"`
+	Share     *ShareInfo                   `json:"share,omitempty"`
+	Status    PersonalizationRequestStatus `json:"status"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4351,7 +3931,6 @@ func updateProviderAnalyticsDashboardRequestToPb(st *UpdateProviderAnalyticsDash
 	}
 	pb := &updateProviderAnalyticsDashboardRequestPb{}
 	pb.Id = st.Id
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4359,9 +3938,8 @@ func updateProviderAnalyticsDashboardRequestToPb(st *UpdateProviderAnalyticsDash
 }
 
 type updateProviderAnalyticsDashboardRequestPb struct {
-	Id string `json:"-" url:"-"`
-
-	Version int64 `json:"version,omitempty"`
+	Id      string `json:"-" url:"-"`
+	Version int64  `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4392,9 +3970,7 @@ func updateProviderAnalyticsDashboardResponseToPb(st *UpdateProviderAnalyticsDas
 	}
 	pb := &updateProviderAnalyticsDashboardResponsePb{}
 	pb.DashboardId = st.DashboardId
-
 	pb.Id = st.Id
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4403,10 +3979,8 @@ func updateProviderAnalyticsDashboardResponseToPb(st *UpdateProviderAnalyticsDas
 
 type updateProviderAnalyticsDashboardResponsePb struct {
 	DashboardId string `json:"dashboard_id"`
-
-	Id string `json:"id"`
-
-	Version int64 `json:"version,omitempty"`
+	Id          string `json:"id"`
+	Version     int64  `json:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4438,15 +4012,13 @@ func updateProviderRequestToPb(st *UpdateProviderRequest) (*updateProviderReques
 	}
 	pb := &updateProviderRequestPb{}
 	pb.Id = st.Id
-
 	pb.Provider = st.Provider
 
 	return pb, nil
 }
 
 type updateProviderRequestPb struct {
-	Id string `json:"-" url:"-"`
-
+	Id       string       `json:"-" url:"-"`
 	Provider ProviderInfo `json:"provider"`
 }
 
@@ -4483,4 +4055,58 @@ func updateProviderResponseFromPb(pb *updateProviderResponsePb) (*UpdateProvider
 	st.Provider = pb.Provider
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

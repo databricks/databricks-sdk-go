@@ -3,6 +3,10 @@
 package compute
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -12,11 +16,8 @@ func addInstanceProfileToPb(st *AddInstanceProfile) (*addInstanceProfilePb, erro
 	}
 	pb := &addInstanceProfilePb{}
 	pb.IamRoleArn = st.IamRoleArn
-
 	pb.InstanceProfileArn = st.InstanceProfileArn
-
 	pb.IsMetaInstanceProfile = st.IsMetaInstanceProfile
-
 	pb.SkipValidation = st.SkipValidation
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -24,13 +25,10 @@ func addInstanceProfileToPb(st *AddInstanceProfile) (*addInstanceProfilePb, erro
 }
 
 type addInstanceProfilePb struct {
-	IamRoleArn string `json:"iam_role_arn,omitempty"`
-
-	InstanceProfileArn string `json:"instance_profile_arn"`
-
-	IsMetaInstanceProfile bool `json:"is_meta_instance_profile,omitempty"`
-
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	IamRoleArn            string `json:"iam_role_arn,omitempty"`
+	InstanceProfileArn    string `json:"instance_profile_arn"`
+	IsMetaInstanceProfile bool   `json:"is_meta_instance_profile,omitempty"`
+	SkipValidation        bool   `json:"skip_validation,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -108,7 +106,6 @@ func autoScaleToPb(st *AutoScale) (*autoScalePb, error) {
 	}
 	pb := &autoScalePb{}
 	pb.MaxWorkers = st.MaxWorkers
-
 	pb.MinWorkers = st.MinWorkers
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -117,7 +114,6 @@ func autoScaleToPb(st *AutoScale) (*autoScalePb, error) {
 
 type autoScalePb struct {
 	MaxWorkers int `json:"max_workers,omitempty"`
-
 	MinWorkers int `json:"min_workers,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -149,23 +145,14 @@ func awsAttributesToPb(st *AwsAttributes) (*awsAttributesPb, error) {
 	}
 	pb := &awsAttributesPb{}
 	pb.Availability = st.Availability
-
 	pb.EbsVolumeCount = st.EbsVolumeCount
-
 	pb.EbsVolumeIops = st.EbsVolumeIops
-
 	pb.EbsVolumeSize = st.EbsVolumeSize
-
 	pb.EbsVolumeThroughput = st.EbsVolumeThroughput
-
 	pb.EbsVolumeType = st.EbsVolumeType
-
 	pb.FirstOnDemand = st.FirstOnDemand
-
 	pb.InstanceProfileArn = st.InstanceProfileArn
-
 	pb.SpotBidPricePercent = st.SpotBidPricePercent
-
 	pb.ZoneId = st.ZoneId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -173,25 +160,16 @@ func awsAttributesToPb(st *AwsAttributes) (*awsAttributesPb, error) {
 }
 
 type awsAttributesPb struct {
-	Availability AwsAvailability `json:"availability,omitempty"`
-
-	EbsVolumeCount int `json:"ebs_volume_count,omitempty"`
-
-	EbsVolumeIops int `json:"ebs_volume_iops,omitempty"`
-
-	EbsVolumeSize int `json:"ebs_volume_size,omitempty"`
-
-	EbsVolumeThroughput int `json:"ebs_volume_throughput,omitempty"`
-
-	EbsVolumeType EbsVolumeType `json:"ebs_volume_type,omitempty"`
-
-	FirstOnDemand int `json:"first_on_demand,omitempty"`
-
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
-
-	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
-
-	ZoneId string `json:"zone_id,omitempty"`
+	Availability        AwsAvailability `json:"availability,omitempty"`
+	EbsVolumeCount      int             `json:"ebs_volume_count,omitempty"`
+	EbsVolumeIops       int             `json:"ebs_volume_iops,omitempty"`
+	EbsVolumeSize       int             `json:"ebs_volume_size,omitempty"`
+	EbsVolumeThroughput int             `json:"ebs_volume_throughput,omitempty"`
+	EbsVolumeType       EbsVolumeType   `json:"ebs_volume_type,omitempty"`
+	FirstOnDemand       int             `json:"first_on_demand,omitempty"`
+	InstanceProfileArn  string          `json:"instance_profile_arn,omitempty"`
+	SpotBidPricePercent int             `json:"spot_bid_price_percent,omitempty"`
+	ZoneId              string          `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -230,11 +208,8 @@ func azureAttributesToPb(st *AzureAttributes) (*azureAttributesPb, error) {
 	}
 	pb := &azureAttributesPb{}
 	pb.Availability = st.Availability
-
 	pb.FirstOnDemand = st.FirstOnDemand
-
 	pb.LogAnalyticsInfo = st.LogAnalyticsInfo
-
 	pb.SpotBidMaxPrice = st.SpotBidMaxPrice
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -242,13 +217,10 @@ func azureAttributesToPb(st *AzureAttributes) (*azureAttributesPb, error) {
 }
 
 type azureAttributesPb struct {
-	Availability AzureAvailability `json:"availability,omitempty"`
-
-	FirstOnDemand int `json:"first_on_demand,omitempty"`
-
+	Availability     AzureAvailability `json:"availability,omitempty"`
+	FirstOnDemand    int               `json:"first_on_demand,omitempty"`
 	LogAnalyticsInfo *LogAnalyticsInfo `json:"log_analytics_info,omitempty"`
-
-	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
+	SpotBidMaxPrice  float64           `json:"spot_bid_max_price,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -281,9 +253,7 @@ func cancelCommandToPb(st *CancelCommand) (*cancelCommandPb, error) {
 	}
 	pb := &cancelCommandPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.CommandId = st.CommandId
-
 	pb.ContextId = st.ContextId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -292,9 +262,7 @@ func cancelCommandToPb(st *CancelCommand) (*cancelCommandPb, error) {
 
 type cancelCommandPb struct {
 	ClusterId string `json:"clusterId,omitempty"`
-
 	CommandId string `json:"commandId,omitempty"`
-
 	ContextId string `json:"contextId,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -348,15 +316,13 @@ func changeClusterOwnerToPb(st *ChangeClusterOwner) (*changeClusterOwnerPb, erro
 	}
 	pb := &changeClusterOwnerPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.OwnerUsername = st.OwnerUsername
 
 	return pb, nil
 }
 
 type changeClusterOwnerPb struct {
-	ClusterId string `json:"cluster_id"`
-
+	ClusterId     string `json:"cluster_id"`
 	OwnerUsername string `json:"owner_username"`
 }
 
@@ -398,7 +364,6 @@ func clientsTypesToPb(st *ClientsTypes) (*clientsTypesPb, error) {
 	}
 	pb := &clientsTypesPb{}
 	pb.Jobs = st.Jobs
-
 	pb.Notebooks = st.Notebooks
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -406,8 +371,7 @@ func clientsTypesToPb(st *ClientsTypes) (*clientsTypesPb, error) {
 }
 
 type clientsTypesPb struct {
-	Jobs bool `json:"jobs,omitempty"`
-
+	Jobs      bool `json:"jobs,omitempty"`
 	Notebooks bool `json:"notebooks,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -487,11 +451,8 @@ func clusterAccessControlRequestToPb(st *ClusterAccessControlRequest) (*clusterA
 	}
 	pb := &clusterAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -499,13 +460,10 @@ func clusterAccessControlRequestToPb(st *ClusterAccessControlRequest) (*clusterA
 }
 
 type clusterAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string                 `json:"group_name,omitempty"`
+	PermissionLevel      ClusterPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string                 `json:"service_principal_name,omitempty"`
+	UserName             string                 `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -538,13 +496,9 @@ func clusterAccessControlResponseToPb(st *ClusterAccessControlResponse) (*cluste
 	}
 	pb := &clusterAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -552,15 +506,11 @@ func clusterAccessControlResponseToPb(st *ClusterAccessControlResponse) (*cluste
 }
 
 type clusterAccessControlResponsePb struct {
-	AllPermissions []ClusterPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []ClusterPermission `json:"all_permissions,omitempty"`
+	DisplayName          string              `json:"display_name,omitempty"`
+	GroupName            string              `json:"group_name,omitempty"`
+	ServicePrincipalName string              `json:"service_principal_name,omitempty"`
+	UserName             string              `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -594,57 +544,31 @@ func clusterAttributesToPb(st *ClusterAttributes) (*clusterAttributesPb, error) 
 	}
 	pb := &clusterAttributesPb{}
 	pb.AutoterminationMinutes = st.AutoterminationMinutes
-
 	pb.AwsAttributes = st.AwsAttributes
-
 	pb.AzureAttributes = st.AzureAttributes
-
 	pb.ClusterLogConf = st.ClusterLogConf
-
 	pb.ClusterName = st.ClusterName
-
 	pb.CustomTags = st.CustomTags
-
 	pb.DataSecurityMode = st.DataSecurityMode
-
 	pb.DockerImage = st.DockerImage
-
 	pb.DriverInstancePoolId = st.DriverInstancePoolId
-
 	pb.DriverNodeTypeId = st.DriverNodeTypeId
-
 	pb.EnableElasticDisk = st.EnableElasticDisk
-
 	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
-
 	pb.GcpAttributes = st.GcpAttributes
-
 	pb.InitScripts = st.InitScripts
-
 	pb.InstancePoolId = st.InstancePoolId
-
 	pb.IsSingleNode = st.IsSingleNode
-
 	pb.Kind = st.Kind
-
 	pb.NodeTypeId = st.NodeTypeId
-
 	pb.PolicyId = st.PolicyId
-
 	pb.RuntimeEngine = st.RuntimeEngine
-
 	pb.SingleUserName = st.SingleUserName
-
 	pb.SparkConf = st.SparkConf
-
 	pb.SparkEnvVars = st.SparkEnvVars
-
 	pb.SparkVersion = st.SparkVersion
-
 	pb.SshPublicKeys = st.SshPublicKeys
-
 	pb.UseMlRuntime = st.UseMlRuntime
-
 	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -652,59 +576,33 @@ func clusterAttributesToPb(st *ClusterAttributes) (*clusterAttributesPb, error) 
 }
 
 type clusterAttributesPb struct {
-	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
-
-	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
-
-	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-
-	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
-
-	ClusterName string `json:"cluster_name,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
-	DockerImage *DockerImage `json:"docker_image,omitempty"`
-
-	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
-
-	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-
-	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
-
-	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
-
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
-
-	IsSingleNode bool `json:"is_single_node,omitempty"`
-
-	Kind Kind `json:"kind,omitempty"`
-
-	NodeTypeId string `json:"node_type_id,omitempty"`
-
-	PolicyId string `json:"policy_id,omitempty"`
-
-	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
-
-	SingleUserName string `json:"single_user_name,omitempty"`
-
-	SparkConf map[string]string `json:"spark_conf,omitempty"`
-
-	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-
-	SparkVersion string `json:"spark_version"`
-
-	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-
-	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
-	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+	AutoterminationMinutes    int               `json:"autotermination_minutes,omitempty"`
+	AwsAttributes             *AwsAttributes    `json:"aws_attributes,omitempty"`
+	AzureAttributes           *AzureAttributes  `json:"azure_attributes,omitempty"`
+	ClusterLogConf            *ClusterLogConf   `json:"cluster_log_conf,omitempty"`
+	ClusterName               string            `json:"cluster_name,omitempty"`
+	CustomTags                map[string]string `json:"custom_tags,omitempty"`
+	DataSecurityMode          DataSecurityMode  `json:"data_security_mode,omitempty"`
+	DockerImage               *DockerImage      `json:"docker_image,omitempty"`
+	DriverInstancePoolId      string            `json:"driver_instance_pool_id,omitempty"`
+	DriverNodeTypeId          string            `json:"driver_node_type_id,omitempty"`
+	EnableElasticDisk         bool              `json:"enable_elastic_disk,omitempty"`
+	EnableLocalDiskEncryption bool              `json:"enable_local_disk_encryption,omitempty"`
+	GcpAttributes             *GcpAttributes    `json:"gcp_attributes,omitempty"`
+	InitScripts               []InitScriptInfo  `json:"init_scripts,omitempty"`
+	InstancePoolId            string            `json:"instance_pool_id,omitempty"`
+	IsSingleNode              bool              `json:"is_single_node,omitempty"`
+	Kind                      Kind              `json:"kind,omitempty"`
+	NodeTypeId                string            `json:"node_type_id,omitempty"`
+	PolicyId                  string            `json:"policy_id,omitempty"`
+	RuntimeEngine             RuntimeEngine     `json:"runtime_engine,omitempty"`
+	SingleUserName            string            `json:"single_user_name,omitempty"`
+	SparkConf                 map[string]string `json:"spark_conf,omitempty"`
+	SparkEnvVars              map[string]string `json:"spark_env_vars,omitempty"`
+	SparkVersion              string            `json:"spark_version"`
+	SshPublicKeys             []string          `json:"ssh_public_keys,omitempty"`
+	UseMlRuntime              bool              `json:"use_ml_runtime,omitempty"`
+	WorkloadType              *WorkloadType     `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -760,9 +658,7 @@ func clusterComplianceToPb(st *ClusterCompliance) (*clusterCompliancePb, error) 
 	}
 	pb := &clusterCompliancePb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.IsCompliant = st.IsCompliant
-
 	pb.Violations = st.Violations
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -770,11 +666,9 @@ func clusterComplianceToPb(st *ClusterCompliance) (*clusterCompliancePb, error) 
 }
 
 type clusterCompliancePb struct {
-	ClusterId string `json:"cluster_id"`
-
-	IsCompliant bool `json:"is_compliant,omitempty"`
-
-	Violations map[string]string `json:"violations,omitempty"`
+	ClusterId   string            `json:"cluster_id"`
+	IsCompliant bool              `json:"is_compliant,omitempty"`
+	Violations  map[string]string `json:"violations,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -806,99 +700,52 @@ func clusterDetailsToPb(st *ClusterDetails) (*clusterDetailsPb, error) {
 	}
 	pb := &clusterDetailsPb{}
 	pb.Autoscale = st.Autoscale
-
 	pb.AutoterminationMinutes = st.AutoterminationMinutes
-
 	pb.AwsAttributes = st.AwsAttributes
-
 	pb.AzureAttributes = st.AzureAttributes
-
 	pb.ClusterCores = st.ClusterCores
-
 	pb.ClusterId = st.ClusterId
-
 	pb.ClusterLogConf = st.ClusterLogConf
-
 	pb.ClusterLogStatus = st.ClusterLogStatus
-
 	pb.ClusterMemoryMb = st.ClusterMemoryMb
-
 	pb.ClusterName = st.ClusterName
-
 	pb.ClusterSource = st.ClusterSource
-
 	pb.CreatorUserName = st.CreatorUserName
-
 	pb.CustomTags = st.CustomTags
-
 	pb.DataSecurityMode = st.DataSecurityMode
-
 	pb.DefaultTags = st.DefaultTags
-
 	pb.DockerImage = st.DockerImage
-
 	pb.Driver = st.Driver
-
 	pb.DriverInstancePoolId = st.DriverInstancePoolId
-
 	pb.DriverNodeTypeId = st.DriverNodeTypeId
-
 	pb.EnableElasticDisk = st.EnableElasticDisk
-
 	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
-
 	pb.Executors = st.Executors
-
 	pb.GcpAttributes = st.GcpAttributes
-
 	pb.InitScripts = st.InitScripts
-
 	pb.InstancePoolId = st.InstancePoolId
-
 	pb.IsSingleNode = st.IsSingleNode
-
 	pb.JdbcPort = st.JdbcPort
-
 	pb.Kind = st.Kind
-
 	pb.LastRestartedTime = st.LastRestartedTime
-
 	pb.LastStateLossTime = st.LastStateLossTime
-
 	pb.NodeTypeId = st.NodeTypeId
-
 	pb.NumWorkers = st.NumWorkers
-
 	pb.PolicyId = st.PolicyId
-
 	pb.RuntimeEngine = st.RuntimeEngine
-
 	pb.SingleUserName = st.SingleUserName
-
 	pb.SparkConf = st.SparkConf
-
 	pb.SparkContextId = st.SparkContextId
-
 	pb.SparkEnvVars = st.SparkEnvVars
-
 	pb.SparkVersion = st.SparkVersion
-
 	pb.Spec = st.Spec
-
 	pb.SshPublicKeys = st.SshPublicKeys
-
 	pb.StartTime = st.StartTime
-
 	pb.State = st.State
-
 	pb.StateMessage = st.StateMessage
-
 	pb.TerminatedTime = st.TerminatedTime
-
 	pb.TerminationReason = st.TerminationReason
-
 	pb.UseMlRuntime = st.UseMlRuntime
-
 	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -906,101 +753,54 @@ func clusterDetailsToPb(st *ClusterDetails) (*clusterDetailsPb, error) {
 }
 
 type clusterDetailsPb struct {
-	Autoscale *AutoScale `json:"autoscale,omitempty"`
-
-	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
-
-	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
-
-	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-
-	ClusterCores float64 `json:"cluster_cores,omitempty"`
-
-	ClusterId string `json:"cluster_id,omitempty"`
-
-	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
-
-	ClusterLogStatus *LogSyncStatus `json:"cluster_log_status,omitempty"`
-
-	ClusterMemoryMb int64 `json:"cluster_memory_mb,omitempty"`
-
-	ClusterName string `json:"cluster_name,omitempty"`
-
-	ClusterSource ClusterSource `json:"cluster_source,omitempty"`
-
-	CreatorUserName string `json:"creator_user_name,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
-	DefaultTags map[string]string `json:"default_tags,omitempty"`
-
-	DockerImage *DockerImage `json:"docker_image,omitempty"`
-
-	Driver *SparkNode `json:"driver,omitempty"`
-
-	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
-
-	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-
-	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
-
-	Executors []SparkNode `json:"executors,omitempty"`
-
-	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
-
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
-
-	IsSingleNode bool `json:"is_single_node,omitempty"`
-
-	JdbcPort int `json:"jdbc_port,omitempty"`
-
-	Kind Kind `json:"kind,omitempty"`
-
-	LastRestartedTime int64 `json:"last_restarted_time,omitempty"`
-
-	LastStateLossTime int64 `json:"last_state_loss_time,omitempty"`
-
-	NodeTypeId string `json:"node_type_id,omitempty"`
-
-	NumWorkers int `json:"num_workers,omitempty"`
-
-	PolicyId string `json:"policy_id,omitempty"`
-
-	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
-
-	SingleUserName string `json:"single_user_name,omitempty"`
-
-	SparkConf map[string]string `json:"spark_conf,omitempty"`
-
-	SparkContextId int64 `json:"spark_context_id,omitempty"`
-
-	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-
-	SparkVersion string `json:"spark_version,omitempty"`
-
-	Spec *ClusterSpec `json:"spec,omitempty"`
-
-	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-
-	StartTime int64 `json:"start_time,omitempty"`
-
-	State State `json:"state,omitempty"`
-
-	StateMessage string `json:"state_message,omitempty"`
-
-	TerminatedTime int64 `json:"terminated_time,omitempty"`
-
-	TerminationReason *TerminationReason `json:"termination_reason,omitempty"`
-
-	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
-	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+	Autoscale                 *AutoScale         `json:"autoscale,omitempty"`
+	AutoterminationMinutes    int                `json:"autotermination_minutes,omitempty"`
+	AwsAttributes             *AwsAttributes     `json:"aws_attributes,omitempty"`
+	AzureAttributes           *AzureAttributes   `json:"azure_attributes,omitempty"`
+	ClusterCores              float64            `json:"cluster_cores,omitempty"`
+	ClusterId                 string             `json:"cluster_id,omitempty"`
+	ClusterLogConf            *ClusterLogConf    `json:"cluster_log_conf,omitempty"`
+	ClusterLogStatus          *LogSyncStatus     `json:"cluster_log_status,omitempty"`
+	ClusterMemoryMb           int64              `json:"cluster_memory_mb,omitempty"`
+	ClusterName               string             `json:"cluster_name,omitempty"`
+	ClusterSource             ClusterSource      `json:"cluster_source,omitempty"`
+	CreatorUserName           string             `json:"creator_user_name,omitempty"`
+	CustomTags                map[string]string  `json:"custom_tags,omitempty"`
+	DataSecurityMode          DataSecurityMode   `json:"data_security_mode,omitempty"`
+	DefaultTags               map[string]string  `json:"default_tags,omitempty"`
+	DockerImage               *DockerImage       `json:"docker_image,omitempty"`
+	Driver                    *SparkNode         `json:"driver,omitempty"`
+	DriverInstancePoolId      string             `json:"driver_instance_pool_id,omitempty"`
+	DriverNodeTypeId          string             `json:"driver_node_type_id,omitempty"`
+	EnableElasticDisk         bool               `json:"enable_elastic_disk,omitempty"`
+	EnableLocalDiskEncryption bool               `json:"enable_local_disk_encryption,omitempty"`
+	Executors                 []SparkNode        `json:"executors,omitempty"`
+	GcpAttributes             *GcpAttributes     `json:"gcp_attributes,omitempty"`
+	InitScripts               []InitScriptInfo   `json:"init_scripts,omitempty"`
+	InstancePoolId            string             `json:"instance_pool_id,omitempty"`
+	IsSingleNode              bool               `json:"is_single_node,omitempty"`
+	JdbcPort                  int                `json:"jdbc_port,omitempty"`
+	Kind                      Kind               `json:"kind,omitempty"`
+	LastRestartedTime         int64              `json:"last_restarted_time,omitempty"`
+	LastStateLossTime         int64              `json:"last_state_loss_time,omitempty"`
+	NodeTypeId                string             `json:"node_type_id,omitempty"`
+	NumWorkers                int                `json:"num_workers,omitempty"`
+	PolicyId                  string             `json:"policy_id,omitempty"`
+	RuntimeEngine             RuntimeEngine      `json:"runtime_engine,omitempty"`
+	SingleUserName            string             `json:"single_user_name,omitempty"`
+	SparkConf                 map[string]string  `json:"spark_conf,omitempty"`
+	SparkContextId            int64              `json:"spark_context_id,omitempty"`
+	SparkEnvVars              map[string]string  `json:"spark_env_vars,omitempty"`
+	SparkVersion              string             `json:"spark_version,omitempty"`
+	Spec                      *ClusterSpec       `json:"spec,omitempty"`
+	SshPublicKeys             []string           `json:"ssh_public_keys,omitempty"`
+	StartTime                 int64              `json:"start_time,omitempty"`
+	State                     State              `json:"state,omitempty"`
+	StateMessage              string             `json:"state_message,omitempty"`
+	TerminatedTime            int64              `json:"terminated_time,omitempty"`
+	TerminationReason         *TerminationReason `json:"termination_reason,omitempty"`
+	UseMlRuntime              bool               `json:"use_ml_runtime,omitempty"`
+	WorkloadType              *WorkloadType      `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1077,13 +877,9 @@ func clusterEventToPb(st *ClusterEvent) (*clusterEventPb, error) {
 	}
 	pb := &clusterEventPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.DataPlaneEventDetails = st.DataPlaneEventDetails
-
 	pb.Details = st.Details
-
 	pb.Timestamp = st.Timestamp
-
 	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1091,15 +887,11 @@ func clusterEventToPb(st *ClusterEvent) (*clusterEventPb, error) {
 }
 
 type clusterEventPb struct {
-	ClusterId string `json:"cluster_id"`
-
+	ClusterId             string                 `json:"cluster_id"`
 	DataPlaneEventDetails *DataPlaneEventDetails `json:"data_plane_event_details,omitempty"`
-
-	Details *EventDetails `json:"details,omitempty"`
-
-	Timestamp int64 `json:"timestamp,omitempty"`
-
-	Type EventType `json:"type,omitempty"`
+	Details               *EventDetails          `json:"details,omitempty"`
+	Timestamp             int64                  `json:"timestamp,omitempty"`
+	Type                  EventType              `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1133,7 +925,6 @@ func clusterLibraryStatusesToPb(st *ClusterLibraryStatuses) (*clusterLibraryStat
 	}
 	pb := &clusterLibraryStatusesPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.LibraryStatuses = st.LibraryStatuses
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1141,8 +932,7 @@ func clusterLibraryStatusesToPb(st *ClusterLibraryStatuses) (*clusterLibraryStat
 }
 
 type clusterLibraryStatusesPb struct {
-	ClusterId string `json:"cluster_id,omitempty"`
-
+	ClusterId       string              `json:"cluster_id,omitempty"`
 	LibraryStatuses []LibraryFullStatus `json:"library_statuses,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1174,19 +964,15 @@ func clusterLogConfToPb(st *ClusterLogConf) (*clusterLogConfPb, error) {
 	}
 	pb := &clusterLogConfPb{}
 	pb.Dbfs = st.Dbfs
-
 	pb.S3 = st.S3
-
 	pb.Volumes = st.Volumes
 
 	return pb, nil
 }
 
 type clusterLogConfPb struct {
-	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
-
-	S3 *S3StorageInfo `json:"s3,omitempty"`
-
+	Dbfs    *DbfsStorageInfo    `json:"dbfs,omitempty"`
+	S3      *S3StorageInfo      `json:"s3,omitempty"`
 	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
 }
 
@@ -1208,9 +994,7 @@ func clusterPermissionToPb(st *ClusterPermission) (*clusterPermissionPb, error) 
 	}
 	pb := &clusterPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1218,11 +1002,9 @@ func clusterPermissionToPb(st *ClusterPermission) (*clusterPermissionPb, error) 
 }
 
 type clusterPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool                   `json:"inherited,omitempty"`
+	InheritedFromObject []string               `json:"inherited_from_object,omitempty"`
+	PermissionLevel     ClusterPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1254,9 +1036,7 @@ func clusterPermissionsToPb(st *ClusterPermissions) (*clusterPermissionsPb, erro
 	}
 	pb := &clusterPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1265,10 +1045,8 @@ func clusterPermissionsToPb(st *ClusterPermissions) (*clusterPermissionsPb, erro
 
 type clusterPermissionsPb struct {
 	AccessControlList []ClusterAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                         `json:"object_id,omitempty"`
+	ObjectType        string                         `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1300,7 +1078,6 @@ func clusterPermissionsDescriptionToPb(st *ClusterPermissionsDescription) (*clus
 	}
 	pb := &clusterPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1308,8 +1085,7 @@ func clusterPermissionsDescriptionToPb(st *ClusterPermissionsDescription) (*clus
 }
 
 type clusterPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string                 `json:"description,omitempty"`
 	PermissionLevel ClusterPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1341,7 +1117,6 @@ func clusterPermissionsRequestToPb(st *ClusterPermissionsRequest) (*clusterPermi
 	}
 	pb := &clusterPermissionsRequestPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ClusterId = st.ClusterId
 
 	return pb, nil
@@ -1349,8 +1124,7 @@ func clusterPermissionsRequestToPb(st *ClusterPermissionsRequest) (*clusterPermi
 
 type clusterPermissionsRequestPb struct {
 	AccessControlList []ClusterAccessControlRequest `json:"access_control_list,omitempty"`
-
-	ClusterId string `json:"-" url:"-"`
+	ClusterId         string                        `json:"-" url:"-"`
 }
 
 func clusterPermissionsRequestFromPb(pb *clusterPermissionsRequestPb) (*ClusterPermissionsRequest, error) {
@@ -1370,11 +1144,8 @@ func clusterPolicyAccessControlRequestToPb(st *ClusterPolicyAccessControlRequest
 	}
 	pb := &clusterPolicyAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1382,13 +1153,10 @@ func clusterPolicyAccessControlRequestToPb(st *ClusterPolicyAccessControlRequest
 }
 
 type clusterPolicyAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string                       `json:"group_name,omitempty"`
+	PermissionLevel      ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string                       `json:"service_principal_name,omitempty"`
+	UserName             string                       `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1421,13 +1189,9 @@ func clusterPolicyAccessControlResponseToPb(st *ClusterPolicyAccessControlRespon
 	}
 	pb := &clusterPolicyAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1435,15 +1199,11 @@ func clusterPolicyAccessControlResponseToPb(st *ClusterPolicyAccessControlRespon
 }
 
 type clusterPolicyAccessControlResponsePb struct {
-	AllPermissions []ClusterPolicyPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []ClusterPolicyPermission `json:"all_permissions,omitempty"`
+	DisplayName          string                    `json:"display_name,omitempty"`
+	GroupName            string                    `json:"group_name,omitempty"`
+	ServicePrincipalName string                    `json:"service_principal_name,omitempty"`
+	UserName             string                    `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1477,9 +1237,7 @@ func clusterPolicyPermissionToPb(st *ClusterPolicyPermission) (*clusterPolicyPer
 	}
 	pb := &clusterPolicyPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1487,11 +1245,9 @@ func clusterPolicyPermissionToPb(st *ClusterPolicyPermission) (*clusterPolicyPer
 }
 
 type clusterPolicyPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool                         `json:"inherited,omitempty"`
+	InheritedFromObject []string                     `json:"inherited_from_object,omitempty"`
+	PermissionLevel     ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1523,9 +1279,7 @@ func clusterPolicyPermissionsToPb(st *ClusterPolicyPermissions) (*clusterPolicyP
 	}
 	pb := &clusterPolicyPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1534,10 +1288,8 @@ func clusterPolicyPermissionsToPb(st *ClusterPolicyPermissions) (*clusterPolicyP
 
 type clusterPolicyPermissionsPb struct {
 	AccessControlList []ClusterPolicyAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                               `json:"object_id,omitempty"`
+	ObjectType        string                               `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1569,7 +1321,6 @@ func clusterPolicyPermissionsDescriptionToPb(st *ClusterPolicyPermissionsDescrip
 	}
 	pb := &clusterPolicyPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1577,8 +1328,7 @@ func clusterPolicyPermissionsDescriptionToPb(st *ClusterPolicyPermissionsDescrip
 }
 
 type clusterPolicyPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string                       `json:"description,omitempty"`
 	PermissionLevel ClusterPolicyPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1610,7 +1360,6 @@ func clusterPolicyPermissionsRequestToPb(st *ClusterPolicyPermissionsRequest) (*
 	}
 	pb := &clusterPolicyPermissionsRequestPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ClusterPolicyId = st.ClusterPolicyId
 
 	return pb, nil
@@ -1618,8 +1367,7 @@ func clusterPolicyPermissionsRequestToPb(st *ClusterPolicyPermissionsRequest) (*
 
 type clusterPolicyPermissionsRequestPb struct {
 	AccessControlList []ClusterPolicyAccessControlRequest `json:"access_control_list,omitempty"`
-
-	ClusterPolicyId string `json:"-" url:"-"`
+	ClusterPolicyId   string                              `json:"-" url:"-"`
 }
 
 func clusterPolicyPermissionsRequestFromPb(pb *clusterPolicyPermissionsRequestPb) (*ClusterPolicyPermissionsRequest, error) {
@@ -1639,9 +1387,7 @@ func clusterSettingsChangeToPb(st *ClusterSettingsChange) (*clusterSettingsChang
 	}
 	pb := &clusterSettingsChangePb{}
 	pb.Field = st.Field
-
 	pb.NewValue = st.NewValue
-
 	pb.PreviousValue = st.PreviousValue
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1649,10 +1395,8 @@ func clusterSettingsChangeToPb(st *ClusterSettingsChange) (*clusterSettingsChang
 }
 
 type clusterSettingsChangePb struct {
-	Field string `json:"field,omitempty"`
-
-	NewValue string `json:"new_value,omitempty"`
-
+	Field         string `json:"field,omitempty"`
+	NewValue      string `json:"new_value,omitempty"`
 	PreviousValue string `json:"previous_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1685,7 +1429,6 @@ func clusterSizeToPb(st *ClusterSize) (*clusterSizePb, error) {
 	}
 	pb := &clusterSizePb{}
 	pb.Autoscale = st.Autoscale
-
 	pb.NumWorkers = st.NumWorkers
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1693,9 +1436,8 @@ func clusterSizeToPb(st *ClusterSize) (*clusterSizePb, error) {
 }
 
 type clusterSizePb struct {
-	Autoscale *AutoScale `json:"autoscale,omitempty"`
-
-	NumWorkers int `json:"num_workers,omitempty"`
+	Autoscale  *AutoScale `json:"autoscale,omitempty"`
+	NumWorkers int        `json:"num_workers,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1726,63 +1468,34 @@ func clusterSpecToPb(st *ClusterSpec) (*clusterSpecPb, error) {
 	}
 	pb := &clusterSpecPb{}
 	pb.ApplyPolicyDefaultValues = st.ApplyPolicyDefaultValues
-
 	pb.Autoscale = st.Autoscale
-
 	pb.AutoterminationMinutes = st.AutoterminationMinutes
-
 	pb.AwsAttributes = st.AwsAttributes
-
 	pb.AzureAttributes = st.AzureAttributes
-
 	pb.ClusterLogConf = st.ClusterLogConf
-
 	pb.ClusterName = st.ClusterName
-
 	pb.CustomTags = st.CustomTags
-
 	pb.DataSecurityMode = st.DataSecurityMode
-
 	pb.DockerImage = st.DockerImage
-
 	pb.DriverInstancePoolId = st.DriverInstancePoolId
-
 	pb.DriverNodeTypeId = st.DriverNodeTypeId
-
 	pb.EnableElasticDisk = st.EnableElasticDisk
-
 	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
-
 	pb.GcpAttributes = st.GcpAttributes
-
 	pb.InitScripts = st.InitScripts
-
 	pb.InstancePoolId = st.InstancePoolId
-
 	pb.IsSingleNode = st.IsSingleNode
-
 	pb.Kind = st.Kind
-
 	pb.NodeTypeId = st.NodeTypeId
-
 	pb.NumWorkers = st.NumWorkers
-
 	pb.PolicyId = st.PolicyId
-
 	pb.RuntimeEngine = st.RuntimeEngine
-
 	pb.SingleUserName = st.SingleUserName
-
 	pb.SparkConf = st.SparkConf
-
 	pb.SparkEnvVars = st.SparkEnvVars
-
 	pb.SparkVersion = st.SparkVersion
-
 	pb.SshPublicKeys = st.SshPublicKeys
-
 	pb.UseMlRuntime = st.UseMlRuntime
-
 	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1790,65 +1503,36 @@ func clusterSpecToPb(st *ClusterSpec) (*clusterSpecPb, error) {
 }
 
 type clusterSpecPb struct {
-	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
-
-	Autoscale *AutoScale `json:"autoscale,omitempty"`
-
-	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
-
-	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
-
-	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-
-	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
-
-	ClusterName string `json:"cluster_name,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
-	DockerImage *DockerImage `json:"docker_image,omitempty"`
-
-	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
-
-	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-
-	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
-
-	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
-
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
-
-	IsSingleNode bool `json:"is_single_node,omitempty"`
-
-	Kind Kind `json:"kind,omitempty"`
-
-	NodeTypeId string `json:"node_type_id,omitempty"`
-
-	NumWorkers int `json:"num_workers,omitempty"`
-
-	PolicyId string `json:"policy_id,omitempty"`
-
-	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
-
-	SingleUserName string `json:"single_user_name,omitempty"`
-
-	SparkConf map[string]string `json:"spark_conf,omitempty"`
-
-	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-
-	SparkVersion string `json:"spark_version,omitempty"`
-
-	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-
-	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
-	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+	ApplyPolicyDefaultValues  bool              `json:"apply_policy_default_values,omitempty"`
+	Autoscale                 *AutoScale        `json:"autoscale,omitempty"`
+	AutoterminationMinutes    int               `json:"autotermination_minutes,omitempty"`
+	AwsAttributes             *AwsAttributes    `json:"aws_attributes,omitempty"`
+	AzureAttributes           *AzureAttributes  `json:"azure_attributes,omitempty"`
+	ClusterLogConf            *ClusterLogConf   `json:"cluster_log_conf,omitempty"`
+	ClusterName               string            `json:"cluster_name,omitempty"`
+	CustomTags                map[string]string `json:"custom_tags,omitempty"`
+	DataSecurityMode          DataSecurityMode  `json:"data_security_mode,omitempty"`
+	DockerImage               *DockerImage      `json:"docker_image,omitempty"`
+	DriverInstancePoolId      string            `json:"driver_instance_pool_id,omitempty"`
+	DriverNodeTypeId          string            `json:"driver_node_type_id,omitempty"`
+	EnableElasticDisk         bool              `json:"enable_elastic_disk,omitempty"`
+	EnableLocalDiskEncryption bool              `json:"enable_local_disk_encryption,omitempty"`
+	GcpAttributes             *GcpAttributes    `json:"gcp_attributes,omitempty"`
+	InitScripts               []InitScriptInfo  `json:"init_scripts,omitempty"`
+	InstancePoolId            string            `json:"instance_pool_id,omitempty"`
+	IsSingleNode              bool              `json:"is_single_node,omitempty"`
+	Kind                      Kind              `json:"kind,omitempty"`
+	NodeTypeId                string            `json:"node_type_id,omitempty"`
+	NumWorkers                int               `json:"num_workers,omitempty"`
+	PolicyId                  string            `json:"policy_id,omitempty"`
+	RuntimeEngine             RuntimeEngine     `json:"runtime_engine,omitempty"`
+	SingleUserName            string            `json:"single_user_name,omitempty"`
+	SparkConf                 map[string]string `json:"spark_conf,omitempty"`
+	SparkEnvVars              map[string]string `json:"spark_env_vars,omitempty"`
+	SparkVersion              string            `json:"spark_version,omitempty"`
+	SshPublicKeys             []string          `json:"ssh_public_keys,omitempty"`
+	UseMlRuntime              bool              `json:"use_ml_runtime,omitempty"`
+	WorkloadType              *WorkloadType     `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1931,11 +1615,8 @@ func commandToPb(st *Command) (*commandPb, error) {
 	}
 	pb := &commandPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.Command = st.Command
-
 	pb.ContextId = st.ContextId
-
 	pb.Language = st.Language
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1943,13 +1624,10 @@ func commandToPb(st *Command) (*commandPb, error) {
 }
 
 type commandPb struct {
-	ClusterId string `json:"clusterId,omitempty"`
-
-	Command string `json:"command,omitempty"`
-
-	ContextId string `json:"contextId,omitempty"`
-
-	Language Language `json:"language,omitempty"`
+	ClusterId string   `json:"clusterId,omitempty"`
+	Command   string   `json:"command,omitempty"`
+	ContextId string   `json:"contextId,omitempty"`
+	Language  Language `json:"language,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1982,9 +1660,7 @@ func commandStatusRequestToPb(st *CommandStatusRequest) (*commandStatusRequestPb
 	}
 	pb := &commandStatusRequestPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.CommandId = st.CommandId
-
 	pb.ContextId = st.ContextId
 
 	return pb, nil
@@ -1992,9 +1668,7 @@ func commandStatusRequestToPb(st *CommandStatusRequest) (*commandStatusRequestPb
 
 type commandStatusRequestPb struct {
 	ClusterId string `json:"-" url:"clusterId"`
-
 	CommandId string `json:"-" url:"commandId"`
-
 	ContextId string `json:"-" url:"contextId"`
 }
 
@@ -2016,9 +1690,7 @@ func commandStatusResponseToPb(st *CommandStatusResponse) (*commandStatusRespons
 	}
 	pb := &commandStatusResponsePb{}
 	pb.Id = st.Id
-
 	pb.Results = st.Results
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2026,11 +1698,9 @@ func commandStatusResponseToPb(st *CommandStatusResponse) (*commandStatusRespons
 }
 
 type commandStatusResponsePb struct {
-	Id string `json:"id,omitempty"`
-
-	Results *Results `json:"results,omitempty"`
-
-	Status CommandStatus `json:"status,omitempty"`
+	Id      string        `json:"id,omitempty"`
+	Results *Results      `json:"results,omitempty"`
+	Status  CommandStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2062,7 +1732,6 @@ func contextStatusRequestToPb(st *ContextStatusRequest) (*contextStatusRequestPb
 	}
 	pb := &contextStatusRequestPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.ContextId = st.ContextId
 
 	return pb, nil
@@ -2070,7 +1739,6 @@ func contextStatusRequestToPb(st *ContextStatusRequest) (*contextStatusRequestPb
 
 type contextStatusRequestPb struct {
 	ClusterId string `json:"-" url:"clusterId"`
-
 	ContextId string `json:"-" url:"contextId"`
 }
 
@@ -2091,7 +1759,6 @@ func contextStatusResponseToPb(st *ContextStatusResponse) (*contextStatusRespons
 	}
 	pb := &contextStatusResponsePb{}
 	pb.Id = st.Id
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2099,8 +1766,7 @@ func contextStatusResponseToPb(st *ContextStatusResponse) (*contextStatusRespons
 }
 
 type contextStatusResponsePb struct {
-	Id string `json:"id,omitempty"`
-
+	Id     string        `json:"id,omitempty"`
 	Status ContextStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2132,65 +1798,35 @@ func createClusterToPb(st *CreateCluster) (*createClusterPb, error) {
 	}
 	pb := &createClusterPb{}
 	pb.ApplyPolicyDefaultValues = st.ApplyPolicyDefaultValues
-
 	pb.Autoscale = st.Autoscale
-
 	pb.AutoterminationMinutes = st.AutoterminationMinutes
-
 	pb.AwsAttributes = st.AwsAttributes
-
 	pb.AzureAttributes = st.AzureAttributes
-
 	pb.CloneFrom = st.CloneFrom
-
 	pb.ClusterLogConf = st.ClusterLogConf
-
 	pb.ClusterName = st.ClusterName
-
 	pb.CustomTags = st.CustomTags
-
 	pb.DataSecurityMode = st.DataSecurityMode
-
 	pb.DockerImage = st.DockerImage
-
 	pb.DriverInstancePoolId = st.DriverInstancePoolId
-
 	pb.DriverNodeTypeId = st.DriverNodeTypeId
-
 	pb.EnableElasticDisk = st.EnableElasticDisk
-
 	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
-
 	pb.GcpAttributes = st.GcpAttributes
-
 	pb.InitScripts = st.InitScripts
-
 	pb.InstancePoolId = st.InstancePoolId
-
 	pb.IsSingleNode = st.IsSingleNode
-
 	pb.Kind = st.Kind
-
 	pb.NodeTypeId = st.NodeTypeId
-
 	pb.NumWorkers = st.NumWorkers
-
 	pb.PolicyId = st.PolicyId
-
 	pb.RuntimeEngine = st.RuntimeEngine
-
 	pb.SingleUserName = st.SingleUserName
-
 	pb.SparkConf = st.SparkConf
-
 	pb.SparkEnvVars = st.SparkEnvVars
-
 	pb.SparkVersion = st.SparkVersion
-
 	pb.SshPublicKeys = st.SshPublicKeys
-
 	pb.UseMlRuntime = st.UseMlRuntime
-
 	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2198,67 +1834,37 @@ func createClusterToPb(st *CreateCluster) (*createClusterPb, error) {
 }
 
 type createClusterPb struct {
-	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
-
-	Autoscale *AutoScale `json:"autoscale,omitempty"`
-
-	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
-
-	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
-
-	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-
-	CloneFrom *CloneCluster `json:"clone_from,omitempty"`
-
-	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
-
-	ClusterName string `json:"cluster_name,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
-	DockerImage *DockerImage `json:"docker_image,omitempty"`
-
-	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
-
-	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-
-	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
-
-	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
-
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
-
-	IsSingleNode bool `json:"is_single_node,omitempty"`
-
-	Kind Kind `json:"kind,omitempty"`
-
-	NodeTypeId string `json:"node_type_id,omitempty"`
-
-	NumWorkers int `json:"num_workers,omitempty"`
-
-	PolicyId string `json:"policy_id,omitempty"`
-
-	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
-
-	SingleUserName string `json:"single_user_name,omitempty"`
-
-	SparkConf map[string]string `json:"spark_conf,omitempty"`
-
-	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-
-	SparkVersion string `json:"spark_version"`
-
-	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-
-	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
-	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+	ApplyPolicyDefaultValues  bool              `json:"apply_policy_default_values,omitempty"`
+	Autoscale                 *AutoScale        `json:"autoscale,omitempty"`
+	AutoterminationMinutes    int               `json:"autotermination_minutes,omitempty"`
+	AwsAttributes             *AwsAttributes    `json:"aws_attributes,omitempty"`
+	AzureAttributes           *AzureAttributes  `json:"azure_attributes,omitempty"`
+	CloneFrom                 *CloneCluster     `json:"clone_from,omitempty"`
+	ClusterLogConf            *ClusterLogConf   `json:"cluster_log_conf,omitempty"`
+	ClusterName               string            `json:"cluster_name,omitempty"`
+	CustomTags                map[string]string `json:"custom_tags,omitempty"`
+	DataSecurityMode          DataSecurityMode  `json:"data_security_mode,omitempty"`
+	DockerImage               *DockerImage      `json:"docker_image,omitempty"`
+	DriverInstancePoolId      string            `json:"driver_instance_pool_id,omitempty"`
+	DriverNodeTypeId          string            `json:"driver_node_type_id,omitempty"`
+	EnableElasticDisk         bool              `json:"enable_elastic_disk,omitempty"`
+	EnableLocalDiskEncryption bool              `json:"enable_local_disk_encryption,omitempty"`
+	GcpAttributes             *GcpAttributes    `json:"gcp_attributes,omitempty"`
+	InitScripts               []InitScriptInfo  `json:"init_scripts,omitempty"`
+	InstancePoolId            string            `json:"instance_pool_id,omitempty"`
+	IsSingleNode              bool              `json:"is_single_node,omitempty"`
+	Kind                      Kind              `json:"kind,omitempty"`
+	NodeTypeId                string            `json:"node_type_id,omitempty"`
+	NumWorkers                int               `json:"num_workers,omitempty"`
+	PolicyId                  string            `json:"policy_id,omitempty"`
+	RuntimeEngine             RuntimeEngine     `json:"runtime_engine,omitempty"`
+	SingleUserName            string            `json:"single_user_name,omitempty"`
+	SparkConf                 map[string]string `json:"spark_conf,omitempty"`
+	SparkEnvVars              map[string]string `json:"spark_env_vars,omitempty"`
+	SparkVersion              string            `json:"spark_version"`
+	SshPublicKeys             []string          `json:"ssh_public_keys,omitempty"`
+	UseMlRuntime              bool              `json:"use_ml_runtime,omitempty"`
+	WorkloadType              *WorkloadType     `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2354,7 +1960,6 @@ func createContextToPb(st *CreateContext) (*createContextPb, error) {
 	}
 	pb := &createContextPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.Language = st.Language
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2362,9 +1967,8 @@ func createContextToPb(st *CreateContext) (*createContextPb, error) {
 }
 
 type createContextPb struct {
-	ClusterId string `json:"clusterId,omitempty"`
-
-	Language Language `json:"language,omitempty"`
+	ClusterId string   `json:"clusterId,omitempty"`
+	Language  Language `json:"language,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2395,31 +1999,18 @@ func createInstancePoolToPb(st *CreateInstancePool) (*createInstancePoolPb, erro
 	}
 	pb := &createInstancePoolPb{}
 	pb.AwsAttributes = st.AwsAttributes
-
 	pb.AzureAttributes = st.AzureAttributes
-
 	pb.CustomTags = st.CustomTags
-
 	pb.DiskSpec = st.DiskSpec
-
 	pb.EnableElasticDisk = st.EnableElasticDisk
-
 	pb.GcpAttributes = st.GcpAttributes
-
 	pb.IdleInstanceAutoterminationMinutes = st.IdleInstanceAutoterminationMinutes
-
 	pb.InstancePoolName = st.InstancePoolName
-
 	pb.MaxCapacity = st.MaxCapacity
-
 	pb.MinIdleInstances = st.MinIdleInstances
-
 	pb.NodeTypeFlexibility = st.NodeTypeFlexibility
-
 	pb.NodeTypeId = st.NodeTypeId
-
 	pb.PreloadedDockerImages = st.PreloadedDockerImages
-
 	pb.PreloadedSparkVersions = st.PreloadedSparkVersions
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2427,33 +2018,20 @@ func createInstancePoolToPb(st *CreateInstancePool) (*createInstancePoolPb, erro
 }
 
 type createInstancePoolPb struct {
-	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
-
-	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-
-	GcpAttributes *InstancePoolGcpAttributes `json:"gcp_attributes,omitempty"`
-
-	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-
-	InstancePoolName string `json:"instance_pool_name"`
-
-	MaxCapacity int `json:"max_capacity,omitempty"`
-
-	MinIdleInstances int `json:"min_idle_instances,omitempty"`
-
-	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
-
-	NodeTypeId string `json:"node_type_id"`
-
-	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-
-	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
+	AwsAttributes                      *InstancePoolAwsAttributes   `json:"aws_attributes,omitempty"`
+	AzureAttributes                    *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
+	CustomTags                         map[string]string            `json:"custom_tags,omitempty"`
+	DiskSpec                           *DiskSpec                    `json:"disk_spec,omitempty"`
+	EnableElasticDisk                  bool                         `json:"enable_elastic_disk,omitempty"`
+	GcpAttributes                      *InstancePoolGcpAttributes   `json:"gcp_attributes,omitempty"`
+	IdleInstanceAutoterminationMinutes int                          `json:"idle_instance_autotermination_minutes,omitempty"`
+	InstancePoolName                   string                       `json:"instance_pool_name"`
+	MaxCapacity                        int                          `json:"max_capacity,omitempty"`
+	MinIdleInstances                   int                          `json:"min_idle_instances,omitempty"`
+	NodeTypeFlexibility                *NodeTypeFlexibility         `json:"node_type_flexibility,omitempty"`
+	NodeTypeId                         string                       `json:"node_type_id"`
+	PreloadedDockerImages              []DockerImage                `json:"preloaded_docker_images,omitempty"`
+	PreloadedSparkVersions             []string                     `json:"preloaded_spark_versions,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2532,17 +2110,11 @@ func createPolicyToPb(st *CreatePolicy) (*createPolicyPb, error) {
 	}
 	pb := &createPolicyPb{}
 	pb.Definition = st.Definition
-
 	pb.Description = st.Description
-
 	pb.Libraries = st.Libraries
-
 	pb.MaxClustersPerUser = st.MaxClustersPerUser
-
 	pb.Name = st.Name
-
 	pb.PolicyFamilyDefinitionOverrides = st.PolicyFamilyDefinitionOverrides
-
 	pb.PolicyFamilyId = st.PolicyFamilyId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2550,19 +2122,13 @@ func createPolicyToPb(st *CreatePolicy) (*createPolicyPb, error) {
 }
 
 type createPolicyPb struct {
-	Definition string `json:"definition,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	Libraries []Library `json:"libraries,omitempty"`
-
-	MaxClustersPerUser int64 `json:"max_clusters_per_user,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	PolicyFamilyDefinitionOverrides string `json:"policy_family_definition_overrides,omitempty"`
-
-	PolicyFamilyId string `json:"policy_family_id,omitempty"`
+	Definition                      string    `json:"definition,omitempty"`
+	Description                     string    `json:"description,omitempty"`
+	Libraries                       []Library `json:"libraries,omitempty"`
+	MaxClustersPerUser              int64     `json:"max_clusters_per_user,omitempty"`
+	Name                            string    `json:"name,omitempty"`
+	PolicyFamilyDefinitionOverrides string    `json:"policy_family_definition_overrides,omitempty"`
+	PolicyFamilyId                  string    `json:"policy_family_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2706,7 +2272,6 @@ func customPolicyTagToPb(st *CustomPolicyTag) (*customPolicyTagPb, error) {
 	}
 	pb := &customPolicyTagPb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2714,8 +2279,7 @@ func customPolicyTagToPb(st *CustomPolicyTag) (*customPolicyTagPb, error) {
 }
 
 type customPolicyTagPb struct {
-	Key string `json:"key"`
-
+	Key   string `json:"key"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2747,11 +2311,8 @@ func dataPlaneEventDetailsToPb(st *DataPlaneEventDetails) (*dataPlaneEventDetail
 	}
 	pb := &dataPlaneEventDetailsPb{}
 	pb.EventType = st.EventType
-
 	pb.ExecutorFailures = st.ExecutorFailures
-
 	pb.HostId = st.HostId
-
 	pb.Timestamp = st.Timestamp
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2759,13 +2320,10 @@ func dataPlaneEventDetailsToPb(st *DataPlaneEventDetails) (*dataPlaneEventDetail
 }
 
 type dataPlaneEventDetailsPb struct {
-	EventType DataPlaneEventDetailsEventType `json:"event_type,omitempty"`
-
-	ExecutorFailures int `json:"executor_failures,omitempty"`
-
-	HostId string `json:"host_id,omitempty"`
-
-	Timestamp int64 `json:"timestamp,omitempty"`
+	EventType        DataPlaneEventDetailsEventType `json:"event_type,omitempty"`
+	ExecutorFailures int                            `json:"executor_failures,omitempty"`
+	HostId           string                         `json:"host_id,omitempty"`
+	Timestamp        int64                          `json:"timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3002,7 +2560,6 @@ func destroyContextToPb(st *DestroyContext) (*destroyContextPb, error) {
 	}
 	pb := &destroyContextPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.ContextId = st.ContextId
 
 	return pb, nil
@@ -3010,7 +2567,6 @@ func destroyContextToPb(st *DestroyContext) (*destroyContextPb, error) {
 
 type destroyContextPb struct {
 	ClusterId string `json:"clusterId"`
-
 	ContextId string `json:"contextId"`
 }
 
@@ -3052,13 +2608,9 @@ func diskSpecToPb(st *DiskSpec) (*diskSpecPb, error) {
 	}
 	pb := &diskSpecPb{}
 	pb.DiskCount = st.DiskCount
-
 	pb.DiskIops = st.DiskIops
-
 	pb.DiskSize = st.DiskSize
-
 	pb.DiskThroughput = st.DiskThroughput
-
 	pb.DiskType = st.DiskType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3066,15 +2618,11 @@ func diskSpecToPb(st *DiskSpec) (*diskSpecPb, error) {
 }
 
 type diskSpecPb struct {
-	DiskCount int `json:"disk_count,omitempty"`
-
-	DiskIops int `json:"disk_iops,omitempty"`
-
-	DiskSize int `json:"disk_size,omitempty"`
-
-	DiskThroughput int `json:"disk_throughput,omitempty"`
-
-	DiskType *DiskType `json:"disk_type,omitempty"`
+	DiskCount      int       `json:"disk_count,omitempty"`
+	DiskIops       int       `json:"disk_iops,omitempty"`
+	DiskSize       int       `json:"disk_size,omitempty"`
+	DiskThroughput int       `json:"disk_throughput,omitempty"`
+	DiskType       *DiskType `json:"disk_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3108,7 +2656,6 @@ func diskTypeToPb(st *DiskType) (*diskTypePb, error) {
 	}
 	pb := &diskTypePb{}
 	pb.AzureDiskVolumeType = st.AzureDiskVolumeType
-
 	pb.EbsVolumeType = st.EbsVolumeType
 
 	return pb, nil
@@ -3116,8 +2663,7 @@ func diskTypeToPb(st *DiskType) (*diskTypePb, error) {
 
 type diskTypePb struct {
 	AzureDiskVolumeType DiskTypeAzureDiskVolumeType `json:"azure_disk_volume_type,omitempty"`
-
-	EbsVolumeType DiskTypeEbsVolumeType `json:"ebs_volume_type,omitempty"`
+	EbsVolumeType       DiskTypeEbsVolumeType       `json:"ebs_volume_type,omitempty"`
 }
 
 func diskTypeFromPb(pb *diskTypePb) (*DiskType, error) {
@@ -3137,7 +2683,6 @@ func dockerBasicAuthToPb(st *DockerBasicAuth) (*dockerBasicAuthPb, error) {
 	}
 	pb := &dockerBasicAuthPb{}
 	pb.Password = st.Password
-
 	pb.Username = st.Username
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3146,7 +2691,6 @@ func dockerBasicAuthToPb(st *DockerBasicAuth) (*dockerBasicAuthPb, error) {
 
 type dockerBasicAuthPb struct {
 	Password string `json:"password,omitempty"`
-
 	Username string `json:"username,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -3178,7 +2722,6 @@ func dockerImageToPb(st *DockerImage) (*dockerImagePb, error) {
 	}
 	pb := &dockerImagePb{}
 	pb.BasicAuth = st.BasicAuth
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3187,8 +2730,7 @@ func dockerImageToPb(st *DockerImage) (*dockerImagePb, error) {
 
 type dockerImagePb struct {
 	BasicAuth *DockerBasicAuth `json:"basic_auth,omitempty"`
-
-	Url string `json:"url,omitempty"`
+	Url       string           `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3219,65 +2761,35 @@ func editClusterToPb(st *EditCluster) (*editClusterPb, error) {
 	}
 	pb := &editClusterPb{}
 	pb.ApplyPolicyDefaultValues = st.ApplyPolicyDefaultValues
-
 	pb.Autoscale = st.Autoscale
-
 	pb.AutoterminationMinutes = st.AutoterminationMinutes
-
 	pb.AwsAttributes = st.AwsAttributes
-
 	pb.AzureAttributes = st.AzureAttributes
-
 	pb.ClusterId = st.ClusterId
-
 	pb.ClusterLogConf = st.ClusterLogConf
-
 	pb.ClusterName = st.ClusterName
-
 	pb.CustomTags = st.CustomTags
-
 	pb.DataSecurityMode = st.DataSecurityMode
-
 	pb.DockerImage = st.DockerImage
-
 	pb.DriverInstancePoolId = st.DriverInstancePoolId
-
 	pb.DriverNodeTypeId = st.DriverNodeTypeId
-
 	pb.EnableElasticDisk = st.EnableElasticDisk
-
 	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
-
 	pb.GcpAttributes = st.GcpAttributes
-
 	pb.InitScripts = st.InitScripts
-
 	pb.InstancePoolId = st.InstancePoolId
-
 	pb.IsSingleNode = st.IsSingleNode
-
 	pb.Kind = st.Kind
-
 	pb.NodeTypeId = st.NodeTypeId
-
 	pb.NumWorkers = st.NumWorkers
-
 	pb.PolicyId = st.PolicyId
-
 	pb.RuntimeEngine = st.RuntimeEngine
-
 	pb.SingleUserName = st.SingleUserName
-
 	pb.SparkConf = st.SparkConf
-
 	pb.SparkEnvVars = st.SparkEnvVars
-
 	pb.SparkVersion = st.SparkVersion
-
 	pb.SshPublicKeys = st.SshPublicKeys
-
 	pb.UseMlRuntime = st.UseMlRuntime
-
 	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3285,67 +2797,37 @@ func editClusterToPb(st *EditCluster) (*editClusterPb, error) {
 }
 
 type editClusterPb struct {
-	ApplyPolicyDefaultValues bool `json:"apply_policy_default_values,omitempty"`
-
-	Autoscale *AutoScale `json:"autoscale,omitempty"`
-
-	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
-
-	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
-
-	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-
-	ClusterId string `json:"cluster_id"`
-
-	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
-
-	ClusterName string `json:"cluster_name,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
-	DockerImage *DockerImage `json:"docker_image,omitempty"`
-
-	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
-
-	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-
-	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
-
-	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
-
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
-
-	IsSingleNode bool `json:"is_single_node,omitempty"`
-
-	Kind Kind `json:"kind,omitempty"`
-
-	NodeTypeId string `json:"node_type_id,omitempty"`
-
-	NumWorkers int `json:"num_workers,omitempty"`
-
-	PolicyId string `json:"policy_id,omitempty"`
-
-	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
-
-	SingleUserName string `json:"single_user_name,omitempty"`
-
-	SparkConf map[string]string `json:"spark_conf,omitempty"`
-
-	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-
-	SparkVersion string `json:"spark_version"`
-
-	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-
-	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
-	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+	ApplyPolicyDefaultValues  bool              `json:"apply_policy_default_values,omitempty"`
+	Autoscale                 *AutoScale        `json:"autoscale,omitempty"`
+	AutoterminationMinutes    int               `json:"autotermination_minutes,omitempty"`
+	AwsAttributes             *AwsAttributes    `json:"aws_attributes,omitempty"`
+	AzureAttributes           *AzureAttributes  `json:"azure_attributes,omitempty"`
+	ClusterId                 string            `json:"cluster_id"`
+	ClusterLogConf            *ClusterLogConf   `json:"cluster_log_conf,omitempty"`
+	ClusterName               string            `json:"cluster_name,omitempty"`
+	CustomTags                map[string]string `json:"custom_tags,omitempty"`
+	DataSecurityMode          DataSecurityMode  `json:"data_security_mode,omitempty"`
+	DockerImage               *DockerImage      `json:"docker_image,omitempty"`
+	DriverInstancePoolId      string            `json:"driver_instance_pool_id,omitempty"`
+	DriverNodeTypeId          string            `json:"driver_node_type_id,omitempty"`
+	EnableElasticDisk         bool              `json:"enable_elastic_disk,omitempty"`
+	EnableLocalDiskEncryption bool              `json:"enable_local_disk_encryption,omitempty"`
+	GcpAttributes             *GcpAttributes    `json:"gcp_attributes,omitempty"`
+	InitScripts               []InitScriptInfo  `json:"init_scripts,omitempty"`
+	InstancePoolId            string            `json:"instance_pool_id,omitempty"`
+	IsSingleNode              bool              `json:"is_single_node,omitempty"`
+	Kind                      Kind              `json:"kind,omitempty"`
+	NodeTypeId                string            `json:"node_type_id,omitempty"`
+	NumWorkers                int               `json:"num_workers,omitempty"`
+	PolicyId                  string            `json:"policy_id,omitempty"`
+	RuntimeEngine             RuntimeEngine     `json:"runtime_engine,omitempty"`
+	SingleUserName            string            `json:"single_user_name,omitempty"`
+	SparkConf                 map[string]string `json:"spark_conf,omitempty"`
+	SparkEnvVars              map[string]string `json:"spark_env_vars,omitempty"`
+	SparkVersion              string            `json:"spark_version"`
+	SshPublicKeys             []string          `json:"ssh_public_keys,omitempty"`
+	UseMlRuntime              bool              `json:"use_ml_runtime,omitempty"`
+	WorkloadType              *WorkloadType     `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3426,19 +2908,12 @@ func editInstancePoolToPb(st *EditInstancePool) (*editInstancePoolPb, error) {
 	}
 	pb := &editInstancePoolPb{}
 	pb.CustomTags = st.CustomTags
-
 	pb.IdleInstanceAutoterminationMinutes = st.IdleInstanceAutoterminationMinutes
-
 	pb.InstancePoolId = st.InstancePoolId
-
 	pb.InstancePoolName = st.InstancePoolName
-
 	pb.MaxCapacity = st.MaxCapacity
-
 	pb.MinIdleInstances = st.MinIdleInstances
-
 	pb.NodeTypeFlexibility = st.NodeTypeFlexibility
-
 	pb.NodeTypeId = st.NodeTypeId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3446,21 +2921,14 @@ func editInstancePoolToPb(st *EditInstancePool) (*editInstancePoolPb, error) {
 }
 
 type editInstancePoolPb struct {
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-
-	InstancePoolId string `json:"instance_pool_id"`
-
-	InstancePoolName string `json:"instance_pool_name"`
-
-	MaxCapacity int `json:"max_capacity,omitempty"`
-
-	MinIdleInstances int `json:"min_idle_instances,omitempty"`
-
-	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
-
-	NodeTypeId string `json:"node_type_id"`
+	CustomTags                         map[string]string    `json:"custom_tags,omitempty"`
+	IdleInstanceAutoterminationMinutes int                  `json:"idle_instance_autotermination_minutes,omitempty"`
+	InstancePoolId                     string               `json:"instance_pool_id"`
+	InstancePoolName                   string               `json:"instance_pool_name"`
+	MaxCapacity                        int                  `json:"max_capacity,omitempty"`
+	MinIdleInstances                   int                  `json:"min_idle_instances,omitempty"`
+	NodeTypeFlexibility                *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
+	NodeTypeId                         string               `json:"node_type_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3518,19 +2986,12 @@ func editPolicyToPb(st *EditPolicy) (*editPolicyPb, error) {
 	}
 	pb := &editPolicyPb{}
 	pb.Definition = st.Definition
-
 	pb.Description = st.Description
-
 	pb.Libraries = st.Libraries
-
 	pb.MaxClustersPerUser = st.MaxClustersPerUser
-
 	pb.Name = st.Name
-
 	pb.PolicyFamilyDefinitionOverrides = st.PolicyFamilyDefinitionOverrides
-
 	pb.PolicyFamilyId = st.PolicyFamilyId
-
 	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3538,21 +2999,14 @@ func editPolicyToPb(st *EditPolicy) (*editPolicyPb, error) {
 }
 
 type editPolicyPb struct {
-	Definition string `json:"definition,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	Libraries []Library `json:"libraries,omitempty"`
-
-	MaxClustersPerUser int64 `json:"max_clusters_per_user,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	PolicyFamilyDefinitionOverrides string `json:"policy_family_definition_overrides,omitempty"`
-
-	PolicyFamilyId string `json:"policy_family_id,omitempty"`
-
-	PolicyId string `json:"policy_id"`
+	Definition                      string    `json:"definition,omitempty"`
+	Description                     string    `json:"description,omitempty"`
+	Libraries                       []Library `json:"libraries,omitempty"`
+	MaxClustersPerUser              int64     `json:"max_clusters_per_user,omitempty"`
+	Name                            string    `json:"name,omitempty"`
+	PolicyFamilyDefinitionOverrides string    `json:"policy_family_definition_overrides,omitempty"`
+	PolicyFamilyId                  string    `json:"policy_family_id,omitempty"`
+	PolicyId                        string    `json:"policy_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3631,7 +3085,6 @@ func enforceClusterComplianceRequestToPb(st *EnforceClusterComplianceRequest) (*
 	}
 	pb := &enforceClusterComplianceRequestPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.ValidateOnly = st.ValidateOnly
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3639,9 +3092,8 @@ func enforceClusterComplianceRequestToPb(st *EnforceClusterComplianceRequest) (*
 }
 
 type enforceClusterComplianceRequestPb struct {
-	ClusterId string `json:"cluster_id"`
-
-	ValidateOnly bool `json:"validate_only,omitempty"`
+	ClusterId    string `json:"cluster_id"`
+	ValidateOnly bool   `json:"validate_only,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3672,7 +3124,6 @@ func enforceClusterComplianceResponseToPb(st *EnforceClusterComplianceResponse) 
 	}
 	pb := &enforceClusterComplianceResponsePb{}
 	pb.Changes = st.Changes
-
 	pb.HasChanges = st.HasChanges
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3680,9 +3131,8 @@ func enforceClusterComplianceResponseToPb(st *EnforceClusterComplianceResponse) 
 }
 
 type enforceClusterComplianceResponsePb struct {
-	Changes []ClusterSettingsChange `json:"changes,omitempty"`
-
-	HasChanges bool `json:"has_changes,omitempty"`
+	Changes    []ClusterSettingsChange `json:"changes,omitempty"`
+	HasChanges bool                    `json:"has_changes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3713,11 +3163,8 @@ func environmentToPb(st *Environment) (*environmentPb, error) {
 	}
 	pb := &environmentPb{}
 	pb.Client = st.Client
-
 	pb.Dependencies = st.Dependencies
-
 	pb.EnvironmentVersion = st.EnvironmentVersion
-
 	pb.JarDependencies = st.JarDependencies
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3725,13 +3172,10 @@ func environmentToPb(st *Environment) (*environmentPb, error) {
 }
 
 type environmentPb struct {
-	Client string `json:"client"`
-
-	Dependencies []string `json:"dependencies,omitempty"`
-
-	EnvironmentVersion string `json:"environment_version,omitempty"`
-
-	JarDependencies []string `json:"jar_dependencies,omitempty"`
+	Client             string   `json:"client"`
+	Dependencies       []string `json:"dependencies,omitempty"`
+	EnvironmentVersion string   `json:"environment_version,omitempty"`
+	JarDependencies    []string `json:"jar_dependencies,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3764,43 +3208,24 @@ func eventDetailsToPb(st *EventDetails) (*eventDetailsPb, error) {
 	}
 	pb := &eventDetailsPb{}
 	pb.Attributes = st.Attributes
-
 	pb.Cause = st.Cause
-
 	pb.ClusterSize = st.ClusterSize
-
 	pb.CurrentNumVcpus = st.CurrentNumVcpus
-
 	pb.CurrentNumWorkers = st.CurrentNumWorkers
-
 	pb.DidNotExpandReason = st.DidNotExpandReason
-
 	pb.DiskSize = st.DiskSize
-
 	pb.DriverStateMessage = st.DriverStateMessage
-
 	pb.EnableTerminationForNodeBlocklisted = st.EnableTerminationForNodeBlocklisted
-
 	pb.FreeSpace = st.FreeSpace
-
 	pb.InitScripts = st.InitScripts
-
 	pb.InstanceId = st.InstanceId
-
 	pb.JobRunName = st.JobRunName
-
 	pb.PreviousAttributes = st.PreviousAttributes
-
 	pb.PreviousClusterSize = st.PreviousClusterSize
-
 	pb.PreviousDiskSize = st.PreviousDiskSize
-
 	pb.Reason = st.Reason
-
 	pb.TargetNumVcpus = st.TargetNumVcpus
-
 	pb.TargetNumWorkers = st.TargetNumWorkers
-
 	pb.User = st.User
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3808,45 +3233,26 @@ func eventDetailsToPb(st *EventDetails) (*eventDetailsPb, error) {
 }
 
 type eventDetailsPb struct {
-	Attributes *ClusterAttributes `json:"attributes,omitempty"`
-
-	Cause EventDetailsCause `json:"cause,omitempty"`
-
-	ClusterSize *ClusterSize `json:"cluster_size,omitempty"`
-
-	CurrentNumVcpus int `json:"current_num_vcpus,omitempty"`
-
-	CurrentNumWorkers int `json:"current_num_workers,omitempty"`
-
-	DidNotExpandReason string `json:"did_not_expand_reason,omitempty"`
-
-	DiskSize int64 `json:"disk_size,omitempty"`
-
-	DriverStateMessage string `json:"driver_state_message,omitempty"`
-
-	EnableTerminationForNodeBlocklisted bool `json:"enable_termination_for_node_blocklisted,omitempty"`
-
-	FreeSpace int64 `json:"free_space,omitempty"`
-
-	InitScripts *InitScriptEventDetails `json:"init_scripts,omitempty"`
-
-	InstanceId string `json:"instance_id,omitempty"`
-
-	JobRunName string `json:"job_run_name,omitempty"`
-
-	PreviousAttributes *ClusterAttributes `json:"previous_attributes,omitempty"`
-
-	PreviousClusterSize *ClusterSize `json:"previous_cluster_size,omitempty"`
-
-	PreviousDiskSize int64 `json:"previous_disk_size,omitempty"`
-
-	Reason *TerminationReason `json:"reason,omitempty"`
-
-	TargetNumVcpus int `json:"target_num_vcpus,omitempty"`
-
-	TargetNumWorkers int `json:"target_num_workers,omitempty"`
-
-	User string `json:"user,omitempty"`
+	Attributes                          *ClusterAttributes      `json:"attributes,omitempty"`
+	Cause                               EventDetailsCause       `json:"cause,omitempty"`
+	ClusterSize                         *ClusterSize            `json:"cluster_size,omitempty"`
+	CurrentNumVcpus                     int                     `json:"current_num_vcpus,omitempty"`
+	CurrentNumWorkers                   int                     `json:"current_num_workers,omitempty"`
+	DidNotExpandReason                  string                  `json:"did_not_expand_reason,omitempty"`
+	DiskSize                            int64                   `json:"disk_size,omitempty"`
+	DriverStateMessage                  string                  `json:"driver_state_message,omitempty"`
+	EnableTerminationForNodeBlocklisted bool                    `json:"enable_termination_for_node_blocklisted,omitempty"`
+	FreeSpace                           int64                   `json:"free_space,omitempty"`
+	InitScripts                         *InitScriptEventDetails `json:"init_scripts,omitempty"`
+	InstanceId                          string                  `json:"instance_id,omitempty"`
+	JobRunName                          string                  `json:"job_run_name,omitempty"`
+	PreviousAttributes                  *ClusterAttributes      `json:"previous_attributes,omitempty"`
+	PreviousClusterSize                 *ClusterSize            `json:"previous_cluster_size,omitempty"`
+	PreviousDiskSize                    int64                   `json:"previous_disk_size,omitempty"`
+	Reason                              *TerminationReason      `json:"reason,omitempty"`
+	TargetNumVcpus                      int                     `json:"target_num_vcpus,omitempty"`
+	TargetNumWorkers                    int                     `json:"target_num_workers,omitempty"`
+	User                                string                  `json:"user,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3895,15 +3301,10 @@ func gcpAttributesToPb(st *GcpAttributes) (*gcpAttributesPb, error) {
 	}
 	pb := &gcpAttributesPb{}
 	pb.Availability = st.Availability
-
 	pb.BootDiskSize = st.BootDiskSize
-
 	pb.GoogleServiceAccount = st.GoogleServiceAccount
-
 	pb.LocalSsdCount = st.LocalSsdCount
-
 	pb.UsePreemptibleExecutors = st.UsePreemptibleExecutors
-
 	pb.ZoneId = st.ZoneId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3911,17 +3312,12 @@ func gcpAttributesToPb(st *GcpAttributes) (*gcpAttributesPb, error) {
 }
 
 type gcpAttributesPb struct {
-	Availability GcpAvailability `json:"availability,omitempty"`
-
-	BootDiskSize int `json:"boot_disk_size,omitempty"`
-
-	GoogleServiceAccount string `json:"google_service_account,omitempty"`
-
-	LocalSsdCount int `json:"local_ssd_count,omitempty"`
-
-	UsePreemptibleExecutors bool `json:"use_preemptible_executors,omitempty"`
-
-	ZoneId string `json:"zone_id,omitempty"`
+	Availability            GcpAvailability `json:"availability,omitempty"`
+	BootDiskSize            int             `json:"boot_disk_size,omitempty"`
+	GoogleServiceAccount    string          `json:"google_service_account,omitempty"`
+	LocalSsdCount           int             `json:"local_ssd_count,omitempty"`
+	UsePreemptibleExecutors bool            `json:"use_preemptible_executors,omitempty"`
+	ZoneId                  string          `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4004,7 +3400,6 @@ func getClusterComplianceResponseToPb(st *GetClusterComplianceResponse) (*getClu
 	}
 	pb := &getClusterComplianceResponsePb{}
 	pb.IsCompliant = st.IsCompliant
-
 	pb.Violations = st.Violations
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4012,9 +3407,8 @@ func getClusterComplianceResponseToPb(st *GetClusterComplianceResponse) (*getClu
 }
 
 type getClusterComplianceResponsePb struct {
-	IsCompliant bool `json:"is_compliant,omitempty"`
-
-	Violations map[string]string `json:"violations,omitempty"`
+	IsCompliant bool              `json:"is_compliant,omitempty"`
+	Violations  map[string]string `json:"violations,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4237,21 +3631,13 @@ func getEventsToPb(st *GetEvents) (*getEventsPb, error) {
 	}
 	pb := &getEventsPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.EndTime = st.EndTime
-
 	pb.EventTypes = st.EventTypes
-
 	pb.Limit = st.Limit
-
 	pb.Offset = st.Offset
-
 	pb.Order = st.Order
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
-
 	pb.StartTime = st.StartTime
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4259,23 +3645,15 @@ func getEventsToPb(st *GetEvents) (*getEventsPb, error) {
 }
 
 type getEventsPb struct {
-	ClusterId string `json:"cluster_id"`
-
-	EndTime int64 `json:"end_time,omitempty"`
-
-	EventTypes []EventType `json:"event_types,omitempty"`
-
-	Limit int64 `json:"limit,omitempty"`
-
-	Offset int64 `json:"offset,omitempty"`
-
-	Order GetEventsOrder `json:"order,omitempty"`
-
-	PageSize int `json:"page_size,omitempty"`
-
-	PageToken string `json:"page_token,omitempty"`
-
-	StartTime int64 `json:"start_time,omitempty"`
+	ClusterId  string         `json:"cluster_id"`
+	EndTime    int64          `json:"end_time,omitempty"`
+	EventTypes []EventType    `json:"event_types,omitempty"`
+	Limit      int64          `json:"limit,omitempty"`
+	Offset     int64          `json:"offset,omitempty"`
+	Order      GetEventsOrder `json:"order,omitempty"`
+	PageSize   int            `json:"page_size,omitempty"`
+	PageToken  string         `json:"page_token,omitempty"`
+	StartTime  int64          `json:"start_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4313,13 +3691,9 @@ func getEventsResponseToPb(st *GetEventsResponse) (*getEventsResponsePb, error) 
 	}
 	pb := &getEventsResponsePb{}
 	pb.Events = st.Events
-
 	pb.NextPage = st.NextPage
-
 	pb.NextPageToken = st.NextPageToken
-
 	pb.PrevPageToken = st.PrevPageToken
-
 	pb.TotalCount = st.TotalCount
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4327,15 +3701,11 @@ func getEventsResponseToPb(st *GetEventsResponse) (*getEventsResponsePb, error) 
 }
 
 type getEventsResponsePb struct {
-	Events []ClusterEvent `json:"events,omitempty"`
-
-	NextPage *GetEvents `json:"next_page,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	PrevPageToken string `json:"prev_page_token,omitempty"`
-
-	TotalCount int64 `json:"total_count,omitempty"`
+	Events        []ClusterEvent `json:"events,omitempty"`
+	NextPage      *GetEvents     `json:"next_page,omitempty"`
+	NextPageToken string         `json:"next_page_token,omitempty"`
+	PrevPageToken string         `json:"prev_page_token,omitempty"`
+	TotalCount    int64          `json:"total_count,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4393,41 +3763,23 @@ func getInstancePoolToPb(st *GetInstancePool) (*getInstancePoolPb, error) {
 	}
 	pb := &getInstancePoolPb{}
 	pb.AwsAttributes = st.AwsAttributes
-
 	pb.AzureAttributes = st.AzureAttributes
-
 	pb.CustomTags = st.CustomTags
-
 	pb.DefaultTags = st.DefaultTags
-
 	pb.DiskSpec = st.DiskSpec
-
 	pb.EnableElasticDisk = st.EnableElasticDisk
-
 	pb.GcpAttributes = st.GcpAttributes
-
 	pb.IdleInstanceAutoterminationMinutes = st.IdleInstanceAutoterminationMinutes
-
 	pb.InstancePoolId = st.InstancePoolId
-
 	pb.InstancePoolName = st.InstancePoolName
-
 	pb.MaxCapacity = st.MaxCapacity
-
 	pb.MinIdleInstances = st.MinIdleInstances
-
 	pb.NodeTypeFlexibility = st.NodeTypeFlexibility
-
 	pb.NodeTypeId = st.NodeTypeId
-
 	pb.PreloadedDockerImages = st.PreloadedDockerImages
-
 	pb.PreloadedSparkVersions = st.PreloadedSparkVersions
-
 	pb.State = st.State
-
 	pb.Stats = st.Stats
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4435,43 +3787,25 @@ func getInstancePoolToPb(st *GetInstancePool) (*getInstancePoolPb, error) {
 }
 
 type getInstancePoolPb struct {
-	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
-
-	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	DefaultTags map[string]string `json:"default_tags,omitempty"`
-
-	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-
-	GcpAttributes *InstancePoolGcpAttributes `json:"gcp_attributes,omitempty"`
-
-	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-
-	InstancePoolId string `json:"instance_pool_id"`
-
-	InstancePoolName string `json:"instance_pool_name,omitempty"`
-
-	MaxCapacity int `json:"max_capacity,omitempty"`
-
-	MinIdleInstances int `json:"min_idle_instances,omitempty"`
-
-	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
-
-	NodeTypeId string `json:"node_type_id,omitempty"`
-
-	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-
-	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
-
-	State InstancePoolState `json:"state,omitempty"`
-
-	Stats *InstancePoolStats `json:"stats,omitempty"`
-
-	Status *InstancePoolStatus `json:"status,omitempty"`
+	AwsAttributes                      *InstancePoolAwsAttributes   `json:"aws_attributes,omitempty"`
+	AzureAttributes                    *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
+	CustomTags                         map[string]string            `json:"custom_tags,omitempty"`
+	DefaultTags                        map[string]string            `json:"default_tags,omitempty"`
+	DiskSpec                           *DiskSpec                    `json:"disk_spec,omitempty"`
+	EnableElasticDisk                  bool                         `json:"enable_elastic_disk,omitempty"`
+	GcpAttributes                      *InstancePoolGcpAttributes   `json:"gcp_attributes,omitempty"`
+	IdleInstanceAutoterminationMinutes int                          `json:"idle_instance_autotermination_minutes,omitempty"`
+	InstancePoolId                     string                       `json:"instance_pool_id"`
+	InstancePoolName                   string                       `json:"instance_pool_name,omitempty"`
+	MaxCapacity                        int                          `json:"max_capacity,omitempty"`
+	MinIdleInstances                   int                          `json:"min_idle_instances,omitempty"`
+	NodeTypeFlexibility                *NodeTypeFlexibility         `json:"node_type_flexibility,omitempty"`
+	NodeTypeId                         string                       `json:"node_type_id,omitempty"`
+	PreloadedDockerImages              []DockerImage                `json:"preloaded_docker_images,omitempty"`
+	PreloadedSparkVersions             []string                     `json:"preloaded_spark_versions,omitempty"`
+	State                              InstancePoolState            `json:"state,omitempty"`
+	Stats                              *InstancePoolStats           `json:"stats,omitempty"`
+	Status                             *InstancePoolStatus          `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4615,7 +3949,6 @@ func getPolicyFamilyRequestToPb(st *GetPolicyFamilyRequest) (*getPolicyFamilyReq
 	}
 	pb := &getPolicyFamilyRequestPb{}
 	pb.PolicyFamilyId = st.PolicyFamilyId
-
 	pb.Version = st.Version
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4624,8 +3957,7 @@ func getPolicyFamilyRequestToPb(st *GetPolicyFamilyRequest) (*getPolicyFamilyReq
 
 type getPolicyFamilyRequestPb struct {
 	PolicyFamilyId string `json:"-" url:"-"`
-
-	Version int64 `json:"-" url:"version,omitempty"`
+	Version        int64  `json:"-" url:"version,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4680,11 +4012,8 @@ func globalInitScriptCreateRequestToPb(st *GlobalInitScriptCreateRequest) (*glob
 	}
 	pb := &globalInitScriptCreateRequestPb{}
 	pb.Enabled = st.Enabled
-
 	pb.Name = st.Name
-
 	pb.Position = st.Position
-
 	pb.Script = st.Script
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4692,13 +4021,10 @@ func globalInitScriptCreateRequestToPb(st *GlobalInitScriptCreateRequest) (*glob
 }
 
 type globalInitScriptCreateRequestPb struct {
-	Enabled bool `json:"enabled,omitempty"`
-
-	Name string `json:"name"`
-
-	Position int `json:"position,omitempty"`
-
-	Script string `json:"script"`
+	Enabled  bool   `json:"enabled,omitempty"`
+	Name     string `json:"name"`
+	Position int    `json:"position,omitempty"`
+	Script   string `json:"script"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4731,19 +4057,12 @@ func globalInitScriptDetailsToPb(st *GlobalInitScriptDetails) (*globalInitScript
 	}
 	pb := &globalInitScriptDetailsPb{}
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.Enabled = st.Enabled
-
 	pb.Name = st.Name
-
 	pb.Position = st.Position
-
 	pb.ScriptId = st.ScriptId
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4751,20 +4070,13 @@ func globalInitScriptDetailsToPb(st *GlobalInitScriptDetails) (*globalInitScript
 }
 
 type globalInitScriptDetailsPb struct {
-	CreatedAt int `json:"created_at,omitempty"`
-
+	CreatedAt int    `json:"created_at,omitempty"`
 	CreatedBy string `json:"created_by,omitempty"`
-
-	Enabled bool `json:"enabled,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Position int `json:"position,omitempty"`
-
-	ScriptId string `json:"script_id,omitempty"`
-
-	UpdatedAt int `json:"updated_at,omitempty"`
-
+	Enabled   bool   `json:"enabled,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Position  int    `json:"position,omitempty"`
+	ScriptId  string `json:"script_id,omitempty"`
+	UpdatedAt int    `json:"updated_at,omitempty"`
 	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4802,21 +4114,13 @@ func globalInitScriptDetailsWithContentToPb(st *GlobalInitScriptDetailsWithConte
 	}
 	pb := &globalInitScriptDetailsWithContentPb{}
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.Enabled = st.Enabled
-
 	pb.Name = st.Name
-
 	pb.Position = st.Position
-
 	pb.Script = st.Script
-
 	pb.ScriptId = st.ScriptId
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4824,22 +4128,14 @@ func globalInitScriptDetailsWithContentToPb(st *GlobalInitScriptDetailsWithConte
 }
 
 type globalInitScriptDetailsWithContentPb struct {
-	CreatedAt int `json:"created_at,omitempty"`
-
+	CreatedAt int    `json:"created_at,omitempty"`
 	CreatedBy string `json:"created_by,omitempty"`
-
-	Enabled bool `json:"enabled,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Position int `json:"position,omitempty"`
-
-	Script string `json:"script,omitempty"`
-
-	ScriptId string `json:"script_id,omitempty"`
-
-	UpdatedAt int `json:"updated_at,omitempty"`
-
+	Enabled   bool   `json:"enabled,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Position  int    `json:"position,omitempty"`
+	Script    string `json:"script,omitempty"`
+	ScriptId  string `json:"script_id,omitempty"`
+	UpdatedAt int    `json:"updated_at,omitempty"`
 	UpdatedBy string `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4878,13 +4174,9 @@ func globalInitScriptUpdateRequestToPb(st *GlobalInitScriptUpdateRequest) (*glob
 	}
 	pb := &globalInitScriptUpdateRequestPb{}
 	pb.Enabled = st.Enabled
-
 	pb.Name = st.Name
-
 	pb.Position = st.Position
-
 	pb.Script = st.Script
-
 	pb.ScriptId = st.ScriptId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4892,14 +4184,10 @@ func globalInitScriptUpdateRequestToPb(st *GlobalInitScriptUpdateRequest) (*glob
 }
 
 type globalInitScriptUpdateRequestPb struct {
-	Enabled bool `json:"enabled,omitempty"`
-
-	Name string `json:"name"`
-
-	Position int `json:"position,omitempty"`
-
-	Script string `json:"script"`
-
+	Enabled  bool   `json:"enabled,omitempty"`
+	Name     string `json:"name"`
+	Position int    `json:"position,omitempty"`
+	Script   string `json:"script"`
 	ScriptId string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4934,9 +4222,7 @@ func initScriptEventDetailsToPb(st *InitScriptEventDetails) (*initScriptEventDet
 	}
 	pb := &initScriptEventDetailsPb{}
 	pb.Cluster = st.Cluster
-
 	pb.Global = st.Global
-
 	pb.ReportedForNode = st.ReportedForNode
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4944,11 +4230,9 @@ func initScriptEventDetailsToPb(st *InitScriptEventDetails) (*initScriptEventDet
 }
 
 type initScriptEventDetailsPb struct {
-	Cluster []InitScriptInfoAndExecutionDetails `json:"cluster,omitempty"`
-
-	Global []InitScriptInfoAndExecutionDetails `json:"global,omitempty"`
-
-	ReportedForNode string `json:"reported_for_node,omitempty"`
+	Cluster         []InitScriptInfoAndExecutionDetails `json:"cluster,omitempty"`
+	Global          []InitScriptInfoAndExecutionDetails `json:"global,omitempty"`
+	ReportedForNode string                              `json:"reported_for_node,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4980,35 +4264,23 @@ func initScriptInfoToPb(st *InitScriptInfo) (*initScriptInfoPb, error) {
 	}
 	pb := &initScriptInfoPb{}
 	pb.Abfss = st.Abfss
-
 	pb.Dbfs = st.Dbfs
-
 	pb.File = st.File
-
 	pb.Gcs = st.Gcs
-
 	pb.S3 = st.S3
-
 	pb.Volumes = st.Volumes
-
 	pb.Workspace = st.Workspace
 
 	return pb, nil
 }
 
 type initScriptInfoPb struct {
-	Abfss *Adlsgen2Info `json:"abfss,omitempty"`
-
-	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
-
-	File *LocalFileInfo `json:"file,omitempty"`
-
-	Gcs *GcsStorageInfo `json:"gcs,omitempty"`
-
-	S3 *S3StorageInfo `json:"s3,omitempty"`
-
-	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
-
+	Abfss     *Adlsgen2Info         `json:"abfss,omitempty"`
+	Dbfs      *DbfsStorageInfo      `json:"dbfs,omitempty"`
+	File      *LocalFileInfo        `json:"file,omitempty"`
+	Gcs       *GcsStorageInfo       `json:"gcs,omitempty"`
+	S3        *S3StorageInfo        `json:"s3,omitempty"`
+	Volumes   *VolumesStorageInfo   `json:"volumes,omitempty"`
 	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
 }
 
@@ -5034,23 +4306,14 @@ func initScriptInfoAndExecutionDetailsToPb(st *InitScriptInfoAndExecutionDetails
 	}
 	pb := &initScriptInfoAndExecutionDetailsPb{}
 	pb.Abfss = st.Abfss
-
 	pb.Dbfs = st.Dbfs
-
 	pb.ErrorMessage = st.ErrorMessage
-
 	pb.ExecutionDurationSeconds = st.ExecutionDurationSeconds
-
 	pb.File = st.File
-
 	pb.Gcs = st.Gcs
-
 	pb.S3 = st.S3
-
 	pb.Status = st.Status
-
 	pb.Volumes = st.Volumes
-
 	pb.Workspace = st.Workspace
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5058,25 +4321,16 @@ func initScriptInfoAndExecutionDetailsToPb(st *InitScriptInfoAndExecutionDetails
 }
 
 type initScriptInfoAndExecutionDetailsPb struct {
-	Abfss *Adlsgen2Info `json:"abfss,omitempty"`
-
-	Dbfs *DbfsStorageInfo `json:"dbfs,omitempty"`
-
-	ErrorMessage string `json:"error_message,omitempty"`
-
-	ExecutionDurationSeconds int `json:"execution_duration_seconds,omitempty"`
-
-	File *LocalFileInfo `json:"file,omitempty"`
-
-	Gcs *GcsStorageInfo `json:"gcs,omitempty"`
-
-	S3 *S3StorageInfo `json:"s3,omitempty"`
-
-	Status InitScriptExecutionDetailsInitScriptExecutionStatus `json:"status,omitempty"`
-
-	Volumes *VolumesStorageInfo `json:"volumes,omitempty"`
-
-	Workspace *WorkspaceStorageInfo `json:"workspace,omitempty"`
+	Abfss                    *Adlsgen2Info                                       `json:"abfss,omitempty"`
+	Dbfs                     *DbfsStorageInfo                                    `json:"dbfs,omitempty"`
+	ErrorMessage             string                                              `json:"error_message,omitempty"`
+	ExecutionDurationSeconds int                                                 `json:"execution_duration_seconds,omitempty"`
+	File                     *LocalFileInfo                                      `json:"file,omitempty"`
+	Gcs                      *GcsStorageInfo                                     `json:"gcs,omitempty"`
+	S3                       *S3StorageInfo                                      `json:"s3,omitempty"`
+	Status                   InitScriptExecutionDetailsInitScriptExecutionStatus `json:"status,omitempty"`
+	Volumes                  *VolumesStorageInfo                                 `json:"volumes,omitempty"`
+	Workspace                *WorkspaceStorageInfo                               `json:"workspace,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5115,15 +4369,13 @@ func installLibrariesToPb(st *InstallLibraries) (*installLibrariesPb, error) {
 	}
 	pb := &installLibrariesPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.Libraries = st.Libraries
 
 	return pb, nil
 }
 
 type installLibrariesPb struct {
-	ClusterId string `json:"cluster_id"`
-
+	ClusterId string    `json:"cluster_id"`
 	Libraries []Library `json:"libraries"`
 }
 
@@ -5165,11 +4417,8 @@ func instancePoolAccessControlRequestToPb(st *InstancePoolAccessControlRequest) 
 	}
 	pb := &instancePoolAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5177,13 +4426,10 @@ func instancePoolAccessControlRequestToPb(st *InstancePoolAccessControlRequest) 
 }
 
 type instancePoolAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string                      `json:"group_name,omitempty"`
+	PermissionLevel      InstancePoolPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string                      `json:"service_principal_name,omitempty"`
+	UserName             string                      `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5216,13 +4462,9 @@ func instancePoolAccessControlResponseToPb(st *InstancePoolAccessControlResponse
 	}
 	pb := &instancePoolAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5230,15 +4472,11 @@ func instancePoolAccessControlResponseToPb(st *InstancePoolAccessControlResponse
 }
 
 type instancePoolAccessControlResponsePb struct {
-	AllPermissions []InstancePoolPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []InstancePoolPermission `json:"all_permissions,omitempty"`
+	DisplayName          string                   `json:"display_name,omitempty"`
+	GroupName            string                   `json:"group_name,omitempty"`
+	ServicePrincipalName string                   `json:"service_principal_name,omitempty"`
+	UserName             string                   `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5272,41 +4510,23 @@ func instancePoolAndStatsToPb(st *InstancePoolAndStats) (*instancePoolAndStatsPb
 	}
 	pb := &instancePoolAndStatsPb{}
 	pb.AwsAttributes = st.AwsAttributes
-
 	pb.AzureAttributes = st.AzureAttributes
-
 	pb.CustomTags = st.CustomTags
-
 	pb.DefaultTags = st.DefaultTags
-
 	pb.DiskSpec = st.DiskSpec
-
 	pb.EnableElasticDisk = st.EnableElasticDisk
-
 	pb.GcpAttributes = st.GcpAttributes
-
 	pb.IdleInstanceAutoterminationMinutes = st.IdleInstanceAutoterminationMinutes
-
 	pb.InstancePoolId = st.InstancePoolId
-
 	pb.InstancePoolName = st.InstancePoolName
-
 	pb.MaxCapacity = st.MaxCapacity
-
 	pb.MinIdleInstances = st.MinIdleInstances
-
 	pb.NodeTypeFlexibility = st.NodeTypeFlexibility
-
 	pb.NodeTypeId = st.NodeTypeId
-
 	pb.PreloadedDockerImages = st.PreloadedDockerImages
-
 	pb.PreloadedSparkVersions = st.PreloadedSparkVersions
-
 	pb.State = st.State
-
 	pb.Stats = st.Stats
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5314,43 +4534,25 @@ func instancePoolAndStatsToPb(st *InstancePoolAndStats) (*instancePoolAndStatsPb
 }
 
 type instancePoolAndStatsPb struct {
-	AwsAttributes *InstancePoolAwsAttributes `json:"aws_attributes,omitempty"`
-
-	AzureAttributes *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	DefaultTags map[string]string `json:"default_tags,omitempty"`
-
-	DiskSpec *DiskSpec `json:"disk_spec,omitempty"`
-
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-
-	GcpAttributes *InstancePoolGcpAttributes `json:"gcp_attributes,omitempty"`
-
-	IdleInstanceAutoterminationMinutes int `json:"idle_instance_autotermination_minutes,omitempty"`
-
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
-
-	InstancePoolName string `json:"instance_pool_name,omitempty"`
-
-	MaxCapacity int `json:"max_capacity,omitempty"`
-
-	MinIdleInstances int `json:"min_idle_instances,omitempty"`
-
-	NodeTypeFlexibility *NodeTypeFlexibility `json:"node_type_flexibility,omitempty"`
-
-	NodeTypeId string `json:"node_type_id,omitempty"`
-
-	PreloadedDockerImages []DockerImage `json:"preloaded_docker_images,omitempty"`
-
-	PreloadedSparkVersions []string `json:"preloaded_spark_versions,omitempty"`
-
-	State InstancePoolState `json:"state,omitempty"`
-
-	Stats *InstancePoolStats `json:"stats,omitempty"`
-
-	Status *InstancePoolStatus `json:"status,omitempty"`
+	AwsAttributes                      *InstancePoolAwsAttributes   `json:"aws_attributes,omitempty"`
+	AzureAttributes                    *InstancePoolAzureAttributes `json:"azure_attributes,omitempty"`
+	CustomTags                         map[string]string            `json:"custom_tags,omitempty"`
+	DefaultTags                        map[string]string            `json:"default_tags,omitempty"`
+	DiskSpec                           *DiskSpec                    `json:"disk_spec,omitempty"`
+	EnableElasticDisk                  bool                         `json:"enable_elastic_disk,omitempty"`
+	GcpAttributes                      *InstancePoolGcpAttributes   `json:"gcp_attributes,omitempty"`
+	IdleInstanceAutoterminationMinutes int                          `json:"idle_instance_autotermination_minutes,omitempty"`
+	InstancePoolId                     string                       `json:"instance_pool_id,omitempty"`
+	InstancePoolName                   string                       `json:"instance_pool_name,omitempty"`
+	MaxCapacity                        int                          `json:"max_capacity,omitempty"`
+	MinIdleInstances                   int                          `json:"min_idle_instances,omitempty"`
+	NodeTypeFlexibility                *NodeTypeFlexibility         `json:"node_type_flexibility,omitempty"`
+	NodeTypeId                         string                       `json:"node_type_id,omitempty"`
+	PreloadedDockerImages              []DockerImage                `json:"preloaded_docker_images,omitempty"`
+	PreloadedSparkVersions             []string                     `json:"preloaded_spark_versions,omitempty"`
+	State                              InstancePoolState            `json:"state,omitempty"`
+	Stats                              *InstancePoolStats           `json:"stats,omitempty"`
+	Status                             *InstancePoolStatus          `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5398,9 +4600,7 @@ func instancePoolAwsAttributesToPb(st *InstancePoolAwsAttributes) (*instancePool
 	}
 	pb := &instancePoolAwsAttributesPb{}
 	pb.Availability = st.Availability
-
 	pb.SpotBidPricePercent = st.SpotBidPricePercent
-
 	pb.ZoneId = st.ZoneId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5408,11 +4608,9 @@ func instancePoolAwsAttributesToPb(st *InstancePoolAwsAttributes) (*instancePool
 }
 
 type instancePoolAwsAttributesPb struct {
-	Availability InstancePoolAwsAttributesAvailability `json:"availability,omitempty"`
-
-	SpotBidPricePercent int `json:"spot_bid_price_percent,omitempty"`
-
-	ZoneId string `json:"zone_id,omitempty"`
+	Availability        InstancePoolAwsAttributesAvailability `json:"availability,omitempty"`
+	SpotBidPricePercent int                                   `json:"spot_bid_price_percent,omitempty"`
+	ZoneId              string                                `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5444,7 +4642,6 @@ func instancePoolAzureAttributesToPb(st *InstancePoolAzureAttributes) (*instance
 	}
 	pb := &instancePoolAzureAttributesPb{}
 	pb.Availability = st.Availability
-
 	pb.SpotBidMaxPrice = st.SpotBidMaxPrice
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5452,9 +4649,8 @@ func instancePoolAzureAttributesToPb(st *InstancePoolAzureAttributes) (*instance
 }
 
 type instancePoolAzureAttributesPb struct {
-	Availability InstancePoolAzureAttributesAvailability `json:"availability,omitempty"`
-
-	SpotBidMaxPrice float64 `json:"spot_bid_max_price,omitempty"`
+	Availability    InstancePoolAzureAttributesAvailability `json:"availability,omitempty"`
+	SpotBidMaxPrice float64                                 `json:"spot_bid_max_price,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5485,9 +4681,7 @@ func instancePoolGcpAttributesToPb(st *InstancePoolGcpAttributes) (*instancePool
 	}
 	pb := &instancePoolGcpAttributesPb{}
 	pb.GcpAvailability = st.GcpAvailability
-
 	pb.LocalSsdCount = st.LocalSsdCount
-
 	pb.ZoneId = st.ZoneId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5496,10 +4690,8 @@ func instancePoolGcpAttributesToPb(st *InstancePoolGcpAttributes) (*instancePool
 
 type instancePoolGcpAttributesPb struct {
 	GcpAvailability GcpAvailability `json:"gcp_availability,omitempty"`
-
-	LocalSsdCount int `json:"local_ssd_count,omitempty"`
-
-	ZoneId string `json:"zone_id,omitempty"`
+	LocalSsdCount   int             `json:"local_ssd_count,omitempty"`
+	ZoneId          string          `json:"zone_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5531,9 +4723,7 @@ func instancePoolPermissionToPb(st *InstancePoolPermission) (*instancePoolPermis
 	}
 	pb := &instancePoolPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5541,11 +4731,9 @@ func instancePoolPermissionToPb(st *InstancePoolPermission) (*instancePoolPermis
 }
 
 type instancePoolPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool                        `json:"inherited,omitempty"`
+	InheritedFromObject []string                    `json:"inherited_from_object,omitempty"`
+	PermissionLevel     InstancePoolPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5577,9 +4765,7 @@ func instancePoolPermissionsToPb(st *InstancePoolPermissions) (*instancePoolPerm
 	}
 	pb := &instancePoolPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5588,10 +4774,8 @@ func instancePoolPermissionsToPb(st *InstancePoolPermissions) (*instancePoolPerm
 
 type instancePoolPermissionsPb struct {
 	AccessControlList []InstancePoolAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                              `json:"object_id,omitempty"`
+	ObjectType        string                              `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5623,7 +4807,6 @@ func instancePoolPermissionsDescriptionToPb(st *InstancePoolPermissionsDescripti
 	}
 	pb := &instancePoolPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5631,8 +4814,7 @@ func instancePoolPermissionsDescriptionToPb(st *InstancePoolPermissionsDescripti
 }
 
 type instancePoolPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string                      `json:"description,omitempty"`
 	PermissionLevel InstancePoolPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5664,7 +4846,6 @@ func instancePoolPermissionsRequestToPb(st *InstancePoolPermissionsRequest) (*in
 	}
 	pb := &instancePoolPermissionsRequestPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.InstancePoolId = st.InstancePoolId
 
 	return pb, nil
@@ -5672,8 +4853,7 @@ func instancePoolPermissionsRequestToPb(st *InstancePoolPermissionsRequest) (*in
 
 type instancePoolPermissionsRequestPb struct {
 	AccessControlList []InstancePoolAccessControlRequest `json:"access_control_list,omitempty"`
-
-	InstancePoolId string `json:"-" url:"-"`
+	InstancePoolId    string                             `json:"-" url:"-"`
 }
 
 func instancePoolPermissionsRequestFromPb(pb *instancePoolPermissionsRequestPb) (*InstancePoolPermissionsRequest, error) {
@@ -5693,11 +4873,8 @@ func instancePoolStatsToPb(st *InstancePoolStats) (*instancePoolStatsPb, error) 
 	}
 	pb := &instancePoolStatsPb{}
 	pb.IdleCount = st.IdleCount
-
 	pb.PendingIdleCount = st.PendingIdleCount
-
 	pb.PendingUsedCount = st.PendingUsedCount
-
 	pb.UsedCount = st.UsedCount
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5705,13 +4882,10 @@ func instancePoolStatsToPb(st *InstancePoolStats) (*instancePoolStatsPb, error) 
 }
 
 type instancePoolStatsPb struct {
-	IdleCount int `json:"idle_count,omitempty"`
-
+	IdleCount        int `json:"idle_count,omitempty"`
 	PendingIdleCount int `json:"pending_idle_count,omitempty"`
-
 	PendingUsedCount int `json:"pending_used_count,omitempty"`
-
-	UsedCount int `json:"used_count,omitempty"`
+	UsedCount        int `json:"used_count,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5768,9 +4942,7 @@ func instanceProfileToPb(st *InstanceProfile) (*instanceProfilePb, error) {
 	}
 	pb := &instanceProfilePb{}
 	pb.IamRoleArn = st.IamRoleArn
-
 	pb.InstanceProfileArn = st.InstanceProfileArn
-
 	pb.IsMetaInstanceProfile = st.IsMetaInstanceProfile
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5778,11 +4950,9 @@ func instanceProfileToPb(st *InstanceProfile) (*instanceProfilePb, error) {
 }
 
 type instanceProfilePb struct {
-	IamRoleArn string `json:"iam_role_arn,omitempty"`
-
-	InstanceProfileArn string `json:"instance_profile_arn"`
-
-	IsMetaInstanceProfile bool `json:"is_meta_instance_profile,omitempty"`
+	IamRoleArn            string `json:"iam_role_arn,omitempty"`
+	InstanceProfileArn    string `json:"instance_profile_arn"`
+	IsMetaInstanceProfile bool   `json:"is_meta_instance_profile,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5814,17 +4984,11 @@ func libraryToPb(st *Library) (*libraryPb, error) {
 	}
 	pb := &libraryPb{}
 	pb.Cran = st.Cran
-
 	pb.Egg = st.Egg
-
 	pb.Jar = st.Jar
-
 	pb.Maven = st.Maven
-
 	pb.Pypi = st.Pypi
-
 	pb.Requirements = st.Requirements
-
 	pb.Whl = st.Whl
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5832,19 +4996,13 @@ func libraryToPb(st *Library) (*libraryPb, error) {
 }
 
 type libraryPb struct {
-	Cran *RCranLibrary `json:"cran,omitempty"`
-
-	Egg string `json:"egg,omitempty"`
-
-	Jar string `json:"jar,omitempty"`
-
-	Maven *MavenLibrary `json:"maven,omitempty"`
-
-	Pypi *PythonPyPiLibrary `json:"pypi,omitempty"`
-
-	Requirements string `json:"requirements,omitempty"`
-
-	Whl string `json:"whl,omitempty"`
+	Cran         *RCranLibrary      `json:"cran,omitempty"`
+	Egg          string             `json:"egg,omitempty"`
+	Jar          string             `json:"jar,omitempty"`
+	Maven        *MavenLibrary      `json:"maven,omitempty"`
+	Pypi         *PythonPyPiLibrary `json:"pypi,omitempty"`
+	Requirements string             `json:"requirements,omitempty"`
+	Whl          string             `json:"whl,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5880,11 +5038,8 @@ func libraryFullStatusToPb(st *LibraryFullStatus) (*libraryFullStatusPb, error) 
 	}
 	pb := &libraryFullStatusPb{}
 	pb.IsLibraryForAllClusters = st.IsLibraryForAllClusters
-
 	pb.Library = st.Library
-
 	pb.Messages = st.Messages
-
 	pb.Status = st.Status
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5892,13 +5047,10 @@ func libraryFullStatusToPb(st *LibraryFullStatus) (*libraryFullStatusPb, error) 
 }
 
 type libraryFullStatusPb struct {
-	IsLibraryForAllClusters bool `json:"is_library_for_all_clusters,omitempty"`
-
-	Library *Library `json:"library,omitempty"`
-
-	Messages []string `json:"messages,omitempty"`
-
-	Status LibraryInstallStatus `json:"status,omitempty"`
+	IsLibraryForAllClusters bool                 `json:"is_library_for_all_clusters,omitempty"`
+	Library                 *Library             `json:"library,omitempty"`
+	Messages                []string             `json:"messages,omitempty"`
+	Status                  LibraryInstallStatus `json:"status,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5955,7 +5107,6 @@ func listAvailableZonesResponseToPb(st *ListAvailableZonesResponse) (*listAvaila
 	}
 	pb := &listAvailableZonesResponsePb{}
 	pb.DefaultZone = st.DefaultZone
-
 	pb.Zones = st.Zones
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5963,9 +5114,8 @@ func listAvailableZonesResponseToPb(st *ListAvailableZonesResponse) (*listAvaila
 }
 
 type listAvailableZonesResponsePb struct {
-	DefaultZone string `json:"default_zone,omitempty"`
-
-	Zones []string `json:"zones,omitempty"`
+	DefaultZone string   `json:"default_zone,omitempty"`
+	Zones       []string `json:"zones,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5996,9 +5146,7 @@ func listClusterCompliancesRequestToPb(st *ListClusterCompliancesRequest) (*list
 	}
 	pb := &listClusterCompliancesRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
-
 	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6006,11 +5154,9 @@ func listClusterCompliancesRequestToPb(st *ListClusterCompliancesRequest) (*list
 }
 
 type listClusterCompliancesRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	PolicyId string `json:"-" url:"policy_id"`
+	PolicyId  string `json:"-" url:"policy_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6042,9 +5188,7 @@ func listClusterCompliancesResponseToPb(st *ListClusterCompliancesResponse) (*li
 	}
 	pb := &listClusterCompliancesResponsePb{}
 	pb.Clusters = st.Clusters
-
 	pb.NextPageToken = st.NextPageToken
-
 	pb.PrevPageToken = st.PrevPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6052,11 +5196,9 @@ func listClusterCompliancesResponseToPb(st *ListClusterCompliancesResponse) (*li
 }
 
 type listClusterCompliancesResponsePb struct {
-	Clusters []ClusterCompliance `json:"clusters,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	PrevPageToken string `json:"prev_page_token,omitempty"`
+	Clusters      []ClusterCompliance `json:"clusters,omitempty"`
+	NextPageToken string              `json:"next_page_token,omitempty"`
+	PrevPageToken string              `json:"prev_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6088,7 +5230,6 @@ func listClusterPoliciesRequestToPb(st *ListClusterPoliciesRequest) (*listCluste
 	}
 	pb := &listClusterPoliciesRequestPb{}
 	pb.SortColumn = st.SortColumn
-
 	pb.SortOrder = st.SortOrder
 
 	return pb, nil
@@ -6096,8 +5237,7 @@ func listClusterPoliciesRequestToPb(st *ListClusterPoliciesRequest) (*listCluste
 
 type listClusterPoliciesRequestPb struct {
 	SortColumn ListSortColumn `json:"-" url:"sort_column,omitempty"`
-
-	SortOrder ListSortOrder `json:"-" url:"sort_order,omitempty"`
+	SortOrder  ListSortOrder  `json:"-" url:"sort_order,omitempty"`
 }
 
 func listClusterPoliciesRequestFromPb(pb *listClusterPoliciesRequestPb) (*ListClusterPoliciesRequest, error) {
@@ -6117,11 +5257,8 @@ func listClustersFilterByToPb(st *ListClustersFilterBy) (*listClustersFilterByPb
 	}
 	pb := &listClustersFilterByPb{}
 	pb.ClusterSources = st.ClusterSources
-
 	pb.ClusterStates = st.ClusterStates
-
 	pb.IsPinned = st.IsPinned
-
 	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6130,12 +5267,9 @@ func listClustersFilterByToPb(st *ListClustersFilterBy) (*listClustersFilterByPb
 
 type listClustersFilterByPb struct {
 	ClusterSources []ClusterSource `json:"cluster_sources,omitempty" url:"cluster_sources,omitempty"`
-
-	ClusterStates []State `json:"cluster_states,omitempty" url:"cluster_states,omitempty"`
-
-	IsPinned bool `json:"is_pinned,omitempty" url:"is_pinned,omitempty"`
-
-	PolicyId string `json:"policy_id,omitempty" url:"policy_id,omitempty"`
+	ClusterStates  []State         `json:"cluster_states,omitempty" url:"cluster_states,omitempty"`
+	IsPinned       bool            `json:"is_pinned,omitempty" url:"is_pinned,omitempty"`
+	PolicyId       string          `json:"policy_id,omitempty" url:"policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6168,11 +5302,8 @@ func listClustersRequestToPb(st *ListClustersRequest) (*listClustersRequestPb, e
 	}
 	pb := &listClustersRequestPb{}
 	pb.FilterBy = st.FilterBy
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
-
 	pb.SortBy = st.SortBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6180,13 +5311,10 @@ func listClustersRequestToPb(st *ListClustersRequest) (*listClustersRequestPb, e
 }
 
 type listClustersRequestPb struct {
-	FilterBy *ListClustersFilterBy `json:"-" url:"filter_by,omitempty"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	SortBy *ListClustersSortBy `json:"-" url:"sort_by,omitempty"`
+	FilterBy  *ListClustersFilterBy `json:"-" url:"filter_by,omitempty"`
+	PageSize  int                   `json:"-" url:"page_size,omitempty"`
+	PageToken string                `json:"-" url:"page_token,omitempty"`
+	SortBy    *ListClustersSortBy   `json:"-" url:"sort_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6219,9 +5347,7 @@ func listClustersResponseToPb(st *ListClustersResponse) (*listClustersResponsePb
 	}
 	pb := &listClustersResponsePb{}
 	pb.Clusters = st.Clusters
-
 	pb.NextPageToken = st.NextPageToken
-
 	pb.PrevPageToken = st.PrevPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6229,11 +5355,9 @@ func listClustersResponseToPb(st *ListClustersResponse) (*listClustersResponsePb
 }
 
 type listClustersResponsePb struct {
-	Clusters []ClusterDetails `json:"clusters,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	PrevPageToken string `json:"prev_page_token,omitempty"`
+	Clusters      []ClusterDetails `json:"clusters,omitempty"`
+	NextPageToken string           `json:"next_page_token,omitempty"`
+	PrevPageToken string           `json:"prev_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6265,7 +5389,6 @@ func listClustersSortByToPb(st *ListClustersSortBy) (*listClustersSortByPb, erro
 	}
 	pb := &listClustersSortByPb{}
 	pb.Direction = st.Direction
-
 	pb.Field = st.Field
 
 	return pb, nil
@@ -6273,8 +5396,7 @@ func listClustersSortByToPb(st *ListClustersSortBy) (*listClustersSortByPb, erro
 
 type listClustersSortByPb struct {
 	Direction ListClustersSortByDirection `json:"direction,omitempty" url:"direction,omitempty"`
-
-	Field ListClustersSortByField `json:"field,omitempty" url:"field,omitempty"`
+	Field     ListClustersSortByField     `json:"field,omitempty" url:"field,omitempty"`
 }
 
 func listClustersSortByFromPb(pb *listClustersSortByPb) (*ListClustersSortBy, error) {
@@ -6414,7 +5536,6 @@ func listPolicyFamiliesRequestToPb(st *ListPolicyFamiliesRequest) (*listPolicyFa
 	}
 	pb := &listPolicyFamiliesRequestPb{}
 	pb.MaxResults = st.MaxResults
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6422,9 +5543,8 @@ func listPolicyFamiliesRequestToPb(st *ListPolicyFamiliesRequest) (*listPolicyFa
 }
 
 type listPolicyFamiliesRequestPb struct {
-	MaxResults int64 `json:"-" url:"max_results,omitempty"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	MaxResults int64  `json:"-" url:"max_results,omitempty"`
+	PageToken  string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6455,7 +5575,6 @@ func listPolicyFamiliesResponseToPb(st *ListPolicyFamiliesResponse) (*listPolicy
 	}
 	pb := &listPolicyFamiliesResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.PolicyFamilies = st.PolicyFamilies
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6463,8 +5582,7 @@ func listPolicyFamiliesResponseToPb(st *ListPolicyFamiliesResponse) (*listPolicy
 }
 
 type listPolicyFamiliesResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
+	NextPageToken  string         `json:"next_page_token,omitempty"`
 	PolicyFamilies []PolicyFamily `json:"policy_families,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6520,7 +5638,6 @@ func logAnalyticsInfoToPb(st *LogAnalyticsInfo) (*logAnalyticsInfoPb, error) {
 	}
 	pb := &logAnalyticsInfoPb{}
 	pb.LogAnalyticsPrimaryKey = st.LogAnalyticsPrimaryKey
-
 	pb.LogAnalyticsWorkspaceId = st.LogAnalyticsWorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6528,8 +5645,7 @@ func logAnalyticsInfoToPb(st *LogAnalyticsInfo) (*logAnalyticsInfoPb, error) {
 }
 
 type logAnalyticsInfoPb struct {
-	LogAnalyticsPrimaryKey string `json:"log_analytics_primary_key,omitempty"`
-
+	LogAnalyticsPrimaryKey  string `json:"log_analytics_primary_key,omitempty"`
 	LogAnalyticsWorkspaceId string `json:"log_analytics_workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6561,7 +5677,6 @@ func logSyncStatusToPb(st *LogSyncStatus) (*logSyncStatusPb, error) {
 	}
 	pb := &logSyncStatusPb{}
 	pb.LastAttempted = st.LastAttempted
-
 	pb.LastException = st.LastException
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6569,8 +5684,7 @@ func logSyncStatusToPb(st *LogSyncStatus) (*logSyncStatusPb, error) {
 }
 
 type logSyncStatusPb struct {
-	LastAttempted int64 `json:"last_attempted,omitempty"`
-
+	LastAttempted int64  `json:"last_attempted,omitempty"`
 	LastException string `json:"last_exception,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -6620,9 +5734,7 @@ func mavenLibraryToPb(st *MavenLibrary) (*mavenLibraryPb, error) {
 	}
 	pb := &mavenLibraryPb{}
 	pb.Coordinates = st.Coordinates
-
 	pb.Exclusions = st.Exclusions
-
 	pb.Repo = st.Repo
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6630,11 +5742,9 @@ func mavenLibraryToPb(st *MavenLibrary) (*mavenLibraryPb, error) {
 }
 
 type mavenLibraryPb struct {
-	Coordinates string `json:"coordinates"`
-
-	Exclusions []string `json:"exclusions,omitempty"`
-
-	Repo string `json:"repo,omitempty"`
+	Coordinates string   `json:"coordinates"`
+	Exclusions  []string `json:"exclusions,omitempty"`
+	Repo        string   `json:"repo,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6666,13 +5776,9 @@ func nodeInstanceTypeToPb(st *NodeInstanceType) (*nodeInstanceTypePb, error) {
 	}
 	pb := &nodeInstanceTypePb{}
 	pb.InstanceTypeId = st.InstanceTypeId
-
 	pb.LocalDiskSizeGb = st.LocalDiskSizeGb
-
 	pb.LocalDisks = st.LocalDisks
-
 	pb.LocalNvmeDiskSizeGb = st.LocalNvmeDiskSizeGb
-
 	pb.LocalNvmeDisks = st.LocalNvmeDisks
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6680,15 +5786,11 @@ func nodeInstanceTypeToPb(st *NodeInstanceType) (*nodeInstanceTypePb, error) {
 }
 
 type nodeInstanceTypePb struct {
-	InstanceTypeId string `json:"instance_type_id"`
-
-	LocalDiskSizeGb int `json:"local_disk_size_gb,omitempty"`
-
-	LocalDisks int `json:"local_disks,omitempty"`
-
-	LocalNvmeDiskSizeGb int `json:"local_nvme_disk_size_gb,omitempty"`
-
-	LocalNvmeDisks int `json:"local_nvme_disks,omitempty"`
+	InstanceTypeId      string `json:"instance_type_id"`
+	LocalDiskSizeGb     int    `json:"local_disk_size_gb,omitempty"`
+	LocalDisks          int    `json:"local_disks,omitempty"`
+	LocalNvmeDiskSizeGb int    `json:"local_nvme_disk_size_gb,omitempty"`
+	LocalNvmeDisks      int    `json:"local_nvme_disks,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6722,43 +5824,24 @@ func nodeTypeToPb(st *NodeType) (*nodeTypePb, error) {
 	}
 	pb := &nodeTypePb{}
 	pb.Category = st.Category
-
 	pb.Description = st.Description
-
 	pb.DisplayOrder = st.DisplayOrder
-
 	pb.InstanceTypeId = st.InstanceTypeId
-
 	pb.IsDeprecated = st.IsDeprecated
-
 	pb.IsEncryptedInTransit = st.IsEncryptedInTransit
-
 	pb.IsGraviton = st.IsGraviton
-
 	pb.IsHidden = st.IsHidden
-
 	pb.IsIoCacheEnabled = st.IsIoCacheEnabled
-
 	pb.MemoryMb = st.MemoryMb
-
 	pb.NodeInfo = st.NodeInfo
-
 	pb.NodeInstanceType = st.NodeInstanceType
-
 	pb.NodeTypeId = st.NodeTypeId
-
 	pb.NumCores = st.NumCores
-
 	pb.NumGpus = st.NumGpus
-
 	pb.PhotonDriverCapable = st.PhotonDriverCapable
-
 	pb.PhotonWorkerCapable = st.PhotonWorkerCapable
-
 	pb.SupportClusterTags = st.SupportClusterTags
-
 	pb.SupportEbsVolumes = st.SupportEbsVolumes
-
 	pb.SupportPortForwarding = st.SupportPortForwarding
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6766,45 +5849,26 @@ func nodeTypeToPb(st *NodeType) (*nodeTypePb, error) {
 }
 
 type nodeTypePb struct {
-	Category string `json:"category"`
-
-	Description string `json:"description"`
-
-	DisplayOrder int `json:"display_order,omitempty"`
-
-	InstanceTypeId string `json:"instance_type_id"`
-
-	IsDeprecated bool `json:"is_deprecated,omitempty"`
-
-	IsEncryptedInTransit bool `json:"is_encrypted_in_transit,omitempty"`
-
-	IsGraviton bool `json:"is_graviton,omitempty"`
-
-	IsHidden bool `json:"is_hidden,omitempty"`
-
-	IsIoCacheEnabled bool `json:"is_io_cache_enabled,omitempty"`
-
-	MemoryMb int `json:"memory_mb"`
-
-	NodeInfo *CloudProviderNodeInfo `json:"node_info,omitempty"`
-
-	NodeInstanceType *NodeInstanceType `json:"node_instance_type,omitempty"`
-
-	NodeTypeId string `json:"node_type_id"`
-
-	NumCores float64 `json:"num_cores"`
-
-	NumGpus int `json:"num_gpus,omitempty"`
-
-	PhotonDriverCapable bool `json:"photon_driver_capable,omitempty"`
-
-	PhotonWorkerCapable bool `json:"photon_worker_capable,omitempty"`
-
-	SupportClusterTags bool `json:"support_cluster_tags,omitempty"`
-
-	SupportEbsVolumes bool `json:"support_ebs_volumes,omitempty"`
-
-	SupportPortForwarding bool `json:"support_port_forwarding,omitempty"`
+	Category              string                 `json:"category"`
+	Description           string                 `json:"description"`
+	DisplayOrder          int                    `json:"display_order,omitempty"`
+	InstanceTypeId        string                 `json:"instance_type_id"`
+	IsDeprecated          bool                   `json:"is_deprecated,omitempty"`
+	IsEncryptedInTransit  bool                   `json:"is_encrypted_in_transit,omitempty"`
+	IsGraviton            bool                   `json:"is_graviton,omitempty"`
+	IsHidden              bool                   `json:"is_hidden,omitempty"`
+	IsIoCacheEnabled      bool                   `json:"is_io_cache_enabled,omitempty"`
+	MemoryMb              int                    `json:"memory_mb"`
+	NodeInfo              *CloudProviderNodeInfo `json:"node_info,omitempty"`
+	NodeInstanceType      *NodeInstanceType      `json:"node_instance_type,omitempty"`
+	NodeTypeId            string                 `json:"node_type_id"`
+	NumCores              float64                `json:"num_cores"`
+	NumGpus               int                    `json:"num_gpus,omitempty"`
+	PhotonDriverCapable   bool                   `json:"photon_driver_capable,omitempty"`
+	PhotonWorkerCapable   bool                   `json:"photon_worker_capable,omitempty"`
+	SupportClusterTags    bool                   `json:"support_cluster_tags,omitempty"`
+	SupportEbsVolumes     bool                   `json:"support_ebs_volumes,omitempty"`
+	SupportPortForwarding bool                   `json:"support_port_forwarding,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6874,7 +5938,6 @@ func pendingInstanceErrorToPb(st *PendingInstanceError) (*pendingInstanceErrorPb
 	}
 	pb := &pendingInstanceErrorPb{}
 	pb.InstanceId = st.InstanceId
-
 	pb.Message = st.Message
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6883,8 +5946,7 @@ func pendingInstanceErrorToPb(st *PendingInstanceError) (*pendingInstanceErrorPb
 
 type pendingInstanceErrorPb struct {
 	InstanceId string `json:"instance_id,omitempty"`
-
-	Message string `json:"message,omitempty"`
+	Message    string `json:"message,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7005,25 +6067,15 @@ func policyToPb(st *Policy) (*policyPb, error) {
 	}
 	pb := &policyPb{}
 	pb.CreatedAtTimestamp = st.CreatedAtTimestamp
-
 	pb.CreatorUserName = st.CreatorUserName
-
 	pb.Definition = st.Definition
-
 	pb.Description = st.Description
-
 	pb.IsDefault = st.IsDefault
-
 	pb.Libraries = st.Libraries
-
 	pb.MaxClustersPerUser = st.MaxClustersPerUser
-
 	pb.Name = st.Name
-
 	pb.PolicyFamilyDefinitionOverrides = st.PolicyFamilyDefinitionOverrides
-
 	pb.PolicyFamilyId = st.PolicyFamilyId
-
 	pb.PolicyId = st.PolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7031,27 +6083,17 @@ func policyToPb(st *Policy) (*policyPb, error) {
 }
 
 type policyPb struct {
-	CreatedAtTimestamp int64 `json:"created_at_timestamp,omitempty"`
-
-	CreatorUserName string `json:"creator_user_name,omitempty"`
-
-	Definition string `json:"definition,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	IsDefault bool `json:"is_default,omitempty"`
-
-	Libraries []Library `json:"libraries,omitempty"`
-
-	MaxClustersPerUser int64 `json:"max_clusters_per_user,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	PolicyFamilyDefinitionOverrides string `json:"policy_family_definition_overrides,omitempty"`
-
-	PolicyFamilyId string `json:"policy_family_id,omitempty"`
-
-	PolicyId string `json:"policy_id,omitempty"`
+	CreatedAtTimestamp              int64     `json:"created_at_timestamp,omitempty"`
+	CreatorUserName                 string    `json:"creator_user_name,omitempty"`
+	Definition                      string    `json:"definition,omitempty"`
+	Description                     string    `json:"description,omitempty"`
+	IsDefault                       bool      `json:"is_default,omitempty"`
+	Libraries                       []Library `json:"libraries,omitempty"`
+	MaxClustersPerUser              int64     `json:"max_clusters_per_user,omitempty"`
+	Name                            string    `json:"name,omitempty"`
+	PolicyFamilyDefinitionOverrides string    `json:"policy_family_definition_overrides,omitempty"`
+	PolicyFamilyId                  string    `json:"policy_family_id,omitempty"`
+	PolicyId                        string    `json:"policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7091,11 +6133,8 @@ func policyFamilyToPb(st *PolicyFamily) (*policyFamilyPb, error) {
 	}
 	pb := &policyFamilyPb{}
 	pb.Definition = st.Definition
-
 	pb.Description = st.Description
-
 	pb.Name = st.Name
-
 	pb.PolicyFamilyId = st.PolicyFamilyId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7103,12 +6142,9 @@ func policyFamilyToPb(st *PolicyFamily) (*policyFamilyPb, error) {
 }
 
 type policyFamilyPb struct {
-	Definition string `json:"definition,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
+	Definition     string `json:"definition,omitempty"`
+	Description    string `json:"description,omitempty"`
+	Name           string `json:"name,omitempty"`
 	PolicyFamilyId string `json:"policy_family_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7142,7 +6178,6 @@ func pythonPyPiLibraryToPb(st *PythonPyPiLibrary) (*pythonPyPiLibraryPb, error) 
 	}
 	pb := &pythonPyPiLibraryPb{}
 	pb.Package = st.Package
-
 	pb.Repo = st.Repo
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7151,8 +6186,7 @@ func pythonPyPiLibraryToPb(st *PythonPyPiLibrary) (*pythonPyPiLibraryPb, error) 
 
 type pythonPyPiLibraryPb struct {
 	Package string `json:"package"`
-
-	Repo string `json:"repo,omitempty"`
+	Repo    string `json:"repo,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7183,7 +6217,6 @@ func rCranLibraryToPb(st *RCranLibrary) (*rCranLibraryPb, error) {
 	}
 	pb := &rCranLibraryPb{}
 	pb.Package = st.Package
-
 	pb.Repo = st.Repo
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7192,8 +6225,7 @@ func rCranLibraryToPb(st *RCranLibrary) (*rCranLibraryPb, error) {
 
 type rCranLibraryPb struct {
 	Package string `json:"package"`
-
-	Repo string `json:"repo,omitempty"`
+	Repo    string `json:"repo,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7269,9 +6301,7 @@ func resizeClusterToPb(st *ResizeCluster) (*resizeClusterPb, error) {
 	}
 	pb := &resizeClusterPb{}
 	pb.Autoscale = st.Autoscale
-
 	pb.ClusterId = st.ClusterId
-
 	pb.NumWorkers = st.NumWorkers
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7279,11 +6309,9 @@ func resizeClusterToPb(st *ResizeCluster) (*resizeClusterPb, error) {
 }
 
 type resizeClusterPb struct {
-	Autoscale *AutoScale `json:"autoscale,omitempty"`
-
-	ClusterId string `json:"cluster_id"`
-
-	NumWorkers int `json:"num_workers,omitempty"`
+	Autoscale  *AutoScale `json:"autoscale,omitempty"`
+	ClusterId  string     `json:"cluster_id"`
+	NumWorkers int        `json:"num_workers,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7336,7 +6364,6 @@ func restartClusterToPb(st *RestartCluster) (*restartClusterPb, error) {
 	}
 	pb := &restartClusterPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.RestartUser = st.RestartUser
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7344,8 +6371,7 @@ func restartClusterToPb(st *RestartCluster) (*restartClusterPb, error) {
 }
 
 type restartClusterPb struct {
-	ClusterId string `json:"cluster_id"`
-
+	ClusterId   string `json:"cluster_id"`
 	RestartUser string `json:"restart_user,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7398,23 +6424,14 @@ func resultsToPb(st *Results) (*resultsPb, error) {
 	}
 	pb := &resultsPb{}
 	pb.Cause = st.Cause
-
 	pb.Data = st.Data
-
 	pb.FileName = st.FileName
-
 	pb.FileNames = st.FileNames
-
 	pb.IsJsonSchema = st.IsJsonSchema
-
 	pb.Pos = st.Pos
-
 	pb.ResultType = st.ResultType
-
 	pb.Schema = st.Schema
-
 	pb.Summary = st.Summary
-
 	pb.Truncated = st.Truncated
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7422,25 +6439,16 @@ func resultsToPb(st *Results) (*resultsPb, error) {
 }
 
 type resultsPb struct {
-	Cause string `json:"cause,omitempty"`
-
-	Data any `json:"data,omitempty"`
-
-	FileName string `json:"fileName,omitempty"`
-
-	FileNames []string `json:"fileNames,omitempty"`
-
-	IsJsonSchema bool `json:"isJsonSchema,omitempty"`
-
-	Pos int `json:"pos,omitempty"`
-
-	ResultType ResultType `json:"resultType,omitempty"`
-
-	Schema []map[string]any `json:"schema,omitempty"`
-
-	Summary string `json:"summary,omitempty"`
-
-	Truncated bool `json:"truncated,omitempty"`
+	Cause        string           `json:"cause,omitempty"`
+	Data         any              `json:"data,omitempty"`
+	FileName     string           `json:"fileName,omitempty"`
+	FileNames    []string         `json:"fileNames,omitempty"`
+	IsJsonSchema bool             `json:"isJsonSchema,omitempty"`
+	Pos          int              `json:"pos,omitempty"`
+	ResultType   ResultType       `json:"resultType,omitempty"`
+	Schema       []map[string]any `json:"schema,omitempty"`
+	Summary      string           `json:"summary,omitempty"`
+	Truncated    bool             `json:"truncated,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7479,17 +6487,11 @@ func s3StorageInfoToPb(st *S3StorageInfo) (*s3StorageInfoPb, error) {
 	}
 	pb := &s3StorageInfoPb{}
 	pb.CannedAcl = st.CannedAcl
-
 	pb.Destination = st.Destination
-
 	pb.EnableEncryption = st.EnableEncryption
-
 	pb.EncryptionType = st.EncryptionType
-
 	pb.Endpoint = st.Endpoint
-
 	pb.KmsKey = st.KmsKey
-
 	pb.Region = st.Region
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7497,19 +6499,13 @@ func s3StorageInfoToPb(st *S3StorageInfo) (*s3StorageInfoPb, error) {
 }
 
 type s3StorageInfoPb struct {
-	CannedAcl string `json:"canned_acl,omitempty"`
-
-	Destination string `json:"destination"`
-
-	EnableEncryption bool `json:"enable_encryption,omitempty"`
-
-	EncryptionType string `json:"encryption_type,omitempty"`
-
-	Endpoint string `json:"endpoint,omitempty"`
-
-	KmsKey string `json:"kms_key,omitempty"`
-
-	Region string `json:"region,omitempty"`
+	CannedAcl        string `json:"canned_acl,omitempty"`
+	Destination      string `json:"destination"`
+	EnableEncryption bool   `json:"enable_encryption,omitempty"`
+	EncryptionType   string `json:"encryption_type,omitempty"`
+	Endpoint         string `json:"endpoint,omitempty"`
+	KmsKey           string `json:"kms_key,omitempty"`
+	Region           string `json:"region,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7545,17 +6541,11 @@ func sparkNodeToPb(st *SparkNode) (*sparkNodePb, error) {
 	}
 	pb := &sparkNodePb{}
 	pb.HostPrivateIp = st.HostPrivateIp
-
 	pb.InstanceId = st.InstanceId
-
 	pb.NodeAwsAttributes = st.NodeAwsAttributes
-
 	pb.NodeId = st.NodeId
-
 	pb.PrivateIp = st.PrivateIp
-
 	pb.PublicDns = st.PublicDns
-
 	pb.StartTimestamp = st.StartTimestamp
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7563,19 +6553,13 @@ func sparkNodeToPb(st *SparkNode) (*sparkNodePb, error) {
 }
 
 type sparkNodePb struct {
-	HostPrivateIp string `json:"host_private_ip,omitempty"`
-
-	InstanceId string `json:"instance_id,omitempty"`
-
+	HostPrivateIp     string                  `json:"host_private_ip,omitempty"`
+	InstanceId        string                  `json:"instance_id,omitempty"`
 	NodeAwsAttributes *SparkNodeAwsAttributes `json:"node_aws_attributes,omitempty"`
-
-	NodeId string `json:"node_id,omitempty"`
-
-	PrivateIp string `json:"private_ip,omitempty"`
-
-	PublicDns string `json:"public_dns,omitempty"`
-
-	StartTimestamp int64 `json:"start_timestamp,omitempty"`
+	NodeId            string                  `json:"node_id,omitempty"`
+	PrivateIp         string                  `json:"private_ip,omitempty"`
+	PublicDns         string                  `json:"public_dns,omitempty"`
+	StartTimestamp    int64                   `json:"start_timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -7647,7 +6631,6 @@ func sparkVersionToPb(st *SparkVersion) (*sparkVersionPb, error) {
 	}
 	pb := &sparkVersionPb{}
 	pb.Key = st.Key
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7655,8 +6638,7 @@ func sparkVersionToPb(st *SparkVersion) (*sparkVersionPb, error) {
 }
 
 type sparkVersionPb struct {
-	Key string `json:"key,omitempty"`
-
+	Key  string `json:"key,omitempty"`
 	Name string `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -7733,20 +6715,16 @@ func terminationReasonToPb(st *TerminationReason) (*terminationReasonPb, error) 
 	}
 	pb := &terminationReasonPb{}
 	pb.Code = st.Code
-
 	pb.Parameters = st.Parameters
-
 	pb.Type = st.Type
 
 	return pb, nil
 }
 
 type terminationReasonPb struct {
-	Code TerminationReasonCode `json:"code,omitempty"`
-
-	Parameters map[string]string `json:"parameters,omitempty"`
-
-	Type TerminationReasonType `json:"type,omitempty"`
+	Code       TerminationReasonCode `json:"code,omitempty"`
+	Parameters map[string]string     `json:"parameters,omitempty"`
+	Type       TerminationReasonType `json:"type,omitempty"`
 }
 
 func terminationReasonFromPb(pb *terminationReasonPb) (*TerminationReason, error) {
@@ -7767,15 +6745,13 @@ func uninstallLibrariesToPb(st *UninstallLibraries) (*uninstallLibrariesPb, erro
 	}
 	pb := &uninstallLibrariesPb{}
 	pb.ClusterId = st.ClusterId
-
 	pb.Libraries = st.Libraries
 
 	return pb, nil
 }
 
 type uninstallLibrariesPb struct {
-	ClusterId string `json:"cluster_id"`
-
+	ClusterId string    `json:"cluster_id"`
 	Libraries []Library `json:"libraries"`
 }
 
@@ -7862,20 +6838,16 @@ func updateClusterToPb(st *UpdateCluster) (*updateClusterPb, error) {
 	}
 	pb := &updateClusterPb{}
 	pb.Cluster = st.Cluster
-
 	pb.ClusterId = st.ClusterId
-
 	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
 }
 
 type updateClusterPb struct {
-	Cluster *UpdateClusterResource `json:"cluster,omitempty"`
-
-	ClusterId string `json:"cluster_id"`
-
-	UpdateMask string `json:"update_mask"`
+	Cluster    *UpdateClusterResource `json:"cluster,omitempty"`
+	ClusterId  string                 `json:"cluster_id"`
+	UpdateMask string                 `json:"update_mask"`
 }
 
 func updateClusterFromPb(pb *updateClusterPb) (*UpdateCluster, error) {
@@ -7896,61 +6868,33 @@ func updateClusterResourceToPb(st *UpdateClusterResource) (*updateClusterResourc
 	}
 	pb := &updateClusterResourcePb{}
 	pb.Autoscale = st.Autoscale
-
 	pb.AutoterminationMinutes = st.AutoterminationMinutes
-
 	pb.AwsAttributes = st.AwsAttributes
-
 	pb.AzureAttributes = st.AzureAttributes
-
 	pb.ClusterLogConf = st.ClusterLogConf
-
 	pb.ClusterName = st.ClusterName
-
 	pb.CustomTags = st.CustomTags
-
 	pb.DataSecurityMode = st.DataSecurityMode
-
 	pb.DockerImage = st.DockerImage
-
 	pb.DriverInstancePoolId = st.DriverInstancePoolId
-
 	pb.DriverNodeTypeId = st.DriverNodeTypeId
-
 	pb.EnableElasticDisk = st.EnableElasticDisk
-
 	pb.EnableLocalDiskEncryption = st.EnableLocalDiskEncryption
-
 	pb.GcpAttributes = st.GcpAttributes
-
 	pb.InitScripts = st.InitScripts
-
 	pb.InstancePoolId = st.InstancePoolId
-
 	pb.IsSingleNode = st.IsSingleNode
-
 	pb.Kind = st.Kind
-
 	pb.NodeTypeId = st.NodeTypeId
-
 	pb.NumWorkers = st.NumWorkers
-
 	pb.PolicyId = st.PolicyId
-
 	pb.RuntimeEngine = st.RuntimeEngine
-
 	pb.SingleUserName = st.SingleUserName
-
 	pb.SparkConf = st.SparkConf
-
 	pb.SparkEnvVars = st.SparkEnvVars
-
 	pb.SparkVersion = st.SparkVersion
-
 	pb.SshPublicKeys = st.SshPublicKeys
-
 	pb.UseMlRuntime = st.UseMlRuntime
-
 	pb.WorkloadType = st.WorkloadType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -7958,63 +6902,35 @@ func updateClusterResourceToPb(st *UpdateClusterResource) (*updateClusterResourc
 }
 
 type updateClusterResourcePb struct {
-	Autoscale *AutoScale `json:"autoscale,omitempty"`
-
-	AutoterminationMinutes int `json:"autotermination_minutes,omitempty"`
-
-	AwsAttributes *AwsAttributes `json:"aws_attributes,omitempty"`
-
-	AzureAttributes *AzureAttributes `json:"azure_attributes,omitempty"`
-
-	ClusterLogConf *ClusterLogConf `json:"cluster_log_conf,omitempty"`
-
-	ClusterName string `json:"cluster_name,omitempty"`
-
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
-
-	DataSecurityMode DataSecurityMode `json:"data_security_mode,omitempty"`
-
-	DockerImage *DockerImage `json:"docker_image,omitempty"`
-
-	DriverInstancePoolId string `json:"driver_instance_pool_id,omitempty"`
-
-	DriverNodeTypeId string `json:"driver_node_type_id,omitempty"`
-
-	EnableElasticDisk bool `json:"enable_elastic_disk,omitempty"`
-
-	EnableLocalDiskEncryption bool `json:"enable_local_disk_encryption,omitempty"`
-
-	GcpAttributes *GcpAttributes `json:"gcp_attributes,omitempty"`
-
-	InitScripts []InitScriptInfo `json:"init_scripts,omitempty"`
-
-	InstancePoolId string `json:"instance_pool_id,omitempty"`
-
-	IsSingleNode bool `json:"is_single_node,omitempty"`
-
-	Kind Kind `json:"kind,omitempty"`
-
-	NodeTypeId string `json:"node_type_id,omitempty"`
-
-	NumWorkers int `json:"num_workers,omitempty"`
-
-	PolicyId string `json:"policy_id,omitempty"`
-
-	RuntimeEngine RuntimeEngine `json:"runtime_engine,omitempty"`
-
-	SingleUserName string `json:"single_user_name,omitempty"`
-
-	SparkConf map[string]string `json:"spark_conf,omitempty"`
-
-	SparkEnvVars map[string]string `json:"spark_env_vars,omitempty"`
-
-	SparkVersion string `json:"spark_version,omitempty"`
-
-	SshPublicKeys []string `json:"ssh_public_keys,omitempty"`
-
-	UseMlRuntime bool `json:"use_ml_runtime,omitempty"`
-
-	WorkloadType *WorkloadType `json:"workload_type,omitempty"`
+	Autoscale                 *AutoScale        `json:"autoscale,omitempty"`
+	AutoterminationMinutes    int               `json:"autotermination_minutes,omitempty"`
+	AwsAttributes             *AwsAttributes    `json:"aws_attributes,omitempty"`
+	AzureAttributes           *AzureAttributes  `json:"azure_attributes,omitempty"`
+	ClusterLogConf            *ClusterLogConf   `json:"cluster_log_conf,omitempty"`
+	ClusterName               string            `json:"cluster_name,omitempty"`
+	CustomTags                map[string]string `json:"custom_tags,omitempty"`
+	DataSecurityMode          DataSecurityMode  `json:"data_security_mode,omitempty"`
+	DockerImage               *DockerImage      `json:"docker_image,omitempty"`
+	DriverInstancePoolId      string            `json:"driver_instance_pool_id,omitempty"`
+	DriverNodeTypeId          string            `json:"driver_node_type_id,omitempty"`
+	EnableElasticDisk         bool              `json:"enable_elastic_disk,omitempty"`
+	EnableLocalDiskEncryption bool              `json:"enable_local_disk_encryption,omitempty"`
+	GcpAttributes             *GcpAttributes    `json:"gcp_attributes,omitempty"`
+	InitScripts               []InitScriptInfo  `json:"init_scripts,omitempty"`
+	InstancePoolId            string            `json:"instance_pool_id,omitempty"`
+	IsSingleNode              bool              `json:"is_single_node,omitempty"`
+	Kind                      Kind              `json:"kind,omitempty"`
+	NodeTypeId                string            `json:"node_type_id,omitempty"`
+	NumWorkers                int               `json:"num_workers,omitempty"`
+	PolicyId                  string            `json:"policy_id,omitempty"`
+	RuntimeEngine             RuntimeEngine     `json:"runtime_engine,omitempty"`
+	SingleUserName            string            `json:"single_user_name,omitempty"`
+	SparkConf                 map[string]string `json:"spark_conf,omitempty"`
+	SparkEnvVars              map[string]string `json:"spark_env_vars,omitempty"`
+	SparkVersion              string            `json:"spark_version,omitempty"`
+	SshPublicKeys             []string          `json:"ssh_public_keys,omitempty"`
+	UseMlRuntime              bool              `json:"use_ml_runtime,omitempty"`
+	WorkloadType              *WorkloadType     `json:"workload_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -8178,4 +7094,58 @@ func workspaceStorageInfoFromPb(pb *workspaceStorageInfoPb) (*WorkspaceStorageIn
 	st.Destination = pb.Destination
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

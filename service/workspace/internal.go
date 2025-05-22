@@ -3,6 +3,10 @@
 package workspace
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -12,7 +16,6 @@ func aclItemToPb(st *AclItem) (*aclItemPb, error) {
 	}
 	pb := &aclItemPb{}
 	pb.Permission = st.Permission
-
 	pb.Principal = st.Principal
 
 	return pb, nil
@@ -20,8 +23,7 @@ func aclItemToPb(st *AclItem) (*aclItemPb, error) {
 
 type aclItemPb struct {
 	Permission AclPermission `json:"permission"`
-
-	Principal string `json:"principal"`
+	Principal  string        `json:"principal"`
 }
 
 func aclItemFromPb(pb *aclItemPb) (*AclItem, error) {
@@ -41,15 +43,13 @@ func azureKeyVaultSecretScopeMetadataToPb(st *AzureKeyVaultSecretScopeMetadata) 
 	}
 	pb := &azureKeyVaultSecretScopeMetadataPb{}
 	pb.DnsName = st.DnsName
-
 	pb.ResourceId = st.ResourceId
 
 	return pb, nil
 }
 
 type azureKeyVaultSecretScopeMetadataPb struct {
-	DnsName string `json:"dns_name"`
-
+	DnsName    string `json:"dns_name"`
 	ResourceId string `json:"resource_id"`
 }
 
@@ -70,9 +70,7 @@ func createCredentialsRequestToPb(st *CreateCredentialsRequest) (*createCredenti
 	}
 	pb := &createCredentialsRequestPb{}
 	pb.GitProvider = st.GitProvider
-
 	pb.GitUsername = st.GitUsername
-
 	pb.PersonalAccessToken = st.PersonalAccessToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -80,10 +78,8 @@ func createCredentialsRequestToPb(st *CreateCredentialsRequest) (*createCredenti
 }
 
 type createCredentialsRequestPb struct {
-	GitProvider string `json:"git_provider"`
-
-	GitUsername string `json:"git_username,omitempty"`
-
+	GitProvider         string `json:"git_provider"`
+	GitUsername         string `json:"git_username,omitempty"`
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -116,9 +112,7 @@ func createCredentialsResponseToPb(st *CreateCredentialsResponse) (*createCreden
 	}
 	pb := &createCredentialsResponsePb{}
 	pb.CredentialId = st.CredentialId
-
 	pb.GitProvider = st.GitProvider
-
 	pb.GitUsername = st.GitUsername
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -126,11 +120,9 @@ func createCredentialsResponseToPb(st *CreateCredentialsResponse) (*createCreden
 }
 
 type createCredentialsResponsePb struct {
-	CredentialId int64 `json:"credential_id"`
-
-	GitProvider string `json:"git_provider"`
-
-	GitUsername string `json:"git_username,omitempty"`
+	CredentialId int64  `json:"credential_id"`
+	GitProvider  string `json:"git_provider"`
+	GitUsername  string `json:"git_username,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -162,11 +154,8 @@ func createRepoRequestToPb(st *CreateRepoRequest) (*createRepoRequestPb, error) 
 	}
 	pb := &createRepoRequestPb{}
 	pb.Path = st.Path
-
 	pb.Provider = st.Provider
-
 	pb.SparseCheckout = st.SparseCheckout
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -174,13 +163,10 @@ func createRepoRequestToPb(st *CreateRepoRequest) (*createRepoRequestPb, error) 
 }
 
 type createRepoRequestPb struct {
-	Path string `json:"path,omitempty"`
-
-	Provider string `json:"provider"`
-
+	Path           string          `json:"path,omitempty"`
+	Provider       string          `json:"provider"`
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
-
-	Url string `json:"url"`
+	Url            string          `json:"url"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -213,17 +199,11 @@ func createRepoResponseToPb(st *CreateRepoResponse) (*createRepoResponsePb, erro
 	}
 	pb := &createRepoResponsePb{}
 	pb.Branch = st.Branch
-
 	pb.HeadCommitId = st.HeadCommitId
-
 	pb.Id = st.Id
-
 	pb.Path = st.Path
-
 	pb.Provider = st.Provider
-
 	pb.SparseCheckout = st.SparseCheckout
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -231,19 +211,13 @@ func createRepoResponseToPb(st *CreateRepoResponse) (*createRepoResponsePb, erro
 }
 
 type createRepoResponsePb struct {
-	Branch string `json:"branch,omitempty"`
-
-	HeadCommitId string `json:"head_commit_id,omitempty"`
-
-	Id int64 `json:"id,omitempty"`
-
-	Path string `json:"path,omitempty"`
-
-	Provider string `json:"provider,omitempty"`
-
+	Branch         string          `json:"branch,omitempty"`
+	HeadCommitId   string          `json:"head_commit_id,omitempty"`
+	Id             int64           `json:"id,omitempty"`
+	Path           string          `json:"path,omitempty"`
+	Provider       string          `json:"provider,omitempty"`
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
-
-	Url string `json:"url,omitempty"`
+	Url            string          `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -279,11 +253,8 @@ func createScopeToPb(st *CreateScope) (*createScopePb, error) {
 	}
 	pb := &createScopePb{}
 	pb.BackendAzureKeyvault = st.BackendAzureKeyvault
-
 	pb.InitialManagePrincipal = st.InitialManagePrincipal
-
 	pb.Scope = st.Scope
-
 	pb.ScopeBackendType = st.ScopeBackendType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -291,13 +262,10 @@ func createScopeToPb(st *CreateScope) (*createScopePb, error) {
 }
 
 type createScopePb struct {
-	BackendAzureKeyvault *AzureKeyVaultSecretScopeMetadata `json:"backend_azure_keyvault,omitempty"`
-
-	InitialManagePrincipal string `json:"initial_manage_principal,omitempty"`
-
-	Scope string `json:"scope"`
-
-	ScopeBackendType ScopeBackendType `json:"scope_backend_type,omitempty"`
+	BackendAzureKeyvault   *AzureKeyVaultSecretScopeMetadata `json:"backend_azure_keyvault,omitempty"`
+	InitialManagePrincipal string                            `json:"initial_manage_principal,omitempty"`
+	Scope                  string                            `json:"scope"`
+	ScopeBackendType       ScopeBackendType                  `json:"scope_backend_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -351,9 +319,7 @@ func credentialInfoToPb(st *CredentialInfo) (*credentialInfoPb, error) {
 	}
 	pb := &credentialInfoPb{}
 	pb.CredentialId = st.CredentialId
-
 	pb.GitProvider = st.GitProvider
-
 	pb.GitUsername = st.GitUsername
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -361,11 +327,9 @@ func credentialInfoToPb(st *CredentialInfo) (*credentialInfoPb, error) {
 }
 
 type credentialInfoPb struct {
-	CredentialId int64 `json:"credential_id"`
-
-	GitProvider string `json:"git_provider,omitempty"`
-
-	GitUsername string `json:"git_username,omitempty"`
+	CredentialId int64  `json:"credential_id"`
+	GitProvider  string `json:"git_provider,omitempty"`
+	GitUsername  string `json:"git_username,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -397,7 +361,6 @@ func deleteToPb(st *Delete) (*deletePb, error) {
 	}
 	pb := &deletePb{}
 	pb.Path = st.Path
-
 	pb.Recursive = st.Recursive
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -405,9 +368,8 @@ func deleteToPb(st *Delete) (*deletePb, error) {
 }
 
 type deletePb struct {
-	Path string `json:"path"`
-
-	Recursive bool `json:"recursive,omitempty"`
+	Path      string `json:"path"`
+	Recursive bool   `json:"recursive,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -438,7 +400,6 @@ func deleteAclToPb(st *DeleteAcl) (*deleteAclPb, error) {
 	}
 	pb := &deleteAclPb{}
 	pb.Principal = st.Principal
-
 	pb.Scope = st.Scope
 
 	return pb, nil
@@ -446,8 +407,7 @@ func deleteAclToPb(st *DeleteAcl) (*deleteAclPb, error) {
 
 type deleteAclPb struct {
 	Principal string `json:"principal"`
-
-	Scope string `json:"scope"`
+	Scope     string `json:"scope"`
 }
 
 func deleteAclFromPb(pb *deleteAclPb) (*DeleteAcl, error) {
@@ -644,15 +604,13 @@ func deleteSecretToPb(st *DeleteSecret) (*deleteSecretPb, error) {
 	}
 	pb := &deleteSecretPb{}
 	pb.Key = st.Key
-
 	pb.Scope = st.Scope
 
 	return pb, nil
 }
 
 type deleteSecretPb struct {
-	Key string `json:"key"`
-
+	Key   string `json:"key"`
 	Scope string `json:"scope"`
 }
 
@@ -694,7 +652,6 @@ func exportRequestToPb(st *ExportRequest) (*exportRequestPb, error) {
 	}
 	pb := &exportRequestPb{}
 	pb.Format = st.Format
-
 	pb.Path = st.Path
 
 	return pb, nil
@@ -702,8 +659,7 @@ func exportRequestToPb(st *ExportRequest) (*exportRequestPb, error) {
 
 type exportRequestPb struct {
 	Format ExportFormat `json:"-" url:"format,omitempty"`
-
-	Path string `json:"-" url:"path"`
+	Path   string       `json:"-" url:"path"`
 }
 
 func exportRequestFromPb(pb *exportRequestPb) (*ExportRequest, error) {
@@ -723,7 +679,6 @@ func exportResponseToPb(st *ExportResponse) (*exportResponsePb, error) {
 	}
 	pb := &exportResponsePb{}
 	pb.Content = st.Content
-
 	pb.FileType = st.FileType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -731,8 +686,7 @@ func exportResponseToPb(st *ExportResponse) (*exportResponsePb, error) {
 }
 
 type exportResponsePb struct {
-	Content string `json:"content,omitempty"`
-
+	Content  string `json:"content,omitempty"`
 	FileType string `json:"file_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -764,7 +718,6 @@ func getAclRequestToPb(st *GetAclRequest) (*getAclRequestPb, error) {
 	}
 	pb := &getAclRequestPb{}
 	pb.Principal = st.Principal
-
 	pb.Scope = st.Scope
 
 	return pb, nil
@@ -772,8 +725,7 @@ func getAclRequestToPb(st *GetAclRequest) (*getAclRequestPb, error) {
 
 type getAclRequestPb struct {
 	Principal string `json:"-" url:"principal"`
-
-	Scope string `json:"-" url:"scope"`
+	Scope     string `json:"-" url:"scope"`
 }
 
 func getAclRequestFromPb(pb *getAclRequestPb) (*GetAclRequest, error) {
@@ -817,9 +769,7 @@ func getCredentialsResponseToPb(st *GetCredentialsResponse) (*getCredentialsResp
 	}
 	pb := &getCredentialsResponsePb{}
 	pb.CredentialId = st.CredentialId
-
 	pb.GitProvider = st.GitProvider
-
 	pb.GitUsername = st.GitUsername
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -827,11 +777,9 @@ func getCredentialsResponseToPb(st *GetCredentialsResponse) (*getCredentialsResp
 }
 
 type getCredentialsResponsePb struct {
-	CredentialId int64 `json:"credential_id"`
-
-	GitProvider string `json:"git_provider,omitempty"`
-
-	GitUsername string `json:"git_username,omitempty"`
+	CredentialId int64  `json:"credential_id"`
+	GitProvider  string `json:"git_provider,omitempty"`
+	GitUsername  string `json:"git_username,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -959,17 +907,11 @@ func getRepoResponseToPb(st *GetRepoResponse) (*getRepoResponsePb, error) {
 	}
 	pb := &getRepoResponsePb{}
 	pb.Branch = st.Branch
-
 	pb.HeadCommitId = st.HeadCommitId
-
 	pb.Id = st.Id
-
 	pb.Path = st.Path
-
 	pb.Provider = st.Provider
-
 	pb.SparseCheckout = st.SparseCheckout
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -977,19 +919,13 @@ func getRepoResponseToPb(st *GetRepoResponse) (*getRepoResponsePb, error) {
 }
 
 type getRepoResponsePb struct {
-	Branch string `json:"branch,omitempty"`
-
-	HeadCommitId string `json:"head_commit_id,omitempty"`
-
-	Id int64 `json:"id,omitempty"`
-
-	Path string `json:"path,omitempty"`
-
-	Provider string `json:"provider,omitempty"`
-
+	Branch         string          `json:"branch,omitempty"`
+	HeadCommitId   string          `json:"head_commit_id,omitempty"`
+	Id             int64           `json:"id,omitempty"`
+	Path           string          `json:"path,omitempty"`
+	Provider       string          `json:"provider,omitempty"`
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
-
-	Url string `json:"url,omitempty"`
+	Url            string          `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1025,15 +961,13 @@ func getSecretRequestToPb(st *GetSecretRequest) (*getSecretRequestPb, error) {
 	}
 	pb := &getSecretRequestPb{}
 	pb.Key = st.Key
-
 	pb.Scope = st.Scope
 
 	return pb, nil
 }
 
 type getSecretRequestPb struct {
-	Key string `json:"-" url:"key"`
-
+	Key   string `json:"-" url:"key"`
 	Scope string `json:"-" url:"scope"`
 }
 
@@ -1054,7 +988,6 @@ func getSecretResponseToPb(st *GetSecretResponse) (*getSecretResponsePb, error) 
 	}
 	pb := &getSecretResponsePb{}
 	pb.Key = st.Key
-
 	pb.Value = st.Value
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1062,8 +995,7 @@ func getSecretResponseToPb(st *GetSecretResponse) (*getSecretResponsePb, error) 
 }
 
 type getSecretResponsePb struct {
-	Key string `json:"key,omitempty"`
-
+	Key   string `json:"key,omitempty"`
 	Value string `json:"value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1119,15 +1051,13 @@ func getWorkspaceObjectPermissionLevelsRequestToPb(st *GetWorkspaceObjectPermiss
 	}
 	pb := &getWorkspaceObjectPermissionLevelsRequestPb{}
 	pb.WorkspaceObjectId = st.WorkspaceObjectId
-
 	pb.WorkspaceObjectType = st.WorkspaceObjectType
 
 	return pb, nil
 }
 
 type getWorkspaceObjectPermissionLevelsRequestPb struct {
-	WorkspaceObjectId string `json:"-" url:"-"`
-
+	WorkspaceObjectId   string `json:"-" url:"-"`
 	WorkspaceObjectType string `json:"-" url:"-"`
 }
 
@@ -1172,15 +1102,13 @@ func getWorkspaceObjectPermissionsRequestToPb(st *GetWorkspaceObjectPermissionsR
 	}
 	pb := &getWorkspaceObjectPermissionsRequestPb{}
 	pb.WorkspaceObjectId = st.WorkspaceObjectId
-
 	pb.WorkspaceObjectType = st.WorkspaceObjectType
 
 	return pb, nil
 }
 
 type getWorkspaceObjectPermissionsRequestPb struct {
-	WorkspaceObjectId string `json:"-" url:"-"`
-
+	WorkspaceObjectId   string `json:"-" url:"-"`
 	WorkspaceObjectType string `json:"-" url:"-"`
 }
 
@@ -1201,13 +1129,9 @@ func importToPb(st *Import) (*importPb, error) {
 	}
 	pb := &importPb{}
 	pb.Content = st.Content
-
 	pb.Format = st.Format
-
 	pb.Language = st.Language
-
 	pb.Overwrite = st.Overwrite
-
 	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1215,15 +1139,11 @@ func importToPb(st *Import) (*importPb, error) {
 }
 
 type importPb struct {
-	Content string `json:"content,omitempty"`
-
-	Format ImportFormat `json:"format,omitempty"`
-
-	Language Language `json:"language,omitempty"`
-
-	Overwrite bool `json:"overwrite,omitempty"`
-
-	Path string `json:"path"`
+	Content   string       `json:"content,omitempty"`
+	Format    ImportFormat `json:"format,omitempty"`
+	Language  Language     `json:"language,omitempty"`
+	Overwrite bool         `json:"overwrite,omitempty"`
+	Path      string       `json:"path"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1350,7 +1270,6 @@ func listReposRequestToPb(st *ListReposRequest) (*listReposRequestPb, error) {
 	}
 	pb := &listReposRequestPb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.PathPrefix = st.PathPrefix
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1359,8 +1278,7 @@ func listReposRequestToPb(st *ListReposRequest) (*listReposRequestPb, error) {
 
 type listReposRequestPb struct {
 	NextPageToken string `json:"-" url:"next_page_token,omitempty"`
-
-	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
+	PathPrefix    string `json:"-" url:"path_prefix,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1391,7 +1309,6 @@ func listReposResponseToPb(st *ListReposResponse) (*listReposResponsePb, error) 
 	}
 	pb := &listReposResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Repos = st.Repos
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1399,9 +1316,8 @@ func listReposResponseToPb(st *ListReposResponse) (*listReposResponsePb, error) 
 }
 
 type listReposResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Repos []RepoInfo `json:"repos,omitempty"`
+	NextPageToken string     `json:"next_page_token,omitempty"`
+	Repos         []RepoInfo `json:"repos,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1528,7 +1444,6 @@ func listWorkspaceRequestToPb(st *ListWorkspaceRequest) (*listWorkspaceRequestPb
 	}
 	pb := &listWorkspaceRequestPb{}
 	pb.NotebooksModifiedAfter = st.NotebooksModifiedAfter
-
 	pb.Path = st.Path
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1536,9 +1451,8 @@ func listWorkspaceRequestToPb(st *ListWorkspaceRequest) (*listWorkspaceRequestPb
 }
 
 type listWorkspaceRequestPb struct {
-	NotebooksModifiedAfter int64 `json:"-" url:"notebooks_modified_after,omitempty"`
-
-	Path string `json:"-" url:"path"`
+	NotebooksModifiedAfter int64  `json:"-" url:"notebooks_modified_after,omitempty"`
+	Path                   string `json:"-" url:"path"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1614,19 +1528,12 @@ func objectInfoToPb(st *ObjectInfo) (*objectInfoPb, error) {
 	}
 	pb := &objectInfoPb{}
 	pb.CreatedAt = st.CreatedAt
-
 	pb.Language = st.Language
-
 	pb.ModifiedAt = st.ModifiedAt
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
-
 	pb.Path = st.Path
-
 	pb.ResourceId = st.ResourceId
-
 	pb.Size = st.Size
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1634,21 +1541,14 @@ func objectInfoToPb(st *ObjectInfo) (*objectInfoPb, error) {
 }
 
 type objectInfoPb struct {
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	Language Language `json:"language,omitempty"`
-
-	ModifiedAt int64 `json:"modified_at,omitempty"`
-
-	ObjectId int64 `json:"object_id,omitempty"`
-
+	CreatedAt  int64      `json:"created_at,omitempty"`
+	Language   Language   `json:"language,omitempty"`
+	ModifiedAt int64      `json:"modified_at,omitempty"`
+	ObjectId   int64      `json:"object_id,omitempty"`
 	ObjectType ObjectType `json:"object_type,omitempty"`
-
-	Path string `json:"path,omitempty"`
-
-	ResourceId string `json:"resource_id,omitempty"`
-
-	Size int64 `json:"size,omitempty"`
+	Path       string     `json:"path,omitempty"`
+	ResourceId string     `json:"resource_id,omitempty"`
+	Size       int64      `json:"size,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1685,9 +1585,7 @@ func putAclToPb(st *PutAcl) (*putAclPb, error) {
 	}
 	pb := &putAclPb{}
 	pb.Permission = st.Permission
-
 	pb.Principal = st.Principal
-
 	pb.Scope = st.Scope
 
 	return pb, nil
@@ -1695,10 +1593,8 @@ func putAclToPb(st *PutAcl) (*putAclPb, error) {
 
 type putAclPb struct {
 	Permission AclPermission `json:"permission"`
-
-	Principal string `json:"principal"`
-
-	Scope string `json:"scope"`
+	Principal  string        `json:"principal"`
+	Scope      string        `json:"scope"`
 }
 
 func putAclFromPb(pb *putAclPb) (*PutAcl, error) {
@@ -1740,11 +1636,8 @@ func putSecretToPb(st *PutSecret) (*putSecretPb, error) {
 	}
 	pb := &putSecretPb{}
 	pb.BytesValue = st.BytesValue
-
 	pb.Key = st.Key
-
 	pb.Scope = st.Scope
-
 	pb.StringValue = st.StringValue
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1752,12 +1645,9 @@ func putSecretToPb(st *PutSecret) (*putSecretPb, error) {
 }
 
 type putSecretPb struct {
-	BytesValue string `json:"bytes_value,omitempty"`
-
-	Key string `json:"key"`
-
-	Scope string `json:"scope"`
-
+	BytesValue  string `json:"bytes_value,omitempty"`
+	Key         string `json:"key"`
+	Scope       string `json:"scope"`
 	StringValue string `json:"string_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1812,11 +1702,8 @@ func repoAccessControlRequestToPb(st *RepoAccessControlRequest) (*repoAccessCont
 	}
 	pb := &repoAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1824,13 +1711,10 @@ func repoAccessControlRequestToPb(st *RepoAccessControlRequest) (*repoAccessCont
 }
 
 type repoAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string              `json:"group_name,omitempty"`
+	PermissionLevel      RepoPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string              `json:"service_principal_name,omitempty"`
+	UserName             string              `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1863,13 +1747,9 @@ func repoAccessControlResponseToPb(st *RepoAccessControlResponse) (*repoAccessCo
 	}
 	pb := &repoAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1877,15 +1757,11 @@ func repoAccessControlResponseToPb(st *RepoAccessControlResponse) (*repoAccessCo
 }
 
 type repoAccessControlResponsePb struct {
-	AllPermissions []RepoPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []RepoPermission `json:"all_permissions,omitempty"`
+	DisplayName          string           `json:"display_name,omitempty"`
+	GroupName            string           `json:"group_name,omitempty"`
+	ServicePrincipalName string           `json:"service_principal_name,omitempty"`
+	UserName             string           `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1919,17 +1795,11 @@ func repoInfoToPb(st *RepoInfo) (*repoInfoPb, error) {
 	}
 	pb := &repoInfoPb{}
 	pb.Branch = st.Branch
-
 	pb.HeadCommitId = st.HeadCommitId
-
 	pb.Id = st.Id
-
 	pb.Path = st.Path
-
 	pb.Provider = st.Provider
-
 	pb.SparseCheckout = st.SparseCheckout
-
 	pb.Url = st.Url
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1937,19 +1807,13 @@ func repoInfoToPb(st *RepoInfo) (*repoInfoPb, error) {
 }
 
 type repoInfoPb struct {
-	Branch string `json:"branch,omitempty"`
-
-	HeadCommitId string `json:"head_commit_id,omitempty"`
-
-	Id int64 `json:"id,omitempty"`
-
-	Path string `json:"path,omitempty"`
-
-	Provider string `json:"provider,omitempty"`
-
+	Branch         string          `json:"branch,omitempty"`
+	HeadCommitId   string          `json:"head_commit_id,omitempty"`
+	Id             int64           `json:"id,omitempty"`
+	Path           string          `json:"path,omitempty"`
+	Provider       string          `json:"provider,omitempty"`
 	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
-
-	Url string `json:"url,omitempty"`
+	Url            string          `json:"url,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1985,9 +1849,7 @@ func repoPermissionToPb(st *RepoPermission) (*repoPermissionPb, error) {
 	}
 	pb := &repoPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1995,11 +1857,9 @@ func repoPermissionToPb(st *RepoPermission) (*repoPermissionPb, error) {
 }
 
 type repoPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool                `json:"inherited,omitempty"`
+	InheritedFromObject []string            `json:"inherited_from_object,omitempty"`
+	PermissionLevel     RepoPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2031,9 +1891,7 @@ func repoPermissionsToPb(st *RepoPermissions) (*repoPermissionsPb, error) {
 	}
 	pb := &repoPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2042,10 +1900,8 @@ func repoPermissionsToPb(st *RepoPermissions) (*repoPermissionsPb, error) {
 
 type repoPermissionsPb struct {
 	AccessControlList []RepoAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                      `json:"object_id,omitempty"`
+	ObjectType        string                      `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2077,7 +1933,6 @@ func repoPermissionsDescriptionToPb(st *RepoPermissionsDescription) (*repoPermis
 	}
 	pb := &repoPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2085,8 +1940,7 @@ func repoPermissionsDescriptionToPb(st *RepoPermissionsDescription) (*repoPermis
 }
 
 type repoPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string              `json:"description,omitempty"`
 	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2118,7 +1972,6 @@ func repoPermissionsRequestToPb(st *RepoPermissionsRequest) (*repoPermissionsReq
 	}
 	pb := &repoPermissionsRequestPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.RepoId = st.RepoId
 
 	return pb, nil
@@ -2126,8 +1979,7 @@ func repoPermissionsRequestToPb(st *RepoPermissionsRequest) (*repoPermissionsReq
 
 type repoPermissionsRequestPb struct {
 	AccessControlList []RepoAccessControlRequest `json:"access_control_list,omitempty"`
-
-	RepoId string `json:"-" url:"-"`
+	RepoId            string                     `json:"-" url:"-"`
 }
 
 func repoPermissionsRequestFromPb(pb *repoPermissionsRequestPb) (*RepoPermissionsRequest, error) {
@@ -2147,7 +1999,6 @@ func secretMetadataToPb(st *SecretMetadata) (*secretMetadataPb, error) {
 	}
 	pb := &secretMetadataPb{}
 	pb.Key = st.Key
-
 	pb.LastUpdatedTimestamp = st.LastUpdatedTimestamp
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2155,9 +2006,8 @@ func secretMetadataToPb(st *SecretMetadata) (*secretMetadataPb, error) {
 }
 
 type secretMetadataPb struct {
-	Key string `json:"key,omitempty"`
-
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+	Key                  string `json:"key,omitempty"`
+	LastUpdatedTimestamp int64  `json:"last_updated_timestamp,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2188,9 +2038,7 @@ func secretScopeToPb(st *SecretScope) (*secretScopePb, error) {
 	}
 	pb := &secretScopePb{}
 	pb.BackendType = st.BackendType
-
 	pb.KeyvaultMetadata = st.KeyvaultMetadata
-
 	pb.Name = st.Name
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2198,11 +2046,9 @@ func secretScopeToPb(st *SecretScope) (*secretScopePb, error) {
 }
 
 type secretScopePb struct {
-	BackendType ScopeBackendType `json:"backend_type,omitempty"`
-
+	BackendType      ScopeBackendType                  `json:"backend_type,omitempty"`
 	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata `json:"keyvault_metadata,omitempty"`
-
-	Name string `json:"name,omitempty"`
+	Name             string                            `json:"name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2282,11 +2128,8 @@ func updateCredentialsRequestToPb(st *UpdateCredentialsRequest) (*updateCredenti
 	}
 	pb := &updateCredentialsRequestPb{}
 	pb.CredentialId = st.CredentialId
-
 	pb.GitProvider = st.GitProvider
-
 	pb.GitUsername = st.GitUsername
-
 	pb.PersonalAccessToken = st.PersonalAccessToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2294,12 +2137,9 @@ func updateCredentialsRequestToPb(st *UpdateCredentialsRequest) (*updateCredenti
 }
 
 type updateCredentialsRequestPb struct {
-	CredentialId int64 `json:"-" url:"-"`
-
-	GitProvider string `json:"git_provider"`
-
-	GitUsername string `json:"git_username,omitempty"`
-
+	CredentialId        int64  `json:"-" url:"-"`
+	GitProvider         string `json:"git_provider"`
+	GitUsername         string `json:"git_username,omitempty"`
 	PersonalAccessToken string `json:"personal_access_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2354,11 +2194,8 @@ func updateRepoRequestToPb(st *UpdateRepoRequest) (*updateRepoRequestPb, error) 
 	}
 	pb := &updateRepoRequestPb{}
 	pb.Branch = st.Branch
-
 	pb.RepoId = st.RepoId
-
 	pb.SparseCheckout = st.SparseCheckout
-
 	pb.Tag = st.Tag
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2366,13 +2203,10 @@ func updateRepoRequestToPb(st *UpdateRepoRequest) (*updateRepoRequestPb, error) 
 }
 
 type updateRepoRequestPb struct {
-	Branch string `json:"branch,omitempty"`
-
-	RepoId int64 `json:"-" url:"-"`
-
+	Branch         string                `json:"branch,omitempty"`
+	RepoId         int64                 `json:"-" url:"-"`
 	SparseCheckout *SparseCheckoutUpdate `json:"sparse_checkout,omitempty"`
-
-	Tag string `json:"tag,omitempty"`
+	Tag            string                `json:"tag,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2426,11 +2260,8 @@ func workspaceObjectAccessControlRequestToPb(st *WorkspaceObjectAccessControlReq
 	}
 	pb := &workspaceObjectAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2438,13 +2269,10 @@ func workspaceObjectAccessControlRequestToPb(st *WorkspaceObjectAccessControlReq
 }
 
 type workspaceObjectAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string                         `json:"group_name,omitempty"`
+	PermissionLevel      WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string                         `json:"service_principal_name,omitempty"`
+	UserName             string                         `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2477,13 +2305,9 @@ func workspaceObjectAccessControlResponseToPb(st *WorkspaceObjectAccessControlRe
 	}
 	pb := &workspaceObjectAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2491,15 +2315,11 @@ func workspaceObjectAccessControlResponseToPb(st *WorkspaceObjectAccessControlRe
 }
 
 type workspaceObjectAccessControlResponsePb struct {
-	AllPermissions []WorkspaceObjectPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []WorkspaceObjectPermission `json:"all_permissions,omitempty"`
+	DisplayName          string                      `json:"display_name,omitempty"`
+	GroupName            string                      `json:"group_name,omitempty"`
+	ServicePrincipalName string                      `json:"service_principal_name,omitempty"`
+	UserName             string                      `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2533,9 +2353,7 @@ func workspaceObjectPermissionToPb(st *WorkspaceObjectPermission) (*workspaceObj
 	}
 	pb := &workspaceObjectPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2543,11 +2361,9 @@ func workspaceObjectPermissionToPb(st *WorkspaceObjectPermission) (*workspaceObj
 }
 
 type workspaceObjectPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool                           `json:"inherited,omitempty"`
+	InheritedFromObject []string                       `json:"inherited_from_object,omitempty"`
+	PermissionLevel     WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2579,9 +2395,7 @@ func workspaceObjectPermissionsToPb(st *WorkspaceObjectPermissions) (*workspaceO
 	}
 	pb := &workspaceObjectPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2590,10 +2404,8 @@ func workspaceObjectPermissionsToPb(st *WorkspaceObjectPermissions) (*workspaceO
 
 type workspaceObjectPermissionsPb struct {
 	AccessControlList []WorkspaceObjectAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                                 `json:"object_id,omitempty"`
+	ObjectType        string                                 `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2625,7 +2437,6 @@ func workspaceObjectPermissionsDescriptionToPb(st *WorkspaceObjectPermissionsDes
 	}
 	pb := &workspaceObjectPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2633,8 +2444,7 @@ func workspaceObjectPermissionsDescriptionToPb(st *WorkspaceObjectPermissionsDes
 }
 
 type workspaceObjectPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string                         `json:"description,omitempty"`
 	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2666,20 +2476,16 @@ func workspaceObjectPermissionsRequestToPb(st *WorkspaceObjectPermissionsRequest
 	}
 	pb := &workspaceObjectPermissionsRequestPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.WorkspaceObjectId = st.WorkspaceObjectId
-
 	pb.WorkspaceObjectType = st.WorkspaceObjectType
 
 	return pb, nil
 }
 
 type workspaceObjectPermissionsRequestPb struct {
-	AccessControlList []WorkspaceObjectAccessControlRequest `json:"access_control_list,omitempty"`
-
-	WorkspaceObjectId string `json:"-" url:"-"`
-
-	WorkspaceObjectType string `json:"-" url:"-"`
+	AccessControlList   []WorkspaceObjectAccessControlRequest `json:"access_control_list,omitempty"`
+	WorkspaceObjectId   string                                `json:"-" url:"-"`
+	WorkspaceObjectType string                                `json:"-" url:"-"`
 }
 
 func workspaceObjectPermissionsRequestFromPb(pb *workspaceObjectPermissionsRequestPb) (*WorkspaceObjectPermissionsRequest, error) {
@@ -2692,4 +2498,58 @@ func workspaceObjectPermissionsRequestFromPb(pb *workspaceObjectPermissionsReque
 	st.WorkspaceObjectType = pb.WorkspaceObjectType
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

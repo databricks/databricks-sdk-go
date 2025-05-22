@@ -3,6 +3,10 @@
 package settings
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -12,9 +16,7 @@ func accountIpAccessEnableToPb(st *AccountIpAccessEnable) (*accountIpAccessEnabl
 	}
 	pb := &accountIpAccessEnablePb{}
 	pb.AcctIpAclEnable = st.AcctIpAclEnable
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -23,10 +25,8 @@ func accountIpAccessEnableToPb(st *AccountIpAccessEnable) (*accountIpAccessEnabl
 
 type accountIpAccessEnablePb struct {
 	AcctIpAclEnable BooleanMessage `json:"acct_ip_acl_enable"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag            string         `json:"etag,omitempty"`
+	SettingName     string         `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -58,9 +58,7 @@ func accountNetworkPolicyToPb(st *AccountNetworkPolicy) (*accountNetworkPolicyPb
 	}
 	pb := &accountNetworkPolicyPb{}
 	pb.AccountId = st.AccountId
-
 	pb.Egress = st.Egress
-
 	pb.NetworkPolicyId = st.NetworkPolicyId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -68,11 +66,9 @@ func accountNetworkPolicyToPb(st *AccountNetworkPolicy) (*accountNetworkPolicyPb
 }
 
 type accountNetworkPolicyPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	Egress *NetworkPolicyEgress `json:"egress,omitempty"`
-
-	NetworkPolicyId string `json:"network_policy_id,omitempty"`
+	AccountId       string               `json:"account_id,omitempty"`
+	Egress          *NetworkPolicyEgress `json:"egress,omitempty"`
+	NetworkPolicyId string               `json:"network_policy_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -128,9 +124,7 @@ func aibiDashboardEmbeddingAccessPolicySettingToPb(st *AibiDashboardEmbeddingAcc
 	}
 	pb := &aibiDashboardEmbeddingAccessPolicySettingPb{}
 	pb.AibiDashboardEmbeddingAccessPolicy = st.AibiDashboardEmbeddingAccessPolicy
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -139,10 +133,8 @@ func aibiDashboardEmbeddingAccessPolicySettingToPb(st *AibiDashboardEmbeddingAcc
 
 type aibiDashboardEmbeddingAccessPolicySettingPb struct {
 	AibiDashboardEmbeddingAccessPolicy AibiDashboardEmbeddingAccessPolicy `json:"aibi_dashboard_embedding_access_policy"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag                               string                             `json:"etag,omitempty"`
+	SettingName                        string                             `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -198,9 +190,7 @@ func aibiDashboardEmbeddingApprovedDomainsSettingToPb(st *AibiDashboardEmbedding
 	}
 	pb := &aibiDashboardEmbeddingApprovedDomainsSettingPb{}
 	pb.AibiDashboardEmbeddingApprovedDomains = st.AibiDashboardEmbeddingApprovedDomains
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -209,10 +199,8 @@ func aibiDashboardEmbeddingApprovedDomainsSettingToPb(st *AibiDashboardEmbedding
 
 type aibiDashboardEmbeddingApprovedDomainsSettingPb struct {
 	AibiDashboardEmbeddingApprovedDomains AibiDashboardEmbeddingApprovedDomains `json:"aibi_dashboard_embedding_approved_domains"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag                                  string                                `json:"etag,omitempty"`
+	SettingName                           string                                `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -244,9 +232,7 @@ func automaticClusterUpdateSettingToPb(st *AutomaticClusterUpdateSetting) (*auto
 	}
 	pb := &automaticClusterUpdateSettingPb{}
 	pb.AutomaticClusterUpdateWorkspace = st.AutomaticClusterUpdateWorkspace
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -255,10 +241,8 @@ func automaticClusterUpdateSettingToPb(st *AutomaticClusterUpdateSetting) (*auto
 
 type automaticClusterUpdateSettingPb struct {
 	AutomaticClusterUpdateWorkspace ClusterAutoRestartMessage `json:"automatic_cluster_update_workspace"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag                            string                    `json:"etag,omitempty"`
+	SettingName                     string                    `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -326,13 +310,9 @@ func clusterAutoRestartMessageToPb(st *ClusterAutoRestartMessage) (*clusterAutoR
 	}
 	pb := &clusterAutoRestartMessagePb{}
 	pb.CanToggle = st.CanToggle
-
 	pb.Enabled = st.Enabled
-
 	pb.EnablementDetails = st.EnablementDetails
-
 	pb.MaintenanceWindow = st.MaintenanceWindow
-
 	pb.RestartEvenIfNoUpdatesAvailable = st.RestartEvenIfNoUpdatesAvailable
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -340,15 +320,11 @@ func clusterAutoRestartMessageToPb(st *ClusterAutoRestartMessage) (*clusterAutoR
 }
 
 type clusterAutoRestartMessagePb struct {
-	CanToggle bool `json:"can_toggle,omitempty"`
-
-	Enabled bool `json:"enabled,omitempty"`
-
-	EnablementDetails *ClusterAutoRestartMessageEnablementDetails `json:"enablement_details,omitempty"`
-
-	MaintenanceWindow *ClusterAutoRestartMessageMaintenanceWindow `json:"maintenance_window,omitempty"`
-
-	RestartEvenIfNoUpdatesAvailable bool `json:"restart_even_if_no_updates_available,omitempty"`
+	CanToggle                       bool                                        `json:"can_toggle,omitempty"`
+	Enabled                         bool                                        `json:"enabled,omitempty"`
+	EnablementDetails               *ClusterAutoRestartMessageEnablementDetails `json:"enablement_details,omitempty"`
+	MaintenanceWindow               *ClusterAutoRestartMessageMaintenanceWindow `json:"maintenance_window,omitempty"`
+	RestartEvenIfNoUpdatesAvailable bool                                        `json:"restart_even_if_no_updates_available,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -382,9 +358,7 @@ func clusterAutoRestartMessageEnablementDetailsToPb(st *ClusterAutoRestartMessag
 	}
 	pb := &clusterAutoRestartMessageEnablementDetailsPb{}
 	pb.ForcedForComplianceMode = st.ForcedForComplianceMode
-
 	pb.UnavailableForDisabledEntitlement = st.UnavailableForDisabledEntitlement
-
 	pb.UnavailableForNonEnterpriseTier = st.UnavailableForNonEnterpriseTier
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -392,11 +366,9 @@ func clusterAutoRestartMessageEnablementDetailsToPb(st *ClusterAutoRestartMessag
 }
 
 type clusterAutoRestartMessageEnablementDetailsPb struct {
-	ForcedForComplianceMode bool `json:"forced_for_compliance_mode,omitempty"`
-
+	ForcedForComplianceMode           bool `json:"forced_for_compliance_mode,omitempty"`
 	UnavailableForDisabledEntitlement bool `json:"unavailable_for_disabled_entitlement,omitempty"`
-
-	UnavailableForNonEnterpriseTier bool `json:"unavailable_for_non_enterprise_tier,omitempty"`
+	UnavailableForNonEnterpriseTier   bool `json:"unavailable_for_non_enterprise_tier,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -452,19 +424,15 @@ func clusterAutoRestartMessageMaintenanceWindowWeekDayBasedScheduleToPb(st *Clus
 	}
 	pb := &clusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedulePb{}
 	pb.DayOfWeek = st.DayOfWeek
-
 	pb.Frequency = st.Frequency
-
 	pb.WindowStartTime = st.WindowStartTime
 
 	return pb, nil
 }
 
 type clusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedulePb struct {
-	DayOfWeek ClusterAutoRestartMessageMaintenanceWindowDayOfWeek `json:"day_of_week,omitempty"`
-
-	Frequency ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency `json:"frequency,omitempty"`
-
+	DayOfWeek       ClusterAutoRestartMessageMaintenanceWindowDayOfWeek        `json:"day_of_week,omitempty"`
+	Frequency       ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency `json:"frequency,omitempty"`
 	WindowStartTime *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime `json:"window_start_time,omitempty"`
 }
 
@@ -486,7 +454,6 @@ func clusterAutoRestartMessageMaintenanceWindowWindowStartTimeToPb(st *ClusterAu
 	}
 	pb := &clusterAutoRestartMessageMaintenanceWindowWindowStartTimePb{}
 	pb.Hours = st.Hours
-
 	pb.Minutes = st.Minutes
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -494,8 +461,7 @@ func clusterAutoRestartMessageMaintenanceWindowWindowStartTimeToPb(st *ClusterAu
 }
 
 type clusterAutoRestartMessageMaintenanceWindowWindowStartTimePb struct {
-	Hours int `json:"hours,omitempty"`
-
+	Hours   int `json:"hours,omitempty"`
 	Minutes int `json:"minutes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -527,7 +493,6 @@ func complianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*complianceSe
 	}
 	pb := &complianceSecurityProfilePb{}
 	pb.ComplianceStandards = st.ComplianceStandards
-
 	pb.IsEnabled = st.IsEnabled
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -536,8 +501,7 @@ func complianceSecurityProfileToPb(st *ComplianceSecurityProfile) (*complianceSe
 
 type complianceSecurityProfilePb struct {
 	ComplianceStandards []ComplianceStandard `json:"compliance_standards,omitempty"`
-
-	IsEnabled bool `json:"is_enabled,omitempty"`
+	IsEnabled           bool                 `json:"is_enabled,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -568,9 +532,7 @@ func complianceSecurityProfileSettingToPb(st *ComplianceSecurityProfileSetting) 
 	}
 	pb := &complianceSecurityProfileSettingPb{}
 	pb.ComplianceSecurityProfileWorkspace = st.ComplianceSecurityProfileWorkspace
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -579,10 +541,8 @@ func complianceSecurityProfileSettingToPb(st *ComplianceSecurityProfileSetting) 
 
 type complianceSecurityProfileSettingPb struct {
 	ComplianceSecurityProfileWorkspace ComplianceSecurityProfile `json:"compliance_security_profile_workspace"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag                               string                    `json:"etag,omitempty"`
+	SettingName                        string                    `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -614,28 +574,20 @@ func configToPb(st *Config) (*configPb, error) {
 	}
 	pb := &configPb{}
 	pb.Email = st.Email
-
 	pb.GenericWebhook = st.GenericWebhook
-
 	pb.MicrosoftTeams = st.MicrosoftTeams
-
 	pb.Pagerduty = st.Pagerduty
-
 	pb.Slack = st.Slack
 
 	return pb, nil
 }
 
 type configPb struct {
-	Email *EmailConfig `json:"email,omitempty"`
-
+	Email          *EmailConfig          `json:"email,omitempty"`
 	GenericWebhook *GenericWebhookConfig `json:"generic_webhook,omitempty"`
-
 	MicrosoftTeams *MicrosoftTeamsConfig `json:"microsoft_teams,omitempty"`
-
-	Pagerduty *PagerdutyConfig `json:"pagerduty,omitempty"`
-
-	Slack *SlackConfig `json:"slack,omitempty"`
+	Pagerduty      *PagerdutyConfig      `json:"pagerduty,omitempty"`
+	Slack          *SlackConfig          `json:"slack,omitempty"`
 }
 
 func configFromPb(pb *configPb) (*Config, error) {
@@ -658,9 +610,7 @@ func createIpAccessListToPb(st *CreateIpAccessList) (*createIpAccessListPb, erro
 	}
 	pb := &createIpAccessListPb{}
 	pb.IpAddresses = st.IpAddresses
-
 	pb.Label = st.Label
-
 	pb.ListType = st.ListType
 
 	return pb, nil
@@ -668,10 +618,8 @@ func createIpAccessListToPb(st *CreateIpAccessList) (*createIpAccessListPb, erro
 
 type createIpAccessListPb struct {
 	IpAddresses []string `json:"ip_addresses,omitempty"`
-
-	Label string `json:"label"`
-
-	ListType ListType `json:"list_type"`
+	Label       string   `json:"label"`
+	ListType    ListType `json:"list_type"`
 }
 
 func createIpAccessListFromPb(pb *createIpAccessListPb) (*CreateIpAccessList, error) {
@@ -740,15 +688,13 @@ func createNetworkConnectivityConfigurationToPb(st *CreateNetworkConnectivityCon
 	}
 	pb := &createNetworkConnectivityConfigurationPb{}
 	pb.Name = st.Name
-
 	pb.Region = st.Region
 
 	return pb, nil
 }
 
 type createNetworkConnectivityConfigurationPb struct {
-	Name string `json:"name"`
-
+	Name   string `json:"name"`
 	Region string `json:"region"`
 }
 
@@ -793,7 +739,6 @@ func createNotificationDestinationRequestToPb(st *CreateNotificationDestinationR
 	}
 	pb := &createNotificationDestinationRequestPb{}
 	pb.Config = st.Config
-
 	pb.DisplayName = st.DisplayName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -801,9 +746,8 @@ func createNotificationDestinationRequestToPb(st *CreateNotificationDestinationR
 }
 
 type createNotificationDestinationRequestPb struct {
-	Config *Config `json:"config,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
+	Config      *Config `json:"config,omitempty"`
+	DisplayName string  `json:"display_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -834,9 +778,7 @@ func createOboTokenRequestToPb(st *CreateOboTokenRequest) (*createOboTokenReques
 	}
 	pb := &createOboTokenRequestPb{}
 	pb.ApplicationId = st.ApplicationId
-
 	pb.Comment = st.Comment
-
 	pb.LifetimeSeconds = st.LifetimeSeconds
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -844,11 +786,9 @@ func createOboTokenRequestToPb(st *CreateOboTokenRequest) (*createOboTokenReques
 }
 
 type createOboTokenRequestPb struct {
-	ApplicationId string `json:"application_id"`
-
-	Comment string `json:"comment,omitempty"`
-
-	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
+	ApplicationId   string `json:"application_id"`
+	Comment         string `json:"comment,omitempty"`
+	LifetimeSeconds int64  `json:"lifetime_seconds,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -880,7 +820,6 @@ func createOboTokenResponseToPb(st *CreateOboTokenResponse) (*createOboTokenResp
 	}
 	pb := &createOboTokenResponsePb{}
 	pb.TokenInfo = st.TokenInfo
-
 	pb.TokenValue = st.TokenValue
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -888,9 +827,8 @@ func createOboTokenResponseToPb(st *CreateOboTokenResponse) (*createOboTokenResp
 }
 
 type createOboTokenResponsePb struct {
-	TokenInfo *TokenInfo `json:"token_info,omitempty"`
-
-	TokenValue string `json:"token_value,omitempty"`
+	TokenInfo  *TokenInfo `json:"token_info,omitempty"`
+	TokenValue string     `json:"token_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -921,9 +859,7 @@ func createPrivateEndpointRuleToPb(st *CreatePrivateEndpointRule) (*createPrivat
 	}
 	pb := &createPrivateEndpointRulePb{}
 	pb.DomainNames = st.DomainNames
-
 	pb.GroupId = st.GroupId
-
 	pb.ResourceId = st.ResourceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -932,10 +868,8 @@ func createPrivateEndpointRuleToPb(st *CreatePrivateEndpointRule) (*createPrivat
 
 type createPrivateEndpointRulePb struct {
 	DomainNames []string `json:"domain_names,omitempty"`
-
-	GroupId string `json:"group_id,omitempty"`
-
-	ResourceId string `json:"resource_id"`
+	GroupId     string   `json:"group_id,omitempty"`
+	ResourceId  string   `json:"resource_id"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -967,16 +901,14 @@ func createPrivateEndpointRuleRequestToPb(st *CreatePrivateEndpointRuleRequest) 
 	}
 	pb := &createPrivateEndpointRuleRequestPb{}
 	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
-
 	pb.PrivateEndpointRule = st.PrivateEndpointRule
 
 	return pb, nil
 }
 
 type createPrivateEndpointRuleRequestPb struct {
-	NetworkConnectivityConfigId string `json:"-" url:"-"`
-
-	PrivateEndpointRule CreatePrivateEndpointRule `json:"private_endpoint_rule"`
+	NetworkConnectivityConfigId string                    `json:"-" url:"-"`
+	PrivateEndpointRule         CreatePrivateEndpointRule `json:"private_endpoint_rule"`
 }
 
 func createPrivateEndpointRuleRequestFromPb(pb *createPrivateEndpointRuleRequestPb) (*CreatePrivateEndpointRuleRequest, error) {
@@ -996,7 +928,6 @@ func createTokenRequestToPb(st *CreateTokenRequest) (*createTokenRequestPb, erro
 	}
 	pb := &createTokenRequestPb{}
 	pb.Comment = st.Comment
-
 	pb.LifetimeSeconds = st.LifetimeSeconds
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1004,9 +935,8 @@ func createTokenRequestToPb(st *CreateTokenRequest) (*createTokenRequestPb, erro
 }
 
 type createTokenRequestPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
+	Comment         string `json:"comment,omitempty"`
+	LifetimeSeconds int64  `json:"lifetime_seconds,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1037,7 +967,6 @@ func createTokenResponseToPb(st *CreateTokenResponse) (*createTokenResponsePb, e
 	}
 	pb := &createTokenResponsePb{}
 	pb.TokenInfo = st.TokenInfo
-
 	pb.TokenValue = st.TokenValue
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1045,9 +974,8 @@ func createTokenResponseToPb(st *CreateTokenResponse) (*createTokenResponsePb, e
 }
 
 type createTokenResponsePb struct {
-	TokenInfo *PublicTokenInfo `json:"token_info,omitempty"`
-
-	TokenValue string `json:"token_value,omitempty"`
+	TokenInfo  *PublicTokenInfo `json:"token_info,omitempty"`
+	TokenValue string           `json:"token_value,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1078,7 +1006,6 @@ func cspEnablementAccountToPb(st *CspEnablementAccount) (*cspEnablementAccountPb
 	}
 	pb := &cspEnablementAccountPb{}
 	pb.ComplianceStandards = st.ComplianceStandards
-
 	pb.IsEnforced = st.IsEnforced
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1087,8 +1014,7 @@ func cspEnablementAccountToPb(st *CspEnablementAccount) (*cspEnablementAccountPb
 
 type cspEnablementAccountPb struct {
 	ComplianceStandards []ComplianceStandard `json:"compliance_standards,omitempty"`
-
-	IsEnforced bool `json:"is_enforced,omitempty"`
+	IsEnforced          bool                 `json:"is_enforced,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1119,9 +1045,7 @@ func cspEnablementAccountSettingToPb(st *CspEnablementAccountSetting) (*cspEnabl
 	}
 	pb := &cspEnablementAccountSettingPb{}
 	pb.CspEnablementAccount = st.CspEnablementAccount
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1130,10 +1054,8 @@ func cspEnablementAccountSettingToPb(st *CspEnablementAccountSetting) (*cspEnabl
 
 type cspEnablementAccountSettingPb struct {
 	CspEnablementAccount CspEnablementAccount `json:"csp_enablement_account"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag                 string               `json:"etag,omitempty"`
+	SettingName          string               `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1165,9 +1087,7 @@ func defaultNamespaceSettingToPb(st *DefaultNamespaceSetting) (*defaultNamespace
 	}
 	pb := &defaultNamespaceSettingPb{}
 	pb.Etag = st.Etag
-
 	pb.Namespace = st.Namespace
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1175,11 +1095,9 @@ func defaultNamespaceSettingToPb(st *DefaultNamespaceSetting) (*defaultNamespace
 }
 
 type defaultNamespaceSettingPb struct {
-	Etag string `json:"etag,omitempty"`
-
-	Namespace StringMessage `json:"namespace"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag        string        `json:"etag,omitempty"`
+	Namespace   StringMessage `json:"namespace"`
+	SettingName string        `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1913,7 +1831,6 @@ func deletePrivateEndpointRuleRequestToPb(st *DeletePrivateEndpointRuleRequest) 
 	}
 	pb := &deletePrivateEndpointRuleRequestPb{}
 	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
-
 	pb.PrivateEndpointRuleId = st.PrivateEndpointRuleId
 
 	return pb, nil
@@ -1921,8 +1838,7 @@ func deletePrivateEndpointRuleRequestToPb(st *DeletePrivateEndpointRuleRequest) 
 
 type deletePrivateEndpointRuleRequestPb struct {
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
-
-	PrivateEndpointRuleId string `json:"-" url:"-"`
+	PrivateEndpointRuleId       string `json:"-" url:"-"`
 }
 
 func deletePrivateEndpointRuleRequestFromPb(pb *deletePrivateEndpointRuleRequestPb) (*DeletePrivateEndpointRuleRequest, error) {
@@ -2047,9 +1963,7 @@ func disableLegacyAccessToPb(st *DisableLegacyAccess) (*disableLegacyAccessPb, e
 	}
 	pb := &disableLegacyAccessPb{}
 	pb.DisableLegacyAccess = st.DisableLegacyAccess
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2058,10 +1972,8 @@ func disableLegacyAccessToPb(st *DisableLegacyAccess) (*disableLegacyAccessPb, e
 
 type disableLegacyAccessPb struct {
 	DisableLegacyAccess BooleanMessage `json:"disable_legacy_access"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag                string         `json:"etag,omitempty"`
+	SettingName         string         `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2093,9 +2005,7 @@ func disableLegacyDbfsToPb(st *DisableLegacyDbfs) (*disableLegacyDbfsPb, error) 
 	}
 	pb := &disableLegacyDbfsPb{}
 	pb.DisableLegacyDbfs = st.DisableLegacyDbfs
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2104,10 +2014,8 @@ func disableLegacyDbfsToPb(st *DisableLegacyDbfs) (*disableLegacyDbfsPb, error) 
 
 type disableLegacyDbfsPb struct {
 	DisableLegacyDbfs BooleanMessage `json:"disable_legacy_dbfs"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag              string         `json:"etag,omitempty"`
+	SettingName       string         `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2139,9 +2047,7 @@ func disableLegacyFeaturesToPb(st *DisableLegacyFeatures) (*disableLegacyFeature
 	}
 	pb := &disableLegacyFeaturesPb{}
 	pb.DisableLegacyFeatures = st.DisableLegacyFeatures
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2150,10 +2056,8 @@ func disableLegacyFeaturesToPb(st *DisableLegacyFeatures) (*disableLegacyFeature
 
 type disableLegacyFeaturesPb struct {
 	DisableLegacyFeatures BooleanMessage `json:"disable_legacy_features"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag                  string         `json:"etag,omitempty"`
+	SettingName           string         `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2209,11 +2113,8 @@ func egressNetworkPolicyInternetAccessPolicyToPb(st *EgressNetworkPolicyInternet
 	}
 	pb := &egressNetworkPolicyInternetAccessPolicyPb{}
 	pb.AllowedInternetDestinations = st.AllowedInternetDestinations
-
 	pb.AllowedStorageDestinations = st.AllowedStorageDestinations
-
 	pb.LogOnlyMode = st.LogOnlyMode
-
 	pb.RestrictionMode = st.RestrictionMode
 
 	return pb, nil
@@ -2221,12 +2122,9 @@ func egressNetworkPolicyInternetAccessPolicyToPb(st *EgressNetworkPolicyInternet
 
 type egressNetworkPolicyInternetAccessPolicyPb struct {
 	AllowedInternetDestinations []EgressNetworkPolicyInternetAccessPolicyInternetDestination `json:"allowed_internet_destinations,omitempty"`
-
-	AllowedStorageDestinations []EgressNetworkPolicyInternetAccessPolicyStorageDestination `json:"allowed_storage_destinations,omitempty"`
-
-	LogOnlyMode *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode `json:"log_only_mode,omitempty"`
-
-	RestrictionMode EgressNetworkPolicyInternetAccessPolicyRestrictionMode `json:"restriction_mode,omitempty"`
+	AllowedStorageDestinations  []EgressNetworkPolicyInternetAccessPolicyStorageDestination  `json:"allowed_storage_destinations,omitempty"`
+	LogOnlyMode                 *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode          `json:"log_only_mode,omitempty"`
+	RestrictionMode             EgressNetworkPolicyInternetAccessPolicyRestrictionMode       `json:"restriction_mode,omitempty"`
 }
 
 func egressNetworkPolicyInternetAccessPolicyFromPb(pb *egressNetworkPolicyInternetAccessPolicyPb) (*EgressNetworkPolicyInternetAccessPolicy, error) {
@@ -2248,9 +2146,7 @@ func egressNetworkPolicyInternetAccessPolicyInternetDestinationToPb(st *EgressNe
 	}
 	pb := &egressNetworkPolicyInternetAccessPolicyInternetDestinationPb{}
 	pb.Destination = st.Destination
-
 	pb.Protocol = st.Protocol
-
 	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2258,11 +2154,9 @@ func egressNetworkPolicyInternetAccessPolicyInternetDestinationToPb(st *EgressNe
 }
 
 type egressNetworkPolicyInternetAccessPolicyInternetDestinationPb struct {
-	Destination string `json:"destination,omitempty"`
-
-	Protocol EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol `json:"protocol,omitempty"`
-
-	Type EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType `json:"type,omitempty"`
+	Destination string                                                                                         `json:"destination,omitempty"`
+	Protocol    EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol `json:"protocol,omitempty"`
+	Type        EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType              `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2294,7 +2188,6 @@ func egressNetworkPolicyInternetAccessPolicyLogOnlyModeToPb(st *EgressNetworkPol
 	}
 	pb := &egressNetworkPolicyInternetAccessPolicyLogOnlyModePb{}
 	pb.LogOnlyModeType = st.LogOnlyModeType
-
 	pb.Workloads = st.Workloads
 
 	return pb, nil
@@ -2302,8 +2195,7 @@ func egressNetworkPolicyInternetAccessPolicyLogOnlyModeToPb(st *EgressNetworkPol
 
 type egressNetworkPolicyInternetAccessPolicyLogOnlyModePb struct {
 	LogOnlyModeType EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType `json:"log_only_mode_type,omitempty"`
-
-	Workloads []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType `json:"workloads,omitempty"`
+	Workloads       []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType  `json:"workloads,omitempty"`
 }
 
 func egressNetworkPolicyInternetAccessPolicyLogOnlyModeFromPb(pb *egressNetworkPolicyInternetAccessPolicyLogOnlyModePb) (*EgressNetworkPolicyInternetAccessPolicyLogOnlyMode, error) {
@@ -2323,19 +2215,12 @@ func egressNetworkPolicyInternetAccessPolicyStorageDestinationToPb(st *EgressNet
 	}
 	pb := &egressNetworkPolicyInternetAccessPolicyStorageDestinationPb{}
 	pb.AllowedPaths = st.AllowedPaths
-
 	pb.AzureContainer = st.AzureContainer
-
 	pb.AzureDnsZone = st.AzureDnsZone
-
 	pb.AzureStorageAccount = st.AzureStorageAccount
-
 	pb.AzureStorageService = st.AzureStorageService
-
 	pb.BucketName = st.BucketName
-
 	pb.Region = st.Region
-
 	pb.Type = st.Type
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2343,21 +2228,14 @@ func egressNetworkPolicyInternetAccessPolicyStorageDestinationToPb(st *EgressNet
 }
 
 type egressNetworkPolicyInternetAccessPolicyStorageDestinationPb struct {
-	AllowedPaths []string `json:"allowed_paths,omitempty"`
-
-	AzureContainer string `json:"azure_container,omitempty"`
-
-	AzureDnsZone string `json:"azure_dns_zone,omitempty"`
-
-	AzureStorageAccount string `json:"azure_storage_account,omitempty"`
-
-	AzureStorageService string `json:"azure_storage_service,omitempty"`
-
-	BucketName string `json:"bucket_name,omitempty"`
-
-	Region string `json:"region,omitempty"`
-
-	Type EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType `json:"type,omitempty"`
+	AllowedPaths        []string                                                                        `json:"allowed_paths,omitempty"`
+	AzureContainer      string                                                                          `json:"azure_container,omitempty"`
+	AzureDnsZone        string                                                                          `json:"azure_dns_zone,omitempty"`
+	AzureStorageAccount string                                                                          `json:"azure_storage_account,omitempty"`
+	AzureStorageService string                                                                          `json:"azure_storage_service,omitempty"`
+	BucketName          string                                                                          `json:"bucket_name,omitempty"`
+	Region              string                                                                          `json:"region,omitempty"`
+	Type                EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType `json:"type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2394,11 +2272,8 @@ func egressNetworkPolicyNetworkAccessPolicyToPb(st *EgressNetworkPolicyNetworkAc
 	}
 	pb := &egressNetworkPolicyNetworkAccessPolicyPb{}
 	pb.AllowedInternetDestinations = st.AllowedInternetDestinations
-
 	pb.AllowedStorageDestinations = st.AllowedStorageDestinations
-
 	pb.PolicyEnforcement = st.PolicyEnforcement
-
 	pb.RestrictionMode = st.RestrictionMode
 
 	return pb, nil
@@ -2406,12 +2281,9 @@ func egressNetworkPolicyNetworkAccessPolicyToPb(st *EgressNetworkPolicyNetworkAc
 
 type egressNetworkPolicyNetworkAccessPolicyPb struct {
 	AllowedInternetDestinations []EgressNetworkPolicyNetworkAccessPolicyInternetDestination `json:"allowed_internet_destinations,omitempty"`
-
-	AllowedStorageDestinations []EgressNetworkPolicyNetworkAccessPolicyStorageDestination `json:"allowed_storage_destinations,omitempty"`
-
-	PolicyEnforcement *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement `json:"policy_enforcement,omitempty"`
-
-	RestrictionMode EgressNetworkPolicyNetworkAccessPolicyRestrictionMode `json:"restriction_mode"`
+	AllowedStorageDestinations  []EgressNetworkPolicyNetworkAccessPolicyStorageDestination  `json:"allowed_storage_destinations,omitempty"`
+	PolicyEnforcement           *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement    `json:"policy_enforcement,omitempty"`
+	RestrictionMode             EgressNetworkPolicyNetworkAccessPolicyRestrictionMode       `json:"restriction_mode"`
 }
 
 func egressNetworkPolicyNetworkAccessPolicyFromPb(pb *egressNetworkPolicyNetworkAccessPolicyPb) (*EgressNetworkPolicyNetworkAccessPolicy, error) {
@@ -2433,7 +2305,6 @@ func egressNetworkPolicyNetworkAccessPolicyInternetDestinationToPb(st *EgressNet
 	}
 	pb := &egressNetworkPolicyNetworkAccessPolicyInternetDestinationPb{}
 	pb.Destination = st.Destination
-
 	pb.InternetDestinationType = st.InternetDestinationType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2441,8 +2312,7 @@ func egressNetworkPolicyNetworkAccessPolicyInternetDestinationToPb(st *EgressNet
 }
 
 type egressNetworkPolicyNetworkAccessPolicyInternetDestinationPb struct {
-	Destination string `json:"destination,omitempty"`
-
+	Destination             string                                                                           `json:"destination,omitempty"`
 	InternetDestinationType EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType `json:"internet_destination_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2474,7 +2344,6 @@ func egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementToPb(st *EgressNetwo
 	}
 	pb := &egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementPb{}
 	pb.DryRunModeProductFilter = st.DryRunModeProductFilter
-
 	pb.EnforcementMode = st.EnforcementMode
 
 	return pb, nil
@@ -2482,8 +2351,7 @@ func egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementToPb(st *EgressNetwo
 
 type egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementPb struct {
 	DryRunModeProductFilter []EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter `json:"dry_run_mode_product_filter,omitempty"`
-
-	EnforcementMode EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode `json:"enforcement_mode,omitempty"`
+	EnforcementMode         EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode           `json:"enforcement_mode,omitempty"`
 }
 
 func egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementFromPb(pb *egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementPb) (*EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement, error) {
@@ -2503,13 +2371,9 @@ func egressNetworkPolicyNetworkAccessPolicyStorageDestinationToPb(st *EgressNetw
 	}
 	pb := &egressNetworkPolicyNetworkAccessPolicyStorageDestinationPb{}
 	pb.AzureStorageAccount = st.AzureStorageAccount
-
 	pb.AzureStorageService = st.AzureStorageService
-
 	pb.BucketName = st.BucketName
-
 	pb.Region = st.Region
-
 	pb.StorageDestinationType = st.StorageDestinationType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2517,14 +2381,10 @@ func egressNetworkPolicyNetworkAccessPolicyStorageDestinationToPb(st *EgressNetw
 }
 
 type egressNetworkPolicyNetworkAccessPolicyStorageDestinationPb struct {
-	AzureStorageAccount string `json:"azure_storage_account,omitempty"`
-
-	AzureStorageService string `json:"azure_storage_service,omitempty"`
-
-	BucketName string `json:"bucket_name,omitempty"`
-
-	Region string `json:"region,omitempty"`
-
+	AzureStorageAccount    string                                                                         `json:"azure_storage_account,omitempty"`
+	AzureStorageService    string                                                                         `json:"azure_storage_service,omitempty"`
+	BucketName             string                                                                         `json:"bucket_name,omitempty"`
+	Region                 string                                                                         `json:"region,omitempty"`
 	StorageDestinationType EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType `json:"storage_destination_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -2604,7 +2464,6 @@ func enableExportNotebookToPb(st *EnableExportNotebook) (*enableExportNotebookPb
 	}
 	pb := &enableExportNotebookPb{}
 	pb.BooleanVal = st.BooleanVal
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2612,9 +2471,8 @@ func enableExportNotebookToPb(st *EnableExportNotebook) (*enableExportNotebookPb
 }
 
 type enableExportNotebookPb struct {
-	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	BooleanVal  *BooleanMessage `json:"boolean_val,omitempty"`
+	SettingName string          `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2645,7 +2503,6 @@ func enableNotebookTableClipboardToPb(st *EnableNotebookTableClipboard) (*enable
 	}
 	pb := &enableNotebookTableClipboardPb{}
 	pb.BooleanVal = st.BooleanVal
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2653,9 +2510,8 @@ func enableNotebookTableClipboardToPb(st *EnableNotebookTableClipboard) (*enable
 }
 
 type enableNotebookTableClipboardPb struct {
-	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	BooleanVal  *BooleanMessage `json:"boolean_val,omitempty"`
+	SettingName string          `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2686,7 +2542,6 @@ func enableResultsDownloadingToPb(st *EnableResultsDownloading) (*enableResultsD
 	}
 	pb := &enableResultsDownloadingPb{}
 	pb.BooleanVal = st.BooleanVal
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2694,9 +2549,8 @@ func enableResultsDownloadingToPb(st *EnableResultsDownloading) (*enableResultsD
 }
 
 type enableResultsDownloadingPb struct {
-	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	BooleanVal  *BooleanMessage `json:"boolean_val,omitempty"`
+	SettingName string          `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2763,9 +2617,7 @@ func enhancedSecurityMonitoringSettingToPb(st *EnhancedSecurityMonitoringSetting
 	}
 	pb := &enhancedSecurityMonitoringSettingPb{}
 	pb.EnhancedSecurityMonitoringWorkspace = st.EnhancedSecurityMonitoringWorkspace
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2774,10 +2626,8 @@ func enhancedSecurityMonitoringSettingToPb(st *EnhancedSecurityMonitoringSetting
 
 type enhancedSecurityMonitoringSettingPb struct {
 	EnhancedSecurityMonitoringWorkspace EnhancedSecurityMonitoring `json:"enhanced_security_monitoring_workspace"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag                                string                     `json:"etag,omitempty"`
+	SettingName                         string                     `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2845,9 +2695,7 @@ func esmEnablementAccountSettingToPb(st *EsmEnablementAccountSetting) (*esmEnabl
 	}
 	pb := &esmEnablementAccountSettingPb{}
 	pb.EsmEnablementAccount = st.EsmEnablementAccount
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2856,10 +2704,8 @@ func esmEnablementAccountSettingToPb(st *EsmEnablementAccountSetting) (*esmEnabl
 
 type esmEnablementAccountSettingPb struct {
 	EsmEnablementAccount EsmEnablementAccount `json:"esm_enablement_account"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	Etag                 string               `json:"etag,omitempty"`
+	SettingName          string               `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2891,13 +2737,9 @@ func exchangeTokenToPb(st *ExchangeToken) (*exchangeTokenPb, error) {
 	}
 	pb := &exchangeTokenPb{}
 	pb.Credential = st.Credential
-
 	pb.CredentialEolTime = st.CredentialEolTime
-
 	pb.OwnerId = st.OwnerId
-
 	pb.Scopes = st.Scopes
-
 	pb.TokenType = st.TokenType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -2905,15 +2747,11 @@ func exchangeTokenToPb(st *ExchangeToken) (*exchangeTokenPb, error) {
 }
 
 type exchangeTokenPb struct {
-	Credential string `json:"credential,omitempty"`
-
-	CredentialEolTime int64 `json:"credentialEolTime,omitempty"`
-
-	OwnerId int64 `json:"ownerId,omitempty"`
-
-	Scopes []string `json:"scopes,omitempty"`
-
-	TokenType TokenType `json:"tokenType,omitempty"`
+	Credential        string    `json:"credential,omitempty"`
+	CredentialEolTime int64     `json:"credentialEolTime,omitempty"`
+	OwnerId           int64     `json:"ownerId,omitempty"`
+	Scopes            []string  `json:"scopes,omitempty"`
+	TokenType         TokenType `json:"tokenType,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -2947,9 +2785,7 @@ func exchangeTokenRequestToPb(st *ExchangeTokenRequest) (*exchangeTokenRequestPb
 	}
 	pb := &exchangeTokenRequestPb{}
 	pb.PartitionId = st.PartitionId
-
 	pb.Scopes = st.Scopes
-
 	pb.TokenType = st.TokenType
 
 	return pb, nil
@@ -2957,10 +2793,8 @@ func exchangeTokenRequestToPb(st *ExchangeTokenRequest) (*exchangeTokenRequestPb
 
 type exchangeTokenRequestPb struct {
 	PartitionId PartitionId `json:"partitionId"`
-
-	Scopes []string `json:"scopes"`
-
-	TokenType []TokenType `json:"tokenType"`
+	Scopes      []string    `json:"scopes"`
+	TokenType   []TokenType `json:"tokenType"`
 }
 
 func exchangeTokenRequestFromPb(pb *exchangeTokenRequestPb) (*ExchangeTokenRequest, error) {
@@ -3029,15 +2863,10 @@ func genericWebhookConfigToPb(st *GenericWebhookConfig) (*genericWebhookConfigPb
 	}
 	pb := &genericWebhookConfigPb{}
 	pb.Password = st.Password
-
 	pb.PasswordSet = st.PasswordSet
-
 	pb.Url = st.Url
-
 	pb.UrlSet = st.UrlSet
-
 	pb.Username = st.Username
-
 	pb.UsernameSet = st.UsernameSet
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -3045,17 +2874,12 @@ func genericWebhookConfigToPb(st *GenericWebhookConfig) (*genericWebhookConfigPb
 }
 
 type genericWebhookConfigPb struct {
-	Password string `json:"password,omitempty"`
-
-	PasswordSet bool `json:"password_set,omitempty"`
-
-	Url string `json:"url,omitempty"`
-
-	UrlSet bool `json:"url_set,omitempty"`
-
-	Username string `json:"username,omitempty"`
-
-	UsernameSet bool `json:"username_set,omitempty"`
+	Password    string `json:"password,omitempty"`
+	PasswordSet bool   `json:"password_set,omitempty"`
+	Url         string `json:"url,omitempty"`
+	UrlSet      bool   `json:"url_set,omitempty"`
+	Username    string `json:"username,omitempty"`
+	UsernameSet bool   `json:"username_set,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3834,7 +3658,6 @@ func getPrivateEndpointRuleRequestToPb(st *GetPrivateEndpointRuleRequest) (*getP
 	}
 	pb := &getPrivateEndpointRuleRequestPb{}
 	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
-
 	pb.PrivateEndpointRuleId = st.PrivateEndpointRuleId
 
 	return pb, nil
@@ -3842,8 +3665,7 @@ func getPrivateEndpointRuleRequestToPb(st *GetPrivateEndpointRuleRequest) (*getP
 
 type getPrivateEndpointRuleRequestPb struct {
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
-
-	PrivateEndpointRuleId string `json:"-" url:"-"`
+	PrivateEndpointRuleId       string `json:"-" url:"-"`
 }
 
 func getPrivateEndpointRuleRequestFromPb(pb *getPrivateEndpointRuleRequestPb) (*GetPrivateEndpointRuleRequest, error) {
@@ -4019,23 +3841,14 @@ func ipAccessListInfoToPb(st *IpAccessListInfo) (*ipAccessListInfoPb, error) {
 	}
 	pb := &ipAccessListInfoPb{}
 	pb.AddressCount = st.AddressCount
-
 	pb.CreatedAt = st.CreatedAt
-
 	pb.CreatedBy = st.CreatedBy
-
 	pb.Enabled = st.Enabled
-
 	pb.IpAddresses = st.IpAddresses
-
 	pb.Label = st.Label
-
 	pb.ListId = st.ListId
-
 	pb.ListType = st.ListType
-
 	pb.UpdatedAt = st.UpdatedAt
-
 	pb.UpdatedBy = st.UpdatedBy
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4043,25 +3856,16 @@ func ipAccessListInfoToPb(st *IpAccessListInfo) (*ipAccessListInfoPb, error) {
 }
 
 type ipAccessListInfoPb struct {
-	AddressCount int `json:"address_count,omitempty"`
-
-	CreatedAt int64 `json:"created_at,omitempty"`
-
-	CreatedBy int64 `json:"created_by,omitempty"`
-
-	Enabled bool `json:"enabled,omitempty"`
-
-	IpAddresses []string `json:"ip_addresses,omitempty"`
-
-	Label string `json:"label,omitempty"`
-
-	ListId string `json:"list_id,omitempty"`
-
-	ListType ListType `json:"list_type,omitempty"`
-
-	UpdatedAt int64 `json:"updated_at,omitempty"`
-
-	UpdatedBy int64 `json:"updated_by,omitempty"`
+	AddressCount int      `json:"address_count,omitempty"`
+	CreatedAt    int64    `json:"created_at,omitempty"`
+	CreatedBy    int64    `json:"created_by,omitempty"`
+	Enabled      bool     `json:"enabled,omitempty"`
+	IpAddresses  []string `json:"ip_addresses,omitempty"`
+	Label        string   `json:"label,omitempty"`
+	ListId       string   `json:"list_id,omitempty"`
+	ListType     ListType `json:"list_type,omitempty"`
+	UpdatedAt    int64    `json:"updated_at,omitempty"`
+	UpdatedBy    int64    `json:"updated_by,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4124,7 +3928,6 @@ func listNccAzurePrivateEndpointRulesResponseToPb(st *ListNccAzurePrivateEndpoin
 	}
 	pb := &listNccAzurePrivateEndpointRulesResponsePb{}
 	pb.Items = st.Items
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4132,9 +3935,8 @@ func listNccAzurePrivateEndpointRulesResponseToPb(st *ListNccAzurePrivateEndpoin
 }
 
 type listNccAzurePrivateEndpointRulesResponsePb struct {
-	Items []NccAzurePrivateEndpointRule `json:"items,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Items         []NccAzurePrivateEndpointRule `json:"items,omitempty"`
+	NextPageToken string                        `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4201,7 +4003,6 @@ func listNetworkConnectivityConfigurationsResponseToPb(st *ListNetworkConnectivi
 	}
 	pb := &listNetworkConnectivityConfigurationsResponsePb{}
 	pb.Items = st.Items
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4209,9 +4010,8 @@ func listNetworkConnectivityConfigurationsResponseToPb(st *ListNetworkConnectivi
 }
 
 type listNetworkConnectivityConfigurationsResponsePb struct {
-	Items []NetworkConnectivityConfiguration `json:"items,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Items         []NetworkConnectivityConfiguration `json:"items,omitempty"`
+	NextPageToken string                             `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4278,7 +4078,6 @@ func listNetworkPoliciesResponseToPb(st *ListNetworkPoliciesResponse) (*listNetw
 	}
 	pb := &listNetworkPoliciesResponsePb{}
 	pb.Items = st.Items
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4286,9 +4085,8 @@ func listNetworkPoliciesResponseToPb(st *ListNetworkPoliciesResponse) (*listNetw
 }
 
 type listNetworkPoliciesResponsePb struct {
-	Items []AccountNetworkPolicy `json:"items,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	Items         []AccountNetworkPolicy `json:"items,omitempty"`
+	NextPageToken string                 `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4319,7 +4117,6 @@ func listNotificationDestinationsRequestToPb(st *ListNotificationDestinationsReq
 	}
 	pb := &listNotificationDestinationsRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4327,8 +4124,7 @@ func listNotificationDestinationsRequestToPb(st *ListNotificationDestinationsReq
 }
 
 type listNotificationDestinationsRequestPb struct {
-	PageSize int64 `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int64  `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4360,7 +4156,6 @@ func listNotificationDestinationsResponseToPb(st *ListNotificationDestinationsRe
 	}
 	pb := &listNotificationDestinationsResponsePb{}
 	pb.NextPageToken = st.NextPageToken
-
 	pb.Results = st.Results
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4368,9 +4163,8 @@ func listNotificationDestinationsResponseToPb(st *ListNotificationDestinationsRe
 }
 
 type listNotificationDestinationsResponsePb struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	Results []ListNotificationDestinationsResult `json:"results,omitempty"`
+	NextPageToken string                               `json:"next_page_token,omitempty"`
+	Results       []ListNotificationDestinationsResult `json:"results,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4401,9 +4195,7 @@ func listNotificationDestinationsResultToPb(st *ListNotificationDestinationsResu
 	}
 	pb := &listNotificationDestinationsResultPb{}
 	pb.DestinationType = st.DestinationType
-
 	pb.DisplayName = st.DisplayName
-
 	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4412,10 +4204,8 @@ func listNotificationDestinationsResultToPb(st *ListNotificationDestinationsResu
 
 type listNotificationDestinationsResultPb struct {
 	DestinationType DestinationType `json:"destination_type,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	Id string `json:"id,omitempty"`
+	DisplayName     string          `json:"display_name,omitempty"`
+	Id              string          `json:"id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4447,7 +4237,6 @@ func listPrivateEndpointRulesRequestToPb(st *ListPrivateEndpointRulesRequest) (*
 	}
 	pb := &listPrivateEndpointRulesRequestPb{}
 	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4456,8 +4245,7 @@ func listPrivateEndpointRulesRequestToPb(st *ListPrivateEndpointRulesRequest) (*
 
 type listPrivateEndpointRulesRequestPb struct {
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
-
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken                   string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4512,7 +4300,6 @@ func listTokenManagementRequestToPb(st *ListTokenManagementRequest) (*listTokenM
 	}
 	pb := &listTokenManagementRequestPb{}
 	pb.CreatedById = st.CreatedById
-
 	pb.CreatedByUsername = st.CreatedByUsername
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4520,8 +4307,7 @@ func listTokenManagementRequestToPb(st *ListTokenManagementRequest) (*listTokenM
 }
 
 type listTokenManagementRequestPb struct {
-	CreatedById int64 `json:"-" url:"created_by_id,omitempty"`
-
+	CreatedById       int64  `json:"-" url:"created_by_id,omitempty"`
 	CreatedByUsername string `json:"-" url:"created_by_username,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4577,9 +4363,7 @@ func llmProxyPartnerPoweredAccountToPb(st *LlmProxyPartnerPoweredAccount) (*llmP
 	}
 	pb := &llmProxyPartnerPoweredAccountPb{}
 	pb.BooleanVal = st.BooleanVal
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4587,11 +4371,9 @@ func llmProxyPartnerPoweredAccountToPb(st *LlmProxyPartnerPoweredAccount) (*llmP
 }
 
 type llmProxyPartnerPoweredAccountPb struct {
-	BooleanVal BooleanMessage `json:"boolean_val"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	BooleanVal  BooleanMessage `json:"boolean_val"`
+	Etag        string         `json:"etag,omitempty"`
+	SettingName string         `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4623,9 +4405,7 @@ func llmProxyPartnerPoweredEnforceToPb(st *LlmProxyPartnerPoweredEnforce) (*llmP
 	}
 	pb := &llmProxyPartnerPoweredEnforcePb{}
 	pb.BooleanVal = st.BooleanVal
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4633,11 +4413,9 @@ func llmProxyPartnerPoweredEnforceToPb(st *LlmProxyPartnerPoweredEnforce) (*llmP
 }
 
 type llmProxyPartnerPoweredEnforcePb struct {
-	BooleanVal BooleanMessage `json:"boolean_val"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	BooleanVal  BooleanMessage `json:"boolean_val"`
+	Etag        string         `json:"etag,omitempty"`
+	SettingName string         `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4669,9 +4447,7 @@ func llmProxyPartnerPoweredWorkspaceToPb(st *LlmProxyPartnerPoweredWorkspace) (*
 	}
 	pb := &llmProxyPartnerPoweredWorkspacePb{}
 	pb.BooleanVal = st.BooleanVal
-
 	pb.Etag = st.Etag
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4679,11 +4455,9 @@ func llmProxyPartnerPoweredWorkspaceToPb(st *LlmProxyPartnerPoweredWorkspace) (*
 }
 
 type llmProxyPartnerPoweredWorkspacePb struct {
-	BooleanVal BooleanMessage `json:"boolean_val"`
-
-	Etag string `json:"etag,omitempty"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	BooleanVal  BooleanMessage `json:"boolean_val"`
+	Etag        string         `json:"etag,omitempty"`
+	SettingName string         `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4715,7 +4489,6 @@ func microsoftTeamsConfigToPb(st *MicrosoftTeamsConfig) (*microsoftTeamsConfigPb
 	}
 	pb := &microsoftTeamsConfigPb{}
 	pb.Url = st.Url
-
 	pb.UrlSet = st.UrlSet
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4723,9 +4496,8 @@ func microsoftTeamsConfigToPb(st *MicrosoftTeamsConfig) (*microsoftTeamsConfigPb
 }
 
 type microsoftTeamsConfigPb struct {
-	Url string `json:"url,omitempty"`
-
-	UrlSet bool `json:"url_set,omitempty"`
+	Url    string `json:"url,omitempty"`
+	UrlSet bool   `json:"url_set,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4780,25 +4552,15 @@ func nccAzurePrivateEndpointRuleToPb(st *NccAzurePrivateEndpointRule) (*nccAzure
 	}
 	pb := &nccAzurePrivateEndpointRulePb{}
 	pb.ConnectionState = st.ConnectionState
-
 	pb.CreationTime = st.CreationTime
-
 	pb.Deactivated = st.Deactivated
-
 	pb.DeactivatedAt = st.DeactivatedAt
-
 	pb.DomainNames = st.DomainNames
-
 	pb.EndpointName = st.EndpointName
-
 	pb.GroupId = st.GroupId
-
 	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
-
 	pb.ResourceId = st.ResourceId
-
 	pb.RuleId = st.RuleId
-
 	pb.UpdatedTime = st.UpdatedTime
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4806,27 +4568,17 @@ func nccAzurePrivateEndpointRuleToPb(st *NccAzurePrivateEndpointRule) (*nccAzure
 }
 
 type nccAzurePrivateEndpointRulePb struct {
-	ConnectionState NccAzurePrivateEndpointRuleConnectionState `json:"connection_state,omitempty"`
-
-	CreationTime int64 `json:"creation_time,omitempty"`
-
-	Deactivated bool `json:"deactivated,omitempty"`
-
-	DeactivatedAt int64 `json:"deactivated_at,omitempty"`
-
-	DomainNames []string `json:"domain_names,omitempty"`
-
-	EndpointName string `json:"endpoint_name,omitempty"`
-
-	GroupId string `json:"group_id,omitempty"`
-
-	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
-
-	ResourceId string `json:"resource_id,omitempty"`
-
-	RuleId string `json:"rule_id,omitempty"`
-
-	UpdatedTime int64 `json:"updated_time,omitempty"`
+	ConnectionState             NccAzurePrivateEndpointRuleConnectionState `json:"connection_state,omitempty"`
+	CreationTime                int64                                      `json:"creation_time,omitempty"`
+	Deactivated                 bool                                       `json:"deactivated,omitempty"`
+	DeactivatedAt               int64                                      `json:"deactivated_at,omitempty"`
+	DomainNames                 []string                                   `json:"domain_names,omitempty"`
+	EndpointName                string                                     `json:"endpoint_name,omitempty"`
+	GroupId                     string                                     `json:"group_id,omitempty"`
+	NetworkConnectivityConfigId string                                     `json:"network_connectivity_config_id,omitempty"`
+	ResourceId                  string                                     `json:"resource_id,omitempty"`
+	RuleId                      string                                     `json:"rule_id,omitempty"`
+	UpdatedTime                 int64                                      `json:"updated_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -4866,9 +4618,7 @@ func nccAzureServiceEndpointRuleToPb(st *NccAzureServiceEndpointRule) (*nccAzure
 	}
 	pb := &nccAzureServiceEndpointRulePb{}
 	pb.Subnets = st.Subnets
-
 	pb.TargetRegion = st.TargetRegion
-
 	pb.TargetServices = st.TargetServices
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -4876,10 +4626,8 @@ func nccAzureServiceEndpointRuleToPb(st *NccAzureServiceEndpointRule) (*nccAzure
 }
 
 type nccAzureServiceEndpointRulePb struct {
-	Subnets []string `json:"subnets,omitempty"`
-
-	TargetRegion string `json:"target_region,omitempty"`
-
+	Subnets        []string             `json:"subnets,omitempty"`
+	TargetRegion   string               `json:"target_region,omitempty"`
 	TargetServices []EgressResourceType `json:"target_services,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -4912,7 +4660,6 @@ func nccEgressConfigToPb(st *NccEgressConfig) (*nccEgressConfigPb, error) {
 	}
 	pb := &nccEgressConfigPb{}
 	pb.DefaultRules = st.DefaultRules
-
 	pb.TargetRules = st.TargetRules
 
 	return pb, nil
@@ -4920,8 +4667,7 @@ func nccEgressConfigToPb(st *NccEgressConfig) (*nccEgressConfigPb, error) {
 
 type nccEgressConfigPb struct {
 	DefaultRules *NccEgressDefaultRules `json:"default_rules,omitempty"`
-
-	TargetRules *NccEgressTargetRules `json:"target_rules,omitempty"`
+	TargetRules  *NccEgressTargetRules  `json:"target_rules,omitempty"`
 }
 
 func nccEgressConfigFromPb(pb *nccEgressConfigPb) (*NccEgressConfig, error) {
@@ -4941,15 +4687,13 @@ func nccEgressDefaultRulesToPb(st *NccEgressDefaultRules) (*nccEgressDefaultRule
 	}
 	pb := &nccEgressDefaultRulesPb{}
 	pb.AwsStableIpRule = st.AwsStableIpRule
-
 	pb.AzureServiceEndpointRule = st.AzureServiceEndpointRule
 
 	return pb, nil
 }
 
 type nccEgressDefaultRulesPb struct {
-	AwsStableIpRule *NccAwsStableIpRule `json:"aws_stable_ip_rule,omitempty"`
-
+	AwsStableIpRule          *NccAwsStableIpRule          `json:"aws_stable_ip_rule,omitempty"`
 	AzureServiceEndpointRule *NccAzureServiceEndpointRule `json:"azure_service_endpoint_rule,omitempty"`
 }
 
@@ -4994,17 +4738,11 @@ func networkConnectivityConfigurationToPb(st *NetworkConnectivityConfiguration) 
 	}
 	pb := &networkConnectivityConfigurationPb{}
 	pb.AccountId = st.AccountId
-
 	pb.CreationTime = st.CreationTime
-
 	pb.EgressConfig = st.EgressConfig
-
 	pb.Name = st.Name
-
 	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
-
 	pb.Region = st.Region
-
 	pb.UpdatedTime = st.UpdatedTime
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5012,19 +4750,13 @@ func networkConnectivityConfigurationToPb(st *NetworkConnectivityConfiguration) 
 }
 
 type networkConnectivityConfigurationPb struct {
-	AccountId string `json:"account_id,omitempty"`
-
-	CreationTime int64 `json:"creation_time,omitempty"`
-
-	EgressConfig *NccEgressConfig `json:"egress_config,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
-
-	Region string `json:"region,omitempty"`
-
-	UpdatedTime int64 `json:"updated_time,omitempty"`
+	AccountId                   string           `json:"account_id,omitempty"`
+	CreationTime                int64            `json:"creation_time,omitempty"`
+	EgressConfig                *NccEgressConfig `json:"egress_config,omitempty"`
+	Name                        string           `json:"name,omitempty"`
+	NetworkConnectivityConfigId string           `json:"network_connectivity_config_id,omitempty"`
+	Region                      string           `json:"region,omitempty"`
+	UpdatedTime                 int64            `json:"updated_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5084,11 +4816,8 @@ func notificationDestinationToPb(st *NotificationDestination) (*notificationDest
 	}
 	pb := &notificationDestinationPb{}
 	pb.Config = st.Config
-
 	pb.DestinationType = st.DestinationType
-
 	pb.DisplayName = st.DisplayName
-
 	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5096,13 +4825,10 @@ func notificationDestinationToPb(st *NotificationDestination) (*notificationDest
 }
 
 type notificationDestinationPb struct {
-	Config *Config `json:"config,omitempty"`
-
+	Config          *Config         `json:"config,omitempty"`
 	DestinationType DestinationType `json:"destination_type,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	Id string `json:"id,omitempty"`
+	DisplayName     string          `json:"display_name,omitempty"`
+	Id              string          `json:"id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5135,7 +4861,6 @@ func pagerdutyConfigToPb(st *PagerdutyConfig) (*pagerdutyConfigPb, error) {
 	}
 	pb := &pagerdutyConfigPb{}
 	pb.IntegrationKey = st.IntegrationKey
-
 	pb.IntegrationKeySet = st.IntegrationKeySet
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5143,9 +4868,8 @@ func pagerdutyConfigToPb(st *PagerdutyConfig) (*pagerdutyConfigPb, error) {
 }
 
 type pagerdutyConfigPb struct {
-	IntegrationKey string `json:"integration_key,omitempty"`
-
-	IntegrationKeySet bool `json:"integration_key_set,omitempty"`
+	IntegrationKey    string `json:"integration_key,omitempty"`
+	IntegrationKeySet bool   `json:"integration_key_set,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5236,9 +4960,7 @@ func personalComputeSettingToPb(st *PersonalComputeSetting) (*personalComputeSet
 	}
 	pb := &personalComputeSettingPb{}
 	pb.Etag = st.Etag
-
 	pb.PersonalCompute = st.PersonalCompute
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5246,11 +4968,9 @@ func personalComputeSettingToPb(st *PersonalComputeSetting) (*personalComputeSet
 }
 
 type personalComputeSettingPb struct {
-	Etag string `json:"etag,omitempty"`
-
+	Etag            string                 `json:"etag,omitempty"`
 	PersonalCompute PersonalComputeMessage `json:"personal_compute"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	SettingName     string                 `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5282,11 +5002,8 @@ func publicTokenInfoToPb(st *PublicTokenInfo) (*publicTokenInfoPb, error) {
 	}
 	pb := &publicTokenInfoPb{}
 	pb.Comment = st.Comment
-
 	pb.CreationTime = st.CreationTime
-
 	pb.ExpiryTime = st.ExpiryTime
-
 	pb.TokenId = st.TokenId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5294,13 +5011,10 @@ func publicTokenInfoToPb(st *PublicTokenInfo) (*publicTokenInfoPb, error) {
 }
 
 type publicTokenInfoPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	CreationTime int64 `json:"creation_time,omitempty"`
-
-	ExpiryTime int64 `json:"expiry_time,omitempty"`
-
-	TokenId string `json:"token_id,omitempty"`
+	Comment      string `json:"comment,omitempty"`
+	CreationTime int64  `json:"creation_time,omitempty"`
+	ExpiryTime   int64  `json:"expiry_time,omitempty"`
+	TokenId      string `json:"token_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5333,28 +5047,20 @@ func replaceIpAccessListToPb(st *ReplaceIpAccessList) (*replaceIpAccessListPb, e
 	}
 	pb := &replaceIpAccessListPb{}
 	pb.Enabled = st.Enabled
-
 	pb.IpAccessListId = st.IpAccessListId
-
 	pb.IpAddresses = st.IpAddresses
-
 	pb.Label = st.Label
-
 	pb.ListType = st.ListType
 
 	return pb, nil
 }
 
 type replaceIpAccessListPb struct {
-	Enabled bool `json:"enabled"`
-
-	IpAccessListId string `json:"-" url:"-"`
-
-	IpAddresses []string `json:"ip_addresses,omitempty"`
-
-	Label string `json:"label"`
-
-	ListType ListType `json:"list_type"`
+	Enabled        bool     `json:"enabled"`
+	IpAccessListId string   `json:"-" url:"-"`
+	IpAddresses    []string `json:"ip_addresses,omitempty"`
+	Label          string   `json:"label"`
+	ListType       ListType `json:"list_type"`
 }
 
 func replaceIpAccessListFromPb(pb *replaceIpAccessListPb) (*ReplaceIpAccessList, error) {
@@ -5422,9 +5128,7 @@ func restrictWorkspaceAdminsSettingToPb(st *RestrictWorkspaceAdminsSetting) (*re
 	}
 	pb := &restrictWorkspaceAdminsSettingPb{}
 	pb.Etag = st.Etag
-
 	pb.RestrictWorkspaceAdmins = st.RestrictWorkspaceAdmins
-
 	pb.SettingName = st.SettingName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5432,11 +5136,9 @@ func restrictWorkspaceAdminsSettingToPb(st *RestrictWorkspaceAdminsSetting) (*re
 }
 
 type restrictWorkspaceAdminsSettingPb struct {
-	Etag string `json:"etag,omitempty"`
-
+	Etag                    string                         `json:"etag,omitempty"`
 	RestrictWorkspaceAdmins RestrictWorkspaceAdminsMessage `json:"restrict_workspace_admins"`
-
-	SettingName string `json:"setting_name,omitempty"`
+	SettingName             string                         `json:"setting_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5534,7 +5236,6 @@ func slackConfigToPb(st *SlackConfig) (*slackConfigPb, error) {
 	}
 	pb := &slackConfigPb{}
 	pb.Url = st.Url
-
 	pb.UrlSet = st.UrlSet
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5542,9 +5243,8 @@ func slackConfigToPb(st *SlackConfig) (*slackConfigPb, error) {
 }
 
 type slackConfigPb struct {
-	Url string `json:"url,omitempty"`
-
-	UrlSet bool `json:"url_set,omitempty"`
+	Url    string `json:"url,omitempty"`
+	UrlSet bool   `json:"url_set,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5611,11 +5311,8 @@ func tokenAccessControlRequestToPb(st *TokenAccessControlRequest) (*tokenAccessC
 	}
 	pb := &tokenAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5623,13 +5320,10 @@ func tokenAccessControlRequestToPb(st *TokenAccessControlRequest) (*tokenAccessC
 }
 
 type tokenAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string               `json:"group_name,omitempty"`
+	PermissionLevel      TokenPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string               `json:"service_principal_name,omitempty"`
+	UserName             string               `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5662,13 +5356,9 @@ func tokenAccessControlResponseToPb(st *TokenAccessControlResponse) (*tokenAcces
 	}
 	pb := &tokenAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5676,15 +5366,11 @@ func tokenAccessControlResponseToPb(st *TokenAccessControlResponse) (*tokenAcces
 }
 
 type tokenAccessControlResponsePb struct {
-	AllPermissions []TokenPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []TokenPermission `json:"all_permissions,omitempty"`
+	DisplayName          string            `json:"display_name,omitempty"`
+	GroupName            string            `json:"group_name,omitempty"`
+	ServicePrincipalName string            `json:"service_principal_name,omitempty"`
+	UserName             string            `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5718,21 +5404,13 @@ func tokenInfoToPb(st *TokenInfo) (*tokenInfoPb, error) {
 	}
 	pb := &tokenInfoPb{}
 	pb.Comment = st.Comment
-
 	pb.CreatedById = st.CreatedById
-
 	pb.CreatedByUsername = st.CreatedByUsername
-
 	pb.CreationTime = st.CreationTime
-
 	pb.ExpiryTime = st.ExpiryTime
-
 	pb.LastUsedDay = st.LastUsedDay
-
 	pb.OwnerId = st.OwnerId
-
 	pb.TokenId = st.TokenId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5740,23 +5418,15 @@ func tokenInfoToPb(st *TokenInfo) (*tokenInfoPb, error) {
 }
 
 type tokenInfoPb struct {
-	Comment string `json:"comment,omitempty"`
-
-	CreatedById int64 `json:"created_by_id,omitempty"`
-
+	Comment           string `json:"comment,omitempty"`
+	CreatedById       int64  `json:"created_by_id,omitempty"`
 	CreatedByUsername string `json:"created_by_username,omitempty"`
-
-	CreationTime int64 `json:"creation_time,omitempty"`
-
-	ExpiryTime int64 `json:"expiry_time,omitempty"`
-
-	LastUsedDay int64 `json:"last_used_day,omitempty"`
-
-	OwnerId int64 `json:"owner_id,omitempty"`
-
-	TokenId string `json:"token_id,omitempty"`
-
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
+	CreationTime      int64  `json:"creation_time,omitempty"`
+	ExpiryTime        int64  `json:"expiry_time,omitempty"`
+	LastUsedDay       int64  `json:"last_used_day,omitempty"`
+	OwnerId           int64  `json:"owner_id,omitempty"`
+	TokenId           string `json:"token_id,omitempty"`
+	WorkspaceId       int64  `json:"workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5794,9 +5464,7 @@ func tokenPermissionToPb(st *TokenPermission) (*tokenPermissionPb, error) {
 	}
 	pb := &tokenPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5804,11 +5472,9 @@ func tokenPermissionToPb(st *TokenPermission) (*tokenPermissionPb, error) {
 }
 
 type tokenPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool                 `json:"inherited,omitempty"`
+	InheritedFromObject []string             `json:"inherited_from_object,omitempty"`
+	PermissionLevel     TokenPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5840,9 +5506,7 @@ func tokenPermissionsToPb(st *TokenPermissions) (*tokenPermissionsPb, error) {
 	}
 	pb := &tokenPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5851,10 +5515,8 @@ func tokenPermissionsToPb(st *TokenPermissions) (*tokenPermissionsPb, error) {
 
 type tokenPermissionsPb struct {
 	AccessControlList []TokenAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                       `json:"object_id,omitempty"`
+	ObjectType        string                       `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -5886,7 +5548,6 @@ func tokenPermissionsDescriptionToPb(st *TokenPermissionsDescription) (*tokenPer
 	}
 	pb := &tokenPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -5894,8 +5555,7 @@ func tokenPermissionsDescriptionToPb(st *TokenPermissionsDescription) (*tokenPer
 }
 
 type tokenPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string               `json:"description,omitempty"`
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -5951,20 +5611,16 @@ func updateAccountIpAccessEnableRequestToPb(st *UpdateAccountIpAccessEnableReque
 	}
 	pb := &updateAccountIpAccessEnableRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateAccountIpAccessEnableRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting AccountIpAccessEnable `json:"setting"`
+	AllowMissing bool                  `json:"allow_missing"`
+	FieldMask    string                `json:"field_mask"`
+	Setting      AccountIpAccessEnable `json:"setting"`
 }
 
 func updateAccountIpAccessEnableRequestFromPb(pb *updateAccountIpAccessEnableRequestPb) (*UpdateAccountIpAccessEnableRequest, error) {
@@ -5985,20 +5641,16 @@ func updateAibiDashboardEmbeddingAccessPolicySettingRequestToPb(st *UpdateAibiDa
 	}
 	pb := &updateAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateAibiDashboardEmbeddingAccessPolicySettingRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting AibiDashboardEmbeddingAccessPolicySetting `json:"setting"`
+	AllowMissing bool                                      `json:"allow_missing"`
+	FieldMask    string                                    `json:"field_mask"`
+	Setting      AibiDashboardEmbeddingAccessPolicySetting `json:"setting"`
 }
 
 func updateAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb *updateAibiDashboardEmbeddingAccessPolicySettingRequestPb) (*UpdateAibiDashboardEmbeddingAccessPolicySettingRequest, error) {
@@ -6019,20 +5671,16 @@ func updateAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(st *UpdateAib
 	}
 	pb := &updateAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateAibiDashboardEmbeddingApprovedDomainsSettingRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting AibiDashboardEmbeddingApprovedDomainsSetting `json:"setting"`
+	AllowMissing bool                                         `json:"allow_missing"`
+	FieldMask    string                                       `json:"field_mask"`
+	Setting      AibiDashboardEmbeddingApprovedDomainsSetting `json:"setting"`
 }
 
 func updateAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb *updateAibiDashboardEmbeddingApprovedDomainsSettingRequestPb) (*UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest, error) {
@@ -6053,20 +5701,16 @@ func updateAutomaticClusterUpdateSettingRequestToPb(st *UpdateAutomaticClusterUp
 	}
 	pb := &updateAutomaticClusterUpdateSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateAutomaticClusterUpdateSettingRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting AutomaticClusterUpdateSetting `json:"setting"`
+	AllowMissing bool                          `json:"allow_missing"`
+	FieldMask    string                        `json:"field_mask"`
+	Setting      AutomaticClusterUpdateSetting `json:"setting"`
 }
 
 func updateAutomaticClusterUpdateSettingRequestFromPb(pb *updateAutomaticClusterUpdateSettingRequestPb) (*UpdateAutomaticClusterUpdateSettingRequest, error) {
@@ -6087,20 +5731,16 @@ func updateComplianceSecurityProfileSettingRequestToPb(st *UpdateComplianceSecur
 	}
 	pb := &updateComplianceSecurityProfileSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateComplianceSecurityProfileSettingRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting ComplianceSecurityProfileSetting `json:"setting"`
+	AllowMissing bool                             `json:"allow_missing"`
+	FieldMask    string                           `json:"field_mask"`
+	Setting      ComplianceSecurityProfileSetting `json:"setting"`
 }
 
 func updateComplianceSecurityProfileSettingRequestFromPb(pb *updateComplianceSecurityProfileSettingRequestPb) (*UpdateComplianceSecurityProfileSettingRequest, error) {
@@ -6121,20 +5761,16 @@ func updateCspEnablementAccountSettingRequestToPb(st *UpdateCspEnablementAccount
 	}
 	pb := &updateCspEnablementAccountSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateCspEnablementAccountSettingRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting CspEnablementAccountSetting `json:"setting"`
+	AllowMissing bool                        `json:"allow_missing"`
+	FieldMask    string                      `json:"field_mask"`
+	Setting      CspEnablementAccountSetting `json:"setting"`
 }
 
 func updateCspEnablementAccountSettingRequestFromPb(pb *updateCspEnablementAccountSettingRequestPb) (*UpdateCspEnablementAccountSettingRequest, error) {
@@ -6155,20 +5791,16 @@ func updateDefaultNamespaceSettingRequestToPb(st *UpdateDefaultNamespaceSettingR
 	}
 	pb := &updateDefaultNamespaceSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateDefaultNamespaceSettingRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting DefaultNamespaceSetting `json:"setting"`
+	AllowMissing bool                    `json:"allow_missing"`
+	FieldMask    string                  `json:"field_mask"`
+	Setting      DefaultNamespaceSetting `json:"setting"`
 }
 
 func updateDefaultNamespaceSettingRequestFromPb(pb *updateDefaultNamespaceSettingRequestPb) (*UpdateDefaultNamespaceSettingRequest, error) {
@@ -6189,20 +5821,16 @@ func updateDisableLegacyAccessRequestToPb(st *UpdateDisableLegacyAccessRequest) 
 	}
 	pb := &updateDisableLegacyAccessRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateDisableLegacyAccessRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting DisableLegacyAccess `json:"setting"`
+	AllowMissing bool                `json:"allow_missing"`
+	FieldMask    string              `json:"field_mask"`
+	Setting      DisableLegacyAccess `json:"setting"`
 }
 
 func updateDisableLegacyAccessRequestFromPb(pb *updateDisableLegacyAccessRequestPb) (*UpdateDisableLegacyAccessRequest, error) {
@@ -6223,20 +5851,16 @@ func updateDisableLegacyDbfsRequestToPb(st *UpdateDisableLegacyDbfsRequest) (*up
 	}
 	pb := &updateDisableLegacyDbfsRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateDisableLegacyDbfsRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting DisableLegacyDbfs `json:"setting"`
+	AllowMissing bool              `json:"allow_missing"`
+	FieldMask    string            `json:"field_mask"`
+	Setting      DisableLegacyDbfs `json:"setting"`
 }
 
 func updateDisableLegacyDbfsRequestFromPb(pb *updateDisableLegacyDbfsRequestPb) (*UpdateDisableLegacyDbfsRequest, error) {
@@ -6257,20 +5881,16 @@ func updateDisableLegacyFeaturesRequestToPb(st *UpdateDisableLegacyFeaturesReque
 	}
 	pb := &updateDisableLegacyFeaturesRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateDisableLegacyFeaturesRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting DisableLegacyFeatures `json:"setting"`
+	AllowMissing bool                  `json:"allow_missing"`
+	FieldMask    string                `json:"field_mask"`
+	Setting      DisableLegacyFeatures `json:"setting"`
 }
 
 func updateDisableLegacyFeaturesRequestFromPb(pb *updateDisableLegacyFeaturesRequestPb) (*UpdateDisableLegacyFeaturesRequest, error) {
@@ -6291,20 +5911,16 @@ func updateEnableExportNotebookRequestToPb(st *UpdateEnableExportNotebookRequest
 	}
 	pb := &updateEnableExportNotebookRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateEnableExportNotebookRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting EnableExportNotebook `json:"setting"`
+	AllowMissing bool                 `json:"allow_missing"`
+	FieldMask    string               `json:"field_mask"`
+	Setting      EnableExportNotebook `json:"setting"`
 }
 
 func updateEnableExportNotebookRequestFromPb(pb *updateEnableExportNotebookRequestPb) (*UpdateEnableExportNotebookRequest, error) {
@@ -6325,20 +5941,16 @@ func updateEnableNotebookTableClipboardRequestToPb(st *UpdateEnableNotebookTable
 	}
 	pb := &updateEnableNotebookTableClipboardRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateEnableNotebookTableClipboardRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting EnableNotebookTableClipboard `json:"setting"`
+	AllowMissing bool                         `json:"allow_missing"`
+	FieldMask    string                       `json:"field_mask"`
+	Setting      EnableNotebookTableClipboard `json:"setting"`
 }
 
 func updateEnableNotebookTableClipboardRequestFromPb(pb *updateEnableNotebookTableClipboardRequestPb) (*UpdateEnableNotebookTableClipboardRequest, error) {
@@ -6359,20 +5971,16 @@ func updateEnableResultsDownloadingRequestToPb(st *UpdateEnableResultsDownloadin
 	}
 	pb := &updateEnableResultsDownloadingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateEnableResultsDownloadingRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting EnableResultsDownloading `json:"setting"`
+	AllowMissing bool                     `json:"allow_missing"`
+	FieldMask    string                   `json:"field_mask"`
+	Setting      EnableResultsDownloading `json:"setting"`
 }
 
 func updateEnableResultsDownloadingRequestFromPb(pb *updateEnableResultsDownloadingRequestPb) (*UpdateEnableResultsDownloadingRequest, error) {
@@ -6393,20 +6001,16 @@ func updateEnhancedSecurityMonitoringSettingRequestToPb(st *UpdateEnhancedSecuri
 	}
 	pb := &updateEnhancedSecurityMonitoringSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateEnhancedSecurityMonitoringSettingRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting EnhancedSecurityMonitoringSetting `json:"setting"`
+	AllowMissing bool                              `json:"allow_missing"`
+	FieldMask    string                            `json:"field_mask"`
+	Setting      EnhancedSecurityMonitoringSetting `json:"setting"`
 }
 
 func updateEnhancedSecurityMonitoringSettingRequestFromPb(pb *updateEnhancedSecurityMonitoringSettingRequestPb) (*UpdateEnhancedSecurityMonitoringSettingRequest, error) {
@@ -6427,20 +6031,16 @@ func updateEsmEnablementAccountSettingRequestToPb(st *UpdateEsmEnablementAccount
 	}
 	pb := &updateEsmEnablementAccountSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateEsmEnablementAccountSettingRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting EsmEnablementAccountSetting `json:"setting"`
+	AllowMissing bool                        `json:"allow_missing"`
+	FieldMask    string                      `json:"field_mask"`
+	Setting      EsmEnablementAccountSetting `json:"setting"`
 }
 
 func updateEsmEnablementAccountSettingRequestFromPb(pb *updateEsmEnablementAccountSettingRequestPb) (*UpdateEsmEnablementAccountSettingRequest, error) {
@@ -6461,13 +6061,9 @@ func updateIpAccessListToPb(st *UpdateIpAccessList) (*updateIpAccessListPb, erro
 	}
 	pb := &updateIpAccessListPb{}
 	pb.Enabled = st.Enabled
-
 	pb.IpAccessListId = st.IpAccessListId
-
 	pb.IpAddresses = st.IpAddresses
-
 	pb.Label = st.Label
-
 	pb.ListType = st.ListType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6475,15 +6071,11 @@ func updateIpAccessListToPb(st *UpdateIpAccessList) (*updateIpAccessListPb, erro
 }
 
 type updateIpAccessListPb struct {
-	Enabled bool `json:"enabled,omitempty"`
-
-	IpAccessListId string `json:"-" url:"-"`
-
-	IpAddresses []string `json:"ip_addresses,omitempty"`
-
-	Label string `json:"label,omitempty"`
-
-	ListType ListType `json:"list_type,omitempty"`
+	Enabled        bool     `json:"enabled,omitempty"`
+	IpAccessListId string   `json:"-" url:"-"`
+	IpAddresses    []string `json:"ip_addresses,omitempty"`
+	Label          string   `json:"label,omitempty"`
+	ListType       ListType `json:"list_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6517,20 +6109,16 @@ func updateLlmProxyPartnerPoweredAccountRequestToPb(st *UpdateLlmProxyPartnerPow
 	}
 	pb := &updateLlmProxyPartnerPoweredAccountRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateLlmProxyPartnerPoweredAccountRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting LlmProxyPartnerPoweredAccount `json:"setting"`
+	AllowMissing bool                          `json:"allow_missing"`
+	FieldMask    string                        `json:"field_mask"`
+	Setting      LlmProxyPartnerPoweredAccount `json:"setting"`
 }
 
 func updateLlmProxyPartnerPoweredAccountRequestFromPb(pb *updateLlmProxyPartnerPoweredAccountRequestPb) (*UpdateLlmProxyPartnerPoweredAccountRequest, error) {
@@ -6551,20 +6139,16 @@ func updateLlmProxyPartnerPoweredEnforceRequestToPb(st *UpdateLlmProxyPartnerPow
 	}
 	pb := &updateLlmProxyPartnerPoweredEnforceRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateLlmProxyPartnerPoweredEnforceRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting LlmProxyPartnerPoweredEnforce `json:"setting"`
+	AllowMissing bool                          `json:"allow_missing"`
+	FieldMask    string                        `json:"field_mask"`
+	Setting      LlmProxyPartnerPoweredEnforce `json:"setting"`
 }
 
 func updateLlmProxyPartnerPoweredEnforceRequestFromPb(pb *updateLlmProxyPartnerPoweredEnforceRequestPb) (*UpdateLlmProxyPartnerPoweredEnforceRequest, error) {
@@ -6585,20 +6169,16 @@ func updateLlmProxyPartnerPoweredWorkspaceRequestToPb(st *UpdateLlmProxyPartnerP
 	}
 	pb := &updateLlmProxyPartnerPoweredWorkspaceRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateLlmProxyPartnerPoweredWorkspaceRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting LlmProxyPartnerPoweredWorkspace `json:"setting"`
+	AllowMissing bool                            `json:"allow_missing"`
+	FieldMask    string                          `json:"field_mask"`
+	Setting      LlmProxyPartnerPoweredWorkspace `json:"setting"`
 }
 
 func updateLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb *updateLlmProxyPartnerPoweredWorkspaceRequestPb) (*UpdateLlmProxyPartnerPoweredWorkspaceRequest, error) {
@@ -6619,24 +6199,18 @@ func updateNccAzurePrivateEndpointRulePublicRequestToPb(st *UpdateNccAzurePrivat
 	}
 	pb := &updateNccAzurePrivateEndpointRulePublicRequestPb{}
 	pb.NetworkConnectivityConfigId = st.NetworkConnectivityConfigId
-
 	pb.PrivateEndpointRule = st.PrivateEndpointRule
-
 	pb.PrivateEndpointRuleId = st.PrivateEndpointRuleId
-
 	pb.UpdateMask = st.UpdateMask
 
 	return pb, nil
 }
 
 type updateNccAzurePrivateEndpointRulePublicRequestPb struct {
-	NetworkConnectivityConfigId string `json:"-" url:"-"`
-
-	PrivateEndpointRule UpdatePrivateEndpointRule `json:"private_endpoint_rule"`
-
-	PrivateEndpointRuleId string `json:"-" url:"-"`
-
-	UpdateMask string `json:"-" url:"update_mask"`
+	NetworkConnectivityConfigId string                    `json:"-" url:"-"`
+	PrivateEndpointRule         UpdatePrivateEndpointRule `json:"private_endpoint_rule"`
+	PrivateEndpointRuleId       string                    `json:"-" url:"-"`
+	UpdateMask                  string                    `json:"-" url:"update_mask"`
 }
 
 func updateNccAzurePrivateEndpointRulePublicRequestFromPb(pb *updateNccAzurePrivateEndpointRulePublicRequestPb) (*UpdateNccAzurePrivateEndpointRulePublicRequest, error) {
@@ -6658,16 +6232,14 @@ func updateNetworkPolicyRequestToPb(st *UpdateNetworkPolicyRequest) (*updateNetw
 	}
 	pb := &updateNetworkPolicyRequestPb{}
 	pb.NetworkPolicy = st.NetworkPolicy
-
 	pb.NetworkPolicyId = st.NetworkPolicyId
 
 	return pb, nil
 }
 
 type updateNetworkPolicyRequestPb struct {
-	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
-
-	NetworkPolicyId string `json:"-" url:"-"`
+	NetworkPolicy   AccountNetworkPolicy `json:"network_policy"`
+	NetworkPolicyId string               `json:"-" url:"-"`
 }
 
 func updateNetworkPolicyRequestFromPb(pb *updateNetworkPolicyRequestPb) (*UpdateNetworkPolicyRequest, error) {
@@ -6687,9 +6259,7 @@ func updateNotificationDestinationRequestToPb(st *UpdateNotificationDestinationR
 	}
 	pb := &updateNotificationDestinationRequestPb{}
 	pb.Config = st.Config
-
 	pb.DisplayName = st.DisplayName
-
 	pb.Id = st.Id
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6697,11 +6267,9 @@ func updateNotificationDestinationRequestToPb(st *UpdateNotificationDestinationR
 }
 
 type updateNotificationDestinationRequestPb struct {
-	Config *Config `json:"config,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	Id string `json:"-" url:"-"`
+	Config      *Config `json:"config,omitempty"`
+	DisplayName string  `json:"display_name,omitempty"`
+	Id          string  `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6733,20 +6301,16 @@ func updatePersonalComputeSettingRequestToPb(st *UpdatePersonalComputeSettingReq
 	}
 	pb := &updatePersonalComputeSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updatePersonalComputeSettingRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting PersonalComputeSetting `json:"setting"`
+	AllowMissing bool                   `json:"allow_missing"`
+	FieldMask    string                 `json:"field_mask"`
+	Setting      PersonalComputeSetting `json:"setting"`
 }
 
 func updatePersonalComputeSettingRequestFromPb(pb *updatePersonalComputeSettingRequestPb) (*UpdatePersonalComputeSettingRequest, error) {
@@ -6812,20 +6376,16 @@ func updateRestrictWorkspaceAdminsSettingRequestToPb(st *UpdateRestrictWorkspace
 	}
 	pb := &updateRestrictWorkspaceAdminsSettingRequestPb{}
 	pb.AllowMissing = st.AllowMissing
-
 	pb.FieldMask = st.FieldMask
-
 	pb.Setting = st.Setting
 
 	return pb, nil
 }
 
 type updateRestrictWorkspaceAdminsSettingRequestPb struct {
-	AllowMissing bool `json:"allow_missing"`
-
-	FieldMask string `json:"field_mask"`
-
-	Setting RestrictWorkspaceAdminsSetting `json:"setting"`
+	AllowMissing bool                           `json:"allow_missing"`
+	FieldMask    string                         `json:"field_mask"`
+	Setting      RestrictWorkspaceAdminsSetting `json:"setting"`
 }
 
 func updateRestrictWorkspaceAdminsSettingRequestFromPb(pb *updateRestrictWorkspaceAdminsSettingRequestPb) (*UpdateRestrictWorkspaceAdminsSettingRequest, error) {
@@ -6846,15 +6406,13 @@ func updateWorkspaceNetworkOptionRequestToPb(st *UpdateWorkspaceNetworkOptionReq
 	}
 	pb := &updateWorkspaceNetworkOptionRequestPb{}
 	pb.WorkspaceId = st.WorkspaceId
-
 	pb.WorkspaceNetworkOption = st.WorkspaceNetworkOption
 
 	return pb, nil
 }
 
 type updateWorkspaceNetworkOptionRequestPb struct {
-	WorkspaceId int64 `json:"-" url:"-"`
-
+	WorkspaceId            int64                  `json:"-" url:"-"`
 	WorkspaceNetworkOption WorkspaceNetworkOption `json:"workspace_network_option"`
 }
 
@@ -6893,7 +6451,6 @@ func workspaceNetworkOptionToPb(st *WorkspaceNetworkOption) (*workspaceNetworkOp
 	}
 	pb := &workspaceNetworkOptionPb{}
 	pb.NetworkPolicyId = st.NetworkPolicyId
-
 	pb.WorkspaceId = st.WorkspaceId
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -6902,8 +6459,7 @@ func workspaceNetworkOptionToPb(st *WorkspaceNetworkOption) (*workspaceNetworkOp
 
 type workspaceNetworkOptionPb struct {
 	NetworkPolicyId string `json:"network_policy_id,omitempty"`
-
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
+	WorkspaceId     int64  `json:"workspace_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -6926,4 +6482,58 @@ func (st *workspaceNetworkOptionPb) UnmarshalJSON(b []byte) error {
 
 func (st workspaceNetworkOptionPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

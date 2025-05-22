@@ -3,6 +3,10 @@
 package apps
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
@@ -12,49 +16,27 @@ func appToPb(st *App) (*appPb, error) {
 	}
 	pb := &appPb{}
 	pb.ActiveDeployment = st.ActiveDeployment
-
 	pb.AppStatus = st.AppStatus
-
 	pb.BudgetPolicyId = st.BudgetPolicyId
-
 	pb.ComputeStatus = st.ComputeStatus
-
 	pb.CreateTime = st.CreateTime
-
 	pb.Creator = st.Creator
-
 	pb.DefaultSourceCodePath = st.DefaultSourceCodePath
-
 	pb.Description = st.Description
-
 	pb.EffectiveBudgetPolicyId = st.EffectiveBudgetPolicyId
-
 	pb.EffectiveUserApiScopes = st.EffectiveUserApiScopes
-
 	pb.Id = st.Id
-
 	pb.Name = st.Name
-
 	pb.Oauth2AppClientId = st.Oauth2AppClientId
-
 	pb.Oauth2AppIntegrationId = st.Oauth2AppIntegrationId
-
 	pb.PendingDeployment = st.PendingDeployment
-
 	pb.Resources = st.Resources
-
 	pb.ServicePrincipalClientId = st.ServicePrincipalClientId
-
 	pb.ServicePrincipalId = st.ServicePrincipalId
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UpdateTime = st.UpdateTime
-
 	pb.Updater = st.Updater
-
 	pb.Url = st.Url
-
 	pb.UserApiScopes = st.UserApiScopes
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -62,51 +44,29 @@ func appToPb(st *App) (*appPb, error) {
 }
 
 type appPb struct {
-	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
-
-	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
-
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
-
-	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
-
-	CreateTime string `json:"create_time,omitempty"`
-
-	Creator string `json:"creator,omitempty"`
-
-	DefaultSourceCodePath string `json:"default_source_code_path,omitempty"`
-
-	Description string `json:"description,omitempty"`
-
-	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
-
-	EffectiveUserApiScopes []string `json:"effective_user_api_scopes,omitempty"`
-
-	Id string `json:"id,omitempty"`
-
-	Name string `json:"name"`
-
-	Oauth2AppClientId string `json:"oauth2_app_client_id,omitempty"`
-
-	Oauth2AppIntegrationId string `json:"oauth2_app_integration_id,omitempty"`
-
-	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
-
-	Resources []AppResource `json:"resources,omitempty"`
-
-	ServicePrincipalClientId string `json:"service_principal_client_id,omitempty"`
-
-	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UpdateTime string `json:"update_time,omitempty"`
-
-	Updater string `json:"updater,omitempty"`
-
-	Url string `json:"url,omitempty"`
-
-	UserApiScopes []string `json:"user_api_scopes,omitempty"`
+	ActiveDeployment         *AppDeployment     `json:"active_deployment,omitempty"`
+	AppStatus                *ApplicationStatus `json:"app_status,omitempty"`
+	BudgetPolicyId           string             `json:"budget_policy_id,omitempty"`
+	ComputeStatus            *ComputeStatus     `json:"compute_status,omitempty"`
+	CreateTime               string             `json:"create_time,omitempty"`
+	Creator                  string             `json:"creator,omitempty"`
+	DefaultSourceCodePath    string             `json:"default_source_code_path,omitempty"`
+	Description              string             `json:"description,omitempty"`
+	EffectiveBudgetPolicyId  string             `json:"effective_budget_policy_id,omitempty"`
+	EffectiveUserApiScopes   []string           `json:"effective_user_api_scopes,omitempty"`
+	Id                       string             `json:"id,omitempty"`
+	Name                     string             `json:"name"`
+	Oauth2AppClientId        string             `json:"oauth2_app_client_id,omitempty"`
+	Oauth2AppIntegrationId   string             `json:"oauth2_app_integration_id,omitempty"`
+	PendingDeployment        *AppDeployment     `json:"pending_deployment,omitempty"`
+	Resources                []AppResource      `json:"resources,omitempty"`
+	ServicePrincipalClientId string             `json:"service_principal_client_id,omitempty"`
+	ServicePrincipalId       int64              `json:"service_principal_id,omitempty"`
+	ServicePrincipalName     string             `json:"service_principal_name,omitempty"`
+	UpdateTime               string             `json:"update_time,omitempty"`
+	Updater                  string             `json:"updater,omitempty"`
+	Url                      string             `json:"url,omitempty"`
+	UserApiScopes            []string           `json:"user_api_scopes,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -158,11 +118,8 @@ func appAccessControlRequestToPb(st *AppAccessControlRequest) (*appAccessControl
 	}
 	pb := &appAccessControlRequestPb{}
 	pb.GroupName = st.GroupName
-
 	pb.PermissionLevel = st.PermissionLevel
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -170,13 +127,10 @@ func appAccessControlRequestToPb(st *AppAccessControlRequest) (*appAccessControl
 }
 
 type appAccessControlRequestPb struct {
-	GroupName string `json:"group_name,omitempty"`
-
-	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	GroupName            string             `json:"group_name,omitempty"`
+	PermissionLevel      AppPermissionLevel `json:"permission_level,omitempty"`
+	ServicePrincipalName string             `json:"service_principal_name,omitempty"`
+	UserName             string             `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -209,13 +163,9 @@ func appAccessControlResponseToPb(st *AppAccessControlResponse) (*appAccessContr
 	}
 	pb := &appAccessControlResponsePb{}
 	pb.AllPermissions = st.AllPermissions
-
 	pb.DisplayName = st.DisplayName
-
 	pb.GroupName = st.GroupName
-
 	pb.ServicePrincipalName = st.ServicePrincipalName
-
 	pb.UserName = st.UserName
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -223,15 +173,11 @@ func appAccessControlResponseToPb(st *AppAccessControlResponse) (*appAccessContr
 }
 
 type appAccessControlResponsePb struct {
-	AllPermissions []AppPermission `json:"all_permissions,omitempty"`
-
-	DisplayName string `json:"display_name,omitempty"`
-
-	GroupName string `json:"group_name,omitempty"`
-
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
-
-	UserName string `json:"user_name,omitempty"`
+	AllPermissions       []AppPermission `json:"all_permissions,omitempty"`
+	DisplayName          string          `json:"display_name,omitempty"`
+	GroupName            string          `json:"group_name,omitempty"`
+	ServicePrincipalName string          `json:"service_principal_name,omitempty"`
+	UserName             string          `json:"user_name,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -265,19 +211,12 @@ func appDeploymentToPb(st *AppDeployment) (*appDeploymentPb, error) {
 	}
 	pb := &appDeploymentPb{}
 	pb.CreateTime = st.CreateTime
-
 	pb.Creator = st.Creator
-
 	pb.DeploymentArtifacts = st.DeploymentArtifacts
-
 	pb.DeploymentId = st.DeploymentId
-
 	pb.Mode = st.Mode
-
 	pb.SourceCodePath = st.SourceCodePath
-
 	pb.Status = st.Status
-
 	pb.UpdateTime = st.UpdateTime
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -285,21 +224,14 @@ func appDeploymentToPb(st *AppDeployment) (*appDeploymentPb, error) {
 }
 
 type appDeploymentPb struct {
-	CreateTime string `json:"create_time,omitempty"`
-
-	Creator string `json:"creator,omitempty"`
-
+	CreateTime          string                  `json:"create_time,omitempty"`
+	Creator             string                  `json:"creator,omitempty"`
 	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
-
-	DeploymentId string `json:"deployment_id,omitempty"`
-
-	Mode AppDeploymentMode `json:"mode,omitempty"`
-
-	SourceCodePath string `json:"source_code_path,omitempty"`
-
-	Status *AppDeploymentStatus `json:"status,omitempty"`
-
-	UpdateTime string `json:"update_time,omitempty"`
+	DeploymentId        string                  `json:"deployment_id,omitempty"`
+	Mode                AppDeploymentMode       `json:"mode,omitempty"`
+	SourceCodePath      string                  `json:"source_code_path,omitempty"`
+	Status              *AppDeploymentStatus    `json:"status,omitempty"`
+	UpdateTime          string                  `json:"update_time,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -372,7 +304,6 @@ func appDeploymentStatusToPb(st *AppDeploymentStatus) (*appDeploymentStatusPb, e
 	}
 	pb := &appDeploymentStatusPb{}
 	pb.Message = st.Message
-
 	pb.State = st.State
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -380,9 +311,8 @@ func appDeploymentStatusToPb(st *AppDeploymentStatus) (*appDeploymentStatusPb, e
 }
 
 type appDeploymentStatusPb struct {
-	Message string `json:"message,omitempty"`
-
-	State AppDeploymentState `json:"state,omitempty"`
+	Message string             `json:"message,omitempty"`
+	State   AppDeploymentState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -413,9 +343,7 @@ func appPermissionToPb(st *AppPermission) (*appPermissionPb, error) {
 	}
 	pb := &appPermissionPb{}
 	pb.Inherited = st.Inherited
-
 	pb.InheritedFromObject = st.InheritedFromObject
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -423,11 +351,9 @@ func appPermissionToPb(st *AppPermission) (*appPermissionPb, error) {
 }
 
 type appPermissionPb struct {
-	Inherited bool `json:"inherited,omitempty"`
-
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
-
-	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
+	Inherited           bool               `json:"inherited,omitempty"`
+	InheritedFromObject []string           `json:"inherited_from_object,omitempty"`
+	PermissionLevel     AppPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -459,9 +385,7 @@ func appPermissionsToPb(st *AppPermissions) (*appPermissionsPb, error) {
 	}
 	pb := &appPermissionsPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.ObjectId = st.ObjectId
-
 	pb.ObjectType = st.ObjectType
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -470,10 +394,8 @@ func appPermissionsToPb(st *AppPermissions) (*appPermissionsPb, error) {
 
 type appPermissionsPb struct {
 	AccessControlList []AppAccessControlResponse `json:"access_control_list,omitempty"`
-
-	ObjectId string `json:"object_id,omitempty"`
-
-	ObjectType string `json:"object_type,omitempty"`
+	ObjectId          string                     `json:"object_id,omitempty"`
+	ObjectType        string                     `json:"object_type,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -505,7 +427,6 @@ func appPermissionsDescriptionToPb(st *AppPermissionsDescription) (*appPermissio
 	}
 	pb := &appPermissionsDescriptionPb{}
 	pb.Description = st.Description
-
 	pb.PermissionLevel = st.PermissionLevel
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -513,8 +434,7 @@ func appPermissionsDescriptionToPb(st *AppPermissionsDescription) (*appPermissio
 }
 
 type appPermissionsDescriptionPb struct {
-	Description string `json:"description,omitempty"`
-
+	Description     string             `json:"description,omitempty"`
 	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -546,7 +466,6 @@ func appPermissionsRequestToPb(st *AppPermissionsRequest) (*appPermissionsReques
 	}
 	pb := &appPermissionsRequestPb{}
 	pb.AccessControlList = st.AccessControlList
-
 	pb.AppName = st.AppName
 
 	return pb, nil
@@ -554,8 +473,7 @@ func appPermissionsRequestToPb(st *AppPermissionsRequest) (*appPermissionsReques
 
 type appPermissionsRequestPb struct {
 	AccessControlList []AppAccessControlRequest `json:"access_control_list,omitempty"`
-
-	AppName string `json:"-" url:"-"`
+	AppName           string                    `json:"-" url:"-"`
 }
 
 func appPermissionsRequestFromPb(pb *appPermissionsRequestPb) (*AppPermissionsRequest, error) {
@@ -575,17 +493,11 @@ func appResourceToPb(st *AppResource) (*appResourcePb, error) {
 	}
 	pb := &appResourcePb{}
 	pb.Description = st.Description
-
 	pb.Job = st.Job
-
 	pb.Name = st.Name
-
 	pb.Secret = st.Secret
-
 	pb.ServingEndpoint = st.ServingEndpoint
-
 	pb.SqlWarehouse = st.SqlWarehouse
-
 	pb.UcSecurable = st.UcSecurable
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -593,19 +505,13 @@ func appResourceToPb(st *AppResource) (*appResourcePb, error) {
 }
 
 type appResourcePb struct {
-	Description string `json:"description,omitempty"`
-
-	Job *AppResourceJob `json:"job,omitempty"`
-
-	Name string `json:"name"`
-
-	Secret *AppResourceSecret `json:"secret,omitempty"`
-
+	Description     string                      `json:"description,omitempty"`
+	Job             *AppResourceJob             `json:"job,omitempty"`
+	Name            string                      `json:"name"`
+	Secret          *AppResourceSecret          `json:"secret,omitempty"`
 	ServingEndpoint *AppResourceServingEndpoint `json:"serving_endpoint,omitempty"`
-
-	SqlWarehouse *AppResourceSqlWarehouse `json:"sql_warehouse,omitempty"`
-
-	UcSecurable *AppResourceUcSecurable `json:"uc_securable,omitempty"`
+	SqlWarehouse    *AppResourceSqlWarehouse    `json:"sql_warehouse,omitempty"`
+	UcSecurable     *AppResourceUcSecurable     `json:"uc_securable,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -641,15 +547,13 @@ func appResourceJobToPb(st *AppResourceJob) (*appResourceJobPb, error) {
 	}
 	pb := &appResourceJobPb{}
 	pb.Id = st.Id
-
 	pb.Permission = st.Permission
 
 	return pb, nil
 }
 
 type appResourceJobPb struct {
-	Id string `json:"id"`
-
+	Id         string                      `json:"id"`
 	Permission AppResourceJobJobPermission `json:"permission"`
 }
 
@@ -670,20 +574,16 @@ func appResourceSecretToPb(st *AppResourceSecret) (*appResourceSecretPb, error) 
 	}
 	pb := &appResourceSecretPb{}
 	pb.Key = st.Key
-
 	pb.Permission = st.Permission
-
 	pb.Scope = st.Scope
 
 	return pb, nil
 }
 
 type appResourceSecretPb struct {
-	Key string `json:"key"`
-
+	Key        string                            `json:"key"`
 	Permission AppResourceSecretSecretPermission `json:"permission"`
-
-	Scope string `json:"scope"`
+	Scope      string                            `json:"scope"`
 }
 
 func appResourceSecretFromPb(pb *appResourceSecretPb) (*AppResourceSecret, error) {
@@ -704,15 +604,13 @@ func appResourceServingEndpointToPb(st *AppResourceServingEndpoint) (*appResourc
 	}
 	pb := &appResourceServingEndpointPb{}
 	pb.Name = st.Name
-
 	pb.Permission = st.Permission
 
 	return pb, nil
 }
 
 type appResourceServingEndpointPb struct {
-	Name string `json:"name"`
-
+	Name       string                                              `json:"name"`
 	Permission AppResourceServingEndpointServingEndpointPermission `json:"permission"`
 }
 
@@ -733,15 +631,13 @@ func appResourceSqlWarehouseToPb(st *AppResourceSqlWarehouse) (*appResourceSqlWa
 	}
 	pb := &appResourceSqlWarehousePb{}
 	pb.Id = st.Id
-
 	pb.Permission = st.Permission
 
 	return pb, nil
 }
 
 type appResourceSqlWarehousePb struct {
-	Id string `json:"id"`
-
+	Id         string                                        `json:"id"`
 	Permission AppResourceSqlWarehouseSqlWarehousePermission `json:"permission"`
 }
 
@@ -762,20 +658,16 @@ func appResourceUcSecurableToPb(st *AppResourceUcSecurable) (*appResourceUcSecur
 	}
 	pb := &appResourceUcSecurablePb{}
 	pb.Permission = st.Permission
-
 	pb.SecurableFullName = st.SecurableFullName
-
 	pb.SecurableType = st.SecurableType
 
 	return pb, nil
 }
 
 type appResourceUcSecurablePb struct {
-	Permission AppResourceUcSecurableUcSecurablePermission `json:"permission"`
-
-	SecurableFullName string `json:"securable_full_name"`
-
-	SecurableType AppResourceUcSecurableUcSecurableType `json:"securable_type"`
+	Permission        AppResourceUcSecurableUcSecurablePermission `json:"permission"`
+	SecurableFullName string                                      `json:"securable_full_name"`
+	SecurableType     AppResourceUcSecurableUcSecurableType       `json:"securable_type"`
 }
 
 func appResourceUcSecurableFromPb(pb *appResourceUcSecurablePb) (*AppResourceUcSecurable, error) {
@@ -796,7 +688,6 @@ func applicationStatusToPb(st *ApplicationStatus) (*applicationStatusPb, error) 
 	}
 	pb := &applicationStatusPb{}
 	pb.Message = st.Message
-
 	pb.State = st.State
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -804,9 +695,8 @@ func applicationStatusToPb(st *ApplicationStatus) (*applicationStatusPb, error) 
 }
 
 type applicationStatusPb struct {
-	Message string `json:"message,omitempty"`
-
-	State ApplicationState `json:"state,omitempty"`
+	Message string           `json:"message,omitempty"`
+	State   ApplicationState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -837,7 +727,6 @@ func computeStatusToPb(st *ComputeStatus) (*computeStatusPb, error) {
 	}
 	pb := &computeStatusPb{}
 	pb.Message = st.Message
-
 	pb.State = st.State
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -845,9 +734,8 @@ func computeStatusToPb(st *ComputeStatus) (*computeStatusPb, error) {
 }
 
 type computeStatusPb struct {
-	Message string `json:"message,omitempty"`
-
-	State ComputeState `json:"state,omitempty"`
+	Message string       `json:"message,omitempty"`
+	State   ComputeState `json:"state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -878,7 +766,6 @@ func createAppDeploymentRequestToPb(st *CreateAppDeploymentRequest) (*createAppD
 	}
 	pb := &createAppDeploymentRequestPb{}
 	pb.AppDeployment = st.AppDeployment
-
 	pb.AppName = st.AppName
 
 	return pb, nil
@@ -886,8 +773,7 @@ func createAppDeploymentRequestToPb(st *CreateAppDeploymentRequest) (*createAppD
 
 type createAppDeploymentRequestPb struct {
 	AppDeployment AppDeployment `json:"app_deployment"`
-
-	AppName string `json:"-" url:"-"`
+	AppName       string        `json:"-" url:"-"`
 }
 
 func createAppDeploymentRequestFromPb(pb *createAppDeploymentRequestPb) (*CreateAppDeploymentRequest, error) {
@@ -907,7 +793,6 @@ func createAppRequestToPb(st *CreateAppRequest) (*createAppRequestPb, error) {
 	}
 	pb := &createAppRequestPb{}
 	pb.App = st.App
-
 	pb.NoCompute = st.NoCompute
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -915,8 +800,7 @@ func createAppRequestToPb(st *CreateAppRequest) (*createAppRequestPb, error) {
 }
 
 type createAppRequestPb struct {
-	App App `json:"app"`
-
+	App       App  `json:"app"`
 	NoCompute bool `json:"-" url:"no_compute,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -972,15 +856,13 @@ func getAppDeploymentRequestToPb(st *GetAppDeploymentRequest) (*getAppDeployment
 	}
 	pb := &getAppDeploymentRequestPb{}
 	pb.AppName = st.AppName
-
 	pb.DeploymentId = st.DeploymentId
 
 	return pb, nil
 }
 
 type getAppDeploymentRequestPb struct {
-	AppName string `json:"-" url:"-"`
-
+	AppName      string `json:"-" url:"-"`
 	DeploymentId string `json:"-" url:"-"`
 }
 
@@ -1097,9 +979,7 @@ func listAppDeploymentsRequestToPb(st *ListAppDeploymentsRequest) (*listAppDeplo
 	}
 	pb := &listAppDeploymentsRequestPb{}
 	pb.AppName = st.AppName
-
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1107,10 +987,8 @@ func listAppDeploymentsRequestToPb(st *ListAppDeploymentsRequest) (*listAppDeplo
 }
 
 type listAppDeploymentsRequestPb struct {
-	AppName string `json:"-" url:"-"`
-
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	AppName   string `json:"-" url:"-"`
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1143,7 +1021,6 @@ func listAppDeploymentsResponseToPb(st *ListAppDeploymentsResponse) (*listAppDep
 	}
 	pb := &listAppDeploymentsResponsePb{}
 	pb.AppDeployments = st.AppDeployments
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1152,8 +1029,7 @@ func listAppDeploymentsResponseToPb(st *ListAppDeploymentsResponse) (*listAppDep
 
 type listAppDeploymentsResponsePb struct {
 	AppDeployments []AppDeployment `json:"app_deployments,omitempty"`
-
-	NextPageToken string `json:"next_page_token,omitempty"`
+	NextPageToken  string          `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1184,7 +1060,6 @@ func listAppsRequestToPb(st *ListAppsRequest) (*listAppsRequestPb, error) {
 	}
 	pb := &listAppsRequestPb{}
 	pb.PageSize = st.PageSize
-
 	pb.PageToken = st.PageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1192,8 +1067,7 @@ func listAppsRequestToPb(st *ListAppsRequest) (*listAppsRequestPb, error) {
 }
 
 type listAppsRequestPb struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
-
+	PageSize  int    `json:"-" url:"page_size,omitempty"`
 	PageToken string `json:"-" url:"page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1225,7 +1099,6 @@ func listAppsResponseToPb(st *ListAppsResponse) (*listAppsResponsePb, error) {
 	}
 	pb := &listAppsResponsePb{}
 	pb.Apps = st.Apps
-
 	pb.NextPageToken = st.NextPageToken
 
 	pb.ForceSendFields = st.ForceSendFields
@@ -1233,8 +1106,7 @@ func listAppsResponseToPb(st *ListAppsResponse) (*listAppsResponsePb, error) {
 }
 
 type listAppsResponsePb struct {
-	Apps []App `json:"apps,omitempty"`
-
+	Apps          []App  `json:"apps,omitempty"`
 	NextPageToken string `json:"next_page_token,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -1314,15 +1186,13 @@ func updateAppRequestToPb(st *UpdateAppRequest) (*updateAppRequestPb, error) {
 	}
 	pb := &updateAppRequestPb{}
 	pb.App = st.App
-
 	pb.Name = st.Name
 
 	return pb, nil
 }
 
 type updateAppRequestPb struct {
-	App App `json:"app"`
-
+	App  App    `json:"app"`
 	Name string `json:"-" url:"-"`
 }
 
@@ -1335,4 +1205,58 @@ func updateAppRequestFromPb(pb *updateAppRequestPb) (*UpdateAppRequest, error) {
 	st.Name = pb.Name
 
 	return st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }
