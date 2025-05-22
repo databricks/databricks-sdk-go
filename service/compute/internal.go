@@ -6596,6 +6596,24 @@ func (st logSyncStatusPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
 }
 
+type mapAnyPb MapAny
+
+func mapAnyToPb(st *MapAny) (*mapAnyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	stPb := mapAnyPb(*st)
+	return &stPb, nil
+}
+
+func mapAnyFromPb(stPb *mapAnyPb) (*MapAny, error) {
+	if stPb == nil {
+		return nil, nil
+	}
+	st := MapAny(*stPb)
+	return &st, nil
+}
+
 func mavenLibraryToPb(st *MavenLibrary) (*mavenLibraryPb, error) {
 	if st == nil {
 		return nil, nil

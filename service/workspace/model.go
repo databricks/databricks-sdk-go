@@ -44,7 +44,6 @@ func (st AclItem) MarshalJSON() ([]byte, error) {
 }
 
 type AclPermission string
-type aclPermissionPb string
 
 const AclPermissionManage AclPermission = `MANAGE`
 
@@ -71,22 +70,6 @@ func (f *AclPermission) Set(v string) error {
 // Type always returns AclPermission to satisfy [pflag.Value] interface
 func (f *AclPermission) Type() string {
 	return "AclPermission"
-}
-
-func aclPermissionToPb(st *AclPermission) (*aclPermissionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := aclPermissionPb(*st)
-	return &pb, nil
-}
-
-func aclPermissionFromPb(pb *aclPermissionPb) (*AclPermission, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AclPermission(*pb)
-	return &st, nil
 }
 
 type AzureKeyVaultSecretScopeMetadata struct {
@@ -800,7 +783,6 @@ func (st DeleteSecretResponse) MarshalJSON() ([]byte, error) {
 
 // The format for workspace import and export.
 type ExportFormat string
-type exportFormatPb string
 
 const ExportFormatAuto ExportFormat = `AUTO`
 
@@ -835,22 +817,6 @@ func (f *ExportFormat) Set(v string) error {
 // Type always returns ExportFormat to satisfy [pflag.Value] interface
 func (f *ExportFormat) Type() string {
 	return "ExportFormat"
-}
-
-func exportFormatToPb(st *ExportFormat) (*exportFormatPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := exportFormatPb(*st)
-	return &pb, nil
-}
-
-func exportFormatFromPb(pb *exportFormatPb) (*ExportFormat, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ExportFormat(*pb)
-	return &st, nil
 }
 
 // Export a workspace object
@@ -1497,7 +1463,6 @@ func (st Import) MarshalJSON() ([]byte, error) {
 
 // The format for workspace import and export.
 type ImportFormat string
-type importFormatPb string
 
 const ImportFormatAuto ImportFormat = `AUTO`
 
@@ -1534,22 +1499,6 @@ func (f *ImportFormat) Type() string {
 	return "ImportFormat"
 }
 
-func importFormatToPb(st *ImportFormat) (*importFormatPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := importFormatPb(*st)
-	return &pb, nil
-}
-
-func importFormatFromPb(pb *importFormatPb) (*ImportFormat, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ImportFormat(*pb)
-	return &st, nil
-}
-
 type ImportResponse struct {
 }
 
@@ -1580,7 +1529,6 @@ func (st ImportResponse) MarshalJSON() ([]byte, error) {
 
 // The language of notebook.
 type Language string
-type languagePb string
 
 const LanguagePython Language = `PYTHON`
 
@@ -1609,22 +1557,6 @@ func (f *Language) Set(v string) error {
 // Type always returns Language to satisfy [pflag.Value] interface
 func (f *Language) Type() string {
 	return "Language"
-}
-
-func languageToPb(st *Language) (*languagePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := languagePb(*st)
-	return &pb, nil
-}
-
-func languageFromPb(pb *languagePb) (*Language, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Language(*pb)
-	return &st, nil
 }
 
 // Lists ACLs
@@ -2086,7 +2018,6 @@ func (st ObjectInfo) MarshalJSON() ([]byte, error) {
 
 // The type of the object in workspace.
 type ObjectType string
-type objectTypePb string
 
 const ObjectTypeDashboard ObjectType = `DASHBOARD`
 
@@ -2119,22 +2050,6 @@ func (f *ObjectType) Set(v string) error {
 // Type always returns ObjectType to satisfy [pflag.Value] interface
 func (f *ObjectType) Type() string {
 	return "ObjectType"
-}
-
-func objectTypeToPb(st *ObjectType) (*objectTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := objectTypePb(*st)
-	return &pb, nil
-}
-
-func objectTypeFromPb(pb *objectTypePb) (*ObjectType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ObjectType(*pb)
-	return &st, nil
 }
 
 type PutAcl struct {
@@ -2452,7 +2367,6 @@ func (st RepoPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type RepoPermissionLevel string
-type repoPermissionLevelPb string
 
 const RepoPermissionLevelCanEdit RepoPermissionLevel = `CAN_EDIT`
 
@@ -2481,22 +2395,6 @@ func (f *RepoPermissionLevel) Set(v string) error {
 // Type always returns RepoPermissionLevel to satisfy [pflag.Value] interface
 func (f *RepoPermissionLevel) Type() string {
 	return "RepoPermissionLevel"
-}
-
-func repoPermissionLevelToPb(st *RepoPermissionLevel) (*repoPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := repoPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func repoPermissionLevelFromPb(pb *repoPermissionLevelPb) (*RepoPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RepoPermissionLevel(*pb)
-	return &st, nil
 }
 
 type RepoPermissions struct {
@@ -2609,7 +2507,6 @@ func (st RepoPermissionsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ScopeBackendType string
-type scopeBackendTypePb string
 
 const ScopeBackendTypeAzureKeyvault ScopeBackendType = `AZURE_KEYVAULT`
 
@@ -2634,22 +2531,6 @@ func (f *ScopeBackendType) Set(v string) error {
 // Type always returns ScopeBackendType to satisfy [pflag.Value] interface
 func (f *ScopeBackendType) Type() string {
 	return "ScopeBackendType"
-}
-
-func scopeBackendTypeToPb(st *ScopeBackendType) (*scopeBackendTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := scopeBackendTypePb(*st)
-	return &pb, nil
-}
-
-func scopeBackendTypeFromPb(pb *scopeBackendTypePb) (*ScopeBackendType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ScopeBackendType(*pb)
-	return &st, nil
 }
 
 type SecretMetadata struct {
@@ -3082,7 +2963,6 @@ func (st WorkspaceObjectPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type WorkspaceObjectPermissionLevel string
-type workspaceObjectPermissionLevelPb string
 
 const WorkspaceObjectPermissionLevelCanEdit WorkspaceObjectPermissionLevel = `CAN_EDIT`
 
@@ -3111,22 +2991,6 @@ func (f *WorkspaceObjectPermissionLevel) Set(v string) error {
 // Type always returns WorkspaceObjectPermissionLevel to satisfy [pflag.Value] interface
 func (f *WorkspaceObjectPermissionLevel) Type() string {
 	return "WorkspaceObjectPermissionLevel"
-}
-
-func workspaceObjectPermissionLevelToPb(st *WorkspaceObjectPermissionLevel) (*workspaceObjectPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := workspaceObjectPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func workspaceObjectPermissionLevelFromPb(pb *workspaceObjectPermissionLevelPb) (*WorkspaceObjectPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := WorkspaceObjectPermissionLevel(*pb)
-	return &st, nil
 }
 
 type WorkspaceObjectPermissions struct {

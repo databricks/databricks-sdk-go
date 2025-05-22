@@ -13,7 +13,6 @@ import (
 
 // The delta sharing authentication type.
 type AuthenticationType string
-type authenticationTypePb string
 
 const AuthenticationTypeDatabricks AuthenticationType = `DATABRICKS`
 
@@ -42,26 +41,9 @@ func (f *AuthenticationType) Type() string {
 	return "AuthenticationType"
 }
 
-func authenticationTypeToPb(st *AuthenticationType) (*authenticationTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := authenticationTypePb(*st)
-	return &pb, nil
-}
-
-func authenticationTypeFromPb(pb *authenticationTypePb) (*AuthenticationType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AuthenticationType(*pb)
-	return &st, nil
-}
-
 // UC supported column types Copied from
 // https://src.dev.databricks.com/databricks/universe@23a85902bb58695ab9293adc9f327b0714b55e72/-/blob/managed-catalog/api/messages/table.proto?L68
 type ColumnTypeName string
-type columnTypeNamePb string
 
 const ColumnTypeNameArray ColumnTypeName = `ARRAY`
 
@@ -126,22 +108,6 @@ func (f *ColumnTypeName) Set(v string) error {
 // Type always returns ColumnTypeName to satisfy [pflag.Value] interface
 func (f *ColumnTypeName) Type() string {
 	return "ColumnTypeName"
-}
-
-func columnTypeNameToPb(st *ColumnTypeName) (*columnTypeNamePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := columnTypeNamePb(*st)
-	return &pb, nil
-}
-
-func columnTypeNameFromPb(pb *columnTypeNamePb) (*ColumnTypeName, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ColumnTypeName(*pb)
-	return &st, nil
 }
 
 // Create recipient federation policy
@@ -856,7 +822,6 @@ func (st FunctionParameterInfos) MarshalJSON() ([]byte, error) {
 }
 
 type FunctionParameterMode string
-type functionParameterModePb string
 
 const FunctionParameterModeIn FunctionParameterMode = `IN`
 
@@ -885,24 +850,7 @@ func (f *FunctionParameterMode) Type() string {
 	return "FunctionParameterMode"
 }
 
-func functionParameterModeToPb(st *FunctionParameterMode) (*functionParameterModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := functionParameterModePb(*st)
-	return &pb, nil
-}
-
-func functionParameterModeFromPb(pb *functionParameterModePb) (*FunctionParameterMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := FunctionParameterMode(*pb)
-	return &st, nil
-}
-
 type FunctionParameterType string
-type functionParameterTypePb string
 
 const FunctionParameterTypeColumn FunctionParameterType = `COLUMN`
 
@@ -927,22 +875,6 @@ func (f *FunctionParameterType) Set(v string) error {
 // Type always returns FunctionParameterType to satisfy [pflag.Value] interface
 func (f *FunctionParameterType) Type() string {
 	return "FunctionParameterType"
-}
-
-func functionParameterTypeToPb(st *FunctionParameterType) (*functionParameterTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := functionParameterTypePb(*st)
-	return &pb, nil
-}
-
-func functionParameterTypeFromPb(pb *functionParameterTypePb) (*FunctionParameterType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := FunctionParameterType(*pb)
-	return &st, nil
 }
 
 // Get a share activation URL
@@ -1904,7 +1836,6 @@ func (st PartitionValue) MarshalJSON() ([]byte, error) {
 }
 
 type PartitionValueOp string
-type partitionValueOpPb string
 
 const PartitionValueOpEqual PartitionValueOp = `EQUAL`
 
@@ -1929,22 +1860,6 @@ func (f *PartitionValueOp) Set(v string) error {
 // Type always returns PartitionValueOp to satisfy [pflag.Value] interface
 func (f *PartitionValueOp) Type() string {
 	return "PartitionValueOp"
-}
-
-func partitionValueOpToPb(st *PartitionValueOp) (*partitionValueOpPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := partitionValueOpPb(*st)
-	return &pb, nil
-}
-
-func partitionValueOpFromPb(pb *partitionValueOpPb) (*PartitionValueOp, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PartitionValueOp(*pb)
-	return &st, nil
 }
 
 type PermissionsChange struct {
@@ -1987,7 +1902,6 @@ func (st PermissionsChange) MarshalJSON() ([]byte, error) {
 }
 
 type Privilege string
-type privilegePb string
 
 const PrivilegeAccess Privilege = `ACCESS`
 
@@ -2098,22 +2012,6 @@ func (f *Privilege) Set(v string) error {
 // Type always returns Privilege to satisfy [pflag.Value] interface
 func (f *Privilege) Type() string {
 	return "Privilege"
-}
-
-func privilegeToPb(st *Privilege) (*privilegePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := privilegePb(*st)
-	return &pb, nil
-}
-
-func privilegeFromPb(pb *privilegePb) (*Privilege, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Privilege(*pb)
-	return &st, nil
 }
 
 type PrivilegeAssignment struct {
@@ -2867,7 +2765,6 @@ func (st SharedDataObject) MarshalJSON() ([]byte, error) {
 }
 
 type SharedDataObjectDataObjectType string
-type sharedDataObjectDataObjectTypePb string
 
 const SharedDataObjectDataObjectTypeFeatureSpec SharedDataObjectDataObjectType = `FEATURE_SPEC`
 
@@ -2908,24 +2805,7 @@ func (f *SharedDataObjectDataObjectType) Type() string {
 	return "SharedDataObjectDataObjectType"
 }
 
-func sharedDataObjectDataObjectTypeToPb(st *SharedDataObjectDataObjectType) (*sharedDataObjectDataObjectTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := sharedDataObjectDataObjectTypePb(*st)
-	return &pb, nil
-}
-
-func sharedDataObjectDataObjectTypeFromPb(pb *sharedDataObjectDataObjectTypePb) (*SharedDataObjectDataObjectType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SharedDataObjectDataObjectType(*pb)
-	return &st, nil
-}
-
 type SharedDataObjectHistoryDataSharingStatus string
-type sharedDataObjectHistoryDataSharingStatusPb string
 
 const SharedDataObjectHistoryDataSharingStatusDisabled SharedDataObjectHistoryDataSharingStatus = `DISABLED`
 
@@ -2952,24 +2832,7 @@ func (f *SharedDataObjectHistoryDataSharingStatus) Type() string {
 	return "SharedDataObjectHistoryDataSharingStatus"
 }
 
-func sharedDataObjectHistoryDataSharingStatusToPb(st *SharedDataObjectHistoryDataSharingStatus) (*sharedDataObjectHistoryDataSharingStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := sharedDataObjectHistoryDataSharingStatusPb(*st)
-	return &pb, nil
-}
-
-func sharedDataObjectHistoryDataSharingStatusFromPb(pb *sharedDataObjectHistoryDataSharingStatusPb) (*SharedDataObjectHistoryDataSharingStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SharedDataObjectHistoryDataSharingStatus(*pb)
-	return &st, nil
-}
-
 type SharedDataObjectStatus string
-type sharedDataObjectStatusPb string
 
 const SharedDataObjectStatusActive SharedDataObjectStatus = `ACTIVE`
 
@@ -2994,22 +2857,6 @@ func (f *SharedDataObjectStatus) Set(v string) error {
 // Type always returns SharedDataObjectStatus to satisfy [pflag.Value] interface
 func (f *SharedDataObjectStatus) Type() string {
 	return "SharedDataObjectStatus"
-}
-
-func sharedDataObjectStatusToPb(st *SharedDataObjectStatus) (*sharedDataObjectStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := sharedDataObjectStatusPb(*st)
-	return &pb, nil
-}
-
-func sharedDataObjectStatusFromPb(pb *sharedDataObjectStatusPb) (*SharedDataObjectStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SharedDataObjectStatus(*pb)
-	return &st, nil
 }
 
 type SharedDataObjectUpdate struct {
@@ -3047,7 +2894,6 @@ func (st SharedDataObjectUpdate) MarshalJSON() ([]byte, error) {
 }
 
 type SharedDataObjectUpdateAction string
-type sharedDataObjectUpdateActionPb string
 
 const SharedDataObjectUpdateActionAdd SharedDataObjectUpdateAction = `ADD`
 
@@ -3076,25 +2922,8 @@ func (f *SharedDataObjectUpdateAction) Type() string {
 	return "SharedDataObjectUpdateAction"
 }
 
-func sharedDataObjectUpdateActionToPb(st *SharedDataObjectUpdateAction) (*sharedDataObjectUpdateActionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := sharedDataObjectUpdateActionPb(*st)
-	return &pb, nil
-}
-
-func sharedDataObjectUpdateActionFromPb(pb *sharedDataObjectUpdateActionPb) (*SharedDataObjectUpdateAction, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SharedDataObjectUpdateAction(*pb)
-	return &st, nil
-}
-
 // The SecurableKind of a delta-shared object.
 type SharedSecurableKind string
-type sharedSecurableKindPb string
 
 const SharedSecurableKindFunctionFeatureSpec SharedSecurableKind = `FUNCTION_FEATURE_SPEC`
 
@@ -3121,22 +2950,6 @@ func (f *SharedSecurableKind) Set(v string) error {
 // Type always returns SharedSecurableKind to satisfy [pflag.Value] interface
 func (f *SharedSecurableKind) Type() string {
 	return "SharedSecurableKind"
-}
-
-func sharedSecurableKindToPb(st *SharedSecurableKind) (*sharedSecurableKindPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := sharedSecurableKindPb(*st)
-	return &pb, nil
-}
-
-func sharedSecurableKindFromPb(pb *sharedSecurableKindPb) (*SharedSecurableKind, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SharedSecurableKind(*pb)
-	return &st, nil
 }
 
 type Table struct {
@@ -3253,7 +3066,6 @@ func (st TableInternalAttributes) MarshalJSON() ([]byte, error) {
 }
 
 type TableInternalAttributesSharedTableType string
-type tableInternalAttributesSharedTableTypePb string
 
 const TableInternalAttributesSharedTableTypeDirectoryBasedTable TableInternalAttributesSharedTableType = `DIRECTORY_BASED_TABLE`
 
@@ -3286,22 +3098,6 @@ func (f *TableInternalAttributesSharedTableType) Set(v string) error {
 // Type always returns TableInternalAttributesSharedTableType to satisfy [pflag.Value] interface
 func (f *TableInternalAttributesSharedTableType) Type() string {
 	return "TableInternalAttributesSharedTableType"
-}
-
-func tableInternalAttributesSharedTableTypeToPb(st *TableInternalAttributesSharedTableType) (*tableInternalAttributesSharedTableTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := tableInternalAttributesSharedTableTypePb(*st)
-	return &pb, nil
-}
-
-func tableInternalAttributesSharedTableTypeFromPb(pb *tableInternalAttributesSharedTableTypePb) (*TableInternalAttributesSharedTableType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TableInternalAttributesSharedTableType(*pb)
-	return &st, nil
 }
 
 // Update recipient federation policy

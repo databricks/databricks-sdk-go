@@ -9217,6 +9217,24 @@ func (st privilegeAssignmentPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
 }
 
+type propertiesKvPairsPb PropertiesKvPairs
+
+func propertiesKvPairsToPb(st *PropertiesKvPairs) (*propertiesKvPairsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	stPb := propertiesKvPairsPb(*st)
+	return &stPb, nil
+}
+
+func propertiesKvPairsFromPb(stPb *propertiesKvPairsPb) (*PropertiesKvPairs, error) {
+	if stPb == nil {
+		return nil, nil
+	}
+	st := PropertiesKvPairs(*stPb)
+	return &st, nil
+}
+
 func provisioningInfoToPb(st *ProvisioningInfo) (*provisioningInfoPb, error) {
 	if st == nil {
 		return nil, nil
@@ -9780,6 +9798,42 @@ func (st *schemaInfoPb) UnmarshalJSON(b []byte) error {
 
 func (st schemaInfoPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
+}
+
+type securableOptionsMapPb SecurableOptionsMap
+
+func securableOptionsMapToPb(st *SecurableOptionsMap) (*securableOptionsMapPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	stPb := securableOptionsMapPb(*st)
+	return &stPb, nil
+}
+
+func securableOptionsMapFromPb(stPb *securableOptionsMapPb) (*SecurableOptionsMap, error) {
+	if stPb == nil {
+		return nil, nil
+	}
+	st := SecurableOptionsMap(*stPb)
+	return &st, nil
+}
+
+type securablePropertiesMapPb SecurablePropertiesMap
+
+func securablePropertiesMapToPb(st *SecurablePropertiesMap) (*securablePropertiesMapPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	stPb := securablePropertiesMapPb(*st)
+	return &stPb, nil
+}
+
+func securablePropertiesMapFromPb(stPb *securablePropertiesMapPb) (*SecurablePropertiesMap, error) {
+	if stPb == nil {
+		return nil, nil
+	}
+	st := SecurablePropertiesMap(*stPb)
+	return &st, nil
 }
 
 func setArtifactAllowlistToPb(st *SetArtifactAllowlist) (*setArtifactAllowlistPb, error) {

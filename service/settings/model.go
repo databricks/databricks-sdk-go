@@ -129,7 +129,6 @@ func (st AibiDashboardEmbeddingAccessPolicy) MarshalJSON() ([]byte, error) {
 }
 
 type AibiDashboardEmbeddingAccessPolicyAccessPolicyType string
-type aibiDashboardEmbeddingAccessPolicyAccessPolicyTypePb string
 
 const AibiDashboardEmbeddingAccessPolicyAccessPolicyTypeAllowAllDomains AibiDashboardEmbeddingAccessPolicyAccessPolicyType = `ALLOW_ALL_DOMAINS`
 
@@ -156,22 +155,6 @@ func (f *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) Set(v string) error
 // Type always returns AibiDashboardEmbeddingAccessPolicyAccessPolicyType to satisfy [pflag.Value] interface
 func (f *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) Type() string {
 	return "AibiDashboardEmbeddingAccessPolicyAccessPolicyType"
-}
-
-func aibiDashboardEmbeddingAccessPolicyAccessPolicyTypeToPb(st *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) (*aibiDashboardEmbeddingAccessPolicyAccessPolicyTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := aibiDashboardEmbeddingAccessPolicyAccessPolicyTypePb(*st)
-	return &pb, nil
-}
-
-func aibiDashboardEmbeddingAccessPolicyAccessPolicyTypeFromPb(pb *aibiDashboardEmbeddingAccessPolicyAccessPolicyTypePb) (*AibiDashboardEmbeddingAccessPolicyAccessPolicyType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AibiDashboardEmbeddingAccessPolicyAccessPolicyType(*pb)
-	return &st, nil
 }
 
 type AibiDashboardEmbeddingAccessPolicySetting struct {
@@ -513,7 +496,6 @@ func (st ClusterAutoRestartMessageMaintenanceWindow) MarshalJSON() ([]byte, erro
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowDayOfWeek string
-type clusterAutoRestartMessageMaintenanceWindowDayOfWeekPb string
 
 const ClusterAutoRestartMessageMaintenanceWindowDayOfWeekFriday ClusterAutoRestartMessageMaintenanceWindowDayOfWeek = `FRIDAY`
 
@@ -548,22 +530,6 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Set(v string) erro
 // Type always returns ClusterAutoRestartMessageMaintenanceWindowDayOfWeek to satisfy [pflag.Value] interface
 func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Type() string {
 	return "ClusterAutoRestartMessageMaintenanceWindowDayOfWeek"
-}
-
-func clusterAutoRestartMessageMaintenanceWindowDayOfWeekToPb(st *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) (*clusterAutoRestartMessageMaintenanceWindowDayOfWeekPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := clusterAutoRestartMessageMaintenanceWindowDayOfWeekPb(*st)
-	return &pb, nil
-}
-
-func clusterAutoRestartMessageMaintenanceWindowDayOfWeekFromPb(pb *clusterAutoRestartMessageMaintenanceWindowDayOfWeekPb) (*ClusterAutoRestartMessageMaintenanceWindowDayOfWeek, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ClusterAutoRestartMessageMaintenanceWindowDayOfWeek(*pb)
-	return &st, nil
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule struct {
@@ -604,7 +570,6 @@ func (st ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule) Marshal
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency string
-type clusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyPb string
 
 const ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyEveryWeek ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency = `EVERY_WEEK`
 
@@ -639,22 +604,6 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) Set(v strin
 // Type always returns ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency to satisfy [pflag.Value] interface
 func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) Type() string {
 	return "ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency"
-}
-
-func clusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyToPb(st *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) (*clusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := clusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyPb(*st)
-	return &pb, nil
-}
-
-func clusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyFromPb(pb *clusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyPb) (*ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency(*pb)
-	return &st, nil
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWindowStartTime struct {
@@ -781,7 +730,6 @@ func (st ComplianceSecurityProfileSetting) MarshalJSON() ([]byte, error) {
 
 // Compliance stardard for SHIELD customers
 type ComplianceStandard string
-type complianceStandardPb string
 
 const ComplianceStandardCanadaProtectedB ComplianceStandard = `CANADA_PROTECTED_B`
 
@@ -828,22 +776,6 @@ func (f *ComplianceStandard) Set(v string) error {
 // Type always returns ComplianceStandard to satisfy [pflag.Value] interface
 func (f *ComplianceStandard) Type() string {
 	return "ComplianceStandard"
-}
-
-func complianceStandardToPb(st *ComplianceStandard) (*complianceStandardPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := complianceStandardPb(*st)
-	return &pb, nil
-}
-
-func complianceStandardFromPb(pb *complianceStandardPb) (*ComplianceStandard, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ComplianceStandard(*pb)
-	return &st, nil
 }
 
 type Config struct {
@@ -2578,7 +2510,6 @@ func (st DeleteTokenManagementRequest) MarshalJSON() ([]byte, error) {
 }
 
 type DestinationType string
-type destinationTypePb string
 
 const DestinationTypeEmail DestinationType = `EMAIL`
 
@@ -2609,22 +2540,6 @@ func (f *DestinationType) Set(v string) error {
 // Type always returns DestinationType to satisfy [pflag.Value] interface
 func (f *DestinationType) Type() string {
 	return "DestinationType"
-}
-
-func destinationTypeToPb(st *DestinationType) (*destinationTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := destinationTypePb(*st)
-	return &pb, nil
-}
-
-func destinationTypeFromPb(pb *destinationTypePb) (*DestinationType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DestinationType(*pb)
-	return &st, nil
 }
 
 type DisableLegacyAccess struct {
@@ -2907,7 +2822,6 @@ func (st EgressNetworkPolicyInternetAccessPolicyInternetDestination) MarshalJSON
 // from the user. In the future, users may be able to select HTTP filtering
 // (i.e. SNI based filtering, filtering by FQDN).
 type EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol string
-type egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocolPb string
 
 const EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocolTcp EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol = `TCP`
 
@@ -2932,24 +2846,7 @@ func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDesti
 	return "EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol"
 }
 
-func egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocolToPb(st *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol) (*egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocolPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocolPb(*st)
-	return &pb, nil
-}
-
-func egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocolFromPb(pb *egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocolPb) (*EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol(*pb)
-	return &st, nil
-}
-
 type EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType string
-type egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationTypePb string
 
 const EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationTypeFqdn EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType = `FQDN`
 
@@ -2972,22 +2869,6 @@ func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDesti
 // Type always returns EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType) Type() string {
 	return "EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType"
-}
-
-func egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationTypeToPb(st *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType) (*egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationTypePb(*st)
-	return &pb, nil
-}
-
-func egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationTypeFromPb(pb *egressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationTypePb) (*EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType(*pb)
-	return &st, nil
 }
 
 type EgressNetworkPolicyInternetAccessPolicyLogOnlyMode struct {
@@ -3025,7 +2906,6 @@ func (st EgressNetworkPolicyInternetAccessPolicyLogOnlyMode) MarshalJSON() ([]by
 }
 
 type EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType string
-type egressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeTypePb string
 
 const EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeTypeAllServices EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType = `ALL_SERVICES`
 
@@ -3052,25 +2932,8 @@ func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType) Type
 	return "EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType"
 }
 
-func egressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeTypeToPb(st *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType) (*egressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeTypePb(*st)
-	return &pb, nil
-}
-
-func egressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeTypeFromPb(pb *egressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeTypePb) (*EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType(*pb)
-	return &st, nil
-}
-
 // The values should match the list of workloads used in networkconfig.proto
 type EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType string
-type egressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypePb string
 
 const EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypeDbsql EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType = `DBSQL`
 
@@ -3097,22 +2960,6 @@ func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType) Type() 
 	return "EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType"
 }
 
-func egressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypeToPb(st *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType) (*egressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypePb(*st)
-	return &pb, nil
-}
-
-func egressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypeFromPb(pb *egressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypePb) (*EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType(*pb)
-	return &st, nil
-}
-
 // At which level can Databricks and Databricks managed compute access Internet.
 // FULL_ACCESS: Databricks can access Internet. No blocking rules will apply.
 // RESTRICTED_ACCESS: Databricks can only access explicitly allowed internet and
@@ -3120,7 +2967,6 @@ func egressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypeFromPb(pb *eg
 // PRIVATE_ACCESS_ONLY (not used): Databricks can only access destinations via
 // private link.
 type EgressNetworkPolicyInternetAccessPolicyRestrictionMode string
-type egressNetworkPolicyInternetAccessPolicyRestrictionModePb string
 
 const EgressNetworkPolicyInternetAccessPolicyRestrictionModeFullAccess EgressNetworkPolicyInternetAccessPolicyRestrictionMode = `FULL_ACCESS`
 
@@ -3147,22 +2993,6 @@ func (f *EgressNetworkPolicyInternetAccessPolicyRestrictionMode) Set(v string) e
 // Type always returns EgressNetworkPolicyInternetAccessPolicyRestrictionMode to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyInternetAccessPolicyRestrictionMode) Type() string {
 	return "EgressNetworkPolicyInternetAccessPolicyRestrictionMode"
-}
-
-func egressNetworkPolicyInternetAccessPolicyRestrictionModeToPb(st *EgressNetworkPolicyInternetAccessPolicyRestrictionMode) (*egressNetworkPolicyInternetAccessPolicyRestrictionModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressNetworkPolicyInternetAccessPolicyRestrictionModePb(*st)
-	return &pb, nil
-}
-
-func egressNetworkPolicyInternetAccessPolicyRestrictionModeFromPb(pb *egressNetworkPolicyInternetAccessPolicyRestrictionModePb) (*EgressNetworkPolicyInternetAccessPolicyRestrictionMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressNetworkPolicyInternetAccessPolicyRestrictionMode(*pb)
-	return &st, nil
 }
 
 // Users can specify accessible storage destinations.
@@ -3221,7 +3051,6 @@ func (st EgressNetworkPolicyInternetAccessPolicyStorageDestination) MarshalJSON(
 }
 
 type EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType string
-type egressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypePb string
 
 const EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypeAwsS3 EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType = `AWS_S3`
 
@@ -3250,22 +3079,6 @@ func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestina
 // Type always returns EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType) Type() string {
 	return "EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType"
-}
-
-func egressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypeToPb(st *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType) (*egressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypePb(*st)
-	return &pb, nil
-}
-
-func egressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypeFromPb(pb *egressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypePb) (*EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType(*pb)
-	return &st, nil
 }
 
 type EgressNetworkPolicyNetworkAccessPolicy struct {
@@ -3353,7 +3166,6 @@ func (st EgressNetworkPolicyNetworkAccessPolicyInternetDestination) MarshalJSON(
 }
 
 type EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType string
-type egressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationTypePb string
 
 const EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationTypeDnsName EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType = `DNS_NAME`
 
@@ -3376,22 +3188,6 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestin
 // Type always returns EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType) Type() string {
 	return "EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType"
-}
-
-func egressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationTypeToPb(st *EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType) (*egressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationTypePb(*st)
-	return &pb, nil
-}
-
-func egressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationTypeFromPb(pb *egressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationTypePb) (*EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType(*pb)
-	return &st, nil
 }
 
 type EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement struct {
@@ -3434,7 +3230,6 @@ func (st EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement) MarshalJSON() 
 
 // The values should match the list of workloads used in networkconfig.proto
 type EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter string
-type egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilterPb string
 
 const EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilterDbsql EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter = `DBSQL`
 
@@ -3461,24 +3256,7 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProduc
 	return "EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter"
 }
 
-func egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilterToPb(st *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter) (*egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilterPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilterPb(*st)
-	return &pb, nil
-}
-
-func egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilterFromPb(pb *egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilterPb) (*EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter(*pb)
-	return &st, nil
-}
-
 type EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode string
-type egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementModePb string
 
 const EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementModeDryRun EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode = `DRY_RUN`
 
@@ -3505,28 +3283,11 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode)
 	return "EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode"
 }
 
-func egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementModeToPb(st *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode) (*egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementModePb(*st)
-	return &pb, nil
-}
-
-func egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementModeFromPb(pb *egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementModePb) (*EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode(*pb)
-	return &st, nil
-}
-
 // At which level can Databricks and Databricks managed compute access Internet.
 // FULL_ACCESS: Databricks can access Internet. No blocking rules will apply.
 // RESTRICTED_ACCESS: Databricks can only access explicitly allowed internet and
 // storage destinations, as well as UC connections and external locations.
 type EgressNetworkPolicyNetworkAccessPolicyRestrictionMode string
-type egressNetworkPolicyNetworkAccessPolicyRestrictionModePb string
 
 const EgressNetworkPolicyNetworkAccessPolicyRestrictionModeFullAccess EgressNetworkPolicyNetworkAccessPolicyRestrictionMode = `FULL_ACCESS`
 
@@ -3551,22 +3312,6 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyRestrictionMode) Set(v string) er
 // Type always returns EgressNetworkPolicyNetworkAccessPolicyRestrictionMode to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyNetworkAccessPolicyRestrictionMode) Type() string {
 	return "EgressNetworkPolicyNetworkAccessPolicyRestrictionMode"
-}
-
-func egressNetworkPolicyNetworkAccessPolicyRestrictionModeToPb(st *EgressNetworkPolicyNetworkAccessPolicyRestrictionMode) (*egressNetworkPolicyNetworkAccessPolicyRestrictionModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressNetworkPolicyNetworkAccessPolicyRestrictionModePb(*st)
-	return &pb, nil
-}
-
-func egressNetworkPolicyNetworkAccessPolicyRestrictionModeFromPb(pb *egressNetworkPolicyNetworkAccessPolicyRestrictionModePb) (*EgressNetworkPolicyNetworkAccessPolicyRestrictionMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressNetworkPolicyNetworkAccessPolicyRestrictionMode(*pb)
-	return &st, nil
 }
 
 // Users can specify accessible storage destinations.
@@ -3616,7 +3361,6 @@ func (st EgressNetworkPolicyNetworkAccessPolicyStorageDestination) MarshalJSON()
 }
 
 type EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType string
-type egressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypePb string
 
 const EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypeAwsS3 EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType = `AWS_S3`
 
@@ -3645,28 +3389,11 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinat
 	return "EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType"
 }
 
-func egressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypeToPb(st *EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType) (*egressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypePb(*st)
-	return &pb, nil
-}
-
-func egressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypeFromPb(pb *egressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypePb) (*EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType(*pb)
-	return &st, nil
-}
-
 // The target resources that are supported by Network Connectivity Config. Note:
 // some egress types can support general types that are not defined in
 // EgressResourceType. E.g.: Azure private endpoint supports private link
 // enabled Azure services.
 type EgressResourceType string
-type egressResourceTypePb string
 
 const EgressResourceTypeAzureBlobStorage EgressResourceType = `AZURE_BLOB_STORAGE`
 
@@ -3689,22 +3416,6 @@ func (f *EgressResourceType) Set(v string) error {
 // Type always returns EgressResourceType to satisfy [pflag.Value] interface
 func (f *EgressResourceType) Type() string {
 	return "EgressResourceType"
-}
-
-func egressResourceTypeToPb(st *EgressResourceType) (*egressResourceTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := egressResourceTypePb(*st)
-	return &pb, nil
-}
-
-func egressResourceTypeFromPb(pb *egressResourceTypePb) (*EgressResourceType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EgressResourceType(*pb)
-	return &st, nil
 }
 
 type EmailConfig struct {
@@ -5881,7 +5592,6 @@ func (st ListTokensResponse) MarshalJSON() ([]byte, error) {
 // Exclude this IP or range. IP addresses in the block list are excluded even if
 // they are included in an allow list.
 type ListType string
-type listTypePb string
 
 // An allow list. Include this IP or range.
 const ListTypeAllow ListType = `ALLOW`
@@ -5909,22 +5619,6 @@ func (f *ListType) Set(v string) error {
 // Type always returns ListType to satisfy [pflag.Value] interface
 func (f *ListType) Type() string {
 	return "ListType"
-}
-
-func listTypeToPb(st *ListType) (*listTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listTypePb(*st)
-	return &pb, nil
-}
-
-func listTypeFromPb(pb *listTypePb) (*ListType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListType(*pb)
-	return &st, nil
 }
 
 type LlmProxyPartnerPoweredAccount struct {
@@ -6230,7 +5924,6 @@ func (st NccAzurePrivateEndpointRule) MarshalJSON() ([]byte, error) {
 }
 
 type NccAzurePrivateEndpointRuleConnectionState string
-type nccAzurePrivateEndpointRuleConnectionStatePb string
 
 const NccAzurePrivateEndpointRuleConnectionStateDisconnected NccAzurePrivateEndpointRuleConnectionState = `DISCONNECTED`
 
@@ -6263,22 +5956,6 @@ func (f *NccAzurePrivateEndpointRuleConnectionState) Set(v string) error {
 // Type always returns NccAzurePrivateEndpointRuleConnectionState to satisfy [pflag.Value] interface
 func (f *NccAzurePrivateEndpointRuleConnectionState) Type() string {
 	return "NccAzurePrivateEndpointRuleConnectionState"
-}
-
-func nccAzurePrivateEndpointRuleConnectionStateToPb(st *NccAzurePrivateEndpointRuleConnectionState) (*nccAzurePrivateEndpointRuleConnectionStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := nccAzurePrivateEndpointRuleConnectionStatePb(*st)
-	return &pb, nil
-}
-
-func nccAzurePrivateEndpointRuleConnectionStateFromPb(pb *nccAzurePrivateEndpointRuleConnectionStatePb) (*NccAzurePrivateEndpointRuleConnectionState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := NccAzurePrivateEndpointRuleConnectionState(*pb)
-	return &st, nil
 }
 
 // The stable Azure service endpoints. You can configure the firewall of your
@@ -6688,7 +6365,6 @@ func (st PersonalComputeMessage) MarshalJSON() ([]byte, error) {
 // added to the ACLs of that workspace’s Personal Compute default policy
 // before they will be able to create compute resources through that policy.
 type PersonalComputeMessageEnum string
-type personalComputeMessageEnumPb string
 
 const PersonalComputeMessageEnumDelegate PersonalComputeMessageEnum = `DELEGATE`
 
@@ -6713,22 +6389,6 @@ func (f *PersonalComputeMessageEnum) Set(v string) error {
 // Type always returns PersonalComputeMessageEnum to satisfy [pflag.Value] interface
 func (f *PersonalComputeMessageEnum) Type() string {
 	return "PersonalComputeMessageEnum"
-}
-
-func personalComputeMessageEnumToPb(st *PersonalComputeMessageEnum) (*personalComputeMessageEnumPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := personalComputeMessageEnumPb(*st)
-	return &pb, nil
-}
-
-func personalComputeMessageEnumFromPb(pb *personalComputeMessageEnumPb) (*PersonalComputeMessageEnum, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PersonalComputeMessageEnum(*pb)
-	return &st, nil
 }
 
 type PersonalComputeSetting struct {
@@ -6932,7 +6592,6 @@ func (st RestrictWorkspaceAdminsMessage) MarshalJSON() ([]byte, error) {
 }
 
 type RestrictWorkspaceAdminsMessageStatus string
-type restrictWorkspaceAdminsMessageStatusPb string
 
 const RestrictWorkspaceAdminsMessageStatusAllowAll RestrictWorkspaceAdminsMessageStatus = `ALLOW_ALL`
 
@@ -6957,22 +6616,6 @@ func (f *RestrictWorkspaceAdminsMessageStatus) Set(v string) error {
 // Type always returns RestrictWorkspaceAdminsMessageStatus to satisfy [pflag.Value] interface
 func (f *RestrictWorkspaceAdminsMessageStatus) Type() string {
 	return "RestrictWorkspaceAdminsMessageStatus"
-}
-
-func restrictWorkspaceAdminsMessageStatusToPb(st *RestrictWorkspaceAdminsMessageStatus) (*restrictWorkspaceAdminsMessageStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := restrictWorkspaceAdminsMessageStatusPb(*st)
-	return &pb, nil
-}
-
-func restrictWorkspaceAdminsMessageStatusFromPb(pb *restrictWorkspaceAdminsMessageStatusPb) (*RestrictWorkspaceAdminsMessageStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RestrictWorkspaceAdminsMessageStatus(*pb)
-	return &st, nil
 }
 
 type RestrictWorkspaceAdminsSetting struct {
@@ -7367,7 +7010,6 @@ func (st TokenPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type TokenPermissionLevel string
-type tokenPermissionLevelPb string
 
 const TokenPermissionLevelCanUse TokenPermissionLevel = `CAN_USE`
 
@@ -7390,22 +7032,6 @@ func (f *TokenPermissionLevel) Set(v string) error {
 // Type always returns TokenPermissionLevel to satisfy [pflag.Value] interface
 func (f *TokenPermissionLevel) Type() string {
 	return "TokenPermissionLevel"
-}
-
-func tokenPermissionLevelToPb(st *TokenPermissionLevel) (*tokenPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := tokenPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func tokenPermissionLevelFromPb(pb *tokenPermissionLevelPb) (*TokenPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TokenPermissionLevel(*pb)
-	return &st, nil
 }
 
 type TokenPermissions struct {
@@ -7517,7 +7143,6 @@ func (st TokenPermissionsRequest) MarshalJSON() ([]byte, error) {
 // The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is
 // supported.
 type TokenType string
-type tokenTypePb string
 
 const TokenTypeArclightAzureExchangeToken TokenType = `ARCLIGHT_AZURE_EXCHANGE_TOKEN`
 
@@ -7548,22 +7173,6 @@ func (f *TokenType) Set(v string) error {
 // Type always returns TokenType to satisfy [pflag.Value] interface
 func (f *TokenType) Type() string {
 	return "TokenType"
-}
-
-func tokenTypeToPb(st *TokenType) (*tokenTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := tokenTypePb(*st)
-	return &pb, nil
-}
-
-func tokenTypeFromPb(pb *tokenTypePb) (*TokenType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TokenType(*pb)
-	return &st, nil
 }
 
 // Details required to update a setting.
@@ -8827,22 +8436,6 @@ func (st UpdateWorkspaceNetworkOptionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type WorkspaceConf map[string]string
-type workspaceConfPb WorkspaceConf
-
-func workspaceConfToPb(st *WorkspaceConf) (*workspaceConfPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	stPb := workspaceConfPb(*st)
-	return &stPb, nil
-}
-func workspaceConfFromPb(stPb *workspaceConfPb) (*WorkspaceConf, error) {
-	if stPb == nil {
-		return nil, nil
-	}
-	st := WorkspaceConf(*stPb)
-	return &st, nil
-}
 
 type WorkspaceNetworkOption struct {
 	// The network policy ID to apply to the workspace. This controls the

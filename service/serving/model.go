@@ -178,7 +178,6 @@ func (st AiGatewayGuardrailPiiBehavior) MarshalJSON() ([]byte, error) {
 }
 
 type AiGatewayGuardrailPiiBehaviorBehavior string
-type aiGatewayGuardrailPiiBehaviorBehaviorPb string
 
 const AiGatewayGuardrailPiiBehaviorBehaviorBlock AiGatewayGuardrailPiiBehaviorBehavior = `BLOCK`
 
@@ -203,22 +202,6 @@ func (f *AiGatewayGuardrailPiiBehaviorBehavior) Set(v string) error {
 // Type always returns AiGatewayGuardrailPiiBehaviorBehavior to satisfy [pflag.Value] interface
 func (f *AiGatewayGuardrailPiiBehaviorBehavior) Type() string {
 	return "AiGatewayGuardrailPiiBehaviorBehavior"
-}
-
-func aiGatewayGuardrailPiiBehaviorBehaviorToPb(st *AiGatewayGuardrailPiiBehaviorBehavior) (*aiGatewayGuardrailPiiBehaviorBehaviorPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := aiGatewayGuardrailPiiBehaviorBehaviorPb(*st)
-	return &pb, nil
-}
-
-func aiGatewayGuardrailPiiBehaviorBehaviorFromPb(pb *aiGatewayGuardrailPiiBehaviorBehaviorPb) (*AiGatewayGuardrailPiiBehaviorBehavior, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AiGatewayGuardrailPiiBehaviorBehavior(*pb)
-	return &st, nil
 }
 
 type AiGatewayGuardrails struct {
@@ -343,7 +326,6 @@ func (st AiGatewayRateLimit) MarshalJSON() ([]byte, error) {
 }
 
 type AiGatewayRateLimitKey string
-type aiGatewayRateLimitKeyPb string
 
 const AiGatewayRateLimitKeyEndpoint AiGatewayRateLimitKey = `endpoint`
 
@@ -370,24 +352,7 @@ func (f *AiGatewayRateLimitKey) Type() string {
 	return "AiGatewayRateLimitKey"
 }
 
-func aiGatewayRateLimitKeyToPb(st *AiGatewayRateLimitKey) (*aiGatewayRateLimitKeyPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := aiGatewayRateLimitKeyPb(*st)
-	return &pb, nil
-}
-
-func aiGatewayRateLimitKeyFromPb(pb *aiGatewayRateLimitKeyPb) (*AiGatewayRateLimitKey, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AiGatewayRateLimitKey(*pb)
-	return &st, nil
-}
-
 type AiGatewayRateLimitRenewalPeriod string
-type aiGatewayRateLimitRenewalPeriodPb string
 
 const AiGatewayRateLimitRenewalPeriodMinute AiGatewayRateLimitRenewalPeriod = `minute`
 
@@ -410,22 +375,6 @@ func (f *AiGatewayRateLimitRenewalPeriod) Set(v string) error {
 // Type always returns AiGatewayRateLimitRenewalPeriod to satisfy [pflag.Value] interface
 func (f *AiGatewayRateLimitRenewalPeriod) Type() string {
 	return "AiGatewayRateLimitRenewalPeriod"
-}
-
-func aiGatewayRateLimitRenewalPeriodToPb(st *AiGatewayRateLimitRenewalPeriod) (*aiGatewayRateLimitRenewalPeriodPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := aiGatewayRateLimitRenewalPeriodPb(*st)
-	return &pb, nil
-}
-
-func aiGatewayRateLimitRenewalPeriodFromPb(pb *aiGatewayRateLimitRenewalPeriodPb) (*AiGatewayRateLimitRenewalPeriod, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AiGatewayRateLimitRenewalPeriod(*pb)
-	return &st, nil
 }
 
 type AiGatewayUsageTrackingConfig struct {
@@ -536,7 +485,6 @@ func (st AmazonBedrockConfig) MarshalJSON() ([]byte, error) {
 }
 
 type AmazonBedrockConfigBedrockProvider string
-type amazonBedrockConfigBedrockProviderPb string
 
 const AmazonBedrockConfigBedrockProviderAi21labs AmazonBedrockConfigBedrockProvider = `ai21labs`
 
@@ -565,22 +513,6 @@ func (f *AmazonBedrockConfigBedrockProvider) Set(v string) error {
 // Type always returns AmazonBedrockConfigBedrockProvider to satisfy [pflag.Value] interface
 func (f *AmazonBedrockConfigBedrockProvider) Type() string {
 	return "AmazonBedrockConfigBedrockProvider"
-}
-
-func amazonBedrockConfigBedrockProviderToPb(st *AmazonBedrockConfigBedrockProvider) (*amazonBedrockConfigBedrockProviderPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := amazonBedrockConfigBedrockProviderPb(*st)
-	return &pb, nil
-}
-
-func amazonBedrockConfigBedrockProviderFromPb(pb *amazonBedrockConfigBedrockProviderPb) (*AmazonBedrockConfigBedrockProvider, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AmazonBedrockConfigBedrockProvider(*pb)
-	return &st, nil
 }
 
 type AnthropicConfig struct {
@@ -934,7 +866,6 @@ func (st ChatMessage) MarshalJSON() ([]byte, error) {
 
 // The role of the message. One of [system, user, assistant].
 type ChatMessageRole string
-type chatMessageRolePb string
 
 const ChatMessageRoleAssistant ChatMessageRole = `assistant`
 
@@ -961,22 +892,6 @@ func (f *ChatMessageRole) Set(v string) error {
 // Type always returns ChatMessageRole to satisfy [pflag.Value] interface
 func (f *ChatMessageRole) Type() string {
 	return "ChatMessageRole"
-}
-
-func chatMessageRoleToPb(st *ChatMessageRole) (*chatMessageRolePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := chatMessageRolePb(*st)
-	return &pb, nil
-}
-
-func chatMessageRoleFromPb(pb *chatMessageRolePb) (*ChatMessageRole, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ChatMessageRole(*pb)
-	return &st, nil
 }
 
 type CohereConfig struct {
@@ -1395,7 +1310,6 @@ func (st EmbeddingsV1ResponseEmbeddingElement) MarshalJSON() ([]byte, error) {
 
 // This will always be 'embedding'.
 type EmbeddingsV1ResponseEmbeddingElementObject string
-type embeddingsV1ResponseEmbeddingElementObjectPb string
 
 const EmbeddingsV1ResponseEmbeddingElementObjectEmbedding EmbeddingsV1ResponseEmbeddingElementObject = `embedding`
 
@@ -1418,22 +1332,6 @@ func (f *EmbeddingsV1ResponseEmbeddingElementObject) Set(v string) error {
 // Type always returns EmbeddingsV1ResponseEmbeddingElementObject to satisfy [pflag.Value] interface
 func (f *EmbeddingsV1ResponseEmbeddingElementObject) Type() string {
 	return "EmbeddingsV1ResponseEmbeddingElementObject"
-}
-
-func embeddingsV1ResponseEmbeddingElementObjectToPb(st *EmbeddingsV1ResponseEmbeddingElementObject) (*embeddingsV1ResponseEmbeddingElementObjectPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := embeddingsV1ResponseEmbeddingElementObjectPb(*st)
-	return &pb, nil
-}
-
-func embeddingsV1ResponseEmbeddingElementObjectFromPb(pb *embeddingsV1ResponseEmbeddingElementObjectPb) (*EmbeddingsV1ResponseEmbeddingElementObject, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EmbeddingsV1ResponseEmbeddingElementObject(*pb)
-	return &st, nil
 }
 
 type EndpointCoreConfigInput struct {
@@ -1666,7 +1564,6 @@ func (st EndpointState) MarshalJSON() ([]byte, error) {
 }
 
 type EndpointStateConfigUpdate string
-type endpointStateConfigUpdatePb string
 
 const EndpointStateConfigUpdateInProgress EndpointStateConfigUpdate = `IN_PROGRESS`
 
@@ -1697,24 +1594,7 @@ func (f *EndpointStateConfigUpdate) Type() string {
 	return "EndpointStateConfigUpdate"
 }
 
-func endpointStateConfigUpdateToPb(st *EndpointStateConfigUpdate) (*endpointStateConfigUpdatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := endpointStateConfigUpdatePb(*st)
-	return &pb, nil
-}
-
-func endpointStateConfigUpdateFromPb(pb *endpointStateConfigUpdatePb) (*EndpointStateConfigUpdate, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EndpointStateConfigUpdate(*pb)
-	return &st, nil
-}
-
 type EndpointStateReady string
-type endpointStateReadyPb string
 
 const EndpointStateReadyNotReady EndpointStateReady = `NOT_READY`
 
@@ -1739,22 +1619,6 @@ func (f *EndpointStateReady) Set(v string) error {
 // Type always returns EndpointStateReady to satisfy [pflag.Value] interface
 func (f *EndpointStateReady) Type() string {
 	return "EndpointStateReady"
-}
-
-func endpointStateReadyToPb(st *EndpointStateReady) (*endpointStateReadyPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := endpointStateReadyPb(*st)
-	return &pb, nil
-}
-
-func endpointStateReadyFromPb(pb *endpointStateReadyPb) (*EndpointStateReady, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EndpointStateReady(*pb)
-	return &st, nil
 }
 
 type EndpointTag struct {
@@ -1940,7 +1804,6 @@ func (st ExternalFunctionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ExternalFunctionRequestHttpMethod string
-type externalFunctionRequestHttpMethodPb string
 
 const ExternalFunctionRequestHttpMethodDelete ExternalFunctionRequestHttpMethod = `DELETE`
 
@@ -1971,22 +1834,6 @@ func (f *ExternalFunctionRequestHttpMethod) Set(v string) error {
 // Type always returns ExternalFunctionRequestHttpMethod to satisfy [pflag.Value] interface
 func (f *ExternalFunctionRequestHttpMethod) Type() string {
 	return "ExternalFunctionRequestHttpMethod"
-}
-
-func externalFunctionRequestHttpMethodToPb(st *ExternalFunctionRequestHttpMethod) (*externalFunctionRequestHttpMethodPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := externalFunctionRequestHttpMethodPb(*st)
-	return &pb, nil
-}
-
-func externalFunctionRequestHttpMethodFromPb(pb *externalFunctionRequestHttpMethodPb) (*ExternalFunctionRequestHttpMethod, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ExternalFunctionRequestHttpMethod(*pb)
-	return &st, nil
 }
 
 type ExternalModel struct {
@@ -2059,7 +1906,6 @@ func (st ExternalModel) MarshalJSON() ([]byte, error) {
 }
 
 type ExternalModelProvider string
-type externalModelProviderPb string
 
 const ExternalModelProviderAi21labs ExternalModelProvider = `ai21labs`
 
@@ -2098,22 +1944,6 @@ func (f *ExternalModelProvider) Set(v string) error {
 // Type always returns ExternalModelProvider to satisfy [pflag.Value] interface
 func (f *ExternalModelProvider) Type() string {
 	return "ExternalModelProvider"
-}
-
-func externalModelProviderToPb(st *ExternalModelProvider) (*externalModelProviderPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := externalModelProviderPb(*st)
-	return &pb, nil
-}
-
-func externalModelProviderFromPb(pb *externalModelProviderPb) (*ExternalModelProvider, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ExternalModelProvider(*pb)
-	return &st, nil
 }
 
 type ExternalModelUsageElement struct {
@@ -3251,7 +3081,6 @@ func (st QueryEndpointResponse) MarshalJSON() ([]byte, error) {
 // The type of object returned by the __external/foundation model__ serving
 // endpoint, one of [text_completion, chat.completion, list (of embeddings)].
 type QueryEndpointResponseObject string
-type queryEndpointResponseObjectPb string
 
 const QueryEndpointResponseObjectChatCompletion QueryEndpointResponseObject = `chat.completion`
 
@@ -3278,22 +3107,6 @@ func (f *QueryEndpointResponseObject) Set(v string) error {
 // Type always returns QueryEndpointResponseObject to satisfy [pflag.Value] interface
 func (f *QueryEndpointResponseObject) Type() string {
 	return "QueryEndpointResponseObject"
-}
-
-func queryEndpointResponseObjectToPb(st *QueryEndpointResponseObject) (*queryEndpointResponseObjectPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := queryEndpointResponseObjectPb(*st)
-	return &pb, nil
-}
-
-func queryEndpointResponseObjectFromPb(pb *queryEndpointResponseObjectPb) (*QueryEndpointResponseObject, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := QueryEndpointResponseObject(*pb)
-	return &st, nil
 }
 
 type RateLimit struct {
@@ -3338,7 +3151,6 @@ func (st RateLimit) MarshalJSON() ([]byte, error) {
 }
 
 type RateLimitKey string
-type rateLimitKeyPb string
 
 const RateLimitKeyEndpoint RateLimitKey = `endpoint`
 
@@ -3365,24 +3177,7 @@ func (f *RateLimitKey) Type() string {
 	return "RateLimitKey"
 }
 
-func rateLimitKeyToPb(st *RateLimitKey) (*rateLimitKeyPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := rateLimitKeyPb(*st)
-	return &pb, nil
-}
-
-func rateLimitKeyFromPb(pb *rateLimitKeyPb) (*RateLimitKey, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RateLimitKey(*pb)
-	return &st, nil
-}
-
 type RateLimitRenewalPeriod string
-type rateLimitRenewalPeriodPb string
 
 const RateLimitRenewalPeriodMinute RateLimitRenewalPeriod = `minute`
 
@@ -3405,22 +3200,6 @@ func (f *RateLimitRenewalPeriod) Set(v string) error {
 // Type always returns RateLimitRenewalPeriod to satisfy [pflag.Value] interface
 func (f *RateLimitRenewalPeriod) Type() string {
 	return "RateLimitRenewalPeriod"
-}
-
-func rateLimitRenewalPeriodToPb(st *RateLimitRenewalPeriod) (*rateLimitRenewalPeriodPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := rateLimitRenewalPeriodPb(*st)
-	return &pb, nil
-}
-
-func rateLimitRenewalPeriodFromPb(pb *rateLimitRenewalPeriodPb) (*RateLimitRenewalPeriod, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RateLimitRenewalPeriod(*pb)
-	return &st, nil
 }
 
 type Route struct {
@@ -3809,7 +3588,6 @@ func (st ServedModelInput) MarshalJSON() ([]byte, error) {
 // Please keep this in sync with with workload types in
 // InferenceEndpointEntities.scala
 type ServedModelInputWorkloadType string
-type servedModelInputWorkloadTypePb string
 
 const ServedModelInputWorkloadTypeCpu ServedModelInputWorkloadType = `CPU`
 
@@ -3840,22 +3618,6 @@ func (f *ServedModelInputWorkloadType) Set(v string) error {
 // Type always returns ServedModelInputWorkloadType to satisfy [pflag.Value] interface
 func (f *ServedModelInputWorkloadType) Type() string {
 	return "ServedModelInputWorkloadType"
-}
-
-func servedModelInputWorkloadTypeToPb(st *ServedModelInputWorkloadType) (*servedModelInputWorkloadTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := servedModelInputWorkloadTypePb(*st)
-	return &pb, nil
-}
-
-func servedModelInputWorkloadTypeFromPb(pb *servedModelInputWorkloadTypePb) (*ServedModelInputWorkloadType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ServedModelInputWorkloadType(*pb)
-	return &st, nil
 }
 
 type ServedModelOutput struct {
@@ -4024,7 +3786,6 @@ func (st ServedModelState) MarshalJSON() ([]byte, error) {
 }
 
 type ServedModelStateDeployment string
-type servedModelStateDeploymentPb string
 
 const ServedModelStateDeploymentAborted ServedModelStateDeployment = `DEPLOYMENT_ABORTED`
 
@@ -4055,22 +3816,6 @@ func (f *ServedModelStateDeployment) Set(v string) error {
 // Type always returns ServedModelStateDeployment to satisfy [pflag.Value] interface
 func (f *ServedModelStateDeployment) Type() string {
 	return "ServedModelStateDeployment"
-}
-
-func servedModelStateDeploymentToPb(st *ServedModelStateDeployment) (*servedModelStateDeploymentPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := servedModelStateDeploymentPb(*st)
-	return &pb, nil
-}
-
-func servedModelStateDeploymentFromPb(pb *servedModelStateDeploymentPb) (*ServedModelStateDeployment, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ServedModelStateDeployment(*pb)
-	return &st, nil
 }
 
 type ServerLogsResponse struct {
@@ -4341,7 +4086,6 @@ func (st ServingEndpointDetailed) MarshalJSON() ([]byte, error) {
 }
 
 type ServingEndpointDetailedPermissionLevel string
-type servingEndpointDetailedPermissionLevelPb string
 
 const ServingEndpointDetailedPermissionLevelCanManage ServingEndpointDetailedPermissionLevel = `CAN_MANAGE`
 
@@ -4368,22 +4112,6 @@ func (f *ServingEndpointDetailedPermissionLevel) Set(v string) error {
 // Type always returns ServingEndpointDetailedPermissionLevel to satisfy [pflag.Value] interface
 func (f *ServingEndpointDetailedPermissionLevel) Type() string {
 	return "ServingEndpointDetailedPermissionLevel"
-}
-
-func servingEndpointDetailedPermissionLevelToPb(st *ServingEndpointDetailedPermissionLevel) (*servingEndpointDetailedPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := servingEndpointDetailedPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func servingEndpointDetailedPermissionLevelFromPb(pb *servingEndpointDetailedPermissionLevelPb) (*ServingEndpointDetailedPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ServingEndpointDetailedPermissionLevel(*pb)
-	return &st, nil
 }
 
 type ServingEndpointPermission struct {
@@ -4427,7 +4155,6 @@ func (st ServingEndpointPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type ServingEndpointPermissionLevel string
-type servingEndpointPermissionLevelPb string
 
 const ServingEndpointPermissionLevelCanManage ServingEndpointPermissionLevel = `CAN_MANAGE`
 
@@ -4454,22 +4181,6 @@ func (f *ServingEndpointPermissionLevel) Set(v string) error {
 // Type always returns ServingEndpointPermissionLevel to satisfy [pflag.Value] interface
 func (f *ServingEndpointPermissionLevel) Type() string {
 	return "ServingEndpointPermissionLevel"
-}
-
-func servingEndpointPermissionLevelToPb(st *ServingEndpointPermissionLevel) (*servingEndpointPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := servingEndpointPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func servingEndpointPermissionLevelFromPb(pb *servingEndpointPermissionLevelPb) (*ServingEndpointPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ServingEndpointPermissionLevel(*pb)
-	return &st, nil
 }
 
 type ServingEndpointPermissions struct {
@@ -4584,7 +4295,6 @@ func (st ServingEndpointPermissionsRequest) MarshalJSON() ([]byte, error) {
 // Please keep this in sync with with workload types in
 // InferenceEndpointEntities.scala
 type ServingModelWorkloadType string
-type servingModelWorkloadTypePb string
 
 const ServingModelWorkloadTypeCpu ServingModelWorkloadType = `CPU`
 
@@ -4615,22 +4325,6 @@ func (f *ServingModelWorkloadType) Set(v string) error {
 // Type always returns ServingModelWorkloadType to satisfy [pflag.Value] interface
 func (f *ServingModelWorkloadType) Type() string {
 	return "ServingModelWorkloadType"
-}
-
-func servingModelWorkloadTypeToPb(st *ServingModelWorkloadType) (*servingModelWorkloadTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := servingModelWorkloadTypePb(*st)
-	return &pb, nil
-}
-
-func servingModelWorkloadTypeFromPb(pb *servingModelWorkloadTypePb) (*ServingModelWorkloadType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ServingModelWorkloadType(*pb)
-	return &st, nil
 }
 
 type TrafficConfig struct {

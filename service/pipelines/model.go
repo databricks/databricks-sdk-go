@@ -254,7 +254,6 @@ func (st DataPlaneId) MarshalJSON() ([]byte, error) {
 // window starting at start_hour). If not specified all days of the week will be
 // used.
 type DayOfWeek string
-type dayOfWeekPb string
 
 const DayOfWeekFriday DayOfWeek = `FRIDAY`
 
@@ -289,22 +288,6 @@ func (f *DayOfWeek) Set(v string) error {
 // Type always returns DayOfWeek to satisfy [pflag.Value] interface
 func (f *DayOfWeek) Type() string {
 	return "DayOfWeek"
-}
-
-func dayOfWeekToPb(st *DayOfWeek) (*dayOfWeekPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := dayOfWeekPb(*st)
-	return &pb, nil
-}
-
-func dayOfWeekFromPb(pb *dayOfWeekPb) (*DayOfWeek, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DayOfWeek(*pb)
-	return &st, nil
 }
 
 // Delete a pipeline
@@ -370,7 +353,6 @@ func (st DeletePipelineResponse) MarshalJSON() ([]byte, error) {
 // The deployment method that manages the pipeline: - BUNDLE: The pipeline is
 // managed by a Databricks Asset Bundle.
 type DeploymentKind string
-type deploymentKindPb string
 
 const DeploymentKindBundle DeploymentKind = `BUNDLE`
 
@@ -393,22 +375,6 @@ func (f *DeploymentKind) Set(v string) error {
 // Type always returns DeploymentKind to satisfy [pflag.Value] interface
 func (f *DeploymentKind) Type() string {
 	return "DeploymentKind"
-}
-
-func deploymentKindToPb(st *DeploymentKind) (*deploymentKindPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := deploymentKindPb(*st)
-	return &pb, nil
-}
-
-func deploymentKindFromPb(pb *deploymentKindPb) (*DeploymentKind, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DeploymentKind(*pb)
-	return &st, nil
 }
 
 type EditPipeline struct {
@@ -612,7 +578,6 @@ func (st ErrorDetail) MarshalJSON() ([]byte, error) {
 
 // The severity level of the event.
 type EventLevel string
-type eventLevelPb string
 
 const EventLevelError EventLevel = `ERROR`
 
@@ -641,22 +606,6 @@ func (f *EventLevel) Set(v string) error {
 // Type always returns EventLevel to satisfy [pflag.Value] interface
 func (f *EventLevel) Type() string {
 	return "EventLevel"
-}
-
-func eventLevelToPb(st *EventLevel) (*eventLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := eventLevelPb(*st)
-	return &pb, nil
-}
-
-func eventLevelFromPb(pb *eventLevelPb) (*EventLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EventLevel(*pb)
-	return &st, nil
 }
 
 // Configurable event log parameters.
@@ -963,7 +912,6 @@ func (st GetPipelineResponse) MarshalJSON() ([]byte, error) {
 
 // The health of a pipeline.
 type GetPipelineResponseHealth string
-type getPipelineResponseHealthPb string
 
 const GetPipelineResponseHealthHealthy GetPipelineResponseHealth = `HEALTHY`
 
@@ -988,22 +936,6 @@ func (f *GetPipelineResponseHealth) Set(v string) error {
 // Type always returns GetPipelineResponseHealth to satisfy [pflag.Value] interface
 func (f *GetPipelineResponseHealth) Type() string {
 	return "GetPipelineResponseHealth"
-}
-
-func getPipelineResponseHealthToPb(st *GetPipelineResponseHealth) (*getPipelineResponseHealthPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := getPipelineResponseHealthPb(*st)
-	return &pb, nil
-}
-
-func getPipelineResponseHealthFromPb(pb *getPipelineResponseHealthPb) (*GetPipelineResponseHealth, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := GetPipelineResponseHealth(*pb)
-	return &st, nil
 }
 
 // Get a pipeline update
@@ -1216,7 +1148,6 @@ func (st IngestionPipelineDefinition) MarshalJSON() ([]byte, error) {
 }
 
 type IngestionSourceType string
-type ingestionSourceTypePb string
 
 const IngestionSourceTypeDynamics365 IngestionSourceType = `DYNAMICS365`
 
@@ -1261,22 +1192,6 @@ func (f *IngestionSourceType) Set(v string) error {
 // Type always returns IngestionSourceType to satisfy [pflag.Value] interface
 func (f *IngestionSourceType) Type() string {
 	return "IngestionSourceType"
-}
-
-func ingestionSourceTypeToPb(st *IngestionSourceType) (*ingestionSourceTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := ingestionSourceTypePb(*st)
-	return &pb, nil
-}
-
-func ingestionSourceTypeFromPb(pb *ingestionSourceTypePb) (*IngestionSourceType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := IngestionSourceType(*pb)
-	return &st, nil
 }
 
 // List pipeline events
@@ -1583,7 +1498,6 @@ func (st ManualTrigger) MarshalJSON() ([]byte, error) {
 
 // Maturity level for EventDetails.
 type MaturityLevel string
-type maturityLevelPb string
 
 const MaturityLevelDeprecated MaturityLevel = `DEPRECATED`
 
@@ -1610,22 +1524,6 @@ func (f *MaturityLevel) Set(v string) error {
 // Type always returns MaturityLevel to satisfy [pflag.Value] interface
 func (f *MaturityLevel) Type() string {
 	return "MaturityLevel"
-}
-
-func maturityLevelToPb(st *MaturityLevel) (*maturityLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := maturityLevelPb(*st)
-	return &pb, nil
-}
-
-func maturityLevelFromPb(pb *maturityLevelPb) (*MaturityLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MaturityLevel(*pb)
-	return &st, nil
 }
 
 type NotebookLibrary struct {
@@ -2096,7 +1994,6 @@ func (st PipelineClusterAutoscale) MarshalJSON() ([]byte, error) {
 // Autoscaling is available for `updates` clusters only. The legacy autoscaling
 // feature is used for `maintenance` clusters.
 type PipelineClusterAutoscaleMode string
-type pipelineClusterAutoscaleModePb string
 
 const PipelineClusterAutoscaleModeEnhanced PipelineClusterAutoscaleMode = `ENHANCED`
 
@@ -2121,22 +2018,6 @@ func (f *PipelineClusterAutoscaleMode) Set(v string) error {
 // Type always returns PipelineClusterAutoscaleMode to satisfy [pflag.Value] interface
 func (f *PipelineClusterAutoscaleMode) Type() string {
 	return "PipelineClusterAutoscaleMode"
-}
-
-func pipelineClusterAutoscaleModeToPb(st *PipelineClusterAutoscaleMode) (*pipelineClusterAutoscaleModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := pipelineClusterAutoscaleModePb(*st)
-	return &pb, nil
-}
-
-func pipelineClusterAutoscaleModeFromPb(pb *pipelineClusterAutoscaleModePb) (*PipelineClusterAutoscaleMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PipelineClusterAutoscaleMode(*pb)
-	return &st, nil
 }
 
 type PipelineDeployment struct {
@@ -2325,7 +2206,6 @@ func (st PipelinePermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type PipelinePermissionLevel string
-type pipelinePermissionLevelPb string
 
 const PipelinePermissionLevelCanManage PipelinePermissionLevel = `CAN_MANAGE`
 
@@ -2354,22 +2234,6 @@ func (f *PipelinePermissionLevel) Set(v string) error {
 // Type always returns PipelinePermissionLevel to satisfy [pflag.Value] interface
 func (f *PipelinePermissionLevel) Type() string {
 	return "PipelinePermissionLevel"
-}
-
-func pipelinePermissionLevelToPb(st *PipelinePermissionLevel) (*pipelinePermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := pipelinePermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func pipelinePermissionLevelFromPb(pb *pipelinePermissionLevelPb) (*PipelinePermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PipelinePermissionLevel(*pb)
-	return &st, nil
 }
 
 type PipelinePermissions struct {
@@ -2598,7 +2462,6 @@ func (st PipelineSpec) MarshalJSON() ([]byte, error) {
 
 // The pipeline state.
 type PipelineState string
-type pipelineStatePb string
 
 const PipelineStateDeleted PipelineState = `DELETED`
 
@@ -2637,22 +2500,6 @@ func (f *PipelineState) Set(v string) error {
 // Type always returns PipelineState to satisfy [pflag.Value] interface
 func (f *PipelineState) Type() string {
 	return "PipelineState"
-}
-
-func pipelineStateToPb(st *PipelineState) (*pipelineStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := pipelineStatePb(*st)
-	return &pb, nil
-}
-
-func pipelineStateFromPb(pb *pipelineStatePb) (*PipelineState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PipelineState(*pb)
-	return &st, nil
 }
 
 type PipelineStateInfo struct {
@@ -2713,7 +2560,6 @@ func (st PipelineStateInfo) MarshalJSON() ([]byte, error) {
 
 // The health of a pipeline.
 type PipelineStateInfoHealth string
-type pipelineStateInfoHealthPb string
 
 const PipelineStateInfoHealthHealthy PipelineStateInfoHealth = `HEALTHY`
 
@@ -2738,22 +2584,6 @@ func (f *PipelineStateInfoHealth) Set(v string) error {
 // Type always returns PipelineStateInfoHealth to satisfy [pflag.Value] interface
 func (f *PipelineStateInfoHealth) Type() string {
 	return "PipelineStateInfoHealth"
-}
-
-func pipelineStateInfoHealthToPb(st *PipelineStateInfoHealth) (*pipelineStateInfoHealthPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := pipelineStateInfoHealthPb(*st)
-	return &pb, nil
-}
-
-func pipelineStateInfoHealthFromPb(pb *pipelineStateInfoHealthPb) (*PipelineStateInfoHealth, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PipelineStateInfoHealth(*pb)
-	return &st, nil
 }
 
 type PipelineTrigger struct {
@@ -3151,7 +2981,6 @@ func (st StartUpdate) MarshalJSON() ([]byte, error) {
 
 // What triggered this update.
 type StartUpdateCause string
-type startUpdateCausePb string
 
 const StartUpdateCauseApiCall StartUpdateCause = `API_CALL`
 
@@ -3186,22 +3015,6 @@ func (f *StartUpdateCause) Set(v string) error {
 // Type always returns StartUpdateCause to satisfy [pflag.Value] interface
 func (f *StartUpdateCause) Type() string {
 	return "StartUpdateCause"
-}
-
-func startUpdateCauseToPb(st *StartUpdateCause) (*startUpdateCausePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := startUpdateCausePb(*st)
-	return &pb, nil
-}
-
-func startUpdateCauseFromPb(pb *startUpdateCausePb) (*StartUpdateCause, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := StartUpdateCause(*pb)
-	return &st, nil
 }
 
 type StartUpdateResponse struct {
@@ -3413,7 +3226,6 @@ func (st TableSpecificConfig) MarshalJSON() ([]byte, error) {
 
 // The SCD type to use to ingest the table.
 type TableSpecificConfigScdType string
-type tableSpecificConfigScdTypePb string
 
 const TableSpecificConfigScdTypeScdType1 TableSpecificConfigScdType = `SCD_TYPE_1`
 
@@ -3438,22 +3250,6 @@ func (f *TableSpecificConfigScdType) Set(v string) error {
 // Type always returns TableSpecificConfigScdType to satisfy [pflag.Value] interface
 func (f *TableSpecificConfigScdType) Type() string {
 	return "TableSpecificConfigScdType"
-}
-
-func tableSpecificConfigScdTypeToPb(st *TableSpecificConfigScdType) (*tableSpecificConfigScdTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := tableSpecificConfigScdTypePb(*st)
-	return &pb, nil
-}
-
-func tableSpecificConfigScdTypeFromPb(pb *tableSpecificConfigScdTypePb) (*TableSpecificConfigScdType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TableSpecificConfigScdType(*pb)
-	return &st, nil
 }
 
 type UpdateInfo struct {
@@ -3529,7 +3325,6 @@ func (st UpdateInfo) MarshalJSON() ([]byte, error) {
 
 // What triggered this update.
 type UpdateInfoCause string
-type updateInfoCausePb string
 
 const UpdateInfoCauseApiCall UpdateInfoCause = `API_CALL`
 
@@ -3566,25 +3361,8 @@ func (f *UpdateInfoCause) Type() string {
 	return "UpdateInfoCause"
 }
 
-func updateInfoCauseToPb(st *UpdateInfoCause) (*updateInfoCausePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := updateInfoCausePb(*st)
-	return &pb, nil
-}
-
-func updateInfoCauseFromPb(pb *updateInfoCausePb) (*UpdateInfoCause, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := UpdateInfoCause(*pb)
-	return &st, nil
-}
-
 // The update state.
 type UpdateInfoState string
-type updateInfoStatePb string
 
 const UpdateInfoStateCanceled UpdateInfoState = `CANCELED`
 
@@ -3629,22 +3407,6 @@ func (f *UpdateInfoState) Type() string {
 	return "UpdateInfoState"
 }
 
-func updateInfoStateToPb(st *UpdateInfoState) (*updateInfoStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := updateInfoStatePb(*st)
-	return &pb, nil
-}
-
-func updateInfoStateFromPb(pb *updateInfoStatePb) (*UpdateInfoState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := UpdateInfoState(*pb)
-	return &st, nil
-}
-
 type UpdateStateInfo struct {
 
 	// Wire name: 'creation_time'
@@ -3686,7 +3448,6 @@ func (st UpdateStateInfo) MarshalJSON() ([]byte, error) {
 
 // The update state.
 type UpdateStateInfoState string
-type updateStateInfoStatePb string
 
 const UpdateStateInfoStateCanceled UpdateStateInfoState = `CANCELED`
 
@@ -3729,22 +3490,6 @@ func (f *UpdateStateInfoState) Set(v string) error {
 // Type always returns UpdateStateInfoState to satisfy [pflag.Value] interface
 func (f *UpdateStateInfoState) Type() string {
 	return "UpdateStateInfoState"
-}
-
-func updateStateInfoStateToPb(st *UpdateStateInfoState) (*updateStateInfoStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := updateStateInfoStatePb(*st)
-	return &pb, nil
-}
-
-func updateStateInfoStateFromPb(pb *updateStateInfoStatePb) (*UpdateStateInfoState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := UpdateStateInfoState(*pb)
-	return &st, nil
 }
 
 func durationToPb(d *time.Duration) (*string, error) {

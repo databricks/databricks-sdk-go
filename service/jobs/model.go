@@ -12,7 +12,6 @@ import (
 )
 
 type AuthenticationMethod string
-type authenticationMethodPb string
 
 const AuthenticationMethodOauth AuthenticationMethod = `OAUTH`
 
@@ -37,22 +36,6 @@ func (f *AuthenticationMethod) Set(v string) error {
 // Type always returns AuthenticationMethod to satisfy [pflag.Value] interface
 func (f *AuthenticationMethod) Type() string {
 	return "AuthenticationMethod"
-}
-
-func authenticationMethodToPb(st *AuthenticationMethod) (*authenticationMethodPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := authenticationMethodPb(*st)
-	return &pb, nil
-}
-
-func authenticationMethodFromPb(pb *authenticationMethodPb) (*AuthenticationMethod, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AuthenticationMethod(*pb)
-	return &st, nil
 }
 
 type BaseJob struct {
@@ -452,7 +435,6 @@ func (st CancelRunResponse) MarshalJSON() ([]byte, error) {
 // Copied from elastic-spark-common/api/messages/runs.proto. Using the original
 // definition to remove coupling with jobs API definition
 type CleanRoomTaskRunLifeCycleState string
-type cleanRoomTaskRunLifeCycleStatePb string
 
 const CleanRoomTaskRunLifeCycleStateBlocked CleanRoomTaskRunLifeCycleState = `BLOCKED`
 
@@ -495,26 +477,9 @@ func (f *CleanRoomTaskRunLifeCycleState) Type() string {
 	return "CleanRoomTaskRunLifeCycleState"
 }
 
-func cleanRoomTaskRunLifeCycleStateToPb(st *CleanRoomTaskRunLifeCycleState) (*cleanRoomTaskRunLifeCycleStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := cleanRoomTaskRunLifeCycleStatePb(*st)
-	return &pb, nil
-}
-
-func cleanRoomTaskRunLifeCycleStateFromPb(pb *cleanRoomTaskRunLifeCycleStatePb) (*CleanRoomTaskRunLifeCycleState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CleanRoomTaskRunLifeCycleState(*pb)
-	return &st, nil
-}
-
 // Copied from elastic-spark-common/api/messages/runs.proto. Using the original
 // definition to avoid cyclic dependency.
 type CleanRoomTaskRunResultState string
-type cleanRoomTaskRunResultStatePb string
 
 const CleanRoomTaskRunResultStateCanceled CleanRoomTaskRunResultState = `CANCELED`
 
@@ -561,22 +526,6 @@ func (f *CleanRoomTaskRunResultState) Set(v string) error {
 // Type always returns CleanRoomTaskRunResultState to satisfy [pflag.Value] interface
 func (f *CleanRoomTaskRunResultState) Type() string {
 	return "CleanRoomTaskRunResultState"
-}
-
-func cleanRoomTaskRunResultStateToPb(st *CleanRoomTaskRunResultState) (*cleanRoomTaskRunResultStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := cleanRoomTaskRunResultStatePb(*st)
-	return &pb, nil
-}
-
-func cleanRoomTaskRunResultStateFromPb(pb *cleanRoomTaskRunResultStatePb) (*CleanRoomTaskRunResultState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CleanRoomTaskRunResultState(*pb)
-	return &st, nil
 }
 
 // Stores the run state of the clean rooms notebook task.
@@ -837,7 +786,6 @@ func (st ComputeConfig) MarshalJSON() ([]byte, error) {
 }
 
 type Condition string
-type conditionPb string
 
 const ConditionAllUpdated Condition = `ALL_UPDATED`
 
@@ -862,22 +810,6 @@ func (f *Condition) Set(v string) error {
 // Type always returns Condition to satisfy [pflag.Value] interface
 func (f *Condition) Type() string {
 	return "Condition"
-}
-
-func conditionToPb(st *Condition) (*conditionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := conditionPb(*st)
-	return &pb, nil
-}
-
-func conditionFromPb(pb *conditionPb) (*Condition, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Condition(*pb)
-	return &st, nil
 }
 
 type ConditionTask struct {
@@ -939,7 +871,6 @@ func (st ConditionTask) MarshalJSON() ([]byte, error) {
 // `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it will
 // be serialized to `“true”` or `“false”` for the comparison.
 type ConditionTaskOp string
-type conditionTaskOpPb string
 
 const ConditionTaskOpEqualTo ConditionTaskOp = `EQUAL_TO`
 
@@ -972,22 +903,6 @@ func (f *ConditionTaskOp) Set(v string) error {
 // Type always returns ConditionTaskOp to satisfy [pflag.Value] interface
 func (f *ConditionTaskOp) Type() string {
 	return "ConditionTaskOp"
-}
-
-func conditionTaskOpToPb(st *ConditionTaskOp) (*conditionTaskOpPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := conditionTaskOpPb(*st)
-	return &pb, nil
-}
-
-func conditionTaskOpFromPb(pb *conditionTaskOpPb) (*ConditionTaskOp, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ConditionTaskOp(*pb)
-	return &st, nil
 }
 
 type Continuous struct {
@@ -2020,7 +1935,6 @@ func (st ForEachTaskTaskRunStats) MarshalJSON() ([]byte, error) {
 }
 
 type Format string
-type formatPb string
 
 const FormatMultiTask Format = `MULTI_TASK`
 
@@ -2045,22 +1959,6 @@ func (f *Format) Set(v string) error {
 // Type always returns Format to satisfy [pflag.Value] interface
 func (f *Format) Type() string {
 	return "Format"
-}
-
-func formatToPb(st *Format) (*formatPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := formatPb(*st)
-	return &pb, nil
-}
-
-func formatFromPb(pb *formatPb) (*Format, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Format(*pb)
-	return &st, nil
 }
 
 type GenAiComputeTask struct {
@@ -2419,7 +2317,6 @@ func (st GetRunRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GitProvider string
-type gitProviderPb string
 
 const GitProviderAwsCodeCommit GitProvider = `awsCodeCommit`
 
@@ -2456,22 +2353,6 @@ func (f *GitProvider) Set(v string) error {
 // Type always returns GitProvider to satisfy [pflag.Value] interface
 func (f *GitProvider) Type() string {
 	return "GitProvider"
-}
-
-func gitProviderToPb(st *GitProvider) (*gitProviderPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := gitProviderPb(*st)
-	return &pb, nil
-}
-
-func gitProviderFromPb(pb *gitProviderPb) (*GitProvider, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := GitProvider(*pb)
-	return &st, nil
 }
 
 // Read-only state of the remote repository at the time the job was run. This
@@ -2856,7 +2737,6 @@ func (st JobDeployment) MarshalJSON() ([]byte, error) {
 
 // * `BUNDLE`: The job is managed by Databricks Asset Bundle.
 type JobDeploymentKind string
-type jobDeploymentKindPb string
 
 // The job is managed by Databricks Asset Bundle.
 const JobDeploymentKindBundle JobDeploymentKind = `BUNDLE`
@@ -2882,28 +2762,11 @@ func (f *JobDeploymentKind) Type() string {
 	return "JobDeploymentKind"
 }
 
-func jobDeploymentKindToPb(st *JobDeploymentKind) (*jobDeploymentKindPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := jobDeploymentKindPb(*st)
-	return &pb, nil
-}
-
-func jobDeploymentKindFromPb(pb *jobDeploymentKindPb) (*JobDeploymentKind, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := JobDeploymentKind(*pb)
-	return &st, nil
-}
-
 // Edit mode of the job.
 //
 // * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. *
 // `EDITABLE`: The job is in an editable state and can be modified.
 type JobEditMode string
-type jobEditModePb string
 
 // The job is in an editable state and can be modified.
 const JobEditModeEditable JobEditMode = `EDITABLE`
@@ -2930,22 +2793,6 @@ func (f *JobEditMode) Set(v string) error {
 // Type always returns JobEditMode to satisfy [pflag.Value] interface
 func (f *JobEditMode) Type() string {
 	return "JobEditMode"
-}
-
-func jobEditModeToPb(st *JobEditMode) (*jobEditModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := jobEditModePb(*st)
-	return &pb, nil
-}
-
-func jobEditModeFromPb(pb *jobEditModePb) (*JobEditMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := JobEditMode(*pb)
-	return &st, nil
 }
 
 type JobEmailNotifications struct {
@@ -3207,7 +3054,6 @@ func (st JobPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type JobPermissionLevel string
-type jobPermissionLevelPb string
 
 const JobPermissionLevelCanManage JobPermissionLevel = `CAN_MANAGE`
 
@@ -3236,22 +3082,6 @@ func (f *JobPermissionLevel) Set(v string) error {
 // Type always returns JobPermissionLevel to satisfy [pflag.Value] interface
 func (f *JobPermissionLevel) Type() string {
 	return "JobPermissionLevel"
-}
-
-func jobPermissionLevelToPb(st *JobPermissionLevel) (*jobPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := jobPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func jobPermissionLevelFromPb(pb *jobPermissionLevelPb) (*JobPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := JobPermissionLevel(*pb)
-	return &st, nil
 }
 
 type JobPermissions struct {
@@ -3629,7 +3459,6 @@ func (st JobSource) MarshalJSON() ([]byte, error) {
 // from the remote job specification and is allowed for live edit. Import the
 // remote job specification again from UI to make the job fully synced.
 type JobSourceDirtyState string
-type jobSourceDirtyStatePb string
 
 // The job is temporary disconnected from the remote job specification and is
 // allowed for live edit. Import the remote job specification again from UI to
@@ -3661,22 +3490,6 @@ func (f *JobSourceDirtyState) Type() string {
 	return "JobSourceDirtyState"
 }
 
-func jobSourceDirtyStateToPb(st *JobSourceDirtyState) (*jobSourceDirtyStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := jobSourceDirtyStatePb(*st)
-	return &pb, nil
-}
-
-func jobSourceDirtyStateFromPb(pb *jobSourceDirtyStatePb) (*JobSourceDirtyState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := JobSourceDirtyState(*pb)
-	return &st, nil
-}
-
 // Specifies the health metric that is being evaluated for a particular health
 // rule.
 //
@@ -3690,7 +3503,6 @@ func jobSourceDirtyStateFromPb(pb *jobSourceDirtyStatePb) (*JobSourceDirtyState,
 // number of outstanding files across all streams. This metric is in Public
 // Preview.
 type JobsHealthMetric string
-type jobsHealthMetricPb string
 
 // Expected total time for a run in seconds.
 const JobsHealthMetricRunDurationSeconds JobsHealthMetric = `RUN_DURATION_SECONDS`
@@ -3732,26 +3544,9 @@ func (f *JobsHealthMetric) Type() string {
 	return "JobsHealthMetric"
 }
 
-func jobsHealthMetricToPb(st *JobsHealthMetric) (*jobsHealthMetricPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := jobsHealthMetricPb(*st)
-	return &pb, nil
-}
-
-func jobsHealthMetricFromPb(pb *jobsHealthMetricPb) (*JobsHealthMetric, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := JobsHealthMetric(*pb)
-	return &st, nil
-}
-
 // Specifies the operator used to compare the health metric value with the
 // specified threshold.
 type JobsHealthOperator string
-type jobsHealthOperatorPb string
 
 const JobsHealthOperatorGreaterThan JobsHealthOperator = `GREATER_THAN`
 
@@ -3774,22 +3569,6 @@ func (f *JobsHealthOperator) Set(v string) error {
 // Type always returns JobsHealthOperator to satisfy [pflag.Value] interface
 func (f *JobsHealthOperator) Type() string {
 	return "JobsHealthOperator"
-}
-
-func jobsHealthOperatorToPb(st *JobsHealthOperator) (*jobsHealthOperatorPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := jobsHealthOperatorPb(*st)
-	return &pb, nil
-}
-
-func jobsHealthOperatorFromPb(pb *jobsHealthOperatorPb) (*JobsHealthOperator, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := JobsHealthOperator(*pb)
-	return &st, nil
 }
 
 type JobsHealthRule struct {
@@ -4339,7 +4118,6 @@ func (st OutputSchemaInfo) MarshalJSON() ([]byte, error) {
 }
 
 type PauseStatus string
-type pauseStatusPb string
 
 const PauseStatusPaused PauseStatus = `PAUSED`
 
@@ -4366,28 +4144,11 @@ func (f *PauseStatus) Type() string {
 	return "PauseStatus"
 }
 
-func pauseStatusToPb(st *PauseStatus) (*pauseStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := pauseStatusPb(*st)
-	return &pb, nil
-}
-
-func pauseStatusFromPb(pb *pauseStatusPb) (*PauseStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PauseStatus(*pb)
-	return &st, nil
-}
-
 // PerformanceTarget defines how performant (lower latency) or cost efficient
 // the execution of run on serverless compute should be. The performance mode on
 // the job or pipeline should map to a performance setting that is passed to
 // Cluster Manager (see cluster-common PerformanceTarget).
 type PerformanceTarget string
-type performanceTargetPb string
 
 const PerformanceTargetPerformanceOptimized PerformanceTarget = `PERFORMANCE_OPTIMIZED`
 
@@ -4412,22 +4173,6 @@ func (f *PerformanceTarget) Set(v string) error {
 // Type always returns PerformanceTarget to satisfy [pflag.Value] interface
 func (f *PerformanceTarget) Type() string {
 	return "PerformanceTarget"
-}
-
-func performanceTargetToPb(st *PerformanceTarget) (*performanceTargetPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := performanceTargetPb(*st)
-	return &pb, nil
-}
-
-func performanceTargetFromPb(pb *performanceTargetPb) (*PerformanceTarget, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PerformanceTarget(*pb)
-	return &st, nil
 }
 
 type PeriodicTriggerConfiguration struct {
@@ -4465,7 +4210,6 @@ func (st PeriodicTriggerConfiguration) MarshalJSON() ([]byte, error) {
 }
 
 type PeriodicTriggerConfigurationTimeUnit string
-type periodicTriggerConfigurationTimeUnitPb string
 
 const PeriodicTriggerConfigurationTimeUnitDays PeriodicTriggerConfigurationTimeUnit = `DAYS`
 
@@ -4492,22 +4236,6 @@ func (f *PeriodicTriggerConfigurationTimeUnit) Set(v string) error {
 // Type always returns PeriodicTriggerConfigurationTimeUnit to satisfy [pflag.Value] interface
 func (f *PeriodicTriggerConfigurationTimeUnit) Type() string {
 	return "PeriodicTriggerConfigurationTimeUnit"
-}
-
-func periodicTriggerConfigurationTimeUnitToPb(st *PeriodicTriggerConfigurationTimeUnit) (*periodicTriggerConfigurationTimeUnitPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := periodicTriggerConfigurationTimeUnitPb(*st)
-	return &pb, nil
-}
-
-func periodicTriggerConfigurationTimeUnitFromPb(pb *periodicTriggerConfigurationTimeUnitPb) (*PeriodicTriggerConfigurationTimeUnit, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PeriodicTriggerConfigurationTimeUnit(*pb)
-	return &st, nil
 }
 
 type PipelineParams struct {
@@ -4805,7 +4533,6 @@ func (st QueueDetails) MarshalJSON() ([]byte, error) {
 // limit of concurrent job runs. * `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run
 // was queued due to reaching the workspace limit of active run job tasks.
 type QueueDetailsCodeCode string
-type queueDetailsCodeCodePb string
 
 // The run was queued due to reaching the workspace limit of active task runs.
 const QueueDetailsCodeCodeActiveRunsLimitReached QueueDetailsCodeCode = `ACTIVE_RUNS_LIMIT_REACHED`
@@ -4836,22 +4563,6 @@ func (f *QueueDetailsCodeCode) Set(v string) error {
 // Type always returns QueueDetailsCodeCode to satisfy [pflag.Value] interface
 func (f *QueueDetailsCodeCode) Type() string {
 	return "QueueDetailsCodeCode"
-}
-
-func queueDetailsCodeCodeToPb(st *QueueDetailsCodeCode) (*queueDetailsCodeCodePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := queueDetailsCodeCodePb(*st)
-	return &pb, nil
-}
-
-func queueDetailsCodeCodeFromPb(pb *queueDetailsCodeCodePb) (*QueueDetailsCodeCode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := QueueDetailsCodeCode(*pb)
-	return &st, nil
 }
 
 type QueueSettings struct {
@@ -4952,7 +4663,6 @@ func (st RepairHistoryItem) MarshalJSON() ([]byte, error) {
 // The repair history item type. Indicates whether a run is the original run or
 // a repair run.
 type RepairHistoryItemType string
-type repairHistoryItemTypePb string
 
 const RepairHistoryItemTypeOriginal RepairHistoryItemType = `ORIGINAL`
 
@@ -4977,22 +4687,6 @@ func (f *RepairHistoryItemType) Set(v string) error {
 // Type always returns RepairHistoryItemType to satisfy [pflag.Value] interface
 func (f *RepairHistoryItemType) Type() string {
 	return "RepairHistoryItemType"
-}
-
-func repairHistoryItemTypeToPb(st *RepairHistoryItemType) (*repairHistoryItemTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := repairHistoryItemTypePb(*st)
-	return &pb, nil
-}
-
-func repairHistoryItemTypeFromPb(pb *repairHistoryItemTypePb) (*RepairHistoryItemType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RepairHistoryItemType(*pb)
-	return &st, nil
 }
 
 type RepairRun struct {
@@ -5866,7 +5560,6 @@ func (st RunForEachTask) MarshalJSON() ([]byte, error) {
 // `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl
 // dependencies have failed
 type RunIf string
-type runIfPb string
 
 // All dependencies have been completed
 const RunIfAllDone RunIf = `ALL_DONE`
@@ -5905,22 +5598,6 @@ func (f *RunIf) Set(v string) error {
 // Type always returns RunIf to satisfy [pflag.Value] interface
 func (f *RunIf) Type() string {
 	return "RunIf"
-}
-
-func runIfToPb(st *RunIf) (*runIfPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := runIfPb(*st)
-	return &pb, nil
-}
-
-func runIfFromPb(pb *runIfPb) (*RunIf, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RunIf(*pb)
-	return &st, nil
 }
 
 type RunJobOutput struct {
@@ -6095,7 +5772,6 @@ func (st RunJobTask) MarshalJSON() ([]byte, error) {
 // terminal. * `BLOCKED`: The run is blocked on an upstream dependency. *
 // `WAITING_FOR_RETRY`: The run is waiting for a retry.
 type RunLifeCycleState string
-type runLifeCycleStatePb string
 
 // The run is blocked on an upstream dependency.
 const RunLifeCycleStateBlocked RunLifeCycleState = `BLOCKED`
@@ -6152,25 +5828,8 @@ func (f *RunLifeCycleState) Type() string {
 	return "RunLifeCycleState"
 }
 
-func runLifeCycleStateToPb(st *RunLifeCycleState) (*runLifeCycleStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := runLifeCycleStatePb(*st)
-	return &pb, nil
-}
-
-func runLifeCycleStateFromPb(pb *runLifeCycleStatePb) (*RunLifeCycleState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RunLifeCycleState(*pb)
-	return &st, nil
-}
-
 // The current state of the run.
 type RunLifecycleStateV2State string
-type runLifecycleStateV2StatePb string
 
 const RunLifecycleStateV2StateBlocked RunLifecycleStateV2State = `BLOCKED`
 
@@ -6205,22 +5864,6 @@ func (f *RunLifecycleStateV2State) Set(v string) error {
 // Type always returns RunLifecycleStateV2State to satisfy [pflag.Value] interface
 func (f *RunLifecycleStateV2State) Type() string {
 	return "RunLifecycleStateV2State"
-}
-
-func runLifecycleStateV2StateToPb(st *RunLifecycleStateV2State) (*runLifecycleStateV2StatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := runLifecycleStateV2StatePb(*st)
-	return &pb, nil
-}
-
-func runLifecycleStateV2StateFromPb(pb *runLifecycleStateV2StatePb) (*RunLifecycleStateV2State, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RunLifecycleStateV2State(*pb)
-	return &st, nil
 }
 
 type RunNow struct {
@@ -6635,7 +6278,6 @@ func (st RunParameters) MarshalJSON() ([]byte, error) {
 // canceled. * `DISABLED`: The run was skipped because it was disabled
 // explicitly by the user.
 type RunResultState string
-type runResultStatePb string
 
 // The run was canceled at user request.
 const RunResultStateCanceled RunResultState = `CANCELED`
@@ -6687,22 +6329,6 @@ func (f *RunResultState) Set(v string) error {
 // Type always returns RunResultState to satisfy [pflag.Value] interface
 func (f *RunResultState) Type() string {
 	return "RunResultState"
-}
-
-func runResultStateToPb(st *RunResultState) (*runResultStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := runResultStatePb(*st)
-	return &pb, nil
-}
-
-func runResultStateFromPb(pb *runResultStatePb) (*RunResultState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RunResultState(*pb)
-	return &st, nil
 }
 
 // The current state of the run.
@@ -7066,7 +6692,6 @@ func (st RunTask) MarshalJSON() ([]byte, error) {
 //
 // [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
 type RunType string
-type runTypePb string
 
 // Normal job run. A run created with :method:jobs/runNow.
 const RunTypeJobRun RunType = `JOB_RUN`
@@ -7100,22 +6725,6 @@ func (f *RunType) Type() string {
 	return "RunType"
 }
 
-func runTypeToPb(st *RunType) (*runTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := runTypePb(*st)
-	return &pb, nil
-}
-
-func runTypeFromPb(pb *runTypePb) (*RunType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RunType(*pb)
-	return &st, nil
-}
-
 // Optional location type of the SQL file. When set to `WORKSPACE`, the SQL file
 // will be retrieved\ from the local Databricks workspace. When set to `GIT`,
 // the SQL file will be retrieved from a Git repository defined in `git_source`.
@@ -7125,7 +6734,6 @@ func runTypeFromPb(pb *runTypePb) (*RunType, error) {
 // * `WORKSPACE`: SQL file is located in Databricks workspace. * `GIT`: SQL file
 // is located in cloud Git provider.
 type Source string
-type sourcePb string
 
 // SQL file is located in cloud Git provider.
 const SourceGit Source = `GIT`
@@ -7152,22 +6760,6 @@ func (f *Source) Set(v string) error {
 // Type always returns Source to satisfy [pflag.Value] interface
 func (f *Source) Type() string {
 	return "Source"
-}
-
-func sourceToPb(st *Source) (*sourcePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := sourcePb(*st)
-	return &pb, nil
-}
-
-func sourceFromPb(pb *sourcePb) (*Source, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Source(*pb)
-	return &st, nil
 }
 
 type SparkJarTask struct {
@@ -7368,7 +6960,6 @@ func (st SqlAlertOutput) MarshalJSON() ([]byte, error) {
 // fulfill trigger conditions * TRIGGERED: alert evaluated and fulfilled trigger
 // conditions
 type SqlAlertState string
-type sqlAlertStatePb string
 
 const SqlAlertStateOk SqlAlertState = `OK`
 
@@ -7395,22 +6986,6 @@ func (f *SqlAlertState) Set(v string) error {
 // Type always returns SqlAlertState to satisfy [pflag.Value] interface
 func (f *SqlAlertState) Type() string {
 	return "SqlAlertState"
-}
-
-func sqlAlertStateToPb(st *SqlAlertState) (*sqlAlertStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := sqlAlertStatePb(*st)
-	return &pb, nil
-}
-
-func sqlAlertStateFromPb(pb *sqlAlertStatePb) (*SqlAlertState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SqlAlertState(*pb)
-	return &st, nil
 }
 
 type SqlDashboardOutput struct {
@@ -7501,7 +7076,6 @@ func (st SqlDashboardWidgetOutput) MarshalJSON() ([]byte, error) {
 }
 
 type SqlDashboardWidgetOutputStatus string
-type sqlDashboardWidgetOutputStatusPb string
 
 const SqlDashboardWidgetOutputStatusCancelled SqlDashboardWidgetOutputStatus = `CANCELLED`
 
@@ -7532,22 +7106,6 @@ func (f *SqlDashboardWidgetOutputStatus) Set(v string) error {
 // Type always returns SqlDashboardWidgetOutputStatus to satisfy [pflag.Value] interface
 func (f *SqlDashboardWidgetOutputStatus) Type() string {
 	return "SqlDashboardWidgetOutputStatus"
-}
-
-func sqlDashboardWidgetOutputStatusToPb(st *SqlDashboardWidgetOutputStatus) (*sqlDashboardWidgetOutputStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := sqlDashboardWidgetOutputStatusPb(*st)
-	return &pb, nil
-}
-
-func sqlDashboardWidgetOutputStatusFromPb(pb *sqlDashboardWidgetOutputStatusPb) (*SqlDashboardWidgetOutputStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SqlDashboardWidgetOutputStatus(*pb)
-	return &st, nil
 }
 
 type SqlOutput struct {
@@ -7947,7 +7505,6 @@ func (st SqlTaskSubscription) MarshalJSON() ([]byte, error) {
 }
 
 type StorageMode string
-type storageModePb string
 
 const StorageModeDirectQuery StorageMode = `DIRECT_QUERY`
 
@@ -7974,22 +7531,6 @@ func (f *StorageMode) Set(v string) error {
 // Type always returns StorageMode to satisfy [pflag.Value] interface
 func (f *StorageMode) Type() string {
 	return "StorageMode"
-}
-
-func storageModeToPb(st *StorageMode) (*storageModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := storageModePb(*st)
-	return &pb, nil
-}
-
-func storageModeFromPb(pb *storageModePb) (*StorageMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := StorageMode(*pb)
-	return &st, nil
 }
 
 type SubmitRun struct {
@@ -8813,7 +8354,6 @@ func (st TaskNotificationSettings) MarshalJSON() ([]byte, error) {
 //
 // [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
 type TerminationCodeCode string
-type terminationCodeCodePb string
 
 const TerminationCodeCodeBudgetPolicyLimitExceeded TerminationCodeCode = `BUDGET_POLICY_LIMIT_EXCEEDED`
 
@@ -8933,22 +8473,6 @@ func (f *TerminationCodeCode) Type() string {
 	return "TerminationCodeCode"
 }
 
-func terminationCodeCodeToPb(st *TerminationCodeCode) (*terminationCodeCodePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := terminationCodeCodePb(*st)
-	return &pb, nil
-}
-
-func terminationCodeCodeFromPb(pb *terminationCodeCodePb) (*TerminationCodeCode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TerminationCodeCode(*pb)
-	return &st, nil
-}
-
 type TerminationDetails struct {
 	// The code indicates why the run was terminated. Additional codes might be
 	// introduced in future releases. * `SUCCESS`: The run was completed
@@ -9052,7 +8576,6 @@ func (st TerminationDetails) MarshalJSON() ([]byte, error) {
 //
 // [status page]: https://status.databricks.com/
 type TerminationTypeType string
-type terminationTypeTypePb string
 
 // The run was terminated because of an error caused by user input or the job
 // configuration.
@@ -9089,22 +8612,6 @@ func (f *TerminationTypeType) Set(v string) error {
 // Type always returns TerminationTypeType to satisfy [pflag.Value] interface
 func (f *TerminationTypeType) Type() string {
 	return "TerminationTypeType"
-}
-
-func terminationTypeTypeToPb(st *TerminationTypeType) (*terminationTypeTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := terminationTypeTypePb(*st)
-	return &pb, nil
-}
-
-func terminationTypeTypeFromPb(pb *terminationTypeTypePb) (*TerminationTypeType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TerminationTypeType(*pb)
-	return &st, nil
 }
 
 // Additional details about what triggered the run
@@ -9197,7 +8704,6 @@ func (st TriggerSettings) MarshalJSON() ([]byte, error) {
 // `CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a
 // continuous job run.
 type TriggerType string
-type triggerTypePb string
 
 // Indicates a run that is triggered by a file arrival.
 const TriggerTypeFileArrival TriggerType = `FILE_ARRIVAL`
@@ -9238,22 +8744,6 @@ func (f *TriggerType) Set(v string) error {
 // Type always returns TriggerType to satisfy [pflag.Value] interface
 func (f *TriggerType) Type() string {
 	return "TriggerType"
-}
-
-func triggerTypeToPb(st *TriggerType) (*triggerTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := triggerTypePb(*st)
-	return &pb, nil
-}
-
-func triggerTypeFromPb(pb *triggerTypePb) (*TriggerType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TriggerType(*pb)
-	return &st, nil
 }
 
 type UpdateJob struct {
@@ -9376,7 +8866,6 @@ func (st ViewItem) MarshalJSON() ([]byte, error) {
 
 // * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
 type ViewType string
-type viewTypePb string
 
 // Dashboard view item.
 const ViewTypeDashboard ViewType = `DASHBOARD`
@@ -9405,26 +8894,9 @@ func (f *ViewType) Type() string {
 	return "ViewType"
 }
 
-func viewTypeToPb(st *ViewType) (*viewTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := viewTypePb(*st)
-	return &pb, nil
-}
-
-func viewTypeFromPb(pb *viewTypePb) (*ViewType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ViewType(*pb)
-	return &st, nil
-}
-
 // * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of
 // the notebook. * `ALL`: All views of the notebook.
 type ViewsToExport string
-type viewsToExportPb string
 
 // All views of the notebook.
 const ViewsToExportAll ViewsToExport = `ALL`
@@ -9454,22 +8926,6 @@ func (f *ViewsToExport) Set(v string) error {
 // Type always returns ViewsToExport to satisfy [pflag.Value] interface
 func (f *ViewsToExport) Type() string {
 	return "ViewsToExport"
-}
-
-func viewsToExportToPb(st *ViewsToExport) (*viewsToExportPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := viewsToExportPb(*st)
-	return &pb, nil
-}
-
-func viewsToExportFromPb(pb *viewsToExportPb) (*ViewsToExport, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ViewsToExport(*pb)
-	return &st, nil
 }
 
 type Webhook struct {

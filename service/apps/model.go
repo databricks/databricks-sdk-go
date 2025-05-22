@@ -295,7 +295,6 @@ func (st AppDeploymentArtifacts) MarshalJSON() ([]byte, error) {
 }
 
 type AppDeploymentMode string
-type appDeploymentModePb string
 
 const AppDeploymentModeAutoSync AppDeploymentMode = `AUTO_SYNC`
 
@@ -322,24 +321,7 @@ func (f *AppDeploymentMode) Type() string {
 	return "AppDeploymentMode"
 }
 
-func appDeploymentModeToPb(st *AppDeploymentMode) (*appDeploymentModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := appDeploymentModePb(*st)
-	return &pb, nil
-}
-
-func appDeploymentModeFromPb(pb *appDeploymentModePb) (*AppDeploymentMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AppDeploymentMode(*pb)
-	return &st, nil
-}
-
 type AppDeploymentState string
-type appDeploymentStatePb string
 
 const AppDeploymentStateCancelled AppDeploymentState = `CANCELLED`
 
@@ -368,22 +350,6 @@ func (f *AppDeploymentState) Set(v string) error {
 // Type always returns AppDeploymentState to satisfy [pflag.Value] interface
 func (f *AppDeploymentState) Type() string {
 	return "AppDeploymentState"
-}
-
-func appDeploymentStateToPb(st *AppDeploymentState) (*appDeploymentStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := appDeploymentStatePb(*st)
-	return &pb, nil
-}
-
-func appDeploymentStateFromPb(pb *appDeploymentStatePb) (*AppDeploymentState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AppDeploymentState(*pb)
-	return &st, nil
 }
 
 type AppDeploymentStatus struct {
@@ -463,7 +429,6 @@ func (st AppPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type AppPermissionLevel string
-type appPermissionLevelPb string
 
 const AppPermissionLevelCanManage AppPermissionLevel = `CAN_MANAGE`
 
@@ -488,22 +453,6 @@ func (f *AppPermissionLevel) Set(v string) error {
 // Type always returns AppPermissionLevel to satisfy [pflag.Value] interface
 func (f *AppPermissionLevel) Type() string {
 	return "AppPermissionLevel"
-}
-
-func appPermissionLevelToPb(st *AppPermissionLevel) (*appPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := appPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func appPermissionLevelFromPb(pb *appPermissionLevelPb) (*AppPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AppPermissionLevel(*pb)
-	return &st, nil
 }
 
 type AppPermissions struct {
@@ -702,7 +651,6 @@ func (st AppResourceJob) MarshalJSON() ([]byte, error) {
 }
 
 type AppResourceJobJobPermission string
-type appResourceJobJobPermissionPb string
 
 const AppResourceJobJobPermissionCanManage AppResourceJobJobPermission = `CAN_MANAGE`
 
@@ -731,22 +679,6 @@ func (f *AppResourceJobJobPermission) Set(v string) error {
 // Type always returns AppResourceJobJobPermission to satisfy [pflag.Value] interface
 func (f *AppResourceJobJobPermission) Type() string {
 	return "AppResourceJobJobPermission"
-}
-
-func appResourceJobJobPermissionToPb(st *AppResourceJobJobPermission) (*appResourceJobJobPermissionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := appResourceJobJobPermissionPb(*st)
-	return &pb, nil
-}
-
-func appResourceJobJobPermissionFromPb(pb *appResourceJobJobPermissionPb) (*AppResourceJobJobPermission, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AppResourceJobJobPermission(*pb)
-	return &st, nil
 }
 
 type AppResourceSecret struct {
@@ -790,7 +722,6 @@ func (st AppResourceSecret) MarshalJSON() ([]byte, error) {
 // Permission to grant on the secret scope. Supported permissions are: "READ",
 // "WRITE", "MANAGE".
 type AppResourceSecretSecretPermission string
-type appResourceSecretSecretPermissionPb string
 
 const AppResourceSecretSecretPermissionManage AppResourceSecretSecretPermission = `MANAGE`
 
@@ -817,22 +748,6 @@ func (f *AppResourceSecretSecretPermission) Set(v string) error {
 // Type always returns AppResourceSecretSecretPermission to satisfy [pflag.Value] interface
 func (f *AppResourceSecretSecretPermission) Type() string {
 	return "AppResourceSecretSecretPermission"
-}
-
-func appResourceSecretSecretPermissionToPb(st *AppResourceSecretSecretPermission) (*appResourceSecretSecretPermissionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := appResourceSecretSecretPermissionPb(*st)
-	return &pb, nil
-}
-
-func appResourceSecretSecretPermissionFromPb(pb *appResourceSecretSecretPermissionPb) (*AppResourceSecretSecretPermission, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AppResourceSecretSecretPermission(*pb)
-	return &st, nil
 }
 
 type AppResourceServingEndpoint struct {
@@ -871,7 +786,6 @@ func (st AppResourceServingEndpoint) MarshalJSON() ([]byte, error) {
 }
 
 type AppResourceServingEndpointServingEndpointPermission string
-type appResourceServingEndpointServingEndpointPermissionPb string
 
 const AppResourceServingEndpointServingEndpointPermissionCanManage AppResourceServingEndpointServingEndpointPermission = `CAN_MANAGE`
 
@@ -898,22 +812,6 @@ func (f *AppResourceServingEndpointServingEndpointPermission) Set(v string) erro
 // Type always returns AppResourceServingEndpointServingEndpointPermission to satisfy [pflag.Value] interface
 func (f *AppResourceServingEndpointServingEndpointPermission) Type() string {
 	return "AppResourceServingEndpointServingEndpointPermission"
-}
-
-func appResourceServingEndpointServingEndpointPermissionToPb(st *AppResourceServingEndpointServingEndpointPermission) (*appResourceServingEndpointServingEndpointPermissionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := appResourceServingEndpointServingEndpointPermissionPb(*st)
-	return &pb, nil
-}
-
-func appResourceServingEndpointServingEndpointPermissionFromPb(pb *appResourceServingEndpointServingEndpointPermissionPb) (*AppResourceServingEndpointServingEndpointPermission, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AppResourceServingEndpointServingEndpointPermission(*pb)
-	return &st, nil
 }
 
 type AppResourceSqlWarehouse struct {
@@ -952,7 +850,6 @@ func (st AppResourceSqlWarehouse) MarshalJSON() ([]byte, error) {
 }
 
 type AppResourceSqlWarehouseSqlWarehousePermission string
-type appResourceSqlWarehouseSqlWarehousePermissionPb string
 
 const AppResourceSqlWarehouseSqlWarehousePermissionCanManage AppResourceSqlWarehouseSqlWarehousePermission = `CAN_MANAGE`
 
@@ -979,22 +876,6 @@ func (f *AppResourceSqlWarehouseSqlWarehousePermission) Set(v string) error {
 // Type always returns AppResourceSqlWarehouseSqlWarehousePermission to satisfy [pflag.Value] interface
 func (f *AppResourceSqlWarehouseSqlWarehousePermission) Type() string {
 	return "AppResourceSqlWarehouseSqlWarehousePermission"
-}
-
-func appResourceSqlWarehouseSqlWarehousePermissionToPb(st *AppResourceSqlWarehouseSqlWarehousePermission) (*appResourceSqlWarehouseSqlWarehousePermissionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := appResourceSqlWarehouseSqlWarehousePermissionPb(*st)
-	return &pb, nil
-}
-
-func appResourceSqlWarehouseSqlWarehousePermissionFromPb(pb *appResourceSqlWarehouseSqlWarehousePermissionPb) (*AppResourceSqlWarehouseSqlWarehousePermission, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AppResourceSqlWarehouseSqlWarehousePermission(*pb)
-	return &st, nil
 }
 
 type AppResourceUcSecurable struct {
@@ -1035,7 +916,6 @@ func (st AppResourceUcSecurable) MarshalJSON() ([]byte, error) {
 }
 
 type AppResourceUcSecurableUcSecurablePermission string
-type appResourceUcSecurableUcSecurablePermissionPb string
 
 const AppResourceUcSecurableUcSecurablePermissionReadVolume AppResourceUcSecurableUcSecurablePermission = `READ_VOLUME`
 
@@ -1062,24 +942,7 @@ func (f *AppResourceUcSecurableUcSecurablePermission) Type() string {
 	return "AppResourceUcSecurableUcSecurablePermission"
 }
 
-func appResourceUcSecurableUcSecurablePermissionToPb(st *AppResourceUcSecurableUcSecurablePermission) (*appResourceUcSecurableUcSecurablePermissionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := appResourceUcSecurableUcSecurablePermissionPb(*st)
-	return &pb, nil
-}
-
-func appResourceUcSecurableUcSecurablePermissionFromPb(pb *appResourceUcSecurableUcSecurablePermissionPb) (*AppResourceUcSecurableUcSecurablePermission, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AppResourceUcSecurableUcSecurablePermission(*pb)
-	return &st, nil
-}
-
 type AppResourceUcSecurableUcSecurableType string
-type appResourceUcSecurableUcSecurableTypePb string
 
 const AppResourceUcSecurableUcSecurableTypeVolume AppResourceUcSecurableUcSecurableType = `VOLUME`
 
@@ -1104,24 +967,7 @@ func (f *AppResourceUcSecurableUcSecurableType) Type() string {
 	return "AppResourceUcSecurableUcSecurableType"
 }
 
-func appResourceUcSecurableUcSecurableTypeToPb(st *AppResourceUcSecurableUcSecurableType) (*appResourceUcSecurableUcSecurableTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := appResourceUcSecurableUcSecurableTypePb(*st)
-	return &pb, nil
-}
-
-func appResourceUcSecurableUcSecurableTypeFromPb(pb *appResourceUcSecurableUcSecurableTypePb) (*AppResourceUcSecurableUcSecurableType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AppResourceUcSecurableUcSecurableType(*pb)
-	return &st, nil
-}
-
 type ApplicationState string
-type applicationStatePb string
 
 const ApplicationStateCrashed ApplicationState = `CRASHED`
 
@@ -1150,22 +996,6 @@ func (f *ApplicationState) Set(v string) error {
 // Type always returns ApplicationState to satisfy [pflag.Value] interface
 func (f *ApplicationState) Type() string {
 	return "ApplicationState"
-}
-
-func applicationStateToPb(st *ApplicationState) (*applicationStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := applicationStatePb(*st)
-	return &pb, nil
-}
-
-func applicationStateFromPb(pb *applicationStatePb) (*ApplicationState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ApplicationState(*pb)
-	return &st, nil
 }
 
 type ApplicationStatus struct {
@@ -1205,7 +1035,6 @@ func (st ApplicationStatus) MarshalJSON() ([]byte, error) {
 }
 
 type ComputeState string
-type computeStatePb string
 
 const ComputeStateActive ComputeState = `ACTIVE`
 
@@ -1240,22 +1069,6 @@ func (f *ComputeState) Set(v string) error {
 // Type always returns ComputeState to satisfy [pflag.Value] interface
 func (f *ComputeState) Type() string {
 	return "ComputeState"
-}
-
-func computeStateToPb(st *ComputeState) (*computeStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := computeStatePb(*st)
-	return &pb, nil
-}
-
-func computeStateFromPb(pb *computeStatePb) (*ComputeState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ComputeState(*pb)
-	return &st, nil
 }
 
 type ComputeStatus struct {

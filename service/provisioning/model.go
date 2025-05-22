@@ -700,24 +700,7 @@ func (st Credential) MarshalJSON() ([]byte, error) {
 // key-value pair is a string of utf-8 characters. The value can be an empty
 // string, with maximum length of 255 characters. The key can be of maximum
 // length of 127 characters, and cannot be empty.
-
 type CustomTags map[string]string
-type customTagsPb CustomTags
-
-func customTagsToPb(st *CustomTags) (*customTagsPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	stPb := customTagsPb(*st)
-	return &stPb, nil
-}
-func customTagsFromPb(stPb *customTagsPb) (*CustomTags, error) {
-	if stPb == nil {
-		return nil, nil
-	}
-	st := CustomTags(*stPb)
-	return &st, nil
-}
 
 // The general workspace configurations that are specific to Google Cloud.
 type CustomerFacingGcpCloudResourceContainer struct {
@@ -1059,7 +1042,6 @@ func (st DeleteWorkspaceRequest) MarshalJSON() ([]byte, error) {
 //
 // [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
 type EndpointUseCase string
-type endpointUseCasePb string
 
 const EndpointUseCaseDataplaneRelayAccess EndpointUseCase = `DATAPLANE_RELAY_ACCESS`
 
@@ -1086,26 +1068,9 @@ func (f *EndpointUseCase) Type() string {
 	return "EndpointUseCase"
 }
 
-func endpointUseCaseToPb(st *EndpointUseCase) (*endpointUseCasePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := endpointUseCasePb(*st)
-	return &pb, nil
-}
-
-func endpointUseCaseFromPb(pb *endpointUseCasePb) (*EndpointUseCase, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EndpointUseCase(*pb)
-	return &st, nil
-}
-
 // The AWS resource associated with this error: credentials, VPC, subnet,
 // security group, or network ACL.
 type ErrorType string
-type errorTypePb string
 
 const ErrorTypeCredentials ErrorType = `credentials`
 
@@ -1136,22 +1101,6 @@ func (f *ErrorType) Set(v string) error {
 // Type always returns ErrorType to satisfy [pflag.Value] interface
 func (f *ErrorType) Type() string {
 	return "ErrorType"
-}
-
-func errorTypeToPb(st *ErrorType) (*errorTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := errorTypePb(*st)
-	return &pb, nil
-}
-
-func errorTypeFromPb(pb *errorTypePb) (*ErrorType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ErrorType(*pb)
-	return &st, nil
 }
 
 type ExternalCustomerInfo struct {
@@ -1671,7 +1620,6 @@ func (st GkeConfig) MarshalJSON() ([]byte, error) {
 // Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a
 // public GKE cluster have public IP addresses.
 type GkeConfigConnectivityType string
-type gkeConfigConnectivityTypePb string
 
 const GkeConfigConnectivityTypePrivateNodePublicMaster GkeConfigConnectivityType = `PRIVATE_NODE_PUBLIC_MASTER`
 
@@ -1698,27 +1646,10 @@ func (f *GkeConfigConnectivityType) Type() string {
 	return "GkeConfigConnectivityType"
 }
 
-func gkeConfigConnectivityTypeToPb(st *GkeConfigConnectivityType) (*gkeConfigConnectivityTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := gkeConfigConnectivityTypePb(*st)
-	return &pb, nil
-}
-
-func gkeConfigConnectivityTypeFromPb(pb *gkeConfigConnectivityTypePb) (*GkeConfigConnectivityType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := GkeConfigConnectivityType(*pb)
-	return &st, nil
-}
-
 // Possible values are: * `MANAGED_SERVICES`: Encrypts notebook and secret data
 // in the control plane * `STORAGE`: Encrypts the workspace's root S3 bucket
 // (root DBFS and system data) and, optionally, cluster EBS volumes.
 type KeyUseCase string
-type keyUseCasePb string
 
 // Encrypts notebook and secret data in the control plane
 const KeyUseCaseManagedServices KeyUseCase = `MANAGED_SERVICES`
@@ -1746,22 +1677,6 @@ func (f *KeyUseCase) Set(v string) error {
 // Type always returns KeyUseCase to satisfy [pflag.Value] interface
 func (f *KeyUseCase) Type() string {
 	return "KeyUseCase"
-}
-
-func keyUseCaseToPb(st *KeyUseCase) (*keyUseCasePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := keyUseCasePb(*st)
-	return &pb, nil
-}
-
-func keyUseCaseFromPb(pb *keyUseCasePb) (*KeyUseCase, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := KeyUseCase(*pb)
-	return &st, nil
 }
 
 type Network struct {
@@ -1959,7 +1874,6 @@ func (st NetworkWarning) MarshalJSON() ([]byte, error) {
 //
 // [AWS Pricing]: https://databricks.com/product/aws-pricing
 type PricingTier string
-type pricingTierPb string
 
 const PricingTierCommunityEdition PricingTier = `COMMUNITY_EDITION`
 
@@ -1994,22 +1908,6 @@ func (f *PricingTier) Type() string {
 	return "PricingTier"
 }
 
-func pricingTierToPb(st *PricingTier) (*pricingTierPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := pricingTierPb(*st)
-	return &pb, nil
-}
-
-func pricingTierFromPb(pb *pricingTierPb) (*PricingTier, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PricingTier(*pb)
-	return &st, nil
-}
-
 // The private access level controls which VPC endpoints can connect to the UI
 // or API of any workspace that attaches this private access settings object. *
 // `ACCOUNT` level access (the default) allows only VPC endpoints that are
@@ -2017,7 +1915,6 @@ func pricingTierFromPb(pb *pricingTierPb) (*PricingTier, error) {
 // level access allows only specified VPC endpoints connect to your workspace.
 // For details, see `allowed_vpc_endpoint_ids`.
 type PrivateAccessLevel string
-type privateAccessLevelPb string
 
 const PrivateAccessLevelAccount PrivateAccessLevel = `ACCOUNT`
 
@@ -2042,22 +1939,6 @@ func (f *PrivateAccessLevel) Set(v string) error {
 // Type always returns PrivateAccessLevel to satisfy [pflag.Value] interface
 func (f *PrivateAccessLevel) Type() string {
 	return "PrivateAccessLevel"
-}
-
-func privateAccessLevelToPb(st *PrivateAccessLevel) (*privateAccessLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := privateAccessLevelPb(*st)
-	return &pb, nil
-}
-
-func privateAccessLevelFromPb(pb *privateAccessLevelPb) (*PrivateAccessLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PrivateAccessLevel(*pb)
-	return &st, nil
 }
 
 type PrivateAccessSettings struct {
@@ -2515,7 +2396,6 @@ func (st VpcEndpoint) MarshalJSON() ([]byte, error) {
 // workspace: * `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`: Broken.
 // * `WARNED`: Warned.
 type VpcStatus string
-type vpcStatusPb string
 
 // Broken.
 const VpcStatusBroken VpcStatus = `BROKEN`
@@ -2550,25 +2430,8 @@ func (f *VpcStatus) Type() string {
 	return "VpcStatus"
 }
 
-func vpcStatusToPb(st *VpcStatus) (*vpcStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := vpcStatusPb(*st)
-	return &pb, nil
-}
-
-func vpcStatusFromPb(pb *vpcStatusPb) (*VpcStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := VpcStatus(*pb)
-	return &st, nil
-}
-
 // The AWS resource associated with this warning: a subnet or a security group.
 type WarningType string
-type warningTypePb string
 
 const WarningTypeSecurityGroup WarningType = `securityGroup`
 
@@ -2593,22 +2456,6 @@ func (f *WarningType) Set(v string) error {
 // Type always returns WarningType to satisfy [pflag.Value] interface
 func (f *WarningType) Type() string {
 	return "WarningType"
-}
-
-func warningTypeToPb(st *WarningType) (*warningTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := warningTypePb(*st)
-	return &pb, nil
-}
-
-func warningTypeFromPb(pb *warningTypePb) (*WarningType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := WarningType(*pb)
-	return &st, nil
 }
 
 type Workspace struct {
@@ -2766,7 +2613,6 @@ func (st Workspace) MarshalJSON() ([]byte, error) {
 // `PROVISIONING` initially. Continue to check the status until the status is
 // `RUNNING`.
 type WorkspaceStatus string
-type workspaceStatusPb string
 
 const WorkspaceStatusBanned WorkspaceStatus = `BANNED`
 
@@ -2799,22 +2645,6 @@ func (f *WorkspaceStatus) Set(v string) error {
 // Type always returns WorkspaceStatus to satisfy [pflag.Value] interface
 func (f *WorkspaceStatus) Type() string {
 	return "WorkspaceStatus"
-}
-
-func workspaceStatusToPb(st *WorkspaceStatus) (*workspaceStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := workspaceStatusPb(*st)
-	return &pb, nil
-}
-
-func workspaceStatusFromPb(pb *workspaceStatusPb) (*WorkspaceStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := WorkspaceStatus(*pb)
-	return &st, nil
 }
 
 func durationToPb(d *time.Duration) (*string, error) {

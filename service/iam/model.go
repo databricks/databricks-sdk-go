@@ -1032,7 +1032,6 @@ func (st GetServicePrincipalRequest) MarshalJSON() ([]byte, error) {
 }
 
 type GetSortOrder string
-type getSortOrderPb string
 
 const GetSortOrderAscending GetSortOrder = `ascending`
 
@@ -1057,22 +1056,6 @@ func (f *GetSortOrder) Set(v string) error {
 // Type always returns GetSortOrder to satisfy [pflag.Value] interface
 func (f *GetSortOrder) Type() string {
 	return "GetSortOrder"
-}
-
-func getSortOrderToPb(st *GetSortOrder) (*getSortOrderPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := getSortOrderPb(*st)
-	return &pb, nil
-}
-
-func getSortOrderFromPb(pb *getSortOrderPb) (*GetSortOrder, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := GetSortOrder(*pb)
-	return &st, nil
 }
 
 // Get user details.
@@ -1268,7 +1251,6 @@ func (st Group) MarshalJSON() ([]byte, error) {
 }
 
 type GroupSchema string
-type groupSchemaPb string
 
 const GroupSchemaUrnIetfParamsScimSchemasCore20Group GroupSchema = `urn:ietf:params:scim:schemas:core:2.0:Group`
 
@@ -1291,22 +1273,6 @@ func (f *GroupSchema) Set(v string) error {
 // Type always returns GroupSchema to satisfy [pflag.Value] interface
 func (f *GroupSchema) Type() string {
 	return "GroupSchema"
-}
-
-func groupSchemaToPb(st *GroupSchema) (*groupSchemaPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := groupSchemaPb(*st)
-	return &pb, nil
-}
-
-func groupSchemaFromPb(pb *groupSchemaPb) (*GroupSchema, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := GroupSchema(*pb)
-	return &st, nil
 }
 
 // List group details.
@@ -1589,7 +1555,6 @@ func (st ListGroupsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListResponseSchema string
-type listResponseSchemaPb string
 
 const ListResponseSchemaUrnIetfParamsScimApiMessages20ListResponse ListResponseSchema = `urn:ietf:params:scim:api:messages:2.0:ListResponse`
 
@@ -1612,22 +1577,6 @@ func (f *ListResponseSchema) Set(v string) error {
 // Type always returns ListResponseSchema to satisfy [pflag.Value] interface
 func (f *ListResponseSchema) Type() string {
 	return "ListResponseSchema"
-}
-
-func listResponseSchemaToPb(st *ListResponseSchema) (*listResponseSchemaPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listResponseSchemaPb(*st)
-	return &pb, nil
-}
-
-func listResponseSchemaFromPb(pb *listResponseSchemaPb) (*ListResponseSchema, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListResponseSchema(*pb)
-	return &st, nil
 }
 
 type ListServicePrincipalResponse struct {
@@ -1735,7 +1684,6 @@ func (st ListServicePrincipalsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListSortOrder string
-type listSortOrderPb string
 
 const ListSortOrderAscending ListSortOrder = `ascending`
 
@@ -1760,22 +1708,6 @@ func (f *ListSortOrder) Set(v string) error {
 // Type always returns ListSortOrder to satisfy [pflag.Value] interface
 func (f *ListSortOrder) Type() string {
 	return "ListSortOrder"
-}
-
-func listSortOrderToPb(st *ListSortOrder) (*listSortOrderPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listSortOrderPb(*st)
-	return &pb, nil
-}
-
-func listSortOrderFromPb(pb *listSortOrderPb) (*ListSortOrder, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListSortOrder(*pb)
-	return &st, nil
 }
 
 // List users.
@@ -2232,7 +2164,6 @@ func (st PasswordPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type PasswordPermissionLevel string
-type passwordPermissionLevelPb string
 
 const PasswordPermissionLevelCanUse PasswordPermissionLevel = `CAN_USE`
 
@@ -2255,22 +2186,6 @@ func (f *PasswordPermissionLevel) Set(v string) error {
 // Type always returns PasswordPermissionLevel to satisfy [pflag.Value] interface
 func (f *PasswordPermissionLevel) Type() string {
 	return "PasswordPermissionLevel"
-}
-
-func passwordPermissionLevelToPb(st *PasswordPermissionLevel) (*passwordPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := passwordPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func passwordPermissionLevelFromPb(pb *passwordPermissionLevelPb) (*PasswordPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PasswordPermissionLevel(*pb)
-	return &st, nil
 }
 
 type PasswordPermissions struct {
@@ -2420,7 +2335,6 @@ func (st Patch) MarshalJSON() ([]byte, error) {
 
 // Type of patch operation.
 type PatchOp string
-type patchOpPb string
 
 const PatchOpAdd PatchOp = `add`
 
@@ -2447,22 +2361,6 @@ func (f *PatchOp) Set(v string) error {
 // Type always returns PatchOp to satisfy [pflag.Value] interface
 func (f *PatchOp) Type() string {
 	return "PatchOp"
-}
-
-func patchOpToPb(st *PatchOp) (*patchOpPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := patchOpPb(*st)
-	return &pb, nil
-}
-
-func patchOpFromPb(pb *patchOpPb) (*PatchOp, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PatchOp(*pb)
-	return &st, nil
 }
 
 type PatchResponse struct {
@@ -2494,7 +2392,6 @@ func (st PatchResponse) MarshalJSON() ([]byte, error) {
 }
 
 type PatchSchema string
-type patchSchemaPb string
 
 const PatchSchemaUrnIetfParamsScimApiMessages20PatchOp PatchSchema = `urn:ietf:params:scim:api:messages:2.0:PatchOp`
 
@@ -2517,22 +2414,6 @@ func (f *PatchSchema) Set(v string) error {
 // Type always returns PatchSchema to satisfy [pflag.Value] interface
 func (f *PatchSchema) Type() string {
 	return "PatchSchema"
-}
-
-func patchSchemaToPb(st *PatchSchema) (*patchSchemaPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := patchSchemaPb(*st)
-	return &pb, nil
-}
-
-func patchSchemaFromPb(pb *patchSchemaPb) (*PatchSchema, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PatchSchema(*pb)
-	return &st, nil
 }
 
 type Permission struct {
@@ -2648,7 +2529,6 @@ func (st PermissionAssignments) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type PermissionLevel string
-type permissionLevelPb string
 
 const PermissionLevelCanAttachTo PermissionLevel = `CAN_ATTACH_TO`
 
@@ -2707,22 +2587,6 @@ func (f *PermissionLevel) Set(v string) error {
 // Type always returns PermissionLevel to satisfy [pflag.Value] interface
 func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
-}
-
-func permissionLevelToPb(st *PermissionLevel) (*permissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := permissionLevelPb(*st)
-	return &pb, nil
-}
-
-func permissionLevelFromPb(pb *permissionLevelPb) (*PermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PermissionLevel(*pb)
-	return &st, nil
 }
 
 type PermissionOutput struct {
@@ -2847,7 +2711,6 @@ func (st PrincipalOutput) MarshalJSON() ([]byte, error) {
 // Defines the identity to be used for authZ of the request on the server side.
 // See one pager for for more information: http://go/acl/service-identity
 type RequestAuthzIdentity string
-type requestAuthzIdentityPb string
 
 const RequestAuthzIdentityRequestAuthzIdentityServiceIdentity RequestAuthzIdentity = `REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY`
 
@@ -2872,22 +2735,6 @@ func (f *RequestAuthzIdentity) Set(v string) error {
 // Type always returns RequestAuthzIdentity to satisfy [pflag.Value] interface
 func (f *RequestAuthzIdentity) Type() string {
 	return "RequestAuthzIdentity"
-}
-
-func requestAuthzIdentityToPb(st *RequestAuthzIdentity) (*requestAuthzIdentityPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := requestAuthzIdentityPb(*st)
-	return &pb, nil
-}
-
-func requestAuthzIdentityFromPb(pb *requestAuthzIdentityPb) (*RequestAuthzIdentity, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RequestAuthzIdentity(*pb)
-	return &st, nil
 }
 
 type ResourceInfo struct {
@@ -3146,7 +2993,6 @@ func (st ServicePrincipal) MarshalJSON() ([]byte, error) {
 }
 
 type ServicePrincipalSchema string
-type servicePrincipalSchemaPb string
 
 const ServicePrincipalSchemaUrnIetfParamsScimSchemasCore20ServicePrincipal ServicePrincipalSchema = `urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal`
 
@@ -3169,22 +3015,6 @@ func (f *ServicePrincipalSchema) Set(v string) error {
 // Type always returns ServicePrincipalSchema to satisfy [pflag.Value] interface
 func (f *ServicePrincipalSchema) Type() string {
 	return "ServicePrincipalSchema"
-}
-
-func servicePrincipalSchemaToPb(st *ServicePrincipalSchema) (*servicePrincipalSchemaPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := servicePrincipalSchemaPb(*st)
-	return &pb, nil
-}
-
-func servicePrincipalSchemaFromPb(pb *servicePrincipalSchemaPb) (*ServicePrincipalSchema, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ServicePrincipalSchema(*pb)
-	return &st, nil
 }
 
 type SetObjectPermissions struct {
@@ -3445,7 +3275,6 @@ func (st User) MarshalJSON() ([]byte, error) {
 }
 
 type UserSchema string
-type userSchemaPb string
 
 const UserSchemaUrnIetfParamsScimSchemasCore20User UserSchema = `urn:ietf:params:scim:schemas:core:2.0:User`
 
@@ -3472,24 +3301,7 @@ func (f *UserSchema) Type() string {
 	return "UserSchema"
 }
 
-func userSchemaToPb(st *UserSchema) (*userSchemaPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := userSchemaPb(*st)
-	return &pb, nil
-}
-
-func userSchemaFromPb(pb *userSchemaPb) (*UserSchema, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := UserSchema(*pb)
-	return &st, nil
-}
-
 type WorkspacePermission string
-type workspacePermissionPb string
 
 const WorkspacePermissionAdmin WorkspacePermission = `ADMIN`
 
@@ -3516,22 +3328,6 @@ func (f *WorkspacePermission) Set(v string) error {
 // Type always returns WorkspacePermission to satisfy [pflag.Value] interface
 func (f *WorkspacePermission) Type() string {
 	return "WorkspacePermission"
-}
-
-func workspacePermissionToPb(st *WorkspacePermission) (*workspacePermissionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := workspacePermissionPb(*st)
-	return &pb, nil
-}
-
-func workspacePermissionFromPb(pb *workspacePermissionPb) (*WorkspacePermission, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := WorkspacePermission(*pb)
-	return &st, nil
 }
 
 type WorkspacePermissions struct {

@@ -296,7 +296,6 @@ func (st AwsAttributes) MarshalJSON() ([]byte, error) {
 // Note: If `first_on_demand` is zero, this availability type will be used for
 // the entire cluster.
 type AwsAvailability string
-type awsAvailabilityPb string
 
 const AwsAvailabilityOnDemand AwsAvailability = `ON_DEMAND`
 
@@ -323,22 +322,6 @@ func (f *AwsAvailability) Set(v string) error {
 // Type always returns AwsAvailability to satisfy [pflag.Value] interface
 func (f *AwsAvailability) Type() string {
 	return "AwsAvailability"
-}
-
-func awsAvailabilityToPb(st *AwsAvailability) (*awsAvailabilityPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := awsAvailabilityPb(*st)
-	return &pb, nil
-}
-
-func awsAvailabilityFromPb(pb *awsAvailabilityPb) (*AwsAvailability, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AwsAvailability(*pb)
-	return &st, nil
 }
 
 // Attributes set during cluster creation which are related to Microsoft Azure.
@@ -402,7 +385,6 @@ func (st AzureAttributes) MarshalJSON() ([]byte, error) {
 // ones. Note: If `first_on_demand` is zero, this availability type will be used
 // for the entire cluster.
 type AzureAvailability string
-type azureAvailabilityPb string
 
 const AzureAvailabilityOnDemandAzure AzureAvailability = `ON_DEMAND_AZURE`
 
@@ -429,22 +411,6 @@ func (f *AzureAvailability) Set(v string) error {
 // Type always returns AzureAvailability to satisfy [pflag.Value] interface
 func (f *AzureAvailability) Type() string {
 	return "AzureAvailability"
-}
-
-func azureAvailabilityToPb(st *AzureAvailability) (*azureAvailabilityPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := azureAvailabilityPb(*st)
-	return &pb, nil
-}
-
-func azureAvailabilityFromPb(pb *azureAvailabilityPb) (*AzureAvailability, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AzureAvailability(*pb)
-	return &st, nil
 }
 
 type CancelCommand struct {
@@ -675,7 +641,6 @@ func (st CloudProviderNodeInfo) MarshalJSON() ([]byte, error) {
 }
 
 type CloudProviderNodeStatus string
-type cloudProviderNodeStatusPb string
 
 const CloudProviderNodeStatusNotAvailableInRegion CloudProviderNodeStatus = `NotAvailableInRegion`
 
@@ -700,22 +665,6 @@ func (f *CloudProviderNodeStatus) Set(v string) error {
 // Type always returns CloudProviderNodeStatus to satisfy [pflag.Value] interface
 func (f *CloudProviderNodeStatus) Type() string {
 	return "CloudProviderNodeStatus"
-}
-
-func cloudProviderNodeStatusToPb(st *CloudProviderNodeStatus) (*cloudProviderNodeStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := cloudProviderNodeStatusPb(*st)
-	return &pb, nil
-}
-
-func cloudProviderNodeStatusFromPb(pb *cloudProviderNodeStatusPb) (*CloudProviderNodeStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CloudProviderNodeStatus(*pb)
-	return &st, nil
 }
 
 type ClusterAccessControlRequest struct {
@@ -1583,7 +1532,6 @@ func (st ClusterPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type ClusterPermissionLevel string
-type clusterPermissionLevelPb string
 
 const ClusterPermissionLevelCanAttachTo ClusterPermissionLevel = `CAN_ATTACH_TO`
 
@@ -1610,22 +1558,6 @@ func (f *ClusterPermissionLevel) Set(v string) error {
 // Type always returns ClusterPermissionLevel to satisfy [pflag.Value] interface
 func (f *ClusterPermissionLevel) Type() string {
 	return "ClusterPermissionLevel"
-}
-
-func clusterPermissionLevelToPb(st *ClusterPermissionLevel) (*clusterPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := clusterPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func clusterPermissionLevelFromPb(pb *clusterPermissionLevelPb) (*ClusterPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ClusterPermissionLevel(*pb)
-	return &st, nil
 }
 
 type ClusterPermissions struct {
@@ -1865,7 +1797,6 @@ func (st ClusterPolicyPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type ClusterPolicyPermissionLevel string
-type clusterPolicyPermissionLevelPb string
 
 const ClusterPolicyPermissionLevelCanUse ClusterPolicyPermissionLevel = `CAN_USE`
 
@@ -1888,22 +1819,6 @@ func (f *ClusterPolicyPermissionLevel) Set(v string) error {
 // Type always returns ClusterPolicyPermissionLevel to satisfy [pflag.Value] interface
 func (f *ClusterPolicyPermissionLevel) Type() string {
 	return "ClusterPolicyPermissionLevel"
-}
-
-func clusterPolicyPermissionLevelToPb(st *ClusterPolicyPermissionLevel) (*clusterPolicyPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := clusterPolicyPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func clusterPolicyPermissionLevelFromPb(pb *clusterPolicyPermissionLevelPb) (*ClusterPolicyPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ClusterPolicyPermissionLevel(*pb)
-	return &st, nil
 }
 
 type ClusterPolicyPermissions struct {
@@ -2113,7 +2028,6 @@ func (st ClusterSize) MarshalJSON() ([]byte, error) {
 // by the Databricks Jobs Scheduler, or through an API request. This is the same
 // as cluster_creator, but read only.
 type ClusterSource string
-type clusterSourcePb string
 
 const ClusterSourceApi ClusterSource = `API`
 
@@ -2148,22 +2062,6 @@ func (f *ClusterSource) Set(v string) error {
 // Type always returns ClusterSource to satisfy [pflag.Value] interface
 func (f *ClusterSource) Type() string {
 	return "ClusterSource"
-}
-
-func clusterSourceToPb(st *ClusterSource) (*clusterSourcePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := clusterSourcePb(*st)
-	return &pb, nil
-}
-
-func clusterSourceFromPb(pb *clusterSourcePb) (*ClusterSource, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ClusterSource(*pb)
-	return &st, nil
 }
 
 // Contains a snapshot of the latest user specified settings that were used to
@@ -2496,7 +2394,6 @@ func (st Command) MarshalJSON() ([]byte, error) {
 }
 
 type CommandStatus string
-type commandStatusPb string
 
 const CommandStatusCancelled CommandStatus = `Cancelled`
 
@@ -2529,22 +2426,6 @@ func (f *CommandStatus) Set(v string) error {
 // Type always returns CommandStatus to satisfy [pflag.Value] interface
 func (f *CommandStatus) Type() string {
 	return "CommandStatus"
-}
-
-func commandStatusToPb(st *CommandStatus) (*commandStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := commandStatusPb(*st)
-	return &pb, nil
-}
-
-func commandStatusFromPb(pb *commandStatusPb) (*CommandStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CommandStatus(*pb)
-	return &st, nil
 }
 
 // Get command info
@@ -2625,7 +2506,6 @@ func (st CommandStatusResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ContextStatus string
-type contextStatusPb string
 
 const ContextStatusError ContextStatus = `Error`
 
@@ -2652,22 +2532,6 @@ func (f *ContextStatus) Set(v string) error {
 // Type always returns ContextStatus to satisfy [pflag.Value] interface
 func (f *ContextStatus) Type() string {
 	return "ContextStatus"
-}
-
-func contextStatusToPb(st *ContextStatus) (*contextStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := contextStatusPb(*st)
-	return &pb, nil
-}
-
-func contextStatusFromPb(pb *contextStatusPb) (*ContextStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ContextStatus(*pb)
-	return &st, nil
 }
 
 // Get status
@@ -3460,7 +3324,6 @@ func (st DataPlaneEventDetails) MarshalJSON() ([]byte, error) {
 }
 
 type DataPlaneEventDetailsEventType string
-type dataPlaneEventDetailsEventTypePb string
 
 const DataPlaneEventDetailsEventTypeNodeBlacklisted DataPlaneEventDetailsEventType = `NODE_BLACKLISTED`
 
@@ -3485,22 +3348,6 @@ func (f *DataPlaneEventDetailsEventType) Set(v string) error {
 // Type always returns DataPlaneEventDetailsEventType to satisfy [pflag.Value] interface
 func (f *DataPlaneEventDetailsEventType) Type() string {
 	return "DataPlaneEventDetailsEventType"
-}
-
-func dataPlaneEventDetailsEventTypeToPb(st *DataPlaneEventDetailsEventType) (*dataPlaneEventDetailsEventTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := dataPlaneEventDetailsEventTypePb(*st)
-	return &pb, nil
-}
-
-func dataPlaneEventDetailsEventTypeFromPb(pb *dataPlaneEventDetailsEventTypePb) (*DataPlaneEventDetailsEventType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DataPlaneEventDetailsEventType(*pb)
-	return &st, nil
 }
 
 // Data security mode decides what data governance model to use when accessing
@@ -3533,7 +3380,6 @@ func dataPlaneEventDetailsEventTypeFromPb(pb *dataPlaneEventDetailsEventTypePb) 
 // `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have
 // UC nor passthrough enabled.
 type DataSecurityMode string
-type dataSecurityModePb string
 
 // <Databricks> will choose the most appropriate access mode depending on your
 // compute configuration.
@@ -3593,22 +3439,6 @@ func (f *DataSecurityMode) Set(v string) error {
 // Type always returns DataSecurityMode to satisfy [pflag.Value] interface
 func (f *DataSecurityMode) Type() string {
 	return "DataSecurityMode"
-}
-
-func dataSecurityModeToPb(st *DataSecurityMode) (*dataSecurityModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := dataSecurityModePb(*st)
-	return &pb, nil
-}
-
-func dataSecurityModeFromPb(pb *dataSecurityModePb) (*DataSecurityMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DataSecurityMode(*pb)
-	return &st, nil
 }
 
 // A storage location in DBFS
@@ -4053,7 +3883,6 @@ func (st DiskType) MarshalJSON() ([]byte, error) {
 // All Azure Disk types that Databricks supports. See
 // https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks
 type DiskTypeAzureDiskVolumeType string
-type diskTypeAzureDiskVolumeTypePb string
 
 const DiskTypeAzureDiskVolumeTypePremiumLrs DiskTypeAzureDiskVolumeType = `PREMIUM_LRS`
 
@@ -4080,26 +3909,9 @@ func (f *DiskTypeAzureDiskVolumeType) Type() string {
 	return "DiskTypeAzureDiskVolumeType"
 }
 
-func diskTypeAzureDiskVolumeTypeToPb(st *DiskTypeAzureDiskVolumeType) (*diskTypeAzureDiskVolumeTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := diskTypeAzureDiskVolumeTypePb(*st)
-	return &pb, nil
-}
-
-func diskTypeAzureDiskVolumeTypeFromPb(pb *diskTypeAzureDiskVolumeTypePb) (*DiskTypeAzureDiskVolumeType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DiskTypeAzureDiskVolumeType(*pb)
-	return &st, nil
-}
-
 // All EBS volume types that Databricks supports. See
 // https://aws.amazon.com/ebs/details/ for details.
 type DiskTypeEbsVolumeType string
-type diskTypeEbsVolumeTypePb string
 
 const DiskTypeEbsVolumeTypeGeneralPurposeSsd DiskTypeEbsVolumeType = `GENERAL_PURPOSE_SSD`
 
@@ -4124,22 +3936,6 @@ func (f *DiskTypeEbsVolumeType) Set(v string) error {
 // Type always returns DiskTypeEbsVolumeType to satisfy [pflag.Value] interface
 func (f *DiskTypeEbsVolumeType) Type() string {
 	return "DiskTypeEbsVolumeType"
-}
-
-func diskTypeEbsVolumeTypeToPb(st *DiskTypeEbsVolumeType) (*diskTypeEbsVolumeTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := diskTypeEbsVolumeTypePb(*st)
-	return &pb, nil
-}
-
-func diskTypeEbsVolumeTypeFromPb(pb *diskTypeEbsVolumeTypePb) (*DiskTypeEbsVolumeType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DiskTypeEbsVolumeType(*pb)
-	return &st, nil
 }
 
 type DockerBasicAuth struct {
@@ -4217,7 +4013,6 @@ func (st DockerImage) MarshalJSON() ([]byte, error) {
 // All EBS volume types that Databricks supports. See
 // https://aws.amazon.com/ebs/details/ for details.
 type EbsVolumeType string
-type ebsVolumeTypePb string
 
 const EbsVolumeTypeGeneralPurposeSsd EbsVolumeType = `GENERAL_PURPOSE_SSD`
 
@@ -4242,22 +4037,6 @@ func (f *EbsVolumeType) Set(v string) error {
 // Type always returns EbsVolumeType to satisfy [pflag.Value] interface
 func (f *EbsVolumeType) Type() string {
 	return "EbsVolumeType"
-}
-
-func ebsVolumeTypeToPb(st *EbsVolumeType) (*ebsVolumeTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := ebsVolumeTypePb(*st)
-	return &pb, nil
-}
-
-func ebsVolumeTypeFromPb(pb *ebsVolumeTypePb) (*EbsVolumeType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EbsVolumeType(*pb)
-	return &st, nil
 }
 
 type EditCluster struct {
@@ -5010,7 +4789,6 @@ func (st EventDetails) MarshalJSON() ([]byte, error) {
 
 // The cause of a change in target size.
 type EventDetailsCause string
-type eventDetailsCausePb string
 
 const EventDetailsCauseAutorecovery EventDetailsCause = `AUTORECOVERY`
 
@@ -5041,24 +4819,7 @@ func (f *EventDetailsCause) Type() string {
 	return "EventDetailsCause"
 }
 
-func eventDetailsCauseToPb(st *EventDetailsCause) (*eventDetailsCausePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := eventDetailsCausePb(*st)
-	return &pb, nil
-}
-
-func eventDetailsCauseFromPb(pb *eventDetailsCausePb) (*EventDetailsCause, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EventDetailsCause(*pb)
-	return &st, nil
-}
-
 type EventType string
-type eventTypePb string
 
 const EventTypeAddNodesFailed EventType = `ADD_NODES_FAILED`
 
@@ -5139,22 +4900,6 @@ func (f *EventType) Type() string {
 	return "EventType"
 }
 
-func eventTypeToPb(st *EventType) (*eventTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := eventTypePb(*st)
-	return &pb, nil
-}
-
-func eventTypeFromPb(pb *eventTypePb) (*EventType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EventType(*pb)
-	return &st, nil
-}
-
 // Attributes set during cluster creation which are related to GCP.
 type GcpAttributes struct {
 	// This field determines whether the spark executors will be scheduled to
@@ -5227,7 +4972,6 @@ func (st GcpAttributes) MarshalJSON() ([]byte, error) {
 // on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the
 // former is unavailable.
 type GcpAvailability string
-type gcpAvailabilityPb string
 
 const GcpAvailabilityOnDemandGcp GcpAvailability = `ON_DEMAND_GCP`
 
@@ -5254,22 +4998,6 @@ func (f *GcpAvailability) Set(v string) error {
 // Type always returns GcpAvailability to satisfy [pflag.Value] interface
 func (f *GcpAvailability) Type() string {
 	return "GcpAvailability"
-}
-
-func gcpAvailabilityToPb(st *GcpAvailability) (*gcpAvailabilityPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := gcpAvailabilityPb(*st)
-	return &pb, nil
-}
-
-func gcpAvailabilityFromPb(pb *gcpAvailabilityPb) (*GcpAvailability, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := GcpAvailability(*pb)
-	return &st, nil
 }
 
 // A storage location in Google Cloud Platform's GCS
@@ -5705,7 +5433,6 @@ func (st GetEvents) MarshalJSON() ([]byte, error) {
 }
 
 type GetEventsOrder string
-type getEventsOrderPb string
 
 const GetEventsOrderAsc GetEventsOrder = `ASC`
 
@@ -5730,22 +5457,6 @@ func (f *GetEventsOrder) Set(v string) error {
 // Type always returns GetEventsOrder to satisfy [pflag.Value] interface
 func (f *GetEventsOrder) Type() string {
 	return "GetEventsOrder"
-}
-
-func getEventsOrderToPb(st *GetEventsOrder) (*getEventsOrderPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := getEventsOrderPb(*st)
-	return &pb, nil
-}
-
-func getEventsOrderFromPb(pb *getEventsOrderPb) (*GetEventsOrder, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := GetEventsOrder(*pb)
-	return &st, nil
 }
 
 type GetEventsResponse struct {
@@ -6428,7 +6139,6 @@ func (st InitScriptEventDetails) MarshalJSON() ([]byte, error) {
 
 // Result of attempted script execution
 type InitScriptExecutionDetailsInitScriptExecutionStatus string
-type initScriptExecutionDetailsInitScriptExecutionStatusPb string
 
 const InitScriptExecutionDetailsInitScriptExecutionStatusFailedExecution InitScriptExecutionDetailsInitScriptExecutionStatus = `FAILED_EXECUTION`
 
@@ -6463,22 +6173,6 @@ func (f *InitScriptExecutionDetailsInitScriptExecutionStatus) Set(v string) erro
 // Type always returns InitScriptExecutionDetailsInitScriptExecutionStatus to satisfy [pflag.Value] interface
 func (f *InitScriptExecutionDetailsInitScriptExecutionStatus) Type() string {
 	return "InitScriptExecutionDetailsInitScriptExecutionStatus"
-}
-
-func initScriptExecutionDetailsInitScriptExecutionStatusToPb(st *InitScriptExecutionDetailsInitScriptExecutionStatus) (*initScriptExecutionDetailsInitScriptExecutionStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := initScriptExecutionDetailsInitScriptExecutionStatusPb(*st)
-	return &pb, nil
-}
-
-func initScriptExecutionDetailsInitScriptExecutionStatusFromPb(pb *initScriptExecutionDetailsInitScriptExecutionStatusPb) (*InitScriptExecutionDetailsInitScriptExecutionStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := InitScriptExecutionDetailsInitScriptExecutionStatus(*pb)
-	return &st, nil
 }
 
 // Config for an individual init script Next ID: 11
@@ -6948,7 +6642,6 @@ func (st InstancePoolAwsAttributes) MarshalJSON() ([]byte, error) {
 // The set of AWS availability types supported when setting up nodes for a
 // cluster.
 type InstancePoolAwsAttributesAvailability string
-type instancePoolAwsAttributesAvailabilityPb string
 
 const InstancePoolAwsAttributesAvailabilityOnDemand InstancePoolAwsAttributesAvailability = `ON_DEMAND`
 
@@ -6973,22 +6666,6 @@ func (f *InstancePoolAwsAttributesAvailability) Set(v string) error {
 // Type always returns InstancePoolAwsAttributesAvailability to satisfy [pflag.Value] interface
 func (f *InstancePoolAwsAttributesAvailability) Type() string {
 	return "InstancePoolAwsAttributesAvailability"
-}
-
-func instancePoolAwsAttributesAvailabilityToPb(st *InstancePoolAwsAttributesAvailability) (*instancePoolAwsAttributesAvailabilityPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := instancePoolAwsAttributesAvailabilityPb(*st)
-	return &pb, nil
-}
-
-func instancePoolAwsAttributesAvailabilityFromPb(pb *instancePoolAwsAttributesAvailabilityPb) (*InstancePoolAwsAttributesAvailability, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := InstancePoolAwsAttributesAvailability(*pb)
-	return &st, nil
 }
 
 // Attributes set during instance pool creation which are related to Azure.
@@ -7036,7 +6713,6 @@ func (st InstancePoolAzureAttributes) MarshalJSON() ([]byte, error) {
 // The set of Azure availability types supported when setting up nodes for a
 // cluster.
 type InstancePoolAzureAttributesAvailability string
-type instancePoolAzureAttributesAvailabilityPb string
 
 const InstancePoolAzureAttributesAvailabilityOnDemandAzure InstancePoolAzureAttributesAvailability = `ON_DEMAND_AZURE`
 
@@ -7061,22 +6737,6 @@ func (f *InstancePoolAzureAttributesAvailability) Set(v string) error {
 // Type always returns InstancePoolAzureAttributesAvailability to satisfy [pflag.Value] interface
 func (f *InstancePoolAzureAttributesAvailability) Type() string {
 	return "InstancePoolAzureAttributesAvailability"
-}
-
-func instancePoolAzureAttributesAvailabilityToPb(st *InstancePoolAzureAttributesAvailability) (*instancePoolAzureAttributesAvailabilityPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := instancePoolAzureAttributesAvailabilityPb(*st)
-	return &pb, nil
-}
-
-func instancePoolAzureAttributesAvailabilityFromPb(pb *instancePoolAzureAttributesAvailabilityPb) (*InstancePoolAzureAttributesAvailability, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := InstancePoolAzureAttributesAvailability(*pb)
-	return &st, nil
 }
 
 // Attributes set during instance pool creation which are related to GCP.
@@ -7182,7 +6842,6 @@ func (st InstancePoolPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type InstancePoolPermissionLevel string
-type instancePoolPermissionLevelPb string
 
 const InstancePoolPermissionLevelCanAttachTo InstancePoolPermissionLevel = `CAN_ATTACH_TO`
 
@@ -7207,22 +6866,6 @@ func (f *InstancePoolPermissionLevel) Set(v string) error {
 // Type always returns InstancePoolPermissionLevel to satisfy [pflag.Value] interface
 func (f *InstancePoolPermissionLevel) Type() string {
 	return "InstancePoolPermissionLevel"
-}
-
-func instancePoolPermissionLevelToPb(st *InstancePoolPermissionLevel) (*instancePoolPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := instancePoolPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func instancePoolPermissionLevelFromPb(pb *instancePoolPermissionLevelPb) (*InstancePoolPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := InstancePoolPermissionLevel(*pb)
-	return &st, nil
 }
 
 type InstancePoolPermissions struct {
@@ -7340,7 +6983,6 @@ func (st InstancePoolPermissionsRequest) MarshalJSON() ([]byte, error) {
 // - “ACTIVE“ -> “STOPPED“ - “ACTIVE“ -> “DELETED“ - “STOPPED“ ->
 // “ACTIVE“ - “STOPPED“ -> “DELETED“
 type InstancePoolState string
-type instancePoolStatePb string
 
 const InstancePoolStateActive InstancePoolState = `ACTIVE`
 
@@ -7367,22 +7009,6 @@ func (f *InstancePoolState) Set(v string) error {
 // Type always returns InstancePoolState to satisfy [pflag.Value] interface
 func (f *InstancePoolState) Type() string {
 	return "InstancePoolState"
-}
-
-func instancePoolStateToPb(st *InstancePoolState) (*instancePoolStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := instancePoolStatePb(*st)
-	return &pb, nil
-}
-
-func instancePoolStateFromPb(pb *instancePoolStatePb) (*InstancePoolState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := InstancePoolState(*pb)
-	return &st, nil
 }
 
 type InstancePoolStats struct {
@@ -7530,7 +7156,6 @@ func (st InstanceProfile) MarshalJSON() ([]byte, error) {
 //
 // [simple form]: https://docs.databricks.com/compute/simple-form.html
 type Kind string
-type kindPb string
 
 const KindClassicPreview Kind = `CLASSIC_PREVIEW`
 
@@ -7555,24 +7180,7 @@ func (f *Kind) Type() string {
 	return "Kind"
 }
 
-func kindToPb(st *Kind) (*kindPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := kindPb(*st)
-	return &pb, nil
-}
-
-func kindFromPb(pb *kindPb) (*Kind, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Kind(*pb)
-	return &st, nil
-}
-
 type Language string
-type languagePb string
 
 const LanguagePython Language = `python`
 
@@ -7599,22 +7207,6 @@ func (f *Language) Set(v string) error {
 // Type always returns Language to satisfy [pflag.Value] interface
 func (f *Language) Type() string {
 	return "Language"
-}
-
-func languageToPb(st *Language) (*languagePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := languagePb(*st)
-	return &pb, nil
-}
-
-func languageFromPb(pb *languagePb) (*Language, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Language(*pb)
-	return &st, nil
 }
 
 type Library struct {
@@ -7734,7 +7326,6 @@ func (st LibraryFullStatus) MarshalJSON() ([]byte, error) {
 
 // The status of a library on a specific cluster.
 type LibraryInstallStatus string
-type libraryInstallStatusPb string
 
 const LibraryInstallStatusFailed LibraryInstallStatus = `FAILED`
 
@@ -7771,22 +7362,6 @@ func (f *LibraryInstallStatus) Set(v string) error {
 // Type always returns LibraryInstallStatus to satisfy [pflag.Value] interface
 func (f *LibraryInstallStatus) Type() string {
 	return "LibraryInstallStatus"
-}
-
-func libraryInstallStatusToPb(st *LibraryInstallStatus) (*libraryInstallStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := libraryInstallStatusPb(*st)
-	return &pb, nil
-}
-
-func libraryInstallStatusFromPb(pb *libraryInstallStatusPb) (*LibraryInstallStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := LibraryInstallStatus(*pb)
-	return &st, nil
 }
 
 type ListAllClusterLibraryStatusesResponse struct {
@@ -8147,7 +7722,6 @@ func (st ListClustersSortBy) MarshalJSON() ([]byte, error) {
 }
 
 type ListClustersSortByDirection string
-type listClustersSortByDirectionPb string
 
 const ListClustersSortByDirectionAsc ListClustersSortByDirection = `ASC`
 
@@ -8174,24 +7748,7 @@ func (f *ListClustersSortByDirection) Type() string {
 	return "ListClustersSortByDirection"
 }
 
-func listClustersSortByDirectionToPb(st *ListClustersSortByDirection) (*listClustersSortByDirectionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listClustersSortByDirectionPb(*st)
-	return &pb, nil
-}
-
-func listClustersSortByDirectionFromPb(pb *listClustersSortByDirectionPb) (*ListClustersSortByDirection, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListClustersSortByDirection(*pb)
-	return &st, nil
-}
-
 type ListClustersSortByField string
-type listClustersSortByFieldPb string
 
 const ListClustersSortByFieldClusterName ListClustersSortByField = `CLUSTER_NAME`
 
@@ -8216,22 +7773,6 @@ func (f *ListClustersSortByField) Set(v string) error {
 // Type always returns ListClustersSortByField to satisfy [pflag.Value] interface
 func (f *ListClustersSortByField) Type() string {
 	return "ListClustersSortByField"
-}
-
-func listClustersSortByFieldToPb(st *ListClustersSortByField) (*listClustersSortByFieldPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listClustersSortByFieldPb(*st)
-	return &pb, nil
-}
-
-func listClustersSortByFieldFromPb(pb *listClustersSortByFieldPb) (*ListClustersSortByField, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListClustersSortByField(*pb)
-	return &st, nil
 }
 
 type ListGlobalInitScriptsResponse struct {
@@ -8464,7 +8005,6 @@ func (st ListPolicyFamiliesResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ListSortColumn string
-type listSortColumnPb string
 
 const ListSortColumnPolicyCreationTime ListSortColumn = `POLICY_CREATION_TIME`
 
@@ -8491,24 +8031,7 @@ func (f *ListSortColumn) Type() string {
 	return "ListSortColumn"
 }
 
-func listSortColumnToPb(st *ListSortColumn) (*listSortColumnPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listSortColumnPb(*st)
-	return &pb, nil
-}
-
-func listSortColumnFromPb(pb *listSortColumnPb) (*ListSortColumn, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListSortColumn(*pb)
-	return &st, nil
-}
-
 type ListSortOrder string
-type listSortOrderPb string
 
 const ListSortOrderAsc ListSortOrder = `ASC`
 
@@ -8533,22 +8056,6 @@ func (f *ListSortOrder) Set(v string) error {
 // Type always returns ListSortOrder to satisfy [pflag.Value] interface
 func (f *ListSortOrder) Type() string {
 	return "ListSortOrder"
-}
-
-func listSortOrderToPb(st *ListSortOrder) (*listSortOrderPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listSortOrderPb(*st)
-	return &pb, nil
-}
-
-func listSortOrderFromPb(pb *listSortOrderPb) (*ListSortOrder, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListSortOrder(*pb)
-	return &st, nil
 }
 
 type LocalFileInfo struct {
@@ -8658,22 +8165,6 @@ func (st LogSyncStatus) MarshalJSON() ([]byte, error) {
 }
 
 type MapAny map[string]any
-type mapAnyPb MapAny
-
-func mapAnyToPb(st *MapAny) (*mapAnyPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	stPb := mapAnyPb(*st)
-	return &stPb, nil
-}
-func mapAnyFromPb(stPb *mapAnyPb) (*MapAny, error) {
-	if stPb == nil {
-		return nil, nil
-	}
-	st := MapAny(*stPb)
-	return &st, nil
-}
 
 type MavenLibrary struct {
 	// Gradle-style maven coordinates. For example: "org.jsoup:jsoup:1.7.2".
@@ -9466,7 +8957,6 @@ func (st RestartClusterResponse) MarshalJSON() ([]byte, error) {
 }
 
 type ResultType string
-type resultTypePb string
 
 const ResultTypeError ResultType = `error`
 
@@ -9497,22 +8987,6 @@ func (f *ResultType) Set(v string) error {
 // Type always returns ResultType to satisfy [pflag.Value] interface
 func (f *ResultType) Type() string {
 	return "ResultType"
-}
-
-func resultTypeToPb(st *ResultType) (*resultTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := resultTypePb(*st)
-	return &pb, nil
-}
-
-func resultTypeFromPb(pb *resultTypePb) (*ResultType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ResultType(*pb)
-	return &st, nil
 }
 
 type Results struct {
@@ -9577,7 +9051,6 @@ func (st Results) MarshalJSON() ([]byte, error) {
 }
 
 type RuntimeEngine string
-type runtimeEnginePb string
 
 const RuntimeEngineNull RuntimeEngine = `NULL`
 
@@ -9604,22 +9077,6 @@ func (f *RuntimeEngine) Set(v string) error {
 // Type always returns RuntimeEngine to satisfy [pflag.Value] interface
 func (f *RuntimeEngine) Type() string {
 	return "RuntimeEngine"
-}
-
-func runtimeEngineToPb(st *RuntimeEngine) (*runtimeEnginePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := runtimeEnginePb(*st)
-	return &pb, nil
-}
-
-func runtimeEngineFromPb(pb *runtimeEnginePb) (*RuntimeEngine, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RuntimeEngine(*pb)
-	return &st, nil
 }
 
 // A storage location in Amazon S3
@@ -9887,7 +9344,6 @@ func (st StartClusterResponse) MarshalJSON() ([]byte, error) {
 // `RESTARTING` -> `RUNNING` - `RESTARTING` -> `TERMINATING` - `RESIZING` ->
 // `RUNNING` - `RESIZING` -> `TERMINATING` - `TERMINATING` -> `TERMINATED`
 type State string
-type statePb string
 
 const StateError State = `ERROR`
 
@@ -9924,22 +9380,6 @@ func (f *State) Set(v string) error {
 // Type always returns State to satisfy [pflag.Value] interface
 func (f *State) Type() string {
 	return "State"
-}
-
-func stateToPb(st *State) (*statePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := statePb(*st)
-	return &pb, nil
-}
-
-func stateFromPb(pb *statePb) (*State, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := State(*pb)
-	return &st, nil
 }
 
 type TerminationReason struct {
@@ -9982,7 +9422,6 @@ func (st TerminationReason) MarshalJSON() ([]byte, error) {
 
 // The status code indicating why the cluster was terminated
 type TerminationReasonCode string
-type terminationReasonCodePb string
 
 const TerminationReasonCodeAbuseDetected TerminationReasonCode = `ABUSE_DETECTED`
 
@@ -10347,25 +9786,8 @@ func (f *TerminationReasonCode) Type() string {
 	return "TerminationReasonCode"
 }
 
-func terminationReasonCodeToPb(st *TerminationReasonCode) (*terminationReasonCodePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := terminationReasonCodePb(*st)
-	return &pb, nil
-}
-
-func terminationReasonCodeFromPb(pb *terminationReasonCodePb) (*TerminationReasonCode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TerminationReasonCode(*pb)
-	return &st, nil
-}
-
 // type of the termination
 type TerminationReasonType string
-type terminationReasonTypePb string
 
 const TerminationReasonTypeClientError TerminationReasonType = `CLIENT_ERROR`
 
@@ -10394,22 +9816,6 @@ func (f *TerminationReasonType) Set(v string) error {
 // Type always returns TerminationReasonType to satisfy [pflag.Value] interface
 func (f *TerminationReasonType) Type() string {
 	return "TerminationReasonType"
-}
-
-func terminationReasonTypeToPb(st *TerminationReasonType) (*terminationReasonTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := terminationReasonTypePb(*st)
-	return &pb, nil
-}
-
-func terminationReasonTypeFromPb(pb *terminationReasonTypePb) (*TerminationReasonType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TerminationReasonType(*pb)
-	return &st, nil
 }
 
 type UninstallLibraries struct {

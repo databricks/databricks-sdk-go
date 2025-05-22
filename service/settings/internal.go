@@ -6869,6 +6869,24 @@ func updateWorkspaceNetworkOptionRequestFromPb(pb *updateWorkspaceNetworkOptionR
 	return st, nil
 }
 
+type workspaceConfPb WorkspaceConf
+
+func workspaceConfToPb(st *WorkspaceConf) (*workspaceConfPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	stPb := workspaceConfPb(*st)
+	return &stPb, nil
+}
+
+func workspaceConfFromPb(stPb *workspaceConfPb) (*WorkspaceConf, error) {
+	if stPb == nil {
+		return nil, nil
+	}
+	st := WorkspaceConf(*stPb)
+	return &st, nil
+}
+
 func workspaceNetworkOptionToPb(st *WorkspaceNetworkOption) (*workspaceNetworkOptionPb, error) {
 	if st == nil {
 		return nil, nil

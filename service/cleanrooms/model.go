@@ -85,7 +85,6 @@ func (st CleanRoom) MarshalJSON() ([]byte, error) {
 }
 
 type CleanRoomAccessRestricted string
-type cleanRoomAccessRestrictedPb string
 
 const CleanRoomAccessRestrictedCspMismatch CleanRoomAccessRestricted = `CSP_MISMATCH`
 
@@ -110,22 +109,6 @@ func (f *CleanRoomAccessRestricted) Set(v string) error {
 // Type always returns CleanRoomAccessRestricted to satisfy [pflag.Value] interface
 func (f *CleanRoomAccessRestricted) Type() string {
 	return "CleanRoomAccessRestricted"
-}
-
-func cleanRoomAccessRestrictedToPb(st *CleanRoomAccessRestricted) (*cleanRoomAccessRestrictedPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := cleanRoomAccessRestrictedPb(*st)
-	return &pb, nil
-}
-
-func cleanRoomAccessRestrictedFromPb(pb *cleanRoomAccessRestrictedPb) (*CleanRoomAccessRestricted, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CleanRoomAccessRestricted(*pb)
-	return &st, nil
 }
 
 // Metadata of the clean room asset
@@ -213,7 +196,6 @@ func (st CleanRoomAsset) MarshalJSON() ([]byte, error) {
 }
 
 type CleanRoomAssetAssetType string
-type cleanRoomAssetAssetTypePb string
 
 const CleanRoomAssetAssetTypeForeignTable CleanRoomAssetAssetType = `FOREIGN_TABLE`
 
@@ -244,22 +226,6 @@ func (f *CleanRoomAssetAssetType) Set(v string) error {
 // Type always returns CleanRoomAssetAssetType to satisfy [pflag.Value] interface
 func (f *CleanRoomAssetAssetType) Type() string {
 	return "CleanRoomAssetAssetType"
-}
-
-func cleanRoomAssetAssetTypeToPb(st *CleanRoomAssetAssetType) (*cleanRoomAssetAssetTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := cleanRoomAssetAssetTypePb(*st)
-	return &pb, nil
-}
-
-func cleanRoomAssetAssetTypeFromPb(pb *cleanRoomAssetAssetTypePb) (*CleanRoomAssetAssetType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CleanRoomAssetAssetType(*pb)
-	return &st, nil
 }
 
 type CleanRoomAssetForeignTable struct {
@@ -374,7 +340,6 @@ func (st CleanRoomAssetNotebook) MarshalJSON() ([]byte, error) {
 }
 
 type CleanRoomAssetStatusEnum string
-type cleanRoomAssetStatusEnumPb string
 
 const CleanRoomAssetStatusEnumActive CleanRoomAssetStatusEnum = `ACTIVE`
 
@@ -401,22 +366,6 @@ func (f *CleanRoomAssetStatusEnum) Set(v string) error {
 // Type always returns CleanRoomAssetStatusEnum to satisfy [pflag.Value] interface
 func (f *CleanRoomAssetStatusEnum) Type() string {
 	return "CleanRoomAssetStatusEnum"
-}
-
-func cleanRoomAssetStatusEnumToPb(st *CleanRoomAssetStatusEnum) (*cleanRoomAssetStatusEnumPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := cleanRoomAssetStatusEnumPb(*st)
-	return &pb, nil
-}
-
-func cleanRoomAssetStatusEnumFromPb(pb *cleanRoomAssetStatusEnumPb) (*CleanRoomAssetStatusEnum, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CleanRoomAssetStatusEnum(*pb)
-	return &st, nil
 }
 
 type CleanRoomAssetTable struct {
@@ -698,7 +647,6 @@ func (st CleanRoomNotebookReview) MarshalJSON() ([]byte, error) {
 }
 
 type CleanRoomNotebookReviewNotebookReviewState string
-type cleanRoomNotebookReviewNotebookReviewStatePb string
 
 const CleanRoomNotebookReviewNotebookReviewStateApproved CleanRoomNotebookReviewNotebookReviewState = `APPROVED`
 
@@ -727,24 +675,7 @@ func (f *CleanRoomNotebookReviewNotebookReviewState) Type() string {
 	return "CleanRoomNotebookReviewNotebookReviewState"
 }
 
-func cleanRoomNotebookReviewNotebookReviewStateToPb(st *CleanRoomNotebookReviewNotebookReviewState) (*cleanRoomNotebookReviewNotebookReviewStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := cleanRoomNotebookReviewNotebookReviewStatePb(*st)
-	return &pb, nil
-}
-
-func cleanRoomNotebookReviewNotebookReviewStateFromPb(pb *cleanRoomNotebookReviewNotebookReviewStatePb) (*CleanRoomNotebookReviewNotebookReviewState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CleanRoomNotebookReviewNotebookReviewState(*pb)
-	return &st, nil
-}
-
 type CleanRoomNotebookReviewNotebookReviewSubReason string
-type cleanRoomNotebookReviewNotebookReviewSubReasonPb string
 
 const CleanRoomNotebookReviewNotebookReviewSubReasonAutoApproved CleanRoomNotebookReviewNotebookReviewSubReason = `AUTO_APPROVED`
 
@@ -769,22 +700,6 @@ func (f *CleanRoomNotebookReviewNotebookReviewSubReason) Set(v string) error {
 // Type always returns CleanRoomNotebookReviewNotebookReviewSubReason to satisfy [pflag.Value] interface
 func (f *CleanRoomNotebookReviewNotebookReviewSubReason) Type() string {
 	return "CleanRoomNotebookReviewNotebookReviewSubReason"
-}
-
-func cleanRoomNotebookReviewNotebookReviewSubReasonToPb(st *CleanRoomNotebookReviewNotebookReviewSubReason) (*cleanRoomNotebookReviewNotebookReviewSubReasonPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := cleanRoomNotebookReviewNotebookReviewSubReasonPb(*st)
-	return &pb, nil
-}
-
-func cleanRoomNotebookReviewNotebookReviewSubReasonFromPb(pb *cleanRoomNotebookReviewNotebookReviewSubReasonPb) (*CleanRoomNotebookReviewNotebookReviewSubReason, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CleanRoomNotebookReviewNotebookReviewSubReason(*pb)
-	return &st, nil
 }
 
 // Stores information about a single task run.
@@ -891,7 +806,6 @@ func (st CleanRoomOutputCatalog) MarshalJSON() ([]byte, error) {
 }
 
 type CleanRoomOutputCatalogOutputCatalogStatus string
-type cleanRoomOutputCatalogOutputCatalogStatusPb string
 
 const CleanRoomOutputCatalogOutputCatalogStatusCreated CleanRoomOutputCatalogOutputCatalogStatus = `CREATED`
 
@@ -918,22 +832,6 @@ func (f *CleanRoomOutputCatalogOutputCatalogStatus) Set(v string) error {
 // Type always returns CleanRoomOutputCatalogOutputCatalogStatus to satisfy [pflag.Value] interface
 func (f *CleanRoomOutputCatalogOutputCatalogStatus) Type() string {
 	return "CleanRoomOutputCatalogOutputCatalogStatus"
-}
-
-func cleanRoomOutputCatalogOutputCatalogStatusToPb(st *CleanRoomOutputCatalogOutputCatalogStatus) (*cleanRoomOutputCatalogOutputCatalogStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := cleanRoomOutputCatalogOutputCatalogStatusPb(*st)
-	return &pb, nil
-}
-
-func cleanRoomOutputCatalogOutputCatalogStatusFromPb(pb *cleanRoomOutputCatalogOutputCatalogStatusPb) (*CleanRoomOutputCatalogOutputCatalogStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CleanRoomOutputCatalogOutputCatalogStatus(*pb)
-	return &st, nil
 }
 
 // Publicly visible central clean room details.
@@ -996,7 +894,6 @@ func (st CleanRoomRemoteDetail) MarshalJSON() ([]byte, error) {
 }
 
 type CleanRoomStatusEnum string
-type cleanRoomStatusEnumPb string
 
 const CleanRoomStatusEnumActive CleanRoomStatusEnum = `ACTIVE`
 
@@ -1025,22 +922,6 @@ func (f *CleanRoomStatusEnum) Set(v string) error {
 // Type always returns CleanRoomStatusEnum to satisfy [pflag.Value] interface
 func (f *CleanRoomStatusEnum) Type() string {
 	return "CleanRoomStatusEnum"
-}
-
-func cleanRoomStatusEnumToPb(st *CleanRoomStatusEnum) (*cleanRoomStatusEnumPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := cleanRoomStatusEnumPb(*st)
-	return &pb, nil
-}
-
-func cleanRoomStatusEnumFromPb(pb *cleanRoomStatusEnumPb) (*CleanRoomStatusEnum, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CleanRoomStatusEnum(*pb)
-	return &st, nil
 }
 
 type CollaboratorJobRunInfo struct {

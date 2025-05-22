@@ -207,7 +207,6 @@ func (st DeleteDataResult) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteDataStatus string
-type deleteDataStatusPb string
 
 const DeleteDataStatusFailure DeleteDataStatus = `FAILURE`
 
@@ -234,22 +233,6 @@ func (f *DeleteDataStatus) Set(v string) error {
 // Type always returns DeleteDataStatus to satisfy [pflag.Value] interface
 func (f *DeleteDataStatus) Type() string {
 	return "DeleteDataStatus"
-}
-
-func deleteDataStatusToPb(st *DeleteDataStatus) (*deleteDataStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := deleteDataStatusPb(*st)
-	return &pb, nil
-}
-
-func deleteDataStatusFromPb(pb *deleteDataStatusPb) (*DeleteDataStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DeleteDataStatus(*pb)
-	return &st, nil
 }
 
 // Delete data from index
@@ -772,7 +755,6 @@ func (st EndpointStatus) MarshalJSON() ([]byte, error) {
 
 // Current state of the endpoint
 type EndpointStatusState string
-type endpointStatusStatePb string
 
 const EndpointStatusStateOffline EndpointStatusState = `OFFLINE`
 
@@ -801,25 +783,8 @@ func (f *EndpointStatusState) Type() string {
 	return "EndpointStatusState"
 }
 
-func endpointStatusStateToPb(st *EndpointStatusState) (*endpointStatusStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := endpointStatusStatePb(*st)
-	return &pb, nil
-}
-
-func endpointStatusStateFromPb(pb *endpointStatusStatePb) (*EndpointStatusState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EndpointStatusState(*pb)
-	return &st, nil
-}
-
 // Type of endpoint.
 type EndpointType string
-type endpointTypePb string
 
 const EndpointTypeStandard EndpointType = `STANDARD`
 
@@ -842,22 +807,6 @@ func (f *EndpointType) Set(v string) error {
 // Type always returns EndpointType to satisfy [pflag.Value] interface
 func (f *EndpointType) Type() string {
 	return "EndpointType"
-}
-
-func endpointTypeToPb(st *EndpointType) (*endpointTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := endpointTypePb(*st)
-	return &pb, nil
-}
-
-func endpointTypeFromPb(pb *endpointTypePb) (*EndpointType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EndpointType(*pb)
-	return &st, nil
 }
 
 // Get an endpoint
@@ -1261,7 +1210,6 @@ func (st PatchEndpointBudgetPolicyResponse) MarshalJSON() ([]byte, error) {
 // continuous execution, the pipeline processes new data as it arrives in the
 // source table to keep vector index fresh.
 type PipelineType string
-type pipelineTypePb string
 
 // If the pipeline uses continuous execution, the pipeline processes new data as
 // it arrives in the source table to keep vector index fresh.
@@ -1292,22 +1240,6 @@ func (f *PipelineType) Set(v string) error {
 // Type always returns PipelineType to satisfy [pflag.Value] interface
 func (f *PipelineType) Type() string {
 	return "PipelineType"
-}
-
-func pipelineTypeToPb(st *PipelineType) (*pipelineTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := pipelineTypePb(*st)
-	return &pb, nil
-}
-
-func pipelineTypeFromPb(pb *pipelineTypePb) (*PipelineType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PipelineType(*pb)
-	return &st, nil
 }
 
 // Request payload for getting next page of results.
@@ -1806,7 +1738,6 @@ func (st UpsertDataResult) MarshalJSON() ([]byte, error) {
 }
 
 type UpsertDataStatus string
-type upsertDataStatusPb string
 
 const UpsertDataStatusFailure UpsertDataStatus = `FAILURE`
 
@@ -1833,22 +1764,6 @@ func (f *UpsertDataStatus) Set(v string) error {
 // Type always returns UpsertDataStatus to satisfy [pflag.Value] interface
 func (f *UpsertDataStatus) Type() string {
 	return "UpsertDataStatus"
-}
-
-func upsertDataStatusToPb(st *UpsertDataStatus) (*upsertDataStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := upsertDataStatusPb(*st)
-	return &pb, nil
-}
-
-func upsertDataStatusFromPb(pb *upsertDataStatusPb) (*UpsertDataStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := UpsertDataStatus(*pb)
-	return &st, nil
 }
 
 type UpsertDataVectorIndexRequest struct {
@@ -2073,7 +1988,6 @@ func (st VectorIndexStatus) MarshalJSON() ([]byte, error) {
 // vectors and metadata through our REST and SDK APIs. With this model, the user
 // manages index updates.
 type VectorIndexType string
-type vectorIndexTypePb string
 
 // An index that automatically syncs with a source Delta Table, automatically
 // and incrementally updating the index as the underlying data in the Delta
@@ -2103,22 +2017,6 @@ func (f *VectorIndexType) Set(v string) error {
 // Type always returns VectorIndexType to satisfy [pflag.Value] interface
 func (f *VectorIndexType) Type() string {
 	return "VectorIndexType"
-}
-
-func vectorIndexTypeToPb(st *VectorIndexType) (*vectorIndexTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := vectorIndexTypePb(*st)
-	return &pb, nil
-}
-
-func vectorIndexTypeFromPb(pb *vectorIndexTypePb) (*VectorIndexType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := VectorIndexType(*pb)
-	return &st, nil
 }
 
 func durationToPb(d *time.Duration) (*string, error) {

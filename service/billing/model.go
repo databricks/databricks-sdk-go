@@ -52,7 +52,6 @@ func (st ActionConfiguration) MarshalJSON() ([]byte, error) {
 }
 
 type ActionConfigurationType string
-type actionConfigurationTypePb string
 
 const ActionConfigurationTypeEmailNotification ActionConfigurationType = `EMAIL_NOTIFICATION`
 
@@ -75,22 +74,6 @@ func (f *ActionConfigurationType) Set(v string) error {
 // Type always returns ActionConfigurationType to satisfy [pflag.Value] interface
 func (f *ActionConfigurationType) Type() string {
 	return "ActionConfigurationType"
-}
-
-func actionConfigurationTypeToPb(st *ActionConfigurationType) (*actionConfigurationTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := actionConfigurationTypePb(*st)
-	return &pb, nil
-}
-
-func actionConfigurationTypeFromPb(pb *actionConfigurationTypePb) (*ActionConfigurationType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ActionConfigurationType(*pb)
-	return &st, nil
 }
 
 type AlertConfiguration struct {
@@ -146,7 +129,6 @@ func (st AlertConfiguration) MarshalJSON() ([]byte, error) {
 }
 
 type AlertConfigurationQuantityType string
-type alertConfigurationQuantityTypePb string
 
 const AlertConfigurationQuantityTypeListPriceDollarsUsd AlertConfigurationQuantityType = `LIST_PRICE_DOLLARS_USD`
 
@@ -171,24 +153,7 @@ func (f *AlertConfigurationQuantityType) Type() string {
 	return "AlertConfigurationQuantityType"
 }
 
-func alertConfigurationQuantityTypeToPb(st *AlertConfigurationQuantityType) (*alertConfigurationQuantityTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := alertConfigurationQuantityTypePb(*st)
-	return &pb, nil
-}
-
-func alertConfigurationQuantityTypeFromPb(pb *alertConfigurationQuantityTypePb) (*AlertConfigurationQuantityType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AlertConfigurationQuantityType(*pb)
-	return &st, nil
-}
-
 type AlertConfigurationTimePeriod string
-type alertConfigurationTimePeriodPb string
 
 const AlertConfigurationTimePeriodMonth AlertConfigurationTimePeriod = `MONTH`
 
@@ -213,24 +178,7 @@ func (f *AlertConfigurationTimePeriod) Type() string {
 	return "AlertConfigurationTimePeriod"
 }
 
-func alertConfigurationTimePeriodToPb(st *AlertConfigurationTimePeriod) (*alertConfigurationTimePeriodPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := alertConfigurationTimePeriodPb(*st)
-	return &pb, nil
-}
-
-func alertConfigurationTimePeriodFromPb(pb *alertConfigurationTimePeriodPb) (*AlertConfigurationTimePeriod, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AlertConfigurationTimePeriod(*pb)
-	return &st, nil
-}
-
 type AlertConfigurationTriggerType string
-type alertConfigurationTriggerTypePb string
 
 const AlertConfigurationTriggerTypeCumulativeSpendingExceeded AlertConfigurationTriggerType = `CUMULATIVE_SPENDING_EXCEEDED`
 
@@ -253,22 +201,6 @@ func (f *AlertConfigurationTriggerType) Set(v string) error {
 // Type always returns AlertConfigurationTriggerType to satisfy [pflag.Value] interface
 func (f *AlertConfigurationTriggerType) Type() string {
 	return "AlertConfigurationTriggerType"
-}
-
-func alertConfigurationTriggerTypeToPb(st *AlertConfigurationTriggerType) (*alertConfigurationTriggerTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := alertConfigurationTriggerTypePb(*st)
-	return &pb, nil
-}
-
-func alertConfigurationTriggerTypeFromPb(pb *alertConfigurationTriggerTypePb) (*AlertConfigurationTriggerType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AlertConfigurationTriggerType(*pb)
-	return &st, nil
 }
 
 type BudgetConfiguration struct {
@@ -397,7 +329,6 @@ func (st BudgetConfigurationFilterClause) MarshalJSON() ([]byte, error) {
 }
 
 type BudgetConfigurationFilterOperator string
-type budgetConfigurationFilterOperatorPb string
 
 const BudgetConfigurationFilterOperatorIn BudgetConfigurationFilterOperator = `IN`
 
@@ -420,22 +351,6 @@ func (f *BudgetConfigurationFilterOperator) Set(v string) error {
 // Type always returns BudgetConfigurationFilterOperator to satisfy [pflag.Value] interface
 func (f *BudgetConfigurationFilterOperator) Type() string {
 	return "BudgetConfigurationFilterOperator"
-}
-
-func budgetConfigurationFilterOperatorToPb(st *BudgetConfigurationFilterOperator) (*budgetConfigurationFilterOperatorPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := budgetConfigurationFilterOperatorPb(*st)
-	return &pb, nil
-}
-
-func budgetConfigurationFilterOperatorFromPb(pb *budgetConfigurationFilterOperatorPb) (*BudgetConfigurationFilterOperator, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := BudgetConfigurationFilterOperator(*pb)
-	return &st, nil
 }
 
 type BudgetConfigurationFilterTagClause struct {
@@ -1101,7 +1016,6 @@ func (st DeleteResponse) MarshalJSON() ([]byte, error) {
 // `NOT_FOUND`: The log delivery status as the configuration has been disabled
 // since the release of this feature or there are no workspaces in the account.
 type DeliveryStatus string
-type deliveryStatusPb string
 
 // There were no log delivery attempts since the config was created.
 const DeliveryStatusCreated DeliveryStatus = `CREATED`
@@ -1140,22 +1054,6 @@ func (f *DeliveryStatus) Set(v string) error {
 // Type always returns DeliveryStatus to satisfy [pflag.Value] interface
 func (f *DeliveryStatus) Type() string {
 	return "DeliveryStatus"
-}
-
-func deliveryStatusToPb(st *DeliveryStatus) (*deliveryStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := deliveryStatusPb(*st)
-	return &pb, nil
-}
-
-func deliveryStatusFromPb(pb *deliveryStatusPb) (*DeliveryStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DeliveryStatus(*pb)
-	return &st, nil
 }
 
 // Return billable usage logs
@@ -1722,7 +1620,6 @@ func (st ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
 // of a configuration is not supported, so disable a log delivery configuration
 // that is no longer needed.
 type LogDeliveryConfigStatus string
-type logDeliveryConfigStatusPb string
 
 const LogDeliveryConfigStatusDisabled LogDeliveryConfigStatus = `DISABLED`
 
@@ -1747,22 +1644,6 @@ func (f *LogDeliveryConfigStatus) Set(v string) error {
 // Type always returns LogDeliveryConfigStatus to satisfy [pflag.Value] interface
 func (f *LogDeliveryConfigStatus) Type() string {
 	return "LogDeliveryConfigStatus"
-}
-
-func logDeliveryConfigStatusToPb(st *LogDeliveryConfigStatus) (*logDeliveryConfigStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := logDeliveryConfigStatusPb(*st)
-	return &pb, nil
-}
-
-func logDeliveryConfigStatusFromPb(pb *logDeliveryConfigStatusPb) (*LogDeliveryConfigStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := LogDeliveryConfigStatus(*pb)
-	return &st, nil
 }
 
 type LogDeliveryConfiguration struct {
@@ -1957,7 +1838,6 @@ func (st LogDeliveryStatus) MarshalJSON() ([]byte, error) {
 // [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 // [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 type LogType string
-type logTypePb string
 
 const LogTypeAuditLogs LogType = `AUDIT_LOGS`
 
@@ -1984,22 +1864,6 @@ func (f *LogType) Type() string {
 	return "LogType"
 }
 
-func logTypeToPb(st *LogType) (*logTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := logTypePb(*st)
-	return &pb, nil
-}
-
-func logTypeFromPb(pb *logTypePb) (*LogType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := LogType(*pb)
-	return &st, nil
-}
-
 // The file type of log delivery.
 //
 // * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV
@@ -2011,7 +1875,6 @@ func logTypeFromPb(pb *logTypePb) (*LogType, error) {
 // [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 // [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 type OutputFormat string
-type outputFormatPb string
 
 const OutputFormatCsv OutputFormat = `CSV`
 
@@ -2036,22 +1899,6 @@ func (f *OutputFormat) Set(v string) error {
 // Type always returns OutputFormat to satisfy [pflag.Value] interface
 func (f *OutputFormat) Type() string {
 	return "OutputFormat"
-}
-
-func outputFormatToPb(st *OutputFormat) (*outputFormatPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := outputFormatPb(*st)
-	return &pb, nil
-}
-
-func outputFormatFromPb(pb *outputFormatPb) (*OutputFormat, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := OutputFormat(*pb)
-	return &st, nil
 }
 
 type PatchStatusResponse struct {
@@ -2119,7 +1966,6 @@ func (st SortSpec) MarshalJSON() ([]byte, error) {
 }
 
 type SortSpecField string
-type sortSpecFieldPb string
 
 const SortSpecFieldPolicyName SortSpecField = `POLICY_NAME`
 
@@ -2142,22 +1988,6 @@ func (f *SortSpecField) Set(v string) error {
 // Type always returns SortSpecField to satisfy [pflag.Value] interface
 func (f *SortSpecField) Type() string {
 	return "SortSpecField"
-}
-
-func sortSpecFieldToPb(st *SortSpecField) (*sortSpecFieldPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := sortSpecFieldPb(*st)
-	return &pb, nil
-}
-
-func sortSpecFieldFromPb(pb *sortSpecFieldPb) (*SortSpecField, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SortSpecField(*pb)
-	return &st, nil
 }
 
 type UpdateBudgetConfigurationBudget struct {
@@ -2354,7 +2184,6 @@ func (st UpdateLogDeliveryConfigurationStatusRequest) MarshalJSON() ([]byte, err
 }
 
 type UsageDashboardType string
-type usageDashboardTypePb string
 
 const UsageDashboardTypeUsageDashboardTypeGlobal UsageDashboardType = `USAGE_DASHBOARD_TYPE_GLOBAL`
 
@@ -2379,22 +2208,6 @@ func (f *UsageDashboardType) Set(v string) error {
 // Type always returns UsageDashboardType to satisfy [pflag.Value] interface
 func (f *UsageDashboardType) Type() string {
 	return "UsageDashboardType"
-}
-
-func usageDashboardTypeToPb(st *UsageDashboardType) (*usageDashboardTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := usageDashboardTypePb(*st)
-	return &pb, nil
-}
-
-func usageDashboardTypeFromPb(pb *usageDashboardTypePb) (*UsageDashboardType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := UsageDashboardType(*pb)
-	return &st, nil
 }
 
 type WrappedCreateLogDeliveryConfiguration struct {

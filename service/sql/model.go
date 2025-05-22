@@ -50,7 +50,6 @@ func (st AccessControl) MarshalJSON() ([]byte, error) {
 }
 
 type Aggregation string
-type aggregationPb string
 
 const AggregationAvg Aggregation = `AVG`
 
@@ -87,22 +86,6 @@ func (f *Aggregation) Set(v string) error {
 // Type always returns Aggregation to satisfy [pflag.Value] interface
 func (f *Aggregation) Type() string {
 	return "Aggregation"
-}
-
-func aggregationToPb(st *Aggregation) (*aggregationPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := aggregationPb(*st)
-	return &pb, nil
-}
-
-func aggregationFromPb(pb *aggregationPb) (*Aggregation, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Aggregation(*pb)
-	return &st, nil
 }
 
 type Alert struct {
@@ -300,7 +283,6 @@ func (st AlertConditionThreshold) MarshalJSON() ([]byte, error) {
 // code UNKNOWN - alert not yet evaluated TRIGGERED - alert is triggered OK -
 // alert is not triggered ERROR - alert evaluation failed
 type AlertEvaluationState string
-type alertEvaluationStatePb string
 
 const AlertEvaluationStateError AlertEvaluationState = `ERROR`
 
@@ -329,22 +311,6 @@ func (f *AlertEvaluationState) Set(v string) error {
 // Type always returns AlertEvaluationState to satisfy [pflag.Value] interface
 func (f *AlertEvaluationState) Type() string {
 	return "AlertEvaluationState"
-}
-
-func alertEvaluationStateToPb(st *AlertEvaluationState) (*alertEvaluationStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := alertEvaluationStatePb(*st)
-	return &pb, nil
-}
-
-func alertEvaluationStateFromPb(pb *alertEvaluationStatePb) (*AlertEvaluationState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AlertEvaluationState(*pb)
-	return &st, nil
 }
 
 type AlertOperandColumn struct {
@@ -420,7 +386,6 @@ func (st AlertOperandValue) MarshalJSON() ([]byte, error) {
 }
 
 type AlertOperator string
-type alertOperatorPb string
 
 const AlertOperatorEqual AlertOperator = `EQUAL`
 
@@ -455,22 +420,6 @@ func (f *AlertOperator) Set(v string) error {
 // Type always returns AlertOperator to satisfy [pflag.Value] interface
 func (f *AlertOperator) Type() string {
 	return "AlertOperator"
-}
-
-func alertOperatorToPb(st *AlertOperator) (*alertOperatorPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := alertOperatorPb(*st)
-	return &pb, nil
-}
-
-func alertOperatorFromPb(pb *alertOperatorPb) (*AlertOperator, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AlertOperator(*pb)
-	return &st, nil
 }
 
 // Alert configuration options.
@@ -537,7 +486,6 @@ func (st AlertOptions) MarshalJSON() ([]byte, error) {
 
 // State that alert evaluates to when query result is empty.
 type AlertOptionsEmptyResultState string
-type alertOptionsEmptyResultStatePb string
 
 const AlertOptionsEmptyResultStateOk AlertOptionsEmptyResultState = `ok`
 
@@ -564,22 +512,6 @@ func (f *AlertOptionsEmptyResultState) Set(v string) error {
 // Type always returns AlertOptionsEmptyResultState to satisfy [pflag.Value] interface
 func (f *AlertOptionsEmptyResultState) Type() string {
 	return "AlertOptionsEmptyResultState"
-}
-
-func alertOptionsEmptyResultStateToPb(st *AlertOptionsEmptyResultState) (*alertOptionsEmptyResultStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := alertOptionsEmptyResultStatePb(*st)
-	return &pb, nil
-}
-
-func alertOptionsEmptyResultStateFromPb(pb *alertOptionsEmptyResultStatePb) (*AlertOptionsEmptyResultState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AlertOptionsEmptyResultState(*pb)
-	return &st, nil
 }
 
 type AlertQuery struct {
@@ -665,7 +597,6 @@ func (st AlertQuery) MarshalJSON() ([]byte, error) {
 }
 
 type AlertState string
-type alertStatePb string
 
 const AlertStateOk AlertState = `OK`
 
@@ -692,22 +623,6 @@ func (f *AlertState) Set(v string) error {
 // Type always returns AlertState to satisfy [pflag.Value] interface
 func (f *AlertState) Type() string {
 	return "AlertState"
-}
-
-func alertStateToPb(st *AlertState) (*alertStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := alertStatePb(*st)
-	return &pb, nil
-}
-
-func alertStateFromPb(pb *alertStatePb) (*AlertState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AlertState(*pb)
-	return &st, nil
 }
 
 type AlertV2 struct {
@@ -1208,7 +1123,6 @@ func (st ChannelInfo) MarshalJSON() ([]byte, error) {
 }
 
 type ChannelName string
-type channelNamePb string
 
 const ChannelNameChannelNameCurrent ChannelName = `CHANNEL_NAME_CURRENT`
 
@@ -1237,22 +1151,6 @@ func (f *ChannelName) Set(v string) error {
 // Type always returns ChannelName to satisfy [pflag.Value] interface
 func (f *ChannelName) Type() string {
 	return "ChannelName"
-}
-
-func channelNameToPb(st *ChannelName) (*channelNamePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := channelNamePb(*st)
-	return &pb, nil
-}
-
-func channelNameFromPb(pb *channelNamePb) (*ChannelName, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ChannelName(*pb)
-	return &st, nil
 }
 
 type ClientConfig struct {
@@ -1372,7 +1270,6 @@ func (st ColumnInfo) MarshalJSON() ([]byte, error) {
 // The name of the base data type. This doesn't include details for complex
 // types such as STRUCT, MAP or ARRAY.
 type ColumnInfoTypeName string
-type columnInfoTypeNamePb string
 
 const ColumnInfoTypeNameArray ColumnInfoTypeName = `ARRAY`
 
@@ -1433,24 +1330,7 @@ func (f *ColumnInfoTypeName) Type() string {
 	return "ColumnInfoTypeName"
 }
 
-func columnInfoTypeNameToPb(st *ColumnInfoTypeName) (*columnInfoTypeNamePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := columnInfoTypeNamePb(*st)
-	return &pb, nil
-}
-
-func columnInfoTypeNameFromPb(pb *columnInfoTypeNamePb) (*ColumnInfoTypeName, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ColumnInfoTypeName(*pb)
-	return &st, nil
-}
-
 type ComparisonOperator string
-type comparisonOperatorPb string
 
 const ComparisonOperatorEqual ComparisonOperator = `EQUAL`
 
@@ -1487,22 +1367,6 @@ func (f *ComparisonOperator) Set(v string) error {
 // Type always returns ComparisonOperator to satisfy [pflag.Value] interface
 func (f *ComparisonOperator) Type() string {
 	return "ComparisonOperator"
-}
-
-func comparisonOperatorToPb(st *ComparisonOperator) (*comparisonOperatorPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := comparisonOperatorPb(*st)
-	return &pb, nil
-}
-
-func comparisonOperatorFromPb(pb *comparisonOperatorPb) (*ComparisonOperator, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ComparisonOperator(*pb)
-	return &st, nil
 }
 
 type CreateAlert struct {
@@ -2026,7 +1890,6 @@ func (st CreateWarehouseRequest) MarshalJSON() ([]byte, error) {
 // you must set to `PRO` and also set the field `enable_serverless_compute` to
 // `true`.
 type CreateWarehouseRequestWarehouseType string
-type createWarehouseRequestWarehouseTypePb string
 
 const CreateWarehouseRequestWarehouseTypeClassic CreateWarehouseRequestWarehouseType = `CLASSIC`
 
@@ -2053,22 +1916,6 @@ func (f *CreateWarehouseRequestWarehouseType) Set(v string) error {
 // Type always returns CreateWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
 func (f *CreateWarehouseRequestWarehouseType) Type() string {
 	return "CreateWarehouseRequestWarehouseType"
-}
-
-func createWarehouseRequestWarehouseTypeToPb(st *CreateWarehouseRequestWarehouseType) (*createWarehouseRequestWarehouseTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := createWarehouseRequestWarehouseTypePb(*st)
-	return &pb, nil
-}
-
-func createWarehouseRequestWarehouseTypeFromPb(pb *createWarehouseRequestWarehouseTypePb) (*CreateWarehouseRequestWarehouseType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CreateWarehouseRequestWarehouseType(*pb)
-	return &st, nil
 }
 
 type CreateWarehouseResponse struct {
@@ -2489,7 +2336,6 @@ func (st DataSource) MarshalJSON() ([]byte, error) {
 }
 
 type DatePrecision string
-type datePrecisionPb string
 
 const DatePrecisionDayPrecision DatePrecision = `DAY_PRECISION`
 
@@ -2516,22 +2362,6 @@ func (f *DatePrecision) Set(v string) error {
 // Type always returns DatePrecision to satisfy [pflag.Value] interface
 func (f *DatePrecision) Type() string {
 	return "DatePrecision"
-}
-
-func datePrecisionToPb(st *DatePrecision) (*datePrecisionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := datePrecisionPb(*st)
-	return &pb, nil
-}
-
-func datePrecisionFromPb(pb *datePrecisionPb) (*DatePrecision, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DatePrecision(*pb)
-	return &st, nil
 }
 
 type DateRange struct {
@@ -2612,7 +2442,6 @@ func (st DateRangeValue) MarshalJSON() ([]byte, error) {
 }
 
 type DateRangeValueDynamicDateRange string
-type dateRangeValueDynamicDateRangePb string
 
 const DateRangeValueDynamicDateRangeLast12Months DateRangeValueDynamicDateRange = `LAST_12_MONTHS`
 
@@ -2669,22 +2498,6 @@ func (f *DateRangeValueDynamicDateRange) Type() string {
 	return "DateRangeValueDynamicDateRange"
 }
 
-func dateRangeValueDynamicDateRangeToPb(st *DateRangeValueDynamicDateRange) (*dateRangeValueDynamicDateRangePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := dateRangeValueDynamicDateRangePb(*st)
-	return &pb, nil
-}
-
-func dateRangeValueDynamicDateRangeFromPb(pb *dateRangeValueDynamicDateRangePb) (*DateRangeValueDynamicDateRange, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DateRangeValueDynamicDateRange(*pb)
-	return &st, nil
-}
-
 type DateValue struct {
 	// Manually specified date-time value.
 	// Wire name: 'date_value'
@@ -2726,7 +2539,6 @@ func (st DateValue) MarshalJSON() ([]byte, error) {
 }
 
 type DateValueDynamicDate string
-type dateValueDynamicDatePb string
 
 const DateValueDynamicDateNow DateValueDynamicDate = `NOW`
 
@@ -2751,22 +2563,6 @@ func (f *DateValueDynamicDate) Set(v string) error {
 // Type always returns DateValueDynamicDate to satisfy [pflag.Value] interface
 func (f *DateValueDynamicDate) Type() string {
 	return "DateValueDynamicDate"
-}
-
-func dateValueDynamicDateToPb(st *DateValueDynamicDate) (*dateValueDynamicDatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := dateValueDynamicDatePb(*st)
-	return &pb, nil
-}
-
-func dateValueDynamicDateFromPb(pb *dateValueDynamicDatePb) (*DateValueDynamicDate, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DateValueDynamicDate(*pb)
-	return &st, nil
 }
 
 // Delete an alert
@@ -3050,7 +2846,6 @@ func (st DeleteWarehouseResponse) MarshalJSON() ([]byte, error) {
 }
 
 type Disposition string
-type dispositionPb string
 
 const DispositionExternalLinks Disposition = `EXTERNAL_LINKS`
 
@@ -3075,22 +2870,6 @@ func (f *Disposition) Set(v string) error {
 // Type always returns Disposition to satisfy [pflag.Value] interface
 func (f *Disposition) Type() string {
 	return "Disposition"
-}
-
-func dispositionToPb(st *Disposition) (*dispositionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := dispositionPb(*st)
-	return &pb, nil
-}
-
-func dispositionFromPb(pb *dispositionPb) (*Disposition, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Disposition(*pb)
-	return &st, nil
 }
 
 type EditAlert struct {
@@ -3249,7 +3028,6 @@ func (st EditWarehouseRequest) MarshalJSON() ([]byte, error) {
 // you must set to `PRO` and also set the field `enable_serverless_compute` to
 // `true`.
 type EditWarehouseRequestWarehouseType string
-type editWarehouseRequestWarehouseTypePb string
 
 const EditWarehouseRequestWarehouseTypeClassic EditWarehouseRequestWarehouseType = `CLASSIC`
 
@@ -3276,22 +3054,6 @@ func (f *EditWarehouseRequestWarehouseType) Set(v string) error {
 // Type always returns EditWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
 func (f *EditWarehouseRequestWarehouseType) Type() string {
 	return "EditWarehouseRequestWarehouseType"
-}
-
-func editWarehouseRequestWarehouseTypeToPb(st *EditWarehouseRequestWarehouseType) (*editWarehouseRequestWarehouseTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := editWarehouseRequestWarehouseTypePb(*st)
-	return &pb, nil
-}
-
-func editWarehouseRequestWarehouseTypeFromPb(pb *editWarehouseRequestWarehouseTypePb) (*EditWarehouseRequestWarehouseType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EditWarehouseRequestWarehouseType(*pb)
-	return &st, nil
 }
 
 type EditWarehouseResponse struct {
@@ -3563,7 +3325,6 @@ func (st EndpointInfo) MarshalJSON() ([]byte, error) {
 // you must set to `PRO` and also set the field `enable_serverless_compute` to
 // `true`.
 type EndpointInfoWarehouseType string
-type endpointInfoWarehouseTypePb string
 
 const EndpointInfoWarehouseTypeClassic EndpointInfoWarehouseType = `CLASSIC`
 
@@ -3590,22 +3351,6 @@ func (f *EndpointInfoWarehouseType) Set(v string) error {
 // Type always returns EndpointInfoWarehouseType to satisfy [pflag.Value] interface
 func (f *EndpointInfoWarehouseType) Type() string {
 	return "EndpointInfoWarehouseType"
-}
-
-func endpointInfoWarehouseTypeToPb(st *EndpointInfoWarehouseType) (*endpointInfoWarehouseTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := endpointInfoWarehouseTypePb(*st)
-	return &pb, nil
-}
-
-func endpointInfoWarehouseTypeFromPb(pb *endpointInfoWarehouseTypePb) (*EndpointInfoWarehouseType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EndpointInfoWarehouseType(*pb)
-	return &st, nil
 }
 
 type EndpointTagPair struct {
@@ -3886,7 +3631,6 @@ func (st ExecuteStatementRequest) MarshalJSON() ([]byte, error) {
 // :method:statementexecution/getStatement. When set to `CANCEL`, the statement
 // execution is canceled and the call returns with a `CANCELED` state.
 type ExecuteStatementRequestOnWaitTimeout string
-type executeStatementRequestOnWaitTimeoutPb string
 
 const ExecuteStatementRequestOnWaitTimeoutCancel ExecuteStatementRequestOnWaitTimeout = `CANCEL`
 
@@ -3911,22 +3655,6 @@ func (f *ExecuteStatementRequestOnWaitTimeout) Set(v string) error {
 // Type always returns ExecuteStatementRequestOnWaitTimeout to satisfy [pflag.Value] interface
 func (f *ExecuteStatementRequestOnWaitTimeout) Type() string {
 	return "ExecuteStatementRequestOnWaitTimeout"
-}
-
-func executeStatementRequestOnWaitTimeoutToPb(st *ExecuteStatementRequestOnWaitTimeout) (*executeStatementRequestOnWaitTimeoutPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := executeStatementRequestOnWaitTimeoutPb(*st)
-	return &pb, nil
-}
-
-func executeStatementRequestOnWaitTimeoutFromPb(pb *executeStatementRequestOnWaitTimeoutPb) (*ExecuteStatementRequestOnWaitTimeout, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ExecuteStatementRequestOnWaitTimeout(*pb)
-	return &st, nil
 }
 
 type ExternalLink struct {
@@ -4090,7 +3818,6 @@ func (st ExternalQuerySourceJobInfo) MarshalJSON() ([]byte, error) {
 }
 
 type Format string
-type formatPb string
 
 const FormatArrowStream Format = `ARROW_STREAM`
 
@@ -4117,22 +3844,6 @@ func (f *Format) Set(v string) error {
 // Type always returns Format to satisfy [pflag.Value] interface
 func (f *Format) Type() string {
 	return "Format"
-}
-
-func formatToPb(st *Format) (*formatPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := formatPb(*st)
-	return &pb, nil
-}
-
-func formatFromPb(pb *formatPb) (*Format, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Format(*pb)
-	return &st, nil
 }
 
 // Get an alert
@@ -4725,7 +4436,6 @@ func (st GetWarehouseResponse) MarshalJSON() ([]byte, error) {
 // you must set to `PRO` and also set the field `enable_serverless_compute` to
 // `true`.
 type GetWarehouseResponseWarehouseType string
-type getWarehouseResponseWarehouseTypePb string
 
 const GetWarehouseResponseWarehouseTypeClassic GetWarehouseResponseWarehouseType = `CLASSIC`
 
@@ -4752,22 +4462,6 @@ func (f *GetWarehouseResponseWarehouseType) Set(v string) error {
 // Type always returns GetWarehouseResponseWarehouseType to satisfy [pflag.Value] interface
 func (f *GetWarehouseResponseWarehouseType) Type() string {
 	return "GetWarehouseResponseWarehouseType"
-}
-
-func getWarehouseResponseWarehouseTypeToPb(st *GetWarehouseResponseWarehouseType) (*getWarehouseResponseWarehouseTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := getWarehouseResponseWarehouseTypePb(*st)
-	return &pb, nil
-}
-
-func getWarehouseResponseWarehouseTypeFromPb(pb *getWarehouseResponseWarehouseTypePb) (*GetWarehouseResponseWarehouseType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := GetWarehouseResponseWarehouseType(*pb)
-	return &st, nil
 }
 
 type GetWorkspaceWarehouseConfigResponse struct {
@@ -4836,7 +4530,6 @@ func (st GetWorkspaceWarehouseConfigResponse) MarshalJSON() ([]byte, error) {
 
 // Security policy for warehouses
 type GetWorkspaceWarehouseConfigResponseSecurityPolicy string
-type getWorkspaceWarehouseConfigResponseSecurityPolicyPb string
 
 const GetWorkspaceWarehouseConfigResponseSecurityPolicyDataAccessControl GetWorkspaceWarehouseConfigResponseSecurityPolicy = `DATA_ACCESS_CONTROL`
 
@@ -4863,22 +4556,6 @@ func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Set(v string) error 
 // Type always returns GetWorkspaceWarehouseConfigResponseSecurityPolicy to satisfy [pflag.Value] interface
 func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Type() string {
 	return "GetWorkspaceWarehouseConfigResponseSecurityPolicy"
-}
-
-func getWorkspaceWarehouseConfigResponseSecurityPolicyToPb(st *GetWorkspaceWarehouseConfigResponseSecurityPolicy) (*getWorkspaceWarehouseConfigResponseSecurityPolicyPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := getWorkspaceWarehouseConfigResponseSecurityPolicyPb(*st)
-	return &pb, nil
-}
-
-func getWorkspaceWarehouseConfigResponseSecurityPolicyFromPb(pb *getWorkspaceWarehouseConfigResponseSecurityPolicyPb) (*GetWorkspaceWarehouseConfigResponseSecurityPolicy, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := GetWorkspaceWarehouseConfigResponseSecurityPolicy(*pb)
-	return &st, nil
 }
 
 type LegacyAlert struct {
@@ -4952,7 +4629,6 @@ func (st LegacyAlert) MarshalJSON() ([]byte, error) {
 // `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated
 // and did not fulfill trigger conditions).
 type LegacyAlertState string
-type legacyAlertStatePb string
 
 const LegacyAlertStateOk LegacyAlertState = `ok`
 
@@ -4979,22 +4655,6 @@ func (f *LegacyAlertState) Set(v string) error {
 // Type always returns LegacyAlertState to satisfy [pflag.Value] interface
 func (f *LegacyAlertState) Type() string {
 	return "LegacyAlertState"
-}
-
-func legacyAlertStateToPb(st *LegacyAlertState) (*legacyAlertStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := legacyAlertStatePb(*st)
-	return &pb, nil
-}
-
-func legacyAlertStateFromPb(pb *legacyAlertStatePb) (*LegacyAlertState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := LegacyAlertState(*pb)
-	return &st, nil
 }
 
 type LegacyQuery struct {
@@ -5183,7 +4843,6 @@ func (st LegacyVisualization) MarshalJSON() ([]byte, error) {
 }
 
 type LifecycleState string
-type lifecycleStatePb string
 
 const LifecycleStateActive LifecycleState = `ACTIVE`
 
@@ -5208,22 +4867,6 @@ func (f *LifecycleState) Set(v string) error {
 // Type always returns LifecycleState to satisfy [pflag.Value] interface
 func (f *LifecycleState) Type() string {
 	return "LifecycleState"
-}
-
-func lifecycleStateToPb(st *LifecycleState) (*lifecycleStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := lifecycleStatePb(*st)
-	return &pb, nil
-}
-
-func lifecycleStateFromPb(pb *lifecycleStatePb) (*LifecycleState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := LifecycleState(*pb)
-	return &st, nil
 }
 
 // List alerts
@@ -5501,7 +5144,6 @@ func (st ListDashboardsRequest) MarshalJSON() ([]byte, error) {
 }
 
 type ListOrder string
-type listOrderPb string
 
 const ListOrderCreatedAt ListOrder = `created_at`
 
@@ -5526,22 +5168,6 @@ func (f *ListOrder) Set(v string) error {
 // Type always returns ListOrder to satisfy [pflag.Value] interface
 func (f *ListOrder) Type() string {
 	return "ListOrder"
-}
-
-func listOrderToPb(st *ListOrder) (*listOrderPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listOrderPb(*st)
-	return &pb, nil
-}
-
-func listOrderFromPb(pb *listOrderPb) (*ListOrder, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListOrder(*pb)
-	return &st, nil
 }
 
 // Get a list of queries
@@ -6099,7 +5725,6 @@ func (st NumericValue) MarshalJSON() ([]byte, error) {
 
 // A singular noun object type.
 type ObjectType string
-type objectTypePb string
 
 const ObjectTypeAlert ObjectType = `alert`
 
@@ -6130,25 +5755,8 @@ func (f *ObjectType) Type() string {
 	return "ObjectType"
 }
 
-func objectTypeToPb(st *ObjectType) (*objectTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := objectTypePb(*st)
-	return &pb, nil
-}
-
-func objectTypeFromPb(pb *objectTypePb) (*ObjectType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ObjectType(*pb)
-	return &st, nil
-}
-
 // Always a plural of the object type.
 type ObjectTypePlural string
-type objectTypePluralPb string
 
 const ObjectTypePluralAlerts ObjectTypePlural = `alerts`
 
@@ -6177,22 +5785,6 @@ func (f *ObjectTypePlural) Set(v string) error {
 // Type always returns ObjectTypePlural to satisfy [pflag.Value] interface
 func (f *ObjectTypePlural) Type() string {
 	return "ObjectTypePlural"
-}
-
-func objectTypePluralToPb(st *ObjectTypePlural) (*objectTypePluralPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := objectTypePluralPb(*st)
-	return &pb, nil
-}
-
-func objectTypePluralFromPb(pb *objectTypePluralPb) (*ObjectTypePlural, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ObjectTypePlural(*pb)
-	return &st, nil
 }
 
 type OdbcParams struct {
@@ -6239,7 +5831,6 @@ func (st OdbcParams) MarshalJSON() ([]byte, error) {
 
 // The singular form of the type of object which can be owned.
 type OwnableObjectType string
-type ownableObjectTypePb string
 
 const OwnableObjectTypeAlert OwnableObjectType = `alert`
 
@@ -6266,22 +5857,6 @@ func (f *OwnableObjectType) Set(v string) error {
 // Type always returns OwnableObjectType to satisfy [pflag.Value] interface
 func (f *OwnableObjectType) Type() string {
 	return "OwnableObjectType"
-}
-
-func ownableObjectTypeToPb(st *OwnableObjectType) (*ownableObjectTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := ownableObjectTypePb(*st)
-	return &pb, nil
-}
-
-func ownableObjectTypeFromPb(pb *ownableObjectTypePb) (*OwnableObjectType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := OwnableObjectType(*pb)
-	return &st, nil
 }
 
 type Parameter struct {
@@ -6341,7 +5916,6 @@ func (st Parameter) MarshalJSON() ([]byte, error) {
 
 // Parameters can have several different types.
 type ParameterType string
-type parameterTypePb string
 
 const ParameterTypeDatetime ParameterType = `datetime`
 
@@ -6374,26 +5948,9 @@ func (f *ParameterType) Type() string {
 	return "ParameterType"
 }
 
-func parameterTypeToPb(st *ParameterType) (*parameterTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := parameterTypePb(*st)
-	return &pb, nil
-}
-
-func parameterTypeFromPb(pb *parameterTypePb) (*ParameterType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ParameterType(*pb)
-	return &st, nil
-}
-
 // * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`:
 // Can edit the query * `CAN_MANAGE`: Can manage the query
 type PermissionLevel string
-type permissionLevelPb string
 
 // Can edit the query
 const PermissionLevelCanEdit PermissionLevel = `CAN_EDIT`
@@ -6428,25 +5985,8 @@ func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
 }
 
-func permissionLevelToPb(st *PermissionLevel) (*permissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := permissionLevelPb(*st)
-	return &pb, nil
-}
-
-func permissionLevelFromPb(pb *permissionLevelPb) (*PermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PermissionLevel(*pb)
-	return &st, nil
-}
-
 // Possible Reasons for which we have not saved plans in the database
 type PlansState string
-type plansStatePb string
 
 const PlansStateEmpty PlansState = `EMPTY`
 
@@ -6479,22 +6019,6 @@ func (f *PlansState) Set(v string) error {
 // Type always returns PlansState to satisfy [pflag.Value] interface
 func (f *PlansState) Type() string {
 	return "PlansState"
-}
-
-func plansStateToPb(st *PlansState) (*plansStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := plansStatePb(*st)
-	return &pb, nil
-}
-
-func plansStateFromPb(pb *plansStatePb) (*PlansState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PlansState(*pb)
-	return &st, nil
 }
 
 type Query struct {
@@ -7155,7 +6679,6 @@ func (st QueryPostContent) MarshalJSON() ([]byte, error) {
 }
 
 type QueryStatementType string
-type queryStatementTypePb string
 
 const QueryStatementTypeAlter QueryStatementType = `ALTER`
 
@@ -7222,25 +6745,8 @@ func (f *QueryStatementType) Type() string {
 	return "QueryStatementType"
 }
 
-func queryStatementTypeToPb(st *QueryStatementType) (*queryStatementTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := queryStatementTypePb(*st)
-	return &pb, nil
-}
-
-func queryStatementTypeFromPb(pb *queryStatementTypePb) (*QueryStatementType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := QueryStatementType(*pb)
-	return &st, nil
-}
-
 // Statuses which are also used by OperationStatus in runtime
 type QueryStatus string
-type queryStatusPb string
 
 const QueryStatusCanceled QueryStatus = `CANCELED`
 
@@ -7277,22 +6783,6 @@ func (f *QueryStatus) Set(v string) error {
 // Type always returns QueryStatus to satisfy [pflag.Value] interface
 func (f *QueryStatus) Type() string {
 	return "QueryStatus"
-}
-
-func queryStatusToPb(st *QueryStatus) (*queryStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := queryStatusPb(*st)
-	return &pb, nil
-}
-
-func queryStatusFromPb(pb *queryStatusPb) (*QueryStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := QueryStatus(*pb)
-	return &st, nil
 }
 
 type RepeatedEndpointConfPairs struct {
@@ -7575,7 +7065,6 @@ func (st ResultSchema) MarshalJSON() ([]byte, error) {
 }
 
 type RunAsMode string
-type runAsModePb string
 
 const RunAsModeOwner RunAsMode = `OWNER`
 
@@ -7602,27 +7091,10 @@ func (f *RunAsMode) Type() string {
 	return "RunAsMode"
 }
 
-func runAsModeToPb(st *RunAsMode) (*runAsModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := runAsModePb(*st)
-	return &pb, nil
-}
-
-func runAsModeFromPb(pb *runAsModePb) (*RunAsMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RunAsMode(*pb)
-	return &st, nil
-}
-
 // Sets the **Run as** role for the object. Must be set to one of `"viewer"`
 // (signifying "run as viewer" behavior) or `"owner"` (signifying "run as owner"
 // behavior)
 type RunAsRole string
-type runAsRolePb string
 
 const RunAsRoleOwner RunAsRole = `owner`
 
@@ -7649,24 +7121,7 @@ func (f *RunAsRole) Type() string {
 	return "RunAsRole"
 }
 
-func runAsRoleToPb(st *RunAsRole) (*runAsRolePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := runAsRolePb(*st)
-	return &pb, nil
-}
-
-func runAsRoleFromPb(pb *runAsRolePb) (*RunAsRole, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RunAsRole(*pb)
-	return &st, nil
-}
-
 type SchedulePauseStatus string
-type schedulePauseStatusPb string
 
 const SchedulePauseStatusPaused SchedulePauseStatus = `PAUSED`
 
@@ -7691,22 +7146,6 @@ func (f *SchedulePauseStatus) Set(v string) error {
 // Type always returns SchedulePauseStatus to satisfy [pflag.Value] interface
 func (f *SchedulePauseStatus) Type() string {
 	return "SchedulePauseStatus"
-}
-
-func schedulePauseStatusToPb(st *SchedulePauseStatus) (*schedulePauseStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := schedulePauseStatusPb(*st)
-	return &pb, nil
-}
-
-func schedulePauseStatusFromPb(pb *schedulePauseStatusPb) (*SchedulePauseStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SchedulePauseStatus(*pb)
-	return &st, nil
 }
 
 type ServiceError struct {
@@ -7746,7 +7185,6 @@ func (st ServiceError) MarshalJSON() ([]byte, error) {
 }
 
 type ServiceErrorCode string
-type serviceErrorCodePb string
 
 const ServiceErrorCodeAborted ServiceErrorCode = `ABORTED`
 
@@ -7795,22 +7233,6 @@ func (f *ServiceErrorCode) Set(v string) error {
 // Type always returns ServiceErrorCode to satisfy [pflag.Value] interface
 func (f *ServiceErrorCode) Type() string {
 	return "ServiceErrorCode"
-}
-
-func serviceErrorCodeToPb(st *ServiceErrorCode) (*serviceErrorCodePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := serviceErrorCodePb(*st)
-	return &pb, nil
-}
-
-func serviceErrorCodeFromPb(pb *serviceErrorCodePb) (*ServiceErrorCode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ServiceErrorCode(*pb)
-	return &st, nil
 }
 
 // Set object ACL
@@ -7957,7 +7379,6 @@ func (st SetWorkspaceWarehouseConfigRequest) MarshalJSON() ([]byte, error) {
 
 // Security policy for warehouses
 type SetWorkspaceWarehouseConfigRequestSecurityPolicy string
-type setWorkspaceWarehouseConfigRequestSecurityPolicyPb string
 
 const SetWorkspaceWarehouseConfigRequestSecurityPolicyDataAccessControl SetWorkspaceWarehouseConfigRequestSecurityPolicy = `DATA_ACCESS_CONTROL`
 
@@ -7984,22 +7405,6 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Set(v string) error {
 // Type always returns SetWorkspaceWarehouseConfigRequestSecurityPolicy to satisfy [pflag.Value] interface
 func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 	return "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
-}
-
-func setWorkspaceWarehouseConfigRequestSecurityPolicyToPb(st *SetWorkspaceWarehouseConfigRequestSecurityPolicy) (*setWorkspaceWarehouseConfigRequestSecurityPolicyPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := setWorkspaceWarehouseConfigRequestSecurityPolicyPb(*st)
-	return &pb, nil
-}
-
-func setWorkspaceWarehouseConfigRequestSecurityPolicyFromPb(pb *setWorkspaceWarehouseConfigRequestSecurityPolicyPb) (*SetWorkspaceWarehouseConfigRequestSecurityPolicy, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SetWorkspaceWarehouseConfigRequestSecurityPolicy(*pb)
-	return &st, nil
 }
 
 type SetWorkspaceWarehouseConfigResponse struct {
@@ -8032,7 +7437,6 @@ func (st SetWorkspaceWarehouseConfigResponse) MarshalJSON() ([]byte, error) {
 
 // Configurations whether the warehouse should use spot instances.
 type SpotInstancePolicy string
-type spotInstancePolicyPb string
 
 const SpotInstancePolicyCostOptimized SpotInstancePolicy = `COST_OPTIMIZED`
 
@@ -8059,22 +7463,6 @@ func (f *SpotInstancePolicy) Set(v string) error {
 // Type always returns SpotInstancePolicy to satisfy [pflag.Value] interface
 func (f *SpotInstancePolicy) Type() string {
 	return "SpotInstancePolicy"
-}
-
-func spotInstancePolicyToPb(st *SpotInstancePolicy) (*spotInstancePolicyPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := spotInstancePolicyPb(*st)
-	return &pb, nil
-}
-
-func spotInstancePolicyFromPb(pb *spotInstancePolicyPb) (*SpotInstancePolicy, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SpotInstancePolicy(*pb)
-	return &st, nil
 }
 
 // Start a warehouse
@@ -8139,7 +7527,6 @@ func (st StartWarehouseResponse) MarshalJSON() ([]byte, error) {
 
 // State of the warehouse
 type State string
-type statePb string
 
 const StateDeleted State = `DELETED`
 
@@ -8172,22 +7559,6 @@ func (f *State) Set(v string) error {
 // Type always returns State to satisfy [pflag.Value] interface
 func (f *State) Type() string {
 	return "State"
-}
-
-func stateToPb(st *State) (*statePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := statePb(*st)
-	return &pb, nil
-}
-
-func stateFromPb(pb *statePb) (*State, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := State(*pb)
-	return &st, nil
 }
 
 type StatementParameterListItem struct {
@@ -8287,7 +7658,6 @@ func (st StatementResponse) MarshalJSON() ([]byte, error) {
 // cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`: execution
 // successful, and statement closed; result no longer available for fetch
 type StatementState string
-type statementStatePb string
 
 // user canceled; can come from explicit cancel call, or timeout with
 // `on_wait_timeout=CANCEL`
@@ -8328,22 +7698,6 @@ func (f *StatementState) Set(v string) error {
 // Type always returns StatementState to satisfy [pflag.Value] interface
 func (f *StatementState) Type() string {
 	return "StatementState"
-}
-
-func statementStateToPb(st *StatementState) (*statementStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := statementStatePb(*st)
-	return &pb, nil
-}
-
-func statementStateFromPb(pb *statementStatePb) (*StatementState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := StatementState(*pb)
-	return &st, nil
 }
 
 // The status response includes execution state and if relevant, error
@@ -8390,7 +7744,6 @@ func (st StatementStatus) MarshalJSON() ([]byte, error) {
 
 // Health status of the warehouse.
 type Status string
-type statusPb string
 
 const StatusDegraded Status = `DEGRADED`
 
@@ -8419,22 +7772,6 @@ func (f *Status) Set(v string) error {
 // Type always returns Status to satisfy [pflag.Value] interface
 func (f *Status) Type() string {
 	return "Status"
-}
-
-func statusToPb(st *Status) (*statusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := statusPb(*st)
-	return &pb, nil
-}
-
-func statusFromPb(pb *statusPb) (*Status, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Status(*pb)
-	return &st, nil
 }
 
 // Stop a warehouse
@@ -8529,7 +7866,6 @@ func (st Success) MarshalJSON() ([]byte, error) {
 }
 
 type SuccessMessage string
-type successMessagePb string
 
 const SuccessMessageSuccess SuccessMessage = `Success`
 
@@ -8552,22 +7888,6 @@ func (f *SuccessMessage) Set(v string) error {
 // Type always returns SuccessMessage to satisfy [pflag.Value] interface
 func (f *SuccessMessage) Type() string {
 	return "SuccessMessage"
-}
-
-func successMessageToPb(st *SuccessMessage) (*successMessagePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := successMessagePb(*st)
-	return &pb, nil
-}
-
-func successMessageFromPb(pb *successMessagePb) (*SuccessMessage, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SuccessMessage(*pb)
-	return &st, nil
 }
 
 type TerminationReason struct {
@@ -8610,7 +7930,6 @@ func (st TerminationReason) MarshalJSON() ([]byte, error) {
 
 // status code indicating why the cluster was terminated
 type TerminationReasonCode string
-type terminationReasonCodePb string
 
 const TerminationReasonCodeAbuseDetected TerminationReasonCode = `ABUSE_DETECTED`
 
@@ -8791,25 +8110,8 @@ func (f *TerminationReasonCode) Type() string {
 	return "TerminationReasonCode"
 }
 
-func terminationReasonCodeToPb(st *TerminationReasonCode) (*terminationReasonCodePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := terminationReasonCodePb(*st)
-	return &pb, nil
-}
-
-func terminationReasonCodeFromPb(pb *terminationReasonCodePb) (*TerminationReasonCode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TerminationReasonCode(*pb)
-	return &st, nil
-}
-
 // type of the termination
 type TerminationReasonType string
-type terminationReasonTypePb string
 
 const TerminationReasonTypeClientError TerminationReasonType = `CLIENT_ERROR`
 
@@ -8838,22 +8140,6 @@ func (f *TerminationReasonType) Set(v string) error {
 // Type always returns TerminationReasonType to satisfy [pflag.Value] interface
 func (f *TerminationReasonType) Type() string {
 	return "TerminationReasonType"
-}
-
-func terminationReasonTypeToPb(st *TerminationReasonType) (*terminationReasonTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := terminationReasonTypePb(*st)
-	return &pb, nil
-}
-
-func terminationReasonTypeFromPb(pb *terminationReasonTypePb) (*TerminationReasonType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TerminationReasonType(*pb)
-	return &st, nil
 }
 
 type TextValue struct {
@@ -9725,7 +9011,6 @@ func (st WarehousePermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type WarehousePermissionLevel string
-type warehousePermissionLevelPb string
 
 const WarehousePermissionLevelCanManage WarehousePermissionLevel = `CAN_MANAGE`
 
@@ -9756,22 +9041,6 @@ func (f *WarehousePermissionLevel) Set(v string) error {
 // Type always returns WarehousePermissionLevel to satisfy [pflag.Value] interface
 func (f *WarehousePermissionLevel) Type() string {
 	return "WarehousePermissionLevel"
-}
-
-func warehousePermissionLevelToPb(st *WarehousePermissionLevel) (*warehousePermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := warehousePermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func warehousePermissionLevelFromPb(pb *warehousePermissionLevelPb) (*WarehousePermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := WarehousePermissionLevel(*pb)
-	return &st, nil
 }
 
 type WarehousePermissions struct {
@@ -9922,7 +9191,6 @@ func (st WarehouseTypePair) MarshalJSON() ([]byte, error) {
 
 // Warehouse type: `PRO` or `CLASSIC`.
 type WarehouseTypePairWarehouseType string
-type warehouseTypePairWarehouseTypePb string
 
 const WarehouseTypePairWarehouseTypeClassic WarehouseTypePairWarehouseType = `CLASSIC`
 
@@ -9949,22 +9217,6 @@ func (f *WarehouseTypePairWarehouseType) Set(v string) error {
 // Type always returns WarehouseTypePairWarehouseType to satisfy [pflag.Value] interface
 func (f *WarehouseTypePairWarehouseType) Type() string {
 	return "WarehouseTypePairWarehouseType"
-}
-
-func warehouseTypePairWarehouseTypeToPb(st *WarehouseTypePairWarehouseType) (*warehouseTypePairWarehouseTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := warehouseTypePairWarehouseTypePb(*st)
-	return &pb, nil
-}
-
-func warehouseTypePairWarehouseTypeFromPb(pb *warehouseTypePairWarehouseTypePb) (*WarehouseTypePairWarehouseType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := WarehouseTypePairWarehouseType(*pb)
-	return &st, nil
 }
 
 type Widget struct {

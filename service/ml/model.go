@@ -109,7 +109,6 @@ func (st Activity) MarshalJSON() ([]byte, error) {
 //
 // * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
 type ActivityAction string
-type activityActionPb string
 
 // Approve a transition request
 const ActivityActionApproveTransitionRequest ActivityAction = `APPROVE_TRANSITION_REQUEST`
@@ -141,22 +140,6 @@ func (f *ActivityAction) Type() string {
 	return "ActivityAction"
 }
 
-func activityActionToPb(st *ActivityAction) (*activityActionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := activityActionPb(*st)
-	return &pb, nil
-}
-
-func activityActionFromPb(pb *activityActionPb) (*ActivityAction, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ActivityAction(*pb)
-	return &st, nil
-}
-
 // Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the
 // corresponding stage transition.
 //
@@ -171,7 +154,6 @@ func activityActionFromPb(pb *activityActionPb) (*ActivityAction, error) {
 // * `SYSTEM_TRANSITION`: For events performed as a side effect, such as
 // archiving existing model versions in a stage.
 type ActivityType string
-type activityTypePb string
 
 // User applied the corresponding stage transition.
 const ActivityTypeAppliedTransition ActivityType = `APPLIED_TRANSITION`
@@ -213,22 +195,6 @@ func (f *ActivityType) Set(v string) error {
 // Type always returns ActivityType to satisfy [pflag.Value] interface
 func (f *ActivityType) Type() string {
 	return "ActivityType"
-}
-
-func activityTypeToPb(st *ActivityType) (*activityTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := activityTypePb(*st)
-	return &pb, nil
-}
-
-func activityTypeFromPb(pb *activityTypePb) (*ActivityType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ActivityType(*pb)
-	return &st, nil
 }
 
 type ApproveTransitionRequest struct {
@@ -403,7 +369,6 @@ func (st ArtifactCredentialInfoHttpHeader) MarshalJSON() ([]byte, error) {
 
 // The type of a given artifact access credential
 type ArtifactCredentialType string
-type artifactCredentialTypePb string
 
 const ArtifactCredentialTypeAwsPresignedUrl ArtifactCredentialType = `AWS_PRESIGNED_URL`
 
@@ -434,28 +399,11 @@ func (f *ArtifactCredentialType) Type() string {
 	return "ArtifactCredentialType"
 }
 
-func artifactCredentialTypeToPb(st *ArtifactCredentialType) (*artifactCredentialTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := artifactCredentialTypePb(*st)
-	return &pb, nil
-}
-
-func artifactCredentialTypeFromPb(pb *artifactCredentialTypePb) (*ArtifactCredentialType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ArtifactCredentialType(*pb)
-	return &st, nil
-}
-
 // An action that a user (with sufficient permissions) could take on a comment.
 // Valid values are: * `EDIT_COMMENT`: Edit the comment
 //
 // * `DELETE_COMMENT`: Delete the comment
 type CommentActivityAction string
-type commentActivityActionPb string
 
 // Delete the comment
 const CommentActivityActionDeleteComment CommentActivityAction = `DELETE_COMMENT`
@@ -482,22 +430,6 @@ func (f *CommentActivityAction) Set(v string) error {
 // Type always returns CommentActivityAction to satisfy [pflag.Value] interface
 func (f *CommentActivityAction) Type() string {
 	return "CommentActivityAction"
-}
-
-func commentActivityActionToPb(st *CommentActivityAction) (*commentActivityActionPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := commentActivityActionPb(*st)
-	return &pb, nil
-}
-
-func commentActivityActionFromPb(pb *commentActivityActionPb) (*CommentActivityAction, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CommentActivityAction(*pb)
-	return &st, nil
 }
 
 // Comment details.
@@ -2212,7 +2144,6 @@ func (st DeleteTransitionRequestResponse) MarshalJSON() ([]byte, error) {
 }
 
 type DeleteTransitionRequestStage string
-type deleteTransitionRequestStagePb string
 
 const DeleteTransitionRequestStageArchived DeleteTransitionRequestStage = `Archived`
 
@@ -2241,22 +2172,6 @@ func (f *DeleteTransitionRequestStage) Set(v string) error {
 // Type always returns DeleteTransitionRequestStage to satisfy [pflag.Value] interface
 func (f *DeleteTransitionRequestStage) Type() string {
 	return "DeleteTransitionRequestStage"
-}
-
-func deleteTransitionRequestStageToPb(st *DeleteTransitionRequestStage) (*deleteTransitionRequestStagePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := deleteTransitionRequestStagePb(*st)
-	return &pb, nil
-}
-
-func deleteTransitionRequestStageFromPb(pb *deleteTransitionRequestStagePb) (*DeleteTransitionRequestStage, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DeleteTransitionRequestStage(*pb)
-	return &st, nil
 }
 
 // Delete a webhook
@@ -2502,7 +2417,6 @@ func (st ExperimentPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type ExperimentPermissionLevel string
-type experimentPermissionLevelPb string
 
 const ExperimentPermissionLevelCanEdit ExperimentPermissionLevel = `CAN_EDIT`
 
@@ -2529,22 +2443,6 @@ func (f *ExperimentPermissionLevel) Set(v string) error {
 // Type always returns ExperimentPermissionLevel to satisfy [pflag.Value] interface
 func (f *ExperimentPermissionLevel) Type() string {
 	return "ExperimentPermissionLevel"
-}
-
-func experimentPermissionLevelToPb(st *ExperimentPermissionLevel) (*experimentPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := experimentPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func experimentPermissionLevelFromPb(pb *experimentPermissionLevelPb) (*ExperimentPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ExperimentPermissionLevel(*pb)
-	return &st, nil
 }
 
 type ExperimentPermissions struct {
@@ -2842,7 +2740,6 @@ func (st ForecastingExperiment) MarshalJSON() ([]byte, error) {
 }
 
 type ForecastingExperimentState string
-type forecastingExperimentStatePb string
 
 const ForecastingExperimentStateCancelled ForecastingExperimentState = `CANCELLED`
 
@@ -2873,22 +2770,6 @@ func (f *ForecastingExperimentState) Set(v string) error {
 // Type always returns ForecastingExperimentState to satisfy [pflag.Value] interface
 func (f *ForecastingExperimentState) Type() string {
 	return "ForecastingExperimentState"
-}
-
-func forecastingExperimentStateToPb(st *ForecastingExperimentState) (*forecastingExperimentStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := forecastingExperimentStatePb(*st)
-	return &pb, nil
-}
-
-func forecastingExperimentStateFromPb(pb *forecastingExperimentStatePb) (*ForecastingExperimentState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ForecastingExperimentState(*pb)
-	return &st, nil
 }
 
 // Get an experiment by name
@@ -5202,7 +5083,6 @@ func (st LoggedModelParameter) MarshalJSON() ([]byte, error) {
 
 // A LoggedModelStatus enum value represents the status of a logged model.
 type LoggedModelStatus string
-type loggedModelStatusPb string
 
 const LoggedModelStatusLoggedModelPending LoggedModelStatus = `LOGGED_MODEL_PENDING`
 
@@ -5229,22 +5109,6 @@ func (f *LoggedModelStatus) Set(v string) error {
 // Type always returns LoggedModelStatus to satisfy [pflag.Value] interface
 func (f *LoggedModelStatus) Type() string {
 	return "LoggedModelStatus"
-}
-
-func loggedModelStatusToPb(st *LoggedModelStatus) (*loggedModelStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := loggedModelStatusPb(*st)
-	return &pb, nil
-}
-
-func loggedModelStatusFromPb(pb *loggedModelStatusPb) (*LoggedModelStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := LoggedModelStatus(*pb)
-	return &st, nil
 }
 
 // Tag for a LoggedModel.
@@ -5723,7 +5587,6 @@ func (st ModelVersionDatabricks) MarshalJSON() ([]byte, error) {
 
 // Current status of `model_version`
 type ModelVersionStatus string
-type modelVersionStatusPb string
 
 const ModelVersionStatusFailedRegistration ModelVersionStatus = `FAILED_REGISTRATION`
 
@@ -5750,22 +5613,6 @@ func (f *ModelVersionStatus) Set(v string) error {
 // Type always returns ModelVersionStatus to satisfy [pflag.Value] interface
 func (f *ModelVersionStatus) Type() string {
 	return "ModelVersionStatus"
-}
-
-func modelVersionStatusToPb(st *ModelVersionStatus) (*modelVersionStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := modelVersionStatusPb(*st)
-	return &pb, nil
-}
-
-func modelVersionStatusFromPb(pb *modelVersionStatusPb) (*ModelVersionStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ModelVersionStatus(*pb)
-	return &st, nil
 }
 
 type ModelVersionTag struct {
@@ -5844,7 +5691,6 @@ func (st Param) MarshalJSON() ([]byte, error) {
 // Permission level of the requesting user on the object. For what is allowed at
 // each level, see [MLflow Model permissions](..).
 type PermissionLevel string
-type permissionLevelPb string
 
 const PermissionLevelCanEdit PermissionLevel = `CAN_EDIT`
 
@@ -5875,22 +5721,6 @@ func (f *PermissionLevel) Set(v string) error {
 // Type always returns PermissionLevel to satisfy [pflag.Value] interface
 func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
-}
-
-func permissionLevelToPb(st *PermissionLevel) (*permissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := permissionLevelPb(*st)
-	return &pb, nil
-}
-
-func permissionLevelFromPb(pb *permissionLevelPb) (*PermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PermissionLevel(*pb)
-	return &st, nil
 }
 
 type RegisteredModelAccessControlRequest struct {
@@ -6021,7 +5851,6 @@ func (st RegisteredModelPermission) MarshalJSON() ([]byte, error) {
 
 // Permission level
 type RegisteredModelPermissionLevel string
-type registeredModelPermissionLevelPb string
 
 const RegisteredModelPermissionLevelCanEdit RegisteredModelPermissionLevel = `CAN_EDIT`
 
@@ -6052,22 +5881,6 @@ func (f *RegisteredModelPermissionLevel) Set(v string) error {
 // Type always returns RegisteredModelPermissionLevel to satisfy [pflag.Value] interface
 func (f *RegisteredModelPermissionLevel) Type() string {
 	return "RegisteredModelPermissionLevel"
-}
-
-func registeredModelPermissionLevelToPb(st *RegisteredModelPermissionLevel) (*registeredModelPermissionLevelPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := registeredModelPermissionLevelPb(*st)
-	return &pb, nil
-}
-
-func registeredModelPermissionLevelFromPb(pb *registeredModelPermissionLevelPb) (*RegisteredModelPermissionLevel, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RegisteredModelPermissionLevel(*pb)
-	return &st, nil
 }
 
 type RegisteredModelPermissions struct {
@@ -6276,7 +6089,6 @@ func (st RegistryWebhook) MarshalJSON() ([]byte, error) {
 }
 
 type RegistryWebhookEvent string
-type registryWebhookEventPb string
 
 const RegistryWebhookEventCommentCreated RegistryWebhookEvent = `COMMENT_CREATED`
 
@@ -6323,22 +6135,6 @@ func (f *RegistryWebhookEvent) Type() string {
 	return "RegistryWebhookEvent"
 }
 
-func registryWebhookEventToPb(st *RegistryWebhookEvent) (*registryWebhookEventPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := registryWebhookEventPb(*st)
-	return &pb, nil
-}
-
-func registryWebhookEventFromPb(pb *registryWebhookEventPb) (*RegistryWebhookEvent, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RegistryWebhookEvent(*pb)
-	return &st, nil
-}
-
 // Enable or disable triggering the webhook, or put the webhook into test mode.
 // The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated
 // event happens.
@@ -6348,7 +6144,6 @@ func registryWebhookEventFromPb(pb *registryWebhookEventPb) (*RegistryWebhookEve
 // * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not
 // triggered on a real event.
 type RegistryWebhookStatus string
-type registryWebhookStatusPb string
 
 // Webhook is triggered when an associated event happens.
 const RegistryWebhookStatusActive RegistryWebhookStatus = `ACTIVE`
@@ -6379,22 +6174,6 @@ func (f *RegistryWebhookStatus) Set(v string) error {
 // Type always returns RegistryWebhookStatus to satisfy [pflag.Value] interface
 func (f *RegistryWebhookStatus) Type() string {
 	return "RegistryWebhookStatus"
-}
-
-func registryWebhookStatusToPb(st *RegistryWebhookStatus) (*registryWebhookStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := registryWebhookStatusPb(*st)
-	return &pb, nil
-}
-
-func registryWebhookStatusFromPb(pb *registryWebhookStatusPb) (*RegistryWebhookStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RegistryWebhookStatus(*pb)
-	return &st, nil
 }
 
 type RejectTransitionRequest struct {
@@ -6883,7 +6662,6 @@ func (st RunInfo) MarshalJSON() ([]byte, error) {
 
 // Status of a run.
 type RunInfoStatus string
-type runInfoStatusPb string
 
 const RunInfoStatusFailed RunInfoStatus = `FAILED`
 
@@ -6914,22 +6692,6 @@ func (f *RunInfoStatus) Set(v string) error {
 // Type always returns RunInfoStatus to satisfy [pflag.Value] interface
 func (f *RunInfoStatus) Type() string {
 	return "RunInfoStatus"
-}
-
-func runInfoStatusToPb(st *RunInfoStatus) (*runInfoStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := runInfoStatusPb(*st)
-	return &pb, nil
-}
-
-func runInfoStatusFromPb(pb *runInfoStatusPb) (*RunInfoStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := RunInfoStatus(*pb)
-	return &st, nil
 }
 
 // Run inputs.
@@ -7893,7 +7655,6 @@ func (st SetTagResponse) MarshalJSON() ([]byte, error) {
 //
 // * `Archived`: Archived stage.
 type Stage string
-type stagePb string
 
 // Archived stage.
 const StageArchived Stage = `Archived`
@@ -7928,22 +7689,6 @@ func (f *Stage) Type() string {
 	return "Stage"
 }
 
-func stageToPb(st *Stage) (*stagePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := stagePb(*st)
-	return &pb, nil
-}
-
-func stageFromPb(pb *stagePb) (*Stage, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Stage(*pb)
-	return &st, nil
-}
-
 // The status of the model version. Valid values are: * `PENDING_REGISTRATION`:
 // Request to register a new model version is pending as server performs
 // background tasks.
@@ -7952,7 +7697,6 @@ func stageFromPb(pb *stagePb) (*Stage, error) {
 //
 // * `READY`: Model version is ready for use.
 type Status string
-type statusPb string
 
 // Request to register a new model version has failed.
 const StatusFailedRegistration Status = `FAILED_REGISTRATION`
@@ -7983,22 +7727,6 @@ func (f *Status) Set(v string) error {
 // Type always returns Status to satisfy [pflag.Value] interface
 func (f *Status) Type() string {
 	return "Status"
-}
-
-func statusToPb(st *Status) (*statusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := statusPb(*st)
-	return &pb, nil
-}
-
-func statusFromPb(pb *statusPb) (*Status, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Status(*pb)
-	return &st, nil
 }
 
 // Test webhook response object.
@@ -8672,7 +8400,6 @@ func (st UpdateRunResponse) MarshalJSON() ([]byte, error) {
 
 // Status of a run.
 type UpdateRunStatus string
-type updateRunStatusPb string
 
 const UpdateRunStatusFailed UpdateRunStatus = `FAILED`
 
@@ -8705,22 +8432,6 @@ func (f *UpdateRunStatus) Type() string {
 	return "UpdateRunStatus"
 }
 
-func updateRunStatusToPb(st *UpdateRunStatus) (*updateRunStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := updateRunStatusPb(*st)
-	return &pb, nil
-}
-
-func updateRunStatusFromPb(pb *updateRunStatusPb) (*UpdateRunStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := UpdateRunStatus(*pb)
-	return &st, nil
-}
-
 type UpdateWebhookResponse struct {
 }
 
@@ -8751,7 +8462,6 @@ func (st UpdateWebhookResponse) MarshalJSON() ([]byte, error) {
 
 // Qualifier for the view type.
 type ViewType string
-type viewTypePb string
 
 const ViewTypeActiveOnly ViewType = `ACTIVE_ONLY`
 
@@ -8778,22 +8488,6 @@ func (f *ViewType) Set(v string) error {
 // Type always returns ViewType to satisfy [pflag.Value] interface
 func (f *ViewType) Type() string {
 	return "ViewType"
-}
-
-func viewTypeToPb(st *ViewType) (*viewTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := viewTypePb(*st)
-	return &pb, nil
-}
-
-func viewTypeFromPb(pb *viewTypePb) (*ViewType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ViewType(*pb)
-	return &st, nil
 }
 
 func durationToPb(d *time.Duration) (*string, error) {

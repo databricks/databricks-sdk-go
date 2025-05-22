@@ -55,7 +55,6 @@ func (st AnomalyDetectionConfig) MarshalJSON() ([]byte, error) {
 
 // Status of Anomaly Detection Job Run
 type AnomalyDetectionRunStatus string
-type anomalyDetectionRunStatusPb string
 
 const AnomalyDetectionRunStatusAnomalyDetectionRunStatusCanceled AnomalyDetectionRunStatus = `ANOMALY_DETECTION_RUN_STATUS_CANCELED`
 
@@ -92,22 +91,6 @@ func (f *AnomalyDetectionRunStatus) Set(v string) error {
 // Type always returns AnomalyDetectionRunStatus to satisfy [pflag.Value] interface
 func (f *AnomalyDetectionRunStatus) Type() string {
 	return "AnomalyDetectionRunStatus"
-}
-
-func anomalyDetectionRunStatusToPb(st *AnomalyDetectionRunStatus) (*anomalyDetectionRunStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := anomalyDetectionRunStatusPb(*st)
-	return &pb, nil
-}
-
-func anomalyDetectionRunStatusFromPb(pb *anomalyDetectionRunStatusPb) (*AnomalyDetectionRunStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AnomalyDetectionRunStatus(*pb)
-	return &st, nil
 }
 
 // Create a quality monitor

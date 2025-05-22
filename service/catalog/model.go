@@ -390,7 +390,6 @@ func (st ArtifactMatcher) MarshalJSON() ([]byte, error) {
 
 // The artifact type
 type ArtifactType string
-type artifactTypePb string
 
 const ArtifactTypeInitScript ArtifactType = `INIT_SCRIPT`
 
@@ -417,22 +416,6 @@ func (f *ArtifactType) Set(v string) error {
 // Type always returns ArtifactType to satisfy [pflag.Value] interface
 func (f *ArtifactType) Type() string {
 	return "ArtifactType"
-}
-
-func artifactTypeToPb(st *ArtifactType) (*artifactTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := artifactTypePb(*st)
-	return &pb, nil
-}
-
-func artifactTypeFromPb(pb *artifactTypePb) (*ArtifactType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ArtifactType(*pb)
-	return &st, nil
 }
 
 type AssignResponse struct {
@@ -1133,7 +1116,6 @@ func (st CatalogInfo) MarshalJSON() ([]byte, error) {
 }
 
 type CatalogIsolationMode string
-type catalogIsolationModePb string
 
 const CatalogIsolationModeIsolated CatalogIsolationMode = `ISOLATED`
 
@@ -1160,25 +1142,8 @@ func (f *CatalogIsolationMode) Type() string {
 	return "CatalogIsolationMode"
 }
 
-func catalogIsolationModeToPb(st *CatalogIsolationMode) (*catalogIsolationModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := catalogIsolationModePb(*st)
-	return &pb, nil
-}
-
-func catalogIsolationModeFromPb(pb *catalogIsolationModePb) (*CatalogIsolationMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CatalogIsolationMode(*pb)
-	return &st, nil
-}
-
 // The type of the catalog.
 type CatalogType string
-type catalogTypePb string
 
 const CatalogTypeDeltasharingCatalog CatalogType = `DELTASHARING_CATALOG`
 
@@ -1213,22 +1178,6 @@ func (f *CatalogType) Set(v string) error {
 // Type always returns CatalogType to satisfy [pflag.Value] interface
 func (f *CatalogType) Type() string {
 	return "CatalogType"
-}
-
-func catalogTypeToPb(st *CatalogType) (*catalogTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := catalogTypePb(*st)
-	return &pb, nil
-}
-
-func catalogTypeFromPb(pb *catalogTypePb) (*CatalogType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CatalogType(*pb)
-	return &st, nil
 }
 
 type CloudflareApiToken struct {
@@ -1374,7 +1323,6 @@ func (st ColumnMask) MarshalJSON() ([]byte, error) {
 }
 
 type ColumnTypeName string
-type columnTypeNamePb string
 
 const ColumnTypeNameArray ColumnTypeName = `ARRAY`
 
@@ -1443,22 +1391,6 @@ func (f *ColumnTypeName) Set(v string) error {
 // Type always returns ColumnTypeName to satisfy [pflag.Value] interface
 func (f *ColumnTypeName) Type() string {
 	return "ColumnTypeName"
-}
-
-func columnTypeNameToPb(st *ColumnTypeName) (*columnTypeNamePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := columnTypeNamePb(*st)
-	return &pb, nil
-}
-
-func columnTypeNameFromPb(pb *columnTypeNamePb) (*ColumnTypeName, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ColumnTypeName(*pb)
-	return &st, nil
 }
 
 type ConnectionInfo struct {
@@ -1548,7 +1480,6 @@ func (st ConnectionInfo) MarshalJSON() ([]byte, error) {
 
 // The type of connection.
 type ConnectionType string
-type connectionTypePb string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
 
@@ -1595,22 +1526,6 @@ func (f *ConnectionType) Set(v string) error {
 // Type always returns ConnectionType to satisfy [pflag.Value] interface
 func (f *ConnectionType) Type() string {
 	return "ConnectionType"
-}
-
-func connectionTypeToPb(st *ConnectionType) (*connectionTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := connectionTypePb(*st)
-	return &pb, nil
-}
-
-func connectionTypeFromPb(pb *connectionTypePb) (*ConnectionType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ConnectionType(*pb)
-	return &st, nil
 }
 
 // Detailed status of an online table. Shown if the online table is in the
@@ -2085,7 +2000,6 @@ func (st CreateFunction) MarshalJSON() ([]byte, error) {
 
 // Function parameter style. **S** is the value for SQL.
 type CreateFunctionParameterStyle string
-type createFunctionParameterStylePb string
 
 const CreateFunctionParameterStyleS CreateFunctionParameterStyle = `S`
 
@@ -2108,22 +2022,6 @@ func (f *CreateFunctionParameterStyle) Set(v string) error {
 // Type always returns CreateFunctionParameterStyle to satisfy [pflag.Value] interface
 func (f *CreateFunctionParameterStyle) Type() string {
 	return "CreateFunctionParameterStyle"
-}
-
-func createFunctionParameterStyleToPb(st *CreateFunctionParameterStyle) (*createFunctionParameterStylePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := createFunctionParameterStylePb(*st)
-	return &pb, nil
-}
-
-func createFunctionParameterStyleFromPb(pb *createFunctionParameterStylePb) (*CreateFunctionParameterStyle, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CreateFunctionParameterStyle(*pb)
-	return &st, nil
 }
 
 type CreateFunctionRequest struct {
@@ -2162,7 +2060,6 @@ func (st CreateFunctionRequest) MarshalJSON() ([]byte, error) {
 // __return_params__ of the function cannot be used (as **TABLE** return type is
 // not supported), and the __sql_data_access__ field must be **NO_SQL**.
 type CreateFunctionRoutineBody string
-type createFunctionRoutineBodyPb string
 
 const CreateFunctionRoutineBodyExternal CreateFunctionRoutineBody = `EXTERNAL`
 
@@ -2189,25 +2086,8 @@ func (f *CreateFunctionRoutineBody) Type() string {
 	return "CreateFunctionRoutineBody"
 }
 
-func createFunctionRoutineBodyToPb(st *CreateFunctionRoutineBody) (*createFunctionRoutineBodyPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := createFunctionRoutineBodyPb(*st)
-	return &pb, nil
-}
-
-func createFunctionRoutineBodyFromPb(pb *createFunctionRoutineBodyPb) (*CreateFunctionRoutineBody, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CreateFunctionRoutineBody(*pb)
-	return &st, nil
-}
-
 // The security type of the function.
 type CreateFunctionSecurityType string
-type createFunctionSecurityTypePb string
 
 const CreateFunctionSecurityTypeDefiner CreateFunctionSecurityType = `DEFINER`
 
@@ -2232,25 +2112,8 @@ func (f *CreateFunctionSecurityType) Type() string {
 	return "CreateFunctionSecurityType"
 }
 
-func createFunctionSecurityTypeToPb(st *CreateFunctionSecurityType) (*createFunctionSecurityTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := createFunctionSecurityTypePb(*st)
-	return &pb, nil
-}
-
-func createFunctionSecurityTypeFromPb(pb *createFunctionSecurityTypePb) (*CreateFunctionSecurityType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CreateFunctionSecurityType(*pb)
-	return &st, nil
-}
-
 // Function SQL data access.
 type CreateFunctionSqlDataAccess string
-type createFunctionSqlDataAccessPb string
 
 const CreateFunctionSqlDataAccessContainsSql CreateFunctionSqlDataAccess = `CONTAINS_SQL`
 
@@ -2277,22 +2140,6 @@ func (f *CreateFunctionSqlDataAccess) Set(v string) error {
 // Type always returns CreateFunctionSqlDataAccess to satisfy [pflag.Value] interface
 func (f *CreateFunctionSqlDataAccess) Type() string {
 	return "CreateFunctionSqlDataAccess"
-}
-
-func createFunctionSqlDataAccessToPb(st *CreateFunctionSqlDataAccess) (*createFunctionSqlDataAccessPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := createFunctionSqlDataAccessPb(*st)
-	return &pb, nil
-}
-
-func createFunctionSqlDataAccessFromPb(pb *createFunctionSqlDataAccessPb) (*CreateFunctionSqlDataAccess, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CreateFunctionSqlDataAccess(*pb)
-	return &st, nil
 }
 
 type CreateMetastore struct {
@@ -2879,7 +2726,6 @@ func (st CredentialInfo) MarshalJSON() ([]byte, error) {
 }
 
 type CredentialPurpose string
-type credentialPurposePb string
 
 const CredentialPurposeService CredentialPurpose = `SERVICE`
 
@@ -2906,25 +2752,8 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-func credentialPurposeToPb(st *CredentialPurpose) (*credentialPurposePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := credentialPurposePb(*st)
-	return &pb, nil
-}
-
-func credentialPurposeFromPb(pb *credentialPurposePb) (*CredentialPurpose, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CredentialPurpose(*pb)
-	return &st, nil
-}
-
 // The type of credential.
 type CredentialType string
-type credentialTypePb string
 
 const CredentialTypeBearerToken CredentialType = `BEARER_TOKEN`
 
@@ -2949,22 +2778,6 @@ func (f *CredentialType) Set(v string) error {
 // Type always returns CredentialType to satisfy [pflag.Value] interface
 func (f *CredentialType) Type() string {
 	return "CredentialType"
-}
-
-func credentialTypeToPb(st *CredentialType) (*credentialTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := credentialTypePb(*st)
-	return &pb, nil
-}
-
-func credentialTypeFromPb(pb *credentialTypePb) (*CredentialType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := CredentialType(*pb)
-	return &st, nil
 }
 
 type CredentialValidationResult struct {
@@ -3005,7 +2818,6 @@ func (st CredentialValidationResult) MarshalJSON() ([]byte, error) {
 
 // Data source format
 type DataSourceFormat string
-type dataSourceFormatPb string
 
 const DataSourceFormatAvro DataSourceFormat = `AVRO`
 
@@ -3072,22 +2884,6 @@ func (f *DataSourceFormat) Set(v string) error {
 // Type always returns DataSourceFormat to satisfy [pflag.Value] interface
 func (f *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
-}
-
-func dataSourceFormatToPb(st *DataSourceFormat) (*dataSourceFormatPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := dataSourceFormatPb(*st)
-	return &pb, nil
-}
-
-func dataSourceFormatFromPb(pb *dataSourceFormatPb) (*DataSourceFormat, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DataSourceFormat(*pb)
-	return &st, nil
 }
 
 type DatabaseCatalog struct {
@@ -3321,7 +3117,6 @@ func (st DatabaseInstanceRef) MarshalJSON() ([]byte, error) {
 }
 
 type DatabaseInstanceState string
-type databaseInstanceStatePb string
 
 const DatabaseInstanceStateAvailable DatabaseInstanceState = `AVAILABLE`
 
@@ -3354,22 +3149,6 @@ func (f *DatabaseInstanceState) Set(v string) error {
 // Type always returns DatabaseInstanceState to satisfy [pflag.Value] interface
 func (f *DatabaseInstanceState) Type() string {
 	return "DatabaseInstanceState"
-}
-
-func databaseInstanceStateToPb(st *DatabaseInstanceState) (*databaseInstanceStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := databaseInstanceStatePb(*st)
-	return &pb, nil
-}
-
-func databaseInstanceStateFromPb(pb *databaseInstanceStatePb) (*DatabaseInstanceState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DatabaseInstanceState(*pb)
-	return &st, nil
 }
 
 // Next field marker: 13
@@ -4800,7 +4579,6 @@ func (st EffectivePredictiveOptimizationFlag) MarshalJSON() ([]byte, error) {
 // The type of the object from which the flag was inherited. If there was no
 // inheritance, this field is left blank.
 type EffectivePredictiveOptimizationFlagInheritedFromType string
-type effectivePredictiveOptimizationFlagInheritedFromTypePb string
 
 const EffectivePredictiveOptimizationFlagInheritedFromTypeCatalog EffectivePredictiveOptimizationFlagInheritedFromType = `CATALOG`
 
@@ -4825,22 +4603,6 @@ func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Set(v string) err
 // Type always returns EffectivePredictiveOptimizationFlagInheritedFromType to satisfy [pflag.Value] interface
 func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Type() string {
 	return "EffectivePredictiveOptimizationFlagInheritedFromType"
-}
-
-func effectivePredictiveOptimizationFlagInheritedFromTypeToPb(st *EffectivePredictiveOptimizationFlagInheritedFromType) (*effectivePredictiveOptimizationFlagInheritedFromTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := effectivePredictiveOptimizationFlagInheritedFromTypePb(*st)
-	return &pb, nil
-}
-
-func effectivePredictiveOptimizationFlagInheritedFromTypeFromPb(pb *effectivePredictiveOptimizationFlagInheritedFromTypePb) (*EffectivePredictiveOptimizationFlagInheritedFromType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EffectivePredictiveOptimizationFlagInheritedFromType(*pb)
-	return &st, nil
 }
 
 type EffectivePrivilege struct {
@@ -4924,7 +4686,6 @@ func (st EffectivePrivilegeAssignment) MarshalJSON() ([]byte, error) {
 }
 
 type EnablePredictiveOptimization string
-type enablePredictiveOptimizationPb string
 
 const EnablePredictiveOptimizationDisable EnablePredictiveOptimization = `DISABLE`
 
@@ -4951,22 +4712,6 @@ func (f *EnablePredictiveOptimization) Set(v string) error {
 // Type always returns EnablePredictiveOptimization to satisfy [pflag.Value] interface
 func (f *EnablePredictiveOptimization) Type() string {
 	return "EnablePredictiveOptimization"
-}
-
-func enablePredictiveOptimizationToPb(st *EnablePredictiveOptimization) (*enablePredictiveOptimizationPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := enablePredictiveOptimizationPb(*st)
-	return &pb, nil
-}
-
-func enablePredictiveOptimizationFromPb(pb *enablePredictiveOptimizationPb) (*EnablePredictiveOptimization, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := EnablePredictiveOptimization(*pb)
-	return &st, nil
 }
 
 type EnableRequest struct {
@@ -5551,7 +5296,6 @@ func (st FunctionInfo) MarshalJSON() ([]byte, error) {
 
 // Function parameter style. **S** is the value for SQL.
 type FunctionInfoParameterStyle string
-type functionInfoParameterStylePb string
 
 const FunctionInfoParameterStyleS FunctionInfoParameterStyle = `S`
 
@@ -5576,28 +5320,11 @@ func (f *FunctionInfoParameterStyle) Type() string {
 	return "FunctionInfoParameterStyle"
 }
 
-func functionInfoParameterStyleToPb(st *FunctionInfoParameterStyle) (*functionInfoParameterStylePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := functionInfoParameterStylePb(*st)
-	return &pb, nil
-}
-
-func functionInfoParameterStyleFromPb(pb *functionInfoParameterStylePb) (*FunctionInfoParameterStyle, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := FunctionInfoParameterStyle(*pb)
-	return &st, nil
-}
-
 // Function language. When **EXTERNAL** is used, the language of the routine
 // function should be specified in the __external_language__ field, and the
 // __return_params__ of the function cannot be used (as **TABLE** return type is
 // not supported), and the __sql_data_access__ field must be **NO_SQL**.
 type FunctionInfoRoutineBody string
-type functionInfoRoutineBodyPb string
 
 const FunctionInfoRoutineBodyExternal FunctionInfoRoutineBody = `EXTERNAL`
 
@@ -5624,25 +5351,8 @@ func (f *FunctionInfoRoutineBody) Type() string {
 	return "FunctionInfoRoutineBody"
 }
 
-func functionInfoRoutineBodyToPb(st *FunctionInfoRoutineBody) (*functionInfoRoutineBodyPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := functionInfoRoutineBodyPb(*st)
-	return &pb, nil
-}
-
-func functionInfoRoutineBodyFromPb(pb *functionInfoRoutineBodyPb) (*FunctionInfoRoutineBody, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := FunctionInfoRoutineBody(*pb)
-	return &st, nil
-}
-
 // The security type of the function.
 type FunctionInfoSecurityType string
-type functionInfoSecurityTypePb string
 
 const FunctionInfoSecurityTypeDefiner FunctionInfoSecurityType = `DEFINER`
 
@@ -5667,25 +5377,8 @@ func (f *FunctionInfoSecurityType) Type() string {
 	return "FunctionInfoSecurityType"
 }
 
-func functionInfoSecurityTypeToPb(st *FunctionInfoSecurityType) (*functionInfoSecurityTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := functionInfoSecurityTypePb(*st)
-	return &pb, nil
-}
-
-func functionInfoSecurityTypeFromPb(pb *functionInfoSecurityTypePb) (*FunctionInfoSecurityType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := FunctionInfoSecurityType(*pb)
-	return &st, nil
-}
-
 // Function SQL data access.
 type FunctionInfoSqlDataAccess string
-type functionInfoSqlDataAccessPb string
 
 const FunctionInfoSqlDataAccessContainsSql FunctionInfoSqlDataAccess = `CONTAINS_SQL`
 
@@ -5712,22 +5405,6 @@ func (f *FunctionInfoSqlDataAccess) Set(v string) error {
 // Type always returns FunctionInfoSqlDataAccess to satisfy [pflag.Value] interface
 func (f *FunctionInfoSqlDataAccess) Type() string {
 	return "FunctionInfoSqlDataAccess"
-}
-
-func functionInfoSqlDataAccessToPb(st *FunctionInfoSqlDataAccess) (*functionInfoSqlDataAccessPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := functionInfoSqlDataAccessPb(*st)
-	return &pb, nil
-}
-
-func functionInfoSqlDataAccessFromPb(pb *functionInfoSqlDataAccessPb) (*FunctionInfoSqlDataAccess, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := FunctionInfoSqlDataAccess(*pb)
-	return &st, nil
 }
 
 type FunctionParameterInfo struct {
@@ -5830,7 +5507,6 @@ func (st FunctionParameterInfos) MarshalJSON() ([]byte, error) {
 
 // The mode of the function parameter.
 type FunctionParameterMode string
-type functionParameterModePb string
 
 const FunctionParameterModeIn FunctionParameterMode = `IN`
 
@@ -5855,25 +5531,8 @@ func (f *FunctionParameterMode) Type() string {
 	return "FunctionParameterMode"
 }
 
-func functionParameterModeToPb(st *FunctionParameterMode) (*functionParameterModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := functionParameterModePb(*st)
-	return &pb, nil
-}
-
-func functionParameterModeFromPb(pb *functionParameterModePb) (*FunctionParameterMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := FunctionParameterMode(*pb)
-	return &st, nil
-}
-
 // The type of function parameter.
 type FunctionParameterType string
-type functionParameterTypePb string
 
 const FunctionParameterTypeColumn FunctionParameterType = `COLUMN`
 
@@ -5898,22 +5557,6 @@ func (f *FunctionParameterType) Set(v string) error {
 // Type always returns FunctionParameterType to satisfy [pflag.Value] interface
 func (f *FunctionParameterType) Type() string {
 	return "FunctionParameterType"
-}
-
-func functionParameterTypeToPb(st *FunctionParameterType) (*functionParameterTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := functionParameterTypePb(*st)
-	return &pb, nil
-}
-
-func functionParameterTypeFromPb(pb *functionParameterTypePb) (*FunctionParameterType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := FunctionParameterType(*pb)
-	return &st, nil
 }
 
 // GCP temporary credentials for API authentication. Read more at
@@ -6963,7 +6606,6 @@ func (st GetMetastoreSummaryResponse) MarshalJSON() ([]byte, error) {
 
 // The scope of Delta Sharing enabled for the metastore.
 type GetMetastoreSummaryResponseDeltaSharingScope string
-type getMetastoreSummaryResponseDeltaSharingScopePb string
 
 const GetMetastoreSummaryResponseDeltaSharingScopeInternal GetMetastoreSummaryResponseDeltaSharingScope = `INTERNAL`
 
@@ -6988,22 +6630,6 @@ func (f *GetMetastoreSummaryResponseDeltaSharingScope) Set(v string) error {
 // Type always returns GetMetastoreSummaryResponseDeltaSharingScope to satisfy [pflag.Value] interface
 func (f *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
 	return "GetMetastoreSummaryResponseDeltaSharingScope"
-}
-
-func getMetastoreSummaryResponseDeltaSharingScopeToPb(st *GetMetastoreSummaryResponseDeltaSharingScope) (*getMetastoreSummaryResponseDeltaSharingScopePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := getMetastoreSummaryResponseDeltaSharingScopePb(*st)
-	return &pb, nil
-}
-
-func getMetastoreSummaryResponseDeltaSharingScopeFromPb(pb *getMetastoreSummaryResponseDeltaSharingScopePb) (*GetMetastoreSummaryResponseDeltaSharingScope, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := GetMetastoreSummaryResponseDeltaSharingScope(*pb)
-	return &st, nil
 }
 
 // Get a Model Version
@@ -7479,7 +7105,6 @@ func (st GetWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
 }
 
 type IsolationMode string
-type isolationModePb string
 
 const IsolationModeIsolationModeIsolated IsolationMode = `ISOLATION_MODE_ISOLATED`
 
@@ -7504,22 +7129,6 @@ func (f *IsolationMode) Set(v string) error {
 // Type always returns IsolationMode to satisfy [pflag.Value] interface
 func (f *IsolationMode) Type() string {
 	return "IsolationMode"
-}
-
-func isolationModeToPb(st *IsolationMode) (*isolationModePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := isolationModePb(*st)
-	return &pb, nil
-}
-
-func isolationModeFromPb(pb *isolationModePb) (*IsolationMode, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := IsolationMode(*pb)
-	return &st, nil
 }
 
 // Get all workspaces assigned to a metastore
@@ -9025,7 +8634,6 @@ func (st ListVolumesResponseContent) MarshalJSON() ([]byte, error) {
 
 // The artifact pattern matching type
 type MatchType string
-type matchTypePb string
 
 const MatchTypePrefixMatch MatchType = `PREFIX_MATCH`
 
@@ -9048,22 +8656,6 @@ func (f *MatchType) Set(v string) error {
 // Type always returns MatchType to satisfy [pflag.Value] interface
 func (f *MatchType) Type() string {
 	return "MatchType"
-}
-
-func matchTypeToPb(st *MatchType) (*matchTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := matchTypePb(*st)
-	return &pb, nil
-}
-
-func matchTypeFromPb(pb *matchTypePb) (*MatchType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MatchType(*pb)
-	return &st, nil
 }
 
 type MetastoreAssignment struct {
@@ -9198,7 +8790,6 @@ func (st MetastoreInfo) MarshalJSON() ([]byte, error) {
 
 // The scope of Delta Sharing enabled for the metastore.
 type MetastoreInfoDeltaSharingScope string
-type metastoreInfoDeltaSharingScopePb string
 
 const MetastoreInfoDeltaSharingScopeInternal MetastoreInfoDeltaSharingScope = `INTERNAL`
 
@@ -9223,22 +8814,6 @@ func (f *MetastoreInfoDeltaSharingScope) Set(v string) error {
 // Type always returns MetastoreInfoDeltaSharingScope to satisfy [pflag.Value] interface
 func (f *MetastoreInfoDeltaSharingScope) Type() string {
 	return "MetastoreInfoDeltaSharingScope"
-}
-
-func metastoreInfoDeltaSharingScopeToPb(st *MetastoreInfoDeltaSharingScope) (*metastoreInfoDeltaSharingScopePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := metastoreInfoDeltaSharingScopePb(*st)
-	return &pb, nil
-}
-
-func metastoreInfoDeltaSharingScopeFromPb(pb *metastoreInfoDeltaSharingScopePb) (*MetastoreInfoDeltaSharingScope, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MetastoreInfoDeltaSharingScope(*pb)
-	return &st, nil
 }
 
 type ModelVersionInfo struct {
@@ -9345,7 +8920,6 @@ func (st ModelVersionInfo) MarshalJSON() ([]byte, error) {
 // files are uploaded and the model version is finalized. Only model versions in
 // READY status can be loaded for inference or served.
 type ModelVersionInfoStatus string
-type modelVersionInfoStatusPb string
 
 const ModelVersionInfoStatusFailedRegistration ModelVersionInfoStatus = `FAILED_REGISTRATION`
 
@@ -9372,22 +8946,6 @@ func (f *ModelVersionInfoStatus) Set(v string) error {
 // Type always returns ModelVersionInfoStatus to satisfy [pflag.Value] interface
 func (f *ModelVersionInfoStatus) Type() string {
 	return "ModelVersionInfoStatus"
-}
-
-func modelVersionInfoStatusToPb(st *ModelVersionInfoStatus) (*modelVersionInfoStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := modelVersionInfoStatusPb(*st)
-	return &pb, nil
-}
-
-func modelVersionInfoStatusFromPb(pb *modelVersionInfoStatusPb) (*ModelVersionInfoStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ModelVersionInfoStatus(*pb)
-	return &st, nil
 }
 
 type MonitorCronSchedule struct {
@@ -9432,7 +8990,6 @@ func (st MonitorCronSchedule) MarshalJSON() ([]byte, error) {
 
 // Read only field that indicates whether a schedule is paused or not.
 type MonitorCronSchedulePauseStatus string
-type monitorCronSchedulePauseStatusPb string
 
 const MonitorCronSchedulePauseStatusPaused MonitorCronSchedulePauseStatus = `PAUSED`
 
@@ -9457,22 +9014,6 @@ func (f *MonitorCronSchedulePauseStatus) Set(v string) error {
 // Type always returns MonitorCronSchedulePauseStatus to satisfy [pflag.Value] interface
 func (f *MonitorCronSchedulePauseStatus) Type() string {
 	return "MonitorCronSchedulePauseStatus"
-}
-
-func monitorCronSchedulePauseStatusToPb(st *MonitorCronSchedulePauseStatus) (*monitorCronSchedulePauseStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := monitorCronSchedulePauseStatusPb(*st)
-	return &pb, nil
-}
-
-func monitorCronSchedulePauseStatusFromPb(pb *monitorCronSchedulePauseStatusPb) (*MonitorCronSchedulePauseStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MonitorCronSchedulePauseStatus(*pb)
-	return &st, nil
 }
 
 type MonitorDataClassificationConfig struct {
@@ -9608,7 +9149,6 @@ func (st MonitorInferenceLog) MarshalJSON() ([]byte, error) {
 // Problem type the model aims to solve. Determines the type of model-quality
 // metrics that will be computed.
 type MonitorInferenceLogProblemType string
-type monitorInferenceLogProblemTypePb string
 
 const MonitorInferenceLogProblemTypeProblemTypeClassification MonitorInferenceLogProblemType = `PROBLEM_TYPE_CLASSIFICATION`
 
@@ -9633,22 +9173,6 @@ func (f *MonitorInferenceLogProblemType) Set(v string) error {
 // Type always returns MonitorInferenceLogProblemType to satisfy [pflag.Value] interface
 func (f *MonitorInferenceLogProblemType) Type() string {
 	return "MonitorInferenceLogProblemType"
-}
-
-func monitorInferenceLogProblemTypeToPb(st *MonitorInferenceLogProblemType) (*monitorInferenceLogProblemTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := monitorInferenceLogProblemTypePb(*st)
-	return &pb, nil
-}
-
-func monitorInferenceLogProblemTypeFromPb(pb *monitorInferenceLogProblemTypePb) (*MonitorInferenceLogProblemType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MonitorInferenceLogProblemType(*pb)
-	return &st, nil
 }
 
 type MonitorInfo struct {
@@ -9750,7 +9274,6 @@ func (st MonitorInfo) MarshalJSON() ([]byte, error) {
 
 // The status of the monitor.
 type MonitorInfoStatus string
-type monitorInfoStatusPb string
 
 const MonitorInfoStatusMonitorStatusActive MonitorInfoStatus = `MONITOR_STATUS_ACTIVE`
 
@@ -9781,22 +9304,6 @@ func (f *MonitorInfoStatus) Set(v string) error {
 // Type always returns MonitorInfoStatus to satisfy [pflag.Value] interface
 func (f *MonitorInfoStatus) Type() string {
 	return "MonitorInfoStatus"
-}
-
-func monitorInfoStatusToPb(st *MonitorInfoStatus) (*monitorInfoStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := monitorInfoStatusPb(*st)
-	return &pb, nil
-}
-
-func monitorInfoStatusFromPb(pb *monitorInfoStatusPb) (*MonitorInfoStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MonitorInfoStatus(*pb)
-	return &st, nil
 }
 
 type MonitorMetric struct {
@@ -9867,7 +9374,6 @@ func (st MonitorMetric) MarshalJSON() ([]byte, error) {
 // metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate
 // or derived metrics
 type MonitorMetricType string
-type monitorMetricTypePb string
 
 const MonitorMetricTypeCustomMetricTypeAggregate MonitorMetricType = `CUSTOM_METRIC_TYPE_AGGREGATE`
 
@@ -9894,22 +9400,6 @@ func (f *MonitorMetricType) Set(v string) error {
 // Type always returns MonitorMetricType to satisfy [pflag.Value] interface
 func (f *MonitorMetricType) Type() string {
 	return "MonitorMetricType"
-}
-
-func monitorMetricTypeToPb(st *MonitorMetricType) (*monitorMetricTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := monitorMetricTypePb(*st)
-	return &pb, nil
-}
-
-func monitorMetricTypeFromPb(pb *monitorMetricTypePb) (*MonitorMetricType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MonitorMetricType(*pb)
-	return &st, nil
 }
 
 type MonitorNotifications struct {
@@ -10000,7 +9490,6 @@ func (st MonitorRefreshInfo) MarshalJSON() ([]byte, error) {
 
 // The current state of the refresh.
 type MonitorRefreshInfoState string
-type monitorRefreshInfoStatePb string
 
 const MonitorRefreshInfoStateCanceled MonitorRefreshInfoState = `CANCELED`
 
@@ -10033,25 +9522,8 @@ func (f *MonitorRefreshInfoState) Type() string {
 	return "MonitorRefreshInfoState"
 }
 
-func monitorRefreshInfoStateToPb(st *MonitorRefreshInfoState) (*monitorRefreshInfoStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := monitorRefreshInfoStatePb(*st)
-	return &pb, nil
-}
-
-func monitorRefreshInfoStateFromPb(pb *monitorRefreshInfoStatePb) (*MonitorRefreshInfoState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MonitorRefreshInfoState(*pb)
-	return &st, nil
-}
-
 // The method by which the refresh was triggered.
 type MonitorRefreshInfoTrigger string
-type monitorRefreshInfoTriggerPb string
 
 const MonitorRefreshInfoTriggerManual MonitorRefreshInfoTrigger = `MANUAL`
 
@@ -10076,22 +9548,6 @@ func (f *MonitorRefreshInfoTrigger) Set(v string) error {
 // Type always returns MonitorRefreshInfoTrigger to satisfy [pflag.Value] interface
 func (f *MonitorRefreshInfoTrigger) Type() string {
 	return "MonitorRefreshInfoTrigger"
-}
-
-func monitorRefreshInfoTriggerToPb(st *MonitorRefreshInfoTrigger) (*monitorRefreshInfoTriggerPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := monitorRefreshInfoTriggerPb(*st)
-	return &pb, nil
-}
-
-func monitorRefreshInfoTriggerFromPb(pb *monitorRefreshInfoTriggerPb) (*MonitorRefreshInfoTrigger, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MonitorRefreshInfoTrigger(*pb)
-	return &st, nil
 }
 
 type MonitorRefreshListResponse struct {
@@ -10437,7 +9893,6 @@ func (st OnlineTableSpecTriggeredSchedulingPolicy) MarshalJSON() ([]byte, error)
 
 // The state of an online table.
 type OnlineTableState string
-type onlineTableStatePb string
 
 const OnlineTableStateOffline OnlineTableState = `OFFLINE`
 
@@ -10480,22 +9935,6 @@ func (f *OnlineTableState) Set(v string) error {
 // Type always returns OnlineTableState to satisfy [pflag.Value] interface
 func (f *OnlineTableState) Type() string {
 	return "OnlineTableState"
-}
-
-func onlineTableStateToPb(st *OnlineTableState) (*onlineTableStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := onlineTableStatePb(*st)
-	return &pb, nil
-}
-
-func onlineTableStateFromPb(pb *onlineTableStatePb) (*OnlineTableState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := OnlineTableState(*pb)
-	return &st, nil
 }
 
 // Status of an online table.
@@ -10708,7 +10147,6 @@ func (st PrimaryKeyConstraint) MarshalJSON() ([]byte, error) {
 }
 
 type Privilege string
-type privilegePb string
 
 const PrivilegeAccess Privilege = `ACCESS`
 
@@ -10829,22 +10267,6 @@ func (f *Privilege) Type() string {
 	return "Privilege"
 }
 
-func privilegeToPb(st *Privilege) (*privilegePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := privilegePb(*st)
-	return &pb, nil
-}
-
-func privilegeFromPb(pb *privilegePb) (*Privilege, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Privilege(*pb)
-	return &st, nil
-}
-
 type PrivilegeAssignment struct {
 	// The principal (user email address or group name).
 	// Wire name: 'principal'
@@ -10882,24 +10304,7 @@ func (st PrivilegeAssignment) MarshalJSON() ([]byte, error) {
 }
 
 // An object containing map of key-value properties attached to the connection.
-
 type PropertiesKvPairs map[string]string
-type propertiesKvPairsPb PropertiesKvPairs
-
-func propertiesKvPairsToPb(st *PropertiesKvPairs) (*propertiesKvPairsPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	stPb := propertiesKvPairsPb(*st)
-	return &stPb, nil
-}
-func propertiesKvPairsFromPb(stPb *propertiesKvPairsPb) (*PropertiesKvPairs, error) {
-	if stPb == nil {
-		return nil, nil
-	}
-	st := PropertiesKvPairs(*stPb)
-	return &st, nil
-}
 
 // Status of an asynchronously provisioned resource.
 type ProvisioningInfo struct {
@@ -10934,7 +10339,6 @@ func (st ProvisioningInfo) MarshalJSON() ([]byte, error) {
 }
 
 type ProvisioningInfoState string
-type provisioningInfoStatePb string
 
 const ProvisioningInfoStateActive ProvisioningInfoState = `ACTIVE`
 
@@ -10967,22 +10371,6 @@ func (f *ProvisioningInfoState) Set(v string) error {
 // Type always returns ProvisioningInfoState to satisfy [pflag.Value] interface
 func (f *ProvisioningInfoState) Type() string {
 	return "ProvisioningInfoState"
-}
-
-func provisioningInfoStateToPb(st *ProvisioningInfoState) (*provisioningInfoStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := provisioningInfoStatePb(*st)
-	return &pb, nil
-}
-
-func provisioningInfoStateFromPb(pb *provisioningInfoStatePb) (*ProvisioningInfoState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ProvisioningInfoState(*pb)
-	return &st, nil
 }
 
 // Detailed status of an online table. Shown if the online table is in the
@@ -11453,48 +10841,13 @@ func (st SchemaInfo) MarshalJSON() ([]byte, error) {
 }
 
 // A map of key-value properties attached to the securable.
-
 type SecurableOptionsMap map[string]string
-type securableOptionsMapPb SecurableOptionsMap
-
-func securableOptionsMapToPb(st *SecurableOptionsMap) (*securableOptionsMapPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	stPb := securableOptionsMapPb(*st)
-	return &stPb, nil
-}
-func securableOptionsMapFromPb(stPb *securableOptionsMapPb) (*SecurableOptionsMap, error) {
-	if stPb == nil {
-		return nil, nil
-	}
-	st := SecurableOptionsMap(*stPb)
-	return &st, nil
-}
 
 // A map of key-value properties attached to the securable.
-
 type SecurablePropertiesMap map[string]string
-type securablePropertiesMapPb SecurablePropertiesMap
-
-func securablePropertiesMapToPb(st *SecurablePropertiesMap) (*securablePropertiesMapPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	stPb := securablePropertiesMapPb(*st)
-	return &stPb, nil
-}
-func securablePropertiesMapFromPb(stPb *securablePropertiesMapPb) (*SecurablePropertiesMap, error) {
-	if stPb == nil {
-		return nil, nil
-	}
-	st := SecurablePropertiesMap(*stPb)
-	return &st, nil
-}
 
 // The type of Unity Catalog securable.
 type SecurableType string
-type securableTypePb string
 
 const SecurableTypeCatalog SecurableType = `CATALOG`
 
@@ -11551,22 +10904,6 @@ func (f *SecurableType) Set(v string) error {
 // Type always returns SecurableType to satisfy [pflag.Value] interface
 func (f *SecurableType) Type() string {
 	return "SecurableType"
-}
-
-func securableTypeToPb(st *SecurableType) (*securableTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := securableTypePb(*st)
-	return &pb, nil
-}
-
-func securableTypeFromPb(pb *securableTypePb) (*SecurableType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SecurableType(*pb)
-	return &st, nil
 }
 
 type SetArtifactAllowlist struct {
@@ -11692,7 +11029,6 @@ func (st SseEncryptionDetails) MarshalJSON() ([]byte, error) {
 }
 
 type SseEncryptionDetailsAlgorithm string
-type sseEncryptionDetailsAlgorithmPb string
 
 const SseEncryptionDetailsAlgorithmAwsSseKms SseEncryptionDetailsAlgorithm = `AWS_SSE_KMS`
 
@@ -11717,22 +11053,6 @@ func (f *SseEncryptionDetailsAlgorithm) Set(v string) error {
 // Type always returns SseEncryptionDetailsAlgorithm to satisfy [pflag.Value] interface
 func (f *SseEncryptionDetailsAlgorithm) Type() string {
 	return "SseEncryptionDetailsAlgorithm"
-}
-
-func sseEncryptionDetailsAlgorithmToPb(st *SseEncryptionDetailsAlgorithm) (*sseEncryptionDetailsAlgorithmPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := sseEncryptionDetailsAlgorithmPb(*st)
-	return &pb, nil
-}
-
-func sseEncryptionDetailsAlgorithmFromPb(pb *sseEncryptionDetailsAlgorithmPb) (*SseEncryptionDetailsAlgorithm, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SseEncryptionDetailsAlgorithm(*pb)
-	return &st, nil
 }
 
 type StorageCredentialInfo struct {
@@ -11893,7 +11213,6 @@ func (st SyncedDatabaseTable) MarshalJSON() ([]byte, error) {
 }
 
 type SyncedTableSchedulingPolicy string
-type syncedTableSchedulingPolicyPb string
 
 const SyncedTableSchedulingPolicyContinuous SyncedTableSchedulingPolicy = `CONTINUOUS`
 
@@ -11920,22 +11239,6 @@ func (f *SyncedTableSchedulingPolicy) Set(v string) error {
 // Type always returns SyncedTableSchedulingPolicy to satisfy [pflag.Value] interface
 func (f *SyncedTableSchedulingPolicy) Type() string {
 	return "SyncedTableSchedulingPolicy"
-}
-
-func syncedTableSchedulingPolicyToPb(st *SyncedTableSchedulingPolicy) (*syncedTableSchedulingPolicyPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := syncedTableSchedulingPolicyPb(*st)
-	return &pb, nil
-}
-
-func syncedTableSchedulingPolicyFromPb(pb *syncedTableSchedulingPolicyPb) (*SyncedTableSchedulingPolicy, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SyncedTableSchedulingPolicy(*pb)
-	return &st, nil
 }
 
 // Specification of a synced database table.
@@ -12275,7 +11578,6 @@ func (st TableInfo) MarshalJSON() ([]byte, error) {
 }
 
 type TableOperation string
-type tableOperationPb string
 
 const TableOperationRead TableOperation = `READ`
 
@@ -12300,22 +11602,6 @@ func (f *TableOperation) Set(v string) error {
 // Type always returns TableOperation to satisfy [pflag.Value] interface
 func (f *TableOperation) Type() string {
 	return "TableOperation"
-}
-
-func tableOperationToPb(st *TableOperation) (*tableOperationPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := tableOperationPb(*st)
-	return &pb, nil
-}
-
-func tableOperationFromPb(pb *tableOperationPb) (*TableOperation, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TableOperation(*pb)
-	return &st, nil
 }
 
 type TableRowFilter struct {
@@ -12391,7 +11677,6 @@ func (st TableSummary) MarshalJSON() ([]byte, error) {
 }
 
 type TableType string
-type tableTypePb string
 
 const TableTypeExternal TableType = `EXTERNAL`
 
@@ -12428,22 +11713,6 @@ func (f *TableType) Set(v string) error {
 // Type always returns TableType to satisfy [pflag.Value] interface
 func (f *TableType) Type() string {
 	return "TableType"
-}
-
-func tableTypeToPb(st *TableType) (*tableTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := tableTypePb(*st)
-	return &pb, nil
-}
-
-func tableTypeFromPb(pb *tableTypePb) (*TableType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := TableType(*pb)
-	return &st, nil
 }
 
 type TagKeyValue struct {
@@ -13118,7 +12387,6 @@ func (st UpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
 
 // The scope of Delta Sharing enabled for the metastore.
 type UpdateMetastoreDeltaSharingScope string
-type updateMetastoreDeltaSharingScopePb string
 
 const UpdateMetastoreDeltaSharingScopeInternal UpdateMetastoreDeltaSharingScope = `INTERNAL`
 
@@ -13143,22 +12411,6 @@ func (f *UpdateMetastoreDeltaSharingScope) Set(v string) error {
 // Type always returns UpdateMetastoreDeltaSharingScope to satisfy [pflag.Value] interface
 func (f *UpdateMetastoreDeltaSharingScope) Type() string {
 	return "UpdateMetastoreDeltaSharingScope"
-}
-
-func updateMetastoreDeltaSharingScopeToPb(st *UpdateMetastoreDeltaSharingScope) (*updateMetastoreDeltaSharingScopePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := updateMetastoreDeltaSharingScopePb(*st)
-	return &pb, nil
-}
-
-func updateMetastoreDeltaSharingScopeFromPb(pb *updateMetastoreDeltaSharingScopePb) (*UpdateMetastoreDeltaSharingScope, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := UpdateMetastoreDeltaSharingScope(*pb)
-	return &st, nil
 }
 
 type UpdateModelVersionRequest struct {
@@ -13790,7 +13042,6 @@ func (st ValidateCredentialResponse) MarshalJSON() ([]byte, error) {
 
 // A enum represents the result of the file operation
 type ValidateCredentialResult string
-type validateCredentialResultPb string
 
 const ValidateCredentialResultFail ValidateCredentialResult = `FAIL`
 
@@ -13817,22 +13068,6 @@ func (f *ValidateCredentialResult) Set(v string) error {
 // Type always returns ValidateCredentialResult to satisfy [pflag.Value] interface
 func (f *ValidateCredentialResult) Type() string {
 	return "ValidateCredentialResult"
-}
-
-func validateCredentialResultToPb(st *ValidateCredentialResult) (*validateCredentialResultPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := validateCredentialResultPb(*st)
-	return &pb, nil
-}
-
-func validateCredentialResultFromPb(pb *validateCredentialResultPb) (*ValidateCredentialResult, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ValidateCredentialResult(*pb)
-	return &st, nil
 }
 
 type ValidateStorageCredential struct {
@@ -13969,7 +13204,6 @@ func (st ValidationResult) MarshalJSON() ([]byte, error) {
 
 // The operation tested.
 type ValidationResultOperation string
-type validationResultOperationPb string
 
 const ValidationResultOperationDelete ValidationResultOperation = `DELETE`
 
@@ -14002,25 +13236,8 @@ func (f *ValidationResultOperation) Type() string {
 	return "ValidationResultOperation"
 }
 
-func validationResultOperationToPb(st *ValidationResultOperation) (*validationResultOperationPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := validationResultOperationPb(*st)
-	return &pb, nil
-}
-
-func validationResultOperationFromPb(pb *validationResultOperationPb) (*ValidationResultOperation, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ValidationResultOperation(*pb)
-	return &st, nil
-}
-
 // The results of the tested operation.
 type ValidationResultResult string
-type validationResultResultPb string
 
 const ValidationResultResultFail ValidationResultResult = `FAIL`
 
@@ -14047,22 +13264,6 @@ func (f *ValidationResultResult) Set(v string) error {
 // Type always returns ValidationResultResult to satisfy [pflag.Value] interface
 func (f *ValidationResultResult) Type() string {
 	return "ValidationResultResult"
-}
-
-func validationResultResultToPb(st *ValidationResultResult) (*validationResultResultPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := validationResultResultPb(*st)
-	return &pb, nil
-}
-
-func validationResultResultFromPb(pb *validationResultResultPb) (*ValidationResultResult, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ValidationResultResult(*pb)
-	return &st, nil
 }
 
 type VolumeInfo struct {
@@ -14160,7 +13361,6 @@ func (st VolumeInfo) MarshalJSON() ([]byte, error) {
 //
 // [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 type VolumeType string
-type volumeTypePb string
 
 const VolumeTypeExternal VolumeType = `EXTERNAL`
 
@@ -14185,22 +13385,6 @@ func (f *VolumeType) Set(v string) error {
 // Type always returns VolumeType to satisfy [pflag.Value] interface
 func (f *VolumeType) Type() string {
 	return "VolumeType"
-}
-
-func volumeTypeToPb(st *VolumeType) (*volumeTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := volumeTypePb(*st)
-	return &pb, nil
-}
-
-func volumeTypeFromPb(pb *volumeTypePb) (*VolumeType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := VolumeType(*pb)
-	return &st, nil
 }
 
 type WorkspaceBinding struct {
@@ -14240,7 +13424,6 @@ func (st WorkspaceBinding) MarshalJSON() ([]byte, error) {
 // Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation`
 // enum in `credentials_common.proto`.
 type WorkspaceBindingBindingType string
-type workspaceBindingBindingTypePb string
 
 const WorkspaceBindingBindingTypeBindingTypeReadOnly WorkspaceBindingBindingType = `BINDING_TYPE_READ_ONLY`
 
@@ -14265,22 +13448,6 @@ func (f *WorkspaceBindingBindingType) Set(v string) error {
 // Type always returns WorkspaceBindingBindingType to satisfy [pflag.Value] interface
 func (f *WorkspaceBindingBindingType) Type() string {
 	return "WorkspaceBindingBindingType"
-}
-
-func workspaceBindingBindingTypeToPb(st *WorkspaceBindingBindingType) (*workspaceBindingBindingTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := workspaceBindingBindingTypePb(*st)
-	return &pb, nil
-}
-
-func workspaceBindingBindingTypeFromPb(pb *workspaceBindingBindingTypePb) (*WorkspaceBindingBindingType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := WorkspaceBindingBindingType(*pb)
-	return &st, nil
 }
 
 func durationToPb(d *time.Duration) (*string, error) {

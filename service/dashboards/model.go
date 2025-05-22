@@ -421,7 +421,6 @@ func (st Dashboard) MarshalJSON() ([]byte, error) {
 }
 
 type DashboardView string
-type dashboardViewPb string
 
 const DashboardViewDashboardViewBasic DashboardView = `DASHBOARD_VIEW_BASIC`
 
@@ -444,22 +443,6 @@ func (f *DashboardView) Set(v string) error {
 // Type always returns DashboardView to satisfy [pflag.Value] interface
 func (f *DashboardView) Type() string {
 	return "DashboardView"
-}
-
-func dashboardViewToPb(st *DashboardView) (*dashboardViewPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := dashboardViewPb(*st)
-	return &pb, nil
-}
-
-func dashboardViewFromPb(pb *dashboardViewPb) (*DashboardView, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DashboardView(*pb)
-	return &st, nil
 }
 
 // Delete dashboard schedule
@@ -1858,7 +1841,6 @@ func (st GetSubscriptionRequest) MarshalJSON() ([]byte, error) {
 }
 
 type LifecycleState string
-type lifecycleStatePb string
 
 const LifecycleStateActive LifecycleState = `ACTIVE`
 
@@ -1883,22 +1865,6 @@ func (f *LifecycleState) Set(v string) error {
 // Type always returns LifecycleState to satisfy [pflag.Value] interface
 func (f *LifecycleState) Type() string {
 	return "LifecycleState"
-}
-
-func lifecycleStateToPb(st *LifecycleState) (*lifecycleStatePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := lifecycleStatePb(*st)
-	return &pb, nil
-}
-
-func lifecycleStateFromPb(pb *lifecycleStatePb) (*LifecycleState, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := LifecycleState(*pb)
-	return &st, nil
 }
 
 // List dashboards
@@ -2181,7 +2147,6 @@ func (st MessageError) MarshalJSON() ([]byte, error) {
 }
 
 type MessageErrorType string
-type messageErrorTypePb string
 
 const MessageErrorTypeBlockMultipleExecutionsException MessageErrorType = `BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION`
 
@@ -2310,22 +2275,6 @@ func (f *MessageErrorType) Type() string {
 	return "MessageErrorType"
 }
 
-func messageErrorTypeToPb(st *MessageErrorType) (*messageErrorTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := messageErrorTypePb(*st)
-	return &pb, nil
-}
-
-func messageErrorTypeFromPb(pb *messageErrorTypePb) (*MessageErrorType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MessageErrorType(*pb)
-	return &st, nil
-}
-
 // MessageStatus. The possible values are: * `FETCHING_METADATA`: Fetching
 // metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context
 // step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to
@@ -2343,7 +2292,6 @@ func messageErrorTypeFromPb(pb *messageErrorTypePb) (*MessageErrorType, error) {
 // [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery)
 // API. * `CANCELLED`: Message has been cancelled.
 type MessageStatus string
-type messageStatusPb string
 
 // Waiting for the LLM to respond to the user's question.
 const MessageStatusAskingAi MessageStatus = `ASKING_AI`
@@ -2402,22 +2350,6 @@ func (f *MessageStatus) Set(v string) error {
 // Type always returns MessageStatus to satisfy [pflag.Value] interface
 func (f *MessageStatus) Type() string {
 	return "MessageStatus"
-}
-
-func messageStatusToPb(st *MessageStatus) (*messageStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := messageStatusPb(*st)
-	return &pb, nil
-}
-
-func messageStatusFromPb(pb *messageStatusPb) (*MessageStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MessageStatus(*pb)
-	return &st, nil
 }
 
 type MigrateDashboardRequest struct {
@@ -2834,7 +2766,6 @@ func (st Schedule) MarshalJSON() ([]byte, error) {
 }
 
 type SchedulePauseStatus string
-type schedulePauseStatusPb string
 
 const SchedulePauseStatusPaused SchedulePauseStatus = `PAUSED`
 
@@ -2859,22 +2790,6 @@ func (f *SchedulePauseStatus) Set(v string) error {
 // Type always returns SchedulePauseStatus to satisfy [pflag.Value] interface
 func (f *SchedulePauseStatus) Type() string {
 	return "SchedulePauseStatus"
-}
-
-func schedulePauseStatusToPb(st *SchedulePauseStatus) (*schedulePauseStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := schedulePauseStatusPb(*st)
-	return &pb, nil
-}
-
-func schedulePauseStatusFromPb(pb *schedulePauseStatusPb) (*SchedulePauseStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := SchedulePauseStatus(*pb)
-	return &st, nil
 }
 
 type Subscriber struct {

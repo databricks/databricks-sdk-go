@@ -75,7 +75,6 @@ func (st AddExchangeForListingResponse) MarshalJSON() ([]byte, error) {
 }
 
 type AssetType string
-type assetTypePb string
 
 const AssetTypeAssetTypeApp AssetType = `ASSET_TYPE_APP`
 
@@ -110,22 +109,6 @@ func (f *AssetType) Set(v string) error {
 // Type always returns AssetType to satisfy [pflag.Value] interface
 func (f *AssetType) Type() string {
 	return "AssetType"
-}
-
-func assetTypeToPb(st *AssetType) (*assetTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := assetTypePb(*st)
-	return &pb, nil
-}
-
-func assetTypeFromPb(pb *assetTypePb) (*AssetType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := AssetType(*pb)
-	return &st, nil
 }
 
 // Get one batch of listings. One may specify up to 50 IDs per request.
@@ -255,7 +238,6 @@ func (st BatchGetProvidersResponse) MarshalJSON() ([]byte, error) {
 }
 
 type Category string
-type categoryPb string
 
 const CategoryAdvertisingAndMarketing Category = `ADVERTISING_AND_MARKETING`
 
@@ -320,22 +302,6 @@ func (f *Category) Set(v string) error {
 // Type always returns Category to satisfy [pflag.Value] interface
 func (f *Category) Type() string {
 	return "Category"
-}
-
-func categoryToPb(st *Category) (*categoryPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := categoryPb(*st)
-	return &pb, nil
-}
-
-func categoryFromPb(pb *categoryPb) (*Category, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Category(*pb)
-	return &st, nil
 }
 
 type ConsumerTerms struct {
@@ -414,7 +380,6 @@ func (st ContactInfo) MarshalJSON() ([]byte, error) {
 }
 
 type Cost string
-type costPb string
 
 const CostFree Cost = `FREE`
 
@@ -439,22 +404,6 @@ func (f *Cost) Set(v string) error {
 // Type always returns Cost to satisfy [pflag.Value] interface
 func (f *Cost) Type() string {
 	return "Cost"
-}
-
-func costToPb(st *Cost) (*costPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := costPb(*st)
-	return &pb, nil
-}
-
-func costFromPb(pb *costPb) (*Cost, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Cost(*pb)
-	return &st, nil
 }
 
 type CreateExchangeFilterRequest struct {
@@ -931,7 +880,6 @@ func (st CreateProviderResponse) MarshalJSON() ([]byte, error) {
 }
 
 type DataRefresh string
-type dataRefreshPb string
 
 const DataRefreshDaily DataRefresh = `DAILY`
 
@@ -970,22 +918,6 @@ func (f *DataRefresh) Set(v string) error {
 // Type always returns DataRefresh to satisfy [pflag.Value] interface
 func (f *DataRefresh) Type() string {
 	return "DataRefresh"
-}
-
-func dataRefreshToPb(st *DataRefresh) (*dataRefreshPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := dataRefreshPb(*st)
-	return &pb, nil
-}
-
-func dataRefreshFromPb(pb *dataRefreshPb) (*DataRefresh, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DataRefresh(*pb)
-	return &st, nil
 }
 
 type DataRefreshInfo struct {
@@ -1386,7 +1318,6 @@ func (st DeleteProviderResponse) MarshalJSON() ([]byte, error) {
 }
 
 type DeltaSharingRecipientType string
-type deltaSharingRecipientTypePb string
 
 const DeltaSharingRecipientTypeDeltaSharingRecipientTypeDatabricks DeltaSharingRecipientType = `DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS`
 
@@ -1411,22 +1342,6 @@ func (f *DeltaSharingRecipientType) Set(v string) error {
 // Type always returns DeltaSharingRecipientType to satisfy [pflag.Value] interface
 func (f *DeltaSharingRecipientType) Type() string {
 	return "DeltaSharingRecipientType"
-}
-
-func deltaSharingRecipientTypeToPb(st *DeltaSharingRecipientType) (*deltaSharingRecipientTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := deltaSharingRecipientTypePb(*st)
-	return &pb, nil
-}
-
-func deltaSharingRecipientTypeFromPb(pb *deltaSharingRecipientTypePb) (*DeltaSharingRecipientType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := DeltaSharingRecipientType(*pb)
-	return &st, nil
 }
 
 type Exchange struct {
@@ -1544,7 +1459,6 @@ func (st ExchangeFilter) MarshalJSON() ([]byte, error) {
 }
 
 type ExchangeFilterType string
-type exchangeFilterTypePb string
 
 const ExchangeFilterTypeGlobalMetastoreId ExchangeFilterType = `GLOBAL_METASTORE_ID`
 
@@ -1567,22 +1481,6 @@ func (f *ExchangeFilterType) Set(v string) error {
 // Type always returns ExchangeFilterType to satisfy [pflag.Value] interface
 func (f *ExchangeFilterType) Type() string {
 	return "ExchangeFilterType"
-}
-
-func exchangeFilterTypeToPb(st *ExchangeFilterType) (*exchangeFilterTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := exchangeFilterTypePb(*st)
-	return &pb, nil
-}
-
-func exchangeFilterTypeFromPb(pb *exchangeFilterTypePb) (*ExchangeFilterType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ExchangeFilterType(*pb)
-	return &st, nil
 }
 
 type ExchangeListing struct {
@@ -1734,7 +1632,6 @@ func (st FileParent) MarshalJSON() ([]byte, error) {
 }
 
 type FileParentType string
-type fileParentTypePb string
 
 const FileParentTypeListing FileParentType = `LISTING`
 
@@ -1763,24 +1660,7 @@ func (f *FileParentType) Type() string {
 	return "FileParentType"
 }
 
-func fileParentTypeToPb(st *FileParentType) (*fileParentTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := fileParentTypePb(*st)
-	return &pb, nil
-}
-
-func fileParentTypeFromPb(pb *fileParentTypePb) (*FileParentType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := FileParentType(*pb)
-	return &st, nil
-}
-
 type FileStatus string
-type fileStatusPb string
 
 const FileStatusFileStatusPublished FileStatus = `FILE_STATUS_PUBLISHED`
 
@@ -1811,24 +1691,7 @@ func (f *FileStatus) Type() string {
 	return "FileStatus"
 }
 
-func fileStatusToPb(st *FileStatus) (*fileStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := fileStatusPb(*st)
-	return &pb, nil
-}
-
-func fileStatusFromPb(pb *fileStatusPb) (*FileStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := FileStatus(*pb)
-	return &st, nil
-}
-
 type FulfillmentType string
-type fulfillmentTypePb string
 
 const FulfillmentTypeInstall FulfillmentType = `INSTALL`
 
@@ -1853,22 +1716,6 @@ func (f *FulfillmentType) Set(v string) error {
 // Type always returns FulfillmentType to satisfy [pflag.Value] interface
 func (f *FulfillmentType) Type() string {
 	return "FulfillmentType"
-}
-
-func fulfillmentTypeToPb(st *FulfillmentType) (*fulfillmentTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := fulfillmentTypePb(*st)
-	return &pb, nil
-}
-
-func fulfillmentTypeFromPb(pb *fulfillmentTypePb) (*FulfillmentType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := FulfillmentType(*pb)
-	return &st, nil
 }
 
 // Get an exchange
@@ -2469,7 +2316,6 @@ func (st InstallationDetail) MarshalJSON() ([]byte, error) {
 }
 
 type InstallationStatus string
-type installationStatusPb string
 
 const InstallationStatusFailed InstallationStatus = `FAILED`
 
@@ -2494,22 +2340,6 @@ func (f *InstallationStatus) Set(v string) error {
 // Type always returns InstallationStatus to satisfy [pflag.Value] interface
 func (f *InstallationStatus) Type() string {
 	return "InstallationStatus"
-}
-
-func installationStatusToPb(st *InstallationStatus) (*installationStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := installationStatusPb(*st)
-	return &pb, nil
-}
-
-func installationStatusFromPb(pb *installationStatusPb) (*InstallationStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := InstallationStatus(*pb)
-	return &st, nil
 }
 
 // List all installations
@@ -3607,7 +3437,6 @@ func (st ListingSetting) MarshalJSON() ([]byte, error) {
 }
 
 type ListingShareType string
-type listingShareTypePb string
 
 const ListingShareTypeFull ListingShareType = `FULL`
 
@@ -3634,25 +3463,8 @@ func (f *ListingShareType) Type() string {
 	return "ListingShareType"
 }
 
-func listingShareTypeToPb(st *ListingShareType) (*listingShareTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listingShareTypePb(*st)
-	return &pb, nil
-}
-
-func listingShareTypeFromPb(pb *listingShareTypePb) (*ListingShareType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListingShareType(*pb)
-	return &st, nil
-}
-
 // Enums
 type ListingStatus string
-type listingStatusPb string
 
 const ListingStatusDraft ListingStatus = `DRAFT`
 
@@ -3681,22 +3493,6 @@ func (f *ListingStatus) Set(v string) error {
 // Type always returns ListingStatus to satisfy [pflag.Value] interface
 func (f *ListingStatus) Type() string {
 	return "ListingStatus"
-}
-
-func listingStatusToPb(st *ListingStatus) (*listingStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listingStatusPb(*st)
-	return &pb, nil
-}
-
-func listingStatusFromPb(pb *listingStatusPb) (*ListingStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListingStatus(*pb)
-	return &st, nil
 }
 
 type ListingSummary struct {
@@ -3823,7 +3619,6 @@ func (st ListingTag) MarshalJSON() ([]byte, error) {
 }
 
 type ListingTagType string
-type listingTagTypePb string
 
 const ListingTagTypeListingTagTypeLanguage ListingTagType = `LISTING_TAG_TYPE_LANGUAGE`
 
@@ -3850,24 +3645,7 @@ func (f *ListingTagType) Type() string {
 	return "ListingTagType"
 }
 
-func listingTagTypeToPb(st *ListingTagType) (*listingTagTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listingTagTypePb(*st)
-	return &pb, nil
-}
-
-func listingTagTypeFromPb(pb *listingTagTypePb) (*ListingTagType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListingTagType(*pb)
-	return &st, nil
-}
-
 type ListingType string
-type listingTypePb string
 
 const ListingTypePersonalized ListingType = `PERSONALIZED`
 
@@ -3894,24 +3672,7 @@ func (f *ListingType) Type() string {
 	return "ListingType"
 }
 
-func listingTypeToPb(st *ListingType) (*listingTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := listingTypePb(*st)
-	return &pb, nil
-}
-
-func listingTypeFromPb(pb *listingTypePb) (*ListingType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := ListingType(*pb)
-	return &st, nil
-}
-
 type MarketplaceFileType string
-type marketplaceFileTypePb string
 
 const MarketplaceFileTypeApp MarketplaceFileType = `APP`
 
@@ -3938,22 +3699,6 @@ func (f *MarketplaceFileType) Set(v string) error {
 // Type always returns MarketplaceFileType to satisfy [pflag.Value] interface
 func (f *MarketplaceFileType) Type() string {
 	return "MarketplaceFileType"
-}
-
-func marketplaceFileTypeToPb(st *MarketplaceFileType) (*marketplaceFileTypePb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := marketplaceFileTypePb(*st)
-	return &pb, nil
-}
-
-func marketplaceFileTypeFromPb(pb *marketplaceFileTypePb) (*MarketplaceFileType, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := MarketplaceFileType(*pb)
-	return &st, nil
 }
 
 type PersonalizationRequest struct {
@@ -4036,7 +3781,6 @@ func (st PersonalizationRequest) MarshalJSON() ([]byte, error) {
 }
 
 type PersonalizationRequestStatus string
-type personalizationRequestStatusPb string
 
 const PersonalizationRequestStatusDenied PersonalizationRequestStatus = `DENIED`
 
@@ -4065,22 +3809,6 @@ func (f *PersonalizationRequestStatus) Set(v string) error {
 // Type always returns PersonalizationRequestStatus to satisfy [pflag.Value] interface
 func (f *PersonalizationRequestStatus) Type() string {
 	return "PersonalizationRequestStatus"
-}
-
-func personalizationRequestStatusToPb(st *PersonalizationRequestStatus) (*personalizationRequestStatusPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := personalizationRequestStatusPb(*st)
-	return &pb, nil
-}
-
-func personalizationRequestStatusFromPb(pb *personalizationRequestStatusPb) (*PersonalizationRequestStatus, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := PersonalizationRequestStatus(*pb)
-	return &st, nil
 }
 
 type ProviderAnalyticsDashboard struct {
@@ -5094,7 +4822,6 @@ func (st UpdateProviderResponse) MarshalJSON() ([]byte, error) {
 }
 
 type Visibility string
-type visibilityPb string
 
 const VisibilityPrivate Visibility = `PRIVATE`
 
@@ -5119,22 +4846,6 @@ func (f *Visibility) Set(v string) error {
 // Type always returns Visibility to satisfy [pflag.Value] interface
 func (f *Visibility) Type() string {
 	return "Visibility"
-}
-
-func visibilityToPb(st *Visibility) (*visibilityPb, error) {
-	if st == nil {
-		return nil, nil
-	}
-	pb := visibilityPb(*st)
-	return &pb, nil
-}
-
-func visibilityFromPb(pb *visibilityPb) (*Visibility, error) {
-	if pb == nil {
-		return nil, nil
-	}
-	st := Visibility(*pb)
-	return &st, nil
 }
 
 func durationToPb(d *time.Duration) (*string, error) {

@@ -652,6 +652,24 @@ func (st credentialPb) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(st)
 }
 
+type customTagsPb CustomTags
+
+func customTagsToPb(st *CustomTags) (*customTagsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	stPb := customTagsPb(*st)
+	return &stPb, nil
+}
+
+func customTagsFromPb(stPb *customTagsPb) (*CustomTags, error) {
+	if stPb == nil {
+		return nil, nil
+	}
+	st := CustomTags(*stPb)
+	return &st, nil
+}
+
 func customerFacingGcpCloudResourceContainerToPb(st *CustomerFacingGcpCloudResourceContainer) (*customerFacingGcpCloudResourceContainerPb, error) {
 	if st == nil {
 		return nil, nil
