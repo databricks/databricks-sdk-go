@@ -143,6 +143,65 @@ func (_c *MockDatabaseInstancesInterface_CreateDatabaseInstance_Call) RunAndRetu
 	return _c
 }
 
+// CreateDatabaseTable provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInstancesInterface) CreateDatabaseTable(ctx context.Context, request catalog.CreateDatabaseTableRequest) (*catalog.DatabaseTable, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateDatabaseTable")
+	}
+
+	var r0 *catalog.DatabaseTable
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.CreateDatabaseTableRequest) (*catalog.DatabaseTable, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.CreateDatabaseTableRequest) *catalog.DatabaseTable); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.DatabaseTable)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.CreateDatabaseTableRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInstancesInterface_CreateDatabaseTable_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateDatabaseTable'
+type MockDatabaseInstancesInterface_CreateDatabaseTable_Call struct {
+	*mock.Call
+}
+
+// CreateDatabaseTable is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.CreateDatabaseTableRequest
+func (_e *MockDatabaseInstancesInterface_Expecter) CreateDatabaseTable(ctx interface{}, request interface{}) *MockDatabaseInstancesInterface_CreateDatabaseTable_Call {
+	return &MockDatabaseInstancesInterface_CreateDatabaseTable_Call{Call: _e.mock.On("CreateDatabaseTable", ctx, request)}
+}
+
+func (_c *MockDatabaseInstancesInterface_CreateDatabaseTable_Call) Run(run func(ctx context.Context, request catalog.CreateDatabaseTableRequest)) *MockDatabaseInstancesInterface_CreateDatabaseTable_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.CreateDatabaseTableRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_CreateDatabaseTable_Call) Return(_a0 *catalog.DatabaseTable, _a1 error) *MockDatabaseInstancesInterface_CreateDatabaseTable_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_CreateDatabaseTable_Call) RunAndReturn(run func(context.Context, catalog.CreateDatabaseTableRequest) (*catalog.DatabaseTable, error)) *MockDatabaseInstancesInterface_CreateDatabaseTable_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateSyncedDatabaseTable provides a mock function with given fields: ctx, request
 func (_m *MockDatabaseInstancesInterface) CreateSyncedDatabaseTable(ctx context.Context, request catalog.CreateSyncedDatabaseTableRequest) (*catalog.SyncedDatabaseTable, error) {
 	ret := _m.Called(ctx, request)
@@ -390,6 +449,100 @@ func (_c *MockDatabaseInstancesInterface_DeleteDatabaseInstanceByName_Call) RunA
 	return _c
 }
 
+// DeleteDatabaseTable provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInstancesInterface) DeleteDatabaseTable(ctx context.Context, request catalog.DeleteDatabaseTableRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteDatabaseTable")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.DeleteDatabaseTableRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockDatabaseInstancesInterface_DeleteDatabaseTable_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDatabaseTable'
+type MockDatabaseInstancesInterface_DeleteDatabaseTable_Call struct {
+	*mock.Call
+}
+
+// DeleteDatabaseTable is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.DeleteDatabaseTableRequest
+func (_e *MockDatabaseInstancesInterface_Expecter) DeleteDatabaseTable(ctx interface{}, request interface{}) *MockDatabaseInstancesInterface_DeleteDatabaseTable_Call {
+	return &MockDatabaseInstancesInterface_DeleteDatabaseTable_Call{Call: _e.mock.On("DeleteDatabaseTable", ctx, request)}
+}
+
+func (_c *MockDatabaseInstancesInterface_DeleteDatabaseTable_Call) Run(run func(ctx context.Context, request catalog.DeleteDatabaseTableRequest)) *MockDatabaseInstancesInterface_DeleteDatabaseTable_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.DeleteDatabaseTableRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_DeleteDatabaseTable_Call) Return(_a0 error) *MockDatabaseInstancesInterface_DeleteDatabaseTable_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_DeleteDatabaseTable_Call) RunAndReturn(run func(context.Context, catalog.DeleteDatabaseTableRequest) error) *MockDatabaseInstancesInterface_DeleteDatabaseTable_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteDatabaseTableByName provides a mock function with given fields: ctx, name
+func (_m *MockDatabaseInstancesInterface) DeleteDatabaseTableByName(ctx context.Context, name string) error {
+	ret := _m.Called(ctx, name)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteDatabaseTableByName")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, name)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockDatabaseInstancesInterface_DeleteDatabaseTableByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDatabaseTableByName'
+type MockDatabaseInstancesInterface_DeleteDatabaseTableByName_Call struct {
+	*mock.Call
+}
+
+// DeleteDatabaseTableByName is a helper method to define mock.On call
+//   - ctx context.Context
+//   - name string
+func (_e *MockDatabaseInstancesInterface_Expecter) DeleteDatabaseTableByName(ctx interface{}, name interface{}) *MockDatabaseInstancesInterface_DeleteDatabaseTableByName_Call {
+	return &MockDatabaseInstancesInterface_DeleteDatabaseTableByName_Call{Call: _e.mock.On("DeleteDatabaseTableByName", ctx, name)}
+}
+
+func (_c *MockDatabaseInstancesInterface_DeleteDatabaseTableByName_Call) Run(run func(ctx context.Context, name string)) *MockDatabaseInstancesInterface_DeleteDatabaseTableByName_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_DeleteDatabaseTableByName_Call) Return(_a0 error) *MockDatabaseInstancesInterface_DeleteDatabaseTableByName_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_DeleteDatabaseTableByName_Call) RunAndReturn(run func(context.Context, string) error) *MockDatabaseInstancesInterface_DeleteDatabaseTableByName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteSyncedDatabaseTable provides a mock function with given fields: ctx, request
 func (_m *MockDatabaseInstancesInterface) DeleteSyncedDatabaseTable(ctx context.Context, request catalog.DeleteSyncedDatabaseTableRequest) error {
 	ret := _m.Called(ctx, request)
@@ -484,6 +637,65 @@ func (_c *MockDatabaseInstancesInterface_DeleteSyncedDatabaseTableByName_Call) R
 	return _c
 }
 
+// FailoverDatabaseInstance provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInstancesInterface) FailoverDatabaseInstance(ctx context.Context, request catalog.FailoverDatabaseInstanceRequest) (*catalog.DatabaseInstance, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FailoverDatabaseInstance")
+	}
+
+	var r0 *catalog.DatabaseInstance
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.FailoverDatabaseInstanceRequest) (*catalog.DatabaseInstance, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.FailoverDatabaseInstanceRequest) *catalog.DatabaseInstance); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.DatabaseInstance)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.FailoverDatabaseInstanceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInstancesInterface_FailoverDatabaseInstance_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FailoverDatabaseInstance'
+type MockDatabaseInstancesInterface_FailoverDatabaseInstance_Call struct {
+	*mock.Call
+}
+
+// FailoverDatabaseInstance is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.FailoverDatabaseInstanceRequest
+func (_e *MockDatabaseInstancesInterface_Expecter) FailoverDatabaseInstance(ctx interface{}, request interface{}) *MockDatabaseInstancesInterface_FailoverDatabaseInstance_Call {
+	return &MockDatabaseInstancesInterface_FailoverDatabaseInstance_Call{Call: _e.mock.On("FailoverDatabaseInstance", ctx, request)}
+}
+
+func (_c *MockDatabaseInstancesInterface_FailoverDatabaseInstance_Call) Run(run func(ctx context.Context, request catalog.FailoverDatabaseInstanceRequest)) *MockDatabaseInstancesInterface_FailoverDatabaseInstance_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.FailoverDatabaseInstanceRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_FailoverDatabaseInstance_Call) Return(_a0 *catalog.DatabaseInstance, _a1 error) *MockDatabaseInstancesInterface_FailoverDatabaseInstance_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_FailoverDatabaseInstance_Call) RunAndReturn(run func(context.Context, catalog.FailoverDatabaseInstanceRequest) (*catalog.DatabaseInstance, error)) *MockDatabaseInstancesInterface_FailoverDatabaseInstance_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // FindDatabaseInstanceByUid provides a mock function with given fields: ctx, request
 func (_m *MockDatabaseInstancesInterface) FindDatabaseInstanceByUid(ctx context.Context, request catalog.FindDatabaseInstanceByUidRequest) (*catalog.DatabaseInstance, error) {
 	ret := _m.Called(ctx, request)
@@ -539,6 +751,65 @@ func (_c *MockDatabaseInstancesInterface_FindDatabaseInstanceByUid_Call) Return(
 }
 
 func (_c *MockDatabaseInstancesInterface_FindDatabaseInstanceByUid_Call) RunAndReturn(run func(context.Context, catalog.FindDatabaseInstanceByUidRequest) (*catalog.DatabaseInstance, error)) *MockDatabaseInstancesInterface_FindDatabaseInstanceByUid_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GenerateDatabaseCredential provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInstancesInterface) GenerateDatabaseCredential(ctx context.Context, request catalog.GenerateDatabaseCredentialRequest) (*catalog.DatabaseCredential, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GenerateDatabaseCredential")
+	}
+
+	var r0 *catalog.DatabaseCredential
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GenerateDatabaseCredentialRequest) (*catalog.DatabaseCredential, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GenerateDatabaseCredentialRequest) *catalog.DatabaseCredential); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.DatabaseCredential)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.GenerateDatabaseCredentialRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInstancesInterface_GenerateDatabaseCredential_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GenerateDatabaseCredential'
+type MockDatabaseInstancesInterface_GenerateDatabaseCredential_Call struct {
+	*mock.Call
+}
+
+// GenerateDatabaseCredential is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.GenerateDatabaseCredentialRequest
+func (_e *MockDatabaseInstancesInterface_Expecter) GenerateDatabaseCredential(ctx interface{}, request interface{}) *MockDatabaseInstancesInterface_GenerateDatabaseCredential_Call {
+	return &MockDatabaseInstancesInterface_GenerateDatabaseCredential_Call{Call: _e.mock.On("GenerateDatabaseCredential", ctx, request)}
+}
+
+func (_c *MockDatabaseInstancesInterface_GenerateDatabaseCredential_Call) Run(run func(ctx context.Context, request catalog.GenerateDatabaseCredentialRequest)) *MockDatabaseInstancesInterface_GenerateDatabaseCredential_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.GenerateDatabaseCredentialRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_GenerateDatabaseCredential_Call) Return(_a0 *catalog.DatabaseCredential, _a1 error) *MockDatabaseInstancesInterface_GenerateDatabaseCredential_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_GenerateDatabaseCredential_Call) RunAndReturn(run func(context.Context, catalog.GenerateDatabaseCredentialRequest) (*catalog.DatabaseCredential, error)) *MockDatabaseInstancesInterface_GenerateDatabaseCredential_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -775,6 +1046,124 @@ func (_c *MockDatabaseInstancesInterface_GetDatabaseInstanceByName_Call) Return(
 }
 
 func (_c *MockDatabaseInstancesInterface_GetDatabaseInstanceByName_Call) RunAndReturn(run func(context.Context, string) (*catalog.DatabaseInstance, error)) *MockDatabaseInstancesInterface_GetDatabaseInstanceByName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetDatabaseTable provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInstancesInterface) GetDatabaseTable(ctx context.Context, request catalog.GetDatabaseTableRequest) (*catalog.DatabaseTable, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDatabaseTable")
+	}
+
+	var r0 *catalog.DatabaseTable
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetDatabaseTableRequest) (*catalog.DatabaseTable, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetDatabaseTableRequest) *catalog.DatabaseTable); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.DatabaseTable)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.GetDatabaseTableRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInstancesInterface_GetDatabaseTable_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDatabaseTable'
+type MockDatabaseInstancesInterface_GetDatabaseTable_Call struct {
+	*mock.Call
+}
+
+// GetDatabaseTable is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request catalog.GetDatabaseTableRequest
+func (_e *MockDatabaseInstancesInterface_Expecter) GetDatabaseTable(ctx interface{}, request interface{}) *MockDatabaseInstancesInterface_GetDatabaseTable_Call {
+	return &MockDatabaseInstancesInterface_GetDatabaseTable_Call{Call: _e.mock.On("GetDatabaseTable", ctx, request)}
+}
+
+func (_c *MockDatabaseInstancesInterface_GetDatabaseTable_Call) Run(run func(ctx context.Context, request catalog.GetDatabaseTableRequest)) *MockDatabaseInstancesInterface_GetDatabaseTable_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(catalog.GetDatabaseTableRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_GetDatabaseTable_Call) Return(_a0 *catalog.DatabaseTable, _a1 error) *MockDatabaseInstancesInterface_GetDatabaseTable_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_GetDatabaseTable_Call) RunAndReturn(run func(context.Context, catalog.GetDatabaseTableRequest) (*catalog.DatabaseTable, error)) *MockDatabaseInstancesInterface_GetDatabaseTable_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetDatabaseTableByName provides a mock function with given fields: ctx, name
+func (_m *MockDatabaseInstancesInterface) GetDatabaseTableByName(ctx context.Context, name string) (*catalog.DatabaseTable, error) {
+	ret := _m.Called(ctx, name)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDatabaseTableByName")
+	}
+
+	var r0 *catalog.DatabaseTable
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.DatabaseTable, error)); ok {
+		return rf(ctx, name)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.DatabaseTable); ok {
+		r0 = rf(ctx, name)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*catalog.DatabaseTable)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, name)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInstancesInterface_GetDatabaseTableByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDatabaseTableByName'
+type MockDatabaseInstancesInterface_GetDatabaseTableByName_Call struct {
+	*mock.Call
+}
+
+// GetDatabaseTableByName is a helper method to define mock.On call
+//   - ctx context.Context
+//   - name string
+func (_e *MockDatabaseInstancesInterface_Expecter) GetDatabaseTableByName(ctx interface{}, name interface{}) *MockDatabaseInstancesInterface_GetDatabaseTableByName_Call {
+	return &MockDatabaseInstancesInterface_GetDatabaseTableByName_Call{Call: _e.mock.On("GetDatabaseTableByName", ctx, name)}
+}
+
+func (_c *MockDatabaseInstancesInterface_GetDatabaseTableByName_Call) Run(run func(ctx context.Context, name string)) *MockDatabaseInstancesInterface_GetDatabaseTableByName_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_GetDatabaseTableByName_Call) Return(_a0 *catalog.DatabaseTable, _a1 error) *MockDatabaseInstancesInterface_GetDatabaseTableByName_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInstancesInterface_GetDatabaseTableByName_Call) RunAndReturn(run func(context.Context, string) (*catalog.DatabaseTable, error)) *MockDatabaseInstancesInterface_GetDatabaseTableByName_Call {
 	_c.Call.Return(run)
 	return _c
 }

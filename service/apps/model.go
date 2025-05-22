@@ -3,130 +3,219 @@
 package apps
 
 import (
+	"encoding/json"
 	"fmt"
-
-	"github.com/databricks/databricks-sdk-go/marshal"
+	"strings"
+	"time"
 )
 
 type App struct {
 	// The active deployment of the app. A deployment is considered active when
 	// it has been deployed to the app compute.
-	ActiveDeployment *AppDeployment `json:"active_deployment,omitempty"`
+	// Wire name: 'active_deployment'
+	ActiveDeployment *AppDeployment
 
-	AppStatus *ApplicationStatus `json:"app_status,omitempty"`
+	// Wire name: 'app_status'
+	AppStatus *ApplicationStatus
 
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Wire name: 'budget_policy_id'
+	BudgetPolicyId string
 
-	ComputeStatus *ComputeStatus `json:"compute_status,omitempty"`
+	// Wire name: 'compute_status'
+	ComputeStatus *ComputeStatus
 	// The creation time of the app. Formatted timestamp in ISO 6801.
-	CreateTime string `json:"create_time,omitempty"`
+	// Wire name: 'create_time'
+	CreateTime string
 	// The email of the user that created the app.
-	Creator string `json:"creator,omitempty"`
+	// Wire name: 'creator'
+	Creator string
 	// The default workspace file system path of the source code from which app
 	// deployment are created. This field tracks the workspace source code path
 	// of the last active deployment.
-	DefaultSourceCodePath string `json:"default_source_code_path,omitempty"`
+	// Wire name: 'default_source_code_path'
+	DefaultSourceCodePath string
 	// The description of the app.
-	Description string `json:"description,omitempty"`
+	// Wire name: 'description'
+	Description string
 
-	EffectiveBudgetPolicyId string `json:"effective_budget_policy_id,omitempty"`
+	// Wire name: 'effective_budget_policy_id'
+	EffectiveBudgetPolicyId string
 	// The effective api scopes granted to the user access token.
-	EffectiveUserApiScopes []string `json:"effective_user_api_scopes,omitempty"`
+	// Wire name: 'effective_user_api_scopes'
+	EffectiveUserApiScopes []string
 	// The unique identifier of the app.
-	Id string `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id string
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 
-	Oauth2AppClientId string `json:"oauth2_app_client_id,omitempty"`
+	// Wire name: 'oauth2_app_client_id'
+	Oauth2AppClientId string
 
-	Oauth2AppIntegrationId string `json:"oauth2_app_integration_id,omitempty"`
+	// Wire name: 'oauth2_app_integration_id'
+	Oauth2AppIntegrationId string
 	// The pending deployment of the app. A deployment is considered pending
 	// when it is being prepared for deployment to the app compute.
-	PendingDeployment *AppDeployment `json:"pending_deployment,omitempty"`
+	// Wire name: 'pending_deployment'
+	PendingDeployment *AppDeployment
 	// Resources for the app.
-	Resources []AppResource `json:"resources,omitempty"`
+	// Wire name: 'resources'
+	Resources []AppResource
 
-	ServicePrincipalClientId string `json:"service_principal_client_id,omitempty"`
+	// Wire name: 'service_principal_client_id'
+	ServicePrincipalClientId string
 
-	ServicePrincipalId int64 `json:"service_principal_id,omitempty"`
+	// Wire name: 'service_principal_id'
+	ServicePrincipalId int64
 
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string
 	// The update time of the app. Formatted timestamp in ISO 6801.
-	UpdateTime string `json:"update_time,omitempty"`
+	// Wire name: 'update_time'
+	UpdateTime string
 	// The email of the user that last updated the app.
-	Updater string `json:"updater,omitempty"`
+	// Wire name: 'updater'
+	Updater string
 	// The URL of the app once it is deployed.
-	Url string `json:"url,omitempty"`
+	// Wire name: 'url'
+	Url string
 
-	UserApiScopes []string `json:"user_api_scopes,omitempty"`
+	// Wire name: 'user_api_scopes'
+	UserApiScopes []string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *App) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *App) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s App) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st App) MarshalJSON() ([]byte, error) {
+	pb, err := appToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppAccessControlRequest struct {
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string
 	// Permission level
-	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel AppPermissionLevel
 	// application ID of a service principal
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
+	// Wire name: 'user_name'
+	UserName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppAccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AppAccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appAccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appAccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AppAccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AppAccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := appAccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppAccessControlResponse struct {
 	// All permissions.
-	AllPermissions []AppPermission `json:"all_permissions,omitempty"`
+	// Wire name: 'all_permissions'
+	AllPermissions []AppPermission
 	// Display name of the user or service principal.
-	DisplayName string `json:"display_name,omitempty"`
+	// Wire name: 'display_name'
+	DisplayName string
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string
 	// Name of the service principal.
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
+	// Wire name: 'user_name'
+	UserName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppAccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AppAccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appAccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appAccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AppAccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AppAccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := appAccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppDeployment struct {
 	// The creation time of the deployment. Formatted timestamp in ISO 6801.
-	CreateTime string `json:"create_time,omitempty"`
+	// Wire name: 'create_time'
+	CreateTime string
 	// The email of the user creates the deployment.
-	Creator string `json:"creator,omitempty"`
+	// Wire name: 'creator'
+	Creator string
 	// The deployment artifacts for an app.
-	DeploymentArtifacts *AppDeploymentArtifacts `json:"deployment_artifacts,omitempty"`
+	// Wire name: 'deployment_artifacts'
+	DeploymentArtifacts *AppDeploymentArtifacts
 	// The unique id of the deployment.
-	DeploymentId string `json:"deployment_id,omitempty"`
+	// Wire name: 'deployment_id'
+	DeploymentId string
 	// The mode of which the deployment will manage the source code.
-	Mode AppDeploymentMode `json:"mode,omitempty"`
+	// Wire name: 'mode'
+	Mode AppDeploymentMode
 	// The workspace file system path of the source code used to create the app
 	// deployment. This is different from
 	// `deployment_artifacts.source_code_path`, which is the path used by the
@@ -134,40 +223,79 @@ type AppDeployment struct {
 	// the app in the workspace during deployment creation, whereas the latter
 	// provides a system generated stable snapshotted source code path used by
 	// the deployment.
-	SourceCodePath string `json:"source_code_path,omitempty"`
+	// Wire name: 'source_code_path'
+	SourceCodePath string
 	// Status and status message of the deployment
-	Status *AppDeploymentStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status *AppDeploymentStatus
 	// The update time of the deployment. Formatted timestamp in ISO 6801.
-	UpdateTime string `json:"update_time,omitempty"`
+	// Wire name: 'update_time'
+	UpdateTime string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppDeployment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AppDeployment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appDeploymentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appDeploymentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AppDeployment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AppDeployment) MarshalJSON() ([]byte, error) {
+	pb, err := appDeploymentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppDeploymentArtifacts struct {
 	// The snapshotted workspace file system path of the source code loaded by
 	// the deployed app.
-	SourceCodePath string `json:"source_code_path,omitempty"`
+	// Wire name: 'source_code_path'
+	SourceCodePath string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppDeploymentArtifacts) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AppDeploymentArtifacts) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appDeploymentArtifactsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appDeploymentArtifactsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AppDeploymentArtifacts) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AppDeploymentArtifacts) MarshalJSON() ([]byte, error) {
+	pb, err := appDeploymentArtifactsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppDeploymentMode string
+type appDeploymentModePb string
 
 const AppDeploymentModeAutoSync AppDeploymentMode = `AUTO_SYNC`
 
@@ -194,7 +322,24 @@ func (f *AppDeploymentMode) Type() string {
 	return "AppDeploymentMode"
 }
 
+func appDeploymentModeToPb(st *AppDeploymentMode) (*appDeploymentModePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appDeploymentModePb(*st)
+	return &pb, nil
+}
+
+func appDeploymentModeFromPb(pb *appDeploymentModePb) (*AppDeploymentMode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppDeploymentMode(*pb)
+	return &st, nil
+}
+
 type AppDeploymentState string
+type appDeploymentStatePb string
 
 const AppDeploymentStateCancelled AppDeploymentState = `CANCELLED`
 
@@ -225,43 +370,100 @@ func (f *AppDeploymentState) Type() string {
 	return "AppDeploymentState"
 }
 
+func appDeploymentStateToPb(st *AppDeploymentState) (*appDeploymentStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appDeploymentStatePb(*st)
+	return &pb, nil
+}
+
+func appDeploymentStateFromPb(pb *appDeploymentStatePb) (*AppDeploymentState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppDeploymentState(*pb)
+	return &st, nil
+}
+
 type AppDeploymentStatus struct {
 	// Message corresponding with the deployment state.
-	Message string `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message string
 	// State of the deployment.
-	State AppDeploymentState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State AppDeploymentState
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppDeploymentStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AppDeploymentStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appDeploymentStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appDeploymentStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AppDeploymentStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AppDeploymentStatus) MarshalJSON() ([]byte, error) {
+	pb, err := appDeploymentStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppPermission struct {
-	Inherited bool `json:"inherited,omitempty"`
 
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Wire name: 'inherited'
+	Inherited bool
+
+	// Wire name: 'inherited_from_object'
+	InheritedFromObject []string
 	// Permission level
-	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel AppPermissionLevel
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppPermission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AppPermission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appPermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appPermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AppPermission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AppPermission) MarshalJSON() ([]byte, error) {
+	pb, err := appPermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Permission level
 type AppPermissionLevel string
+type appPermissionLevelPb string
 
 const AppPermissionLevelCanManage AppPermissionLevel = `CAN_MANAGE`
 
@@ -288,82 +490,219 @@ func (f *AppPermissionLevel) Type() string {
 	return "AppPermissionLevel"
 }
 
+func appPermissionLevelToPb(st *AppPermissionLevel) (*appPermissionLevelPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appPermissionLevelPb(*st)
+	return &pb, nil
+}
+
+func appPermissionLevelFromPb(pb *appPermissionLevelPb) (*AppPermissionLevel, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppPermissionLevel(*pb)
+	return &st, nil
+}
+
 type AppPermissions struct {
-	AccessControlList []AppAccessControlResponse `json:"access_control_list,omitempty"`
 
-	ObjectId string `json:"object_id,omitempty"`
+	// Wire name: 'access_control_list'
+	AccessControlList []AppAccessControlResponse
 
-	ObjectType string `json:"object_type,omitempty"`
+	// Wire name: 'object_id'
+	ObjectId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'object_type'
+	ObjectType string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppPermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AppPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AppPermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AppPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := appPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppPermissionsDescription struct {
-	Description string `json:"description,omitempty"`
+
+	// Wire name: 'description'
+	Description string
 	// Permission level
-	PermissionLevel AppPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel AppPermissionLevel
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppPermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AppPermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appPermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appPermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AppPermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AppPermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := appPermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppPermissionsRequest struct {
-	AccessControlList []AppAccessControlRequest `json:"access_control_list,omitempty"`
+
+	// Wire name: 'access_control_list'
+	AccessControlList []AppAccessControlRequest
 	// The app for which to get or manage permissions.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
+}
+
+func (st *AppPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AppPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := appPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppResource struct {
 	// Description of the App Resource.
-	Description string `json:"description,omitempty"`
+	// Wire name: 'description'
+	Description string
 
-	Job *AppResourceJob `json:"job,omitempty"`
+	// Wire name: 'job'
+	Job *AppResourceJob
 	// Name of the App Resource.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 
-	Secret *AppResourceSecret `json:"secret,omitempty"`
+	// Wire name: 'secret'
+	Secret *AppResourceSecret
 
-	ServingEndpoint *AppResourceServingEndpoint `json:"serving_endpoint,omitempty"`
+	// Wire name: 'serving_endpoint'
+	ServingEndpoint *AppResourceServingEndpoint
 
-	SqlWarehouse *AppResourceSqlWarehouse `json:"sql_warehouse,omitempty"`
+	// Wire name: 'sql_warehouse'
+	SqlWarehouse *AppResourceSqlWarehouse
 
-	UcSecurable *AppResourceUcSecurable `json:"uc_securable,omitempty"`
+	// Wire name: 'uc_securable'
+	UcSecurable *AppResourceUcSecurable
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AppResource) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AppResource) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appResourcePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appResourceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AppResource) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AppResource) MarshalJSON() ([]byte, error) {
+	pb, err := appResourceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppResourceJob struct {
 	// Id of the job to grant permission on.
-	Id string `json:"id"`
+	// Wire name: 'id'
+	Id string
 	// Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE",
 	// "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
-	Permission AppResourceJobJobPermission `json:"permission"`
+	// Wire name: 'permission'
+	Permission AppResourceJobJobPermission
+}
+
+func (st *AppResourceJob) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appResourceJobPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appResourceJobFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AppResourceJob) MarshalJSON() ([]byte, error) {
+	pb, err := appResourceJobToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppResourceJobJobPermission string
+type appResourceJobJobPermissionPb string
 
 const AppResourceJobJobPermissionCanManage AppResourceJobJobPermission = `CAN_MANAGE`
 
@@ -394,19 +733,64 @@ func (f *AppResourceJobJobPermission) Type() string {
 	return "AppResourceJobJobPermission"
 }
 
+func appResourceJobJobPermissionToPb(st *AppResourceJobJobPermission) (*appResourceJobJobPermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appResourceJobJobPermissionPb(*st)
+	return &pb, nil
+}
+
+func appResourceJobJobPermissionFromPb(pb *appResourceJobJobPermissionPb) (*AppResourceJobJobPermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceJobJobPermission(*pb)
+	return &st, nil
+}
+
 type AppResourceSecret struct {
 	// Key of the secret to grant permission on.
-	Key string `json:"key"`
+	// Wire name: 'key'
+	Key string
 	// Permission to grant on the secret scope. For secrets, only one permission
 	// is allowed. Permission must be one of: "READ", "WRITE", "MANAGE".
-	Permission AppResourceSecretSecretPermission `json:"permission"`
+	// Wire name: 'permission'
+	Permission AppResourceSecretSecretPermission
 	// Scope of the secret to grant permission on.
-	Scope string `json:"scope"`
+	// Wire name: 'scope'
+	Scope string
+}
+
+func (st *AppResourceSecret) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appResourceSecretPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appResourceSecretFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AppResourceSecret) MarshalJSON() ([]byte, error) {
+	pb, err := appResourceSecretToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Permission to grant on the secret scope. Supported permissions are: "READ",
 // "WRITE", "MANAGE".
 type AppResourceSecretSecretPermission string
+type appResourceSecretSecretPermissionPb string
 
 const AppResourceSecretSecretPermissionManage AppResourceSecretSecretPermission = `MANAGE`
 
@@ -435,15 +819,59 @@ func (f *AppResourceSecretSecretPermission) Type() string {
 	return "AppResourceSecretSecretPermission"
 }
 
+func appResourceSecretSecretPermissionToPb(st *AppResourceSecretSecretPermission) (*appResourceSecretSecretPermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appResourceSecretSecretPermissionPb(*st)
+	return &pb, nil
+}
+
+func appResourceSecretSecretPermissionFromPb(pb *appResourceSecretSecretPermissionPb) (*AppResourceSecretSecretPermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceSecretSecretPermission(*pb)
+	return &st, nil
+}
+
 type AppResourceServingEndpoint struct {
 	// Name of the serving endpoint to grant permission on.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Permission to grant on the serving endpoint. Supported permissions are:
 	// "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW".
-	Permission AppResourceServingEndpointServingEndpointPermission `json:"permission"`
+	// Wire name: 'permission'
+	Permission AppResourceServingEndpointServingEndpointPermission
+}
+
+func (st *AppResourceServingEndpoint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appResourceServingEndpointPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appResourceServingEndpointFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AppResourceServingEndpoint) MarshalJSON() ([]byte, error) {
+	pb, err := appResourceServingEndpointToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppResourceServingEndpointServingEndpointPermission string
+type appResourceServingEndpointServingEndpointPermissionPb string
 
 const AppResourceServingEndpointServingEndpointPermissionCanManage AppResourceServingEndpointServingEndpointPermission = `CAN_MANAGE`
 
@@ -472,15 +900,59 @@ func (f *AppResourceServingEndpointServingEndpointPermission) Type() string {
 	return "AppResourceServingEndpointServingEndpointPermission"
 }
 
+func appResourceServingEndpointServingEndpointPermissionToPb(st *AppResourceServingEndpointServingEndpointPermission) (*appResourceServingEndpointServingEndpointPermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appResourceServingEndpointServingEndpointPermissionPb(*st)
+	return &pb, nil
+}
+
+func appResourceServingEndpointServingEndpointPermissionFromPb(pb *appResourceServingEndpointServingEndpointPermissionPb) (*AppResourceServingEndpointServingEndpointPermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceServingEndpointServingEndpointPermission(*pb)
+	return &st, nil
+}
+
 type AppResourceSqlWarehouse struct {
 	// Id of the SQL warehouse to grant permission on.
-	Id string `json:"id"`
+	// Wire name: 'id'
+	Id string
 	// Permission to grant on the SQL warehouse. Supported permissions are:
 	// "CAN_MANAGE", "CAN_USE", "IS_OWNER".
-	Permission AppResourceSqlWarehouseSqlWarehousePermission `json:"permission"`
+	// Wire name: 'permission'
+	Permission AppResourceSqlWarehouseSqlWarehousePermission
+}
+
+func (st *AppResourceSqlWarehouse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appResourceSqlWarehousePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appResourceSqlWarehouseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AppResourceSqlWarehouse) MarshalJSON() ([]byte, error) {
+	pb, err := appResourceSqlWarehouseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppResourceSqlWarehouseSqlWarehousePermission string
+type appResourceSqlWarehouseSqlWarehousePermissionPb string
 
 const AppResourceSqlWarehouseSqlWarehousePermissionCanManage AppResourceSqlWarehouseSqlWarehousePermission = `CAN_MANAGE`
 
@@ -509,15 +981,61 @@ func (f *AppResourceSqlWarehouseSqlWarehousePermission) Type() string {
 	return "AppResourceSqlWarehouseSqlWarehousePermission"
 }
 
+func appResourceSqlWarehouseSqlWarehousePermissionToPb(st *AppResourceSqlWarehouseSqlWarehousePermission) (*appResourceSqlWarehouseSqlWarehousePermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appResourceSqlWarehouseSqlWarehousePermissionPb(*st)
+	return &pb, nil
+}
+
+func appResourceSqlWarehouseSqlWarehousePermissionFromPb(pb *appResourceSqlWarehouseSqlWarehousePermissionPb) (*AppResourceSqlWarehouseSqlWarehousePermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceSqlWarehouseSqlWarehousePermission(*pb)
+	return &st, nil
+}
+
 type AppResourceUcSecurable struct {
-	Permission AppResourceUcSecurableUcSecurablePermission `json:"permission"`
 
-	SecurableFullName string `json:"securable_full_name"`
+	// Wire name: 'permission'
+	Permission AppResourceUcSecurableUcSecurablePermission
 
-	SecurableType AppResourceUcSecurableUcSecurableType `json:"securable_type"`
+	// Wire name: 'securable_full_name'
+	SecurableFullName string
+
+	// Wire name: 'securable_type'
+	SecurableType AppResourceUcSecurableUcSecurableType
+}
+
+func (st *AppResourceUcSecurable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &appResourceUcSecurablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := appResourceUcSecurableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AppResourceUcSecurable) MarshalJSON() ([]byte, error) {
+	pb, err := appResourceUcSecurableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AppResourceUcSecurableUcSecurablePermission string
+type appResourceUcSecurableUcSecurablePermissionPb string
 
 const AppResourceUcSecurableUcSecurablePermissionReadVolume AppResourceUcSecurableUcSecurablePermission = `READ_VOLUME`
 
@@ -544,7 +1062,24 @@ func (f *AppResourceUcSecurableUcSecurablePermission) Type() string {
 	return "AppResourceUcSecurableUcSecurablePermission"
 }
 
+func appResourceUcSecurableUcSecurablePermissionToPb(st *AppResourceUcSecurableUcSecurablePermission) (*appResourceUcSecurableUcSecurablePermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appResourceUcSecurableUcSecurablePermissionPb(*st)
+	return &pb, nil
+}
+
+func appResourceUcSecurableUcSecurablePermissionFromPb(pb *appResourceUcSecurableUcSecurablePermissionPb) (*AppResourceUcSecurableUcSecurablePermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceUcSecurableUcSecurablePermission(*pb)
+	return &st, nil
+}
+
 type AppResourceUcSecurableUcSecurableType string
+type appResourceUcSecurableUcSecurableTypePb string
 
 const AppResourceUcSecurableUcSecurableTypeVolume AppResourceUcSecurableUcSecurableType = `VOLUME`
 
@@ -569,7 +1104,24 @@ func (f *AppResourceUcSecurableUcSecurableType) Type() string {
 	return "AppResourceUcSecurableUcSecurableType"
 }
 
+func appResourceUcSecurableUcSecurableTypeToPb(st *AppResourceUcSecurableUcSecurableType) (*appResourceUcSecurableUcSecurableTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := appResourceUcSecurableUcSecurableTypePb(*st)
+	return &pb, nil
+}
+
+func appResourceUcSecurableUcSecurableTypeFromPb(pb *appResourceUcSecurableUcSecurableTypePb) (*AppResourceUcSecurableUcSecurableType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AppResourceUcSecurableUcSecurableType(*pb)
+	return &st, nil
+}
+
 type ApplicationState string
+type applicationStatePb string
 
 const ApplicationStateCrashed ApplicationState = `CRASHED`
 
@@ -600,24 +1152,60 @@ func (f *ApplicationState) Type() string {
 	return "ApplicationState"
 }
 
+func applicationStateToPb(st *ApplicationState) (*applicationStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := applicationStatePb(*st)
+	return &pb, nil
+}
+
+func applicationStateFromPb(pb *applicationStatePb) (*ApplicationState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ApplicationState(*pb)
+	return &st, nil
+}
+
 type ApplicationStatus struct {
 	// Application status message
-	Message string `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message string
 	// State of the application.
-	State ApplicationState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State ApplicationState
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ApplicationStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ApplicationStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &applicationStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := applicationStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ApplicationStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ApplicationStatus) MarshalJSON() ([]byte, error) {
+	pb, err := applicationStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ComputeState string
+type computeStatePb string
 
 const ComputeStateActive ComputeState = `ACTIVE`
 
@@ -654,171 +1242,623 @@ func (f *ComputeState) Type() string {
 	return "ComputeState"
 }
 
+func computeStateToPb(st *ComputeState) (*computeStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := computeStatePb(*st)
+	return &pb, nil
+}
+
+func computeStateFromPb(pb *computeStatePb) (*ComputeState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ComputeState(*pb)
+	return &st, nil
+}
+
 type ComputeStatus struct {
 	// Compute status message
-	Message string `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message string
 	// State of the app compute.
-	State ComputeState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State ComputeState
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ComputeStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ComputeStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &computeStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := computeStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ComputeStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ComputeStatus) MarshalJSON() ([]byte, error) {
+	pb, err := computeStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Create an app deployment
 type CreateAppDeploymentRequest struct {
-	AppDeployment AppDeployment `json:"app_deployment"`
+
+	// Wire name: 'app_deployment'
+	AppDeployment AppDeployment
 	// The name of the app.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
+}
+
+func (st *CreateAppDeploymentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createAppDeploymentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createAppDeploymentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateAppDeploymentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createAppDeploymentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Create an app
 type CreateAppRequest struct {
-	App App `json:"app"`
+
+	// Wire name: 'app'
+	App App
 	// If true, the app will not be started after creation.
-	NoCompute bool `json:"-" url:"no_compute,omitempty"`
+	// Wire name: 'no_compute'
+	NoCompute bool `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateAppRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateAppRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete an app
 type DeleteAppRequest struct {
 	// The name of the app.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *DeleteAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get an app deployment
 type GetAppDeploymentRequest struct {
 	// The name of the app.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
 	// The unique id of the deployment.
-	DeploymentId string `json:"-" url:"-"`
+	// Wire name: 'deployment_id'
+	DeploymentId string `tf:"-"`
+}
+
+func (st *GetAppDeploymentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAppDeploymentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAppDeploymentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetAppDeploymentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAppDeploymentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get app permission levels
 type GetAppPermissionLevelsRequest struct {
 	// The app for which to get or manage permissions.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
+}
+
+func (st *GetAppPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAppPermissionLevelsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAppPermissionLevelsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetAppPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAppPermissionLevelsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetAppPermissionLevelsResponse struct {
 	// Specific permission levels
-	PermissionLevels []AppPermissionsDescription `json:"permission_levels,omitempty"`
+	// Wire name: 'permission_levels'
+	PermissionLevels []AppPermissionsDescription
+}
+
+func (st *GetAppPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAppPermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAppPermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetAppPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getAppPermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get app permissions
 type GetAppPermissionsRequest struct {
 	// The app for which to get or manage permissions.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
+}
+
+func (st *GetAppPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAppPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAppPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetAppPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAppPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get an app
 type GetAppRequest struct {
 	// The name of the app.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *GetAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List app deployments
 type ListAppDeploymentsRequest struct {
 	// The name of the app.
-	AppName string `json:"-" url:"-"`
+	// Wire name: 'app_name'
+	AppName string `tf:"-"`
 	// Upper bound for items returned.
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// Pagination token to go to the next page of apps. Requests first page if
 	// absent.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAppDeploymentsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListAppDeploymentsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAppDeploymentsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAppDeploymentsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListAppDeploymentsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListAppDeploymentsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listAppDeploymentsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListAppDeploymentsResponse struct {
 	// Deployment history of the app.
-	AppDeployments []AppDeployment `json:"app_deployments,omitempty"`
+	// Wire name: 'app_deployments'
+	AppDeployments []AppDeployment
 	// Pagination token to request the next page of apps.
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAppDeploymentsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListAppDeploymentsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAppDeploymentsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAppDeploymentsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListAppDeploymentsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listAppDeploymentsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List apps
 type ListAppsRequest struct {
 	// Upper bound for items returned.
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// Pagination token to go to the next page of apps. Requests first page if
 	// absent.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAppsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListAppsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAppsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAppsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListAppsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListAppsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listAppsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListAppsResponse struct {
-	Apps []App `json:"apps,omitempty"`
+
+	// Wire name: 'apps'
+	Apps []App
 	// Pagination token to request the next page of apps.
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAppsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListAppsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAppsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAppsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListAppsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListAppsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listAppsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type StartAppRequest struct {
 	// The name of the app.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *StartAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &startAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := startAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st StartAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := startAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type StopAppRequest struct {
 	// The name of the app.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *StopAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &stopAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := stopAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st StopAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := stopAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Update an app
 type UpdateAppRequest struct {
-	App App `json:"app"`
+
+	// Wire name: 'app'
+	App App
 	// The name of the app. The name must contain only lowercase alphanumeric
 	// characters and hyphens. It must be unique within the workspace.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *UpdateAppRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateAppRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateAppRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateAppRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateAppRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

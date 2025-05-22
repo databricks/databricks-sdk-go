@@ -3,94 +3,394 @@
 package catalog
 
 import (
+	"encoding/json"
 	"fmt"
-
-	"github.com/databricks/databricks-sdk-go/marshal"
+	"strings"
+	"time"
 )
 
 type AccountsCreateMetastore struct {
-	MetastoreInfo *CreateMetastore `json:"metastore_info,omitempty"`
+
+	// Wire name: 'metastore_info'
+	MetastoreInfo *CreateMetastore
+}
+
+func (st *AccountsCreateMetastore) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &accountsCreateMetastorePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := accountsCreateMetastoreFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AccountsCreateMetastore) MarshalJSON() ([]byte, error) {
+	pb, err := accountsCreateMetastoreToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AccountsCreateMetastoreAssignment struct {
-	MetastoreAssignment *CreateMetastoreAssignment `json:"metastore_assignment,omitempty"`
+
+	// Wire name: 'metastore_assignment'
+	MetastoreAssignment *CreateMetastoreAssignment
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
+}
+
+func (st *AccountsCreateMetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &accountsCreateMetastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := accountsCreateMetastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AccountsCreateMetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := accountsCreateMetastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AccountsCreateStorageCredential struct {
-	CredentialInfo *CreateStorageCredential `json:"credential_info,omitempty"`
+
+	// Wire name: 'credential_info'
+	CredentialInfo *CreateStorageCredential
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
+}
+
+func (st *AccountsCreateStorageCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &accountsCreateStorageCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := accountsCreateStorageCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AccountsCreateStorageCredential) MarshalJSON() ([]byte, error) {
+	pb, err := accountsCreateStorageCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AccountsMetastoreAssignment struct {
-	MetastoreAssignment *MetastoreAssignment `json:"metastore_assignment,omitempty"`
+
+	// Wire name: 'metastore_assignment'
+	MetastoreAssignment *MetastoreAssignment
+}
+
+func (st *AccountsMetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &accountsMetastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := accountsMetastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AccountsMetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := accountsMetastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AccountsMetastoreInfo struct {
-	MetastoreInfo *MetastoreInfo `json:"metastore_info,omitempty"`
+
+	// Wire name: 'metastore_info'
+	MetastoreInfo *MetastoreInfo
+}
+
+func (st *AccountsMetastoreInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &accountsMetastoreInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := accountsMetastoreInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AccountsMetastoreInfo) MarshalJSON() ([]byte, error) {
+	pb, err := accountsMetastoreInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AccountsStorageCredentialInfo struct {
-	CredentialInfo *StorageCredentialInfo `json:"credential_info,omitempty"`
+
+	// Wire name: 'credential_info'
+	CredentialInfo *StorageCredentialInfo
+}
+
+func (st *AccountsStorageCredentialInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &accountsStorageCredentialInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := accountsStorageCredentialInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AccountsStorageCredentialInfo) MarshalJSON() ([]byte, error) {
+	pb, err := accountsStorageCredentialInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AccountsUpdateMetastore struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 
-	MetastoreInfo *UpdateMetastore `json:"metastore_info,omitempty"`
+	// Wire name: 'metastore_info'
+	MetastoreInfo *UpdateMetastore
+}
+
+func (st *AccountsUpdateMetastore) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &accountsUpdateMetastorePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := accountsUpdateMetastoreFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AccountsUpdateMetastore) MarshalJSON() ([]byte, error) {
+	pb, err := accountsUpdateMetastoreToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AccountsUpdateMetastoreAssignment struct {
-	MetastoreAssignment *UpdateMetastoreAssignment `json:"metastore_assignment,omitempty"`
+
+	// Wire name: 'metastore_assignment'
+	MetastoreAssignment *UpdateMetastoreAssignment
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
+}
+
+func (st *AccountsUpdateMetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &accountsUpdateMetastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := accountsUpdateMetastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AccountsUpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := accountsUpdateMetastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AccountsUpdateStorageCredential struct {
-	CredentialInfo *UpdateStorageCredential `json:"credential_info,omitempty"`
+
+	// Wire name: 'credential_info'
+	CredentialInfo *UpdateStorageCredential
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Name of the storage credential.
-	StorageCredentialName string `json:"-" url:"-"`
+	// Wire name: 'storage_credential_name'
+	StorageCredentialName string `tf:"-"`
+}
+
+func (st *AccountsUpdateStorageCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &accountsUpdateStorageCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := accountsUpdateStorageCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AccountsUpdateStorageCredential) MarshalJSON() ([]byte, error) {
+	pb, err := accountsUpdateStorageCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ArtifactAllowlistInfo struct {
 	// A list of allowed artifact match patterns.
-	ArtifactMatchers []ArtifactMatcher `json:"artifact_matchers,omitempty"`
+	// Wire name: 'artifact_matchers'
+	ArtifactMatchers []ArtifactMatcher
 	// Time at which this artifact allowlist was set, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of the user who set the artifact allowlist.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// Unique identifier of parent metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ArtifactAllowlistInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ArtifactAllowlistInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &artifactAllowlistInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := artifactAllowlistInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ArtifactAllowlistInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ArtifactAllowlistInfo) MarshalJSON() ([]byte, error) {
+	pb, err := artifactAllowlistInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ArtifactMatcher struct {
 	// The artifact path or maven coordinate
-	Artifact string `json:"artifact"`
+	// Wire name: 'artifact'
+	Artifact string
 	// The pattern matching type of the artifact
-	MatchType MatchType `json:"match_type"`
+	// Wire name: 'match_type'
+	MatchType MatchType
+}
+
+func (st *ArtifactMatcher) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &artifactMatcherPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := artifactMatcherFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ArtifactMatcher) MarshalJSON() ([]byte, error) {
+	pb, err := artifactMatcherToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The artifact type
 type ArtifactType string
+type artifactTypePb string
 
 const ArtifactTypeInitScript ArtifactType = `INIT_SCRIPT`
 
@@ -119,101 +419,248 @@ func (f *ArtifactType) Type() string {
 	return "ArtifactType"
 }
 
+func artifactTypeToPb(st *ArtifactType) (*artifactTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := artifactTypePb(*st)
+	return &pb, nil
+}
+
+func artifactTypeFromPb(pb *artifactTypePb) (*ArtifactType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ArtifactType(*pb)
+	return &st, nil
+}
+
 type AssignResponse struct {
+}
+
+func (st *AssignResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &assignResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := assignResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AssignResponse) MarshalJSON() ([]byte, error) {
+	pb, err := assignResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // AWS temporary credentials for API authentication. Read more at
 // https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
 type AwsCredentials struct {
 	// The access key ID that identifies the temporary credentials.
-	AccessKeyId string `json:"access_key_id,omitempty"`
+	// Wire name: 'access_key_id'
+	AccessKeyId string
 	// The Amazon Resource Name (ARN) of the S3 access point for temporary
 	// credentials related the external location.
-	AccessPoint string `json:"access_point,omitempty"`
+	// Wire name: 'access_point'
+	AccessPoint string
 	// The secret access key that can be used to sign AWS API requests.
-	SecretAccessKey string `json:"secret_access_key,omitempty"`
+	// Wire name: 'secret_access_key'
+	SecretAccessKey string
 	// The token that users must pass to AWS API to use the temporary
 	// credentials.
-	SessionToken string `json:"session_token,omitempty"`
+	// Wire name: 'session_token'
+	SessionToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AwsCredentials) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AwsCredentials) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &awsCredentialsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := awsCredentialsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AwsCredentials) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AwsCredentials) MarshalJSON() ([]byte, error) {
+	pb, err := awsCredentialsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The AWS IAM role configuration
 type AwsIamRole struct {
 	// The external ID used in role assumption to prevent the confused deputy
 	// problem.
-	ExternalId string `json:"external_id,omitempty"`
+	// Wire name: 'external_id'
+	ExternalId string
 	// The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary
 	// credentials.
-	RoleArn string `json:"role_arn,omitempty"`
+	// Wire name: 'role_arn'
+	RoleArn string
 	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
 	// This is the identity that is going to assume the AWS IAM role.
-	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
+	// Wire name: 'unity_catalog_iam_arn'
+	UnityCatalogIamArn string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AwsIamRole) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AwsIamRole) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &awsIamRolePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := awsIamRoleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AwsIamRole) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AwsIamRole) MarshalJSON() ([]byte, error) {
+	pb, err := awsIamRoleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AwsIamRoleRequest struct {
 	// The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
-	RoleArn string `json:"role_arn"`
+	// Wire name: 'role_arn'
+	RoleArn string
+}
+
+func (st *AwsIamRoleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &awsIamRoleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := awsIamRoleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AwsIamRoleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := awsIamRoleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AwsIamRoleResponse struct {
 	// The external ID used in role assumption to prevent confused deputy
 	// problem..
-	ExternalId string `json:"external_id,omitempty"`
+	// Wire name: 'external_id'
+	ExternalId string
 	// The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access.
-	RoleArn string `json:"role_arn"`
+	// Wire name: 'role_arn'
+	RoleArn string
 	// The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks.
 	// This is the identity that is going to assume the AWS IAM role.
-	UnityCatalogIamArn string `json:"unity_catalog_iam_arn,omitempty"`
+	// Wire name: 'unity_catalog_iam_arn'
+	UnityCatalogIamArn string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AwsIamRoleResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AwsIamRoleResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &awsIamRoleResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := awsIamRoleResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AwsIamRoleResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AwsIamRoleResponse) MarshalJSON() ([]byte, error) {
+	pb, err := awsIamRoleResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AwsSqsQueue struct {
 	// Unique identifier included in the name of file events managed cloud
 	// resources.
-	ManagedResourceId string `json:"managed_resource_id,omitempty"`
+	// Wire name: 'managed_resource_id'
+	ManagedResourceId string
 	// The AQS queue url in the format
 	// https://sqs.{region}.amazonaws.com/{account id}/{queue name} REQUIRED for
 	// provided_sqs.
-	QueueUrl string `json:"queue_url,omitempty"`
+	// Wire name: 'queue_url'
+	QueueUrl string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AwsSqsQueue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AwsSqsQueue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &awsSqsQueuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := awsSqsQueueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AwsSqsQueue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AwsSqsQueue) MarshalJSON() ([]byte, error) {
+	pb, err := awsSqsQueueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Azure Active Directory token, essentially the Oauth token for Azure Service
@@ -222,17 +669,35 @@ func (s AwsSqsQueue) MarshalJSON() ([]byte, error) {
 type AzureActiveDirectoryToken struct {
 	// Opaque token that contains claims that you can use in Azure Active
 	// Directory to access cloud services.
-	AadToken string `json:"aad_token,omitempty"`
+	// Wire name: 'aad_token'
+	AadToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AzureActiveDirectoryToken) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AzureActiveDirectoryToken) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &azureActiveDirectoryTokenPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := azureActiveDirectoryTokenFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AzureActiveDirectoryToken) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AzureActiveDirectoryToken) MarshalJSON() ([]byte, error) {
+	pb, err := azureActiveDirectoryTokenToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The Azure managed identity configuration.
@@ -240,106 +705,186 @@ type AzureManagedIdentity struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
 	// format
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`.
-	AccessConnectorId string `json:"access_connector_id"`
+	// Wire name: 'access_connector_id'
+	AccessConnectorId string
 	// The Databricks internal ID that represents this managed identity. This
 	// field is only used to persist the credential_id once it is fetched from
 	// the credentials manager - as we only use the protobuf serializer to store
 	// credentials, this ID gets persisted to the database. .
-	CredentialId string `json:"credential_id,omitempty"`
+	// Wire name: 'credential_id'
+	CredentialId string
 	// The Azure resource ID of the managed identity. Use the format,
 	// `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}`
 	// This is only available for user-assgined identities. For system-assigned
 	// identities, the access_connector_id is used to identify the identity. If
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// using the system-assigned identity.
-	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
+	// Wire name: 'managed_identity_id'
+	ManagedIdentityId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AzureManagedIdentity) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AzureManagedIdentity) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &azureManagedIdentityPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := azureManagedIdentityFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AzureManagedIdentity) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AzureManagedIdentity) MarshalJSON() ([]byte, error) {
+	pb, err := azureManagedIdentityToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AzureManagedIdentityRequest struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
 	// format
 	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}.
-	AccessConnectorId string `json:"access_connector_id"`
+	// Wire name: 'access_connector_id'
+	AccessConnectorId string
 	// The Azure resource ID of the managed identity. Use the format
 	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}.
 	// This is only available for user-assgined identities. For system-assigned
 	// identities, the access_connector_id is used to identify the identity. If
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// for a system-assigned identity.
-	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
+	// Wire name: 'managed_identity_id'
+	ManagedIdentityId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AzureManagedIdentityRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AzureManagedIdentityRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &azureManagedIdentityRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := azureManagedIdentityRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AzureManagedIdentityRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AzureManagedIdentityRequest) MarshalJSON() ([]byte, error) {
+	pb, err := azureManagedIdentityRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AzureManagedIdentityResponse struct {
 	// The Azure resource ID of the Azure Databricks Access Connector. Use the
 	// format
 	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}.
-	AccessConnectorId string `json:"access_connector_id"`
+	// Wire name: 'access_connector_id'
+	AccessConnectorId string
 	// The Databricks internal ID that represents this managed identity.
-	CredentialId string `json:"credential_id,omitempty"`
+	// Wire name: 'credential_id'
+	CredentialId string
 	// The Azure resource ID of the managed identity. Use the format
 	// /subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identity-name}.
 	// This is only available for user-assgined identities. For system-assigned
 	// identities, the access_connector_id is used to identify the identity. If
 	// this field is not provided, then we assume the AzureManagedIdentity is
 	// for a system-assigned identity.
-	ManagedIdentityId string `json:"managed_identity_id,omitempty"`
+	// Wire name: 'managed_identity_id'
+	ManagedIdentityId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AzureManagedIdentityResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AzureManagedIdentityResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &azureManagedIdentityResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := azureManagedIdentityResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AzureManagedIdentityResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AzureManagedIdentityResponse) MarshalJSON() ([]byte, error) {
+	pb, err := azureManagedIdentityResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AzureQueueStorage struct {
 	// Unique identifier included in the name of file events managed cloud
 	// resources.
-	ManagedResourceId string `json:"managed_resource_id,omitempty"`
+	// Wire name: 'managed_resource_id'
+	ManagedResourceId string
 	// The AQS queue url in the format https://{storage
 	// account}.queue.core.windows.net/{queue name} REQUIRED for provided_aqs.
-	QueueUrl string `json:"queue_url,omitempty"`
+	// Wire name: 'queue_url'
+	QueueUrl string
 	// The resource group for the queue, event grid subscription, and external
 	// location storage account. ONLY REQUIRED for locations with a service
 	// principal storage credential
-	ResourceGroup string `json:"resource_group,omitempty"`
+	// Wire name: 'resource_group'
+	ResourceGroup string
 	// OPTIONAL: The subscription id for the queue, event grid subscription, and
 	// external location storage account. REQUIRED for locations with a service
 	// principal storage credential
-	SubscriptionId string `json:"subscription_id,omitempty"`
+	// Wire name: 'subscription_id'
+	SubscriptionId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AzureQueueStorage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AzureQueueStorage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &azureQueueStoragePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := azureQueueStorageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AzureQueueStorage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AzureQueueStorage) MarshalJSON() ([]byte, error) {
+	pb, err := azureQueueStorageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The Azure service principal configuration. Only applicable when purpose is
@@ -347,109 +892,248 @@ func (s AzureQueueStorage) MarshalJSON() ([]byte, error) {
 type AzureServicePrincipal struct {
 	// The application ID of the application registration within the referenced
 	// AAD tenant.
-	ApplicationId string `json:"application_id"`
+	// Wire name: 'application_id'
+	ApplicationId string
 	// The client secret generated for the above app ID in AAD.
-	ClientSecret string `json:"client_secret"`
+	// Wire name: 'client_secret'
+	ClientSecret string
 	// The directory ID corresponding to the Azure Active Directory (AAD) tenant
 	// of the application.
-	DirectoryId string `json:"directory_id"`
+	// Wire name: 'directory_id'
+	DirectoryId string
+}
+
+func (st *AzureServicePrincipal) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &azureServicePrincipalPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := azureServicePrincipalFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AzureServicePrincipal) MarshalJSON() ([]byte, error) {
+	pb, err := azureServicePrincipalToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Azure temporary credentials for API authentication. Read more at
 // https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
 type AzureUserDelegationSas struct {
 	// The signed URI (SAS Token) used to access blob services for a given path
-	SasToken string `json:"sas_token,omitempty"`
+	// Wire name: 'sas_token'
+	SasToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AzureUserDelegationSas) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AzureUserDelegationSas) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &azureUserDelegationSasPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := azureUserDelegationSasFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AzureUserDelegationSas) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AzureUserDelegationSas) MarshalJSON() ([]byte, error) {
+	pb, err := azureUserDelegationSasToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Cancel refresh
 type CancelRefreshRequest struct {
 	// ID of the refresh.
-	RefreshId string `json:"-" url:"-"`
+	// Wire name: 'refresh_id'
+	RefreshId string `tf:"-"`
 	// Full name of the table.
-	TableName string `json:"-" url:"-"`
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
+}
+
+func (st *CancelRefreshRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cancelRefreshRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := cancelRefreshRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CancelRefreshRequest) MarshalJSON() ([]byte, error) {
+	pb, err := cancelRefreshRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CancelRefreshResponse struct {
+}
+
+func (st *CancelRefreshResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cancelRefreshResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := cancelRefreshResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CancelRefreshResponse) MarshalJSON() ([]byte, error) {
+	pb, err := cancelRefreshResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CatalogInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
-	BrowseOnly bool `json:"browse_only,omitempty"`
+	// Wire name: 'browse_only'
+	BrowseOnly bool
 	// The type of the catalog.
-	CatalogType CatalogType `json:"catalog_type,omitempty"`
+	// Wire name: 'catalog_type'
+	CatalogType CatalogType
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// The name of the connection to an external data source.
-	ConnectionName string `json:"connection_name,omitempty"`
+	// Wire name: 'connection_name'
+	ConnectionName string
 	// Time at which this catalog was created, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of catalog creator.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 
-	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
+	// Wire name: 'effective_predictive_optimization_flag'
+	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
-	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
+	// Wire name: 'enable_predictive_optimization'
+	EnablePredictiveOptimization EnablePredictiveOptimization
 	// The full name of the catalog. Corresponds with the name field.
-	FullName string `json:"full_name,omitempty"`
+	// Wire name: 'full_name'
+	FullName string
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
-	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
+	// Wire name: 'isolation_mode'
+	IsolationMode CatalogIsolationMode
 	// Unique identifier of parent metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// Name of catalog.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// A map of key-value properties attached to the securable.
-	Options map[string]string `json:"options,omitempty"`
+	// Wire name: 'options'
+	Options map[string]string
 	// Username of current owner of catalog.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties,omitempty"`
+	// Wire name: 'properties'
+	Properties map[string]string
 	// The name of delta sharing provider.
 	//
 	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
-	ProviderName string `json:"provider_name,omitempty"`
+	// Wire name: 'provider_name'
+	ProviderName string
 	// Status of an asynchronously provisioned resource.
-	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
+	// Wire name: 'provisioning_info'
+	ProvisioningInfo *ProvisioningInfo
 	// The type of Unity Catalog securable.
-	SecurableType SecurableType `json:"securable_type,omitempty"`
+	// Wire name: 'securable_type'
+	SecurableType SecurableType
 	// The name of the share under the share provider.
-	ShareName string `json:"share_name,omitempty"`
+	// Wire name: 'share_name'
+	ShareName string
 	// Storage Location URL (full path) for managed tables within catalog.
-	StorageLocation string `json:"storage_location,omitempty"`
+	// Wire name: 'storage_location'
+	StorageLocation string
 	// Storage root URL for managed tables within catalog.
-	StorageRoot string `json:"storage_root,omitempty"`
+	// Wire name: 'storage_root'
+	StorageRoot string
 	// Time at which this catalog was last modified, in epoch milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// Username of user who last modified catalog.
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CatalogInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CatalogInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &catalogInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := catalogInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CatalogInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CatalogInfo) MarshalJSON() ([]byte, error) {
+	pb, err := catalogInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CatalogIsolationMode string
+type catalogIsolationModePb string
 
 const CatalogIsolationModeIsolated CatalogIsolationMode = `ISOLATED`
 
@@ -476,8 +1160,25 @@ func (f *CatalogIsolationMode) Type() string {
 	return "CatalogIsolationMode"
 }
 
+func catalogIsolationModeToPb(st *CatalogIsolationMode) (*catalogIsolationModePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogIsolationModePb(*st)
+	return &pb, nil
+}
+
+func catalogIsolationModeFromPb(pb *catalogIsolationModePb) (*CatalogIsolationMode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CatalogIsolationMode(*pb)
+	return &st, nil
+}
+
 // The type of the catalog.
 type CatalogType string
+type catalogTypePb string
 
 const CatalogTypeDeltasharingCatalog CatalogType = `DELTASHARING_CATALOG`
 
@@ -514,73 +1215,166 @@ func (f *CatalogType) Type() string {
 	return "CatalogType"
 }
 
+func catalogTypeToPb(st *CatalogType) (*catalogTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := catalogTypePb(*st)
+	return &pb, nil
+}
+
+func catalogTypeFromPb(pb *catalogTypePb) (*CatalogType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CatalogType(*pb)
+	return &st, nil
+}
+
 type CloudflareApiToken struct {
 	// The Cloudflare access key id of the token.
-	AccessKeyId string `json:"access_key_id"`
+	// Wire name: 'access_key_id'
+	AccessKeyId string
 	// The account id associated with the API token.
-	AccountId string `json:"account_id"`
+	// Wire name: 'account_id'
+	AccountId string
 	// The secret access token generated for the access key id
-	SecretAccessKey string `json:"secret_access_key"`
+	// Wire name: 'secret_access_key'
+	SecretAccessKey string
+}
+
+func (st *CloudflareApiToken) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cloudflareApiTokenPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := cloudflareApiTokenFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CloudflareApiToken) MarshalJSON() ([]byte, error) {
+	pb, err := cloudflareApiTokenToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ColumnInfo struct {
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 
-	Mask *ColumnMask `json:"mask,omitempty"`
+	// Wire name: 'mask'
+	Mask *ColumnMask
 	// Name of Column.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// Whether field may be Null (default: true).
-	Nullable bool `json:"nullable,omitempty"`
+	// Wire name: 'nullable'
+	Nullable bool
 	// Partition index for column.
-	PartitionIndex int `json:"partition_index,omitempty"`
+	// Wire name: 'partition_index'
+	PartitionIndex int
 	// Ordinal position of column (starting at position 0).
-	Position int `json:"position,omitempty"`
+	// Wire name: 'position'
+	Position int
 	// Format of IntervalType.
-	TypeIntervalType string `json:"type_interval_type,omitempty"`
+	// Wire name: 'type_interval_type'
+	TypeIntervalType string
 	// Full data type specification, JSON-serialized.
-	TypeJson string `json:"type_json,omitempty"`
+	// Wire name: 'type_json'
+	TypeJson string
 
-	TypeName ColumnTypeName `json:"type_name,omitempty"`
+	// Wire name: 'type_name'
+	TypeName ColumnTypeName
 	// Digits of precision; required for DecimalTypes.
-	TypePrecision int `json:"type_precision,omitempty"`
+	// Wire name: 'type_precision'
+	TypePrecision int
 	// Digits to right of decimal; Required for DecimalTypes.
-	TypeScale int `json:"type_scale,omitempty"`
+	// Wire name: 'type_scale'
+	TypeScale int
 	// Full data type specification as SQL/catalogString text.
-	TypeText string `json:"type_text,omitempty"`
+	// Wire name: 'type_text'
+	TypeText string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ColumnInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ColumnInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &columnInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := columnInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ColumnInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ColumnInfo) MarshalJSON() ([]byte, error) {
+	pb, err := columnInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ColumnMask struct {
 	// The full name of the column mask SQL UDF.
-	FunctionName string `json:"function_name,omitempty"`
+	// Wire name: 'function_name'
+	FunctionName string
 	// The list of additional table columns to be passed as input to the column
 	// mask function. The first arg of the mask function should be of the type
 	// of the column being masked and the types of the rest of the args should
 	// match the types of columns in 'using_column_names'.
-	UsingColumnNames []string `json:"using_column_names,omitempty"`
+	// Wire name: 'using_column_names'
+	UsingColumnNames []string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ColumnMask) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ColumnMask) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &columnMaskPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := columnMaskFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ColumnMask) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ColumnMask) MarshalJSON() ([]byte, error) {
+	pb, err := columnMaskToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ColumnTypeName string
+type columnTypeNamePb string
 
 const ColumnTypeNameArray ColumnTypeName = `ARRAY`
 
@@ -651,58 +1445,110 @@ func (f *ColumnTypeName) Type() string {
 	return "ColumnTypeName"
 }
 
+func columnTypeNameToPb(st *ColumnTypeName) (*columnTypeNamePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := columnTypeNamePb(*st)
+	return &pb, nil
+}
+
+func columnTypeNameFromPb(pb *columnTypeNamePb) (*ColumnTypeName, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ColumnTypeName(*pb)
+	return &st, nil
+}
+
 type ConnectionInfo struct {
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Unique identifier of the Connection.
-	ConnectionId string `json:"connection_id,omitempty"`
+	// Wire name: 'connection_id'
+	ConnectionId string
 	// The type of connection.
-	ConnectionType ConnectionType `json:"connection_type,omitempty"`
+	// Wire name: 'connection_type'
+	ConnectionType ConnectionType
 	// Time at which this connection was created, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of connection creator.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// The type of credential.
-	CredentialType CredentialType `json:"credential_type,omitempty"`
+	// Wire name: 'credential_type'
+	CredentialType CredentialType
 	// Full name of connection.
-	FullName string `json:"full_name,omitempty"`
+	// Wire name: 'full_name'
+	FullName string
 	// Unique identifier of parent metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// Name of the connection.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// A map of key-value properties attached to the securable.
-	Options map[string]string `json:"options,omitempty"`
+	// Wire name: 'options'
+	Options map[string]string
 	// Username of current owner of the connection.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// An object containing map of key-value properties attached to the
 	// connection.
-	Properties map[string]string `json:"properties,omitempty"`
+	// Wire name: 'properties'
+	Properties map[string]string
 	// Status of an asynchronously provisioned resource.
-	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
+	// Wire name: 'provisioning_info'
+	ProvisioningInfo *ProvisioningInfo
 	// If the connection is read only.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 
-	SecurableType string `json:"securable_type,omitempty"`
+	// Wire name: 'securable_type'
+	SecurableType string
 	// Time at which this connection was updated, in epoch milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// Username of user who last modified connection.
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 	// URL of the remote data source, extracted from options.
-	Url string `json:"url,omitempty"`
+	// Wire name: 'url'
+	Url string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ConnectionInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ConnectionInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &connectionInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := connectionInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ConnectionInfo) MarshalJSON() ([]byte, error) {
+	pb, err := connectionInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The type of connection.
 type ConnectionType string
+type connectionTypePb string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
 
@@ -751,234 +1597,495 @@ func (f *ConnectionType) Type() string {
 	return "ConnectionType"
 }
 
+func connectionTypeToPb(st *ConnectionType) (*connectionTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := connectionTypePb(*st)
+	return &pb, nil
+}
+
+func connectionTypeFromPb(pb *connectionTypePb) (*ConnectionType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ConnectionType(*pb)
+	return &st, nil
+}
+
 // Detailed status of an online table. Shown if the online table is in the
 // ONLINE_CONTINUOUS_UPDATE or the ONLINE_UPDATING_PIPELINE_RESOURCES state.
 type ContinuousUpdateStatus struct {
 	// Progress of the initial data synchronization.
-	InitialPipelineSyncProgress *PipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
+	// Wire name: 'initial_pipeline_sync_progress'
+	InitialPipelineSyncProgress *PipelineProgress
 	// The last source table Delta version that was synced to the online table.
 	// Note that this Delta version may not be completely synced to the online
 	// table yet.
-	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
+	// Wire name: 'last_processed_commit_version'
+	LastProcessedCommitVersion int64
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table.
-	Timestamp string `json:"timestamp,omitempty"`
+	// Wire name: 'timestamp'
+	Timestamp string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ContinuousUpdateStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ContinuousUpdateStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &continuousUpdateStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := continuousUpdateStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ContinuousUpdateStatus) MarshalJSON() ([]byte, error) {
+	pb, err := continuousUpdateStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateCatalog struct {
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// The name of the connection to an external data source.
-	ConnectionName string `json:"connection_name,omitempty"`
+	// Wire name: 'connection_name'
+	ConnectionName string
 	// Name of catalog.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// A map of key-value properties attached to the securable.
-	Options map[string]string `json:"options,omitempty"`
+	// Wire name: 'options'
+	Options map[string]string
 	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties,omitempty"`
+	// Wire name: 'properties'
+	Properties map[string]string
 	// The name of delta sharing provider.
 	//
 	// A Delta Sharing catalog is a catalog that is based on a Delta share on a
 	// remote sharing server.
-	ProviderName string `json:"provider_name,omitempty"`
+	// Wire name: 'provider_name'
+	ProviderName string
 	// The name of the share under the share provider.
-	ShareName string `json:"share_name,omitempty"`
+	// Wire name: 'share_name'
+	ShareName string
 	// Storage root URL for managed tables within catalog.
-	StorageRoot string `json:"storage_root,omitempty"`
+	// Wire name: 'storage_root'
+	StorageRoot string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateCatalog) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateCatalog) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createCatalogPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createCatalogFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateCatalog) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateCatalog) MarshalJSON() ([]byte, error) {
+	pb, err := createCatalogToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateConnection struct {
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// The type of connection.
-	ConnectionType ConnectionType `json:"connection_type"`
+	// Wire name: 'connection_type'
+	ConnectionType ConnectionType
 	// Name of the connection.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// A map of key-value properties attached to the securable.
-	Options map[string]string `json:"options"`
+	// Wire name: 'options'
+	Options map[string]string
 	// An object containing map of key-value properties attached to the
 	// connection.
-	Properties map[string]string `json:"properties,omitempty"`
+	// Wire name: 'properties'
+	Properties map[string]string
 	// If the connection is read only.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateConnection) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateConnection) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createConnectionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createConnectionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateConnection) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateConnection) MarshalJSON() ([]byte, error) {
+	pb, err := createConnectionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateCredentialRequest struct {
 	// The AWS IAM role configuration
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// Wire name: 'aws_iam_role'
+	AwsIamRole *AwsIamRole
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	// Wire name: 'azure_managed_identity'
+	AzureManagedIdentity *AzureManagedIdentity
 	// The Azure service principal configuration. Only applicable when purpose
 	// is **STORAGE**.
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// Wire name: 'azure_service_principal'
+	AzureServicePrincipal *AzureServicePrincipal
 	// Comment associated with the credential.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// GCP long-lived credential. Databricks-created Google Cloud Storage
 	// service account.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
+	// Wire name: 'databricks_gcp_service_account'
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Indicates the purpose of the credential.
-	Purpose CredentialPurpose `json:"purpose,omitempty"`
+	// Wire name: 'purpose'
+	Purpose CredentialPurpose
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 	// Optional. Supplying true to this argument skips validation of the created
 	// set of credentials.
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	// Wire name: 'skip_validation'
+	SkipValidation bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Create a Database Catalog
 type CreateDatabaseCatalogRequest struct {
-	Catalog DatabaseCatalog `json:"catalog"`
+
+	// Wire name: 'catalog'
+	Catalog DatabaseCatalog
+}
+
+func (st *CreateDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createDatabaseCatalogRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createDatabaseCatalogRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateDatabaseCatalogRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createDatabaseCatalogRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Create a Database Instance
 type CreateDatabaseInstanceRequest struct {
 	// A DatabaseInstance represents a logical Postgres instance, comprised of
 	// both compute and storage.
-	DatabaseInstance DatabaseInstance `json:"database_instance"`
+	// Wire name: 'database_instance'
+	DatabaseInstance DatabaseInstance
+}
+
+func (st *CreateDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createDatabaseInstanceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createDatabaseInstanceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createDatabaseInstanceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+// Create a Database Table
+type CreateDatabaseTableRequest struct {
+	// Next field marker: 13
+	// Wire name: 'table'
+	Table DatabaseTable
+}
+
+func (st *CreateDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateExternalLocation struct {
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Name of the storage credential used with this location.
-	CredentialName string `json:"credential_name"`
+	// Wire name: 'credential_name'
+	CredentialName string
 	// [Create:OPT Update:OPT] Whether to enable file events on this external
 	// location.
-	EnableFileEvents bool `json:"enable_file_events,omitempty"`
+	// Wire name: 'enable_file_events'
+	EnableFileEvents bool
 	// Encryption options that apply to clients connecting to cloud storage.
-	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Wire name: 'encryption_details'
+	EncryptionDetails *EncryptionDetails
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
-	Fallback bool `json:"fallback,omitempty"`
+	// Wire name: 'fallback'
+	Fallback bool
 	// [Create:OPT Update:OPT] File event queue settings.
-	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
+	// Wire name: 'file_event_queue'
+	FileEventQueue *FileEventQueue
 	// Name of the external location.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Indicates whether the external location is read-only.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 	// Skips validation of the storage credential associated with the external
 	// location.
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	// Wire name: 'skip_validation'
+	SkipValidation bool
 	// Path URL of the external location.
-	Url string `json:"url"`
+	// Wire name: 'url'
+	Url string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateExternalLocation) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateExternalLocation) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createExternalLocationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createExternalLocationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateExternalLocation) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateExternalLocation) MarshalJSON() ([]byte, error) {
+	pb, err := createExternalLocationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateFunction struct {
 	// Name of parent catalog.
-	CatalogName string `json:"catalog_name"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Scalar function return data type.
-	DataType ColumnTypeName `json:"data_type"`
+	// Wire name: 'data_type'
+	DataType ColumnTypeName
 	// External function language.
-	ExternalLanguage string `json:"external_language,omitempty"`
+	// Wire name: 'external_language'
+	ExternalLanguage string
 	// External function name.
-	ExternalName string `json:"external_name,omitempty"`
+	// Wire name: 'external_name'
+	ExternalName string
 	// Pretty printed function data type.
-	FullDataType string `json:"full_data_type"`
+	// Wire name: 'full_data_type'
+	FullDataType string
 
-	InputParams FunctionParameterInfos `json:"input_params"`
+	// Wire name: 'input_params'
+	InputParams FunctionParameterInfos
 	// Whether the function is deterministic.
-	IsDeterministic bool `json:"is_deterministic"`
+	// Wire name: 'is_deterministic'
+	IsDeterministic bool
 	// Function null call.
-	IsNullCall bool `json:"is_null_call"`
+	// Wire name: 'is_null_call'
+	IsNullCall bool
 	// Name of function, relative to parent schema.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Function parameter style. **S** is the value for SQL.
-	ParameterStyle CreateFunctionParameterStyle `json:"parameter_style"`
+	// Wire name: 'parameter_style'
+	ParameterStyle CreateFunctionParameterStyle
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
-	Properties string `json:"properties,omitempty"`
+	// Wire name: 'properties'
+	Properties string
 	// Table function return parameters.
-	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
+	// Wire name: 'return_params'
+	ReturnParams *FunctionParameterInfos
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
 	// type is not supported), and the __sql_data_access__ field must be
 	// **NO_SQL**.
-	RoutineBody CreateFunctionRoutineBody `json:"routine_body"`
+	// Wire name: 'routine_body'
+	RoutineBody CreateFunctionRoutineBody
 	// Function body.
-	RoutineDefinition string `json:"routine_definition"`
+	// Wire name: 'routine_definition'
+	RoutineDefinition string
 	// Function dependencies.
-	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
+	// Wire name: 'routine_dependencies'
+	RoutineDependencies *DependencyList
 	// Name of parent schema relative to its parent catalog.
-	SchemaName string `json:"schema_name"`
+	// Wire name: 'schema_name'
+	SchemaName string
 	// Function security type.
-	SecurityType CreateFunctionSecurityType `json:"security_type"`
+	// Wire name: 'security_type'
+	SecurityType CreateFunctionSecurityType
 	// Specific name of the function; Reserved for future use.
-	SpecificName string `json:"specific_name"`
+	// Wire name: 'specific_name'
+	SpecificName string
 	// Function SQL data access.
-	SqlDataAccess CreateFunctionSqlDataAccess `json:"sql_data_access"`
+	// Wire name: 'sql_data_access'
+	SqlDataAccess CreateFunctionSqlDataAccess
 	// List of schemes whose objects can be referenced without qualification.
-	SqlPath string `json:"sql_path,omitempty"`
+	// Wire name: 'sql_path'
+	SqlPath string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateFunction) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateFunction) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createFunctionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createFunctionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateFunction) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateFunction) MarshalJSON() ([]byte, error) {
+	pb, err := createFunctionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Function parameter style. **S** is the value for SQL.
 type CreateFunctionParameterStyle string
+type createFunctionParameterStylePb string
 
 const CreateFunctionParameterStyleS CreateFunctionParameterStyle = `S`
 
@@ -1003,9 +2110,51 @@ func (f *CreateFunctionParameterStyle) Type() string {
 	return "CreateFunctionParameterStyle"
 }
 
+func createFunctionParameterStyleToPb(st *CreateFunctionParameterStyle) (*createFunctionParameterStylePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := createFunctionParameterStylePb(*st)
+	return &pb, nil
+}
+
+func createFunctionParameterStyleFromPb(pb *createFunctionParameterStylePb) (*CreateFunctionParameterStyle, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CreateFunctionParameterStyle(*pb)
+	return &st, nil
+}
+
 type CreateFunctionRequest struct {
 	// Partial __FunctionInfo__ specifying the function to be created.
-	FunctionInfo CreateFunction `json:"function_info"`
+	// Wire name: 'function_info'
+	FunctionInfo CreateFunction
+}
+
+func (st *CreateFunctionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createFunctionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createFunctionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateFunctionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createFunctionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Function language. When **EXTERNAL** is used, the language of the routine
@@ -1013,6 +2162,7 @@ type CreateFunctionRequest struct {
 // __return_params__ of the function cannot be used (as **TABLE** return type is
 // not supported), and the __sql_data_access__ field must be **NO_SQL**.
 type CreateFunctionRoutineBody string
+type createFunctionRoutineBodyPb string
 
 const CreateFunctionRoutineBodyExternal CreateFunctionRoutineBody = `EXTERNAL`
 
@@ -1039,8 +2189,25 @@ func (f *CreateFunctionRoutineBody) Type() string {
 	return "CreateFunctionRoutineBody"
 }
 
+func createFunctionRoutineBodyToPb(st *CreateFunctionRoutineBody) (*createFunctionRoutineBodyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := createFunctionRoutineBodyPb(*st)
+	return &pb, nil
+}
+
+func createFunctionRoutineBodyFromPb(pb *createFunctionRoutineBodyPb) (*CreateFunctionRoutineBody, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CreateFunctionRoutineBody(*pb)
+	return &st, nil
+}
+
 // The security type of the function.
 type CreateFunctionSecurityType string
+type createFunctionSecurityTypePb string
 
 const CreateFunctionSecurityTypeDefiner CreateFunctionSecurityType = `DEFINER`
 
@@ -1065,8 +2232,25 @@ func (f *CreateFunctionSecurityType) Type() string {
 	return "CreateFunctionSecurityType"
 }
 
+func createFunctionSecurityTypeToPb(st *CreateFunctionSecurityType) (*createFunctionSecurityTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := createFunctionSecurityTypePb(*st)
+	return &pb, nil
+}
+
+func createFunctionSecurityTypeFromPb(pb *createFunctionSecurityTypePb) (*CreateFunctionSecurityType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CreateFunctionSecurityType(*pb)
+	return &st, nil
+}
+
 // Function SQL data access.
 type CreateFunctionSqlDataAccess string
+type createFunctionSqlDataAccessPb string
 
 const CreateFunctionSqlDataAccessContainsSql CreateFunctionSqlDataAccess = `CONTAINS_SQL`
 
@@ -1095,279 +2279,607 @@ func (f *CreateFunctionSqlDataAccess) Type() string {
 	return "CreateFunctionSqlDataAccess"
 }
 
+func createFunctionSqlDataAccessToPb(st *CreateFunctionSqlDataAccess) (*createFunctionSqlDataAccessPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := createFunctionSqlDataAccessPb(*st)
+	return &pb, nil
+}
+
+func createFunctionSqlDataAccessFromPb(pb *createFunctionSqlDataAccessPb) (*CreateFunctionSqlDataAccess, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CreateFunctionSqlDataAccess(*pb)
+	return &st, nil
+}
+
 type CreateMetastore struct {
 	// The user-specified name of the metastore.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
 	// The field can be omitted in the __workspace-level__ __API__ but not in
 	// the __account-level__ __API__. If this field is omitted, the region of
 	// the workspace receiving the request will be used.
-	Region string `json:"region,omitempty"`
+	// Wire name: 'region'
+	Region string
 	// The storage root URL for metastore
-	StorageRoot string `json:"storage_root,omitempty"`
+	// Wire name: 'storage_root'
+	StorageRoot string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateMetastore) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateMetastore) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createMetastorePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createMetastoreFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateMetastore) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateMetastore) MarshalJSON() ([]byte, error) {
+	pb, err := createMetastoreToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateMetastoreAssignment struct {
 	// The name of the default catalog in the metastore. This field is
 	// depracted. Please use "Default Namespace API" to configure the default
 	// catalog for a Databricks workspace.
-	DefaultCatalogName string `json:"default_catalog_name"`
+	// Wire name: 'default_catalog_name'
+	DefaultCatalogName string
 	// The unique ID of the metastore.
-	MetastoreId string `json:"metastore_id"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// A workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
+}
+
+func (st *CreateMetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createMetastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createMetastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateMetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := createMetastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateMonitor struct {
 	// The directory to store monitoring assets (e.g. dashboard, metric tables).
-	AssetsDir string `json:"assets_dir"`
+	// Wire name: 'assets_dir'
+	AssetsDir string
 	// Name of the baseline table from which drift metrics are computed from.
 	// Columns in the monitored table should also be present in the baseline
 	// table.
-	BaselineTableName string `json:"baseline_table_name,omitempty"`
+	// Wire name: 'baseline_table_name'
+	BaselineTableName string
 	// Custom metrics to compute on the monitored table. These can be aggregate
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
-	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
+	// Wire name: 'custom_metrics'
+	CustomMetrics []MonitorMetric
 	// The data classification config for the monitor.
-	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
+	// Wire name: 'data_classification_config'
+	DataClassificationConfig *MonitorDataClassificationConfig
 	// Configuration for monitoring inference logs.
-	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
+	// Wire name: 'inference_log'
+	InferenceLog *MonitorInferenceLog
 	// The notification settings for the monitor.
-	Notifications *MonitorNotifications `json:"notifications,omitempty"`
+	// Wire name: 'notifications'
+	Notifications *MonitorNotifications
 	// Schema where output metric tables are created.
-	OutputSchemaName string `json:"output_schema_name"`
+	// Wire name: 'output_schema_name'
+	OutputSchemaName string
 	// The schedule for automatically updating and refreshing metric tables.
-	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
+	// Wire name: 'schedule'
+	Schedule *MonitorCronSchedule
 	// Whether to skip creating a default dashboard summarizing data quality
 	// metrics.
-	SkipBuiltinDashboard bool `json:"skip_builtin_dashboard,omitempty"`
+	// Wire name: 'skip_builtin_dashboard'
+	SkipBuiltinDashboard bool
 	// List of column expressions to slice data with for targeted analysis. The
 	// data is grouped by each expression independently, resulting in a separate
 	// slice for each predicate and its complements. For high-cardinality
 	// columns, only the top 100 unique values by frequency will generate
 	// slices.
-	SlicingExprs []string `json:"slicing_exprs,omitempty"`
+	// Wire name: 'slicing_exprs'
+	SlicingExprs []string
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
+	// Wire name: 'snapshot'
+	Snapshot *MonitorSnapshot
 	// Full name of the table.
-	TableName string `json:"-" url:"-"`
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 	// Configuration for monitoring time series tables.
-	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
+	// Wire name: 'time_series'
+	TimeSeries *MonitorTimeSeries
 	// Optional argument to specify the warehouse for dashboard creation. If not
 	// specified, the first running warehouse will be used.
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	// Wire name: 'warehouse_id'
+	WarehouseId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateMonitor) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateMonitor) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createMonitorPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createMonitorFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateMonitor) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateMonitor) MarshalJSON() ([]byte, error) {
+	pb, err := createMonitorToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Create an Online Table
 type CreateOnlineTableRequest struct {
 	// Online Table information.
-	Table OnlineTable `json:"table"`
+	// Wire name: 'table'
+	Table OnlineTable
+}
+
+func (st *CreateOnlineTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createOnlineTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createOnlineTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateOnlineTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createOnlineTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateRegisteredModelRequest struct {
 	// The name of the catalog where the schema and the registered model reside
-	CatalogName string `json:"catalog_name"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// The comment attached to the registered model
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// The name of the registered model
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// The name of the schema where the registered model resides
-	SchemaName string `json:"schema_name"`
+	// Wire name: 'schema_name'
+	SchemaName string
 	// The storage location on the cloud under which model version data files
 	// are stored
-	StorageLocation string `json:"storage_location,omitempty"`
+	// Wire name: 'storage_location'
+	StorageLocation string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createRegisteredModelRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createRegisteredModelRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createRegisteredModelRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateResponse struct {
 }
 
+func (st *CreateResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type CreateSchema struct {
 	// Name of parent catalog.
-	CatalogName string `json:"catalog_name"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Name of schema, relative to parent catalog.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties,omitempty"`
+	// Wire name: 'properties'
+	Properties map[string]string
 	// Storage root URL for managed tables within schema.
-	StorageRoot string `json:"storage_root,omitempty"`
+	// Wire name: 'storage_root'
+	StorageRoot string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateSchema) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateSchema) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createSchemaPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createSchemaFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateSchema) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateSchema) MarshalJSON() ([]byte, error) {
+	pb, err := createSchemaToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateStorageCredential struct {
 	// The AWS IAM role configuration.
-	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
+	// Wire name: 'aws_iam_role'
+	AwsIamRole *AwsIamRoleRequest
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
+	// Wire name: 'azure_managed_identity'
+	AzureManagedIdentity *AzureManagedIdentityRequest
 	// The Azure service principal configuration.
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// Wire name: 'azure_service_principal'
+	AzureServicePrincipal *AzureServicePrincipal
 	// The Cloudflare API token configuration.
-	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
+	// Wire name: 'cloudflare_api_token'
+	CloudflareApiToken *CloudflareApiToken
 	// Comment associated with the credential.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// The Databricks managed GCP service account configuration.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
+	// Wire name: 'databricks_gcp_service_account'
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest
 	// The credential name. The name must be unique within the metastore.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Whether the storage credential is only usable for read operations.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 	// Supplying true to this argument skips validation of the created
 	// credential.
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	// Wire name: 'skip_validation'
+	SkipValidation bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateStorageCredential) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateStorageCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createStorageCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createStorageCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateStorageCredential) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateStorageCredential) MarshalJSON() ([]byte, error) {
+	pb, err := createStorageCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Create a Synced Database Table
 type CreateSyncedDatabaseTableRequest struct {
 	// Next field marker: 10
-	SyncedTable SyncedDatabaseTable `json:"synced_table"`
+	// Wire name: 'synced_table'
+	SyncedTable SyncedDatabaseTable
+}
+
+func (st *CreateSyncedDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createSyncedDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createSyncedDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createSyncedDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateTableConstraint struct {
 	// A table constraint, as defined by *one* of the following fields being
 	// set: __primary_key_constraint__, __foreign_key_constraint__,
 	// __named_table_constraint__.
-	Constraint TableConstraint `json:"constraint"`
+	// Wire name: 'constraint'
+	Constraint TableConstraint
 	// The full name of the table referenced by the constraint.
-	FullNameArg string `json:"full_name_arg"`
+	// Wire name: 'full_name_arg'
+	FullNameArg string
+}
+
+func (st *CreateTableConstraint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createTableConstraintPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createTableConstraintFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateTableConstraint) MarshalJSON() ([]byte, error) {
+	pb, err := createTableConstraintToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateVolumeRequestContent struct {
 	// The name of the catalog where the schema and the volume are
-	CatalogName string `json:"catalog_name"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// The comment attached to the volume
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// The name of the volume
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// The name of the schema where the volume is
-	SchemaName string `json:"schema_name"`
+	// Wire name: 'schema_name'
+	SchemaName string
 	// The storage location on the cloud
-	StorageLocation string `json:"storage_location,omitempty"`
+	// Wire name: 'storage_location'
+	StorageLocation string
 	// The type of the volume. An external volume is located in the specified
 	// external location. A managed volume is located in the default location
 	// which is specified by the parent schema, or the parent catalog, or the
 	// Metastore. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
-	VolumeType VolumeType `json:"volume_type"`
+	// Wire name: 'volume_type'
+	VolumeType VolumeType
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateVolumeRequestContent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateVolumeRequestContent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createVolumeRequestContentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createVolumeRequestContentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateVolumeRequestContent) MarshalJSON() ([]byte, error) {
+	pb, err := createVolumeRequestContentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CredentialInfo struct {
 	// The AWS IAM role configuration
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// Wire name: 'aws_iam_role'
+	AwsIamRole *AwsIamRole
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	// Wire name: 'azure_managed_identity'
+	AzureManagedIdentity *AzureManagedIdentity
 	// The Azure service principal configuration. Only applicable when purpose
 	// is **STORAGE**.
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// Wire name: 'azure_service_principal'
+	AzureServicePrincipal *AzureServicePrincipal
 	// Comment associated with the credential.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Time at which this credential was created, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of credential creator.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// GCP long-lived credential. Databricks-created Google Cloud Storage
 	// service account.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
+	// Wire name: 'databricks_gcp_service_account'
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount
 	// The full name of the credential.
-	FullName string `json:"full_name,omitempty"`
+	// Wire name: 'full_name'
+	FullName string
 	// The unique identifier of the credential.
-	Id string `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id string
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	// Wire name: 'isolation_mode'
+	IsolationMode IsolationMode
 	// Unique identifier of the parent metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// The credential name. The name must be unique among storage and service
 	// credentials within the metastore.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// Username of current owner of credential.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// Indicates the purpose of the credential.
-	Purpose CredentialPurpose `json:"purpose,omitempty"`
+	// Wire name: 'purpose'
+	Purpose CredentialPurpose
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 	// Time at which this credential was last modified, in epoch milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// Username of user who last modified the credential.
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 	// Whether this credential is the current metastore's root storage
 	// credential. Only applicable when purpose is **STORAGE**.
-	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
+	// Wire name: 'used_for_managed_storage'
+	UsedForManagedStorage bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CredentialInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CredentialInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &credentialInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := credentialInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CredentialInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CredentialInfo) MarshalJSON() ([]byte, error) {
+	pb, err := credentialInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CredentialPurpose string
+type credentialPurposePb string
 
 const CredentialPurposeService CredentialPurpose = `SERVICE`
 
@@ -1394,8 +2906,25 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
+func credentialPurposeToPb(st *CredentialPurpose) (*credentialPurposePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := credentialPurposePb(*st)
+	return &pb, nil
+}
+
+func credentialPurposeFromPb(pb *credentialPurposePb) (*CredentialPurpose, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CredentialPurpose(*pb)
+	return &st, nil
+}
+
 // The type of credential.
 type CredentialType string
+type credentialTypePb string
 
 const CredentialTypeBearerToken CredentialType = `BEARER_TOKEN`
 
@@ -1422,25 +2951,61 @@ func (f *CredentialType) Type() string {
 	return "CredentialType"
 }
 
+func credentialTypeToPb(st *CredentialType) (*credentialTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := credentialTypePb(*st)
+	return &pb, nil
+}
+
+func credentialTypeFromPb(pb *credentialTypePb) (*CredentialType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := CredentialType(*pb)
+	return &st, nil
+}
+
 type CredentialValidationResult struct {
 	// Error message would exist when the result does not equal to **PASS**.
-	Message string `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message string
 	// The results of the tested operation.
-	Result ValidateCredentialResult `json:"result,omitempty"`
+	// Wire name: 'result'
+	Result ValidateCredentialResult
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CredentialValidationResult) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CredentialValidationResult) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &credentialValidationResultPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := credentialValidationResultFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CredentialValidationResult) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CredentialValidationResult) MarshalJSON() ([]byte, error) {
+	pb, err := credentialValidationResultToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Data source format
 type DataSourceFormat string
+type dataSourceFormatPb string
 
 const DataSourceFormatAvro DataSourceFormat = `AVRO`
 
@@ -1509,26 +3074,98 @@ func (f *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
 }
 
+func dataSourceFormatToPb(st *DataSourceFormat) (*dataSourceFormatPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := dataSourceFormatPb(*st)
+	return &pb, nil
+}
+
+func dataSourceFormatFromPb(pb *dataSourceFormatPb) (*DataSourceFormat, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := DataSourceFormat(*pb)
+	return &st, nil
+}
+
 type DatabaseCatalog struct {
-	CreateDatabaseIfNotExists bool `json:"create_database_if_not_exists,omitempty"`
+
+	// Wire name: 'create_database_if_not_exists'
+	CreateDatabaseIfNotExists bool
 	// The name of the DatabaseInstance housing the database.
-	DatabaseInstanceName string `json:"database_instance_name"`
+	// Wire name: 'database_instance_name'
+	DatabaseInstanceName string
 	// The name of the database (in a instance) associated with the catalog.
-	DatabaseName string `json:"database_name"`
+	// Wire name: 'database_name'
+	DatabaseName string
 	// The name of the catalog in UC.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 
-	Uid string `json:"uid,omitempty"`
+	// Wire name: 'uid'
+	Uid string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabaseCatalog) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DatabaseCatalog) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databaseCatalogPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := databaseCatalogFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DatabaseCatalog) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DatabaseCatalog) MarshalJSON() ([]byte, error) {
+	pb, err := databaseCatalogToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type DatabaseCredential struct {
+
+	// Wire name: 'token'
+	Token string
+
+	ForceSendFields []string `tf:"-"`
+}
+
+func (st *DatabaseCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databaseCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := databaseCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DatabaseCredential) MarshalJSON() ([]byte, error) {
+	pb, err := databaseCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // A DatabaseInstance represents a logical Postgres instance, comprised of both
@@ -1536,41 +3173,155 @@ func (s DatabaseCatalog) MarshalJSON() ([]byte, error) {
 type DatabaseInstance struct {
 	// Password for admin user to create. If not provided, no user will be
 	// created.
-	AdminPassword string `json:"admin_password,omitempty"`
+	// Wire name: 'admin_password'
+	AdminPassword string
 	// Name of the admin role for the instance. If not provided, defaults to
 	// 'databricks_admin'.
-	AdminRolename string `json:"admin_rolename,omitempty"`
+	// Wire name: 'admin_rolename'
+	AdminRolename string
 	// The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4".
-	Capacity string `json:"capacity,omitempty"`
+	// Wire name: 'capacity'
+	Capacity string
+	// The refs of the child instances. This is only available if the instance
+	// is parent instance.
+	// Wire name: 'child_instance_refs'
+	ChildInstanceRefs []DatabaseInstanceRef
 	// The timestamp when the instance was created.
-	CreationTime string `json:"creation_time,omitempty"`
+	// Wire name: 'creation_time'
+	CreationTime string
 	// The email of the creator of the instance.
-	Creator string `json:"creator,omitempty"`
+	// Wire name: 'creator'
+	Creator string
+	// Whether to enable secondaries to serve read-only traffic. Defaults to
+	// false.
+	// Wire name: 'enable_readable_secondaries'
+	EnableReadableSecondaries bool
 	// The name of the instance. This is the unique identifier for the instance.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
+	// The number of nodes in the instance, composed of 1 primary and 0 or more
+	// secondaries. Defaults to 1 primary and 0 secondaries.
+	// Wire name: 'node_count'
+	NodeCount int
+	// The ref of the parent instance. This is only available if the instance is
+	// child instance. Input: For specifying the parent instance to create a
+	// child instance. Optional. Output: Only populated if provided as input to
+	// create a child instance.
+	// Wire name: 'parent_instance_ref'
+	ParentInstanceRef *DatabaseInstanceRef
 	// The version of Postgres running on the instance.
-	PgVersion string `json:"pg_version,omitempty"`
+	// Wire name: 'pg_version'
+	PgVersion string
+	// The DNS endpoint to connect to the instance for read only access. This is
+	// only available if enable_readable_secondaries is true.
+	// Wire name: 'read_only_dns'
+	ReadOnlyDns string
 	// The DNS endpoint to connect to the instance for read+write access.
-	ReadWriteDns string `json:"read_write_dns,omitempty"`
+	// Wire name: 'read_write_dns'
+	ReadWriteDns string
+	// The retention window for the instance. This is the time window in days
+	// for which the historical data is retained. The default value is 7 days.
+	// Valid values are 2 to 35 days.
+	// Wire name: 'retention_window_in_days'
+	RetentionWindowInDays int
 	// The current state of the instance.
-	State DatabaseInstanceState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State DatabaseInstanceState
 	// Whether the instance is stopped.
-	Stopped bool `json:"stopped,omitempty"`
+	// Wire name: 'stopped'
+	Stopped bool
 	// An immutable UUID identifier for the instance.
-	Uid string `json:"uid,omitempty"`
+	// Wire name: 'uid'
+	Uid string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabaseInstance) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DatabaseInstance) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databaseInstancePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := databaseInstanceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DatabaseInstance) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DatabaseInstance) MarshalJSON() ([]byte, error) {
+	pb, err := databaseInstanceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+// DatabaseInstanceRef is a reference to a database instance. It is used in the
+// DatabaseInstance object to refer to the parent instance of an instance and to
+// refer the child instances of an instance. To specify as a parent instance
+// during creation of an instance, the lsn and branch_time fields are optional.
+// If not specified, the child instance will be created from the latest lsn of
+// the parent. If both lsn and branch_time are specified, the lsn will be used
+// to create the child instance.
+type DatabaseInstanceRef struct {
+	// Branch time of the ref database instance. For a parent ref instance, this
+	// is the point in time on the parent instance from which the instance was
+	// created. For a child ref instance, this is the point in time on the
+	// instance from which the child instance was created. Input: For specifying
+	// the point in time to create a child instance. Optional. Output: Only
+	// populated if provided as input to create a child instance.
+	// Wire name: 'branch_time'
+	BranchTime string
+	// WAL LSN of the ref database instance. For a parent ref instance, this is
+	// the LSN on the parent instance from which the instance was created. For a
+	// child ref instance, this is the LSN on the instance from which the child
+	// instance was created. Input: For specifying the WAL LSN to create a child
+	// instance. Optional. Output: Always populated
+	// Wire name: 'lsn'
+	Lsn string
+	// Name of the ref database instance.
+	// Wire name: 'name'
+	Name string
+	// Id of the ref database instance.
+	// Wire name: 'uid'
+	Uid string
+
+	ForceSendFields []string `tf:"-"`
+}
+
+func (st *DatabaseInstanceRef) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databaseInstanceRefPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := databaseInstanceRefFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DatabaseInstanceRef) MarshalJSON() ([]byte, error) {
+	pb, err := databaseInstanceRefToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DatabaseInstanceState string
+type databaseInstanceStatePb string
 
 const DatabaseInstanceStateAvailable DatabaseInstanceState = `AVAILABLE`
 
@@ -1605,6 +3356,83 @@ func (f *DatabaseInstanceState) Type() string {
 	return "DatabaseInstanceState"
 }
 
+func databaseInstanceStateToPb(st *DatabaseInstanceState) (*databaseInstanceStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := databaseInstanceStatePb(*st)
+	return &pb, nil
+}
+
+func databaseInstanceStateFromPb(pb *databaseInstanceStatePb) (*DatabaseInstanceState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := DatabaseInstanceState(*pb)
+	return &st, nil
+}
+
+// Next field marker: 13
+type DatabaseTable struct {
+	// Name of the target database instance. This is required when creating
+	// database tables in standard catalogs. This is optional when creating
+	// database tables in registered catalogs. If this field is specified when
+	// creating database tables in registered catalogs, the database instance
+	// name MUST match that of the registered catalog (or the request will be
+	// rejected).
+	// Wire name: 'database_instance_name'
+	DatabaseInstanceName string
+	// Target Postgres database object (logical database) name for this table.
+	// This field is optional in all scenarios.
+	//
+	// When creating a table in a registered Postgres catalog, the target
+	// Postgres database name is inferred to be that of the registered catalog.
+	// If this field is specified in this scenario, the Postgres database name
+	// MUST match that of the registered catalog (or the request will be
+	// rejected).
+	//
+	// When creating a table in a standard catalog, the target database name is
+	// inferred to be that of the standard catalog. In this scenario, specifying
+	// this field will allow targeting an arbitrary postgres database. Note that
+	// this has implications for the `create_database_objects_is_missing` field
+	// in `spec`.
+	// Wire name: 'logical_database_name'
+	LogicalDatabaseName string
+	// Full three-part (catalog, schema, table) name of the table.
+	// Wire name: 'name'
+	Name string
+	// Data serving REST API URL for this table
+	// Wire name: 'table_serving_url'
+	TableServingUrl string
+
+	ForceSendFields []string `tf:"-"`
+}
+
+func (st *DatabaseTable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databaseTablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := databaseTableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DatabaseTable) MarshalJSON() ([]byte, error) {
+	pb, err := databaseTableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // GCP long-lived credential. Databricks-created Google Cloud Storage service
 // account.
 type DatabricksGcpServiceAccount struct {
@@ -1612,124 +3440,351 @@ type DatabricksGcpServiceAccount struct {
 	// field is only used to persist the credential_id once it is fetched from
 	// the credentials manager - as we only use the protobuf serializer to store
 	// credentials, this ID gets persisted to the database
-	CredentialId string `json:"credential_id,omitempty"`
+	// Wire name: 'credential_id'
+	CredentialId string
 	// The email of the service account.
-	Email string `json:"email,omitempty"`
+	// Wire name: 'email'
+	Email string
 	// The ID that represents the private key for this Service Account
-	PrivateKeyId string `json:"private_key_id,omitempty"`
+	// Wire name: 'private_key_id'
+	PrivateKeyId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabricksGcpServiceAccount) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DatabricksGcpServiceAccount) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databricksGcpServiceAccountPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := databricksGcpServiceAccountFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DatabricksGcpServiceAccount) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DatabricksGcpServiceAccount) MarshalJSON() ([]byte, error) {
+	pb, err := databricksGcpServiceAccountToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DatabricksGcpServiceAccountRequest struct {
 }
 
+func (st *DatabricksGcpServiceAccountRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databricksGcpServiceAccountRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := databricksGcpServiceAccountRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DatabricksGcpServiceAccountRequest) MarshalJSON() ([]byte, error) {
+	pb, err := databricksGcpServiceAccountRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type DatabricksGcpServiceAccountResponse struct {
 	// The Databricks internal ID that represents this service account. This is
 	// an output-only field.
-	CredentialId string `json:"credential_id,omitempty"`
+	// Wire name: 'credential_id'
+	CredentialId string
 	// The email of the service account. This is an output-only field.
-	Email string `json:"email,omitempty"`
+	// Wire name: 'email'
+	Email string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabricksGcpServiceAccountResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DatabricksGcpServiceAccountResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databricksGcpServiceAccountResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := databricksGcpServiceAccountResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DatabricksGcpServiceAccountResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DatabricksGcpServiceAccountResponse) MarshalJSON() ([]byte, error) {
+	pb, err := databricksGcpServiceAccountResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a metastore assignment
 type DeleteAccountMetastoreAssignmentRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
+}
+
+func (st *DeleteAccountMetastoreAssignmentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAccountMetastoreAssignmentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAccountMetastoreAssignmentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteAccountMetastoreAssignmentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAccountMetastoreAssignmentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a metastore
 type DeleteAccountMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
-	Force bool `json:"-" url:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteAccountMetastoreRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteAccountMetastoreRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAccountMetastoreRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAccountMetastoreRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAccountMetastoreRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a storage credential
 type DeleteAccountStorageCredentialRequest struct {
 	// Force deletion even if the Storage Credential is not empty. Default is
 	// false.
-	Force bool `json:"-" url:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Name of the storage credential.
-	StorageCredentialName string `json:"-" url:"-"`
+	// Wire name: 'storage_credential_name'
+	StorageCredentialName string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteAccountStorageCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteAccountStorageCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAccountStorageCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAccountStorageCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAccountStorageCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a Registered Model Alias
 type DeleteAliasRequest struct {
 	// The name of the alias
-	Alias string `json:"-" url:"-"`
+	// Wire name: 'alias'
+	Alias string `tf:"-"`
 	// The three-level (fully qualified) name of the registered model
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
+}
+
+func (st *DeleteAliasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAliasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAliasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteAliasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAliasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteAliasResponse struct {
 }
 
+func (st *DeleteAliasResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAliasResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAliasResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteAliasResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAliasResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete a catalog
 type DeleteCatalogRequest struct {
 	// Force deletion even if the catalog is not empty.
-	Force bool `json:"-" url:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// The name of the catalog.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteCatalogRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteCatalogRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteCatalogRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteCatalogRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteCatalogRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteCatalogRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteCatalogRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a connection
 type DeleteConnectionRequest struct {
 	// The name of the connection to be deleted.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *DeleteConnectionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteConnectionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteConnectionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteConnectionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteConnectionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a credential
@@ -1737,30 +3792,126 @@ type DeleteCredentialRequest struct {
 	// Force an update even if there are dependent services (when purpose is
 	// **SERVICE**) or dependent external locations and external tables (when
 	// purpose is **STORAGE**).
-	Force bool `json:"-" url:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Name of the credential.
-	NameArg string `json:"-" url:"-"`
+	// Wire name: 'name_arg'
+	NameArg string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteCredentialResponse struct {
 }
 
+func (st *DeleteCredentialResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteCredentialResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteCredentialResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteCredentialResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteCredentialResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete a Database Catalog
 type DeleteDatabaseCatalogRequest struct {
-	Name string `json:"-" url:"-"`
+
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *DeleteDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDatabaseCatalogRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDatabaseCatalogRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteDatabaseCatalogRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDatabaseCatalogRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteDatabaseCatalogResponse struct {
+}
+
+func (st *DeleteDatabaseCatalogResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDatabaseCatalogResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDatabaseCatalogResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteDatabaseCatalogResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDatabaseCatalogResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a Database Instance
@@ -1768,157 +3919,539 @@ type DeleteDatabaseInstanceRequest struct {
 	// By default, a instance cannot be deleted if it has descendant instances
 	// created via PITR. If this flag is specified as true, all descendent
 	// instances will be deleted as well.
-	Force bool `json:"-" url:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Name of the instance to delete.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// If false, the database instance is soft deleted. Soft deleted instances
 	// behave as if they are deleted, and cannot be used for CRUD operations nor
 	// connected to. However they can be undeleted by calling the undelete API
 	// for a limited time. If true, the database instance is hard deleted and
 	// cannot be undeleted.
-	Purge bool `json:"-" url:"purge,omitempty"`
+	// Wire name: 'purge'
+	Purge bool `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDatabaseInstanceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDatabaseInstanceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDatabaseInstanceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteDatabaseInstanceResponse struct {
 }
 
+func (st *DeleteDatabaseInstanceResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDatabaseInstanceResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDatabaseInstanceResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteDatabaseInstanceResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDatabaseInstanceResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+// Delete a Database Table
+type DeleteDatabaseTableRequest struct {
+
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *DeleteDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type DeleteDatabaseTableResponse struct {
+}
+
+func (st *DeleteDatabaseTableResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDatabaseTableResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDatabaseTableResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteDatabaseTableResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDatabaseTableResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete an external location
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
-	Force bool `json:"-" url:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Name of the external location.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteExternalLocationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteExternalLocationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteExternalLocationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteExternalLocationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteExternalLocationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteExternalLocationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteExternalLocationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a function
 type DeleteFunctionRequest struct {
 	// Force deletion even if the function is notempty.
-	Force bool `json:"-" url:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteFunctionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteFunctionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteFunctionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteFunctionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteFunctionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteFunctionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a metastore
 type DeleteMetastoreRequest struct {
 	// Force deletion even if the metastore is not empty. Default is false.
-	Force bool `json:"-" url:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Unique ID of the metastore.
-	Id string `json:"-" url:"-"`
+	// Wire name: 'id'
+	Id string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteMetastoreRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteMetastoreRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteMetastoreRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteMetastoreRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteMetastoreRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteMetastoreRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteMetastoreRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a Model Version
 type DeleteModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// The integer version number of the model version
-	Version int `json:"-" url:"-"`
+	// Wire name: 'version'
+	Version int `tf:"-"`
+}
+
+func (st *DeleteModelVersionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteModelVersionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteModelVersionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteModelVersionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteModelVersionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete an Online Table
 type DeleteOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *DeleteOnlineTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteOnlineTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteOnlineTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteOnlineTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteOnlineTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a table monitor
 type DeleteQualityMonitorRequest struct {
 	// Full name of the table.
-	TableName string `json:"-" url:"-"`
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
+}
+
+func (st *DeleteQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteQualityMonitorRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteQualityMonitorRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteQualityMonitorRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteQualityMonitorRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a Registered Model
 type DeleteRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
+}
+
+func (st *DeleteRegisteredModelRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteRegisteredModelRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteRegisteredModelRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteRegisteredModelRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteResponse struct {
 }
 
+func (st *DeleteResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete a schema
 type DeleteSchemaRequest struct {
 	// Force deletion even if the schema is not empty.
-	Force bool `json:"-" url:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Full name of the schema.
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteSchemaRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteSchemaRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteSchemaRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteSchemaRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteSchemaRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteSchemaRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteSchemaRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a credential
 type DeleteStorageCredentialRequest struct {
 	// Force deletion even if there are dependent external locations or external
 	// tables.
-	Force bool `json:"-" url:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool `tf:"-"`
 	// Name of the storage credential.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DeleteStorageCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteStorageCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteStorageCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteStorageCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteStorageCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteStorageCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteStorageCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a Synced Database Table
 type DeleteSyncedDatabaseTableRequest struct {
-	Name string `json:"-" url:"-"`
+
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *DeleteSyncedDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteSyncedDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteSyncedDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteSyncedDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteSyncedDatabaseTableResponse struct {
+}
+
+func (st *DeleteSyncedDatabaseTableResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteSyncedDatabaseTableResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteSyncedDatabaseTableResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteSyncedDatabaseTableResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteSyncedDatabaseTableResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a table constraint
@@ -1926,23 +4459,103 @@ type DeleteTableConstraintRequest struct {
 	// If true, try deleting all child constraints of the current constraint. If
 	// false, reject this operation if the current constraint has any child
 	// constraints.
-	Cascade bool `json:"-" url:"cascade"`
+	// Wire name: 'cascade'
+	Cascade bool `tf:"-"`
 	// The name of the constraint to delete.
-	ConstraintName string `json:"-" url:"constraint_name"`
+	// Wire name: 'constraint_name'
+	ConstraintName string `tf:"-"`
 	// Full name of the table referenced by the constraint.
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
+}
+
+func (st *DeleteTableConstraintRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteTableConstraintRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteTableConstraintRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteTableConstraintRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteTableConstraintRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a table
 type DeleteTableRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
+}
+
+func (st *DeleteTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a Volume
 type DeleteVolumeRequest struct {
 	// The three-level (fully qualified) name of the volume
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *DeleteVolumeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteVolumeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteVolumeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteVolumeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteVolumeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Properties pertaining to the current state of the delta table as given by the
@@ -1950,66 +4563,244 @@ type DeleteVolumeRequest struct {
 // __TableInfo.properties__.
 type DeltaRuntimePropertiesKvPairs struct {
 	// A map of key-value properties attached to the securable.
-	DeltaRuntimeProperties map[string]string `json:"delta_runtime_properties"`
+	// Wire name: 'delta_runtime_properties'
+	DeltaRuntimeProperties map[string]string
+}
+
+func (st *DeltaRuntimePropertiesKvPairs) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deltaRuntimePropertiesKvPairsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deltaRuntimePropertiesKvPairsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeltaRuntimePropertiesKvPairs) MarshalJSON() ([]byte, error) {
+	pb, err := deltaRuntimePropertiesKvPairsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // A dependency of a SQL object. Either the __table__ field or the __function__
 // field must be defined.
 type Dependency struct {
 	// A function that is dependent on a SQL object.
-	Function *FunctionDependency `json:"function,omitempty"`
+	// Wire name: 'function'
+	Function *FunctionDependency
 	// A table that is dependent on a SQL object.
-	Table *TableDependency `json:"table,omitempty"`
+	// Wire name: 'table'
+	Table *TableDependency
+}
+
+func (st *Dependency) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dependencyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := dependencyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st Dependency) MarshalJSON() ([]byte, error) {
+	pb, err := dependencyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // A list of dependencies.
 type DependencyList struct {
 	// Array of dependencies.
-	Dependencies []Dependency `json:"dependencies,omitempty"`
+	// Wire name: 'dependencies'
+	Dependencies []Dependency
+}
+
+func (st *DependencyList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dependencyListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := dependencyListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DependencyList) MarshalJSON() ([]byte, error) {
+	pb, err := dependencyListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Disable a system schema
 type DisableRequest struct {
 	// The metastore ID under which the system schema lives.
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Full name of the system schema.
-	SchemaName string `json:"-" url:"-"`
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
+}
+
+func (st *DisableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &disableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := disableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DisableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := disableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DisableResponse struct {
 }
 
+func (st *DisableResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &disableResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := disableResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DisableResponse) MarshalJSON() ([]byte, error) {
+	pb, err := disableResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type EffectivePermissionsList struct {
 	// The privileges conveyed to each principal (either directly or via
 	// inheritance)
-	PrivilegeAssignments []EffectivePrivilegeAssignment `json:"privilege_assignments,omitempty"`
+	// Wire name: 'privilege_assignments'
+	PrivilegeAssignments []EffectivePrivilegeAssignment
+}
+
+func (st *EffectivePermissionsList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &effectivePermissionsListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := effectivePermissionsListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EffectivePermissionsList) MarshalJSON() ([]byte, error) {
+	pb, err := effectivePermissionsListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EffectivePredictiveOptimizationFlag struct {
 	// The name of the object from which the flag was inherited. If there was no
 	// inheritance, this field is left blank.
-	InheritedFromName string `json:"inherited_from_name,omitempty"`
+	// Wire name: 'inherited_from_name'
+	InheritedFromName string
 	// The type of the object from which the flag was inherited. If there was no
 	// inheritance, this field is left blank.
-	InheritedFromType EffectivePredictiveOptimizationFlagInheritedFromType `json:"inherited_from_type,omitempty"`
+	// Wire name: 'inherited_from_type'
+	InheritedFromType EffectivePredictiveOptimizationFlagInheritedFromType
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
-	Value EnablePredictiveOptimization `json:"value"`
+	// Wire name: 'value'
+	Value EnablePredictiveOptimization
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EffectivePredictiveOptimizationFlag) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EffectivePredictiveOptimizationFlag) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &effectivePredictiveOptimizationFlagPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := effectivePredictiveOptimizationFlagFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EffectivePredictiveOptimizationFlag) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EffectivePredictiveOptimizationFlag) MarshalJSON() ([]byte, error) {
+	pb, err := effectivePredictiveOptimizationFlagToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The type of the object from which the flag was inherited. If there was no
 // inheritance, this field is left blank.
 type EffectivePredictiveOptimizationFlagInheritedFromType string
+type effectivePredictiveOptimizationFlagInheritedFromTypePb string
 
 const EffectivePredictiveOptimizationFlagInheritedFromTypeCatalog EffectivePredictiveOptimizationFlagInheritedFromType = `CATALOG`
 
@@ -2036,48 +4827,104 @@ func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Type() string {
 	return "EffectivePredictiveOptimizationFlagInheritedFromType"
 }
 
+func effectivePredictiveOptimizationFlagInheritedFromTypeToPb(st *EffectivePredictiveOptimizationFlagInheritedFromType) (*effectivePredictiveOptimizationFlagInheritedFromTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := effectivePredictiveOptimizationFlagInheritedFromTypePb(*st)
+	return &pb, nil
+}
+
+func effectivePredictiveOptimizationFlagInheritedFromTypeFromPb(pb *effectivePredictiveOptimizationFlagInheritedFromTypePb) (*EffectivePredictiveOptimizationFlagInheritedFromType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := EffectivePredictiveOptimizationFlagInheritedFromType(*pb)
+	return &st, nil
+}
+
 type EffectivePrivilege struct {
 	// The full name of the object that conveys this privilege via inheritance.
 	// This field is omitted when privilege is not inherited (it's assigned to
 	// the securable itself).
-	InheritedFromName string `json:"inherited_from_name,omitempty"`
+	// Wire name: 'inherited_from_name'
+	InheritedFromName string
 	// The type of the object that conveys this privilege via inheritance. This
 	// field is omitted when privilege is not inherited (it's assigned to the
 	// securable itself).
-	InheritedFromType SecurableType `json:"inherited_from_type,omitempty"`
+	// Wire name: 'inherited_from_type'
+	InheritedFromType SecurableType
 	// The privilege assigned to the principal.
-	Privilege Privilege `json:"privilege,omitempty"`
+	// Wire name: 'privilege'
+	Privilege Privilege
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EffectivePrivilege) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EffectivePrivilege) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &effectivePrivilegePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := effectivePrivilegeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EffectivePrivilege) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EffectivePrivilege) MarshalJSON() ([]byte, error) {
+	pb, err := effectivePrivilegeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EffectivePrivilegeAssignment struct {
 	// The principal (user email address or group name).
-	Principal string `json:"principal,omitempty"`
+	// Wire name: 'principal'
+	Principal string
 	// The privileges conveyed to the principal (either directly or via
 	// inheritance).
-	Privileges []EffectivePrivilege `json:"privileges,omitempty"`
+	// Wire name: 'privileges'
+	Privileges []EffectivePrivilege
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EffectivePrivilegeAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EffectivePrivilegeAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &effectivePrivilegeAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := effectivePrivilegeAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EffectivePrivilegeAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EffectivePrivilegeAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := effectivePrivilegeAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EnablePredictiveOptimization string
+type enablePredictiveOptimizationPb string
 
 const EnablePredictiveOptimizationDisable EnablePredictiveOptimization = `DISABLE`
 
@@ -2106,93 +4953,241 @@ func (f *EnablePredictiveOptimization) Type() string {
 	return "EnablePredictiveOptimization"
 }
 
+func enablePredictiveOptimizationToPb(st *EnablePredictiveOptimization) (*enablePredictiveOptimizationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := enablePredictiveOptimizationPb(*st)
+	return &pb, nil
+}
+
+func enablePredictiveOptimizationFromPb(pb *enablePredictiveOptimizationPb) (*EnablePredictiveOptimization, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := EnablePredictiveOptimization(*pb)
+	return &st, nil
+}
+
 type EnableRequest struct {
 	// the catalog for which the system schema is to enabled in
-	CatalogName string `json:"catalog_name,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// The metastore ID under which the system schema lives.
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Full name of the system schema.
-	SchemaName string `json:"-" url:"-"`
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EnableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EnableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &enableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := enableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EnableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EnableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := enableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EnableResponse struct {
 }
 
+func (st *EnableResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &enableResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := enableResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EnableResponse) MarshalJSON() ([]byte, error) {
+	pb, err := enableResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Encryption options that apply to clients connecting to cloud storage.
 type EncryptionDetails struct {
 	// Server-Side Encryption properties for clients communicating with AWS s3.
-	SseEncryptionDetails *SseEncryptionDetails `json:"sse_encryption_details,omitempty"`
+	// Wire name: 'sse_encryption_details'
+	SseEncryptionDetails *SseEncryptionDetails
+}
+
+func (st *EncryptionDetails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &encryptionDetailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := encryptionDetailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EncryptionDetails) MarshalJSON() ([]byte, error) {
+	pb, err := encryptionDetailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get boolean reflecting if table exists
 type ExistsRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
+}
+
+func (st *ExistsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &existsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := existsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ExistsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := existsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ExternalLocationInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
-	BrowseOnly bool `json:"browse_only,omitempty"`
+	// Wire name: 'browse_only'
+	BrowseOnly bool
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Time at which this external location was created, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of external location creator.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// Unique ID of the location's storage credential.
-	CredentialId string `json:"credential_id,omitempty"`
+	// Wire name: 'credential_id'
+	CredentialId string
 	// Name of the storage credential used with this location.
-	CredentialName string `json:"credential_name,omitempty"`
+	// Wire name: 'credential_name'
+	CredentialName string
 	// [Create:OPT Update:OPT] Whether to enable file events on this external
 	// location.
-	EnableFileEvents bool `json:"enable_file_events,omitempty"`
+	// Wire name: 'enable_file_events'
+	EnableFileEvents bool
 	// Encryption options that apply to clients connecting to cloud storage.
-	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Wire name: 'encryption_details'
+	EncryptionDetails *EncryptionDetails
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
-	Fallback bool `json:"fallback,omitempty"`
+	// Wire name: 'fallback'
+	Fallback bool
 	// [Create:OPT Update:OPT] File event queue settings.
-	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
+	// Wire name: 'file_event_queue'
+	FileEventQueue *FileEventQueue
 
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	// Wire name: 'isolation_mode'
+	IsolationMode IsolationMode
 	// Unique identifier of metastore hosting the external location.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// Name of the external location.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// The owner of the external location.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// Indicates whether the external location is read-only.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 	// Time at which external location this was last modified, in epoch
 	// milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// Username of user who last modified the external location.
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 	// Path URL of the external location.
-	Url string `json:"url,omitempty"`
+	// Wire name: 'url'
+	Url string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExternalLocationInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ExternalLocationInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &externalLocationInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := externalLocationInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ExternalLocationInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ExternalLocationInfo) MarshalJSON() ([]byte, error) {
+	pb, err := externalLocationInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Detailed status of an online table. Shown if the online table is in the
@@ -2202,153 +5197,361 @@ type FailedStatus struct {
 	// Note that this Delta version may only be partially synced to the online
 	// table. Only populated if the table is still online and available for
 	// serving.
-	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
+	// Wire name: 'last_processed_commit_version'
+	LastProcessedCommitVersion int64
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table. Only populated if the table is still online
 	// and available for serving.
-	Timestamp string `json:"timestamp,omitempty"`
+	// Wire name: 'timestamp'
+	Timestamp string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FailedStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *FailedStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &failedStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := failedStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s FailedStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st FailedStatus) MarshalJSON() ([]byte, error) {
+	pb, err := failedStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+type FailoverDatabaseInstanceRequest struct {
+
+	// Wire name: 'failover_target_database_instance_name'
+	FailoverTargetDatabaseInstanceName string
+	// Name of the instance to failover.
+	// Wire name: 'name'
+	Name string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
+}
+
+func (st *FailoverDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &failoverDatabaseInstanceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := failoverDatabaseInstanceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st FailoverDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := failoverDatabaseInstanceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type FileEventQueue struct {
-	ManagedAqs *AzureQueueStorage `json:"managed_aqs,omitempty"`
 
-	ManagedPubsub *GcpPubsub `json:"managed_pubsub,omitempty"`
+	// Wire name: 'managed_aqs'
+	ManagedAqs *AzureQueueStorage
 
-	ManagedSqs *AwsSqsQueue `json:"managed_sqs,omitempty"`
+	// Wire name: 'managed_pubsub'
+	ManagedPubsub *GcpPubsub
 
-	ProvidedAqs *AzureQueueStorage `json:"provided_aqs,omitempty"`
+	// Wire name: 'managed_sqs'
+	ManagedSqs *AwsSqsQueue
 
-	ProvidedPubsub *GcpPubsub `json:"provided_pubsub,omitempty"`
+	// Wire name: 'provided_aqs'
+	ProvidedAqs *AzureQueueStorage
 
-	ProvidedSqs *AwsSqsQueue `json:"provided_sqs,omitempty"`
+	// Wire name: 'provided_pubsub'
+	ProvidedPubsub *GcpPubsub
+
+	// Wire name: 'provided_sqs'
+	ProvidedSqs *AwsSqsQueue
+}
+
+func (st *FileEventQueue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &fileEventQueuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := fileEventQueueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st FileEventQueue) MarshalJSON() ([]byte, error) {
+	pb, err := fileEventQueueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Find a Database Instance by uid
 type FindDatabaseInstanceByUidRequest struct {
 	// UID of the cluster to get.
-	Uid string `json:"-" url:"uid,omitempty"`
+	// Wire name: 'uid'
+	Uid string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FindDatabaseInstanceByUidRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *FindDatabaseInstanceByUidRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &findDatabaseInstanceByUidRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := findDatabaseInstanceByUidRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s FindDatabaseInstanceByUidRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st FindDatabaseInstanceByUidRequest) MarshalJSON() ([]byte, error) {
+	pb, err := findDatabaseInstanceByUidRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ForeignKeyConstraint struct {
 	// Column names for this constraint.
-	ChildColumns []string `json:"child_columns"`
+	// Wire name: 'child_columns'
+	ChildColumns []string
 	// The name of the constraint.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Column names for this constraint.
-	ParentColumns []string `json:"parent_columns"`
+	// Wire name: 'parent_columns'
+	ParentColumns []string
 	// The full name of the parent constraint.
-	ParentTable string `json:"parent_table"`
+	// Wire name: 'parent_table'
+	ParentTable string
+}
+
+func (st *ForeignKeyConstraint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &foreignKeyConstraintPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := foreignKeyConstraintFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ForeignKeyConstraint) MarshalJSON() ([]byte, error) {
+	pb, err := foreignKeyConstraintToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // A function that is dependent on a SQL object.
 type FunctionDependency struct {
 	// Full name of the dependent function, in the form of
 	// __catalog_name__.__schema_name__.__function_name__.
-	FunctionFullName string `json:"function_full_name"`
+	// Wire name: 'function_full_name'
+	FunctionFullName string
+}
+
+func (st *FunctionDependency) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &functionDependencyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := functionDependencyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st FunctionDependency) MarshalJSON() ([]byte, error) {
+	pb, err := functionDependencyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type FunctionInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
-	BrowseOnly bool `json:"browse_only,omitempty"`
+	// Wire name: 'browse_only'
+	BrowseOnly bool
 	// Name of parent catalog.
-	CatalogName string `json:"catalog_name,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Time at which this function was created, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of function creator.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// Scalar function return data type.
-	DataType ColumnTypeName `json:"data_type,omitempty"`
+	// Wire name: 'data_type'
+	DataType ColumnTypeName
 	// External function language.
-	ExternalLanguage string `json:"external_language,omitempty"`
+	// Wire name: 'external_language'
+	ExternalLanguage string
 	// External function name.
-	ExternalName string `json:"external_name,omitempty"`
+	// Wire name: 'external_name'
+	ExternalName string
 	// Pretty printed function data type.
-	FullDataType string `json:"full_data_type,omitempty"`
+	// Wire name: 'full_data_type'
+	FullDataType string
 	// Full name of function, in form of
 	// __catalog_name__.__schema_name__.__function__name__
-	FullName string `json:"full_name,omitempty"`
+	// Wire name: 'full_name'
+	FullName string
 	// Id of Function, relative to parent schema.
-	FunctionId string `json:"function_id,omitempty"`
+	// Wire name: 'function_id'
+	FunctionId string
 
-	InputParams *FunctionParameterInfos `json:"input_params,omitempty"`
+	// Wire name: 'input_params'
+	InputParams *FunctionParameterInfos
 	// Whether the function is deterministic.
-	IsDeterministic bool `json:"is_deterministic,omitempty"`
+	// Wire name: 'is_deterministic'
+	IsDeterministic bool
 	// Function null call.
-	IsNullCall bool `json:"is_null_call,omitempty"`
+	// Wire name: 'is_null_call'
+	IsNullCall bool
 	// Unique identifier of parent metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// Name of function, relative to parent schema.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// Username of current owner of function.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// Function parameter style. **S** is the value for SQL.
-	ParameterStyle FunctionInfoParameterStyle `json:"parameter_style,omitempty"`
+	// Wire name: 'parameter_style'
+	ParameterStyle FunctionInfoParameterStyle
 	// JSON-serialized key-value pair map, encoded (escaped) as a string.
-	Properties string `json:"properties,omitempty"`
+	// Wire name: 'properties'
+	Properties string
 	// Table function return parameters.
-	ReturnParams *FunctionParameterInfos `json:"return_params,omitempty"`
+	// Wire name: 'return_params'
+	ReturnParams *FunctionParameterInfos
 	// Function language. When **EXTERNAL** is used, the language of the routine
 	// function should be specified in the __external_language__ field, and the
 	// __return_params__ of the function cannot be used (as **TABLE** return
 	// type is not supported), and the __sql_data_access__ field must be
 	// **NO_SQL**.
-	RoutineBody FunctionInfoRoutineBody `json:"routine_body,omitempty"`
+	// Wire name: 'routine_body'
+	RoutineBody FunctionInfoRoutineBody
 	// Function body.
-	RoutineDefinition string `json:"routine_definition,omitempty"`
+	// Wire name: 'routine_definition'
+	RoutineDefinition string
 	// Function dependencies.
-	RoutineDependencies *DependencyList `json:"routine_dependencies,omitempty"`
+	// Wire name: 'routine_dependencies'
+	RoutineDependencies *DependencyList
 	// Name of parent schema relative to its parent catalog.
-	SchemaName string `json:"schema_name,omitempty"`
+	// Wire name: 'schema_name'
+	SchemaName string
 	// Function security type.
-	SecurityType FunctionInfoSecurityType `json:"security_type,omitempty"`
+	// Wire name: 'security_type'
+	SecurityType FunctionInfoSecurityType
 	// Specific name of the function; Reserved for future use.
-	SpecificName string `json:"specific_name,omitempty"`
+	// Wire name: 'specific_name'
+	SpecificName string
 	// Function SQL data access.
-	SqlDataAccess FunctionInfoSqlDataAccess `json:"sql_data_access,omitempty"`
+	// Wire name: 'sql_data_access'
+	SqlDataAccess FunctionInfoSqlDataAccess
 	// List of schemes whose objects can be referenced without qualification.
-	SqlPath string `json:"sql_path,omitempty"`
+	// Wire name: 'sql_path'
+	SqlPath string
 	// Time at which this function was created, in epoch milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// Username of user who last modified function.
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FunctionInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *FunctionInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &functionInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := functionInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s FunctionInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st FunctionInfo) MarshalJSON() ([]byte, error) {
+	pb, err := functionInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Function parameter style. **S** is the value for SQL.
 type FunctionInfoParameterStyle string
+type functionInfoParameterStylePb string
 
 const FunctionInfoParameterStyleS FunctionInfoParameterStyle = `S`
 
@@ -2373,11 +5576,28 @@ func (f *FunctionInfoParameterStyle) Type() string {
 	return "FunctionInfoParameterStyle"
 }
 
+func functionInfoParameterStyleToPb(st *FunctionInfoParameterStyle) (*functionInfoParameterStylePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := functionInfoParameterStylePb(*st)
+	return &pb, nil
+}
+
+func functionInfoParameterStyleFromPb(pb *functionInfoParameterStylePb) (*FunctionInfoParameterStyle, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionInfoParameterStyle(*pb)
+	return &st, nil
+}
+
 // Function language. When **EXTERNAL** is used, the language of the routine
 // function should be specified in the __external_language__ field, and the
 // __return_params__ of the function cannot be used (as **TABLE** return type is
 // not supported), and the __sql_data_access__ field must be **NO_SQL**.
 type FunctionInfoRoutineBody string
+type functionInfoRoutineBodyPb string
 
 const FunctionInfoRoutineBodyExternal FunctionInfoRoutineBody = `EXTERNAL`
 
@@ -2404,8 +5624,25 @@ func (f *FunctionInfoRoutineBody) Type() string {
 	return "FunctionInfoRoutineBody"
 }
 
+func functionInfoRoutineBodyToPb(st *FunctionInfoRoutineBody) (*functionInfoRoutineBodyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := functionInfoRoutineBodyPb(*st)
+	return &pb, nil
+}
+
+func functionInfoRoutineBodyFromPb(pb *functionInfoRoutineBodyPb) (*FunctionInfoRoutineBody, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionInfoRoutineBody(*pb)
+	return &st, nil
+}
+
 // The security type of the function.
 type FunctionInfoSecurityType string
+type functionInfoSecurityTypePb string
 
 const FunctionInfoSecurityTypeDefiner FunctionInfoSecurityType = `DEFINER`
 
@@ -2430,8 +5667,25 @@ func (f *FunctionInfoSecurityType) Type() string {
 	return "FunctionInfoSecurityType"
 }
 
+func functionInfoSecurityTypeToPb(st *FunctionInfoSecurityType) (*functionInfoSecurityTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := functionInfoSecurityTypePb(*st)
+	return &pb, nil
+}
+
+func functionInfoSecurityTypeFromPb(pb *functionInfoSecurityTypePb) (*FunctionInfoSecurityType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionInfoSecurityType(*pb)
+	return &st, nil
+}
+
 // Function SQL data access.
 type FunctionInfoSqlDataAccess string
+type functionInfoSqlDataAccessPb string
 
 const FunctionInfoSqlDataAccessContainsSql FunctionInfoSqlDataAccess = `CONTAINS_SQL`
 
@@ -2460,51 +5714,123 @@ func (f *FunctionInfoSqlDataAccess) Type() string {
 	return "FunctionInfoSqlDataAccess"
 }
 
+func functionInfoSqlDataAccessToPb(st *FunctionInfoSqlDataAccess) (*functionInfoSqlDataAccessPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := functionInfoSqlDataAccessPb(*st)
+	return &pb, nil
+}
+
+func functionInfoSqlDataAccessFromPb(pb *functionInfoSqlDataAccessPb) (*FunctionInfoSqlDataAccess, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionInfoSqlDataAccess(*pb)
+	return &st, nil
+}
+
 type FunctionParameterInfo struct {
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Name of parameter.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Default value of the parameter.
-	ParameterDefault string `json:"parameter_default,omitempty"`
+	// Wire name: 'parameter_default'
+	ParameterDefault string
 	// The mode of the function parameter.
-	ParameterMode FunctionParameterMode `json:"parameter_mode,omitempty"`
+	// Wire name: 'parameter_mode'
+	ParameterMode FunctionParameterMode
 	// The type of function parameter.
-	ParameterType FunctionParameterType `json:"parameter_type,omitempty"`
+	// Wire name: 'parameter_type'
+	ParameterType FunctionParameterType
 	// Ordinal position of column (starting at position 0).
-	Position int `json:"position"`
+	// Wire name: 'position'
+	Position int
 	// Format of IntervalType.
-	TypeIntervalType string `json:"type_interval_type,omitempty"`
+	// Wire name: 'type_interval_type'
+	TypeIntervalType string
 	// Full data type spec, JSON-serialized.
-	TypeJson string `json:"type_json,omitempty"`
+	// Wire name: 'type_json'
+	TypeJson string
 
-	TypeName ColumnTypeName `json:"type_name"`
+	// Wire name: 'type_name'
+	TypeName ColumnTypeName
 	// Digits of precision; required on Create for DecimalTypes.
-	TypePrecision int `json:"type_precision,omitempty"`
+	// Wire name: 'type_precision'
+	TypePrecision int
 	// Digits to right of decimal; Required on Create for DecimalTypes.
-	TypeScale int `json:"type_scale,omitempty"`
+	// Wire name: 'type_scale'
+	TypeScale int
 	// Full data type spec, SQL/catalogString text.
-	TypeText string `json:"type_text"`
+	// Wire name: 'type_text'
+	TypeText string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FunctionParameterInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *FunctionParameterInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &functionParameterInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := functionParameterInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s FunctionParameterInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st FunctionParameterInfo) MarshalJSON() ([]byte, error) {
+	pb, err := functionParameterInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type FunctionParameterInfos struct {
 	// The array of __FunctionParameterInfo__ definitions of the function's
 	// parameters.
-	Parameters []FunctionParameterInfo `json:"parameters,omitempty"`
+	// Wire name: 'parameters'
+	Parameters []FunctionParameterInfo
+}
+
+func (st *FunctionParameterInfos) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &functionParameterInfosPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := functionParameterInfosFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st FunctionParameterInfos) MarshalJSON() ([]byte, error) {
+	pb, err := functionParameterInfosToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The mode of the function parameter.
 type FunctionParameterMode string
+type functionParameterModePb string
 
 const FunctionParameterModeIn FunctionParameterMode = `IN`
 
@@ -2529,8 +5855,25 @@ func (f *FunctionParameterMode) Type() string {
 	return "FunctionParameterMode"
 }
 
+func functionParameterModeToPb(st *FunctionParameterMode) (*functionParameterModePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := functionParameterModePb(*st)
+	return &pb, nil
+}
+
+func functionParameterModeFromPb(pb *functionParameterModePb) (*FunctionParameterMode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionParameterMode(*pb)
+	return &st, nil
+}
+
 // The type of function parameter.
 type FunctionParameterType string
+type functionParameterTypePb string
 
 const FunctionParameterTypeColumn FunctionParameterType = `COLUMN`
 
@@ -2557,40 +5900,131 @@ func (f *FunctionParameterType) Type() string {
 	return "FunctionParameterType"
 }
 
+func functionParameterTypeToPb(st *FunctionParameterType) (*functionParameterTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := functionParameterTypePb(*st)
+	return &pb, nil
+}
+
+func functionParameterTypeFromPb(pb *functionParameterTypePb) (*FunctionParameterType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FunctionParameterType(*pb)
+	return &st, nil
+}
+
 // GCP temporary credentials for API authentication. Read more at
 // https://developers.google.com/identity/protocols/oauth2/service-account
 type GcpOauthToken struct {
-	OauthToken string `json:"oauth_token,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'oauth_token'
+	OauthToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GcpOauthToken) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GcpOauthToken) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &gcpOauthTokenPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := gcpOauthTokenFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GcpOauthToken) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GcpOauthToken) MarshalJSON() ([]byte, error) {
+	pb, err := gcpOauthTokenToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GcpPubsub struct {
 	// Unique identifier included in the name of file events managed cloud
 	// resources.
-	ManagedResourceId string `json:"managed_resource_id,omitempty"`
+	// Wire name: 'managed_resource_id'
+	ManagedResourceId string
 	// The Pub/Sub subscription name in the format
 	// projects/{project}/subscriptions/{subscription name} REQUIRED for
 	// provided_pubsub.
-	SubscriptionName string `json:"subscription_name,omitempty"`
+	// Wire name: 'subscription_name'
+	SubscriptionName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GcpPubsub) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GcpPubsub) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &gcpPubsubPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := gcpPubsubFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GcpPubsub) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GcpPubsub) MarshalJSON() ([]byte, error) {
+	pb, err := gcpPubsubToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+// Generates a credential that can be used to access database instances
+type GenerateDatabaseCredentialRequest struct {
+	// Instances to which the token will be scoped.
+	// Wire name: 'instance_names'
+	InstanceNames []string
+
+	// Wire name: 'request_id'
+	RequestId string
+
+	ForceSendFields []string `tf:"-"`
+}
+
+func (st *GenerateDatabaseCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &generateDatabaseCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := generateDatabaseCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GenerateDatabaseCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := generateDatabaseCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The Azure cloud options to customize the requested temporary credential
@@ -2598,7 +6032,33 @@ type GenerateTemporaryServiceCredentialAzureOptions struct {
 	// The resources to which the temporary Azure credential should apply. These
 	// resources are the scopes that are passed to the token provider (see
 	// https://learn.microsoft.com/python/api/azure-core/azure.core.credentials.tokencredential?view=azure-python)
-	Resources []string `json:"resources,omitempty"`
+	// Wire name: 'resources'
+	Resources []string
+}
+
+func (st *GenerateTemporaryServiceCredentialAzureOptions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &generateTemporaryServiceCredentialAzureOptionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := generateTemporaryServiceCredentialAzureOptionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GenerateTemporaryServiceCredentialAzureOptions) MarshalJSON() ([]byte, error) {
+	pb, err := generateTemporaryServiceCredentialAzureOptionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The GCP cloud options to customize the requested temporary credential
@@ -2606,96 +6066,298 @@ type GenerateTemporaryServiceCredentialGcpOptions struct {
 	// The scopes to which the temporary GCP credential should apply. These
 	// resources are the scopes that are passed to the token provider (see
 	// https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.credentials.Credentials)
-	Scopes []string `json:"scopes,omitempty"`
+	// Wire name: 'scopes'
+	Scopes []string
+}
+
+func (st *GenerateTemporaryServiceCredentialGcpOptions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &generateTemporaryServiceCredentialGcpOptionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := generateTemporaryServiceCredentialGcpOptionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GenerateTemporaryServiceCredentialGcpOptions) MarshalJSON() ([]byte, error) {
+	pb, err := generateTemporaryServiceCredentialGcpOptionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GenerateTemporaryServiceCredentialRequest struct {
 	// The Azure cloud options to customize the requested temporary credential
-	AzureOptions *GenerateTemporaryServiceCredentialAzureOptions `json:"azure_options,omitempty"`
+	// Wire name: 'azure_options'
+	AzureOptions *GenerateTemporaryServiceCredentialAzureOptions
 	// The name of the service credential used to generate a temporary
 	// credential
-	CredentialName string `json:"credential_name"`
+	// Wire name: 'credential_name'
+	CredentialName string
 	// The GCP cloud options to customize the requested temporary credential
-	GcpOptions *GenerateTemporaryServiceCredentialGcpOptions `json:"gcp_options,omitempty"`
+	// Wire name: 'gcp_options'
+	GcpOptions *GenerateTemporaryServiceCredentialGcpOptions
+}
+
+func (st *GenerateTemporaryServiceCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &generateTemporaryServiceCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := generateTemporaryServiceCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GenerateTemporaryServiceCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := generateTemporaryServiceCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GenerateTemporaryTableCredentialRequest struct {
 	// The operation performed against the table data, either READ or
 	// READ_WRITE. If READ_WRITE is specified, the credentials returned will
 	// have write permissions, otherwise, it will be read only.
-	Operation TableOperation `json:"operation,omitempty"`
+	// Wire name: 'operation'
+	Operation TableOperation
 	// UUID of the table to read or write.
-	TableId string `json:"table_id,omitempty"`
+	// Wire name: 'table_id'
+	TableId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenerateTemporaryTableCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GenerateTemporaryTableCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &generateTemporaryTableCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := generateTemporaryTableCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GenerateTemporaryTableCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GenerateTemporaryTableCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := generateTemporaryTableCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GenerateTemporaryTableCredentialResponse struct {
 	// AWS temporary credentials for API authentication. Read more at
 	// https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
-	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
+	// Wire name: 'aws_temp_credentials'
+	AwsTempCredentials *AwsCredentials
 	// Azure Active Directory token, essentially the Oauth token for Azure
 	// Service Principal or Managed Identity. Read more at
 	// https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token
-	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
+	// Wire name: 'azure_aad'
+	AzureAad *AzureActiveDirectoryToken
 	// Azure temporary credentials for API authentication. Read more at
 	// https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
-	AzureUserDelegationSas *AzureUserDelegationSas `json:"azure_user_delegation_sas,omitempty"`
+	// Wire name: 'azure_user_delegation_sas'
+	AzureUserDelegationSas *AzureUserDelegationSas
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
+	// Wire name: 'expiration_time'
+	ExpirationTime int64
 	// GCP temporary credentials for API authentication. Read more at
 	// https://developers.google.com/identity/protocols/oauth2/service-account
-	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
+	// Wire name: 'gcp_oauth_token'
+	GcpOauthToken *GcpOauthToken
 	// R2 temporary credentials for API authentication. Read more at
 	// https://developers.cloudflare.com/r2/api/s3/tokens/.
-	R2TempCredentials *R2Credentials `json:"r2_temp_credentials,omitempty"`
+	// Wire name: 'r2_temp_credentials'
+	R2TempCredentials *R2Credentials
 	// The URL of the storage path accessible by the temporary credential.
-	Url string `json:"url,omitempty"`
+	// Wire name: 'url'
+	Url string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GenerateTemporaryTableCredentialResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GenerateTemporaryTableCredentialResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &generateTemporaryTableCredentialResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := generateTemporaryTableCredentialResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GenerateTemporaryTableCredentialResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GenerateTemporaryTableCredentialResponse) MarshalJSON() ([]byte, error) {
+	pb, err := generateTemporaryTableCredentialResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Gets the metastore assignment for a workspace
 type GetAccountMetastoreAssignmentRequest struct {
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
+}
+
+func (st *GetAccountMetastoreAssignmentRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAccountMetastoreAssignmentRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAccountMetastoreAssignmentRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetAccountMetastoreAssignmentRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAccountMetastoreAssignmentRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a metastore
 type GetAccountMetastoreRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
+}
+
+func (st *GetAccountMetastoreRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAccountMetastoreRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAccountMetastoreRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetAccountMetastoreRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAccountMetastoreRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Gets the named storage credential
 type GetAccountStorageCredentialRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Name of the storage credential.
-	StorageCredentialName string `json:"-" url:"-"`
+	// Wire name: 'storage_credential_name'
+	StorageCredentialName string `tf:"-"`
+}
+
+func (st *GetAccountStorageCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAccountStorageCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAccountStorageCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetAccountStorageCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAccountStorageCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get an artifact allowlist
 type GetArtifactAllowlistRequest struct {
 	// The artifact type of the allowlist.
-	ArtifactType ArtifactType `json:"-" url:"-"`
+	// Wire name: 'artifact_type'
+	ArtifactType ArtifactType `tf:"-"`
+}
+
+func (st *GetArtifactAllowlistRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getArtifactAllowlistRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getArtifactAllowlistRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetArtifactAllowlistRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getArtifactAllowlistRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get securable workspace bindings
@@ -2706,238 +6368,602 @@ type GetBindingsRequest struct {
 	// server configured value; - When set to a value less than 0, an invalid
 	// parameter error is returned; - If not set, all the workspace bindings are
 	// returned (not recommended).
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The name of the securable.
-	SecurableName string `json:"-" url:"-"`
+	// Wire name: 'securable_name'
+	SecurableName string `tf:"-"`
 	// The type of the securable to bind to a workspace (catalog,
 	// storage_credential, credential, or external_location).
-	SecurableType string `json:"-" url:"-"`
+	// Wire name: 'securable_type'
+	SecurableType string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetBindingsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetBindingsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getBindingsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getBindingsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetBindingsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetBindingsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getBindingsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get Model Version By Alias
 type GetByAliasRequest struct {
 	// The name of the alias
-	Alias string `json:"-" url:"-"`
+	// Wire name: 'alias'
+	Alias string `tf:"-"`
 	// The three-level (fully qualified) name of the registered model
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include aliases associated with the model version in the
 	// response
-	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
+	// Wire name: 'include_aliases'
+	IncludeAliases bool `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetByAliasRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetByAliasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getByAliasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getByAliasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetByAliasRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetByAliasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getByAliasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a catalog
 type GetCatalogRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// The name of the catalog.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetCatalogRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetCatalogRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getCatalogRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getCatalogRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetCatalogRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetCatalogRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getCatalogRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetCatalogWorkspaceBindingsResponse struct {
 	// A list of workspace IDs
-	Workspaces []int64 `json:"workspaces,omitempty"`
+	// Wire name: 'workspaces'
+	Workspaces []int64
+}
+
+func (st *GetCatalogWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getCatalogWorkspaceBindingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getCatalogWorkspaceBindingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetCatalogWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getCatalogWorkspaceBindingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a connection
 type GetConnectionRequest struct {
 	// Name of the connection.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *GetConnectionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getConnectionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getConnectionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetConnectionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getConnectionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a credential
 type GetCredentialRequest struct {
 	// Name of the credential.
-	NameArg string `json:"-" url:"-"`
+	// Wire name: 'name_arg'
+	NameArg string `tf:"-"`
+}
+
+func (st *GetCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a Database Catalog
 type GetDatabaseCatalogRequest struct {
-	Name string `json:"-" url:"-"`
+
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *GetDatabaseCatalogRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getDatabaseCatalogRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getDatabaseCatalogRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetDatabaseCatalogRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getDatabaseCatalogRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a Database Instance
 type GetDatabaseInstanceRequest struct {
 	// Name of the cluster to get.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *GetDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getDatabaseInstanceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getDatabaseInstanceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getDatabaseInstanceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+// Get a Database Table
+type GetDatabaseTableRequest struct {
+
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *GetDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get effective permissions
 type GetEffectiveRequest struct {
 	// Full name of securable.
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// If provided, only the effective permissions for the specified principal
 	// (user or group) are returned.
-	Principal string `json:"-" url:"principal,omitempty"`
+	// Wire name: 'principal'
+	Principal string `tf:"-"`
 	// Type of securable.
-	SecurableType SecurableType `json:"-" url:"-"`
+	// Wire name: 'securable_type'
+	SecurableType SecurableType `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetEffectiveRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetEffectiveRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getEffectiveRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getEffectiveRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetEffectiveRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetEffectiveRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getEffectiveRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get an external location
 type GetExternalLocationRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Name of the external location.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetExternalLocationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetExternalLocationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getExternalLocationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getExternalLocationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetExternalLocationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetExternalLocationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getExternalLocationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a function
 type GetFunctionRequest struct {
 	// Whether to include functions in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetFunctionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetFunctionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getFunctionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getFunctionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetFunctionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetFunctionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getFunctionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get permissions
 type GetGrantRequest struct {
 	// Full name of securable.
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// If provided, only the permissions for the specified principal (user or
 	// group) are returned.
-	Principal string `json:"-" url:"principal,omitempty"`
+	// Wire name: 'principal'
+	Principal string `tf:"-"`
 	// Type of securable.
-	SecurableType SecurableType `json:"-" url:"-"`
+	// Wire name: 'securable_type'
+	SecurableType SecurableType `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetGrantRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetGrantRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getGrantRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getGrantRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetGrantRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetGrantRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getGrantRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a metastore
 type GetMetastoreRequest struct {
 	// Unique ID of the metastore.
-	Id string `json:"-" url:"-"`
+	// Wire name: 'id'
+	Id string `tf:"-"`
+}
+
+func (st *GetMetastoreRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getMetastoreRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getMetastoreRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetMetastoreRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getMetastoreRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetMetastoreSummaryResponse struct {
 	// Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`).
-	Cloud string `json:"cloud,omitempty"`
+	// Wire name: 'cloud'
+	Cloud string
 	// Time at which this metastore was created, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of metastore creator.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// Unique identifier of the metastore's (Default) Data Access Configuration.
-	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
+	// Wire name: 'default_data_access_config_id'
+	DefaultDataAccessConfigId string
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
-	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
+	// Wire name: 'delta_sharing_organization_name'
+	DeltaSharingOrganizationName string
 	// The lifetime of delta sharing recipient token in seconds.
-	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
+	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
+	DeltaSharingRecipientTokenLifetimeInSeconds int64
 	// The scope of Delta Sharing enabled for the metastore.
-	DeltaSharingScope GetMetastoreSummaryResponseDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	// Wire name: 'delta_sharing_scope'
+	DeltaSharingScope GetMetastoreSummaryResponseDeltaSharingScope
 	// Whether to allow non-DBR clients to directly access entities under the
 	// metastore.
-	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
+	// Wire name: 'external_access_enabled'
+	ExternalAccessEnabled bool
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
-	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
+	// Wire name: 'global_metastore_id'
+	GlobalMetastoreId string
 	// Unique identifier of metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// The user-specified name of the metastore.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// The owner of the metastore.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
-	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
+	// Wire name: 'privilege_model_version'
+	PrivilegeModelVersion string
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
-	Region string `json:"region,omitempty"`
+	// Wire name: 'region'
+	Region string
 	// The storage root URL for metastore
-	StorageRoot string `json:"storage_root,omitempty"`
+	// Wire name: 'storage_root'
+	StorageRoot string
 	// UUID of storage credential to access the metastore storage_root.
-	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
+	// Wire name: 'storage_root_credential_id'
+	StorageRootCredentialId string
 	// Name of the storage credential to access the metastore storage_root.
-	StorageRootCredentialName string `json:"storage_root_credential_name,omitempty"`
+	// Wire name: 'storage_root_credential_name'
+	StorageRootCredentialName string
 	// Time at which the metastore was last modified, in epoch milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// Username of user who last modified the metastore.
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetMetastoreSummaryResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetMetastoreSummaryResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getMetastoreSummaryResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getMetastoreSummaryResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetMetastoreSummaryResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetMetastoreSummaryResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getMetastoreSummaryResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The scope of Delta Sharing enabled for the metastore.
 type GetMetastoreSummaryResponseDeltaSharingScope string
+type getMetastoreSummaryResponseDeltaSharingScopePb string
 
 const GetMetastoreSummaryResponseDeltaSharingScopeInternal GetMetastoreSummaryResponseDeltaSharingScope = `INTERNAL`
 
@@ -2964,167 +6990,496 @@ func (f *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
 	return "GetMetastoreSummaryResponseDeltaSharingScope"
 }
 
+func getMetastoreSummaryResponseDeltaSharingScopeToPb(st *GetMetastoreSummaryResponseDeltaSharingScope) (*getMetastoreSummaryResponseDeltaSharingScopePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := getMetastoreSummaryResponseDeltaSharingScopePb(*st)
+	return &pb, nil
+}
+
+func getMetastoreSummaryResponseDeltaSharingScopeFromPb(pb *getMetastoreSummaryResponseDeltaSharingScopePb) (*GetMetastoreSummaryResponseDeltaSharingScope, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := GetMetastoreSummaryResponseDeltaSharingScope(*pb)
+	return &st, nil
+}
+
 // Get a Model Version
 type GetModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include aliases associated with the model version in the
 	// response
-	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
+	// Wire name: 'include_aliases'
+	IncludeAliases bool `tf:"-"`
 	// Whether to include model versions in the response for which the principal
 	// can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// The integer version number of the model version
-	Version int `json:"-" url:"-"`
+	// Wire name: 'version'
+	Version int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetModelVersionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetModelVersionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getModelVersionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getModelVersionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetModelVersionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetModelVersionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getModelVersionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get an Online Table
 type GetOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *GetOnlineTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getOnlineTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getOnlineTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetOnlineTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getOnlineTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a table monitor
 type GetQualityMonitorRequest struct {
 	// Full name of the table.
-	TableName string `json:"-" url:"-"`
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
+}
+
+func (st *GetQualityMonitorRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getQualityMonitorRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getQualityMonitorRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetQualityMonitorRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getQualityMonitorRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get information for a single resource quota.
 type GetQuotaRequest struct {
 	// Full name of the parent resource. Provide the metastore ID if the parent
 	// is a metastore.
-	ParentFullName string `json:"-" url:"-"`
+	// Wire name: 'parent_full_name'
+	ParentFullName string `tf:"-"`
 	// Securable type of the quota parent.
-	ParentSecurableType string `json:"-" url:"-"`
+	// Wire name: 'parent_securable_type'
+	ParentSecurableType string `tf:"-"`
 	// Name of the quota. Follows the pattern of the quota type, with "-quota"
 	// added as a suffix.
-	QuotaName string `json:"-" url:"-"`
+	// Wire name: 'quota_name'
+	QuotaName string `tf:"-"`
+}
+
+func (st *GetQuotaRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getQuotaRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getQuotaRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetQuotaRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getQuotaRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetQuotaResponse struct {
 	// The returned QuotaInfo.
-	QuotaInfo *QuotaInfo `json:"quota_info,omitempty"`
+	// Wire name: 'quota_info'
+	QuotaInfo *QuotaInfo
+}
+
+func (st *GetQuotaResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getQuotaResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getQuotaResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetQuotaResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getQuotaResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get refresh
 type GetRefreshRequest struct {
 	// ID of the refresh.
-	RefreshId string `json:"-" url:"-"`
+	// Wire name: 'refresh_id'
+	RefreshId string `tf:"-"`
 	// Full name of the table.
-	TableName string `json:"-" url:"-"`
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
+}
+
+func (st *GetRefreshRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getRefreshRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getRefreshRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetRefreshRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getRefreshRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a Registered Model
 type GetRegisteredModelRequest struct {
 	// The three-level (fully qualified) name of the registered model
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include registered model aliases in the response
-	IncludeAliases bool `json:"-" url:"include_aliases,omitempty"`
+	// Wire name: 'include_aliases'
+	IncludeAliases bool `tf:"-"`
 	// Whether to include registered models in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetRegisteredModelRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetRegisteredModelRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getRegisteredModelRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getRegisteredModelRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetRegisteredModelRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getRegisteredModelRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a schema
 type GetSchemaRequest struct {
 	// Full name of the schema.
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include schemas in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetSchemaRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetSchemaRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getSchemaRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getSchemaRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetSchemaRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetSchemaRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getSchemaRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a credential
 type GetStorageCredentialRequest struct {
 	// Name of the storage credential.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *GetStorageCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getStorageCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getStorageCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetStorageCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getStorageCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a Synced Database Table
 type GetSyncedDatabaseTableRequest struct {
-	Name string `json:"-" url:"-"`
+
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *GetSyncedDatabaseTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getSyncedDatabaseTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getSyncedDatabaseTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetSyncedDatabaseTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getSyncedDatabaseTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a table
 type GetTableRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include tables in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Whether delta metadata should be included in the response.
-	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
+	// Wire name: 'include_delta_metadata'
+	IncludeDeltaMetadata bool `tf:"-"`
 	// Whether to include a manifest containing capabilities the table has.
-	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
+	// Wire name: 'include_manifest_capabilities'
+	IncludeManifestCapabilities bool `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetTableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetTableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get catalog workspace bindings
 type GetWorkspaceBindingRequest struct {
 	// The name of the catalog.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *GetWorkspaceBindingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getWorkspaceBindingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getWorkspaceBindingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetWorkspaceBindingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getWorkspaceBindingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetWorkspaceBindingsResponse struct {
 	// List of workspace bindings
-	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
+	// Wire name: 'bindings'
+	Bindings []WorkspaceBinding
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getWorkspaceBindingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getWorkspaceBindingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getWorkspaceBindingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type IsolationMode string
+type isolationModePb string
 
 const IsolationModeIsolationModeIsolated IsolationMode = `ISOLATION_MODE_ISOLATED`
 
@@ -3151,33 +7506,155 @@ func (f *IsolationMode) Type() string {
 	return "IsolationMode"
 }
 
+func isolationModeToPb(st *IsolationMode) (*isolationModePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := isolationModePb(*st)
+	return &pb, nil
+}
+
+func isolationModeFromPb(pb *isolationModePb) (*IsolationMode, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := IsolationMode(*pb)
+	return &st, nil
+}
+
 // Get all workspaces assigned to a metastore
 type ListAccountMetastoreAssignmentsRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
+}
+
+func (st *ListAccountMetastoreAssignmentsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAccountMetastoreAssignmentsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAccountMetastoreAssignmentsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListAccountMetastoreAssignmentsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listAccountMetastoreAssignmentsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The list of workspaces to which the given metastore is assigned.
 type ListAccountMetastoreAssignmentsResponse struct {
-	WorkspaceIds []int64 `json:"workspace_ids,omitempty"`
+
+	// Wire name: 'workspace_ids'
+	WorkspaceIds []int64
+}
+
+func (st *ListAccountMetastoreAssignmentsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAccountMetastoreAssignmentsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAccountMetastoreAssignmentsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListAccountMetastoreAssignmentsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listAccountMetastoreAssignmentsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get all storage credentials assigned to a metastore
 type ListAccountStorageCredentialsRequest struct {
 	// Unity Catalog metastore ID
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
+}
+
+func (st *ListAccountStorageCredentialsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAccountStorageCredentialsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAccountStorageCredentialsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListAccountStorageCredentialsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listAccountStorageCredentialsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListAccountStorageCredentialsResponse struct {
 	// An array of metastore storage credentials.
-	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
+	// Wire name: 'storage_credentials'
+	StorageCredentials []StorageCredentialInfo
+}
+
+func (st *ListAccountStorageCredentialsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAccountStorageCredentialsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAccountStorageCredentialsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListAccountStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listAccountStorageCredentialsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List catalogs
 type ListCatalogsRequest struct {
 	// Whether to include catalogs in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of catalogs to return. - when set to 0, the page length is
 	// set to a server configured value (recommended); - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
@@ -3187,38 +7664,76 @@ type ListCatalogsRequest struct {
 	// the specified max_results size, even zero. The only definitive indication
 	// that no further catalogs can be fetched is when the next_page_token is
 	// unset from the response.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCatalogsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListCatalogsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listCatalogsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listCatalogsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListCatalogsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListCatalogsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listCatalogsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListCatalogsResponse struct {
 	// An array of catalog information objects.
-	Catalogs []CatalogInfo `json:"catalogs,omitempty"`
+	// Wire name: 'catalogs'
+	Catalogs []CatalogInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCatalogsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListCatalogsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listCatalogsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listCatalogsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListCatalogsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListCatalogsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listCatalogsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List connections
@@ -3229,38 +7744,76 @@ type ListConnectionsRequest struct {
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListConnectionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListConnectionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listConnectionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listConnectionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListConnectionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListConnectionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listConnectionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListConnectionsResponse struct {
 	// An array of connection information objects.
-	Connections []ConnectionInfo `json:"connections,omitempty"`
+	// Wire name: 'connections'
+	Connections []ConnectionInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListConnectionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListConnectionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listConnectionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listConnectionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListConnectionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListConnectionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listConnectionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List credentials
@@ -3270,184 +7823,370 @@ type ListCredentialsRequest struct {
 	// is the minimum of this value and a server-configured value. - When set to
 	// 0, the page length is set to a server-configured value (recommended). -
 	// When set to a value less than 0, an invalid parameter error is returned.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque token to retrieve the next page of results.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Return only credentials for the specified purpose.
-	Purpose CredentialPurpose `json:"-" url:"purpose,omitempty"`
+	// Wire name: 'purpose'
+	Purpose CredentialPurpose `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCredentialsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListCredentialsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listCredentialsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listCredentialsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListCredentialsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListCredentialsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listCredentialsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListCredentialsResponse struct {
-	Credentials []CredentialInfo `json:"credentials,omitempty"`
+
+	// Wire name: 'credentials'
+	Credentials []CredentialInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListCredentialsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListCredentialsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listCredentialsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listCredentialsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListCredentialsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListCredentialsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listCredentialsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List Database Instances
 type ListDatabaseInstancesRequest struct {
 	// Upper bound for items returned.
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 	// Pagination token to go to the next page of Database Instances. Requests
 	// first page if absent.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListDatabaseInstancesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListDatabaseInstancesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listDatabaseInstancesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listDatabaseInstancesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListDatabaseInstancesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListDatabaseInstancesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listDatabaseInstancesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListDatabaseInstancesResponse struct {
 	// List of instances.
-	DatabaseInstances []DatabaseInstance `json:"database_instances,omitempty"`
+	// Wire name: 'database_instances'
+	DatabaseInstances []DatabaseInstance
 	// Pagination token to request the next page of instances.
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListDatabaseInstancesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListDatabaseInstancesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listDatabaseInstancesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listDatabaseInstancesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListDatabaseInstancesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListDatabaseInstancesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listDatabaseInstancesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List external locations
 type ListExternalLocationsRequest struct {
 	// Whether to include external locations in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of external locations to return. If not set, all the
 	// external locations are returned (not recommended). - when set to a value
 	// greater than 0, the page length is the minimum of this value and a server
 	// configured value; - when set to 0, the page length is set to a server
 	// configured value (recommended); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExternalLocationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListExternalLocationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listExternalLocationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listExternalLocationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListExternalLocationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListExternalLocationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listExternalLocationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListExternalLocationsResponse struct {
 	// An array of external locations.
-	ExternalLocations []ExternalLocationInfo `json:"external_locations,omitempty"`
+	// Wire name: 'external_locations'
+	ExternalLocations []ExternalLocationInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExternalLocationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListExternalLocationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listExternalLocationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listExternalLocationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListExternalLocationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListExternalLocationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listExternalLocationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List functions
 type ListFunctionsRequest struct {
 	// Name of parent catalog for functions of interest.
-	CatalogName string `json:"-" url:"catalog_name"`
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include functions in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of functions to return. If not set, all the functions are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Parent schema of functions.
-	SchemaName string `json:"-" url:"schema_name"`
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListFunctionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListFunctionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listFunctionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listFunctionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListFunctionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListFunctionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listFunctionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListFunctionsResponse struct {
 	// An array of function information objects.
-	Functions []FunctionInfo `json:"functions,omitempty"`
+	// Wire name: 'functions'
+	Functions []FunctionInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListFunctionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListFunctionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listFunctionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listFunctionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListFunctionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listFunctionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListMetastoresResponse struct {
 	// An array of metastore information objects.
-	Metastores []MetastoreInfo `json:"metastores,omitempty"`
+	// Wire name: 'metastores'
+	Metastores []MetastoreInfo
+}
+
+func (st *ListMetastoresResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listMetastoresResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listMetastoresResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListMetastoresResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listMetastoresResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List Model Versions
 type ListModelVersionsRequest struct {
 	// The full three-level name of the registered model under which to list
 	// model versions
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Whether to include model versions in the response for which the principal
 	// can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of model versions to return. If not set, the page length
 	// is set to a server configured value (100, as of 1/3/2024). - when set to
 	// a value greater than 0, the page length is the minimum of this value and
@@ -3455,90 +8194,195 @@ type ListModelVersionsRequest struct {
 	// page length is set to a server configured value (100, as of 1/3/2024)
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListModelVersionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListModelVersionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listModelVersionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listModelVersionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListModelVersionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListModelVersionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listModelVersionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListModelVersionsResponse struct {
-	ModelVersions []ModelVersionInfo `json:"model_versions,omitempty"`
+
+	// Wire name: 'model_versions'
+	ModelVersions []ModelVersionInfo
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListModelVersionsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListModelVersionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listModelVersionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listModelVersionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListModelVersionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listModelVersionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List all resource quotas under a metastore.
 type ListQuotasRequest struct {
 	// The number of quotas to return.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque token for the next page of results.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListQuotasRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListQuotasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listQuotasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listQuotasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListQuotasRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListQuotasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listQuotasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListQuotasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request.
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 	// An array of returned QuotaInfos.
-	Quotas []QuotaInfo `json:"quotas,omitempty"`
+	// Wire name: 'quotas'
+	Quotas []QuotaInfo
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListQuotasResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListQuotasResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listQuotasResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listQuotasResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListQuotasResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListQuotasResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listQuotasResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List refreshes
 type ListRefreshesRequest struct {
 	// Full name of the table.
-	TableName string `json:"-" url:"-"`
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
+}
+
+func (st *ListRefreshesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listRefreshesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listRefreshesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListRefreshesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listRefreshesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List Registered Models
 type ListRegisteredModelsRequest struct {
 	// The identifier of the catalog under which to list registered models. If
 	// specified, schema_name must be specified.
-	CatalogName string `json:"-" url:"catalog_name,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include registered models in the response for which the
 	// principal can only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Max number of registered models to return.
 	//
 	// If both catalog and schema are specified: - when max_results is not
@@ -3556,87 +8400,166 @@ type ListRegisteredModelsRequest struct {
 	// 4/2/2024); - when set to 0, the page length is set to a server configured
 	// value (100, as of 4/2/2024); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque token to send for the next page of results (pagination).
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The identifier of the schema under which to list registered models. If
 	// specified, catalog_name must be specified.
-	SchemaName string `json:"-" url:"schema_name,omitempty"`
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListRegisteredModelsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListRegisteredModelsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listRegisteredModelsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listRegisteredModelsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListRegisteredModelsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListRegisteredModelsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listRegisteredModelsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListRegisteredModelsResponse struct {
 	// Opaque token for pagination. Omitted if there are no more results.
 	// page_token should be set to this value for fetching the next page.
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	RegisteredModels []RegisteredModelInfo `json:"registered_models,omitempty"`
+	// Wire name: 'registered_models'
+	RegisteredModels []RegisteredModelInfo
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListRegisteredModelsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListRegisteredModelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listRegisteredModelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listRegisteredModelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListRegisteredModelsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListRegisteredModelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listRegisteredModelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List schemas
 type ListSchemasRequest struct {
 	// Parent catalog for schemas of interest.
-	CatalogName string `json:"-" url:"catalog_name"`
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include schemas in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of schemas to return. If not set, all the schemas are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListSchemasRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListSchemasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listSchemasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listSchemasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListSchemasRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListSchemasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listSchemasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListSchemasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 	// An array of schema information objects.
-	Schemas []SchemaInfo `json:"schemas,omitempty"`
+	// Wire name: 'schemas'
+	Schemas []SchemaInfo
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListSchemasResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListSchemasResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listSchemasResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listSchemasResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListSchemasResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListSchemasResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listSchemasResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List credentials
@@ -3647,46 +8570,86 @@ type ListStorageCredentialsRequest struct {
 	// configured value; - when set to 0, the page length is set to a server
 	// configured value (recommended); - when set to a value less than 0, an
 	// invalid parameter error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListStorageCredentialsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListStorageCredentialsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listStorageCredentialsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listStorageCredentialsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListStorageCredentialsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListStorageCredentialsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listStorageCredentialsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListStorageCredentialsResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	StorageCredentials []StorageCredentialInfo `json:"storage_credentials,omitempty"`
+	// Wire name: 'storage_credentials'
+	StorageCredentials []StorageCredentialInfo
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListStorageCredentialsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListStorageCredentialsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listStorageCredentialsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listStorageCredentialsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListStorageCredentialsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listStorageCredentialsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List table summaries
 type ListSummariesRequest struct {
 	// Name of parent catalog for tables of interest.
-	CatalogName string `json:"-" url:"catalog_name"`
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include a manifest containing capabilities the table has.
-	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
+	// Wire name: 'include_manifest_capabilities'
+	IncludeManifestCapabilities bool `tf:"-"`
 	// Maximum number of summaries for tables to return. If not set, the page
 	// length is set to a server configured value (10000, as of 1/5/2024). -
 	// when set to a value greater than 0, the page length is the minimum of
@@ -3694,25 +8657,46 @@ type ListSummariesRequest struct {
 	// set to 0, the page length is set to a server configured value (10000, as
 	// of 1/5/2024) (recommended); - when set to a value less than 0, an invalid
 	// parameter error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// A sql LIKE pattern (% and _) for schema names. All schemas will be
 	// returned if not set or empty.
-	SchemaNamePattern string `json:"-" url:"schema_name_pattern,omitempty"`
+	// Wire name: 'schema_name_pattern'
+	SchemaNamePattern string `tf:"-"`
 	// A sql LIKE pattern (% and _) for table names. All tables will be returned
 	// if not set or empty.
-	TableNamePattern string `json:"-" url:"table_name_pattern,omitempty"`
+	// Wire name: 'table_name_pattern'
+	TableNamePattern string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListSummariesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListSummariesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listSummariesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listSummariesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListSummariesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListSummariesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listSummariesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List system schemas
@@ -3723,128 +8707,234 @@ type ListSystemSchemasRequest struct {
 	// configured value; - When set to a value less than 0, an invalid parameter
 	// error is returned; - If not set, all the schemas are returned (not
 	// recommended).
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// The ID for the metastore in which the system schema resides.
-	MetastoreId string `json:"-" url:"-"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// Opaque pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListSystemSchemasRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListSystemSchemasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listSystemSchemasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listSystemSchemasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListSystemSchemasRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListSystemSchemasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listSystemSchemasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListSystemSchemasResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 	// An array of system schema information objects.
-	Schemas []SystemSchemaInfo `json:"schemas,omitempty"`
+	// Wire name: 'schemas'
+	Schemas []SystemSchemaInfo
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListSystemSchemasResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListSystemSchemasResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listSystemSchemasResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listSystemSchemasResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListSystemSchemasResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListSystemSchemasResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listSystemSchemasResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListTableSummariesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 	// List of table summaries.
-	Tables []TableSummary `json:"tables,omitempty"`
+	// Wire name: 'tables'
+	Tables []TableSummary
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListTableSummariesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListTableSummariesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listTableSummariesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listTableSummariesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListTableSummariesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListTableSummariesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listTableSummariesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List tables
 type ListTablesRequest struct {
 	// Name of parent catalog for tables of interest.
-	CatalogName string `json:"-" url:"catalog_name"`
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include tables in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Whether delta metadata should be included in the response.
-	IncludeDeltaMetadata bool `json:"-" url:"include_delta_metadata,omitempty"`
+	// Wire name: 'include_delta_metadata'
+	IncludeDeltaMetadata bool `tf:"-"`
 	// Whether to include a manifest containing capabilities the table has.
-	IncludeManifestCapabilities bool `json:"-" url:"include_manifest_capabilities,omitempty"`
+	// Wire name: 'include_manifest_capabilities'
+	IncludeManifestCapabilities bool `tf:"-"`
 	// Maximum number of tables to return. If not set, all the tables are
 	// returned (not recommended). - when set to a value greater than 0, the
 	// page length is the minimum of this value and a server configured value; -
 	// when set to 0, the page length is set to a server configured value
 	// (recommended); - when set to a value less than 0, an invalid parameter
 	// error is returned;
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Whether to omit the columns of the table from the response or not.
-	OmitColumns bool `json:"-" url:"omit_columns,omitempty"`
+	// Wire name: 'omit_columns'
+	OmitColumns bool `tf:"-"`
 	// Whether to omit the properties of the table from the response or not.
-	OmitProperties bool `json:"-" url:"omit_properties,omitempty"`
+	// Wire name: 'omit_properties'
+	OmitProperties bool `tf:"-"`
 	// Whether to omit the username of the table (e.g. owner, updated_by,
 	// created_by) from the response or not.
-	OmitUsername bool `json:"-" url:"omit_username,omitempty"`
+	// Wire name: 'omit_username'
+	OmitUsername bool `tf:"-"`
 	// Opaque token to send for the next page of results (pagination).
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Parent schema of tables.
-	SchemaName string `json:"-" url:"schema_name"`
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListTablesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListTablesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listTablesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listTablesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListTablesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListTablesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listTablesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListTablesResponse struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request (for the next page of results).
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 	// An array of table information objects.
-	Tables []TableInfo `json:"tables,omitempty"`
+	// Wire name: 'tables'
+	Tables []TableInfo
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListTablesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListTablesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listTablesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listTablesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListTablesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListTablesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listTablesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List Volumes
 type ListVolumesRequest struct {
 	// The identifier of the catalog
-	CatalogName string `json:"-" url:"catalog_name"`
+	// Wire name: 'catalog_name'
+	CatalogName string `tf:"-"`
 	// Whether to include volumes in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// Maximum number of volumes to return (page length).
 	//
 	// If not set, the page length is set to a server configured value (10000,
@@ -3857,45 +8947,85 @@ type ListVolumesRequest struct {
 	// Note: this parameter controls only the maximum number of volumes to
 	// return. The actual number of volumes returned in a page may be smaller
 	// than this value, including 0, even if there are more pages.
-	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Wire name: 'max_results'
+	MaxResults int `tf:"-"`
 	// Opaque token returned by a previous request. It must be included in the
 	// request to retrieve the next page of results (pagination).
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// The identifier of the schema
-	SchemaName string `json:"-" url:"schema_name"`
+	// Wire name: 'schema_name'
+	SchemaName string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListVolumesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListVolumesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listVolumesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listVolumesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListVolumesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListVolumesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listVolumesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListVolumesResponseContent struct {
 	// Opaque token to retrieve the next page of results. Absent if there are no
 	// more pages. __page_token__ should be set to this value for the next
 	// request to retrieve the next page of results.
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	Volumes []VolumeInfo `json:"volumes,omitempty"`
+	// Wire name: 'volumes'
+	Volumes []VolumeInfo
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListVolumesResponseContent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListVolumesResponseContent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listVolumesResponseContentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listVolumesResponseContentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListVolumesResponseContent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListVolumesResponseContent) MarshalJSON() ([]byte, error) {
+	pb, err := listVolumesResponseContentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The artifact pattern matching type
 type MatchType string
+type matchTypePb string
 
 const MatchTypePrefixMatch MatchType = `PREFIX_MATCH`
 
@@ -3920,82 +9050,155 @@ func (f *MatchType) Type() string {
 	return "MatchType"
 }
 
+func matchTypeToPb(st *MatchType) (*matchTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := matchTypePb(*st)
+	return &pb, nil
+}
+
+func matchTypeFromPb(pb *matchTypePb) (*MatchType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MatchType(*pb)
+	return &st, nil
+}
+
 type MetastoreAssignment struct {
 	// The name of the default catalog in the metastore.
-	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
+	// Wire name: 'default_catalog_name'
+	DefaultCatalogName string
 	// The unique ID of the metastore.
-	MetastoreId string `json:"metastore_id"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// The unique ID of the Databricks workspace.
-	WorkspaceId int64 `json:"workspace_id"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *MetastoreAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *MetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &metastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := metastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s MetastoreAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st MetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := metastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type MetastoreInfo struct {
 	// Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`).
-	Cloud string `json:"cloud,omitempty"`
+	// Wire name: 'cloud'
+	Cloud string
 	// Time at which this metastore was created, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of metastore creator.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// Unique identifier of the metastore's (Default) Data Access Configuration.
-	DefaultDataAccessConfigId string `json:"default_data_access_config_id,omitempty"`
+	// Wire name: 'default_data_access_config_id'
+	DefaultDataAccessConfigId string
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
-	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
+	// Wire name: 'delta_sharing_organization_name'
+	DeltaSharingOrganizationName string
 	// The lifetime of delta sharing recipient token in seconds.
-	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
+	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
+	DeltaSharingRecipientTokenLifetimeInSeconds int64
 	// The scope of Delta Sharing enabled for the metastore.
-	DeltaSharingScope MetastoreInfoDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	// Wire name: 'delta_sharing_scope'
+	DeltaSharingScope MetastoreInfoDeltaSharingScope
 	// Whether to allow non-DBR clients to directly access entities under the
 	// metastore.
-	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
+	// Wire name: 'external_access_enabled'
+	ExternalAccessEnabled bool
 	// Globally unique metastore ID across clouds and regions, of the form
 	// `cloud:region:metastore_id`.
-	GlobalMetastoreId string `json:"global_metastore_id,omitempty"`
+	// Wire name: 'global_metastore_id'
+	GlobalMetastoreId string
 	// Unique identifier of metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// The user-specified name of the metastore.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// The owner of the metastore.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
-	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
+	// Wire name: 'privilege_model_version'
+	PrivilegeModelVersion string
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
-	Region string `json:"region,omitempty"`
+	// Wire name: 'region'
+	Region string
 	// The storage root URL for metastore
-	StorageRoot string `json:"storage_root,omitempty"`
+	// Wire name: 'storage_root'
+	StorageRoot string
 	// UUID of storage credential to access the metastore storage_root.
-	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
+	// Wire name: 'storage_root_credential_id'
+	StorageRootCredentialId string
 	// Name of the storage credential to access the metastore storage_root.
-	StorageRootCredentialName string `json:"storage_root_credential_name,omitempty"`
+	// Wire name: 'storage_root_credential_name'
+	StorageRootCredentialName string
 	// Time at which the metastore was last modified, in epoch milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// Username of user who last modified the metastore.
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *MetastoreInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *MetastoreInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &metastoreInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := metastoreInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s MetastoreInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st MetastoreInfo) MarshalJSON() ([]byte, error) {
+	pb, err := metastoreInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The scope of Delta Sharing enabled for the metastore.
 type MetastoreInfoDeltaSharingScope string
+type metastoreInfoDeltaSharingScopePb string
 
 const MetastoreInfoDeltaSharingScopeInternal MetastoreInfoDeltaSharingScope = `INTERNAL`
 
@@ -4022,67 +9225,119 @@ func (f *MetastoreInfoDeltaSharingScope) Type() string {
 	return "MetastoreInfoDeltaSharingScope"
 }
 
+func metastoreInfoDeltaSharingScopeToPb(st *MetastoreInfoDeltaSharingScope) (*metastoreInfoDeltaSharingScopePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := metastoreInfoDeltaSharingScopePb(*st)
+	return &pb, nil
+}
+
+func metastoreInfoDeltaSharingScopeFromPb(pb *metastoreInfoDeltaSharingScopePb) (*MetastoreInfoDeltaSharingScope, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MetastoreInfoDeltaSharingScope(*pb)
+	return &st, nil
+}
+
 type ModelVersionInfo struct {
 	// List of aliases associated with the model version
-	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
+	// Wire name: 'aliases'
+	Aliases []RegisteredModelAlias
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
-	BrowseOnly bool `json:"browse_only,omitempty"`
+	// Wire name: 'browse_only'
+	BrowseOnly bool
 	// The name of the catalog containing the model version
-	CatalogName string `json:"catalog_name,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// The comment attached to the model version
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// The identifier of the user who created the model version
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// The unique identifier of the model version
-	Id string `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id string
 	// The unique identifier of the metastore containing the model version
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// The name of the parent registered model of the model version, relative to
 	// parent schema
-	ModelName string `json:"model_name,omitempty"`
+	// Wire name: 'model_name'
+	ModelName string
 	// Model version dependencies, for feature-store packaged models
-	ModelVersionDependencies *DependencyList `json:"model_version_dependencies,omitempty"`
+	// Wire name: 'model_version_dependencies'
+	ModelVersionDependencies *DependencyList
 	// MLflow run ID used when creating the model version, if ``source`` was
 	// generated by an experiment run stored in an MLflow tracking server
-	RunId string `json:"run_id,omitempty"`
+	// Wire name: 'run_id'
+	RunId string
 	// ID of the Databricks workspace containing the MLflow run that generated
 	// this model version, if applicable
-	RunWorkspaceId int `json:"run_workspace_id,omitempty"`
+	// Wire name: 'run_workspace_id'
+	RunWorkspaceId int
 	// The name of the schema containing the model version, relative to parent
 	// catalog
-	SchemaName string `json:"schema_name,omitempty"`
+	// Wire name: 'schema_name'
+	SchemaName string
 	// URI indicating the location of the source artifacts (files) for the model
 	// version
-	Source string `json:"source,omitempty"`
+	// Wire name: 'source'
+	Source string
 	// Current status of the model version. Newly created model versions start
 	// in PENDING_REGISTRATION status, then move to READY status once the model
 	// version files are uploaded and the model version is finalized. Only model
 	// versions in READY status can be loaded for inference or served.
-	Status ModelVersionInfoStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status ModelVersionInfoStatus
 	// The storage location on the cloud under which model version data files
 	// are stored
-	StorageLocation string `json:"storage_location,omitempty"`
+	// Wire name: 'storage_location'
+	StorageLocation string
 
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// The identifier of the user who updated the model version last time
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 	// Integer model version number, used to reference the model version in API
 	// requests.
-	Version int `json:"version,omitempty"`
+	// Wire name: 'version'
+	Version int
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ModelVersionInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ModelVersionInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &modelVersionInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := modelVersionInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ModelVersionInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ModelVersionInfo) MarshalJSON() ([]byte, error) {
+	pb, err := modelVersionInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Current status of the model version. Newly created model versions start in
@@ -4090,6 +9345,7 @@ func (s ModelVersionInfo) MarshalJSON() ([]byte, error) {
 // files are uploaded and the model version is finalized. Only model versions in
 // READY status can be loaded for inference or served.
 type ModelVersionInfoStatus string
+type modelVersionInfoStatusPb string
 
 const ModelVersionInfoStatusFailedRegistration ModelVersionInfoStatus = `FAILED_REGISTRATION`
 
@@ -4118,20 +9374,65 @@ func (f *ModelVersionInfoStatus) Type() string {
 	return "ModelVersionInfoStatus"
 }
 
+func modelVersionInfoStatusToPb(st *ModelVersionInfoStatus) (*modelVersionInfoStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := modelVersionInfoStatusPb(*st)
+	return &pb, nil
+}
+
+func modelVersionInfoStatusFromPb(pb *modelVersionInfoStatusPb) (*ModelVersionInfoStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ModelVersionInfoStatus(*pb)
+	return &st, nil
+}
+
 type MonitorCronSchedule struct {
 	// Read only field that indicates whether a schedule is paused or not.
-	PauseStatus MonitorCronSchedulePauseStatus `json:"pause_status,omitempty"`
+	// Wire name: 'pause_status'
+	PauseStatus MonitorCronSchedulePauseStatus
 	// The expression that determines when to run the monitor. See [examples].
 	//
 	// [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
-	QuartzCronExpression string `json:"quartz_cron_expression"`
+	// Wire name: 'quartz_cron_expression'
+	QuartzCronExpression string
 	// The timezone id (e.g., ``"PST"``) in which to evaluate the quartz
 	// expression.
-	TimezoneId string `json:"timezone_id"`
+	// Wire name: 'timezone_id'
+	TimezoneId string
+}
+
+func (st *MonitorCronSchedule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &monitorCronSchedulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := monitorCronScheduleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st MonitorCronSchedule) MarshalJSON() ([]byte, error) {
+	pb, err := monitorCronScheduleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Read only field that indicates whether a schedule is paused or not.
 type MonitorCronSchedulePauseStatus string
+type monitorCronSchedulePauseStatusPb string
 
 const MonitorCronSchedulePauseStatusPaused MonitorCronSchedulePauseStatus = `PAUSED`
 
@@ -4158,25 +9459,85 @@ func (f *MonitorCronSchedulePauseStatus) Type() string {
 	return "MonitorCronSchedulePauseStatus"
 }
 
+func monitorCronSchedulePauseStatusToPb(st *MonitorCronSchedulePauseStatus) (*monitorCronSchedulePauseStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := monitorCronSchedulePauseStatusPb(*st)
+	return &pb, nil
+}
+
+func monitorCronSchedulePauseStatusFromPb(pb *monitorCronSchedulePauseStatusPb) (*MonitorCronSchedulePauseStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorCronSchedulePauseStatus(*pb)
+	return &st, nil
+}
+
 type MonitorDataClassificationConfig struct {
 	// Whether data classification is enabled.
-	Enabled bool `json:"enabled,omitempty"`
+	// Wire name: 'enabled'
+	Enabled bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *MonitorDataClassificationConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *MonitorDataClassificationConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &monitorDataClassificationConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := monitorDataClassificationConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s MonitorDataClassificationConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st MonitorDataClassificationConfig) MarshalJSON() ([]byte, error) {
+	pb, err := monitorDataClassificationConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type MonitorDestination struct {
 	// The list of email addresses to send the notification to. A maximum of 5
 	// email addresses is supported.
-	EmailAddresses []string `json:"email_addresses,omitempty"`
+	// Wire name: 'email_addresses'
+	EmailAddresses []string
+}
+
+func (st *MonitorDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &monitorDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := monitorDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st MonitorDestination) MarshalJSON() ([]byte, error) {
+	pb, err := monitorDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type MonitorInferenceLog struct {
@@ -4184,45 +9545,70 @@ type MonitorInferenceLog struct {
 	// timestamp. Currently the following static granularities are supported:
 	// {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``, ``"1 day"``, ``"<n>
 	// week(s)"``, ``"1 month"``, ``"1 year"``}.
-	Granularities []string `json:"granularities"`
+	// Wire name: 'granularities'
+	Granularities []string
 	// Optional column that contains the ground truth for the prediction.
-	LabelCol string `json:"label_col,omitempty"`
+	// Wire name: 'label_col'
+	LabelCol string
 	// Column that contains the id of the model generating the predictions.
 	// Metrics will be computed per model id by default, and also across all
 	// model ids.
-	ModelIdCol string `json:"model_id_col"`
+	// Wire name: 'model_id_col'
+	ModelIdCol string
 	// Column that contains the output/prediction from the model.
-	PredictionCol string `json:"prediction_col"`
+	// Wire name: 'prediction_col'
+	PredictionCol string
 	// Optional column that contains the prediction probabilities for each class
 	// in a classification problem type. The values in this column should be a
 	// map, mapping each class label to the prediction probability for a given
 	// sample. The map should be of PySpark MapType().
-	PredictionProbaCol string `json:"prediction_proba_col,omitempty"`
+	// Wire name: 'prediction_proba_col'
+	PredictionProbaCol string
 	// Problem type the model aims to solve. Determines the type of
 	// model-quality metrics that will be computed.
-	ProblemType MonitorInferenceLogProblemType `json:"problem_type"`
+	// Wire name: 'problem_type'
+	ProblemType MonitorInferenceLogProblemType
 	// Column that contains the timestamps of requests. The column must be one
 	// of the following: - A ``TimestampType`` column - A column whose values
 	// can be converted to timestamps through the pyspark ``to_timestamp``
 	// [function].
 	//
 	// [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html
-	TimestampCol string `json:"timestamp_col"`
+	// Wire name: 'timestamp_col'
+	TimestampCol string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *MonitorInferenceLog) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *MonitorInferenceLog) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &monitorInferenceLogPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := monitorInferenceLogFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s MonitorInferenceLog) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st MonitorInferenceLog) MarshalJSON() ([]byte, error) {
+	pb, err := monitorInferenceLogToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Problem type the model aims to solve. Determines the type of model-quality
 // metrics that will be computed.
 type MonitorInferenceLogProblemType string
+type monitorInferenceLogProblemTypePb string
 
 const MonitorInferenceLogProblemTypeProblemTypeClassification MonitorInferenceLogProblemType = `PROBLEM_TYPE_CLASSIFICATION`
 
@@ -4249,70 +9635,122 @@ func (f *MonitorInferenceLogProblemType) Type() string {
 	return "MonitorInferenceLogProblemType"
 }
 
+func monitorInferenceLogProblemTypeToPb(st *MonitorInferenceLogProblemType) (*monitorInferenceLogProblemTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := monitorInferenceLogProblemTypePb(*st)
+	return &pb, nil
+}
+
+func monitorInferenceLogProblemTypeFromPb(pb *monitorInferenceLogProblemTypePb) (*MonitorInferenceLogProblemType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorInferenceLogProblemType(*pb)
+	return &st, nil
+}
+
 type MonitorInfo struct {
 	// The directory to store monitoring assets (e.g. dashboard, metric tables).
-	AssetsDir string `json:"assets_dir,omitempty"`
+	// Wire name: 'assets_dir'
+	AssetsDir string
 	// Name of the baseline table from which drift metrics are computed from.
 	// Columns in the monitored table should also be present in the baseline
 	// table.
-	BaselineTableName string `json:"baseline_table_name,omitempty"`
+	// Wire name: 'baseline_table_name'
+	BaselineTableName string
 	// Custom metrics to compute on the monitored table. These can be aggregate
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
-	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
+	// Wire name: 'custom_metrics'
+	CustomMetrics []MonitorMetric
 	// Id of dashboard that visualizes the computed metrics. This can be empty
 	// if the monitor is in PENDING state.
-	DashboardId string `json:"dashboard_id,omitempty"`
+	// Wire name: 'dashboard_id'
+	DashboardId string
 	// The data classification config for the monitor.
-	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
+	// Wire name: 'data_classification_config'
+	DataClassificationConfig *MonitorDataClassificationConfig
 	// The full name of the drift metrics table. Format:
 	// __catalog_name__.__schema_name__.__table_name__.
-	DriftMetricsTableName string `json:"drift_metrics_table_name"`
+	// Wire name: 'drift_metrics_table_name'
+	DriftMetricsTableName string
 	// Configuration for monitoring inference logs.
-	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
+	// Wire name: 'inference_log'
+	InferenceLog *MonitorInferenceLog
 	// The latest failure message of the monitor (if any).
-	LatestMonitorFailureMsg string `json:"latest_monitor_failure_msg,omitempty"`
+	// Wire name: 'latest_monitor_failure_msg'
+	LatestMonitorFailureMsg string
 	// The version of the monitor config (e.g. 1,2,3). If negative, the monitor
 	// may be corrupted.
-	MonitorVersion string `json:"monitor_version"`
+	// Wire name: 'monitor_version'
+	MonitorVersion string
 	// The notification settings for the monitor.
-	Notifications *MonitorNotifications `json:"notifications,omitempty"`
+	// Wire name: 'notifications'
+	Notifications *MonitorNotifications
 	// Schema where output metric tables are created.
-	OutputSchemaName string `json:"output_schema_name,omitempty"`
+	// Wire name: 'output_schema_name'
+	OutputSchemaName string
 	// The full name of the profile metrics table. Format:
 	// __catalog_name__.__schema_name__.__table_name__.
-	ProfileMetricsTableName string `json:"profile_metrics_table_name"`
+	// Wire name: 'profile_metrics_table_name'
+	ProfileMetricsTableName string
 	// The schedule for automatically updating and refreshing metric tables.
-	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
+	// Wire name: 'schedule'
+	Schedule *MonitorCronSchedule
 	// List of column expressions to slice data with for targeted analysis. The
 	// data is grouped by each expression independently, resulting in a separate
 	// slice for each predicate and its complements. For high-cardinality
 	// columns, only the top 100 unique values by frequency will generate
 	// slices.
-	SlicingExprs []string `json:"slicing_exprs,omitempty"`
+	// Wire name: 'slicing_exprs'
+	SlicingExprs []string
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
+	// Wire name: 'snapshot'
+	Snapshot *MonitorSnapshot
 	// The status of the monitor.
-	Status MonitorInfoStatus `json:"status"`
+	// Wire name: 'status'
+	Status MonitorInfoStatus
 	// The full name of the table to monitor. Format:
 	// __catalog_name__.__schema_name__.__table_name__.
-	TableName string `json:"table_name"`
+	// Wire name: 'table_name'
+	TableName string
 	// Configuration for monitoring time series tables.
-	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
+	// Wire name: 'time_series'
+	TimeSeries *MonitorTimeSeries
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *MonitorInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *MonitorInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &monitorInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := monitorInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s MonitorInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st MonitorInfo) MarshalJSON() ([]byte, error) {
+	pb, err := monitorInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The status of the monitor.
 type MonitorInfoStatus string
+type monitorInfoStatusPb string
 
 const MonitorInfoStatusMonitorStatusActive MonitorInfoStatus = `MONITOR_STATUS_ACTIVE`
 
@@ -4345,20 +9783,40 @@ func (f *MonitorInfoStatus) Type() string {
 	return "MonitorInfoStatus"
 }
 
+func monitorInfoStatusToPb(st *MonitorInfoStatus) (*monitorInfoStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := monitorInfoStatusPb(*st)
+	return &pb, nil
+}
+
+func monitorInfoStatusFromPb(pb *monitorInfoStatusPb) (*MonitorInfoStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorInfoStatus(*pb)
+	return &st, nil
+}
+
 type MonitorMetric struct {
 	// Jinja template for a SQL expression that specifies how to compute the
 	// metric. See [create metric definition].
 	//
 	// [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
-	Definition string `json:"definition"`
+	// Wire name: 'definition'
+	Definition string
 	// A list of column names in the input table the metric should be computed
 	// for. Can use ``":table"`` to indicate that the metric needs information
 	// from multiple columns.
-	InputColumns []string `json:"input_columns"`
+	// Wire name: 'input_columns'
+	InputColumns []string
 	// Name of the metric in the output tables.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// The output type of the custom metric.
-	OutputDataType string `json:"output_data_type"`
+	// Wire name: 'output_data_type'
+	OutputDataType string
 	// Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``,
 	// ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The
 	// ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"``
@@ -4369,7 +9827,33 @@ type MonitorMetric struct {
 	// table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed
 	// aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously
 	// computed aggregate or derived metrics
-	Type MonitorMetricType `json:"type"`
+	// Wire name: 'type'
+	Type MonitorMetricType
+}
+
+func (st *MonitorMetric) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &monitorMetricPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := monitorMetricFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st MonitorMetric) MarshalJSON() ([]byte, error) {
+	pb, err := monitorMetricToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Can only be one of “"CUSTOM_METRIC_TYPE_AGGREGATE"“,
@@ -4383,6 +9867,7 @@ type MonitorMetric struct {
 // metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate
 // or derived metrics
 type MonitorMetricType string
+type monitorMetricTypePb string
 
 const MonitorMetricTypeCustomMetricTypeAggregate MonitorMetricType = `CUSTOM_METRIC_TYPE_AGGREGATE`
 
@@ -4411,44 +9896,111 @@ func (f *MonitorMetricType) Type() string {
 	return "MonitorMetricType"
 }
 
+func monitorMetricTypeToPb(st *MonitorMetricType) (*monitorMetricTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := monitorMetricTypePb(*st)
+	return &pb, nil
+}
+
+func monitorMetricTypeFromPb(pb *monitorMetricTypePb) (*MonitorMetricType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorMetricType(*pb)
+	return &st, nil
+}
+
 type MonitorNotifications struct {
 	// Who to send notifications to on monitor failure.
-	OnFailure *MonitorDestination `json:"on_failure,omitempty"`
+	// Wire name: 'on_failure'
+	OnFailure *MonitorDestination
 	// Who to send notifications to when new data classification tags are
 	// detected.
-	OnNewClassificationTagDetected *MonitorDestination `json:"on_new_classification_tag_detected,omitempty"`
+	// Wire name: 'on_new_classification_tag_detected'
+	OnNewClassificationTagDetected *MonitorDestination
+}
+
+func (st *MonitorNotifications) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &monitorNotificationsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := monitorNotificationsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st MonitorNotifications) MarshalJSON() ([]byte, error) {
+	pb, err := monitorNotificationsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type MonitorRefreshInfo struct {
 	// Time at which refresh operation completed (milliseconds since 1/1/1970
 	// UTC).
-	EndTimeMs int64 `json:"end_time_ms,omitempty"`
+	// Wire name: 'end_time_ms'
+	EndTimeMs int64
 	// An optional message to give insight into the current state of the job
 	// (e.g. FAILURE messages).
-	Message string `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message string
 	// Unique id of the refresh operation.
-	RefreshId int64 `json:"refresh_id"`
+	// Wire name: 'refresh_id'
+	RefreshId int64
 	// Time at which refresh operation was initiated (milliseconds since
 	// 1/1/1970 UTC).
-	StartTimeMs int64 `json:"start_time_ms"`
+	// Wire name: 'start_time_ms'
+	StartTimeMs int64
 	// The current state of the refresh.
-	State MonitorRefreshInfoState `json:"state"`
+	// Wire name: 'state'
+	State MonitorRefreshInfoState
 	// The method by which the refresh was triggered.
-	Trigger MonitorRefreshInfoTrigger `json:"trigger,omitempty"`
+	// Wire name: 'trigger'
+	Trigger MonitorRefreshInfoTrigger
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *MonitorRefreshInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *MonitorRefreshInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &monitorRefreshInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := monitorRefreshInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s MonitorRefreshInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st MonitorRefreshInfo) MarshalJSON() ([]byte, error) {
+	pb, err := monitorRefreshInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The current state of the refresh.
 type MonitorRefreshInfoState string
+type monitorRefreshInfoStatePb string
 
 const MonitorRefreshInfoStateCanceled MonitorRefreshInfoState = `CANCELED`
 
@@ -4481,8 +10033,25 @@ func (f *MonitorRefreshInfoState) Type() string {
 	return "MonitorRefreshInfoState"
 }
 
+func monitorRefreshInfoStateToPb(st *MonitorRefreshInfoState) (*monitorRefreshInfoStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := monitorRefreshInfoStatePb(*st)
+	return &pb, nil
+}
+
+func monitorRefreshInfoStateFromPb(pb *monitorRefreshInfoStatePb) (*MonitorRefreshInfoState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorRefreshInfoState(*pb)
+	return &st, nil
+}
+
 // The method by which the refresh was triggered.
 type MonitorRefreshInfoTrigger string
+type monitorRefreshInfoTriggerPb string
 
 const MonitorRefreshInfoTriggerManual MonitorRefreshInfoTrigger = `MANUAL`
 
@@ -4509,12 +10078,79 @@ func (f *MonitorRefreshInfoTrigger) Type() string {
 	return "MonitorRefreshInfoTrigger"
 }
 
+func monitorRefreshInfoTriggerToPb(st *MonitorRefreshInfoTrigger) (*monitorRefreshInfoTriggerPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := monitorRefreshInfoTriggerPb(*st)
+	return &pb, nil
+}
+
+func monitorRefreshInfoTriggerFromPb(pb *monitorRefreshInfoTriggerPb) (*MonitorRefreshInfoTrigger, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MonitorRefreshInfoTrigger(*pb)
+	return &st, nil
+}
+
 type MonitorRefreshListResponse struct {
 	// List of refreshes.
-	Refreshes []MonitorRefreshInfo `json:"refreshes,omitempty"`
+	// Wire name: 'refreshes'
+	Refreshes []MonitorRefreshInfo
+}
+
+func (st *MonitorRefreshListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &monitorRefreshListResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := monitorRefreshListResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st MonitorRefreshListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := monitorRefreshListResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type MonitorSnapshot struct {
+}
+
+func (st *MonitorSnapshot) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &monitorSnapshotPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := monitorSnapshotFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st MonitorSnapshot) MarshalJSON() ([]byte, error) {
+	pb, err := monitorSnapshotToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type MonitorTimeSeries struct {
@@ -4522,19 +10158,72 @@ type MonitorTimeSeries struct {
 	// timestamp. Currently the following static granularities are supported:
 	// {``"5 minutes"``, ``"30 minutes"``, ``"1 hour"``, ``"1 day"``, ``"<n>
 	// week(s)"``, ``"1 month"``, ``"1 year"``}.
-	Granularities []string `json:"granularities"`
+	// Wire name: 'granularities'
+	Granularities []string
 	// Column that contains the timestamps of requests. The column must be one
 	// of the following: - A ``TimestampType`` column - A column whose values
 	// can be converted to timestamps through the pyspark ``to_timestamp``
 	// [function].
 	//
 	// [function]: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.functions.to_timestamp.html
-	TimestampCol string `json:"timestamp_col"`
+	// Wire name: 'timestamp_col'
+	TimestampCol string
+}
+
+func (st *MonitorTimeSeries) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &monitorTimeSeriesPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := monitorTimeSeriesFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st MonitorTimeSeries) MarshalJSON() ([]byte, error) {
+	pb, err := monitorTimeSeriesToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type NamedTableConstraint struct {
 	// The name of the constraint.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
+}
+
+func (st *NamedTableConstraint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &namedTableConstraintPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := namedTableConstraintFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st NamedTableConstraint) MarshalJSON() ([]byte, error) {
+	pb, err := namedTableConstraintToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Custom fields that user can set for pipeline while creating
@@ -4544,48 +10233,89 @@ type NewPipelineSpec struct {
 	// UC catalog for the pipeline to store intermediate files (checkpoints,
 	// event logs etc). This needs to be a standard catalog where the user has
 	// permissions to create Delta tables.
-	StorageCatalog string `json:"storage_catalog,omitempty"`
+	// Wire name: 'storage_catalog'
+	StorageCatalog string
 	// UC schema for the pipeline to store intermediate files (checkpoints,
 	// event logs etc). This needs to be in the standard catalog where the user
 	// has permissions to create Delta tables.
-	StorageSchema string `json:"storage_schema,omitempty"`
+	// Wire name: 'storage_schema'
+	StorageSchema string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *NewPipelineSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *NewPipelineSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &newPipelineSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := newPipelineSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s NewPipelineSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st NewPipelineSpec) MarshalJSON() ([]byte, error) {
+	pb, err := newPipelineSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Online Table information.
 type OnlineTable struct {
 	// Full three-part (catalog, schema, table) name of the table.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// Specification of the online table.
-	Spec *OnlineTableSpec `json:"spec,omitempty"`
+	// Wire name: 'spec'
+	Spec *OnlineTableSpec
 	// Online Table data synchronization status
-	Status *OnlineTableStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status *OnlineTableStatus
 	// Data serving REST API URL for this table
-	TableServingUrl string `json:"table_serving_url,omitempty"`
+	// Wire name: 'table_serving_url'
+	TableServingUrl string
 	// The provisioning state of the online table entity in Unity Catalog. This
 	// is distinct from the state of the data synchronization pipeline (i.e. the
 	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
 	// runs asynchronously).
-	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
+	// Wire name: 'unity_catalog_provisioning_state'
+	UnityCatalogProvisioningState ProvisioningInfoState
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *OnlineTable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *OnlineTable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &onlineTablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := onlineTableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s OnlineTable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st OnlineTable) MarshalJSON() ([]byte, error) {
+	pb, err := onlineTableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Specification of an online table.
@@ -4597,42 +10327,117 @@ type OnlineTableSpec struct {
 	// the source table and there are no incremental updates. This mode is
 	// useful for syncing views or tables without CDFs to online tables. Note
 	// that the full-copy pipeline only supports "triggered" scheduling policy.
-	PerformFullCopy bool `json:"perform_full_copy,omitempty"`
+	// Wire name: 'perform_full_copy'
+	PerformFullCopy bool
 	// ID of the associated pipeline. Generated by the server - cannot be set by
 	// the caller.
-	PipelineId string `json:"pipeline_id,omitempty"`
+	// Wire name: 'pipeline_id'
+	PipelineId string
 	// Primary Key columns to be used for data insert/update in the destination.
-	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
+	// Wire name: 'primary_key_columns'
+	PrimaryKeyColumns []string
 	// Pipeline runs continuously after generating the initial data.
-	RunContinuously *OnlineTableSpecContinuousSchedulingPolicy `json:"run_continuously,omitempty"`
+	// Wire name: 'run_continuously'
+	RunContinuously *OnlineTableSpecContinuousSchedulingPolicy
 	// Pipeline stops after generating the initial data and can be triggered
 	// later (manually, through a cron job or through data triggers)
-	RunTriggered *OnlineTableSpecTriggeredSchedulingPolicy `json:"run_triggered,omitempty"`
+	// Wire name: 'run_triggered'
+	RunTriggered *OnlineTableSpecTriggeredSchedulingPolicy
 	// Three-part (catalog, schema, table) name of the source Delta table.
-	SourceTableFullName string `json:"source_table_full_name,omitempty"`
+	// Wire name: 'source_table_full_name'
+	SourceTableFullName string
 	// Time series key to deduplicate (tie-break) rows with the same primary
 	// key.
-	TimeseriesKey string `json:"timeseries_key,omitempty"`
+	// Wire name: 'timeseries_key'
+	TimeseriesKey string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *OnlineTableSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *OnlineTableSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &onlineTableSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := onlineTableSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s OnlineTableSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st OnlineTableSpec) MarshalJSON() ([]byte, error) {
+	pb, err := onlineTableSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type OnlineTableSpecContinuousSchedulingPolicy struct {
 }
 
+func (st *OnlineTableSpecContinuousSchedulingPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &onlineTableSpecContinuousSchedulingPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := onlineTableSpecContinuousSchedulingPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st OnlineTableSpecContinuousSchedulingPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := onlineTableSpecContinuousSchedulingPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type OnlineTableSpecTriggeredSchedulingPolicy struct {
+}
+
+func (st *OnlineTableSpecTriggeredSchedulingPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &onlineTableSpecTriggeredSchedulingPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := onlineTableSpecTriggeredSchedulingPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st OnlineTableSpecTriggeredSchedulingPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := onlineTableSpecTriggeredSchedulingPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The state of an online table.
 type OnlineTableState string
+type onlineTableStatePb string
 
 const OnlineTableStateOffline OnlineTableState = `OFFLINE`
 
@@ -4677,97 +10482,233 @@ func (f *OnlineTableState) Type() string {
 	return "OnlineTableState"
 }
 
+func onlineTableStateToPb(st *OnlineTableState) (*onlineTableStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := onlineTableStatePb(*st)
+	return &pb, nil
+}
+
+func onlineTableStateFromPb(pb *onlineTableStatePb) (*OnlineTableState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := OnlineTableState(*pb)
+	return &st, nil
+}
+
 // Status of an online table.
 type OnlineTableStatus struct {
 	// Detailed status of an online table. Shown if the online table is in the
 	// ONLINE_CONTINUOUS_UPDATE or the ONLINE_UPDATING_PIPELINE_RESOURCES state.
-	ContinuousUpdateStatus *ContinuousUpdateStatus `json:"continuous_update_status,omitempty"`
+	// Wire name: 'continuous_update_status'
+	ContinuousUpdateStatus *ContinuousUpdateStatus
 	// The state of the online table.
-	DetailedState OnlineTableState `json:"detailed_state,omitempty"`
+	// Wire name: 'detailed_state'
+	DetailedState OnlineTableState
 	// Detailed status of an online table. Shown if the online table is in the
 	// OFFLINE_FAILED or the ONLINE_PIPELINE_FAILED state.
-	FailedStatus *FailedStatus `json:"failed_status,omitempty"`
+	// Wire name: 'failed_status'
+	FailedStatus *FailedStatus
 	// A text description of the current state of the online table.
-	Message string `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message string
 	// Detailed status of an online table. Shown if the online table is in the
 	// PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT
 	// state.
-	ProvisioningStatus *ProvisioningStatus `json:"provisioning_status,omitempty"`
+	// Wire name: 'provisioning_status'
+	ProvisioningStatus *ProvisioningStatus
 	// Detailed status of an online table. Shown if the online table is in the
 	// ONLINE_TRIGGERED_UPDATE or the ONLINE_NO_PENDING_UPDATE state.
-	TriggeredUpdateStatus *TriggeredUpdateStatus `json:"triggered_update_status,omitempty"`
+	// Wire name: 'triggered_update_status'
+	TriggeredUpdateStatus *TriggeredUpdateStatus
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *OnlineTableStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *OnlineTableStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &onlineTableStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := onlineTableStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s OnlineTableStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st OnlineTableStatus) MarshalJSON() ([]byte, error) {
+	pb, err := onlineTableStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PermissionsChange struct {
 	// The set of privileges to add.
-	Add []Privilege `json:"add,omitempty"`
+	// Wire name: 'add'
+	Add []Privilege
 	// The principal whose privileges we are changing.
-	Principal string `json:"principal,omitempty"`
+	// Wire name: 'principal'
+	Principal string
 	// The set of privileges to remove.
-	Remove []Privilege `json:"remove,omitempty"`
+	// Wire name: 'remove'
+	Remove []Privilege
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PermissionsChange) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PermissionsChange) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &permissionsChangePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := permissionsChangeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PermissionsChange) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PermissionsChange) MarshalJSON() ([]byte, error) {
+	pb, err := permissionsChangeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PermissionsList struct {
 	// The privileges assigned to each principal
-	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+	// Wire name: 'privilege_assignments'
+	PrivilegeAssignments []PrivilegeAssignment
+}
+
+func (st *PermissionsList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &permissionsListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := permissionsListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PermissionsList) MarshalJSON() ([]byte, error) {
+	pb, err := permissionsListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Progress information of the Online Table data synchronization pipeline.
 type PipelineProgress struct {
 	// The estimated time remaining to complete this update in seconds.
-	EstimatedCompletionTimeSeconds float64 `json:"estimated_completion_time_seconds,omitempty"`
+	// Wire name: 'estimated_completion_time_seconds'
+	EstimatedCompletionTimeSeconds float64
 	// The source table Delta version that was last processed by the pipeline.
 	// The pipeline may not have completely processed this version yet.
-	LatestVersionCurrentlyProcessing int64 `json:"latest_version_currently_processing,omitempty"`
+	// Wire name: 'latest_version_currently_processing'
+	LatestVersionCurrentlyProcessing int64
 	// The completion ratio of this update. This is a number between 0 and 1.
-	SyncProgressCompletion float64 `json:"sync_progress_completion,omitempty"`
+	// Wire name: 'sync_progress_completion'
+	SyncProgressCompletion float64
 	// The number of rows that have been synced in this update.
-	SyncedRowCount int64 `json:"synced_row_count,omitempty"`
+	// Wire name: 'synced_row_count'
+	SyncedRowCount int64
 	// The total number of rows that need to be synced in this update. This
 	// number may be an estimate.
-	TotalRowCount int64 `json:"total_row_count,omitempty"`
+	// Wire name: 'total_row_count'
+	TotalRowCount int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PipelineProgress) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PipelineProgress) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pipelineProgressPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := pipelineProgressFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PipelineProgress) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PipelineProgress) MarshalJSON() ([]byte, error) {
+	pb, err := pipelineProgressToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PrimaryKeyConstraint struct {
 	// Column names for this constraint.
-	ChildColumns []string `json:"child_columns"`
+	// Wire name: 'child_columns'
+	ChildColumns []string
 	// The name of the constraint.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Column names that represent a timeseries.
-	TimeseriesColumns []string `json:"timeseries_columns,omitempty"`
+	// Wire name: 'timeseries_columns'
+	TimeseriesColumns []string
+}
+
+func (st *PrimaryKeyConstraint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &primaryKeyConstraintPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := primaryKeyConstraintFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PrimaryKeyConstraint) MarshalJSON() ([]byte, error) {
+	pb, err := primaryKeyConstraintToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type Privilege string
+type privilegePb string
 
 const PrivilegeAccess Privilege = `ACCESS`
 
@@ -4888,33 +10829,112 @@ func (f *Privilege) Type() string {
 	return "Privilege"
 }
 
+func privilegeToPb(st *Privilege) (*privilegePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := privilegePb(*st)
+	return &pb, nil
+}
+
+func privilegeFromPb(pb *privilegePb) (*Privilege, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := Privilege(*pb)
+	return &st, nil
+}
+
 type PrivilegeAssignment struct {
 	// The principal (user email address or group name).
-	Principal string `json:"principal,omitempty"`
+	// Wire name: 'principal'
+	Principal string
 	// The privileges assigned to the principal.
-	Privileges []Privilege `json:"privileges,omitempty"`
+	// Wire name: 'privileges'
+	Privileges []Privilege
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PrivilegeAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &privilegeAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := privilegeAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PrivilegeAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PrivilegeAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := privilegeAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // An object containing map of key-value properties attached to the connection.
+
 type PropertiesKvPairs map[string]string
+type propertiesKvPairsPb PropertiesKvPairs
+
+func propertiesKvPairsToPb(st *PropertiesKvPairs) (*propertiesKvPairsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	stPb := propertiesKvPairsPb(*st)
+	return &stPb, nil
+}
+func propertiesKvPairsFromPb(stPb *propertiesKvPairsPb) (*PropertiesKvPairs, error) {
+	if stPb == nil {
+		return nil, nil
+	}
+	st := PropertiesKvPairs(*stPb)
+	return &st, nil
+}
 
 // Status of an asynchronously provisioned resource.
 type ProvisioningInfo struct {
 	// The provisioning state of the resource.
-	State ProvisioningInfoState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State ProvisioningInfoState
+}
+
+func (st *ProvisioningInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &provisioningInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := provisioningInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ProvisioningInfo) MarshalJSON() ([]byte, error) {
+	pb, err := provisioningInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ProvisioningInfoState string
+type provisioningInfoStatePb string
 
 const ProvisioningInfoStateActive ProvisioningInfoState = `ACTIVE`
 
@@ -4949,244 +10969,532 @@ func (f *ProvisioningInfoState) Type() string {
 	return "ProvisioningInfoState"
 }
 
+func provisioningInfoStateToPb(st *ProvisioningInfoState) (*provisioningInfoStatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := provisioningInfoStatePb(*st)
+	return &pb, nil
+}
+
+func provisioningInfoStateFromPb(pb *provisioningInfoStatePb) (*ProvisioningInfoState, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ProvisioningInfoState(*pb)
+	return &st, nil
+}
+
 // Detailed status of an online table. Shown if the online table is in the
 // PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state.
 type ProvisioningStatus struct {
 	// Details about initial data synchronization. Only populated when in the
 	// PROVISIONING_INITIAL_SNAPSHOT state.
-	InitialPipelineSyncProgress *PipelineProgress `json:"initial_pipeline_sync_progress,omitempty"`
+	// Wire name: 'initial_pipeline_sync_progress'
+	InitialPipelineSyncProgress *PipelineProgress
+}
+
+func (st *ProvisioningStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &provisioningStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := provisioningStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ProvisioningStatus) MarshalJSON() ([]byte, error) {
+	pb, err := provisioningStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type QuotaInfo struct {
 	// The timestamp that indicates when the quota count was last updated.
-	LastRefreshedAt int64 `json:"last_refreshed_at,omitempty"`
+	// Wire name: 'last_refreshed_at'
+	LastRefreshedAt int64
 	// Name of the parent resource. Returns metastore ID if the parent is a
 	// metastore.
-	ParentFullName string `json:"parent_full_name,omitempty"`
+	// Wire name: 'parent_full_name'
+	ParentFullName string
 	// The quota parent securable type.
-	ParentSecurableType SecurableType `json:"parent_securable_type,omitempty"`
+	// Wire name: 'parent_securable_type'
+	ParentSecurableType SecurableType
 	// The current usage of the resource quota.
-	QuotaCount int `json:"quota_count,omitempty"`
+	// Wire name: 'quota_count'
+	QuotaCount int
 	// The current limit of the resource quota.
-	QuotaLimit int `json:"quota_limit,omitempty"`
+	// Wire name: 'quota_limit'
+	QuotaLimit int
 	// The name of the quota.
-	QuotaName string `json:"quota_name,omitempty"`
+	// Wire name: 'quota_name'
+	QuotaName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QuotaInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *QuotaInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &quotaInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := quotaInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s QuotaInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st QuotaInfo) MarshalJSON() ([]byte, error) {
+	pb, err := quotaInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // R2 temporary credentials for API authentication. Read more at
 // https://developers.cloudflare.com/r2/api/s3/tokens/.
 type R2Credentials struct {
 	// The access key ID that identifies the temporary credentials.
-	AccessKeyId string `json:"access_key_id,omitempty"`
+	// Wire name: 'access_key_id'
+	AccessKeyId string
 	// The secret access key associated with the access key.
-	SecretAccessKey string `json:"secret_access_key,omitempty"`
+	// Wire name: 'secret_access_key'
+	SecretAccessKey string
 	// The generated JWT that users must pass to use the temporary credentials.
-	SessionToken string `json:"session_token,omitempty"`
+	// Wire name: 'session_token'
+	SessionToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *R2Credentials) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *R2Credentials) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &r2CredentialsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := r2CredentialsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s R2Credentials) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st R2Credentials) MarshalJSON() ([]byte, error) {
+	pb, err := r2CredentialsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a Volume
 type ReadVolumeRequest struct {
 	// Whether to include volumes in the response for which the principal can
 	// only access selective metadata for
-	IncludeBrowse bool `json:"-" url:"include_browse,omitempty"`
+	// Wire name: 'include_browse'
+	IncludeBrowse bool `tf:"-"`
 	// The three-level (fully qualified) name of the volume
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ReadVolumeRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ReadVolumeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &readVolumeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := readVolumeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ReadVolumeRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ReadVolumeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := readVolumeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RegenerateDashboardRequest struct {
 	// Full name of the table.
-	TableName string `json:"-" url:"-"`
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 	// Optional argument to specify the warehouse for dashboard regeneration. If
 	// not specified, the first running warehouse will be used.
-	WarehouseId string `json:"warehouse_id,omitempty"`
+	// Wire name: 'warehouse_id'
+	WarehouseId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RegenerateDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RegenerateDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &regenerateDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := regenerateDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RegenerateDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RegenerateDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := regenerateDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RegenerateDashboardResponse struct {
 	// Id of the regenerated monitoring dashboard.
-	DashboardId string `json:"dashboard_id,omitempty"`
+	// Wire name: 'dashboard_id'
+	DashboardId string
 	// The directory where the regenerated dashboard is stored.
-	ParentFolder string `json:"parent_folder,omitempty"`
+	// Wire name: 'parent_folder'
+	ParentFolder string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RegenerateDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RegenerateDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &regenerateDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := regenerateDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RegenerateDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RegenerateDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := regenerateDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Registered model alias.
 type RegisteredModelAlias struct {
 	// Name of the alias, e.g. 'champion' or 'latest_stable'
-	AliasName string `json:"alias_name,omitempty"`
+	// Wire name: 'alias_name'
+	AliasName string
 	// Integer version number of the model version to which this alias points.
-	VersionNum int `json:"version_num,omitempty"`
+	// Wire name: 'version_num'
+	VersionNum int
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RegisteredModelAlias) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RegisteredModelAlias) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &registeredModelAliasPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := registeredModelAliasFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RegisteredModelAlias) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RegisteredModelAlias) MarshalJSON() ([]byte, error) {
+	pb, err := registeredModelAliasToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RegisteredModelInfo struct {
 	// List of aliases associated with the registered model
-	Aliases []RegisteredModelAlias `json:"aliases,omitempty"`
+	// Wire name: 'aliases'
+	Aliases []RegisteredModelAlias
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
-	BrowseOnly bool `json:"browse_only,omitempty"`
+	// Wire name: 'browse_only'
+	BrowseOnly bool
 	// The name of the catalog where the schema and the registered model reside
-	CatalogName string `json:"catalog_name,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// The comment attached to the registered model
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Creation timestamp of the registered model in milliseconds since the Unix
 	// epoch
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// The identifier of the user who created the registered model
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// The three-level (fully qualified) name of the registered model
-	FullName string `json:"full_name,omitempty"`
+	// Wire name: 'full_name'
+	FullName string
 	// The unique identifier of the metastore
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// The name of the registered model
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// The identifier of the user who owns the registered model
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// The name of the schema where the registered model resides
-	SchemaName string `json:"schema_name,omitempty"`
+	// Wire name: 'schema_name'
+	SchemaName string
 	// The storage location on the cloud under which model version data files
 	// are stored
-	StorageLocation string `json:"storage_location,omitempty"`
+	// Wire name: 'storage_location'
+	StorageLocation string
 	// Last-update timestamp of the registered model in milliseconds since the
 	// Unix epoch
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// The identifier of the user who updated the registered model last time
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RegisteredModelInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RegisteredModelInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &registeredModelInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := registeredModelInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RegisteredModelInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RegisteredModelInfo) MarshalJSON() ([]byte, error) {
+	pb, err := registeredModelInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Queue a metric refresh for a monitor
 type RunRefreshRequest struct {
 	// Full name of the table.
-	TableName string `json:"-" url:"-"`
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
+}
+
+func (st *RunRefreshRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &runRefreshRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := runRefreshRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st RunRefreshRequest) MarshalJSON() ([]byte, error) {
+	pb, err := runRefreshRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
-	BrowseOnly bool `json:"browse_only,omitempty"`
+	// Wire name: 'browse_only'
+	BrowseOnly bool
 	// Name of parent catalog.
-	CatalogName string `json:"catalog_name,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// The type of the parent catalog.
-	CatalogType string `json:"catalog_type,omitempty"`
+	// Wire name: 'catalog_type'
+	CatalogType string
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Time at which this schema was created, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of schema creator.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 
-	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
+	// Wire name: 'effective_predictive_optimization_flag'
+	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag
 
-	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
+	// Wire name: 'enable_predictive_optimization'
+	EnablePredictiveOptimization EnablePredictiveOptimization
 	// Full name of schema, in form of __catalog_name__.__schema_name__.
-	FullName string `json:"full_name,omitempty"`
+	// Wire name: 'full_name'
+	FullName string
 	// Unique identifier of parent metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// Name of schema, relative to parent catalog.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// Username of current owner of schema.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties,omitempty"`
+	// Wire name: 'properties'
+	Properties map[string]string
 	// The unique identifier of the schema.
-	SchemaId string `json:"schema_id,omitempty"`
+	// Wire name: 'schema_id'
+	SchemaId string
 	// Storage location for managed tables within schema.
-	StorageLocation string `json:"storage_location,omitempty"`
+	// Wire name: 'storage_location'
+	StorageLocation string
 	// Storage root URL for managed tables within schema.
-	StorageRoot string `json:"storage_root,omitempty"`
+	// Wire name: 'storage_root'
+	StorageRoot string
 	// Time at which this schema was created, in epoch milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// Username of user who last modified schema.
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SchemaInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SchemaInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &schemaInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := schemaInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SchemaInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SchemaInfo) MarshalJSON() ([]byte, error) {
+	pb, err := schemaInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // A map of key-value properties attached to the securable.
+
 type SecurableOptionsMap map[string]string
+type securableOptionsMapPb SecurableOptionsMap
+
+func securableOptionsMapToPb(st *SecurableOptionsMap) (*securableOptionsMapPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	stPb := securableOptionsMapPb(*st)
+	return &stPb, nil
+}
+func securableOptionsMapFromPb(stPb *securableOptionsMapPb) (*SecurableOptionsMap, error) {
+	if stPb == nil {
+		return nil, nil
+	}
+	st := SecurableOptionsMap(*stPb)
+	return &st, nil
+}
 
 // A map of key-value properties attached to the securable.
+
 type SecurablePropertiesMap map[string]string
+type securablePropertiesMapPb SecurablePropertiesMap
+
+func securablePropertiesMapToPb(st *SecurablePropertiesMap) (*securablePropertiesMapPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	stPb := securablePropertiesMapPb(*st)
+	return &stPb, nil
+}
+func securablePropertiesMapFromPb(stPb *securablePropertiesMapPb) (*SecurablePropertiesMap, error) {
+	if stPb == nil {
+		return nil, nil
+	}
+	st := SecurablePropertiesMap(*stPb)
+	return &st, nil
+}
 
 // The type of Unity Catalog securable.
 type SecurableType string
+type securableTypePb string
 
 const SecurableTypeCatalog SecurableType = `CATALOG`
 
@@ -5245,60 +11553,146 @@ func (f *SecurableType) Type() string {
 	return "SecurableType"
 }
 
+func securableTypeToPb(st *SecurableType) (*securableTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := securableTypePb(*st)
+	return &pb, nil
+}
+
+func securableTypeFromPb(pb *securableTypePb) (*SecurableType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := SecurableType(*pb)
+	return &st, nil
+}
+
 type SetArtifactAllowlist struct {
 	// A list of allowed artifact match patterns.
-	ArtifactMatchers []ArtifactMatcher `json:"artifact_matchers"`
+	// Wire name: 'artifact_matchers'
+	ArtifactMatchers []ArtifactMatcher
 	// The artifact type of the allowlist.
-	ArtifactType ArtifactType `json:"-" url:"-"`
+	// Wire name: 'artifact_type'
+	ArtifactType ArtifactType `tf:"-"`
 	// Time at which this artifact allowlist was set, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of the user who set the artifact allowlist.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// Unique identifier of parent metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SetArtifactAllowlist) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SetArtifactAllowlist) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &setArtifactAllowlistPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := setArtifactAllowlistFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SetArtifactAllowlist) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SetArtifactAllowlist) MarshalJSON() ([]byte, error) {
+	pb, err := setArtifactAllowlistToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type SetRegisteredModelAliasRequest struct {
 	// The name of the alias
-	Alias string `json:"alias" url:"-"`
+	// Wire name: 'alias'
+	Alias string
 	// Full name of the registered model
-	FullName string `json:"full_name" url:"-"`
+	// Wire name: 'full_name'
+	FullName string
 	// The version number of the model version to which the alias points
-	VersionNum int `json:"version_num"`
+	// Wire name: 'version_num'
+	VersionNum int
+}
+
+func (st *SetRegisteredModelAliasRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &setRegisteredModelAliasRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := setRegisteredModelAliasRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st SetRegisteredModelAliasRequest) MarshalJSON() ([]byte, error) {
+	pb, err := setRegisteredModelAliasRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Server-Side Encryption properties for clients communicating with AWS s3.
 type SseEncryptionDetails struct {
 	// Sets the value of the 'x-amz-server-side-encryption' header in S3
 	// request.
-	Algorithm SseEncryptionDetailsAlgorithm `json:"algorithm,omitempty"`
+	// Wire name: 'algorithm'
+	Algorithm SseEncryptionDetailsAlgorithm
 	// Optional. The ARN of the SSE-KMS key used with the S3 location, when
 	// algorithm = "SSE-KMS". Sets the value of the
 	// 'x-amz-server-side-encryption-aws-kms-key-id' header.
-	AwsKmsKeyArn string `json:"aws_kms_key_arn,omitempty"`
+	// Wire name: 'aws_kms_key_arn'
+	AwsKmsKeyArn string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SseEncryptionDetails) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SseEncryptionDetails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sseEncryptionDetailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := sseEncryptionDetailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SseEncryptionDetails) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SseEncryptionDetails) MarshalJSON() ([]byte, error) {
+	pb, err := sseEncryptionDetailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type SseEncryptionDetailsAlgorithm string
+type sseEncryptionDetailsAlgorithmPb string
 
 const SseEncryptionDetailsAlgorithmAwsSseKms SseEncryptionDetailsAlgorithm = `AWS_SSE_KMS`
 
@@ -5325,67 +11719,120 @@ func (f *SseEncryptionDetailsAlgorithm) Type() string {
 	return "SseEncryptionDetailsAlgorithm"
 }
 
+func sseEncryptionDetailsAlgorithmToPb(st *SseEncryptionDetailsAlgorithm) (*sseEncryptionDetailsAlgorithmPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := sseEncryptionDetailsAlgorithmPb(*st)
+	return &pb, nil
+}
+
+func sseEncryptionDetailsAlgorithmFromPb(pb *sseEncryptionDetailsAlgorithmPb) (*SseEncryptionDetailsAlgorithm, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := SseEncryptionDetailsAlgorithm(*pb)
+	return &st, nil
+}
+
 type StorageCredentialInfo struct {
 	// The AWS IAM role configuration.
-	AwsIamRole *AwsIamRoleResponse `json:"aws_iam_role,omitempty"`
+	// Wire name: 'aws_iam_role'
+	AwsIamRole *AwsIamRoleResponse
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentityResponse `json:"azure_managed_identity,omitempty"`
+	// Wire name: 'azure_managed_identity'
+	AzureManagedIdentity *AzureManagedIdentityResponse
 	// The Azure service principal configuration.
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// Wire name: 'azure_service_principal'
+	AzureServicePrincipal *AzureServicePrincipal
 	// The Cloudflare API token configuration.
-	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
+	// Wire name: 'cloudflare_api_token'
+	CloudflareApiToken *CloudflareApiToken
 	// Comment associated with the credential.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Time at which this Credential was created, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of credential creator.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// The Databricks managed GCP service account configuration.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountResponse `json:"databricks_gcp_service_account,omitempty"`
+	// Wire name: 'databricks_gcp_service_account'
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountResponse
 	// The full name of the credential.
-	FullName string `json:"full_name,omitempty"`
+	// Wire name: 'full_name'
+	FullName string
 	// The unique identifier of the credential.
-	Id string `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id string
 
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	// Wire name: 'isolation_mode'
+	IsolationMode IsolationMode
 	// Unique identifier of parent metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// The credential name. The name must be unique within the metastore.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// Username of current owner of credential.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// Whether the storage credential is only usable for read operations.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 	// Time at which this credential was last modified, in epoch milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// Username of user who last modified the credential.
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 	// Whether this credential is the current metastore's root storage
 	// credential.
-	UsedForManagedStorage bool `json:"used_for_managed_storage,omitempty"`
+	// Wire name: 'used_for_managed_storage'
+	UsedForManagedStorage bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *StorageCredentialInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *StorageCredentialInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &storageCredentialInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := storageCredentialInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s StorageCredentialInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st StorageCredentialInfo) MarshalJSON() ([]byte, error) {
+	pb, err := storageCredentialInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Next field marker: 10
 type SyncedDatabaseTable struct {
 	// Synced Table data synchronization status
-	DataSynchronizationStatus *OnlineTableStatus `json:"data_synchronization_status,omitempty"`
+	// Wire name: 'data_synchronization_status'
+	DataSynchronizationStatus *OnlineTableStatus
 	// Name of the target database instance. This is required when creating
 	// synced database tables in standard catalogs. This is optional when
 	// creating synced database tables in registered catalogs. If this field is
 	// specified when creating synced database tables in registered catalogs,
 	// the database instance name MUST match that of the registered catalog (or
 	// the request will be rejected).
-	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
+	// Wire name: 'database_instance_name'
+	DatabaseInstanceName string
 	// Target Postgres database object (logical database) name for this table.
 	// This field is optional in all scenarios.
 	//
@@ -5399,31 +11846,54 @@ type SyncedDatabaseTable struct {
 	// name is inferred to be that of the standard catalog. In this scenario,
 	// specifying this field will allow targeting an arbitrary postgres
 	// database.
-	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
+	// Wire name: 'logical_database_name'
+	LogicalDatabaseName string
 	// Full three-part (catalog, schema, table) name of the table.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Specification of a synced database table.
-	Spec *SyncedTableSpec `json:"spec,omitempty"`
+	// Wire name: 'spec'
+	Spec *SyncedTableSpec
 	// Data serving REST API URL for this table
-	TableServingUrl string `json:"table_serving_url,omitempty"`
+	// Wire name: 'table_serving_url'
+	TableServingUrl string
 	// The provisioning state of the synced table entity in Unity Catalog. This
 	// is distinct from the state of the data synchronization pipeline (i.e. the
 	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
 	// runs asynchronously).
-	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
+	// Wire name: 'unity_catalog_provisioning_state'
+	UnityCatalogProvisioningState ProvisioningInfoState
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SyncedDatabaseTable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SyncedDatabaseTable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &syncedDatabaseTablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := syncedDatabaseTableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SyncedDatabaseTable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SyncedDatabaseTable) MarshalJSON() ([]byte, error) {
+	pb, err := syncedDatabaseTableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type SyncedTableSchedulingPolicy string
+type syncedTableSchedulingPolicyPb string
 
 const SyncedTableSchedulingPolicyContinuous SyncedTableSchedulingPolicy = `CONTINUOUS`
 
@@ -5452,170 +11922,360 @@ func (f *SyncedTableSchedulingPolicy) Type() string {
 	return "SyncedTableSchedulingPolicy"
 }
 
+func syncedTableSchedulingPolicyToPb(st *SyncedTableSchedulingPolicy) (*syncedTableSchedulingPolicyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := syncedTableSchedulingPolicyPb(*st)
+	return &pb, nil
+}
+
+func syncedTableSchedulingPolicyFromPb(pb *syncedTableSchedulingPolicyPb) (*SyncedTableSchedulingPolicy, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := SyncedTableSchedulingPolicy(*pb)
+	return &st, nil
+}
+
 // Specification of a synced database table.
 type SyncedTableSpec struct {
 	// If true, the synced table's logical database and schema resources in PG
 	// will be created if they do not already exist.
-	CreateDatabaseObjectsIfMissing bool `json:"create_database_objects_if_missing,omitempty"`
+	// Wire name: 'create_database_objects_if_missing'
+	CreateDatabaseObjectsIfMissing bool
 	// Spec of new pipeline. Should be empty if pipeline_id is set
-	NewPipelineSpec *NewPipelineSpec `json:"new_pipeline_spec,omitempty"`
+	// Wire name: 'new_pipeline_spec'
+	NewPipelineSpec *NewPipelineSpec
 	// ID of the associated pipeline. Should be empty if new_pipeline_spec is
 	// set
-	PipelineId string `json:"pipeline_id,omitempty"`
+	// Wire name: 'pipeline_id'
+	PipelineId string
 	// Primary Key columns to be used for data insert/update in the destination.
-	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
+	// Wire name: 'primary_key_columns'
+	PrimaryKeyColumns []string
 	// Scheduling policy of the underlying pipeline.
-	SchedulingPolicy SyncedTableSchedulingPolicy `json:"scheduling_policy,omitempty"`
+	// Wire name: 'scheduling_policy'
+	SchedulingPolicy SyncedTableSchedulingPolicy
 	// Three-part (catalog, schema, table) name of the source Delta table.
-	SourceTableFullName string `json:"source_table_full_name,omitempty"`
+	// Wire name: 'source_table_full_name'
+	SourceTableFullName string
 	// Time series key to deduplicate (tie-break) rows with the same primary
 	// key.
-	TimeseriesKey string `json:"timeseries_key,omitempty"`
+	// Wire name: 'timeseries_key'
+	TimeseriesKey string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SyncedTableSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SyncedTableSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &syncedTableSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := syncedTableSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SyncedTableSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SyncedTableSpec) MarshalJSON() ([]byte, error) {
+	pb, err := syncedTableSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type SystemSchemaInfo struct {
 	// Name of the system schema.
-	Schema string `json:"schema"`
+	// Wire name: 'schema'
+	Schema string
 	// The current state of enablement for the system schema. An empty string
 	// means the system schema is available and ready for opt-in. Possible
 	// values: AVAILABLE | ENABLE_INITIALIZED | ENABLE_COMPLETED |
 	// DISABLE_INITIALIZED | UNAVAILABLE
-	State string `json:"state"`
+	// Wire name: 'state'
+	State string
+}
+
+func (st *SystemSchemaInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &systemSchemaInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := systemSchemaInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st SystemSchemaInfo) MarshalJSON() ([]byte, error) {
+	pb, err := systemSchemaInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // A table constraint, as defined by *one* of the following fields being set:
 // __primary_key_constraint__, __foreign_key_constraint__,
 // __named_table_constraint__.
 type TableConstraint struct {
-	ForeignKeyConstraint *ForeignKeyConstraint `json:"foreign_key_constraint,omitempty"`
 
-	NamedTableConstraint *NamedTableConstraint `json:"named_table_constraint,omitempty"`
+	// Wire name: 'foreign_key_constraint'
+	ForeignKeyConstraint *ForeignKeyConstraint
 
-	PrimaryKeyConstraint *PrimaryKeyConstraint `json:"primary_key_constraint,omitempty"`
+	// Wire name: 'named_table_constraint'
+	NamedTableConstraint *NamedTableConstraint
+
+	// Wire name: 'primary_key_constraint'
+	PrimaryKeyConstraint *PrimaryKeyConstraint
+}
+
+func (st *TableConstraint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tableConstraintPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tableConstraintFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st TableConstraint) MarshalJSON() ([]byte, error) {
+	pb, err := tableConstraintToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // A table that is dependent on a SQL object.
 type TableDependency struct {
 	// Full name of the dependent table, in the form of
 	// __catalog_name__.__schema_name__.__table_name__.
-	TableFullName string `json:"table_full_name"`
+	// Wire name: 'table_full_name'
+	TableFullName string
+}
+
+func (st *TableDependency) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tableDependencyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tableDependencyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st TableDependency) MarshalJSON() ([]byte, error) {
+	pb, err := tableDependencyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TableExistsResponse struct {
 	// Whether the table exists or not.
-	TableExists bool `json:"table_exists,omitempty"`
+	// Wire name: 'table_exists'
+	TableExists bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TableExistsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TableExistsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tableExistsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tableExistsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TableExistsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TableExistsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := tableExistsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TableInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
-	AccessPoint string `json:"access_point,omitempty"`
+	// Wire name: 'access_point'
+	AccessPoint string
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
-	BrowseOnly bool `json:"browse_only,omitempty"`
+	// Wire name: 'browse_only'
+	BrowseOnly bool
 	// Name of parent catalog.
-	CatalogName string `json:"catalog_name,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// The array of __ColumnInfo__ definitions of the table's columns.
-	Columns []ColumnInfo `json:"columns,omitempty"`
+	// Wire name: 'columns'
+	Columns []ColumnInfo
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Time at which this table was created, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of table creator.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// Unique ID of the Data Access Configuration to use with the table data.
-	DataAccessConfigurationId string `json:"data_access_configuration_id,omitempty"`
+	// Wire name: 'data_access_configuration_id'
+	DataAccessConfigurationId string
 	// Data source format
-	DataSourceFormat DataSourceFormat `json:"data_source_format,omitempty"`
+	// Wire name: 'data_source_format'
+	DataSourceFormat DataSourceFormat
 	// Time at which this table was deleted, in epoch milliseconds. Field is
 	// omitted if table is not deleted.
-	DeletedAt int64 `json:"deleted_at,omitempty"`
+	// Wire name: 'deleted_at'
+	DeletedAt int64
 	// Information pertaining to current state of the delta table.
-	DeltaRuntimePropertiesKvpairs *DeltaRuntimePropertiesKvPairs `json:"delta_runtime_properties_kvpairs,omitempty"`
+	// Wire name: 'delta_runtime_properties_kvpairs'
+	DeltaRuntimePropertiesKvpairs *DeltaRuntimePropertiesKvPairs
 
-	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
+	// Wire name: 'effective_predictive_optimization_flag'
+	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag
 
-	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
+	// Wire name: 'enable_predictive_optimization'
+	EnablePredictiveOptimization EnablePredictiveOptimization
 	// Encryption options that apply to clients connecting to cloud storage.
-	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Wire name: 'encryption_details'
+	EncryptionDetails *EncryptionDetails
 	// Full name of table, in form of
 	// __catalog_name__.__schema_name__.__table_name__
-	FullName string `json:"full_name,omitempty"`
+	// Wire name: 'full_name'
+	FullName string
 	// Unique identifier of parent metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// Name of table, relative to parent schema.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// Username of current owner of table.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// The pipeline ID of the table. Applicable for tables created by pipelines
 	// (Materialized View, Streaming Table, etc.).
-	PipelineId string `json:"pipeline_id,omitempty"`
+	// Wire name: 'pipeline_id'
+	PipelineId string
 	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties,omitempty"`
+	// Wire name: 'properties'
+	Properties map[string]string
 
-	RowFilter *TableRowFilter `json:"row_filter,omitempty"`
+	// Wire name: 'row_filter'
+	RowFilter *TableRowFilter
 	// Name of parent schema relative to its parent catalog.
-	SchemaName string `json:"schema_name,omitempty"`
+	// Wire name: 'schema_name'
+	SchemaName string
 	// List of schemes whose objects can be referenced without qualification.
-	SqlPath string `json:"sql_path,omitempty"`
+	// Wire name: 'sql_path'
+	SqlPath string
 	// Name of the storage credential, when a storage credential is configured
 	// for use with this table.
-	StorageCredentialName string `json:"storage_credential_name,omitempty"`
+	// Wire name: 'storage_credential_name'
+	StorageCredentialName string
 	// Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)
-	StorageLocation string `json:"storage_location,omitempty"`
+	// Wire name: 'storage_location'
+	StorageLocation string
 	// List of table constraints. Note: this field is not set in the output of
 	// the __listTables__ API.
-	TableConstraints []TableConstraint `json:"table_constraints,omitempty"`
+	// Wire name: 'table_constraints'
+	TableConstraints []TableConstraint
 	// The unique identifier of the table.
-	TableId string `json:"table_id,omitempty"`
+	// Wire name: 'table_id'
+	TableId string
 
-	TableType TableType `json:"table_type,omitempty"`
+	// Wire name: 'table_type'
+	TableType TableType
 	// Time at which this table was last modified, in epoch milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// Username of user who last modified the table.
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 	// View definition SQL (when __table_type__ is **VIEW**,
 	// **MATERIALIZED_VIEW**, or **STREAMING_TABLE**)
-	ViewDefinition string `json:"view_definition,omitempty"`
+	// Wire name: 'view_definition'
+	ViewDefinition string
 	// View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**,
 	// **STREAMING_TABLE**) - when DependencyList is None, the dependency is not
 	// provided; - when DependencyList is an empty list, the dependency is
 	// provided but is empty; - when DependencyList is not an empty list,
 	// dependencies are provided and recorded.
-	ViewDependencies *DependencyList `json:"view_dependencies,omitempty"`
+	// Wire name: 'view_dependencies'
+	ViewDependencies *DependencyList
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TableInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TableInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tableInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tableInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TableInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TableInfo) MarshalJSON() ([]byte, error) {
+	pb, err := tableInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TableOperation string
+type tableOperationPb string
 
 const TableOperationRead TableOperation = `READ`
 
@@ -5642,33 +12302,96 @@ func (f *TableOperation) Type() string {
 	return "TableOperation"
 }
 
+func tableOperationToPb(st *TableOperation) (*tableOperationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := tableOperationPb(*st)
+	return &pb, nil
+}
+
+func tableOperationFromPb(pb *tableOperationPb) (*TableOperation, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := TableOperation(*pb)
+	return &st, nil
+}
+
 type TableRowFilter struct {
 	// The full name of the row filter SQL UDF.
-	FunctionName string `json:"function_name"`
+	// Wire name: 'function_name'
+	FunctionName string
 	// The list of table columns to be passed as input to the row filter
 	// function. The column types should match the types of the filter function
 	// arguments.
-	InputColumnNames []string `json:"input_column_names"`
+	// Wire name: 'input_column_names'
+	InputColumnNames []string
+}
+
+func (st *TableRowFilter) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tableRowFilterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tableRowFilterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st TableRowFilter) MarshalJSON() ([]byte, error) {
+	pb, err := tableRowFilterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TableSummary struct {
 	// The full name of the table.
-	FullName string `json:"full_name,omitempty"`
+	// Wire name: 'full_name'
+	FullName string
 
-	TableType TableType `json:"table_type,omitempty"`
+	// Wire name: 'table_type'
+	TableType TableType
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TableSummary) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TableSummary) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tableSummaryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tableSummaryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TableSummary) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TableSummary) MarshalJSON() ([]byte, error) {
+	pb, err := tableSummaryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TableType string
+type tableTypePb string
 
 const TableTypeExternal TableType = `EXTERNAL`
 
@@ -5707,47 +12430,103 @@ func (f *TableType) Type() string {
 	return "TableType"
 }
 
+func tableTypeToPb(st *TableType) (*tableTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := tableTypePb(*st)
+	return &pb, nil
+}
+
+func tableTypeFromPb(pb *tableTypePb) (*TableType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := TableType(*pb)
+	return &st, nil
+}
+
 type TagKeyValue struct {
 	// name of the tag
-	Key string `json:"key,omitempty"`
+	// Wire name: 'key'
+	Key string
 	// value of the tag associated with the key, could be optional
-	Value string `json:"value,omitempty"`
+	// Wire name: 'value'
+	Value string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TagKeyValue) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TagKeyValue) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tagKeyValuePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tagKeyValueFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TagKeyValue) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TagKeyValue) MarshalJSON() ([]byte, error) {
+	pb, err := tagKeyValueToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TemporaryCredentials struct {
 	// AWS temporary credentials for API authentication. Read more at
 	// https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html.
-	AwsTempCredentials *AwsCredentials `json:"aws_temp_credentials,omitempty"`
+	// Wire name: 'aws_temp_credentials'
+	AwsTempCredentials *AwsCredentials
 	// Azure Active Directory token, essentially the Oauth token for Azure
 	// Service Principal or Managed Identity. Read more at
 	// https://learn.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token
-	AzureAad *AzureActiveDirectoryToken `json:"azure_aad,omitempty"`
+	// Wire name: 'azure_aad'
+	AzureAad *AzureActiveDirectoryToken
 	// Server time when the credential will expire, in epoch milliseconds. The
 	// API client is advised to cache the credential given this expiration time.
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
+	// Wire name: 'expiration_time'
+	ExpirationTime int64
 	// GCP temporary credentials for API authentication. Read more at
 	// https://developers.google.com/identity/protocols/oauth2/service-account
-	GcpOauthToken *GcpOauthToken `json:"gcp_oauth_token,omitempty"`
+	// Wire name: 'gcp_oauth_token'
+	GcpOauthToken *GcpOauthToken
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TemporaryCredentials) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TemporaryCredentials) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &temporaryCredentialsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := temporaryCredentialsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TemporaryCredentials) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TemporaryCredentials) MarshalJSON() ([]byte, error) {
+	pb, err := temporaryCredentialsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Detailed status of an online table. Shown if the online table is in the
@@ -5756,268 +12535,590 @@ type TriggeredUpdateStatus struct {
 	// The last source table Delta version that was synced to the online table.
 	// Note that this Delta version may not be completely synced to the online
 	// table yet.
-	LastProcessedCommitVersion int64 `json:"last_processed_commit_version,omitempty"`
+	// Wire name: 'last_processed_commit_version'
+	LastProcessedCommitVersion int64
 	// The timestamp of the last time any data was synchronized from the source
 	// table to the online table.
-	Timestamp string `json:"timestamp,omitempty"`
+	// Wire name: 'timestamp'
+	Timestamp string
 	// Progress of the active data synchronization pipeline.
-	TriggeredUpdateProgress *PipelineProgress `json:"triggered_update_progress,omitempty"`
+	// Wire name: 'triggered_update_progress'
+	TriggeredUpdateProgress *PipelineProgress
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TriggeredUpdateStatus) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TriggeredUpdateStatus) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &triggeredUpdateStatusPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := triggeredUpdateStatusFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TriggeredUpdateStatus) MarshalJSON() ([]byte, error) {
+	pb, err := triggeredUpdateStatusToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete an assignment
 type UnassignRequest struct {
 	// Query for the ID of the metastore to delete.
-	MetastoreId string `json:"-" url:"metastore_id"`
+	// Wire name: 'metastore_id'
+	MetastoreId string `tf:"-"`
 	// A workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
+}
+
+func (st *UnassignRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &unassignRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := unassignRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UnassignRequest) MarshalJSON() ([]byte, error) {
+	pb, err := unassignRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UnassignResponse struct {
 }
 
+func (st *UnassignResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &unassignResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := unassignResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UnassignResponse) MarshalJSON() ([]byte, error) {
+	pb, err := unassignResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type UpdateAssignmentResponse struct {
+}
+
+func (st *UpdateAssignmentResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateAssignmentResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateAssignmentResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateAssignmentResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateAssignmentResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateCatalog struct {
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Whether predictive optimization should be enabled for this object and
 	// objects under it.
-	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
+	// Wire name: 'enable_predictive_optimization'
+	EnablePredictiveOptimization EnablePredictiveOptimization
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
-	IsolationMode CatalogIsolationMode `json:"isolation_mode,omitempty"`
+	// Wire name: 'isolation_mode'
+	IsolationMode CatalogIsolationMode
 	// The name of the catalog.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the catalog.
-	NewName string `json:"new_name,omitempty"`
+	// Wire name: 'new_name'
+	NewName string
 	// A map of key-value properties attached to the securable.
-	Options map[string]string `json:"options,omitempty"`
+	// Wire name: 'options'
+	Options map[string]string
 	// Username of current owner of catalog.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties,omitempty"`
+	// Wire name: 'properties'
+	Properties map[string]string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateCatalog) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateCatalog) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateCatalogPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateCatalogFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateCatalog) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateCatalog) MarshalJSON() ([]byte, error) {
+	pb, err := updateCatalogToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateCatalogWorkspaceBindingsResponse struct {
 	// A list of workspace IDs
-	Workspaces []int64 `json:"workspaces,omitempty"`
+	// Wire name: 'workspaces'
+	Workspaces []int64
+}
+
+func (st *UpdateCatalogWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateCatalogWorkspaceBindingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateCatalogWorkspaceBindingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateCatalogWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateCatalogWorkspaceBindingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateConnection struct {
 	// Name of the connection.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the connection.
-	NewName string `json:"new_name,omitempty"`
+	// Wire name: 'new_name'
+	NewName string
 	// A map of key-value properties attached to the securable.
-	Options map[string]string `json:"options"`
+	// Wire name: 'options'
+	Options map[string]string
 	// Username of current owner of the connection.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateConnection) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateConnection) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateConnectionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateConnectionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateConnection) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateConnection) MarshalJSON() ([]byte, error) {
+	pb, err := updateConnectionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateCredentialRequest struct {
 	// The AWS IAM role configuration
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// Wire name: 'aws_iam_role'
+	AwsIamRole *AwsIamRole
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	// Wire name: 'azure_managed_identity'
+	AzureManagedIdentity *AzureManagedIdentity
 	// The Azure service principal configuration. Only applicable when purpose
 	// is **STORAGE**.
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// Wire name: 'azure_service_principal'
+	AzureServicePrincipal *AzureServicePrincipal
 	// Comment associated with the credential.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// GCP long-lived credential. Databricks-created Google Cloud Storage
 	// service account.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
+	// Wire name: 'databricks_gcp_service_account'
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount
 	// Force an update even if there are dependent services (when purpose is
 	// **SERVICE**) or dependent external locations and external tables (when
 	// purpose is **STORAGE**).
-	Force bool `json:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool
 	// Whether the current securable is accessible from all workspaces or a
 	// specific set of workspaces.
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	// Wire name: 'isolation_mode'
+	IsolationMode IsolationMode
 	// Name of the credential.
-	NameArg string `json:"-" url:"-"`
+	// Wire name: 'name_arg'
+	NameArg string `tf:"-"`
 	// New name of credential.
-	NewName string `json:"new_name,omitempty"`
+	// Wire name: 'new_name'
+	NewName string
 	// Username of current owner of credential.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// Whether the credential is usable only for read operations. Only
 	// applicable when purpose is **STORAGE**.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 	// Supply true to this argument to skip validation of the updated
 	// credential.
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	// Wire name: 'skip_validation'
+	SkipValidation bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Update a Database Instance
 type UpdateDatabaseInstanceRequest struct {
 	// A DatabaseInstance represents a logical Postgres instance, comprised of
 	// both compute and storage.
-	DatabaseInstance DatabaseInstance `json:"database_instance"`
+	// Wire name: 'database_instance'
+	DatabaseInstance DatabaseInstance
 	// The name of the instance. This is the unique identifier for the instance.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The list of fields to update.
-	UpdateMask string `json:"-" url:"update_mask"`
+	// Wire name: 'update_mask'
+	UpdateMask string `tf:"-"`
+}
+
+func (st *UpdateDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateDatabaseInstanceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateDatabaseInstanceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateDatabaseInstanceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateExternalLocation struct {
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// Name of the storage credential used with this location.
-	CredentialName string `json:"credential_name,omitempty"`
+	// Wire name: 'credential_name'
+	CredentialName string
 	// [Create:OPT Update:OPT] Whether to enable file events on this external
 	// location.
-	EnableFileEvents bool `json:"enable_file_events,omitempty"`
+	// Wire name: 'enable_file_events'
+	EnableFileEvents bool
 	// Encryption options that apply to clients connecting to cloud storage.
-	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Wire name: 'encryption_details'
+	EncryptionDetails *EncryptionDetails
 	// Indicates whether fallback mode is enabled for this external location.
 	// When fallback mode is enabled, the access to the location falls back to
 	// cluster credentials if UC credentials are not sufficient.
-	Fallback bool `json:"fallback,omitempty"`
+	// Wire name: 'fallback'
+	Fallback bool
 	// [Create:OPT Update:OPT] File event queue settings.
-	FileEventQueue *FileEventQueue `json:"file_event_queue,omitempty"`
+	// Wire name: 'file_event_queue'
+	FileEventQueue *FileEventQueue
 	// Force update even if changing url invalidates dependent external tables
 	// or mounts.
-	Force bool `json:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool
 
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	// Wire name: 'isolation_mode'
+	IsolationMode IsolationMode
 	// Name of the external location.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the external location.
-	NewName string `json:"new_name,omitempty"`
+	// Wire name: 'new_name'
+	NewName string
 	// The owner of the external location.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// Indicates whether the external location is read-only.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 	// Skips validation of the storage credential associated with the external
 	// location.
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	// Wire name: 'skip_validation'
+	SkipValidation bool
 	// Path URL of the external location.
-	Url string `json:"url,omitempty"`
+	// Wire name: 'url'
+	Url string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateExternalLocation) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateExternalLocation) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateExternalLocationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateExternalLocationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateExternalLocation) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateExternalLocation) MarshalJSON() ([]byte, error) {
+	pb, err := updateExternalLocationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateFunction struct {
 	// The fully-qualified name of the function (of the form
 	// __catalog_name__.__schema_name__.__function__name__).
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Username of current owner of function.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateFunction) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateFunction) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateFunctionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateFunctionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateFunction) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateFunction) MarshalJSON() ([]byte, error) {
+	pb, err := updateFunctionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateMetastore struct {
 	// The organization name of a Delta Sharing entity, to be used in
 	// Databricks-to-Databricks Delta Sharing as the official name.
-	DeltaSharingOrganizationName string `json:"delta_sharing_organization_name,omitempty"`
+	// Wire name: 'delta_sharing_organization_name'
+	DeltaSharingOrganizationName string
 	// The lifetime of delta sharing recipient token in seconds.
-	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
+	// Wire name: 'delta_sharing_recipient_token_lifetime_in_seconds'
+	DeltaSharingRecipientTokenLifetimeInSeconds int64
 	// The scope of Delta Sharing enabled for the metastore.
-	DeltaSharingScope UpdateMetastoreDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	// Wire name: 'delta_sharing_scope'
+	DeltaSharingScope UpdateMetastoreDeltaSharingScope
 	// Unique ID of the metastore.
-	Id string `json:"-" url:"-"`
+	// Wire name: 'id'
+	Id string `tf:"-"`
 	// New name for the metastore.
-	NewName string `json:"new_name,omitempty"`
+	// Wire name: 'new_name'
+	NewName string
 	// The owner of the metastore.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// Privilege model version of the metastore, of the form `major.minor`
 	// (e.g., `1.0`).
-	PrivilegeModelVersion string `json:"privilege_model_version,omitempty"`
+	// Wire name: 'privilege_model_version'
+	PrivilegeModelVersion string
 	// UUID of storage credential to access the metastore storage_root.
-	StorageRootCredentialId string `json:"storage_root_credential_id,omitempty"`
+	// Wire name: 'storage_root_credential_id'
+	StorageRootCredentialId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateMetastore) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateMetastore) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateMetastorePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateMetastoreFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateMetastore) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateMetastore) MarshalJSON() ([]byte, error) {
+	pb, err := updateMetastoreToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateMetastoreAssignment struct {
 	// The name of the default catalog in the metastore. This field is
 	// depracted. Please use "Default Namespace API" to configure the default
 	// catalog for a Databricks workspace.
-	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
+	// Wire name: 'default_catalog_name'
+	DefaultCatalogName string
 	// The unique ID of the metastore.
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// A workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateMetastoreAssignment) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateMetastoreAssignment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateMetastoreAssignmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateMetastoreAssignmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
+	pb, err := updateMetastoreAssignmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The scope of Delta Sharing enabled for the metastore.
 type UpdateMetastoreDeltaSharingScope string
+type updateMetastoreDeltaSharingScopePb string
 
 const UpdateMetastoreDeltaSharingScopeInternal UpdateMetastoreDeltaSharingScope = `INTERNAL`
 
@@ -6044,292 +13145,652 @@ func (f *UpdateMetastoreDeltaSharingScope) Type() string {
 	return "UpdateMetastoreDeltaSharingScope"
 }
 
+func updateMetastoreDeltaSharingScopeToPb(st *UpdateMetastoreDeltaSharingScope) (*updateMetastoreDeltaSharingScopePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := updateMetastoreDeltaSharingScopePb(*st)
+	return &pb, nil
+}
+
+func updateMetastoreDeltaSharingScopeFromPb(pb *updateMetastoreDeltaSharingScopePb) (*UpdateMetastoreDeltaSharingScope, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := UpdateMetastoreDeltaSharingScope(*pb)
+	return &st, nil
+}
+
 type UpdateModelVersionRequest struct {
 	// The comment attached to the model version
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// The three-level (fully qualified) name of the model version
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// The integer version number of the model version
-	Version int `json:"-" url:"-"`
+	// Wire name: 'version'
+	Version int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateModelVersionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateModelVersionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateModelVersionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateModelVersionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateModelVersionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateModelVersionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateMonitor struct {
 	// Name of the baseline table from which drift metrics are computed from.
 	// Columns in the monitored table should also be present in the baseline
 	// table.
-	BaselineTableName string `json:"baseline_table_name,omitempty"`
+	// Wire name: 'baseline_table_name'
+	BaselineTableName string
 	// Custom metrics to compute on the monitored table. These can be aggregate
 	// metrics, derived metrics (from already computed aggregate metrics), or
 	// drift metrics (comparing metrics across time windows).
-	CustomMetrics []MonitorMetric `json:"custom_metrics,omitempty"`
+	// Wire name: 'custom_metrics'
+	CustomMetrics []MonitorMetric
 	// Id of dashboard that visualizes the computed metrics. This can be empty
 	// if the monitor is in PENDING state.
-	DashboardId string `json:"dashboard_id,omitempty"`
+	// Wire name: 'dashboard_id'
+	DashboardId string
 	// The data classification config for the monitor.
-	DataClassificationConfig *MonitorDataClassificationConfig `json:"data_classification_config,omitempty"`
+	// Wire name: 'data_classification_config'
+	DataClassificationConfig *MonitorDataClassificationConfig
 	// Configuration for monitoring inference logs.
-	InferenceLog *MonitorInferenceLog `json:"inference_log,omitempty"`
+	// Wire name: 'inference_log'
+	InferenceLog *MonitorInferenceLog
 	// The notification settings for the monitor.
-	Notifications *MonitorNotifications `json:"notifications,omitempty"`
+	// Wire name: 'notifications'
+	Notifications *MonitorNotifications
 	// Schema where output metric tables are created.
-	OutputSchemaName string `json:"output_schema_name"`
+	// Wire name: 'output_schema_name'
+	OutputSchemaName string
 	// The schedule for automatically updating and refreshing metric tables.
-	Schedule *MonitorCronSchedule `json:"schedule,omitempty"`
+	// Wire name: 'schedule'
+	Schedule *MonitorCronSchedule
 	// List of column expressions to slice data with for targeted analysis. The
 	// data is grouped by each expression independently, resulting in a separate
 	// slice for each predicate and its complements. For high-cardinality
 	// columns, only the top 100 unique values by frequency will generate
 	// slices.
-	SlicingExprs []string `json:"slicing_exprs,omitempty"`
+	// Wire name: 'slicing_exprs'
+	SlicingExprs []string
 	// Configuration for monitoring snapshot tables.
-	Snapshot *MonitorSnapshot `json:"snapshot,omitempty"`
+	// Wire name: 'snapshot'
+	Snapshot *MonitorSnapshot
 	// Full name of the table.
-	TableName string `json:"-" url:"-"`
+	// Wire name: 'table_name'
+	TableName string `tf:"-"`
 	// Configuration for monitoring time series tables.
-	TimeSeries *MonitorTimeSeries `json:"time_series,omitempty"`
+	// Wire name: 'time_series'
+	TimeSeries *MonitorTimeSeries
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateMonitor) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateMonitor) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateMonitorPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateMonitorFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateMonitor) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateMonitor) MarshalJSON() ([]byte, error) {
+	pb, err := updateMonitorToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdatePermissions struct {
 	// Array of permissions change objects.
-	Changes []PermissionsChange `json:"changes,omitempty"`
+	// Wire name: 'changes'
+	Changes []PermissionsChange
 	// Full name of securable.
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// Type of securable.
-	SecurableType SecurableType `json:"-" url:"-"`
+	// Wire name: 'securable_type'
+	SecurableType SecurableType `tf:"-"`
+}
+
+func (st *UpdatePermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updatePermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updatePermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdatePermissions) MarshalJSON() ([]byte, error) {
+	pb, err := updatePermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateRegisteredModelRequest struct {
 	// The comment attached to the registered model
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// The three-level (fully qualified) name of the registered model
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// New name for the registered model.
-	NewName string `json:"new_name,omitempty"`
+	// Wire name: 'new_name'
+	NewName string
 	// The identifier of the user who owns the registered model
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateRegisteredModelRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateRegisteredModelRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateRegisteredModelRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateRegisteredModelRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateRegisteredModelRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateResponse struct {
 }
 
+func (st *UpdateResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type UpdateSchema struct {
 	// User-provided free-form text description.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 
-	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
+	// Wire name: 'enable_predictive_optimization'
+	EnablePredictiveOptimization EnablePredictiveOptimization
 	// Full name of the schema.
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 	// New name for the schema.
-	NewName string `json:"new_name,omitempty"`
+	// Wire name: 'new_name'
+	NewName string
 	// Username of current owner of schema.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// A map of key-value properties attached to the securable.
-	Properties map[string]string `json:"properties,omitempty"`
+	// Wire name: 'properties'
+	Properties map[string]string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateSchema) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateSchema) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateSchemaPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateSchemaFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateSchema) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateSchema) MarshalJSON() ([]byte, error) {
+	pb, err := updateSchemaToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateStorageCredential struct {
 	// The AWS IAM role configuration.
-	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
+	// Wire name: 'aws_iam_role'
+	AwsIamRole *AwsIamRoleRequest
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentityResponse `json:"azure_managed_identity,omitempty"`
+	// Wire name: 'azure_managed_identity'
+	AzureManagedIdentity *AzureManagedIdentityResponse
 	// The Azure service principal configuration.
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// Wire name: 'azure_service_principal'
+	AzureServicePrincipal *AzureServicePrincipal
 	// The Cloudflare API token configuration.
-	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
+	// Wire name: 'cloudflare_api_token'
+	CloudflareApiToken *CloudflareApiToken
 	// Comment associated with the credential.
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// The Databricks managed GCP service account configuration.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
+	// Wire name: 'databricks_gcp_service_account'
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest
 	// Force update even if there are dependent external locations or external
 	// tables.
-	Force bool `json:"force,omitempty"`
+	// Wire name: 'force'
+	Force bool
 
-	IsolationMode IsolationMode `json:"isolation_mode,omitempty"`
+	// Wire name: 'isolation_mode'
+	IsolationMode IsolationMode
 	// Name of the storage credential.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the storage credential.
-	NewName string `json:"new_name,omitempty"`
+	// Wire name: 'new_name'
+	NewName string
 	// Username of current owner of credential.
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// Whether the storage credential is only usable for read operations.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 	// Supplying true to this argument skips validation of the updated
 	// credential.
-	SkipValidation bool `json:"skip_validation,omitempty"`
+	// Wire name: 'skip_validation'
+	SkipValidation bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateStorageCredential) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateStorageCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateStorageCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateStorageCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateStorageCredential) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateStorageCredential) MarshalJSON() ([]byte, error) {
+	pb, err := updateStorageCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Update a table owner.
 type UpdateTableRequest struct {
 	// Full name of the table.
-	FullName string `json:"-" url:"-"`
+	// Wire name: 'full_name'
+	FullName string `tf:"-"`
 
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateTableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateTableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateTableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateTableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateTableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateTableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateTableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateVolumeRequestContent struct {
 	// The comment attached to the volume
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 	// The three-level (fully qualified) name of the volume
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// New name for the volume.
-	NewName string `json:"new_name,omitempty"`
+	// Wire name: 'new_name'
+	NewName string
 	// The identifier of the user who owns the volume
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateVolumeRequestContent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateVolumeRequestContent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateVolumeRequestContentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateVolumeRequestContentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateVolumeRequestContent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateVolumeRequestContent) MarshalJSON() ([]byte, error) {
+	pb, err := updateVolumeRequestContentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateWorkspaceBindings struct {
 	// A list of workspace IDs.
-	AssignWorkspaces []int64 `json:"assign_workspaces,omitempty"`
+	// Wire name: 'assign_workspaces'
+	AssignWorkspaces []int64
 	// The name of the catalog.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// A list of workspace IDs.
-	UnassignWorkspaces []int64 `json:"unassign_workspaces,omitempty"`
+	// Wire name: 'unassign_workspaces'
+	UnassignWorkspaces []int64
+}
+
+func (st *UpdateWorkspaceBindings) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateWorkspaceBindingsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateWorkspaceBindingsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateWorkspaceBindings) MarshalJSON() ([]byte, error) {
+	pb, err := updateWorkspaceBindingsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateWorkspaceBindingsParameters struct {
 	// List of workspace bindings.
-	Add []WorkspaceBinding `json:"add,omitempty"`
+	// Wire name: 'add'
+	Add []WorkspaceBinding
 	// List of workspace bindings.
-	Remove []WorkspaceBinding `json:"remove,omitempty"`
+	// Wire name: 'remove'
+	Remove []WorkspaceBinding
 	// The name of the securable.
-	SecurableName string `json:"-" url:"-"`
+	// Wire name: 'securable_name'
+	SecurableName string `tf:"-"`
 	// The type of the securable to bind to a workspace (catalog,
 	// storage_credential, credential, or external_location).
-	SecurableType string `json:"-" url:"-"`
+	// Wire name: 'securable_type'
+	SecurableType string `tf:"-"`
+}
+
+func (st *UpdateWorkspaceBindingsParameters) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateWorkspaceBindingsParametersPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateWorkspaceBindingsParametersFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateWorkspaceBindingsParameters) MarshalJSON() ([]byte, error) {
+	pb, err := updateWorkspaceBindingsParametersToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // A list of workspace IDs that are bound to the securable
 type UpdateWorkspaceBindingsResponse struct {
 	// List of workspace bindings.
-	Bindings []WorkspaceBinding `json:"bindings,omitempty"`
+	// Wire name: 'bindings'
+	Bindings []WorkspaceBinding
+}
+
+func (st *UpdateWorkspaceBindingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateWorkspaceBindingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateWorkspaceBindingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateWorkspaceBindingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateWorkspaceBindingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Next ID: 17
 type ValidateCredentialRequest struct {
 	// The AWS IAM role configuration
-	AwsIamRole *AwsIamRole `json:"aws_iam_role,omitempty"`
+	// Wire name: 'aws_iam_role'
+	AwsIamRole *AwsIamRole
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentity `json:"azure_managed_identity,omitempty"`
+	// Wire name: 'azure_managed_identity'
+	AzureManagedIdentity *AzureManagedIdentity
 	// Required. The name of an existing credential or long-lived cloud
 	// credential to validate.
-	CredentialName string `json:"credential_name,omitempty"`
+	// Wire name: 'credential_name'
+	CredentialName string
 	// GCP long-lived credential. Databricks-created Google Cloud Storage
 	// service account.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount `json:"databricks_gcp_service_account,omitempty"`
+	// Wire name: 'databricks_gcp_service_account'
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccount
 	// The name of an existing external location to validate. Only applicable
 	// for storage credentials (purpose is **STORAGE**.)
-	ExternalLocationName string `json:"external_location_name,omitempty"`
+	// Wire name: 'external_location_name'
+	ExternalLocationName string
 	// The purpose of the credential. This should only be used when the
 	// credential is specified.
-	Purpose CredentialPurpose `json:"purpose,omitempty"`
+	// Wire name: 'purpose'
+	Purpose CredentialPurpose
 	// Whether the credential is only usable for read operations. Only
 	// applicable for storage credentials (purpose is **STORAGE**.)
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 	// The external location url to validate. Only applicable when purpose is
 	// **STORAGE**.
-	Url string `json:"url,omitempty"`
+	// Wire name: 'url'
+	Url string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ValidateCredentialRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ValidateCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &validateCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := validateCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ValidateCredentialRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ValidateCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := validateCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ValidateCredentialResponse struct {
 	// Whether the tested location is a directory in cloud storage. Only
 	// applicable for when purpose is **STORAGE**.
-	IsDir bool `json:"isDir,omitempty"`
+	// Wire name: 'isDir'
+	IsDir bool
 	// The results of the validation check.
-	Results []CredentialValidationResult `json:"results,omitempty"`
+	// Wire name: 'results'
+	Results []CredentialValidationResult
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ValidateCredentialResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ValidateCredentialResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &validateCredentialResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := validateCredentialResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ValidateCredentialResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ValidateCredentialResponse) MarshalJSON() ([]byte, error) {
+	pb, err := validateCredentialResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // A enum represents the result of the file operation
 type ValidateCredentialResult string
+type validateCredentialResultPb string
 
 const ValidateCredentialResultFail ValidateCredentialResult = `FAIL`
 
@@ -6358,75 +13819,157 @@ func (f *ValidateCredentialResult) Type() string {
 	return "ValidateCredentialResult"
 }
 
+func validateCredentialResultToPb(st *ValidateCredentialResult) (*validateCredentialResultPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := validateCredentialResultPb(*st)
+	return &pb, nil
+}
+
+func validateCredentialResultFromPb(pb *validateCredentialResultPb) (*ValidateCredentialResult, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ValidateCredentialResult(*pb)
+	return &st, nil
+}
+
 type ValidateStorageCredential struct {
 	// The AWS IAM role configuration.
-	AwsIamRole *AwsIamRoleRequest `json:"aws_iam_role,omitempty"`
+	// Wire name: 'aws_iam_role'
+	AwsIamRole *AwsIamRoleRequest
 	// The Azure managed identity configuration.
-	AzureManagedIdentity *AzureManagedIdentityRequest `json:"azure_managed_identity,omitempty"`
+	// Wire name: 'azure_managed_identity'
+	AzureManagedIdentity *AzureManagedIdentityRequest
 	// The Azure service principal configuration.
-	AzureServicePrincipal *AzureServicePrincipal `json:"azure_service_principal,omitempty"`
+	// Wire name: 'azure_service_principal'
+	AzureServicePrincipal *AzureServicePrincipal
 	// The Cloudflare API token configuration.
-	CloudflareApiToken *CloudflareApiToken `json:"cloudflare_api_token,omitempty"`
+	// Wire name: 'cloudflare_api_token'
+	CloudflareApiToken *CloudflareApiToken
 	// The Databricks created GCP service account configuration.
-	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest `json:"databricks_gcp_service_account,omitempty"`
+	// Wire name: 'databricks_gcp_service_account'
+	DatabricksGcpServiceAccount *DatabricksGcpServiceAccountRequest
 	// The name of an existing external location to validate.
-	ExternalLocationName string `json:"external_location_name,omitempty"`
+	// Wire name: 'external_location_name'
+	ExternalLocationName string
 	// Whether the storage credential is only usable for read operations.
-	ReadOnly bool `json:"read_only,omitempty"`
+	// Wire name: 'read_only'
+	ReadOnly bool
 	// The name of the storage credential to validate.
-	StorageCredentialName string `json:"storage_credential_name,omitempty"`
+	// Wire name: 'storage_credential_name'
+	StorageCredentialName string
 	// The external location url to validate.
-	Url string `json:"url,omitempty"`
+	// Wire name: 'url'
+	Url string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ValidateStorageCredential) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ValidateStorageCredential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &validateStorageCredentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := validateStorageCredentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ValidateStorageCredential) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ValidateStorageCredential) MarshalJSON() ([]byte, error) {
+	pb, err := validateStorageCredentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ValidateStorageCredentialResponse struct {
 	// Whether the tested location is a directory in cloud storage.
-	IsDir bool `json:"isDir,omitempty"`
+	// Wire name: 'isDir'
+	IsDir bool
 	// The results of the validation check.
-	Results []ValidationResult `json:"results,omitempty"`
+	// Wire name: 'results'
+	Results []ValidationResult
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ValidateStorageCredentialResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ValidateStorageCredentialResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &validateStorageCredentialResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := validateStorageCredentialResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ValidateStorageCredentialResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ValidateStorageCredentialResponse) MarshalJSON() ([]byte, error) {
+	pb, err := validateStorageCredentialResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ValidationResult struct {
 	// Error message would exist when the result does not equal to **PASS**.
-	Message string `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message string
 	// The operation tested.
-	Operation ValidationResultOperation `json:"operation,omitempty"`
+	// Wire name: 'operation'
+	Operation ValidationResultOperation
 	// The results of the tested operation.
-	Result ValidationResultResult `json:"result,omitempty"`
+	// Wire name: 'result'
+	Result ValidationResultResult
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ValidationResult) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ValidationResult) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &validationResultPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := validationResultFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ValidationResult) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ValidationResult) MarshalJSON() ([]byte, error) {
+	pb, err := validationResultToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The operation tested.
 type ValidationResultOperation string
+type validationResultOperationPb string
 
 const ValidationResultOperationDelete ValidationResultOperation = `DELETE`
 
@@ -6459,8 +14002,25 @@ func (f *ValidationResultOperation) Type() string {
 	return "ValidationResultOperation"
 }
 
+func validationResultOperationToPb(st *ValidationResultOperation) (*validationResultOperationPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := validationResultOperationPb(*st)
+	return &pb, nil
+}
+
+func validationResultOperationFromPb(pb *validationResultOperationPb) (*ValidationResultOperation, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ValidationResultOperation(*pb)
+	return &st, nil
+}
+
 // The results of the tested operation.
 type ValidationResultResult string
+type validationResultResultPb string
 
 const ValidationResultResultFail ValidationResultResult = `FAIL`
 
@@ -6489,58 +14049,108 @@ func (f *ValidationResultResult) Type() string {
 	return "ValidationResultResult"
 }
 
+func validationResultResultToPb(st *ValidationResultResult) (*validationResultResultPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := validationResultResultPb(*st)
+	return &pb, nil
+}
+
+func validationResultResultFromPb(pb *validationResultResultPb) (*ValidationResultResult, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ValidationResultResult(*pb)
+	return &st, nil
+}
+
 type VolumeInfo struct {
 	// The AWS access point to use when accesing s3 for this external location.
-	AccessPoint string `json:"access_point,omitempty"`
+	// Wire name: 'access_point'
+	AccessPoint string
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
 	// enabled in the request.
-	BrowseOnly bool `json:"browse_only,omitempty"`
+	// Wire name: 'browse_only'
+	BrowseOnly bool
 	// The name of the catalog where the schema and the volume are
-	CatalogName string `json:"catalog_name,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// The comment attached to the volume
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// The identifier of the user who created the volume
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// Encryption options that apply to clients connecting to cloud storage.
-	EncryptionDetails *EncryptionDetails `json:"encryption_details,omitempty"`
+	// Wire name: 'encryption_details'
+	EncryptionDetails *EncryptionDetails
 	// The three-level (fully qualified) name of the volume
-	FullName string `json:"full_name,omitempty"`
+	// Wire name: 'full_name'
+	FullName string
 	// The unique identifier of the metastore
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 	// The name of the volume
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// The identifier of the user who owns the volume
-	Owner string `json:"owner,omitempty"`
+	// Wire name: 'owner'
+	Owner string
 	// The name of the schema where the volume is
-	SchemaName string `json:"schema_name,omitempty"`
+	// Wire name: 'schema_name'
+	SchemaName string
 	// The storage location on the cloud
-	StorageLocation string `json:"storage_location,omitempty"`
+	// Wire name: 'storage_location'
+	StorageLocation string
 
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// The identifier of the user who updated the volume last time
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 	// The unique identifier of the volume
-	VolumeId string `json:"volume_id,omitempty"`
+	// Wire name: 'volume_id'
+	VolumeId string
 	// The type of the volume. An external volume is located in the specified
 	// external location. A managed volume is located in the default location
 	// which is specified by the parent schema, or the parent catalog, or the
 	// Metastore. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
-	VolumeType VolumeType `json:"volume_type,omitempty"`
+	// Wire name: 'volume_type'
+	VolumeType VolumeType
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *VolumeInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *VolumeInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &volumeInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := volumeInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s VolumeInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st VolumeInfo) MarshalJSON() ([]byte, error) {
+	pb, err := volumeInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The type of the volume. An external volume is located in the specified
@@ -6550,6 +14160,7 @@ func (s VolumeInfo) MarshalJSON() ([]byte, error) {
 //
 // [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external
 type VolumeType string
+type volumeTypePb string
 
 const VolumeTypeExternal VolumeType = `EXTERNAL`
 
@@ -6576,16 +14187,60 @@ func (f *VolumeType) Type() string {
 	return "VolumeType"
 }
 
+func volumeTypeToPb(st *VolumeType) (*volumeTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := volumeTypePb(*st)
+	return &pb, nil
+}
+
+func volumeTypeFromPb(pb *volumeTypePb) (*VolumeType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := VolumeType(*pb)
+	return &st, nil
+}
+
 type WorkspaceBinding struct {
 	// One of READ_WRITE/READ_ONLY. Default is READ_WRITE.
-	BindingType WorkspaceBindingBindingType `json:"binding_type,omitempty"`
+	// Wire name: 'binding_type'
+	BindingType WorkspaceBindingBindingType
 	// Required
-	WorkspaceId int64 `json:"workspace_id"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64
+}
+
+func (st *WorkspaceBinding) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &workspaceBindingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := workspaceBindingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st WorkspaceBinding) MarshalJSON() ([]byte, error) {
+	pb, err := workspaceBindingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Using `BINDING_TYPE_` prefix here to avoid conflict with `TableOperation`
 // enum in `credentials_common.proto`.
 type WorkspaceBindingBindingType string
+type workspaceBindingBindingTypePb string
 
 const WorkspaceBindingBindingTypeBindingTypeReadOnly WorkspaceBindingBindingType = `BINDING_TYPE_READ_ONLY`
 
@@ -6610,4 +14265,74 @@ func (f *WorkspaceBindingBindingType) Set(v string) error {
 // Type always returns WorkspaceBindingBindingType to satisfy [pflag.Value] interface
 func (f *WorkspaceBindingBindingType) Type() string {
 	return "WorkspaceBindingBindingType"
+}
+
+func workspaceBindingBindingTypeToPb(st *WorkspaceBindingBindingType) (*workspaceBindingBindingTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := workspaceBindingBindingTypePb(*st)
+	return &pb, nil
+}
+
+func workspaceBindingBindingTypeFromPb(pb *workspaceBindingBindingTypePb) (*WorkspaceBindingBindingType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := WorkspaceBindingBindingType(*pb)
+	return &st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

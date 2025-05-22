@@ -3,200 +3,518 @@
 package provisioning
 
 import (
+	"encoding/json"
 	"fmt"
-
-	"github.com/databricks/databricks-sdk-go/marshal"
+	"strings"
+	"time"
 )
 
 type AwsCredentials struct {
-	StsRole *StsRole `json:"sts_role,omitempty"`
+
+	// Wire name: 'sts_role'
+	StsRole *StsRole
+}
+
+func (st *AwsCredentials) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &awsCredentialsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := awsCredentialsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AwsCredentials) MarshalJSON() ([]byte, error) {
+	pb, err := awsCredentialsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AwsKeyInfo struct {
 	// The AWS KMS key alias.
-	KeyAlias string `json:"key_alias,omitempty"`
+	// Wire name: 'key_alias'
+	KeyAlias string
 	// The AWS KMS key's Amazon Resource Name (ARN).
-	KeyArn string `json:"key_arn"`
+	// Wire name: 'key_arn'
+	KeyArn string
 	// The AWS KMS key region.
-	KeyRegion string `json:"key_region"`
+	// Wire name: 'key_region'
+	KeyRegion string
 	// This field applies only if the `use_cases` property includes `STORAGE`.
 	// If this is set to `true` or omitted, the key is also used to encrypt
 	// cluster EBS volumes. If you do not want to use this key for encrypting
 	// EBS volumes, set to `false`.
-	ReuseKeyForClusterVolumes bool `json:"reuse_key_for_cluster_volumes,omitempty"`
+	// Wire name: 'reuse_key_for_cluster_volumes'
+	ReuseKeyForClusterVolumes bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AwsKeyInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AwsKeyInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &awsKeyInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := awsKeyInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AwsKeyInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AwsKeyInfo) MarshalJSON() ([]byte, error) {
+	pb, err := awsKeyInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AzureWorkspaceInfo struct {
 	// Azure Resource Group name
-	ResourceGroup string `json:"resource_group,omitempty"`
+	// Wire name: 'resource_group'
+	ResourceGroup string
 	// Azure Subscription ID
-	SubscriptionId string `json:"subscription_id,omitempty"`
+	// Wire name: 'subscription_id'
+	SubscriptionId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AzureWorkspaceInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AzureWorkspaceInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &azureWorkspaceInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := azureWorkspaceInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AzureWorkspaceInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AzureWorkspaceInfo) MarshalJSON() ([]byte, error) {
+	pb, err := azureWorkspaceInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The general workspace configurations that are specific to cloud providers.
 type CloudResourceContainer struct {
 	// The general workspace configurations that are specific to Google Cloud.
-	Gcp *CustomerFacingGcpCloudResourceContainer `json:"gcp,omitempty"`
+	// Wire name: 'gcp'
+	Gcp *CustomerFacingGcpCloudResourceContainer
+}
+
+func (st *CloudResourceContainer) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cloudResourceContainerPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := cloudResourceContainerFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CloudResourceContainer) MarshalJSON() ([]byte, error) {
+	pb, err := cloudResourceContainerToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateAwsKeyInfo struct {
 	// The AWS KMS key alias.
-	KeyAlias string `json:"key_alias,omitempty"`
+	// Wire name: 'key_alias'
+	KeyAlias string
 	// The AWS KMS key's Amazon Resource Name (ARN). Note that the key's AWS
 	// region is inferred from the ARN.
-	KeyArn string `json:"key_arn"`
+	// Wire name: 'key_arn'
+	KeyArn string
 	// This field applies only if the `use_cases` property includes `STORAGE`.
 	// If this is set to `true` or omitted, the key is also used to encrypt
 	// cluster EBS volumes. To not use this key also for encrypting EBS volumes,
 	// set this to `false`.
-	ReuseKeyForClusterVolumes bool `json:"reuse_key_for_cluster_volumes,omitempty"`
+	// Wire name: 'reuse_key_for_cluster_volumes'
+	ReuseKeyForClusterVolumes bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateAwsKeyInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateAwsKeyInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createAwsKeyInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createAwsKeyInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateAwsKeyInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateAwsKeyInfo) MarshalJSON() ([]byte, error) {
+	pb, err := createAwsKeyInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateCredentialAwsCredentials struct {
-	StsRole *CreateCredentialStsRole `json:"sts_role,omitempty"`
+
+	// Wire name: 'sts_role'
+	StsRole *CreateCredentialStsRole
+}
+
+func (st *CreateCredentialAwsCredentials) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createCredentialAwsCredentialsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createCredentialAwsCredentialsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateCredentialAwsCredentials) MarshalJSON() ([]byte, error) {
+	pb, err := createCredentialAwsCredentialsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateCredentialRequest struct {
-	AwsCredentials CreateCredentialAwsCredentials `json:"aws_credentials"`
+
+	// Wire name: 'aws_credentials'
+	AwsCredentials CreateCredentialAwsCredentials
 	// The human-readable name of the credential configuration object.
-	CredentialsName string `json:"credentials_name"`
+	// Wire name: 'credentials_name'
+	CredentialsName string
+}
+
+func (st *CreateCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateCredentialStsRole struct {
 	// The Amazon Resource Name (ARN) of the cross account role.
-	RoleArn string `json:"role_arn,omitempty"`
+	// Wire name: 'role_arn'
+	RoleArn string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateCredentialStsRole) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateCredentialStsRole) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createCredentialStsRolePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createCredentialStsRoleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateCredentialStsRole) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateCredentialStsRole) MarshalJSON() ([]byte, error) {
+	pb, err := createCredentialStsRoleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateCustomerManagedKeyRequest struct {
-	AwsKeyInfo *CreateAwsKeyInfo `json:"aws_key_info,omitempty"`
 
-	GcpKeyInfo *CreateGcpKeyInfo `json:"gcp_key_info,omitempty"`
+	// Wire name: 'aws_key_info'
+	AwsKeyInfo *CreateAwsKeyInfo
+
+	// Wire name: 'gcp_key_info'
+	GcpKeyInfo *CreateGcpKeyInfo
 	// The cases that the key can be used for.
-	UseCases []KeyUseCase `json:"use_cases"`
+	// Wire name: 'use_cases'
+	UseCases []KeyUseCase
+}
+
+func (st *CreateCustomerManagedKeyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createCustomerManagedKeyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createCustomerManagedKeyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateCustomerManagedKeyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createCustomerManagedKeyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateGcpKeyInfo struct {
 	// The GCP KMS key's resource name
-	KmsKeyId string `json:"kms_key_id"`
+	// Wire name: 'kms_key_id'
+	KmsKeyId string
+}
+
+func (st *CreateGcpKeyInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createGcpKeyInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createGcpKeyInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateGcpKeyInfo) MarshalJSON() ([]byte, error) {
+	pb, err := createGcpKeyInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateNetworkRequest struct {
 	// The Google Cloud specific information for this network (for example, the
 	// VPC ID, subnet ID, and secondary IP ranges).
-	GcpNetworkInfo *GcpNetworkInfo `json:"gcp_network_info,omitempty"`
+	// Wire name: 'gcp_network_info'
+	GcpNetworkInfo *GcpNetworkInfo
 	// The human-readable name of the network configuration.
-	NetworkName string `json:"network_name"`
+	// Wire name: 'network_name'
+	NetworkName string
 	// IDs of one to five security groups associated with this network. Security
 	// group IDs **cannot** be used in multiple network configurations.
-	SecurityGroupIds []string `json:"security_group_ids,omitempty"`
+	// Wire name: 'security_group_ids'
+	SecurityGroupIds []string
 	// IDs of at least two subnets associated with this network. Subnet IDs
 	// **cannot** be used in multiple network configurations.
-	SubnetIds []string `json:"subnet_ids,omitempty"`
+	// Wire name: 'subnet_ids'
+	SubnetIds []string
 	// If specified, contains the VPC endpoints used to allow cluster
 	// communication from this VPC over [AWS PrivateLink].
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
-	VpcEndpoints *NetworkVpcEndpoints `json:"vpc_endpoints,omitempty"`
+	// Wire name: 'vpc_endpoints'
+	VpcEndpoints *NetworkVpcEndpoints
 	// The ID of the VPC associated with this network. VPC IDs can be used in
 	// multiple network configurations.
-	VpcId string `json:"vpc_id,omitempty"`
+	// Wire name: 'vpc_id'
+	VpcId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateNetworkRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateNetworkRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createNetworkRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createNetworkRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateNetworkRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateNetworkRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createNetworkRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateStorageConfigurationRequest struct {
 	// Root S3 bucket information.
-	RootBucketInfo RootBucketInfo `json:"root_bucket_info"`
+	// Wire name: 'root_bucket_info'
+	RootBucketInfo RootBucketInfo
 	// The human-readable name of the storage configuration.
-	StorageConfigurationName string `json:"storage_configuration_name"`
+	// Wire name: 'storage_configuration_name'
+	StorageConfigurationName string
+}
+
+func (st *CreateStorageConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createStorageConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createStorageConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateStorageConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createStorageConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateVpcEndpointRequest struct {
 	// The ID of the VPC endpoint object in AWS.
-	AwsVpcEndpointId string `json:"aws_vpc_endpoint_id,omitempty"`
+	// Wire name: 'aws_vpc_endpoint_id'
+	AwsVpcEndpointId string
 	// The Google Cloud specific information for this Private Service Connect
 	// endpoint.
-	GcpVpcEndpointInfo *GcpVpcEndpointInfo `json:"gcp_vpc_endpoint_info,omitempty"`
+	// Wire name: 'gcp_vpc_endpoint_info'
+	GcpVpcEndpointInfo *GcpVpcEndpointInfo
 	// The AWS region in which this VPC endpoint object exists.
-	Region string `json:"region,omitempty"`
+	// Wire name: 'region'
+	Region string
 	// The human-readable name of the storage configuration.
-	VpcEndpointName string `json:"vpc_endpoint_name"`
+	// Wire name: 'vpc_endpoint_name'
+	VpcEndpointName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateVpcEndpointRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateVpcEndpointRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createVpcEndpointRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createVpcEndpointRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateVpcEndpointRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateVpcEndpointRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createVpcEndpointRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateWorkspaceRequest struct {
 	// The AWS region of the workspace's data plane.
-	AwsRegion string `json:"aws_region,omitempty"`
+	// Wire name: 'aws_region'
+	AwsRegion string
 	// The cloud provider which the workspace uses. For Google Cloud workspaces,
 	// always set this field to `gcp`.
-	Cloud string `json:"cloud,omitempty"`
+	// Wire name: 'cloud'
+	Cloud string
 	// The general workspace configurations that are specific to cloud
 	// providers.
-	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
+	// Wire name: 'cloud_resource_container'
+	CloudResourceContainer *CloudResourceContainer
 	// ID of the workspace's credential configuration object.
-	CredentialsId string `json:"credentials_id,omitempty"`
+	// Wire name: 'credentials_id'
+	CredentialsId string
 	// The custom tags key-value pairing that is attached to this workspace. The
 	// key-value pair is a string of utf-8 characters. The value can be an empty
 	// string, with maximum length of 255 characters. The key can be of maximum
 	// length of 127 characters, and cannot be empty.
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
+	// Wire name: 'custom_tags'
+	CustomTags map[string]string
 	// The deployment name defines part of the subdomain for the workspace. The
 	// workspace URL for the web application and REST APIs is
 	// `<workspace-deployment-name>.cloud.databricks.com`. For example, if the
@@ -226,7 +544,8 @@ type CreateWorkspaceRequest struct {
 	//
 	// If a new workspace omits this property, the server generates a unique
 	// deployment name for you with the pattern `dbc-xxxxxxxx-xxxx`.
-	DeploymentName string `json:"deployment_name,omitempty"`
+	// Wire name: 'deployment_name'
+	DeploymentName string
 	// The network settings for the workspace. The configurations are only for
 	// Databricks-managed VPCs. It is ignored if you specify a customer-managed
 	// VPC in the `network_id` field.", All the IP range configurations must be
@@ -250,27 +569,34 @@ type CreateWorkspaceRequest struct {
 	// for a new workspace].
 	//
 	// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
-	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
+	// Wire name: 'gcp_managed_network_config'
+	GcpManagedNetworkConfig *GcpManagedNetworkConfig
 	// The configurations for the GKE cluster of a Databricks workspace.
-	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
+	// Wire name: 'gke_config'
+	GkeConfig *GkeConfig
 	// Whether no public IP is enabled for the workspace.
-	IsNoPublicIpEnabled bool `json:"is_no_public_ip_enabled,omitempty"`
+	// Wire name: 'is_no_public_ip_enabled'
+	IsNoPublicIpEnabled bool
 	// The Google Cloud region of the workspace data plane in your Google
 	// account. For example, `us-east4`.
-	Location string `json:"location,omitempty"`
+	// Wire name: 'location'
+	Location string
 	// The ID of the workspace's managed services encryption key configuration
 	// object. This is used to help protect and control access to the
 	// workspace's notebooks, secrets, Databricks SQL queries, and query
 	// history. The provided key configuration object property `use_cases` must
 	// contain `MANAGED_SERVICES`.
-	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
+	// Wire name: 'managed_services_customer_managed_key_id'
+	ManagedServicesCustomerManagedKeyId string
 
-	NetworkId string `json:"network_id,omitempty"`
+	// Wire name: 'network_id'
+	NetworkId string
 	// The pricing tier of the workspace. For pricing tier information, see [AWS
 	// Pricing].
 	//
 	// [AWS Pricing]: https://databricks.com/product/aws-pricing
-	PricingTier PricingTier `json:"pricing_tier,omitempty"`
+	// Wire name: 'pricing_tier'
+	PricingTier PricingTier
 	// ID of the workspace's private access settings object. Only used for
 	// PrivateLink. This ID must be specified for customers using [AWS
 	// PrivateLink] for either front-end (user-to-workspace connection),
@@ -282,142 +608,450 @@ type CreateWorkspaceRequest struct {
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
+	// Wire name: 'private_access_settings_id'
+	PrivateAccessSettingsId string
 	// The ID of the workspace's storage configuration object.
-	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string
 	// The ID of the workspace's storage encryption key configuration object.
 	// This is used to encrypt the workspace's root S3 bucket (root DBFS and
 	// system data) and, optionally, cluster EBS volumes. The provided key
 	// configuration object property `use_cases` must contain `STORAGE`.
-	StorageCustomerManagedKeyId string `json:"storage_customer_managed_key_id,omitempty"`
+	// Wire name: 'storage_customer_managed_key_id'
+	StorageCustomerManagedKeyId string
 	// The workspace's human-readable name.
-	WorkspaceName string `json:"workspace_name"`
+	// Wire name: 'workspace_name'
+	WorkspaceName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createWorkspaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createWorkspaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createWorkspaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type Credential struct {
 	// The Databricks account ID that hosts the credential.
-	AccountId string `json:"account_id,omitempty"`
+	// Wire name: 'account_id'
+	AccountId string
 
-	AwsCredentials *AwsCredentials `json:"aws_credentials,omitempty"`
+	// Wire name: 'aws_credentials'
+	AwsCredentials *AwsCredentials
 	// Time in epoch milliseconds when the credential was created.
-	CreationTime int64 `json:"creation_time,omitempty"`
+	// Wire name: 'creation_time'
+	CreationTime int64
 	// Databricks credential configuration ID.
-	CredentialsId string `json:"credentials_id,omitempty"`
+	// Wire name: 'credentials_id'
+	CredentialsId string
 	// The human-readable name of the credential configuration object.
-	CredentialsName string `json:"credentials_name,omitempty"`
+	// Wire name: 'credentials_name'
+	CredentialsName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Credential) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *Credential) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &credentialPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := credentialFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s Credential) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st Credential) MarshalJSON() ([]byte, error) {
+	pb, err := credentialToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The custom tags key-value pairing that is attached to this workspace. The
 // key-value pair is a string of utf-8 characters. The value can be an empty
 // string, with maximum length of 255 characters. The key can be of maximum
 // length of 127 characters, and cannot be empty.
+
 type CustomTags map[string]string
+type customTagsPb CustomTags
+
+func customTagsToPb(st *CustomTags) (*customTagsPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	stPb := customTagsPb(*st)
+	return &stPb, nil
+}
+func customTagsFromPb(stPb *customTagsPb) (*CustomTags, error) {
+	if stPb == nil {
+		return nil, nil
+	}
+	st := CustomTags(*stPb)
+	return &st, nil
+}
 
 // The general workspace configurations that are specific to Google Cloud.
 type CustomerFacingGcpCloudResourceContainer struct {
 	// The Google Cloud project ID, which the workspace uses to instantiate
 	// cloud resources for your workspace.
-	ProjectId string `json:"project_id,omitempty"`
+	// Wire name: 'project_id'
+	ProjectId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CustomerFacingGcpCloudResourceContainer) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CustomerFacingGcpCloudResourceContainer) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &customerFacingGcpCloudResourceContainerPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := customerFacingGcpCloudResourceContainerFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CustomerFacingGcpCloudResourceContainer) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CustomerFacingGcpCloudResourceContainer) MarshalJSON() ([]byte, error) {
+	pb, err := customerFacingGcpCloudResourceContainerToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CustomerManagedKey struct {
 	// The Databricks account ID that holds the customer-managed key.
-	AccountId string `json:"account_id,omitempty"`
+	// Wire name: 'account_id'
+	AccountId string
 
-	AwsKeyInfo *AwsKeyInfo `json:"aws_key_info,omitempty"`
+	// Wire name: 'aws_key_info'
+	AwsKeyInfo *AwsKeyInfo
 	// Time in epoch milliseconds when the customer key was created.
-	CreationTime int64 `json:"creation_time,omitempty"`
+	// Wire name: 'creation_time'
+	CreationTime int64
 	// ID of the encryption key configuration object.
-	CustomerManagedKeyId string `json:"customer_managed_key_id,omitempty"`
+	// Wire name: 'customer_managed_key_id'
+	CustomerManagedKeyId string
 
-	GcpKeyInfo *GcpKeyInfo `json:"gcp_key_info,omitempty"`
+	// Wire name: 'gcp_key_info'
+	GcpKeyInfo *GcpKeyInfo
 	// The cases that the key can be used for.
-	UseCases []KeyUseCase `json:"use_cases,omitempty"`
+	// Wire name: 'use_cases'
+	UseCases []KeyUseCase
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CustomerManagedKey) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CustomerManagedKey) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &customerManagedKeyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := customerManagedKeyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CustomerManagedKey) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CustomerManagedKey) MarshalJSON() ([]byte, error) {
+	pb, err := customerManagedKeyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete credential configuration
 type DeleteCredentialRequest struct {
 	// Databricks Account API credential configuration ID
-	CredentialsId string `json:"-" url:"-"`
+	// Wire name: 'credentials_id'
+	CredentialsId string `tf:"-"`
+}
+
+func (st *DeleteCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete encryption key configuration
 type DeleteEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
-	CustomerManagedKeyId string `json:"-" url:"-"`
+	// Wire name: 'customer_managed_key_id'
+	CustomerManagedKeyId string `tf:"-"`
+}
+
+func (st *DeleteEncryptionKeyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteEncryptionKeyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteEncryptionKeyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteEncryptionKeyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteEncryptionKeyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a network configuration
 type DeleteNetworkRequest struct {
 	// Databricks Account API network configuration ID.
-	NetworkId string `json:"-" url:"-"`
+	// Wire name: 'network_id'
+	NetworkId string `tf:"-"`
+}
+
+func (st *DeleteNetworkRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteNetworkRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteNetworkRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteNetworkRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteNetworkRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a private access settings object
 type DeletePrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
-	PrivateAccessSettingsId string `json:"-" url:"-"`
+	// Wire name: 'private_access_settings_id'
+	PrivateAccessSettingsId string `tf:"-"`
+}
+
+func (st *DeletePrivateAccesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deletePrivateAccesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deletePrivateAccesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeletePrivateAccesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deletePrivateAccesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteResponse struct {
 }
 
+func (st *DeleteResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete storage configuration
 type DeleteStorageRequest struct {
 	// Databricks Account API storage configuration ID.
-	StorageConfigurationId string `json:"-" url:"-"`
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string `tf:"-"`
+}
+
+func (st *DeleteStorageRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteStorageRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteStorageRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteStorageRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteStorageRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete VPC endpoint configuration
 type DeleteVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
-	VpcEndpointId string `json:"-" url:"-"`
+	// Wire name: 'vpc_endpoint_id'
+	VpcEndpointId string `tf:"-"`
+}
+
+func (st *DeleteVpcEndpointRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteVpcEndpointRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteVpcEndpointRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteVpcEndpointRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteVpcEndpointRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a workspace
 type DeleteWorkspaceRequest struct {
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
+}
+
+func (st *DeleteWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteWorkspaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteWorkspaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteWorkspaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // This enumeration represents the type of Databricks VPC [endpoint service]
@@ -425,6 +1059,7 @@ type DeleteWorkspaceRequest struct {
 //
 // [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
 type EndpointUseCase string
+type endpointUseCasePb string
 
 const EndpointUseCaseDataplaneRelayAccess EndpointUseCase = `DATAPLANE_RELAY_ACCESS`
 
@@ -451,9 +1086,26 @@ func (f *EndpointUseCase) Type() string {
 	return "EndpointUseCase"
 }
 
+func endpointUseCaseToPb(st *EndpointUseCase) (*endpointUseCasePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := endpointUseCasePb(*st)
+	return &pb, nil
+}
+
+func endpointUseCaseFromPb(pb *endpointUseCasePb) (*EndpointUseCase, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := EndpointUseCase(*pb)
+	return &st, nil
+}
+
 // The AWS resource associated with this error: credentials, VPC, subnet,
 // security group, or network ACL.
 type ErrorType string
+type errorTypePb string
 
 const ErrorTypeCredentials ErrorType = `credentials`
 
@@ -486,28 +1138,90 @@ func (f *ErrorType) Type() string {
 	return "ErrorType"
 }
 
+func errorTypeToPb(st *ErrorType) (*errorTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := errorTypePb(*st)
+	return &pb, nil
+}
+
+func errorTypeFromPb(pb *errorTypePb) (*ErrorType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ErrorType(*pb)
+	return &st, nil
+}
+
 type ExternalCustomerInfo struct {
 	// Email of the authoritative user.
-	AuthoritativeUserEmail string `json:"authoritative_user_email,omitempty"`
+	// Wire name: 'authoritative_user_email'
+	AuthoritativeUserEmail string
 	// The authoritative user full name.
-	AuthoritativeUserFullName string `json:"authoritative_user_full_name,omitempty"`
+	// Wire name: 'authoritative_user_full_name'
+	AuthoritativeUserFullName string
 	// The legal entity name for the external workspace
-	CustomerName string `json:"customer_name,omitempty"`
+	// Wire name: 'customer_name'
+	CustomerName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExternalCustomerInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ExternalCustomerInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &externalCustomerInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := externalCustomerInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ExternalCustomerInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ExternalCustomerInfo) MarshalJSON() ([]byte, error) {
+	pb, err := externalCustomerInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GcpKeyInfo struct {
 	// The GCP KMS key's resource name
-	KmsKeyId string `json:"kms_key_id"`
+	// Wire name: 'kms_key_id'
+	KmsKeyId string
+}
+
+func (st *GcpKeyInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &gcpKeyInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := gcpKeyInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GcpKeyInfo) MarshalJSON() ([]byte, error) {
+	pb, err := gcpKeyInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The network settings for the workspace. The configurations are only for
@@ -536,114 +1250,369 @@ type GcpKeyInfo struct {
 type GcpManagedNetworkConfig struct {
 	// The IP range from which to allocate GKE cluster pods. No bigger than `/9`
 	// and no smaller than `/21`.
-	GkeClusterPodIpRange string `json:"gke_cluster_pod_ip_range,omitempty"`
+	// Wire name: 'gke_cluster_pod_ip_range'
+	GkeClusterPodIpRange string
 	// The IP range from which to allocate GKE cluster services. No bigger than
 	// `/16` and no smaller than `/27`.
-	GkeClusterServiceIpRange string `json:"gke_cluster_service_ip_range,omitempty"`
+	// Wire name: 'gke_cluster_service_ip_range'
+	GkeClusterServiceIpRange string
 	// The IP range from which to allocate GKE cluster nodes. No bigger than
 	// `/9` and no smaller than `/29`.
-	SubnetCidr string `json:"subnet_cidr,omitempty"`
+	// Wire name: 'subnet_cidr'
+	SubnetCidr string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GcpManagedNetworkConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GcpManagedNetworkConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &gcpManagedNetworkConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := gcpManagedNetworkConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GcpManagedNetworkConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GcpManagedNetworkConfig) MarshalJSON() ([]byte, error) {
+	pb, err := gcpManagedNetworkConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The Google Cloud specific information for this network (for example, the VPC
 // ID, subnet ID, and secondary IP ranges).
 type GcpNetworkInfo struct {
 	// The Google Cloud project ID of the VPC network.
-	NetworkProjectId string `json:"network_project_id"`
+	// Wire name: 'network_project_id'
+	NetworkProjectId string
 	// The name of the secondary IP range for pods. A Databricks-managed GKE
 	// cluster uses this IP range for its pods. This secondary IP range can be
 	// used by only one workspace.
-	PodIpRangeName string `json:"pod_ip_range_name"`
+	// Wire name: 'pod_ip_range_name'
+	PodIpRangeName string
 	// The name of the secondary IP range for services. A Databricks-managed GKE
 	// cluster uses this IP range for its services. This secondary IP range can
 	// be used by only one workspace.
-	ServiceIpRangeName string `json:"service_ip_range_name"`
+	// Wire name: 'service_ip_range_name'
+	ServiceIpRangeName string
 	// The ID of the subnet associated with this network.
-	SubnetId string `json:"subnet_id"`
+	// Wire name: 'subnet_id'
+	SubnetId string
 	// The Google Cloud region of the workspace data plane (for example,
 	// `us-east4`).
-	SubnetRegion string `json:"subnet_region"`
+	// Wire name: 'subnet_region'
+	SubnetRegion string
 	// The ID of the VPC associated with this network. VPC IDs can be used in
 	// multiple network configurations.
-	VpcId string `json:"vpc_id"`
+	// Wire name: 'vpc_id'
+	VpcId string
+}
+
+func (st *GcpNetworkInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &gcpNetworkInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := gcpNetworkInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GcpNetworkInfo) MarshalJSON() ([]byte, error) {
+	pb, err := gcpNetworkInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The Google Cloud specific information for this Private Service Connect
 // endpoint.
 type GcpVpcEndpointInfo struct {
 	// Region of the PSC endpoint.
-	EndpointRegion string `json:"endpoint_region"`
+	// Wire name: 'endpoint_region'
+	EndpointRegion string
 	// The Google Cloud project ID of the VPC network where the PSC connection
 	// resides.
-	ProjectId string `json:"project_id"`
+	// Wire name: 'project_id'
+	ProjectId string
 	// The unique ID of this PSC connection.
-	PscConnectionId string `json:"psc_connection_id,omitempty"`
+	// Wire name: 'psc_connection_id'
+	PscConnectionId string
 	// The name of the PSC endpoint in the Google Cloud project.
-	PscEndpointName string `json:"psc_endpoint_name"`
+	// Wire name: 'psc_endpoint_name'
+	PscEndpointName string
 	// The service attachment this PSC connection connects to.
-	ServiceAttachmentId string `json:"service_attachment_id,omitempty"`
+	// Wire name: 'service_attachment_id'
+	ServiceAttachmentId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GcpVpcEndpointInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GcpVpcEndpointInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &gcpVpcEndpointInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := gcpVpcEndpointInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GcpVpcEndpointInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GcpVpcEndpointInfo) MarshalJSON() ([]byte, error) {
+	pb, err := gcpVpcEndpointInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get credential configuration
 type GetCredentialRequest struct {
 	// Databricks Account API credential configuration ID
-	CredentialsId string `json:"-" url:"-"`
+	// Wire name: 'credentials_id'
+	CredentialsId string `tf:"-"`
+}
+
+func (st *GetCredentialRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getCredentialRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getCredentialRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetCredentialRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getCredentialRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get encryption key configuration
 type GetEncryptionKeyRequest struct {
 	// Databricks encryption key configuration ID.
-	CustomerManagedKeyId string `json:"-" url:"-"`
+	// Wire name: 'customer_managed_key_id'
+	CustomerManagedKeyId string `tf:"-"`
+}
+
+func (st *GetEncryptionKeyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getEncryptionKeyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getEncryptionKeyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetEncryptionKeyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getEncryptionKeyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a network configuration
 type GetNetworkRequest struct {
 	// Databricks Account API network configuration ID.
-	NetworkId string `json:"-" url:"-"`
+	// Wire name: 'network_id'
+	NetworkId string `tf:"-"`
+}
+
+func (st *GetNetworkRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getNetworkRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getNetworkRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetNetworkRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getNetworkRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a private access settings object
 type GetPrivateAccesRequest struct {
 	// Databricks Account API private access settings ID.
-	PrivateAccessSettingsId string `json:"-" url:"-"`
+	// Wire name: 'private_access_settings_id'
+	PrivateAccessSettingsId string `tf:"-"`
+}
+
+func (st *GetPrivateAccesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getPrivateAccesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getPrivateAccesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetPrivateAccesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getPrivateAccesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get storage configuration
 type GetStorageRequest struct {
 	// Databricks Account API storage configuration ID.
-	StorageConfigurationId string `json:"-" url:"-"`
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string `tf:"-"`
+}
+
+func (st *GetStorageRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getStorageRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getStorageRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetStorageRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getStorageRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a VPC endpoint configuration
 type GetVpcEndpointRequest struct {
 	// Databricks VPC endpoint ID.
-	VpcEndpointId string `json:"-" url:"-"`
+	// Wire name: 'vpc_endpoint_id'
+	VpcEndpointId string `tf:"-"`
+}
+
+func (st *GetVpcEndpointRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getVpcEndpointRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getVpcEndpointRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetVpcEndpointRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getVpcEndpointRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a workspace
 type GetWorkspaceRequest struct {
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
+}
+
+func (st *GetWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getWorkspaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getWorkspaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getWorkspaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The configurations for the GKE cluster of a Databricks workspace.
@@ -656,22 +1625,41 @@ type GkeConfig struct {
 	//
 	// Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of
 	// a public GKE cluster have public IP addresses.
-	ConnectivityType GkeConfigConnectivityType `json:"connectivity_type,omitempty"`
+	// Wire name: 'connectivity_type'
+	ConnectivityType GkeConfigConnectivityType
 	// The IP range from which to allocate GKE cluster master resources. This
 	// field will be ignored if GKE private cluster is not enabled.
 	//
 	// It must be exactly as big as `/28`.
-	MasterIpRange string `json:"master_ip_range,omitempty"`
+	// Wire name: 'master_ip_range'
+	MasterIpRange string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GkeConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GkeConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &gkeConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := gkeConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GkeConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GkeConfig) MarshalJSON() ([]byte, error) {
+	pb, err := gkeConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Specifies the network connectivity types for the GKE nodes and the GKE master
@@ -683,6 +1671,7 @@ func (s GkeConfig) MarshalJSON() ([]byte, error) {
 // Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a
 // public GKE cluster have public IP addresses.
 type GkeConfigConnectivityType string
+type gkeConfigConnectivityTypePb string
 
 const GkeConfigConnectivityTypePrivateNodePublicMaster GkeConfigConnectivityType = `PRIVATE_NODE_PUBLIC_MASTER`
 
@@ -709,10 +1698,27 @@ func (f *GkeConfigConnectivityType) Type() string {
 	return "GkeConfigConnectivityType"
 }
 
+func gkeConfigConnectivityTypeToPb(st *GkeConfigConnectivityType) (*gkeConfigConnectivityTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := gkeConfigConnectivityTypePb(*st)
+	return &pb, nil
+}
+
+func gkeConfigConnectivityTypeFromPb(pb *gkeConfigConnectivityTypePb) (*GkeConfigConnectivityType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := GkeConfigConnectivityType(*pb)
+	return &st, nil
+}
+
 // Possible values are: * `MANAGED_SERVICES`: Encrypts notebook and secret data
 // in the control plane * `STORAGE`: Encrypts the workspace's root S3 bucket
 // (root DBFS and system data) and, optionally, cluster EBS volumes.
 type KeyUseCase string
+type keyUseCasePb string
 
 // Encrypts notebook and secret data in the control plane
 const KeyUseCaseManagedServices KeyUseCase = `MANAGED_SERVICES`
@@ -742,68 +1748,133 @@ func (f *KeyUseCase) Type() string {
 	return "KeyUseCase"
 }
 
+func keyUseCaseToPb(st *KeyUseCase) (*keyUseCasePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := keyUseCasePb(*st)
+	return &pb, nil
+}
+
+func keyUseCaseFromPb(pb *keyUseCasePb) (*KeyUseCase, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := KeyUseCase(*pb)
+	return &st, nil
+}
+
 type Network struct {
 	// The Databricks account ID associated with this network configuration.
-	AccountId string `json:"account_id,omitempty"`
+	// Wire name: 'account_id'
+	AccountId string
 	// Time in epoch milliseconds when the network was created.
-	CreationTime int64 `json:"creation_time,omitempty"`
+	// Wire name: 'creation_time'
+	CreationTime int64
 	// Array of error messages about the network configuration.
-	ErrorMessages []NetworkHealth `json:"error_messages,omitempty"`
+	// Wire name: 'error_messages'
+	ErrorMessages []NetworkHealth
 	// The Google Cloud specific information for this network (for example, the
 	// VPC ID, subnet ID, and secondary IP ranges).
-	GcpNetworkInfo *GcpNetworkInfo `json:"gcp_network_info,omitempty"`
+	// Wire name: 'gcp_network_info'
+	GcpNetworkInfo *GcpNetworkInfo
 	// The Databricks network configuration ID.
-	NetworkId string `json:"network_id,omitempty"`
+	// Wire name: 'network_id'
+	NetworkId string
 	// The human-readable name of the network configuration.
-	NetworkName string `json:"network_name,omitempty"`
+	// Wire name: 'network_name'
+	NetworkName string
 
-	SecurityGroupIds []string `json:"security_group_ids,omitempty"`
+	// Wire name: 'security_group_ids'
+	SecurityGroupIds []string
 
-	SubnetIds []string `json:"subnet_ids,omitempty"`
+	// Wire name: 'subnet_ids'
+	SubnetIds []string
 	// If specified, contains the VPC endpoints used to allow cluster
 	// communication from this VPC over [AWS PrivateLink].
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
-	VpcEndpoints *NetworkVpcEndpoints `json:"vpc_endpoints,omitempty"`
+	// Wire name: 'vpc_endpoints'
+	VpcEndpoints *NetworkVpcEndpoints
 	// The ID of the VPC associated with this network configuration. VPC IDs can
 	// be used in multiple networks.
-	VpcId string `json:"vpc_id,omitempty"`
+	// Wire name: 'vpc_id'
+	VpcId string
 	// The status of this network configuration object in terms of its use in a
 	// workspace: * `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`:
 	// Broken. * `WARNED`: Warned.
-	VpcStatus VpcStatus `json:"vpc_status,omitempty"`
+	// Wire name: 'vpc_status'
+	VpcStatus VpcStatus
 	// Array of warning messages about the network configuration.
-	WarningMessages []NetworkWarning `json:"warning_messages,omitempty"`
+	// Wire name: 'warning_messages'
+	WarningMessages []NetworkWarning
 	// Workspace ID associated with this network configuration.
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Network) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *Network) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &networkPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := networkFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s Network) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st Network) MarshalJSON() ([]byte, error) {
+	pb, err := networkToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type NetworkHealth struct {
 	// Details of the error.
-	ErrorMessage string `json:"error_message,omitempty"`
+	// Wire name: 'error_message'
+	ErrorMessage string
 	// The AWS resource associated with this error: credentials, VPC, subnet,
 	// security group, or network ACL.
-	ErrorType ErrorType `json:"error_type,omitempty"`
+	// Wire name: 'error_type'
+	ErrorType ErrorType
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *NetworkHealth) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *NetworkHealth) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &networkHealthPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := networkHealthFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s NetworkHealth) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st NetworkHealth) MarshalJSON() ([]byte, error) {
+	pb, err := networkHealthToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // If specified, contains the VPC endpoints used to allow cluster communication
@@ -813,28 +1884,74 @@ func (s NetworkHealth) MarshalJSON() ([]byte, error) {
 type NetworkVpcEndpoints struct {
 	// The VPC endpoint ID used by this network to access the Databricks secure
 	// cluster connectivity relay.
-	DataplaneRelay []string `json:"dataplane_relay"`
+	// Wire name: 'dataplane_relay'
+	DataplaneRelay []string
 	// The VPC endpoint ID used by this network to access the Databricks REST
 	// API.
-	RestApi []string `json:"rest_api"`
+	// Wire name: 'rest_api'
+	RestApi []string
+}
+
+func (st *NetworkVpcEndpoints) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &networkVpcEndpointsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := networkVpcEndpointsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st NetworkVpcEndpoints) MarshalJSON() ([]byte, error) {
+	pb, err := networkVpcEndpointsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type NetworkWarning struct {
 	// Details of the warning.
-	WarningMessage string `json:"warning_message,omitempty"`
+	// Wire name: 'warning_message'
+	WarningMessage string
 	// The AWS resource associated with this warning: a subnet or a security
 	// group.
-	WarningType WarningType `json:"warning_type,omitempty"`
+	// Wire name: 'warning_type'
+	WarningType WarningType
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *NetworkWarning) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *NetworkWarning) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &networkWarningPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := networkWarningFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s NetworkWarning) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st NetworkWarning) MarshalJSON() ([]byte, error) {
+	pb, err := networkWarningToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The pricing tier of the workspace. For pricing tier information, see [AWS
@@ -842,6 +1959,7 @@ func (s NetworkWarning) MarshalJSON() ([]byte, error) {
 //
 // [AWS Pricing]: https://databricks.com/product/aws-pricing
 type PricingTier string
+type pricingTierPb string
 
 const PricingTierCommunityEdition PricingTier = `COMMUNITY_EDITION`
 
@@ -876,6 +1994,22 @@ func (f *PricingTier) Type() string {
 	return "PricingTier"
 }
 
+func pricingTierToPb(st *PricingTier) (*pricingTierPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := pricingTierPb(*st)
+	return &pb, nil
+}
+
+func pricingTierFromPb(pb *pricingTierPb) (*PricingTier, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := PricingTier(*pb)
+	return &st, nil
+}
+
 // The private access level controls which VPC endpoints can connect to the UI
 // or API of any workspace that attaches this private access settings object. *
 // `ACCOUNT` level access (the default) allows only VPC endpoints that are
@@ -883,6 +2017,7 @@ func (f *PricingTier) Type() string {
 // level access allows only specified VPC endpoints connect to your workspace.
 // For details, see `allowed_vpc_endpoint_ids`.
 type PrivateAccessLevel string
+type privateAccessLevelPb string
 
 const PrivateAccessLevelAccount PrivateAccessLevel = `ACCOUNT`
 
@@ -909,149 +2044,325 @@ func (f *PrivateAccessLevel) Type() string {
 	return "PrivateAccessLevel"
 }
 
+func privateAccessLevelToPb(st *PrivateAccessLevel) (*privateAccessLevelPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := privateAccessLevelPb(*st)
+	return &pb, nil
+}
+
+func privateAccessLevelFromPb(pb *privateAccessLevelPb) (*PrivateAccessLevel, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := PrivateAccessLevel(*pb)
+	return &st, nil
+}
+
 type PrivateAccessSettings struct {
 	// The Databricks account ID that hosts the credential.
-	AccountId string `json:"account_id,omitempty"`
+	// Wire name: 'account_id'
+	AccountId string
 	// An array of Databricks VPC endpoint IDs.
-	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
+	// Wire name: 'allowed_vpc_endpoint_ids'
+	AllowedVpcEndpointIds []string
 	// The private access level controls which VPC endpoints can connect to the
 	// UI or API of any workspace that attaches this private access settings
 	// object. * `ACCOUNT` level access (the default) allows only VPC endpoints
 	// that are registered in your Databricks account connect to your workspace.
 	// * `ENDPOINT` level access allows only specified VPC endpoints connect to
 	// your workspace. For details, see `allowed_vpc_endpoint_ids`.
-	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
+	// Wire name: 'private_access_level'
+	PrivateAccessLevel PrivateAccessLevel
 	// Databricks private access settings ID.
-	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
+	// Wire name: 'private_access_settings_id'
+	PrivateAccessSettingsId string
 	// The human-readable name of the private access settings object.
-	PrivateAccessSettingsName string `json:"private_access_settings_name,omitempty"`
+	// Wire name: 'private_access_settings_name'
+	PrivateAccessSettingsName string
 	// Determines if the workspace can be accessed over public internet. For
 	// fully private workspaces, you can optionally specify `false`, but only if
 	// you implement both the front-end and the back-end PrivateLink
 	// connections. Otherwise, specify `true`, which means that public access is
 	// enabled.
-	PublicAccessEnabled bool `json:"public_access_enabled,omitempty"`
+	// Wire name: 'public_access_enabled'
+	PublicAccessEnabled bool
 	// The cloud region for workspaces attached to this private access settings
 	// object.
-	Region string `json:"region,omitempty"`
+	// Wire name: 'region'
+	Region string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PrivateAccessSettings) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PrivateAccessSettings) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &privateAccessSettingsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := privateAccessSettingsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PrivateAccessSettings) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PrivateAccessSettings) MarshalJSON() ([]byte, error) {
+	pb, err := privateAccessSettingsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ReplaceResponse struct {
 }
 
+func (st *ReplaceResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &replaceResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := replaceResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ReplaceResponse) MarshalJSON() ([]byte, error) {
+	pb, err := replaceResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Root S3 bucket information.
 type RootBucketInfo struct {
 	// The name of the S3 bucket.
-	BucketName string `json:"bucket_name,omitempty"`
+	// Wire name: 'bucket_name'
+	BucketName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RootBucketInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RootBucketInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &rootBucketInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := rootBucketInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RootBucketInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RootBucketInfo) MarshalJSON() ([]byte, error) {
+	pb, err := rootBucketInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type StorageConfiguration struct {
 	// The Databricks account ID that hosts the credential.
-	AccountId string `json:"account_id,omitempty"`
+	// Wire name: 'account_id'
+	AccountId string
 	// Time in epoch milliseconds when the storage configuration was created.
-	CreationTime int64 `json:"creation_time,omitempty"`
+	// Wire name: 'creation_time'
+	CreationTime int64
 	// Root S3 bucket information.
-	RootBucketInfo *RootBucketInfo `json:"root_bucket_info,omitempty"`
+	// Wire name: 'root_bucket_info'
+	RootBucketInfo *RootBucketInfo
 	// Databricks storage configuration ID.
-	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string
 	// The human-readable name of the storage configuration.
-	StorageConfigurationName string `json:"storage_configuration_name,omitempty"`
+	// Wire name: 'storage_configuration_name'
+	StorageConfigurationName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *StorageConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *StorageConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &storageConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := storageConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s StorageConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st StorageConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := storageConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type StsRole struct {
 	// The external ID that needs to be trusted by the cross-account role. This
 	// is always your Databricks account ID.
-	ExternalId string `json:"external_id,omitempty"`
+	// Wire name: 'external_id'
+	ExternalId string
 	// The Amazon Resource Name (ARN) of the cross account role.
-	RoleArn string `json:"role_arn,omitempty"`
+	// Wire name: 'role_arn'
+	RoleArn string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *StsRole) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *StsRole) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &stsRolePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := stsRoleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s StsRole) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st StsRole) MarshalJSON() ([]byte, error) {
+	pb, err := stsRoleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateResponse struct {
 }
 
+func (st *UpdateResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type UpdateWorkspaceRequest struct {
 	// The AWS region of the workspace's data plane (for example, `us-west-2`).
 	// This parameter is available only for updating failed workspaces.
-	AwsRegion string `json:"aws_region,omitempty"`
+	// Wire name: 'aws_region'
+	AwsRegion string
 	// ID of the workspace's credential configuration object. This parameter is
 	// available for updating both failed and running workspaces.
-	CredentialsId string `json:"credentials_id,omitempty"`
+	// Wire name: 'credentials_id'
+	CredentialsId string
 	// The custom tags key-value pairing that is attached to this workspace. The
 	// key-value pair is a string of utf-8 characters. The value can be an empty
 	// string, with maximum length of 255 characters. The key can be of maximum
 	// length of 127 characters, and cannot be empty.
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
+	// Wire name: 'custom_tags'
+	CustomTags map[string]string
 	// The ID of the workspace's managed services encryption key configuration
 	// object. This parameter is available only for updating failed workspaces.
-	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
+	// Wire name: 'managed_services_customer_managed_key_id'
+	ManagedServicesCustomerManagedKeyId string
 
-	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
+	// Wire name: 'network_connectivity_config_id'
+	NetworkConnectivityConfigId string
 	// The ID of the workspace's network configuration object. Used only if you
 	// already use a customer-managed VPC. For failed workspaces only, you can
 	// switch from a Databricks-managed VPC to a customer-managed VPC by
 	// updating the workspace to add a network configuration ID.
-	NetworkId string `json:"network_id,omitempty"`
+	// Wire name: 'network_id'
+	NetworkId string
 	// The ID of the workspace's private access settings configuration object.
 	// This parameter is available only for updating failed workspaces.
-	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
+	// Wire name: 'private_access_settings_id'
+	PrivateAccessSettingsId string
 	// The ID of the workspace's storage configuration object. This parameter is
 	// available only for updating failed workspaces.
-	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string
 	// The ID of the key configuration object for workspace storage. This
 	// parameter is available for updating both failed and running workspaces.
-	StorageCustomerManagedKeyId string `json:"storage_customer_managed_key_id,omitempty"`
+	// Wire name: 'storage_customer_managed_key_id'
+	StorageCustomerManagedKeyId string
 	// Workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64 `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateWorkspaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateWorkspaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateWorkspaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpsertPrivateAccessSettingsRequest struct {
@@ -1069,91 +2380,142 @@ type UpsertPrivateAccessSettingsRequest struct {
 	// public internet, see [IP access lists].
 	//
 	// [IP access lists]: https://docs.databricks.com/security/network/ip-access-list.html
-	AllowedVpcEndpointIds []string `json:"allowed_vpc_endpoint_ids,omitempty"`
+	// Wire name: 'allowed_vpc_endpoint_ids'
+	AllowedVpcEndpointIds []string
 	// The private access level controls which VPC endpoints can connect to the
 	// UI or API of any workspace that attaches this private access settings
 	// object. * `ACCOUNT` level access (the default) allows only VPC endpoints
 	// that are registered in your Databricks account connect to your workspace.
 	// * `ENDPOINT` level access allows only specified VPC endpoints connect to
 	// your workspace. For details, see `allowed_vpc_endpoint_ids`.
-	PrivateAccessLevel PrivateAccessLevel `json:"private_access_level,omitempty"`
+	// Wire name: 'private_access_level'
+	PrivateAccessLevel PrivateAccessLevel
 	// Databricks Account API private access settings ID.
-	PrivateAccessSettingsId string `json:"-" url:"-"`
+	// Wire name: 'private_access_settings_id'
+	PrivateAccessSettingsId string `tf:"-"`
 	// The human-readable name of the private access settings object.
-	PrivateAccessSettingsName string `json:"private_access_settings_name"`
+	// Wire name: 'private_access_settings_name'
+	PrivateAccessSettingsName string
 	// Determines if the workspace can be accessed over public internet. For
 	// fully private workspaces, you can optionally specify `false`, but only if
 	// you implement both the front-end and the back-end PrivateLink
 	// connections. Otherwise, specify `true`, which means that public access is
 	// enabled.
-	PublicAccessEnabled bool `json:"public_access_enabled,omitempty"`
+	// Wire name: 'public_access_enabled'
+	PublicAccessEnabled bool
 	// The cloud region for workspaces associated with this private access
 	// settings object.
-	Region string `json:"region"`
+	// Wire name: 'region'
+	Region string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpsertPrivateAccessSettingsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpsertPrivateAccessSettingsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &upsertPrivateAccessSettingsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := upsertPrivateAccessSettingsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpsertPrivateAccessSettingsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpsertPrivateAccessSettingsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := upsertPrivateAccessSettingsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type VpcEndpoint struct {
 	// The Databricks account ID that hosts the VPC endpoint configuration.
-	AccountId string `json:"account_id,omitempty"`
+	// Wire name: 'account_id'
+	AccountId string
 	// The AWS Account in which the VPC endpoint object exists.
-	AwsAccountId string `json:"aws_account_id,omitempty"`
+	// Wire name: 'aws_account_id'
+	AwsAccountId string
 	// The ID of the Databricks [endpoint service] that this VPC endpoint is
 	// connected to. For a list of endpoint service IDs for each supported AWS
 	// region, see the [Databricks PrivateLink documentation].
 	//
 	// [Databricks PrivateLink documentation]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
 	// [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
-	AwsEndpointServiceId string `json:"aws_endpoint_service_id,omitempty"`
+	// Wire name: 'aws_endpoint_service_id'
+	AwsEndpointServiceId string
 	// The ID of the VPC endpoint object in AWS.
-	AwsVpcEndpointId string `json:"aws_vpc_endpoint_id,omitempty"`
+	// Wire name: 'aws_vpc_endpoint_id'
+	AwsVpcEndpointId string
 	// The Google Cloud specific information for this Private Service Connect
 	// endpoint.
-	GcpVpcEndpointInfo *GcpVpcEndpointInfo `json:"gcp_vpc_endpoint_info,omitempty"`
+	// Wire name: 'gcp_vpc_endpoint_info'
+	GcpVpcEndpointInfo *GcpVpcEndpointInfo
 	// The AWS region in which this VPC endpoint object exists.
-	Region string `json:"region,omitempty"`
+	// Wire name: 'region'
+	Region string
 	// The current state (such as `available` or `rejected`) of the VPC
 	// endpoint. Derived from AWS. For the full set of values, see [AWS
 	// DescribeVpcEndpoint documentation].
 	//
 	// [AWS DescribeVpcEndpoint documentation]: https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-vpc-endpoints.html
-	State string `json:"state,omitempty"`
+	// Wire name: 'state'
+	State string
 	// This enumeration represents the type of Databricks VPC [endpoint service]
 	// that was used when creating this VPC endpoint.
 	//
 	// [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
-	UseCase EndpointUseCase `json:"use_case,omitempty"`
+	// Wire name: 'use_case'
+	UseCase EndpointUseCase
 	// Databricks VPC endpoint ID. This is the Databricks-specific name of the
 	// VPC endpoint. Do not confuse this with the `aws_vpc_endpoint_id`, which
 	// is the ID within AWS of the VPC endpoint.
-	VpcEndpointId string `json:"vpc_endpoint_id,omitempty"`
+	// Wire name: 'vpc_endpoint_id'
+	VpcEndpointId string
 	// The human-readable name of the storage configuration.
-	VpcEndpointName string `json:"vpc_endpoint_name,omitempty"`
+	// Wire name: 'vpc_endpoint_name'
+	VpcEndpointName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *VpcEndpoint) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *VpcEndpoint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &vpcEndpointPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := vpcEndpointFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s VpcEndpoint) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st VpcEndpoint) MarshalJSON() ([]byte, error) {
+	pb, err := vpcEndpointToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The status of this network configuration object in terms of its use in a
 // workspace: * `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`: Broken.
 // * `WARNED`: Warned.
 type VpcStatus string
+type vpcStatusPb string
 
 // Broken.
 const VpcStatusBroken VpcStatus = `BROKEN`
@@ -1188,8 +2550,25 @@ func (f *VpcStatus) Type() string {
 	return "VpcStatus"
 }
 
+func vpcStatusToPb(st *VpcStatus) (*vpcStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := vpcStatusPb(*st)
+	return &pb, nil
+}
+
+func vpcStatusFromPb(pb *vpcStatusPb) (*VpcStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := VpcStatus(*pb)
+	return &st, nil
+}
+
 // The AWS resource associated with this warning: a subnet or a security group.
 type WarningType string
+type warningTypePb string
 
 const WarningTypeSecurityGroup WarningType = `securityGroup`
 
@@ -1216,38 +2595,64 @@ func (f *WarningType) Type() string {
 	return "WarningType"
 }
 
+func warningTypeToPb(st *WarningType) (*warningTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := warningTypePb(*st)
+	return &pb, nil
+}
+
+func warningTypeFromPb(pb *warningTypePb) (*WarningType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := WarningType(*pb)
+	return &st, nil
+}
+
 type Workspace struct {
 	// Databricks account ID.
-	AccountId string `json:"account_id,omitempty"`
+	// Wire name: 'account_id'
+	AccountId string
 	// The AWS region of the workspace data plane (for example, `us-west-2`).
-	AwsRegion string `json:"aws_region,omitempty"`
+	// Wire name: 'aws_region'
+	AwsRegion string
 
-	AzureWorkspaceInfo *AzureWorkspaceInfo `json:"azure_workspace_info,omitempty"`
+	// Wire name: 'azure_workspace_info'
+	AzureWorkspaceInfo *AzureWorkspaceInfo
 	// The cloud name. This field always has the value `gcp`.
-	Cloud string `json:"cloud,omitempty"`
+	// Wire name: 'cloud'
+	Cloud string
 	// The general workspace configurations that are specific to cloud
 	// providers.
-	CloudResourceContainer *CloudResourceContainer `json:"cloud_resource_container,omitempty"`
+	// Wire name: 'cloud_resource_container'
+	CloudResourceContainer *CloudResourceContainer
 	// Time in epoch milliseconds when the workspace was created.
-	CreationTime int64 `json:"creation_time,omitempty"`
+	// Wire name: 'creation_time'
+	CreationTime int64
 	// ID of the workspace's credential configuration object.
-	CredentialsId string `json:"credentials_id,omitempty"`
+	// Wire name: 'credentials_id'
+	CredentialsId string
 	// The custom tags key-value pairing that is attached to this workspace. The
 	// key-value pair is a string of utf-8 characters. The value can be an empty
 	// string, with maximum length of 255 characters. The key can be of maximum
 	// length of 127 characters, and cannot be empty.
-	CustomTags map[string]string `json:"custom_tags,omitempty"`
+	// Wire name: 'custom_tags'
+	CustomTags map[string]string
 	// The deployment name defines part of the subdomain for the workspace. The
 	// workspace URL for web application and REST APIs is
 	// `<deployment-name>.cloud.databricks.com`.
 	//
 	// This value must be unique across all non-deleted deployments across all
 	// AWS regions.
-	DeploymentName string `json:"deployment_name,omitempty"`
+	// Wire name: 'deployment_name'
+	DeploymentName string
 	// If this workspace is for a external customer, then external_customer_info
 	// is populated. If this workspace is not for a external customer, then
 	// external_customer_info is empty.
-	ExternalCustomerInfo *ExternalCustomerInfo `json:"external_customer_info,omitempty"`
+	// Wire name: 'external_customer_info'
+	ExternalCustomerInfo *ExternalCustomerInfo
 	// The network settings for the workspace. The configurations are only for
 	// Databricks-managed VPCs. It is ignored if you specify a customer-managed
 	// VPC in the `network_id` field.", All the IP range configurations must be
@@ -1271,24 +2676,31 @@ type Workspace struct {
 	// for a new workspace].
 	//
 	// [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
-	GcpManagedNetworkConfig *GcpManagedNetworkConfig `json:"gcp_managed_network_config,omitempty"`
+	// Wire name: 'gcp_managed_network_config'
+	GcpManagedNetworkConfig *GcpManagedNetworkConfig
 	// The configurations for the GKE cluster of a Databricks workspace.
-	GkeConfig *GkeConfig `json:"gke_config,omitempty"`
+	// Wire name: 'gke_config'
+	GkeConfig *GkeConfig
 	// Whether no public IP is enabled for the workspace.
-	IsNoPublicIpEnabled bool `json:"is_no_public_ip_enabled,omitempty"`
+	// Wire name: 'is_no_public_ip_enabled'
+	IsNoPublicIpEnabled bool
 	// The Google Cloud region of the workspace data plane in your Google
 	// account (for example, `us-east4`).
-	Location string `json:"location,omitempty"`
+	// Wire name: 'location'
+	Location string
 	// ID of the key configuration for encrypting managed services.
-	ManagedServicesCustomerManagedKeyId string `json:"managed_services_customer_managed_key_id,omitempty"`
+	// Wire name: 'managed_services_customer_managed_key_id'
+	ManagedServicesCustomerManagedKeyId string
 	// The network configuration ID that is attached to the workspace. This
 	// field is available only if the network is a customer-managed network.
-	NetworkId string `json:"network_id,omitempty"`
+	// Wire name: 'network_id'
+	NetworkId string
 	// The pricing tier of the workspace. For pricing tier information, see [AWS
 	// Pricing].
 	//
 	// [AWS Pricing]: https://databricks.com/product/aws-pricing
-	PricingTier PricingTier `json:"pricing_tier,omitempty"`
+	// Wire name: 'pricing_tier'
+	PricingTier PricingTier
 	// ID of the workspace's private access settings object. Only used for
 	// PrivateLink. You must specify this ID if you are using [AWS PrivateLink]
 	// for either front-end (user-to-workspace connection), back-end (data plane
@@ -1299,37 +2711,62 @@ type Workspace struct {
 	//
 	// [AWS PrivateLink]: https://aws.amazon.com/privatelink/
 	// [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-	PrivateAccessSettingsId string `json:"private_access_settings_id,omitempty"`
+	// Wire name: 'private_access_settings_id'
+	PrivateAccessSettingsId string
 	// ID of the workspace's storage configuration object.
-	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
+	// Wire name: 'storage_configuration_id'
+	StorageConfigurationId string
 	// ID of the key configuration for encrypting workspace storage.
-	StorageCustomerManagedKeyId string `json:"storage_customer_managed_key_id,omitempty"`
+	// Wire name: 'storage_customer_managed_key_id'
+	StorageCustomerManagedKeyId string
 	// A unique integer ID for the workspace
-	WorkspaceId int64 `json:"workspace_id,omitempty"`
+	// Wire name: 'workspace_id'
+	WorkspaceId int64
 	// The human-readable name of the workspace.
-	WorkspaceName string `json:"workspace_name,omitempty"`
+	// Wire name: 'workspace_name'
+	WorkspaceName string
 	// The status of the workspace. For workspace creation, usually it is set to
 	// `PROVISIONING` initially. Continue to check the status until the status
 	// is `RUNNING`.
-	WorkspaceStatus WorkspaceStatus `json:"workspace_status,omitempty"`
+	// Wire name: 'workspace_status'
+	WorkspaceStatus WorkspaceStatus
 	// Message describing the current workspace status.
-	WorkspaceStatusMessage string `json:"workspace_status_message,omitempty"`
+	// Wire name: 'workspace_status_message'
+	WorkspaceStatusMessage string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Workspace) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *Workspace) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &workspacePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := workspaceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s Workspace) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st Workspace) MarshalJSON() ([]byte, error) {
+	pb, err := workspaceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The status of the workspace. For workspace creation, usually it is set to
 // `PROVISIONING` initially. Continue to check the status until the status is
 // `RUNNING`.
 type WorkspaceStatus string
+type workspaceStatusPb string
 
 const WorkspaceStatusBanned WorkspaceStatus = `BANNED`
 
@@ -1362,4 +2799,74 @@ func (f *WorkspaceStatus) Set(v string) error {
 // Type always returns WorkspaceStatus to satisfy [pflag.Value] interface
 func (f *WorkspaceStatus) Type() string {
 	return "WorkspaceStatus"
+}
+
+func workspaceStatusToPb(st *WorkspaceStatus) (*workspaceStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := workspaceStatusPb(*st)
+	return &pb, nil
+}
+
+func workspaceStatusFromPb(pb *workspaceStatusPb) (*WorkspaceStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := WorkspaceStatus(*pb)
+	return &st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

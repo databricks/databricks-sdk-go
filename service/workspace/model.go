@@ -3,19 +3,48 @@
 package workspace
 
 import (
+	"encoding/json"
 	"fmt"
-
-	"github.com/databricks/databricks-sdk-go/marshal"
+	"strings"
+	"time"
 )
 
 type AclItem struct {
 	// The permission level applied to the principal.
-	Permission AclPermission `json:"permission"`
+	// Wire name: 'permission'
+	Permission AclPermission
 	// The principal in which the permission is applied.
-	Principal string `json:"principal"`
+	// Wire name: 'principal'
+	Principal string
+}
+
+func (st *AclItem) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aclItemPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aclItemFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AclItem) MarshalJSON() ([]byte, error) {
+	pb, err := aclItemToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AclPermission string
+type aclPermissionPb string
 
 const AclPermissionManage AclPermission = `MANAGE`
 
@@ -44,12 +73,55 @@ func (f *AclPermission) Type() string {
 	return "AclPermission"
 }
 
+func aclPermissionToPb(st *AclPermission) (*aclPermissionPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := aclPermissionPb(*st)
+	return &pb, nil
+}
+
+func aclPermissionFromPb(pb *aclPermissionPb) (*AclPermission, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AclPermission(*pb)
+	return &st, nil
+}
+
 type AzureKeyVaultSecretScopeMetadata struct {
 	// The DNS of the KeyVault
-	DnsName string `json:"dns_name"`
+	// Wire name: 'dns_name'
+	DnsName string
 	// The resource id of the azure KeyVault that user wants to associate the
 	// scope with.
-	ResourceId string `json:"resource_id"`
+	// Wire name: 'resource_id'
+	ResourceId string
+}
+
+func (st *AzureKeyVaultSecretScopeMetadata) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &azureKeyVaultSecretScopeMetadataPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := azureKeyVaultSecretScopeMetadataFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AzureKeyVaultSecretScopeMetadata) MarshalJSON() ([]byte, error) {
+	pb, err := azureKeyVaultSecretScopeMetadataToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateCredentialsRequest struct {
@@ -57,7 +129,8 @@ type CreateCredentialsRequest struct {
 	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
 	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
 	// `awsCodeCommit`.
-	GitProvider string `json:"git_provider"`
+	// Wire name: 'git_provider'
+	GitProvider string
 	// The username or email provided with your Git provider account, depending
 	// on which provider you are using. For GitHub, GitHub Enterprise Server, or
 	// Azure DevOps Services, either email or username may be used. For GitLab,
@@ -65,217 +138,669 @@ type CreateCredentialsRequest struct {
 	// BitBucket or BitBucket Server, username must be used. For all other
 	// providers please see your provider's Personal Access Token authentication
 	// documentation to see what is supported.
-	GitUsername string `json:"git_username,omitempty"`
+	// Wire name: 'git_username'
+	GitUsername string
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
 	// scoped access tokens. [Learn more].
 	//
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
-	PersonalAccessToken string `json:"personal_access_token,omitempty"`
+	// Wire name: 'personal_access_token'
+	PersonalAccessToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateCredentialsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateCredentialsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createCredentialsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createCredentialsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateCredentialsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateCredentialsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createCredentialsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateCredentialsResponse struct {
 	// ID of the credential object in the workspace.
-	CredentialId int64 `json:"credential_id"`
+	// Wire name: 'credential_id'
+	CredentialId int64
 	// The Git provider associated with the credential.
-	GitProvider string `json:"git_provider"`
+	// Wire name: 'git_provider'
+	GitProvider string
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
-	GitUsername string `json:"git_username,omitempty"`
+	// Wire name: 'git_username'
+	GitUsername string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateCredentialsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateCredentialsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createCredentialsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createCredentialsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateCredentialsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateCredentialsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createCredentialsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateRepoRequest struct {
 	// Desired path for the repo in the workspace. Almost any path in the
 	// workspace can be chosen. If repo is created in `/Repos`, path must be in
 	// the format `/Repos/{folder}/{repo-name}`.
-	Path string `json:"path,omitempty"`
+	// Wire name: 'path'
+	Path string
 	// Git provider. This field is case-insensitive. The available Git providers
 	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
 	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
 	// `awsCodeCommit`.
-	Provider string `json:"provider"`
+	// Wire name: 'provider'
+	Provider string
 	// If specified, the repo will be created with sparse checkout enabled. You
 	// cannot enable/disable sparse checkout after the repo is created.
-	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
+	// Wire name: 'sparse_checkout'
+	SparseCheckout *SparseCheckout
 	// URL of the Git repository to be linked.
-	Url string `json:"url"`
+	// Wire name: 'url'
+	Url string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateRepoRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateRepoRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createRepoRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createRepoRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateRepoRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateRepoRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createRepoRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateRepoResponse struct {
 	// Branch that the Git folder (repo) is checked out to.
-	Branch string `json:"branch,omitempty"`
+	// Wire name: 'branch'
+	Branch string
 	// SHA-1 hash representing the commit ID of the current HEAD of the Git
 	// folder (repo).
-	HeadCommitId string `json:"head_commit_id,omitempty"`
+	// Wire name: 'head_commit_id'
+	HeadCommitId string
 	// ID of the Git folder (repo) object in the workspace.
-	Id int64 `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id int64
 	// Path of the Git folder (repo) in the workspace.
-	Path string `json:"path,omitempty"`
+	// Wire name: 'path'
+	Path string
 	// Git provider of the linked Git repository.
-	Provider string `json:"provider,omitempty"`
+	// Wire name: 'provider'
+	Provider string
 	// Sparse checkout settings for the Git folder (repo).
-	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
+	// Wire name: 'sparse_checkout'
+	SparseCheckout *SparseCheckout
 	// URL of the linked Git repository.
-	Url string `json:"url,omitempty"`
+	// Wire name: 'url'
+	Url string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateRepoResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateRepoResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createRepoResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createRepoResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateRepoResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateRepoResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createRepoResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateScope struct {
 	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
-	BackendAzureKeyvault *AzureKeyVaultSecretScopeMetadata `json:"backend_azure_keyvault,omitempty"`
+	// Wire name: 'backend_azure_keyvault'
+	BackendAzureKeyvault *AzureKeyVaultSecretScopeMetadata
 	// The principal that is initially granted `MANAGE` permission to the
 	// created scope.
-	InitialManagePrincipal string `json:"initial_manage_principal,omitempty"`
+	// Wire name: 'initial_manage_principal'
+	InitialManagePrincipal string
 	// Scope name requested by the user. Scope names are unique.
-	Scope string `json:"scope"`
+	// Wire name: 'scope'
+	Scope string
 	// The backend type the scope will be created with. If not specified, will
 	// default to `DATABRICKS`
-	ScopeBackendType ScopeBackendType `json:"scope_backend_type,omitempty"`
+	// Wire name: 'scope_backend_type'
+	ScopeBackendType ScopeBackendType
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateScope) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateScope) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createScopePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createScopeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateScope) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateScope) MarshalJSON() ([]byte, error) {
+	pb, err := createScopeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateScopeResponse struct {
 }
 
+func (st *CreateScopeResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createScopeResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createScopeResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateScopeResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createScopeResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type CredentialInfo struct {
 	// ID of the credential object in the workspace.
-	CredentialId int64 `json:"credential_id"`
+	// Wire name: 'credential_id'
+	CredentialId int64
 	// The Git provider associated with the credential.
-	GitProvider string `json:"git_provider,omitempty"`
+	// Wire name: 'git_provider'
+	GitProvider string
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
-	GitUsername string `json:"git_username,omitempty"`
+	// Wire name: 'git_username'
+	GitUsername string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CredentialInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CredentialInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &credentialInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := credentialInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CredentialInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CredentialInfo) MarshalJSON() ([]byte, error) {
+	pb, err := credentialInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type Delete struct {
 	// The absolute path of the notebook or directory.
-	Path string `json:"path"`
+	// Wire name: 'path'
+	Path string
 	// The flag that specifies whether to delete the object recursively. It is
 	// `false` by default. Please note this deleting directory is not atomic. If
 	// it fails in the middle, some of objects under this directory may be
 	// deleted and cannot be undone.
-	Recursive bool `json:"recursive,omitempty"`
+	// Wire name: 'recursive'
+	Recursive bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Delete) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *Delete) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deletePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s Delete) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st Delete) MarshalJSON() ([]byte, error) {
+	pb, err := deleteToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteAcl struct {
 	// The principal to remove an existing ACL from.
-	Principal string `json:"principal"`
+	// Wire name: 'principal'
+	Principal string
 	// The name of the scope to remove permissions from.
-	Scope string `json:"scope"`
+	// Wire name: 'scope'
+	Scope string
+}
+
+func (st *DeleteAcl) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAclPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAclFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteAcl) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAclToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteAclResponse struct {
 }
 
+func (st *DeleteAclResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAclResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAclResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteAclResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAclResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete a credential
 type DeleteCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
-	CredentialId int64 `json:"-" url:"-"`
+	// Wire name: 'credential_id'
+	CredentialId int64 `tf:"-"`
+}
+
+func (st *DeleteCredentialsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteCredentialsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteCredentialsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteCredentialsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteCredentialsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteCredentialsResponse struct {
 }
 
+func (st *DeleteCredentialsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteCredentialsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteCredentialsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteCredentialsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteCredentialsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete a repo
 type DeleteRepoRequest struct {
 	// The ID for the corresponding repo to delete.
-	RepoId int64 `json:"-" url:"-"`
+	// Wire name: 'repo_id'
+	RepoId int64 `tf:"-"`
+}
+
+func (st *DeleteRepoRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteRepoRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteRepoRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteRepoRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteRepoRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteRepoResponse struct {
 }
 
+func (st *DeleteRepoResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteRepoResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteRepoResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteRepoResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteRepoResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type DeleteResponse struct {
+}
+
+func (st *DeleteResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteScope struct {
 	// Name of the scope to delete.
-	Scope string `json:"scope"`
+	// Wire name: 'scope'
+	Scope string
+}
+
+func (st *DeleteScope) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteScopePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteScopeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteScope) MarshalJSON() ([]byte, error) {
+	pb, err := deleteScopeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteScopeResponse struct {
 }
 
+func (st *DeleteScopeResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteScopeResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteScopeResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteScopeResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteScopeResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type DeleteSecret struct {
 	// Name of the secret to delete.
-	Key string `json:"key"`
+	// Wire name: 'key'
+	Key string
 	// The name of the scope that contains the secret to delete.
-	Scope string `json:"scope"`
+	// Wire name: 'scope'
+	Scope string
+}
+
+func (st *DeleteSecret) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteSecretPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteSecretFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteSecret) MarshalJSON() ([]byte, error) {
+	pb, err := deleteSecretToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteSecretResponse struct {
 }
 
+func (st *DeleteSecretResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteSecretResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteSecretResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteSecretResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteSecretResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // The format for workspace import and export.
 type ExportFormat string
+type exportFormatPb string
 
 const ExportFormatAuto ExportFormat = `AUTO`
 
@@ -312,6 +837,22 @@ func (f *ExportFormat) Type() string {
 	return "ExportFormat"
 }
 
+func exportFormatToPb(st *ExportFormat) (*exportFormatPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := exportFormatPb(*st)
+	return &pb, nil
+}
+
+func exportFormatFromPb(pb *exportFormatPb) (*ExportFormat, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ExportFormat(*pb)
+	return &st, nil
+}
+
 // Export a workspace object
 type ExportRequest struct {
 	// This specifies the format of the exported file. By default, this is
@@ -328,10 +869,37 @@ type ExportRequest struct {
 	// Markdown format. - `AUTO`: The object or directory is exported depending
 	// on the objects type. Directory exports will include notebooks and
 	// workspace files.
-	Format ExportFormat `json:"-" url:"format,omitempty"`
+	// Wire name: 'format'
+	Format ExportFormat `tf:"-"`
 	// The absolute path of the object or directory. Exporting a directory is
 	// only supported for the `DBC`, `SOURCE`, and `AUTO` format.
-	Path string `json:"-" url:"path"`
+	// Wire name: 'path'
+	Path string `tf:"-"`
+}
+
+func (st *ExportRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &exportRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := exportRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ExportRequest) MarshalJSON() ([]byte, error) {
+	pb, err := exportRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The request field `direct_download` determines whether a JSON response or
@@ -339,155 +907,527 @@ type ExportRequest struct {
 type ExportResponse struct {
 	// The base64-encoded content. If the limit (10MB) is exceeded, exception
 	// with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
-	Content string `json:"content,omitempty"`
+	// Wire name: 'content'
+	Content string
 	// The file type of the exported file.
-	FileType string `json:"file_type,omitempty"`
+	// Wire name: 'file_type'
+	FileType string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExportResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ExportResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &exportResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := exportResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ExportResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ExportResponse) MarshalJSON() ([]byte, error) {
+	pb, err := exportResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get secret ACL details
 type GetAclRequest struct {
 	// The principal to fetch ACL information for.
-	Principal string `json:"-" url:"principal"`
+	// Wire name: 'principal'
+	Principal string `tf:"-"`
 	// The name of the scope to fetch ACL information from.
-	Scope string `json:"-" url:"scope"`
+	// Wire name: 'scope'
+	Scope string `tf:"-"`
+}
+
+func (st *GetAclRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAclRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAclRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetAclRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAclRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a credential entry
 type GetCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
-	CredentialId int64 `json:"-" url:"-"`
+	// Wire name: 'credential_id'
+	CredentialId int64 `tf:"-"`
+}
+
+func (st *GetCredentialsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getCredentialsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getCredentialsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetCredentialsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getCredentialsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetCredentialsResponse struct {
 	// ID of the credential object in the workspace.
-	CredentialId int64 `json:"credential_id"`
+	// Wire name: 'credential_id'
+	CredentialId int64
 	// The Git provider associated with the credential.
-	GitProvider string `json:"git_provider,omitempty"`
+	// Wire name: 'git_provider'
+	GitProvider string
 	// The username or email provided with your Git provider account and
 	// associated with the credential.
-	GitUsername string `json:"git_username,omitempty"`
+	// Wire name: 'git_username'
+	GitUsername string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetCredentialsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetCredentialsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getCredentialsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getCredentialsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetCredentialsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetCredentialsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getCredentialsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get repo permission levels
 type GetRepoPermissionLevelsRequest struct {
 	// The repo for which to get or manage permissions.
-	RepoId string `json:"-" url:"-"`
+	// Wire name: 'repo_id'
+	RepoId string `tf:"-"`
+}
+
+func (st *GetRepoPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getRepoPermissionLevelsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getRepoPermissionLevelsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetRepoPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getRepoPermissionLevelsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetRepoPermissionLevelsResponse struct {
 	// Specific permission levels
-	PermissionLevels []RepoPermissionsDescription `json:"permission_levels,omitempty"`
+	// Wire name: 'permission_levels'
+	PermissionLevels []RepoPermissionsDescription
+}
+
+func (st *GetRepoPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getRepoPermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getRepoPermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetRepoPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getRepoPermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get repo permissions
 type GetRepoPermissionsRequest struct {
 	// The repo for which to get or manage permissions.
-	RepoId string `json:"-" url:"-"`
+	// Wire name: 'repo_id'
+	RepoId string `tf:"-"`
+}
+
+func (st *GetRepoPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getRepoPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getRepoPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetRepoPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getRepoPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a repo
 type GetRepoRequest struct {
 	// ID of the Git folder (repo) object in the workspace.
-	RepoId int64 `json:"-" url:"-"`
+	// Wire name: 'repo_id'
+	RepoId int64 `tf:"-"`
+}
+
+func (st *GetRepoRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getRepoRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getRepoRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetRepoRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getRepoRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetRepoResponse struct {
 	// Branch that the local version of the repo is checked out to.
-	Branch string `json:"branch,omitempty"`
+	// Wire name: 'branch'
+	Branch string
 	// SHA-1 hash representing the commit ID of the current HEAD of the repo.
-	HeadCommitId string `json:"head_commit_id,omitempty"`
+	// Wire name: 'head_commit_id'
+	HeadCommitId string
 	// ID of the Git folder (repo) object in the workspace.
-	Id int64 `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id int64
 	// Path of the Git folder (repo) in the workspace.
-	Path string `json:"path,omitempty"`
+	// Wire name: 'path'
+	Path string
 	// Git provider of the linked Git repository.
-	Provider string `json:"provider,omitempty"`
+	// Wire name: 'provider'
+	Provider string
 	// Sparse checkout settings for the Git folder (repo).
-	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
+	// Wire name: 'sparse_checkout'
+	SparseCheckout *SparseCheckout
 	// URL of the linked Git repository.
-	Url string `json:"url,omitempty"`
+	// Wire name: 'url'
+	Url string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetRepoResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetRepoResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getRepoResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getRepoResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetRepoResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetRepoResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getRepoResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a secret
 type GetSecretRequest struct {
 	// The key to fetch secret for.
-	Key string `json:"-" url:"key"`
+	// Wire name: 'key'
+	Key string `tf:"-"`
 	// The name of the scope to fetch secret information from.
-	Scope string `json:"-" url:"scope"`
+	// Wire name: 'scope'
+	Scope string `tf:"-"`
+}
+
+func (st *GetSecretRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getSecretRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getSecretRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetSecretRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getSecretRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetSecretResponse struct {
 	// A unique name to identify the secret.
-	Key string `json:"key,omitempty"`
+	// Wire name: 'key'
+	Key string
 	// The value of the secret in its byte representation.
-	Value string `json:"value,omitempty"`
+	// Wire name: 'value'
+	Value string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetSecretResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetSecretResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getSecretResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getSecretResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetSecretResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetSecretResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getSecretResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get status
 type GetStatusRequest struct {
 	// The absolute path of the notebook or directory.
-	Path string `json:"-" url:"path"`
+	// Wire name: 'path'
+	Path string `tf:"-"`
+}
+
+func (st *GetStatusRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getStatusRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getStatusRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetStatusRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getStatusRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get workspace object permission levels
 type GetWorkspaceObjectPermissionLevelsRequest struct {
 	// The workspace object for which to get or manage permissions.
-	WorkspaceObjectId string `json:"-" url:"-"`
+	// Wire name: 'workspace_object_id'
+	WorkspaceObjectId string `tf:"-"`
 	// The workspace object type for which to get or manage permissions.
-	WorkspaceObjectType string `json:"-" url:"-"`
+	// Wire name: 'workspace_object_type'
+	WorkspaceObjectType string `tf:"-"`
+}
+
+func (st *GetWorkspaceObjectPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getWorkspaceObjectPermissionLevelsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getWorkspaceObjectPermissionLevelsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetWorkspaceObjectPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getWorkspaceObjectPermissionLevelsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetWorkspaceObjectPermissionLevelsResponse struct {
 	// Specific permission levels
-	PermissionLevels []WorkspaceObjectPermissionsDescription `json:"permission_levels,omitempty"`
+	// Wire name: 'permission_levels'
+	PermissionLevels []WorkspaceObjectPermissionsDescription
+}
+
+func (st *GetWorkspaceObjectPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getWorkspaceObjectPermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getWorkspaceObjectPermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetWorkspaceObjectPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getWorkspaceObjectPermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get workspace object permissions
 type GetWorkspaceObjectPermissionsRequest struct {
 	// The workspace object for which to get or manage permissions.
-	WorkspaceObjectId string `json:"-" url:"-"`
+	// Wire name: 'workspace_object_id'
+	WorkspaceObjectId string `tf:"-"`
 	// The workspace object type for which to get or manage permissions.
-	WorkspaceObjectType string `json:"-" url:"-"`
+	// Wire name: 'workspace_object_type'
+	WorkspaceObjectType string `tf:"-"`
+}
+
+func (st *GetWorkspaceObjectPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getWorkspaceObjectPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getWorkspaceObjectPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetWorkspaceObjectPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getWorkspaceObjectPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type Import struct {
@@ -496,7 +1436,8 @@ type Import struct {
 	// If the limit (10MB) is exceeded, exception with error code
 	// **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown. This parameter might be absent,
 	// and instead a posted file is used.
-	Content string `json:"content,omitempty"`
+	// Wire name: 'content'
+	Content string
 	// This specifies the format of the file to be imported.
 	//
 	// The value is case sensitive.
@@ -510,31 +1451,53 @@ type Import struct {
 	// notebook is imported in Databricks archive format. Required for
 	// directories. - `R_MARKDOWN`: The notebook is imported from R Markdown
 	// format.
-	Format ImportFormat `json:"format,omitempty"`
+	// Wire name: 'format'
+	Format ImportFormat
 	// The language of the object. This value is set only if the object type is
 	// `NOTEBOOK`.
-	Language Language `json:"language,omitempty"`
+	// Wire name: 'language'
+	Language Language
 	// The flag that specifies whether to overwrite existing object. It is
 	// `false` by default. For `DBC` format, `overwrite` is not supported since
 	// it may contain a directory.
-	Overwrite bool `json:"overwrite,omitempty"`
+	// Wire name: 'overwrite'
+	Overwrite bool
 	// The absolute path of the object or directory. Importing a directory is
 	// only supported for the `DBC` and `SOURCE` formats.
-	Path string `json:"path"`
+	// Wire name: 'path'
+	Path string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Import) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *Import) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &importPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := importFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s Import) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st Import) MarshalJSON() ([]byte, error) {
+	pb, err := importToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The format for workspace import and export.
 type ImportFormat string
+type importFormatPb string
 
 const ImportFormatAuto ImportFormat = `AUTO`
 
@@ -571,11 +1534,53 @@ func (f *ImportFormat) Type() string {
 	return "ImportFormat"
 }
 
+func importFormatToPb(st *ImportFormat) (*importFormatPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := importFormatPb(*st)
+	return &pb, nil
+}
+
+func importFormatFromPb(pb *importFormatPb) (*ImportFormat, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ImportFormat(*pb)
+	return &st, nil
+}
+
 type ImportResponse struct {
+}
+
+func (st *ImportResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &importResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := importResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ImportResponse) MarshalJSON() ([]byte, error) {
+	pb, err := importResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The language of notebook.
 type Language string
+type languagePb string
 
 const LanguagePython Language = `PYTHON`
 
@@ -606,20 +1611,114 @@ func (f *Language) Type() string {
 	return "Language"
 }
 
+func languageToPb(st *Language) (*languagePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := languagePb(*st)
+	return &pb, nil
+}
+
+func languageFromPb(pb *languagePb) (*Language, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := Language(*pb)
+	return &st, nil
+}
+
 // Lists ACLs
 type ListAclsRequest struct {
 	// The name of the scope to fetch ACL information from.
-	Scope string `json:"-" url:"scope"`
+	// Wire name: 'scope'
+	Scope string `tf:"-"`
+}
+
+func (st *ListAclsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAclsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAclsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListAclsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listAclsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListAclsResponse struct {
 	// The associated ACLs rule applied to principals in the given scope.
-	Items []AclItem `json:"items,omitempty"`
+	// Wire name: 'items'
+	Items []AclItem
+}
+
+func (st *ListAclsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAclsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAclsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListAclsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listAclsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListCredentialsResponse struct {
 	// List of credentials.
-	Credentials []CredentialInfo `json:"credentials,omitempty"`
+	// Wire name: 'credentials'
+	Credentials []CredentialInfo
+}
+
+func (st *ListCredentialsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listCredentialsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listCredentialsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListCredentialsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listCredentialsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get repos
@@ -627,129 +1726,367 @@ type ListReposRequest struct {
 	// Token used to get the next page of results. If not specified, returns the
 	// first page of results as well as a next page token if there are more
 	// results.
-	NextPageToken string `json:"-" url:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string `tf:"-"`
 	// Filters repos that have paths starting with the given path prefix. If not
 	// provided or when provided an effectively empty prefix (`/` or
 	// `/Workspace`) Git folders (repos) from `/Workspace/Repos` will be served.
-	PathPrefix string `json:"-" url:"path_prefix,omitempty"`
+	// Wire name: 'path_prefix'
+	PathPrefix string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListReposRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListReposRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listReposRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listReposRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListReposRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListReposRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listReposRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListReposResponse struct {
 	// Token that can be specified as a query parameter to the `GET /repos`
 	// endpoint to retrieve the next page of results.
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 	// List of Git folders (repos).
-	Repos []RepoInfo `json:"repos,omitempty"`
+	// Wire name: 'repos'
+	Repos []RepoInfo
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListReposResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListReposResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listReposResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listReposResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListReposResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListReposResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listReposResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListResponse struct {
 	// List of objects.
-	Objects []ObjectInfo `json:"objects,omitempty"`
+	// Wire name: 'objects'
+	Objects []ObjectInfo
+}
+
+func (st *ListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListScopesResponse struct {
 	// The available secret scopes.
-	Scopes []SecretScope `json:"scopes,omitempty"`
+	// Wire name: 'scopes'
+	Scopes []SecretScope
+}
+
+func (st *ListScopesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listScopesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listScopesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListScopesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listScopesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List secret keys
 type ListSecretsRequest struct {
 	// The name of the scope to list secrets within.
-	Scope string `json:"-" url:"scope"`
+	// Wire name: 'scope'
+	Scope string `tf:"-"`
+}
+
+func (st *ListSecretsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listSecretsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listSecretsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListSecretsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listSecretsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListSecretsResponse struct {
 	// Metadata information of all secrets contained within the given scope.
-	Secrets []SecretMetadata `json:"secrets,omitempty"`
+	// Wire name: 'secrets'
+	Secrets []SecretMetadata
+}
+
+func (st *ListSecretsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listSecretsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listSecretsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListSecretsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listSecretsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List contents
 type ListWorkspaceRequest struct {
 	// UTC timestamp in milliseconds
-	NotebooksModifiedAfter int64 `json:"-" url:"notebooks_modified_after,omitempty"`
+	// Wire name: 'notebooks_modified_after'
+	NotebooksModifiedAfter int64 `tf:"-"`
 	// The absolute path of the notebook or directory.
-	Path string `json:"-" url:"path"`
+	// Wire name: 'path'
+	Path string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listWorkspaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listWorkspaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listWorkspaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type Mkdirs struct {
 	// The absolute path of the directory. If the parent directories do not
 	// exist, it will also create them. If the directory already exists, this
 	// command will do nothing and succeed.
-	Path string `json:"path"`
+	// Wire name: 'path'
+	Path string
+}
+
+func (st *Mkdirs) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &mkdirsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := mkdirsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st Mkdirs) MarshalJSON() ([]byte, error) {
+	pb, err := mkdirsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type MkdirsResponse struct {
+}
+
+func (st *MkdirsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &mkdirsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := mkdirsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st MkdirsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := mkdirsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The information of the object in workspace. It will be returned by “list“
 // and “get-status“.
 type ObjectInfo struct {
 	// Only applicable to files. The creation UTC timestamp.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// The language of the object. This value is set only if the object type is
 	// ``NOTEBOOK``.
-	Language Language `json:"language,omitempty"`
+	// Wire name: 'language'
+	Language Language
 	// Only applicable to files, the last modified UTC timestamp.
-	ModifiedAt int64 `json:"modified_at,omitempty"`
+	// Wire name: 'modified_at'
+	ModifiedAt int64
 	// Unique identifier for the object.
-	ObjectId int64 `json:"object_id,omitempty"`
+	// Wire name: 'object_id'
+	ObjectId int64
 	// The type of the object in workspace.
 	//
 	// - `NOTEBOOK`: document that contains runnable code, visualizations, and
 	// explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`:
 	// file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard
-	ObjectType ObjectType `json:"object_type,omitempty"`
+	// Wire name: 'object_type'
+	ObjectType ObjectType
 	// The absolute path of the object.
-	Path string `json:"path,omitempty"`
+	// Wire name: 'path'
+	Path string
 	// A unique identifier for the object that is consistent across all
 	// Databricks APIs.
-	ResourceId string `json:"resource_id,omitempty"`
+	// Wire name: 'resource_id'
+	ResourceId string
 	// Only applicable to files. The file size in bytes can be returned.
-	Size int64 `json:"size,omitempty"`
+	// Wire name: 'size'
+	Size int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ObjectInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ObjectInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &objectInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := objectInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ObjectInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ObjectInfo) MarshalJSON() ([]byte, error) {
+	pb, err := objectInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The type of the object in workspace.
 type ObjectType string
+type objectTypePb string
 
 const ObjectTypeDashboard ObjectType = `DASHBOARD`
 
@@ -784,134 +2121,338 @@ func (f *ObjectType) Type() string {
 	return "ObjectType"
 }
 
+func objectTypeToPb(st *ObjectType) (*objectTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := objectTypePb(*st)
+	return &pb, nil
+}
+
+func objectTypeFromPb(pb *objectTypePb) (*ObjectType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ObjectType(*pb)
+	return &st, nil
+}
+
 type PutAcl struct {
 	// The permission level applied to the principal.
-	Permission AclPermission `json:"permission"`
+	// Wire name: 'permission'
+	Permission AclPermission
 	// The principal in which the permission is applied.
-	Principal string `json:"principal"`
+	// Wire name: 'principal'
+	Principal string
 	// The name of the scope to apply permissions to.
-	Scope string `json:"scope"`
+	// Wire name: 'scope'
+	Scope string
+}
+
+func (st *PutAcl) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &putAclPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := putAclFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PutAcl) MarshalJSON() ([]byte, error) {
+	pb, err := putAclToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PutAclResponse struct {
 }
 
+func (st *PutAclResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &putAclResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := putAclResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PutAclResponse) MarshalJSON() ([]byte, error) {
+	pb, err := putAclResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type PutSecret struct {
 	// If specified, value will be stored as bytes.
-	BytesValue string `json:"bytes_value,omitempty"`
+	// Wire name: 'bytes_value'
+	BytesValue string
 	// A unique name to identify the secret.
-	Key string `json:"key"`
+	// Wire name: 'key'
+	Key string
 	// The name of the scope to which the secret will be associated with.
-	Scope string `json:"scope"`
+	// Wire name: 'scope'
+	Scope string
 	// If specified, note that the value will be stored in UTF-8 (MB4) form.
-	StringValue string `json:"string_value,omitempty"`
+	// Wire name: 'string_value'
+	StringValue string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PutSecret) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PutSecret) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &putSecretPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := putSecretFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PutSecret) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PutSecret) MarshalJSON() ([]byte, error) {
+	pb, err := putSecretToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PutSecretResponse struct {
 }
 
+func (st *PutSecretResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &putSecretResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := putSecretResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PutSecretResponse) MarshalJSON() ([]byte, error) {
+	pb, err := putSecretResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type RepoAccessControlRequest struct {
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string
 	// Permission level
-	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel RepoPermissionLevel
 	// application ID of a service principal
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
+	// Wire name: 'user_name'
+	UserName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RepoAccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RepoAccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &repoAccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := repoAccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RepoAccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RepoAccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := repoAccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RepoAccessControlResponse struct {
 	// All permissions.
-	AllPermissions []RepoPermission `json:"all_permissions,omitempty"`
+	// Wire name: 'all_permissions'
+	AllPermissions []RepoPermission
 	// Display name of the user or service principal.
-	DisplayName string `json:"display_name,omitempty"`
+	// Wire name: 'display_name'
+	DisplayName string
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string
 	// Name of the service principal.
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
+	// Wire name: 'user_name'
+	UserName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RepoAccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RepoAccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &repoAccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := repoAccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RepoAccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RepoAccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := repoAccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Git folder (repo) information.
 type RepoInfo struct {
 	// Name of the current git branch of the git folder (repo).
-	Branch string `json:"branch,omitempty"`
+	// Wire name: 'branch'
+	Branch string
 	// Current git commit id of the git folder (repo).
-	HeadCommitId string `json:"head_commit_id,omitempty"`
+	// Wire name: 'head_commit_id'
+	HeadCommitId string
 	// Id of the git folder (repo) in the Workspace.
-	Id int64 `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id int64
 	// Root path of the git folder (repo) in the Workspace.
-	Path string `json:"path,omitempty"`
+	// Wire name: 'path'
+	Path string
 	// Git provider of the remote git repository, e.g. `gitHub`.
-	Provider string `json:"provider,omitempty"`
+	// Wire name: 'provider'
+	Provider string
 	// Sparse checkout config for the git folder (repo).
-	SparseCheckout *SparseCheckout `json:"sparse_checkout,omitempty"`
+	// Wire name: 'sparse_checkout'
+	SparseCheckout *SparseCheckout
 	// URL of the remote git repository.
-	Url string `json:"url,omitempty"`
+	// Wire name: 'url'
+	Url string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RepoInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RepoInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &repoInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := repoInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RepoInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RepoInfo) MarshalJSON() ([]byte, error) {
+	pb, err := repoInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RepoPermission struct {
-	Inherited bool `json:"inherited,omitempty"`
 
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Wire name: 'inherited'
+	Inherited bool
+
+	// Wire name: 'inherited_from_object'
+	InheritedFromObject []string
 	// Permission level
-	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel RepoPermissionLevel
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RepoPermission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RepoPermission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &repoPermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := repoPermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RepoPermission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RepoPermission) MarshalJSON() ([]byte, error) {
+	pb, err := repoPermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Permission level
 type RepoPermissionLevel string
+type repoPermissionLevelPb string
 
 const RepoPermissionLevelCanEdit RepoPermissionLevel = `CAN_EDIT`
 
@@ -942,47 +2483,133 @@ func (f *RepoPermissionLevel) Type() string {
 	return "RepoPermissionLevel"
 }
 
+func repoPermissionLevelToPb(st *RepoPermissionLevel) (*repoPermissionLevelPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := repoPermissionLevelPb(*st)
+	return &pb, nil
+}
+
+func repoPermissionLevelFromPb(pb *repoPermissionLevelPb) (*RepoPermissionLevel, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := RepoPermissionLevel(*pb)
+	return &st, nil
+}
+
 type RepoPermissions struct {
-	AccessControlList []RepoAccessControlResponse `json:"access_control_list,omitempty"`
 
-	ObjectId string `json:"object_id,omitempty"`
+	// Wire name: 'access_control_list'
+	AccessControlList []RepoAccessControlResponse
 
-	ObjectType string `json:"object_type,omitempty"`
+	// Wire name: 'object_id'
+	ObjectId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'object_type'
+	ObjectType string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RepoPermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RepoPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &repoPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := repoPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RepoPermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RepoPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := repoPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RepoPermissionsDescription struct {
-	Description string `json:"description,omitempty"`
+
+	// Wire name: 'description'
+	Description string
 	// Permission level
-	PermissionLevel RepoPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel RepoPermissionLevel
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RepoPermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RepoPermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &repoPermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := repoPermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RepoPermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RepoPermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := repoPermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RepoPermissionsRequest struct {
-	AccessControlList []RepoAccessControlRequest `json:"access_control_list,omitempty"`
+
+	// Wire name: 'access_control_list'
+	AccessControlList []RepoAccessControlRequest
 	// The repo for which to get or manage permissions.
-	RepoId string `json:"-" url:"-"`
+	// Wire name: 'repo_id'
+	RepoId string `tf:"-"`
+}
+
+func (st *RepoPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &repoPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := repoPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st RepoPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := repoPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ScopeBackendType string
+type scopeBackendTypePb string
 
 const ScopeBackendTypeAzureKeyvault ScopeBackendType = `AZURE_KEYVAULT`
 
@@ -1009,40 +2636,95 @@ func (f *ScopeBackendType) Type() string {
 	return "ScopeBackendType"
 }
 
+func scopeBackendTypeToPb(st *ScopeBackendType) (*scopeBackendTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := scopeBackendTypePb(*st)
+	return &pb, nil
+}
+
+func scopeBackendTypeFromPb(pb *scopeBackendTypePb) (*ScopeBackendType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ScopeBackendType(*pb)
+	return &st, nil
+}
+
 type SecretMetadata struct {
 	// A unique name to identify the secret.
-	Key string `json:"key,omitempty"`
+	// Wire name: 'key'
+	Key string
 	// The last updated timestamp (in milliseconds) for the secret.
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+	// Wire name: 'last_updated_timestamp'
+	LastUpdatedTimestamp int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SecretMetadata) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SecretMetadata) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &secretMetadataPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := secretMetadataFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SecretMetadata) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SecretMetadata) MarshalJSON() ([]byte, error) {
+	pb, err := secretMetadataToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type SecretScope struct {
 	// The type of secret scope backend.
-	BackendType ScopeBackendType `json:"backend_type,omitempty"`
+	// Wire name: 'backend_type'
+	BackendType ScopeBackendType
 	// The metadata for the secret scope if the type is `AZURE_KEYVAULT`
-	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata `json:"keyvault_metadata,omitempty"`
+	// Wire name: 'keyvault_metadata'
+	KeyvaultMetadata *AzureKeyVaultSecretScopeMetadata
 	// A unique name to identify the secret scope.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SecretScope) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SecretScope) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &secretScopePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := secretScopeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SecretScope) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SecretScope) MarshalJSON() ([]byte, error) {
+	pb, err := secretScopeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Sparse checkout configuration, it contains options like cone patterns.
@@ -1051,7 +2733,33 @@ type SparseCheckout struct {
 	// details.
 	//
 	// [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
-	Patterns []string `json:"patterns,omitempty"`
+	// Wire name: 'patterns'
+	Patterns []string
+}
+
+func (st *SparseCheckout) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sparseCheckoutPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := sparseCheckoutFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st SparseCheckout) MarshalJSON() ([]byte, error) {
+	pb, err := sparseCheckoutToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Sparse checkout configuration, it contains options like cone patterns.
@@ -1060,17 +2768,45 @@ type SparseCheckoutUpdate struct {
 	// details.
 	//
 	// [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling
-	Patterns []string `json:"patterns,omitempty"`
+	// Wire name: 'patterns'
+	Patterns []string
+}
+
+func (st *SparseCheckoutUpdate) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sparseCheckoutUpdatePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := sparseCheckoutUpdateFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st SparseCheckoutUpdate) MarshalJSON() ([]byte, error) {
+	pb, err := sparseCheckoutUpdateToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateCredentialsRequest struct {
 	// The ID for the corresponding credential to access.
-	CredentialId int64 `json:"-" url:"-"`
+	// Wire name: 'credential_id'
+	CredentialId int64 `tf:"-"`
 	// Git provider. This field is case-insensitive. The available Git providers
 	// are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`,
 	// `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and
 	// `awsCodeCommit`.
-	GitProvider string `json:"git_provider"`
+	// Wire name: 'git_provider'
+	GitProvider string
 	// The username or email provided with your Git provider account, depending
 	// on which provider you are using. For GitHub, GitHub Enterprise Server, or
 	// Azure DevOps Services, either email or username may be used. For GitLab,
@@ -1078,120 +2814,275 @@ type UpdateCredentialsRequest struct {
 	// BitBucket or BitBucket Server, username must be used. For all other
 	// providers please see your provider's Personal Access Token authentication
 	// documentation to see what is supported.
-	GitUsername string `json:"git_username,omitempty"`
+	// Wire name: 'git_username'
+	GitUsername string
 	// The personal access token used to authenticate to the corresponding Git
 	// provider. For certain providers, support may exist for other types of
 	// scoped access tokens. [Learn more].
 	//
 	// [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
-	PersonalAccessToken string `json:"personal_access_token,omitempty"`
+	// Wire name: 'personal_access_token'
+	PersonalAccessToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateCredentialsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateCredentialsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateCredentialsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateCredentialsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateCredentialsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateCredentialsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateCredentialsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateCredentialsResponse struct {
 }
 
+func (st *UpdateCredentialsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateCredentialsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateCredentialsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateCredentialsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateCredentialsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type UpdateRepoRequest struct {
 	// Branch that the local version of the repo is checked out to.
-	Branch string `json:"branch,omitempty"`
+	// Wire name: 'branch'
+	Branch string
 	// ID of the Git folder (repo) object in the workspace.
-	RepoId int64 `json:"-" url:"-"`
+	// Wire name: 'repo_id'
+	RepoId int64 `tf:"-"`
 	// If specified, update the sparse checkout settings. The update will fail
 	// if sparse checkout is not enabled for the repo.
-	SparseCheckout *SparseCheckoutUpdate `json:"sparse_checkout,omitempty"`
+	// Wire name: 'sparse_checkout'
+	SparseCheckout *SparseCheckoutUpdate
 	// Tag that the local version of the repo is checked out to. Updating the
 	// repo to a tag puts the repo in a detached HEAD state. Before committing
 	// new changes, you must update the repo to a branch instead of the detached
 	// HEAD.
-	Tag string `json:"tag,omitempty"`
+	// Wire name: 'tag'
+	Tag string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateRepoRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateRepoRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateRepoRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateRepoRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateRepoRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateRepoRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateRepoRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateRepoResponse struct {
 }
 
+func (st *UpdateRepoResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateRepoResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateRepoResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateRepoResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateRepoResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type WorkspaceObjectAccessControlRequest struct {
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string
 	// Permission level
-	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel WorkspaceObjectPermissionLevel
 	// application ID of a service principal
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
+	// Wire name: 'user_name'
+	UserName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WorkspaceObjectAccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *WorkspaceObjectAccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &workspaceObjectAccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := workspaceObjectAccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s WorkspaceObjectAccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st WorkspaceObjectAccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := workspaceObjectAccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type WorkspaceObjectAccessControlResponse struct {
 	// All permissions.
-	AllPermissions []WorkspaceObjectPermission `json:"all_permissions,omitempty"`
+	// Wire name: 'all_permissions'
+	AllPermissions []WorkspaceObjectPermission
 	// Display name of the user or service principal.
-	DisplayName string `json:"display_name,omitempty"`
+	// Wire name: 'display_name'
+	DisplayName string
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string
 	// Name of the service principal.
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
+	// Wire name: 'user_name'
+	UserName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WorkspaceObjectAccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *WorkspaceObjectAccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &workspaceObjectAccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := workspaceObjectAccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s WorkspaceObjectAccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st WorkspaceObjectAccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := workspaceObjectAccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type WorkspaceObjectPermission struct {
-	Inherited bool `json:"inherited,omitempty"`
 
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Wire name: 'inherited'
+	Inherited bool
+
+	// Wire name: 'inherited_from_object'
+	InheritedFromObject []string
 	// Permission level
-	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel WorkspaceObjectPermissionLevel
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WorkspaceObjectPermission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *WorkspaceObjectPermission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &workspaceObjectPermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := workspaceObjectPermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s WorkspaceObjectPermission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st WorkspaceObjectPermission) MarshalJSON() ([]byte, error) {
+	pb, err := workspaceObjectPermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Permission level
 type WorkspaceObjectPermissionLevel string
+type workspaceObjectPermissionLevelPb string
 
 const WorkspaceObjectPermissionLevelCanEdit WorkspaceObjectPermissionLevel = `CAN_EDIT`
 
@@ -1222,44 +3113,184 @@ func (f *WorkspaceObjectPermissionLevel) Type() string {
 	return "WorkspaceObjectPermissionLevel"
 }
 
+func workspaceObjectPermissionLevelToPb(st *WorkspaceObjectPermissionLevel) (*workspaceObjectPermissionLevelPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := workspaceObjectPermissionLevelPb(*st)
+	return &pb, nil
+}
+
+func workspaceObjectPermissionLevelFromPb(pb *workspaceObjectPermissionLevelPb) (*WorkspaceObjectPermissionLevel, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := WorkspaceObjectPermissionLevel(*pb)
+	return &st, nil
+}
+
 type WorkspaceObjectPermissions struct {
-	AccessControlList []WorkspaceObjectAccessControlResponse `json:"access_control_list,omitempty"`
 
-	ObjectId string `json:"object_id,omitempty"`
+	// Wire name: 'access_control_list'
+	AccessControlList []WorkspaceObjectAccessControlResponse
 
-	ObjectType string `json:"object_type,omitempty"`
+	// Wire name: 'object_id'
+	ObjectId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'object_type'
+	ObjectType string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WorkspaceObjectPermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *WorkspaceObjectPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &workspaceObjectPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := workspaceObjectPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s WorkspaceObjectPermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st WorkspaceObjectPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := workspaceObjectPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type WorkspaceObjectPermissionsDescription struct {
-	Description string `json:"description,omitempty"`
+
+	// Wire name: 'description'
+	Description string
 	// Permission level
-	PermissionLevel WorkspaceObjectPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel WorkspaceObjectPermissionLevel
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *WorkspaceObjectPermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *WorkspaceObjectPermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &workspaceObjectPermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := workspaceObjectPermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s WorkspaceObjectPermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st WorkspaceObjectPermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := workspaceObjectPermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type WorkspaceObjectPermissionsRequest struct {
-	AccessControlList []WorkspaceObjectAccessControlRequest `json:"access_control_list,omitempty"`
+
+	// Wire name: 'access_control_list'
+	AccessControlList []WorkspaceObjectAccessControlRequest
 	// The workspace object for which to get or manage permissions.
-	WorkspaceObjectId string `json:"-" url:"-"`
+	// Wire name: 'workspace_object_id'
+	WorkspaceObjectId string `tf:"-"`
 	// The workspace object type for which to get or manage permissions.
-	WorkspaceObjectType string `json:"-" url:"-"`
+	// Wire name: 'workspace_object_type'
+	WorkspaceObjectType string `tf:"-"`
+}
+
+func (st *WorkspaceObjectPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &workspaceObjectPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := workspaceObjectPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st WorkspaceObjectPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := workspaceObjectPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

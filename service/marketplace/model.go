@@ -3,22 +3,79 @@
 package marketplace
 
 import (
+	"encoding/json"
 	"fmt"
-
-	"github.com/databricks/databricks-sdk-go/marshal"
+	"strings"
+	"time"
 )
 
 type AddExchangeForListingRequest struct {
-	ExchangeId string `json:"exchange_id"`
 
-	ListingId string `json:"listing_id"`
+	// Wire name: 'exchange_id'
+	ExchangeId string
+
+	// Wire name: 'listing_id'
+	ListingId string
+}
+
+func (st *AddExchangeForListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &addExchangeForListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := addExchangeForListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AddExchangeForListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := addExchangeForListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AddExchangeForListingResponse struct {
-	ExchangeForListing *ExchangeListing `json:"exchange_for_listing,omitempty"`
+
+	// Wire name: 'exchange_for_listing'
+	ExchangeForListing *ExchangeListing
+}
+
+func (st *AddExchangeForListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &addExchangeForListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := addExchangeForListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AddExchangeForListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := addExchangeForListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AssetType string
+type assetTypePb string
 
 const AssetTypeAssetTypeApp AssetType = `ASSET_TYPE_APP`
 
@@ -55,25 +112,150 @@ func (f *AssetType) Type() string {
 	return "AssetType"
 }
 
+func assetTypeToPb(st *AssetType) (*assetTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := assetTypePb(*st)
+	return &pb, nil
+}
+
+func assetTypeFromPb(pb *assetTypePb) (*AssetType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AssetType(*pb)
+	return &st, nil
+}
+
 // Get one batch of listings. One may specify up to 50 IDs per request.
 type BatchGetListingsRequest struct {
-	Ids []string `json:"-" url:"ids,omitempty"`
+
+	// Wire name: 'ids'
+	Ids []string `tf:"-"`
+}
+
+func (st *BatchGetListingsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &batchGetListingsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := batchGetListingsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BatchGetListingsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := batchGetListingsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type BatchGetListingsResponse struct {
-	Listings []Listing `json:"listings,omitempty"`
+
+	// Wire name: 'listings'
+	Listings []Listing
+}
+
+func (st *BatchGetListingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &batchGetListingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := batchGetListingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BatchGetListingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := batchGetListingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get one batch of providers. One may specify up to 50 IDs per request.
 type BatchGetProvidersRequest struct {
-	Ids []string `json:"-" url:"ids,omitempty"`
+
+	// Wire name: 'ids'
+	Ids []string `tf:"-"`
+}
+
+func (st *BatchGetProvidersRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &batchGetProvidersRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := batchGetProvidersRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BatchGetProvidersRequest) MarshalJSON() ([]byte, error) {
+	pb, err := batchGetProvidersRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type BatchGetProvidersResponse struct {
-	Providers []ProviderInfo `json:"providers,omitempty"`
+
+	// Wire name: 'providers'
+	Providers []ProviderInfo
+}
+
+func (st *BatchGetProvidersResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &batchGetProvidersResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := batchGetProvidersResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BatchGetProvidersResponse) MarshalJSON() ([]byte, error) {
+	pb, err := batchGetProvidersResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type Category string
+type categoryPb string
 
 const CategoryAdvertisingAndMarketing Category = `ADVERTISING_AND_MARKETING`
 
@@ -140,33 +322,99 @@ func (f *Category) Type() string {
 	return "Category"
 }
 
+func categoryToPb(st *Category) (*categoryPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := categoryPb(*st)
+	return &pb, nil
+}
+
+func categoryFromPb(pb *categoryPb) (*Category, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := Category(*pb)
+	return &st, nil
+}
+
 type ConsumerTerms struct {
-	Version string `json:"version"`
+
+	// Wire name: 'version'
+	Version string
+}
+
+func (st *ConsumerTerms) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &consumerTermsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := consumerTermsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ConsumerTerms) MarshalJSON() ([]byte, error) {
+	pb, err := consumerTermsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // contact info for the consumer requesting data or performing a listing
 // installation
 type ContactInfo struct {
-	Company string `json:"company,omitempty"`
 
-	Email string `json:"email,omitempty"`
+	// Wire name: 'company'
+	Company string
 
-	FirstName string `json:"first_name,omitempty"`
+	// Wire name: 'email'
+	Email string
 
-	LastName string `json:"last_name,omitempty"`
+	// Wire name: 'first_name'
+	FirstName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'last_name'
+	LastName string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ContactInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ContactInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &contactInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := contactInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ContactInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ContactInfo) MarshalJSON() ([]byte, error) {
+	pb, err := contactInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type Cost string
+type costPb string
 
 const CostFree Cost = `FREE`
 
@@ -193,184 +441,497 @@ func (f *Cost) Type() string {
 	return "Cost"
 }
 
+func costToPb(st *Cost) (*costPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := costPb(*st)
+	return &pb, nil
+}
+
+func costFromPb(pb *costPb) (*Cost, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := Cost(*pb)
+	return &st, nil
+}
+
 type CreateExchangeFilterRequest struct {
-	Filter ExchangeFilter `json:"filter"`
+
+	// Wire name: 'filter'
+	Filter ExchangeFilter
+}
+
+func (st *CreateExchangeFilterRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createExchangeFilterRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createExchangeFilterRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateExchangeFilterRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createExchangeFilterRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateExchangeFilterResponse struct {
-	FilterId string `json:"filter_id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'filter_id'
+	FilterId string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateExchangeFilterResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateExchangeFilterResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createExchangeFilterResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createExchangeFilterResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateExchangeFilterResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateExchangeFilterResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createExchangeFilterResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateExchangeRequest struct {
-	Exchange Exchange `json:"exchange"`
+
+	// Wire name: 'exchange'
+	Exchange Exchange
+}
+
+func (st *CreateExchangeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createExchangeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createExchangeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateExchangeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createExchangeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateExchangeResponse struct {
-	ExchangeId string `json:"exchange_id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'exchange_id'
+	ExchangeId string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateExchangeResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateExchangeResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createExchangeResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createExchangeResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateExchangeResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateExchangeResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createExchangeResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateFileRequest struct {
-	DisplayName string `json:"display_name,omitempty"`
 
-	FileParent FileParent `json:"file_parent"`
+	// Wire name: 'display_name'
+	DisplayName string
 
-	MarketplaceFileType MarketplaceFileType `json:"marketplace_file_type"`
+	// Wire name: 'file_parent'
+	FileParent FileParent
 
-	MimeType string `json:"mime_type"`
+	// Wire name: 'marketplace_file_type'
+	MarketplaceFileType MarketplaceFileType
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'mime_type'
+	MimeType string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateFileRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateFileRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createFileRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createFileRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateFileRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateFileRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createFileRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateFileResponse struct {
-	FileInfo *FileInfo `json:"file_info,omitempty"`
+
+	// Wire name: 'file_info'
+	FileInfo *FileInfo
 	// Pre-signed POST URL to blob storage
-	UploadUrl string `json:"upload_url,omitempty"`
+	// Wire name: 'upload_url'
+	UploadUrl string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateFileResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateFileResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createFileResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createFileResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateFileResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateFileResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createFileResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateInstallationRequest struct {
-	AcceptedConsumerTerms *ConsumerTerms `json:"accepted_consumer_terms,omitempty"`
 
-	CatalogName string `json:"catalog_name,omitempty"`
+	// Wire name: 'accepted_consumer_terms'
+	AcceptedConsumerTerms *ConsumerTerms
 
-	ListingId string `json:"-" url:"-"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 
-	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
+
+	// Wire name: 'recipient_type'
+	RecipientType DeltaSharingRecipientType
 	// for git repo installations
-	RepoDetail *RepoInstallation `json:"repo_detail,omitempty"`
+	// Wire name: 'repo_detail'
+	RepoDetail *RepoInstallation
 
-	ShareName string `json:"share_name,omitempty"`
+	// Wire name: 'share_name'
+	ShareName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateInstallationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateInstallationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createInstallationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createInstallationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateInstallationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateInstallationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createInstallationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateListingRequest struct {
-	Listing Listing `json:"listing"`
+
+	// Wire name: 'listing'
+	Listing Listing
+}
+
+func (st *CreateListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateListingResponse struct {
-	ListingId string `json:"listing_id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'listing_id'
+	ListingId string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateListingResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateListingResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Data request messages also creates a lead (maybe)
 type CreatePersonalizationRequest struct {
-	AcceptedConsumerTerms ConsumerTerms `json:"accepted_consumer_terms"`
 
-	Comment string `json:"comment,omitempty"`
+	// Wire name: 'accepted_consumer_terms'
+	AcceptedConsumerTerms ConsumerTerms
 
-	Company string `json:"company,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 
-	FirstName string `json:"first_name,omitempty"`
+	// Wire name: 'company'
+	Company string
 
-	IntendedUse string `json:"intended_use"`
+	// Wire name: 'first_name'
+	FirstName string
 
-	IsFromLighthouse bool `json:"is_from_lighthouse,omitempty"`
+	// Wire name: 'intended_use'
+	IntendedUse string
 
-	LastName string `json:"last_name,omitempty"`
+	// Wire name: 'is_from_lighthouse'
+	IsFromLighthouse bool
 
-	ListingId string `json:"-" url:"-"`
+	// Wire name: 'last_name'
+	LastName string
 
-	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'recipient_type'
+	RecipientType DeltaSharingRecipientType
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreatePersonalizationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreatePersonalizationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createPersonalizationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createPersonalizationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreatePersonalizationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreatePersonalizationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createPersonalizationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreatePersonalizationRequestResponse struct {
-	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'id'
+	Id string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreatePersonalizationRequestResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreatePersonalizationRequestResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createPersonalizationRequestResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createPersonalizationRequestResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreatePersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreatePersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createPersonalizationRequestResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateProviderRequest struct {
-	Provider ProviderInfo `json:"provider"`
+
+	// Wire name: 'provider'
+	Provider ProviderInfo
+}
+
+func (st *CreateProviderRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createProviderRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createProviderRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateProviderRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createProviderRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateProviderResponse struct {
-	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'id'
+	Id string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateProviderResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateProviderResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createProviderResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createProviderResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateProviderResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateProviderResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createProviderResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DataRefresh string
+type dataRefreshPb string
 
 const DataRefreshDaily DataRefresh = `DAILY`
 
@@ -411,63 +972,421 @@ func (f *DataRefresh) Type() string {
 	return "DataRefresh"
 }
 
-type DataRefreshInfo struct {
-	Interval int64 `json:"interval"`
+func dataRefreshToPb(st *DataRefresh) (*dataRefreshPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := dataRefreshPb(*st)
+	return &pb, nil
+}
 
-	Unit DataRefresh `json:"unit"`
+func dataRefreshFromPb(pb *dataRefreshPb) (*DataRefresh, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := DataRefresh(*pb)
+	return &st, nil
+}
+
+type DataRefreshInfo struct {
+
+	// Wire name: 'interval'
+	Interval int64
+
+	// Wire name: 'unit'
+	Unit DataRefresh
+}
+
+func (st *DataRefreshInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dataRefreshInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := dataRefreshInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DataRefreshInfo) MarshalJSON() ([]byte, error) {
+	pb, err := dataRefreshInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete an exchange filter
 type DeleteExchangeFilterRequest struct {
-	Id string `json:"-" url:"-"`
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
+}
+
+func (st *DeleteExchangeFilterRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteExchangeFilterRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteExchangeFilterRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteExchangeFilterRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteExchangeFilterRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteExchangeFilterResponse struct {
 }
 
+func (st *DeleteExchangeFilterResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteExchangeFilterResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteExchangeFilterResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteExchangeFilterResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteExchangeFilterResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete an exchange
 type DeleteExchangeRequest struct {
-	Id string `json:"-" url:"-"`
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
+}
+
+func (st *DeleteExchangeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteExchangeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteExchangeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteExchangeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteExchangeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteExchangeResponse struct {
 }
 
+func (st *DeleteExchangeResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteExchangeResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteExchangeResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteExchangeResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteExchangeResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete a file
 type DeleteFileRequest struct {
-	FileId string `json:"-" url:"-"`
+
+	// Wire name: 'file_id'
+	FileId string `tf:"-"`
+}
+
+func (st *DeleteFileRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteFileRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteFileRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteFileRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteFileRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteFileResponse struct {
 }
 
+func (st *DeleteFileResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteFileResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteFileResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteFileResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteFileResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Uninstall from a listing
 type DeleteInstallationRequest struct {
-	InstallationId string `json:"-" url:"-"`
 
-	ListingId string `json:"-" url:"-"`
+	// Wire name: 'installation_id'
+	InstallationId string `tf:"-"`
+
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
+}
+
+func (st *DeleteInstallationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteInstallationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteInstallationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteInstallationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteInstallationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteInstallationResponse struct {
 }
 
+func (st *DeleteInstallationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteInstallationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteInstallationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteInstallationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteInstallationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete a listing
 type DeleteListingRequest struct {
-	Id string `json:"-" url:"-"`
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
+}
+
+func (st *DeleteListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteListingResponse struct {
 }
 
+func (st *DeleteListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete provider
 type DeleteProviderRequest struct {
-	Id string `json:"-" url:"-"`
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
+}
+
+func (st *DeleteProviderRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteProviderRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteProviderRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteProviderRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteProviderRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteProviderResponse struct {
 }
 
+func (st *DeleteProviderResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteProviderResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteProviderResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteProviderResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteProviderResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type DeltaSharingRecipientType string
+type deltaSharingRecipientTypePb string
 
 const DeltaSharingRecipientTypeDeltaSharingRecipientTypeDatabricks DeltaSharingRecipientType = `DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS`
 
@@ -494,67 +1413,138 @@ func (f *DeltaSharingRecipientType) Type() string {
 	return "DeltaSharingRecipientType"
 }
 
+func deltaSharingRecipientTypeToPb(st *DeltaSharingRecipientType) (*deltaSharingRecipientTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := deltaSharingRecipientTypePb(*st)
+	return &pb, nil
+}
+
+func deltaSharingRecipientTypeFromPb(pb *deltaSharingRecipientTypePb) (*DeltaSharingRecipientType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := DeltaSharingRecipientType(*pb)
+	return &st, nil
+}
+
 type Exchange struct {
-	Comment string `json:"comment,omitempty"`
 
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'comment'
+	Comment string
 
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 
-	Filters []ExchangeFilter `json:"filters,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 
-	Id string `json:"id,omitempty"`
+	// Wire name: 'filters'
+	Filters []ExchangeFilter
 
-	LinkedListings []ExchangeListing `json:"linked_listings,omitempty"`
+	// Wire name: 'id'
+	Id string
 
-	Name string `json:"name"`
+	// Wire name: 'linked_listings'
+	LinkedListings []ExchangeListing
 
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'name'
+	Name string
 
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Exchange) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *Exchange) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &exchangePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := exchangeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s Exchange) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st Exchange) MarshalJSON() ([]byte, error) {
+	pb, err := exchangeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ExchangeFilter struct {
-	CreatedAt int64 `json:"created_at,omitempty"`
 
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 
-	ExchangeId string `json:"exchange_id"`
+	// Wire name: 'created_by'
+	CreatedBy string
 
-	FilterType ExchangeFilterType `json:"filter_type"`
+	// Wire name: 'exchange_id'
+	ExchangeId string
 
-	FilterValue string `json:"filter_value"`
+	// Wire name: 'filter_type'
+	FilterType ExchangeFilterType
 
-	Id string `json:"id,omitempty"`
+	// Wire name: 'filter_value'
+	FilterValue string
 
-	Name string `json:"name,omitempty"`
+	// Wire name: 'id'
+	Id string
 
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'name'
+	Name string
 
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExchangeFilter) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ExchangeFilter) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &exchangeFilterPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := exchangeFilterFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ExchangeFilter) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ExchangeFilter) MarshalJSON() ([]byte, error) {
+	pb, err := exchangeFilterToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ExchangeFilterType string
+type exchangeFilterTypePb string
 
 const ExchangeFilterTypeGlobalMetastoreId ExchangeFilterType = `GLOBAL_METASTORE_ID`
 
@@ -579,82 +1569,172 @@ func (f *ExchangeFilterType) Type() string {
 	return "ExchangeFilterType"
 }
 
+func exchangeFilterTypeToPb(st *ExchangeFilterType) (*exchangeFilterTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := exchangeFilterTypePb(*st)
+	return &pb, nil
+}
+
+func exchangeFilterTypeFromPb(pb *exchangeFilterTypePb) (*ExchangeFilterType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ExchangeFilterType(*pb)
+	return &st, nil
+}
+
 type ExchangeListing struct {
-	CreatedAt int64 `json:"created_at,omitempty"`
 
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 
-	ExchangeId string `json:"exchange_id,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 
-	ExchangeName string `json:"exchange_name,omitempty"`
+	// Wire name: 'exchange_id'
+	ExchangeId string
 
-	Id string `json:"id,omitempty"`
+	// Wire name: 'exchange_name'
+	ExchangeName string
 
-	ListingId string `json:"listing_id,omitempty"`
+	// Wire name: 'id'
+	Id string
 
-	ListingName string `json:"listing_name,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'listing_name'
+	ListingName string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExchangeListing) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ExchangeListing) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &exchangeListingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := exchangeListingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ExchangeListing) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ExchangeListing) MarshalJSON() ([]byte, error) {
+	pb, err := exchangeListingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type FileInfo struct {
-	CreatedAt int64 `json:"created_at,omitempty"`
+
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Name displayed to users for applicable files, e.g. embedded notebooks
-	DisplayName string `json:"display_name,omitempty"`
+	// Wire name: 'display_name'
+	DisplayName string
 
-	DownloadLink string `json:"download_link,omitempty"`
+	// Wire name: 'download_link'
+	DownloadLink string
 
-	FileParent *FileParent `json:"file_parent,omitempty"`
+	// Wire name: 'file_parent'
+	FileParent *FileParent
 
-	Id string `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id string
 
-	MarketplaceFileType MarketplaceFileType `json:"marketplace_file_type,omitempty"`
+	// Wire name: 'marketplace_file_type'
+	MarketplaceFileType MarketplaceFileType
 
-	MimeType string `json:"mime_type,omitempty"`
+	// Wire name: 'mime_type'
+	MimeType string
 
-	Status FileStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status FileStatus
 	// Populated if status is in a failed state with more information on reason
 	// for the failure.
-	StatusMessage string `json:"status_message,omitempty"`
+	// Wire name: 'status_message'
+	StatusMessage string
 
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FileInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *FileInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &fileInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := fileInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s FileInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st FileInfo) MarshalJSON() ([]byte, error) {
+	pb, err := fileInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type FileParent struct {
-	FileParentType FileParentType `json:"file_parent_type,omitempty"`
+
+	// Wire name: 'file_parent_type'
+	FileParentType FileParentType
 	// TODO make the following fields required
-	ParentId string `json:"parent_id,omitempty"`
+	// Wire name: 'parent_id'
+	ParentId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FileParent) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *FileParent) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &fileParentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := fileParentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s FileParent) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st FileParent) MarshalJSON() ([]byte, error) {
+	pb, err := fileParentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type FileParentType string
+type fileParentTypePb string
 
 const FileParentTypeListing FileParentType = `LISTING`
 
@@ -683,7 +1763,24 @@ func (f *FileParentType) Type() string {
 	return "FileParentType"
 }
 
+func fileParentTypeToPb(st *FileParentType) (*fileParentTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := fileParentTypePb(*st)
+	return &pb, nil
+}
+
+func fileParentTypeFromPb(pb *fileParentTypePb) (*FileParentType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FileParentType(*pb)
+	return &st, nil
+}
+
 type FileStatus string
+type fileStatusPb string
 
 const FileStatusFileStatusPublished FileStatus = `FILE_STATUS_PUBLISHED`
 
@@ -714,7 +1811,24 @@ func (f *FileStatus) Type() string {
 	return "FileStatus"
 }
 
+func fileStatusToPb(st *FileStatus) (*fileStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := fileStatusPb(*st)
+	return &pb, nil
+}
+
+func fileStatusFromPb(pb *fileStatusPb) (*FileStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FileStatus(*pb)
+	return &st, nil
+}
+
 type FulfillmentType string
+type fulfillmentTypePb string
 
 const FulfillmentTypeInstall FulfillmentType = `INSTALL`
 
@@ -741,177 +1855,621 @@ func (f *FulfillmentType) Type() string {
 	return "FulfillmentType"
 }
 
+func fulfillmentTypeToPb(st *FulfillmentType) (*fulfillmentTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := fulfillmentTypePb(*st)
+	return &pb, nil
+}
+
+func fulfillmentTypeFromPb(pb *fulfillmentTypePb) (*FulfillmentType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := FulfillmentType(*pb)
+	return &st, nil
+}
+
 // Get an exchange
 type GetExchangeRequest struct {
-	Id string `json:"-" url:"-"`
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
+}
+
+func (st *GetExchangeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getExchangeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getExchangeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetExchangeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getExchangeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetExchangeResponse struct {
-	Exchange *Exchange `json:"exchange,omitempty"`
+
+	// Wire name: 'exchange'
+	Exchange *Exchange
+}
+
+func (st *GetExchangeResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getExchangeResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getExchangeResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetExchangeResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getExchangeResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a file
 type GetFileRequest struct {
-	FileId string `json:"-" url:"-"`
+
+	// Wire name: 'file_id'
+	FileId string `tf:"-"`
+}
+
+func (st *GetFileRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getFileRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getFileRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetFileRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getFileRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetFileResponse struct {
-	FileInfo *FileInfo `json:"file_info,omitempty"`
+
+	// Wire name: 'file_info'
+	FileInfo *FileInfo
+}
+
+func (st *GetFileResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getFileResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getFileResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetFileResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getFileResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetLatestVersionProviderAnalyticsDashboardResponse struct {
 	// version here is latest logical version of the dashboard template
-	Version int64 `json:"version,omitempty"`
+	// Wire name: 'version'
+	Version int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetLatestVersionProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetLatestVersionProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getLatestVersionProviderAnalyticsDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getLatestVersionProviderAnalyticsDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetLatestVersionProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetLatestVersionProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getLatestVersionProviderAnalyticsDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get listing content metadata
 type GetListingContentMetadataRequest struct {
-	ListingId string `json:"-" url:"-"`
 
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetListingContentMetadataRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetListingContentMetadataRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getListingContentMetadataRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getListingContentMetadataRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetListingContentMetadataRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetListingContentMetadataRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getListingContentMetadataRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetListingContentMetadataResponse struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
 
-	SharedDataObjects []SharedDataObject `json:"shared_data_objects,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'shared_data_objects'
+	SharedDataObjects []SharedDataObject
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetListingContentMetadataResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetListingContentMetadataResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getListingContentMetadataResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getListingContentMetadataResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetListingContentMetadataResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetListingContentMetadataResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getListingContentMetadataResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get listing
 type GetListingRequest struct {
-	Id string `json:"-" url:"-"`
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
+}
+
+func (st *GetListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetListingResponse struct {
-	Listing *Listing `json:"listing,omitempty"`
+
+	// Wire name: 'listing'
+	Listing *Listing
+}
+
+func (st *GetListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List listings
 type GetListingsRequest struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetListingsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetListingsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getListingsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getListingsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetListingsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetListingsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getListingsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetListingsResponse struct {
-	Listings []Listing `json:"listings,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'listings'
+	Listings []Listing
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GetListingsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetListingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getListingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getListingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetListingsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetListingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getListingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the personalization request for a listing
 type GetPersonalizationRequestRequest struct {
-	ListingId string `json:"-" url:"-"`
+
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
+}
+
+func (st *GetPersonalizationRequestRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getPersonalizationRequestRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getPersonalizationRequestRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetPersonalizationRequestRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getPersonalizationRequestRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetPersonalizationRequestResponse struct {
-	PersonalizationRequests []PersonalizationRequest `json:"personalization_requests,omitempty"`
+
+	// Wire name: 'personalization_requests'
+	PersonalizationRequests []PersonalizationRequest
+}
+
+func (st *GetPersonalizationRequestResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getPersonalizationRequestResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getPersonalizationRequestResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetPersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getPersonalizationRequestResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a provider
 type GetProviderRequest struct {
-	Id string `json:"-" url:"-"`
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
+}
+
+func (st *GetProviderRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getProviderRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getProviderRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetProviderRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getProviderRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetProviderResponse struct {
-	Provider *ProviderInfo `json:"provider,omitempty"`
+
+	// Wire name: 'provider'
+	Provider *ProviderInfo
+}
+
+func (st *GetProviderResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getProviderResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getProviderResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetProviderResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getProviderResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type Installation struct {
-	Installation *InstallationDetail `json:"installation,omitempty"`
+
+	// Wire name: 'installation'
+	Installation *InstallationDetail
+}
+
+func (st *Installation) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &installationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := installationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st Installation) MarshalJSON() ([]byte, error) {
+	pb, err := installationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type InstallationDetail struct {
-	CatalogName string `json:"catalog_name,omitempty"`
 
-	ErrorMessage string `json:"error_message,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 
-	Id string `json:"id,omitempty"`
+	// Wire name: 'error_message'
+	ErrorMessage string
 
-	InstalledOn int64 `json:"installed_on,omitempty"`
+	// Wire name: 'id'
+	Id string
 
-	ListingId string `json:"listing_id,omitempty"`
+	// Wire name: 'installed_on'
+	InstalledOn int64
 
-	ListingName string `json:"listing_name,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string
 
-	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
+	// Wire name: 'listing_name'
+	ListingName string
 
-	RepoName string `json:"repo_name,omitempty"`
+	// Wire name: 'recipient_type'
+	RecipientType DeltaSharingRecipientType
 
-	RepoPath string `json:"repo_path,omitempty"`
+	// Wire name: 'repo_name'
+	RepoName string
 
-	ShareName string `json:"share_name,omitempty"`
+	// Wire name: 'repo_path'
+	RepoPath string
 
-	Status InstallationStatus `json:"status,omitempty"`
+	// Wire name: 'share_name'
+	ShareName string
 
-	TokenDetail *TokenDetail `json:"token_detail,omitempty"`
+	// Wire name: 'status'
+	Status InstallationStatus
 
-	Tokens []TokenInfo `json:"tokens,omitempty"`
+	// Wire name: 'token_detail'
+	TokenDetail *TokenDetail
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'tokens'
+	Tokens []TokenInfo
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *InstallationDetail) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *InstallationDetail) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &installationDetailPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := installationDetailFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s InstallationDetail) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st InstallationDetail) MarshalJSON() ([]byte, error) {
+	pb, err := installationDetailToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type InstallationStatus string
+type installationStatusPb string
 
 const InstallationStatusFailed InstallationStatus = `FAILED`
 
@@ -938,472 +2496,998 @@ func (f *InstallationStatus) Type() string {
 	return "InstallationStatus"
 }
 
+func installationStatusToPb(st *InstallationStatus) (*installationStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := installationStatusPb(*st)
+	return &pb, nil
+}
+
+func installationStatusFromPb(pb *installationStatusPb) (*InstallationStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := InstallationStatus(*pb)
+	return &st, nil
+}
+
 // List all installations
 type ListAllInstallationsRequest struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAllInstallationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListAllInstallationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAllInstallationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAllInstallationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListAllInstallationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListAllInstallationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listAllInstallationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListAllInstallationsResponse struct {
-	Installations []InstallationDetail `json:"installations,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'installations'
+	Installations []InstallationDetail
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAllInstallationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListAllInstallationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAllInstallationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAllInstallationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListAllInstallationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListAllInstallationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listAllInstallationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List all personalization requests
 type ListAllPersonalizationRequestsRequest struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAllPersonalizationRequestsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListAllPersonalizationRequestsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAllPersonalizationRequestsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAllPersonalizationRequestsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListAllPersonalizationRequestsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListAllPersonalizationRequestsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listAllPersonalizationRequestsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListAllPersonalizationRequestsResponse struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
 
-	PersonalizationRequests []PersonalizationRequest `json:"personalization_requests,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'personalization_requests'
+	PersonalizationRequests []PersonalizationRequest
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListAllPersonalizationRequestsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListAllPersonalizationRequestsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listAllPersonalizationRequestsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listAllPersonalizationRequestsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListAllPersonalizationRequestsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListAllPersonalizationRequestsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listAllPersonalizationRequestsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List exchange filters
 type ListExchangeFiltersRequest struct {
-	ExchangeId string `json:"-" url:"exchange_id"`
 
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'exchange_id'
+	ExchangeId string `tf:"-"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangeFiltersRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListExchangeFiltersRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listExchangeFiltersRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listExchangeFiltersRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListExchangeFiltersRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListExchangeFiltersRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listExchangeFiltersRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListExchangeFiltersResponse struct {
-	Filters []ExchangeFilter `json:"filters,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'filters'
+	Filters []ExchangeFilter
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangeFiltersResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListExchangeFiltersResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listExchangeFiltersResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listExchangeFiltersResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListExchangeFiltersResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListExchangeFiltersResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listExchangeFiltersResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List exchanges for listing
 type ListExchangesForListingRequest struct {
-	ListingId string `json:"-" url:"listing_id"`
 
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangesForListingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListExchangesForListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listExchangesForListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listExchangesForListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListExchangesForListingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListExchangesForListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listExchangesForListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListExchangesForListingResponse struct {
-	ExchangeListing []ExchangeListing `json:"exchange_listing,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'exchange_listing'
+	ExchangeListing []ExchangeListing
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangesForListingResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListExchangesForListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listExchangesForListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listExchangesForListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListExchangesForListingResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListExchangesForListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listExchangesForListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List exchanges
 type ListExchangesRequest struct {
-	PageSize int `json:"-" url:"page_size,omitempty"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListExchangesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listExchangesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listExchangesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListExchangesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListExchangesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listExchangesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListExchangesResponse struct {
-	Exchanges []Exchange `json:"exchanges,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'exchanges'
+	Exchanges []Exchange
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListExchangesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListExchangesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listExchangesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listExchangesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListExchangesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListExchangesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listExchangesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List files
 type ListFilesRequest struct {
-	FileParent FileParent `json:"-" url:"file_parent"`
 
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'file_parent'
+	FileParent FileParent `tf:"-"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListFilesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListFilesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listFilesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listFilesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListFilesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListFilesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listFilesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListFilesResponse struct {
-	FileInfos []FileInfo `json:"file_infos,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'file_infos'
+	FileInfos []FileInfo
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListFilesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListFilesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listFilesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listFilesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListFilesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListFilesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listFilesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List all listing fulfillments
 type ListFulfillmentsRequest struct {
-	ListingId string `json:"-" url:"-"`
 
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListFulfillmentsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListFulfillmentsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listFulfillmentsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listFulfillmentsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListFulfillmentsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListFulfillmentsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listFulfillmentsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListFulfillmentsResponse struct {
-	Fulfillments []ListingFulfillment `json:"fulfillments,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'fulfillments'
+	Fulfillments []ListingFulfillment
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListFulfillmentsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListFulfillmentsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listFulfillmentsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listFulfillmentsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListFulfillmentsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListFulfillmentsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listFulfillmentsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List installations for a listing
 type ListInstallationsRequest struct {
-	ListingId string `json:"-" url:"-"`
 
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListInstallationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListInstallationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listInstallationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listInstallationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListInstallationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListInstallationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listInstallationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListInstallationsResponse struct {
-	Installations []InstallationDetail `json:"installations,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'installations'
+	Installations []InstallationDetail
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListInstallationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListInstallationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listInstallationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listInstallationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListInstallationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListInstallationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listInstallationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List listings for exchange
 type ListListingsForExchangeRequest struct {
-	ExchangeId string `json:"-" url:"exchange_id"`
 
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'exchange_id'
+	ExchangeId string `tf:"-"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListListingsForExchangeRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListListingsForExchangeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listListingsForExchangeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listListingsForExchangeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListListingsForExchangeRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListListingsForExchangeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listListingsForExchangeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListListingsForExchangeResponse struct {
-	ExchangeListings []ExchangeListing `json:"exchange_listings,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'exchange_listings'
+	ExchangeListings []ExchangeListing
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListListingsForExchangeResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListListingsForExchangeResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listListingsForExchangeResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listListingsForExchangeResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListListingsForExchangeResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListListingsForExchangeResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listListingsForExchangeResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List listings
 type ListListingsRequest struct {
 	// Matches any of the following asset types
-	Assets []AssetType `json:"-" url:"assets,omitempty"`
+	// Wire name: 'assets'
+	Assets []AssetType `tf:"-"`
 	// Matches any of the following categories
-	Categories []Category `json:"-" url:"categories,omitempty"`
+	// Wire name: 'categories'
+	Categories []Category `tf:"-"`
 	// Filters each listing based on if it is free.
-	IsFree bool `json:"-" url:"is_free,omitempty"`
+	// Wire name: 'is_free'
+	IsFree bool `tf:"-"`
 	// Filters each listing based on if it is a private exchange.
-	IsPrivateExchange bool `json:"-" url:"is_private_exchange,omitempty"`
+	// Wire name: 'is_private_exchange'
+	IsPrivateExchange bool `tf:"-"`
 	// Filters each listing based on whether it is a staff pick.
-	IsStaffPick bool `json:"-" url:"is_staff_pick,omitempty"`
+	// Wire name: 'is_staff_pick'
+	IsStaffPick bool `tf:"-"`
 
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Matches any of the following provider ids
-	ProviderIds []string `json:"-" url:"provider_ids,omitempty"`
+	// Wire name: 'provider_ids'
+	ProviderIds []string `tf:"-"`
 	// Matches any of the following tags
-	Tags []ListingTag `json:"-" url:"tags,omitempty"`
+	// Wire name: 'tags'
+	Tags []ListingTag `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListListingsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListListingsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listListingsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listListingsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListListingsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListListingsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listListingsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListListingsResponse struct {
-	Listings []Listing `json:"listings,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'listings'
+	Listings []Listing
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListListingsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListListingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listListingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listListingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListListingsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListListingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listListingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListProviderAnalyticsDashboardResponse struct {
 	// dashboard_id will be used to open Lakeview dashboard.
-	DashboardId string `json:"dashboard_id"`
+	// Wire name: 'dashboard_id'
+	DashboardId string
 
-	Id string `json:"id"`
+	// Wire name: 'id'
+	Id string
 
-	Version int64 `json:"version,omitempty"`
+	// Wire name: 'version'
+	Version int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listProviderAnalyticsDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listProviderAnalyticsDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listProviderAnalyticsDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List providers
 type ListProvidersRequest struct {
-	IsFeatured bool `json:"-" url:"is_featured,omitempty"`
 
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'is_featured'
+	IsFeatured bool `tf:"-"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListProvidersRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListProvidersRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listProvidersRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listProvidersRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListProvidersRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListProvidersRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listProvidersRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListProvidersResponse struct {
-	NextPageToken string `json:"next_page_token,omitempty"`
 
-	Providers []ProviderInfo `json:"providers,omitempty"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'providers'
+	Providers []ProviderInfo
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListProvidersResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListProvidersResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listProvidersResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listProvidersResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListProvidersResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListProvidersResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listProvidersResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type Listing struct {
-	Detail *ListingDetail `json:"detail,omitempty"`
 
-	Id string `json:"id,omitempty"`
+	// Wire name: 'detail'
+	Detail *ListingDetail
 
-	Summary ListingSummary `json:"summary"`
+	// Wire name: 'id'
+	Id string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'summary'
+	Summary ListingSummary
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Listing) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *Listing) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s Listing) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st Listing) MarshalJSON() ([]byte, error) {
+	pb, err := listingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListingDetail struct {
 	// Type of assets included in the listing. eg. GIT_REPO, DATA_TABLE, MODEL,
 	// NOTEBOOK
-	Assets []AssetType `json:"assets,omitempty"`
+	// Wire name: 'assets'
+	Assets []AssetType
 	// The ending date timestamp for when the data spans
-	CollectionDateEnd int64 `json:"collection_date_end,omitempty"`
+	// Wire name: 'collection_date_end'
+	CollectionDateEnd int64
 	// The starting date timestamp for when the data spans
-	CollectionDateStart int64 `json:"collection_date_start,omitempty"`
+	// Wire name: 'collection_date_start'
+	CollectionDateStart int64
 	// Smallest unit of time in the dataset
-	CollectionGranularity *DataRefreshInfo `json:"collection_granularity,omitempty"`
+	// Wire name: 'collection_granularity'
+	CollectionGranularity *DataRefreshInfo
 	// Whether the dataset is free or paid
-	Cost Cost `json:"cost,omitempty"`
+	// Wire name: 'cost'
+	Cost Cost
 	// Where/how the data is sourced
-	DataSource string `json:"data_source,omitempty"`
+	// Wire name: 'data_source'
+	DataSource string
 
-	Description string `json:"description,omitempty"`
+	// Wire name: 'description'
+	Description string
 
-	DocumentationLink string `json:"documentation_link,omitempty"`
+	// Wire name: 'documentation_link'
+	DocumentationLink string
 
-	EmbeddedNotebookFileInfos []FileInfo `json:"embedded_notebook_file_infos,omitempty"`
+	// Wire name: 'embedded_notebook_file_infos'
+	EmbeddedNotebookFileInfos []FileInfo
 
-	FileIds []string `json:"file_ids,omitempty"`
+	// Wire name: 'file_ids'
+	FileIds []string
 	// Which geo region the listing data is collected from
-	GeographicalCoverage string `json:"geographical_coverage,omitempty"`
+	// Wire name: 'geographical_coverage'
+	GeographicalCoverage string
 	// ID 20, 21 removed don't use License of the data asset - Required for
 	// listings with model based assets
-	License string `json:"license,omitempty"`
+	// Wire name: 'license'
+	License string
 	// What the pricing model is (e.g. paid, subscription, paid upfront); should
 	// only be present if cost is paid TODO: Not used yet, should deprecate if
 	// we will never use it
-	PricingModel string `json:"pricing_model,omitempty"`
+	// Wire name: 'pricing_model'
+	PricingModel string
 
-	PrivacyPolicyLink string `json:"privacy_policy_link,omitempty"`
+	// Wire name: 'privacy_policy_link'
+	PrivacyPolicyLink string
 	// size of the dataset in GB
-	Size float64 `json:"size,omitempty"`
+	// Wire name: 'size'
+	Size float64
 
-	SupportLink string `json:"support_link,omitempty"`
+	// Wire name: 'support_link'
+	SupportLink string
 	// Listing tags - Simple key value pair to annotate listings. When should I
 	// use tags vs dedicated fields? Using tags avoids the need to add new
 	// columns in the database for new annotations. However, this should be used
@@ -1411,40 +3495,119 @@ type ListingDetail struct {
 	// the field is optional and won't need to have NOT NULL integrity check 2.
 	// The value is fairly fixed, static and low cardinality (eg. enums). 3. The
 	// value won't be used in filters or joins with other tables.
-	Tags []ListingTag `json:"tags,omitempty"`
+	// Wire name: 'tags'
+	Tags []ListingTag
 
-	TermsOfService string `json:"terms_of_service,omitempty"`
+	// Wire name: 'terms_of_service'
+	TermsOfService string
 	// How often data is updated
-	UpdateFrequency *DataRefreshInfo `json:"update_frequency,omitempty"`
+	// Wire name: 'update_frequency'
+	UpdateFrequency *DataRefreshInfo
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListingDetail) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListingDetail) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listingDetailPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listingDetailFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListingDetail) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListingDetail) MarshalJSON() ([]byte, error) {
+	pb, err := listingDetailToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListingFulfillment struct {
-	FulfillmentType FulfillmentType `json:"fulfillment_type,omitempty"`
 
-	ListingId string `json:"listing_id"`
+	// Wire name: 'fulfillment_type'
+	FulfillmentType FulfillmentType
 
-	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string
 
-	RepoInfo *RepoInfo `json:"repo_info,omitempty"`
+	// Wire name: 'recipient_type'
+	RecipientType DeltaSharingRecipientType
 
-	ShareInfo *ShareInfo `json:"share_info,omitempty"`
+	// Wire name: 'repo_info'
+	RepoInfo *RepoInfo
+
+	// Wire name: 'share_info'
+	ShareInfo *ShareInfo
+}
+
+func (st *ListingFulfillment) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listingFulfillmentPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listingFulfillmentFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListingFulfillment) MarshalJSON() ([]byte, error) {
+	pb, err := listingFulfillmentToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListingSetting struct {
-	Visibility Visibility `json:"visibility,omitempty"`
+
+	// Wire name: 'visibility'
+	Visibility Visibility
+}
+
+func (st *ListingSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listingSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listingSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListingSetting) MarshalJSON() ([]byte, error) {
+	pb, err := listingSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListingShareType string
+type listingShareTypePb string
 
 const ListingShareTypeFull ListingShareType = `FULL`
 
@@ -1471,8 +3634,25 @@ func (f *ListingShareType) Type() string {
 	return "ListingShareType"
 }
 
+func listingShareTypeToPb(st *ListingShareType) (*listingShareTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := listingShareTypePb(*st)
+	return &pb, nil
+}
+
+func listingShareTypeFromPb(pb *listingShareTypePb) (*ListingShareType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ListingShareType(*pb)
+	return &st, nil
+}
+
 // Enums
 type ListingStatus string
+type listingStatusPb string
 
 const ListingStatusDraft ListingStatus = `DRAFT`
 
@@ -1503,66 +3683,147 @@ func (f *ListingStatus) Type() string {
 	return "ListingStatus"
 }
 
+func listingStatusToPb(st *ListingStatus) (*listingStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := listingStatusPb(*st)
+	return &pb, nil
+}
+
+func listingStatusFromPb(pb *listingStatusPb) (*ListingStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ListingStatus(*pb)
+	return &st, nil
+}
+
 type ListingSummary struct {
-	Categories []Category `json:"categories,omitempty"`
 
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'categories'
+	Categories []Category
 
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 
-	CreatedById int64 `json:"created_by_id,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 
-	ExchangeIds []string `json:"exchange_ids,omitempty"`
+	// Wire name: 'created_by_id'
+	CreatedById int64
+
+	// Wire name: 'exchange_ids'
+	ExchangeIds []string
 	// if a git repo is being created, a listing will be initialized with this
 	// field as opposed to a share
-	GitRepo *RepoInfo `json:"git_repo,omitempty"`
+	// Wire name: 'git_repo'
+	GitRepo *RepoInfo
 
-	ListingType ListingType `json:"listingType"`
+	// Wire name: 'listingType'
+	ListingType ListingType
 
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 
-	ProviderId string `json:"provider_id,omitempty"`
+	// Wire name: 'provider_id'
+	ProviderId string
 
-	ProviderRegion *RegionInfo `json:"provider_region,omitempty"`
+	// Wire name: 'provider_region'
+	ProviderRegion *RegionInfo
 
-	PublishedAt int64 `json:"published_at,omitempty"`
+	// Wire name: 'published_at'
+	PublishedAt int64
 
-	PublishedBy string `json:"published_by,omitempty"`
+	// Wire name: 'published_by'
+	PublishedBy string
 
-	Setting *ListingSetting `json:"setting,omitempty"`
+	// Wire name: 'setting'
+	Setting *ListingSetting
 
-	Share *ShareInfo `json:"share,omitempty"`
+	// Wire name: 'share'
+	Share *ShareInfo
 	// Enums
-	Status ListingStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status ListingStatus
 
-	Subtitle string `json:"subtitle,omitempty"`
+	// Wire name: 'subtitle'
+	Subtitle string
 
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 
-	UpdatedById int64 `json:"updated_by_id,omitempty"`
+	// Wire name: 'updated_by_id'
+	UpdatedById int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ListingSummary) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListingSummary) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listingSummaryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listingSummaryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListingSummary) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListingSummary) MarshalJSON() ([]byte, error) {
+	pb, err := listingSummaryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListingTag struct {
 	// Tag name (enum)
-	TagName ListingTagType `json:"tag_name,omitempty"`
+	// Wire name: 'tag_name'
+	TagName ListingTagType
 	// String representation of the tag value. Values should be string literals
 	// (no complex types)
-	TagValues []string `json:"tag_values,omitempty"`
+	// Wire name: 'tag_values'
+	TagValues []string
+}
+
+func (st *ListingTag) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listingTagPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listingTagFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListingTag) MarshalJSON() ([]byte, error) {
+	pb, err := listingTagToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListingTagType string
+type listingTagTypePb string
 
 const ListingTagTypeListingTagTypeLanguage ListingTagType = `LISTING_TAG_TYPE_LANGUAGE`
 
@@ -1589,7 +3850,24 @@ func (f *ListingTagType) Type() string {
 	return "ListingTagType"
 }
 
+func listingTagTypeToPb(st *ListingTagType) (*listingTagTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := listingTagTypePb(*st)
+	return &pb, nil
+}
+
+func listingTagTypeFromPb(pb *listingTagTypePb) (*ListingTagType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ListingTagType(*pb)
+	return &st, nil
+}
+
 type ListingType string
+type listingTypePb string
 
 const ListingTypePersonalized ListingType = `PERSONALIZED`
 
@@ -1616,7 +3894,24 @@ func (f *ListingType) Type() string {
 	return "ListingType"
 }
 
+func listingTypeToPb(st *ListingType) (*listingTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := listingTypePb(*st)
+	return &pb, nil
+}
+
+func listingTypeFromPb(pb *listingTypePb) (*ListingType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ListingType(*pb)
+	return &st, nil
+}
+
 type MarketplaceFileType string
+type marketplaceFileTypePb string
 
 const MarketplaceFileTypeApp MarketplaceFileType = `APP`
 
@@ -1645,52 +3940,103 @@ func (f *MarketplaceFileType) Type() string {
 	return "MarketplaceFileType"
 }
 
-type PersonalizationRequest struct {
-	Comment string `json:"comment,omitempty"`
+func marketplaceFileTypeToPb(st *MarketplaceFileType) (*marketplaceFileTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := marketplaceFileTypePb(*st)
+	return &pb, nil
+}
 
-	ConsumerRegion RegionInfo `json:"consumer_region"`
+func marketplaceFileTypeFromPb(pb *marketplaceFileTypePb) (*MarketplaceFileType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := MarketplaceFileType(*pb)
+	return &st, nil
+}
+
+type PersonalizationRequest struct {
+
+	// Wire name: 'comment'
+	Comment string
+
+	// Wire name: 'consumer_region'
+	ConsumerRegion RegionInfo
 	// contact info for the consumer requesting data or performing a listing
 	// installation
-	ContactInfo *ContactInfo `json:"contact_info,omitempty"`
+	// Wire name: 'contact_info'
+	ContactInfo *ContactInfo
 
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 
-	Id string `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id string
 
-	IntendedUse string `json:"intended_use,omitempty"`
+	// Wire name: 'intended_use'
+	IntendedUse string
 
-	IsFromLighthouse bool `json:"is_from_lighthouse,omitempty"`
+	// Wire name: 'is_from_lighthouse'
+	IsFromLighthouse bool
 
-	ListingId string `json:"listing_id,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string
 
-	ListingName string `json:"listing_name,omitempty"`
+	// Wire name: 'listing_name'
+	ListingName string
 
-	MetastoreId string `json:"metastore_id,omitempty"`
+	// Wire name: 'metastore_id'
+	MetastoreId string
 
-	ProviderId string `json:"provider_id,omitempty"`
+	// Wire name: 'provider_id'
+	ProviderId string
 
-	RecipientType DeltaSharingRecipientType `json:"recipient_type,omitempty"`
+	// Wire name: 'recipient_type'
+	RecipientType DeltaSharingRecipientType
 
-	Share *ShareInfo `json:"share,omitempty"`
+	// Wire name: 'share'
+	Share *ShareInfo
 
-	Status PersonalizationRequestStatus `json:"status,omitempty"`
+	// Wire name: 'status'
+	Status PersonalizationRequestStatus
 
-	StatusMessage string `json:"status_message,omitempty"`
+	// Wire name: 'status_message'
+	StatusMessage string
 
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PersonalizationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PersonalizationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &personalizationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := personalizationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PersonalizationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PersonalizationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := personalizationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PersonalizationRequestStatus string
+type personalizationRequestStatusPb string
 
 const PersonalizationRequestStatusDenied PersonalizationRequestStatus = `DENIED`
 
@@ -1721,337 +4067,1034 @@ func (f *PersonalizationRequestStatus) Type() string {
 	return "PersonalizationRequestStatus"
 }
 
+func personalizationRequestStatusToPb(st *PersonalizationRequestStatus) (*personalizationRequestStatusPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := personalizationRequestStatusPb(*st)
+	return &pb, nil
+}
+
+func personalizationRequestStatusFromPb(pb *personalizationRequestStatusPb) (*PersonalizationRequestStatus, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := PersonalizationRequestStatus(*pb)
+	return &st, nil
+}
+
 type ProviderAnalyticsDashboard struct {
-	Id string `json:"id"`
+
+	// Wire name: 'id'
+	Id string
+}
+
+func (st *ProviderAnalyticsDashboard) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &providerAnalyticsDashboardPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := providerAnalyticsDashboardFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ProviderAnalyticsDashboard) MarshalJSON() ([]byte, error) {
+	pb, err := providerAnalyticsDashboardToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ProviderInfo struct {
-	BusinessContactEmail string `json:"business_contact_email"`
 
-	CompanyWebsiteLink string `json:"company_website_link,omitempty"`
+	// Wire name: 'business_contact_email'
+	BusinessContactEmail string
 
-	DarkModeIconFileId string `json:"dark_mode_icon_file_id,omitempty"`
+	// Wire name: 'company_website_link'
+	CompanyWebsiteLink string
 
-	DarkModeIconFilePath string `json:"dark_mode_icon_file_path,omitempty"`
+	// Wire name: 'dark_mode_icon_file_id'
+	DarkModeIconFileId string
 
-	Description string `json:"description,omitempty"`
+	// Wire name: 'dark_mode_icon_file_path'
+	DarkModeIconFilePath string
 
-	IconFileId string `json:"icon_file_id,omitempty"`
+	// Wire name: 'description'
+	Description string
 
-	IconFilePath string `json:"icon_file_path,omitempty"`
+	// Wire name: 'icon_file_id'
+	IconFileId string
 
-	Id string `json:"id,omitempty"`
+	// Wire name: 'icon_file_path'
+	IconFilePath string
+
+	// Wire name: 'id'
+	Id string
 	// is_featured is accessible by consumers only
-	IsFeatured bool `json:"is_featured,omitempty"`
+	// Wire name: 'is_featured'
+	IsFeatured bool
 
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 
-	PrivacyPolicyLink string `json:"privacy_policy_link"`
+	// Wire name: 'privacy_policy_link'
+	PrivacyPolicyLink string
 	// published_by is only applicable to data aggregators (e.g. Crux)
-	PublishedBy string `json:"published_by,omitempty"`
+	// Wire name: 'published_by'
+	PublishedBy string
 
-	SupportContactEmail string `json:"support_contact_email,omitempty"`
+	// Wire name: 'support_contact_email'
+	SupportContactEmail string
 
-	TermOfServiceLink string `json:"term_of_service_link"`
+	// Wire name: 'term_of_service_link'
+	TermOfServiceLink string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ProviderInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ProviderInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &providerInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := providerInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ProviderInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ProviderInfo) MarshalJSON() ([]byte, error) {
+	pb, err := providerInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RegionInfo struct {
-	Cloud string `json:"cloud,omitempty"`
 
-	Region string `json:"region,omitempty"`
+	// Wire name: 'cloud'
+	Cloud string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'region'
+	Region string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *RegionInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RegionInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &regionInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := regionInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RegionInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RegionInfo) MarshalJSON() ([]byte, error) {
+	pb, err := regionInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Remove an exchange for listing
 type RemoveExchangeForListingRequest struct {
-	Id string `json:"-" url:"-"`
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
+}
+
+func (st *RemoveExchangeForListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &removeExchangeForListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := removeExchangeForListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st RemoveExchangeForListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := removeExchangeForListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RemoveExchangeForListingResponse struct {
 }
 
+func (st *RemoveExchangeForListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &removeExchangeForListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := removeExchangeForListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st RemoveExchangeForListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := removeExchangeForListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type RepoInfo struct {
 	// the git repo url e.g. https://github.com/databrickslabs/dolly.git
-	GitRepoUrl string `json:"git_repo_url"`
+	// Wire name: 'git_repo_url'
+	GitRepoUrl string
+}
+
+func (st *RepoInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &repoInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := repoInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st RepoInfo) MarshalJSON() ([]byte, error) {
+	pb, err := repoInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RepoInstallation struct {
 	// the user-specified repo name for their installed git repo listing
-	RepoName string `json:"repo_name"`
+	// Wire name: 'repo_name'
+	RepoName string
 	// refers to the full url file path that navigates the user to the repo's
 	// entrypoint (e.g. a README.md file, or the repo file view in the unified
 	// UI) should just be a relative path
-	RepoPath string `json:"repo_path"`
+	// Wire name: 'repo_path'
+	RepoPath string
+}
+
+func (st *RepoInstallation) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &repoInstallationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := repoInstallationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st RepoInstallation) MarshalJSON() ([]byte, error) {
+	pb, err := repoInstallationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Search listings
 type SearchListingsRequest struct {
 	// Matches any of the following asset types
-	Assets []AssetType `json:"-" url:"assets,omitempty"`
+	// Wire name: 'assets'
+	Assets []AssetType `tf:"-"`
 	// Matches any of the following categories
-	Categories []Category `json:"-" url:"categories,omitempty"`
+	// Wire name: 'categories'
+	Categories []Category `tf:"-"`
 
-	IsFree bool `json:"-" url:"is_free,omitempty"`
+	// Wire name: 'is_free'
+	IsFree bool `tf:"-"`
 
-	IsPrivateExchange bool `json:"-" url:"is_private_exchange,omitempty"`
+	// Wire name: 'is_private_exchange'
+	IsPrivateExchange bool `tf:"-"`
 
-	PageSize int `json:"-" url:"page_size,omitempty"`
+	// Wire name: 'page_size'
+	PageSize int `tf:"-"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Wire name: 'page_token'
+	PageToken string `tf:"-"`
 	// Matches any of the following provider ids
-	ProviderIds []string `json:"-" url:"provider_ids,omitempty"`
+	// Wire name: 'provider_ids'
+	ProviderIds []string `tf:"-"`
 	// Fuzzy matches query
-	Query string `json:"-" url:"query"`
+	// Wire name: 'query'
+	Query string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SearchListingsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SearchListingsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &searchListingsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := searchListingsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SearchListingsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SearchListingsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := searchListingsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type SearchListingsResponse struct {
-	Listings []Listing `json:"listings,omitempty"`
 
-	NextPageToken string `json:"next_page_token,omitempty"`
+	// Wire name: 'listings'
+	Listings []Listing
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'next_page_token'
+	NextPageToken string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SearchListingsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SearchListingsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &searchListingsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := searchListingsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SearchListingsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SearchListingsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := searchListingsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ShareInfo struct {
-	Name string `json:"name"`
 
-	Type ListingShareType `json:"type"`
+	// Wire name: 'name'
+	Name string
+
+	// Wire name: 'type'
+	Type ListingShareType
+}
+
+func (st *ShareInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &shareInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := shareInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ShareInfo) MarshalJSON() ([]byte, error) {
+	pb, err := shareInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type SharedDataObject struct {
 	// The type of the data object. Could be one of: TABLE, SCHEMA,
 	// NOTEBOOK_FILE, MODEL, VOLUME
-	DataObjectType string `json:"data_object_type,omitempty"`
+	// Wire name: 'data_object_type'
+	DataObjectType string
 	// Name of the shared object
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *SharedDataObject) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SharedDataObject) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sharedDataObjectPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := sharedDataObjectFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SharedDataObject) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SharedDataObject) MarshalJSON() ([]byte, error) {
+	pb, err := sharedDataObjectToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TokenDetail struct {
-	BearerToken string `json:"bearerToken,omitempty"`
 
-	Endpoint string `json:"endpoint,omitempty"`
+	// Wire name: 'bearerToken'
+	BearerToken string
 
-	ExpirationTime string `json:"expirationTime,omitempty"`
+	// Wire name: 'endpoint'
+	Endpoint string
+
+	// Wire name: 'expirationTime'
+	ExpirationTime string
 	// These field names must follow the delta sharing protocol. Original
 	// message: RetrieveToken.Response in
 	// managed-catalog/api/messages/recipient.proto
-	ShareCredentialsVersion int `json:"shareCredentialsVersion,omitempty"`
+	// Wire name: 'shareCredentialsVersion'
+	ShareCredentialsVersion int
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TokenDetail) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TokenDetail) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tokenDetailPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tokenDetailFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TokenDetail) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TokenDetail) MarshalJSON() ([]byte, error) {
+	pb, err := tokenDetailToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TokenInfo struct {
 	// Full activation url to retrieve the access token. It will be empty if the
 	// token is already retrieved.
-	ActivationUrl string `json:"activation_url,omitempty"`
+	// Wire name: 'activation_url'
+	ActivationUrl string
 	// Time at which this Recipient Token was created, in epoch milliseconds.
-	CreatedAt int64 `json:"created_at,omitempty"`
+	// Wire name: 'created_at'
+	CreatedAt int64
 	// Username of Recipient Token creator.
-	CreatedBy string `json:"created_by,omitempty"`
+	// Wire name: 'created_by'
+	CreatedBy string
 	// Expiration timestamp of the token in epoch milliseconds.
-	ExpirationTime int64 `json:"expiration_time,omitempty"`
+	// Wire name: 'expiration_time'
+	ExpirationTime int64
 	// Unique id of the Recipient Token.
-	Id string `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id string
 	// Time at which this Recipient Token was updated, in epoch milliseconds.
-	UpdatedAt int64 `json:"updated_at,omitempty"`
+	// Wire name: 'updated_at'
+	UpdatedAt int64
 	// Username of Recipient Token updater.
-	UpdatedBy string `json:"updated_by,omitempty"`
+	// Wire name: 'updated_by'
+	UpdatedBy string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *TokenInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TokenInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tokenInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tokenInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TokenInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TokenInfo) MarshalJSON() ([]byte, error) {
+	pb, err := tokenInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateExchangeFilterRequest struct {
-	Filter ExchangeFilter `json:"filter"`
 
-	Id string `json:"-" url:"-"`
+	// Wire name: 'filter'
+	Filter ExchangeFilter
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
+}
+
+func (st *UpdateExchangeFilterRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateExchangeFilterRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateExchangeFilterRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateExchangeFilterRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateExchangeFilterRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateExchangeFilterResponse struct {
-	Filter *ExchangeFilter `json:"filter,omitempty"`
+
+	// Wire name: 'filter'
+	Filter *ExchangeFilter
+}
+
+func (st *UpdateExchangeFilterResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateExchangeFilterResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateExchangeFilterResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateExchangeFilterResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateExchangeFilterResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateExchangeRequest struct {
-	Exchange Exchange `json:"exchange"`
 
-	Id string `json:"-" url:"-"`
+	// Wire name: 'exchange'
+	Exchange Exchange
+
+	// Wire name: 'id'
+	Id string `tf:"-"`
+}
+
+func (st *UpdateExchangeRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateExchangeRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateExchangeRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateExchangeRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateExchangeRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateExchangeResponse struct {
-	Exchange *Exchange `json:"exchange,omitempty"`
+
+	// Wire name: 'exchange'
+	Exchange *Exchange
+}
+
+func (st *UpdateExchangeResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateExchangeResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateExchangeResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateExchangeResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateExchangeResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateInstallationRequest struct {
-	Installation InstallationDetail `json:"installation"`
 
-	InstallationId string `json:"-" url:"-"`
+	// Wire name: 'installation'
+	Installation InstallationDetail
 
-	ListingId string `json:"-" url:"-"`
+	// Wire name: 'installation_id'
+	InstallationId string `tf:"-"`
 
-	RotateToken bool `json:"rotate_token,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'rotate_token'
+	RotateToken bool
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateInstallationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateInstallationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateInstallationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateInstallationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateInstallationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateInstallationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateInstallationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateInstallationResponse struct {
-	Installation *InstallationDetail `json:"installation,omitempty"`
+
+	// Wire name: 'installation'
+	Installation *InstallationDetail
+}
+
+func (st *UpdateInstallationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateInstallationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateInstallationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateInstallationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateInstallationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateListingRequest struct {
-	Id string `json:"-" url:"-"`
 
-	Listing Listing `json:"listing"`
+	// Wire name: 'id'
+	Id string `tf:"-"`
+
+	// Wire name: 'listing'
+	Listing Listing
+}
+
+func (st *UpdateListingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateListingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateListingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateListingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateListingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateListingResponse struct {
-	Listing *Listing `json:"listing,omitempty"`
+
+	// Wire name: 'listing'
+	Listing *Listing
+}
+
+func (st *UpdateListingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateListingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateListingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateListingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateListingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdatePersonalizationRequestRequest struct {
-	ListingId string `json:"-" url:"-"`
 
-	Reason string `json:"reason,omitempty"`
+	// Wire name: 'listing_id'
+	ListingId string `tf:"-"`
 
-	RequestId string `json:"-" url:"-"`
+	// Wire name: 'reason'
+	Reason string
 
-	Share *ShareInfo `json:"share,omitempty"`
+	// Wire name: 'request_id'
+	RequestId string `tf:"-"`
 
-	Status PersonalizationRequestStatus `json:"status"`
+	// Wire name: 'share'
+	Share *ShareInfo
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'status'
+	Status PersonalizationRequestStatus
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdatePersonalizationRequestRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdatePersonalizationRequestRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updatePersonalizationRequestRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updatePersonalizationRequestRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdatePersonalizationRequestRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdatePersonalizationRequestRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updatePersonalizationRequestRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdatePersonalizationRequestResponse struct {
-	Request *PersonalizationRequest `json:"request,omitempty"`
+
+	// Wire name: 'request'
+	Request *PersonalizationRequest
+}
+
+func (st *UpdatePersonalizationRequestResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updatePersonalizationRequestResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updatePersonalizationRequestResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdatePersonalizationRequestResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updatePersonalizationRequestResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateProviderAnalyticsDashboardRequest struct {
 	// id is immutable property and can't be updated.
-	Id string `json:"-" url:"-"`
+	// Wire name: 'id'
+	Id string `tf:"-"`
 	// this is the version of the dashboard template we want to update our user
 	// to current expectation is that it should be equal to latest version of
 	// the dashboard template
-	Version int64 `json:"version,omitempty"`
+	// Wire name: 'version'
+	Version int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateProviderAnalyticsDashboardRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateProviderAnalyticsDashboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateProviderAnalyticsDashboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateProviderAnalyticsDashboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateProviderAnalyticsDashboardRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateProviderAnalyticsDashboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateProviderAnalyticsDashboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateProviderAnalyticsDashboardResponse struct {
 	// this is newly created Lakeview dashboard for the user
-	DashboardId string `json:"dashboard_id"`
+	// Wire name: 'dashboard_id'
+	DashboardId string
 	// id & version should be the same as the request
-	Id string `json:"id"`
+	// Wire name: 'id'
+	Id string
 
-	Version int64 `json:"version,omitempty"`
+	// Wire name: 'version'
+	Version int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *UpdateProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateProviderAnalyticsDashboardResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateProviderAnalyticsDashboardResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateProviderAnalyticsDashboardResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateProviderAnalyticsDashboardResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateProviderAnalyticsDashboardResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateProviderRequest struct {
-	Id string `json:"-" url:"-"`
 
-	Provider ProviderInfo `json:"provider"`
+	// Wire name: 'id'
+	Id string `tf:"-"`
+
+	// Wire name: 'provider'
+	Provider ProviderInfo
+}
+
+func (st *UpdateProviderRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateProviderRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateProviderRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateProviderRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateProviderRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateProviderResponse struct {
-	Provider *ProviderInfo `json:"provider,omitempty"`
+
+	// Wire name: 'provider'
+	Provider *ProviderInfo
+}
+
+func (st *UpdateProviderResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateProviderResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateProviderResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateProviderResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateProviderResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type Visibility string
+type visibilityPb string
 
 const VisibilityPrivate Visibility = `PRIVATE`
 
@@ -2076,4 +5119,74 @@ func (f *Visibility) Set(v string) error {
 // Type always returns Visibility to satisfy [pflag.Value] interface
 func (f *Visibility) Type() string {
 	return "Visibility"
+}
+
+func visibilityToPb(st *Visibility) (*visibilityPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := visibilityPb(*st)
+	return &pb, nil
+}
+
+func visibilityFromPb(pb *visibilityPb) (*Visibility, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := Visibility(*pb)
+	return &st, nil
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }

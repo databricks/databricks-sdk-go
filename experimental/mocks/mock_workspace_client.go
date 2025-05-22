@@ -19,6 +19,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/pipelines"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/qualitymonitor"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/serving"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sharing"
@@ -106,6 +107,7 @@ func NewMockWorkspaceClient(t interface {
 			ProviderProviders:                   marketplace.NewMockProviderProvidersInterface(t),
 			Providers:                           sharing.NewMockProvidersInterface(t),
 			QualityMonitors:                     catalog.NewMockQualityMonitorsInterface(t),
+			QualityMonitorsV2:                   qualitymonitor.NewMockQualityMonitorsV2Interface(t),
 			Queries:                             sql.NewMockQueriesInterface(t),
 			QueriesLegacy:                       sql.NewMockQueriesLegacyInterface(t),
 			QueryExecution:                      dashboards.NewMockQueryExecutionInterface(t),
@@ -810,6 +812,14 @@ func (m *MockWorkspaceClient) GetMockQualityMonitorsAPI() *catalog.MockQualityMo
 	api, ok := m.WorkspaceClient.QualityMonitors.(*catalog.MockQualityMonitorsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected QualityMonitors to be *catalog.MockQualityMonitorsInterface, actual was %T", m.WorkspaceClient.QualityMonitors))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockQualityMonitorsV2API() *qualitymonitor.MockQualityMonitorsV2Interface {
+	api, ok := m.WorkspaceClient.QualityMonitorsV2.(*qualitymonitor.MockQualityMonitorsV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected QualityMonitorsV2 to be *qualitymonitor.MockQualityMonitorsV2Interface, actual was %T", m.WorkspaceClient.QualityMonitorsV2))
 	}
 	return api
 }

@@ -3,10 +3,11 @@
 package serving
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
-
-	"github.com/databricks/databricks-sdk-go/marshal"
+	"strings"
+	"time"
 )
 
 type Ai21LabsConfig struct {
@@ -14,73 +15,170 @@ type Ai21LabsConfig struct {
 	// prefer to paste your API key directly, see `ai21labs_api_key_plaintext`.
 	// You must provide an API key using one of the following fields:
 	// `ai21labs_api_key` or `ai21labs_api_key_plaintext`.
-	Ai21labsApiKey string `json:"ai21labs_api_key,omitempty"`
+	// Wire name: 'ai21labs_api_key'
+	Ai21labsApiKey string
 	// An AI21 Labs API key provided as a plaintext string. If you prefer to
 	// reference your key using Databricks Secrets, see `ai21labs_api_key`. You
 	// must provide an API key using one of the following fields:
 	// `ai21labs_api_key` or `ai21labs_api_key_plaintext`.
-	Ai21labsApiKeyPlaintext string `json:"ai21labs_api_key_plaintext,omitempty"`
+	// Wire name: 'ai21labs_api_key_plaintext'
+	Ai21labsApiKeyPlaintext string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *Ai21LabsConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *Ai21LabsConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &ai21LabsConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ai21LabsConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s Ai21LabsConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st Ai21LabsConfig) MarshalJSON() ([]byte, error) {
+	pb, err := ai21LabsConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AiGatewayConfig struct {
 	// Configuration for traffic fallback which auto fallbacks to other served
 	// entities if the request to a served entity fails with certain error
 	// codes, to increase availability.
-	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
+	// Wire name: 'fallback_config'
+	FallbackConfig *FallbackConfig
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
-	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
+	// Wire name: 'guardrails'
+	Guardrails *AiGatewayGuardrails
 	// Configuration for payload logging using inference tables. Use these
 	// tables to monitor and audit data being sent to and received from model
 	// APIs and to improve model quality.
-	InferenceTableConfig *AiGatewayInferenceTableConfig `json:"inference_table_config,omitempty"`
+	// Wire name: 'inference_table_config'
+	InferenceTableConfig *AiGatewayInferenceTableConfig
 	// Configuration for rate limits which can be set to limit endpoint traffic.
-	RateLimits []AiGatewayRateLimit `json:"rate_limits,omitempty"`
+	// Wire name: 'rate_limits'
+	RateLimits []AiGatewayRateLimit
 	// Configuration to enable usage tracking using system tables. These tables
 	// allow you to monitor operational usage on endpoints and their associated
 	// costs.
-	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
+	// Wire name: 'usage_tracking_config'
+	UsageTrackingConfig *AiGatewayUsageTrackingConfig
+}
+
+func (st *AiGatewayConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aiGatewayConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aiGatewayConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AiGatewayConfig) MarshalJSON() ([]byte, error) {
+	pb, err := aiGatewayConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AiGatewayGuardrailParameters struct {
 	// List of invalid keywords. AI guardrail uses keyword or string matching to
 	// decide if the keyword exists in the request or response content.
-	InvalidKeywords []string `json:"invalid_keywords,omitempty"`
+	// Wire name: 'invalid_keywords'
+	InvalidKeywords []string
 	// Configuration for guardrail PII filter.
-	Pii *AiGatewayGuardrailPiiBehavior `json:"pii,omitempty"`
+	// Wire name: 'pii'
+	Pii *AiGatewayGuardrailPiiBehavior
 	// Indicates whether the safety filter is enabled.
-	Safety bool `json:"safety,omitempty"`
+	// Wire name: 'safety'
+	Safety bool
 	// The list of allowed topics. Given a chat request, this guardrail flags
 	// the request if its topic is not in the allowed topics.
-	ValidTopics []string `json:"valid_topics,omitempty"`
+	// Wire name: 'valid_topics'
+	ValidTopics []string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AiGatewayGuardrailParameters) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AiGatewayGuardrailParameters) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aiGatewayGuardrailParametersPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aiGatewayGuardrailParametersFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AiGatewayGuardrailParameters) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AiGatewayGuardrailParameters) MarshalJSON() ([]byte, error) {
+	pb, err := aiGatewayGuardrailParametersToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AiGatewayGuardrailPiiBehavior struct {
 	// Configuration for input guardrail filters.
-	Behavior AiGatewayGuardrailPiiBehaviorBehavior `json:"behavior,omitempty"`
+	// Wire name: 'behavior'
+	Behavior AiGatewayGuardrailPiiBehaviorBehavior
+}
+
+func (st *AiGatewayGuardrailPiiBehavior) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aiGatewayGuardrailPiiBehaviorPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aiGatewayGuardrailPiiBehaviorFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AiGatewayGuardrailPiiBehavior) MarshalJSON() ([]byte, error) {
+	pb, err := aiGatewayGuardrailPiiBehaviorToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AiGatewayGuardrailPiiBehaviorBehavior string
+type aiGatewayGuardrailPiiBehaviorBehaviorPb string
 
 const AiGatewayGuardrailPiiBehaviorBehaviorBlock AiGatewayGuardrailPiiBehaviorBehavior = `BLOCK`
 
@@ -107,52 +205,145 @@ func (f *AiGatewayGuardrailPiiBehaviorBehavior) Type() string {
 	return "AiGatewayGuardrailPiiBehaviorBehavior"
 }
 
+func aiGatewayGuardrailPiiBehaviorBehaviorToPb(st *AiGatewayGuardrailPiiBehaviorBehavior) (*aiGatewayGuardrailPiiBehaviorBehaviorPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := aiGatewayGuardrailPiiBehaviorBehaviorPb(*st)
+	return &pb, nil
+}
+
+func aiGatewayGuardrailPiiBehaviorBehaviorFromPb(pb *aiGatewayGuardrailPiiBehaviorBehaviorPb) (*AiGatewayGuardrailPiiBehaviorBehavior, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AiGatewayGuardrailPiiBehaviorBehavior(*pb)
+	return &st, nil
+}
+
 type AiGatewayGuardrails struct {
 	// Configuration for input guardrail filters.
-	Input *AiGatewayGuardrailParameters `json:"input,omitempty"`
+	// Wire name: 'input'
+	Input *AiGatewayGuardrailParameters
 	// Configuration for output guardrail filters.
-	Output *AiGatewayGuardrailParameters `json:"output,omitempty"`
+	// Wire name: 'output'
+	Output *AiGatewayGuardrailParameters
+}
+
+func (st *AiGatewayGuardrails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aiGatewayGuardrailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aiGatewayGuardrailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AiGatewayGuardrails) MarshalJSON() ([]byte, error) {
+	pb, err := aiGatewayGuardrailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AiGatewayInferenceTableConfig struct {
 	// The name of the catalog in Unity Catalog. Required when enabling
 	// inference tables. NOTE: On update, you have to disable inference table
 	// first in order to change the catalog name.
-	CatalogName string `json:"catalog_name,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// Indicates whether the inference table is enabled.
-	Enabled bool `json:"enabled,omitempty"`
+	// Wire name: 'enabled'
+	Enabled bool
 	// The name of the schema in Unity Catalog. Required when enabling inference
 	// tables. NOTE: On update, you have to disable inference table first in
 	// order to change the schema name.
-	SchemaName string `json:"schema_name,omitempty"`
+	// Wire name: 'schema_name'
+	SchemaName string
 	// The prefix of the table in Unity Catalog. NOTE: On update, you have to
 	// disable inference table first in order to change the prefix name.
-	TableNamePrefix string `json:"table_name_prefix,omitempty"`
+	// Wire name: 'table_name_prefix'
+	TableNamePrefix string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AiGatewayInferenceTableConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AiGatewayInferenceTableConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aiGatewayInferenceTableConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aiGatewayInferenceTableConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AiGatewayInferenceTableConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AiGatewayInferenceTableConfig) MarshalJSON() ([]byte, error) {
+	pb, err := aiGatewayInferenceTableConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AiGatewayRateLimit struct {
 	// Used to specify how many calls are allowed for a key within the
 	// renewal_period.
-	Calls int64 `json:"calls"`
+	// Wire name: 'calls'
+	Calls int64
 	// Key field for a rate limit. Currently, only 'user' and 'endpoint' are
 	// supported, with 'endpoint' being the default if not specified.
-	Key AiGatewayRateLimitKey `json:"key,omitempty"`
+	// Wire name: 'key'
+	Key AiGatewayRateLimitKey
 	// Renewal period field for a rate limit. Currently, only 'minute' is
 	// supported.
-	RenewalPeriod AiGatewayRateLimitRenewalPeriod `json:"renewal_period"`
+	// Wire name: 'renewal_period'
+	RenewalPeriod AiGatewayRateLimitRenewalPeriod
+}
+
+func (st *AiGatewayRateLimit) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aiGatewayRateLimitPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aiGatewayRateLimitFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AiGatewayRateLimit) MarshalJSON() ([]byte, error) {
+	pb, err := aiGatewayRateLimitToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AiGatewayRateLimitKey string
+type aiGatewayRateLimitKeyPb string
 
 const AiGatewayRateLimitKeyEndpoint AiGatewayRateLimitKey = `endpoint`
 
@@ -179,7 +370,24 @@ func (f *AiGatewayRateLimitKey) Type() string {
 	return "AiGatewayRateLimitKey"
 }
 
+func aiGatewayRateLimitKeyToPb(st *AiGatewayRateLimitKey) (*aiGatewayRateLimitKeyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := aiGatewayRateLimitKeyPb(*st)
+	return &pb, nil
+}
+
+func aiGatewayRateLimitKeyFromPb(pb *aiGatewayRateLimitKeyPb) (*AiGatewayRateLimitKey, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AiGatewayRateLimitKey(*pb)
+	return &st, nil
+}
+
 type AiGatewayRateLimitRenewalPeriod string
+type aiGatewayRateLimitRenewalPeriodPb string
 
 const AiGatewayRateLimitRenewalPeriodMinute AiGatewayRateLimitRenewalPeriod = `minute`
 
@@ -204,19 +412,53 @@ func (f *AiGatewayRateLimitRenewalPeriod) Type() string {
 	return "AiGatewayRateLimitRenewalPeriod"
 }
 
+func aiGatewayRateLimitRenewalPeriodToPb(st *AiGatewayRateLimitRenewalPeriod) (*aiGatewayRateLimitRenewalPeriodPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := aiGatewayRateLimitRenewalPeriodPb(*st)
+	return &pb, nil
+}
+
+func aiGatewayRateLimitRenewalPeriodFromPb(pb *aiGatewayRateLimitRenewalPeriodPb) (*AiGatewayRateLimitRenewalPeriod, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AiGatewayRateLimitRenewalPeriod(*pb)
+	return &st, nil
+}
+
 type AiGatewayUsageTrackingConfig struct {
 	// Whether to enable usage tracking.
-	Enabled bool `json:"enabled,omitempty"`
+	// Wire name: 'enabled'
+	Enabled bool
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AiGatewayUsageTrackingConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AiGatewayUsageTrackingConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aiGatewayUsageTrackingConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aiGatewayUsageTrackingConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AiGatewayUsageTrackingConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AiGatewayUsageTrackingConfig) MarshalJSON() ([]byte, error) {
+	pb, err := aiGatewayUsageTrackingConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AmazonBedrockConfig struct {
@@ -225,51 +467,76 @@ type AmazonBedrockConfig struct {
 	// your API key directly, see `aws_access_key_id_plaintext`. You must
 	// provide an API key using one of the following fields: `aws_access_key_id`
 	// or `aws_access_key_id_plaintext`.
-	AwsAccessKeyId string `json:"aws_access_key_id,omitempty"`
+	// Wire name: 'aws_access_key_id'
+	AwsAccessKeyId string
 	// An AWS access key ID with permissions to interact with Bedrock services
 	// provided as a plaintext string. If you prefer to reference your key using
 	// Databricks Secrets, see `aws_access_key_id`. You must provide an API key
 	// using one of the following fields: `aws_access_key_id` or
 	// `aws_access_key_id_plaintext`.
-	AwsAccessKeyIdPlaintext string `json:"aws_access_key_id_plaintext,omitempty"`
+	// Wire name: 'aws_access_key_id_plaintext'
+	AwsAccessKeyIdPlaintext string
 	// The AWS region to use. Bedrock has to be enabled there.
-	AwsRegion string `json:"aws_region"`
+	// Wire name: 'aws_region'
+	AwsRegion string
 	// The Databricks secret key reference for an AWS secret access key paired
 	// with the access key ID, with permissions to interact with Bedrock
 	// services. If you prefer to paste your API key directly, see
 	// `aws_secret_access_key_plaintext`. You must provide an API key using one
 	// of the following fields: `aws_secret_access_key` or
 	// `aws_secret_access_key_plaintext`.
-	AwsSecretAccessKey string `json:"aws_secret_access_key,omitempty"`
+	// Wire name: 'aws_secret_access_key'
+	AwsSecretAccessKey string
 	// An AWS secret access key paired with the access key ID, with permissions
 	// to interact with Bedrock services provided as a plaintext string. If you
 	// prefer to reference your key using Databricks Secrets, see
 	// `aws_secret_access_key`. You must provide an API key using one of the
 	// following fields: `aws_secret_access_key` or
 	// `aws_secret_access_key_plaintext`.
-	AwsSecretAccessKeyPlaintext string `json:"aws_secret_access_key_plaintext,omitempty"`
+	// Wire name: 'aws_secret_access_key_plaintext'
+	AwsSecretAccessKeyPlaintext string
 	// The underlying provider in Amazon Bedrock. Supported values (case
 	// insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
-	BedrockProvider AmazonBedrockConfigBedrockProvider `json:"bedrock_provider"`
+	// Wire name: 'bedrock_provider'
+	BedrockProvider AmazonBedrockConfigBedrockProvider
 	// ARN of the instance profile that the external model will use to access
 	// AWS resources. You must authenticate using an instance profile or access
 	// keys. If you prefer to authenticate using access keys, see
 	// `aws_access_key_id`, `aws_access_key_id_plaintext`,
 	// `aws_secret_access_key` and `aws_secret_access_key_plaintext`.
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// Wire name: 'instance_profile_arn'
+	InstanceProfileArn string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AmazonBedrockConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AmazonBedrockConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &amazonBedrockConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := amazonBedrockConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AmazonBedrockConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AmazonBedrockConfig) MarshalJSON() ([]byte, error) {
+	pb, err := amazonBedrockConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AmazonBedrockConfigBedrockProvider string
+type amazonBedrockConfigBedrockProviderPb string
 
 const AmazonBedrockConfigBedrockProviderAi21labs AmazonBedrockConfigBedrockProvider = `ai21labs`
 
@@ -300,157 +567,374 @@ func (f *AmazonBedrockConfigBedrockProvider) Type() string {
 	return "AmazonBedrockConfigBedrockProvider"
 }
 
+func amazonBedrockConfigBedrockProviderToPb(st *AmazonBedrockConfigBedrockProvider) (*amazonBedrockConfigBedrockProviderPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := amazonBedrockConfigBedrockProviderPb(*st)
+	return &pb, nil
+}
+
+func amazonBedrockConfigBedrockProviderFromPb(pb *amazonBedrockConfigBedrockProviderPb) (*AmazonBedrockConfigBedrockProvider, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := AmazonBedrockConfigBedrockProvider(*pb)
+	return &st, nil
+}
+
 type AnthropicConfig struct {
 	// The Databricks secret key reference for an Anthropic API key. If you
 	// prefer to paste your API key directly, see `anthropic_api_key_plaintext`.
 	// You must provide an API key using one of the following fields:
 	// `anthropic_api_key` or `anthropic_api_key_plaintext`.
-	AnthropicApiKey string `json:"anthropic_api_key,omitempty"`
+	// Wire name: 'anthropic_api_key'
+	AnthropicApiKey string
 	// The Anthropic API key provided as a plaintext string. If you prefer to
 	// reference your key using Databricks Secrets, see `anthropic_api_key`. You
 	// must provide an API key using one of the following fields:
 	// `anthropic_api_key` or `anthropic_api_key_plaintext`.
-	AnthropicApiKeyPlaintext string `json:"anthropic_api_key_plaintext,omitempty"`
+	// Wire name: 'anthropic_api_key_plaintext'
+	AnthropicApiKeyPlaintext string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AnthropicConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AnthropicConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &anthropicConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := anthropicConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AnthropicConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AnthropicConfig) MarshalJSON() ([]byte, error) {
+	pb, err := anthropicConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ApiKeyAuth struct {
 	// The name of the API key parameter used for authentication.
-	Key string `json:"key"`
+	// Wire name: 'key'
+	Key string
 	// The Databricks secret key reference for an API Key. If you prefer to
 	// paste your token directly, see `value_plaintext`.
-	Value string `json:"value,omitempty"`
+	// Wire name: 'value'
+	Value string
 	// The API Key provided as a plaintext string. If you prefer to reference
 	// your token using Databricks Secrets, see `value`.
-	ValuePlaintext string `json:"value_plaintext,omitempty"`
+	// Wire name: 'value_plaintext'
+	ValuePlaintext string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ApiKeyAuth) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ApiKeyAuth) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &apiKeyAuthPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := apiKeyAuthFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ApiKeyAuth) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ApiKeyAuth) MarshalJSON() ([]byte, error) {
+	pb, err := apiKeyAuthToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AutoCaptureConfigInput struct {
 	// The name of the catalog in Unity Catalog. NOTE: On update, you cannot
 	// change the catalog name if the inference table is already enabled.
-	CatalogName string `json:"catalog_name,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// Indicates whether the inference table is enabled.
-	Enabled bool `json:"enabled,omitempty"`
+	// Wire name: 'enabled'
+	Enabled bool
 	// The name of the schema in Unity Catalog. NOTE: On update, you cannot
 	// change the schema name if the inference table is already enabled.
-	SchemaName string `json:"schema_name,omitempty"`
+	// Wire name: 'schema_name'
+	SchemaName string
 	// The prefix of the table in Unity Catalog. NOTE: On update, you cannot
 	// change the prefix name if the inference table is already enabled.
-	TableNamePrefix string `json:"table_name_prefix,omitempty"`
+	// Wire name: 'table_name_prefix'
+	TableNamePrefix string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AutoCaptureConfigInput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AutoCaptureConfigInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &autoCaptureConfigInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := autoCaptureConfigInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AutoCaptureConfigInput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AutoCaptureConfigInput) MarshalJSON() ([]byte, error) {
+	pb, err := autoCaptureConfigInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AutoCaptureConfigOutput struct {
 	// The name of the catalog in Unity Catalog. NOTE: On update, you cannot
 	// change the catalog name if the inference table is already enabled.
-	CatalogName string `json:"catalog_name,omitempty"`
+	// Wire name: 'catalog_name'
+	CatalogName string
 	// Indicates whether the inference table is enabled.
-	Enabled bool `json:"enabled,omitempty"`
+	// Wire name: 'enabled'
+	Enabled bool
 	// The name of the schema in Unity Catalog. NOTE: On update, you cannot
 	// change the schema name if the inference table is already enabled.
-	SchemaName string `json:"schema_name,omitempty"`
+	// Wire name: 'schema_name'
+	SchemaName string
 
-	State *AutoCaptureState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State *AutoCaptureState
 	// The prefix of the table in Unity Catalog. NOTE: On update, you cannot
 	// change the prefix name if the inference table is already enabled.
-	TableNamePrefix string `json:"table_name_prefix,omitempty"`
+	// Wire name: 'table_name_prefix'
+	TableNamePrefix string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *AutoCaptureConfigOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AutoCaptureConfigOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &autoCaptureConfigOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := autoCaptureConfigOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AutoCaptureConfigOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AutoCaptureConfigOutput) MarshalJSON() ([]byte, error) {
+	pb, err := autoCaptureConfigOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AutoCaptureState struct {
-	PayloadTable *PayloadTable `json:"payload_table,omitempty"`
+
+	// Wire name: 'payload_table'
+	PayloadTable *PayloadTable
+}
+
+func (st *AutoCaptureState) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &autoCaptureStatePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := autoCaptureStateFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AutoCaptureState) MarshalJSON() ([]byte, error) {
+	pb, err := autoCaptureStateToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type BearerTokenAuth struct {
 	// The Databricks secret key reference for a token. If you prefer to paste
 	// your token directly, see `token_plaintext`.
-	Token string `json:"token,omitempty"`
+	// Wire name: 'token'
+	Token string
 	// The token provided as a plaintext string. If you prefer to reference your
 	// token using Databricks Secrets, see `token`.
-	TokenPlaintext string `json:"token_plaintext,omitempty"`
+	// Wire name: 'token_plaintext'
+	TokenPlaintext string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *BearerTokenAuth) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *BearerTokenAuth) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &bearerTokenAuthPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := bearerTokenAuthFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s BearerTokenAuth) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st BearerTokenAuth) MarshalJSON() ([]byte, error) {
+	pb, err := bearerTokenAuthToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get build logs for a served model
 type BuildLogsRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The name of the served model that build logs will be retrieved for. This
 	// field is required.
-	ServedModelName string `json:"-" url:"-"`
+	// Wire name: 'served_model_name'
+	ServedModelName string `tf:"-"`
+}
+
+func (st *BuildLogsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &buildLogsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := buildLogsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BuildLogsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := buildLogsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type BuildLogsResponse struct {
 	// The logs associated with building the served entity's environment.
-	Logs string `json:"logs"`
+	// Wire name: 'logs'
+	Logs string
+}
+
+func (st *BuildLogsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &buildLogsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := buildLogsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st BuildLogsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := buildLogsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ChatMessage struct {
 	// The content of the message.
-	Content string `json:"content,omitempty"`
+	// Wire name: 'content'
+	Content string
 	// The role of the message. One of [system, user, assistant].
-	Role ChatMessageRole `json:"role,omitempty"`
+	// Wire name: 'role'
+	Role ChatMessageRole
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ChatMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ChatMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &chatMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := chatMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ChatMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ChatMessage) MarshalJSON() ([]byte, error) {
+	pb, err := chatMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The role of the message. One of [system, user, assistant].
 type ChatMessageRole string
+type chatMessageRolePb string
 
 const ChatMessageRoleAssistant ChatMessageRole = `assistant`
 
@@ -479,119 +963,248 @@ func (f *ChatMessageRole) Type() string {
 	return "ChatMessageRole"
 }
 
+func chatMessageRoleToPb(st *ChatMessageRole) (*chatMessageRolePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := chatMessageRolePb(*st)
+	return &pb, nil
+}
+
+func chatMessageRoleFromPb(pb *chatMessageRolePb) (*ChatMessageRole, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ChatMessageRole(*pb)
+	return &st, nil
+}
+
 type CohereConfig struct {
 	// This is an optional field to provide a customized base URL for the Cohere
 	// API. If left unspecified, the standard Cohere base URL is used.
-	CohereApiBase string `json:"cohere_api_base,omitempty"`
+	// Wire name: 'cohere_api_base'
+	CohereApiBase string
 	// The Databricks secret key reference for a Cohere API key. If you prefer
 	// to paste your API key directly, see `cohere_api_key_plaintext`. You must
 	// provide an API key using one of the following fields: `cohere_api_key` or
 	// `cohere_api_key_plaintext`.
-	CohereApiKey string `json:"cohere_api_key,omitempty"`
+	// Wire name: 'cohere_api_key'
+	CohereApiKey string
 	// The Cohere API key provided as a plaintext string. If you prefer to
 	// reference your key using Databricks Secrets, see `cohere_api_key`. You
 	// must provide an API key using one of the following fields:
 	// `cohere_api_key` or `cohere_api_key_plaintext`.
-	CohereApiKeyPlaintext string `json:"cohere_api_key_plaintext,omitempty"`
+	// Wire name: 'cohere_api_key_plaintext'
+	CohereApiKeyPlaintext string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CohereConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CohereConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cohereConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := cohereConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CohereConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CohereConfig) MarshalJSON() ([]byte, error) {
+	pb, err := cohereConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreatePtEndpointRequest struct {
 	// The AI Gateway configuration for the serving endpoint.
-	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// Wire name: 'ai_gateway'
+	AiGateway *AiGatewayConfig
 	// The budget policy associated with the endpoint.
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Wire name: 'budget_policy_id'
+	BudgetPolicyId string
 	// The core config of the serving endpoint.
-	Config PtEndpointCoreConfig `json:"config"`
+	// Wire name: 'config'
+	Config PtEndpointCoreConfig
 	// The name of the serving endpoint. This field is required and must be
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Tags to be attached to the serving endpoint and automatically propagated
 	// to billing logs.
-	Tags []EndpointTag `json:"tags,omitempty"`
+	// Wire name: 'tags'
+	Tags []EndpointTag
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreatePtEndpointRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreatePtEndpointRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createPtEndpointRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createPtEndpointRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreatePtEndpointRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreatePtEndpointRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createPtEndpointRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateServingEndpoint struct {
 	// The AI Gateway configuration for the serving endpoint. NOTE: External
 	// model, provisioned throughput, and pay-per-token endpoints are fully
 	// supported; agent endpoints currently only support inference tables.
-	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// Wire name: 'ai_gateway'
+	AiGateway *AiGatewayConfig
 	// The budget policy to be applied to the serving endpoint.
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Wire name: 'budget_policy_id'
+	BudgetPolicyId string
 	// The core config of the serving endpoint.
-	Config *EndpointCoreConfigInput `json:"config,omitempty"`
+	// Wire name: 'config'
+	Config *EndpointCoreConfigInput
 	// The name of the serving endpoint. This field is required and must be
 	// unique across a Databricks workspace. An endpoint name can consist of
 	// alphanumeric characters, dashes, and underscores.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// Rate limits to be applied to the serving endpoint. NOTE: this field is
 	// deprecated, please use AI Gateway to manage rate limits.
-	RateLimits []RateLimit `json:"rate_limits,omitempty"`
+	// Wire name: 'rate_limits'
+	RateLimits []RateLimit
 	// Enable route optimization for the serving endpoint.
-	RouteOptimized bool `json:"route_optimized,omitempty"`
+	// Wire name: 'route_optimized'
+	RouteOptimized bool
 	// Tags to be attached to the serving endpoint and automatically propagated
 	// to billing logs.
-	Tags []EndpointTag `json:"tags,omitempty"`
+	// Wire name: 'tags'
+	Tags []EndpointTag
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *CreateServingEndpoint) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateServingEndpoint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createServingEndpointPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createServingEndpointFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateServingEndpoint) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateServingEndpoint) MarshalJSON() ([]byte, error) {
+	pb, err := createServingEndpointToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Configs needed to create a custom provider model route.
 type CustomProviderConfig struct {
 	// This is a field to provide API key authentication for the custom provider
 	// API. You can only specify one authentication method.
-	ApiKeyAuth *ApiKeyAuth `json:"api_key_auth,omitempty"`
+	// Wire name: 'api_key_auth'
+	ApiKeyAuth *ApiKeyAuth
 	// This is a field to provide bearer token authentication for the custom
 	// provider API. You can only specify one authentication method.
-	BearerTokenAuth *BearerTokenAuth `json:"bearer_token_auth,omitempty"`
+	// Wire name: 'bearer_token_auth'
+	BearerTokenAuth *BearerTokenAuth
 	// This is a field to provide the URL of the custom provider API.
-	CustomProviderUrl string `json:"custom_provider_url"`
+	// Wire name: 'custom_provider_url'
+	CustomProviderUrl string
+}
+
+func (st *CustomProviderConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &customProviderConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := customProviderConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CustomProviderConfig) MarshalJSON() ([]byte, error) {
+	pb, err := customProviderConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details necessary to query this object's API through the DataPlane APIs.
 type DataPlaneInfo struct {
 	// Authorization details as a string.
-	AuthorizationDetails string `json:"authorization_details,omitempty"`
+	// Wire name: 'authorization_details'
+	AuthorizationDetails string
 	// The URL of the endpoint for this operation in the dataplane.
-	EndpointUrl string `json:"endpoint_url,omitempty"`
+	// Wire name: 'endpoint_url'
+	EndpointUrl string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DataPlaneInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DataPlaneInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dataPlaneInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := dataPlaneInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DataPlaneInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DataPlaneInfo) MarshalJSON() ([]byte, error) {
+	pb, err := dataPlaneInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DatabricksModelServingConfig struct {
@@ -601,65 +1214,188 @@ type DatabricksModelServingConfig struct {
 	// to paste your API key directly, see `databricks_api_token_plaintext`. You
 	// must provide an API key using one of the following fields:
 	// `databricks_api_token` or `databricks_api_token_plaintext`.
-	DatabricksApiToken string `json:"databricks_api_token,omitempty"`
+	// Wire name: 'databricks_api_token'
+	DatabricksApiToken string
 	// The Databricks API token that corresponds to a user or service principal
 	// with Can Query access to the model serving endpoint pointed to by this
 	// external model provided as a plaintext string. If you prefer to reference
 	// your key using Databricks Secrets, see `databricks_api_token`. You must
 	// provide an API key using one of the following fields:
 	// `databricks_api_token` or `databricks_api_token_plaintext`.
-	DatabricksApiTokenPlaintext string `json:"databricks_api_token_plaintext,omitempty"`
+	// Wire name: 'databricks_api_token_plaintext'
+	DatabricksApiTokenPlaintext string
 	// The URL of the Databricks workspace containing the model serving endpoint
 	// pointed to by this external model.
-	DatabricksWorkspaceUrl string `json:"databricks_workspace_url"`
+	// Wire name: 'databricks_workspace_url'
+	DatabricksWorkspaceUrl string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *DatabricksModelServingConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DatabricksModelServingConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &databricksModelServingConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := databricksModelServingConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DatabricksModelServingConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DatabricksModelServingConfig) MarshalJSON() ([]byte, error) {
+	pb, err := databricksModelServingConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DataframeSplitInput struct {
-	Columns []any `json:"columns,omitempty"`
 
-	Data []any `json:"data,omitempty"`
+	// Wire name: 'columns'
+	Columns []any
 
-	Index []int `json:"index,omitempty"`
+	// Wire name: 'data'
+	Data []any
+
+	// Wire name: 'index'
+	Index []int
+}
+
+func (st *DataframeSplitInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dataframeSplitInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := dataframeSplitInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DataframeSplitInput) MarshalJSON() ([]byte, error) {
+	pb, err := dataframeSplitInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteResponse struct {
 }
 
+func (st *DeleteResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete a serving endpoint
 type DeleteServingEndpointRequest struct {
-	Name string `json:"-" url:"-"`
+
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *DeleteServingEndpointRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteServingEndpointRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteServingEndpointRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteServingEndpointRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteServingEndpointRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EmbeddingsV1ResponseEmbeddingElement struct {
-	Embedding []float64 `json:"embedding,omitempty"`
+
+	// Wire name: 'embedding'
+	Embedding []float64
 	// The index of the embedding in the response.
-	Index int `json:"index,omitempty"`
+	// Wire name: 'index'
+	Index int
 	// This will always be 'embedding'.
-	Object EmbeddingsV1ResponseEmbeddingElementObject `json:"object,omitempty"`
+	// Wire name: 'object'
+	Object EmbeddingsV1ResponseEmbeddingElementObject
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EmbeddingsV1ResponseEmbeddingElement) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EmbeddingsV1ResponseEmbeddingElement) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &embeddingsV1ResponseEmbeddingElementPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := embeddingsV1ResponseEmbeddingElementFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EmbeddingsV1ResponseEmbeddingElement) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EmbeddingsV1ResponseEmbeddingElement) MarshalJSON() ([]byte, error) {
+	pb, err := embeddingsV1ResponseEmbeddingElementToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // This will always be 'embedding'.
 type EmbeddingsV1ResponseEmbeddingElementObject string
+type embeddingsV1ResponseEmbeddingElementObjectPb string
 
 const EmbeddingsV1ResponseEmbeddingElementObjectEmbedding EmbeddingsV1ResponseEmbeddingElementObject = `embedding`
 
@@ -684,22 +1420,68 @@ func (f *EmbeddingsV1ResponseEmbeddingElementObject) Type() string {
 	return "EmbeddingsV1ResponseEmbeddingElementObject"
 }
 
+func embeddingsV1ResponseEmbeddingElementObjectToPb(st *EmbeddingsV1ResponseEmbeddingElementObject) (*embeddingsV1ResponseEmbeddingElementObjectPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := embeddingsV1ResponseEmbeddingElementObjectPb(*st)
+	return &pb, nil
+}
+
+func embeddingsV1ResponseEmbeddingElementObjectFromPb(pb *embeddingsV1ResponseEmbeddingElementObjectPb) (*EmbeddingsV1ResponseEmbeddingElementObject, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := EmbeddingsV1ResponseEmbeddingElementObject(*pb)
+	return &st, nil
+}
+
 type EndpointCoreConfigInput struct {
 	// Configuration for Inference Tables which automatically logs requests and
 	// responses to Unity Catalog. Note: this field is deprecated for creating
 	// new provisioned throughput endpoints, or updating existing provisioned
 	// throughput endpoints that never have inference table configured; in these
 	// cases please use AI Gateway to manage inference tables.
-	AutoCaptureConfig *AutoCaptureConfigInput `json:"auto_capture_config,omitempty"`
+	// Wire name: 'auto_capture_config'
+	AutoCaptureConfig *AutoCaptureConfigInput
 	// The name of the serving endpoint to update. This field is required.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The list of served entities under the serving endpoint config.
-	ServedEntities []ServedEntityInput `json:"served_entities,omitempty"`
+	// Wire name: 'served_entities'
+	ServedEntities []ServedEntityInput
 	// (Deprecated, use served_entities instead) The list of served models under
 	// the serving endpoint config.
-	ServedModels []ServedModelInput `json:"served_models,omitempty"`
+	// Wire name: 'served_models'
+	ServedModels []ServedModelInput
 	// The traffic configuration associated with the serving endpoint config.
-	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
+	// Wire name: 'traffic_config'
+	TrafficConfig *TrafficConfig
+}
+
+func (st *EndpointCoreConfigInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &endpointCoreConfigInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := endpointCoreConfigInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EndpointCoreConfigInput) MarshalJSON() ([]byte, error) {
+	pb, err := endpointCoreConfigInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EndpointCoreConfigOutput struct {
@@ -708,34 +1490,83 @@ type EndpointCoreConfigOutput struct {
 	// new provisioned throughput endpoints, or updating existing provisioned
 	// throughput endpoints that never have inference table configured; in these
 	// cases please use AI Gateway to manage inference tables.
-	AutoCaptureConfig *AutoCaptureConfigOutput `json:"auto_capture_config,omitempty"`
+	// Wire name: 'auto_capture_config'
+	AutoCaptureConfig *AutoCaptureConfigOutput
 	// The config version that the serving endpoint is currently serving.
-	ConfigVersion int64 `json:"config_version,omitempty"`
+	// Wire name: 'config_version'
+	ConfigVersion int64
 	// The list of served entities under the serving endpoint config.
-	ServedEntities []ServedEntityOutput `json:"served_entities,omitempty"`
+	// Wire name: 'served_entities'
+	ServedEntities []ServedEntityOutput
 	// (Deprecated, use served_entities instead) The list of served models under
 	// the serving endpoint config.
-	ServedModels []ServedModelOutput `json:"served_models,omitempty"`
+	// Wire name: 'served_models'
+	ServedModels []ServedModelOutput
 	// The traffic configuration associated with the serving endpoint config.
-	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
+	// Wire name: 'traffic_config'
+	TrafficConfig *TrafficConfig
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EndpointCoreConfigOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EndpointCoreConfigOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &endpointCoreConfigOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := endpointCoreConfigOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EndpointCoreConfigOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EndpointCoreConfigOutput) MarshalJSON() ([]byte, error) {
+	pb, err := endpointCoreConfigOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EndpointCoreConfigSummary struct {
 	// The list of served entities under the serving endpoint config.
-	ServedEntities []ServedEntitySpec `json:"served_entities,omitempty"`
+	// Wire name: 'served_entities'
+	ServedEntities []ServedEntitySpec
 	// (Deprecated, use served_entities instead) The list of served models under
 	// the serving endpoint config.
-	ServedModels []ServedModelSpec `json:"served_models,omitempty"`
+	// Wire name: 'served_models'
+	ServedModels []ServedModelSpec
+}
+
+func (st *EndpointCoreConfigSummary) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &endpointCoreConfigSummaryPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := endpointCoreConfigSummaryFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EndpointCoreConfigSummary) MarshalJSON() ([]byte, error) {
+	pb, err := endpointCoreConfigSummaryToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EndpointPendingConfig struct {
@@ -744,30 +1575,53 @@ type EndpointPendingConfig struct {
 	// new provisioned throughput endpoints, or updating existing provisioned
 	// throughput endpoints that never have inference table configured; in these
 	// cases please use AI Gateway to manage inference tables.
-	AutoCaptureConfig *AutoCaptureConfigOutput `json:"auto_capture_config,omitempty"`
+	// Wire name: 'auto_capture_config'
+	AutoCaptureConfig *AutoCaptureConfigOutput
 	// The config version that the serving endpoint is currently serving.
-	ConfigVersion int `json:"config_version,omitempty"`
+	// Wire name: 'config_version'
+	ConfigVersion int
 	// The list of served entities belonging to the last issued update to the
 	// serving endpoint.
-	ServedEntities []ServedEntityOutput `json:"served_entities,omitempty"`
+	// Wire name: 'served_entities'
+	ServedEntities []ServedEntityOutput
 	// (Deprecated, use served_entities instead) The list of served models
 	// belonging to the last issued update to the serving endpoint.
-	ServedModels []ServedModelOutput `json:"served_models,omitempty"`
+	// Wire name: 'served_models'
+	ServedModels []ServedModelOutput
 	// The timestamp when the update to the pending config started.
-	StartTime int64 `json:"start_time,omitempty"`
+	// Wire name: 'start_time'
+	StartTime int64
 	// The traffic config defining how invocations to the serving endpoint
 	// should be routed.
-	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
+	// Wire name: 'traffic_config'
+	TrafficConfig *TrafficConfig
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EndpointPendingConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EndpointPendingConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &endpointPendingConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := endpointPendingConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EndpointPendingConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EndpointPendingConfig) MarshalJSON() ([]byte, error) {
+	pb, err := endpointPendingConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EndpointState struct {
@@ -776,15 +1630,43 @@ type EndpointState struct {
 	// update in progress. Note that if the endpoint's config_update state value
 	// is IN_PROGRESS, another update can not be made until the update completes
 	// or fails.
-	ConfigUpdate EndpointStateConfigUpdate `json:"config_update,omitempty"`
+	// Wire name: 'config_update'
+	ConfigUpdate EndpointStateConfigUpdate
 	// The state of an endpoint, indicating whether or not the endpoint is
 	// queryable. An endpoint is READY if all of the served entities in its
 	// active configuration are ready. If any of the actively served entities
 	// are in a non-ready state, the endpoint state will be NOT_READY.
-	Ready EndpointStateReady `json:"ready,omitempty"`
+	// Wire name: 'ready'
+	Ready EndpointStateReady
+}
+
+func (st *EndpointState) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &endpointStatePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := endpointStateFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EndpointState) MarshalJSON() ([]byte, error) {
+	pb, err := endpointStateToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EndpointStateConfigUpdate string
+type endpointStateConfigUpdatePb string
 
 const EndpointStateConfigUpdateInProgress EndpointStateConfigUpdate = `IN_PROGRESS`
 
@@ -815,7 +1697,24 @@ func (f *EndpointStateConfigUpdate) Type() string {
 	return "EndpointStateConfigUpdate"
 }
 
+func endpointStateConfigUpdateToPb(st *EndpointStateConfigUpdate) (*endpointStateConfigUpdatePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := endpointStateConfigUpdatePb(*st)
+	return &pb, nil
+}
+
+func endpointStateConfigUpdateFromPb(pb *endpointStateConfigUpdatePb) (*EndpointStateConfigUpdate, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := EndpointStateConfigUpdate(*pb)
+	return &st, nil
+}
+
 type EndpointStateReady string
+type endpointStateReadyPb string
 
 const EndpointStateReadyNotReady EndpointStateReady = `NOT_READY`
 
@@ -842,67 +1741,206 @@ func (f *EndpointStateReady) Type() string {
 	return "EndpointStateReady"
 }
 
+func endpointStateReadyToPb(st *EndpointStateReady) (*endpointStateReadyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := endpointStateReadyPb(*st)
+	return &pb, nil
+}
+
+func endpointStateReadyFromPb(pb *endpointStateReadyPb) (*EndpointStateReady, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := EndpointStateReady(*pb)
+	return &st, nil
+}
+
 type EndpointTag struct {
 	// Key field for a serving endpoint tag.
-	Key string `json:"key"`
+	// Wire name: 'key'
+	Key string
 	// Optional value field for a serving endpoint tag.
-	Value string `json:"value,omitempty"`
+	// Wire name: 'value'
+	Value string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *EndpointTag) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EndpointTag) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &endpointTagPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := endpointTagFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EndpointTag) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EndpointTag) MarshalJSON() ([]byte, error) {
+	pb, err := endpointTagToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EndpointTags struct {
-	Tags []EndpointTag `json:"tags,omitempty"`
+
+	// Wire name: 'tags'
+	Tags []EndpointTag
+}
+
+func (st *EndpointTags) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &endpointTagsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := endpointTagsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EndpointTags) MarshalJSON() ([]byte, error) {
+	pb, err := endpointTagsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get metrics of a serving endpoint
 type ExportMetricsRequest struct {
 	// The name of the serving endpoint to retrieve metrics for. This field is
 	// required.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *ExportMetricsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &exportMetricsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := exportMetricsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ExportMetricsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := exportMetricsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ExportMetricsResponse struct {
-	Contents io.ReadCloser `json:"-"`
+
+	// Wire name: 'contents'
+	Contents io.ReadCloser `tf:"-"`
+}
+
+func (st *ExportMetricsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &exportMetricsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := exportMetricsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ExportMetricsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := exportMetricsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Simple Proto message for testing
 type ExternalFunctionRequest struct {
 	// The connection name to use. This is required to identify the external
 	// connection.
-	ConnectionName string `json:"connection_name"`
+	// Wire name: 'connection_name'
+	ConnectionName string
 	// Additional headers for the request. If not provided, only auth headers
 	// from connections would be passed.
-	Headers string `json:"headers,omitempty"`
+	// Wire name: 'headers'
+	Headers string
 	// The JSON payload to send in the request body.
-	Json string `json:"json,omitempty"`
+	// Wire name: 'json'
+	Json string
 	// The HTTP method to use (e.g., 'GET', 'POST').
-	Method ExternalFunctionRequestHttpMethod `json:"method"`
+	// Wire name: 'method'
+	Method ExternalFunctionRequestHttpMethod
 	// Query parameters for the request.
-	Params string `json:"params,omitempty"`
+	// Wire name: 'params'
+	Params string
 	// The relative path for the API endpoint. This is required.
-	Path string `json:"path"`
+	// Wire name: 'path'
+	Path string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExternalFunctionRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ExternalFunctionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &externalFunctionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := externalFunctionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ExternalFunctionRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ExternalFunctionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := externalFunctionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ExternalFunctionRequestHttpMethod string
+type externalFunctionRequestHttpMethodPb string
 
 const ExternalFunctionRequestHttpMethodDelete ExternalFunctionRequestHttpMethod = `DELETE`
 
@@ -935,39 +1973,93 @@ func (f *ExternalFunctionRequestHttpMethod) Type() string {
 	return "ExternalFunctionRequestHttpMethod"
 }
 
+func externalFunctionRequestHttpMethodToPb(st *ExternalFunctionRequestHttpMethod) (*externalFunctionRequestHttpMethodPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := externalFunctionRequestHttpMethodPb(*st)
+	return &pb, nil
+}
+
+func externalFunctionRequestHttpMethodFromPb(pb *externalFunctionRequestHttpMethodPb) (*ExternalFunctionRequestHttpMethod, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ExternalFunctionRequestHttpMethod(*pb)
+	return &st, nil
+}
+
 type ExternalModel struct {
 	// AI21Labs Config. Only required if the provider is 'ai21labs'.
-	Ai21labsConfig *Ai21LabsConfig `json:"ai21labs_config,omitempty"`
+	// Wire name: 'ai21labs_config'
+	Ai21labsConfig *Ai21LabsConfig
 	// Amazon Bedrock Config. Only required if the provider is 'amazon-bedrock'.
-	AmazonBedrockConfig *AmazonBedrockConfig `json:"amazon_bedrock_config,omitempty"`
+	// Wire name: 'amazon_bedrock_config'
+	AmazonBedrockConfig *AmazonBedrockConfig
 	// Anthropic Config. Only required if the provider is 'anthropic'.
-	AnthropicConfig *AnthropicConfig `json:"anthropic_config,omitempty"`
+	// Wire name: 'anthropic_config'
+	AnthropicConfig *AnthropicConfig
 	// Cohere Config. Only required if the provider is 'cohere'.
-	CohereConfig *CohereConfig `json:"cohere_config,omitempty"`
+	// Wire name: 'cohere_config'
+	CohereConfig *CohereConfig
 	// Custom Provider Config. Only required if the provider is 'custom'.
-	CustomProviderConfig *CustomProviderConfig `json:"custom_provider_config,omitempty"`
+	// Wire name: 'custom_provider_config'
+	CustomProviderConfig *CustomProviderConfig
 	// Databricks Model Serving Config. Only required if the provider is
 	// 'databricks-model-serving'.
-	DatabricksModelServingConfig *DatabricksModelServingConfig `json:"databricks_model_serving_config,omitempty"`
+	// Wire name: 'databricks_model_serving_config'
+	DatabricksModelServingConfig *DatabricksModelServingConfig
 	// Google Cloud Vertex AI Config. Only required if the provider is
 	// 'google-cloud-vertex-ai'.
-	GoogleCloudVertexAiConfig *GoogleCloudVertexAiConfig `json:"google_cloud_vertex_ai_config,omitempty"`
+	// Wire name: 'google_cloud_vertex_ai_config'
+	GoogleCloudVertexAiConfig *GoogleCloudVertexAiConfig
 	// The name of the external model.
-	Name string `json:"name"`
+	// Wire name: 'name'
+	Name string
 	// OpenAI Config. Only required if the provider is 'openai'.
-	OpenaiConfig *OpenAiConfig `json:"openai_config,omitempty"`
+	// Wire name: 'openai_config'
+	OpenaiConfig *OpenAiConfig
 	// PaLM Config. Only required if the provider is 'palm'.
-	PalmConfig *PaLmConfig `json:"palm_config,omitempty"`
+	// Wire name: 'palm_config'
+	PalmConfig *PaLmConfig
 	// The name of the provider for the external model. Currently, the supported
 	// providers are 'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere',
 	// 'databricks-model-serving', 'google-cloud-vertex-ai', 'openai', 'palm',
 	// and 'custom'.
-	Provider ExternalModelProvider `json:"provider"`
+	// Wire name: 'provider'
+	Provider ExternalModelProvider
 	// The task type of the external model.
-	Task string `json:"task"`
+	// Wire name: 'task'
+	Task string
+}
+
+func (st *ExternalModel) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &externalModelPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := externalModelFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ExternalModel) MarshalJSON() ([]byte, error) {
+	pb, err := externalModelToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ExternalModelProvider string
+type externalModelProviderPb string
 
 const ExternalModelProviderAi21labs ExternalModelProvider = `ai21labs`
 
@@ -1008,23 +2100,59 @@ func (f *ExternalModelProvider) Type() string {
 	return "ExternalModelProvider"
 }
 
+func externalModelProviderToPb(st *ExternalModelProvider) (*externalModelProviderPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := externalModelProviderPb(*st)
+	return &pb, nil
+}
+
+func externalModelProviderFromPb(pb *externalModelProviderPb) (*ExternalModelProvider, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ExternalModelProvider(*pb)
+	return &st, nil
+}
+
 type ExternalModelUsageElement struct {
 	// The number of tokens in the chat/completions response.
-	CompletionTokens int `json:"completion_tokens,omitempty"`
+	// Wire name: 'completion_tokens'
+	CompletionTokens int
 	// The number of tokens in the prompt.
-	PromptTokens int `json:"prompt_tokens,omitempty"`
+	// Wire name: 'prompt_tokens'
+	PromptTokens int
 	// The total number of tokens in the prompt and response.
-	TotalTokens int `json:"total_tokens,omitempty"`
+	// Wire name: 'total_tokens'
+	TotalTokens int
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ExternalModelUsageElement) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ExternalModelUsageElement) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &externalModelUsageElementPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := externalModelUsageElementFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ExternalModelUsageElement) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ExternalModelUsageElement) MarshalJSON() ([]byte, error) {
+	pb, err := externalModelUsageElementToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type FallbackConfig struct {
@@ -1034,63 +2162,268 @@ type FallbackConfig struct {
 	// same endpoint, following the order of served entity list, until a
 	// successful response is returned. If all attempts fail, return the last
 	// response with the error code.
-	Enabled bool `json:"enabled"`
+	// Wire name: 'enabled'
+	Enabled bool
+}
+
+func (st *FallbackConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &fallbackConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := fallbackConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st FallbackConfig) MarshalJSON() ([]byte, error) {
+	pb, err := fallbackConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // All fields are not sensitive as they are hard-coded in the system and made
 // available to customers.
 type FoundationModel struct {
-	Description string `json:"description,omitempty"`
 
-	DisplayName string `json:"display_name,omitempty"`
+	// Wire name: 'description'
+	Description string
 
-	Docs string `json:"docs,omitempty"`
+	// Wire name: 'display_name'
+	DisplayName string
 
-	Name string `json:"name,omitempty"`
+	// Wire name: 'docs'
+	Docs string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *FoundationModel) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *FoundationModel) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &foundationModelPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := foundationModelFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s FoundationModel) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st FoundationModel) MarshalJSON() ([]byte, error) {
+	pb, err := foundationModelToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the schema for a serving endpoint
 type GetOpenApiRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *GetOpenApiRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getOpenApiRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getOpenApiRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetOpenApiRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getOpenApiRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetOpenApiResponse struct {
-	Contents io.ReadCloser `json:"-"`
+
+	// Wire name: 'contents'
+	Contents io.ReadCloser `tf:"-"`
+}
+
+func (st *GetOpenApiResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getOpenApiResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getOpenApiResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetOpenApiResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getOpenApiResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get serving endpoint permission levels
 type GetServingEndpointPermissionLevelsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
-	ServingEndpointId string `json:"-" url:"-"`
+	// Wire name: 'serving_endpoint_id'
+	ServingEndpointId string `tf:"-"`
+}
+
+func (st *GetServingEndpointPermissionLevelsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getServingEndpointPermissionLevelsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getServingEndpointPermissionLevelsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetServingEndpointPermissionLevelsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getServingEndpointPermissionLevelsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetServingEndpointPermissionLevelsResponse struct {
 	// Specific permission levels
-	PermissionLevels []ServingEndpointPermissionsDescription `json:"permission_levels,omitempty"`
+	// Wire name: 'permission_levels'
+	PermissionLevels []ServingEndpointPermissionsDescription
+}
+
+func (st *GetServingEndpointPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getServingEndpointPermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getServingEndpointPermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetServingEndpointPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getServingEndpointPermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get serving endpoint permissions
 type GetServingEndpointPermissionsRequest struct {
 	// The serving endpoint for which to get or manage permissions.
-	ServingEndpointId string `json:"-" url:"-"`
+	// Wire name: 'serving_endpoint_id'
+	ServingEndpointId string `tf:"-"`
+}
+
+func (st *GetServingEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getServingEndpointPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getServingEndpointPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetServingEndpointPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getServingEndpointPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a single serving endpoint
 type GetServingEndpointRequest struct {
 	// The name of the serving endpoint. This field is required.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *GetServingEndpointRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getServingEndpointRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getServingEndpointRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetServingEndpointRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getServingEndpointRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GoogleCloudVertexAiConfig struct {
@@ -1103,7 +2436,8 @@ type GoogleCloudVertexAiConfig struct {
 	//
 	// [Best practices for managing service account keys]:
 	// https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys
-	PrivateKey string `json:"private_key,omitempty"`
+	// Wire name: 'private_key'
+	PrivateKey string
 	// The private key for the service account which has access to the Google
 	// Cloud Vertex AI Service provided as a plaintext secret. See [Best
 	// practices for managing service account keys]. If you prefer to reference
@@ -1113,118 +2447,272 @@ type GoogleCloudVertexAiConfig struct {
 	//
 	// [Best practices for managing service account keys]:
 	// https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys
-	PrivateKeyPlaintext string `json:"private_key_plaintext,omitempty"`
+	// Wire name: 'private_key_plaintext'
+	PrivateKeyPlaintext string
 	// This is the Google Cloud project id that the service account is
 	// associated with.
-	ProjectId string `json:"project_id"`
+	// Wire name: 'project_id'
+	ProjectId string
 	// This is the region for the Google Cloud Vertex AI Service. See [supported
 	// regions] for more details. Some models are only available in specific
 	// regions.
 	//
 	// [supported regions]:
 	// https://cloud.google.com/vertex-ai/docs/general/locations
-	Region string `json:"region"`
+	// Wire name: 'region'
+	Region string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *GoogleCloudVertexAiConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GoogleCloudVertexAiConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &googleCloudVertexAiConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := googleCloudVertexAiConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GoogleCloudVertexAiConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GoogleCloudVertexAiConfig) MarshalJSON() ([]byte, error) {
+	pb, err := googleCloudVertexAiConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type HttpRequestResponse struct {
-	Contents io.ReadCloser `json:"-"`
+
+	// Wire name: 'contents'
+	Contents io.ReadCloser `tf:"-"`
+}
+
+func (st *HttpRequestResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &httpRequestResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := httpRequestResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st HttpRequestResponse) MarshalJSON() ([]byte, error) {
+	pb, err := httpRequestResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListEndpointsResponse struct {
 	// The list of endpoints.
-	Endpoints []ServingEndpoint `json:"endpoints,omitempty"`
+	// Wire name: 'endpoints'
+	Endpoints []ServingEndpoint
+}
+
+func (st *ListEndpointsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listEndpointsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listEndpointsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListEndpointsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listEndpointsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the latest logs for a served model
 type LogsRequest struct {
 	// The name of the serving endpoint that the served model belongs to. This
 	// field is required.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The name of the served model that logs will be retrieved for. This field
 	// is required.
-	ServedModelName string `json:"-" url:"-"`
+	// Wire name: 'served_model_name'
+	ServedModelName string `tf:"-"`
+}
+
+func (st *LogsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &logsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := logsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st LogsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := logsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // A representation of all DataPlaneInfo for operations that can be done on a
 // model through Data Plane APIs.
 type ModelDataPlaneInfo struct {
 	// Information required to query DataPlane API 'query' endpoint.
-	QueryInfo *DataPlaneInfo `json:"query_info,omitempty"`
+	// Wire name: 'query_info'
+	QueryInfo *DataPlaneInfo
+}
+
+func (st *ModelDataPlaneInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &modelDataPlaneInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := modelDataPlaneInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ModelDataPlaneInfo) MarshalJSON() ([]byte, error) {
+	pb, err := modelDataPlaneInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Configs needed to create an OpenAI model route.
 type OpenAiConfig struct {
 	// This field is only required for Azure AD OpenAI and is the Microsoft
 	// Entra Client ID.
-	MicrosoftEntraClientId string `json:"microsoft_entra_client_id,omitempty"`
+	// Wire name: 'microsoft_entra_client_id'
+	MicrosoftEntraClientId string
 	// The Databricks secret key reference for a client secret used for
 	// Microsoft Entra ID authentication. If you prefer to paste your client
 	// secret directly, see `microsoft_entra_client_secret_plaintext`. You must
 	// provide an API key using one of the following fields:
 	// `microsoft_entra_client_secret` or
 	// `microsoft_entra_client_secret_plaintext`.
-	MicrosoftEntraClientSecret string `json:"microsoft_entra_client_secret,omitempty"`
+	// Wire name: 'microsoft_entra_client_secret'
+	MicrosoftEntraClientSecret string
 	// The client secret used for Microsoft Entra ID authentication provided as
 	// a plaintext string. If you prefer to reference your key using Databricks
 	// Secrets, see `microsoft_entra_client_secret`. You must provide an API key
 	// using one of the following fields: `microsoft_entra_client_secret` or
 	// `microsoft_entra_client_secret_plaintext`.
-	MicrosoftEntraClientSecretPlaintext string `json:"microsoft_entra_client_secret_plaintext,omitempty"`
+	// Wire name: 'microsoft_entra_client_secret_plaintext'
+	MicrosoftEntraClientSecretPlaintext string
 	// This field is only required for Azure AD OpenAI and is the Microsoft
 	// Entra Tenant ID.
-	MicrosoftEntraTenantId string `json:"microsoft_entra_tenant_id,omitempty"`
+	// Wire name: 'microsoft_entra_tenant_id'
+	MicrosoftEntraTenantId string
 	// This is a field to provide a customized base URl for the OpenAI API. For
 	// Azure OpenAI, this field is required, and is the base URL for the Azure
 	// OpenAI API service provided by Azure. For other OpenAI API types, this
 	// field is optional, and if left unspecified, the standard OpenAI base URL
 	// is used.
-	OpenaiApiBase string `json:"openai_api_base,omitempty"`
+	// Wire name: 'openai_api_base'
+	OpenaiApiBase string
 	// The Databricks secret key reference for an OpenAI API key using the
 	// OpenAI or Azure service. If you prefer to paste your API key directly,
 	// see `openai_api_key_plaintext`. You must provide an API key using one of
 	// the following fields: `openai_api_key` or `openai_api_key_plaintext`.
-	OpenaiApiKey string `json:"openai_api_key,omitempty"`
+	// Wire name: 'openai_api_key'
+	OpenaiApiKey string
 	// The OpenAI API key using the OpenAI or Azure service provided as a
 	// plaintext string. If you prefer to reference your key using Databricks
 	// Secrets, see `openai_api_key`. You must provide an API key using one of
 	// the following fields: `openai_api_key` or `openai_api_key_plaintext`.
-	OpenaiApiKeyPlaintext string `json:"openai_api_key_plaintext,omitempty"`
+	// Wire name: 'openai_api_key_plaintext'
+	OpenaiApiKeyPlaintext string
 	// This is an optional field to specify the type of OpenAI API to use. For
 	// Azure OpenAI, this field is required, and adjust this parameter to
 	// represent the preferred security access validation protocol. For access
 	// token validation, use azure. For authentication using Azure Active
 	// Directory (Azure AD) use, azuread.
-	OpenaiApiType string `json:"openai_api_type,omitempty"`
+	// Wire name: 'openai_api_type'
+	OpenaiApiType string
 	// This is an optional field to specify the OpenAI API version. For Azure
 	// OpenAI, this field is required, and is the version of the Azure OpenAI
 	// service to utilize, specified by a date.
-	OpenaiApiVersion string `json:"openai_api_version,omitempty"`
+	// Wire name: 'openai_api_version'
+	OpenaiApiVersion string
 	// This field is only required for Azure OpenAI and is the name of the
 	// deployment resource for the Azure OpenAI service.
-	OpenaiDeploymentName string `json:"openai_deployment_name,omitempty"`
+	// Wire name: 'openai_deployment_name'
+	OpenaiDeploymentName string
 	// This is an optional field to specify the organization in OpenAI or Azure
 	// OpenAI.
-	OpenaiOrganization string `json:"openai_organization,omitempty"`
+	// Wire name: 'openai_organization'
+	OpenaiOrganization string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *OpenAiConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *OpenAiConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &openAiConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := openAiConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s OpenAiConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st OpenAiConfig) MarshalJSON() ([]byte, error) {
+	pb, err := openAiConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PaLmConfig struct {
@@ -1232,57 +2720,152 @@ type PaLmConfig struct {
 	// paste your API key directly, see `palm_api_key_plaintext`. You must
 	// provide an API key using one of the following fields: `palm_api_key` or
 	// `palm_api_key_plaintext`.
-	PalmApiKey string `json:"palm_api_key,omitempty"`
+	// Wire name: 'palm_api_key'
+	PalmApiKey string
 	// The PaLM API key provided as a plaintext string. If you prefer to
 	// reference your key using Databricks Secrets, see `palm_api_key`. You must
 	// provide an API key using one of the following fields: `palm_api_key` or
 	// `palm_api_key_plaintext`.
-	PalmApiKeyPlaintext string `json:"palm_api_key_plaintext,omitempty"`
+	// Wire name: 'palm_api_key_plaintext'
+	PalmApiKeyPlaintext string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PaLmConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PaLmConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &paLmConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := paLmConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PaLmConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PaLmConfig) MarshalJSON() ([]byte, error) {
+	pb, err := paLmConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PatchServingEndpointTags struct {
 	// List of endpoint tags to add
-	AddTags []EndpointTag `json:"add_tags,omitempty"`
+	// Wire name: 'add_tags'
+	AddTags []EndpointTag
 	// List of tag keys to delete
-	DeleteTags []string `json:"delete_tags,omitempty"`
+	// Wire name: 'delete_tags'
+	DeleteTags []string
 	// The name of the serving endpoint who's tags to patch. This field is
 	// required.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *PatchServingEndpointTags) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &patchServingEndpointTagsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := patchServingEndpointTagsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PatchServingEndpointTags) MarshalJSON() ([]byte, error) {
+	pb, err := patchServingEndpointTagsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PayloadTable struct {
-	Name string `json:"name,omitempty"`
 
-	Status string `json:"status,omitempty"`
+	// Wire name: 'name'
+	Name string
 
-	StatusMessage string `json:"status_message,omitempty"`
+	// Wire name: 'status'
+	Status string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'status_message'
+	StatusMessage string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PayloadTable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PayloadTable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &payloadTablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := payloadTableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PayloadTable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PayloadTable) MarshalJSON() ([]byte, error) {
+	pb, err := payloadTableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PtEndpointCoreConfig struct {
 	// The list of served entities under the serving endpoint config.
-	ServedEntities []PtServedModel `json:"served_entities,omitempty"`
+	// Wire name: 'served_entities'
+	ServedEntities []PtServedModel
 
-	TrafficConfig *TrafficConfig `json:"traffic_config,omitempty"`
+	// Wire name: 'traffic_config'
+	TrafficConfig *TrafficConfig
+}
+
+func (st *PtEndpointCoreConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &ptEndpointCoreConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ptEndpointCoreConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PtEndpointCoreConfig) MarshalJSON() ([]byte, error) {
+	pb, err := ptEndpointCoreConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PtServedModel struct {
@@ -1291,191 +2874,384 @@ type PtServedModel struct {
 	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full
 	// name of the object should be given in the form of
 	// **catalog_name.schema_name.model_name**.
-	EntityName string `json:"entity_name"`
+	// Wire name: 'entity_name'
+	EntityName string
 
-	EntityVersion string `json:"entity_version,omitempty"`
+	// Wire name: 'entity_version'
+	EntityVersion string
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
 	// underscores. If not specified for an external model, this field defaults
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// The number of model units to be provisioned.
-	ProvisionedModelUnits int64 `json:"provisioned_model_units"`
+	// Wire name: 'provisioned_model_units'
+	ProvisionedModelUnits int64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *PtServedModel) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PtServedModel) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &ptServedModelPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ptServedModelFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PtServedModel) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PtServedModel) MarshalJSON() ([]byte, error) {
+	pb, err := ptServedModelToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PutAiGatewayRequest struct {
 	// Configuration for traffic fallback which auto fallbacks to other served
 	// entities if the request to a served entity fails with certain error
 	// codes, to increase availability.
-	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
+	// Wire name: 'fallback_config'
+	FallbackConfig *FallbackConfig
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
-	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
+	// Wire name: 'guardrails'
+	Guardrails *AiGatewayGuardrails
 	// Configuration for payload logging using inference tables. Use these
 	// tables to monitor and audit data being sent to and received from model
 	// APIs and to improve model quality.
-	InferenceTableConfig *AiGatewayInferenceTableConfig `json:"inference_table_config,omitempty"`
+	// Wire name: 'inference_table_config'
+	InferenceTableConfig *AiGatewayInferenceTableConfig
 	// The name of the serving endpoint whose AI Gateway is being updated. This
 	// field is required.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// Configuration for rate limits which can be set to limit endpoint traffic.
-	RateLimits []AiGatewayRateLimit `json:"rate_limits,omitempty"`
+	// Wire name: 'rate_limits'
+	RateLimits []AiGatewayRateLimit
 	// Configuration to enable usage tracking using system tables. These tables
 	// allow you to monitor operational usage on endpoints and their associated
 	// costs.
-	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
+	// Wire name: 'usage_tracking_config'
+	UsageTrackingConfig *AiGatewayUsageTrackingConfig
+}
+
+func (st *PutAiGatewayRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &putAiGatewayRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := putAiGatewayRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PutAiGatewayRequest) MarshalJSON() ([]byte, error) {
+	pb, err := putAiGatewayRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PutAiGatewayResponse struct {
 	// Configuration for traffic fallback which auto fallbacks to other served
 	// entities if the request to a served entity fails with certain error
 	// codes, to increase availability.
-	FallbackConfig *FallbackConfig `json:"fallback_config,omitempty"`
+	// Wire name: 'fallback_config'
+	FallbackConfig *FallbackConfig
 	// Configuration for AI Guardrails to prevent unwanted data and unsafe data
 	// in requests and responses.
-	Guardrails *AiGatewayGuardrails `json:"guardrails,omitempty"`
+	// Wire name: 'guardrails'
+	Guardrails *AiGatewayGuardrails
 	// Configuration for payload logging using inference tables. Use these
 	// tables to monitor and audit data being sent to and received from model
 	// APIs and to improve model quality.
-	InferenceTableConfig *AiGatewayInferenceTableConfig `json:"inference_table_config,omitempty"`
+	// Wire name: 'inference_table_config'
+	InferenceTableConfig *AiGatewayInferenceTableConfig
 	// Configuration for rate limits which can be set to limit endpoint traffic.
-	RateLimits []AiGatewayRateLimit `json:"rate_limits,omitempty"`
+	// Wire name: 'rate_limits'
+	RateLimits []AiGatewayRateLimit
 	// Configuration to enable usage tracking using system tables. These tables
 	// allow you to monitor operational usage on endpoints and their associated
 	// costs.
-	UsageTrackingConfig *AiGatewayUsageTrackingConfig `json:"usage_tracking_config,omitempty"`
+	// Wire name: 'usage_tracking_config'
+	UsageTrackingConfig *AiGatewayUsageTrackingConfig
+}
+
+func (st *PutAiGatewayResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &putAiGatewayResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := putAiGatewayResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PutAiGatewayResponse) MarshalJSON() ([]byte, error) {
+	pb, err := putAiGatewayResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PutRequest struct {
 	// The name of the serving endpoint whose rate limits are being updated.
 	// This field is required.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The list of endpoint rate limits.
-	RateLimits []RateLimit `json:"rate_limits,omitempty"`
+	// Wire name: 'rate_limits'
+	RateLimits []RateLimit
+}
+
+func (st *PutRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &putRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := putRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PutRequest) MarshalJSON() ([]byte, error) {
+	pb, err := putRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PutResponse struct {
 	// The list of endpoint rate limits.
-	RateLimits []RateLimit `json:"rate_limits,omitempty"`
+	// Wire name: 'rate_limits'
+	RateLimits []RateLimit
+}
+
+func (st *PutResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &putResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := putResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PutResponse) MarshalJSON() ([]byte, error) {
+	pb, err := putResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type QueryEndpointInput struct {
 	// Pandas Dataframe input in the records orientation.
-	DataframeRecords []any `json:"dataframe_records,omitempty"`
+	// Wire name: 'dataframe_records'
+	DataframeRecords []any
 	// Pandas Dataframe input in the split orientation.
-	DataframeSplit *DataframeSplitInput `json:"dataframe_split,omitempty"`
+	// Wire name: 'dataframe_split'
+	DataframeSplit *DataframeSplitInput
 	// The extra parameters field used ONLY for __completions, chat,__ and
 	// __embeddings external & foundation model__ serving endpoints. This is a
 	// map of strings and should only be used with other external/foundation
 	// model query fields.
-	ExtraParams map[string]string `json:"extra_params,omitempty"`
+	// Wire name: 'extra_params'
+	ExtraParams map[string]string
 	// The input string (or array of strings) field used ONLY for __embeddings
 	// external & foundation model__ serving endpoints and is the only field
 	// (along with extra_params if needed) used by embeddings queries.
-	Input any `json:"input,omitempty"`
+	// Wire name: 'input'
+	Input any
 	// Tensor-based input in columnar format.
-	Inputs any `json:"inputs,omitempty"`
+	// Wire name: 'inputs'
+	Inputs any
 	// Tensor-based input in row format.
-	Instances []any `json:"instances,omitempty"`
+	// Wire name: 'instances'
+	Instances []any
 	// The max tokens field used ONLY for __completions__ and __chat external &
 	// foundation model__ serving endpoints. This is an integer and should only
 	// be used with other chat/completions query fields.
-	MaxTokens int `json:"max_tokens,omitempty"`
+	// Wire name: 'max_tokens'
+	MaxTokens int
 	// The messages field used ONLY for __chat external & foundation model__
 	// serving endpoints. This is a map of strings and should only be used with
 	// other chat query fields.
-	Messages []ChatMessage `json:"messages,omitempty"`
+	// Wire name: 'messages'
+	Messages []ChatMessage
 	// The n (number of candidates) field used ONLY for __completions__ and
 	// __chat external & foundation model__ serving endpoints. This is an
 	// integer between 1 and 5 with a default of 1 and should only be used with
 	// other chat/completions query fields.
-	N int `json:"n,omitempty"`
+	// Wire name: 'n'
+	N int
 	// The name of the serving endpoint. This field is required.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
 	// The prompt string (or array of strings) field used ONLY for __completions
 	// external & foundation model__ serving endpoints and should only be used
 	// with other completions query fields.
-	Prompt any `json:"prompt,omitempty"`
+	// Wire name: 'prompt'
+	Prompt any
 	// The stop sequences field used ONLY for __completions__ and __chat
 	// external & foundation model__ serving endpoints. This is a list of
 	// strings and should only be used with other chat/completions query fields.
-	Stop []string `json:"stop,omitempty"`
+	// Wire name: 'stop'
+	Stop []string
 	// The stream field used ONLY for __completions__ and __chat external &
 	// foundation model__ serving endpoints. This is a boolean defaulting to
 	// false and should only be used with other chat/completions query fields.
-	Stream bool `json:"stream,omitempty"`
+	// Wire name: 'stream'
+	Stream bool
 	// The temperature field used ONLY for __completions__ and __chat external &
 	// foundation model__ serving endpoints. This is a float between 0.0 and 2.0
 	// with a default of 1.0 and should only be used with other chat/completions
 	// query fields.
-	Temperature float64 `json:"temperature,omitempty"`
+	// Wire name: 'temperature'
+	Temperature float64
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QueryEndpointInput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *QueryEndpointInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &queryEndpointInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := queryEndpointInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s QueryEndpointInput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st QueryEndpointInput) MarshalJSON() ([]byte, error) {
+	pb, err := queryEndpointInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type QueryEndpointResponse struct {
 	// The list of choices returned by the __chat or completions
 	// external/foundation model__ serving endpoint.
-	Choices []V1ResponseChoiceElement `json:"choices,omitempty"`
+	// Wire name: 'choices'
+	Choices []V1ResponseChoiceElement
 	// The timestamp in seconds when the query was created in Unix time returned
 	// by a __completions or chat external/foundation model__ serving endpoint.
-	Created int64 `json:"created,omitempty"`
+	// Wire name: 'created'
+	Created int64
 	// The list of the embeddings returned by the __embeddings
 	// external/foundation model__ serving endpoint.
-	Data []EmbeddingsV1ResponseEmbeddingElement `json:"data,omitempty"`
+	// Wire name: 'data'
+	Data []EmbeddingsV1ResponseEmbeddingElement
 	// The ID of the query that may be returned by a __completions or chat
 	// external/foundation model__ serving endpoint.
-	Id string `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id string
 	// The name of the __external/foundation model__ used for querying. This is
 	// the name of the model that was specified in the endpoint config.
-	Model string `json:"model,omitempty"`
+	// Wire name: 'model'
+	Model string
 	// The type of object returned by the __external/foundation model__ serving
 	// endpoint, one of [text_completion, chat.completion, list (of
 	// embeddings)].
-	Object QueryEndpointResponseObject `json:"object,omitempty"`
+	// Wire name: 'object'
+	Object QueryEndpointResponseObject
 	// The predictions returned by the serving endpoint.
-	Predictions []any `json:"predictions,omitempty"`
+	// Wire name: 'predictions'
+	Predictions []any
 	// The name of the served model that served the request. This is useful when
 	// there are multiple models behind the same endpoint with traffic split.
-	ServedModelName string `json:"-" url:"-" header:"served-model-name,omitempty"`
+	// Wire name: 'served-model-name'
+	ServedModelName string `tf:"-"`
 	// The usage object that may be returned by the __external/foundation
 	// model__ serving endpoint. This contains information about the number of
 	// tokens used in the prompt and response.
-	Usage *ExternalModelUsageElement `json:"usage,omitempty"`
+	// Wire name: 'usage'
+	Usage *ExternalModelUsageElement
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *QueryEndpointResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *QueryEndpointResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &queryEndpointResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := queryEndpointResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s QueryEndpointResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st QueryEndpointResponse) MarshalJSON() ([]byte, error) {
+	pb, err := queryEndpointResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The type of object returned by the __external/foundation model__ serving
 // endpoint, one of [text_completion, chat.completion, list (of embeddings)].
 type QueryEndpointResponseObject string
+type queryEndpointResponseObjectPb string
 
 const QueryEndpointResponseObjectChatCompletion QueryEndpointResponseObject = `chat.completion`
 
@@ -1504,20 +3280,65 @@ func (f *QueryEndpointResponseObject) Type() string {
 	return "QueryEndpointResponseObject"
 }
 
+func queryEndpointResponseObjectToPb(st *QueryEndpointResponseObject) (*queryEndpointResponseObjectPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := queryEndpointResponseObjectPb(*st)
+	return &pb, nil
+}
+
+func queryEndpointResponseObjectFromPb(pb *queryEndpointResponseObjectPb) (*QueryEndpointResponseObject, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := QueryEndpointResponseObject(*pb)
+	return &st, nil
+}
+
 type RateLimit struct {
 	// Used to specify how many calls are allowed for a key within the
 	// renewal_period.
-	Calls int64 `json:"calls"`
+	// Wire name: 'calls'
+	Calls int64
 	// Key field for a serving endpoint rate limit. Currently, only 'user' and
 	// 'endpoint' are supported, with 'endpoint' being the default if not
 	// specified.
-	Key RateLimitKey `json:"key,omitempty"`
+	// Wire name: 'key'
+	Key RateLimitKey
 	// Renewal period field for a serving endpoint rate limit. Currently, only
 	// 'minute' is supported.
-	RenewalPeriod RateLimitRenewalPeriod `json:"renewal_period"`
+	// Wire name: 'renewal_period'
+	RenewalPeriod RateLimitRenewalPeriod
+}
+
+func (st *RateLimit) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &rateLimitPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := rateLimitFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st RateLimit) MarshalJSON() ([]byte, error) {
+	pb, err := rateLimitToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RateLimitKey string
+type rateLimitKeyPb string
 
 const RateLimitKeyEndpoint RateLimitKey = `endpoint`
 
@@ -1544,7 +3365,24 @@ func (f *RateLimitKey) Type() string {
 	return "RateLimitKey"
 }
 
+func rateLimitKeyToPb(st *RateLimitKey) (*rateLimitKeyPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := rateLimitKeyPb(*st)
+	return &pb, nil
+}
+
+func rateLimitKeyFromPb(pb *rateLimitKeyPb) (*RateLimitKey, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := RateLimitKey(*pb)
+	return &st, nil
+}
+
 type RateLimitRenewalPeriod string
+type rateLimitRenewalPeriodPb string
 
 const RateLimitRenewalPeriodMinute RateLimitRenewalPeriod = `minute`
 
@@ -1569,12 +3407,55 @@ func (f *RateLimitRenewalPeriod) Type() string {
 	return "RateLimitRenewalPeriod"
 }
 
+func rateLimitRenewalPeriodToPb(st *RateLimitRenewalPeriod) (*rateLimitRenewalPeriodPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := rateLimitRenewalPeriodPb(*st)
+	return &pb, nil
+}
+
+func rateLimitRenewalPeriodFromPb(pb *rateLimitRenewalPeriodPb) (*RateLimitRenewalPeriod, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := RateLimitRenewalPeriod(*pb)
+	return &st, nil
+}
+
 type Route struct {
 	// The name of the served model this route configures traffic for.
-	ServedModelName string `json:"served_model_name"`
+	// Wire name: 'served_model_name'
+	ServedModelName string
 	// The percentage of endpoint traffic to send to this route. It must be an
 	// integer between 0 and 100 inclusive.
-	TrafficPercentage int `json:"traffic_percentage"`
+	// Wire name: 'traffic_percentage'
+	TrafficPercentage int
+}
+
+func (st *Route) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &routePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := routeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st Route) MarshalJSON() ([]byte, error) {
+	pb, err := routeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServedEntityInput struct {
@@ -1583,16 +3464,19 @@ type ServedEntityInput struct {
 	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full
 	// name of the object should be given in the form of
 	// **catalog_name.schema_name.model_name**.
-	EntityName string `json:"entity_name,omitempty"`
+	// Wire name: 'entity_name'
+	EntityName string
 
-	EntityVersion string `json:"entity_version,omitempty"`
+	// Wire name: 'entity_version'
+	EntityVersion string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs used for serving this entity. Note: this is an
 	// experimental feature and subject to change. Example entity environment
 	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
-	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
+	// Wire name: 'environment_vars'
+	EnvironmentVars map[string]string
 	// The external model to be served. NOTE: Only one of external_model and
 	// (entity_name, entity_version, workload_size, workload_type, and
 	// scale_to_zero_enabled) can be specified with the latter set being used
@@ -1601,25 +3485,32 @@ type ServedEntityInput struct {
 	// endpoint without external_model. If the endpoint is created without
 	// external_model, users cannot update it to add external_model later. The
 	// task type of all external models within an endpoint must be the same.
-	ExternalModel *ExternalModel `json:"external_model,omitempty"`
+	// Wire name: 'external_model'
+	ExternalModel *ExternalModel
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// Wire name: 'instance_profile_arn'
+	InstanceProfileArn string
 	// The maximum tokens per second that the endpoint can scale up to.
-	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
+	// Wire name: 'max_provisioned_throughput'
+	MaxProvisionedThroughput int
 	// The minimum tokens per second that the endpoint can scale down to.
-	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
+	// Wire name: 'min_provisioned_throughput'
+	MinProvisionedThroughput int
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
 	// underscores. If not specified for an external model, this field defaults
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// The number of model units provisioned.
-	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
+	// Wire name: 'provisioned_model_units'
+	ProvisionedModelUnits int64
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
-	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
+	// Wire name: 'scale_to_zero_enabled'
+	ScaleToZeroEnabled bool
 	// The workload size of the served entity. The workload size corresponds to
 	// a range of provisioned concurrency that the compute autoscales between. A
 	// single unit of provisioned concurrency can process one request at a time.
@@ -1628,7 +3519,8 @@ type ServedEntityInput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
-	WorkloadSize string `json:"workload_size,omitempty"`
+	// Wire name: 'workload_size'
+	WorkloadSize string
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
 	// parameter is "CPU". For deep learning workloads, GPU acceleration is
@@ -1636,38 +3528,62 @@ type ServedEntityInput struct {
 	// available [GPU types].
 	//
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
-	WorkloadType ServingModelWorkloadType `json:"workload_type,omitempty"`
+	// Wire name: 'workload_type'
+	WorkloadType ServingModelWorkloadType
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServedEntityInput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServedEntityInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servedEntityInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servedEntityInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServedEntityInput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServedEntityInput) MarshalJSON() ([]byte, error) {
+	pb, err := servedEntityInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServedEntityOutput struct {
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
 
-	Creator string `json:"creator,omitempty"`
+	// Wire name: 'creation_timestamp'
+	CreationTimestamp int64
+
+	// Wire name: 'creator'
+	Creator string
 	// The name of the entity to be served. The entity may be a model in the
 	// Databricks Model Registry, a model in the Unity Catalog (UC), or a
 	// function of type FEATURE_SPEC in the UC. If it is a UC object, the full
 	// name of the object should be given in the form of
 	// **catalog_name.schema_name.model_name**.
-	EntityName string `json:"entity_name,omitempty"`
+	// Wire name: 'entity_name'
+	EntityName string
 
-	EntityVersion string `json:"entity_version,omitempty"`
+	// Wire name: 'entity_version'
+	EntityVersion string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs used for serving this entity. Note: this is an
 	// experimental feature and subject to change. Example entity environment
 	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
-	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
+	// Wire name: 'environment_vars'
+	EnvironmentVars map[string]string
 	// The external model to be served. NOTE: Only one of external_model and
 	// (entity_name, entity_version, workload_size, workload_type, and
 	// scale_to_zero_enabled) can be specified with the latter set being used
@@ -1676,30 +3592,39 @@ type ServedEntityOutput struct {
 	// endpoint without external_model. If the endpoint is created without
 	// external_model, users cannot update it to add external_model later. The
 	// task type of all external models within an endpoint must be the same.
-	ExternalModel *ExternalModel `json:"external_model,omitempty"`
+	// Wire name: 'external_model'
+	ExternalModel *ExternalModel
 	// All fields are not sensitive as they are hard-coded in the system and
 	// made available to customers.
-	FoundationModel *FoundationModel `json:"foundation_model,omitempty"`
+	// Wire name: 'foundation_model'
+	FoundationModel *FoundationModel
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// Wire name: 'instance_profile_arn'
+	InstanceProfileArn string
 	// The maximum tokens per second that the endpoint can scale up to.
-	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
+	// Wire name: 'max_provisioned_throughput'
+	MaxProvisionedThroughput int
 	// The minimum tokens per second that the endpoint can scale down to.
-	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
+	// Wire name: 'min_provisioned_throughput'
+	MinProvisionedThroughput int
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
 	// underscores. If not specified for an external model, this field defaults
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// The number of model units provisioned.
-	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
+	// Wire name: 'provisioned_model_units'
+	ProvisionedModelUnits int64
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
-	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
+	// Wire name: 'scale_to_zero_enabled'
+	ScaleToZeroEnabled bool
 
-	State *ServedModelState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State *ServedModelState
 	// The workload size of the served entity. The workload size corresponds to
 	// a range of provisioned concurrency that the compute autoscales between. A
 	// single unit of provisioned concurrency can process one request at a time.
@@ -1708,7 +3633,8 @@ type ServedEntityOutput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
-	WorkloadSize string `json:"workload_size,omitempty"`
+	// Wire name: 'workload_size'
+	WorkloadSize string
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
 	// parameter is "CPU". For deep learning workloads, GPU acceleration is
@@ -1716,40 +3642,81 @@ type ServedEntityOutput struct {
 	// available [GPU types].
 	//
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
-	WorkloadType ServingModelWorkloadType `json:"workload_type,omitempty"`
+	// Wire name: 'workload_type'
+	WorkloadType ServingModelWorkloadType
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServedEntityOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServedEntityOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servedEntityOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servedEntityOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServedEntityOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServedEntityOutput) MarshalJSON() ([]byte, error) {
+	pb, err := servedEntityOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServedEntitySpec struct {
-	EntityName string `json:"entity_name,omitempty"`
 
-	EntityVersion string `json:"entity_version,omitempty"`
+	// Wire name: 'entity_name'
+	EntityName string
 
-	ExternalModel *ExternalModel `json:"external_model,omitempty"`
+	// Wire name: 'entity_version'
+	EntityVersion string
+
+	// Wire name: 'external_model'
+	ExternalModel *ExternalModel
 	// All fields are not sensitive as they are hard-coded in the system and
 	// made available to customers.
-	FoundationModel *FoundationModel `json:"foundation_model,omitempty"`
+	// Wire name: 'foundation_model'
+	FoundationModel *FoundationModel
 
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServedEntitySpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServedEntitySpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servedEntitySpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servedEntitySpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServedEntitySpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServedEntitySpec) MarshalJSON() ([]byte, error) {
+	pb, err := servedEntitySpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServedModelInput struct {
@@ -1759,29 +3726,38 @@ type ServedModelInput struct {
 	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
-	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
+	// Wire name: 'environment_vars'
+	EnvironmentVars map[string]string
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// Wire name: 'instance_profile_arn'
+	InstanceProfileArn string
 	// The maximum tokens per second that the endpoint can scale up to.
-	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
+	// Wire name: 'max_provisioned_throughput'
+	MaxProvisionedThroughput int
 	// The minimum tokens per second that the endpoint can scale down to.
-	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
+	// Wire name: 'min_provisioned_throughput'
+	MinProvisionedThroughput int
 
-	ModelName string `json:"model_name"`
+	// Wire name: 'model_name'
+	ModelName string
 
-	ModelVersion string `json:"model_version"`
+	// Wire name: 'model_version'
+	ModelVersion string
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
 	// underscores. If not specified for an external model, this field defaults
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// The number of model units provisioned.
-	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
+	// Wire name: 'provisioned_model_units'
+	ProvisionedModelUnits int64
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
-	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled"`
+	// Wire name: 'scale_to_zero_enabled'
+	ScaleToZeroEnabled bool
 	// The workload size of the served entity. The workload size corresponds to
 	// a range of provisioned concurrency that the compute autoscales between. A
 	// single unit of provisioned concurrency can process one request at a time.
@@ -1790,7 +3766,8 @@ type ServedModelInput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
-	WorkloadSize string `json:"workload_size,omitempty"`
+	// Wire name: 'workload_size'
+	WorkloadSize string
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
 	// parameter is "CPU". For deep learning workloads, GPU acceleration is
@@ -1798,22 +3775,41 @@ type ServedModelInput struct {
 	// available [GPU types].
 	//
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
-	WorkloadType ServedModelInputWorkloadType `json:"workload_type,omitempty"`
+	// Wire name: 'workload_type'
+	WorkloadType ServedModelInputWorkloadType
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServedModelInput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServedModelInput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servedModelInputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servedModelInputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServedModelInput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServedModelInput) MarshalJSON() ([]byte, error) {
+	pb, err := servedModelInputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Please keep this in sync with with workload types in
 // InferenceEndpointEntities.scala
 type ServedModelInputWorkloadType string
+type servedModelInputWorkloadTypePb string
 
 const ServedModelInputWorkloadTypeCpu ServedModelInputWorkloadType = `CPU`
 
@@ -1846,37 +3842,64 @@ func (f *ServedModelInputWorkloadType) Type() string {
 	return "ServedModelInputWorkloadType"
 }
 
-type ServedModelOutput struct {
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
+func servedModelInputWorkloadTypeToPb(st *ServedModelInputWorkloadType) (*servedModelInputWorkloadTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := servedModelInputWorkloadTypePb(*st)
+	return &pb, nil
+}
 
-	Creator string `json:"creator,omitempty"`
+func servedModelInputWorkloadTypeFromPb(pb *servedModelInputWorkloadTypePb) (*ServedModelInputWorkloadType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ServedModelInputWorkloadType(*pb)
+	return &st, nil
+}
+
+type ServedModelOutput struct {
+
+	// Wire name: 'creation_timestamp'
+	CreationTimestamp int64
+
+	// Wire name: 'creator'
+	Creator string
 	// An object containing a set of optional, user-specified environment
 	// variable key-value pairs used for serving this entity. Note: this is an
 	// experimental feature and subject to change. Example entity environment
 	// variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
 	// "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN":
 	// "{{secrets/my_scope2/my_key2}}"}`
-	EnvironmentVars map[string]string `json:"environment_vars,omitempty"`
+	// Wire name: 'environment_vars'
+	EnvironmentVars map[string]string
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
-	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// Wire name: 'instance_profile_arn'
+	InstanceProfileArn string
 
-	ModelName string `json:"model_name,omitempty"`
+	// Wire name: 'model_name'
+	ModelName string
 
-	ModelVersion string `json:"model_version,omitempty"`
+	// Wire name: 'model_version'
+	ModelVersion string
 	// The name of a served entity. It must be unique across an endpoint. A
 	// served entity name can consist of alphanumeric characters, dashes, and
 	// underscores. If not specified for an external model, this field defaults
 	// to external_model.name, with '.' and ':' replaced with '-', and if not
 	// specified for other entities, it defaults to entity_name-entity_version.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// The number of model units provisioned.
-	ProvisionedModelUnits int64 `json:"provisioned_model_units,omitempty"`
+	// Wire name: 'provisioned_model_units'
+	ProvisionedModelUnits int64
 	// Whether the compute resources for the served entity should scale down to
 	// zero.
-	ScaleToZeroEnabled bool `json:"scale_to_zero_enabled,omitempty"`
+	// Wire name: 'scale_to_zero_enabled'
+	ScaleToZeroEnabled bool
 
-	State *ServedModelState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State *ServedModelState
 	// The workload size of the served entity. The workload size corresponds to
 	// a range of provisioned concurrency that the compute autoscales between. A
 	// single unit of provisioned concurrency can process one request at a time.
@@ -1885,7 +3908,8 @@ type ServedModelOutput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
-	WorkloadSize string `json:"workload_size,omitempty"`
+	// Wire name: 'workload_size'
+	WorkloadSize string
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
 	// parameter is "CPU". For deep learning workloads, GPU acceleration is
@@ -1893,55 +3917,114 @@ type ServedModelOutput struct {
 	// available [GPU types].
 	//
 	// [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
-	WorkloadType ServingModelWorkloadType `json:"workload_type,omitempty"`
+	// Wire name: 'workload_type'
+	WorkloadType ServingModelWorkloadType
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServedModelOutput) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServedModelOutput) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servedModelOutputPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servedModelOutputFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServedModelOutput) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServedModelOutput) MarshalJSON() ([]byte, error) {
+	pb, err := servedModelOutputToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServedModelSpec struct {
 	// Only one of model_name and entity_name should be populated
-	ModelName string `json:"model_name,omitempty"`
+	// Wire name: 'model_name'
+	ModelName string
 	// Only one of model_version and entity_version should be populated
-	ModelVersion string `json:"model_version,omitempty"`
+	// Wire name: 'model_version'
+	ModelVersion string
 
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServedModelSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServedModelSpec) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servedModelSpecPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servedModelSpecFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServedModelSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServedModelSpec) MarshalJSON() ([]byte, error) {
+	pb, err := servedModelSpecToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServedModelState struct {
-	Deployment ServedModelStateDeployment `json:"deployment,omitempty"`
 
-	DeploymentStateMessage string `json:"deployment_state_message,omitempty"`
+	// Wire name: 'deployment'
+	Deployment ServedModelStateDeployment
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'deployment_state_message'
+	DeploymentStateMessage string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServedModelState) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServedModelState) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servedModelStatePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servedModelStateFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServedModelState) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServedModelState) MarshalJSON() ([]byte, error) {
+	pb, err := servedModelStateToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServedModelStateDeployment string
+type servedModelStateDeploymentPb string
 
 const ServedModelStateDeploymentAborted ServedModelStateDeployment = `DEPLOYMENT_ABORTED`
 
@@ -1974,144 +4057,291 @@ func (f *ServedModelStateDeployment) Type() string {
 	return "ServedModelStateDeployment"
 }
 
+func servedModelStateDeploymentToPb(st *ServedModelStateDeployment) (*servedModelStateDeploymentPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := servedModelStateDeploymentPb(*st)
+	return &pb, nil
+}
+
+func servedModelStateDeploymentFromPb(pb *servedModelStateDeploymentPb) (*ServedModelStateDeployment, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ServedModelStateDeployment(*pb)
+	return &st, nil
+}
+
 type ServerLogsResponse struct {
 	// The most recent log lines of the model server processing invocation
 	// requests.
-	Logs string `json:"logs"`
+	// Wire name: 'logs'
+	Logs string
+}
+
+func (st *ServerLogsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &serverLogsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := serverLogsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ServerLogsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := serverLogsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServingEndpoint struct {
 	// The AI Gateway configuration for the serving endpoint. NOTE: External
 	// model, provisioned throughput, and pay-per-token endpoints are fully
 	// supported; agent endpoints currently only support inference tables.
-	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// Wire name: 'ai_gateway'
+	AiGateway *AiGatewayConfig
 	// The budget policy associated with the endpoint.
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Wire name: 'budget_policy_id'
+	BudgetPolicyId string
 	// The config that is currently being served by the endpoint.
-	Config *EndpointCoreConfigSummary `json:"config,omitempty"`
+	// Wire name: 'config'
+	Config *EndpointCoreConfigSummary
 	// The timestamp when the endpoint was created in Unix time.
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
+	// Wire name: 'creation_timestamp'
+	CreationTimestamp int64
 	// The email of the user who created the serving endpoint.
-	Creator string `json:"creator,omitempty"`
+	// Wire name: 'creator'
+	Creator string
 	// System-generated ID of the endpoint, included to be used by the
 	// Permissions API.
-	Id string `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id string
 	// The timestamp when the endpoint was last updated by a user in Unix time.
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+	// Wire name: 'last_updated_timestamp'
+	LastUpdatedTimestamp int64
 	// The name of the serving endpoint.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// Information corresponding to the state of the serving endpoint.
-	State *EndpointState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State *EndpointState
 	// Tags attached to the serving endpoint.
-	Tags []EndpointTag `json:"tags,omitempty"`
+	// Wire name: 'tags'
+	Tags []EndpointTag
 	// The task type of the serving endpoint.
-	Task string `json:"task,omitempty"`
+	// Wire name: 'task'
+	Task string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpoint) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServingEndpoint) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingEndpointPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servingEndpointFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServingEndpoint) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServingEndpoint) MarshalJSON() ([]byte, error) {
+	pb, err := servingEndpointToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServingEndpointAccessControlRequest struct {
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string
 	// Permission level
-	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel ServingEndpointPermissionLevel
 	// application ID of a service principal
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
+	// Wire name: 'user_name'
+	UserName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpointAccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServingEndpointAccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingEndpointAccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servingEndpointAccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServingEndpointAccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServingEndpointAccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := servingEndpointAccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServingEndpointAccessControlResponse struct {
 	// All permissions.
-	AllPermissions []ServingEndpointPermission `json:"all_permissions,omitempty"`
+	// Wire name: 'all_permissions'
+	AllPermissions []ServingEndpointPermission
 	// Display name of the user or service principal.
-	DisplayName string `json:"display_name,omitempty"`
+	// Wire name: 'display_name'
+	DisplayName string
 	// name of the group
-	GroupName string `json:"group_name,omitempty"`
+	// Wire name: 'group_name'
+	GroupName string
 	// Name of the service principal.
-	ServicePrincipalName string `json:"service_principal_name,omitempty"`
+	// Wire name: 'service_principal_name'
+	ServicePrincipalName string
 	// name of the user
-	UserName string `json:"user_name,omitempty"`
+	// Wire name: 'user_name'
+	UserName string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpointAccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServingEndpointAccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingEndpointAccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servingEndpointAccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServingEndpointAccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServingEndpointAccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := servingEndpointAccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServingEndpointDetailed struct {
 	// The AI Gateway configuration for the serving endpoint. NOTE: External
 	// model, provisioned throughput, and pay-per-token endpoints are fully
 	// supported; agent endpoints currently only support inference tables.
-	AiGateway *AiGatewayConfig `json:"ai_gateway,omitempty"`
+	// Wire name: 'ai_gateway'
+	AiGateway *AiGatewayConfig
 	// The budget policy associated with the endpoint.
-	BudgetPolicyId string `json:"budget_policy_id,omitempty"`
+	// Wire name: 'budget_policy_id'
+	BudgetPolicyId string
 	// The config that is currently being served by the endpoint.
-	Config *EndpointCoreConfigOutput `json:"config,omitempty"`
+	// Wire name: 'config'
+	Config *EndpointCoreConfigOutput
 	// The timestamp when the endpoint was created in Unix time.
-	CreationTimestamp int64 `json:"creation_timestamp,omitempty"`
+	// Wire name: 'creation_timestamp'
+	CreationTimestamp int64
 	// The email of the user who created the serving endpoint.
-	Creator string `json:"creator,omitempty"`
+	// Wire name: 'creator'
+	Creator string
 	// Information required to query DataPlane APIs.
-	DataPlaneInfo *ModelDataPlaneInfo `json:"data_plane_info,omitempty"`
+	// Wire name: 'data_plane_info'
+	DataPlaneInfo *ModelDataPlaneInfo
 	// Endpoint invocation url if route optimization is enabled for endpoint
-	EndpointUrl string `json:"endpoint_url,omitempty"`
+	// Wire name: 'endpoint_url'
+	EndpointUrl string
 	// System-generated ID of the endpoint. This is used to refer to the
 	// endpoint in the Permissions API
-	Id string `json:"id,omitempty"`
+	// Wire name: 'id'
+	Id string
 	// The timestamp when the endpoint was last updated by a user in Unix time.
-	LastUpdatedTimestamp int64 `json:"last_updated_timestamp,omitempty"`
+	// Wire name: 'last_updated_timestamp'
+	LastUpdatedTimestamp int64
 	// The name of the serving endpoint.
-	Name string `json:"name,omitempty"`
+	// Wire name: 'name'
+	Name string
 	// The config that the endpoint is attempting to update to.
-	PendingConfig *EndpointPendingConfig `json:"pending_config,omitempty"`
+	// Wire name: 'pending_config'
+	PendingConfig *EndpointPendingConfig
 	// The permission level of the principal making the request.
-	PermissionLevel ServingEndpointDetailedPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel ServingEndpointDetailedPermissionLevel
 	// Boolean representing if route optimization has been enabled for the
 	// endpoint
-	RouteOptimized bool `json:"route_optimized,omitempty"`
+	// Wire name: 'route_optimized'
+	RouteOptimized bool
 	// Information corresponding to the state of the serving endpoint.
-	State *EndpointState `json:"state,omitempty"`
+	// Wire name: 'state'
+	State *EndpointState
 	// Tags attached to the serving endpoint.
-	Tags []EndpointTag `json:"tags,omitempty"`
+	// Wire name: 'tags'
+	Tags []EndpointTag
 	// The task type of the serving endpoint.
-	Task string `json:"task,omitempty"`
+	// Wire name: 'task'
+	Task string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpointDetailed) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServingEndpointDetailed) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingEndpointDetailedPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servingEndpointDetailedFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServingEndpointDetailed) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServingEndpointDetailed) MarshalJSON() ([]byte, error) {
+	pb, err := servingEndpointDetailedToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServingEndpointDetailedPermissionLevel string
+type servingEndpointDetailedPermissionLevelPb string
 
 const ServingEndpointDetailedPermissionLevelCanManage ServingEndpointDetailedPermissionLevel = `CAN_MANAGE`
 
@@ -2140,26 +4370,64 @@ func (f *ServingEndpointDetailedPermissionLevel) Type() string {
 	return "ServingEndpointDetailedPermissionLevel"
 }
 
+func servingEndpointDetailedPermissionLevelToPb(st *ServingEndpointDetailedPermissionLevel) (*servingEndpointDetailedPermissionLevelPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := servingEndpointDetailedPermissionLevelPb(*st)
+	return &pb, nil
+}
+
+func servingEndpointDetailedPermissionLevelFromPb(pb *servingEndpointDetailedPermissionLevelPb) (*ServingEndpointDetailedPermissionLevel, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ServingEndpointDetailedPermissionLevel(*pb)
+	return &st, nil
+}
+
 type ServingEndpointPermission struct {
-	Inherited bool `json:"inherited,omitempty"`
 
-	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
+	// Wire name: 'inherited'
+	Inherited bool
+
+	// Wire name: 'inherited_from_object'
+	InheritedFromObject []string
 	// Permission level
-	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel ServingEndpointPermissionLevel
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpointPermission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServingEndpointPermission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingEndpointPermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servingEndpointPermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServingEndpointPermission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServingEndpointPermission) MarshalJSON() ([]byte, error) {
+	pb, err := servingEndpointPermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Permission level
 type ServingEndpointPermissionLevel string
+type servingEndpointPermissionLevelPb string
 
 const ServingEndpointPermissionLevelCanManage ServingEndpointPermissionLevel = `CAN_MANAGE`
 
@@ -2188,49 +4456,135 @@ func (f *ServingEndpointPermissionLevel) Type() string {
 	return "ServingEndpointPermissionLevel"
 }
 
+func servingEndpointPermissionLevelToPb(st *ServingEndpointPermissionLevel) (*servingEndpointPermissionLevelPb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := servingEndpointPermissionLevelPb(*st)
+	return &pb, nil
+}
+
+func servingEndpointPermissionLevelFromPb(pb *servingEndpointPermissionLevelPb) (*ServingEndpointPermissionLevel, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ServingEndpointPermissionLevel(*pb)
+	return &st, nil
+}
+
 type ServingEndpointPermissions struct {
-	AccessControlList []ServingEndpointAccessControlResponse `json:"access_control_list,omitempty"`
 
-	ObjectId string `json:"object_id,omitempty"`
+	// Wire name: 'access_control_list'
+	AccessControlList []ServingEndpointAccessControlResponse
 
-	ObjectType string `json:"object_type,omitempty"`
+	// Wire name: 'object_id'
+	ObjectId string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	// Wire name: 'object_type'
+	ObjectType string
+
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpointPermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServingEndpointPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingEndpointPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servingEndpointPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServingEndpointPermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServingEndpointPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := servingEndpointPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServingEndpointPermissionsDescription struct {
-	Description string `json:"description,omitempty"`
+
+	// Wire name: 'description'
+	Description string
 	// Permission level
-	PermissionLevel ServingEndpointPermissionLevel `json:"permission_level,omitempty"`
+	// Wire name: 'permission_level'
+	PermissionLevel ServingEndpointPermissionLevel
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *ServingEndpointPermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ServingEndpointPermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingEndpointPermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servingEndpointPermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ServingEndpointPermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ServingEndpointPermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := servingEndpointPermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ServingEndpointPermissionsRequest struct {
-	AccessControlList []ServingEndpointAccessControlRequest `json:"access_control_list,omitempty"`
+
+	// Wire name: 'access_control_list'
+	AccessControlList []ServingEndpointAccessControlRequest
 	// The serving endpoint for which to get or manage permissions.
-	ServingEndpointId string `json:"-" url:"-"`
+	// Wire name: 'serving_endpoint_id'
+	ServingEndpointId string `tf:"-"`
+}
+
+func (st *ServingEndpointPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &servingEndpointPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := servingEndpointPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ServingEndpointPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := servingEndpointPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Please keep this in sync with with workload types in
 // InferenceEndpointEntities.scala
 type ServingModelWorkloadType string
+type servingModelWorkloadTypePb string
 
 const ServingModelWorkloadTypeCpu ServingModelWorkloadType = `CPU`
 
@@ -2263,36 +4617,182 @@ func (f *ServingModelWorkloadType) Type() string {
 	return "ServingModelWorkloadType"
 }
 
+func servingModelWorkloadTypeToPb(st *ServingModelWorkloadType) (*servingModelWorkloadTypePb, error) {
+	if st == nil {
+		return nil, nil
+	}
+	pb := servingModelWorkloadTypePb(*st)
+	return &pb, nil
+}
+
+func servingModelWorkloadTypeFromPb(pb *servingModelWorkloadTypePb) (*ServingModelWorkloadType, error) {
+	if pb == nil {
+		return nil, nil
+	}
+	st := ServingModelWorkloadType(*pb)
+	return &st, nil
+}
+
 type TrafficConfig struct {
 	// The list of routes that define traffic to each served entity.
-	Routes []Route `json:"routes,omitempty"`
+	// Wire name: 'routes'
+	Routes []Route
+}
+
+func (st *TrafficConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &trafficConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := trafficConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st TrafficConfig) MarshalJSON() ([]byte, error) {
+	pb, err := trafficConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateProvisionedThroughputEndpointConfigRequest struct {
-	Config PtEndpointCoreConfig `json:"config"`
+
+	// Wire name: 'config'
+	Config PtEndpointCoreConfig
 	// The name of the pt endpoint to update. This field is required.
-	Name string `json:"-" url:"-"`
+	// Wire name: 'name'
+	Name string `tf:"-"`
+}
+
+func (st *UpdateProvisionedThroughputEndpointConfigRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateProvisionedThroughputEndpointConfigRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateProvisionedThroughputEndpointConfigRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateProvisionedThroughputEndpointConfigRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateProvisionedThroughputEndpointConfigRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type V1ResponseChoiceElement struct {
 	// The finish reason returned by the endpoint.
-	FinishReason string `json:"finishReason,omitempty"`
+	// Wire name: 'finishReason'
+	FinishReason string
 	// The index of the choice in the __chat or completions__ response.
-	Index int `json:"index,omitempty"`
+	// Wire name: 'index'
+	Index int
 	// The logprobs returned only by the __completions__ endpoint.
-	Logprobs int `json:"logprobs,omitempty"`
+	// Wire name: 'logprobs'
+	Logprobs int
 	// The message response from the __chat__ endpoint.
-	Message *ChatMessage `json:"message,omitempty"`
+	// Wire name: 'message'
+	Message *ChatMessage
 	// The text response from the __completions__ endpoint.
-	Text string `json:"text,omitempty"`
+	// Wire name: 'text'
+	Text string
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `tf:"-"`
 }
 
-func (s *V1ResponseChoiceElement) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *V1ResponseChoiceElement) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &v1ResponseChoiceElementPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := v1ResponseChoiceElementFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s V1ResponseChoiceElement) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st V1ResponseChoiceElement) MarshalJSON() ([]byte, error) {
+	pb, err := v1ResponseChoiceElementToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
+func durationToPb(d *time.Duration) (*string, error) {
+	if d == nil {
+		return nil, nil
+	}
+	s := fmt.Sprintf("%fs", d.Seconds())
+	return &s, nil
+}
+
+func durationFromPb(s *string) (*time.Duration, error) {
+	if s == nil {
+		return nil, nil
+	}
+	d, err := time.ParseDuration(*s)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
+}
+
+func timestampToPb(t *time.Time) (*string, error) {
+	if t == nil {
+		return nil, nil
+	}
+	s := t.Format(time.RFC3339)
+	return &s, nil
+}
+
+func timestampFromPb(s *string) (*time.Time, error) {
+	if s == nil {
+		return nil, nil
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func fieldMaskToPb(fm *[]string) (*string, error) {
+	if fm == nil {
+		return nil, nil
+	}
+	s := strings.Join(*fm, ",")
+	return &s, nil
+}
+
+func fieldMaskFromPb(s *string) (*[]string, error) {
+	if s == nil {
+		return nil, nil
+	}
+	fm := strings.Split(*s, ",")
+	return &fm, nil
 }
