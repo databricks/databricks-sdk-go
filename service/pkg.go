@@ -54,9 +54,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
-//
 // - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
+//
+// - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -204,6 +204,8 @@
 //
 // - [catalog.QualityMonitorsAPI]: A monitor computes and monitors data or model quality metrics for a table over time.
 //
+// - [qualitymonitor.QualityMonitorsV2API]: Manage data quality of UC objects (currently support `schema`).
+//
 // - [sql.QueriesAPI]: The queries API can be used to perform CRUD operations on queries.
 //
 // - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
@@ -322,6 +324,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
+	"github.com/databricks/databricks-sdk-go/service/qualitymonitor"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
@@ -437,6 +440,7 @@ var (
 	_ *sharing.ProvidersAPI                               = nil
 	_ *oauth2.PublishedAppIntegrationAPI                  = nil
 	_ *catalog.QualityMonitorsAPI                         = nil
+	_ *qualitymonitor.QualityMonitorsV2API                = nil
 	_ *sql.QueriesAPI                                     = nil
 	_ *sql.QueriesLegacyAPI                               = nil
 	_ *dashboards.QueryExecutionAPI                       = nil

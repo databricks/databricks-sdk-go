@@ -744,6 +744,9 @@ type DatabaseInstancesInterface interface {
 	// Create a Database Instance.
 	CreateDatabaseInstance(ctx context.Context, request CreateDatabaseInstanceRequest) (*DatabaseInstance, error)
 
+	// Create a Database Table.
+	CreateDatabaseTable(ctx context.Context, request CreateDatabaseTableRequest) (*DatabaseTable, error)
+
 	// Create a Synced Database Table.
 	CreateSyncedDatabaseTable(ctx context.Context, request CreateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
 
@@ -759,14 +762,26 @@ type DatabaseInstancesInterface interface {
 	// Delete a Database Instance.
 	DeleteDatabaseInstanceByName(ctx context.Context, name string) error
 
+	// Delete a Database Table.
+	DeleteDatabaseTable(ctx context.Context, request DeleteDatabaseTableRequest) error
+
+	// Delete a Database Table.
+	DeleteDatabaseTableByName(ctx context.Context, name string) error
+
 	// Delete a Synced Database Table.
 	DeleteSyncedDatabaseTable(ctx context.Context, request DeleteSyncedDatabaseTableRequest) error
 
 	// Delete a Synced Database Table.
 	DeleteSyncedDatabaseTableByName(ctx context.Context, name string) error
 
+	// Failover the primary node of a Database Instance to a secondary.
+	FailoverDatabaseInstance(ctx context.Context, request FailoverDatabaseInstanceRequest) (*DatabaseInstance, error)
+
 	// Find a Database Instance by uid.
 	FindDatabaseInstanceByUid(ctx context.Context, request FindDatabaseInstanceByUidRequest) (*DatabaseInstance, error)
+
+	// Generates a credential that can be used to access database instances.
+	GenerateDatabaseCredential(ctx context.Context, request GenerateDatabaseCredentialRequest) (*DatabaseCredential, error)
 
 	// Get a Database Catalog.
 	GetDatabaseCatalog(ctx context.Context, request GetDatabaseCatalogRequest) (*DatabaseCatalog, error)
@@ -779,6 +794,12 @@ type DatabaseInstancesInterface interface {
 
 	// Get a Database Instance.
 	GetDatabaseInstanceByName(ctx context.Context, name string) (*DatabaseInstance, error)
+
+	// Get a Database Table.
+	GetDatabaseTable(ctx context.Context, request GetDatabaseTableRequest) (*DatabaseTable, error)
+
+	// Get a Database Table.
+	GetDatabaseTableByName(ctx context.Context, name string) (*DatabaseTable, error)
 
 	// Get a Synced Database Table.
 	GetSyncedDatabaseTable(ctx context.Context, request GetSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
@@ -827,6 +848,13 @@ func (a *DatabaseInstancesAPI) DeleteDatabaseInstanceByName(ctx context.Context,
 	})
 }
 
+// Delete a Database Table.
+func (a *DatabaseInstancesAPI) DeleteDatabaseTableByName(ctx context.Context, name string) error {
+	return a.databaseInstancesImpl.DeleteDatabaseTable(ctx, DeleteDatabaseTableRequest{
+		Name: name,
+	})
+}
+
 // Delete a Synced Database Table.
 func (a *DatabaseInstancesAPI) DeleteSyncedDatabaseTableByName(ctx context.Context, name string) error {
 	return a.databaseInstancesImpl.DeleteSyncedDatabaseTable(ctx, DeleteSyncedDatabaseTableRequest{
@@ -844,6 +872,13 @@ func (a *DatabaseInstancesAPI) GetDatabaseCatalogByName(ctx context.Context, nam
 // Get a Database Instance.
 func (a *DatabaseInstancesAPI) GetDatabaseInstanceByName(ctx context.Context, name string) (*DatabaseInstance, error) {
 	return a.databaseInstancesImpl.GetDatabaseInstance(ctx, GetDatabaseInstanceRequest{
+		Name: name,
+	})
+}
+
+// Get a Database Table.
+func (a *DatabaseInstancesAPI) GetDatabaseTableByName(ctx context.Context, name string) (*DatabaseTable, error) {
+	return a.databaseInstancesImpl.GetDatabaseTable(ctx, GetDatabaseTableRequest{
 		Name: name,
 	})
 }

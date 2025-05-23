@@ -18,115 +18,357 @@ type genieImpl struct {
 }
 
 func (a *genieImpl) CreateMessage(ctx context.Context, request GenieCreateConversationMessageRequest) (*GenieMessage, error) {
-	var genieMessage GenieMessage
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages", request.SpaceId, request.ConversationId)
+
+	requestPb, pbErr := genieCreateConversationMessageRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var genieMessagePb genieMessagePb
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages", requestPb.SpaceId, requestPb.ConversationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieMessage)
-	return &genieMessage, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieMessagePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := genieMessageFromPb(&genieMessagePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *genieImpl) ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
-	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+
+	requestPb, pbErr := genieExecuteMessageAttachmentQueryRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var genieGetMessageQueryResultResponsePb genieGetMessageQueryResultResponsePb
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/execute-query", requestPb.SpaceId, requestPb.ConversationId, requestPb.MessageId, requestPb.AttachmentId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponse)
-	return &genieGetMessageQueryResultResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&genieGetMessageQueryResultResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *genieImpl) ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error) {
-	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/execute-query", request.SpaceId, request.ConversationId, request.MessageId)
+
+	requestPb, pbErr := genieExecuteMessageQueryRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var genieGetMessageQueryResultResponsePb genieGetMessageQueryResultResponsePb
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/execute-query", requestPb.SpaceId, requestPb.ConversationId, requestPb.MessageId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGetMessageQueryResultResponse)
-	return &genieGetMessageQueryResultResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&genieGetMessageQueryResultResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *genieImpl) GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error) {
-	var genieGenerateDownloadFullQueryResultResponse GenieGenerateDownloadFullQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+
+	requestPb, pbErr := genieGenerateDownloadFullQueryResultRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var genieGenerateDownloadFullQueryResultResponsePb genieGenerateDownloadFullQueryResultResponsePb
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads", requestPb.SpaceId, requestPb.ConversationId, requestPb.MessageId, requestPb.AttachmentId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, nil, &genieGenerateDownloadFullQueryResultResponse)
-	return &genieGenerateDownloadFullQueryResultResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		nil,
+		&genieGenerateDownloadFullQueryResultResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := genieGenerateDownloadFullQueryResultResponseFromPb(&genieGenerateDownloadFullQueryResultResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *genieImpl) GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error) {
-	var genieGetDownloadFullQueryResultResponse GenieGetDownloadFullQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads/%v", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId, request.DownloadId)
+
+	requestPb, pbErr := genieGetDownloadFullQueryResultRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var genieGetDownloadFullQueryResultResponsePb genieGetDownloadFullQueryResultResponsePb
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/downloads/%v", requestPb.SpaceId, requestPb.ConversationId, requestPb.MessageId, requestPb.AttachmentId, requestPb.DownloadId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetDownloadFullQueryResultResponse)
-	return &genieGetDownloadFullQueryResultResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieGetDownloadFullQueryResultResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := genieGetDownloadFullQueryResultResponseFromPb(&genieGetDownloadFullQueryResultResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *genieImpl) GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error) {
-	var genieMessage GenieMessage
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v", request.SpaceId, request.ConversationId, request.MessageId)
+
+	requestPb, pbErr := genieGetConversationMessageRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var genieMessagePb genieMessagePb
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v", requestPb.SpaceId, requestPb.ConversationId, requestPb.MessageId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieMessage)
-	return &genieMessage, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieMessagePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := genieMessageFromPb(&genieMessagePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *genieImpl) GetMessageAttachmentQueryResult(ctx context.Context, request GenieGetMessageAttachmentQueryResultRequest) (*GenieGetMessageQueryResultResponse, error) {
-	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/query-result", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+
+	requestPb, pbErr := genieGetMessageAttachmentQueryResultRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var genieGetMessageQueryResultResponsePb genieGetMessageQueryResultResponsePb
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/attachments/%v/query-result", requestPb.SpaceId, requestPb.ConversationId, requestPb.MessageId, requestPb.AttachmentId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
-	return &genieGetMessageQueryResultResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieGetMessageQueryResultResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *genieImpl) GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error) {
-	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/query-result", request.SpaceId, request.ConversationId, request.MessageId)
+
+	requestPb, pbErr := genieGetMessageQueryResultRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var genieGetMessageQueryResultResponsePb genieGetMessageQueryResultResponsePb
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/query-result", requestPb.SpaceId, requestPb.ConversationId, requestPb.MessageId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
-	return &genieGetMessageQueryResultResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieGetMessageQueryResultResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *genieImpl) GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error) {
-	var genieGetMessageQueryResultResponse GenieGetMessageQueryResultResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/query-result/%v", request.SpaceId, request.ConversationId, request.MessageId, request.AttachmentId)
+
+	requestPb, pbErr := genieGetQueryResultByAttachmentRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var genieGetMessageQueryResultResponsePb genieGetMessageQueryResultResponsePb
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/conversations/%v/messages/%v/query-result/%v", requestPb.SpaceId, requestPb.ConversationId, requestPb.MessageId, requestPb.AttachmentId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieGetMessageQueryResultResponse)
-	return &genieGetMessageQueryResultResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieGetMessageQueryResultResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := genieGetMessageQueryResultResponseFromPb(&genieGetMessageQueryResultResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *genieImpl) GetSpace(ctx context.Context, request GenieGetSpaceRequest) (*GenieSpace, error) {
-	var genieSpace GenieSpace
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", request.SpaceId)
+
+	requestPb, pbErr := genieGetSpaceRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var genieSpacePb genieSpacePb
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v", requestPb.SpaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &genieSpace)
-	return &genieSpace, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieSpacePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := genieSpaceFromPb(&genieSpacePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *genieImpl) StartConversation(ctx context.Context, request GenieStartConversationMessageRequest) (*GenieStartConversationResponse, error) {
-	var genieStartConversationResponse GenieStartConversationResponse
-	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/start-conversation", request.SpaceId)
+
+	requestPb, pbErr := genieStartConversationMessageRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var genieStartConversationResponsePb genieStartConversationResponsePb
+	path := fmt.Sprintf("/api/2.0/genie/spaces/%v/start-conversation", requestPb.SpaceId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &genieStartConversationResponse)
-	return &genieStartConversationResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&genieStartConversationResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := genieStartConversationResponseFromPb(&genieStartConversationResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just Lakeview API methods
@@ -135,96 +377,286 @@ type lakeviewImpl struct {
 }
 
 func (a *lakeviewImpl) Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error) {
-	var dashboard Dashboard
+
+	requestPb, pbErr := createDashboardRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var dashboardPb dashboardPb
 	path := "/api/2.0/lakeview/dashboards"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Dashboard, &dashboard)
-	return &dashboard, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Dashboard,
+		&dashboardPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := dashboardFromPb(&dashboardPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *lakeviewImpl) CreateSchedule(ctx context.Context, request CreateScheduleRequest) (*Schedule, error) {
-	var schedule Schedule
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules", request.DashboardId)
+
+	requestPb, pbErr := createScheduleRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var schedulePb schedulePb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules", requestPb.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Schedule, &schedule)
-	return &schedule, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Schedule,
+		&schedulePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := scheduleFromPb(&schedulePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *lakeviewImpl) CreateSubscription(ctx context.Context, request CreateSubscriptionRequest) (*Subscription, error) {
-	var subscription Subscription
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions", request.DashboardId, request.ScheduleId)
+
+	requestPb, pbErr := createSubscriptionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var subscriptionPb subscriptionPb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions", requestPb.DashboardId, requestPb.ScheduleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Subscription, &subscription)
-	return &subscription, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Subscription,
+		&subscriptionPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := subscriptionFromPb(&subscriptionPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *lakeviewImpl) DeleteSchedule(ctx context.Context, request DeleteScheduleRequest) error {
-	var deleteScheduleResponse DeleteScheduleResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
+
+	requestPb, pbErr := deleteScheduleRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	var deleteScheduleResponsePb deleteScheduleResponsePb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", requestPb.DashboardId, requestPb.ScheduleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteScheduleResponse)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteScheduleResponsePb,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *lakeviewImpl) DeleteSubscription(ctx context.Context, request DeleteSubscriptionRequest) error {
-	var deleteSubscriptionResponse DeleteSubscriptionResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", request.DashboardId, request.ScheduleId, request.SubscriptionId)
+
+	requestPb, pbErr := deleteSubscriptionRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	var deleteSubscriptionResponsePb deleteSubscriptionResponsePb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", requestPb.DashboardId, requestPb.ScheduleId, requestPb.SubscriptionId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteSubscriptionResponse)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteSubscriptionResponsePb,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *lakeviewImpl) Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error) {
-	var dashboard Dashboard
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
+
+	requestPb, pbErr := getDashboardRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var dashboardPb dashboardPb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", requestPb.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &dashboard)
-	return &dashboard, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&dashboardPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := dashboardFromPb(&dashboardPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *lakeviewImpl) GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error) {
-	var publishedDashboard PublishedDashboard
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
+
+	requestPb, pbErr := getPublishedDashboardRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var publishedDashboardPb publishedDashboardPb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", requestPb.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &publishedDashboard)
-	return &publishedDashboard, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&publishedDashboardPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := publishedDashboardFromPb(&publishedDashboardPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *lakeviewImpl) GetSchedule(ctx context.Context, request GetScheduleRequest) (*Schedule, error) {
-	var schedule Schedule
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
+
+	requestPb, pbErr := getScheduleRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var schedulePb schedulePb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", requestPb.DashboardId, requestPb.ScheduleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &schedule)
-	return &schedule, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&schedulePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := scheduleFromPb(&schedulePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *lakeviewImpl) GetSubscription(ctx context.Context, request GetSubscriptionRequest) (*Subscription, error) {
-	var subscription Subscription
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", request.DashboardId, request.ScheduleId, request.SubscriptionId)
+
+	requestPb, pbErr := getSubscriptionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var subscriptionPb subscriptionPb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions/%v", requestPb.DashboardId, requestPb.ScheduleId, requestPb.SubscriptionId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &subscription)
-	return &subscription, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&subscriptionPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := subscriptionFromPb(&subscriptionPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List dashboards.
@@ -259,13 +691,35 @@ func (a *lakeviewImpl) ListAll(ctx context.Context, request ListDashboardsReques
 }
 
 func (a *lakeviewImpl) internalList(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error) {
-	var listDashboardsResponse ListDashboardsResponse
+
+	requestPb, pbErr := listDashboardsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listDashboardsResponsePb listDashboardsResponsePb
 	path := "/api/2.0/lakeview/dashboards"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDashboardsResponse)
-	return &listDashboardsResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listDashboardsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := listDashboardsResponseFromPb(&listDashboardsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List dashboard schedules.
@@ -300,13 +754,35 @@ func (a *lakeviewImpl) ListSchedulesAll(ctx context.Context, request ListSchedul
 }
 
 func (a *lakeviewImpl) internalListSchedules(ctx context.Context, request ListSchedulesRequest) (*ListSchedulesResponse, error) {
-	var listSchedulesResponse ListSchedulesResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules", request.DashboardId)
+
+	requestPb, pbErr := listSchedulesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listSchedulesResponsePb listSchedulesResponsePb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules", requestPb.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSchedulesResponse)
-	return &listSchedulesResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listSchedulesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := listSchedulesResponseFromPb(&listSchedulesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List schedule subscriptions.
@@ -341,77 +817,223 @@ func (a *lakeviewImpl) ListSubscriptionsAll(ctx context.Context, request ListSub
 }
 
 func (a *lakeviewImpl) internalListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) (*ListSubscriptionsResponse, error) {
-	var listSubscriptionsResponse ListSubscriptionsResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions", request.DashboardId, request.ScheduleId)
+
+	requestPb, pbErr := listSubscriptionsRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listSubscriptionsResponsePb listSubscriptionsResponsePb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v/subscriptions", requestPb.DashboardId, requestPb.ScheduleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listSubscriptionsResponse)
-	return &listSubscriptionsResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listSubscriptionsResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := listSubscriptionsResponseFromPb(&listSubscriptionsResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *lakeviewImpl) Migrate(ctx context.Context, request MigrateDashboardRequest) (*Dashboard, error) {
-	var dashboard Dashboard
+
+	requestPb, pbErr := migrateDashboardRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var dashboardPb dashboardPb
 	path := "/api/2.0/lakeview/dashboards/migrate"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &dashboard)
-	return &dashboard, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&dashboardPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := dashboardFromPb(&dashboardPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *lakeviewImpl) Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error) {
-	var publishedDashboard PublishedDashboard
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
+
+	requestPb, pbErr := publishRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var publishedDashboardPb publishedDashboardPb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", requestPb.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &publishedDashboard)
-	return &publishedDashboard, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&publishedDashboardPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := publishedDashboardFromPb(&publishedDashboardPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *lakeviewImpl) Trash(ctx context.Context, request TrashDashboardRequest) error {
-	var trashDashboardResponse TrashDashboardResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
+
+	requestPb, pbErr := trashDashboardRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	var trashDashboardResponsePb trashDashboardResponsePb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", requestPb.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &trashDashboardResponse)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&trashDashboardResponsePb,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *lakeviewImpl) Unpublish(ctx context.Context, request UnpublishDashboardRequest) error {
-	var unpublishDashboardResponse UnpublishDashboardResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", request.DashboardId)
+
+	requestPb, pbErr := unpublishDashboardRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	var unpublishDashboardResponsePb unpublishDashboardResponsePb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published", requestPb.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &unpublishDashboardResponse)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&unpublishDashboardResponsePb,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *lakeviewImpl) Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error) {
-	var dashboard Dashboard
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", request.DashboardId)
+
+	requestPb, pbErr := updateDashboardRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var dashboardPb dashboardPb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v", requestPb.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Dashboard, &dashboard)
-	return &dashboard, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Dashboard,
+		&dashboardPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := dashboardFromPb(&dashboardPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *lakeviewImpl) UpdateSchedule(ctx context.Context, request UpdateScheduleRequest) (*Schedule, error) {
-	var schedule Schedule
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", request.DashboardId, request.ScheduleId)
+
+	requestPb, pbErr := updateScheduleRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var schedulePb schedulePb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/schedules/%v", requestPb.DashboardId, requestPb.ScheduleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPut, path, headers, queryParams, request.Schedule, &schedule)
-	return &schedule, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPut,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Schedule,
+		&schedulePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := scheduleFromPb(&schedulePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just LakeviewEmbedded API methods
@@ -420,23 +1042,63 @@ type lakeviewEmbeddedImpl struct {
 }
 
 func (a *lakeviewEmbeddedImpl) GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error {
-	var getPublishedDashboardEmbeddedResponse GetPublishedDashboardEmbeddedResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/embedded", request.DashboardId)
+
+	requestPb, pbErr := getPublishedDashboardEmbeddedRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	var getPublishedDashboardEmbeddedResponsePb getPublishedDashboardEmbeddedResponsePb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/embedded", requestPb.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardEmbeddedResponse)
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getPublishedDashboardEmbeddedResponsePb,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *lakeviewEmbeddedImpl) GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error) {
-	var getPublishedDashboardTokenInfoResponse GetPublishedDashboardTokenInfoResponse
-	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/tokeninfo", request.DashboardId)
+
+	requestPb, pbErr := getPublishedDashboardTokenInfoRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var getPublishedDashboardTokenInfoResponsePb getPublishedDashboardTokenInfoResponsePb
+	path := fmt.Sprintf("/api/2.0/lakeview/dashboards/%v/published/tokeninfo", requestPb.DashboardId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getPublishedDashboardTokenInfoResponse)
-	return &getPublishedDashboardTokenInfoResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&getPublishedDashboardTokenInfoResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := getPublishedDashboardTokenInfoResponseFromPb(&getPublishedDashboardTokenInfoResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // unexported type that holds implementations of just QueryExecution API methods
@@ -445,32 +1107,94 @@ type queryExecutionImpl struct {
 }
 
 func (a *queryExecutionImpl) CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error) {
-	var cancelQueryExecutionResponse CancelQueryExecutionResponse
+
+	requestPb, pbErr := cancelPublishedQueryExecutionRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var cancelQueryExecutionResponsePb cancelQueryExecutionResponsePb
 	path := "/api/2.0/lakeview-query/query/published"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &cancelQueryExecutionResponse)
-	return &cancelQueryExecutionResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&cancelQueryExecutionResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := cancelQueryExecutionResponseFromPb(&cancelQueryExecutionResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *queryExecutionImpl) ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error {
-	var executeQueryResponse ExecuteQueryResponse
+
+	requestPb, pbErr := executePublishedDashboardQueryRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	var executeQueryResponsePb executeQueryResponsePb
 	path := "/api/2.0/lakeview-query/query/published"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &executeQueryResponse)
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&executeQueryResponsePb,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *queryExecutionImpl) PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error) {
-	var pollQueryStatusResponse PollQueryStatusResponse
+
+	requestPb, pbErr := pollPublishedQueryStatusRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var pollQueryStatusResponsePb pollQueryStatusResponsePb
 	path := "/api/2.0/lakeview-query/query/published"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &pollQueryStatusResponse)
-	return &pollQueryStatusResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&pollQueryStatusResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := pollQueryStatusResponseFromPb(&pollQueryStatusResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
