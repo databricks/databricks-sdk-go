@@ -11,6 +11,10 @@ import (
 
 const authDocURL = "https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication"
 
+// ErrCannotConfigureDefault indicates that the DefaultCredentials strategy was
+// unable to configure the default credentials.
+var ErrCannotConfigureDefault = fmt.Errorf("cannot configure default credentials, please check %s to configure credentials for your preferred authentication method", authDocURL)
+
 type DefaultCredentials struct {
 	name string
 }
@@ -83,7 +87,7 @@ func (c *DefaultCredentials) Configure(ctx context.Context, cfg *Config) (creden
 		return cp, nil
 	}
 
-	return nil, fmt.Errorf("cannot configure default credentials, please check %s to configure credentials for your preferred authentication method", authDocURL)
+	return nil, ErrCannotConfigureDefault
 }
 
 func githubOIDC(cfg *Config) CredentialsStrategy {
