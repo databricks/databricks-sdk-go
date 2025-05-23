@@ -31,7 +31,7 @@ func (c GoogleDefaultCredentials) Configure(ctx context.Context, cfg *Config) (c
 	if !cfg.IsAccountClient() {
 		logger.Infof(ctx, "Using Google Default Application Credentials for Workspace")
 		visitor := refreshableVisitor(inner)
-		return credentials.NewCredentialsProvider(visitor), nil
+		return credentials.CredentialsProviderFn(visitor), nil
 	}
 	// source for generateAccessToken
 	platform, err := impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{

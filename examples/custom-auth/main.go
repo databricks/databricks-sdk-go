@@ -28,7 +28,7 @@ func (c *CustomCredentials) Configure(
 		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 		return nil
 	}
-	return credentials.NewCredentialsProvider(visitor), nil
+	return credentials.CredentialsProviderFn(visitor), nil
 }
 
 func main() {

@@ -11,8 +11,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/logger"
 )
 
-type M2mCredentials struct {
-}
+type M2mCredentials struct{}
 
 func (c M2mCredentials) Name() string {
 	return "oauth-m2m"
@@ -34,6 +33,7 @@ func (c M2mCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		TokenURL:     endpoints.TokenEndpoint,
 		Scopes:       []string{"all-apis"},
 	}).TokenSource(ctx)
+
 	visitor := refreshableVisitor(ts)
 	return credentials.NewOAuthCredentialsProvider(visitor, ts.Token), nil
 }

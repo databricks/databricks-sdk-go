@@ -23,5 +23,5 @@ func (c PatCredentials) Configure(ctx context.Context, cfg *Config) (credentials
 		r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", cfg.Token))
 		return nil
 	}
-	return credentials.NewCredentialsProvider(visitor), nil
+	return credentials.CredentialsProviderFn(visitor), nil
 }

@@ -106,5 +106,5 @@ type noopAuth struct{}
 func (noopAuth) Name() string { return "noop" }
 func (noopAuth) Configure(context.Context, *Config) (credentials.CredentialsProvider, error) {
 	visitor := func(r *http.Request) error { return nil }
-	return credentials.NewCredentialsProvider(visitor), nil
+	return credentials.CredentialsProviderFn(visitor), nil
 }
