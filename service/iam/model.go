@@ -231,6 +231,12 @@ func (s GetAccountUserRequest) MarshalJSON() ([]byte, error) {
 // Get assignable roles for a resource
 type GetAssignableRolesForResourceRequest struct {
 	// The resource name for which assignable roles will be listed.
+	//
+	// Examples | Summary :--- | :--- `resource=accounts/<ACCOUNT_ID>` | A
+	// resource name for the account.
+	// `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for
+	// the group. `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A
+	// resource name for the service principal.
 	Resource string `json:"-" url:"resource"`
 }
 
@@ -287,8 +293,21 @@ type GetRuleSetRequest struct {
 	// avoid race conditions that is get an etag from a GET rule set request,
 	// and pass it with the PUT update request to identify the rule set version
 	// you are updating.
+	//
+	// Examples | Summary :--- | :--- `etag=` | An empty etag can only be used
+	// in GET to indicate no freshness requirements.
+	// `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An
+	// etag encoded a specific version of the rule set to get or to be updated.
 	Etag string `json:"-" url:"etag"`
 	// The ruleset name associated with the request.
+	//
+	// Examples | Summary :--- | :---
+	// `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set on
+	// the account.
+	// `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name
+	// for a rule set on the group.
+	// `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default`
+	// | A name for a rule set on the service principal.
 	Name string `json:"-" url:"name"`
 }
 
@@ -369,7 +388,11 @@ type GetWorkspaceAssignmentRequest struct {
 }
 
 type GrantRule struct {
-	// Principals this grant rule applies to.
+	// Principals this grant rule applies to. A principal can be a user (for end
+	// users), a service principal (for applications and compute workloads), or
+	// an account group. Each principal has its own identifier format: *
+	// users/<USERNAME> * groups/<GROUP_NAME> *
+	// servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>
 	Principals []string `json:"principals,omitempty"`
 	// Role that is assigned to the list of principals.
 	Role string `json:"role"`
@@ -1290,28 +1313,32 @@ type Role struct {
 }
 
 type RuleSetResponse struct {
-	// Identifies the version of the rule set returned.
-	Etag string `json:"etag,omitempty"`
+	// Identifies the version of the rule set returned. Etag used for
+	// versioning. The response is at least as fresh as the eTag provided. Etag
+	// is used for optimistic concurrency control as a way to help prevent
+	// simultaneous updates of a rule set from overwriting each other. It is
+	// strongly suggested that systems make use of the etag in the read ->
+	// modify -> write pattern to perform rule set updates in order to avoid
+	// race conditions that is get an etag from a GET rule set request, and pass
+	// it with the PUT update request to identify the rule set version you are
+	// updating.
+	Etag string `json:"etag"`
 
 	GrantRules []GrantRule `json:"grant_rules,omitempty"`
 	// Name of the rule set.
-	Name string `json:"name,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *RuleSetResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s RuleSetResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+	Name string `json:"name"`
 }
 
 type RuleSetUpdateRequest struct {
-	// The expected etag of the rule set to update. The update will fail if the
-	// value does not match the value that is stored in account access control
-	// service.
+	// Identifies the version of the rule set returned. Etag used for
+	// versioning. The response is at least as fresh as the eTag provided. Etag
+	// is used for optimistic concurrency control as a way to help prevent
+	// simultaneous updates of a rule set from overwriting each other. It is
+	// strongly suggested that systems make use of the etag in the read ->
+	// modify -> write pattern to perform rule set updates in order to avoid
+	// race conditions that is get an etag from a GET rule set request, and pass
+	// it with the PUT update request to identify the rule set version you are
+	// updating.
 	Etag string `json:"etag"`
 
 	GrantRules []GrantRule `json:"grant_rules,omitempty"`

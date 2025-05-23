@@ -83,6 +83,65 @@ func (_c *MockExperimentsInterface_CreateExperiment_Call) RunAndReturn(run func(
 	return _c
 }
 
+// CreateLoggedModel provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) CreateLoggedModel(ctx context.Context, request ml.CreateLoggedModelRequest) (*ml.CreateLoggedModelResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateLoggedModel")
+	}
+
+	var r0 *ml.CreateLoggedModelResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.CreateLoggedModelRequest) (*ml.CreateLoggedModelResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.CreateLoggedModelRequest) *ml.CreateLoggedModelResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.CreateLoggedModelResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.CreateLoggedModelRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_CreateLoggedModel_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateLoggedModel'
+type MockExperimentsInterface_CreateLoggedModel_Call struct {
+	*mock.Call
+}
+
+// CreateLoggedModel is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.CreateLoggedModelRequest
+func (_e *MockExperimentsInterface_Expecter) CreateLoggedModel(ctx interface{}, request interface{}) *MockExperimentsInterface_CreateLoggedModel_Call {
+	return &MockExperimentsInterface_CreateLoggedModel_Call{Call: _e.mock.On("CreateLoggedModel", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_CreateLoggedModel_Call) Run(run func(ctx context.Context, request ml.CreateLoggedModelRequest)) *MockExperimentsInterface_CreateLoggedModel_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.CreateLoggedModelRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_CreateLoggedModel_Call) Return(_a0 *ml.CreateLoggedModelResponse, _a1 error) *MockExperimentsInterface_CreateLoggedModel_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_CreateLoggedModel_Call) RunAndReturn(run func(context.Context, ml.CreateLoggedModelRequest) (*ml.CreateLoggedModelResponse, error)) *MockExperimentsInterface_CreateLoggedModel_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateRun provides a mock function with given fields: ctx, request
 func (_m *MockExperimentsInterface) CreateRun(ctx context.Context, request ml.CreateRun) (*ml.CreateRunResponse, error) {
 	ret := _m.Called(ctx, request)
@@ -185,6 +244,195 @@ func (_c *MockExperimentsInterface_DeleteExperiment_Call) Return(_a0 error) *Moc
 }
 
 func (_c *MockExperimentsInterface_DeleteExperiment_Call) RunAndReturn(run func(context.Context, ml.DeleteExperiment) error) *MockExperimentsInterface_DeleteExperiment_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteLoggedModel provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) DeleteLoggedModel(ctx context.Context, request ml.DeleteLoggedModelRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteLoggedModel")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.DeleteLoggedModelRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockExperimentsInterface_DeleteLoggedModel_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteLoggedModel'
+type MockExperimentsInterface_DeleteLoggedModel_Call struct {
+	*mock.Call
+}
+
+// DeleteLoggedModel is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.DeleteLoggedModelRequest
+func (_e *MockExperimentsInterface_Expecter) DeleteLoggedModel(ctx interface{}, request interface{}) *MockExperimentsInterface_DeleteLoggedModel_Call {
+	return &MockExperimentsInterface_DeleteLoggedModel_Call{Call: _e.mock.On("DeleteLoggedModel", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModel_Call) Run(run func(ctx context.Context, request ml.DeleteLoggedModelRequest)) *MockExperimentsInterface_DeleteLoggedModel_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.DeleteLoggedModelRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModel_Call) Return(_a0 error) *MockExperimentsInterface_DeleteLoggedModel_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModel_Call) RunAndReturn(run func(context.Context, ml.DeleteLoggedModelRequest) error) *MockExperimentsInterface_DeleteLoggedModel_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteLoggedModelByModelId provides a mock function with given fields: ctx, modelId
+func (_m *MockExperimentsInterface) DeleteLoggedModelByModelId(ctx context.Context, modelId string) error {
+	ret := _m.Called(ctx, modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteLoggedModelByModelId")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, modelId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockExperimentsInterface_DeleteLoggedModelByModelId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteLoggedModelByModelId'
+type MockExperimentsInterface_DeleteLoggedModelByModelId_Call struct {
+	*mock.Call
+}
+
+// DeleteLoggedModelByModelId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - modelId string
+func (_e *MockExperimentsInterface_Expecter) DeleteLoggedModelByModelId(ctx interface{}, modelId interface{}) *MockExperimentsInterface_DeleteLoggedModelByModelId_Call {
+	return &MockExperimentsInterface_DeleteLoggedModelByModelId_Call{Call: _e.mock.On("DeleteLoggedModelByModelId", ctx, modelId)}
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModelByModelId_Call) Run(run func(ctx context.Context, modelId string)) *MockExperimentsInterface_DeleteLoggedModelByModelId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModelByModelId_Call) Return(_a0 error) *MockExperimentsInterface_DeleteLoggedModelByModelId_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModelByModelId_Call) RunAndReturn(run func(context.Context, string) error) *MockExperimentsInterface_DeleteLoggedModelByModelId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteLoggedModelTag provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) DeleteLoggedModelTag(ctx context.Context, request ml.DeleteLoggedModelTagRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteLoggedModelTag")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.DeleteLoggedModelTagRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockExperimentsInterface_DeleteLoggedModelTag_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteLoggedModelTag'
+type MockExperimentsInterface_DeleteLoggedModelTag_Call struct {
+	*mock.Call
+}
+
+// DeleteLoggedModelTag is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.DeleteLoggedModelTagRequest
+func (_e *MockExperimentsInterface_Expecter) DeleteLoggedModelTag(ctx interface{}, request interface{}) *MockExperimentsInterface_DeleteLoggedModelTag_Call {
+	return &MockExperimentsInterface_DeleteLoggedModelTag_Call{Call: _e.mock.On("DeleteLoggedModelTag", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModelTag_Call) Run(run func(ctx context.Context, request ml.DeleteLoggedModelTagRequest)) *MockExperimentsInterface_DeleteLoggedModelTag_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.DeleteLoggedModelTagRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModelTag_Call) Return(_a0 error) *MockExperimentsInterface_DeleteLoggedModelTag_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModelTag_Call) RunAndReturn(run func(context.Context, ml.DeleteLoggedModelTagRequest) error) *MockExperimentsInterface_DeleteLoggedModelTag_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteLoggedModelTagByModelIdAndTagKey provides a mock function with given fields: ctx, modelId, tagKey
+func (_m *MockExperimentsInterface) DeleteLoggedModelTagByModelIdAndTagKey(ctx context.Context, modelId string, tagKey string) error {
+	ret := _m.Called(ctx, modelId, tagKey)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteLoggedModelTagByModelIdAndTagKey")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+		r0 = rf(ctx, modelId, tagKey)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockExperimentsInterface_DeleteLoggedModelTagByModelIdAndTagKey_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteLoggedModelTagByModelIdAndTagKey'
+type MockExperimentsInterface_DeleteLoggedModelTagByModelIdAndTagKey_Call struct {
+	*mock.Call
+}
+
+// DeleteLoggedModelTagByModelIdAndTagKey is a helper method to define mock.On call
+//   - ctx context.Context
+//   - modelId string
+//   - tagKey string
+func (_e *MockExperimentsInterface_Expecter) DeleteLoggedModelTagByModelIdAndTagKey(ctx interface{}, modelId interface{}, tagKey interface{}) *MockExperimentsInterface_DeleteLoggedModelTagByModelIdAndTagKey_Call {
+	return &MockExperimentsInterface_DeleteLoggedModelTagByModelIdAndTagKey_Call{Call: _e.mock.On("DeleteLoggedModelTagByModelIdAndTagKey", ctx, modelId, tagKey)}
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModelTagByModelIdAndTagKey_Call) Run(run func(ctx context.Context, modelId string, tagKey string)) *MockExperimentsInterface_DeleteLoggedModelTagByModelIdAndTagKey_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModelTagByModelIdAndTagKey_Call) Return(_a0 error) *MockExperimentsInterface_DeleteLoggedModelTagByModelIdAndTagKey_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_DeleteLoggedModelTagByModelIdAndTagKey_Call) RunAndReturn(run func(context.Context, string, string) error) *MockExperimentsInterface_DeleteLoggedModelTagByModelIdAndTagKey_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -338,6 +586,65 @@ func (_c *MockExperimentsInterface_DeleteTag_Call) Return(_a0 error) *MockExperi
 }
 
 func (_c *MockExperimentsInterface_DeleteTag_Call) RunAndReturn(run func(context.Context, ml.DeleteTag) error) *MockExperimentsInterface_DeleteTag_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// FinalizeLoggedModel provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) FinalizeLoggedModel(ctx context.Context, request ml.FinalizeLoggedModelRequest) (*ml.FinalizeLoggedModelResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FinalizeLoggedModel")
+	}
+
+	var r0 *ml.FinalizeLoggedModelResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.FinalizeLoggedModelRequest) (*ml.FinalizeLoggedModelResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.FinalizeLoggedModelRequest) *ml.FinalizeLoggedModelResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.FinalizeLoggedModelResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.FinalizeLoggedModelRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_FinalizeLoggedModel_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FinalizeLoggedModel'
+type MockExperimentsInterface_FinalizeLoggedModel_Call struct {
+	*mock.Call
+}
+
+// FinalizeLoggedModel is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.FinalizeLoggedModelRequest
+func (_e *MockExperimentsInterface_Expecter) FinalizeLoggedModel(ctx interface{}, request interface{}) *MockExperimentsInterface_FinalizeLoggedModel_Call {
+	return &MockExperimentsInterface_FinalizeLoggedModel_Call{Call: _e.mock.On("FinalizeLoggedModel", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_FinalizeLoggedModel_Call) Run(run func(ctx context.Context, request ml.FinalizeLoggedModelRequest)) *MockExperimentsInterface_FinalizeLoggedModel_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.FinalizeLoggedModelRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_FinalizeLoggedModel_Call) Return(_a0 *ml.FinalizeLoggedModelResponse, _a1 error) *MockExperimentsInterface_FinalizeLoggedModel_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_FinalizeLoggedModel_Call) RunAndReturn(run func(context.Context, ml.FinalizeLoggedModelRequest) (*ml.FinalizeLoggedModelResponse, error)) *MockExperimentsInterface_FinalizeLoggedModel_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -800,6 +1107,124 @@ func (_c *MockExperimentsInterface_GetHistoryAll_Call) Return(_a0 []ml.Metric, _
 }
 
 func (_c *MockExperimentsInterface_GetHistoryAll_Call) RunAndReturn(run func(context.Context, ml.GetHistoryRequest) ([]ml.Metric, error)) *MockExperimentsInterface_GetHistoryAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetLoggedModel provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) GetLoggedModel(ctx context.Context, request ml.GetLoggedModelRequest) (*ml.GetLoggedModelResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetLoggedModel")
+	}
+
+	var r0 *ml.GetLoggedModelResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetLoggedModelRequest) (*ml.GetLoggedModelResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.GetLoggedModelRequest) *ml.GetLoggedModelResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.GetLoggedModelResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.GetLoggedModelRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_GetLoggedModel_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetLoggedModel'
+type MockExperimentsInterface_GetLoggedModel_Call struct {
+	*mock.Call
+}
+
+// GetLoggedModel is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.GetLoggedModelRequest
+func (_e *MockExperimentsInterface_Expecter) GetLoggedModel(ctx interface{}, request interface{}) *MockExperimentsInterface_GetLoggedModel_Call {
+	return &MockExperimentsInterface_GetLoggedModel_Call{Call: _e.mock.On("GetLoggedModel", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_GetLoggedModel_Call) Run(run func(ctx context.Context, request ml.GetLoggedModelRequest)) *MockExperimentsInterface_GetLoggedModel_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.GetLoggedModelRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetLoggedModel_Call) Return(_a0 *ml.GetLoggedModelResponse, _a1 error) *MockExperimentsInterface_GetLoggedModel_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetLoggedModel_Call) RunAndReturn(run func(context.Context, ml.GetLoggedModelRequest) (*ml.GetLoggedModelResponse, error)) *MockExperimentsInterface_GetLoggedModel_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetLoggedModelByModelId provides a mock function with given fields: ctx, modelId
+func (_m *MockExperimentsInterface) GetLoggedModelByModelId(ctx context.Context, modelId string) (*ml.GetLoggedModelResponse, error) {
+	ret := _m.Called(ctx, modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetLoggedModelByModelId")
+	}
+
+	var r0 *ml.GetLoggedModelResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*ml.GetLoggedModelResponse, error)); ok {
+		return rf(ctx, modelId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *ml.GetLoggedModelResponse); ok {
+		r0 = rf(ctx, modelId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.GetLoggedModelResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, modelId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_GetLoggedModelByModelId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetLoggedModelByModelId'
+type MockExperimentsInterface_GetLoggedModelByModelId_Call struct {
+	*mock.Call
+}
+
+// GetLoggedModelByModelId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - modelId string
+func (_e *MockExperimentsInterface_Expecter) GetLoggedModelByModelId(ctx interface{}, modelId interface{}) *MockExperimentsInterface_GetLoggedModelByModelId_Call {
+	return &MockExperimentsInterface_GetLoggedModelByModelId_Call{Call: _e.mock.On("GetLoggedModelByModelId", ctx, modelId)}
+}
+
+func (_c *MockExperimentsInterface_GetLoggedModelByModelId_Call) Run(run func(ctx context.Context, modelId string)) *MockExperimentsInterface_GetLoggedModelByModelId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetLoggedModelByModelId_Call) Return(_a0 *ml.GetLoggedModelResponse, _a1 error) *MockExperimentsInterface_GetLoggedModelByModelId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_GetLoggedModelByModelId_Call) RunAndReturn(run func(context.Context, string) (*ml.GetLoggedModelResponse, error)) *MockExperimentsInterface_GetLoggedModelByModelId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1315,6 +1740,124 @@ func (_c *MockExperimentsInterface_ListExperimentsAll_Call) RunAndReturn(run fun
 	return _c
 }
 
+// ListLoggedModelArtifacts provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) ListLoggedModelArtifacts(ctx context.Context, request ml.ListLoggedModelArtifactsRequest) (*ml.ListLoggedModelArtifactsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListLoggedModelArtifacts")
+	}
+
+	var r0 *ml.ListLoggedModelArtifactsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListLoggedModelArtifactsRequest) (*ml.ListLoggedModelArtifactsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.ListLoggedModelArtifactsRequest) *ml.ListLoggedModelArtifactsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.ListLoggedModelArtifactsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.ListLoggedModelArtifactsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_ListLoggedModelArtifacts_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListLoggedModelArtifacts'
+type MockExperimentsInterface_ListLoggedModelArtifacts_Call struct {
+	*mock.Call
+}
+
+// ListLoggedModelArtifacts is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.ListLoggedModelArtifactsRequest
+func (_e *MockExperimentsInterface_Expecter) ListLoggedModelArtifacts(ctx interface{}, request interface{}) *MockExperimentsInterface_ListLoggedModelArtifacts_Call {
+	return &MockExperimentsInterface_ListLoggedModelArtifacts_Call{Call: _e.mock.On("ListLoggedModelArtifacts", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_ListLoggedModelArtifacts_Call) Run(run func(ctx context.Context, request ml.ListLoggedModelArtifactsRequest)) *MockExperimentsInterface_ListLoggedModelArtifacts_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.ListLoggedModelArtifactsRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_ListLoggedModelArtifacts_Call) Return(_a0 *ml.ListLoggedModelArtifactsResponse, _a1 error) *MockExperimentsInterface_ListLoggedModelArtifacts_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_ListLoggedModelArtifacts_Call) RunAndReturn(run func(context.Context, ml.ListLoggedModelArtifactsRequest) (*ml.ListLoggedModelArtifactsResponse, error)) *MockExperimentsInterface_ListLoggedModelArtifacts_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListLoggedModelArtifactsByModelId provides a mock function with given fields: ctx, modelId
+func (_m *MockExperimentsInterface) ListLoggedModelArtifactsByModelId(ctx context.Context, modelId string) (*ml.ListLoggedModelArtifactsResponse, error) {
+	ret := _m.Called(ctx, modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListLoggedModelArtifactsByModelId")
+	}
+
+	var r0 *ml.ListLoggedModelArtifactsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*ml.ListLoggedModelArtifactsResponse, error)); ok {
+		return rf(ctx, modelId)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *ml.ListLoggedModelArtifactsResponse); ok {
+		r0 = rf(ctx, modelId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.ListLoggedModelArtifactsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, modelId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_ListLoggedModelArtifactsByModelId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListLoggedModelArtifactsByModelId'
+type MockExperimentsInterface_ListLoggedModelArtifactsByModelId_Call struct {
+	*mock.Call
+}
+
+// ListLoggedModelArtifactsByModelId is a helper method to define mock.On call
+//   - ctx context.Context
+//   - modelId string
+func (_e *MockExperimentsInterface_Expecter) ListLoggedModelArtifactsByModelId(ctx interface{}, modelId interface{}) *MockExperimentsInterface_ListLoggedModelArtifactsByModelId_Call {
+	return &MockExperimentsInterface_ListLoggedModelArtifactsByModelId_Call{Call: _e.mock.On("ListLoggedModelArtifactsByModelId", ctx, modelId)}
+}
+
+func (_c *MockExperimentsInterface_ListLoggedModelArtifactsByModelId_Call) Run(run func(ctx context.Context, modelId string)) *MockExperimentsInterface_ListLoggedModelArtifactsByModelId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_ListLoggedModelArtifactsByModelId_Call) Return(_a0 *ml.ListLoggedModelArtifactsResponse, _a1 error) *MockExperimentsInterface_ListLoggedModelArtifactsByModelId_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_ListLoggedModelArtifactsByModelId_Call) RunAndReturn(run func(context.Context, string) (*ml.ListLoggedModelArtifactsResponse, error)) *MockExperimentsInterface_ListLoggedModelArtifactsByModelId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // LogBatch provides a mock function with given fields: ctx, request
 func (_m *MockExperimentsInterface) LogBatch(ctx context.Context, request ml.LogBatch) error {
 	ret := _m.Called(ctx, request)
@@ -1409,6 +1952,53 @@ func (_c *MockExperimentsInterface_LogInputs_Call) RunAndReturn(run func(context
 	return _c
 }
 
+// LogLoggedModelParams provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) LogLoggedModelParams(ctx context.Context, request ml.LogLoggedModelParamsRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for LogLoggedModelParams")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.LogLoggedModelParamsRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockExperimentsInterface_LogLoggedModelParams_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LogLoggedModelParams'
+type MockExperimentsInterface_LogLoggedModelParams_Call struct {
+	*mock.Call
+}
+
+// LogLoggedModelParams is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.LogLoggedModelParamsRequest
+func (_e *MockExperimentsInterface_Expecter) LogLoggedModelParams(ctx interface{}, request interface{}) *MockExperimentsInterface_LogLoggedModelParams_Call {
+	return &MockExperimentsInterface_LogLoggedModelParams_Call{Call: _e.mock.On("LogLoggedModelParams", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_LogLoggedModelParams_Call) Run(run func(ctx context.Context, request ml.LogLoggedModelParamsRequest)) *MockExperimentsInterface_LogLoggedModelParams_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.LogLoggedModelParamsRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_LogLoggedModelParams_Call) Return(_a0 error) *MockExperimentsInterface_LogLoggedModelParams_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_LogLoggedModelParams_Call) RunAndReturn(run func(context.Context, ml.LogLoggedModelParamsRequest) error) *MockExperimentsInterface_LogLoggedModelParams_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // LogMetric provides a mock function with given fields: ctx, request
 func (_m *MockExperimentsInterface) LogMetric(ctx context.Context, request ml.LogMetric) error {
 	ret := _m.Called(ctx, request)
@@ -1499,6 +2089,53 @@ func (_c *MockExperimentsInterface_LogModel_Call) Return(_a0 error) *MockExperim
 }
 
 func (_c *MockExperimentsInterface_LogModel_Call) RunAndReturn(run func(context.Context, ml.LogModel) error) *MockExperimentsInterface_LogModel_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// LogOutputs provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) LogOutputs(ctx context.Context, request ml.LogOutputsRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for LogOutputs")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.LogOutputsRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockExperimentsInterface_LogOutputs_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LogOutputs'
+type MockExperimentsInterface_LogOutputs_Call struct {
+	*mock.Call
+}
+
+// LogOutputs is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.LogOutputsRequest
+func (_e *MockExperimentsInterface_Expecter) LogOutputs(ctx interface{}, request interface{}) *MockExperimentsInterface_LogOutputs_Call {
+	return &MockExperimentsInterface_LogOutputs_Call{Call: _e.mock.On("LogOutputs", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_LogOutputs_Call) Run(run func(ctx context.Context, request ml.LogOutputsRequest)) *MockExperimentsInterface_LogOutputs_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.LogOutputsRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_LogOutputs_Call) Return(_a0 error) *MockExperimentsInterface_LogOutputs_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_LogOutputs_Call) RunAndReturn(run func(context.Context, ml.LogOutputsRequest) error) *MockExperimentsInterface_LogOutputs_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1811,6 +2448,65 @@ func (_c *MockExperimentsInterface_SearchExperimentsAll_Call) RunAndReturn(run f
 	return _c
 }
 
+// SearchLoggedModels provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) SearchLoggedModels(ctx context.Context, request ml.SearchLoggedModelsRequest) (*ml.SearchLoggedModelsResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SearchLoggedModels")
+	}
+
+	var r0 *ml.SearchLoggedModelsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.SearchLoggedModelsRequest) (*ml.SearchLoggedModelsResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, ml.SearchLoggedModelsRequest) *ml.SearchLoggedModelsResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ml.SearchLoggedModelsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, ml.SearchLoggedModelsRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockExperimentsInterface_SearchLoggedModels_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SearchLoggedModels'
+type MockExperimentsInterface_SearchLoggedModels_Call struct {
+	*mock.Call
+}
+
+// SearchLoggedModels is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.SearchLoggedModelsRequest
+func (_e *MockExperimentsInterface_Expecter) SearchLoggedModels(ctx interface{}, request interface{}) *MockExperimentsInterface_SearchLoggedModels_Call {
+	return &MockExperimentsInterface_SearchLoggedModels_Call{Call: _e.mock.On("SearchLoggedModels", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_SearchLoggedModels_Call) Run(run func(ctx context.Context, request ml.SearchLoggedModelsRequest)) *MockExperimentsInterface_SearchLoggedModels_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.SearchLoggedModelsRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_SearchLoggedModels_Call) Return(_a0 *ml.SearchLoggedModelsResponse, _a1 error) *MockExperimentsInterface_SearchLoggedModels_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_SearchLoggedModels_Call) RunAndReturn(run func(context.Context, ml.SearchLoggedModelsRequest) (*ml.SearchLoggedModelsResponse, error)) *MockExperimentsInterface_SearchLoggedModels_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SearchRuns provides a mock function with given fields: ctx, request
 func (_m *MockExperimentsInterface) SearchRuns(ctx context.Context, request ml.SearchRuns) listing.Iterator[ml.Run] {
 	ret := _m.Called(ctx, request)
@@ -1962,6 +2658,53 @@ func (_c *MockExperimentsInterface_SetExperimentTag_Call) Return(_a0 error) *Moc
 }
 
 func (_c *MockExperimentsInterface_SetExperimentTag_Call) RunAndReturn(run func(context.Context, ml.SetExperimentTag) error) *MockExperimentsInterface_SetExperimentTag_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SetLoggedModelTags provides a mock function with given fields: ctx, request
+func (_m *MockExperimentsInterface) SetLoggedModelTags(ctx context.Context, request ml.SetLoggedModelTagsRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SetLoggedModelTags")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, ml.SetLoggedModelTagsRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockExperimentsInterface_SetLoggedModelTags_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetLoggedModelTags'
+type MockExperimentsInterface_SetLoggedModelTags_Call struct {
+	*mock.Call
+}
+
+// SetLoggedModelTags is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request ml.SetLoggedModelTagsRequest
+func (_e *MockExperimentsInterface_Expecter) SetLoggedModelTags(ctx interface{}, request interface{}) *MockExperimentsInterface_SetLoggedModelTags_Call {
+	return &MockExperimentsInterface_SetLoggedModelTags_Call{Call: _e.mock.On("SetLoggedModelTags", ctx, request)}
+}
+
+func (_c *MockExperimentsInterface_SetLoggedModelTags_Call) Run(run func(ctx context.Context, request ml.SetLoggedModelTagsRequest)) *MockExperimentsInterface_SetLoggedModelTags_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(ml.SetLoggedModelTagsRequest))
+	})
+	return _c
+}
+
+func (_c *MockExperimentsInterface_SetLoggedModelTags_Call) Return(_a0 error) *MockExperimentsInterface_SetLoggedModelTags_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockExperimentsInterface_SetLoggedModelTags_Call) RunAndReturn(run func(context.Context, ml.SetLoggedModelTagsRequest) error) *MockExperimentsInterface_SetLoggedModelTags_Call {
 	_c.Call.Return(run)
 	return _c
 }

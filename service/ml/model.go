@@ -483,6 +483,36 @@ func (s CreateForecastingExperimentResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type CreateLoggedModelRequest struct {
+	// The ID of the experiment that owns the model.
+	ExperimentId string `json:"experiment_id"`
+	// The type of the model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``.
+	ModelType string `json:"model_type,omitempty"`
+	// The name of the model (optional). If not specified one will be generated.
+	Name string `json:"name,omitempty"`
+	// Parameters attached to the model.
+	Params []LoggedModelParameter `json:"params,omitempty"`
+	// The ID of the run that created the model.
+	SourceRunId string `json:"source_run_id,omitempty"`
+	// Tags attached to the model.
+	Tags []LoggedModelTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CreateLoggedModelRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CreateLoggedModelRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CreateLoggedModelResponse struct {
+	// The newly created logged model.
+	Model *LoggedModel `json:"model,omitempty"`
+}
+
 type CreateModelRequest struct {
 	// Optional description for registered model.
 	Description string `json:"description,omitempty"`
@@ -728,6 +758,26 @@ type DeleteExperiment struct {
 }
 
 type DeleteExperimentResponse struct {
+}
+
+// Delete a logged model
+type DeleteLoggedModelRequest struct {
+	// The ID of the logged model to delete.
+	ModelId string `json:"-" url:"-"`
+}
+
+type DeleteLoggedModelResponse struct {
+}
+
+// Delete a tag on a logged model
+type DeleteLoggedModelTagRequest struct {
+	// The ID of the logged model to delete the tag from.
+	ModelId string `json:"-" url:"-"`
+	// The tag key.
+	TagKey string `json:"-" url:"-"`
+}
+
+type DeleteLoggedModelTagResponse struct {
 }
 
 // Delete a model
@@ -1117,6 +1167,20 @@ func (s FileInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type FinalizeLoggedModelRequest struct {
+	// The ID of the logged model to finalize.
+	ModelId string `json:"-" url:"-"`
+	// Whether or not the model is ready for use.
+	// ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something went wrong when
+	// logging the model weights / agent code).
+	Status LoggedModelStatus `json:"status"`
+}
+
+type FinalizeLoggedModelResponse struct {
+	// The updated logged model.
+	Model *LoggedModel `json:"model,omitempty"`
+}
+
 // Represents a forecasting experiment with its unique identifier, URL, and
 // state.
 type ForecastingExperiment struct {
@@ -1277,6 +1341,17 @@ type GetLatestVersionsResponse struct {
 	// current `READY` status. If no `stages` provided, returns the latest
 	// version for each stage, including `"None"`.
 	ModelVersions []ModelVersion `json:"model_versions,omitempty"`
+}
+
+// Get a logged model
+type GetLoggedModelRequest struct {
+	// The ID of the logged model to retrieve.
+	ModelId string `json:"-" url:"-"`
+}
+
+type GetLoggedModelResponse struct {
+	// The retrieved logged model.
+	Model *LoggedModel `json:"model,omitempty"`
 }
 
 type GetMetricHistoryResponse struct {
@@ -1583,6 +1658,51 @@ func (s ListExperimentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// List artifacts for a logged model
+type ListLoggedModelArtifactsRequest struct {
+	// Filter artifacts matching this path (a relative path from the root
+	// artifact directory).
+	ArtifactDirectoryPath string `json:"-" url:"artifact_directory_path,omitempty"`
+	// The ID of the logged model for which to list the artifacts.
+	ModelId string `json:"-" url:"-"`
+	// Token indicating the page of artifact results to fetch. `page_token` is
+	// not supported when listing artifacts in UC Volumes. A maximum of 1000
+	// artifacts will be retrieved for UC Volumes. Please call
+	// `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC
+	// Volumes, which supports pagination. See [List directory contents | Files
+	// API](/api/workspace/files/listdirectorycontents).
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListLoggedModelArtifactsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListLoggedModelArtifactsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListLoggedModelArtifactsResponse struct {
+	// File location and metadata for artifacts.
+	Files []FileInfo `json:"files,omitempty"`
+	// Token that can be used to retrieve the next page of artifact results
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// Root artifact directory for the logged model.
+	RootUri string `json:"root_uri,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListLoggedModelArtifactsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListLoggedModelArtifactsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // List models
 type ListModelsRequest struct {
 	// Maximum number of registered models desired. Max threshold is 1000.
@@ -1710,6 +1830,16 @@ type LogInputs struct {
 type LogInputsResponse struct {
 }
 
+type LogLoggedModelParamsRequest struct {
+	// The ID of the logged model to log params for.
+	ModelId string `json:"-" url:"-"`
+	// Parameters to attach to the model.
+	Params []LoggedModelParameter `json:"params,omitempty"`
+}
+
+type LogLoggedModelParamsRequestResponse struct {
+}
+
 type LogMetric struct {
 	// Dataset digest of the dataset associated with the metric, e.g. an md5
 	// hash of the dataset that uniquely identifies it within datasets of the
@@ -1768,6 +1898,16 @@ func (s LogModel) MarshalJSON() ([]byte, error) {
 type LogModelResponse struct {
 }
 
+type LogOutputsRequest struct {
+	// The model outputs from the Run.
+	Models []ModelOutput `json:"models,omitempty"`
+	// The ID of the Run from which to log outputs.
+	RunId string `json:"run_id"`
+}
+
+type LogOutputsResponse struct {
+}
+
 type LogParam struct {
 	// Name of the param. Maximum size is 255 bytes.
 	Key string `json:"key"`
@@ -1791,6 +1931,130 @@ func (s LogParam) MarshalJSON() ([]byte, error) {
 }
 
 type LogParamResponse struct {
+}
+
+// A logged model message includes logged model attributes, tags, registration
+// info, params, and linked run metrics.
+type LoggedModel struct {
+	// The params and metrics attached to the logged model.
+	Data *LoggedModelData `json:"data,omitempty"`
+	// The logged model attributes such as model ID, status, tags, etc.
+	Info *LoggedModelInfo `json:"info,omitempty"`
+}
+
+// A LoggedModelData message includes logged model params and linked metrics.
+type LoggedModelData struct {
+	// Performance metrics linked to the model.
+	Metrics []Metric `json:"metrics,omitempty"`
+	// Immutable string key-value pairs of the model.
+	Params []LoggedModelParameter `json:"params,omitempty"`
+}
+
+// A LoggedModelInfo includes logged model attributes, tags, and registration
+// info.
+type LoggedModelInfo struct {
+	// The URI of the directory where model artifacts are stored.
+	ArtifactUri string `json:"artifact_uri,omitempty"`
+	// The timestamp when the model was created in milliseconds since the UNIX
+	// epoch.
+	CreationTimestampMs int64 `json:"creation_timestamp_ms,omitempty"`
+	// The ID of the user or principal that created the model.
+	CreatorId int64 `json:"creator_id,omitempty"`
+	// The ID of the experiment that owns the model.
+	ExperimentId string `json:"experiment_id,omitempty"`
+	// The timestamp when the model was last updated in milliseconds since the
+	// UNIX epoch.
+	LastUpdatedTimestampMs int64 `json:"last_updated_timestamp_ms,omitempty"`
+	// The unique identifier for the logged model.
+	ModelId string `json:"model_id,omitempty"`
+	// The type of model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``.
+	ModelType string `json:"model_type,omitempty"`
+	// The name of the model.
+	Name string `json:"name,omitempty"`
+	// The ID of the run that created the model.
+	SourceRunId string `json:"source_run_id,omitempty"`
+	// The status of whether or not the model is ready for use.
+	Status LoggedModelStatus `json:"status,omitempty"`
+	// Details on the current model status.
+	StatusMessage string `json:"status_message,omitempty"`
+	// Mutable string key-value pairs set on the model.
+	Tags []LoggedModelTag `json:"tags,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LoggedModelInfo) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LoggedModelInfo) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Parameter associated with a LoggedModel.
+type LoggedModelParameter struct {
+	// The key identifying this param.
+	Key string `json:"key,omitempty"`
+	// The value of this param.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LoggedModelParameter) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LoggedModelParameter) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// A LoggedModelStatus enum value represents the status of a logged model.
+type LoggedModelStatus string
+
+const LoggedModelStatusLoggedModelPending LoggedModelStatus = `LOGGED_MODEL_PENDING`
+
+const LoggedModelStatusLoggedModelReady LoggedModelStatus = `LOGGED_MODEL_READY`
+
+const LoggedModelStatusLoggedModelUploadFailed LoggedModelStatus = `LOGGED_MODEL_UPLOAD_FAILED`
+
+// String representation for [fmt.Print]
+func (f *LoggedModelStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *LoggedModelStatus) Set(v string) error {
+	switch v {
+	case `LOGGED_MODEL_PENDING`, `LOGGED_MODEL_READY`, `LOGGED_MODEL_UPLOAD_FAILED`:
+		*f = LoggedModelStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "LOGGED_MODEL_PENDING", "LOGGED_MODEL_READY", "LOGGED_MODEL_UPLOAD_FAILED"`, v)
+	}
+}
+
+// Type always returns LoggedModelStatus to satisfy [pflag.Value] interface
+func (f *LoggedModelStatus) Type() string {
+	return "LoggedModelStatus"
+}
+
+// Tag for a LoggedModel.
+type LoggedModelTag struct {
+	// The tag key.
+	Key string `json:"key,omitempty"`
+	// The tag value.
+	Value string `json:"value,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *LoggedModelTag) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s LoggedModelTag) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Metric associated with a run, represented as a key-value pair.
@@ -1892,6 +2156,14 @@ func (s ModelDatabricks) MarshalJSON() ([]byte, error) {
 type ModelInput struct {
 	// The unique identifier of the model.
 	ModelId string `json:"model_id"`
+}
+
+// Represents a LoggedModel output of a Run.
+type ModelOutput struct {
+	// The unique identifier of the model.
+	ModelId string `json:"model_id"`
+	// The step at which the model was produced.
+	Step int64 `json:"step"`
 }
 
 type ModelTag struct {
@@ -2685,6 +2957,102 @@ func (s SearchExperimentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type SearchLoggedModelsDataset struct {
+	// The digest of the dataset.
+	DatasetDigest string `json:"dataset_digest,omitempty"`
+	// The name of the dataset.
+	DatasetName string `json:"dataset_name"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SearchLoggedModelsDataset) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SearchLoggedModelsDataset) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SearchLoggedModelsOrderBy struct {
+	// Whether the search results order is ascending or not.
+	Ascending bool `json:"ascending,omitempty"`
+	// If ``field_name`` refers to a metric, this field specifies the digest of
+	// the dataset associated with the metric. Only metrics associated with the
+	// specified dataset name and digest will be considered for ordering. This
+	// field may only be set if ``dataset_name`` is also set.
+	DatasetDigest string `json:"dataset_digest,omitempty"`
+	// If ``field_name`` refers to a metric, this field specifies the name of
+	// the dataset associated with the metric. Only metrics associated with the
+	// specified dataset name will be considered for ordering. This field may
+	// only be set if ``field_name`` refers to a metric.
+	DatasetName string `json:"dataset_name,omitempty"`
+	// The name of the field to order by, e.g. "metrics.accuracy".
+	FieldName string `json:"field_name"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SearchLoggedModelsOrderBy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SearchLoggedModelsOrderBy) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SearchLoggedModelsRequest struct {
+	// List of datasets on which to apply the metrics filter clauses. For
+	// example, a filter with `metrics.accuracy > 0.9` and dataset info with
+	// name "test_dataset" means we will return all logged models with accuracy
+	// > 0.9 on the test_dataset. Metric values from ANY dataset matching the
+	// criteria are considered. If no datasets are specified, then metrics
+	// across all datasets are considered in the filter.
+	Datasets []SearchLoggedModelsDataset `json:"datasets,omitempty"`
+	// The IDs of the experiments in which to search for logged models.
+	ExperimentIds []string `json:"experiment_ids,omitempty"`
+	// A filter expression over logged model info and data that allows returning
+	// a subset of logged models. The syntax is a subset of SQL that supports
+	// AND'ing together binary operations.
+	//
+	// Example: ``params.alpha < 0.3 AND metrics.accuracy > 0.9``.
+	Filter string `json:"filter,omitempty"`
+	// The maximum number of Logged Models to return. The maximum limit is 50.
+	MaxResults int `json:"max_results,omitempty"`
+	// The list of columns for ordering the results, with additional fields for
+	// sorting criteria.
+	OrderBy []SearchLoggedModelsOrderBy `json:"order_by,omitempty"`
+	// The token indicating the page of logged models to fetch.
+	PageToken string `json:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SearchLoggedModelsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SearchLoggedModelsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SearchLoggedModelsResponse struct {
+	// Logged models that match the search criteria.
+	Models []LoggedModel `json:"models,omitempty"`
+	// The token that can be used to retrieve the next page of logged models.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SearchLoggedModelsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SearchLoggedModelsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Searches model versions
 type SearchModelVersionsRequest struct {
 	// String filter condition, like "name='my-model-name'". Must be a single
@@ -2842,6 +3210,16 @@ type SetExperimentTag struct {
 }
 
 type SetExperimentTagResponse struct {
+}
+
+type SetLoggedModelTagsRequest struct {
+	// The ID of the logged model to set the tags on.
+	ModelId string `json:"-" url:"-"`
+	// The tags to set on the logged model.
+	Tags []LoggedModelTag `json:"tags,omitempty"`
+}
+
+type SetLoggedModelTagsResponse struct {
 }
 
 type SetModelTagRequest struct {

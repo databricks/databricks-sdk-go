@@ -234,6 +234,16 @@ type AccountClient struct {
 	// [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 	NetworkConnectivity settings.NetworkConnectivityInterface
 
+	// These APIs manage network policies for this account. Network policies
+	// control which network destinations can be accessed from the Databricks
+	// environment. Each Databricks account includes a default policy named
+	// 'default-policy'. 'default-policy' is associated with any workspace
+	// lacking an explicit network policy assignment, and is automatically
+	// associated with each newly created workspace. 'default-policy' is
+	// reserved and cannot be deleted, but it can be updated to customize the
+	// default network access rules for your account.
+	NetworkPolicies settings.NetworkPoliciesInterface
+
 	// These APIs manage network configurations for customer-managed VPCs
 	// (optional). Its ID is used when creating a new workspace if you use
 	// customer-managed VPCs.
@@ -376,6 +386,15 @@ type AccountClient struct {
 	// permissions for principals in your account.
 	WorkspaceAssignment iam.WorkspaceAssignmentInterface
 
+	// These APIs allow configuration of network settings for Databricks
+	// workspaces. Each workspace is always associated with exactly one network
+	// policy that controls which network destinations can be accessed from the
+	// Databricks environment. By default, workspaces are associated with the
+	// 'default-policy' network policy. You cannot create or delete a
+	// workspace's network configuration, only update it to associate the
+	// workspace with a different policy.
+	WorkspaceNetworkConfiguration settings.WorkspaceNetworkConfigurationInterface
+
 	// These APIs manage workspaces for this account. A Databricks workspace is
 	// an environment for accessing all of your Databricks assets. The workspace
 	// organizes objects (notebooks, libraries, and experiments) into folders,
@@ -435,6 +454,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		MetastoreAssignments:             catalog.NewAccountMetastoreAssignments(apiClient),
 		Metastores:                       catalog.NewAccountMetastores(apiClient),
 		NetworkConnectivity:              settings.NewNetworkConnectivity(apiClient),
+		NetworkPolicies:                  settings.NewNetworkPolicies(apiClient),
 		Networks:                         provisioning.NewNetworks(apiClient),
 		OAuthPublishedApps:               oauth2.NewOAuthPublishedApps(apiClient),
 		PrivateAccess:                    provisioning.NewPrivateAccess(apiClient),
@@ -449,6 +469,7 @@ func NewAccountClient(c ...*Config) (*AccountClient, error) {
 		Users:                            iam.NewAccountUsers(apiClient),
 		VpcEndpoints:                     provisioning.NewVpcEndpoints(apiClient),
 		WorkspaceAssignment:              iam.NewWorkspaceAssignment(apiClient),
+		WorkspaceNetworkConfiguration:    settings.NewWorkspaceNetworkConfiguration(apiClient),
 		Workspaces:                       provisioning.NewWorkspaces(apiClient),
 		Budgets:                          billing.NewBudgets(apiClient),
 	}, nil

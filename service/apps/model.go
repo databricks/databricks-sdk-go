@@ -342,6 +342,8 @@ type AppResource struct {
 
 	SqlWarehouse *AppResourceSqlWarehouse `json:"sql_warehouse,omitempty"`
 
+	UcSecurable *AppResourceUcSecurable `json:"uc_securable,omitempty"`
+
 	ForceSendFields []string `json:"-" url:"-"`
 }
 
@@ -505,6 +507,66 @@ func (f *AppResourceSqlWarehouseSqlWarehousePermission) Set(v string) error {
 // Type always returns AppResourceSqlWarehouseSqlWarehousePermission to satisfy [pflag.Value] interface
 func (f *AppResourceSqlWarehouseSqlWarehousePermission) Type() string {
 	return "AppResourceSqlWarehouseSqlWarehousePermission"
+}
+
+type AppResourceUcSecurable struct {
+	Permission AppResourceUcSecurableUcSecurablePermission `json:"permission"`
+
+	SecurableFullName string `json:"securable_full_name"`
+
+	SecurableType AppResourceUcSecurableUcSecurableType `json:"securable_type"`
+}
+
+type AppResourceUcSecurableUcSecurablePermission string
+
+const AppResourceUcSecurableUcSecurablePermissionReadVolume AppResourceUcSecurableUcSecurablePermission = `READ_VOLUME`
+
+const AppResourceUcSecurableUcSecurablePermissionWriteVolume AppResourceUcSecurableUcSecurablePermission = `WRITE_VOLUME`
+
+// String representation for [fmt.Print]
+func (f *AppResourceUcSecurableUcSecurablePermission) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceUcSecurableUcSecurablePermission) Set(v string) error {
+	switch v {
+	case `READ_VOLUME`, `WRITE_VOLUME`:
+		*f = AppResourceUcSecurableUcSecurablePermission(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "READ_VOLUME", "WRITE_VOLUME"`, v)
+	}
+}
+
+// Type always returns AppResourceUcSecurableUcSecurablePermission to satisfy [pflag.Value] interface
+func (f *AppResourceUcSecurableUcSecurablePermission) Type() string {
+	return "AppResourceUcSecurableUcSecurablePermission"
+}
+
+type AppResourceUcSecurableUcSecurableType string
+
+const AppResourceUcSecurableUcSecurableTypeVolume AppResourceUcSecurableUcSecurableType = `VOLUME`
+
+// String representation for [fmt.Print]
+func (f *AppResourceUcSecurableUcSecurableType) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *AppResourceUcSecurableUcSecurableType) Set(v string) error {
+	switch v {
+	case `VOLUME`:
+		*f = AppResourceUcSecurableUcSecurableType(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "VOLUME"`, v)
+	}
+}
+
+// Type always returns AppResourceUcSecurableUcSecurableType to satisfy [pflag.Value] interface
+func (f *AppResourceUcSecurableUcSecurableType) Type() string {
+	return "AppResourceUcSecurableUcSecurableType"
 }
 
 type ApplicationState string

@@ -108,6 +108,14 @@ func (f *ColumnTypeName) Type() string {
 	return "ColumnTypeName"
 }
 
+// Create recipient federation policy
+type CreateFederationPolicyRequest struct {
+	Policy FederationPolicy `json:"policy"`
+	// Name of the recipient. This is the name of the recipient for which the
+	// policy is being created.
+	RecipientName string `json:"-" url:"-"`
+}
+
 type CreateProvider struct {
 	// The delta sharing authentication type.
 	AuthenticationType AuthenticationType `json:"authentication_type"`
@@ -185,6 +193,15 @@ func (s *CreateShare) UnmarshalJSON(b []byte) error {
 
 func (s CreateShare) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Delete recipient federation policy
+type DeleteFederationPolicyRequest struct {
+	// Name of the policy. This is the name of the policy to be deleted.
+	Name string `json:"-" url:"-"`
+	// Name of the recipient. This is the name of the recipient for which the
+	// policy is being deleted.
+	RecipientName string `json:"-" url:"-"`
 }
 
 // Delete a provider
@@ -301,6 +318,34 @@ func (s DeltaSharingTableDependency) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type FederationPolicy struct {
+	// Description of the policy. This is a user-provided description.
+	Comment string `json:"comment,omitempty"`
+	// System-generated timestamp indicating when the policy was created.
+	CreateTime string `json:"create_time,omitempty"`
+	// Unique, immutable system-generated identifier for the federation policy.
+	Id string `json:"id,omitempty"`
+	// Name of the federation policy. A recipient can have multiple policies
+	// with different names. The name must contain only lowercase alphanumeric
+	// characters, numbers, and hyphens.
+	Name string `json:"name,omitempty"`
+	// Specifies the policy to use for validating OIDC claims in the federated
+	// tokens.
+	OidcPolicy *OidcFederationPolicy `json:"oidc_policy,omitempty"`
+	// System-generated timestamp indicating when the policy was last updated.
+	UpdateTime string `json:"update_time,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FederationPolicy) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FederationPolicy) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Represents a parameter of a function. The same message is used for both input
 // and output columns.
 type FunctionParameterInfo struct {
@@ -410,6 +455,15 @@ type GetActivationUrlInfoRequest struct {
 type GetActivationUrlInfoResponse struct {
 }
 
+// Get recipient federation policy
+type GetFederationPolicyRequest struct {
+	// Name of the policy. This is the name of the policy to be retrieved.
+	Name string `json:"-" url:"-"`
+	// Name of the recipient. This is the name of the recipient for which the
+	// policy is being retrieved.
+	RecipientName string `json:"-" url:"-"`
+}
+
 // Get a provider
 type GetProviderRequest struct {
 	// Name of the provider.
@@ -481,6 +535,42 @@ func (s GetShareRequest) MarshalJSON() ([]byte, error) {
 type IpAccessList struct {
 	// Allowed IP Addresses in CIDR notation. Limit of 100.
 	AllowedIpAddresses []string `json:"allowed_ip_addresses,omitempty"`
+}
+
+// List recipient federation policies
+type ListFederationPoliciesRequest struct {
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// Name of the recipient. This is the name of the recipient for which the
+	// policies are being listed.
+	RecipientName string `json:"-" url:"-"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListFederationPoliciesRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListFederationPoliciesRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type ListFederationPoliciesResponse struct {
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	Policies []FederationPolicy `json:"policies,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListFederationPoliciesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListFederationPoliciesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List assets by provider share
@@ -707,6 +797,40 @@ func (s *NotebookFile) UnmarshalJSON(b []byte) error {
 
 func (s NotebookFile) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
+}
+
+// Specifies the policy to use for validating OIDC claims in your federated
+// tokens from Delta Sharing Clients. Refer to
+// https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed for
+// more details.
+type OidcFederationPolicy struct {
+	// The allowed token audiences, as specified in the 'aud' claim of federated
+	// tokens. The audience identifier is intended to represent the recipient of
+	// the token. Can be any non-empty string value. As long as the audience in
+	// the token matches at least one audience in the policy,
+	Audiences []string `json:"audiences,omitempty"`
+	// The required token issuer, as specified in the 'iss' claim of federated
+	// tokens.
+	Issuer string `json:"issuer"`
+	// The required token subject, as specified in the subject claim of
+	// federated tokens. The subject claim identifies the identity of the user
+	// or machine accessing the resource. Examples for Entra ID (AAD): - U2M
+	// flow (group access): If the subject claim is `groups`, this must be the
+	// Object ID of the group in Entra ID. - U2M flow (user access): If the
+	// subject claim is `oid`, this must be the Object ID of the user in Entra
+	// ID. - M2M flow (OAuth App access): If the subject claim is `azp`, this
+	// must be the client ID of the OAuth app registered in Entra ID.
+	Subject string `json:"subject"`
+	// The claim that contains the subject of the token. Depending on the
+	// identity provider and the use case (U2M or M2M), this can vary: - For
+	// Entra ID (AAD): * U2M flow (group access): Use `groups`. * U2M flow (user
+	// access): Use `oid`. * M2M flow (OAuth App access): Use `azp`. - For other
+	// IdPs, refer to the specific IdP documentation.
+	//
+	// Supported `subject_claim` values are: - `oid`: Object ID of the user. -
+	// `azp`: Client ID of the OAuth app. - `groups`: Object ID of the group. -
+	// `sub`: Subject identifier for other use cases.
+	SubjectClaim string `json:"subject_claim"`
 }
 
 type Partition struct {
@@ -1454,6 +1578,8 @@ type Table struct {
 	// Internal information for D2D sharing that should not be disclosed to
 	// external users.
 	InternalAttributes *TableInternalAttributes `json:"internal_attributes,omitempty"`
+	// The catalog and schema of the materialized table
+	MaterializationNamespace string `json:"materialization_namespace,omitempty"`
 	// The name of a materialized table.
 	MaterializedTableName string `json:"materialized_table_name,omitempty"`
 	// The name of the table.
@@ -1544,6 +1670,34 @@ func (f *TableInternalAttributesSharedTableType) Type() string {
 	return "TableInternalAttributesSharedTableType"
 }
 
+// Update recipient federation policy
+type UpdateFederationPolicyRequest struct {
+	// Name of the policy. This is the name of the current name of the policy.
+	Name string `json:"-" url:"-"`
+
+	Policy FederationPolicy `json:"policy"`
+	// Name of the recipient. This is the name of the recipient for which the
+	// policy is being updated.
+	RecipientName string `json:"-" url:"-"`
+	// The field mask specifies which fields of the policy to update. To specify
+	// multiple fields in the field mask, use comma as the separator (no space).
+	// The special value '*' indicates that all fields should be updated (full
+	// replacement). If unspecified, all fields that are set in the policy
+	// provided in the update request will overwrite the corresponding fields in
+	// the existing policy. Example value: 'comment,oidc_policy.audiences'.
+	UpdateMask string `json:"-" url:"update_mask,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateFederationPolicyRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateFederationPolicyRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type UpdateProvider struct {
 	// Description about the provider.
 	Comment string `json:"comment,omitempty"`
@@ -1628,6 +1782,19 @@ type UpdateSharePermissions struct {
 	Changes []PermissionsChange `json:"changes,omitempty"`
 	// The name of the share.
 	Name string `json:"-" url:"-"`
+	// Optional. Whether to return the latest permissions list of the share in
+	// the response.
+	OmitPermissionsList bool `json:"omit_permissions_list,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdateSharePermissions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdateSharePermissions) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateSharePermissionsResponse struct {

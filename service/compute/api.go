@@ -2079,8 +2079,10 @@ type InstanceProfilesInterface interface {
 
 	// Register an instance profile.
 	//
-	// In the UI, you can select the instance profile when launching clusters. This
-	// API is only available to admin users.
+	// Registers an instance profile in Databricks. In the UI, you can then give
+	// users the permission to use this instance profile when launching clusters.
+	//
+	// This API is only available to admin users.
 	Add(ctx context.Context, request AddInstanceProfile) error
 
 	// Edit an instance profile.

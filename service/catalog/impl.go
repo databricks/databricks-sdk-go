@@ -346,8 +346,6 @@ func (a *catalogsImpl) Get(ctx context.Context, request GetCatalogRequest) (*Cat
 // the array.
 func (a *catalogsImpl) List(ctx context.Context, request ListCatalogsRequest) listing.Iterator[CatalogInfo] {
 
-	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
-
 	getNextPage := func(ctx context.Context, req ListCatalogsRequest) (*ListCatalogsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalList(ctx, req)
@@ -828,8 +826,6 @@ func (a *externalLocationsImpl) Get(ctx context.Context, request GetExternalLoca
 // location. There is no guarantee of a specific ordering of the elements in the
 // array.
 func (a *externalLocationsImpl) List(ctx context.Context, request ListExternalLocationsRequest) listing.Iterator[ExternalLocationInfo] {
-
-	request.ForceSendFields = append(request.ForceSendFields, "MaxResults")
 
 	getNextPage := func(ctx context.Context, req ListExternalLocationsRequest) (*ListExternalLocationsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")

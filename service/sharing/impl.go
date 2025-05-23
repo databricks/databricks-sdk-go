@@ -10,6 +10,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/client"
 	"github.com/databricks/databricks-sdk-go/listing"
 	"github.com/databricks/databricks-sdk-go/useragent"
+	"golang.org/x/exp/slices"
 )
 
 // unexported type that holds implementations of just Providers API methods
@@ -195,6 +196,105 @@ func (a *recipientActivationImpl) RetrieveToken(ctx context.Context, request Ret
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &retrieveTokenResponse)
 	return &retrieveTokenResponse, err
+}
+
+// unexported type that holds implementations of just RecipientFederationPolicies API methods
+type recipientFederationPoliciesImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *recipientFederationPoliciesImpl) Create(ctx context.Context, request CreateFederationPolicyRequest) (*FederationPolicy, error) {
+	var federationPolicy FederationPolicy
+	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies", request.RecipientName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Policy, &federationPolicy)
+	return &federationPolicy, err
+}
+
+func (a *recipientFederationPoliciesImpl) Delete(ctx context.Context, request DeleteFederationPolicyRequest) error {
+	var deleteResponse DeleteResponse
+	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", request.RecipientName, request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteResponse)
+	return err
+}
+
+func (a *recipientFederationPoliciesImpl) GetFederationPolicy(ctx context.Context, request GetFederationPolicyRequest) (*FederationPolicy, error) {
+	var federationPolicy FederationPolicy
+	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", request.RecipientName, request.Name)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &federationPolicy)
+	return &federationPolicy, err
+}
+
+// List recipient federation policies.
+//
+// Lists federation policies for an OIDC_FEDERATION recipient for sharing data
+// from Databricks to non-Databricks recipients. The caller must have read
+// access to the recipient.
+func (a *recipientFederationPoliciesImpl) List(ctx context.Context, request ListFederationPoliciesRequest) listing.Iterator[FederationPolicy] {
+
+	getNextPage := func(ctx context.Context, req ListFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
+		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
+		return a.internalList(ctx, req)
+	}
+	getItems := func(resp *ListFederationPoliciesResponse) []FederationPolicy {
+		return resp.Policies
+	}
+	getNextReq := func(resp *ListFederationPoliciesResponse) *ListFederationPoliciesRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
+	iterator := listing.NewIterator(
+		&request,
+		getNextPage,
+		getItems,
+		getNextReq)
+	return iterator
+}
+
+// List recipient federation policies.
+//
+// Lists federation policies for an OIDC_FEDERATION recipient for sharing data
+// from Databricks to non-Databricks recipients. The caller must have read
+// access to the recipient.
+func (a *recipientFederationPoliciesImpl) ListAll(ctx context.Context, request ListFederationPoliciesRequest) ([]FederationPolicy, error) {
+	iterator := a.List(ctx, request)
+	return listing.ToSlice[FederationPolicy](ctx, iterator)
+}
+
+func (a *recipientFederationPoliciesImpl) internalList(ctx context.Context, request ListFederationPoliciesRequest) (*ListFederationPoliciesResponse, error) {
+	var listFederationPoliciesResponse ListFederationPoliciesResponse
+	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies", request.RecipientName)
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listFederationPoliciesResponse)
+	return &listFederationPoliciesResponse, err
+}
+
+func (a *recipientFederationPoliciesImpl) Update(ctx context.Context, request UpdateFederationPolicyRequest) (*FederationPolicy, error) {
+	var federationPolicy FederationPolicy
+	path := fmt.Sprintf("/api/2.0/data-sharing/recipients/%v/federation-policies/%v", request.RecipientName, request.Name)
+	queryParams := make(map[string]any)
+	if request.UpdateMask != "" || slices.Contains(request.ForceSendFields, "UpdateMask") {
+		queryParams["update_mask"] = request.UpdateMask
+	}
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.Policy, &federationPolicy)
+	return &federationPolicy, err
 }
 
 // unexported type that holds implementations of just Recipients API methods
