@@ -20,6 +20,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
+	"github.com/databricks/databricks-sdk-go/service/qualitymonitor"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
@@ -657,6 +658,9 @@ type WorkspaceClient struct {
 	// **USE_CATALOG**).
 	QualityMonitors catalog.QualityMonitorsInterface
 
+	// Manage data quality of UC objects (currently support `schema`)
+	QualityMonitorsV2 qualitymonitor.QualityMonitorsV2Interface
+
 	// The queries API can be used to perform CRUD operations on queries. A
 	// query is a Databricks SQL object that includes the target SQL warehouse,
 	// query text, name, description, tags, and parameters. Queries can be
@@ -1251,6 +1255,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ProviderProviders:                   marketplace.NewProviderProviders(databricksClient),
 		Providers:                           sharing.NewProviders(databricksClient),
 		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
+		QualityMonitorsV2:                   qualitymonitor.NewQualityMonitorsV2(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
 		QueriesLegacy:                       sql.NewQueriesLegacy(databricksClient),
 		QueryExecution:                      dashboards.NewQueryExecution(databricksClient),
