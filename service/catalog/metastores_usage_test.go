@@ -227,6 +227,7 @@ func ExampleMetastoresAPI_Update_metastores() {
 
 	_, err = w.Metastores.Update(ctx, catalog.UpdateMetastore{
 		Id:      created.MetastoreId,
+		ExternalAccessEnabled: true,
 		NewName: fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 	})
 	if err != nil {
