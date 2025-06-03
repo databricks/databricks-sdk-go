@@ -180,6 +180,21 @@ func (f *DayOfWeek) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of DayOfWeek.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DayOfWeek) Values() []DayOfWeek {
+	return []DayOfWeek{
+		DayOfWeekFriday,
+		DayOfWeekMonday,
+		DayOfWeekSaturday,
+		DayOfWeekSunday,
+		DayOfWeekThursday,
+		DayOfWeekTuesday,
+		DayOfWeekWednesday,
+	}
+}
+
 // Type always returns DayOfWeek to satisfy [pflag.Value] interface
 func (f *DayOfWeek) Type() string {
 	return "DayOfWeek"
@@ -212,6 +227,15 @@ func (f *DeploymentKind) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BUNDLE"`, v)
+	}
+}
+
+// Values returns all possible values of DeploymentKind.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DeploymentKind) Values() []DeploymentKind {
+	return []DeploymentKind{
+		DeploymentKindBundle,
 	}
 }
 
@@ -356,6 +380,18 @@ func (f *EventLevel) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of EventLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EventLevel) Values() []EventLevel {
+	return []EventLevel{
+		EventLevelError,
+		EventLevelInfo,
+		EventLevelMetrics,
+		EventLevelWarn,
+	}
+}
+
 // Type always returns EventLevel to satisfy [pflag.Value] interface
 func (f *EventLevel) Type() string {
 	return "EventLevel"
@@ -487,6 +523,16 @@ func (f *GetPipelineResponseHealth) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of GetPipelineResponseHealth.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GetPipelineResponseHealth) Values() []GetPipelineResponseHealth {
+	return []GetPipelineResponseHealth{
+		GetPipelineResponseHealthHealthy,
+		GetPipelineResponseHealthUnhealthy,
+	}
+}
+
 // Type always returns GetPipelineResponseHealth to satisfy [pflag.Value] interface
 func (f *GetPipelineResponseHealth) Type() string {
 	return "GetPipelineResponseHealth"
@@ -615,6 +661,26 @@ func (f *IngestionSourceType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "WORKDAY_RAAS"`, v)
+	}
+}
+
+// Values returns all possible values of IngestionSourceType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IngestionSourceType) Values() []IngestionSourceType {
+	return []IngestionSourceType{
+		IngestionSourceTypeDynamics365,
+		IngestionSourceTypeGa4RawData,
+		IngestionSourceTypeManagedPostgresql,
+		IngestionSourceTypeMysql,
+		IngestionSourceTypeNetsuite,
+		IngestionSourceTypeOracle,
+		IngestionSourceTypePostgresql,
+		IngestionSourceTypeSalesforce,
+		IngestionSourceTypeServicenow,
+		IngestionSourceTypeSharepoint,
+		IngestionSourceTypeSqlserver,
+		IngestionSourceTypeWorkdayRaas,
 	}
 }
 
@@ -799,6 +865,17 @@ func (f *MaturityLevel) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEPRECATED", "EVOLVING", "STABLE"`, v)
+	}
+}
+
+// Values returns all possible values of MaturityLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MaturityLevel) Values() []MaturityLevel {
+	return []MaturityLevel{
+		MaturityLevelDeprecated,
+		MaturityLevelEvolving,
+		MaturityLevelStable,
 	}
 }
 
@@ -1092,6 +1169,16 @@ func (f *PipelineClusterAutoscaleMode) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of PipelineClusterAutoscaleMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PipelineClusterAutoscaleMode) Values() []PipelineClusterAutoscaleMode {
+	return []PipelineClusterAutoscaleMode{
+		PipelineClusterAutoscaleModeEnhanced,
+		PipelineClusterAutoscaleModeLegacy,
+	}
+}
+
 // Type always returns PipelineClusterAutoscaleMode to satisfy [pflag.Value] interface
 func (f *PipelineClusterAutoscaleMode) Type() string {
 	return "PipelineClusterAutoscaleMode"
@@ -1216,6 +1303,18 @@ func (f *PipelinePermissionLevel) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_RUN", "CAN_VIEW", "IS_OWNER"`, v)
+	}
+}
+
+// Values returns all possible values of PipelinePermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PipelinePermissionLevel) Values() []PipelinePermissionLevel {
+	return []PipelinePermissionLevel{
+		PipelinePermissionLevelCanManage,
+		PipelinePermissionLevelCanRun,
+		PipelinePermissionLevelCanView,
+		PipelinePermissionLevelIsOwner,
 	}
 }
 
@@ -1374,6 +1473,23 @@ func (f *PipelineState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of PipelineState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PipelineState) Values() []PipelineState {
+	return []PipelineState{
+		PipelineStateDeleted,
+		PipelineStateDeploying,
+		PipelineStateFailed,
+		PipelineStateIdle,
+		PipelineStateRecovering,
+		PipelineStateResetting,
+		PipelineStateRunning,
+		PipelineStateStarting,
+		PipelineStateStopping,
+	}
+}
+
 // Type always returns PipelineState to satisfy [pflag.Value] interface
 func (f *PipelineState) Type() string {
 	return "PipelineState"
@@ -1430,6 +1546,16 @@ func (f *PipelineStateInfoHealth) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "HEALTHY", "UNHEALTHY"`, v)
+	}
+}
+
+// Values returns all possible values of PipelineStateInfoHealth.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PipelineStateInfoHealth) Values() []PipelineStateInfoHealth {
+	return []PipelineStateInfoHealth{
+		PipelineStateInfoHealthHealthy,
+		PipelineStateInfoHealthUnhealthy,
 	}
 }
 
@@ -1670,6 +1796,21 @@ func (f *StartUpdateCause) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of StartUpdateCause.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *StartUpdateCause) Values() []StartUpdateCause {
+	return []StartUpdateCause{
+		StartUpdateCauseApiCall,
+		StartUpdateCauseInfrastructureMaintenance,
+		StartUpdateCauseJobTask,
+		StartUpdateCauseRetryOnFailure,
+		StartUpdateCauseSchemaChange,
+		StartUpdateCauseServiceUpgrade,
+		StartUpdateCauseUserAction,
+	}
+}
+
 // Type always returns StartUpdateCause to satisfy [pflag.Value] interface
 func (f *StartUpdateCause) Type() string {
 	return "StartUpdateCause"
@@ -1787,6 +1928,16 @@ func (f *TableSpecificConfigScdType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of TableSpecificConfigScdType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TableSpecificConfigScdType) Values() []TableSpecificConfigScdType {
+	return []TableSpecificConfigScdType{
+		TableSpecificConfigScdTypeScdType1,
+		TableSpecificConfigScdTypeScdType2,
+	}
+}
+
 // Type always returns TableSpecificConfigScdType to satisfy [pflag.Value] interface
 func (f *TableSpecificConfigScdType) Type() string {
 	return "TableSpecificConfigScdType"
@@ -1868,6 +2019,21 @@ func (f *UpdateInfoCause) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of UpdateInfoCause.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UpdateInfoCause) Values() []UpdateInfoCause {
+	return []UpdateInfoCause{
+		UpdateInfoCauseApiCall,
+		UpdateInfoCauseInfrastructureMaintenance,
+		UpdateInfoCauseJobTask,
+		UpdateInfoCauseRetryOnFailure,
+		UpdateInfoCauseSchemaChange,
+		UpdateInfoCauseServiceUpgrade,
+		UpdateInfoCauseUserAction,
+	}
+}
+
 // Type always returns UpdateInfoCause to satisfy [pflag.Value] interface
 func (f *UpdateInfoCause) Type() string {
 	return "UpdateInfoCause"
@@ -1911,6 +2077,25 @@ func (f *UpdateInfoState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELED", "COMPLETED", "CREATED", "FAILED", "INITIALIZING", "QUEUED", "RESETTING", "RUNNING", "SETTING_UP_TABLES", "STOPPING", "WAITING_FOR_RESOURCES"`, v)
+	}
+}
+
+// Values returns all possible values of UpdateInfoState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UpdateInfoState) Values() []UpdateInfoState {
+	return []UpdateInfoState{
+		UpdateInfoStateCanceled,
+		UpdateInfoStateCompleted,
+		UpdateInfoStateCreated,
+		UpdateInfoStateFailed,
+		UpdateInfoStateInitializing,
+		UpdateInfoStateQueued,
+		UpdateInfoStateResetting,
+		UpdateInfoStateRunning,
+		UpdateInfoStateSettingUpTables,
+		UpdateInfoStateStopping,
+		UpdateInfoStateWaitingForResources,
 	}
 }
 
@@ -1975,6 +2160,25 @@ func (f *UpdateStateInfoState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELED", "COMPLETED", "CREATED", "FAILED", "INITIALIZING", "QUEUED", "RESETTING", "RUNNING", "SETTING_UP_TABLES", "STOPPING", "WAITING_FOR_RESOURCES"`, v)
+	}
+}
+
+// Values returns all possible values of UpdateStateInfoState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UpdateStateInfoState) Values() []UpdateStateInfoState {
+	return []UpdateStateInfoState{
+		UpdateStateInfoStateCanceled,
+		UpdateStateInfoStateCompleted,
+		UpdateStateInfoStateCreated,
+		UpdateStateInfoStateFailed,
+		UpdateStateInfoStateInitializing,
+		UpdateStateInfoStateQueued,
+		UpdateStateInfoStateResetting,
+		UpdateStateInfoStateRunning,
+		UpdateStateInfoStateSettingUpTables,
+		UpdateStateInfoStateStopping,
+		UpdateStateInfoStateWaitingForResources,
 	}
 }
 

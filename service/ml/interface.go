@@ -15,6 +15,8 @@ import (
 // Experiments are located in the workspace file tree. You manage experiments
 // using the same tools you use to manage other workspace objects such as
 // folders, notebooks, and libraries.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ExperimentsService interface {
 
 	// Create experiment.
@@ -102,8 +104,6 @@ type ExperimentsService interface {
 	// Get metric history for a run.
 	//
 	// Gets a list of all values for the specified metric for a given run.
-	//
-	// Use GetHistoryAll() to get all Metric instances, which will iterate over every result page.
 	GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error)
 
 	// Get a logged model.
@@ -138,15 +138,11 @@ type ExperimentsService interface {
 	// Please call `/api/2.0/fs/directories{directory_path}` for listing
 	// artifacts in UC Volumes, which supports pagination. See [List directory
 	// contents | Files API](/api/workspace/files/listdirectorycontents).
-	//
-	// Use ListArtifactsAll() to get all FileInfo instances, which will iterate over every result page.
 	ListArtifacts(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error)
 
 	// List experiments.
 	//
 	// Gets a list of all experiments.
-	//
-	// Use ListExperimentsAll() to get all Experiment instances, which will iterate over every result page.
 	ListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error)
 
 	// List artifacts for a logged model.
@@ -285,8 +281,6 @@ type ExperimentsService interface {
 	// Search experiments.
 	//
 	// Searches for experiments that satisfy specified search criteria.
-	//
-	// Use SearchExperimentsAll() to get all Experiment instances, which will iterate over every result page.
 	SearchExperiments(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error)
 
 	// Search logged models.
@@ -299,8 +293,6 @@ type ExperimentsService interface {
 	// Searches for runs that satisfy expressions.
 	//
 	// Search expressions can use `mlflowMetric` and `mlflowParam` keys.
-	//
-	// Use SearchRunsAll() to get all Run instances, which will iterate over every result page.
 	SearchRuns(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error)
 
 	// Set a tag for an experiment.
@@ -344,6 +336,8 @@ type ExperimentsService interface {
 
 // The Forecasting API allows you to create and get serverless forecasting
 // experiments
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ForecastingService interface {
 
 	// Create a forecasting experiment.
@@ -365,6 +359,8 @@ type ForecastingService interface {
 //
 // The Workspace Model Registry is a centralized model repository and a UI and
 // set of APIs that enable you to manage the full lifecycle of MLflow Models.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ModelRegistryService interface {
 
 	// Approve transition request.
@@ -445,8 +441,6 @@ type ModelRegistryService interface {
 	// Get the latest version.
 	//
 	// Gets the latest version of a registered model.
-	//
-	// Use GetLatestVersionsAll() to get all ModelVersion instances
 	GetLatestVersions(ctx context.Context, request GetLatestVersionsRequest) (*GetLatestVersionsResponse, error)
 
 	// Get model.
@@ -483,15 +477,11 @@ type ModelRegistryService interface {
 	//
 	// Lists all available registered models, up to the limit specified in
 	// __max_results__.
-	//
-	// Use ListModelsAll() to get all Model instances, which will iterate over every result page.
 	ListModels(ctx context.Context, request ListModelsRequest) (*ListModelsResponse, error)
 
 	// List transition requests.
 	//
 	// Gets a list of all open stage transition requests for the model version.
-	//
-	// Use ListTransitionRequestsAll() to get all Activity instances
 	ListTransitionRequests(ctx context.Context, request ListTransitionRequestsRequest) (*ListTransitionRequestsResponse, error)
 
 	// List registry webhooks.
@@ -499,8 +489,6 @@ type ModelRegistryService interface {
 	// **NOTE:** This endpoint is in Public Preview.
 	//
 	// Lists all registry webhooks.
-	//
-	// Use ListWebhooksAll() to get all RegistryWebhook instances, which will iterate over every result page.
 	ListWebhooks(ctx context.Context, request ListWebhooksRequest) (*ListRegistryWebhooks, error)
 
 	// Reject a transition request.
@@ -516,15 +504,11 @@ type ModelRegistryService interface {
 	// Searches model versions.
 	//
 	// Searches for specific model versions based on the supplied __filter__.
-	//
-	// Use SearchModelVersionsAll() to get all ModelVersion instances, which will iterate over every result page.
 	SearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error)
 
 	// Search models.
 	//
 	// Search for registered models based on the specified __filter__.
-	//
-	// Use SearchModelsAll() to get all Model instances, which will iterate over every result page.
 	SearchModels(ctx context.Context, request SearchModelsRequest) (*SearchModelsResponse, error)
 
 	// Set a tag.

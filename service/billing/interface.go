@@ -8,6 +8,8 @@ import (
 
 // This API allows you to download billable usage logs for the specified account
 // and date range. This feature works with all account types.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type BillableUsageService interface {
 
 	// Return billable usage logs.
@@ -27,6 +29,8 @@ type BillableUsageService interface {
 }
 
 // A service serves REST API about Budget policies
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type BudgetPolicyService interface {
 
 	// Create a budget policy.
@@ -48,8 +52,6 @@ type BudgetPolicyService interface {
 	//
 	// Lists all policies. Policies are returned in the alphabetically ascending
 	// order of their names.
-	//
-	// Use ListAll() to get all BudgetPolicy instances, which will iterate over every result page.
 	List(ctx context.Context, request ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error)
 
 	// Update a budget policy.
@@ -62,6 +64,8 @@ type BudgetPolicyService interface {
 // to monitor usage across your account. You can set up budgets to either track
 // account-wide spending, or apply filters to track the spending of specific
 // teams, projects, or workspaces.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type BudgetsService interface {
 
 	// Create new budget.
@@ -85,8 +89,6 @@ type BudgetsService interface {
 	// Get all budgets.
 	//
 	// Gets all budgets associated with this account.
-	//
-	// Use ListAll() to get all BudgetConfiguration instances, which will iterate over every result page.
 	List(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error)
 
 	// Modify budget.
@@ -153,6 +155,8 @@ type BudgetsService interface {
 // details. * Auditable events are typically available in logs within 15
 // minutes.
 //
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+//
 // [Audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 // [Billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 // [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
@@ -199,8 +203,6 @@ type LogDeliveryService interface {
 	//
 	// Gets all Databricks log delivery configurations associated with an
 	// account specified by ID.
-	//
-	// Use ListAll() to get all LogDeliveryConfiguration instances
 	List(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error)
 
 	// Enable or disable log delivery configuration.
@@ -216,6 +218,8 @@ type LogDeliveryService interface {
 // These APIs manage usage dashboards for this account. Usage dashboards enable
 // you to gain insights into your usage with pre-built dashboards: visualize
 // breakdowns, analyze tag attributions, and identify cost drivers.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type UsageDashboardsService interface {
 
 	// Create new usage dashboard.

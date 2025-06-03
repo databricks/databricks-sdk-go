@@ -179,6 +179,15 @@ func (f *DashboardView) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of DashboardView.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DashboardView) Values() []DashboardView {
+	return []DashboardView{
+		DashboardViewDashboardViewBasic,
+	}
+}
+
 // Type always returns DashboardView to satisfy [pflag.Value] interface
 func (f *DashboardView) Type() string {
 	return "DashboardView"
@@ -695,6 +704,16 @@ func (f *LifecycleState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of LifecycleState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LifecycleState) Values() []LifecycleState {
+	return []LifecycleState{
+		LifecycleStateActive,
+		LifecycleStateTrashed,
+	}
+}
+
 // Type always returns LifecycleState to satisfy [pflag.Value] interface
 func (f *LifecycleState) Type() string {
 	return "LifecycleState"
@@ -963,6 +982,67 @@ func (f *MessageErrorType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of MessageErrorType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MessageErrorType) Values() []MessageErrorType {
+	return []MessageErrorType{
+		MessageErrorTypeBlockMultipleExecutionsException,
+		MessageErrorTypeChatCompletionClientException,
+		MessageErrorTypeChatCompletionClientTimeoutException,
+		MessageErrorTypeChatCompletionNetworkException,
+		MessageErrorTypeContentFilterException,
+		MessageErrorTypeContextExceededException,
+		MessageErrorTypeCouldNotGetModelDeploymentsException,
+		MessageErrorTypeCouldNotGetUcSchemaException,
+		MessageErrorTypeDeploymentNotFoundException,
+		MessageErrorTypeDescribeQueryInvalidSqlError,
+		MessageErrorTypeDescribeQueryTimeout,
+		MessageErrorTypeDescribeQueryUnexpectedFailure,
+		MessageErrorTypeFunctionsNotAvailableException,
+		MessageErrorTypeFunctionArgumentsInvalidException,
+		MessageErrorTypeFunctionArgumentsInvalidJsonException,
+		MessageErrorTypeFunctionArgumentsInvalidTypeException,
+		MessageErrorTypeFunctionCallMissingParameterException,
+		MessageErrorTypeGeneratedSqlQueryTooLongException,
+		MessageErrorTypeGenericChatCompletionException,
+		MessageErrorTypeGenericChatCompletionServiceException,
+		MessageErrorTypeGenericSqlExecApiCallException,
+		MessageErrorTypeIllegalParameterDefinitionException,
+		MessageErrorTypeInvalidCertifiedAnswerFunctionException,
+		MessageErrorTypeInvalidCertifiedAnswerIdentifierException,
+		MessageErrorTypeInvalidChatCompletionArgumentsJsonException,
+		MessageErrorTypeInvalidChatCompletionJsonException,
+		MessageErrorTypeInvalidCompletionRequestException,
+		MessageErrorTypeInvalidFunctionCallException,
+		MessageErrorTypeInvalidSqlMultipleDatasetReferencesException,
+		MessageErrorTypeInvalidSqlMultipleStatementsException,
+		MessageErrorTypeInvalidSqlUnknownTableException,
+		MessageErrorTypeInvalidTableIdentifierException,
+		MessageErrorTypeLocalContextExceededException,
+		MessageErrorTypeMessageCancelledWhileExecutingException,
+		MessageErrorTypeMessageDeletedWhileExecutingException,
+		MessageErrorTypeMessageUpdatedWhileExecutingException,
+		MessageErrorTypeMissingSqlQueryException,
+		MessageErrorTypeNoDeploymentsAvailableToWorkspace,
+		MessageErrorTypeNoQueryToVisualizeException,
+		MessageErrorTypeNoTablesToQueryException,
+		MessageErrorTypeRateLimitExceededGenericException,
+		MessageErrorTypeRateLimitExceededSpecifiedWaitException,
+		MessageErrorTypeReplyProcessTimeoutException,
+		MessageErrorTypeRetryableProcessingException,
+		MessageErrorTypeSqlExecutionException,
+		MessageErrorTypeStopProcessDueToAutoRegenerate,
+		MessageErrorTypeTablesMissingException,
+		MessageErrorTypeTooManyCertifiedAnswersException,
+		MessageErrorTypeTooManyTablesException,
+		MessageErrorTypeUnexpectedReplyProcessException,
+		MessageErrorTypeUnknownAiModel,
+		MessageErrorTypeWarehouseAccessMissingException,
+		MessageErrorTypeWarehouseNotFoundException,
+	}
+}
+
 // Type always returns MessageErrorType to satisfy [pflag.Value] interface
 func (f *MessageErrorType) Type() string {
 	return "MessageErrorType"
@@ -1037,6 +1117,24 @@ func (f *MessageStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ASKING_AI", "CANCELLED", "COMPLETED", "EXECUTING_QUERY", "FAILED", "FETCHING_METADATA", "FILTERING_CONTEXT", "PENDING_WAREHOUSE", "QUERY_RESULT_EXPIRED", "SUBMITTED"`, v)
+	}
+}
+
+// Values returns all possible values of MessageStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MessageStatus) Values() []MessageStatus {
+	return []MessageStatus{
+		MessageStatusAskingAi,
+		MessageStatusCancelled,
+		MessageStatusCompleted,
+		MessageStatusExecutingQuery,
+		MessageStatusFailed,
+		MessageStatusFetchingMetadata,
+		MessageStatusFilteringContext,
+		MessageStatusPendingWarehouse,
+		MessageStatusQueryResultExpired,
+		MessageStatusSubmitted,
 	}
 }
 
@@ -1238,6 +1336,16 @@ func (f *SchedulePauseStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
+	}
+}
+
+// Values returns all possible values of SchedulePauseStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SchedulePauseStatus) Values() []SchedulePauseStatus {
+	return []SchedulePauseStatus{
+		SchedulePauseStatusPaused,
+		SchedulePauseStatusUnpaused,
 	}
 }
 

@@ -446,6 +446,16 @@ func (f *EndpointUseCase) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of EndpointUseCase.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EndpointUseCase) Values() []EndpointUseCase {
+	return []EndpointUseCase{
+		EndpointUseCaseDataplaneRelayAccess,
+		EndpointUseCaseWorkspaceAccess,
+	}
+}
+
 // Type always returns EndpointUseCase to satisfy [pflag.Value] interface
 func (f *EndpointUseCase) Type() string {
 	return "EndpointUseCase"
@@ -478,6 +488,19 @@ func (f *ErrorType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "credentials", "networkAcl", "securityGroup", "subnet", "vpc"`, v)
+	}
+}
+
+// Values returns all possible values of ErrorType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ErrorType) Values() []ErrorType {
+	return []ErrorType{
+		ErrorTypeCredentials,
+		ErrorTypeNetworkAcl,
+		ErrorTypeSecurityGroup,
+		ErrorTypeSubnet,
+		ErrorTypeVpc,
 	}
 }
 
@@ -704,6 +727,16 @@ func (f *GkeConfigConnectivityType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of GkeConfigConnectivityType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GkeConfigConnectivityType) Values() []GkeConfigConnectivityType {
+	return []GkeConfigConnectivityType{
+		GkeConfigConnectivityTypePrivateNodePublicMaster,
+		GkeConfigConnectivityTypePublicNodePublicMaster,
+	}
+}
+
 // Type always returns GkeConfigConnectivityType to satisfy [pflag.Value] interface
 func (f *GkeConfigConnectivityType) Type() string {
 	return "GkeConfigConnectivityType"
@@ -734,6 +767,16 @@ func (f *KeyUseCase) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "MANAGED_SERVICES", "STORAGE"`, v)
+	}
+}
+
+// Values returns all possible values of KeyUseCase.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *KeyUseCase) Values() []KeyUseCase {
+	return []KeyUseCase{
+		KeyUseCaseManagedServices,
+		KeyUseCaseStorage,
 	}
 }
 
@@ -871,6 +914,20 @@ func (f *PricingTier) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of PricingTier.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PricingTier) Values() []PricingTier {
+	return []PricingTier{
+		PricingTierCommunityEdition,
+		PricingTierDedicated,
+		PricingTierEnterprise,
+		PricingTierPremium,
+		PricingTierStandard,
+		PricingTierUnknown,
+	}
+}
+
 // Type always returns PricingTier to satisfy [pflag.Value] interface
 func (f *PricingTier) Type() string {
 	return "PricingTier"
@@ -901,6 +958,16 @@ func (f *PrivateAccessLevel) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACCOUNT", "ENDPOINT"`, v)
+	}
+}
+
+// Values returns all possible values of PrivateAccessLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PrivateAccessLevel) Values() []PrivateAccessLevel {
+	return []PrivateAccessLevel{
+		PrivateAccessLevelAccount,
+		PrivateAccessLevelEndpoint,
 	}
 }
 
@@ -1183,6 +1250,18 @@ func (f *VpcStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of VpcStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *VpcStatus) Values() []VpcStatus {
+	return []VpcStatus{
+		VpcStatusBroken,
+		VpcStatusUnattached,
+		VpcStatusValid,
+		VpcStatusWarned,
+	}
+}
+
 // Type always returns VpcStatus to satisfy [pflag.Value] interface
 func (f *VpcStatus) Type() string {
 	return "VpcStatus"
@@ -1208,6 +1287,16 @@ func (f *WarningType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "securityGroup", "subnet"`, v)
+	}
+}
+
+// Values returns all possible values of WarningType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *WarningType) Values() []WarningType {
+	return []WarningType{
+		WarningTypeSecurityGroup,
+		WarningTypeSubnet,
 	}
 }
 
@@ -1356,6 +1445,20 @@ func (f *WorkspaceStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BANNED", "CANCELLING", "FAILED", "NOT_PROVISIONED", "PROVISIONING", "RUNNING"`, v)
+	}
+}
+
+// Values returns all possible values of WorkspaceStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *WorkspaceStatus) Values() []WorkspaceStatus {
+	return []WorkspaceStatus{
+		WorkspaceStatusBanned,
+		WorkspaceStatusCancelling,
+		WorkspaceStatusFailed,
+		WorkspaceStatusNotProvisioned,
+		WorkspaceStatusProvisioning,
+		WorkspaceStatusRunning,
 	}
 }
 

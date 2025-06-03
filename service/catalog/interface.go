@@ -7,6 +7,8 @@ import (
 )
 
 // These APIs manage metastore assignments to a workspace.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountMetastoreAssignmentsService interface {
 
 	// Assigns a workspace to a metastore.
@@ -32,8 +34,6 @@ type AccountMetastoreAssignmentsService interface {
 	//
 	// Gets a list of all Databricks workspace IDs that have been assigned to
 	// given metastore.
-	//
-	// Use ListAll() to get all WorkspaceId instances
 	List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) (*ListAccountMetastoreAssignmentsResponse, error)
 
 	// Updates a metastore assignment to a workspaces.
@@ -45,6 +45,8 @@ type AccountMetastoreAssignmentsService interface {
 
 // These APIs manage Unity Catalog metastores for an account. A metastore
 // contains catalogs that can be associated with workspaces
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountMetastoresService interface {
 
 	// Create metastore.
@@ -66,8 +68,6 @@ type AccountMetastoresService interface {
 	//
 	// Gets all Unity Catalog metastores associated with an account specified by
 	// ID.
-	//
-	// Use ListAll() to get all MetastoreInfo instances
 	List(ctx context.Context) (*ListMetastoresResponse, error)
 
 	// Update a metastore.
@@ -77,6 +77,8 @@ type AccountMetastoresService interface {
 }
 
 // These APIs manage storage credentials for a particular metastore.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountStorageCredentialsService interface {
 
 	// Create a storage credential.
@@ -108,8 +110,6 @@ type AccountStorageCredentialsService interface {
 	//
 	// Gets a list of all storage credentials that have been assigned to given
 	// metastore.
-	//
-	// Use ListAll() to get all StorageCredentialInfo instances
 	List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListAccountStorageCredentialsResponse, error)
 
 	// Updates a storage credential.
@@ -123,6 +123,8 @@ type AccountStorageCredentialsService interface {
 // In Databricks Runtime 13.3 and above, you can add libraries and init scripts
 // to the `allowlist` in UC so that users can leverage these artifacts on
 // compute configured with shared access mode.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ArtifactAllowlistsService interface {
 
 	// Get an artifact allowlist.
@@ -149,6 +151,8 @@ type ArtifactAllowlistsService interface {
 // data centrally across all of the workspaces in a Databricks account. Users in
 // different workspaces can share access to the same data, depending on
 // privileges granted centrally in Unity Catalog.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CatalogsService interface {
 
 	// Create a catalog.
@@ -177,8 +181,6 @@ type CatalogsService interface {
 	// owned by the caller (or for which the caller has the **USE_CATALOG**
 	// privilege) will be retrieved. There is no guarantee of a specific
 	// ordering of the elements in the array.
-	//
-	// Use ListAll() to get all CatalogInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListCatalogsRequest) (*ListCatalogsResponse, error)
 
 	// Update a catalog.
@@ -200,6 +202,8 @@ type CatalogsService interface {
 // Users may create different types of connections with each connection having a
 // unique set of configuration options to support credential management and
 // other settings.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ConnectionsService interface {
 
 	// Create a connection.
@@ -224,8 +228,6 @@ type ConnectionsService interface {
 	// List connections.
 	//
 	// List all connections.
-	//
-	// Use ListAll() to get all ConnectionInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListConnectionsRequest) (*ListConnectionsResponse, error)
 
 	// Update a connection.
@@ -242,6 +244,8 @@ type ConnectionsService interface {
 // To create credentials, you must be a Databricks account admin or have the
 // `CREATE SERVICE CREDENTIAL` privilege. The user who creates the credential
 // can delegate ownership to another user or group to manage permissions on it.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CredentialsService interface {
 
 	// Create a credential.
@@ -283,8 +287,6 @@ type CredentialsService interface {
 	// permission to access. If the caller is a metastore admin, retrieval of
 	// credentials is unrestricted. There is no guarantee of a specific ordering
 	// of the elements in the array.
-	//
-	// Use ListCredentialsAll() to get all CredentialInfo instances, which will iterate over every result page.
 	ListCredentials(ctx context.Context, request ListCredentialsRequest) (*ListCredentialsResponse, error)
 
 	// Update a credential.
@@ -318,6 +320,8 @@ type CredentialsService interface {
 }
 
 // Database Instances provide access to a database via REST API or direct SQL.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DatabaseInstancesService interface {
 
 	// Create a Database Catalog.
@@ -351,8 +355,6 @@ type DatabaseInstancesService interface {
 	GetSyncedDatabaseTable(ctx context.Context, request GetSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
 
 	// List Database Instances.
-	//
-	// Use ListDatabaseInstancesAll() to get all DatabaseInstance instances, which will iterate over every result page.
 	ListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error)
 
 	// Update a Database Instance.
@@ -372,6 +374,8 @@ type DatabaseInstancesService interface {
 //
 // To create external locations, you must be a metastore admin or a user with
 // the **CREATE_EXTERNAL_LOCATION** privilege.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ExternalLocationsService interface {
 
 	// Create an external location.
@@ -401,8 +405,6 @@ type ExternalLocationsService interface {
 	// the external location, or a user that has some privilege on the external
 	// location. There is no guarantee of a specific ordering of the elements in
 	// the array.
-	//
-	// Use ListAll() to get all ExternalLocationInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListExternalLocationsRequest) (*ListExternalLocationsResponse, error)
 
 	// Update an external location.
@@ -419,6 +421,8 @@ type ExternalLocationsService interface {
 // invoked wherever a table reference is allowed in a query. In Unity Catalog, a
 // function resides at the same level as a table, so it can be referenced with
 // the form __catalog_name__.__schema_name__.__function_name__.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type FunctionsService interface {
 
 	// Create a function.
@@ -463,8 +467,6 @@ type FunctionsService interface {
 	// list contains only functions for which either the user has the
 	// **EXECUTE** privilege or the user is the owner. There is no guarantee of
 	// a specific ordering of the elements in the array.
-	//
-	// Use ListAll() to get all FunctionInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error)
 
 	// Update a function.
@@ -491,6 +493,8 @@ type FunctionsService interface {
 // automatically grants the privilege to all current and future objects within
 // the catalog. Similarly, privileges granted on a schema are inherited by all
 // current and future objects within that schema.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type GrantsService interface {
 
 	// Get permissions.
@@ -523,6 +527,8 @@ type GrantsService interface {
 // workspaces created before Unity Catalog was released. If your workspace
 // includes a legacy Hive metastore, the data in that metastore is available in
 // a catalog named hive_metastore.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type MetastoresService interface {
 
 	// Create an assignment.
@@ -563,8 +569,6 @@ type MetastoresService interface {
 	// Gets an array of the available metastores (as __MetastoreInfo__ objects).
 	// The caller must be an admin to retrieve this info. There is no guarantee
 	// of a specific ordering of the elements in the array.
-	//
-	// Use ListAll() to get all MetastoreInfo instances
 	List(ctx context.Context) (*ListMetastoresResponse, error)
 
 	// Get a metastore summary.
@@ -604,6 +608,8 @@ type MetastoresService interface {
 // This API reference documents the REST endpoints for managing model versions
 // in Unity Catalog. For more details, see the [registered models API
 // docs](/api/workspace/registeredmodels).
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ModelVersionsService interface {
 
 	// Delete a Model Version.
@@ -654,8 +660,6 @@ type ModelVersionsService interface {
 	// There is no guarantee of a specific ordering of the elements in the
 	// response. The elements in the response will not contain any aliases or
 	// tags.
-	//
-	// Use ListAll() to get all ModelVersionInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListModelVersionsRequest) (*ListModelVersionsResponse, error)
 
 	// Update a Model Version.
@@ -673,6 +677,8 @@ type ModelVersionsService interface {
 
 // Online tables provide lower latency and higher QPS access to data from Delta
 // tables.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type OnlineTablesService interface {
 
 	// Create an Online Table.
@@ -701,6 +707,8 @@ type OnlineTablesService interface {
 // parent schema or parent catalog). Viewing the dashboard, computed metrics, or
 // monitor configuration only requires the user to have **SELECT** privileges on
 // the table (along with **USE_SCHEMA** and **USE_CATALOG**).
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QualityMonitorsService interface {
 
 	// Cancel refresh.
@@ -872,6 +880,8 @@ type QualityMonitorsService interface {
 // Note: The securable type for models is "FUNCTION". When using REST APIs (e.g.
 // tagging, grants) that specify a securable type, use "FUNCTION" as the
 // securable type.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type RegisteredModelsService interface {
 
 	// Create a Registered Model.
@@ -936,8 +946,6 @@ type RegisteredModelsService interface {
 	//
 	// There is no guarantee of a specific ordering of the elements in the
 	// response.
-	//
-	// Use ListAll() to get all RegisteredModelInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error)
 
 	// Set a Registered Model Alias.
@@ -971,6 +979,8 @@ type RegisteredModelsService interface {
 // usage and limits. For more information on resource quotas see the [Unity
 // Catalog documentation].
 //
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+//
 // [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
 type ResourceQuotasService interface {
 
@@ -987,8 +997,6 @@ type ResourceQuotasService interface {
 	// ListQuotas returns all quota values under the metastore. There are no
 	// SLAs on the freshness of the counts returned. This API does not trigger a
 	// refresh of quota counts.
-	//
-	// Use ListQuotasAll() to get all QuotaInfo instances, which will iterate over every result page.
 	ListQuotas(ctx context.Context, request ListQuotasRequest) (*ListQuotasResponse, error)
 }
 
@@ -997,6 +1005,8 @@ type ResourceQuotasService interface {
 // access (or list) a table or view in a schema, users must have the USE_SCHEMA
 // data permission on the schema and its parent catalog, and they must have the
 // SELECT permission on the table or view.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SchemasService interface {
 
 	// Create a schema.
@@ -1027,8 +1037,6 @@ type SchemasService interface {
 	// caller (or for which the caller has the **USE_SCHEMA** privilege) will be
 	// retrieved. There is no guarantee of a specific ordering of the elements
 	// in the array.
-	//
-	// Use ListAll() to get all SchemaInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error)
 
 	// Update a schema.
@@ -1054,6 +1062,8 @@ type SchemasService interface {
 // To create storage credentials, you must be a Databricks account admin. The
 // account admin who creates the storage credential can delegate ownership to
 // another user or group to manage permissions on it.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type StorageCredentialsService interface {
 
 	// Create a storage credential.
@@ -1081,8 +1091,6 @@ type StorageCredentialsService interface {
 	// caller has permission to access. If the caller is a metastore admin,
 	// retrieval of credentials is unrestricted. There is no guarantee of a
 	// specific ordering of the elements in the array.
-	//
-	// Use ListAll() to get all StorageCredentialInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error)
 
 	// Update a credential.
@@ -1111,6 +1119,8 @@ type StorageCredentialsService interface {
 // A system schema is a schema that lives within the system catalog. A system
 // schema may contain information about customer usage of Unity Catalog such as
 // audit-logs, billing-logs, lineage information, etc.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SystemSchemasService interface {
 
 	// Disable a system schema.
@@ -1129,8 +1139,6 @@ type SystemSchemasService interface {
 	//
 	// Gets an array of system schemas for a metastore. The caller must be an
 	// account admin or a metastore admin.
-	//
-	// Use ListAll() to get all SystemSchemaInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error)
 }
 
@@ -1147,6 +1155,8 @@ type SystemSchemasService interface {
 // You can declare primary keys and foreign keys as part of the table
 // specification during table creation. You can also add or drop constraints on
 // existing tables.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type TableConstraintsService interface {
 
 	// Create a table constraint.
@@ -1188,6 +1198,8 @@ type TableConstraintsService interface {
 //
 // A table can be managed or external. From an API perspective, a __VIEW__ is a
 // particular kind of table (rather than a managed or external table).
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type TablesService interface {
 
 	// Delete a table.
@@ -1232,8 +1244,6 @@ type TablesService interface {
 	// the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 	// There is no guarantee of a specific ordering of the elements in the
 	// array.
-	//
-	// Use ListAll() to get all TableInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error)
 
 	// List table summaries.
@@ -1251,8 +1261,6 @@ type TablesService interface {
 	//
 	// There is no guarantee of a specific ordering of the elements in the
 	// array.
-	//
-	// Use ListSummariesAll() to get all TableSummary instances, which will iterate over every result page.
 	ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error)
 
 	// Update a table owner.
@@ -1281,6 +1289,8 @@ type TablesService interface {
 // SCHEMA is a schema level permission that can only be granted by catalog admin
 // explicitly and is not included in schema ownership or ALL PRIVILEGES on the
 // schema for security reason.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type TemporaryTableCredentialsService interface {
 
 	// Generate a temporary table credential.
@@ -1301,6 +1311,8 @@ type TemporaryTableCredentialsService interface {
 // cluster machines, storing library and config files of arbitrary formats such
 // as .whl or .txt centrally and providing secure access across workspaces to
 // it, or transforming and querying non-tabular data files in ETL.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type VolumesService interface {
 
 	// Create a Volume.
@@ -1350,8 +1362,6 @@ type VolumesService interface {
 	//
 	// There is no guarantee of a specific ordering of the elements in the
 	// array.
-	//
-	// Use ListAll() to get all VolumeInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListVolumesRequest) (*ListVolumesResponseContent, error)
 
 	// Get a Volume.
@@ -1398,6 +1408,8 @@ type VolumesService interface {
 //
 // Securable types that support binding: - catalog - storage_credential -
 // credential - external_location
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WorkspaceBindingsService interface {
 
 	// Get catalog workspace bindings.
@@ -1410,8 +1422,6 @@ type WorkspaceBindingsService interface {
 	//
 	// Gets workspace bindings of the securable. The caller must be a metastore
 	// admin or an owner of the securable.
-	//
-	// Use GetBindingsAll() to get all WorkspaceBinding instances, which will iterate over every result page.
 	GetBindings(ctx context.Context, request GetBindingsRequest) (*GetWorkspaceBindingsResponse, error)
 
 	// Update catalog workspace bindings.

@@ -339,6 +339,16 @@ func (f *GetSortOrder) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of GetSortOrder.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GetSortOrder) Values() []GetSortOrder {
+	return []GetSortOrder{
+		GetSortOrderAscending,
+		GetSortOrderDescending,
+	}
+}
+
 // Type always returns GetSortOrder to satisfy [pflag.Value] interface
 func (f *GetSortOrder) Type() string {
 	return "GetSortOrder"
@@ -449,6 +459,15 @@ func (f *GroupSchema) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "urn:ietf:params:scim:schemas:core:2.0:Group"`, v)
+	}
+}
+
+// Values returns all possible values of GroupSchema.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GroupSchema) Values() []GroupSchema {
+	return []GroupSchema{
+		GroupSchemaUrnIetfParamsScimSchemasCore20Group,
 	}
 }
 
@@ -638,6 +657,15 @@ func (f *ListResponseSchema) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ListResponseSchema.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListResponseSchema) Values() []ListResponseSchema {
+	return []ListResponseSchema{
+		ListResponseSchemaUrnIetfParamsScimApiMessages20ListResponse,
+	}
+}
+
 // Type always returns ListResponseSchema to satisfy [pflag.Value] interface
 func (f *ListResponseSchema) Type() string {
 	return "ListResponseSchema"
@@ -720,6 +748,16 @@ func (f *ListSortOrder) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ascending", "descending"`, v)
+	}
+}
+
+// Values returns all possible values of ListSortOrder.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListSortOrder) Values() []ListSortOrder {
+	return []ListSortOrder{
+		ListSortOrderAscending,
+		ListSortOrderDescending,
 	}
 }
 
@@ -958,6 +996,15 @@ func (f *PasswordPermissionLevel) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of PasswordPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PasswordPermissionLevel) Values() []PasswordPermissionLevel {
+	return []PasswordPermissionLevel{
+		PasswordPermissionLevelCanUse,
+	}
+}
+
 // Type always returns PasswordPermissionLevel to satisfy [pflag.Value] interface
 func (f *PasswordPermissionLevel) Type() string {
 	return "PasswordPermissionLevel"
@@ -1045,6 +1092,17 @@ func (f *PatchOp) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of PatchOp.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PatchOp) Values() []PatchOp {
+	return []PatchOp{
+		PatchOpAdd,
+		PatchOpRemove,
+		PatchOpReplace,
+	}
+}
+
 // Type always returns PatchOp to satisfy [pflag.Value] interface
 func (f *PatchOp) Type() string {
 	return "PatchOp"
@@ -1070,6 +1128,15 @@ func (f *PatchSchema) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "urn:ietf:params:scim:api:messages:2.0:PatchOp"`, v)
+	}
+}
+
+// Values returns all possible values of PatchSchema.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PatchSchema) Values() []PatchSchema {
+	return []PatchSchema{
+		PatchSchemaUrnIetfParamsScimApiMessages20PatchOp,
 	}
 }
 
@@ -1179,6 +1246,33 @@ func (f *PermissionLevel) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of PermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PermissionLevel) Values() []PermissionLevel {
+	return []PermissionLevel{
+		PermissionLevelCanAttachTo,
+		PermissionLevelCanBind,
+		PermissionLevelCanCreate,
+		PermissionLevelCanEdit,
+		PermissionLevelCanEditMetadata,
+		PermissionLevelCanManage,
+		PermissionLevelCanManageProductionVersions,
+		PermissionLevelCanManageRun,
+		PermissionLevelCanManageStagingVersions,
+		PermissionLevelCanMonitor,
+		PermissionLevelCanMonitorOnly,
+		PermissionLevelCanQuery,
+		PermissionLevelCanRead,
+		PermissionLevelCanRestart,
+		PermissionLevelCanRun,
+		PermissionLevelCanUse,
+		PermissionLevelCanView,
+		PermissionLevelCanViewMetadata,
+		PermissionLevelIsOwner,
+	}
+}
+
 // Type always returns PermissionLevel to satisfy [pflag.Value] interface
 func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
@@ -1263,6 +1357,16 @@ func (f *RequestAuthzIdentity) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY", "REQUEST_AUTHZ_IDENTITY_USER_CONTEXT"`, v)
+	}
+}
+
+// Values returns all possible values of RequestAuthzIdentity.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RequestAuthzIdentity) Values() []RequestAuthzIdentity {
+	return []RequestAuthzIdentity{
+		RequestAuthzIdentityRequestAuthzIdentityServiceIdentity,
+		RequestAuthzIdentityRequestAuthzIdentityUserContext,
 	}
 }
 
@@ -1400,6 +1504,15 @@ func (f *ServicePrincipalSchema) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ServicePrincipalSchema.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ServicePrincipalSchema) Values() []ServicePrincipalSchema {
+	return []ServicePrincipalSchema{
+		ServicePrincipalSchemaUrnIetfParamsScimSchemasCore20ServicePrincipal,
+	}
+}
+
 // Type always returns ServicePrincipalSchema to satisfy [pflag.Value] interface
 func (f *ServicePrincipalSchema) Type() string {
 	return "ServicePrincipalSchema"
@@ -1518,6 +1631,16 @@ func (f *UserSchema) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of UserSchema.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UserSchema) Values() []UserSchema {
+	return []UserSchema{
+		UserSchemaUrnIetfParamsScimSchemasCore20User,
+		UserSchemaUrnIetfParamsScimSchemasExtensionWorkspace20User,
+	}
+}
+
 // Type always returns UserSchema to satisfy [pflag.Value] interface
 func (f *UserSchema) Type() string {
 	return "UserSchema"
@@ -1544,6 +1667,17 @@ func (f *WorkspacePermission) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ADMIN", "UNKNOWN", "USER"`, v)
+	}
+}
+
+// Values returns all possible values of WorkspacePermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *WorkspacePermission) Values() []WorkspacePermission {
+	return []WorkspacePermission{
+		WorkspacePermissionAdmin,
+		WorkspacePermissionUnknown,
+		WorkspacePermissionUser,
 	}
 }
 

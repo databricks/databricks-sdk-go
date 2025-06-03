@@ -9,6 +9,8 @@ import (
 // Apps run directly on a customer’s Databricks instance, integrate with their
 // data, use and extend Databricks services, and enable users to interact
 // through single sign-on.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AppsService interface {
 
 	// Create an app.
@@ -51,15 +53,11 @@ type AppsService interface {
 	// List apps.
 	//
 	// Lists all apps in the workspace.
-	//
-	// Use ListAll() to get all App instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAppsRequest) (*ListAppsResponse, error)
 
 	// List app deployments.
 	//
 	// Lists all app deployments for the app with the supplied name.
-	//
-	// Use ListDeploymentsAll() to get all AppDeployment instances, which will iterate over every result page.
 	ListDeployments(ctx context.Context, request ListAppDeploymentsRequest) (*ListAppDeploymentsResponse, error)
 
 	// Set app permissions.

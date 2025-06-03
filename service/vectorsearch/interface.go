@@ -7,6 +7,8 @@ import (
 )
 
 // **Endpoint**: Represents the compute resources to host vector search indexes.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type VectorSearchEndpointsService interface {
 
 	// Create an endpoint.
@@ -27,8 +29,6 @@ type VectorSearchEndpointsService interface {
 	// List all endpoints.
 	//
 	// List all vector search endpoints in the workspace.
-	//
-	// Use ListEndpointsAll() to get all EndpointInfo instances, which will iterate over every result page.
 	ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointResponse, error)
 
 	// Update the budget policy of an endpoint.
@@ -50,6 +50,8 @@ type VectorSearchEndpointsService interface {
 // changes. - **Direct Vector Access Index**: An index that supports direct read
 // and write of vectors and metadata through our REST and SDK APIs. With this
 // model, the user manages index updates.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type VectorSearchIndexesService interface {
 
 	// Create an index.
@@ -75,8 +77,6 @@ type VectorSearchIndexesService interface {
 	// List indexes.
 	//
 	// List all indexes in the given endpoint.
-	//
-	// Use ListIndexesAll() to get all MiniVectorIndex instances, which will iterate over every result page.
 	ListIndexes(ctx context.Context, request ListIndexesRequest) (*ListVectorIndexesResponse, error)
 
 	// Query an index.

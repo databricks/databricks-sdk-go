@@ -49,6 +49,15 @@ func (f *ActionConfigurationType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ActionConfigurationType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ActionConfigurationType) Values() []ActionConfigurationType {
+	return []ActionConfigurationType{
+		ActionConfigurationTypeEmailNotification,
+	}
+}
+
 // Type always returns ActionConfigurationType to satisfy [pflag.Value] interface
 func (f *ActionConfigurationType) Type() string {
 	return "ActionConfigurationType"
@@ -103,6 +112,15 @@ func (f *AlertConfigurationQuantityType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AlertConfigurationQuantityType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AlertConfigurationQuantityType) Values() []AlertConfigurationQuantityType {
+	return []AlertConfigurationQuantityType{
+		AlertConfigurationQuantityTypeListPriceDollarsUsd,
+	}
+}
+
 // Type always returns AlertConfigurationQuantityType to satisfy [pflag.Value] interface
 func (f *AlertConfigurationQuantityType) Type() string {
 	return "AlertConfigurationQuantityType"
@@ -128,6 +146,15 @@ func (f *AlertConfigurationTimePeriod) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AlertConfigurationTimePeriod.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AlertConfigurationTimePeriod) Values() []AlertConfigurationTimePeriod {
+	return []AlertConfigurationTimePeriod{
+		AlertConfigurationTimePeriodMonth,
+	}
+}
+
 // Type always returns AlertConfigurationTimePeriod to satisfy [pflag.Value] interface
 func (f *AlertConfigurationTimePeriod) Type() string {
 	return "AlertConfigurationTimePeriod"
@@ -150,6 +177,15 @@ func (f *AlertConfigurationTriggerType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CUMULATIVE_SPENDING_EXCEEDED"`, v)
+	}
+}
+
+// Values returns all possible values of AlertConfigurationTriggerType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AlertConfigurationTriggerType) Values() []AlertConfigurationTriggerType {
+	return []AlertConfigurationTriggerType{
+		AlertConfigurationTriggerTypeCumulativeSpendingExceeded,
 	}
 }
 
@@ -221,6 +257,15 @@ func (f *BudgetConfigurationFilterOperator) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "IN"`, v)
+	}
+}
+
+// Values returns all possible values of BudgetConfigurationFilterOperator.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *BudgetConfigurationFilterOperator) Values() []BudgetConfigurationFilterOperator {
+	return []BudgetConfigurationFilterOperator{
+		BudgetConfigurationFilterOperatorIn,
 	}
 }
 
@@ -560,6 +605,19 @@ func (f *DeliveryStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of DeliveryStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DeliveryStatus) Values() []DeliveryStatus {
+	return []DeliveryStatus{
+		DeliveryStatusCreated,
+		DeliveryStatusNotFound,
+		DeliveryStatusSucceeded,
+		DeliveryStatusSystemFailure,
+		DeliveryStatusUserFailure,
+	}
+}
+
 // Type always returns DeliveryStatus to satisfy [pflag.Value] interface
 func (f *DeliveryStatus) Type() string {
 	return "DeliveryStatus"
@@ -816,6 +874,16 @@ func (f *LogDeliveryConfigStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of LogDeliveryConfigStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LogDeliveryConfigStatus) Values() []LogDeliveryConfigStatus {
+	return []LogDeliveryConfigStatus{
+		LogDeliveryConfigStatusDisabled,
+		LogDeliveryConfigStatusEnabled,
+	}
+}
+
 // Type always returns LogDeliveryConfigStatus to satisfy [pflag.Value] interface
 func (f *LogDeliveryConfigStatus) Type() string {
 	return "LogDeliveryConfigStatus"
@@ -982,6 +1050,16 @@ func (f *LogType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of LogType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LogType) Values() []LogType {
+	return []LogType{
+		LogTypeAuditLogs,
+		LogTypeBillableUsage,
+	}
+}
+
 // Type always returns LogType to satisfy [pflag.Value] interface
 func (f *LogType) Type() string {
 	return "LogType"
@@ -1016,6 +1094,16 @@ func (f *OutputFormat) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CSV", "JSON"`, v)
+	}
+}
+
+// Values returns all possible values of OutputFormat.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *OutputFormat) Values() []OutputFormat {
+	return []OutputFormat{
+		OutputFormatCsv,
+		OutputFormatJson,
 	}
 }
 
@@ -1061,6 +1149,15 @@ func (f *SortSpecField) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "POLICY_NAME"`, v)
+	}
+}
+
+// Values returns all possible values of SortSpecField.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SortSpecField) Values() []SortSpecField {
+	return []SortSpecField{
+		SortSpecFieldPolicyName,
 	}
 }
 
@@ -1151,6 +1248,16 @@ func (f *UsageDashboardType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "USAGE_DASHBOARD_TYPE_GLOBAL", "USAGE_DASHBOARD_TYPE_WORKSPACE"`, v)
+	}
+}
+
+// Values returns all possible values of UsageDashboardType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UsageDashboardType) Values() []UsageDashboardType {
+	return []UsageDashboardType{
+		UsageDashboardTypeUsageDashboardTypeGlobal,
+		UsageDashboardTypeUsageDashboardTypeWorkspace,
 	}
 }
 

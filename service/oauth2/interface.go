@@ -55,6 +55,8 @@ import (
 // You do not need to configure an OAuth application in Databricks to use token
 // federation.
 //
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+//
 // [SCIM]: https://docs.databricks.com/admin/users-groups/scim/index.html
 type AccountFederationPolicyService interface {
 
@@ -68,8 +70,6 @@ type AccountFederationPolicyService interface {
 	Get(ctx context.Context, request GetAccountFederationPolicyRequest) (*FederationPolicy, error)
 
 	// List account federation policies.
-	//
-	// Use ListAll() to get all FederationPolicy instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAccountFederationPoliciesRequest) (*ListFederationPoliciesResponse, error)
 
 	// Update account federation policy.
@@ -79,6 +79,8 @@ type AccountFederationPolicyService interface {
 // These APIs enable administrators to manage custom OAuth app integrations,
 // which is required for adding/using Custom OAuth App Integration like Tableau
 // Cloud for Databricks in AWS cloud.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CustomAppIntegrationService interface {
 
 	// Create Custom OAuth App Integration.
@@ -104,8 +106,6 @@ type CustomAppIntegrationService interface {
 	//
 	// Get the list of custom OAuth app integrations for the specified
 	// Databricks account
-	//
-	// Use ListAll() to get all GetCustomAppIntegrationOutput instances, which will iterate over every result page.
 	List(ctx context.Context, request ListCustomAppIntegrationsRequest) (*GetCustomAppIntegrationsOutput, error)
 
 	// Updates Custom OAuth App Integration.
@@ -119,19 +119,21 @@ type CustomAppIntegrationService interface {
 // applications in Databricks. Administrators can add the published OAuth
 // applications to their account through the OAuth Published App Integration
 // APIs.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type OAuthPublishedAppsService interface {
 
 	// Get all the published OAuth apps.
 	//
 	// Get all the available published OAuth apps in Databricks.
-	//
-	// Use ListAll() to get all PublishedAppOutput instances, which will iterate over every result page.
 	List(ctx context.Context, request ListOAuthPublishedAppsRequest) (*GetPublishedAppsOutput, error)
 }
 
 // These APIs enable administrators to manage published OAuth app integrations,
 // which is required for adding/using Published OAuth App Integration like
 // Tableau Desktop for Databricks in AWS cloud.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PublishedAppIntegrationService interface {
 
 	// Create Published OAuth App Integration.
@@ -157,8 +159,6 @@ type PublishedAppIntegrationService interface {
 	//
 	// Get the list of published OAuth app integrations for the specified
 	// Databricks account
-	//
-	// Use ListAll() to get all GetPublishedAppIntegrationOutput instances, which will iterate over every result page.
 	List(ctx context.Context, request ListPublishedAppIntegrationsRequest) (*GetPublishedAppIntegrationsOutput, error)
 
 	// Updates Published OAuth App Integration.
@@ -222,6 +222,8 @@ type PublishedAppIntegrationService interface {
 //
 // You do not need to configure an OAuth application in Databricks to use token
 // federation.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ServicePrincipalFederationPolicyService interface {
 
 	// Create service principal federation policy.
@@ -234,8 +236,6 @@ type ServicePrincipalFederationPolicyService interface {
 	Get(ctx context.Context, request GetServicePrincipalFederationPolicyRequest) (*FederationPolicy, error)
 
 	// List service principal federation policies.
-	//
-	// Use ListAll() to get all FederationPolicy instances, which will iterate over every result page.
 	List(ctx context.Context, request ListServicePrincipalFederationPoliciesRequest) (*ListFederationPoliciesResponse, error)
 
 	// Update service principal federation policy.
@@ -252,6 +252,8 @@ type ServicePrincipalFederationPolicyService interface {
 // In addition, the generated secrets can be used to configure the Databricks
 // Terraform Provider to authenticate with the service principal. For more
 // information, see [Databricks Terraform Provider].
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 //
 // [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
 // [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal
@@ -272,7 +274,5 @@ type ServicePrincipalSecretsService interface {
 	// List all secrets associated with the given service principal. This
 	// operation only returns information about the secrets themselves and does
 	// not include the secret values.
-	//
-	// Use ListAll() to get all SecretInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListServicePrincipalSecretsRequest) (*ListServicePrincipalSecretsResponse, error)
 }

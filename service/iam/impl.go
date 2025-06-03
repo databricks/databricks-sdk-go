@@ -141,7 +141,7 @@ func (a *accountGroupsImpl) List(ctx context.Context, request ListAccountGroupsR
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
-		request.Count = 100
+		request.Count = 10000
 	}
 	getNextPage := func(ctx context.Context, req ListAccountGroupsRequest) (*ListGroupsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -251,7 +251,7 @@ func (a *accountServicePrincipalsImpl) List(ctx context.Context, request ListAcc
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
-		request.Count = 100
+		request.Count = 10000
 	}
 	getNextPage := func(ctx context.Context, req ListAccountServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -361,7 +361,7 @@ func (a *accountUsersImpl) List(ctx context.Context, request ListAccountUsersReq
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
-		request.Count = 100
+		request.Count = 10000
 	}
 	getNextPage := func(ctx context.Context, req ListAccountUsersRequest) (*ListUsersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -486,7 +486,7 @@ func (a *groupsImpl) List(ctx context.Context, request ListGroupsRequest) listin
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
-		request.Count = 100
+		request.Count = 10000
 	}
 	getNextPage := func(ctx context.Context, req ListGroupsRequest) (*ListGroupsResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -659,7 +659,7 @@ func (a *servicePrincipalsImpl) List(ctx context.Context, request ListServicePri
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
-		request.Count = 100
+		request.Count = 10000
 	}
 	getNextPage := func(ctx context.Context, req ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
@@ -789,7 +789,7 @@ func (a *usersImpl) List(ctx context.Context, request ListUsersRequest) listing.
 
 	request.StartIndex = 1 // SCIM offset starts from 1
 	if request.Count == 0 {
-		request.Count = 100
+		request.Count = 10000
 	}
 	getNextPage := func(ctx context.Context, req ListUsersRequest) (*ListUsersResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")

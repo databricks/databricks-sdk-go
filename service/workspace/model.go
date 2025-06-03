@@ -39,6 +39,17 @@ func (f *AclPermission) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AclPermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AclPermission) Values() []AclPermission {
+	return []AclPermission{
+		AclPermissionManage,
+		AclPermissionRead,
+		AclPermissionWrite,
+	}
+}
+
 // Type always returns AclPermission to satisfy [pflag.Value] interface
 func (f *AclPermission) Type() string {
 	return "AclPermission"
@@ -307,6 +318,21 @@ func (f *ExportFormat) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ExportFormat.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ExportFormat) Values() []ExportFormat {
+	return []ExportFormat{
+		ExportFormatAuto,
+		ExportFormatDbc,
+		ExportFormatHtml,
+		ExportFormatJupyter,
+		ExportFormatRaw,
+		ExportFormatRMarkdown,
+		ExportFormatSource,
+	}
+}
+
 // Type always returns ExportFormat to satisfy [pflag.Value] interface
 func (f *ExportFormat) Type() string {
 	return "ExportFormat"
@@ -566,6 +592,21 @@ func (f *ImportFormat) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ImportFormat.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ImportFormat) Values() []ImportFormat {
+	return []ImportFormat{
+		ImportFormatAuto,
+		ImportFormatDbc,
+		ImportFormatHtml,
+		ImportFormatJupyter,
+		ImportFormatRaw,
+		ImportFormatRMarkdown,
+		ImportFormatSource,
+	}
+}
+
 // Type always returns ImportFormat to satisfy [pflag.Value] interface
 func (f *ImportFormat) Type() string {
 	return "ImportFormat"
@@ -598,6 +639,18 @@ func (f *Language) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PYTHON", "R", "SCALA", "SQL"`, v)
+	}
+}
+
+// Values returns all possible values of Language.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Language) Values() []Language {
+	return []Language{
+		LanguagePython,
+		LanguageR,
+		LanguageScala,
+		LanguageSql,
 	}
 }
 
@@ -779,6 +832,20 @@ func (f *ObjectType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ObjectType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ObjectType) Values() []ObjectType {
+	return []ObjectType{
+		ObjectTypeDashboard,
+		ObjectTypeDirectory,
+		ObjectTypeFile,
+		ObjectTypeLibrary,
+		ObjectTypeNotebook,
+		ObjectTypeRepo,
+	}
+}
+
 // Type always returns ObjectType to satisfy [pflag.Value] interface
 func (f *ObjectType) Type() string {
 	return "ObjectType"
@@ -937,6 +1004,18 @@ func (f *RepoPermissionLevel) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of RepoPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RepoPermissionLevel) Values() []RepoPermissionLevel {
+	return []RepoPermissionLevel{
+		RepoPermissionLevelCanEdit,
+		RepoPermissionLevelCanManage,
+		RepoPermissionLevelCanRead,
+		RepoPermissionLevelCanRun,
+	}
+}
+
 // Type always returns RepoPermissionLevel to satisfy [pflag.Value] interface
 func (f *RepoPermissionLevel) Type() string {
 	return "RepoPermissionLevel"
@@ -1001,6 +1080,16 @@ func (f *ScopeBackendType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AZURE_KEYVAULT", "DATABRICKS"`, v)
+	}
+}
+
+// Values returns all possible values of ScopeBackendType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ScopeBackendType) Values() []ScopeBackendType {
+	return []ScopeBackendType{
+		ScopeBackendTypeAzureKeyvault,
+		ScopeBackendTypeDatabricks,
 	}
 }
 
@@ -1214,6 +1303,18 @@ func (f *WorkspaceObjectPermissionLevel) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_READ", "CAN_RUN"`, v)
+	}
+}
+
+// Values returns all possible values of WorkspaceObjectPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *WorkspaceObjectPermissionLevel) Values() []WorkspaceObjectPermissionLevel {
+	return []WorkspaceObjectPermissionLevel{
+		WorkspaceObjectPermissionLevelCanEdit,
+		WorkspaceObjectPermissionLevelCanManage,
+		WorkspaceObjectPermissionLevelCanRead,
+		WorkspaceObjectPermissionLevelCanRun,
 	}
 }
 

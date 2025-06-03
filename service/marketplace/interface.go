@@ -7,13 +7,13 @@ import (
 )
 
 // Fulfillments are entities that allow consumers to preview installations.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ConsumerFulfillmentsService interface {
 
 	// Get listing content metadata.
 	//
 	// Get a high level preview of the metadata of listing installable content.
-	//
-	// Use GetAll() to get all SharedDataObject instances, which will iterate over every result page.
 	Get(ctx context.Context, request GetListingContentMetadataRequest) (*GetListingContentMetadataResponse, error)
 
 	// List all listing fulfillments.
@@ -23,13 +23,13 @@ type ConsumerFulfillmentsService interface {
 	// about the attached share or git repo. Only one of these fields will be
 	// present. Personalized installations contain metadata about the attached
 	// share or git repo, as well as the Delta Sharing recipient type.
-	//
-	// Use ListAll() to get all ListingFulfillment instances, which will iterate over every result page.
 	List(ctx context.Context, request ListFulfillmentsRequest) (*ListFulfillmentsResponse, error)
 }
 
 // Installations are entities that allow consumers to interact with Databricks
 // Marketplace listings.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ConsumerInstallationsService interface {
 
 	// Install from a listing.
@@ -46,15 +46,11 @@ type ConsumerInstallationsService interface {
 	// List all installations.
 	//
 	// List all installations across all listings.
-	//
-	// Use ListAll() to get all InstallationDetail instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAllInstallationsRequest) (*ListAllInstallationsResponse, error)
 
 	// List installations for a listing.
 	//
 	// List all installations for a particular listing.
-	//
-	// Use ListListingInstallationsAll() to get all InstallationDetail instances, which will iterate over every result page.
 	ListListingInstallations(ctx context.Context, request ListInstallationsRequest) (*ListInstallationsResponse, error)
 
 	// Update an installation.
@@ -70,6 +66,8 @@ type ConsumerInstallationsService interface {
 
 // Listings are the core entities in the Marketplace. They represent the
 // products that are available for consumption.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ConsumerListingsService interface {
 
 	// Get one batch of listings. One may specify up to 50 IDs per request.
@@ -88,8 +86,6 @@ type ConsumerListingsService interface {
 	//
 	// List all published listings in the Databricks Marketplace that the
 	// consumer has access to.
-	//
-	// Use ListAll() to get all Listing instances, which will iterate over every result page.
 	List(ctx context.Context, request ListListingsRequest) (*ListListingsResponse, error)
 
 	// Search listings.
@@ -97,13 +93,13 @@ type ConsumerListingsService interface {
 	// Search published listings in the Databricks Marketplace that the consumer
 	// has access to. This query supports a variety of different search
 	// parameters and performs fuzzy matching.
-	//
-	// Use SearchAll() to get all Listing instances, which will iterate over every result page.
 	Search(ctx context.Context, request SearchListingsRequest) (*SearchListingsResponse, error)
 }
 
 // Personalization Requests allow customers to interact with the individualized
 // Marketplace listing flow.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ConsumerPersonalizationRequestsService interface {
 
 	// Create a personalization request.
@@ -120,12 +116,12 @@ type ConsumerPersonalizationRequestsService interface {
 	// List all personalization requests.
 	//
 	// List personalization requests for a consumer across all listings.
-	//
-	// Use ListAll() to get all PersonalizationRequest instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error)
 }
 
 // Providers are the entities that publish listings to the Marketplace.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ConsumerProvidersService interface {
 
 	// Get one batch of providers. One may specify up to 50 IDs per request.
@@ -144,12 +140,12 @@ type ConsumerProvidersService interface {
 	//
 	// List all providers in the Databricks Marketplace with at least one
 	// visible listing.
-	//
-	// Use ListAll() to get all ProviderInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error)
 }
 
 // Marketplace exchanges filters curate which groups can access an exchange.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProviderExchangeFiltersService interface {
 
 	// Create a new exchange filter.
@@ -165,8 +161,6 @@ type ProviderExchangeFiltersService interface {
 	// List exchange filters.
 	//
 	// List exchange filter
-	//
-	// Use ListAll() to get all ExchangeFilter instances, which will iterate over every result page.
 	List(ctx context.Context, request ListExchangeFiltersRequest) (*ListExchangeFiltersResponse, error)
 
 	// Update exchange filter.
@@ -177,6 +171,8 @@ type ProviderExchangeFiltersService interface {
 
 // Marketplace exchanges allow providers to share their listings with a curated
 // set of customers.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProviderExchangesService interface {
 
 	// Add an exchange for listing.
@@ -207,22 +203,16 @@ type ProviderExchangesService interface {
 	// List exchanges.
 	//
 	// List exchanges visible to provider
-	//
-	// Use ListAll() to get all Exchange instances, which will iterate over every result page.
 	List(ctx context.Context, request ListExchangesRequest) (*ListExchangesResponse, error)
 
 	// List exchanges for listing.
 	//
 	// List exchanges associated with a listing
-	//
-	// Use ListExchangesForListingAll() to get all ExchangeListing instances, which will iterate over every result page.
 	ListExchangesForListing(ctx context.Context, request ListExchangesForListingRequest) (*ListExchangesForListingResponse, error)
 
 	// List listings for exchange.
 	//
 	// List listings associated with an exchange
-	//
-	// Use ListListingsForExchangeAll() to get all ExchangeListing instances, which will iterate over every result page.
 	ListListingsForExchange(ctx context.Context, request ListListingsForExchangeRequest) (*ListListingsForExchangeResponse, error)
 
 	// Update exchange.
@@ -233,6 +223,8 @@ type ProviderExchangesService interface {
 
 // Marketplace offers a set of file APIs for various purposes such as preview
 // notebooks and provider icons.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProviderFilesService interface {
 
 	// Create a file.
@@ -254,13 +246,13 @@ type ProviderFilesService interface {
 	// List files.
 	//
 	// List files attached to a parent entity.
-	//
-	// Use ListAll() to get all FileInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListFilesRequest) (*ListFilesResponse, error)
 }
 
 // Listings are the core entities in the Marketplace. They represent the
 // products that are available for consumption.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProviderListingsService interface {
 
 	// Create a listing.
@@ -281,8 +273,6 @@ type ProviderListingsService interface {
 	// List listings.
 	//
 	// List listings owned by this provider
-	//
-	// Use ListAll() to get all Listing instances, which will iterate over every result page.
 	List(ctx context.Context, request GetListingsRequest) (*GetListingsResponse, error)
 
 	// Update listing.
@@ -293,14 +283,14 @@ type ProviderListingsService interface {
 
 // Personalization requests are an alternate to instantly available listings.
 // Control the lifecycle of personalized solutions.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProviderPersonalizationRequestsService interface {
 
 	// All personalization requests across all listings.
 	//
 	// List personalization requests to this provider. This will return all
 	// personalization requests, regardless of which listing they are for.
-	//
-	// Use ListAll() to get all PersonalizationRequest instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAllPersonalizationRequestsRequest) (*ListAllPersonalizationRequestsResponse, error)
 
 	// Update personalization request status.
@@ -311,6 +301,8 @@ type ProviderPersonalizationRequestsService interface {
 }
 
 // Manage templated analytics solution for providers.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProviderProviderAnalyticsDashboardsService interface {
 
 	// Create provider analytics dashboard.
@@ -336,6 +328,8 @@ type ProviderProviderAnalyticsDashboardsService interface {
 }
 
 // Providers are entities that manage assets in Marketplace.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProviderProvidersService interface {
 
 	// Create a provider.
@@ -356,8 +350,6 @@ type ProviderProvidersService interface {
 	// List providers.
 	//
 	// List provider profiles for account.
-	//
-	// Use ListAll() to get all ProviderInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error)
 
 	// Update provider.

@@ -19,6 +19,8 @@ import (
 // configure traffic settings to define how requests should be routed to your
 // served entities behind an endpoint. Additionally, you can configure the scale
 // of resources that should be applied to each served entity.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ServingEndpointsService interface {
 
 	// Get build logs for a served model.
@@ -69,8 +71,6 @@ type ServingEndpointsService interface {
 	HttpRequest(ctx context.Context, request ExternalFunctionRequest) (*HttpRequestResponse, error)
 
 	// Get all serving endpoints.
-	//
-	// Use ListAll() to get all ServingEndpoint instances
 	List(ctx context.Context) (*ListEndpointsResponse, error)
 
 	// Get the latest logs for a served model.
@@ -131,6 +131,8 @@ type ServingEndpointsService interface {
 
 // Serving endpoints DataPlane provides a set of operations to interact with
 // data plane endpoints for Serving endpoints service.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ServingEndpointsDataPlaneService interface {
 
 	// Query a serving endpoint.

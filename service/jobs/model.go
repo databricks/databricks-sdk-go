@@ -31,6 +31,16 @@ func (f *AuthenticationMethod) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AuthenticationMethod.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AuthenticationMethod) Values() []AuthenticationMethod {
+	return []AuthenticationMethod{
+		AuthenticationMethodOauth,
+		AuthenticationMethodPat,
+	}
+}
+
 // Type always returns AuthenticationMethod to satisfy [pflag.Value] interface
 func (f *AuthenticationMethod) Type() string {
 	return "AuthenticationMethod"
@@ -302,6 +312,24 @@ func (f *CleanRoomTaskRunLifeCycleState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of CleanRoomTaskRunLifeCycleState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomTaskRunLifeCycleState) Values() []CleanRoomTaskRunLifeCycleState {
+	return []CleanRoomTaskRunLifeCycleState{
+		CleanRoomTaskRunLifeCycleStateBlocked,
+		CleanRoomTaskRunLifeCycleStateInternalError,
+		CleanRoomTaskRunLifeCycleStatePending,
+		CleanRoomTaskRunLifeCycleStateQueued,
+		CleanRoomTaskRunLifeCycleStateRunning,
+		CleanRoomTaskRunLifeCycleStateRunLifeCycleStateUnspecified,
+		CleanRoomTaskRunLifeCycleStateSkipped,
+		CleanRoomTaskRunLifeCycleStateTerminated,
+		CleanRoomTaskRunLifeCycleStateTerminating,
+		CleanRoomTaskRunLifeCycleStateWaitingForRetry,
+	}
+}
+
 // Type always returns CleanRoomTaskRunLifeCycleState to satisfy [pflag.Value] interface
 func (f *CleanRoomTaskRunLifeCycleState) Type() string {
 	return "CleanRoomTaskRunLifeCycleState"
@@ -350,6 +378,27 @@ func (f *CleanRoomTaskRunResultState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELED", "DISABLED", "EVICTED", "EXCLUDED", "FAILED", "MAXIMUM_CONCURRENT_RUNS_REACHED", "RUN_RESULT_STATE_UNSPECIFIED", "SUCCESS", "SUCCESS_WITH_FAILURES", "TIMEDOUT", "UPSTREAM_CANCELED", "UPSTREAM_EVICTED", "UPSTREAM_FAILED"`, v)
+	}
+}
+
+// Values returns all possible values of CleanRoomTaskRunResultState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomTaskRunResultState) Values() []CleanRoomTaskRunResultState {
+	return []CleanRoomTaskRunResultState{
+		CleanRoomTaskRunResultStateCanceled,
+		CleanRoomTaskRunResultStateDisabled,
+		CleanRoomTaskRunResultStateEvicted,
+		CleanRoomTaskRunResultStateExcluded,
+		CleanRoomTaskRunResultStateFailed,
+		CleanRoomTaskRunResultStateMaximumConcurrentRunsReached,
+		CleanRoomTaskRunResultStateRunResultStateUnspecified,
+		CleanRoomTaskRunResultStateSuccess,
+		CleanRoomTaskRunResultStateSuccessWithFailures,
+		CleanRoomTaskRunResultStateTimedout,
+		CleanRoomTaskRunResultStateUpstreamCanceled,
+		CleanRoomTaskRunResultStateUpstreamEvicted,
+		CleanRoomTaskRunResultStateUpstreamFailed,
 	}
 }
 
@@ -501,6 +550,16 @@ func (f *Condition) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of Condition.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Condition) Values() []Condition {
+	return []Condition{
+		ConditionAllUpdated,
+		ConditionAnyUpdated,
+	}
+}
+
 // Type always returns Condition to satisfy [pflag.Value] interface
 func (f *Condition) Type() string {
 	return "Condition"
@@ -563,6 +622,20 @@ func (f *ConditionTaskOp) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EQUAL_TO", "GREATER_THAN", "GREATER_THAN_OR_EQUAL", "LESS_THAN", "LESS_THAN_OR_EQUAL", "NOT_EQUAL"`, v)
+	}
+}
+
+// Values returns all possible values of ConditionTaskOp.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ConditionTaskOp) Values() []ConditionTaskOp {
+	return []ConditionTaskOp{
+		ConditionTaskOpEqualTo,
+		ConditionTaskOpGreaterThan,
+		ConditionTaskOpGreaterThanOrEqual,
+		ConditionTaskOpLessThan,
+		ConditionTaskOpLessThanOrEqual,
+		ConditionTaskOpNotEqual,
 	}
 }
 
@@ -1075,6 +1148,16 @@ func (f *Format) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of Format.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Format) Values() []Format {
+	return []Format{
+		FormatMultiTask,
+		FormatSingleTask,
+	}
+}
+
 // Type always returns Format to satisfy [pflag.Value] interface
 func (f *Format) Type() string {
 	return "Format"
@@ -1252,6 +1335,22 @@ func (f *GitProvider) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "awsCodeCommit", "azureDevOpsServices", "bitbucketCloud", "bitbucketServer", "gitHub", "gitHubEnterprise", "gitLab", "gitLabEnterpriseEdition"`, v)
+	}
+}
+
+// Values returns all possible values of GitProvider.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GitProvider) Values() []GitProvider {
+	return []GitProvider{
+		GitProviderAwsCodeCommit,
+		GitProviderAzureDevOpsServices,
+		GitProviderBitbucketCloud,
+		GitProviderBitbucketServer,
+		GitProviderGitHub,
+		GitProviderGitHubEnterprise,
+		GitProviderGitLab,
+		GitProviderGitLabEnterpriseEdition,
 	}
 }
 
@@ -1486,6 +1585,15 @@ func (f *JobDeploymentKind) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of JobDeploymentKind.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *JobDeploymentKind) Values() []JobDeploymentKind {
+	return []JobDeploymentKind{
+		JobDeploymentKindBundle,
+	}
+}
+
 // Type always returns JobDeploymentKind to satisfy [pflag.Value] interface
 func (f *JobDeploymentKind) Type() string {
 	return "JobDeploymentKind"
@@ -1516,6 +1624,16 @@ func (f *JobEditMode) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EDITABLE", "UI_LOCKED"`, v)
+	}
+}
+
+// Values returns all possible values of JobEditMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *JobEditMode) Values() []JobEditMode {
+	return []JobEditMode{
+		JobEditModeEditable,
+		JobEditModeUiLocked,
 	}
 }
 
@@ -1668,6 +1786,18 @@ func (f *JobPermissionLevel) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_MANAGE_RUN", "CAN_VIEW", "IS_OWNER"`, v)
+	}
+}
+
+// Values returns all possible values of JobPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *JobPermissionLevel) Values() []JobPermissionLevel {
+	return []JobPermissionLevel{
+		JobPermissionLevelCanManage,
+		JobPermissionLevelCanManageRun,
+		JobPermissionLevelCanView,
+		JobPermissionLevelIsOwner,
 	}
 }
 
@@ -1920,6 +2050,16 @@ func (f *JobSourceDirtyState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of JobSourceDirtyState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *JobSourceDirtyState) Values() []JobSourceDirtyState {
+	return []JobSourceDirtyState{
+		JobSourceDirtyStateDisconnected,
+		JobSourceDirtyStateNotSynced,
+	}
+}
+
 // Type always returns JobSourceDirtyState to satisfy [pflag.Value] interface
 func (f *JobSourceDirtyState) Type() string {
 	return "JobSourceDirtyState"
@@ -1974,6 +2114,19 @@ func (f *JobsHealthMetric) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of JobsHealthMetric.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *JobsHealthMetric) Values() []JobsHealthMetric {
+	return []JobsHealthMetric{
+		JobsHealthMetricRunDurationSeconds,
+		JobsHealthMetricStreamingBacklogBytes,
+		JobsHealthMetricStreamingBacklogFiles,
+		JobsHealthMetricStreamingBacklogRecords,
+		JobsHealthMetricStreamingBacklogSeconds,
+	}
+}
+
 // Type always returns JobsHealthMetric to satisfy [pflag.Value] interface
 func (f *JobsHealthMetric) Type() string {
 	return "JobsHealthMetric"
@@ -1998,6 +2151,15 @@ func (f *JobsHealthOperator) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GREATER_THAN"`, v)
+	}
+}
+
+// Values returns all possible values of JobsHealthOperator.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *JobsHealthOperator) Values() []JobsHealthOperator {
+	return []JobsHealthOperator{
+		JobsHealthOperatorGreaterThan,
 	}
 }
 
@@ -2327,6 +2489,16 @@ func (f *PauseStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of PauseStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PauseStatus) Values() []PauseStatus {
+	return []PauseStatus{
+		PauseStatusPaused,
+		PauseStatusUnpaused,
+	}
+}
+
 // Type always returns PauseStatus to satisfy [pflag.Value] interface
 func (f *PauseStatus) Type() string {
 	return "PauseStatus"
@@ -2355,6 +2527,16 @@ func (f *PerformanceTarget) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PERFORMANCE_OPTIMIZED", "STANDARD"`, v)
+	}
+}
+
+// Values returns all possible values of PerformanceTarget.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PerformanceTarget) Values() []PerformanceTarget {
+	return []PerformanceTarget{
+		PerformanceTargetPerformanceOptimized,
+		PerformanceTargetStandard,
 	}
 }
 
@@ -2391,6 +2573,17 @@ func (f *PeriodicTriggerConfigurationTimeUnit) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DAYS", "HOURS", "WEEKS"`, v)
+	}
+}
+
+// Values returns all possible values of PeriodicTriggerConfigurationTimeUnit.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PeriodicTriggerConfigurationTimeUnit) Values() []PeriodicTriggerConfigurationTimeUnit {
+	return []PeriodicTriggerConfigurationTimeUnit{
+		PeriodicTriggerConfigurationTimeUnitDays,
+		PeriodicTriggerConfigurationTimeUnitHours,
+		PeriodicTriggerConfigurationTimeUnitWeeks,
 	}
 }
 
@@ -2571,6 +2764,17 @@ func (f *QueueDetailsCodeCode) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of QueueDetailsCodeCode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *QueueDetailsCodeCode) Values() []QueueDetailsCodeCode {
+	return []QueueDetailsCodeCode{
+		QueueDetailsCodeCodeActiveRunsLimitReached,
+		QueueDetailsCodeCodeActiveRunJobTasksLimitReached,
+		QueueDetailsCodeCodeMaxConcurrentRunsReached,
+	}
+}
+
 // Type always returns QueueDetailsCodeCode to satisfy [pflag.Value] interface
 func (f *QueueDetailsCodeCode) Type() string {
 	return "QueueDetailsCodeCode"
@@ -2641,6 +2845,16 @@ func (f *RepairHistoryItemType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ORIGINAL", "REPAIR"`, v)
+	}
+}
+
+// Values returns all possible values of RepairHistoryItemType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RepairHistoryItemType) Values() []RepairHistoryItemType {
+	return []RepairHistoryItemType{
+		RepairHistoryItemTypeOriginal,
+		RepairHistoryItemTypeRepair,
 	}
 }
 
@@ -3139,6 +3353,20 @@ func (f *RunIf) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of RunIf.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RunIf) Values() []RunIf {
+	return []RunIf{
+		RunIfAllDone,
+		RunIfAllFailed,
+		RunIfAllSuccess,
+		RunIfAtLeastOneFailed,
+		RunIfAtLeastOneSuccess,
+		RunIfNoneFailed,
+	}
+}
+
 // Type always returns RunIf to satisfy [pflag.Value] interface
 func (f *RunIf) Type() string {
 	return "RunIf"
@@ -3314,6 +3542,23 @@ func (f *RunLifeCycleState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of RunLifeCycleState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RunLifeCycleState) Values() []RunLifeCycleState {
+	return []RunLifeCycleState{
+		RunLifeCycleStateBlocked,
+		RunLifeCycleStateInternalError,
+		RunLifeCycleStatePending,
+		RunLifeCycleStateQueued,
+		RunLifeCycleStateRunning,
+		RunLifeCycleStateSkipped,
+		RunLifeCycleStateTerminated,
+		RunLifeCycleStateTerminating,
+		RunLifeCycleStateWaitingForRetry,
+	}
+}
+
 // Type always returns RunLifeCycleState to satisfy [pflag.Value] interface
 func (f *RunLifeCycleState) Type() string {
 	return "RunLifeCycleState"
@@ -3349,6 +3594,21 @@ func (f *RunLifecycleStateV2State) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BLOCKED", "PENDING", "QUEUED", "RUNNING", "TERMINATED", "TERMINATING", "WAITING"`, v)
+	}
+}
+
+// Values returns all possible values of RunLifecycleStateV2State.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RunLifecycleStateV2State) Values() []RunLifecycleStateV2State {
+	return []RunLifecycleStateV2State{
+		RunLifecycleStateV2StateBlocked,
+		RunLifecycleStateV2StatePending,
+		RunLifecycleStateV2StateQueued,
+		RunLifecycleStateV2StateRunning,
+		RunLifecycleStateV2StateTerminated,
+		RunLifecycleStateV2StateTerminating,
+		RunLifecycleStateV2StateWaiting,
 	}
 }
 
@@ -3705,6 +3965,24 @@ func (f *RunResultState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of RunResultState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RunResultState) Values() []RunResultState {
+	return []RunResultState{
+		RunResultStateCanceled,
+		RunResultStateDisabled,
+		RunResultStateExcluded,
+		RunResultStateFailed,
+		RunResultStateMaximumConcurrentRunsReached,
+		RunResultStateSuccess,
+		RunResultStateSuccessWithFailures,
+		RunResultStateTimedout,
+		RunResultStateUpstreamCanceled,
+		RunResultStateUpstreamFailed,
+	}
+}
+
 // Type always returns RunResultState to satisfy [pflag.Value] interface
 func (f *RunResultState) Type() string {
 	return "RunResultState"
@@ -3987,6 +4265,17 @@ func (f *RunType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of RunType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RunType) Values() []RunType {
+	return []RunType{
+		RunTypeJobRun,
+		RunTypeSubmitRun,
+		RunTypeWorkflowRun,
+	}
+}
+
 // Type always returns RunType to satisfy [pflag.Value] interface
 func (f *RunType) Type() string {
 	return "RunType"
@@ -4021,6 +4310,16 @@ func (f *Source) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GIT", "WORKSPACE"`, v)
+	}
+}
+
+// Values returns all possible values of Source.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Source) Values() []Source {
+	return []Source{
+		SourceGit,
+		SourceWorkspace,
 	}
 }
 
@@ -4153,6 +4452,17 @@ func (f *SqlAlertState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of SqlAlertState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SqlAlertState) Values() []SqlAlertState {
+	return []SqlAlertState{
+		SqlAlertStateOk,
+		SqlAlertStateTriggered,
+		SqlAlertStateUnknown,
+	}
+}
+
 // Type always returns SqlAlertState to satisfy [pflag.Value] interface
 func (f *SqlAlertState) Type() string {
 	return "SqlAlertState"
@@ -4227,6 +4537,19 @@ func (f *SqlDashboardWidgetOutputStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "PENDING", "RUNNING", "SUCCESS"`, v)
+	}
+}
+
+// Values returns all possible values of SqlDashboardWidgetOutputStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SqlDashboardWidgetOutputStatus) Values() []SqlDashboardWidgetOutputStatus {
+	return []SqlDashboardWidgetOutputStatus{
+		SqlDashboardWidgetOutputStatusCancelled,
+		SqlDashboardWidgetOutputStatusFailed,
+		SqlDashboardWidgetOutputStatusPending,
+		SqlDashboardWidgetOutputStatusRunning,
+		SqlDashboardWidgetOutputStatusSuccess,
 	}
 }
 
@@ -4421,6 +4744,17 @@ func (f *StorageMode) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DIRECT_QUERY", "DUAL", "IMPORT"`, v)
+	}
+}
+
+// Values returns all possible values of StorageMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *StorageMode) Values() []StorageMode {
+	return []StorageMode{
+		StorageModeDirectQuery,
+		StorageModeDual,
+		StorageModeImport,
 	}
 }
 
@@ -5098,6 +5432,39 @@ func (f *TerminationCodeCode) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of TerminationCodeCode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TerminationCodeCode) Values() []TerminationCodeCode {
+	return []TerminationCodeCode{
+		TerminationCodeCodeBudgetPolicyLimitExceeded,
+		TerminationCodeCodeCanceled,
+		TerminationCodeCodeCloudFailure,
+		TerminationCodeCodeClusterError,
+		TerminationCodeCodeClusterRequestLimitExceeded,
+		TerminationCodeCodeDisabled,
+		TerminationCodeCodeDriverError,
+		TerminationCodeCodeFeatureDisabled,
+		TerminationCodeCodeInternalError,
+		TerminationCodeCodeInvalidClusterRequest,
+		TerminationCodeCodeInvalidRunConfiguration,
+		TerminationCodeCodeLibraryInstallationError,
+		TerminationCodeCodeMaxConcurrentRunsExceeded,
+		TerminationCodeCodeMaxJobQueueSizeExceeded,
+		TerminationCodeCodeMaxSparkContextsExceeded,
+		TerminationCodeCodeRepositoryCheckoutFailed,
+		TerminationCodeCodeResourceNotFound,
+		TerminationCodeCodeRunExecutionError,
+		TerminationCodeCodeSkipped,
+		TerminationCodeCodeStorageAccessError,
+		TerminationCodeCodeSuccess,
+		TerminationCodeCodeSuccessWithFailures,
+		TerminationCodeCodeUnauthorizedError,
+		TerminationCodeCodeUserCanceled,
+		TerminationCodeCodeWorkspaceRunLimitExceeded,
+	}
+}
+
 // Type always returns TerminationCodeCode to satisfy [pflag.Value] interface
 func (f *TerminationCodeCode) Type() string {
 	return "TerminationCodeCode"
@@ -5219,6 +5586,18 @@ func (f *TerminationTypeType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of TerminationTypeType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TerminationTypeType) Values() []TerminationTypeType {
+	return []TerminationTypeType{
+		TerminationTypeTypeClientError,
+		TerminationTypeTypeCloudFailure,
+		TerminationTypeTypeInternalError,
+		TerminationTypeTypeSuccess,
+	}
+}
+
 // Type always returns TerminationTypeType to satisfy [pflag.Value] interface
 func (f *TerminationTypeType) Type() string {
 	return "TerminationTypeType"
@@ -5303,6 +5682,20 @@ func (f *TriggerType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of TriggerType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TriggerType) Values() []TriggerType {
+	return []TriggerType{
+		TriggerTypeFileArrival,
+		TriggerTypeOneTime,
+		TriggerTypePeriodic,
+		TriggerTypeRetry,
+		TriggerTypeRunJobTask,
+		TriggerTypeTable,
+	}
+}
+
 // Type always returns TriggerType to satisfy [pflag.Value] interface
 func (f *TriggerType) Type() string {
 	return "TriggerType"
@@ -5378,6 +5771,16 @@ func (f *ViewType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ViewType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ViewType) Values() []ViewType {
+	return []ViewType{
+		ViewTypeDashboard,
+		ViewTypeNotebook,
+	}
+}
+
 // Type always returns ViewType to satisfy [pflag.Value] interface
 func (f *ViewType) Type() string {
 	return "ViewType"
@@ -5409,6 +5812,17 @@ func (f *ViewsToExport) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ALL", "CODE", "DASHBOARDS"`, v)
+	}
+}
+
+// Values returns all possible values of ViewsToExport.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ViewsToExport) Values() []ViewsToExport {
+	return []ViewsToExport{
+		ViewsToExportAll,
+		ViewsToExportCode,
+		ViewsToExportDashboards,
 	}
 }
 

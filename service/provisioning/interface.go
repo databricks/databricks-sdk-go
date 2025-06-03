@@ -11,6 +11,8 @@ import (
 // Databricks can deploy clusters in the appropriate VPC for the new workspace.
 // A credential configuration encapsulates this role information, and its ID is
 // used when creating a new workspace.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CredentialsService interface {
 
 	// Create credential configuration.
@@ -67,6 +69,8 @@ type CredentialsService interface {
 // encryption requires that the workspace is on the E2 version of the platform.
 // If you have an older workspace, it might not be on the E2 version of the
 // platform. If you are not sure, contact your Databricks representative.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type EncryptionKeysService interface {
 
 	// Create encryption key configuration.
@@ -138,6 +142,8 @@ type EncryptionKeysService interface {
 // These APIs manage network configurations for customer-managed VPCs
 // (optional). Its ID is used when creating a new workspace if you use
 // customer-managed VPCs.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type NetworksService interface {
 
 	// Create network configuration.
@@ -174,6 +180,8 @@ type NetworksService interface {
 }
 
 // These APIs manage private access settings for this account.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PrivateAccessService interface {
 
 	// Create private access settings.
@@ -259,6 +267,8 @@ type PrivateAccessService interface {
 // bucket for storage of non-production DBFS data. A storage configuration
 // encapsulates this bucket information, and its ID is used when creating a new
 // workspace.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type StorageService interface {
 
 	// Create new storage configuration.
@@ -295,6 +305,8 @@ type StorageService interface {
 }
 
 // These APIs manage VPC endpoint configurations for this account.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type VpcEndpointsService interface {
 
 	// Create VPC endpoint configuration.
@@ -359,6 +371,8 @@ type VpcEndpointsService interface {
 // These endpoints are available if your account is on the E2 version of the
 // platform or on a select custom plan that allows multiple workspaces per
 // account.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WorkspacesService interface {
 
 	// Create a new workspace.
