@@ -11,6 +11,8 @@ import (
 // natural language. Genie uses data registered to Unity Catalog and requires at
 // least CAN USE permission on a Pro or Serverless SQL warehouse. Also,
 // Databricks Assistant must be enabled.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type GenieService interface {
 
 	// Create conversation message.
@@ -96,6 +98,8 @@ type GenieService interface {
 // These APIs provide specific management operations for Lakeview dashboards.
 // Generic resource management can be done with Workspace API (import, export,
 // get-status, list, delete).
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type LakeviewService interface {
 
 	// Create dashboard.
@@ -132,18 +136,12 @@ type LakeviewService interface {
 	GetSubscription(ctx context.Context, request GetSubscriptionRequest) (*Subscription, error)
 
 	// List dashboards.
-	//
-	// Use ListAll() to get all Dashboard instances, which will iterate over every result page.
 	List(ctx context.Context, request ListDashboardsRequest) (*ListDashboardsResponse, error)
 
 	// List dashboard schedules.
-	//
-	// Use ListSchedulesAll() to get all Schedule instances, which will iterate over every result page.
 	ListSchedules(ctx context.Context, request ListSchedulesRequest) (*ListSchedulesResponse, error)
 
 	// List schedule subscriptions.
-	//
-	// Use ListSubscriptionsAll() to get all Subscription instances, which will iterate over every result page.
 	ListSubscriptions(ctx context.Context, request ListSubscriptionsRequest) (*ListSubscriptionsResponse, error)
 
 	// Migrate dashboard.
@@ -176,6 +174,8 @@ type LakeviewService interface {
 }
 
 // Token-based Lakeview APIs for embedding dashboards in external applications.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type LakeviewEmbeddedService interface {
 
 	// Read a published dashboard in an embedded ui.
@@ -197,6 +197,8 @@ type LakeviewEmbeddedService interface {
 }
 
 // Query execution APIs for AI / BI Dashboards
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QueryExecutionService interface {
 
 	// Cancel the results for the a query for a published, embedded dashboard.

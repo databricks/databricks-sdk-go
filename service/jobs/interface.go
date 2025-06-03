@@ -21,6 +21,8 @@ import (
 // [Secrets CLI] to manage secrets in the [Databricks CLI]. Use the [Secrets
 // utility] to reference secrets in notebooks and jobs.
 //
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+//
 // [Databricks CLI]: https://docs.databricks.com/dev-tools/cli/index.html
 // [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
 // [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
@@ -114,15 +116,11 @@ type JobsService interface {
 	// List jobs.
 	//
 	// Retrieves a list of jobs.
-	//
-	// Use ListAll() to get all BaseJob instances, which will iterate over every result page.
 	List(ctx context.Context, request ListJobsRequest) (*ListJobsResponse, error)
 
 	// List job runs.
 	//
 	// List runs in descending order by start time.
-	//
-	// Use ListRunsAll() to get all BaseRun instances, which will iterate over every result page.
 	ListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error)
 
 	// Repair a job run.
@@ -184,6 +182,8 @@ type JobsService interface {
 // The get and list compliance APIs allow you to view the policy compliance
 // status of a job. The enforce compliance API allows you to update a job so
 // that it becomes compliant with all of its policies.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PolicyComplianceForJobsService interface {
 
 	// Enforce job policy compliance.
@@ -208,7 +208,5 @@ type PolicyComplianceForJobsService interface {
 	// Jobs could be out of compliance if a cluster policy they use was updated
 	// after the job was last edited and its job clusters no longer comply with
 	// the updated policy.
-	//
-	// Use ListComplianceAll() to get all JobCompliance instances, which will iterate over every result page.
 	ListCompliance(ctx context.Context, request ListJobComplianceRequest) (*ListJobComplianceForPolicyResponse, error)
 }

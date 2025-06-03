@@ -11,6 +11,8 @@ import (
 //
 // See [more info].
 //
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+//
 // [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 type GitCredentialsService interface {
 
@@ -36,8 +38,6 @@ type GitCredentialsService interface {
 	//
 	// Lists the calling user's Git credentials. One credential per user is
 	// supported.
-	//
-	// Use ListAll() to get all CredentialInfo instances
 	List(ctx context.Context) (*ListCredentialsResponse, error)
 
 	// Update a credential.
@@ -56,6 +56,8 @@ type GitCredentialsService interface {
 // Within Repos you can develop code in notebooks or other files and follow data
 // science and engineering code development best practices using Git for version
 // control, collaboration, and CI/CD.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ReposService interface {
 
 	// Create a repo.
@@ -90,8 +92,6 @@ type ReposService interface {
 	//
 	// Returns repos that the calling user has Manage permissions on. Use
 	// `next_page_token` to iterate through additional pages.
-	//
-	// Use ListAll() to get all RepoInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListReposRequest) (*ListReposResponse, error)
 
 	// Set repo permissions.
@@ -126,6 +126,8 @@ type ReposService interface {
 // Databricks secrets. While Databricks makes an effort to redact secret values
 // that might be displayed in notebooks, it is not possible to prevent such
 // users from reading secrets.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SecretsService interface {
 
 	// Create a new secret scope.
@@ -197,8 +199,6 @@ type SecretsService interface {
 	// Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
 	// `PERMISSION_DENIED` if the user does not have permission to make this API
 	// call.
-	//
-	// Use ListAclsAll() to get all AclItem instances
 	ListAcls(ctx context.Context, request ListAclsRequest) (*ListAclsResponse, error)
 
 	// List all scopes.
@@ -207,8 +207,6 @@ type SecretsService interface {
 	//
 	// Throws `PERMISSION_DENIED` if the user does not have permission to make
 	// this API call.
-	//
-	// Use ListScopesAll() to get all SecretScope instances
 	ListScopes(ctx context.Context) (*ListScopesResponse, error)
 
 	// List secret keys.
@@ -221,8 +219,6 @@ type SecretsService interface {
 	// `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws
 	// `PERMISSION_DENIED` if the user does not have permission to make this API
 	// call.
-	//
-	// Use ListSecretsAll() to get all SecretMetadata instances
 	ListSecrets(ctx context.Context, request ListSecretsRequest) (*ListSecretsResponse, error)
 
 	// Create/update an ACL.
@@ -286,6 +282,8 @@ type SecretsService interface {
 //
 // A notebook is a web-based interface to a document that contains runnable
 // code, visualizations, and explanatory text.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WorkspaceService interface {
 
 	// Delete a workspace object.
@@ -344,8 +342,6 @@ type WorkspaceService interface {
 	// Lists the contents of a directory, or the object if it is not a
 	// directory. If the input path does not exist, this call returns an error
 	// `RESOURCE_DOES_NOT_EXIST`.
-	//
-	// Use ListAll() to get all ObjectInfo instances
 	List(ctx context.Context, request ListWorkspaceRequest) (*ListResponse, error)
 
 	// Create a directory.

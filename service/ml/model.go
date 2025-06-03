@@ -108,6 +108,17 @@ func (f *ActivityAction) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ActivityAction.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ActivityAction) Values() []ActivityAction {
+	return []ActivityAction{
+		ActivityActionApproveTransitionRequest,
+		ActivityActionCancelTransitionRequest,
+		ActivityActionRejectTransitionRequest,
+	}
+}
+
 // Type always returns ActivityAction to satisfy [pflag.Value] interface
 func (f *ActivityAction) Type() string {
 	return "ActivityAction"
@@ -162,6 +173,21 @@ func (f *ActivityType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "APPLIED_TRANSITION", "APPROVED_REQUEST", "CANCELLED_REQUEST", "NEW_COMMENT", "REJECTED_REQUEST", "REQUESTED_TRANSITION", "SYSTEM_TRANSITION"`, v)
+	}
+}
+
+// Values returns all possible values of ActivityType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ActivityType) Values() []ActivityType {
+	return []ActivityType{
+		ActivityTypeAppliedTransition,
+		ActivityTypeApprovedRequest,
+		ActivityTypeCancelledRequest,
+		ActivityTypeNewComment,
+		ActivityTypeRejectedRequest,
+		ActivityTypeRequestedTransition,
+		ActivityTypeSystemTransition,
 	}
 }
 
@@ -278,6 +304,18 @@ func (f *ArtifactCredentialType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ArtifactCredentialType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ArtifactCredentialType) Values() []ArtifactCredentialType {
+	return []ArtifactCredentialType{
+		ArtifactCredentialTypeAwsPresignedUrl,
+		ArtifactCredentialTypeAzureAdlsGen2SasUri,
+		ArtifactCredentialTypeAzureSasUri,
+		ArtifactCredentialTypeGcpSignedUrl,
+	}
+}
+
 // Type always returns ArtifactCredentialType to satisfy [pflag.Value] interface
 func (f *ArtifactCredentialType) Type() string {
 	return "ArtifactCredentialType"
@@ -308,6 +346,16 @@ func (f *CommentActivityAction) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELETE_COMMENT", "EDIT_COMMENT"`, v)
+	}
+}
+
+// Values returns all possible values of CommentActivityAction.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CommentActivityAction) Values() []CommentActivityAction {
+	return []CommentActivityAction{
+		CommentActivityActionDeleteComment,
+		CommentActivityActionEditComment,
 	}
 }
 
@@ -944,6 +992,18 @@ func (f *DeleteTransitionRequestStage) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of DeleteTransitionRequestStage.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DeleteTransitionRequestStage) Values() []DeleteTransitionRequestStage {
+	return []DeleteTransitionRequestStage{
+		DeleteTransitionRequestStageArchived,
+		DeleteTransitionRequestStageNone,
+		DeleteTransitionRequestStageProduction,
+		DeleteTransitionRequestStageStaging,
+	}
+}
+
 // Type always returns DeleteTransitionRequestStage to satisfy [pflag.Value] interface
 func (f *DeleteTransitionRequestStage) Type() string {
 	return "DeleteTransitionRequestStage"
@@ -1081,6 +1141,17 @@ func (f *ExperimentPermissionLevel) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_READ"`, v)
+	}
+}
+
+// Values returns all possible values of ExperimentPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ExperimentPermissionLevel) Values() []ExperimentPermissionLevel {
+	return []ExperimentPermissionLevel{
+		ExperimentPermissionLevelCanEdit,
+		ExperimentPermissionLevelCanManage,
+		ExperimentPermissionLevelCanRead,
 	}
 }
 
@@ -1227,6 +1298,19 @@ func (f *ForecastingExperimentState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "PENDING", "RUNNING", "SUCCEEDED"`, v)
+	}
+}
+
+// Values returns all possible values of ForecastingExperimentState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ForecastingExperimentState) Values() []ForecastingExperimentState {
+	return []ForecastingExperimentState{
+		ForecastingExperimentStateCancelled,
+		ForecastingExperimentStateFailed,
+		ForecastingExperimentStatePending,
+		ForecastingExperimentStateRunning,
+		ForecastingExperimentStateSucceeded,
 	}
 }
 
@@ -2034,6 +2118,17 @@ func (f *LoggedModelStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of LoggedModelStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LoggedModelStatus) Values() []LoggedModelStatus {
+	return []LoggedModelStatus{
+		LoggedModelStatusLoggedModelPending,
+		LoggedModelStatusLoggedModelReady,
+		LoggedModelStatusLoggedModelUploadFailed,
+	}
+}
+
 // Type always returns LoggedModelStatus to satisfy [pflag.Value] interface
 func (f *LoggedModelStatus) Type() string {
 	return "LoggedModelStatus"
@@ -2311,6 +2406,17 @@ func (f *ModelVersionStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ModelVersionStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ModelVersionStatus) Values() []ModelVersionStatus {
+	return []ModelVersionStatus{
+		ModelVersionStatusFailedRegistration,
+		ModelVersionStatusPendingRegistration,
+		ModelVersionStatusReady,
+	}
+}
+
 // Type always returns ModelVersionStatus to satisfy [pflag.Value] interface
 func (f *ModelVersionStatus) Type() string {
 	return "ModelVersionStatus"
@@ -2378,6 +2484,19 @@ func (f *PermissionLevel) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_STAGING_VERSIONS", "CAN_READ"`, v)
+	}
+}
+
+// Values returns all possible values of PermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PermissionLevel) Values() []PermissionLevel {
+	return []PermissionLevel{
+		PermissionLevelCanEdit,
+		PermissionLevelCanManage,
+		PermissionLevelCanManageProductionVersions,
+		PermissionLevelCanManageStagingVersions,
+		PermissionLevelCanRead,
 	}
 }
 
@@ -2474,6 +2593,19 @@ func (f *RegisteredModelPermissionLevel) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_EDIT", "CAN_MANAGE", "CAN_MANAGE_PRODUCTION_VERSIONS", "CAN_MANAGE_STAGING_VERSIONS", "CAN_READ"`, v)
+	}
+}
+
+// Values returns all possible values of RegisteredModelPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RegisteredModelPermissionLevel) Values() []RegisteredModelPermissionLevel {
+	return []RegisteredModelPermissionLevel{
+		RegisteredModelPermissionLevelCanEdit,
+		RegisteredModelPermissionLevelCanManage,
+		RegisteredModelPermissionLevelCanManageProductionVersions,
+		RegisteredModelPermissionLevelCanManageStagingVersions,
+		RegisteredModelPermissionLevelCanRead,
 	}
 }
 
@@ -2634,6 +2766,26 @@ func (f *RegistryWebhookEvent) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of RegistryWebhookEvent.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RegistryWebhookEvent) Values() []RegistryWebhookEvent {
+	return []RegistryWebhookEvent{
+		RegistryWebhookEventCommentCreated,
+		RegistryWebhookEventModelVersionCreated,
+		RegistryWebhookEventModelVersionTagSet,
+		RegistryWebhookEventModelVersionTransitionedStage,
+		RegistryWebhookEventModelVersionTransitionedToArchived,
+		RegistryWebhookEventModelVersionTransitionedToProduction,
+		RegistryWebhookEventModelVersionTransitionedToStaging,
+		RegistryWebhookEventRegisteredModelCreated,
+		RegistryWebhookEventTransitionRequestCreated,
+		RegistryWebhookEventTransitionRequestToArchivedCreated,
+		RegistryWebhookEventTransitionRequestToProductionCreated,
+		RegistryWebhookEventTransitionRequestToStagingCreated,
+	}
+}
+
 // Type always returns RegistryWebhookEvent to satisfy [pflag.Value] interface
 func (f *RegistryWebhookEvent) Type() string {
 	return "RegistryWebhookEvent"
@@ -2672,6 +2824,17 @@ func (f *RegistryWebhookStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DISABLED", "TEST_MODE"`, v)
+	}
+}
+
+// Values returns all possible values of RegistryWebhookStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RegistryWebhookStatus) Values() []RegistryWebhookStatus {
+	return []RegistryWebhookStatus{
+		RegistryWebhookStatusActive,
+		RegistryWebhookStatusDisabled,
+		RegistryWebhookStatusTestMode,
 	}
 }
 
@@ -2874,6 +3037,19 @@ func (f *RunInfoStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAILED", "FINISHED", "KILLED", "RUNNING", "SCHEDULED"`, v)
+	}
+}
+
+// Values returns all possible values of RunInfoStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RunInfoStatus) Values() []RunInfoStatus {
+	return []RunInfoStatus{
+		RunInfoStatusFailed,
+		RunInfoStatusFinished,
+		RunInfoStatusKilled,
+		RunInfoStatusRunning,
+		RunInfoStatusScheduled,
 	}
 }
 
@@ -3323,6 +3499,18 @@ func (f *Stage) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of Stage.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Stage) Values() []Stage {
+	return []Stage{
+		StageArchived,
+		StageNone,
+		StageProduction,
+		StageStaging,
+	}
+}
+
 // Type always returns Stage to satisfy [pflag.Value] interface
 func (f *Stage) Type() string {
 	return "Stage"
@@ -3360,6 +3548,17 @@ func (f *Status) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAILED_REGISTRATION", "PENDING_REGISTRATION", "READY"`, v)
+	}
+}
+
+// Values returns all possible values of Status.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Status) Values() []Status {
+	return []Status{
+		StatusFailedRegistration,
+		StatusPendingRegistration,
+		StatusReady,
 	}
 }
 
@@ -3666,6 +3865,19 @@ func (f *UpdateRunStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of UpdateRunStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UpdateRunStatus) Values() []UpdateRunStatus {
+	return []UpdateRunStatus{
+		UpdateRunStatusFailed,
+		UpdateRunStatusFinished,
+		UpdateRunStatusKilled,
+		UpdateRunStatusRunning,
+		UpdateRunStatusScheduled,
+	}
+}
+
 // Type always returns UpdateRunStatus to satisfy [pflag.Value] interface
 func (f *UpdateRunStatus) Type() string {
 	return "UpdateRunStatus"
@@ -3696,6 +3908,17 @@ func (f *ViewType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE_ONLY", "ALL", "DELETED_ONLY"`, v)
+	}
+}
+
+// Values returns all possible values of ViewType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ViewType) Values() []ViewType {
+	return []ViewType{
+		ViewTypeActiveOnly,
+		ViewTypeAll,
+		ViewTypeDeletedOnly,
 	}
 }
 

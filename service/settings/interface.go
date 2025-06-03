@@ -28,6 +28,8 @@ import (
 //
 // After changes to the account-level IP access lists, it can take a few minutes
 // for changes to take effect.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountIpAccessListsService interface {
 
 	// Create access list.
@@ -63,8 +65,6 @@ type AccountIpAccessListsService interface {
 	// Get access lists.
 	//
 	// Gets all IP access lists for the specified account.
-	//
-	// Use ListAll() to get all IpAccessListInfo instances
 	List(ctx context.Context) (*GetIpAccessListsResponse, error)
 
 	// Replace access list.
@@ -104,12 +104,16 @@ type AccountIpAccessListsService interface {
 }
 
 // Accounts Settings API allows users to manage settings at the account level.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountSettingsService interface {
 }
 
 // Controls whether AI/BI published dashboard embedding is enabled,
 // conditionally enabled, or disabled at the workspace level. By default, this
 // setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AibiDashboardEmbeddingAccessPolicyService interface {
 
 	// Delete the AI/BI dashboard embedding access policy.
@@ -135,6 +139,8 @@ type AibiDashboardEmbeddingAccessPolicyService interface {
 // Controls the list of domains approved to host the embedded AI/BI dashboards.
 // The approved domains list can't be mutated when the current access policy is
 // not set to ALLOW_APPROVED_DOMAINS.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AibiDashboardEmbeddingApprovedDomainsService interface {
 
 	// Delete AI/BI dashboard embedding approved domains.
@@ -158,6 +164,8 @@ type AibiDashboardEmbeddingApprovedDomainsService interface {
 
 // Controls whether automatic cluster update is enabled for the current
 // workspace. By default, it is turned off.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AutomaticClusterUpdateService interface {
 
 	// Get the automatic cluster update setting.
@@ -181,6 +189,8 @@ type AutomaticClusterUpdateService interface {
 // off.
 //
 // This settings can NOT be disabled once it is enabled.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ComplianceSecurityProfileService interface {
 
 	// Get the compliance security profile setting.
@@ -201,6 +211,8 @@ type ComplianceSecurityProfileService interface {
 
 // Credentials manager interacts with with Identity Providers to to perform
 // token exchanges using stored credentials and refresh tokens.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CredentialsManagerService interface {
 
 	// Exchange token.
@@ -217,6 +229,8 @@ type CredentialsManagerService interface {
 //
 // This settings can be disabled so that new workspaces do not have compliance
 // security profile enabled by default.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CspEnablementAccountService interface {
 
 	// Get the compliance security profile setting for new workspaces.
@@ -243,6 +257,8 @@ type CspEnablementAccountService interface {
 // This setting requires a restart of clusters and SQL warehouses to take
 // effect. Additionally, the default namespace only applies when using Unity
 // Catalog-enabled compute.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DefaultNamespaceService interface {
 
 	// Delete the default namespace setting.
@@ -279,6 +295,8 @@ type DefaultNamespaceService interface {
 // can still access a Hive Metastore through Hive Metastore federation. 2.
 // Disables fallback mode on external location access from the workspace. 3.
 // Disables Databricks Runtime versions prior to 13.3LTS.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DisableLegacyAccessService interface {
 
 	// Delete Legacy Access Disablement Status.
@@ -306,6 +324,8 @@ type DisableLegacyAccessService interface {
 // restrictions are imposed on Databricks Runtime versions. This setting can
 // take up to 20 minutes to take effect and requires a manual restart of
 // all-purpose compute clusters and SQL warehouses.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DisableLegacyDbfsService interface {
 
 	// Delete the disable legacy DBFS setting.
@@ -331,6 +351,8 @@ type DisableLegacyDbfsService interface {
 // Hive Metastore will not be provisioned. 3. Disables the use of
 // ‘No-isolation clusters’. 4. Disables Databricks Runtime versions prior to
 // 13.3LTS.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DisableLegacyFeaturesService interface {
 
 	// Delete the disable legacy features setting.
@@ -351,6 +373,8 @@ type DisableLegacyFeaturesService interface {
 
 // Controls whether users can export notebooks and files from the Workspace UI.
 // By default, this setting is enabled.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type EnableExportNotebookService interface {
 
 	// Get the Notebook and File exporting setting.
@@ -369,6 +393,8 @@ type EnableExportNotebookService interface {
 // Controls the enforcement of IP access lists for accessing the account
 // console. Allowing you to enable or disable restricted access based on IP
 // addresses.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type EnableIpAccessListsService interface {
 
 	// Delete the account IP access toggle setting.
@@ -389,6 +415,8 @@ type EnableIpAccessListsService interface {
 
 // Controls whether users can copy tabular data to the clipboard via the UI. By
 // default, this setting is enabled.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type EnableNotebookTableClipboardService interface {
 
 	// Get the Results Table Clipboard features setting.
@@ -406,6 +434,8 @@ type EnableNotebookTableClipboardService interface {
 
 // Controls whether users can download notebook results. By default, this
 // setting is enabled.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type EnableResultsDownloadingService interface {
 
 	// Get the Notebook results download setting.
@@ -428,6 +458,8 @@ type EnableResultsDownloadingService interface {
 //
 // If the compliance security profile is disabled, you can enable or disable
 // this setting and it is not permanent.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type EnhancedSecurityMonitoringService interface {
 
 	// Get the enhanced security monitoring setting.
@@ -451,6 +483,8 @@ type EnhancedSecurityMonitoringService interface {
 // account-level setting is disabled for new workspaces. After workspace
 // creation, account admins can enable enhanced security monitoring individually
 // for each workspace.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type EsmEnablementAccountService interface {
 
 	// Get the enhanced security monitoring setting for new workspaces.
@@ -486,6 +520,8 @@ type EsmEnablementAccountService interface {
 //
 // After changes to the IP access list feature, it can take a few minutes for
 // changes to take effect.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type IpAccessListsService interface {
 
 	// Create access list.
@@ -523,8 +559,6 @@ type IpAccessListsService interface {
 	// Get access lists.
 	//
 	// Gets all IP access lists for the specified workspace.
-	//
-	// Use ListAll() to get all IpAccessListInfo instances
 	List(ctx context.Context) (*ListIpAccessListResponse, error)
 
 	// Replace access list.
@@ -569,6 +603,8 @@ type IpAccessListsService interface {
 
 // Determines if partner powered models are enabled or not for a specific
 // account
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type LlmProxyPartnerPoweredAccountService interface {
 
 	// Get the enable partner powered AI features account setting.
@@ -584,6 +620,8 @@ type LlmProxyPartnerPoweredAccountService interface {
 
 // Determines if the account-level partner-powered setting value is enforced
 // upon the workspace-level partner-powered setting
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type LlmProxyPartnerPoweredEnforceService interface {
 
 	// Get the enforcement status of partner powered AI features account
@@ -603,6 +641,8 @@ type LlmProxyPartnerPoweredEnforceService interface {
 
 // Determines if partner powered models are enabled or not for a specific
 // workspace
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type LlmProxyPartnerPoweredWorkspaceService interface {
 
 	// Delete the enable partner powered AI features workspace setting.
@@ -629,6 +669,8 @@ type LlmProxyPartnerPoweredWorkspaceService interface {
 // provision private endpoints for Databricks to privately connect serverless
 // compute resources to your Azure resources using Azure Private Link. See
 // [configure serverless secure connectivity].
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 //
 // [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
 type NetworkConnectivityService interface {
@@ -692,15 +734,11 @@ type NetworkConnectivityService interface {
 	// List network connectivity configurations.
 	//
 	// Gets an array of network connectivity configurations.
-	//
-	// Use ListNetworkConnectivityConfigurationsAll() to get all NetworkConnectivityConfiguration instances, which will iterate over every result page.
 	ListNetworkConnectivityConfigurations(ctx context.Context, request ListNetworkConnectivityConfigurationsRequest) (*ListNetworkConnectivityConfigurationsResponse, error)
 
 	// List private endpoint rules.
 	//
 	// Gets an array of private endpoint rules.
-	//
-	// Use ListPrivateEndpointRulesAll() to get all NccAzurePrivateEndpointRule instances, which will iterate over every result page.
 	ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error)
 
 	// Update a private endpoint rule.
@@ -717,6 +755,8 @@ type NetworkConnectivityService interface {
 // policy assignment, and is automatically associated with each newly created
 // workspace. 'default-policy' is reserved and cannot be deleted, but it can be
 // updated to customize the default network access rules for your account.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type NetworkPoliciesService interface {
 
 	// Create a network policy.
@@ -738,8 +778,6 @@ type NetworkPoliciesService interface {
 	// List network policies.
 	//
 	// Gets an array of network policies.
-	//
-	// Use ListNetworkPoliciesRpcAll() to get all AccountNetworkPolicy instances, which will iterate over every result page.
 	ListNetworkPoliciesRpc(ctx context.Context, request ListNetworkPoliciesRequest) (*ListNetworkPoliciesResponse, error)
 
 	// Update a network policy.
@@ -754,6 +792,8 @@ type NetworkPoliciesService interface {
 // send notifications for query alerts and jobs to destinations outside of
 // Databricks. Only workspace admins can create, update, and delete notification
 // destinations.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type NotificationDestinationsService interface {
 
 	// Create a notification destination.
@@ -774,8 +814,6 @@ type NotificationDestinationsService interface {
 	// List notification destinations.
 	//
 	// Lists notification destinations.
-	//
-	// Use ListAll() to get all ListNotificationDestinationsResult instances, which will iterate over every result page.
 	List(ctx context.Context, request ListNotificationDestinationsRequest) (*ListNotificationDestinationsResponse, error)
 
 	// Update a notification destination.
@@ -794,6 +832,8 @@ type NotificationDestinationsService interface {
 // has a default value, this setting is present on all accounts even though it's
 // never set on a given account. Deletion reverts the value of the setting back
 // to the default value.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PersonalComputeService interface {
 
 	// Delete Personal Compute setting.
@@ -824,6 +864,8 @@ type PersonalComputeService interface {
 // User role on. They can also only change a job owner to themselves. And they
 // can change the job run_as setting to themselves or to a service principal on
 // which they have the Service Principal User role.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type RestrictWorkspaceAdminsService interface {
 
 	// Delete the restrict workspace admins setting.
@@ -854,12 +896,16 @@ type RestrictWorkspaceAdminsService interface {
 
 // Workspace Settings API allows users to manage settings at the workspace
 // level.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SettingsService interface {
 }
 
 // Enables administrators to get all tokens and delete tokens for other users.
 // Admins can either get every token, get a specific token by ID, or get all
 // tokens for a particular user.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type TokenManagementService interface {
 
 	// Create on-behalf token.
@@ -891,8 +937,6 @@ type TokenManagementService interface {
 	// List all tokens.
 	//
 	// Lists all tokens associated with the specified workspace or user.
-	//
-	// Use ListAll() to get all TokenInfo instances
 	List(ctx context.Context, request ListTokenManagementRequest) (*ListTokensResponse, error)
 
 	// Set token permissions.
@@ -911,6 +955,8 @@ type TokenManagementService interface {
 
 // The Token API allows you to create, list, and revoke tokens that can be used
 // to authenticate and access Databricks REST APIs.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type TokensService interface {
 
 	// Create a user token.
@@ -932,12 +978,12 @@ type TokensService interface {
 	// List tokens.
 	//
 	// Lists all the valid tokens for a user-workspace pair.
-	//
-	// Use ListAll() to get all PublicTokenInfo instances
 	List(ctx context.Context) (*ListPublicTokensResponse, error)
 }
 
 // This API allows updating known workspace settings for advanced users.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WorkspaceConfService interface {
 
 	// Check configuration status.
@@ -959,6 +1005,8 @@ type WorkspaceConfService interface {
 // network policy. You cannot create or delete a workspace's network
 // configuration, only update it to associate the workspace with a different
 // policy.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WorkspaceNetworkConfigurationService interface {
 
 	// Get workspace network configuration.

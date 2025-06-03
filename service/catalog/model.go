@@ -114,6 +114,17 @@ func (f *ArtifactType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ArtifactType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ArtifactType) Values() []ArtifactType {
+	return []ArtifactType{
+		ArtifactTypeInitScript,
+		ArtifactTypeLibraryJar,
+		ArtifactTypeLibraryMaven,
+	}
+}
+
 // Type always returns ArtifactType to satisfy [pflag.Value] interface
 func (f *ArtifactType) Type() string {
 	return "ArtifactType"
@@ -471,6 +482,16 @@ func (f *CatalogIsolationMode) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of CatalogIsolationMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CatalogIsolationMode) Values() []CatalogIsolationMode {
+	return []CatalogIsolationMode{
+		CatalogIsolationModeIsolated,
+		CatalogIsolationModeOpen,
+	}
+}
+
 // Type always returns CatalogIsolationMode to satisfy [pflag.Value] interface
 func (f *CatalogIsolationMode) Type() string {
 	return "CatalogIsolationMode"
@@ -506,6 +527,21 @@ func (f *CatalogType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELTASHARING_CATALOG", "FOREIGN_CATALOG", "INTERNAL_CATALOG", "MANAGED_CATALOG", "MANAGED_ONLINE_CATALOG", "SYSTEM_CATALOG", "UNKNOWN_CATALOG_TYPE"`, v)
+	}
+}
+
+// Values returns all possible values of CatalogType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CatalogType) Values() []CatalogType {
+	return []CatalogType{
+		CatalogTypeDeltasharingCatalog,
+		CatalogTypeForeignCatalog,
+		CatalogTypeInternalCatalog,
+		CatalogTypeManagedCatalog,
+		CatalogTypeManagedOnlineCatalog,
+		CatalogTypeSystemCatalog,
+		CatalogTypeUnknownCatalogType,
 	}
 }
 
@@ -646,6 +682,38 @@ func (f *ColumnTypeName) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ColumnTypeName.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ColumnTypeName) Values() []ColumnTypeName {
+	return []ColumnTypeName{
+		ColumnTypeNameArray,
+		ColumnTypeNameBinary,
+		ColumnTypeNameBoolean,
+		ColumnTypeNameByte,
+		ColumnTypeNameChar,
+		ColumnTypeNameDate,
+		ColumnTypeNameDecimal,
+		ColumnTypeNameDouble,
+		ColumnTypeNameFloat,
+		ColumnTypeNameGeography,
+		ColumnTypeNameGeometry,
+		ColumnTypeNameInt,
+		ColumnTypeNameInterval,
+		ColumnTypeNameLong,
+		ColumnTypeNameMap,
+		ColumnTypeNameNull,
+		ColumnTypeNameShort,
+		ColumnTypeNameString,
+		ColumnTypeNameStruct,
+		ColumnTypeNameTableType,
+		ColumnTypeNameTimestamp,
+		ColumnTypeNameTimestampNtz,
+		ColumnTypeNameUserDefinedType,
+		ColumnTypeNameVariant,
+	}
+}
+
 // Type always returns ColumnTypeName to satisfy [pflag.Value] interface
 func (f *ColumnTypeName) Type() string {
 	return "ColumnTypeName"
@@ -743,6 +811,27 @@ func (f *ConnectionType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "GLUE", "HIVE_METASTORE", "HTTP", "MYSQL", "ORACLE", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA"`, v)
+	}
+}
+
+// Values returns all possible values of ConnectionType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ConnectionType) Values() []ConnectionType {
+	return []ConnectionType{
+		ConnectionTypeBigquery,
+		ConnectionTypeDatabricks,
+		ConnectionTypeGlue,
+		ConnectionTypeHiveMetastore,
+		ConnectionTypeHttp,
+		ConnectionTypeMysql,
+		ConnectionTypeOracle,
+		ConnectionTypePostgresql,
+		ConnectionTypeRedshift,
+		ConnectionTypeSnowflake,
+		ConnectionTypeSqldw,
+		ConnectionTypeSqlserver,
+		ConnectionTypeTeradata,
 	}
 }
 
@@ -998,6 +1087,15 @@ func (f *CreateFunctionParameterStyle) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of CreateFunctionParameterStyle.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CreateFunctionParameterStyle) Values() []CreateFunctionParameterStyle {
+	return []CreateFunctionParameterStyle{
+		CreateFunctionParameterStyleS,
+	}
+}
+
 // Type always returns CreateFunctionParameterStyle to satisfy [pflag.Value] interface
 func (f *CreateFunctionParameterStyle) Type() string {
 	return "CreateFunctionParameterStyle"
@@ -1034,6 +1132,16 @@ func (f *CreateFunctionRoutineBody) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of CreateFunctionRoutineBody.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CreateFunctionRoutineBody) Values() []CreateFunctionRoutineBody {
+	return []CreateFunctionRoutineBody{
+		CreateFunctionRoutineBodyExternal,
+		CreateFunctionRoutineBodySql,
+	}
+}
+
 // Type always returns CreateFunctionRoutineBody to satisfy [pflag.Value] interface
 func (f *CreateFunctionRoutineBody) Type() string {
 	return "CreateFunctionRoutineBody"
@@ -1057,6 +1165,15 @@ func (f *CreateFunctionSecurityType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEFINER"`, v)
+	}
+}
+
+// Values returns all possible values of CreateFunctionSecurityType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CreateFunctionSecurityType) Values() []CreateFunctionSecurityType {
+	return []CreateFunctionSecurityType{
+		CreateFunctionSecurityTypeDefiner,
 	}
 }
 
@@ -1087,6 +1204,17 @@ func (f *CreateFunctionSqlDataAccess) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CONTAINS_SQL", "NO_SQL", "READS_SQL_DATA"`, v)
+	}
+}
+
+// Values returns all possible values of CreateFunctionSqlDataAccess.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CreateFunctionSqlDataAccess) Values() []CreateFunctionSqlDataAccess {
+	return []CreateFunctionSqlDataAccess{
+		CreateFunctionSqlDataAccessContainsSql,
+		CreateFunctionSqlDataAccessNoSql,
+		CreateFunctionSqlDataAccessReadsSqlData,
 	}
 }
 
@@ -1389,6 +1517,16 @@ func (f *CredentialPurpose) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of CredentialPurpose.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CredentialPurpose) Values() []CredentialPurpose {
+	return []CredentialPurpose{
+		CredentialPurposeService,
+		CredentialPurposeStorage,
+	}
+}
+
 // Type always returns CredentialPurpose to satisfy [pflag.Value] interface
 func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
@@ -1414,6 +1552,16 @@ func (f *CredentialType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BEARER_TOKEN", "USERNAME_PASSWORD"`, v)
+	}
+}
+
+// Values returns all possible values of CredentialType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CredentialType) Values() []CredentialType {
+	return []CredentialType{
+		CredentialTypeBearerToken,
+		CredentialTypeUsernamePassword,
 	}
 }
 
@@ -1501,6 +1649,37 @@ func (f *DataSourceFormat) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AVRO", "BIGQUERY_FORMAT", "CSV", "DATABRICKS_FORMAT", "DELTA", "DELTASHARING", "HIVE_CUSTOM", "HIVE_SERDE", "JSON", "MYSQL_FORMAT", "NETSUITE_FORMAT", "ORC", "PARQUET", "POSTGRESQL_FORMAT", "REDSHIFT_FORMAT", "SALESFORCE_FORMAT", "SNOWFLAKE_FORMAT", "SQLDW_FORMAT", "SQLSERVER_FORMAT", "TEXT", "UNITY_CATALOG", "VECTOR_INDEX_FORMAT", "WORKDAY_RAAS_FORMAT"`, v)
+	}
+}
+
+// Values returns all possible values of DataSourceFormat.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DataSourceFormat) Values() []DataSourceFormat {
+	return []DataSourceFormat{
+		DataSourceFormatAvro,
+		DataSourceFormatBigqueryFormat,
+		DataSourceFormatCsv,
+		DataSourceFormatDatabricksFormat,
+		DataSourceFormatDelta,
+		DataSourceFormatDeltasharing,
+		DataSourceFormatHiveCustom,
+		DataSourceFormatHiveSerde,
+		DataSourceFormatJson,
+		DataSourceFormatMysqlFormat,
+		DataSourceFormatNetsuiteFormat,
+		DataSourceFormatOrc,
+		DataSourceFormatParquet,
+		DataSourceFormatPostgresqlFormat,
+		DataSourceFormatRedshiftFormat,
+		DataSourceFormatSalesforceFormat,
+		DataSourceFormatSnowflakeFormat,
+		DataSourceFormatSqldwFormat,
+		DataSourceFormatSqlserverFormat,
+		DataSourceFormatText,
+		DataSourceFormatUnityCatalog,
+		DataSourceFormatVectorIndexFormat,
+		DataSourceFormatWorkdayRaasFormat,
 	}
 }
 
@@ -1597,6 +1776,20 @@ func (f *DatabaseInstanceState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AVAILABLE", "DELETING", "FAILING_OVER", "STARTING", "STOPPED", "UPDATING"`, v)
+	}
+}
+
+// Values returns all possible values of DatabaseInstanceState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DatabaseInstanceState) Values() []DatabaseInstanceState {
+	return []DatabaseInstanceState{
+		DatabaseInstanceStateAvailable,
+		DatabaseInstanceStateDeleting,
+		DatabaseInstanceStateFailingOver,
+		DatabaseInstanceStateStarting,
+		DatabaseInstanceStateStopped,
+		DatabaseInstanceStateUpdating,
 	}
 }
 
@@ -2031,6 +2224,16 @@ func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Set(v string) err
 	}
 }
 
+// Values returns all possible values of EffectivePredictiveOptimizationFlagInheritedFromType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Values() []EffectivePredictiveOptimizationFlagInheritedFromType {
+	return []EffectivePredictiveOptimizationFlagInheritedFromType{
+		EffectivePredictiveOptimizationFlagInheritedFromTypeCatalog,
+		EffectivePredictiveOptimizationFlagInheritedFromTypeSchema,
+	}
+}
+
 // Type always returns EffectivePredictiveOptimizationFlagInheritedFromType to satisfy [pflag.Value] interface
 func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Type() string {
 	return "EffectivePredictiveOptimizationFlagInheritedFromType"
@@ -2098,6 +2301,17 @@ func (f *EnablePredictiveOptimization) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DISABLE", "ENABLE", "INHERIT"`, v)
+	}
+}
+
+// Values returns all possible values of EnablePredictiveOptimization.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EnablePredictiveOptimization) Values() []EnablePredictiveOptimization {
+	return []EnablePredictiveOptimization{
+		EnablePredictiveOptimizationDisable,
+		EnablePredictiveOptimizationEnable,
+		EnablePredictiveOptimizationInherit,
 	}
 }
 
@@ -2368,6 +2582,15 @@ func (f *FunctionInfoParameterStyle) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of FunctionInfoParameterStyle.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FunctionInfoParameterStyle) Values() []FunctionInfoParameterStyle {
+	return []FunctionInfoParameterStyle{
+		FunctionInfoParameterStyleS,
+	}
+}
+
 // Type always returns FunctionInfoParameterStyle to satisfy [pflag.Value] interface
 func (f *FunctionInfoParameterStyle) Type() string {
 	return "FunctionInfoParameterStyle"
@@ -2399,6 +2622,16 @@ func (f *FunctionInfoRoutineBody) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of FunctionInfoRoutineBody.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FunctionInfoRoutineBody) Values() []FunctionInfoRoutineBody {
+	return []FunctionInfoRoutineBody{
+		FunctionInfoRoutineBodyExternal,
+		FunctionInfoRoutineBodySql,
+	}
+}
+
 // Type always returns FunctionInfoRoutineBody to satisfy [pflag.Value] interface
 func (f *FunctionInfoRoutineBody) Type() string {
 	return "FunctionInfoRoutineBody"
@@ -2422,6 +2655,15 @@ func (f *FunctionInfoSecurityType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEFINER"`, v)
+	}
+}
+
+// Values returns all possible values of FunctionInfoSecurityType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FunctionInfoSecurityType) Values() []FunctionInfoSecurityType {
+	return []FunctionInfoSecurityType{
+		FunctionInfoSecurityTypeDefiner,
 	}
 }
 
@@ -2452,6 +2694,17 @@ func (f *FunctionInfoSqlDataAccess) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CONTAINS_SQL", "NO_SQL", "READS_SQL_DATA"`, v)
+	}
+}
+
+// Values returns all possible values of FunctionInfoSqlDataAccess.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FunctionInfoSqlDataAccess) Values() []FunctionInfoSqlDataAccess {
+	return []FunctionInfoSqlDataAccess{
+		FunctionInfoSqlDataAccessContainsSql,
+		FunctionInfoSqlDataAccessNoSql,
+		FunctionInfoSqlDataAccessReadsSqlData,
 	}
 }
 
@@ -2524,6 +2777,15 @@ func (f *FunctionParameterMode) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of FunctionParameterMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FunctionParameterMode) Values() []FunctionParameterMode {
+	return []FunctionParameterMode{
+		FunctionParameterModeIn,
+	}
+}
+
 // Type always returns FunctionParameterMode to satisfy [pflag.Value] interface
 func (f *FunctionParameterMode) Type() string {
 	return "FunctionParameterMode"
@@ -2549,6 +2811,16 @@ func (f *FunctionParameterType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "COLUMN", "PARAM"`, v)
+	}
+}
+
+// Values returns all possible values of FunctionParameterType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FunctionParameterType) Values() []FunctionParameterType {
+	return []FunctionParameterType{
+		FunctionParameterTypeColumn,
+		FunctionParameterTypeParam,
 	}
 }
 
@@ -2959,6 +3231,16 @@ func (f *GetMetastoreSummaryResponseDeltaSharingScope) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of GetMetastoreSummaryResponseDeltaSharingScope.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GetMetastoreSummaryResponseDeltaSharingScope) Values() []GetMetastoreSummaryResponseDeltaSharingScope {
+	return []GetMetastoreSummaryResponseDeltaSharingScope{
+		GetMetastoreSummaryResponseDeltaSharingScopeInternal,
+		GetMetastoreSummaryResponseDeltaSharingScopeInternalAndExternal,
+	}
+}
+
 // Type always returns GetMetastoreSummaryResponseDeltaSharingScope to satisfy [pflag.Value] interface
 func (f *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
 	return "GetMetastoreSummaryResponseDeltaSharingScope"
@@ -3143,6 +3425,16 @@ func (f *IsolationMode) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ISOLATION_MODE_ISOLATED", "ISOLATION_MODE_OPEN"`, v)
+	}
+}
+
+// Values returns all possible values of IsolationMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *IsolationMode) Values() []IsolationMode {
+	return []IsolationMode{
+		IsolationModeIsolationModeIsolated,
+		IsolationModeIsolationModeOpen,
 	}
 }
 
@@ -3915,6 +4207,15 @@ func (f *MatchType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of MatchType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MatchType) Values() []MatchType {
+	return []MatchType{
+		MatchTypePrefixMatch,
+	}
+}
+
 // Type always returns MatchType to satisfy [pflag.Value] interface
 func (f *MatchType) Type() string {
 	return "MatchType"
@@ -4017,6 +4318,16 @@ func (f *MetastoreInfoDeltaSharingScope) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of MetastoreInfoDeltaSharingScope.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MetastoreInfoDeltaSharingScope) Values() []MetastoreInfoDeltaSharingScope {
+	return []MetastoreInfoDeltaSharingScope{
+		MetastoreInfoDeltaSharingScopeInternal,
+		MetastoreInfoDeltaSharingScopeInternalAndExternal,
+	}
+}
+
 // Type always returns MetastoreInfoDeltaSharingScope to satisfy [pflag.Value] interface
 func (f *MetastoreInfoDeltaSharingScope) Type() string {
 	return "MetastoreInfoDeltaSharingScope"
@@ -4113,6 +4424,17 @@ func (f *ModelVersionInfoStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ModelVersionInfoStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ModelVersionInfoStatus) Values() []ModelVersionInfoStatus {
+	return []ModelVersionInfoStatus{
+		ModelVersionInfoStatusFailedRegistration,
+		ModelVersionInfoStatusPendingRegistration,
+		ModelVersionInfoStatusReady,
+	}
+}
+
 // Type always returns ModelVersionInfoStatus to satisfy [pflag.Value] interface
 func (f *ModelVersionInfoStatus) Type() string {
 	return "ModelVersionInfoStatus"
@@ -4150,6 +4472,16 @@ func (f *MonitorCronSchedulePauseStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
+	}
+}
+
+// Values returns all possible values of MonitorCronSchedulePauseStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MonitorCronSchedulePauseStatus) Values() []MonitorCronSchedulePauseStatus {
+	return []MonitorCronSchedulePauseStatus{
+		MonitorCronSchedulePauseStatusPaused,
+		MonitorCronSchedulePauseStatusUnpaused,
 	}
 }
 
@@ -4241,6 +4573,16 @@ func (f *MonitorInferenceLogProblemType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PROBLEM_TYPE_CLASSIFICATION", "PROBLEM_TYPE_REGRESSION"`, v)
+	}
+}
+
+// Values returns all possible values of MonitorInferenceLogProblemType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MonitorInferenceLogProblemType) Values() []MonitorInferenceLogProblemType {
+	return []MonitorInferenceLogProblemType{
+		MonitorInferenceLogProblemTypeProblemTypeClassification,
+		MonitorInferenceLogProblemTypeProblemTypeRegression,
 	}
 }
 
@@ -4340,6 +4682,19 @@ func (f *MonitorInfoStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of MonitorInfoStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MonitorInfoStatus) Values() []MonitorInfoStatus {
+	return []MonitorInfoStatus{
+		MonitorInfoStatusMonitorStatusActive,
+		MonitorInfoStatusMonitorStatusDeletePending,
+		MonitorInfoStatusMonitorStatusError,
+		MonitorInfoStatusMonitorStatusFailed,
+		MonitorInfoStatusMonitorStatusPending,
+	}
+}
+
 // Type always returns MonitorInfoStatus to satisfy [pflag.Value] interface
 func (f *MonitorInfoStatus) Type() string {
 	return "MonitorInfoStatus"
@@ -4403,6 +4758,17 @@ func (f *MonitorMetricType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CUSTOM_METRIC_TYPE_AGGREGATE", "CUSTOM_METRIC_TYPE_DERIVED", "CUSTOM_METRIC_TYPE_DRIFT"`, v)
+	}
+}
+
+// Values returns all possible values of MonitorMetricType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MonitorMetricType) Values() []MonitorMetricType {
+	return []MonitorMetricType{
+		MonitorMetricTypeCustomMetricTypeAggregate,
+		MonitorMetricTypeCustomMetricTypeDerived,
+		MonitorMetricTypeCustomMetricTypeDrift,
 	}
 }
 
@@ -4476,6 +4842,19 @@ func (f *MonitorRefreshInfoState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of MonitorRefreshInfoState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MonitorRefreshInfoState) Values() []MonitorRefreshInfoState {
+	return []MonitorRefreshInfoState{
+		MonitorRefreshInfoStateCanceled,
+		MonitorRefreshInfoStateFailed,
+		MonitorRefreshInfoStatePending,
+		MonitorRefreshInfoStateRunning,
+		MonitorRefreshInfoStateSuccess,
+	}
+}
+
 // Type always returns MonitorRefreshInfoState to satisfy [pflag.Value] interface
 func (f *MonitorRefreshInfoState) Type() string {
 	return "MonitorRefreshInfoState"
@@ -4501,6 +4880,16 @@ func (f *MonitorRefreshInfoTrigger) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "MANUAL", "SCHEDULE"`, v)
+	}
+}
+
+// Values returns all possible values of MonitorRefreshInfoTrigger.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MonitorRefreshInfoTrigger) Values() []MonitorRefreshInfoTrigger {
+	return []MonitorRefreshInfoTrigger{
+		MonitorRefreshInfoTriggerManual,
+		MonitorRefreshInfoTriggerSchedule,
 	}
 }
 
@@ -4669,6 +5058,25 @@ func (f *OnlineTableState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "OFFLINE", "OFFLINE_FAILED", "ONLINE", "ONLINE_CONTINUOUS_UPDATE", "ONLINE_NO_PENDING_UPDATE", "ONLINE_PIPELINE_FAILED", "ONLINE_TRIGGERED_UPDATE", "ONLINE_UPDATING_PIPELINE_RESOURCES", "PROVISIONING", "PROVISIONING_INITIAL_SNAPSHOT", "PROVISIONING_PIPELINE_RESOURCES"`, v)
+	}
+}
+
+// Values returns all possible values of OnlineTableState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *OnlineTableState) Values() []OnlineTableState {
+	return []OnlineTableState{
+		OnlineTableStateOffline,
+		OnlineTableStateOfflineFailed,
+		OnlineTableStateOnline,
+		OnlineTableStateOnlineContinuousUpdate,
+		OnlineTableStateOnlineNoPendingUpdate,
+		OnlineTableStateOnlinePipelineFailed,
+		OnlineTableStateOnlineTriggeredUpdate,
+		OnlineTableStateOnlineUpdatingPipelineResources,
+		OnlineTableStateProvisioning,
+		OnlineTableStateProvisioningInitialSnapshot,
+		OnlineTableStateProvisioningPipelineResources,
 	}
 }
 
@@ -4883,6 +5291,63 @@ func (f *Privilege) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of Privilege.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Privilege) Values() []Privilege {
+	return []Privilege{
+		PrivilegeAccess,
+		PrivilegeAllPrivileges,
+		PrivilegeApplyTag,
+		PrivilegeBrowse,
+		PrivilegeCreate,
+		PrivilegeCreateCatalog,
+		PrivilegeCreateCleanRoom,
+		PrivilegeCreateConnection,
+		PrivilegeCreateExternalLocation,
+		PrivilegeCreateExternalTable,
+		PrivilegeCreateExternalVolume,
+		PrivilegeCreateForeignCatalog,
+		PrivilegeCreateForeignSecurable,
+		PrivilegeCreateFunction,
+		PrivilegeCreateManagedStorage,
+		PrivilegeCreateMaterializedView,
+		PrivilegeCreateModel,
+		PrivilegeCreateProvider,
+		PrivilegeCreateRecipient,
+		PrivilegeCreateSchema,
+		PrivilegeCreateServiceCredential,
+		PrivilegeCreateShare,
+		PrivilegeCreateStorageCredential,
+		PrivilegeCreateTable,
+		PrivilegeCreateView,
+		PrivilegeCreateVolume,
+		PrivilegeExecute,
+		PrivilegeExecuteCleanRoomTask,
+		PrivilegeManage,
+		PrivilegeManageAllowlist,
+		PrivilegeModify,
+		PrivilegeModifyCleanRoom,
+		PrivilegeReadFiles,
+		PrivilegeReadPrivateFiles,
+		PrivilegeReadVolume,
+		PrivilegeRefresh,
+		PrivilegeSelect,
+		PrivilegeSetSharePermission,
+		PrivilegeUsage,
+		PrivilegeUseCatalog,
+		PrivilegeUseConnection,
+		PrivilegeUseMarketplaceAssets,
+		PrivilegeUseProvider,
+		PrivilegeUseRecipient,
+		PrivilegeUseSchema,
+		PrivilegeUseShare,
+		PrivilegeWriteFiles,
+		PrivilegeWritePrivateFiles,
+		PrivilegeWriteVolume,
+	}
+}
+
 // Type always returns Privilege to satisfy [pflag.Value] interface
 func (f *Privilege) Type() string {
 	return "Privilege"
@@ -4941,6 +5406,20 @@ func (f *ProvisioningInfoState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DEGRADED", "DELETING", "FAILED", "PROVISIONING", "UPDATING"`, v)
+	}
+}
+
+// Values returns all possible values of ProvisioningInfoState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ProvisioningInfoState) Values() []ProvisioningInfoState {
+	return []ProvisioningInfoState{
+		ProvisioningInfoStateActive,
+		ProvisioningInfoStateDegraded,
+		ProvisioningInfoStateDeleting,
+		ProvisioningInfoStateFailed,
+		ProvisioningInfoStateProvisioning,
+		ProvisioningInfoStateUpdating,
 	}
 }
 
@@ -5240,6 +5719,32 @@ func (f *SecurableType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of SecurableType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SecurableType) Values() []SecurableType {
+	return []SecurableType{
+		SecurableTypeCatalog,
+		SecurableTypeCleanRoom,
+		SecurableTypeConnection,
+		SecurableTypeCredential,
+		SecurableTypeExternalLocation,
+		SecurableTypeExternalMetadata,
+		SecurableTypeFunction,
+		SecurableTypeMetastore,
+		SecurableTypePipeline,
+		SecurableTypeProvider,
+		SecurableTypeRecipient,
+		SecurableTypeSchema,
+		SecurableTypeShare,
+		SecurableTypeStagingTable,
+		SecurableTypeStorageCredential,
+		SecurableTypeTable,
+		SecurableTypeUnknownSecurableType,
+		SecurableTypeVolume,
+	}
+}
+
 // Type always returns SecurableType to satisfy [pflag.Value] interface
 func (f *SecurableType) Type() string {
 	return "SecurableType"
@@ -5317,6 +5822,16 @@ func (f *SseEncryptionDetailsAlgorithm) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AWS_SSE_KMS", "AWS_SSE_S3"`, v)
+	}
+}
+
+// Values returns all possible values of SseEncryptionDetailsAlgorithm.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SseEncryptionDetailsAlgorithm) Values() []SseEncryptionDetailsAlgorithm {
+	return []SseEncryptionDetailsAlgorithm{
+		SseEncryptionDetailsAlgorithmAwsSseKms,
+		SseEncryptionDetailsAlgorithmAwsSseS3,
 	}
 }
 
@@ -5444,6 +5959,17 @@ func (f *SyncedTableSchedulingPolicy) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "SNAPSHOT", "TRIGGERED"`, v)
+	}
+}
+
+// Values returns all possible values of SyncedTableSchedulingPolicy.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SyncedTableSchedulingPolicy) Values() []SyncedTableSchedulingPolicy {
+	return []SyncedTableSchedulingPolicy{
+		SyncedTableSchedulingPolicyContinuous,
+		SyncedTableSchedulingPolicySnapshot,
+		SyncedTableSchedulingPolicyTriggered,
 	}
 }
 
@@ -5637,6 +6163,16 @@ func (f *TableOperation) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of TableOperation.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TableOperation) Values() []TableOperation {
+	return []TableOperation{
+		TableOperationRead,
+		TableOperationReadWrite,
+	}
+}
+
 // Type always returns TableOperation to satisfy [pflag.Value] interface
 func (f *TableOperation) Type() string {
 	return "TableOperation"
@@ -5699,6 +6235,22 @@ func (f *TableType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EXTERNAL", "EXTERNAL_SHALLOW_CLONE", "FOREIGN", "MANAGED", "MANAGED_SHALLOW_CLONE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
+	}
+}
+
+// Values returns all possible values of TableType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TableType) Values() []TableType {
+	return []TableType{
+		TableTypeExternal,
+		TableTypeExternalShallowClone,
+		TableTypeForeign,
+		TableTypeManaged,
+		TableTypeManagedShallowClone,
+		TableTypeMaterializedView,
+		TableTypeStreamingTable,
+		TableTypeView,
 	}
 }
 
@@ -6039,6 +6591,16 @@ func (f *UpdateMetastoreDeltaSharingScope) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of UpdateMetastoreDeltaSharingScope.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UpdateMetastoreDeltaSharingScope) Values() []UpdateMetastoreDeltaSharingScope {
+	return []UpdateMetastoreDeltaSharingScope{
+		UpdateMetastoreDeltaSharingScopeInternal,
+		UpdateMetastoreDeltaSharingScopeInternalAndExternal,
+	}
+}
+
 // Type always returns UpdateMetastoreDeltaSharingScope to satisfy [pflag.Value] interface
 func (f *UpdateMetastoreDeltaSharingScope) Type() string {
 	return "UpdateMetastoreDeltaSharingScope"
@@ -6353,6 +6915,17 @@ func (f *ValidateCredentialResult) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ValidateCredentialResult.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ValidateCredentialResult) Values() []ValidateCredentialResult {
+	return []ValidateCredentialResult{
+		ValidateCredentialResultFail,
+		ValidateCredentialResultPass,
+		ValidateCredentialResultSkip,
+	}
+}
+
 // Type always returns ValidateCredentialResult to satisfy [pflag.Value] interface
 func (f *ValidateCredentialResult) Type() string {
 	return "ValidateCredentialResult"
@@ -6454,6 +7027,19 @@ func (f *ValidationResultOperation) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ValidationResultOperation.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ValidationResultOperation) Values() []ValidationResultOperation {
+	return []ValidationResultOperation{
+		ValidationResultOperationDelete,
+		ValidationResultOperationList,
+		ValidationResultOperationPathExists,
+		ValidationResultOperationRead,
+		ValidationResultOperationWrite,
+	}
+}
+
 // Type always returns ValidationResultOperation to satisfy [pflag.Value] interface
 func (f *ValidationResultOperation) Type() string {
 	return "ValidationResultOperation"
@@ -6481,6 +7067,17 @@ func (f *ValidationResultResult) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAIL", "PASS", "SKIP"`, v)
+	}
+}
+
+// Values returns all possible values of ValidationResultResult.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ValidationResultResult) Values() []ValidationResultResult {
+	return []ValidationResultResult{
+		ValidationResultResultFail,
+		ValidationResultResultPass,
+		ValidationResultResultSkip,
 	}
 }
 
@@ -6571,6 +7168,16 @@ func (f *VolumeType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of VolumeType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *VolumeType) Values() []VolumeType {
+	return []VolumeType{
+		VolumeTypeExternal,
+		VolumeTypeManaged,
+	}
+}
+
 // Type always returns VolumeType to satisfy [pflag.Value] interface
 func (f *VolumeType) Type() string {
 	return "VolumeType"
@@ -6604,6 +7211,16 @@ func (f *WorkspaceBindingBindingType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "BINDING_TYPE_READ_ONLY", "BINDING_TYPE_READ_WRITE"`, v)
+	}
+}
+
+// Values returns all possible values of WorkspaceBindingBindingType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *WorkspaceBindingBindingType) Values() []WorkspaceBindingBindingType {
+	return []WorkspaceBindingBindingType{
+		WorkspaceBindingBindingTypeBindingTypeReadOnly,
+		WorkspaceBindingBindingTypeBindingTypeReadWrite,
 	}
 }
 

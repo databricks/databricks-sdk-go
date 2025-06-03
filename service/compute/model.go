@@ -200,6 +200,17 @@ func (f *AwsAvailability) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AwsAvailability.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AwsAvailability) Values() []AwsAvailability {
+	return []AwsAvailability{
+		AwsAvailabilityOnDemand,
+		AwsAvailabilitySpot,
+		AwsAvailabilitySpotWithFallback,
+	}
+}
+
 // Type always returns AwsAvailability to satisfy [pflag.Value] interface
 func (f *AwsAvailability) Type() string {
 	return "AwsAvailability"
@@ -265,6 +276,17 @@ func (f *AzureAvailability) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE", "SPOT_WITH_FALLBACK_AZURE"`, v)
+	}
+}
+
+// Values returns all possible values of AzureAvailability.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AzureAvailability) Values() []AzureAvailability {
+	return []AzureAvailability{
+		AzureAvailabilityOnDemandAzure,
+		AzureAvailabilitySpotAzure,
+		AzureAvailabilitySpotWithFallbackAzure,
 	}
 }
 
@@ -349,6 +371,16 @@ func (f *CloudProviderNodeStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NotAvailableInRegion", "NotEnabledOnSubscription"`, v)
+	}
+}
+
+// Values returns all possible values of CloudProviderNodeStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CloudProviderNodeStatus) Values() []CloudProviderNodeStatus {
+	return []CloudProviderNodeStatus{
+		CloudProviderNodeStatusNotAvailableInRegion,
+		CloudProviderNodeStatusNotEnabledOnSubscription,
 	}
 }
 
@@ -982,6 +1014,17 @@ func (f *ClusterPermissionLevel) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ClusterPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ClusterPermissionLevel) Values() []ClusterPermissionLevel {
+	return []ClusterPermissionLevel{
+		ClusterPermissionLevelCanAttachTo,
+		ClusterPermissionLevelCanManage,
+		ClusterPermissionLevelCanRestart,
+	}
+}
+
 // Type always returns ClusterPermissionLevel to satisfy [pflag.Value] interface
 func (f *ClusterPermissionLevel) Type() string {
 	return "ClusterPermissionLevel"
@@ -1107,6 +1150,15 @@ func (f *ClusterPolicyPermissionLevel) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_USE"`, v)
+	}
+}
+
+// Values returns all possible values of ClusterPolicyPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ClusterPolicyPermissionLevel) Values() []ClusterPolicyPermissionLevel {
+	return []ClusterPolicyPermissionLevel{
+		ClusterPolicyPermissionLevelCanUse,
 	}
 }
 
@@ -1242,6 +1294,21 @@ func (f *ClusterSource) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "API", "JOB", "MODELS", "PIPELINE", "PIPELINE_MAINTENANCE", "SQL", "UI"`, v)
+	}
+}
+
+// Values returns all possible values of ClusterSource.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ClusterSource) Values() []ClusterSource {
+	return []ClusterSource{
+		ClusterSourceApi,
+		ClusterSourceJob,
+		ClusterSourceModels,
+		ClusterSourcePipeline,
+		ClusterSourcePipelineMaintenance,
+		ClusterSourceSql,
+		ClusterSourceUi,
 	}
 }
 
@@ -1515,6 +1582,20 @@ func (f *CommandStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of CommandStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CommandStatus) Values() []CommandStatus {
+	return []CommandStatus{
+		CommandStatusCancelled,
+		CommandStatusCancelling,
+		CommandStatusError,
+		CommandStatusFinished,
+		CommandStatusQueued,
+		CommandStatusRunning,
+	}
+}
+
 // Type always returns CommandStatus to satisfy [pflag.Value] interface
 func (f *CommandStatus) Type() string {
 	return "CommandStatus"
@@ -1568,6 +1649,17 @@ func (f *ContextStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "Error", "Pending", "Running"`, v)
+	}
+}
+
+// Values returns all possible values of ContextStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ContextStatus) Values() []ContextStatus {
+	return []ContextStatus{
+		ContextStatusError,
+		ContextStatusPending,
+		ContextStatusRunning,
 	}
 }
 
@@ -2080,6 +2172,16 @@ func (f *DataPlaneEventDetailsEventType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of DataPlaneEventDetailsEventType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DataPlaneEventDetailsEventType) Values() []DataPlaneEventDetailsEventType {
+	return []DataPlaneEventDetailsEventType{
+		DataPlaneEventDetailsEventTypeNodeBlacklisted,
+		DataPlaneEventDetailsEventTypeNodeExcludedDecommissioned,
+	}
+}
+
 // Type always returns DataPlaneEventDetailsEventType to satisfy [pflag.Value] interface
 func (f *DataPlaneEventDetailsEventType) Type() string {
 	return "DataPlaneEventDetailsEventType"
@@ -2168,6 +2270,24 @@ func (f *DataSecurityMode) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DATA_SECURITY_MODE_AUTO", "DATA_SECURITY_MODE_DEDICATED", "DATA_SECURITY_MODE_STANDARD", "LEGACY_PASSTHROUGH", "LEGACY_SINGLE_USER", "LEGACY_SINGLE_USER_STANDARD", "LEGACY_TABLE_ACL", "NONE", "SINGLE_USER", "USER_ISOLATION"`, v)
+	}
+}
+
+// Values returns all possible values of DataSecurityMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DataSecurityMode) Values() []DataSecurityMode {
+	return []DataSecurityMode{
+		DataSecurityModeDataSecurityModeAuto,
+		DataSecurityModeDataSecurityModeDedicated,
+		DataSecurityModeDataSecurityModeStandard,
+		DataSecurityModeLegacyPassthrough,
+		DataSecurityModeLegacySingleUser,
+		DataSecurityModeLegacySingleUserStandard,
+		DataSecurityModeLegacyTableAcl,
+		DataSecurityModeNone,
+		DataSecurityModeSingleUser,
+		DataSecurityModeUserIsolation,
 	}
 }
 
@@ -2307,6 +2427,16 @@ func (f *DiskTypeAzureDiskVolumeType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of DiskTypeAzureDiskVolumeType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DiskTypeAzureDiskVolumeType) Values() []DiskTypeAzureDiskVolumeType {
+	return []DiskTypeAzureDiskVolumeType{
+		DiskTypeAzureDiskVolumeTypePremiumLrs,
+		DiskTypeAzureDiskVolumeTypeStandardLrs,
+	}
+}
+
 // Type always returns DiskTypeAzureDiskVolumeType to satisfy [pflag.Value] interface
 func (f *DiskTypeAzureDiskVolumeType) Type() string {
 	return "DiskTypeAzureDiskVolumeType"
@@ -2333,6 +2463,16 @@ func (f *DiskTypeEbsVolumeType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GENERAL_PURPOSE_SSD", "THROUGHPUT_OPTIMIZED_HDD"`, v)
+	}
+}
+
+// Values returns all possible values of DiskTypeEbsVolumeType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DiskTypeEbsVolumeType) Values() []DiskTypeEbsVolumeType {
+	return []DiskTypeEbsVolumeType{
+		DiskTypeEbsVolumeTypeGeneralPurposeSsd,
+		DiskTypeEbsVolumeTypeThroughputOptimizedHdd,
 	}
 }
 
@@ -2396,6 +2536,16 @@ func (f *EbsVolumeType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GENERAL_PURPOSE_SSD", "THROUGHPUT_OPTIMIZED_HDD"`, v)
+	}
+}
+
+// Values returns all possible values of EbsVolumeType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EbsVolumeType) Values() []EbsVolumeType {
+	return []EbsVolumeType{
+		EbsVolumeTypeGeneralPurposeSsd,
+		EbsVolumeTypeThroughputOptimizedHdd,
 	}
 }
 
@@ -2881,6 +3031,18 @@ func (f *EventDetailsCause) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of EventDetailsCause.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EventDetailsCause) Values() []EventDetailsCause {
+	return []EventDetailsCause{
+		EventDetailsCauseAutorecovery,
+		EventDetailsCauseAutoscale,
+		EventDetailsCauseReplaceBadNodes,
+		EventDetailsCauseUserRequest,
+	}
+}
+
 // Type always returns EventDetailsCause to satisfy [pflag.Value] interface
 func (f *EventDetailsCause) Type() string {
 	return "EventDetailsCause"
@@ -2962,6 +3124,43 @@ func (f *EventType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of EventType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EventType) Values() []EventType {
+	return []EventType{
+		EventTypeAddNodesFailed,
+		EventTypeAutomaticClusterUpdate,
+		EventTypeAutoscalingBackoff,
+		EventTypeAutoscalingFailed,
+		EventTypeAutoscalingStatsReport,
+		EventTypeCreating,
+		EventTypeDbfsDown,
+		EventTypeDidNotExpandDisk,
+		EventTypeDriverHealthy,
+		EventTypeDriverNotResponding,
+		EventTypeDriverUnavailable,
+		EventTypeEdited,
+		EventTypeExpandedDisk,
+		EventTypeFailedToExpandDisk,
+		EventTypeInitScriptsFinished,
+		EventTypeInitScriptsStarted,
+		EventTypeMetastoreDown,
+		EventTypeNodesLost,
+		EventTypeNodeBlacklisted,
+		EventTypeNodeExcludedDecommissioned,
+		EventTypePinned,
+		EventTypeResizing,
+		EventTypeRestarting,
+		EventTypeRunning,
+		EventTypeSparkException,
+		EventTypeStarting,
+		EventTypeTerminating,
+		EventTypeUnpinned,
+		EventTypeUpsizeCompleted,
+	}
+}
+
 // Type always returns EventType to satisfy [pflag.Value] interface
 func (f *EventType) Type() string {
 	return "EventType"
@@ -3036,6 +3235,17 @@ func (f *GcpAvailability) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_GCP", "PREEMPTIBLE_GCP", "PREEMPTIBLE_WITH_FALLBACK_GCP"`, v)
+	}
+}
+
+// Values returns all possible values of GcpAvailability.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GcpAvailability) Values() []GcpAvailability {
+	return []GcpAvailability{
+		GcpAvailabilityOnDemandGcp,
+		GcpAvailabilityPreemptibleGcp,
+		GcpAvailabilityPreemptibleWithFallbackGcp,
 	}
 }
 
@@ -3190,6 +3400,16 @@ func (f *GetEventsOrder) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ASC", "DESC"`, v)
+	}
+}
+
+// Values returns all possible values of GetEventsOrder.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GetEventsOrder) Values() []GetEventsOrder {
+	return []GetEventsOrder{
+		GetEventsOrderAsc,
+		GetEventsOrderDesc,
 	}
 }
 
@@ -3557,6 +3777,21 @@ func (f *InitScriptExecutionDetailsInitScriptExecutionStatus) Set(v string) erro
 	}
 }
 
+// Values returns all possible values of InitScriptExecutionDetailsInitScriptExecutionStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *InitScriptExecutionDetailsInitScriptExecutionStatus) Values() []InitScriptExecutionDetailsInitScriptExecutionStatus {
+	return []InitScriptExecutionDetailsInitScriptExecutionStatus{
+		InitScriptExecutionDetailsInitScriptExecutionStatusFailedExecution,
+		InitScriptExecutionDetailsInitScriptExecutionStatusFailedFetch,
+		InitScriptExecutionDetailsInitScriptExecutionStatusFuseMountFailed,
+		InitScriptExecutionDetailsInitScriptExecutionStatusNotExecuted,
+		InitScriptExecutionDetailsInitScriptExecutionStatusSkipped,
+		InitScriptExecutionDetailsInitScriptExecutionStatusSucceeded,
+		InitScriptExecutionDetailsInitScriptExecutionStatusUnknown,
+	}
+}
+
 // Type always returns InitScriptExecutionDetailsInitScriptExecutionStatus to satisfy [pflag.Value] interface
 func (f *InitScriptExecutionDetailsInitScriptExecutionStatus) Type() string {
 	return "InitScriptExecutionDetailsInitScriptExecutionStatus"
@@ -3836,6 +4071,16 @@ func (f *InstancePoolAwsAttributesAvailability) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of InstancePoolAwsAttributesAvailability.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *InstancePoolAwsAttributesAvailability) Values() []InstancePoolAwsAttributesAvailability {
+	return []InstancePoolAwsAttributesAvailability{
+		InstancePoolAwsAttributesAvailabilityOnDemand,
+		InstancePoolAwsAttributesAvailabilitySpot,
+	}
+}
+
 // Type always returns InstancePoolAwsAttributesAvailability to satisfy [pflag.Value] interface
 func (f *InstancePoolAwsAttributesAvailability) Type() string {
 	return "InstancePoolAwsAttributesAvailability"
@@ -3885,6 +4130,16 @@ func (f *InstancePoolAzureAttributesAvailability) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ON_DEMAND_AZURE", "SPOT_AZURE"`, v)
+	}
+}
+
+// Values returns all possible values of InstancePoolAzureAttributesAvailability.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *InstancePoolAzureAttributesAvailability) Values() []InstancePoolAzureAttributesAvailability {
+	return []InstancePoolAzureAttributesAvailability{
+		InstancePoolAzureAttributesAvailabilityOnDemandAzure,
+		InstancePoolAzureAttributesAvailabilitySpotAzure,
 	}
 }
 
@@ -3976,6 +4231,16 @@ func (f *InstancePoolPermissionLevel) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of InstancePoolPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *InstancePoolPermissionLevel) Values() []InstancePoolPermissionLevel {
+	return []InstancePoolPermissionLevel{
+		InstancePoolPermissionLevelCanAttachTo,
+		InstancePoolPermissionLevelCanManage,
+	}
+}
+
 // Type always returns InstancePoolPermissionLevel to satisfy [pflag.Value] interface
 func (f *InstancePoolPermissionLevel) Type() string {
 	return "InstancePoolPermissionLevel"
@@ -4047,6 +4312,17 @@ func (f *InstancePoolState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETED", "STOPPED"`, v)
+	}
+}
+
+// Values returns all possible values of InstancePoolState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *InstancePoolState) Values() []InstancePoolState {
+	return []InstancePoolState{
+		InstancePoolStateActive,
+		InstancePoolStateDeleted,
+		InstancePoolStateStopped,
 	}
 }
 
@@ -4152,6 +4428,15 @@ func (f *Kind) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of Kind.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Kind) Values() []Kind {
+	return []Kind{
+		KindClassicPreview,
+	}
+}
+
 // Type always returns Kind to satisfy [pflag.Value] interface
 func (f *Kind) Type() string {
 	return "Kind"
@@ -4178,6 +4463,17 @@ func (f *Language) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "python", "scala", "sql"`, v)
+	}
+}
+
+// Values returns all possible values of Language.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Language) Values() []Language {
+	return []Language{
+		LanguagePython,
+		LanguageScala,
+		LanguageSql,
 	}
 }
 
@@ -4288,6 +4584,22 @@ func (f *LibraryInstallStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAILED", "INSTALLED", "INSTALLING", "PENDING", "RESOLVING", "RESTORED", "SKIPPED", "UNINSTALL_ON_RESTART"`, v)
+	}
+}
+
+// Values returns all possible values of LibraryInstallStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LibraryInstallStatus) Values() []LibraryInstallStatus {
+	return []LibraryInstallStatus{
+		LibraryInstallStatusFailed,
+		LibraryInstallStatusInstalled,
+		LibraryInstallStatusInstalling,
+		LibraryInstallStatusPending,
+		LibraryInstallStatusResolving,
+		LibraryInstallStatusRestored,
+		LibraryInstallStatusSkipped,
+		LibraryInstallStatusUninstallOnRestart,
 	}
 }
 
@@ -4473,6 +4785,16 @@ func (f *ListClustersSortByDirection) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ListClustersSortByDirection.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListClustersSortByDirection) Values() []ListClustersSortByDirection {
+	return []ListClustersSortByDirection{
+		ListClustersSortByDirectionAsc,
+		ListClustersSortByDirectionDesc,
+	}
+}
+
 // Type always returns ListClustersSortByDirection to satisfy [pflag.Value] interface
 func (f *ListClustersSortByDirection) Type() string {
 	return "ListClustersSortByDirection"
@@ -4497,6 +4819,16 @@ func (f *ListClustersSortByField) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLUSTER_NAME", "DEFAULT"`, v)
+	}
+}
+
+// Values returns all possible values of ListClustersSortByField.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListClustersSortByField) Values() []ListClustersSortByField {
+	return []ListClustersSortByField{
+		ListClustersSortByFieldClusterName,
+		ListClustersSortByFieldDefault,
 	}
 }
 
@@ -4586,6 +4918,16 @@ func (f *ListSortColumn) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ListSortColumn.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListSortColumn) Values() []ListSortColumn {
+	return []ListSortColumn{
+		ListSortColumnPolicyCreationTime,
+		ListSortColumnPolicyName,
+	}
+}
+
 // Type always returns ListSortColumn to satisfy [pflag.Value] interface
 func (f *ListSortColumn) Type() string {
 	return "ListSortColumn"
@@ -4610,6 +4952,16 @@ func (f *ListSortOrder) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ASC", "DESC"`, v)
+	}
+}
+
+// Values returns all possible values of ListSortOrder.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListSortOrder) Values() []ListSortOrder {
+	return []ListSortOrder{
+		ListSortOrderAsc,
+		ListSortOrderDesc,
 	}
 }
 
@@ -5019,6 +5371,19 @@ func (f *ResultType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ResultType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ResultType) Values() []ResultType {
+	return []ResultType{
+		ResultTypeError,
+		ResultTypeImage,
+		ResultTypeImages,
+		ResultTypeTable,
+		ResultTypeText,
+	}
+}
+
 // Type always returns ResultType to satisfy [pflag.Value] interface
 func (f *ResultType) Type() string {
 	return "ResultType"
@@ -5079,6 +5444,17 @@ func (f *RuntimeEngine) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NULL", "PHOTON", "STANDARD"`, v)
+	}
+}
+
+// Values returns all possible values of RuntimeEngine.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RuntimeEngine) Values() []RuntimeEngine {
+	return []RuntimeEngine{
+		RuntimeEngineNull,
+		RuntimeEnginePhoton,
+		RuntimeEngineStandard,
 	}
 }
 
@@ -5246,6 +5622,22 @@ func (f *State) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ERROR", "PENDING", "RESIZING", "RESTARTING", "RUNNING", "TERMINATED", "TERMINATING", "UNKNOWN"`, v)
+	}
+}
+
+// Values returns all possible values of State.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *State) Values() []State {
+	return []State{
+		StateError,
+		StatePending,
+		StateResizing,
+		StateRestarting,
+		StateRunning,
+		StateTerminated,
+		StateTerminating,
+		StateUnknown,
 	}
 }
 
@@ -5625,6 +6017,185 @@ func (f *TerminationReasonCode) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of TerminationReasonCode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TerminationReasonCode) Values() []TerminationReasonCode {
+	return []TerminationReasonCode{
+		TerminationReasonCodeAbuseDetected,
+		TerminationReasonCodeAccessTokenFailure,
+		TerminationReasonCodeAllocationTimeout,
+		TerminationReasonCodeAllocationTimeoutNodeDaemonNotReady,
+		TerminationReasonCodeAllocationTimeoutNoHealthyAndWarmedUpClusters,
+		TerminationReasonCodeAllocationTimeoutNoHealthyClusters,
+		TerminationReasonCodeAllocationTimeoutNoMatchedClusters,
+		TerminationReasonCodeAllocationTimeoutNoReadyClusters,
+		TerminationReasonCodeAllocationTimeoutNoUnallocatedClusters,
+		TerminationReasonCodeAllocationTimeoutNoWarmedUpClusters,
+		TerminationReasonCodeAttachProjectFailure,
+		TerminationReasonCodeAwsAuthorizationFailure,
+		TerminationReasonCodeAwsInaccessibleKmsKeyFailure,
+		TerminationReasonCodeAwsInstanceProfileUpdateFailure,
+		TerminationReasonCodeAwsInsufficientFreeAddressesInSubnetFailure,
+		TerminationReasonCodeAwsInsufficientInstanceCapacityFailure,
+		TerminationReasonCodeAwsInvalidKeyPair,
+		TerminationReasonCodeAwsInvalidKmsKeyState,
+		TerminationReasonCodeAwsMaxSpotInstanceCountExceededFailure,
+		TerminationReasonCodeAwsRequestLimitExceeded,
+		TerminationReasonCodeAwsResourceQuotaExceeded,
+		TerminationReasonCodeAwsUnsupportedFailure,
+		TerminationReasonCodeAzureByokKeyPermissionFailure,
+		TerminationReasonCodeAzureEphemeralDiskFailure,
+		TerminationReasonCodeAzureInvalidDeploymentTemplate,
+		TerminationReasonCodeAzureOperationNotAllowedException,
+		TerminationReasonCodeAzurePackedDeploymentPartialFailure,
+		TerminationReasonCodeAzureQuotaExceededException,
+		TerminationReasonCodeAzureResourceManagerThrottling,
+		TerminationReasonCodeAzureResourceProviderThrottling,
+		TerminationReasonCodeAzureUnexpectedDeploymentTemplateFailure,
+		TerminationReasonCodeAzureVmExtensionFailure,
+		TerminationReasonCodeAzureVnetConfigurationFailure,
+		TerminationReasonCodeBootstrapTimeout,
+		TerminationReasonCodeBootstrapTimeoutCloudProviderException,
+		TerminationReasonCodeBootstrapTimeoutDueToMisconfig,
+		TerminationReasonCodeBudgetPolicyLimitEnforcementActivated,
+		TerminationReasonCodeBudgetPolicyResolutionFailure,
+		TerminationReasonCodeCloudAccountSetupFailure,
+		TerminationReasonCodeCloudOperationCancelled,
+		TerminationReasonCodeCloudProviderDiskSetupFailure,
+		TerminationReasonCodeCloudProviderInstanceNotLaunched,
+		TerminationReasonCodeCloudProviderLaunchFailure,
+		TerminationReasonCodeCloudProviderLaunchFailureDueToMisconfig,
+		TerminationReasonCodeCloudProviderResourceStockout,
+		TerminationReasonCodeCloudProviderResourceStockoutDueToMisconfig,
+		TerminationReasonCodeCloudProviderShutdown,
+		TerminationReasonCodeClusterOperationThrottled,
+		TerminationReasonCodeClusterOperationTimeout,
+		TerminationReasonCodeCommunicationLost,
+		TerminationReasonCodeContainerLaunchFailure,
+		TerminationReasonCodeControlPlaneRequestFailure,
+		TerminationReasonCodeControlPlaneRequestFailureDueToMisconfig,
+		TerminationReasonCodeDatabaseConnectionFailure,
+		TerminationReasonCodeDataAccessConfigChanged,
+		TerminationReasonCodeDbfsComponentUnhealthy,
+		TerminationReasonCodeDisasterRecoveryReplication,
+		TerminationReasonCodeDnsResolutionError,
+		TerminationReasonCodeDockerContainerCreationException,
+		TerminationReasonCodeDockerImagePullFailure,
+		TerminationReasonCodeDockerImageTooLargeForInstanceException,
+		TerminationReasonCodeDockerInvalidOsException,
+		TerminationReasonCodeDriverEviction,
+		TerminationReasonCodeDriverLaunchTimeout,
+		TerminationReasonCodeDriverNodeUnreachable,
+		TerminationReasonCodeDriverOutOfDisk,
+		TerminationReasonCodeDriverOutOfMemory,
+		TerminationReasonCodeDriverPodCreationFailure,
+		TerminationReasonCodeDriverUnexpectedFailure,
+		TerminationReasonCodeDriverUnreachable,
+		TerminationReasonCodeDriverUnresponsive,
+		TerminationReasonCodeDynamicSparkConfSizeExceeded,
+		TerminationReasonCodeEosSparkImage,
+		TerminationReasonCodeExecutionComponentUnhealthy,
+		TerminationReasonCodeExecutorPodUnscheduled,
+		TerminationReasonCodeGcpApiRateQuotaExceeded,
+		TerminationReasonCodeGcpDeniedByOrgPolicy,
+		TerminationReasonCodeGcpForbidden,
+		TerminationReasonCodeGcpIamTimeout,
+		TerminationReasonCodeGcpInaccessibleKmsKeyFailure,
+		TerminationReasonCodeGcpInsufficientCapacity,
+		TerminationReasonCodeGcpIpSpaceExhausted,
+		TerminationReasonCodeGcpKmsKeyPermissionDenied,
+		TerminationReasonCodeGcpNotFound,
+		TerminationReasonCodeGcpQuotaExceeded,
+		TerminationReasonCodeGcpResourceQuotaExceeded,
+		TerminationReasonCodeGcpServiceAccountAccessDenied,
+		TerminationReasonCodeGcpServiceAccountDeleted,
+		TerminationReasonCodeGcpServiceAccountNotFound,
+		TerminationReasonCodeGcpSubnetNotReady,
+		TerminationReasonCodeGcpTrustedImageProjectsViolated,
+		TerminationReasonCodeGkeBasedClusterTermination,
+		TerminationReasonCodeGlobalInitScriptFailure,
+		TerminationReasonCodeHiveMetastoreProvisioningFailure,
+		TerminationReasonCodeImagePullPermissionDenied,
+		TerminationReasonCodeInactivity,
+		TerminationReasonCodeInitContainerNotFinished,
+		TerminationReasonCodeInitScriptFailure,
+		TerminationReasonCodeInstancePoolClusterFailure,
+		TerminationReasonCodeInstancePoolMaxCapacityReached,
+		TerminationReasonCodeInstancePoolNotFound,
+		TerminationReasonCodeInstanceUnreachable,
+		TerminationReasonCodeInstanceUnreachableDueToMisconfig,
+		TerminationReasonCodeInternalCapacityFailure,
+		TerminationReasonCodeInternalError,
+		TerminationReasonCodeInvalidArgument,
+		TerminationReasonCodeInvalidAwsParameter,
+		TerminationReasonCodeInvalidInstancePlacementProtocol,
+		TerminationReasonCodeInvalidSparkImage,
+		TerminationReasonCodeInvalidWorkerImageFailure,
+		TerminationReasonCodeInPenaltyBox,
+		TerminationReasonCodeIpExhaustionFailure,
+		TerminationReasonCodeJobFinished,
+		TerminationReasonCodeK8sAutoscalingFailure,
+		TerminationReasonCodeK8sDbrClusterLaunchTimeout,
+		TerminationReasonCodeLazyAllocationTimeout,
+		TerminationReasonCodeMaintenanceMode,
+		TerminationReasonCodeMetastoreComponentUnhealthy,
+		TerminationReasonCodeNephosResourceManagement,
+		TerminationReasonCodeNetvisorSetupTimeout,
+		TerminationReasonCodeNetworkCheckControlPlaneFailure,
+		TerminationReasonCodeNetworkCheckDnsServerFailure,
+		TerminationReasonCodeNetworkCheckMetadataEndpointFailure,
+		TerminationReasonCodeNetworkCheckMultipleComponentsFailure,
+		TerminationReasonCodeNetworkCheckNicFailure,
+		TerminationReasonCodeNetworkCheckStorageFailure,
+		TerminationReasonCodeNetworkConfigurationFailure,
+		TerminationReasonCodeNfsMountFailure,
+		TerminationReasonCodeNoMatchedK8s,
+		TerminationReasonCodeNoMatchedK8sTestingTag,
+		TerminationReasonCodeNpipTunnelSetupFailure,
+		TerminationReasonCodeNpipTunnelTokenFailure,
+		TerminationReasonCodePodAssignmentFailure,
+		TerminationReasonCodePodSchedulingFailure,
+		TerminationReasonCodeRequestRejected,
+		TerminationReasonCodeRequestThrottled,
+		TerminationReasonCodeResourceUsageBlocked,
+		TerminationReasonCodeSecretCreationFailure,
+		TerminationReasonCodeSecretPermissionDenied,
+		TerminationReasonCodeSecretResolutionError,
+		TerminationReasonCodeSecurityDaemonRegistrationException,
+		TerminationReasonCodeSelfBootstrapFailure,
+		TerminationReasonCodeServerlessLongRunningTerminated,
+		TerminationReasonCodeSkippedSlowNodes,
+		TerminationReasonCodeSlowImageDownload,
+		TerminationReasonCodeSparkError,
+		TerminationReasonCodeSparkImageDownloadFailure,
+		TerminationReasonCodeSparkImageDownloadThrottled,
+		TerminationReasonCodeSparkImageNotFound,
+		TerminationReasonCodeSparkStartupFailure,
+		TerminationReasonCodeSpotInstanceTermination,
+		TerminationReasonCodeSshBootstrapFailure,
+		TerminationReasonCodeStorageDownloadFailure,
+		TerminationReasonCodeStorageDownloadFailureDueToMisconfig,
+		TerminationReasonCodeStorageDownloadFailureSlow,
+		TerminationReasonCodeStorageDownloadFailureThrottled,
+		TerminationReasonCodeStsClientSetupFailure,
+		TerminationReasonCodeSubnetExhaustedFailure,
+		TerminationReasonCodeTemporarilyUnavailable,
+		TerminationReasonCodeTrialExpired,
+		TerminationReasonCodeUnexpectedLaunchFailure,
+		TerminationReasonCodeUnexpectedPodRecreation,
+		TerminationReasonCodeUnknown,
+		TerminationReasonCodeUnsupportedInstanceType,
+		TerminationReasonCodeUpdateInstanceProfileFailure,
+		TerminationReasonCodeUserInitiatedVmTermination,
+		TerminationReasonCodeUserRequest,
+		TerminationReasonCodeWorkerSetupFailure,
+		TerminationReasonCodeWorkspaceCancelledError,
+		TerminationReasonCodeWorkspaceConfigurationError,
+		TerminationReasonCodeWorkspaceUpdate,
+	}
+}
+
 // Type always returns TerminationReasonCode to satisfy [pflag.Value] interface
 func (f *TerminationReasonCode) Type() string {
 	return "TerminationReasonCode"
@@ -5654,6 +6225,18 @@ func (f *TerminationReasonType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLIENT_ERROR", "CLOUD_FAILURE", "SERVICE_FAULT", "SUCCESS"`, v)
+	}
+}
+
+// Values returns all possible values of TerminationReasonType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TerminationReasonType) Values() []TerminationReasonType {
+	return []TerminationReasonType{
+		TerminationReasonTypeClientError,
+		TerminationReasonTypeCloudFailure,
+		TerminationReasonTypeServiceFault,
+		TerminationReasonTypeSuccess,
 	}
 }
 

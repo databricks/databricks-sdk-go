@@ -7,6 +7,8 @@ import (
 )
 
 // Rule based Access Control for Databricks Resources.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccessControlService interface {
 
 	// Check access policy to a resource.
@@ -16,6 +18,8 @@ type AccessControlService interface {
 // These APIs manage access rules on resources in an account. Currently, only
 // grant rules are supported. A grant rule specifies a role assigned to a set of
 // principals. A list of rules attached to a resource is called a rule set.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountAccessControlService interface {
 
 	// Get assignable roles for a resource.
@@ -44,6 +48,8 @@ type AccountAccessControlService interface {
 // grant rules are supported. A grant rule specifies a role assigned to a set of
 // principals. A list of rules attached to a resource is called a rule set. A
 // workspace must belong to an account for these APIs to work
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountAccessControlProxyService interface {
 
 	// Get assignable roles for a resource.
@@ -75,6 +81,8 @@ type AccountAccessControlProxyService interface {
 // policies in Unity Catalog to groups, instead of to users individually. All
 // Databricks account identities can be assigned as members of groups, and
 // members inherit permissions that are assigned to their group.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountGroupsService interface {
 
 	// Create a new group.
@@ -96,8 +104,6 @@ type AccountGroupsService interface {
 	// List group details.
 	//
 	// Gets all details of the groups associated with the Databricks account.
-	//
-	// Use ListAll() to get all Group instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAccountGroupsRequest) (*ListGroupsResponse, error)
 
 	// Update group details.
@@ -117,6 +123,8 @@ type AccountGroupsService interface {
 // on production data run with service principals, interactive users do not need
 // any write, delete, or modify privileges in production. This eliminates the
 // risk of a user overwriting production data by accident.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountServicePrincipalsService interface {
 
 	// Create a service principal.
@@ -138,8 +146,6 @@ type AccountServicePrincipalsService interface {
 	// List service principals.
 	//
 	// Gets the set of service principals associated with a Databricks account.
-	//
-	// Use ListAll() to get all ServicePrincipal instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAccountServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
 
 	// Update service principal details.
@@ -167,6 +173,8 @@ type AccountServicePrincipalsService interface {
 // provider and that user’s account will also be removed from Databricks
 // account. This ensures a consistent offboarding process and prevents
 // unauthorized users from accessing sensitive data.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountUsersService interface {
 
 	// Create a new user.
@@ -189,8 +197,6 @@ type AccountUsersService interface {
 	// List users.
 	//
 	// Gets details for all the users associated with a Databricks account.
-	//
-	// Use ListAll() to get all User instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAccountUsersRequest) (*ListUsersResponse, error)
 
 	// Update user details.
@@ -207,6 +213,8 @@ type AccountUsersService interface {
 
 // This API allows retrieving information about currently authenticated user or
 // service principal.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CurrentUserService interface {
 
 	// Get current user info.
@@ -222,6 +230,8 @@ type CurrentUserService interface {
 // policies in Unity Catalog to groups, instead of to users individually. All
 // Databricks workspace identities can be assigned as members of groups, and
 // members inherit permissions that are assigned to their group.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type GroupsService interface {
 
 	// Create a new group.
@@ -243,8 +253,6 @@ type GroupsService interface {
 	// List group details.
 	//
 	// Gets all details of the groups associated with the Databricks workspace.
-	//
-	// Use ListAll() to get all Group instances, which will iterate over every result page.
 	List(ctx context.Context, request ListGroupsRequest) (*ListGroupsResponse, error)
 
 	// Update group details.
@@ -260,6 +268,8 @@ type GroupsService interface {
 
 // APIs for migrating acl permissions, used only by the ucx tool:
 // https://github.com/databrickslabs/ucx
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PermissionMigrationService interface {
 
 	// Migrate Permissions.
@@ -296,6 +306,8 @@ type PermissionMigrationService interface {
 // manage access control on service principals, use **[Account Access Control
 // Proxy](:service:accountaccesscontrolproxy)**.
 //
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+//
 // [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 type PermissionsService interface {
 
@@ -330,6 +342,8 @@ type PermissionsService interface {
 // on production data run with service principals, interactive users do not need
 // any write, delete, or modify privileges in production. This eliminates the
 // risk of a user overwriting production data by accident.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ServicePrincipalsService interface {
 
 	// Create a service principal.
@@ -352,8 +366,6 @@ type ServicePrincipalsService interface {
 	//
 	// Gets the set of service principals associated with a Databricks
 	// workspace.
-	//
-	// Use ListAll() to get all ServicePrincipal instances, which will iterate over every result page.
 	List(ctx context.Context, request ListServicePrincipalsRequest) (*ListServicePrincipalResponse, error)
 
 	// Update service principal details.
@@ -381,6 +393,8 @@ type ServicePrincipalsService interface {
 // identity provider and that user’s account will also be removed from
 // Databricks workspace. This ensures a consistent offboarding process and
 // prevents unauthorized users from accessing sensitive data.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type UsersService interface {
 
 	// Create a new user.
@@ -414,8 +428,6 @@ type UsersService interface {
 	// List users.
 	//
 	// Gets details for all the users associated with a Databricks workspace.
-	//
-	// Use ListAll() to get all User instances, which will iterate over every result page.
 	List(ctx context.Context, request ListUsersRequest) (*ListUsersResponse, error)
 
 	// Update user details.
@@ -445,6 +457,8 @@ type UsersService interface {
 
 // The Workspace Permission Assignment API allows you to manage workspace
 // permissions for principals in your account.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WorkspaceAssignmentService interface {
 
 	// Delete permissions assignment.
@@ -463,8 +477,6 @@ type WorkspaceAssignmentService interface {
 	//
 	// Get the permission assignments for the specified Databricks account and
 	// Databricks workspace.
-	//
-	// Use ListAll() to get all PermissionAssignment instances
 	List(ctx context.Context, request ListWorkspaceAssignmentRequest) (*PermissionAssignments, error)
 
 	// Create or update permissions assignment.

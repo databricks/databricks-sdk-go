@@ -8,6 +8,8 @@ import (
 
 // DBFS API makes it simple to interact with various data sources without having
 // to include a users credentials every time to read a file.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DbfsService interface {
 
 	// Append data block.
@@ -83,8 +85,6 @@ type DbfsService interface {
 	// using the [File system utility
 	// (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which
 	// provides the same functionality without timing out.
-	//
-	// Use ListAll() to get all FileInfo instances
 	List(ctx context.Context, request ListDbfsRequest) (*ListStatusResponse, error)
 
 	// Create a directory.
@@ -156,6 +156,8 @@ type DbfsService interface {
 // profile or use the environment variable
 // `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
 //
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+//
 // [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 type FilesService interface {
 
@@ -212,8 +214,6 @@ type FilesService interface {
 	//
 	// Returns the contents of a directory. If there is no directory at the
 	// specified path, the API returns a HTTP 404 error.
-	//
-	// Use ListDirectoryContentsAll() to get all DirectoryEntry instances, which will iterate over every result page.
 	ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error)
 
 	// Upload a file.

@@ -20,6 +20,8 @@ import (
 // data quality with Delta Live Tables expectations. Expectations allow you to
 // define expected data quality and specify how to handle records that fail
 // those expectations.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PipelinesService interface {
 
 	// Create a pipeline.
@@ -56,15 +58,11 @@ type PipelinesService interface {
 	// List pipeline events.
 	//
 	// Retrieves events for a pipeline.
-	//
-	// Use ListPipelineEventsAll() to get all PipelineEvent instances, which will iterate over every result page.
 	ListPipelineEvents(ctx context.Context, request ListPipelineEventsRequest) (*ListPipelineEventsResponse, error)
 
 	// List pipelines.
 	//
 	// Lists pipelines defined in the Delta Live Tables system.
-	//
-	// Use ListPipelinesAll() to get all PipelineStateInfo instances, which will iterate over every result page.
 	ListPipelines(ctx context.Context, request ListPipelinesRequest) (*ListPipelinesResponse, error)
 
 	// List pipeline updates.

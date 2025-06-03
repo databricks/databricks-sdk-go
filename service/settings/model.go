@@ -83,6 +83,17 @@ func (f *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) Set(v string) error
 	}
 }
 
+// Values returns all possible values of AibiDashboardEmbeddingAccessPolicyAccessPolicyType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) Values() []AibiDashboardEmbeddingAccessPolicyAccessPolicyType {
+	return []AibiDashboardEmbeddingAccessPolicyAccessPolicyType{
+		AibiDashboardEmbeddingAccessPolicyAccessPolicyTypeAllowAllDomains,
+		AibiDashboardEmbeddingAccessPolicyAccessPolicyTypeAllowApprovedDomains,
+		AibiDashboardEmbeddingAccessPolicyAccessPolicyTypeDenyAllDomains,
+	}
+}
+
 // Type always returns AibiDashboardEmbeddingAccessPolicyAccessPolicyType to satisfy [pflag.Value] interface
 func (f *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) Type() string {
 	return "AibiDashboardEmbeddingAccessPolicyAccessPolicyType"
@@ -279,6 +290,21 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Set(v string) erro
 	}
 }
 
+// Values returns all possible values of ClusterAutoRestartMessageMaintenanceWindowDayOfWeek.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Values() []ClusterAutoRestartMessageMaintenanceWindowDayOfWeek {
+	return []ClusterAutoRestartMessageMaintenanceWindowDayOfWeek{
+		ClusterAutoRestartMessageMaintenanceWindowDayOfWeekFriday,
+		ClusterAutoRestartMessageMaintenanceWindowDayOfWeekMonday,
+		ClusterAutoRestartMessageMaintenanceWindowDayOfWeekSaturday,
+		ClusterAutoRestartMessageMaintenanceWindowDayOfWeekSunday,
+		ClusterAutoRestartMessageMaintenanceWindowDayOfWeekThursday,
+		ClusterAutoRestartMessageMaintenanceWindowDayOfWeekTuesday,
+		ClusterAutoRestartMessageMaintenanceWindowDayOfWeekWednesday,
+	}
+}
+
 // Type always returns ClusterAutoRestartMessageMaintenanceWindowDayOfWeek to satisfy [pflag.Value] interface
 func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Type() string {
 	return "ClusterAutoRestartMessageMaintenanceWindowDayOfWeek"
@@ -321,6 +347,21 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) Set(v strin
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EVERY_WEEK", "FIRST_AND_THIRD_OF_MONTH", "FIRST_OF_MONTH", "FOURTH_OF_MONTH", "SECOND_AND_FOURTH_OF_MONTH", "SECOND_OF_MONTH", "THIRD_OF_MONTH"`, v)
+	}
+}
+
+// Values returns all possible values of ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) Values() []ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency {
+	return []ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency{
+		ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyEveryWeek,
+		ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyFirstAndThirdOfMonth,
+		ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyFirstOfMonth,
+		ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyFourthOfMonth,
+		ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencySecondAndFourthOfMonth,
+		ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencySecondOfMonth,
+		ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequencyThirdOfMonth,
 	}
 }
 
@@ -434,6 +475,27 @@ func (f *ComplianceStandard) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANADA_PROTECTED_B", "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH", "FEDRAMP_IL5", "FEDRAMP_MODERATE", "HIPAA", "HITRUST", "IRAP_PROTECTED", "ISMAP", "ITAR_EAR", "K_FSI", "NONE", "PCI_DSS"`, v)
+	}
+}
+
+// Values returns all possible values of ComplianceStandard.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ComplianceStandard) Values() []ComplianceStandard {
+	return []ComplianceStandard{
+		ComplianceStandardCanadaProtectedB,
+		ComplianceStandardCyberEssentialPlus,
+		ComplianceStandardFedrampHigh,
+		ComplianceStandardFedrampIl5,
+		ComplianceStandardFedrampModerate,
+		ComplianceStandardHipaa,
+		ComplianceStandardHitrust,
+		ComplianceStandardIrapProtected,
+		ComplianceStandardIsmap,
+		ComplianceStandardItarEar,
+		ComplianceStandardKFsi,
+		ComplianceStandardNone,
+		ComplianceStandardPciDss,
 	}
 }
 
@@ -1133,6 +1195,19 @@ func (f *DestinationType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of DestinationType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DestinationType) Values() []DestinationType {
+	return []DestinationType{
+		DestinationTypeEmail,
+		DestinationTypeMicrosoftTeams,
+		DestinationTypePagerduty,
+		DestinationTypeSlack,
+		DestinationTypeWebhook,
+	}
+}
+
 // Type always returns DestinationType to satisfy [pflag.Value] interface
 func (f *DestinationType) Type() string {
 	return "DestinationType"
@@ -1297,6 +1372,15 @@ func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDesti
 	}
 }
 
+// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol) Values() []EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol {
+	return []EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol{
+		EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocolTcp,
+	}
+}
+
 // Type always returns EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol) Type() string {
 	return "EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol"
@@ -1319,6 +1403,15 @@ func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDesti
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FQDN"`, v)
+	}
+}
+
+// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType) Values() []EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType {
+	return []EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType{
+		EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationTypeFqdn,
 	}
 }
 
@@ -1355,6 +1448,16 @@ func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType) Set(
 	}
 }
 
+// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType) Values() []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType {
+	return []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType{
+		EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeTypeAllServices,
+		EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeTypeSelectedServices,
+	}
+}
+
 // Type always returns EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType) Type() string {
 	return "EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType"
@@ -1380,6 +1483,16 @@ func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType) Set(v s
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DBSQL", "ML_SERVING"`, v)
+	}
+}
+
+// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType) Values() []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType {
+	return []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType{
+		EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypeDbsql,
+		EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadTypeMlServing,
 	}
 }
 
@@ -1415,6 +1528,17 @@ func (f *EgressNetworkPolicyInternetAccessPolicyRestrictionMode) Set(v string) e
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FULL_ACCESS", "PRIVATE_ACCESS_ONLY", "RESTRICTED_ACCESS"`, v)
+	}
+}
+
+// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyRestrictionMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressNetworkPolicyInternetAccessPolicyRestrictionMode) Values() []EgressNetworkPolicyInternetAccessPolicyRestrictionMode {
+	return []EgressNetworkPolicyInternetAccessPolicyRestrictionMode{
+		EgressNetworkPolicyInternetAccessPolicyRestrictionModeFullAccess,
+		EgressNetworkPolicyInternetAccessPolicyRestrictionModePrivateAccessOnly,
+		EgressNetworkPolicyInternetAccessPolicyRestrictionModeRestrictedAccess,
 	}
 }
 
@@ -1475,6 +1599,18 @@ func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestina
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AWS_S3", "AZURE_STORAGE", "CLOUDFLARE_R2", "GOOGLE_CLOUD_STORAGE"`, v)
+	}
+}
+
+// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType) Values() []EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType {
+	return []EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType{
+		EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypeAwsS3,
+		EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypeAzureStorage,
+		EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypeCloudflareR2,
+		EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationTypeGoogleCloudStorage,
 	}
 }
 
@@ -1539,6 +1675,15 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestin
 	}
 }
 
+// Values returns all possible values of EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType) Values() []EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType {
+	return []EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType{
+		EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationTypeDnsName,
+	}
+}
+
 // Type always returns EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType) Type() string {
 	return "EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType"
@@ -1578,6 +1723,16 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProduc
 	}
 }
 
+// Values returns all possible values of EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter) Values() []EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter {
+	return []EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter{
+		EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilterDbsql,
+		EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilterMlServing,
+	}
+}
+
 // Type always returns EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter) Type() string {
 	return "EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter"
@@ -1602,6 +1757,16 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode)
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DRY_RUN", "ENFORCED"`, v)
+	}
+}
+
+// Values returns all possible values of EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode) Values() []EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode {
+	return []EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode{
+		EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementModeDryRun,
+		EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementModeEnforced,
 	}
 }
 
@@ -1633,6 +1798,16 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyRestrictionMode) Set(v string) er
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FULL_ACCESS", "RESTRICTED_ACCESS"`, v)
+	}
+}
+
+// Values returns all possible values of EgressNetworkPolicyNetworkAccessPolicyRestrictionMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressNetworkPolicyNetworkAccessPolicyRestrictionMode) Values() []EgressNetworkPolicyNetworkAccessPolicyRestrictionMode {
+	return []EgressNetworkPolicyNetworkAccessPolicyRestrictionMode{
+		EgressNetworkPolicyNetworkAccessPolicyRestrictionModeFullAccess,
+		EgressNetworkPolicyNetworkAccessPolicyRestrictionModeRestrictedAccess,
 	}
 }
 
@@ -1689,6 +1864,17 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinat
 	}
 }
 
+// Values returns all possible values of EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType) Values() []EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType {
+	return []EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType{
+		EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypeAwsS3,
+		EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypeAzureStorage,
+		EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationTypeGoogleCloudStorage,
+	}
+}
+
 // Type always returns EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType to satisfy [pflag.Value] interface
 func (f *EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType) Type() string {
 	return "EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType"
@@ -1715,6 +1901,15 @@ func (f *EgressResourceType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AZURE_BLOB_STORAGE"`, v)
+	}
+}
+
+// Values returns all possible values of EgressResourceType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EgressResourceType) Values() []EgressResourceType {
+	return []EgressResourceType{
+		EgressResourceTypeAzureBlobStorage,
 	}
 }
 
@@ -2659,6 +2854,16 @@ func (f *ListType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ListType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListType) Values() []ListType {
+	return []ListType{
+		ListTypeAllow,
+		ListTypeBlock,
+	}
+}
+
 // Type always returns ListType to satisfy [pflag.Value] interface
 func (f *ListType) Type() string {
 	return "ListType"
@@ -2860,6 +3065,20 @@ func (f *NccAzurePrivateEndpointRuleConnectionState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of NccAzurePrivateEndpointRuleConnectionState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *NccAzurePrivateEndpointRuleConnectionState) Values() []NccAzurePrivateEndpointRuleConnectionState {
+	return []NccAzurePrivateEndpointRuleConnectionState{
+		NccAzurePrivateEndpointRuleConnectionStateDisconnected,
+		NccAzurePrivateEndpointRuleConnectionStateEstablished,
+		NccAzurePrivateEndpointRuleConnectionStateExpired,
+		NccAzurePrivateEndpointRuleConnectionStateInit,
+		NccAzurePrivateEndpointRuleConnectionStatePending,
+		NccAzurePrivateEndpointRuleConnectionStateRejected,
+	}
+}
+
 // Type always returns NccAzurePrivateEndpointRuleConnectionState to satisfy [pflag.Value] interface
 func (f *NccAzurePrivateEndpointRuleConnectionState) Type() string {
 	return "NccAzurePrivateEndpointRuleConnectionState"
@@ -3058,6 +3277,16 @@ func (f *PersonalComputeMessageEnum) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of PersonalComputeMessageEnum.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PersonalComputeMessageEnum) Values() []PersonalComputeMessageEnum {
+	return []PersonalComputeMessageEnum{
+		PersonalComputeMessageEnumDelegate,
+		PersonalComputeMessageEnumOn,
+	}
+}
+
 // Type always returns PersonalComputeMessageEnum to satisfy [pflag.Value] interface
 func (f *PersonalComputeMessageEnum) Type() string {
 	return "PersonalComputeMessageEnum"
@@ -3159,6 +3388,16 @@ func (f *RestrictWorkspaceAdminsMessageStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ALLOW_ALL", "RESTRICT_TOKENS_AND_JOB_RUN_AS"`, v)
+	}
+}
+
+// Values returns all possible values of RestrictWorkspaceAdminsMessageStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RestrictWorkspaceAdminsMessageStatus) Values() []RestrictWorkspaceAdminsMessageStatus {
+	return []RestrictWorkspaceAdminsMessageStatus{
+		RestrictWorkspaceAdminsMessageStatusAllowAll,
+		RestrictWorkspaceAdminsMessageStatusRestrictTokensAndJobRunAs,
 	}
 }
 
@@ -3355,6 +3594,15 @@ func (f *TokenPermissionLevel) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of TokenPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TokenPermissionLevel) Values() []TokenPermissionLevel {
+	return []TokenPermissionLevel{
+		TokenPermissionLevelCanUse,
+	}
+}
+
 // Type always returns TokenPermissionLevel to satisfy [pflag.Value] interface
 func (f *TokenPermissionLevel) Type() string {
 	return "TokenPermissionLevel"
@@ -3425,6 +3673,19 @@ func (f *TokenType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ARCLIGHT_AZURE_EXCHANGE_TOKEN", "ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY", "ARCLIGHT_MULTI_TENANT_AZURE_EXCHANGE_TOKEN", "ARCLIGHT_MULTI_TENANT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY", "AZURE_ACTIVE_DIRECTORY_TOKEN"`, v)
+	}
+}
+
+// Values returns all possible values of TokenType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TokenType) Values() []TokenType {
+	return []TokenType{
+		TokenTypeArclightAzureExchangeToken,
+		TokenTypeArclightAzureExchangeTokenWithUserDelegationKey,
+		TokenTypeArclightMultiTenantAzureExchangeToken,
+		TokenTypeArclightMultiTenantAzureExchangeTokenWithUserDelegationKey,
+		TokenTypeAzureActiveDirectoryToken,
 	}
 }
 

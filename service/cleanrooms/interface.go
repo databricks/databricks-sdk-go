@@ -8,6 +8,8 @@ import (
 
 // Clean room assets are data and code objects — Tables, volumes, and
 // notebooks that are shared with the clean room.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CleanRoomAssetsService interface {
 
 	// Create an asset.
@@ -31,8 +33,6 @@ type CleanRoomAssetsService interface {
 	Get(ctx context.Context, request GetCleanRoomAssetRequest) (*CleanRoomAsset, error)
 
 	// List assets.
-	//
-	// Use ListAll() to get all CleanRoomAsset instances, which will iterate over every result page.
 	List(ctx context.Context, request ListCleanRoomAssetsRequest) (*ListCleanRoomAssetsResponse, error)
 
 	// Update an asset.
@@ -43,19 +43,21 @@ type CleanRoomAssetsService interface {
 }
 
 // Clean room task runs are the executions of notebooks in a clean room.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CleanRoomTaskRunsService interface {
 
 	// List notebook task runs.
 	//
 	// List all the historical notebook task runs in a clean room.
-	//
-	// Use ListAll() to get all CleanRoomNotebookTaskRun instances, which will iterate over every result page.
 	List(ctx context.Context, request ListCleanRoomNotebookTaskRunsRequest) (*ListCleanRoomNotebookTaskRunsResponse, error)
 }
 
 // A clean room uses Delta Sharing and serverless compute to provide a secure
 // and privacy-protecting environment where multiple parties can work together
 // on sensitive enterprise data without direct access to each other’s data.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CleanRoomsService interface {
 
 	// Create a clean room.
@@ -94,8 +96,6 @@ type CleanRoomsService interface {
 	//
 	// Get a list of all clean rooms of the metastore. Only clean rooms the
 	// caller has access to are returned.
-	//
-	// Use ListAll() to get all CleanRoom instances, which will iterate over every result page.
 	List(ctx context.Context, request ListCleanRoomsRequest) (*ListCleanRoomsResponse, error)
 
 	// Update a clean room.

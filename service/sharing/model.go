@@ -34,6 +34,17 @@ func (f *AuthenticationType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AuthenticationType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AuthenticationType) Values() []AuthenticationType {
+	return []AuthenticationType{
+		AuthenticationTypeDatabricks,
+		AuthenticationTypeOauthClientCredentials,
+		AuthenticationTypeToken,
+	}
+}
+
 // Type always returns AuthenticationType to satisfy [pflag.Value] interface
 func (f *AuthenticationType) Type() string {
 	return "AuthenticationType"
@@ -100,6 +111,36 @@ func (f *ColumnTypeName) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ARRAY", "BINARY", "BOOLEAN", "BYTE", "CHAR", "DATE", "DECIMAL", "DOUBLE", "FLOAT", "INT", "INTERVAL", "LONG", "MAP", "NULL", "SHORT", "STRING", "STRUCT", "TABLE_TYPE", "TIMESTAMP", "TIMESTAMP_NTZ", "USER_DEFINED_TYPE", "VARIANT"`, v)
+	}
+}
+
+// Values returns all possible values of ColumnTypeName.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ColumnTypeName) Values() []ColumnTypeName {
+	return []ColumnTypeName{
+		ColumnTypeNameArray,
+		ColumnTypeNameBinary,
+		ColumnTypeNameBoolean,
+		ColumnTypeNameByte,
+		ColumnTypeNameChar,
+		ColumnTypeNameDate,
+		ColumnTypeNameDecimal,
+		ColumnTypeNameDouble,
+		ColumnTypeNameFloat,
+		ColumnTypeNameInt,
+		ColumnTypeNameInterval,
+		ColumnTypeNameLong,
+		ColumnTypeNameMap,
+		ColumnTypeNameNull,
+		ColumnTypeNameShort,
+		ColumnTypeNameString,
+		ColumnTypeNameStruct,
+		ColumnTypeNameTableType,
+		ColumnTypeNameTimestamp,
+		ColumnTypeNameTimestampNtz,
+		ColumnTypeNameUserDefinedType,
+		ColumnTypeNameVariant,
 	}
 }
 
@@ -414,6 +455,17 @@ func (f *FunctionParameterMode) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of FunctionParameterMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FunctionParameterMode) Values() []FunctionParameterMode {
+	return []FunctionParameterMode{
+		FunctionParameterModeIn,
+		FunctionParameterModeInout,
+		FunctionParameterModeOut,
+	}
+}
+
 // Type always returns FunctionParameterMode to satisfy [pflag.Value] interface
 func (f *FunctionParameterMode) Type() string {
 	return "FunctionParameterMode"
@@ -438,6 +490,16 @@ func (f *FunctionParameterType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "COLUMN", "PARAM"`, v)
+	}
+}
+
+// Values returns all possible values of FunctionParameterType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FunctionParameterType) Values() []FunctionParameterType {
+	return []FunctionParameterType{
+		FunctionParameterTypeColumn,
+		FunctionParameterTypeParam,
 	}
 }
 
@@ -885,6 +947,16 @@ func (f *PartitionValueOp) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of PartitionValueOp.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PartitionValueOp) Values() []PartitionValueOp {
+	return []PartitionValueOp{
+		PartitionValueOpEqual,
+		PartitionValueOpLike,
+	}
+}
+
 // Type always returns PartitionValueOp to satisfy [pflag.Value] interface
 func (f *PartitionValueOp) Type() string {
 	return "PartitionValueOp"
@@ -1014,6 +1086,59 @@ func (f *Privilege) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACCESS", "ALL_PRIVILEGES", "APPLY_TAG", "CREATE", "CREATE_CATALOG", "CREATE_CONNECTION", "CREATE_EXTERNAL_LOCATION", "CREATE_EXTERNAL_TABLE", "CREATE_EXTERNAL_VOLUME", "CREATE_FOREIGN_CATALOG", "CREATE_FOREIGN_SECURABLE", "CREATE_FUNCTION", "CREATE_MANAGED_STORAGE", "CREATE_MATERIALIZED_VIEW", "CREATE_MODEL", "CREATE_PROVIDER", "CREATE_RECIPIENT", "CREATE_SCHEMA", "CREATE_SERVICE_CREDENTIAL", "CREATE_SHARE", "CREATE_STORAGE_CREDENTIAL", "CREATE_TABLE", "CREATE_VIEW", "CREATE_VOLUME", "EXECUTE", "MANAGE", "MANAGE_ALLOWLIST", "MODIFY", "READ_FILES", "READ_PRIVATE_FILES", "READ_VOLUME", "REFRESH", "SELECT", "SET_SHARE_PERMISSION", "USAGE", "USE_CATALOG", "USE_CONNECTION", "USE_MARKETPLACE_ASSETS", "USE_PROVIDER", "USE_RECIPIENT", "USE_SCHEMA", "USE_SHARE", "WRITE_FILES", "WRITE_PRIVATE_FILES", "WRITE_VOLUME"`, v)
+	}
+}
+
+// Values returns all possible values of Privilege.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Privilege) Values() []Privilege {
+	return []Privilege{
+		PrivilegeAccess,
+		PrivilegeAllPrivileges,
+		PrivilegeApplyTag,
+		PrivilegeCreate,
+		PrivilegeCreateCatalog,
+		PrivilegeCreateConnection,
+		PrivilegeCreateExternalLocation,
+		PrivilegeCreateExternalTable,
+		PrivilegeCreateExternalVolume,
+		PrivilegeCreateForeignCatalog,
+		PrivilegeCreateForeignSecurable,
+		PrivilegeCreateFunction,
+		PrivilegeCreateManagedStorage,
+		PrivilegeCreateMaterializedView,
+		PrivilegeCreateModel,
+		PrivilegeCreateProvider,
+		PrivilegeCreateRecipient,
+		PrivilegeCreateSchema,
+		PrivilegeCreateServiceCredential,
+		PrivilegeCreateShare,
+		PrivilegeCreateStorageCredential,
+		PrivilegeCreateTable,
+		PrivilegeCreateView,
+		PrivilegeCreateVolume,
+		PrivilegeExecute,
+		PrivilegeManage,
+		PrivilegeManageAllowlist,
+		PrivilegeModify,
+		PrivilegeReadFiles,
+		PrivilegeReadPrivateFiles,
+		PrivilegeReadVolume,
+		PrivilegeRefresh,
+		PrivilegeSelect,
+		PrivilegeSetSharePermission,
+		PrivilegeUsage,
+		PrivilegeUseCatalog,
+		PrivilegeUseConnection,
+		PrivilegeUseMarketplaceAssets,
+		PrivilegeUseProvider,
+		PrivilegeUseRecipient,
+		PrivilegeUseSchema,
+		PrivilegeUseShare,
+		PrivilegeWriteFiles,
+		PrivilegeWritePrivateFiles,
+		PrivilegeWriteVolume,
 	}
 }
 
@@ -1445,6 +1570,23 @@ func (f *SharedDataObjectDataObjectType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of SharedDataObjectDataObjectType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SharedDataObjectDataObjectType) Values() []SharedDataObjectDataObjectType {
+	return []SharedDataObjectDataObjectType{
+		SharedDataObjectDataObjectTypeFeatureSpec,
+		SharedDataObjectDataObjectTypeFunction,
+		SharedDataObjectDataObjectTypeMaterializedView,
+		SharedDataObjectDataObjectTypeModel,
+		SharedDataObjectDataObjectTypeNotebookFile,
+		SharedDataObjectDataObjectTypeSchema,
+		SharedDataObjectDataObjectTypeStreamingTable,
+		SharedDataObjectDataObjectTypeTable,
+		SharedDataObjectDataObjectTypeView,
+	}
+}
+
 // Type always returns SharedDataObjectDataObjectType to satisfy [pflag.Value] interface
 func (f *SharedDataObjectDataObjectType) Type() string {
 	return "SharedDataObjectDataObjectType"
@@ -1472,6 +1614,16 @@ func (f *SharedDataObjectHistoryDataSharingStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of SharedDataObjectHistoryDataSharingStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SharedDataObjectHistoryDataSharingStatus) Values() []SharedDataObjectHistoryDataSharingStatus {
+	return []SharedDataObjectHistoryDataSharingStatus{
+		SharedDataObjectHistoryDataSharingStatusDisabled,
+		SharedDataObjectHistoryDataSharingStatusEnabled,
+	}
+}
+
 // Type always returns SharedDataObjectHistoryDataSharingStatus to satisfy [pflag.Value] interface
 func (f *SharedDataObjectHistoryDataSharingStatus) Type() string {
 	return "SharedDataObjectHistoryDataSharingStatus"
@@ -1496,6 +1648,16 @@ func (f *SharedDataObjectStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "PERMISSION_DENIED"`, v)
+	}
+}
+
+// Values returns all possible values of SharedDataObjectStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SharedDataObjectStatus) Values() []SharedDataObjectStatus {
+	return []SharedDataObjectStatus{
+		SharedDataObjectStatusActive,
+		SharedDataObjectStatusPermissionDenied,
 	}
 }
 
@@ -1535,6 +1697,17 @@ func (f *SharedDataObjectUpdateAction) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of SharedDataObjectUpdateAction.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SharedDataObjectUpdateAction) Values() []SharedDataObjectUpdateAction {
+	return []SharedDataObjectUpdateAction{
+		SharedDataObjectUpdateActionAdd,
+		SharedDataObjectUpdateActionRemove,
+		SharedDataObjectUpdateActionUpdate,
+	}
+}
+
 // Type always returns SharedDataObjectUpdateAction to satisfy [pflag.Value] interface
 func (f *SharedDataObjectUpdateAction) Type() string {
 	return "SharedDataObjectUpdateAction"
@@ -1562,6 +1735,17 @@ func (f *SharedSecurableKind) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FUNCTION_FEATURE_SPEC", "FUNCTION_REGISTERED_MODEL", "FUNCTION_STANDARD"`, v)
+	}
+}
+
+// Values returns all possible values of SharedSecurableKind.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SharedSecurableKind) Values() []SharedSecurableKind {
+	return []SharedSecurableKind{
+		SharedSecurableKindFunctionFeatureSpec,
+		SharedSecurableKindFunctionRegisteredModel,
+		SharedSecurableKindFunctionStandard,
 	}
 }
 
@@ -1662,6 +1846,20 @@ func (f *TableInternalAttributesSharedTableType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DIRECTORY_BASED_TABLE", "FILE_BASED_TABLE", "FOREIGN_TABLE", "MATERIALIZED_VIEW", "STREAMING_TABLE", "VIEW"`, v)
+	}
+}
+
+// Values returns all possible values of TableInternalAttributesSharedTableType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TableInternalAttributesSharedTableType) Values() []TableInternalAttributesSharedTableType {
+	return []TableInternalAttributesSharedTableType{
+		TableInternalAttributesSharedTableTypeDirectoryBasedTable,
+		TableInternalAttributesSharedTableTypeFileBasedTable,
+		TableInternalAttributesSharedTableTypeForeignTable,
+		TableInternalAttributesSharedTableTypeMaterializedView,
+		TableInternalAttributesSharedTableTypeStreamingTable,
+		TableInternalAttributesSharedTableTypeView,
 	}
 }
 

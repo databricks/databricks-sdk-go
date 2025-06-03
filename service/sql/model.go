@@ -61,6 +61,22 @@ func (f *Aggregation) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of Aggregation.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Aggregation) Values() []Aggregation {
+	return []Aggregation{
+		AggregationAvg,
+		AggregationCount,
+		AggregationCountDistinct,
+		AggregationMax,
+		AggregationMedian,
+		AggregationMin,
+		AggregationStddev,
+		AggregationSum,
+	}
+}
+
 // Type always returns Aggregation to satisfy [pflag.Value] interface
 func (f *Aggregation) Type() string {
 	return "Aggregation"
@@ -171,6 +187,18 @@ func (f *AlertEvaluationState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AlertEvaluationState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AlertEvaluationState) Values() []AlertEvaluationState {
+	return []AlertEvaluationState{
+		AlertEvaluationStateError,
+		AlertEvaluationStateOk,
+		AlertEvaluationStateTriggered,
+		AlertEvaluationStateUnknown,
+	}
+}
+
 // Type always returns AlertEvaluationState to satisfy [pflag.Value] interface
 func (f *AlertEvaluationState) Type() string {
 	return "AlertEvaluationState"
@@ -240,6 +268,21 @@ func (f *AlertOperator) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AlertOperator.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AlertOperator) Values() []AlertOperator {
+	return []AlertOperator{
+		AlertOperatorEqual,
+		AlertOperatorGreaterThan,
+		AlertOperatorGreaterThanOrEqual,
+		AlertOperatorIsNull,
+		AlertOperatorLessThan,
+		AlertOperatorLessThanOrEqual,
+		AlertOperatorNotEqual,
+	}
+}
+
 // Type always returns AlertOperator to satisfy [pflag.Value] interface
 func (f *AlertOperator) Type() string {
 	return "AlertOperator"
@@ -305,6 +348,17 @@ func (f *AlertOptionsEmptyResultState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ok", "triggered", "unknown"`, v)
+	}
+}
+
+// Values returns all possible values of AlertOptionsEmptyResultState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AlertOptionsEmptyResultState) Values() []AlertOptionsEmptyResultState {
+	return []AlertOptionsEmptyResultState{
+		AlertOptionsEmptyResultStateOk,
+		AlertOptionsEmptyResultStateTriggered,
+		AlertOptionsEmptyResultStateUnknown,
 	}
 }
 
@@ -386,6 +440,17 @@ func (f *AlertState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "OK", "TRIGGERED", "UNKNOWN"`, v)
+	}
+}
+
+// Values returns all possible values of AlertState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AlertState) Values() []AlertState {
+	return []AlertState{
+		AlertStateOk,
+		AlertStateTriggered,
+		AlertStateUnknown,
 	}
 }
 
@@ -641,6 +706,18 @@ func (f *ChannelName) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ChannelName.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ChannelName) Values() []ChannelName {
+	return []ChannelName{
+		ChannelNameChannelNameCurrent,
+		ChannelNameChannelNameCustom,
+		ChannelNameChannelNamePreview,
+		ChannelNameChannelNamePrevious,
+	}
+}
+
 // Type always returns ChannelName to satisfy [pflag.Value] interface
 func (f *ChannelName) Type() string {
 	return "ChannelName"
@@ -766,6 +843,33 @@ func (f *ColumnInfoTypeName) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ColumnInfoTypeName.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ColumnInfoTypeName) Values() []ColumnInfoTypeName {
+	return []ColumnInfoTypeName{
+		ColumnInfoTypeNameArray,
+		ColumnInfoTypeNameBinary,
+		ColumnInfoTypeNameBoolean,
+		ColumnInfoTypeNameByte,
+		ColumnInfoTypeNameChar,
+		ColumnInfoTypeNameDate,
+		ColumnInfoTypeNameDecimal,
+		ColumnInfoTypeNameDouble,
+		ColumnInfoTypeNameFloat,
+		ColumnInfoTypeNameInt,
+		ColumnInfoTypeNameInterval,
+		ColumnInfoTypeNameLong,
+		ColumnInfoTypeNameMap,
+		ColumnInfoTypeNameNull,
+		ColumnInfoTypeNameShort,
+		ColumnInfoTypeNameString,
+		ColumnInfoTypeNameStruct,
+		ColumnInfoTypeNameTimestamp,
+		ColumnInfoTypeNameUserDefinedType,
+	}
+}
+
 // Type always returns ColumnInfoTypeName to satisfy [pflag.Value] interface
 func (f *ColumnInfoTypeName) Type() string {
 	return "ColumnInfoTypeName"
@@ -802,6 +906,22 @@ func (f *ComparisonOperator) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EQUAL", "GREATER_THAN", "GREATER_THAN_OR_EQUAL", "IS_NOT_NULL", "IS_NULL", "LESS_THAN", "LESS_THAN_OR_EQUAL", "NOT_EQUAL"`, v)
+	}
+}
+
+// Values returns all possible values of ComparisonOperator.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ComparisonOperator) Values() []ComparisonOperator {
+	return []ComparisonOperator{
+		ComparisonOperatorEqual,
+		ComparisonOperatorGreaterThan,
+		ComparisonOperatorGreaterThanOrEqual,
+		ComparisonOperatorIsNotNull,
+		ComparisonOperatorIsNull,
+		ComparisonOperatorLessThan,
+		ComparisonOperatorLessThanOrEqual,
+		ComparisonOperatorNotEqual,
 	}
 }
 
@@ -1112,6 +1232,17 @@ func (f *CreateWarehouseRequestWarehouseType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of CreateWarehouseRequestWarehouseType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CreateWarehouseRequestWarehouseType) Values() []CreateWarehouseRequestWarehouseType {
+	return []CreateWarehouseRequestWarehouseType{
+		CreateWarehouseRequestWarehouseTypeClassic,
+		CreateWarehouseRequestWarehouseTypePro,
+		CreateWarehouseRequestWarehouseTypeTypeUnspecified,
+	}
+}
+
 // Type always returns CreateWarehouseRequestWarehouseType to satisfy [pflag.Value] interface
 func (f *CreateWarehouseRequestWarehouseType) Type() string {
 	return "CreateWarehouseRequestWarehouseType"
@@ -1374,6 +1505,17 @@ func (f *DatePrecision) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of DatePrecision.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DatePrecision) Values() []DatePrecision {
+	return []DatePrecision{
+		DatePrecisionDayPrecision,
+		DatePrecisionMinutePrecision,
+		DatePrecisionSecondPrecision,
+	}
+}
+
 // Type always returns DatePrecision to satisfy [pflag.Value] interface
 func (f *DatePrecision) Type() string {
 	return "DatePrecision"
@@ -1459,6 +1601,31 @@ func (f *DateRangeValueDynamicDateRange) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of DateRangeValueDynamicDateRange.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DateRangeValueDynamicDateRange) Values() []DateRangeValueDynamicDateRange {
+	return []DateRangeValueDynamicDateRange{
+		DateRangeValueDynamicDateRangeLast12Months,
+		DateRangeValueDynamicDateRangeLast14Days,
+		DateRangeValueDynamicDateRangeLast24Hours,
+		DateRangeValueDynamicDateRangeLast30Days,
+		DateRangeValueDynamicDateRangeLast60Days,
+		DateRangeValueDynamicDateRangeLast7Days,
+		DateRangeValueDynamicDateRangeLast8Hours,
+		DateRangeValueDynamicDateRangeLast90Days,
+		DateRangeValueDynamicDateRangeLastHour,
+		DateRangeValueDynamicDateRangeLastMonth,
+		DateRangeValueDynamicDateRangeLastWeek,
+		DateRangeValueDynamicDateRangeLastYear,
+		DateRangeValueDynamicDateRangeThisMonth,
+		DateRangeValueDynamicDateRangeThisWeek,
+		DateRangeValueDynamicDateRangeThisYear,
+		DateRangeValueDynamicDateRangeToday,
+		DateRangeValueDynamicDateRangeYesterday,
+	}
+}
+
 // Type always returns DateRangeValueDynamicDateRange to satisfy [pflag.Value] interface
 func (f *DateRangeValueDynamicDateRange) Type() string {
 	return "DateRangeValueDynamicDateRange"
@@ -1503,6 +1670,16 @@ func (f *DateValueDynamicDate) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NOW", "YESTERDAY"`, v)
+	}
+}
+
+// Values returns all possible values of DateValueDynamicDate.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DateValueDynamicDate) Values() []DateValueDynamicDate {
+	return []DateValueDynamicDate{
+		DateValueDynamicDateNow,
+		DateValueDynamicDateYesterday,
 	}
 }
 
@@ -1574,6 +1751,16 @@ func (f *Disposition) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EXTERNAL_LINKS", "INLINE"`, v)
+	}
+}
+
+// Values returns all possible values of Disposition.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Disposition) Values() []Disposition {
+	return []Disposition{
+		DispositionExternalLinks,
+		DispositionInline,
 	}
 }
 
@@ -1704,6 +1891,17 @@ func (f *EditWarehouseRequestWarehouseType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Values returns all possible values of EditWarehouseRequestWarehouseType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EditWarehouseRequestWarehouseType) Values() []EditWarehouseRequestWarehouseType {
+	return []EditWarehouseRequestWarehouseType{
+		EditWarehouseRequestWarehouseTypeClassic,
+		EditWarehouseRequestWarehouseTypePro,
+		EditWarehouseRequestWarehouseTypeTypeUnspecified,
 	}
 }
 
@@ -1872,6 +2070,17 @@ func (f *EndpointInfoWarehouseType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Values returns all possible values of EndpointInfoWarehouseType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EndpointInfoWarehouseType) Values() []EndpointInfoWarehouseType {
+	return []EndpointInfoWarehouseType{
+		EndpointInfoWarehouseTypeClassic,
+		EndpointInfoWarehouseTypePro,
+		EndpointInfoWarehouseTypeTypeUnspecified,
 	}
 }
 
@@ -2084,6 +2293,16 @@ func (f *ExecuteStatementRequestOnWaitTimeout) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ExecuteStatementRequestOnWaitTimeout.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ExecuteStatementRequestOnWaitTimeout) Values() []ExecuteStatementRequestOnWaitTimeout {
+	return []ExecuteStatementRequestOnWaitTimeout{
+		ExecuteStatementRequestOnWaitTimeoutCancel,
+		ExecuteStatementRequestOnWaitTimeoutContinue,
+	}
+}
+
 // Type always returns ExecuteStatementRequestOnWaitTimeout to satisfy [pflag.Value] interface
 func (f *ExecuteStatementRequestOnWaitTimeout) Type() string {
 	return "ExecuteStatementRequestOnWaitTimeout"
@@ -2200,6 +2419,17 @@ func (f *Format) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ARROW_STREAM", "CSV", "JSON_ARRAY"`, v)
+	}
+}
+
+// Values returns all possible values of Format.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Format) Values() []Format {
+	return []Format{
+		FormatArrowStream,
+		FormatCsv,
+		FormatJsonArray,
 	}
 }
 
@@ -2416,6 +2646,17 @@ func (f *GetWarehouseResponseWarehouseType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of GetWarehouseResponseWarehouseType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GetWarehouseResponseWarehouseType) Values() []GetWarehouseResponseWarehouseType {
+	return []GetWarehouseResponseWarehouseType{
+		GetWarehouseResponseWarehouseTypeClassic,
+		GetWarehouseResponseWarehouseTypePro,
+		GetWarehouseResponseWarehouseTypeTypeUnspecified,
+	}
+}
+
 // Type always returns GetWarehouseResponseWarehouseType to satisfy [pflag.Value] interface
 func (f *GetWarehouseResponseWarehouseType) Type() string {
 	return "GetWarehouseResponseWarehouseType"
@@ -2481,6 +2722,17 @@ func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Set(v string) error 
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DATA_ACCESS_CONTROL", "NONE", "PASSTHROUGH"`, v)
+	}
+}
+
+// Values returns all possible values of GetWorkspaceWarehouseConfigResponseSecurityPolicy.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Values() []GetWorkspaceWarehouseConfigResponseSecurityPolicy {
+	return []GetWorkspaceWarehouseConfigResponseSecurityPolicy{
+		GetWorkspaceWarehouseConfigResponseSecurityPolicyDataAccessControl,
+		GetWorkspaceWarehouseConfigResponseSecurityPolicyNone,
+		GetWorkspaceWarehouseConfigResponseSecurityPolicyPassthrough,
 	}
 }
 
@@ -2552,6 +2804,17 @@ func (f *LegacyAlertState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ok", "triggered", "unknown"`, v)
+	}
+}
+
+// Values returns all possible values of LegacyAlertState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LegacyAlertState) Values() []LegacyAlertState {
+	return []LegacyAlertState{
+		LegacyAlertStateOk,
+		LegacyAlertStateTriggered,
+		LegacyAlertStateUnknown,
 	}
 }
 
@@ -2697,6 +2960,16 @@ func (f *LifecycleState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "TRASHED"`, v)
+	}
+}
+
+// Values returns all possible values of LifecycleState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *LifecycleState) Values() []LifecycleState {
+	return []LifecycleState{
+		LifecycleStateActive,
+		LifecycleStateTrashed,
 	}
 }
 
@@ -2866,6 +3139,16 @@ func (f *ListOrder) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "created_at", "name"`, v)
+	}
+}
+
+// Values returns all possible values of ListOrder.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListOrder) Values() []ListOrder {
+	return []ListOrder{
+		ListOrderCreatedAt,
+		ListOrderName,
 	}
 }
 
@@ -3174,6 +3457,18 @@ func (f *ObjectType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ObjectType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ObjectType) Values() []ObjectType {
+	return []ObjectType{
+		ObjectTypeAlert,
+		ObjectTypeDashboard,
+		ObjectTypeDataSource,
+		ObjectTypeQuery,
+	}
+}
+
 // Type always returns ObjectType to satisfy [pflag.Value] interface
 func (f *ObjectType) Type() string {
 	return "ObjectType"
@@ -3203,6 +3498,18 @@ func (f *ObjectTypePlural) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "alerts", "dashboards", "data_sources", "queries"`, v)
+	}
+}
+
+// Values returns all possible values of ObjectTypePlural.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ObjectTypePlural) Values() []ObjectTypePlural {
+	return []ObjectTypePlural{
+		ObjectTypePluralAlerts,
+		ObjectTypePluralDashboards,
+		ObjectTypePluralDataSources,
+		ObjectTypePluralQueries,
 	}
 }
 
@@ -3253,6 +3560,17 @@ func (f *OwnableObjectType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "alert", "dashboard", "query"`, v)
+	}
+}
+
+// Values returns all possible values of OwnableObjectType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *OwnableObjectType) Values() []OwnableObjectType {
+	return []OwnableObjectType{
+		OwnableObjectTypeAlert,
+		OwnableObjectTypeDashboard,
+		OwnableObjectTypeQuery,
 	}
 }
 
@@ -3321,6 +3639,19 @@ func (f *ParameterType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ParameterType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ParameterType) Values() []ParameterType {
+	return []ParameterType{
+		ParameterTypeDatetime,
+		ParameterTypeEnum,
+		ParameterTypeNumber,
+		ParameterTypeQuery,
+		ParameterTypeText,
+	}
+}
+
 // Type always returns ParameterType to satisfy [pflag.Value] interface
 func (f *ParameterType) Type() string {
 	return "ParameterType"
@@ -3358,6 +3689,18 @@ func (f *PermissionLevel) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of PermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PermissionLevel) Values() []PermissionLevel {
+	return []PermissionLevel{
+		PermissionLevelCanEdit,
+		PermissionLevelCanManage,
+		PermissionLevelCanRun,
+		PermissionLevelCanView,
+	}
+}
+
 // Type always returns PermissionLevel to satisfy [pflag.Value] interface
 func (f *PermissionLevel) Type() string {
 	return "PermissionLevel"
@@ -3391,6 +3734,20 @@ func (f *PlansState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "EMPTY", "EXISTS", "IGNORED_LARGE_PLANS_SIZE", "IGNORED_SMALL_DURATION", "IGNORED_SPARK_PLAN_TYPE", "UNKNOWN"`, v)
+	}
+}
+
+// Values returns all possible values of PlansState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PlansState) Values() []PlansState {
+	return []PlansState{
+		PlansStateEmpty,
+		PlansStateExists,
+		PlansStateIgnoredLargePlansSize,
+		PlansStateIgnoredSmallDuration,
+		PlansStateIgnoredSparkPlanType,
+		PlansStateUnknown,
 	}
 }
 
@@ -3837,6 +4194,36 @@ func (f *QueryStatementType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of QueryStatementType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *QueryStatementType) Values() []QueryStatementType {
+	return []QueryStatementType{
+		QueryStatementTypeAlter,
+		QueryStatementTypeAnalyze,
+		QueryStatementTypeCopy,
+		QueryStatementTypeCreate,
+		QueryStatementTypeDelete,
+		QueryStatementTypeDescribe,
+		QueryStatementTypeDrop,
+		QueryStatementTypeExplain,
+		QueryStatementTypeGrant,
+		QueryStatementTypeInsert,
+		QueryStatementTypeMerge,
+		QueryStatementTypeOptimize,
+		QueryStatementTypeOther,
+		QueryStatementTypeRefresh,
+		QueryStatementTypeReplace,
+		QueryStatementTypeRevoke,
+		QueryStatementTypeSelect,
+		QueryStatementTypeSet,
+		QueryStatementTypeShow,
+		QueryStatementTypeTruncate,
+		QueryStatementTypeUpdate,
+		QueryStatementTypeUse,
+	}
+}
+
 // Type always returns QueryStatementType to satisfy [pflag.Value] interface
 func (f *QueryStatementType) Type() string {
 	return "QueryStatementType"
@@ -3874,6 +4261,22 @@ func (f *QueryStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELED", "COMPILED", "COMPILING", "FAILED", "FINISHED", "QUEUED", "RUNNING", "STARTED"`, v)
+	}
+}
+
+// Values returns all possible values of QueryStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *QueryStatus) Values() []QueryStatus {
+	return []QueryStatus{
+		QueryStatusCanceled,
+		QueryStatusCompiled,
+		QueryStatusCompiling,
+		QueryStatusFailed,
+		QueryStatusFinished,
+		QueryStatusQueued,
+		QueryStatusRunning,
+		QueryStatusStarted,
 	}
 }
 
@@ -4008,6 +4411,16 @@ func (f *RunAsMode) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of RunAsMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RunAsMode) Values() []RunAsMode {
+	return []RunAsMode{
+		RunAsModeOwner,
+		RunAsModeViewer,
+	}
+}
+
 // Type always returns RunAsMode to satisfy [pflag.Value] interface
 func (f *RunAsMode) Type() string {
 	return "RunAsMode"
@@ -4038,6 +4451,16 @@ func (f *RunAsRole) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of RunAsRole.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RunAsRole) Values() []RunAsRole {
+	return []RunAsRole{
+		RunAsRoleOwner,
+		RunAsRoleViewer,
+	}
+}
+
 // Type always returns RunAsRole to satisfy [pflag.Value] interface
 func (f *RunAsRole) Type() string {
 	return "RunAsRole"
@@ -4062,6 +4485,16 @@ func (f *SchedulePauseStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PAUSED", "UNPAUSED"`, v)
+	}
+}
+
+// Values returns all possible values of SchedulePauseStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SchedulePauseStatus) Values() []SchedulePauseStatus {
+	return []SchedulePauseStatus{
+		SchedulePauseStatusPaused,
+		SchedulePauseStatusUnpaused,
 	}
 }
 
@@ -4129,6 +4562,28 @@ func (f *ServiceErrorCode) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ABORTED", "ALREADY_EXISTS", "BAD_REQUEST", "CANCELLED", "DEADLINE_EXCEEDED", "INTERNAL_ERROR", "IO_ERROR", "NOT_FOUND", "RESOURCE_EXHAUSTED", "SERVICE_UNDER_MAINTENANCE", "TEMPORARILY_UNAVAILABLE", "UNAUTHENTICATED", "UNKNOWN", "WORKSPACE_TEMPORARILY_UNAVAILABLE"`, v)
+	}
+}
+
+// Values returns all possible values of ServiceErrorCode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ServiceErrorCode) Values() []ServiceErrorCode {
+	return []ServiceErrorCode{
+		ServiceErrorCodeAborted,
+		ServiceErrorCodeAlreadyExists,
+		ServiceErrorCodeBadRequest,
+		ServiceErrorCodeCancelled,
+		ServiceErrorCodeDeadlineExceeded,
+		ServiceErrorCodeInternalError,
+		ServiceErrorCodeIoError,
+		ServiceErrorCodeNotFound,
+		ServiceErrorCodeResourceExhausted,
+		ServiceErrorCodeServiceUnderMaintenance,
+		ServiceErrorCodeTemporarilyUnavailable,
+		ServiceErrorCodeUnauthenticated,
+		ServiceErrorCodeUnknown,
+		ServiceErrorCodeWorkspaceTemporarilyUnavailable,
 	}
 }
 
@@ -4228,6 +4683,17 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of SetWorkspaceWarehouseConfigRequestSecurityPolicy.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Values() []SetWorkspaceWarehouseConfigRequestSecurityPolicy {
+	return []SetWorkspaceWarehouseConfigRequestSecurityPolicy{
+		SetWorkspaceWarehouseConfigRequestSecurityPolicyDataAccessControl,
+		SetWorkspaceWarehouseConfigRequestSecurityPolicyNone,
+		SetWorkspaceWarehouseConfigRequestSecurityPolicyPassthrough,
+	}
+}
+
 // Type always returns SetWorkspaceWarehouseConfigRequestSecurityPolicy to satisfy [pflag.Value] interface
 func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Type() string {
 	return "SetWorkspaceWarehouseConfigRequestSecurityPolicy"
@@ -4258,6 +4724,17 @@ func (f *SpotInstancePolicy) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "COST_OPTIMIZED", "POLICY_UNSPECIFIED", "RELIABILITY_OPTIMIZED"`, v)
+	}
+}
+
+// Values returns all possible values of SpotInstancePolicy.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SpotInstancePolicy) Values() []SpotInstancePolicy {
+	return []SpotInstancePolicy{
+		SpotInstancePolicyCostOptimized,
+		SpotInstancePolicyPolicyUnspecified,
+		SpotInstancePolicyReliabilityOptimized,
 	}
 }
 
@@ -4303,6 +4780,20 @@ func (f *State) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELETED", "DELETING", "RUNNING", "STARTING", "STOPPED", "STOPPING"`, v)
+	}
+}
+
+// Values returns all possible values of State.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *State) Values() []State {
+	return []State{
+		StateDeleted,
+		StateDeleting,
+		StateRunning,
+		StateStarting,
+		StateStopped,
+		StateStopping,
 	}
 }
 
@@ -4404,6 +4895,20 @@ func (f *StatementState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of StatementState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *StatementState) Values() []StatementState {
+	return []StatementState{
+		StatementStateCanceled,
+		StatementStateClosed,
+		StatementStateFailed,
+		StatementStatePending,
+		StatementStateRunning,
+		StatementStateSucceeded,
+	}
+}
+
 // Type always returns StatementState to satisfy [pflag.Value] interface
 func (f *StatementState) Type() string {
 	return "StatementState"
@@ -4450,6 +4955,18 @@ func (f *Status) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of Status.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Status) Values() []Status {
+	return []Status{
+		StatusDegraded,
+		StatusFailed,
+		StatusHealthy,
+		StatusStatusUnspecified,
+	}
+}
+
 // Type always returns Status to satisfy [pflag.Value] interface
 func (f *Status) Type() string {
 	return "Status"
@@ -4485,6 +5002,15 @@ func (f *SuccessMessage) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "Success"`, v)
+	}
+}
+
+// Values returns all possible values of SuccessMessage.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *SuccessMessage) Values() []SuccessMessage {
+	return []SuccessMessage{
+		SuccessMessageSuccess,
 	}
 }
 
@@ -4680,6 +5206,93 @@ func (f *TerminationReasonCode) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of TerminationReasonCode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TerminationReasonCode) Values() []TerminationReasonCode {
+	return []TerminationReasonCode{
+		TerminationReasonCodeAbuseDetected,
+		TerminationReasonCodeAttachProjectFailure,
+		TerminationReasonCodeAwsAuthorizationFailure,
+		TerminationReasonCodeAwsInsufficientFreeAddressesInSubnetFailure,
+		TerminationReasonCodeAwsInsufficientInstanceCapacityFailure,
+		TerminationReasonCodeAwsMaxSpotInstanceCountExceededFailure,
+		TerminationReasonCodeAwsRequestLimitExceeded,
+		TerminationReasonCodeAwsUnsupportedFailure,
+		TerminationReasonCodeAzureByokKeyPermissionFailure,
+		TerminationReasonCodeAzureEphemeralDiskFailure,
+		TerminationReasonCodeAzureInvalidDeploymentTemplate,
+		TerminationReasonCodeAzureOperationNotAllowedException,
+		TerminationReasonCodeAzureQuotaExceededException,
+		TerminationReasonCodeAzureResourceManagerThrottling,
+		TerminationReasonCodeAzureResourceProviderThrottling,
+		TerminationReasonCodeAzureUnexpectedDeploymentTemplateFailure,
+		TerminationReasonCodeAzureVmExtensionFailure,
+		TerminationReasonCodeAzureVnetConfigurationFailure,
+		TerminationReasonCodeBootstrapTimeout,
+		TerminationReasonCodeBootstrapTimeoutCloudProviderException,
+		TerminationReasonCodeCloudProviderDiskSetupFailure,
+		TerminationReasonCodeCloudProviderLaunchFailure,
+		TerminationReasonCodeCloudProviderResourceStockout,
+		TerminationReasonCodeCloudProviderShutdown,
+		TerminationReasonCodeCommunicationLost,
+		TerminationReasonCodeContainerLaunchFailure,
+		TerminationReasonCodeControlPlaneRequestFailure,
+		TerminationReasonCodeDatabaseConnectionFailure,
+		TerminationReasonCodeDbfsComponentUnhealthy,
+		TerminationReasonCodeDockerImagePullFailure,
+		TerminationReasonCodeDriverUnreachable,
+		TerminationReasonCodeDriverUnresponsive,
+		TerminationReasonCodeExecutionComponentUnhealthy,
+		TerminationReasonCodeGcpQuotaExceeded,
+		TerminationReasonCodeGcpServiceAccountDeleted,
+		TerminationReasonCodeGlobalInitScriptFailure,
+		TerminationReasonCodeHiveMetastoreProvisioningFailure,
+		TerminationReasonCodeImagePullPermissionDenied,
+		TerminationReasonCodeInactivity,
+		TerminationReasonCodeInitScriptFailure,
+		TerminationReasonCodeInstancePoolClusterFailure,
+		TerminationReasonCodeInstanceUnreachable,
+		TerminationReasonCodeInternalError,
+		TerminationReasonCodeInvalidArgument,
+		TerminationReasonCodeInvalidSparkImage,
+		TerminationReasonCodeIpExhaustionFailure,
+		TerminationReasonCodeJobFinished,
+		TerminationReasonCodeK8sAutoscalingFailure,
+		TerminationReasonCodeK8sDbrClusterLaunchTimeout,
+		TerminationReasonCodeMetastoreComponentUnhealthy,
+		TerminationReasonCodeNephosResourceManagement,
+		TerminationReasonCodeNetworkConfigurationFailure,
+		TerminationReasonCodeNfsMountFailure,
+		TerminationReasonCodeNpipTunnelSetupFailure,
+		TerminationReasonCodeNpipTunnelTokenFailure,
+		TerminationReasonCodeRequestRejected,
+		TerminationReasonCodeRequestThrottled,
+		TerminationReasonCodeSecretResolutionError,
+		TerminationReasonCodeSecurityDaemonRegistrationException,
+		TerminationReasonCodeSelfBootstrapFailure,
+		TerminationReasonCodeSkippedSlowNodes,
+		TerminationReasonCodeSlowImageDownload,
+		TerminationReasonCodeSparkError,
+		TerminationReasonCodeSparkImageDownloadFailure,
+		TerminationReasonCodeSparkStartupFailure,
+		TerminationReasonCodeSpotInstanceTermination,
+		TerminationReasonCodeStorageDownloadFailure,
+		TerminationReasonCodeStsClientSetupFailure,
+		TerminationReasonCodeSubnetExhaustedFailure,
+		TerminationReasonCodeTemporarilyUnavailable,
+		TerminationReasonCodeTrialExpired,
+		TerminationReasonCodeUnexpectedLaunchFailure,
+		TerminationReasonCodeUnknown,
+		TerminationReasonCodeUnsupportedInstanceType,
+		TerminationReasonCodeUpdateInstanceProfileFailure,
+		TerminationReasonCodeUserRequest,
+		TerminationReasonCodeWorkerSetupFailure,
+		TerminationReasonCodeWorkspaceCancelledError,
+		TerminationReasonCodeWorkspaceConfigurationError,
+	}
+}
+
 // Type always returns TerminationReasonCode to satisfy [pflag.Value] interface
 func (f *TerminationReasonCode) Type() string {
 	return "TerminationReasonCode"
@@ -4709,6 +5322,18 @@ func (f *TerminationReasonType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLIENT_ERROR", "CLOUD_FAILURE", "SERVICE_FAULT", "SUCCESS"`, v)
+	}
+}
+
+// Values returns all possible values of TerminationReasonType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *TerminationReasonType) Values() []TerminationReasonType {
+	return []TerminationReasonType{
+		TerminationReasonTypeClientError,
+		TerminationReasonTypeCloudFailure,
+		TerminationReasonTypeServiceFault,
+		TerminationReasonTypeSuccess,
 	}
 }
 
@@ -5146,6 +5771,19 @@ func (f *WarehousePermissionLevel) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of WarehousePermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *WarehousePermissionLevel) Values() []WarehousePermissionLevel {
+	return []WarehousePermissionLevel{
+		WarehousePermissionLevelCanManage,
+		WarehousePermissionLevelCanMonitor,
+		WarehousePermissionLevelCanUse,
+		WarehousePermissionLevelCanView,
+		WarehousePermissionLevelIsOwner,
+	}
+}
+
 // Type always returns WarehousePermissionLevel to satisfy [pflag.Value] interface
 func (f *WarehousePermissionLevel) Type() string {
 	return "WarehousePermissionLevel"
@@ -5231,6 +5869,17 @@ func (f *WarehouseTypePairWarehouseType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CLASSIC", "PRO", "TYPE_UNSPECIFIED"`, v)
+	}
+}
+
+// Values returns all possible values of WarehouseTypePairWarehouseType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *WarehouseTypePairWarehouseType) Values() []WarehouseTypePairWarehouseType {
+	return []WarehouseTypePairWarehouseType{
+		WarehouseTypePairWarehouseTypeClassic,
+		WarehouseTypePairWarehouseTypePro,
+		WarehouseTypePairWarehouseTypeTypeUnspecified,
 	}
 }
 

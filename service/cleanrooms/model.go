@@ -77,6 +77,16 @@ func (f *CleanRoomAccessRestricted) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of CleanRoomAccessRestricted.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomAccessRestricted) Values() []CleanRoomAccessRestricted {
+	return []CleanRoomAccessRestricted{
+		CleanRoomAccessRestrictedCspMismatch,
+		CleanRoomAccessRestrictedNoRestriction,
+	}
+}
+
 // Type always returns CleanRoomAccessRestricted to satisfy [pflag.Value] interface
 func (f *CleanRoomAccessRestricted) Type() string {
 	return "CleanRoomAccessRestricted"
@@ -164,6 +174,19 @@ func (f *CleanRoomAssetAssetType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of CleanRoomAssetAssetType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomAssetAssetType) Values() []CleanRoomAssetAssetType {
+	return []CleanRoomAssetAssetType{
+		CleanRoomAssetAssetTypeForeignTable,
+		CleanRoomAssetAssetTypeNotebookFile,
+		CleanRoomAssetAssetTypeTable,
+		CleanRoomAssetAssetTypeView,
+		CleanRoomAssetAssetTypeVolume,
+	}
+}
+
 // Type always returns CleanRoomAssetAssetType to satisfy [pflag.Value] interface
 func (f *CleanRoomAssetAssetType) Type() string {
 	return "CleanRoomAssetAssetType"
@@ -235,6 +258,17 @@ func (f *CleanRoomAssetStatusEnum) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "PENDING", "PERMISSION_DENIED"`, v)
+	}
+}
+
+// Values returns all possible values of CleanRoomAssetStatusEnum.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomAssetStatusEnum) Values() []CleanRoomAssetStatusEnum {
+	return []CleanRoomAssetStatusEnum{
+		CleanRoomAssetStatusEnumActive,
+		CleanRoomAssetStatusEnumPending,
+		CleanRoomAssetStatusEnumPermissionDenied,
 	}
 }
 
@@ -393,6 +427,17 @@ func (f *CleanRoomNotebookReviewNotebookReviewState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of CleanRoomNotebookReviewNotebookReviewState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomNotebookReviewNotebookReviewState) Values() []CleanRoomNotebookReviewNotebookReviewState {
+	return []CleanRoomNotebookReviewNotebookReviewState{
+		CleanRoomNotebookReviewNotebookReviewStateApproved,
+		CleanRoomNotebookReviewNotebookReviewStatePending,
+		CleanRoomNotebookReviewNotebookReviewStateRejected,
+	}
+}
+
 // Type always returns CleanRoomNotebookReviewNotebookReviewState to satisfy [pflag.Value] interface
 func (f *CleanRoomNotebookReviewNotebookReviewState) Type() string {
 	return "CleanRoomNotebookReviewNotebookReviewState"
@@ -417,6 +462,16 @@ func (f *CleanRoomNotebookReviewNotebookReviewSubReason) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "AUTO_APPROVED", "BACKFILLED"`, v)
+	}
+}
+
+// Values returns all possible values of CleanRoomNotebookReviewNotebookReviewSubReason.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomNotebookReviewNotebookReviewSubReason) Values() []CleanRoomNotebookReviewNotebookReviewSubReason {
+	return []CleanRoomNotebookReviewNotebookReviewSubReason{
+		CleanRoomNotebookReviewNotebookReviewSubReasonAutoApproved,
+		CleanRoomNotebookReviewNotebookReviewSubReasonBackfilled,
 	}
 }
 
@@ -507,6 +562,17 @@ func (f *CleanRoomOutputCatalogOutputCatalogStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of CleanRoomOutputCatalogOutputCatalogStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomOutputCatalogOutputCatalogStatus) Values() []CleanRoomOutputCatalogOutputCatalogStatus {
+	return []CleanRoomOutputCatalogOutputCatalogStatus{
+		CleanRoomOutputCatalogOutputCatalogStatusCreated,
+		CleanRoomOutputCatalogOutputCatalogStatusNotCreated,
+		CleanRoomOutputCatalogOutputCatalogStatusNotEligible,
+	}
+}
+
 // Type always returns CleanRoomOutputCatalogOutputCatalogStatus to satisfy [pflag.Value] interface
 func (f *CleanRoomOutputCatalogOutputCatalogStatus) Type() string {
 	return "CleanRoomOutputCatalogOutputCatalogStatus"
@@ -570,6 +636,18 @@ func (f *CleanRoomStatusEnum) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETED", "FAILED", "PROVISIONING"`, v)
+	}
+}
+
+// Values returns all possible values of CleanRoomStatusEnum.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CleanRoomStatusEnum) Values() []CleanRoomStatusEnum {
+	return []CleanRoomStatusEnum{
+		CleanRoomStatusEnumActive,
+		CleanRoomStatusEnumDeleted,
+		CleanRoomStatusEnumFailed,
+		CleanRoomStatusEnumProvisioning,
 	}
 }
 

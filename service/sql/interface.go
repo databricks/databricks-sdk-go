@@ -11,6 +11,8 @@ import (
 // of its result, and notifies one or more users and/or notification
 // destinations if the condition was met. Alerts can be scheduled using the
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AlertsService interface {
 
 	// Create an alert.
@@ -36,8 +38,6 @@ type AlertsService interface {
 	// Gets a list of alerts accessible to the user, ordered by creation time.
 	// **Warning:** Calling this API concurrently 10 or more times could result
 	// in throttling, service degradation, or a temporary ban.
-	//
-	// Use ListAll() to get all ListAlertsResponseAlert instances, which will iterate over every result page.
 	List(ctx context.Context, request ListAlertsRequest) (*ListAlertsResponse, error)
 
 	// Update an alert.
@@ -54,6 +54,8 @@ type AlertsService interface {
 //
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // see the latest version. [Learn more]
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type AlertsLegacyService interface {
@@ -114,6 +116,8 @@ type AlertsLegacyService interface {
 }
 
 // TODO: Add description
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AlertsV2Service interface {
 
 	// Create an alert.
@@ -129,8 +133,6 @@ type AlertsV2Service interface {
 	// List alerts.
 	//
 	// Gets a list of alerts accessible to the user, ordered by creation time.
-	//
-	// Use ListAlertsAll() to get all AlertV2 instances, which will iterate over every result page.
 	ListAlerts(ctx context.Context, request ListAlertsV2Request) (*ListAlertsV2Response, error)
 
 	// Delete an alert.
@@ -149,6 +151,8 @@ type AlertsV2Service interface {
 // This is an evolving API that facilitates the addition and removal of widgets
 // from existing dashboards within the Databricks Workspace. Data structures may
 // change over time.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DashboardWidgetsService interface {
 
 	// Add widget to a dashboard.
@@ -167,6 +171,8 @@ type DashboardWidgetsService interface {
 // since you can get a dashboard definition with a GET request and then POST it
 // to create a new one. Dashboards can be scheduled using the `sql_task` type of
 // the Jobs API, e.g. :method:jobs/create.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DashboardsService interface {
 
 	// Create a dashboard object.
@@ -190,8 +196,6 @@ type DashboardsService interface {
 	//
 	// **Warning**: Calling this API concurrently 10 or more times could result
 	// in throttling, service degradation, or a temporary ban.
-	//
-	// Use ListAll() to get all Dashboard instances, which will iterate over every result page.
 	List(ctx context.Context, request ListDashboardsRequest) (*ListResponse, error)
 
 	// Restore a dashboard.
@@ -222,6 +226,8 @@ type DashboardsService interface {
 //
 // **Note**: A new version of the Databricks SQL API is now available. [Learn
 // more]
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type DataSourcesService interface {
@@ -256,6 +262,8 @@ type DataSourcesService interface {
 //
 // **Note**: A new version of the Databricks SQL API is now available. [Learn
 // more]
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type DbsqlPermissionsService interface {
@@ -299,6 +307,8 @@ type DbsqlPermissionsService interface {
 // a Databricks SQL object that includes the target SQL warehouse, query text,
 // name, description, tags, and parameters. Queries can be scheduled using the
 // `sql_task` type of the Jobs API, e.g. :method:jobs/create.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QueriesService interface {
 
 	// Create a query.
@@ -324,15 +334,11 @@ type QueriesService interface {
 	// Gets a list of queries accessible to the user, ordered by creation time.
 	// **Warning:** Calling this API concurrently 10 or more times could result
 	// in throttling, service degradation, or a temporary ban.
-	//
-	// Use ListAll() to get all ListQueryObjectsResponseQuery instances, which will iterate over every result page.
 	List(ctx context.Context, request ListQueriesRequest) (*ListQueryObjectsResponse, error)
 
 	// List visualizations on a query.
 	//
 	// Gets a list of visualizations on a query.
-	//
-	// Use ListVisualizationsAll() to get all Visualization instances, which will iterate over every result page.
 	ListVisualizations(ctx context.Context, request ListVisualizationsForQueryRequest) (*ListVisualizationsForQueryResponse, error)
 
 	// Update a query.
@@ -348,6 +354,8 @@ type QueriesService interface {
 //
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // see the latest version. [Learn more]
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type QueriesLegacyService interface {
@@ -405,8 +413,6 @@ type QueriesLegacyService interface {
 	// Please use :method:queries/list instead. [Learn more]
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
-	//
-	// Use ListAll() to get all LegacyQuery instances, which will iterate over every result page.
 	List(ctx context.Context, request ListQueriesLegacyRequest) (*QueryList, error)
 
 	// Restore a query.
@@ -436,6 +442,8 @@ type QueriesLegacyService interface {
 
 // A service responsible for storing and retrieving the list of queries run
 // against SQL endpoints and serverless compute.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QueryHistoryService interface {
 
 	// List Queries.
@@ -453,6 +461,8 @@ type QueryHistoryService interface {
 // This is an evolving API that facilitates the addition and removal of
 // visualizations from existing queries in the Databricks Workspace. Data
 // structures can change over time.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QueryVisualizationsService interface {
 
 	// Add a visualization to a query.
@@ -477,6 +487,8 @@ type QueryVisualizationsService interface {
 //
 // **Note**: A new version of the Databricks SQL API is now available. Please
 // see the latest version. [Learn more]
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 //
 // [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 type QueryVisualizationsLegacyService interface {
@@ -513,6 +525,8 @@ type QueryVisualizationsLegacyService interface {
 }
 
 // Redash V2 service for workspace configurations (internal)
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type RedashConfigService interface {
 
 	// Read workspace configuration for Redash-v2.
@@ -622,6 +636,8 @@ type RedashConfigService interface {
 // For example, you cannot use the Jobs API to execute the command, and then the
 // SQL Execution API to cancel it.
 //
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+//
 // [Apache Arrow Columnar]: https://arrow.apache.org/overview/
 // [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html
 type StatementExecutionService interface {
@@ -666,6 +682,8 @@ type StatementExecutionService interface {
 // A SQL warehouse is a compute resource that lets you run SQL commands on data
 // objects within Databricks SQL. Compute resources are infrastructure resources
 // that provide processing capabilities in the cloud.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WarehousesService interface {
 
 	// Create a warehouse.
@@ -708,8 +726,6 @@ type WarehousesService interface {
 	// List warehouses.
 	//
 	// Lists all SQL warehouses that a user has manager permissions on.
-	//
-	// Use ListAll() to get all EndpointInfo instances
 	List(ctx context.Context, request ListWarehousesRequest) (*ListWarehousesResponse, error)
 
 	// Set SQL warehouse permissions.

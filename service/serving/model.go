@@ -102,6 +102,16 @@ func (f *AiGatewayGuardrailPiiBehaviorBehavior) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AiGatewayGuardrailPiiBehaviorBehavior.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AiGatewayGuardrailPiiBehaviorBehavior) Values() []AiGatewayGuardrailPiiBehaviorBehavior {
+	return []AiGatewayGuardrailPiiBehaviorBehavior{
+		AiGatewayGuardrailPiiBehaviorBehaviorBlock,
+		AiGatewayGuardrailPiiBehaviorBehaviorNone,
+	}
+}
+
 // Type always returns AiGatewayGuardrailPiiBehaviorBehavior to satisfy [pflag.Value] interface
 func (f *AiGatewayGuardrailPiiBehaviorBehavior) Type() string {
 	return "AiGatewayGuardrailPiiBehaviorBehavior"
@@ -174,6 +184,16 @@ func (f *AiGatewayRateLimitKey) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AiGatewayRateLimitKey.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AiGatewayRateLimitKey) Values() []AiGatewayRateLimitKey {
+	return []AiGatewayRateLimitKey{
+		AiGatewayRateLimitKeyEndpoint,
+		AiGatewayRateLimitKeyUser,
+	}
+}
+
 // Type always returns AiGatewayRateLimitKey to satisfy [pflag.Value] interface
 func (f *AiGatewayRateLimitKey) Type() string {
 	return "AiGatewayRateLimitKey"
@@ -196,6 +216,15 @@ func (f *AiGatewayRateLimitRenewalPeriod) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "minute"`, v)
+	}
+}
+
+// Values returns all possible values of AiGatewayRateLimitRenewalPeriod.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AiGatewayRateLimitRenewalPeriod) Values() []AiGatewayRateLimitRenewalPeriod {
+	return []AiGatewayRateLimitRenewalPeriod{
+		AiGatewayRateLimitRenewalPeriodMinute,
 	}
 }
 
@@ -292,6 +321,18 @@ func (f *AmazonBedrockConfigBedrockProvider) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ai21labs", "amazon", "anthropic", "cohere"`, v)
+	}
+}
+
+// Values returns all possible values of AmazonBedrockConfigBedrockProvider.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AmazonBedrockConfigBedrockProvider) Values() []AmazonBedrockConfigBedrockProvider {
+	return []AmazonBedrockConfigBedrockProvider{
+		AmazonBedrockConfigBedrockProviderAi21labs,
+		AmazonBedrockConfigBedrockProviderAmazon,
+		AmazonBedrockConfigBedrockProviderAnthropic,
+		AmazonBedrockConfigBedrockProviderCohere,
 	}
 }
 
@@ -471,6 +512,17 @@ func (f *ChatMessageRole) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "assistant", "system", "user"`, v)
+	}
+}
+
+// Values returns all possible values of ChatMessageRole.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ChatMessageRole) Values() []ChatMessageRole {
+	return []ChatMessageRole{
+		ChatMessageRoleAssistant,
+		ChatMessageRoleSystem,
+		ChatMessageRoleUser,
 	}
 }
 
@@ -679,6 +731,15 @@ func (f *EmbeddingsV1ResponseEmbeddingElementObject) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of EmbeddingsV1ResponseEmbeddingElementObject.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EmbeddingsV1ResponseEmbeddingElementObject) Values() []EmbeddingsV1ResponseEmbeddingElementObject {
+	return []EmbeddingsV1ResponseEmbeddingElementObject{
+		EmbeddingsV1ResponseEmbeddingElementObjectEmbedding,
+	}
+}
+
 // Type always returns EmbeddingsV1ResponseEmbeddingElementObject to satisfy [pflag.Value] interface
 func (f *EmbeddingsV1ResponseEmbeddingElementObject) Type() string {
 	return "EmbeddingsV1ResponseEmbeddingElementObject"
@@ -810,6 +871,18 @@ func (f *EndpointStateConfigUpdate) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of EndpointStateConfigUpdate.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EndpointStateConfigUpdate) Values() []EndpointStateConfigUpdate {
+	return []EndpointStateConfigUpdate{
+		EndpointStateConfigUpdateInProgress,
+		EndpointStateConfigUpdateNotUpdating,
+		EndpointStateConfigUpdateUpdateCanceled,
+		EndpointStateConfigUpdateUpdateFailed,
+	}
+}
+
 // Type always returns EndpointStateConfigUpdate to satisfy [pflag.Value] interface
 func (f *EndpointStateConfigUpdate) Type() string {
 	return "EndpointStateConfigUpdate"
@@ -834,6 +907,16 @@ func (f *EndpointStateReady) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "NOT_READY", "READY"`, v)
+	}
+}
+
+// Values returns all possible values of EndpointStateReady.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EndpointStateReady) Values() []EndpointStateReady {
+	return []EndpointStateReady{
+		EndpointStateReadyNotReady,
+		EndpointStateReadyReady,
 	}
 }
 
@@ -930,6 +1013,19 @@ func (f *ExternalFunctionRequestHttpMethod) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ExternalFunctionRequestHttpMethod.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ExternalFunctionRequestHttpMethod) Values() []ExternalFunctionRequestHttpMethod {
+	return []ExternalFunctionRequestHttpMethod{
+		ExternalFunctionRequestHttpMethodDelete,
+		ExternalFunctionRequestHttpMethodGet,
+		ExternalFunctionRequestHttpMethodPatch,
+		ExternalFunctionRequestHttpMethodPost,
+		ExternalFunctionRequestHttpMethodPut,
+	}
+}
+
 // Type always returns ExternalFunctionRequestHttpMethod to satisfy [pflag.Value] interface
 func (f *ExternalFunctionRequestHttpMethod) Type() string {
 	return "ExternalFunctionRequestHttpMethod"
@@ -1000,6 +1096,23 @@ func (f *ExternalModelProvider) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ai21labs", "amazon-bedrock", "anthropic", "cohere", "custom", "databricks-model-serving", "google-cloud-vertex-ai", "openai", "palm"`, v)
+	}
+}
+
+// Values returns all possible values of ExternalModelProvider.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ExternalModelProvider) Values() []ExternalModelProvider {
+	return []ExternalModelProvider{
+		ExternalModelProviderAi21labs,
+		ExternalModelProviderAmazonBedrock,
+		ExternalModelProviderAnthropic,
+		ExternalModelProviderCohere,
+		ExternalModelProviderCustom,
+		ExternalModelProviderDatabricksModelServing,
+		ExternalModelProviderGoogleCloudVertexAi,
+		ExternalModelProviderOpenai,
+		ExternalModelProviderPalm,
 	}
 }
 
@@ -1499,6 +1612,17 @@ func (f *QueryEndpointResponseObject) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of QueryEndpointResponseObject.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *QueryEndpointResponseObject) Values() []QueryEndpointResponseObject {
+	return []QueryEndpointResponseObject{
+		QueryEndpointResponseObjectChatCompletion,
+		QueryEndpointResponseObjectList,
+		QueryEndpointResponseObjectTextCompletion,
+	}
+}
+
 // Type always returns QueryEndpointResponseObject to satisfy [pflag.Value] interface
 func (f *QueryEndpointResponseObject) Type() string {
 	return "QueryEndpointResponseObject"
@@ -1539,6 +1663,16 @@ func (f *RateLimitKey) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of RateLimitKey.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RateLimitKey) Values() []RateLimitKey {
+	return []RateLimitKey{
+		RateLimitKeyEndpoint,
+		RateLimitKeyUser,
+	}
+}
+
 // Type always returns RateLimitKey to satisfy [pflag.Value] interface
 func (f *RateLimitKey) Type() string {
 	return "RateLimitKey"
@@ -1561,6 +1695,15 @@ func (f *RateLimitRenewalPeriod) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "minute"`, v)
+	}
+}
+
+// Values returns all possible values of RateLimitRenewalPeriod.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *RateLimitRenewalPeriod) Values() []RateLimitRenewalPeriod {
+	return []RateLimitRenewalPeriod{
+		RateLimitRenewalPeriodMinute,
 	}
 }
 
@@ -1841,6 +1984,19 @@ func (f *ServedModelInputWorkloadType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ServedModelInputWorkloadType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ServedModelInputWorkloadType) Values() []ServedModelInputWorkloadType {
+	return []ServedModelInputWorkloadType{
+		ServedModelInputWorkloadTypeCpu,
+		ServedModelInputWorkloadTypeGpuLarge,
+		ServedModelInputWorkloadTypeGpuMedium,
+		ServedModelInputWorkloadTypeGpuSmall,
+		ServedModelInputWorkloadTypeMultigpuMedium,
+	}
+}
+
 // Type always returns ServedModelInputWorkloadType to satisfy [pflag.Value] interface
 func (f *ServedModelInputWorkloadType) Type() string {
 	return "ServedModelInputWorkloadType"
@@ -1966,6 +2122,19 @@ func (f *ServedModelStateDeployment) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DEPLOYMENT_ABORTED", "DEPLOYMENT_CREATING", "DEPLOYMENT_FAILED", "DEPLOYMENT_READY", "DEPLOYMENT_RECOVERING"`, v)
+	}
+}
+
+// Values returns all possible values of ServedModelStateDeployment.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ServedModelStateDeployment) Values() []ServedModelStateDeployment {
+	return []ServedModelStateDeployment{
+		ServedModelStateDeploymentAborted,
+		ServedModelStateDeploymentCreating,
+		ServedModelStateDeploymentFailed,
+		ServedModelStateDeploymentReady,
+		ServedModelStateDeploymentRecovering,
 	}
 }
 
@@ -2135,6 +2304,17 @@ func (f *ServingEndpointDetailedPermissionLevel) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ServingEndpointDetailedPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ServingEndpointDetailedPermissionLevel) Values() []ServingEndpointDetailedPermissionLevel {
+	return []ServingEndpointDetailedPermissionLevel{
+		ServingEndpointDetailedPermissionLevelCanManage,
+		ServingEndpointDetailedPermissionLevelCanQuery,
+		ServingEndpointDetailedPermissionLevelCanView,
+	}
+}
+
 // Type always returns ServingEndpointDetailedPermissionLevel to satisfy [pflag.Value] interface
 func (f *ServingEndpointDetailedPermissionLevel) Type() string {
 	return "ServingEndpointDetailedPermissionLevel"
@@ -2180,6 +2360,17 @@ func (f *ServingEndpointPermissionLevel) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW"`, v)
+	}
+}
+
+// Values returns all possible values of ServingEndpointPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ServingEndpointPermissionLevel) Values() []ServingEndpointPermissionLevel {
+	return []ServingEndpointPermissionLevel{
+		ServingEndpointPermissionLevelCanManage,
+		ServingEndpointPermissionLevelCanQuery,
+		ServingEndpointPermissionLevelCanView,
 	}
 }
 
@@ -2255,6 +2446,19 @@ func (f *ServingModelWorkloadType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CPU", "GPU_LARGE", "GPU_MEDIUM", "GPU_SMALL", "MULTIGPU_MEDIUM"`, v)
+	}
+}
+
+// Values returns all possible values of ServingModelWorkloadType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ServingModelWorkloadType) Values() []ServingModelWorkloadType {
+	return []ServingModelWorkloadType{
+		ServingModelWorkloadTypeCpu,
+		ServingModelWorkloadTypeGpuLarge,
+		ServingModelWorkloadTypeGpuMedium,
+		ServingModelWorkloadTypeGpuSmall,
+		ServingModelWorkloadTypeMultigpuMedium,
 	}
 }
 

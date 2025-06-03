@@ -50,6 +50,21 @@ func (f *AssetType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AssetType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AssetType) Values() []AssetType {
+	return []AssetType{
+		AssetTypeAssetTypeApp,
+		AssetTypeAssetTypeDataTable,
+		AssetTypeAssetTypeGitRepo,
+		AssetTypeAssetTypeMedia,
+		AssetTypeAssetTypeModel,
+		AssetTypeAssetTypeNotebook,
+		AssetTypeAssetTypePartnerIntegration,
+	}
+}
+
 // Type always returns AssetType to satisfy [pflag.Value] interface
 func (f *AssetType) Type() string {
 	return "AssetType"
@@ -135,6 +150,36 @@ func (f *Category) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of Category.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Category) Values() []Category {
+	return []Category{
+		CategoryAdvertisingAndMarketing,
+		CategoryClimateAndEnvironment,
+		CategoryCommerce,
+		CategoryDemographics,
+		CategoryEconomics,
+		CategoryEducation,
+		CategoryEnergy,
+		CategoryFinancial,
+		CategoryGaming,
+		CategoryGeospatial,
+		CategoryHealth,
+		CategoryLookupTables,
+		CategoryManufacturing,
+		CategoryMedia,
+		CategoryOther,
+		CategoryPublicSector,
+		CategoryRetail,
+		CategoryScienceAndResearch,
+		CategorySecurity,
+		CategorySports,
+		CategoryTransportationAndLogistics,
+		CategoryTravelAndTourism,
+	}
+}
+
 // Type always returns Category to satisfy [pflag.Value] interface
 func (f *Category) Type() string {
 	return "Category"
@@ -185,6 +230,16 @@ func (f *Cost) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FREE", "PAID"`, v)
+	}
+}
+
+// Values returns all possible values of Cost.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Cost) Values() []Cost {
+	return []Cost{
+		CostFree,
+		CostPaid,
 	}
 }
 
@@ -406,6 +461,23 @@ func (f *DataRefresh) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of DataRefresh.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DataRefresh) Values() []DataRefresh {
+	return []DataRefresh{
+		DataRefreshDaily,
+		DataRefreshHourly,
+		DataRefreshMinute,
+		DataRefreshMonthly,
+		DataRefreshNone,
+		DataRefreshQuarterly,
+		DataRefreshSecond,
+		DataRefreshWeekly,
+		DataRefreshYearly,
+	}
+}
+
 // Type always returns DataRefresh to satisfy [pflag.Value] interface
 func (f *DataRefresh) Type() string {
 	return "DataRefresh"
@@ -486,6 +558,16 @@ func (f *DeltaSharingRecipientType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS", "DELTA_SHARING_RECIPIENT_TYPE_OPEN"`, v)
+	}
+}
+
+// Values returns all possible values of DeltaSharingRecipientType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DeltaSharingRecipientType) Values() []DeltaSharingRecipientType {
+	return []DeltaSharingRecipientType{
+		DeltaSharingRecipientTypeDeltaSharingRecipientTypeDatabricks,
+		DeltaSharingRecipientTypeDeltaSharingRecipientTypeOpen,
 	}
 }
 
@@ -571,6 +653,15 @@ func (f *ExchangeFilterType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "GLOBAL_METASTORE_ID"`, v)
+	}
+}
+
+// Values returns all possible values of ExchangeFilterType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ExchangeFilterType) Values() []ExchangeFilterType {
+	return []ExchangeFilterType{
+		ExchangeFilterTypeGlobalMetastoreId,
 	}
 }
 
@@ -678,6 +769,17 @@ func (f *FileParentType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of FileParentType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FileParentType) Values() []FileParentType {
+	return []FileParentType{
+		FileParentTypeListing,
+		FileParentTypeListingResource,
+		FileParentTypeProvider,
+	}
+}
+
 // Type always returns FileParentType to satisfy [pflag.Value] interface
 func (f *FileParentType) Type() string {
 	return "FileParentType"
@@ -709,6 +811,18 @@ func (f *FileStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of FileStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FileStatus) Values() []FileStatus {
+	return []FileStatus{
+		FileStatusFileStatusPublished,
+		FileStatusFileStatusSanitizationFailed,
+		FileStatusFileStatusSanitizing,
+		FileStatusFileStatusStaging,
+	}
+}
+
 // Type always returns FileStatus to satisfy [pflag.Value] interface
 func (f *FileStatus) Type() string {
 	return "FileStatus"
@@ -733,6 +847,16 @@ func (f *FulfillmentType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "INSTALL", "REQUEST_ACCESS"`, v)
+	}
+}
+
+// Values returns all possible values of FulfillmentType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *FulfillmentType) Values() []FulfillmentType {
+	return []FulfillmentType{
+		FulfillmentTypeInstall,
+		FulfillmentTypeRequestAccess,
 	}
 }
 
@@ -930,6 +1054,16 @@ func (f *InstallationStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "FAILED", "INSTALLED"`, v)
+	}
+}
+
+// Values returns all possible values of InstallationStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *InstallationStatus) Values() []InstallationStatus {
+	return []InstallationStatus{
+		InstallationStatusFailed,
+		InstallationStatusInstalled,
 	}
 }
 
@@ -1466,6 +1600,16 @@ func (f *ListingShareType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ListingShareType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListingShareType) Values() []ListingShareType {
+	return []ListingShareType{
+		ListingShareTypeFull,
+		ListingShareTypeSample,
+	}
+}
+
 // Type always returns ListingShareType to satisfy [pflag.Value] interface
 func (f *ListingShareType) Type() string {
 	return "ListingShareType"
@@ -1495,6 +1639,18 @@ func (f *ListingStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DRAFT", "PENDING", "PUBLISHED", "SUSPENDED"`, v)
+	}
+}
+
+// Values returns all possible values of ListingStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListingStatus) Values() []ListingStatus {
+	return []ListingStatus{
+		ListingStatusDraft,
+		ListingStatusPending,
+		ListingStatusPublished,
+		ListingStatusSuspended,
 	}
 }
 
@@ -1584,6 +1740,16 @@ func (f *ListingTagType) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of ListingTagType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListingTagType) Values() []ListingTagType {
+	return []ListingTagType{
+		ListingTagTypeListingTagTypeLanguage,
+		ListingTagTypeListingTagTypeTask,
+	}
+}
+
 // Type always returns ListingTagType to satisfy [pflag.Value] interface
 func (f *ListingTagType) Type() string {
 	return "ListingTagType"
@@ -1608,6 +1774,16 @@ func (f *ListingType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PERSONALIZED", "STANDARD"`, v)
+	}
+}
+
+// Values returns all possible values of ListingType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ListingType) Values() []ListingType {
+	return []ListingType{
+		ListingTypePersonalized,
+		ListingTypeStandard,
 	}
 }
 
@@ -1637,6 +1813,17 @@ func (f *MarketplaceFileType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "APP", "EMBEDDED_NOTEBOOK", "PROVIDER_ICON"`, v)
+	}
+}
+
+// Values returns all possible values of MarketplaceFileType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *MarketplaceFileType) Values() []MarketplaceFileType {
+	return []MarketplaceFileType{
+		MarketplaceFileTypeApp,
+		MarketplaceFileTypeEmbeddedNotebook,
+		MarketplaceFileTypeProviderIcon,
 	}
 }
 
@@ -1713,6 +1900,18 @@ func (f *PersonalizationRequestStatus) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DENIED", "FULFILLED", "NEW", "REQUEST_PENDING"`, v)
+	}
+}
+
+// Values returns all possible values of PersonalizationRequestStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PersonalizationRequestStatus) Values() []PersonalizationRequestStatus {
+	return []PersonalizationRequestStatus{
+		PersonalizationRequestStatusDenied,
+		PersonalizationRequestStatusFulfilled,
+		PersonalizationRequestStatusNew,
+		PersonalizationRequestStatusRequestPending,
 	}
 }
 
@@ -2070,6 +2269,16 @@ func (f *Visibility) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "PRIVATE", "PUBLIC"`, v)
+	}
+}
+
+// Values returns all possible values of Visibility.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *Visibility) Values() []Visibility {
+	return []Visibility{
+		VisibilityPrivate,
+		VisibilityPublic,
 	}
 }
 

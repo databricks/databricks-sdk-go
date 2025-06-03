@@ -189,6 +189,16 @@ func (f *AppDeploymentMode) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AppDeploymentMode.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppDeploymentMode) Values() []AppDeploymentMode {
+	return []AppDeploymentMode{
+		AppDeploymentModeAutoSync,
+		AppDeploymentModeSnapshot,
+	}
+}
+
 // Type always returns AppDeploymentMode to satisfy [pflag.Value] interface
 func (f *AppDeploymentMode) Type() string {
 	return "AppDeploymentMode"
@@ -217,6 +227,18 @@ func (f *AppDeploymentState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "FAILED", "IN_PROGRESS", "SUCCEEDED"`, v)
+	}
+}
+
+// Values returns all possible values of AppDeploymentState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppDeploymentState) Values() []AppDeploymentState {
+	return []AppDeploymentState{
+		AppDeploymentStateCancelled,
+		AppDeploymentStateFailed,
+		AppDeploymentStateInProgress,
+		AppDeploymentStateSucceeded,
 	}
 }
 
@@ -280,6 +302,16 @@ func (f *AppPermissionLevel) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_USE"`, v)
+	}
+}
+
+// Values returns all possible values of AppPermissionLevel.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppPermissionLevel) Values() []AppPermissionLevel {
+	return []AppPermissionLevel{
+		AppPermissionLevelCanManage,
+		AppPermissionLevelCanUse,
 	}
 }
 
@@ -389,6 +421,18 @@ func (f *AppResourceJobJobPermission) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AppResourceJobJobPermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourceJobJobPermission) Values() []AppResourceJobJobPermission {
+	return []AppResourceJobJobPermission{
+		AppResourceJobJobPermissionCanManage,
+		AppResourceJobJobPermissionCanManageRun,
+		AppResourceJobJobPermissionCanView,
+		AppResourceJobJobPermissionIsOwner,
+	}
+}
+
 // Type always returns AppResourceJobJobPermission to satisfy [pflag.Value] interface
 func (f *AppResourceJobJobPermission) Type() string {
 	return "AppResourceJobJobPermission"
@@ -430,6 +474,17 @@ func (f *AppResourceSecretSecretPermission) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AppResourceSecretSecretPermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourceSecretSecretPermission) Values() []AppResourceSecretSecretPermission {
+	return []AppResourceSecretSecretPermission{
+		AppResourceSecretSecretPermissionManage,
+		AppResourceSecretSecretPermissionRead,
+		AppResourceSecretSecretPermissionWrite,
+	}
+}
+
 // Type always returns AppResourceSecretSecretPermission to satisfy [pflag.Value] interface
 func (f *AppResourceSecretSecretPermission) Type() string {
 	return "AppResourceSecretSecretPermission"
@@ -464,6 +519,17 @@ func (f *AppResourceServingEndpointServingEndpointPermission) Set(v string) erro
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW"`, v)
+	}
+}
+
+// Values returns all possible values of AppResourceServingEndpointServingEndpointPermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourceServingEndpointServingEndpointPermission) Values() []AppResourceServingEndpointServingEndpointPermission {
+	return []AppResourceServingEndpointServingEndpointPermission{
+		AppResourceServingEndpointServingEndpointPermissionCanManage,
+		AppResourceServingEndpointServingEndpointPermissionCanQuery,
+		AppResourceServingEndpointServingEndpointPermissionCanView,
 	}
 }
 
@@ -504,6 +570,17 @@ func (f *AppResourceSqlWarehouseSqlWarehousePermission) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AppResourceSqlWarehouseSqlWarehousePermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourceSqlWarehouseSqlWarehousePermission) Values() []AppResourceSqlWarehouseSqlWarehousePermission {
+	return []AppResourceSqlWarehouseSqlWarehousePermission{
+		AppResourceSqlWarehouseSqlWarehousePermissionCanManage,
+		AppResourceSqlWarehouseSqlWarehousePermissionCanUse,
+		AppResourceSqlWarehouseSqlWarehousePermissionIsOwner,
+	}
+}
+
 // Type always returns AppResourceSqlWarehouseSqlWarehousePermission to satisfy [pflag.Value] interface
 func (f *AppResourceSqlWarehouseSqlWarehousePermission) Type() string {
 	return "AppResourceSqlWarehouseSqlWarehousePermission"
@@ -539,6 +616,16 @@ func (f *AppResourceUcSecurableUcSecurablePermission) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of AppResourceUcSecurableUcSecurablePermission.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourceUcSecurableUcSecurablePermission) Values() []AppResourceUcSecurableUcSecurablePermission {
+	return []AppResourceUcSecurableUcSecurablePermission{
+		AppResourceUcSecurableUcSecurablePermissionReadVolume,
+		AppResourceUcSecurableUcSecurablePermissionWriteVolume,
+	}
+}
+
 // Type always returns AppResourceUcSecurableUcSecurablePermission to satisfy [pflag.Value] interface
 func (f *AppResourceUcSecurableUcSecurablePermission) Type() string {
 	return "AppResourceUcSecurableUcSecurablePermission"
@@ -561,6 +648,15 @@ func (f *AppResourceUcSecurableUcSecurableType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "VOLUME"`, v)
+	}
+}
+
+// Values returns all possible values of AppResourceUcSecurableUcSecurableType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *AppResourceUcSecurableUcSecurableType) Values() []AppResourceUcSecurableUcSecurableType {
+	return []AppResourceUcSecurableUcSecurableType{
+		AppResourceUcSecurableUcSecurableTypeVolume,
 	}
 }
 
@@ -592,6 +688,18 @@ func (f *ApplicationState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CRASHED", "DEPLOYING", "RUNNING", "UNAVAILABLE"`, v)
+	}
+}
+
+// Values returns all possible values of ApplicationState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ApplicationState) Values() []ApplicationState {
+	return []ApplicationState{
+		ApplicationStateCrashed,
+		ApplicationStateDeploying,
+		ApplicationStateRunning,
+		ApplicationStateUnavailable,
 	}
 }
 
@@ -646,6 +754,21 @@ func (f *ComputeState) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "ACTIVE", "DELETING", "ERROR", "STARTING", "STOPPED", "STOPPING", "UPDATING"`, v)
+	}
+}
+
+// Values returns all possible values of ComputeState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *ComputeState) Values() []ComputeState {
+	return []ComputeState{
+		ComputeStateActive,
+		ComputeStateDeleting,
+		ComputeStateError,
+		ComputeStateStarting,
+		ComputeStateStopped,
+		ComputeStateStopping,
+		ComputeStateUpdating,
 	}
 }
 

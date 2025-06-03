@@ -122,6 +122,17 @@ func (f *DeleteDataStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of DeleteDataStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DeleteDataStatus) Values() []DeleteDataStatus {
+	return []DeleteDataStatus{
+		DeleteDataStatusFailure,
+		DeleteDataStatusPartialSuccess,
+		DeleteDataStatusSuccess,
+	}
+}
+
 // Type always returns DeleteDataStatus to satisfy [pflag.Value] interface
 func (f *DeleteDataStatus) Type() string {
 	return "DeleteDataStatus"
@@ -363,6 +374,17 @@ func (f *EndpointStatusState) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of EndpointStatusState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EndpointStatusState) Values() []EndpointStatusState {
+	return []EndpointStatusState{
+		EndpointStatusStateOffline,
+		EndpointStatusStateOnline,
+		EndpointStatusStateProvisioning,
+	}
+}
+
 // Type always returns EndpointStatusState to satisfy [pflag.Value] interface
 func (f *EndpointStatusState) Type() string {
 	return "EndpointStatusState"
@@ -386,6 +408,15 @@ func (f *EndpointType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "STANDARD"`, v)
+	}
+}
+
+// Values returns all possible values of EndpointType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *EndpointType) Values() []EndpointType {
+	return []EndpointType{
+		EndpointTypeStandard,
 	}
 }
 
@@ -580,6 +611,16 @@ func (f *PipelineType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "TRIGGERED"`, v)
+	}
+}
+
+// Values returns all possible values of PipelineType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *PipelineType) Values() []PipelineType {
+	return []PipelineType{
+		PipelineTypeContinuous,
+		PipelineTypeTriggered,
 	}
 }
 
@@ -822,6 +863,17 @@ func (f *UpsertDataStatus) Set(v string) error {
 	}
 }
 
+// Values returns all possible values of UpsertDataStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *UpsertDataStatus) Values() []UpsertDataStatus {
+	return []UpsertDataStatus{
+		UpsertDataStatusFailure,
+		UpsertDataStatusPartialSuccess,
+		UpsertDataStatusSuccess,
+	}
+}
+
 // Type always returns UpsertDataStatus to satisfy [pflag.Value] interface
 func (f *UpsertDataStatus) Type() string {
 	return "UpsertDataStatus"
@@ -949,6 +1001,16 @@ func (f *VectorIndexType) Set(v string) error {
 		return nil
 	default:
 		return fmt.Errorf(`value "%s" is not one of "DELTA_SYNC", "DIRECT_ACCESS"`, v)
+	}
+}
+
+// Values returns all possible values of VectorIndexType.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *VectorIndexType) Values() []VectorIndexType {
+	return []VectorIndexType{
+		VectorIndexTypeDeltaSync,
+		VectorIndexTypeDirectAccess,
 	}
 }
 

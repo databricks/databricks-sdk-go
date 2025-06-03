@@ -9,6 +9,8 @@ import (
 // A data provider is an object representing the organization in the real world
 // who shares the data. A provider contains shares which further contain the
 // shared data.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ProvidersService interface {
 
 	// Create an auth provider.
@@ -36,8 +38,6 @@ type ProvidersService interface {
 	// either be a metastore admin or the owner of the providers. Providers not
 	// owned by the caller are not included in the response. There is no
 	// guarantee of a specific ordering of the elements in the array.
-	//
-	// Use ListAll() to get all ProviderInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListProvidersRequest) (*ListProvidersResponse, error)
 
 	// List assets by provider share.
@@ -52,8 +52,6 @@ type ProvidersService interface {
 	// where:
 	//
 	// * the caller is a metastore admin, or * the caller is the owner.
-	//
-	// Use ListSharesAll() to get all ProviderShare instances, which will iterate over every result page.
 	ListShares(ctx context.Context, request ListSharesRequest) (*ListProviderSharesResponse, error)
 
 	// Update a provider.
@@ -75,6 +73,8 @@ type ProvidersService interface {
 // Note that you can download the credential file only once. Recipients should
 // treat the downloaded credential as a secret and must not share it outside of
 // their organization.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type RecipientActivationService interface {
 
 	// Get a share activation URL.
@@ -114,6 +114,8 @@ type RecipientActivationService interface {
 // For more information, see
 // https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security
 // and https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type RecipientFederationPoliciesService interface {
 
 	// Create recipient federation policy.
@@ -165,8 +167,6 @@ type RecipientFederationPoliciesService interface {
 	// Lists federation policies for an OIDC_FEDERATION recipient for sharing
 	// data from Databricks to non-Databricks recipients. The caller must have
 	// read access to the recipient.
-	//
-	// Use ListAll() to get all FederationPolicy instances, which will iterate over every result page.
 	List(ctx context.Context, request ListFederationPoliciesRequest) (*ListFederationPoliciesResponse, error)
 
 	// Update recipient federation policy.
@@ -193,6 +193,8 @@ type RecipientFederationPoliciesService interface {
 // activation link to download the credential file, and then uses the credential
 // file to establish a secure connection to receive the shared data. This
 // sharing mode is called **open sharing**.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type RecipientsService interface {
 
 	// Create a share recipient.
@@ -222,8 +224,6 @@ type RecipientsService interface {
 	//
 	// * the caller is a metastore admin, or * the caller is the owner. There is
 	// no guarantee of a specific ordering of the elements in the array.
-	//
-	// Use ListAll() to get all RecipientInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListRecipientsRequest) (*ListRecipientsResponse, error)
 
 	// Rotate a token.
@@ -253,6 +253,8 @@ type RecipientsService interface {
 // within the metastore using :method:shares/update. You can register data
 // assets under their original name, qualified by their original schema, or
 // provide alternate exposed names.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SharesService interface {
 
 	// Create a share.
@@ -279,8 +281,6 @@ type SharesService interface {
 	// Gets an array of data object shares from the metastore. The caller must
 	// be a metastore admin or the owner of the share. There is no guarantee of
 	// a specific ordering of the elements in the array.
-	//
-	// Use ListAll() to get all ShareInfo instances, which will iterate over every result page.
 	List(ctx context.Context, request ListSharesRequest) (*ListSharesResponse, error)
 
 	// Get permissions.

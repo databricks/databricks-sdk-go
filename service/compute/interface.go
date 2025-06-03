@@ -29,6 +29,8 @@ import (
 // If no policies exist in the workspace, the Policy drop-down doesn't appear.
 // Only admin users can create, edit, and delete policies. Admin users also have
 // access to all policies.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ClusterPoliciesService interface {
 
 	// Create a new policy.
@@ -68,8 +70,6 @@ type ClusterPoliciesService interface {
 	// List cluster policies.
 	//
 	// Returns a list of policies accessible by the requesting user.
-	//
-	// Use ListAll() to get all Policy instances
 	List(ctx context.Context, request ListClusterPoliciesRequest) (*ListPoliciesResponse, error)
 
 	// Set cluster policy permissions.
@@ -112,6 +112,8 @@ type ClusterPoliciesService interface {
 // terminated clusters for 30 days. To keep an all-purpose cluster configuration
 // even after it has been terminated for more than 30 days, an administrator can
 // pin a cluster to the cluster list.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ClustersService interface {
 
 	// Change cluster owner.
@@ -173,8 +175,6 @@ type ClustersService interface {
 	// Retrieves a list of events about the activity of a cluster. This API is
 	// paginated. If there are more events to read, the response includes all
 	// the parameters necessary to request the next page of events.
-	//
-	// Use EventsAll() to get all ClusterEvent instances, which will iterate over every result page.
 	Events(ctx context.Context, request GetEvents) (*GetEventsResponse, error)
 
 	// Get cluster info.
@@ -200,8 +200,6 @@ type ClustersService interface {
 	// Return information about all pinned and active clusters, and all clusters
 	// terminated within the last 30 days. Clusters terminated prior to this
 	// period are not included.
-	//
-	// Use ListAll() to get all ClusterDetails instances, which will iterate over every result page.
 	List(ctx context.Context, request ListClustersRequest) (*ListClustersResponse, error)
 
 	// List node types.
@@ -301,6 +299,8 @@ type ClustersService interface {
 // This API allows execution of Python, Scala, SQL, or R commands on running
 // Databricks Clusters. This API only supports (classic) all-purpose clusters.
 // Serverless compute is not supported.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CommandExecutionService interface {
 
 	// Cancel a command.
@@ -355,6 +355,8 @@ type CommandExecutionService interface {
 // launch and init scripts with later position are skipped. If enough containers
 // fail, the entire cluster fails with a `GLOBAL_INIT_SCRIPT_FAILURE` error
 // code.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type GlobalInitScriptsService interface {
 
 	// Create init script.
@@ -378,8 +380,6 @@ type GlobalInitScriptsService interface {
 	// all properties for each script but **not** the script contents. To
 	// retrieve the contents of a script, use the [get a global init
 	// script](:method:globalinitscripts/get) operation.
-	//
-	// Use ListAll() to get all GlobalInitScriptDetails instances
 	List(ctx context.Context) (*ListGlobalInitScriptsResponse, error)
 
 	// Update init script.
@@ -407,6 +407,8 @@ type GlobalInitScriptsService interface {
 //
 // Databricks does not charge DBUs while instances are idle in the pool.
 // Instance provider billing does apply. See pricing.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type InstancePoolsService interface {
 
 	// Create a new instance pool.
@@ -444,8 +446,6 @@ type InstancePoolsService interface {
 	// List instance pool info.
 	//
 	// Gets a list of instance pools with their statistics.
-	//
-	// Use ListAll() to get all InstancePoolAndStats instances
 	List(ctx context.Context) (*ListInstancePools, error)
 
 	// Set instance pool permissions.
@@ -466,6 +466,8 @@ type InstancePoolsService interface {
 // profiles that users can launch clusters with. Regular users can list the
 // instance profiles available to them. See [Secure access to S3 buckets] using
 // instance profiles for more information.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 //
 // [Secure access to S3 buckets]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/instance-profiles.html
 type InstanceProfilesService interface {
@@ -504,8 +506,6 @@ type InstanceProfilesService interface {
 	// cluster.
 	//
 	// This API is available to all users.
-	//
-	// Use ListAll() to get all InstanceProfile instances
 	List(ctx context.Context) (*ListInstanceProfilesResponse, error)
 
 	// Remove the instance profile.
@@ -533,14 +533,14 @@ type InstanceProfilesService interface {
 // When you uninstall a library from a cluster, the library is removed only when
 // you restart the cluster. Until you restart the cluster, the status of the
 // uninstalled library appears as Uninstall pending restart.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type LibrariesService interface {
 
 	// Get all statuses.
 	//
 	// Get the status of all libraries on all clusters. A status is returned for
 	// all libraries installed on this cluster via the API or the libraries UI.
-	//
-	// Use AllClusterStatusesAll() to get all ClusterLibraryStatuses instances
 	AllClusterStatuses(ctx context.Context) (*ListAllClusterLibraryStatusesResponse, error)
 
 	// Get status.
@@ -552,8 +552,6 @@ type LibrariesService interface {
 	// the cluster, are returned first. 2. Libraries that were previously
 	// requested to be installed on this cluster or, but are now marked for
 	// removal, in no particular order, are returned last.
-	//
-	// Use ClusterStatusAll() to get all LibraryFullStatus instances
 	ClusterStatus(ctx context.Context, request ClusterStatus) (*ClusterLibraryStatuses, error)
 
 	// Add a library.
@@ -580,6 +578,8 @@ type LibrariesService interface {
 // The get and list compliance APIs allow you to view the policy compliance
 // status of a cluster. The enforce compliance API allows you to update a
 // cluster to be compliant with the current version of its policy.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PolicyComplianceForClustersService interface {
 
 	// Enforce cluster policy compliance.
@@ -611,8 +611,6 @@ type PolicyComplianceForClustersService interface {
 	// Returns the policy compliance status of all clusters that use a given
 	// policy. Clusters could be out of compliance if their policy was updated
 	// after the cluster was last edited.
-	//
-	// Use ListComplianceAll() to get all ClusterCompliance instances, which will iterate over every result page.
 	ListCompliance(ctx context.Context, request ListClusterCompliancesRequest) (*ListClusterCompliancesResponse, error)
 }
 
@@ -625,6 +623,8 @@ type PolicyComplianceForClustersService interface {
 // Policy families cannot be used directly to create clusters. Instead, you
 // create cluster policies using a policy family. Cluster policies created using
 // a policy family inherit the policy family's policy definition.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PolicyFamiliesService interface {
 
 	// Get policy family information.
@@ -637,7 +637,5 @@ type PolicyFamiliesService interface {
 	//
 	// Returns the list of policy definition types available to use at their
 	// latest version. This API is paginated.
-	//
-	// Use ListAll() to get all PolicyFamily instances, which will iterate over every result page.
 	List(ctx context.Context, request ListPolicyFamiliesRequest) (*ListPolicyFamiliesResponse, error)
 }
