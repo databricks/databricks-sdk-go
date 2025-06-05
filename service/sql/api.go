@@ -456,7 +456,7 @@ func NewAlertsV2(client *client.DatabricksClient) *AlertsV2API {
 	}
 }
 
-// TODO: Add description
+// New version of SQL Alerts
 type AlertsV2API struct {
 	alertsV2Impl
 }

@@ -8,17 +8,20 @@ import (
 	"github.com/databricks/databricks-sdk-go"
 	"github.com/stretchr/testify/mock"
 
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/aibuilder"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/apps"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/catalog"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/compute"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/dashboards"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/database"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/files"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/iam"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/jobs"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/ml"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/pipelines"
+	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/serving"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/settings"
 	"github.com/databricks/databricks-sdk-go/experimental/mocks/service/sharing"
@@ -64,10 +67,11 @@ func NewMockWorkspaceClient(t interface {
 			Credentials:                         catalog.NewMockCredentialsInterface(t),
 			CredentialsManager:                  settings.NewMockCredentialsManagerInterface(t),
 			CurrentUser:                         iam.NewMockCurrentUserInterface(t),
+			CustomLlms:                          aibuilder.NewMockCustomLlmsInterface(t),
 			DashboardWidgets:                    sql.NewMockDashboardWidgetsInterface(t),
 			Dashboards:                          sql.NewMockDashboardsInterface(t),
 			DataSources:                         sql.NewMockDataSourcesInterface(t),
-			DatabaseInstances:                   catalog.NewMockDatabaseInstancesInterface(t),
+			Database:                            database.NewMockDatabaseInterface(t),
 			Dbfs:                                files.NewMockDbfsInterface(t),
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
 			Experiments:                         ml.NewMockExperimentsInterface(t),
@@ -105,10 +109,10 @@ func NewMockWorkspaceClient(t interface {
 			ProviderProviderAnalyticsDashboards: marketplace.NewMockProviderProviderAnalyticsDashboardsInterface(t),
 			ProviderProviders:                   marketplace.NewMockProviderProvidersInterface(t),
 			Providers:                           sharing.NewMockProvidersInterface(t),
+			QualityMonitorV2:                    qualitymonitorv2.NewMockQualityMonitorV2Interface(t),
 			QualityMonitors:                     catalog.NewMockQualityMonitorsInterface(t),
 			Queries:                             sql.NewMockQueriesInterface(t),
 			QueriesLegacy:                       sql.NewMockQueriesLegacyInterface(t),
-			QueryExecution:                      dashboards.NewMockQueryExecutionInterface(t),
 			QueryHistory:                        sql.NewMockQueryHistoryInterface(t),
 			QueryVisualizations:                 sql.NewMockQueryVisualizationsInterface(t),
 			QueryVisualizationsLegacy:           sql.NewMockQueryVisualizationsLegacyInterface(t),
@@ -160,6 +164,9 @@ func NewMockWorkspaceClient(t interface {
 	mockcomplianceSecurityProfile := settings.NewMockComplianceSecurityProfileInterface(t)
 	mocksettingsAPI.On("ComplianceSecurityProfile").Return(mockcomplianceSecurityProfile).Maybe()
 
+	mockdashboardEmailSubscriptions := settings.NewMockDashboardEmailSubscriptionsInterface(t)
+	mocksettingsAPI.On("DashboardEmailSubscriptions").Return(mockdashboardEmailSubscriptions).Maybe()
+
 	mockdefaultNamespace := settings.NewMockDefaultNamespaceInterface(t)
 	mocksettingsAPI.On("DefaultNamespace").Return(mockdefaultNamespace).Maybe()
 
@@ -186,6 +193,9 @@ func NewMockWorkspaceClient(t interface {
 
 	mockrestrictWorkspaceAdmins := settings.NewMockRestrictWorkspaceAdminsInterface(t)
 	mocksettingsAPI.On("RestrictWorkspaceAdmins").Return(mockrestrictWorkspaceAdmins).Maybe()
+
+	mocksqlResultsDownload := settings.NewMockSqlResultsDownloadInterface(t)
+	mocksettingsAPI.On("SqlResultsDownload").Return(mocksqlResultsDownload).Maybe()
 
 	return cli
 }
@@ -218,6 +228,14 @@ func (m *MockWorkspaceClient) GetMockComplianceSecurityProfileAPI() *settings.Mo
 	api, ok := m.GetMockSettingsAPI().ComplianceSecurityProfile().(*settings.MockComplianceSecurityProfileInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ComplianceSecurityProfile to be *settings.MockComplianceSecurityProfileInterface, actual was %T", m.GetMockSettingsAPI().ComplianceSecurityProfile()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockDashboardEmailSubscriptionsAPI() *settings.MockDashboardEmailSubscriptionsInterface {
+	api, ok := m.GetMockSettingsAPI().DashboardEmailSubscriptions().(*settings.MockDashboardEmailSubscriptionsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected DashboardEmailSubscriptions to be *settings.MockDashboardEmailSubscriptionsInterface, actual was %T", m.GetMockSettingsAPI().DashboardEmailSubscriptions()))
 	}
 	return api
 }
@@ -290,6 +308,14 @@ func (m *MockWorkspaceClient) GetMockRestrictWorkspaceAdminsAPI() *settings.Mock
 	api, ok := m.GetMockSettingsAPI().RestrictWorkspaceAdmins().(*settings.MockRestrictWorkspaceAdminsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected RestrictWorkspaceAdmins to be *settings.MockRestrictWorkspaceAdminsInterface, actual was %T", m.GetMockSettingsAPI().RestrictWorkspaceAdmins()))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockSqlResultsDownloadAPI() *settings.MockSqlResultsDownloadInterface {
+	api, ok := m.GetMockSettingsAPI().SqlResultsDownload().(*settings.MockSqlResultsDownloadInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected SqlResultsDownload to be *settings.MockSqlResultsDownloadInterface, actual was %T", m.GetMockSettingsAPI().SqlResultsDownload()))
 	}
 	return api
 }
@@ -478,6 +504,14 @@ func (m *MockWorkspaceClient) GetMockCurrentUserAPI() *iam.MockCurrentUserInterf
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockCustomLlmsAPI() *aibuilder.MockCustomLlmsInterface {
+	api, ok := m.WorkspaceClient.CustomLlms.(*aibuilder.MockCustomLlmsInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected CustomLlms to be *aibuilder.MockCustomLlmsInterface, actual was %T", m.WorkspaceClient.CustomLlms))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockDashboardWidgetsAPI() *sql.MockDashboardWidgetsInterface {
 	api, ok := m.WorkspaceClient.DashboardWidgets.(*sql.MockDashboardWidgetsInterface)
 	if !ok {
@@ -502,10 +536,10 @@ func (m *MockWorkspaceClient) GetMockDataSourcesAPI() *sql.MockDataSourcesInterf
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockDatabaseInstancesAPI() *catalog.MockDatabaseInstancesInterface {
-	api, ok := m.WorkspaceClient.DatabaseInstances.(*catalog.MockDatabaseInstancesInterface)
+func (m *MockWorkspaceClient) GetMockDatabaseAPI() *database.MockDatabaseInterface {
+	api, ok := m.WorkspaceClient.Database.(*database.MockDatabaseInterface)
 	if !ok {
-		panic(fmt.Sprintf("expected DatabaseInstances to be *catalog.MockDatabaseInstancesInterface, actual was %T", m.WorkspaceClient.DatabaseInstances))
+		panic(fmt.Sprintf("expected Database to be *database.MockDatabaseInterface, actual was %T", m.WorkspaceClient.Database))
 	}
 	return api
 }
@@ -806,6 +840,14 @@ func (m *MockWorkspaceClient) GetMockProvidersAPI() *sharing.MockProvidersInterf
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockQualityMonitorV2API() *qualitymonitorv2.MockQualityMonitorV2Interface {
+	api, ok := m.WorkspaceClient.QualityMonitorV2.(*qualitymonitorv2.MockQualityMonitorV2Interface)
+	if !ok {
+		panic(fmt.Sprintf("expected QualityMonitorV2 to be *qualitymonitorv2.MockQualityMonitorV2Interface, actual was %T", m.WorkspaceClient.QualityMonitorV2))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockQualityMonitorsAPI() *catalog.MockQualityMonitorsInterface {
 	api, ok := m.WorkspaceClient.QualityMonitors.(*catalog.MockQualityMonitorsInterface)
 	if !ok {
@@ -826,14 +868,6 @@ func (m *MockWorkspaceClient) GetMockQueriesLegacyAPI() *sql.MockQueriesLegacyIn
 	api, ok := m.WorkspaceClient.QueriesLegacy.(*sql.MockQueriesLegacyInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected QueriesLegacy to be *sql.MockQueriesLegacyInterface, actual was %T", m.WorkspaceClient.QueriesLegacy))
-	}
-	return api
-}
-
-func (m *MockWorkspaceClient) GetMockQueryExecutionAPI() *dashboards.MockQueryExecutionInterface {
-	api, ok := m.WorkspaceClient.QueryExecution.(*dashboards.MockQueryExecutionInterface)
-	if !ok {
-		panic(fmt.Sprintf("expected QueryExecution to be *dashboards.MockQueryExecutionInterface, actual was %T", m.WorkspaceClient.QueryExecution))
 	}
 	return api
 }

@@ -401,76 +401,17 @@ func (_c *MockMetastoresInterface_GetById_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
-// GetByName provides a mock function with given fields: ctx, name
-func (_m *MockMetastoresInterface) GetByName(ctx context.Context, name string) (*catalog.MetastoreInfo, error) {
-	ret := _m.Called(ctx, name)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByName")
-	}
-
-	var r0 *catalog.MetastoreInfo
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.MetastoreInfo, error)); ok {
-		return rf(ctx, name)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.MetastoreInfo); ok {
-		r0 = rf(ctx, name)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.MetastoreInfo)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, name)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockMetastoresInterface_GetByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByName'
-type MockMetastoresInterface_GetByName_Call struct {
-	*mock.Call
-}
-
-// GetByName is a helper method to define mock.On call
-//   - ctx context.Context
-//   - name string
-func (_e *MockMetastoresInterface_Expecter) GetByName(ctx interface{}, name interface{}) *MockMetastoresInterface_GetByName_Call {
-	return &MockMetastoresInterface_GetByName_Call{Call: _e.mock.On("GetByName", ctx, name)}
-}
-
-func (_c *MockMetastoresInterface_GetByName_Call) Run(run func(ctx context.Context, name string)) *MockMetastoresInterface_GetByName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockMetastoresInterface_GetByName_Call) Return(_a0 *catalog.MetastoreInfo, _a1 error) *MockMetastoresInterface_GetByName_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockMetastoresInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*catalog.MetastoreInfo, error)) *MockMetastoresInterface_GetByName_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// List provides a mock function with given fields: ctx
-func (_m *MockMetastoresInterface) List(ctx context.Context) listing.Iterator[catalog.MetastoreInfo] {
-	ret := _m.Called(ctx)
+// List provides a mock function with given fields: ctx, request
+func (_m *MockMetastoresInterface) List(ctx context.Context, request catalog.ListMetastoresRequest) listing.Iterator[catalog.MetastoreInfo] {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
 	var r0 listing.Iterator[catalog.MetastoreInfo]
-	if rf, ok := ret.Get(0).(func(context.Context) listing.Iterator[catalog.MetastoreInfo]); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListMetastoresRequest) listing.Iterator[catalog.MetastoreInfo]); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(listing.Iterator[catalog.MetastoreInfo])
@@ -487,13 +428,14 @@ type MockMetastoresInterface_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockMetastoresInterface_Expecter) List(ctx interface{}) *MockMetastoresInterface_List_Call {
-	return &MockMetastoresInterface_List_Call{Call: _e.mock.On("List", ctx)}
+//   - request catalog.ListMetastoresRequest
+func (_e *MockMetastoresInterface_Expecter) List(ctx interface{}, request interface{}) *MockMetastoresInterface_List_Call {
+	return &MockMetastoresInterface_List_Call{Call: _e.mock.On("List", ctx, request)}
 }
 
-func (_c *MockMetastoresInterface_List_Call) Run(run func(ctx context.Context)) *MockMetastoresInterface_List_Call {
+func (_c *MockMetastoresInterface_List_Call) Run(run func(ctx context.Context, request catalog.ListMetastoresRequest)) *MockMetastoresInterface_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListMetastoresRequest))
 	})
 	return _c
 }
@@ -503,14 +445,14 @@ func (_c *MockMetastoresInterface_List_Call) Return(_a0 listing.Iterator[catalog
 	return _c
 }
 
-func (_c *MockMetastoresInterface_List_Call) RunAndReturn(run func(context.Context) listing.Iterator[catalog.MetastoreInfo]) *MockMetastoresInterface_List_Call {
+func (_c *MockMetastoresInterface_List_Call) RunAndReturn(run func(context.Context, catalog.ListMetastoresRequest) listing.Iterator[catalog.MetastoreInfo]) *MockMetastoresInterface_List_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// ListAll provides a mock function with given fields: ctx
-func (_m *MockMetastoresInterface) ListAll(ctx context.Context) ([]catalog.MetastoreInfo, error) {
-	ret := _m.Called(ctx)
+// ListAll provides a mock function with given fields: ctx, request
+func (_m *MockMetastoresInterface) ListAll(ctx context.Context, request catalog.ListMetastoresRequest) ([]catalog.MetastoreInfo, error) {
+	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListAll")
@@ -518,19 +460,19 @@ func (_m *MockMetastoresInterface) ListAll(ctx context.Context) ([]catalog.Metas
 
 	var r0 []catalog.MetastoreInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) ([]catalog.MetastoreInfo, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListMetastoresRequest) ([]catalog.MetastoreInfo, error)); ok {
+		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) []catalog.MetastoreInfo); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListMetastoresRequest) []catalog.MetastoreInfo); ok {
+		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]catalog.MetastoreInfo)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListMetastoresRequest) error); ok {
+		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -545,13 +487,14 @@ type MockMetastoresInterface_ListAll_Call struct {
 
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockMetastoresInterface_Expecter) ListAll(ctx interface{}) *MockMetastoresInterface_ListAll_Call {
-	return &MockMetastoresInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx)}
+//   - request catalog.ListMetastoresRequest
+func (_e *MockMetastoresInterface_Expecter) ListAll(ctx interface{}, request interface{}) *MockMetastoresInterface_ListAll_Call {
+	return &MockMetastoresInterface_ListAll_Call{Call: _e.mock.On("ListAll", ctx, request)}
 }
 
-func (_c *MockMetastoresInterface_ListAll_Call) Run(run func(ctx context.Context)) *MockMetastoresInterface_ListAll_Call {
+func (_c *MockMetastoresInterface_ListAll_Call) Run(run func(ctx context.Context, request catalog.ListMetastoresRequest)) *MockMetastoresInterface_ListAll_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(catalog.ListMetastoresRequest))
 	})
 	return _c
 }
@@ -561,65 +504,7 @@ func (_c *MockMetastoresInterface_ListAll_Call) Return(_a0 []catalog.MetastoreIn
 	return _c
 }
 
-func (_c *MockMetastoresInterface_ListAll_Call) RunAndReturn(run func(context.Context) ([]catalog.MetastoreInfo, error)) *MockMetastoresInterface_ListAll_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// MetastoreInfoNameToMetastoreIdMap provides a mock function with given fields: ctx
-func (_m *MockMetastoresInterface) MetastoreInfoNameToMetastoreIdMap(ctx context.Context) (map[string]string, error) {
-	ret := _m.Called(ctx)
-
-	if len(ret) == 0 {
-		panic("no return value specified for MetastoreInfoNameToMetastoreIdMap")
-	}
-
-	var r0 map[string]string
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) (map[string]string, error)); ok {
-		return rf(ctx)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context) map[string]string); ok {
-		r0 = rf(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]string)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockMetastoresInterface_MetastoreInfoNameToMetastoreIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'MetastoreInfoNameToMetastoreIdMap'
-type MockMetastoresInterface_MetastoreInfoNameToMetastoreIdMap_Call struct {
-	*mock.Call
-}
-
-// MetastoreInfoNameToMetastoreIdMap is a helper method to define mock.On call
-//   - ctx context.Context
-func (_e *MockMetastoresInterface_Expecter) MetastoreInfoNameToMetastoreIdMap(ctx interface{}) *MockMetastoresInterface_MetastoreInfoNameToMetastoreIdMap_Call {
-	return &MockMetastoresInterface_MetastoreInfoNameToMetastoreIdMap_Call{Call: _e.mock.On("MetastoreInfoNameToMetastoreIdMap", ctx)}
-}
-
-func (_c *MockMetastoresInterface_MetastoreInfoNameToMetastoreIdMap_Call) Run(run func(ctx context.Context)) *MockMetastoresInterface_MetastoreInfoNameToMetastoreIdMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
-	})
-	return _c
-}
-
-func (_c *MockMetastoresInterface_MetastoreInfoNameToMetastoreIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockMetastoresInterface_MetastoreInfoNameToMetastoreIdMap_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockMetastoresInterface_MetastoreInfoNameToMetastoreIdMap_Call) RunAndReturn(run func(context.Context) (map[string]string, error)) *MockMetastoresInterface_MetastoreInfoNameToMetastoreIdMap_Call {
+func (_c *MockMetastoresInterface_ListAll_Call) RunAndReturn(run func(context.Context, catalog.ListMetastoresRequest) ([]catalog.MetastoreInfo, error)) *MockMetastoresInterface_ListAll_Call {
 	_c.Call.Return(run)
 	return _c
 }

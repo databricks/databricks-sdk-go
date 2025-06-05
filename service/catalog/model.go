@@ -114,7 +114,7 @@ func (f *ArtifactType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ArtifactType.
+// Values returns all possible values for ArtifactType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ArtifactType) Values() []ArtifactType {
@@ -482,7 +482,7 @@ func (f *CatalogIsolationMode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CatalogIsolationMode.
+// Values returns all possible values for CatalogIsolationMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CatalogIsolationMode) Values() []CatalogIsolationMode {
@@ -530,7 +530,7 @@ func (f *CatalogType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CatalogType.
+// Values returns all possible values for CatalogType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CatalogType) Values() []CatalogType {
@@ -682,7 +682,7 @@ func (f *ColumnTypeName) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ColumnTypeName.
+// Values returns all possible values for ColumnTypeName.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ColumnTypeName) Values() []ColumnTypeName {
@@ -742,15 +742,14 @@ type ConnectionInfo struct {
 	Options map[string]string `json:"options,omitempty"`
 	// Username of current owner of the connection.
 	Owner string `json:"owner,omitempty"`
-	// An object containing map of key-value properties attached to the
-	// connection.
+	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 	// Status of an asynchronously provisioned resource.
 	ProvisioningInfo *ProvisioningInfo `json:"provisioning_info,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
-
-	SecurableType string `json:"securable_type,omitempty"`
+	// The type of Unity Catalog securable.
+	SecurableType SecurableType `json:"securable_type,omitempty"`
 	// Time at which this connection was updated, in epoch milliseconds.
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// Username of user who last modified connection.
@@ -769,12 +768,14 @@ func (s ConnectionInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The type of connection.
+// Next Id: 31
 type ConnectionType string
 
 const ConnectionTypeBigquery ConnectionType = `BIGQUERY`
 
 const ConnectionTypeDatabricks ConnectionType = `DATABRICKS`
+
+const ConnectionTypeGa4RawData ConnectionType = `GA4_RAW_DATA`
 
 const ConnectionTypeGlue ConnectionType = `GLUE`
 
@@ -788,7 +789,15 @@ const ConnectionTypeOracle ConnectionType = `ORACLE`
 
 const ConnectionTypePostgresql ConnectionType = `POSTGRESQL`
 
+const ConnectionTypePowerBi ConnectionType = `POWER_BI`
+
 const ConnectionTypeRedshift ConnectionType = `REDSHIFT`
+
+const ConnectionTypeSalesforce ConnectionType = `SALESFORCE`
+
+const ConnectionTypeSalesforceDataCloud ConnectionType = `SALESFORCE_DATA_CLOUD`
+
+const ConnectionTypeServicenow ConnectionType = `SERVICENOW`
 
 const ConnectionTypeSnowflake ConnectionType = `SNOWFLAKE`
 
@@ -798,6 +807,10 @@ const ConnectionTypeSqlserver ConnectionType = `SQLSERVER`
 
 const ConnectionTypeTeradata ConnectionType = `TERADATA`
 
+const ConnectionTypeUnknownConnectionType ConnectionType = `UNKNOWN_CONNECTION_TYPE`
+
+const ConnectionTypeWorkdayRaas ConnectionType = `WORKDAY_RAAS`
+
 // String representation for [fmt.Print]
 func (f *ConnectionType) String() string {
 	return string(*f)
@@ -806,32 +819,39 @@ func (f *ConnectionType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *ConnectionType) Set(v string) error {
 	switch v {
-	case `BIGQUERY`, `DATABRICKS`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `MYSQL`, `ORACLE`, `POSTGRESQL`, `REDSHIFT`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`:
+	case `BIGQUERY`, `DATABRICKS`, `GA4_RAW_DATA`, `GLUE`, `HIVE_METASTORE`, `HTTP`, `MYSQL`, `ORACLE`, `POSTGRESQL`, `POWER_BI`, `REDSHIFT`, `SALESFORCE`, `SALESFORCE_DATA_CLOUD`, `SERVICENOW`, `SNOWFLAKE`, `SQLDW`, `SQLSERVER`, `TERADATA`, `UNKNOWN_CONNECTION_TYPE`, `WORKDAY_RAAS`:
 		*f = ConnectionType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "GLUE", "HIVE_METASTORE", "HTTP", "MYSQL", "ORACLE", "POSTGRESQL", "REDSHIFT", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BIGQUERY", "DATABRICKS", "GA4_RAW_DATA", "GLUE", "HIVE_METASTORE", "HTTP", "MYSQL", "ORACLE", "POSTGRESQL", "POWER_BI", "REDSHIFT", "SALESFORCE", "SALESFORCE_DATA_CLOUD", "SERVICENOW", "SNOWFLAKE", "SQLDW", "SQLSERVER", "TERADATA", "UNKNOWN_CONNECTION_TYPE", "WORKDAY_RAAS"`, v)
 	}
 }
 
-// Values returns all possible values of ConnectionType.
+// Values returns all possible values for ConnectionType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ConnectionType) Values() []ConnectionType {
 	return []ConnectionType{
 		ConnectionTypeBigquery,
 		ConnectionTypeDatabricks,
+		ConnectionTypeGa4RawData,
 		ConnectionTypeGlue,
 		ConnectionTypeHiveMetastore,
 		ConnectionTypeHttp,
 		ConnectionTypeMysql,
 		ConnectionTypeOracle,
 		ConnectionTypePostgresql,
+		ConnectionTypePowerBi,
 		ConnectionTypeRedshift,
+		ConnectionTypeSalesforce,
+		ConnectionTypeSalesforceDataCloud,
+		ConnectionTypeServicenow,
 		ConnectionTypeSnowflake,
 		ConnectionTypeSqldw,
 		ConnectionTypeSqlserver,
 		ConnectionTypeTeradata,
+		ConnectionTypeUnknownConnectionType,
+		ConnectionTypeWorkdayRaas,
 	}
 }
 
@@ -905,8 +925,7 @@ type CreateConnection struct {
 	Name string `json:"name"`
 	// A map of key-value properties attached to the securable.
 	Options map[string]string `json:"options"`
-	// An object containing map of key-value properties attached to the
-	// connection.
+	// A map of key-value properties attached to the securable.
 	Properties map[string]string `json:"properties,omitempty"`
 	// If the connection is read only.
 	ReadOnly bool `json:"read_only,omitempty"`
@@ -956,18 +975,6 @@ func (s *CreateCredentialRequest) UnmarshalJSON(b []byte) error {
 
 func (s CreateCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-// Create a Database Catalog
-type CreateDatabaseCatalogRequest struct {
-	Catalog DatabaseCatalog `json:"catalog"`
-}
-
-// Create a Database Instance
-type CreateDatabaseInstanceRequest struct {
-	// A DatabaseInstance represents a logical Postgres instance, comprised of
-	// both compute and storage.
-	DatabaseInstance DatabaseInstance `json:"database_instance"`
 }
 
 type CreateExternalLocation struct {
@@ -1087,7 +1094,7 @@ func (f *CreateFunctionParameterStyle) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CreateFunctionParameterStyle.
+// Values returns all possible values for CreateFunctionParameterStyle.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CreateFunctionParameterStyle) Values() []CreateFunctionParameterStyle {
@@ -1132,7 +1139,7 @@ func (f *CreateFunctionRoutineBody) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CreateFunctionRoutineBody.
+// Values returns all possible values for CreateFunctionRoutineBody.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CreateFunctionRoutineBody) Values() []CreateFunctionRoutineBody {
@@ -1168,7 +1175,7 @@ func (f *CreateFunctionSecurityType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CreateFunctionSecurityType.
+// Values returns all possible values for CreateFunctionSecurityType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CreateFunctionSecurityType) Values() []CreateFunctionSecurityType {
@@ -1207,7 +1214,7 @@ func (f *CreateFunctionSqlDataAccess) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CreateFunctionSqlDataAccess.
+// Values returns all possible values for CreateFunctionSqlDataAccess.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CreateFunctionSqlDataAccess) Values() []CreateFunctionSqlDataAccess {
@@ -1227,9 +1234,6 @@ type CreateMetastore struct {
 	// The user-specified name of the metastore.
 	Name string `json:"name"`
 	// Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
-	// The field can be omitted in the __workspace-level__ __API__ but not in
-	// the __account-level__ __API__. If this field is omitted, the region of
-	// the workspace receiving the request will be used.
 	Region string `json:"region,omitempty"`
 	// The storage root URL for metastore
 	StorageRoot string `json:"storage_root,omitempty"`
@@ -1247,7 +1251,7 @@ func (s CreateMetastore) MarshalJSON() ([]byte, error) {
 
 type CreateMetastoreAssignment struct {
 	// The name of the default catalog in the metastore. This field is
-	// depracted. Please use "Default Namespace API" to configure the default
+	// deprecated. Please use "Default Namespace API" to configure the default
 	// catalog for a Databricks workspace.
 	DefaultCatalogName string `json:"default_catalog_name"`
 	// The unique ID of the metastore.
@@ -1395,12 +1399,6 @@ func (s CreateStorageCredential) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Create a Synced Database Table
-type CreateSyncedDatabaseTableRequest struct {
-	// Next field marker: 10
-	SyncedTable SyncedDatabaseTable `json:"synced_table"`
-}
-
 type CreateTableConstraint struct {
 	// A table constraint, as defined by *one* of the following fields being
 	// set: __primary_key_constraint__, __foreign_key_constraint__,
@@ -1517,7 +1515,7 @@ func (f *CredentialPurpose) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CredentialPurpose.
+// Values returns all possible values for CredentialPurpose.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CredentialPurpose) Values() []CredentialPurpose {
@@ -1532,10 +1530,30 @@ func (f *CredentialPurpose) Type() string {
 	return "CredentialPurpose"
 }
 
-// The type of credential.
+// Next Id: 12
 type CredentialType string
 
 const CredentialTypeBearerToken CredentialType = `BEARER_TOKEN`
+
+const CredentialTypeOauthAccessToken CredentialType = `OAUTH_ACCESS_TOKEN`
+
+const CredentialTypeOauthM2m CredentialType = `OAUTH_M2M`
+
+const CredentialTypeOauthRefreshToken CredentialType = `OAUTH_REFRESH_TOKEN`
+
+const CredentialTypeOauthResourceOwnerPassword CredentialType = `OAUTH_RESOURCE_OWNER_PASSWORD`
+
+const CredentialTypeOauthU2m CredentialType = `OAUTH_U2M`
+
+const CredentialTypeOauthU2mMapping CredentialType = `OAUTH_U2M_MAPPING`
+
+const CredentialTypeOidcToken CredentialType = `OIDC_TOKEN`
+
+const CredentialTypePemPrivateKey CredentialType = `PEM_PRIVATE_KEY`
+
+const CredentialTypeServiceCredential CredentialType = `SERVICE_CREDENTIAL`
+
+const CredentialTypeUnknownCredentialType CredentialType = `UNKNOWN_CREDENTIAL_TYPE`
 
 const CredentialTypeUsernamePassword CredentialType = `USERNAME_PASSWORD`
 
@@ -1547,20 +1565,30 @@ func (f *CredentialType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *CredentialType) Set(v string) error {
 	switch v {
-	case `BEARER_TOKEN`, `USERNAME_PASSWORD`:
+	case `BEARER_TOKEN`, `OAUTH_ACCESS_TOKEN`, `OAUTH_M2M`, `OAUTH_REFRESH_TOKEN`, `OAUTH_RESOURCE_OWNER_PASSWORD`, `OAUTH_U2M`, `OAUTH_U2M_MAPPING`, `OIDC_TOKEN`, `PEM_PRIVATE_KEY`, `SERVICE_CREDENTIAL`, `UNKNOWN_CREDENTIAL_TYPE`, `USERNAME_PASSWORD`:
 		*f = CredentialType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "BEARER_TOKEN", "USERNAME_PASSWORD"`, v)
+		return fmt.Errorf(`value "%s" is not one of "BEARER_TOKEN", "OAUTH_ACCESS_TOKEN", "OAUTH_M2M", "OAUTH_REFRESH_TOKEN", "OAUTH_RESOURCE_OWNER_PASSWORD", "OAUTH_U2M", "OAUTH_U2M_MAPPING", "OIDC_TOKEN", "PEM_PRIVATE_KEY", "SERVICE_CREDENTIAL", "UNKNOWN_CREDENTIAL_TYPE", "USERNAME_PASSWORD"`, v)
 	}
 }
 
-// Values returns all possible values of CredentialType.
+// Values returns all possible values for CredentialType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CredentialType) Values() []CredentialType {
 	return []CredentialType{
 		CredentialTypeBearerToken,
+		CredentialTypeOauthAccessToken,
+		CredentialTypeOauthM2m,
+		CredentialTypeOauthRefreshToken,
+		CredentialTypeOauthResourceOwnerPassword,
+		CredentialTypeOauthU2m,
+		CredentialTypeOauthU2mMapping,
+		CredentialTypeOidcToken,
+		CredentialTypePemPrivateKey,
+		CredentialTypeServiceCredential,
+		CredentialTypeUnknownCredentialType,
 		CredentialTypeUsernamePassword,
 	}
 }
@@ -1652,7 +1680,7 @@ func (f *DataSourceFormat) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DataSourceFormat.
+// Values returns all possible values for DataSourceFormat.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DataSourceFormat) Values() []DataSourceFormat {
@@ -1686,116 +1714,6 @@ func (f *DataSourceFormat) Values() []DataSourceFormat {
 // Type always returns DataSourceFormat to satisfy [pflag.Value] interface
 func (f *DataSourceFormat) Type() string {
 	return "DataSourceFormat"
-}
-
-type DatabaseCatalog struct {
-	CreateDatabaseIfNotExists bool `json:"create_database_if_not_exists,omitempty"`
-	// The name of the DatabaseInstance housing the database.
-	DatabaseInstanceName string `json:"database_instance_name"`
-	// The name of the database (in a instance) associated with the catalog.
-	DatabaseName string `json:"database_name"`
-	// The name of the catalog in UC.
-	Name string `json:"name"`
-
-	Uid string `json:"uid,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *DatabaseCatalog) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DatabaseCatalog) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// A DatabaseInstance represents a logical Postgres instance, comprised of both
-// compute and storage.
-type DatabaseInstance struct {
-	// Password for admin user to create. If not provided, no user will be
-	// created.
-	AdminPassword string `json:"admin_password,omitempty"`
-	// Name of the admin role for the instance. If not provided, defaults to
-	// 'databricks_admin'.
-	AdminRolename string `json:"admin_rolename,omitempty"`
-	// The sku of the instance. Valid values are "CU_1", "CU_2", "CU_4".
-	Capacity string `json:"capacity,omitempty"`
-	// The timestamp when the instance was created.
-	CreationTime string `json:"creation_time,omitempty"`
-	// The email of the creator of the instance.
-	Creator string `json:"creator,omitempty"`
-	// The name of the instance. This is the unique identifier for the instance.
-	Name string `json:"name"`
-	// The version of Postgres running on the instance.
-	PgVersion string `json:"pg_version,omitempty"`
-	// The DNS endpoint to connect to the instance for read+write access.
-	ReadWriteDns string `json:"read_write_dns,omitempty"`
-	// The current state of the instance.
-	State DatabaseInstanceState `json:"state,omitempty"`
-	// Whether the instance is stopped.
-	Stopped bool `json:"stopped,omitempty"`
-	// An immutable UUID identifier for the instance.
-	Uid string `json:"uid,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *DatabaseInstance) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DatabaseInstance) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type DatabaseInstanceState string
-
-const DatabaseInstanceStateAvailable DatabaseInstanceState = `AVAILABLE`
-
-const DatabaseInstanceStateDeleting DatabaseInstanceState = `DELETING`
-
-const DatabaseInstanceStateFailingOver DatabaseInstanceState = `FAILING_OVER`
-
-const DatabaseInstanceStateStarting DatabaseInstanceState = `STARTING`
-
-const DatabaseInstanceStateStopped DatabaseInstanceState = `STOPPED`
-
-const DatabaseInstanceStateUpdating DatabaseInstanceState = `UPDATING`
-
-// String representation for [fmt.Print]
-func (f *DatabaseInstanceState) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *DatabaseInstanceState) Set(v string) error {
-	switch v {
-	case `AVAILABLE`, `DELETING`, `FAILING_OVER`, `STARTING`, `STOPPED`, `UPDATING`:
-		*f = DatabaseInstanceState(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "AVAILABLE", "DELETING", "FAILING_OVER", "STARTING", "STOPPED", "UPDATING"`, v)
-	}
-}
-
-// Values returns all possible values of DatabaseInstanceState.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *DatabaseInstanceState) Values() []DatabaseInstanceState {
-	return []DatabaseInstanceState{
-		DatabaseInstanceStateAvailable,
-		DatabaseInstanceStateDeleting,
-		DatabaseInstanceStateFailingOver,
-		DatabaseInstanceStateStarting,
-		DatabaseInstanceStateStopped,
-		DatabaseInstanceStateUpdating,
-	}
-}
-
-// Type always returns DatabaseInstanceState to satisfy [pflag.Value] interface
-func (f *DatabaseInstanceState) Type() string {
-	return "DatabaseInstanceState"
 }
 
 // GCP long-lived credential. Databricks-created Google Cloud Storage service
@@ -1948,43 +1866,6 @@ func (s DeleteCredentialRequest) MarshalJSON() ([]byte, error) {
 type DeleteCredentialResponse struct {
 }
 
-// Delete a Database Catalog
-type DeleteDatabaseCatalogRequest struct {
-	Name string `json:"-" url:"-"`
-}
-
-type DeleteDatabaseCatalogResponse struct {
-}
-
-// Delete a Database Instance
-type DeleteDatabaseInstanceRequest struct {
-	// By default, a instance cannot be deleted if it has descendant instances
-	// created via PITR. If this flag is specified as true, all descendent
-	// instances will be deleted as well.
-	Force bool `json:"-" url:"force,omitempty"`
-	// Name of the instance to delete.
-	Name string `json:"-" url:"-"`
-	// If false, the database instance is soft deleted. Soft deleted instances
-	// behave as if they are deleted, and cannot be used for CRUD operations nor
-	// connected to. However they can be undeleted by calling the undelete API
-	// for a limited time. If true, the database instance is hard deleted and
-	// cannot be undeleted.
-	Purge bool `json:"-" url:"purge,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *DeleteDatabaseInstanceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s DeleteDatabaseInstanceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type DeleteDatabaseInstanceResponse struct {
-}
-
 // Delete an external location
 type DeleteExternalLocationRequest struct {
 	// Force deletion even if there are dependent external tables or mounts.
@@ -2106,14 +1987,6 @@ func (s DeleteStorageCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Delete a Synced Database Table
-type DeleteSyncedDatabaseTableRequest struct {
-	Name string `json:"-" url:"-"`
-}
-
-type DeleteSyncedDatabaseTableResponse struct {
-}
-
 // Delete a table constraint
 type DeleteTableConstraintRequest struct {
 	// If true, try deleting all child constraints of the current constraint. If
@@ -2146,6 +2019,43 @@ type DeltaRuntimePropertiesKvPairs struct {
 	DeltaRuntimeProperties map[string]string `json:"delta_runtime_properties"`
 }
 
+type DeltaSharingScopeEnum string
+
+const DeltaSharingScopeEnumInternal DeltaSharingScopeEnum = `INTERNAL`
+
+const DeltaSharingScopeEnumInternalAndExternal DeltaSharingScopeEnum = `INTERNAL_AND_EXTERNAL`
+
+// String representation for [fmt.Print]
+func (f *DeltaSharingScopeEnum) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DeltaSharingScopeEnum) Set(v string) error {
+	switch v {
+	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
+		*f = DeltaSharingScopeEnum(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
+	}
+}
+
+// Values returns all possible values for DeltaSharingScopeEnum.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DeltaSharingScopeEnum) Values() []DeltaSharingScopeEnum {
+	return []DeltaSharingScopeEnum{
+		DeltaSharingScopeEnumInternal,
+		DeltaSharingScopeEnumInternalAndExternal,
+	}
+}
+
+// Type always returns DeltaSharingScopeEnum to satisfy [pflag.Value] interface
+func (f *DeltaSharingScopeEnum) Type() string {
+	return "DeltaSharingScopeEnum"
+}
+
 // A dependency of a SQL object. Either the __table__ field or the __function__
 // field must be defined.
 type Dependency struct {
@@ -2173,9 +2083,23 @@ type DisableResponse struct {
 }
 
 type EffectivePermissionsList struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
 	// The privileges conveyed to each principal (either directly or via
 	// inheritance)
 	PrivilegeAssignments []EffectivePrivilegeAssignment `json:"privilege_assignments,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *EffectivePermissionsList) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s EffectivePermissionsList) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type EffectivePredictiveOptimizationFlag struct {
@@ -2224,7 +2148,7 @@ func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Set(v string) err
 	}
 }
 
-// Values returns all possible values of EffectivePredictiveOptimizationFlagInheritedFromType.
+// Values returns all possible values for EffectivePredictiveOptimizationFlagInheritedFromType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EffectivePredictiveOptimizationFlagInheritedFromType) Values() []EffectivePredictiveOptimizationFlagInheritedFromType {
@@ -2304,7 +2228,7 @@ func (f *EnablePredictiveOptimization) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of EnablePredictiveOptimization.
+// Values returns all possible values for EnablePredictiveOptimization.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EnablePredictiveOptimization) Values() []EnablePredictiveOptimization {
@@ -2447,22 +2371,6 @@ type FileEventQueue struct {
 	ProvidedSqs *AwsSqsQueue `json:"provided_sqs,omitempty"`
 }
 
-// Find a Database Instance by uid
-type FindDatabaseInstanceByUidRequest struct {
-	// UID of the cluster to get.
-	Uid string `json:"-" url:"uid,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *FindDatabaseInstanceByUidRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s FindDatabaseInstanceByUidRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 type ForeignKeyConstraint struct {
 	// Column names for this constraint.
 	ChildColumns []string `json:"child_columns"`
@@ -2582,7 +2490,7 @@ func (f *FunctionInfoParameterStyle) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of FunctionInfoParameterStyle.
+// Values returns all possible values for FunctionInfoParameterStyle.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *FunctionInfoParameterStyle) Values() []FunctionInfoParameterStyle {
@@ -2622,7 +2530,7 @@ func (f *FunctionInfoRoutineBody) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of FunctionInfoRoutineBody.
+// Values returns all possible values for FunctionInfoRoutineBody.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *FunctionInfoRoutineBody) Values() []FunctionInfoRoutineBody {
@@ -2658,7 +2566,7 @@ func (f *FunctionInfoSecurityType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of FunctionInfoSecurityType.
+// Values returns all possible values for FunctionInfoSecurityType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *FunctionInfoSecurityType) Values() []FunctionInfoSecurityType {
@@ -2697,7 +2605,7 @@ func (f *FunctionInfoSqlDataAccess) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of FunctionInfoSqlDataAccess.
+// Values returns all possible values for FunctionInfoSqlDataAccess.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *FunctionInfoSqlDataAccess) Values() []FunctionInfoSqlDataAccess {
@@ -2777,7 +2685,7 @@ func (f *FunctionParameterMode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of FunctionParameterMode.
+// Values returns all possible values for FunctionParameterMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *FunctionParameterMode) Values() []FunctionParameterMode {
@@ -2814,7 +2722,7 @@ func (f *FunctionParameterType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of FunctionParameterType.
+// Values returns all possible values for FunctionParameterType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *FunctionParameterType) Values() []FunctionParameterType {
@@ -3055,26 +2963,30 @@ type GetCredentialRequest struct {
 	NameArg string `json:"-" url:"-"`
 }
 
-// Get a Database Catalog
-type GetDatabaseCatalogRequest struct {
-	Name string `json:"-" url:"-"`
-}
-
-// Get a Database Instance
-type GetDatabaseInstanceRequest struct {
-	// Name of the cluster to get.
-	Name string `json:"-" url:"-"`
-}
-
 // Get effective permissions
 type GetEffectiveRequest struct {
 	// Full name of securable.
 	FullName string `json:"-" url:"-"`
+	// Specifies the maximum number of privileges to return (page length). Every
+	// EffectivePrivilegeAssignment present in a single page response is
+	// guaranteed to contain all the effective privileges granted on (or
+	// inherited by) the requested Securable for the respective principal.
+	//
+	// If not set, all the effective permissions are returned. If set to -
+	// lesser than 0: invalid parameter error - 0: page length is set to a
+	// server configured value - lesser than 150 but greater than 0: invalid
+	// parameter error (this is to ensure that server is able to return at least
+	// one complete EffectivePrivilegeAssignment in a single page response) -
+	// greater than (or equal to) 150: page length is the minimum of this value
+	// and a server configured value
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque token for the next page of results (pagination).
+	PageToken string `json:"-" url:"page_token,omitempty"`
 	// If provided, only the effective permissions for the specified principal
 	// (user or group) are returned.
 	Principal string `json:"-" url:"principal,omitempty"`
 	// Type of securable.
-	SecurableType SecurableType `json:"-" url:"-"`
+	SecurableType string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3130,11 +3042,26 @@ func (s GetFunctionRequest) MarshalJSON() ([]byte, error) {
 type GetGrantRequest struct {
 	// Full name of securable.
 	FullName string `json:"-" url:"-"`
+	// Specifies the maximum number of privileges to return (page length). Every
+	// PrivilegeAssignment present in a single page response is guaranteed to
+	// contain all the privileges granted on the requested Securable for the
+	// respective principal.
+	//
+	// If not set, all the permissions are returned. If set to - lesser than 0:
+	// invalid parameter error - 0: page length is set to a server configured
+	// value - lesser than 150 but greater than 0: invalid parameter error (this
+	// is to ensure that server is able to return at least one complete
+	// PrivilegeAssignment in a single page response) - greater than (or equal
+	// to) 150: page length is the minimum of this value and a server configured
+	// value
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
 	// If provided, only the permissions for the specified principal (user or
 	// group) are returned.
 	Principal string `json:"-" url:"principal,omitempty"`
 	// Type of securable.
-	SecurableType SecurableType `json:"-" url:"-"`
+	SecurableType string `json:"-" url:"-"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -3168,7 +3095,7 @@ type GetMetastoreSummaryResponse struct {
 	// The lifetime of delta sharing recipient token in seconds.
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
-	DeltaSharingScope GetMetastoreSummaryResponseDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
 	// Whether to allow non-DBR clients to directly access entities under the
 	// metastore.
 	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
@@ -3208,44 +3135,6 @@ func (s GetMetastoreSummaryResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The scope of Delta Sharing enabled for the metastore.
-type GetMetastoreSummaryResponseDeltaSharingScope string
-
-const GetMetastoreSummaryResponseDeltaSharingScopeInternal GetMetastoreSummaryResponseDeltaSharingScope = `INTERNAL`
-
-const GetMetastoreSummaryResponseDeltaSharingScopeInternalAndExternal GetMetastoreSummaryResponseDeltaSharingScope = `INTERNAL_AND_EXTERNAL`
-
-// String representation for [fmt.Print]
-func (f *GetMetastoreSummaryResponseDeltaSharingScope) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *GetMetastoreSummaryResponseDeltaSharingScope) Set(v string) error {
-	switch v {
-	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
-		*f = GetMetastoreSummaryResponseDeltaSharingScope(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
-	}
-}
-
-// Values returns all possible values of GetMetastoreSummaryResponseDeltaSharingScope.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *GetMetastoreSummaryResponseDeltaSharingScope) Values() []GetMetastoreSummaryResponseDeltaSharingScope {
-	return []GetMetastoreSummaryResponseDeltaSharingScope{
-		GetMetastoreSummaryResponseDeltaSharingScopeInternal,
-		GetMetastoreSummaryResponseDeltaSharingScopeInternalAndExternal,
-	}
-}
-
-// Type always returns GetMetastoreSummaryResponseDeltaSharingScope to satisfy [pflag.Value] interface
-func (f *GetMetastoreSummaryResponseDeltaSharingScope) Type() string {
-	return "GetMetastoreSummaryResponseDeltaSharingScope"
-}
-
 // Get a Model Version
 type GetModelVersionRequest struct {
 	// The three-level (fully qualified) name of the model version
@@ -3274,6 +3163,25 @@ func (s GetModelVersionRequest) MarshalJSON() ([]byte, error) {
 type GetOnlineTableRequest struct {
 	// Full three-part (catalog, schema, table) name of the table.
 	Name string `json:"-" url:"-"`
+}
+
+type GetPermissionsResponse struct {
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+	// The privileges assigned to each principal
+	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetPermissionsResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetPermissionsResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // Get a table monitor
@@ -3353,11 +3261,6 @@ type GetStorageCredentialRequest struct {
 	Name string `json:"-" url:"-"`
 }
 
-// Get a Synced Database Table
-type GetSyncedDatabaseTableRequest struct {
-	Name string `json:"-" url:"-"`
-}
-
 // Get a table
 type GetTableRequest struct {
 	// Full name of the table.
@@ -3428,7 +3331,7 @@ func (f *IsolationMode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of IsolationMode.
+// Values returns all possible values for IsolationMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *IsolationMode) Values() []IsolationMode {
@@ -3597,42 +3500,6 @@ func (s ListCredentialsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List Database Instances
-type ListDatabaseInstancesRequest struct {
-	// Upper bound for items returned.
-	PageSize int `json:"-" url:"page_size,omitempty"`
-	// Pagination token to go to the next page of Database Instances. Requests
-	// first page if absent.
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ListDatabaseInstancesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListDatabaseInstancesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type ListDatabaseInstancesResponse struct {
-	// List of instances.
-	DatabaseInstances []DatabaseInstance `json:"database_instances,omitempty"`
-	// Pagination token to request the next page of instances.
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ListDatabaseInstancesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListDatabaseInstancesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 // List external locations
 type ListExternalLocationsRequest struct {
 	// Whether to include external locations in the response for which the
@@ -3727,9 +3594,49 @@ func (s ListFunctionsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// List metastores
+type ListMetastoresRequest struct {
+	// Maximum number of metastores to return. - when set to a value greater
+	// than 0, the page length is the minimum of this value and a server
+	// configured value; - when set to 0, the page length is set to a server
+	// configured value (recommended); - when set to a value less than 0, an
+	// invalid parameter error is returned; - If not set, all the metastores are
+	// returned (not recommended). - Note: The number of returned metastores
+	// might be less than the specified max_results size, even zero. The only
+	// definitive indication that no further metastores can be fetched is when
+	// the next_page_token is unset from the response.
+	MaxResults int `json:"-" url:"max_results,omitempty"`
+	// Opaque pagination token to go to next page based on previous query.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListMetastoresRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListMetastoresRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListMetastoresResponse struct {
 	// An array of metastore information objects.
 	Metastores []MetastoreInfo `json:"metastores,omitempty"`
+	// Opaque token to retrieve the next page of results. Absent if there are no
+	// more pages. __page_token__ should be set to this value for the next
+	// request (for the next page of results).
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListMetastoresResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListMetastoresResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 // List Model Versions
@@ -4207,7 +4114,7 @@ func (f *MatchType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of MatchType.
+// Values returns all possible values for MatchType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *MatchType) Values() []MatchType {
@@ -4255,7 +4162,7 @@ type MetastoreInfo struct {
 	// The lifetime of delta sharing recipient token in seconds.
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
-	DeltaSharingScope MetastoreInfoDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
 	// Whether to allow non-DBR clients to directly access entities under the
 	// metastore.
 	ExternalAccessEnabled bool `json:"external_access_enabled,omitempty"`
@@ -4293,44 +4200,6 @@ func (s *MetastoreInfo) UnmarshalJSON(b []byte) error {
 
 func (s MetastoreInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-// The scope of Delta Sharing enabled for the metastore.
-type MetastoreInfoDeltaSharingScope string
-
-const MetastoreInfoDeltaSharingScopeInternal MetastoreInfoDeltaSharingScope = `INTERNAL`
-
-const MetastoreInfoDeltaSharingScopeInternalAndExternal MetastoreInfoDeltaSharingScope = `INTERNAL_AND_EXTERNAL`
-
-// String representation for [fmt.Print]
-func (f *MetastoreInfoDeltaSharingScope) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *MetastoreInfoDeltaSharingScope) Set(v string) error {
-	switch v {
-	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
-		*f = MetastoreInfoDeltaSharingScope(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
-	}
-}
-
-// Values returns all possible values of MetastoreInfoDeltaSharingScope.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *MetastoreInfoDeltaSharingScope) Values() []MetastoreInfoDeltaSharingScope {
-	return []MetastoreInfoDeltaSharingScope{
-		MetastoreInfoDeltaSharingScopeInternal,
-		MetastoreInfoDeltaSharingScopeInternalAndExternal,
-	}
-}
-
-// Type always returns MetastoreInfoDeltaSharingScope to satisfy [pflag.Value] interface
-func (f *MetastoreInfoDeltaSharingScope) Type() string {
-	return "MetastoreInfoDeltaSharingScope"
 }
 
 type ModelVersionInfo struct {
@@ -4424,7 +4293,7 @@ func (f *ModelVersionInfoStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ModelVersionInfoStatus.
+// Values returns all possible values for ModelVersionInfoStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ModelVersionInfoStatus) Values() []ModelVersionInfoStatus {
@@ -4475,7 +4344,7 @@ func (f *MonitorCronSchedulePauseStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of MonitorCronSchedulePauseStatus.
+// Values returns all possible values for MonitorCronSchedulePauseStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *MonitorCronSchedulePauseStatus) Values() []MonitorCronSchedulePauseStatus {
@@ -4576,7 +4445,7 @@ func (f *MonitorInferenceLogProblemType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of MonitorInferenceLogProblemType.
+// Values returns all possible values for MonitorInferenceLogProblemType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *MonitorInferenceLogProblemType) Values() []MonitorInferenceLogProblemType {
@@ -4682,7 +4551,7 @@ func (f *MonitorInfoStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of MonitorInfoStatus.
+// Values returns all possible values for MonitorInfoStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *MonitorInfoStatus) Values() []MonitorInfoStatus {
@@ -4761,7 +4630,7 @@ func (f *MonitorMetricType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of MonitorMetricType.
+// Values returns all possible values for MonitorMetricType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *MonitorMetricType) Values() []MonitorMetricType {
@@ -4842,7 +4711,7 @@ func (f *MonitorRefreshInfoState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of MonitorRefreshInfoState.
+// Values returns all possible values for MonitorRefreshInfoState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *MonitorRefreshInfoState) Values() []MonitorRefreshInfoState {
@@ -4883,7 +4752,7 @@ func (f *MonitorRefreshInfoTrigger) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of MonitorRefreshInfoTrigger.
+// Values returns all possible values for MonitorRefreshInfoTrigger.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *MonitorRefreshInfoTrigger) Values() []MonitorRefreshInfoTrigger {
@@ -4924,30 +4793,6 @@ type MonitorTimeSeries struct {
 type NamedTableConstraint struct {
 	// The name of the constraint.
 	Name string `json:"name"`
-}
-
-// Custom fields that user can set for pipeline while creating
-// SyncedDatabaseTable. Note that other fields of pipeline are still inferred by
-// table def internally
-type NewPipelineSpec struct {
-	// UC catalog for the pipeline to store intermediate files (checkpoints,
-	// event logs etc). This needs to be a standard catalog where the user has
-	// permissions to create Delta tables.
-	StorageCatalog string `json:"storage_catalog,omitempty"`
-	// UC schema for the pipeline to store intermediate files (checkpoints,
-	// event logs etc). This needs to be in the standard catalog where the user
-	// has permissions to create Delta tables.
-	StorageSchema string `json:"storage_schema,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *NewPipelineSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s NewPipelineSpec) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // Online Table information.
@@ -5061,7 +4906,7 @@ func (f *OnlineTableState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of OnlineTableState.
+// Values returns all possible values for OnlineTableState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *OnlineTableState) Values() []OnlineTableState {
@@ -5133,11 +4978,6 @@ func (s *PermissionsChange) UnmarshalJSON(b []byte) error {
 
 func (s PermissionsChange) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-type PermissionsList struct {
-	// The privileges assigned to each principal
-	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 }
 
 // Progress information of the Online Table data synchronization pipeline.
@@ -5291,7 +5131,7 @@ func (f *Privilege) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Privilege.
+// Values returns all possible values for Privilege.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Privilege) Values() []Privilege {
@@ -5370,9 +5210,6 @@ func (s PrivilegeAssignment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// An object containing map of key-value properties attached to the connection.
-type PropertiesKvPairs map[string]string
-
 // Status of an asynchronously provisioned resource.
 type ProvisioningInfo struct {
 	// The provisioning state of the resource.
@@ -5409,7 +5246,7 @@ func (f *ProvisioningInfoState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ProvisioningInfoState.
+// Values returns all possible values for ProvisioningInfoState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ProvisioningInfoState) Values() []ProvisioningInfoState {
@@ -5607,6 +5444,7 @@ type RunRefreshRequest struct {
 	TableName string `json:"-" url:"-"`
 }
 
+// Next ID: 40
 type SchemaInfo struct {
 	// Indicates whether the principal is limited to retrieving metadata for the
 	// associated object through the BROWSE privilege when include_browse is
@@ -5615,7 +5453,7 @@ type SchemaInfo struct {
 	// Name of parent catalog.
 	CatalogName string `json:"catalog_name,omitempty"`
 	// The type of the parent catalog.
-	CatalogType string `json:"catalog_type,omitempty"`
+	CatalogType CatalogType `json:"catalog_type,omitempty"`
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
 	// Time at which this schema was created, in epoch milliseconds.
@@ -5624,7 +5462,8 @@ type SchemaInfo struct {
 	CreatedBy string `json:"created_by,omitempty"`
 
 	EffectivePredictiveOptimizationFlag *EffectivePredictiveOptimizationFlag `json:"effective_predictive_optimization_flag,omitempty"`
-
+	// Whether predictive optimization should be enabled for this object and
+	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of schema, in form of __catalog_name__.__schema_name__.
 	FullName string `json:"full_name,omitempty"`
@@ -5657,12 +5496,6 @@ func (s *SchemaInfo) UnmarshalJSON(b []byte) error {
 func (s SchemaInfo) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
-
-// A map of key-value properties attached to the securable.
-type SecurableOptionsMap map[string]string
-
-// A map of key-value properties attached to the securable.
-type SecurablePropertiesMap map[string]string
 
 // The type of Unity Catalog securable.
 type SecurableType string
@@ -5719,7 +5552,7 @@ func (f *SecurableType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SecurableType.
+// Values returns all possible values for SecurableType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SecurableType) Values() []SecurableType {
@@ -5825,7 +5658,7 @@ func (f *SseEncryptionDetailsAlgorithm) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SseEncryptionDetailsAlgorithm.
+// Values returns all possible values for SseEncryptionDetailsAlgorithm.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SseEncryptionDetailsAlgorithm) Values() []SseEncryptionDetailsAlgorithm {
@@ -5887,125 +5720,6 @@ func (s *StorageCredentialInfo) UnmarshalJSON(b []byte) error {
 }
 
 func (s StorageCredentialInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// Next field marker: 10
-type SyncedDatabaseTable struct {
-	// Synced Table data synchronization status
-	DataSynchronizationStatus *OnlineTableStatus `json:"data_synchronization_status,omitempty"`
-	// Name of the target database instance. This is required when creating
-	// synced database tables in standard catalogs. This is optional when
-	// creating synced database tables in registered catalogs. If this field is
-	// specified when creating synced database tables in registered catalogs,
-	// the database instance name MUST match that of the registered catalog (or
-	// the request will be rejected).
-	DatabaseInstanceName string `json:"database_instance_name,omitempty"`
-	// Target Postgres database object (logical database) name for this table.
-	// This field is optional in all scenarios.
-	//
-	// When creating a synced table in a registered Postgres catalog, the target
-	// Postgres database name is inferred to be that of the registered catalog.
-	// If this field is specified in this scenario, the Postgres database name
-	// MUST match that of the registered catalog (or the request will be
-	// rejected).
-	//
-	// When creating a synced table in a standard catalog, the target database
-	// name is inferred to be that of the standard catalog. In this scenario,
-	// specifying this field will allow targeting an arbitrary postgres
-	// database.
-	LogicalDatabaseName string `json:"logical_database_name,omitempty"`
-	// Full three-part (catalog, schema, table) name of the table.
-	Name string `json:"name"`
-	// Specification of a synced database table.
-	Spec *SyncedTableSpec `json:"spec,omitempty"`
-	// Data serving REST API URL for this table
-	TableServingUrl string `json:"table_serving_url,omitempty"`
-	// The provisioning state of the synced table entity in Unity Catalog. This
-	// is distinct from the state of the data synchronization pipeline (i.e. the
-	// table may be in "ACTIVE" but the pipeline may be in "PROVISIONING" as it
-	// runs asynchronously).
-	UnityCatalogProvisioningState ProvisioningInfoState `json:"unity_catalog_provisioning_state,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *SyncedDatabaseTable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s SyncedDatabaseTable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type SyncedTableSchedulingPolicy string
-
-const SyncedTableSchedulingPolicyContinuous SyncedTableSchedulingPolicy = `CONTINUOUS`
-
-const SyncedTableSchedulingPolicySnapshot SyncedTableSchedulingPolicy = `SNAPSHOT`
-
-const SyncedTableSchedulingPolicyTriggered SyncedTableSchedulingPolicy = `TRIGGERED`
-
-// String representation for [fmt.Print]
-func (f *SyncedTableSchedulingPolicy) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *SyncedTableSchedulingPolicy) Set(v string) error {
-	switch v {
-	case `CONTINUOUS`, `SNAPSHOT`, `TRIGGERED`:
-		*f = SyncedTableSchedulingPolicy(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "CONTINUOUS", "SNAPSHOT", "TRIGGERED"`, v)
-	}
-}
-
-// Values returns all possible values of SyncedTableSchedulingPolicy.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *SyncedTableSchedulingPolicy) Values() []SyncedTableSchedulingPolicy {
-	return []SyncedTableSchedulingPolicy{
-		SyncedTableSchedulingPolicyContinuous,
-		SyncedTableSchedulingPolicySnapshot,
-		SyncedTableSchedulingPolicyTriggered,
-	}
-}
-
-// Type always returns SyncedTableSchedulingPolicy to satisfy [pflag.Value] interface
-func (f *SyncedTableSchedulingPolicy) Type() string {
-	return "SyncedTableSchedulingPolicy"
-}
-
-// Specification of a synced database table.
-type SyncedTableSpec struct {
-	// If true, the synced table's logical database and schema resources in PG
-	// will be created if they do not already exist.
-	CreateDatabaseObjectsIfMissing bool `json:"create_database_objects_if_missing,omitempty"`
-	// Spec of new pipeline. Should be empty if pipeline_id is set
-	NewPipelineSpec *NewPipelineSpec `json:"new_pipeline_spec,omitempty"`
-	// ID of the associated pipeline. Should be empty if new_pipeline_spec is
-	// set
-	PipelineId string `json:"pipeline_id,omitempty"`
-	// Primary Key columns to be used for data insert/update in the destination.
-	PrimaryKeyColumns []string `json:"primary_key_columns,omitempty"`
-	// Scheduling policy of the underlying pipeline.
-	SchedulingPolicy SyncedTableSchedulingPolicy `json:"scheduling_policy,omitempty"`
-	// Three-part (catalog, schema, table) name of the source Delta table.
-	SourceTableFullName string `json:"source_table_full_name,omitempty"`
-	// Time series key to deduplicate (tie-break) rows with the same primary
-	// key.
-	TimeseriesKey string `json:"timeseries_key,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *SyncedTableSpec) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s SyncedTableSpec) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -6163,7 +5877,7 @@ func (f *TableOperation) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of TableOperation.
+// Values returns all possible values for TableOperation.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *TableOperation) Values() []TableOperation {
@@ -6238,7 +5952,7 @@ func (f *TableType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of TableType.
+// Values returns all possible values for TableType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *TableType) Values() []TableType {
@@ -6441,17 +6155,6 @@ func (s UpdateCredentialRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Update a Database Instance
-type UpdateDatabaseInstanceRequest struct {
-	// A DatabaseInstance represents a logical Postgres instance, comprised of
-	// both compute and storage.
-	DatabaseInstance DatabaseInstance `json:"database_instance"`
-	// The name of the instance. This is the unique identifier for the instance.
-	Name string `json:"-" url:"-"`
-	// The list of fields to update.
-	UpdateMask string `json:"-" url:"update_mask"`
-}
-
 type UpdateExternalLocation struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
@@ -6523,7 +6226,7 @@ type UpdateMetastore struct {
 	// The lifetime of delta sharing recipient token in seconds.
 	DeltaSharingRecipientTokenLifetimeInSeconds int64 `json:"delta_sharing_recipient_token_lifetime_in_seconds,omitempty"`
 	// The scope of Delta Sharing enabled for the metastore.
-	DeltaSharingScope UpdateMetastoreDeltaSharingScope `json:"delta_sharing_scope,omitempty"`
+	DeltaSharingScope DeltaSharingScopeEnum `json:"delta_sharing_scope,omitempty"`
 	// Unique ID of the metastore.
 	Id string `json:"-" url:"-"`
 	// New name for the metastore.
@@ -6549,7 +6252,7 @@ func (s UpdateMetastore) MarshalJSON() ([]byte, error) {
 
 type UpdateMetastoreAssignment struct {
 	// The name of the default catalog in the metastore. This field is
-	// depracted. Please use "Default Namespace API" to configure the default
+	// deprecated. Please use "Default Namespace API" to configure the default
 	// catalog for a Databricks workspace.
 	DefaultCatalogName string `json:"default_catalog_name,omitempty"`
 	// The unique ID of the metastore.
@@ -6566,44 +6269,6 @@ func (s *UpdateMetastoreAssignment) UnmarshalJSON(b []byte) error {
 
 func (s UpdateMetastoreAssignment) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
-}
-
-// The scope of Delta Sharing enabled for the metastore.
-type UpdateMetastoreDeltaSharingScope string
-
-const UpdateMetastoreDeltaSharingScopeInternal UpdateMetastoreDeltaSharingScope = `INTERNAL`
-
-const UpdateMetastoreDeltaSharingScopeInternalAndExternal UpdateMetastoreDeltaSharingScope = `INTERNAL_AND_EXTERNAL`
-
-// String representation for [fmt.Print]
-func (f *UpdateMetastoreDeltaSharingScope) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *UpdateMetastoreDeltaSharingScope) Set(v string) error {
-	switch v {
-	case `INTERNAL`, `INTERNAL_AND_EXTERNAL`:
-		*f = UpdateMetastoreDeltaSharingScope(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "INTERNAL", "INTERNAL_AND_EXTERNAL"`, v)
-	}
-}
-
-// Values returns all possible values of UpdateMetastoreDeltaSharingScope.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *UpdateMetastoreDeltaSharingScope) Values() []UpdateMetastoreDeltaSharingScope {
-	return []UpdateMetastoreDeltaSharingScope{
-		UpdateMetastoreDeltaSharingScopeInternal,
-		UpdateMetastoreDeltaSharingScopeInternalAndExternal,
-	}
-}
-
-// Type always returns UpdateMetastoreDeltaSharingScope to satisfy [pflag.Value] interface
-func (f *UpdateMetastoreDeltaSharingScope) Type() string {
-	return "UpdateMetastoreDeltaSharingScope"
 }
 
 type UpdateModelVersionRequest struct {
@@ -6677,7 +6342,12 @@ type UpdatePermissions struct {
 	// Full name of securable.
 	FullName string `json:"-" url:"-"`
 	// Type of securable.
-	SecurableType SecurableType `json:"-" url:"-"`
+	SecurableType string `json:"-" url:"-"`
+}
+
+type UpdatePermissionsResponse struct {
+	// The privileges assigned to each principal
+	PrivilegeAssignments []PrivilegeAssignment `json:"privilege_assignments,omitempty"`
 }
 
 type UpdateRegisteredModelRequest struct {
@@ -6707,7 +6377,8 @@ type UpdateResponse struct {
 type UpdateSchema struct {
 	// User-provided free-form text description.
 	Comment string `json:"comment,omitempty"`
-
+	// Whether predictive optimization should be enabled for this object and
+	// objects under it.
 	EnablePredictiveOptimization EnablePredictiveOptimization `json:"enable_predictive_optimization,omitempty"`
 	// Full name of the schema.
 	FullName string `json:"-" url:"-"`
@@ -6915,7 +6586,7 @@ func (f *ValidateCredentialResult) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ValidateCredentialResult.
+// Values returns all possible values for ValidateCredentialResult.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ValidateCredentialResult) Values() []ValidateCredentialResult {
@@ -7027,7 +6698,7 @@ func (f *ValidationResultOperation) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ValidationResultOperation.
+// Values returns all possible values for ValidationResultOperation.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ValidationResultOperation) Values() []ValidationResultOperation {
@@ -7070,7 +6741,7 @@ func (f *ValidationResultResult) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ValidationResultResult.
+// Values returns all possible values for ValidationResultResult.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ValidationResultResult) Values() []ValidationResultResult {
@@ -7168,7 +6839,7 @@ func (f *VolumeType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of VolumeType.
+// Values returns all possible values for VolumeType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *VolumeType) Values() []VolumeType {
@@ -7214,7 +6885,7 @@ func (f *WorkspaceBindingBindingType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of WorkspaceBindingBindingType.
+// Values returns all possible values for WorkspaceBindingBindingType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *WorkspaceBindingBindingType) Values() []WorkspaceBindingBindingType {

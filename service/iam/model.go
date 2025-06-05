@@ -339,7 +339,7 @@ func (f *GetSortOrder) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of GetSortOrder.
+// Values returns all possible values for GetSortOrder.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *GetSortOrder) Values() []GetSortOrder {
@@ -462,7 +462,7 @@ func (f *GroupSchema) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of GroupSchema.
+// Values returns all possible values for GroupSchema.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *GroupSchema) Values() []GroupSchema {
@@ -657,7 +657,7 @@ func (f *ListResponseSchema) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ListResponseSchema.
+// Values returns all possible values for ListResponseSchema.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ListResponseSchema) Values() []ListResponseSchema {
@@ -751,7 +751,7 @@ func (f *ListSortOrder) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ListSortOrder.
+// Values returns all possible values for ListSortOrder.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ListSortOrder) Values() []ListSortOrder {
@@ -996,7 +996,7 @@ func (f *PasswordPermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PasswordPermissionLevel.
+// Values returns all possible values for PasswordPermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PasswordPermissionLevel) Values() []PasswordPermissionLevel {
@@ -1092,7 +1092,7 @@ func (f *PatchOp) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PatchOp.
+// Values returns all possible values for PatchOp.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PatchOp) Values() []PatchOp {
@@ -1131,7 +1131,7 @@ func (f *PatchSchema) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PatchSchema.
+// Values returns all possible values for PatchSchema.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PatchSchema) Values() []PatchSchema {
@@ -1246,7 +1246,7 @@ func (f *PermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PermissionLevel.
+// Values returns all possible values for PermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PermissionLevel) Values() []PermissionLevel {
@@ -1360,7 +1360,7 @@ func (f *RequestAuthzIdentity) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RequestAuthzIdentity.
+// Values returns all possible values for RequestAuthzIdentity.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RequestAuthzIdentity) Values() []RequestAuthzIdentity {
@@ -1504,7 +1504,7 @@ func (f *ServicePrincipalSchema) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ServicePrincipalSchema.
+// Values returns all possible values for ServicePrincipalSchema.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ServicePrincipalSchema) Values() []ServicePrincipalSchema {
@@ -1631,7 +1631,7 @@ func (f *UserSchema) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of UserSchema.
+// Values returns all possible values for UserSchema.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *UserSchema) Values() []UserSchema {
@@ -1670,7 +1670,7 @@ func (f *WorkspacePermission) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of WorkspacePermission.
+// Values returns all possible values for WorkspacePermission.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *WorkspacePermission) Values() []WorkspacePermission {

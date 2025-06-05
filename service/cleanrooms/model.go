@@ -77,7 +77,7 @@ func (f *CleanRoomAccessRestricted) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CleanRoomAccessRestricted.
+// Values returns all possible values for CleanRoomAccessRestricted.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CleanRoomAccessRestricted) Values() []CleanRoomAccessRestricted {
@@ -98,6 +98,9 @@ type CleanRoomAsset struct {
 	AddedAt int64 `json:"added_at,omitempty"`
 	// The type of the asset.
 	AssetType CleanRoomAssetAssetType `json:"asset_type,omitempty"`
+	// The name of the clean room this asset belongs to. This is an output-only
+	// field to ensure proper resource identification.
+	CleanRoomName string `json:"clean_room_name,omitempty"`
 	// Foreign table details available to all collaborators of the clean room.
 	// Present if and only if **asset_type** is **FOREIGN_TABLE**
 	ForeignTable *CleanRoomAssetForeignTable `json:"foreign_table,omitempty"`
@@ -174,7 +177,7 @@ func (f *CleanRoomAssetAssetType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CleanRoomAssetAssetType.
+// Values returns all possible values for CleanRoomAssetAssetType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CleanRoomAssetAssetType) Values() []CleanRoomAssetAssetType {
@@ -261,7 +264,7 @@ func (f *CleanRoomAssetStatusEnum) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CleanRoomAssetStatusEnum.
+// Values returns all possible values for CleanRoomAssetStatusEnum.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CleanRoomAssetStatusEnum) Values() []CleanRoomAssetStatusEnum {
@@ -427,7 +430,7 @@ func (f *CleanRoomNotebookReviewNotebookReviewState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CleanRoomNotebookReviewNotebookReviewState.
+// Values returns all possible values for CleanRoomNotebookReviewNotebookReviewState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CleanRoomNotebookReviewNotebookReviewState) Values() []CleanRoomNotebookReviewNotebookReviewState {
@@ -465,7 +468,7 @@ func (f *CleanRoomNotebookReviewNotebookReviewSubReason) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CleanRoomNotebookReviewNotebookReviewSubReason.
+// Values returns all possible values for CleanRoomNotebookReviewNotebookReviewSubReason.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CleanRoomNotebookReviewNotebookReviewSubReason) Values() []CleanRoomNotebookReviewNotebookReviewSubReason {
@@ -562,7 +565,7 @@ func (f *CleanRoomOutputCatalogOutputCatalogStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CleanRoomOutputCatalogOutputCatalogStatus.
+// Values returns all possible values for CleanRoomOutputCatalogOutputCatalogStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CleanRoomOutputCatalogOutputCatalogStatus) Values() []CleanRoomOutputCatalogOutputCatalogStatus {
@@ -639,7 +642,7 @@ func (f *CleanRoomStatusEnum) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CleanRoomStatusEnum.
+// Values returns all possible values for CleanRoomStatusEnum.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CleanRoomStatusEnum) Values() []CleanRoomStatusEnum {
@@ -726,13 +729,13 @@ type CreateCleanRoomRequest struct {
 
 // Delete an asset
 type DeleteCleanRoomAssetRequest struct {
-	// The fully qualified name of the asset, it is same as the name field in
-	// CleanRoomAsset.
-	AssetFullName string `json:"-" url:"-"`
 	// The type of the asset.
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
 	// Name of the clean room.
 	CleanRoomName string `json:"-" url:"-"`
+	// The fully qualified name of the asset, it is same as the name field in
+	// CleanRoomAsset.
+	Name string `json:"-" url:"-"`
 }
 
 // Response for delete clean room request. Using an empty message since the
@@ -751,13 +754,13 @@ type DeleteResponse struct {
 
 // Get an asset
 type GetCleanRoomAssetRequest struct {
-	// The fully qualified name of the asset, it is same as the name field in
-	// CleanRoomAsset.
-	AssetFullName string `json:"-" url:"-"`
 	// The type of the asset.
 	AssetType CleanRoomAssetAssetType `json:"-" url:"-"`
 	// Name of the clean room.
 	CleanRoomName string `json:"-" url:"-"`
+	// The fully qualified name of the asset, it is same as the name field in
+	// CleanRoomAsset.
+	Name string `json:"-" url:"-"`
 }
 
 // Get a clean room

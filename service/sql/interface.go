@@ -115,7 +115,7 @@ type AlertsLegacyService interface {
 	Update(ctx context.Context, request EditAlert) error
 }
 
-// TODO: Add description
+// New version of SQL Alerts
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AlertsV2Service interface {

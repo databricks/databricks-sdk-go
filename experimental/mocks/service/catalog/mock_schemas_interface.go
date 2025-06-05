@@ -296,65 +296,6 @@ func (_c *MockSchemasInterface_GetByFullName_Call) RunAndReturn(run func(context
 	return _c
 }
 
-// GetByName provides a mock function with given fields: ctx, name
-func (_m *MockSchemasInterface) GetByName(ctx context.Context, name string) (*catalog.SchemaInfo, error) {
-	ret := _m.Called(ctx, name)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByName")
-	}
-
-	var r0 *catalog.SchemaInfo
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*catalog.SchemaInfo, error)); ok {
-		return rf(ctx, name)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *catalog.SchemaInfo); ok {
-		r0 = rf(ctx, name)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.SchemaInfo)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, name)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockSchemasInterface_GetByName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByName'
-type MockSchemasInterface_GetByName_Call struct {
-	*mock.Call
-}
-
-// GetByName is a helper method to define mock.On call
-//   - ctx context.Context
-//   - name string
-func (_e *MockSchemasInterface_Expecter) GetByName(ctx interface{}, name interface{}) *MockSchemasInterface_GetByName_Call {
-	return &MockSchemasInterface_GetByName_Call{Call: _e.mock.On("GetByName", ctx, name)}
-}
-
-func (_c *MockSchemasInterface_GetByName_Call) Run(run func(ctx context.Context, name string)) *MockSchemasInterface_GetByName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
-	})
-	return _c
-}
-
-func (_c *MockSchemasInterface_GetByName_Call) Return(_a0 *catalog.SchemaInfo, _a1 error) *MockSchemasInterface_GetByName_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockSchemasInterface_GetByName_Call) RunAndReturn(run func(context.Context, string) (*catalog.SchemaInfo, error)) *MockSchemasInterface_GetByName_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // List provides a mock function with given fields: ctx, request
 func (_m *MockSchemasInterface) List(ctx context.Context, request catalog.ListSchemasRequest) listing.Iterator[catalog.SchemaInfo] {
 	ret := _m.Called(ctx, request)
@@ -459,65 +400,6 @@ func (_c *MockSchemasInterface_ListAll_Call) Return(_a0 []catalog.SchemaInfo, _a
 }
 
 func (_c *MockSchemasInterface_ListAll_Call) RunAndReturn(run func(context.Context, catalog.ListSchemasRequest) ([]catalog.SchemaInfo, error)) *MockSchemasInterface_ListAll_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// SchemaInfoNameToFullNameMap provides a mock function with given fields: ctx, request
-func (_m *MockSchemasInterface) SchemaInfoNameToFullNameMap(ctx context.Context, request catalog.ListSchemasRequest) (map[string]string, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for SchemaInfoNameToFullNameMap")
-	}
-
-	var r0 map[string]string
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListSchemasRequest) (map[string]string, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListSchemasRequest) map[string]string); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]string)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListSchemasRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockSchemasInterface_SchemaInfoNameToFullNameMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SchemaInfoNameToFullNameMap'
-type MockSchemasInterface_SchemaInfoNameToFullNameMap_Call struct {
-	*mock.Call
-}
-
-// SchemaInfoNameToFullNameMap is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request catalog.ListSchemasRequest
-func (_e *MockSchemasInterface_Expecter) SchemaInfoNameToFullNameMap(ctx interface{}, request interface{}) *MockSchemasInterface_SchemaInfoNameToFullNameMap_Call {
-	return &MockSchemasInterface_SchemaInfoNameToFullNameMap_Call{Call: _e.mock.On("SchemaInfoNameToFullNameMap", ctx, request)}
-}
-
-func (_c *MockSchemasInterface_SchemaInfoNameToFullNameMap_Call) Run(run func(ctx context.Context, request catalog.ListSchemasRequest)) *MockSchemasInterface_SchemaInfoNameToFullNameMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(catalog.ListSchemasRequest))
-	})
-	return _c
-}
-
-func (_c *MockSchemasInterface_SchemaInfoNameToFullNameMap_Call) Return(_a0 map[string]string, _a1 error) *MockSchemasInterface_SchemaInfoNameToFullNameMap_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockSchemasInterface_SchemaInfoNameToFullNameMap_Call) RunAndReturn(run func(context.Context, catalog.ListSchemasRequest) (map[string]string, error)) *MockSchemasInterface_SchemaInfoNameToFullNameMap_Call {
 	_c.Call.Return(run)
 	return _c
 }

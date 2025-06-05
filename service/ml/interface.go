@@ -89,12 +89,6 @@ type ExperimentsService interface {
 	// exists.
 	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error)
 
-	// Get credentials to download trace data.
-	GetCredentialsForTraceDataDownload(ctx context.Context, request GetCredentialsForTraceDataDownloadRequest) (*GetCredentialsForTraceDataDownloadResponse, error)
-
-	// Get credentials to upload trace data.
-	GetCredentialsForTraceDataUpload(ctx context.Context, request GetCredentialsForTraceDataUploadRequest) (*GetCredentialsForTraceDataUploadResponse, error)
-
 	// Get an experiment.
 	//
 	// Gets metadata for an experiment. This method works on deleted
@@ -144,13 +138,6 @@ type ExperimentsService interface {
 	//
 	// Gets a list of all experiments.
 	ListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error)
-
-	// List artifacts for a logged model.
-	//
-	// List artifacts for a logged model. Takes an optional
-	// ``artifact_directory_path`` prefix which if specified, the response
-	// contains only artifacts with the specified prefix.
-	ListLoggedModelArtifacts(ctx context.Context, request ListLoggedModelArtifactsRequest) (*ListLoggedModelArtifactsResponse, error)
 
 	// Log a batch of metrics/params/tags for a run.
 	//

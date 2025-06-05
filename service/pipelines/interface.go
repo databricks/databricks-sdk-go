@@ -33,7 +33,8 @@ type PipelinesService interface {
 
 	// Delete a pipeline.
 	//
-	// Deletes a pipeline.
+	// Deletes a pipeline. Deleting a pipeline is a permanent action that stops
+	// and removes the pipeline and its tables. You cannot undo this action.
 	Delete(ctx context.Context, request DeletePipelineRequest) error
 
 	// Get a pipeline.

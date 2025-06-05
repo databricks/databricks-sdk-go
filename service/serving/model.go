@@ -102,7 +102,7 @@ func (f *AiGatewayGuardrailPiiBehaviorBehavior) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AiGatewayGuardrailPiiBehaviorBehavior.
+// Values returns all possible values for AiGatewayGuardrailPiiBehaviorBehavior.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AiGatewayGuardrailPiiBehaviorBehavior) Values() []AiGatewayGuardrailPiiBehaviorBehavior {
@@ -184,7 +184,7 @@ func (f *AiGatewayRateLimitKey) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AiGatewayRateLimitKey.
+// Values returns all possible values for AiGatewayRateLimitKey.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AiGatewayRateLimitKey) Values() []AiGatewayRateLimitKey {
@@ -219,7 +219,7 @@ func (f *AiGatewayRateLimitRenewalPeriod) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AiGatewayRateLimitRenewalPeriod.
+// Values returns all possible values for AiGatewayRateLimitRenewalPeriod.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AiGatewayRateLimitRenewalPeriod) Values() []AiGatewayRateLimitRenewalPeriod {
@@ -324,7 +324,7 @@ func (f *AmazonBedrockConfigBedrockProvider) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AmazonBedrockConfigBedrockProvider.
+// Values returns all possible values for AmazonBedrockConfigBedrockProvider.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AmazonBedrockConfigBedrockProvider) Values() []AmazonBedrockConfigBedrockProvider {
@@ -515,7 +515,7 @@ func (f *ChatMessageRole) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ChatMessageRole.
+// Values returns all possible values for ChatMessageRole.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ChatMessageRole) Values() []ChatMessageRole {
@@ -731,7 +731,7 @@ func (f *EmbeddingsV1ResponseEmbeddingElementObject) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of EmbeddingsV1ResponseEmbeddingElementObject.
+// Values returns all possible values for EmbeddingsV1ResponseEmbeddingElementObject.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EmbeddingsV1ResponseEmbeddingElementObject) Values() []EmbeddingsV1ResponseEmbeddingElementObject {
@@ -871,7 +871,7 @@ func (f *EndpointStateConfigUpdate) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of EndpointStateConfigUpdate.
+// Values returns all possible values for EndpointStateConfigUpdate.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EndpointStateConfigUpdate) Values() []EndpointStateConfigUpdate {
@@ -910,7 +910,7 @@ func (f *EndpointStateReady) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of EndpointStateReady.
+// Values returns all possible values for EndpointStateReady.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EndpointStateReady) Values() []EndpointStateReady {
@@ -1013,7 +1013,7 @@ func (f *ExternalFunctionRequestHttpMethod) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ExternalFunctionRequestHttpMethod.
+// Values returns all possible values for ExternalFunctionRequestHttpMethod.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ExternalFunctionRequestHttpMethod) Values() []ExternalFunctionRequestHttpMethod {
@@ -1099,7 +1099,7 @@ func (f *ExternalModelProvider) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ExternalModelProvider.
+// Values returns all possible values for ExternalModelProvider.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ExternalModelProvider) Values() []ExternalModelProvider {
@@ -1612,7 +1612,7 @@ func (f *QueryEndpointResponseObject) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of QueryEndpointResponseObject.
+// Values returns all possible values for QueryEndpointResponseObject.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *QueryEndpointResponseObject) Values() []QueryEndpointResponseObject {
@@ -1663,7 +1663,7 @@ func (f *RateLimitKey) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RateLimitKey.
+// Values returns all possible values for RateLimitKey.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RateLimitKey) Values() []RateLimitKey {
@@ -1698,7 +1698,7 @@ func (f *RateLimitRenewalPeriod) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RateLimitRenewalPeriod.
+// Values returns all possible values for RateLimitRenewalPeriod.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RateLimitRenewalPeriod) Values() []RateLimitRenewalPeriod {
@@ -1748,8 +1748,14 @@ type ServedEntityInput struct {
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The maximum provisioned concurrency that the endpoint can scale up to. Do
+	// not use if workload_size is specified.
+	MaxProvisionedConcurrency int `json:"max_provisioned_concurrency,omitempty"`
 	// The maximum tokens per second that the endpoint can scale up to.
 	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
+	// The minimum provisioned concurrency that the endpoint can scale down to.
+	// Do not use if workload_size is specified.
+	MinProvisionedConcurrency int `json:"min_provisioned_concurrency,omitempty"`
 	// The minimum tokens per second that the endpoint can scale down to.
 	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
 	// The name of a served entity. It must be unique across an endpoint. A
@@ -1771,6 +1777,8 @@ type ServedEntityInput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
+	// Do not use if min_provisioned_concurrency and max_provisioned_concurrency
+	// are specified.
 	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -1826,8 +1834,14 @@ type ServedEntityOutput struct {
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The maximum provisioned concurrency that the endpoint can scale up to. Do
+	// not use if workload_size is specified.
+	MaxProvisionedConcurrency int `json:"max_provisioned_concurrency,omitempty"`
 	// The maximum tokens per second that the endpoint can scale up to.
 	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
+	// The minimum provisioned concurrency that the endpoint can scale down to.
+	// Do not use if workload_size is specified.
+	MinProvisionedConcurrency int `json:"min_provisioned_concurrency,omitempty"`
 	// The minimum tokens per second that the endpoint can scale down to.
 	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
 	// The name of a served entity. It must be unique across an endpoint. A
@@ -1851,6 +1865,8 @@ type ServedEntityOutput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
+	// Do not use if min_provisioned_concurrency and max_provisioned_concurrency
+	// are specified.
 	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -1906,8 +1922,14 @@ type ServedModelInput struct {
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The maximum provisioned concurrency that the endpoint can scale up to. Do
+	// not use if workload_size is specified.
+	MaxProvisionedConcurrency int `json:"max_provisioned_concurrency,omitempty"`
 	// The maximum tokens per second that the endpoint can scale up to.
 	MaxProvisionedThroughput int `json:"max_provisioned_throughput,omitempty"`
+	// The minimum provisioned concurrency that the endpoint can scale down to.
+	// Do not use if workload_size is specified.
+	MinProvisionedConcurrency int `json:"min_provisioned_concurrency,omitempty"`
 	// The minimum tokens per second that the endpoint can scale down to.
 	MinProvisionedThroughput int `json:"min_provisioned_throughput,omitempty"`
 
@@ -1933,6 +1955,8 @@ type ServedModelInput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
+	// Do not use if min_provisioned_concurrency and max_provisioned_concurrency
+	// are specified.
 	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -1984,7 +2008,7 @@ func (f *ServedModelInputWorkloadType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ServedModelInputWorkloadType.
+// Values returns all possible values for ServedModelInputWorkloadType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ServedModelInputWorkloadType) Values() []ServedModelInputWorkloadType {
@@ -2016,6 +2040,12 @@ type ServedModelOutput struct {
 	// ARN of the instance profile that the served entity uses to access AWS
 	// resources.
 	InstanceProfileArn string `json:"instance_profile_arn,omitempty"`
+	// The maximum provisioned concurrency that the endpoint can scale up to. Do
+	// not use if workload_size is specified.
+	MaxProvisionedConcurrency int `json:"max_provisioned_concurrency,omitempty"`
+	// The minimum provisioned concurrency that the endpoint can scale down to.
+	// Do not use if workload_size is specified.
+	MinProvisionedConcurrency int `json:"min_provisioned_concurrency,omitempty"`
 
 	ModelName string `json:"model_name,omitempty"`
 
@@ -2041,6 +2071,8 @@ type ServedModelOutput struct {
 	// provisioned concurrency). Additional custom workload sizes can also be
 	// used when available in the workspace. If scale-to-zero is enabled, the
 	// lower bound of the provisioned concurrency for each workload size is 0.
+	// Do not use if min_provisioned_concurrency and max_provisioned_concurrency
+	// are specified.
 	WorkloadSize string `json:"workload_size,omitempty"`
 	// The workload type of the served entity. The workload type selects which
 	// type of compute to use in the endpoint. The default value for this
@@ -2125,7 +2157,7 @@ func (f *ServedModelStateDeployment) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ServedModelStateDeployment.
+// Values returns all possible values for ServedModelStateDeployment.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ServedModelStateDeployment) Values() []ServedModelStateDeployment {
@@ -2304,7 +2336,7 @@ func (f *ServingEndpointDetailedPermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ServingEndpointDetailedPermissionLevel.
+// Values returns all possible values for ServingEndpointDetailedPermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ServingEndpointDetailedPermissionLevel) Values() []ServingEndpointDetailedPermissionLevel {
@@ -2363,7 +2395,7 @@ func (f *ServingEndpointPermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ServingEndpointPermissionLevel.
+// Values returns all possible values for ServingEndpointPermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ServingEndpointPermissionLevel) Values() []ServingEndpointPermissionLevel {
@@ -2449,7 +2481,7 @@ func (f *ServingModelWorkloadType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ServingModelWorkloadType.
+// Values returns all possible values for ServingModelWorkloadType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ServingModelWorkloadType) Values() []ServingModelWorkloadType {

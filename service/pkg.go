@@ -14,7 +14,7 @@
 //
 // - [sql.AlertsLegacyAPI]: The alerts API can be used to perform CRUD operations on alerts.
 //
-// - [sql.AlertsV2API]: TODO: Add description.
+// - [sql.AlertsV2API]: New version of SQL Alerts.
 //
 // - [apps.AppsAPI]: Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on.
 //
@@ -54,9 +54,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
-//
 // - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
+//
+// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -66,13 +66,17 @@
 //
 // - [oauth2.CustomAppIntegrationAPI]: These APIs enable administrators to manage custom OAuth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
 //
+// - [aibuilder.CustomLlmsAPI]: The Custom LLMs service manages state and powers the UI for the Custom LLM product.
+//
+// - [settings.DashboardEmailSubscriptionsAPI]: Controls whether schedules or workload tasks for refreshing AI/BI Dashboards in the workspace can send subscription emails containing PDFs and/or images of the dashboard.
+//
 // - [sql.DashboardWidgetsAPI]: This is an evolving API that facilitates the addition and removal of widgets from existing dashboards within the Databricks Workspace.
 //
 // - [sql.DashboardsAPI]: In general, there is little need to modify dashboards using the API.
 //
 // - [sql.DataSourcesAPI]: This API is provided to assist you in making new query objects.
 //
-// - [catalog.DatabaseInstancesAPI]: Database Instances provide access to a database via REST API or direct SQL.
+// - [database.DatabaseAPI]: Database Instances provide access to a database via REST API or direct SQL.
 //
 // - [files.DbfsAPI]: DBFS API makes it simple to interact with various data sources without having to include a users credentials every time to read a file.
 //
@@ -144,7 +148,7 @@
 //
 // - [settings.LlmProxyPartnerPoweredWorkspaceAPI]: Determines if partner powered models are enabled or not for a specific workspace.
 //
-// - [billing.LogDeliveryAPI]: These APIs manage log delivery configurations for this account.
+// - [billing.LogDeliveryAPI]: These APIs manage Log delivery configurations for this account.
 //
 // - [catalog.AccountMetastoreAssignmentsAPI]: These APIs manage metastore assignments to a workspace.
 //
@@ -202,13 +206,13 @@
 //
 // - [oauth2.PublishedAppIntegrationAPI]: These APIs enable administrators to manage published OAuth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud.
 //
+// - [qualitymonitorv2.QualityMonitorV2API]: Manage data quality of UC objects (currently support `schema`).
+//
 // - [catalog.QualityMonitorsAPI]: A monitor computes and monitors data or model quality metrics for a table over time.
 //
 // - [sql.QueriesAPI]: The queries API can be used to perform CRUD operations on queries.
 //
 // - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
-//
-// - [dashboards.QueryExecutionAPI]: Query execution APIs for AI / BI Dashboards.
 //
 // - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute.
 //
@@ -254,6 +258,8 @@
 //
 // - [sharing.SharesAPI]: A share is a container instantiated with :method:shares/create.
 //
+// - [settings.SqlResultsDownloadAPI]: Controls whether users within the workspace are allowed to download results from the SQL Editor and AI/BI Dashboards UIs.
+//
 // - [sql.StatementExecutionAPI]: The Databricks SQL Statement Execution API can be used to execute SQL statements on a SQL warehouse and fetch the result.
 //
 // - [provisioning.StorageAPI]: These APIs manage storage configurations for this workspace.
@@ -298,7 +304,7 @@
 //
 // - [settings.WorkspaceConfAPI]: This API allows updating known workspace settings for advanced users.
 //
-// - [settings.WorkspaceNetworkConfigurationAPI]: These APIs allow configuration of network settings for Databricks workspaces.
+// - [settings.WorkspaceNetworkConfigurationAPI]: These APIs allow configuration of network settings for Databricks workspaces by selecting which network policy to associate with the workspace.
 //
 // - [provisioning.WorkspacesAPI]: These APIs manage workspaces for this account.
 //
@@ -308,12 +314,14 @@
 package service
 
 import (
+	"github.com/databricks/databricks-sdk-go/service/aibuilder"
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/billing"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
+	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
@@ -322,6 +330,7 @@ import (
 	"github.com/databricks/databricks-sdk-go/service/oauth2"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
 	"github.com/databricks/databricks-sdk-go/service/provisioning"
+	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
@@ -368,10 +377,12 @@ var (
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
 	_ *oauth2.CustomAppIntegrationAPI                     = nil
+	_ *aibuilder.CustomLlmsAPI                            = nil
+	_ *settings.DashboardEmailSubscriptionsAPI            = nil
 	_ *sql.DashboardWidgetsAPI                            = nil
 	_ *sql.DashboardsAPI                                  = nil
 	_ *sql.DataSourcesAPI                                 = nil
-	_ *catalog.DatabaseInstancesAPI                       = nil
+	_ *database.DatabaseAPI                               = nil
 	_ *files.DbfsAPI                                      = nil
 	_ *sql.DbsqlPermissionsAPI                            = nil
 	_ *settings.DefaultNamespaceAPI                       = nil
@@ -436,10 +447,10 @@ var (
 	_ *marketplace.ProviderProvidersAPI                   = nil
 	_ *sharing.ProvidersAPI                               = nil
 	_ *oauth2.PublishedAppIntegrationAPI                  = nil
+	_ *qualitymonitorv2.QualityMonitorV2API               = nil
 	_ *catalog.QualityMonitorsAPI                         = nil
 	_ *sql.QueriesAPI                                     = nil
 	_ *sql.QueriesLegacyAPI                               = nil
-	_ *dashboards.QueryExecutionAPI                       = nil
 	_ *sql.QueryHistoryAPI                                = nil
 	_ *sql.QueryVisualizationsAPI                         = nil
 	_ *sql.QueryVisualizationsLegacyAPI                   = nil
@@ -462,6 +473,7 @@ var (
 	_ *settings.SettingsAPI                               = nil
 	_ *settings.AccountSettingsAPI                        = nil
 	_ *sharing.SharesAPI                                  = nil
+	_ *settings.SqlResultsDownloadAPI                     = nil
 	_ *sql.StatementExecutionAPI                          = nil
 	_ *provisioning.StorageAPI                            = nil
 	_ *catalog.StorageCredentialsAPI                      = nil

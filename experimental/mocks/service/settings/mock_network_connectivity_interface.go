@@ -84,23 +84,23 @@ func (_c *MockNetworkConnectivityInterface_CreateNetworkConnectivityConfiguratio
 }
 
 // CreatePrivateEndpointRule provides a mock function with given fields: ctx, request
-func (_m *MockNetworkConnectivityInterface) CreatePrivateEndpointRule(ctx context.Context, request settings.CreatePrivateEndpointRuleRequest) (*settings.NccAzurePrivateEndpointRule, error) {
+func (_m *MockNetworkConnectivityInterface) CreatePrivateEndpointRule(ctx context.Context, request settings.CreatePrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreatePrivateEndpointRule")
 	}
 
-	var r0 *settings.NccAzurePrivateEndpointRule
+	var r0 *settings.NccPrivateEndpointRule
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.CreatePrivateEndpointRuleRequest) (*settings.NccAzurePrivateEndpointRule, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.CreatePrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.CreatePrivateEndpointRuleRequest) *settings.NccAzurePrivateEndpointRule); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.CreatePrivateEndpointRuleRequest) *settings.NccPrivateEndpointRule); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.NccAzurePrivateEndpointRule)
+			r0 = ret.Get(0).(*settings.NccPrivateEndpointRule)
 		}
 	}
 
@@ -132,12 +132,12 @@ func (_c *MockNetworkConnectivityInterface_CreatePrivateEndpointRule_Call) Run(r
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_CreatePrivateEndpointRule_Call) Return(_a0 *settings.NccAzurePrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_CreatePrivateEndpointRule_Call {
+func (_c *MockNetworkConnectivityInterface_CreatePrivateEndpointRule_Call) Return(_a0 *settings.NccPrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_CreatePrivateEndpointRule_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_CreatePrivateEndpointRule_Call) RunAndReturn(run func(context.Context, settings.CreatePrivateEndpointRuleRequest) (*settings.NccAzurePrivateEndpointRule, error)) *MockNetworkConnectivityInterface_CreatePrivateEndpointRule_Call {
+func (_c *MockNetworkConnectivityInterface_CreatePrivateEndpointRule_Call) RunAndReturn(run func(context.Context, settings.CreatePrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error)) *MockNetworkConnectivityInterface_CreatePrivateEndpointRule_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -237,23 +237,23 @@ func (_c *MockNetworkConnectivityInterface_DeleteNetworkConnectivityConfiguratio
 }
 
 // DeletePrivateEndpointRule provides a mock function with given fields: ctx, request
-func (_m *MockNetworkConnectivityInterface) DeletePrivateEndpointRule(ctx context.Context, request settings.DeletePrivateEndpointRuleRequest) (*settings.NccAzurePrivateEndpointRule, error) {
+func (_m *MockNetworkConnectivityInterface) DeletePrivateEndpointRule(ctx context.Context, request settings.DeletePrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeletePrivateEndpointRule")
 	}
 
-	var r0 *settings.NccAzurePrivateEndpointRule
+	var r0 *settings.NccPrivateEndpointRule
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeletePrivateEndpointRuleRequest) (*settings.NccAzurePrivateEndpointRule, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeletePrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.DeletePrivateEndpointRuleRequest) *settings.NccAzurePrivateEndpointRule); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.DeletePrivateEndpointRuleRequest) *settings.NccPrivateEndpointRule); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.NccAzurePrivateEndpointRule)
+			r0 = ret.Get(0).(*settings.NccPrivateEndpointRule)
 		}
 	}
 
@@ -285,34 +285,34 @@ func (_c *MockNetworkConnectivityInterface_DeletePrivateEndpointRule_Call) Run(r
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_DeletePrivateEndpointRule_Call) Return(_a0 *settings.NccAzurePrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_DeletePrivateEndpointRule_Call {
+func (_c *MockNetworkConnectivityInterface_DeletePrivateEndpointRule_Call) Return(_a0 *settings.NccPrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_DeletePrivateEndpointRule_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_DeletePrivateEndpointRule_Call) RunAndReturn(run func(context.Context, settings.DeletePrivateEndpointRuleRequest) (*settings.NccAzurePrivateEndpointRule, error)) *MockNetworkConnectivityInterface_DeletePrivateEndpointRule_Call {
+func (_c *MockNetworkConnectivityInterface_DeletePrivateEndpointRule_Call) RunAndReturn(run func(context.Context, settings.DeletePrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error)) *MockNetworkConnectivityInterface_DeletePrivateEndpointRule_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId provides a mock function with given fields: ctx, networkConnectivityConfigId, privateEndpointRuleId
-func (_m *MockNetworkConnectivityInterface) DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*settings.NccAzurePrivateEndpointRule, error) {
+func (_m *MockNetworkConnectivityInterface) DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*settings.NccPrivateEndpointRule, error) {
 	ret := _m.Called(ctx, networkConnectivityConfigId, privateEndpointRuleId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId")
 	}
 
-	var r0 *settings.NccAzurePrivateEndpointRule
+	var r0 *settings.NccPrivateEndpointRule
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*settings.NccAzurePrivateEndpointRule, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*settings.NccPrivateEndpointRule, error)); ok {
 		return rf(ctx, networkConnectivityConfigId, privateEndpointRuleId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) *settings.NccAzurePrivateEndpointRule); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *settings.NccPrivateEndpointRule); ok {
 		r0 = rf(ctx, networkConnectivityConfigId, privateEndpointRuleId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.NccAzurePrivateEndpointRule)
+			r0 = ret.Get(0).(*settings.NccPrivateEndpointRule)
 		}
 	}
 
@@ -345,12 +345,12 @@ func (_c *MockNetworkConnectivityInterface_DeletePrivateEndpointRuleByNetworkCon
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call) Return(_a0 *settings.NccAzurePrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call {
+func (_c *MockNetworkConnectivityInterface_DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call) Return(_a0 *settings.NccPrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call) RunAndReturn(run func(context.Context, string, string) (*settings.NccAzurePrivateEndpointRule, error)) *MockNetworkConnectivityInterface_DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call {
+func (_c *MockNetworkConnectivityInterface_DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call) RunAndReturn(run func(context.Context, string, string) (*settings.NccPrivateEndpointRule, error)) *MockNetworkConnectivityInterface_DeletePrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -474,23 +474,23 @@ func (_c *MockNetworkConnectivityInterface_GetNetworkConnectivityConfigurationBy
 }
 
 // GetPrivateEndpointRule provides a mock function with given fields: ctx, request
-func (_m *MockNetworkConnectivityInterface) GetPrivateEndpointRule(ctx context.Context, request settings.GetPrivateEndpointRuleRequest) (*settings.NccAzurePrivateEndpointRule, error) {
+func (_m *MockNetworkConnectivityInterface) GetPrivateEndpointRule(ctx context.Context, request settings.GetPrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPrivateEndpointRule")
 	}
 
-	var r0 *settings.NccAzurePrivateEndpointRule
+	var r0 *settings.NccPrivateEndpointRule
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetPrivateEndpointRuleRequest) (*settings.NccAzurePrivateEndpointRule, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetPrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.GetPrivateEndpointRuleRequest) *settings.NccAzurePrivateEndpointRule); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.GetPrivateEndpointRuleRequest) *settings.NccPrivateEndpointRule); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.NccAzurePrivateEndpointRule)
+			r0 = ret.Get(0).(*settings.NccPrivateEndpointRule)
 		}
 	}
 
@@ -522,34 +522,34 @@ func (_c *MockNetworkConnectivityInterface_GetPrivateEndpointRule_Call) Run(run 
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_GetPrivateEndpointRule_Call) Return(_a0 *settings.NccAzurePrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_GetPrivateEndpointRule_Call {
+func (_c *MockNetworkConnectivityInterface_GetPrivateEndpointRule_Call) Return(_a0 *settings.NccPrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_GetPrivateEndpointRule_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_GetPrivateEndpointRule_Call) RunAndReturn(run func(context.Context, settings.GetPrivateEndpointRuleRequest) (*settings.NccAzurePrivateEndpointRule, error)) *MockNetworkConnectivityInterface_GetPrivateEndpointRule_Call {
+func (_c *MockNetworkConnectivityInterface_GetPrivateEndpointRule_Call) RunAndReturn(run func(context.Context, settings.GetPrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error)) *MockNetworkConnectivityInterface_GetPrivateEndpointRule_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId provides a mock function with given fields: ctx, networkConnectivityConfigId, privateEndpointRuleId
-func (_m *MockNetworkConnectivityInterface) GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*settings.NccAzurePrivateEndpointRule, error) {
+func (_m *MockNetworkConnectivityInterface) GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId(ctx context.Context, networkConnectivityConfigId string, privateEndpointRuleId string) (*settings.NccPrivateEndpointRule, error) {
 	ret := _m.Called(ctx, networkConnectivityConfigId, privateEndpointRuleId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId")
 	}
 
-	var r0 *settings.NccAzurePrivateEndpointRule
+	var r0 *settings.NccPrivateEndpointRule
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*settings.NccAzurePrivateEndpointRule, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*settings.NccPrivateEndpointRule, error)); ok {
 		return rf(ctx, networkConnectivityConfigId, privateEndpointRuleId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) *settings.NccAzurePrivateEndpointRule); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *settings.NccPrivateEndpointRule); ok {
 		r0 = rf(ctx, networkConnectivityConfigId, privateEndpointRuleId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.NccAzurePrivateEndpointRule)
+			r0 = ret.Get(0).(*settings.NccPrivateEndpointRule)
 		}
 	}
 
@@ -582,12 +582,12 @@ func (_c *MockNetworkConnectivityInterface_GetPrivateEndpointRuleByNetworkConnec
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call) Return(_a0 *settings.NccAzurePrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call {
+func (_c *MockNetworkConnectivityInterface_GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call) Return(_a0 *settings.NccPrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call) RunAndReturn(run func(context.Context, string, string) (*settings.NccAzurePrivateEndpointRule, error)) *MockNetworkConnectivityInterface_GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call {
+func (_c *MockNetworkConnectivityInterface_GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call) RunAndReturn(run func(context.Context, string, string) (*settings.NccPrivateEndpointRule, error)) *MockNetworkConnectivityInterface_GetPrivateEndpointRuleByNetworkConnectivityConfigIdAndPrivateEndpointRuleId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -701,19 +701,19 @@ func (_c *MockNetworkConnectivityInterface_ListNetworkConnectivityConfigurations
 }
 
 // ListPrivateEndpointRules provides a mock function with given fields: ctx, request
-func (_m *MockNetworkConnectivityInterface) ListPrivateEndpointRules(ctx context.Context, request settings.ListPrivateEndpointRulesRequest) listing.Iterator[settings.NccAzurePrivateEndpointRule] {
+func (_m *MockNetworkConnectivityInterface) ListPrivateEndpointRules(ctx context.Context, request settings.ListPrivateEndpointRulesRequest) listing.Iterator[settings.NccPrivateEndpointRule] {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListPrivateEndpointRules")
 	}
 
-	var r0 listing.Iterator[settings.NccAzurePrivateEndpointRule]
-	if rf, ok := ret.Get(0).(func(context.Context, settings.ListPrivateEndpointRulesRequest) listing.Iterator[settings.NccAzurePrivateEndpointRule]); ok {
+	var r0 listing.Iterator[settings.NccPrivateEndpointRule]
+	if rf, ok := ret.Get(0).(func(context.Context, settings.ListPrivateEndpointRulesRequest) listing.Iterator[settings.NccPrivateEndpointRule]); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(listing.Iterator[settings.NccAzurePrivateEndpointRule])
+			r0 = ret.Get(0).(listing.Iterator[settings.NccPrivateEndpointRule])
 		}
 	}
 
@@ -739,34 +739,34 @@ func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call) Run(ru
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call) Return(_a0 listing.Iterator[settings.NccAzurePrivateEndpointRule]) *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call {
+func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call) Return(_a0 listing.Iterator[settings.NccPrivateEndpointRule]) *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call) RunAndReturn(run func(context.Context, settings.ListPrivateEndpointRulesRequest) listing.Iterator[settings.NccAzurePrivateEndpointRule]) *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call {
+func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call) RunAndReturn(run func(context.Context, settings.ListPrivateEndpointRulesRequest) listing.Iterator[settings.NccPrivateEndpointRule]) *MockNetworkConnectivityInterface_ListPrivateEndpointRules_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListPrivateEndpointRulesAll provides a mock function with given fields: ctx, request
-func (_m *MockNetworkConnectivityInterface) ListPrivateEndpointRulesAll(ctx context.Context, request settings.ListPrivateEndpointRulesRequest) ([]settings.NccAzurePrivateEndpointRule, error) {
+func (_m *MockNetworkConnectivityInterface) ListPrivateEndpointRulesAll(ctx context.Context, request settings.ListPrivateEndpointRulesRequest) ([]settings.NccPrivateEndpointRule, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListPrivateEndpointRulesAll")
 	}
 
-	var r0 []settings.NccAzurePrivateEndpointRule
+	var r0 []settings.NccPrivateEndpointRule
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.ListPrivateEndpointRulesRequest) ([]settings.NccAzurePrivateEndpointRule, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.ListPrivateEndpointRulesRequest) ([]settings.NccPrivateEndpointRule, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.ListPrivateEndpointRulesRequest) []settings.NccAzurePrivateEndpointRule); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.ListPrivateEndpointRulesRequest) []settings.NccPrivateEndpointRule); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]settings.NccAzurePrivateEndpointRule)
+			r0 = ret.Get(0).([]settings.NccPrivateEndpointRule)
 		}
 	}
 
@@ -798,34 +798,34 @@ func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesAll_Call) Run
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesAll_Call) Return(_a0 []settings.NccAzurePrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_ListPrivateEndpointRulesAll_Call {
+func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesAll_Call) Return(_a0 []settings.NccPrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_ListPrivateEndpointRulesAll_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesAll_Call) RunAndReturn(run func(context.Context, settings.ListPrivateEndpointRulesRequest) ([]settings.NccAzurePrivateEndpointRule, error)) *MockNetworkConnectivityInterface_ListPrivateEndpointRulesAll_Call {
+func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesAll_Call) RunAndReturn(run func(context.Context, settings.ListPrivateEndpointRulesRequest) ([]settings.NccPrivateEndpointRule, error)) *MockNetworkConnectivityInterface_ListPrivateEndpointRulesAll_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ListPrivateEndpointRulesByNetworkConnectivityConfigId provides a mock function with given fields: ctx, networkConnectivityConfigId
-func (_m *MockNetworkConnectivityInterface) ListPrivateEndpointRulesByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*settings.ListNccAzurePrivateEndpointRulesResponse, error) {
+func (_m *MockNetworkConnectivityInterface) ListPrivateEndpointRulesByNetworkConnectivityConfigId(ctx context.Context, networkConnectivityConfigId string) (*settings.ListPrivateEndpointRulesResponse, error) {
 	ret := _m.Called(ctx, networkConnectivityConfigId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListPrivateEndpointRulesByNetworkConnectivityConfigId")
 	}
 
-	var r0 *settings.ListNccAzurePrivateEndpointRulesResponse
+	var r0 *settings.ListPrivateEndpointRulesResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*settings.ListNccAzurePrivateEndpointRulesResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*settings.ListPrivateEndpointRulesResponse, error)); ok {
 		return rf(ctx, networkConnectivityConfigId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *settings.ListNccAzurePrivateEndpointRulesResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *settings.ListPrivateEndpointRulesResponse); ok {
 		r0 = rf(ctx, networkConnectivityConfigId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.ListNccAzurePrivateEndpointRulesResponse)
+			r0 = ret.Get(0).(*settings.ListPrivateEndpointRulesResponse)
 		}
 	}
 
@@ -857,38 +857,38 @@ func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConn
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConnectivityConfigId_Call) Return(_a0 *settings.ListNccAzurePrivateEndpointRulesResponse, _a1 error) *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConnectivityConfigId_Call {
+func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConnectivityConfigId_Call) Return(_a0 *settings.ListPrivateEndpointRulesResponse, _a1 error) *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConnectivityConfigId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConnectivityConfigId_Call) RunAndReturn(run func(context.Context, string) (*settings.ListNccAzurePrivateEndpointRulesResponse, error)) *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConnectivityConfigId_Call {
+func (_c *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConnectivityConfigId_Call) RunAndReturn(run func(context.Context, string) (*settings.ListPrivateEndpointRulesResponse, error)) *MockNetworkConnectivityInterface_ListPrivateEndpointRulesByNetworkConnectivityConfigId_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// UpdateNccAzurePrivateEndpointRulePublic provides a mock function with given fields: ctx, request
-func (_m *MockNetworkConnectivityInterface) UpdateNccAzurePrivateEndpointRulePublic(ctx context.Context, request settings.UpdateNccAzurePrivateEndpointRulePublicRequest) (*settings.NccAzurePrivateEndpointRule, error) {
+// UpdatePrivateEndpointRule provides a mock function with given fields: ctx, request
+func (_m *MockNetworkConnectivityInterface) UpdatePrivateEndpointRule(ctx context.Context, request settings.UpdateNccPrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
-		panic("no return value specified for UpdateNccAzurePrivateEndpointRulePublic")
+		panic("no return value specified for UpdatePrivateEndpointRule")
 	}
 
-	var r0 *settings.NccAzurePrivateEndpointRule
+	var r0 *settings.NccPrivateEndpointRule
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateNccAzurePrivateEndpointRulePublicRequest) (*settings.NccAzurePrivateEndpointRule, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateNccPrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateNccAzurePrivateEndpointRulePublicRequest) *settings.NccAzurePrivateEndpointRule); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, settings.UpdateNccPrivateEndpointRuleRequest) *settings.NccPrivateEndpointRule); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*settings.NccAzurePrivateEndpointRule)
+			r0 = ret.Get(0).(*settings.NccPrivateEndpointRule)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateNccAzurePrivateEndpointRulePublicRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, settings.UpdateNccPrivateEndpointRuleRequest) error); ok {
 		r1 = rf(ctx, request)
 	} else {
 		r1 = ret.Error(1)
@@ -897,31 +897,31 @@ func (_m *MockNetworkConnectivityInterface) UpdateNccAzurePrivateEndpointRulePub
 	return r0, r1
 }
 
-// MockNetworkConnectivityInterface_UpdateNccAzurePrivateEndpointRulePublic_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateNccAzurePrivateEndpointRulePublic'
-type MockNetworkConnectivityInterface_UpdateNccAzurePrivateEndpointRulePublic_Call struct {
+// MockNetworkConnectivityInterface_UpdatePrivateEndpointRule_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdatePrivateEndpointRule'
+type MockNetworkConnectivityInterface_UpdatePrivateEndpointRule_Call struct {
 	*mock.Call
 }
 
-// UpdateNccAzurePrivateEndpointRulePublic is a helper method to define mock.On call
+// UpdatePrivateEndpointRule is a helper method to define mock.On call
 //   - ctx context.Context
-//   - request settings.UpdateNccAzurePrivateEndpointRulePublicRequest
-func (_e *MockNetworkConnectivityInterface_Expecter) UpdateNccAzurePrivateEndpointRulePublic(ctx interface{}, request interface{}) *MockNetworkConnectivityInterface_UpdateNccAzurePrivateEndpointRulePublic_Call {
-	return &MockNetworkConnectivityInterface_UpdateNccAzurePrivateEndpointRulePublic_Call{Call: _e.mock.On("UpdateNccAzurePrivateEndpointRulePublic", ctx, request)}
+//   - request settings.UpdateNccPrivateEndpointRuleRequest
+func (_e *MockNetworkConnectivityInterface_Expecter) UpdatePrivateEndpointRule(ctx interface{}, request interface{}) *MockNetworkConnectivityInterface_UpdatePrivateEndpointRule_Call {
+	return &MockNetworkConnectivityInterface_UpdatePrivateEndpointRule_Call{Call: _e.mock.On("UpdatePrivateEndpointRule", ctx, request)}
 }
 
-func (_c *MockNetworkConnectivityInterface_UpdateNccAzurePrivateEndpointRulePublic_Call) Run(run func(ctx context.Context, request settings.UpdateNccAzurePrivateEndpointRulePublicRequest)) *MockNetworkConnectivityInterface_UpdateNccAzurePrivateEndpointRulePublic_Call {
+func (_c *MockNetworkConnectivityInterface_UpdatePrivateEndpointRule_Call) Run(run func(ctx context.Context, request settings.UpdateNccPrivateEndpointRuleRequest)) *MockNetworkConnectivityInterface_UpdatePrivateEndpointRule_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(settings.UpdateNccAzurePrivateEndpointRulePublicRequest))
+		run(args[0].(context.Context), args[1].(settings.UpdateNccPrivateEndpointRuleRequest))
 	})
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_UpdateNccAzurePrivateEndpointRulePublic_Call) Return(_a0 *settings.NccAzurePrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_UpdateNccAzurePrivateEndpointRulePublic_Call {
+func (_c *MockNetworkConnectivityInterface_UpdatePrivateEndpointRule_Call) Return(_a0 *settings.NccPrivateEndpointRule, _a1 error) *MockNetworkConnectivityInterface_UpdatePrivateEndpointRule_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockNetworkConnectivityInterface_UpdateNccAzurePrivateEndpointRulePublic_Call) RunAndReturn(run func(context.Context, settings.UpdateNccAzurePrivateEndpointRulePublicRequest) (*settings.NccAzurePrivateEndpointRule, error)) *MockNetworkConnectivityInterface_UpdateNccAzurePrivateEndpointRulePublic_Call {
+func (_c *MockNetworkConnectivityInterface_UpdatePrivateEndpointRule_Call) RunAndReturn(run func(context.Context, settings.UpdateNccPrivateEndpointRuleRequest) (*settings.NccPrivateEndpointRule, error)) *MockNetworkConnectivityInterface_UpdatePrivateEndpointRule_Call {
 	_c.Call.Return(run)
 	return _c
 }

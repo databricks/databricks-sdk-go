@@ -83,7 +83,7 @@ func (f *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) Set(v string) error
 	}
 }
 
-// Values returns all possible values of AibiDashboardEmbeddingAccessPolicyAccessPolicyType.
+// Values returns all possible values for AibiDashboardEmbeddingAccessPolicyAccessPolicyType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) Values() []AibiDashboardEmbeddingAccessPolicyAccessPolicyType {
@@ -290,7 +290,7 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Set(v string) erro
 	}
 }
 
-// Values returns all possible values of ClusterAutoRestartMessageMaintenanceWindowDayOfWeek.
+// Values returns all possible values for ClusterAutoRestartMessageMaintenanceWindowDayOfWeek.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Values() []ClusterAutoRestartMessageMaintenanceWindowDayOfWeek {
@@ -350,7 +350,7 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) Set(v strin
 	}
 }
 
-// Values returns all possible values of ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency.
+// Values returns all possible values for ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) Values() []ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency {
@@ -478,7 +478,7 @@ func (f *ComplianceStandard) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ComplianceStandard.
+// Values returns all possible values for ComplianceStandard.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ComplianceStandard) Values() []ComplianceStandard {
@@ -618,20 +618,30 @@ func (s CreateOboTokenResponse) MarshalJSON() ([]byte, error) {
 // Properties of the new private endpoint rule. Note that you must approve the
 // endpoint in Azure portal after initialization.
 type CreatePrivateEndpointRule struct {
-	// Only used by private endpoints to customer-managed resources.
+	// Only used by private endpoints to customer-managed private endpoint
+	// services.
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
 	DomainNames []string `json:"domain_names,omitempty"`
-	// Only used by private endpoints to Azure first-party services. Enum: blob
-	// | dfs | sqlServer | mysqlServer
+	// The full target AWS endpoint service name that connects to the
+	// destination resources of the private endpoint.
+	EndpointService string `json:"endpoint_service,omitempty"`
+	// Not used by customer-managed private endpoint services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
 	// one for blob and one for dfs.
 	GroupId string `json:"group_id,omitempty"`
 	// The Azure resource ID of the target resource.
-	ResourceId string `json:"resource_id"`
+	ResourceId string `json:"resource_id,omitempty"`
+	// Only used by private endpoints towards AWS S3 service.
+	//
+	// The globally unique S3 bucket names that will be accessed via the VPC
+	// endpoint. The bucket names must be in the same region as the NCC/endpoint
+	// service. When updating this field, we perform full update on this field.
+	// Please ensure a full list of desired resource_names is provided.
+	ResourceNames []string `json:"resource_names,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -734,6 +744,149 @@ func (s *CspEnablementAccountSetting) UnmarshalJSON(b []byte) error {
 }
 
 func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Properties of the new private endpoint rule. Note that for private endpoints
+// towards a VPC endpoint service behind a customer-managed NLB, you must
+// approve the endpoint in AWS console after initialization.
+type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
+	// Databricks account ID. You can find your account ID from the Accounts
+	// Console.
+	AccountId string `json:"account_id,omitempty"`
+	// The current status of this private endpoint. The private endpoint rules
+	// are effective only if the connection state is ESTABLISHED. Remember that
+	// you must approve new endpoints on your resources in the AWS console
+	// before they take effect. The possible values are: - PENDING: The endpoint
+	// has been created and pending approval. - ESTABLISHED: The endpoint has
+	// been approved and is ready to use in your serverless compute resources. -
+	// REJECTED: Connection was rejected by the private link resource owner. -
+	// DISCONNECTED: Connection was removed by the private link resource owner,
+	// the private endpoint becomes informative and should be deleted for
+	// clean-up. - EXPIRED: If the endpoint is created but not approved in 14
+	// days, it is EXPIRED.
+	ConnectionState CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState `json:"connection_state,omitempty"`
+	// Time in epoch milliseconds when this object was created.
+	CreationTime int64 `json:"creation_time,omitempty"`
+	// Whether this private endpoint is deactivated.
+	Deactivated bool `json:"deactivated,omitempty"`
+	// Time in epoch milliseconds when this object was deactivated.
+	DeactivatedAt int64 `json:"deactivated_at,omitempty"`
+	// Only used by private endpoints towards a VPC endpoint service for
+	// customer-managed VPC endpoint service.
+	//
+	// The target AWS resource FQDNs accessible via the VPC endpoint service.
+	// When updating this field, we perform full update on this field. Please
+	// ensure a full list of desired domain_names is provided.
+	DomainNames []string `json:"domain_names,omitempty"`
+	// Only used by private endpoints towards an AWS S3 service.
+	//
+	// Update this field to activate/deactivate this private endpoint to allow
+	// egress access from serverless compute resources.
+	Enabled bool `json:"enabled,omitempty"`
+	// The full target AWS endpoint service name that connects to the
+	// destination resources of the private endpoint.
+	EndpointService string `json:"endpoint_service,omitempty"`
+	// The ID of a network connectivity configuration, which is the parent
+	// resource of this private endpoint rule object.
+	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
+	// Only used by private endpoints towards AWS S3 service.
+	//
+	// The globally unique S3 bucket names that will be accessed via the VPC
+	// endpoint. The bucket names must be in the same region as the NCC/endpoint
+	// service. When updating this field, we perform full update on this field.
+	// Please ensure a full list of desired resource_names is provided.
+	ResourceNames []string `json:"resource_names,omitempty"`
+	// The ID of a private endpoint rule.
+	RuleId string `json:"rule_id,omitempty"`
+	// Time in epoch milliseconds when this object was updated.
+	UpdatedTime int64 `json:"updated_time,omitempty"`
+	// The AWS VPC endpoint ID. You can use this ID to identify VPC endpoint
+	// created by Databricks.
+	VpcEndpointId string `json:"vpc_endpoint_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState string
+
+const CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateDisconnected CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState = `DISCONNECTED`
+
+const CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateEstablished CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState = `ESTABLISHED`
+
+const CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateExpired CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState = `EXPIRED`
+
+const CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStatePending CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState = `PENDING`
+
+const CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateRejected CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState = `REJECTED`
+
+// String representation for [fmt.Print]
+func (f *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState) Set(v string) error {
+	switch v {
+	case `DISCONNECTED`, `ESTABLISHED`, `EXPIRED`, `PENDING`, `REJECTED`:
+		*f = CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DISCONNECTED", "ESTABLISHED", "EXPIRED", "PENDING", "REJECTED"`, v)
+	}
+}
+
+// Values returns all possible values for CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState) Values() []CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState {
+	return []CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState{
+		CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateDisconnected,
+		CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateEstablished,
+		CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateExpired,
+		CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStatePending,
+		CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionStateRejected,
+	}
+}
+
+// Type always returns CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState to satisfy [pflag.Value] interface
+func (f *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState) Type() string {
+	return "CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState"
+}
+
+type DashboardEmailSubscriptions struct {
+	BooleanVal BooleanMessage `json:"boolean_val"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DashboardEmailSubscriptions) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DashboardEmailSubscriptions) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -873,6 +1026,40 @@ func (s DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON()
 
 // The etag is returned.
 type DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
+}
+
+// Delete the Dashboard Email Subscriptions setting
+type DeleteDashboardEmailSubscriptionsRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteDashboardEmailSubscriptionsResponse struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
 	// help prevent simultaneous writes of a setting overwriting each other. It
@@ -1161,6 +1348,40 @@ type DeleteRestrictWorkspaceAdminsSettingResponse struct {
 	Etag string `json:"etag"`
 }
 
+// Delete the SQL Results Download setting
+type DeleteSqlResultsDownloadRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DeleteSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DeleteSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// The etag is returned.
+type DeleteSqlResultsDownloadResponse struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"etag"`
+}
+
 // Delete a token
 type DeleteTokenManagementRequest struct {
 	// The ID of the token to revoke.
@@ -1195,7 +1416,7 @@ func (f *DestinationType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DestinationType.
+// Values returns all possible values for DestinationType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DestinationType) Values() []DestinationType {
@@ -1372,7 +1593,7 @@ func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDesti
 	}
 }
 
-// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol.
+// Values returns all possible values for EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol) Values() []EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol {
@@ -1406,7 +1627,7 @@ func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDesti
 	}
 }
 
-// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType.
+// Values returns all possible values for EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType) Values() []EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType {
@@ -1448,7 +1669,7 @@ func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType) Set(
 	}
 }
 
-// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType.
+// Values returns all possible values for EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType) Values() []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType {
@@ -1486,7 +1707,7 @@ func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType) Set(v s
 	}
 }
 
-// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType.
+// Values returns all possible values for EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType) Values() []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType {
@@ -1531,7 +1752,7 @@ func (f *EgressNetworkPolicyInternetAccessPolicyRestrictionMode) Set(v string) e
 	}
 }
 
-// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyRestrictionMode.
+// Values returns all possible values for EgressNetworkPolicyInternetAccessPolicyRestrictionMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressNetworkPolicyInternetAccessPolicyRestrictionMode) Values() []EgressNetworkPolicyInternetAccessPolicyRestrictionMode {
@@ -1602,7 +1823,7 @@ func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestina
 	}
 }
 
-// Values returns all possible values of EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType.
+// Values returns all possible values for EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType) Values() []EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType {
@@ -1675,7 +1896,7 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestin
 	}
 }
 
-// Values returns all possible values of EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType.
+// Values returns all possible values for EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType) Values() []EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType {
@@ -1723,7 +1944,7 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProduc
 	}
 }
 
-// Values returns all possible values of EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter.
+// Values returns all possible values for EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter) Values() []EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter {
@@ -1760,7 +1981,7 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode)
 	}
 }
 
-// Values returns all possible values of EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode.
+// Values returns all possible values for EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode) Values() []EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode {
@@ -1801,7 +2022,7 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyRestrictionMode) Set(v string) er
 	}
 }
 
-// Values returns all possible values of EgressNetworkPolicyNetworkAccessPolicyRestrictionMode.
+// Values returns all possible values for EgressNetworkPolicyNetworkAccessPolicyRestrictionMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressNetworkPolicyNetworkAccessPolicyRestrictionMode) Values() []EgressNetworkPolicyNetworkAccessPolicyRestrictionMode {
@@ -1864,7 +2085,7 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinat
 	}
 }
 
-// Values returns all possible values of EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType.
+// Values returns all possible values for EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType) Values() []EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType {
@@ -1904,7 +2125,7 @@ func (f *EgressResourceType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of EgressResourceType.
+// Values returns all possible values for EgressResourceType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EgressResourceType) Values() []EgressResourceType {
@@ -2283,6 +2504,28 @@ func (s GetCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// Get the Dashboard Email Subscriptions setting
+type GetDashboardEmailSubscriptionsRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Get the default namespace setting
 type GetDefaultNamespaceSettingRequest struct {
 	// etag used for versioning. The response is at least as fresh as the eTag
@@ -2566,6 +2809,28 @@ func (s GetRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) 
 	return marshal.Marshal(s)
 }
 
+// Get the SQL Results Download setting
+type GetSqlResultsDownloadRequest struct {
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// delete pattern to perform setting deletions in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// DELETE request to identify the rule set version you are deleting.
+	Etag string `json:"-" url:"etag,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *GetSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s GetSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 // Check configuration status
 type GetStatusRequest struct {
 	Keys string `json:"-" url:"keys"`
@@ -2587,7 +2852,7 @@ type GetTokenResponse struct {
 	TokenInfo *TokenInfo `json:"token_info,omitempty"`
 }
 
-// Get workspace network configuration
+// Get workspace network option
 type GetWorkspaceNetworkOptionRequest struct {
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`
@@ -2635,24 +2900,6 @@ func (s IpAccessListInfo) MarshalJSON() ([]byte, error) {
 // IP access lists were successfully returned.
 type ListIpAccessListResponse struct {
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
-}
-
-// The private endpoint rule list was successfully retrieved.
-type ListNccAzurePrivateEndpointRulesResponse struct {
-	Items []NccAzurePrivateEndpointRule `json:"items,omitempty"`
-	// A token that can be used to get the next page of results. If null, there
-	// are no more results to show.
-	NextPageToken string `json:"next_page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ListNccAzurePrivateEndpointRulesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListNccAzurePrivateEndpointRulesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
 }
 
 // List network connectivity configurations
@@ -2795,6 +3042,24 @@ func (s ListPrivateEndpointRulesRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// The private endpoint rule list was successfully retrieved.
+type ListPrivateEndpointRulesResponse struct {
+	Items []NccPrivateEndpointRule `json:"items,omitempty"`
+	// A token that can be used to get the next page of results. If null, there
+	// are no more results to show.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *ListPrivateEndpointRulesResponse) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s ListPrivateEndpointRulesResponse) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ListPublicTokensResponse struct {
 	// The information for each token.
 	TokenInfos []PublicTokenInfo `json:"token_infos,omitempty"`
@@ -2854,7 +3119,7 @@ func (f *ListType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ListType.
+// Values returns all possible values for ListType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ListType) Values() []ListType {
@@ -3000,15 +3265,14 @@ type NccAzurePrivateEndpointRule struct {
 	Deactivated bool `json:"deactivated,omitempty"`
 	// Time in epoch milliseconds when this object was deactivated.
 	DeactivatedAt int64 `json:"deactivated_at,omitempty"`
-	// Only used by private endpoints to customer-managed resources.
+	// Not used by customer-managed private endpoint services.
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
 	DomainNames []string `json:"domain_names,omitempty"`
 	// The name of the Azure private endpoint resource.
 	EndpointName string `json:"endpoint_name,omitempty"`
-	// Only used by private endpoints to Azure first-party services. Enum: blob
-	// | dfs | sqlServer | mysqlServer
+	// Only used by private endpoints to Azure first-party services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
@@ -3065,7 +3329,7 @@ func (f *NccAzurePrivateEndpointRuleConnectionState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of NccAzurePrivateEndpointRuleConnectionState.
+// Values returns all possible values for NccAzurePrivateEndpointRuleConnectionState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *NccAzurePrivateEndpointRuleConnectionState) Values() []NccAzurePrivateEndpointRuleConnectionState {
@@ -3132,12 +3396,140 @@ type NccEgressDefaultRules struct {
 // Target rule controls the egress rules that are dedicated to specific
 // resources.
 type NccEgressTargetRules struct {
+	// AWS private endpoint rule controls the AWS private endpoint based egress
+	// rules.
+	AwsPrivateEndpointRules []CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule `json:"aws_private_endpoint_rules,omitempty"`
+
 	AzurePrivateEndpointRules []NccAzurePrivateEndpointRule `json:"azure_private_endpoint_rules,omitempty"`
+}
+
+// Properties of the new private endpoint rule. Note that you must approve the
+// endpoint in Azure portal after initialization.
+type NccPrivateEndpointRule struct {
+	// Databricks account ID. You can find your account ID from the Accounts
+	// Console.
+	AccountId string `json:"account_id,omitempty"`
+	// The current status of this private endpoint. The private endpoint rules
+	// are effective only if the connection state is ESTABLISHED. Remember that
+	// you must approve new endpoints on your resources in the Cloud console
+	// before they take effect. The possible values are: - PENDING: The endpoint
+	// has been created and pending approval. - ESTABLISHED: The endpoint has
+	// been approved and is ready to use in your serverless compute resources. -
+	// REJECTED: Connection was rejected by the private link resource owner. -
+	// DISCONNECTED: Connection was removed by the private link resource owner,
+	// the private endpoint becomes informative and should be deleted for
+	// clean-up. - EXPIRED: If the endpoint was created but not approved in 14
+	// days, it will be EXPIRED.
+	ConnectionState NccPrivateEndpointRulePrivateLinkConnectionState `json:"connection_state,omitempty"`
+	// Time in epoch milliseconds when this object was created.
+	CreationTime int64 `json:"creation_time,omitempty"`
+	// Whether this private endpoint is deactivated.
+	Deactivated bool `json:"deactivated,omitempty"`
+	// Time in epoch milliseconds when this object was deactivated.
+	DeactivatedAt int64 `json:"deactivated_at,omitempty"`
+	// Only used by private endpoints to customer-managed private endpoint
+	// services.
+	//
+	// Domain names of target private link service. When updating this field,
+	// the full list of target domain_names must be specified.
+	DomainNames []string `json:"domain_names,omitempty"`
+	// Only used by private endpoints towards an AWS S3 service.
+	//
+	// Update this field to activate/deactivate this private endpoint to allow
+	// egress access from serverless compute resources.
+	Enabled bool `json:"enabled,omitempty"`
+	// The name of the Azure private endpoint resource.
+	EndpointName string `json:"endpoint_name,omitempty"`
+	// The full target AWS endpoint service name that connects to the
+	// destination resources of the private endpoint.
+	EndpointService string `json:"endpoint_service,omitempty"`
+	// Not used by customer-managed private endpoint services.
+	//
+	// The sub-resource type (group ID) of the target resource. Note that to
+	// connect to workspace root storage (root DBFS), you need two endpoints,
+	// one for blob and one for dfs.
+	GroupId string `json:"group_id,omitempty"`
+	// The ID of a network connectivity configuration, which is the parent
+	// resource of this private endpoint rule object.
+	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
+	// The Azure resource ID of the target resource.
+	ResourceId string `json:"resource_id,omitempty"`
+	// Only used by private endpoints towards AWS S3 service.
+	//
+	// The globally unique S3 bucket names that will be accessed via the VPC
+	// endpoint. The bucket names must be in the same region as the NCC/endpoint
+	// service. When updating this field, we perform full update on this field.
+	// Please ensure a full list of desired resource_names is provided.
+	ResourceNames []string `json:"resource_names,omitempty"`
+	// The ID of a private endpoint rule.
+	RuleId string `json:"rule_id,omitempty"`
+	// Time in epoch milliseconds when this object was updated.
+	UpdatedTime int64 `json:"updated_time,omitempty"`
+	// The AWS VPC endpoint ID. You can use this ID to identify the VPC endpoint
+	// created by Databricks.
+	VpcEndpointId string `json:"vpc_endpoint_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *NccPrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s NccPrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type NccPrivateEndpointRulePrivateLinkConnectionState string
+
+const NccPrivateEndpointRulePrivateLinkConnectionStateDisconnected NccPrivateEndpointRulePrivateLinkConnectionState = `DISCONNECTED`
+
+const NccPrivateEndpointRulePrivateLinkConnectionStateEstablished NccPrivateEndpointRulePrivateLinkConnectionState = `ESTABLISHED`
+
+const NccPrivateEndpointRulePrivateLinkConnectionStateExpired NccPrivateEndpointRulePrivateLinkConnectionState = `EXPIRED`
+
+const NccPrivateEndpointRulePrivateLinkConnectionStatePending NccPrivateEndpointRulePrivateLinkConnectionState = `PENDING`
+
+const NccPrivateEndpointRulePrivateLinkConnectionStateRejected NccPrivateEndpointRulePrivateLinkConnectionState = `REJECTED`
+
+// String representation for [fmt.Print]
+func (f *NccPrivateEndpointRulePrivateLinkConnectionState) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Set(v string) error {
+	switch v {
+	case `DISCONNECTED`, `ESTABLISHED`, `EXPIRED`, `PENDING`, `REJECTED`:
+		*f = NccPrivateEndpointRulePrivateLinkConnectionState(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "DISCONNECTED", "ESTABLISHED", "EXPIRED", "PENDING", "REJECTED"`, v)
+	}
+}
+
+// Values returns all possible values for NccPrivateEndpointRulePrivateLinkConnectionState.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Values() []NccPrivateEndpointRulePrivateLinkConnectionState {
+	return []NccPrivateEndpointRulePrivateLinkConnectionState{
+		NccPrivateEndpointRulePrivateLinkConnectionStateDisconnected,
+		NccPrivateEndpointRulePrivateLinkConnectionStateEstablished,
+		NccPrivateEndpointRulePrivateLinkConnectionStateExpired,
+		NccPrivateEndpointRulePrivateLinkConnectionStatePending,
+		NccPrivateEndpointRulePrivateLinkConnectionStateRejected,
+	}
+}
+
+// Type always returns NccPrivateEndpointRulePrivateLinkConnectionState to satisfy [pflag.Value] interface
+func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Type() string {
+	return "NccPrivateEndpointRulePrivateLinkConnectionState"
 }
 
 // Properties of the new network connectivity configuration.
 type NetworkConnectivityConfiguration struct {
-	// The Databricks account ID that hosts the credential.
+	// Your Databricks account ID. You can find your account ID in your
+	// Databricks accounts console.
 	AccountId string `json:"account_id,omitempty"`
 	// Time in epoch milliseconds when this object was created.
 	CreationTime int64 `json:"creation_time,omitempty"`
@@ -3277,7 +3669,7 @@ func (f *PersonalComputeMessageEnum) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PersonalComputeMessageEnum.
+// Values returns all possible values for PersonalComputeMessageEnum.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PersonalComputeMessageEnum) Values() []PersonalComputeMessageEnum {
@@ -3391,7 +3783,7 @@ func (f *RestrictWorkspaceAdminsMessageStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RestrictWorkspaceAdminsMessageStatus.
+// Values returns all possible values for RestrictWorkspaceAdminsMessageStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RestrictWorkspaceAdminsMessageStatus) Values() []RestrictWorkspaceAdminsMessageStatus {
@@ -3460,6 +3852,34 @@ func (s *SlackConfig) UnmarshalJSON(b []byte) error {
 }
 
 func (s SlackConfig) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type SqlResultsDownload struct {
+	BooleanVal BooleanMessage `json:"boolean_val"`
+	// etag used for versioning. The response is at least as fresh as the eTag
+	// provided. This is used for optimistic concurrency control as a way to
+	// help prevent simultaneous writes of a setting overwriting each other. It
+	// is strongly suggested that systems make use of the etag in the read ->
+	// update pattern to perform setting updates in order to avoid race
+	// conditions. That is, get an etag from a GET request, and pass it with the
+	// PATCH request to identify the setting version you are updating.
+	Etag string `json:"etag,omitempty"`
+	// Name of the corresponding setting. This field is populated in the
+	// response, but it will not be respected even if it's set in the request
+	// body. The setting name in the path parameter will be respected instead.
+	// Setting name is required to be 'default' if the setting only has one
+	// instance per workspace.
+	SettingName string `json:"setting_name,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *SqlResultsDownload) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s SqlResultsDownload) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
@@ -3594,7 +4014,7 @@ func (f *TokenPermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of TokenPermissionLevel.
+// Values returns all possible values for TokenPermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *TokenPermissionLevel) Values() []TokenPermissionLevel {
@@ -3676,7 +4096,7 @@ func (f *TokenType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of TokenType.
+// Values returns all possible values for TokenType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *TokenType) Values() []TokenType {
@@ -3818,6 +4238,27 @@ type UpdateCspEnablementAccountSettingRequest struct {
 	FieldMask string `json:"field_mask"`
 
 	Setting CspEnablementAccountSetting `json:"setting"`
+}
+
+// Details required to update a setting.
+type UpdateDashboardEmailSubscriptionsRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	FieldMask string `json:"field_mask"`
+
+	Setting DashboardEmailSubscriptions `json:"setting"`
 }
 
 // Details required to update a setting.
@@ -4110,8 +4551,9 @@ type UpdateLlmProxyPartnerPoweredWorkspaceRequest struct {
 }
 
 // Update a private endpoint rule
-type UpdateNccAzurePrivateEndpointRulePublicRequest struct {
-	// Your Network Connectivity Configuration ID.
+type UpdateNccPrivateEndpointRuleRequest struct {
+	// The ID of a network connectivity configuration, which is the parent
+	// resource of this private endpoint rule object.
 	NetworkConnectivityConfigId string `json:"-" url:"-"`
 	// Properties of the new private endpoint rule. Note that you must approve
 	// the endpoint in Azure portal after initialization.
@@ -4178,11 +4620,34 @@ type UpdatePersonalComputeSettingRequest struct {
 // Properties of the new private endpoint rule. Note that you must approve the
 // endpoint in Azure portal after initialization.
 type UpdatePrivateEndpointRule struct {
-	// Only used by private endpoints to customer-managed resources.
+	// Only used by private endpoints to customer-managed private endpoint
+	// services.
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
 	DomainNames []string `json:"domain_names,omitempty"`
+	// Only used by private endpoints towards an AWS S3 service.
+	//
+	// Update this field to activate/deactivate this private endpoint to allow
+	// egress access from serverless compute resources.
+	Enabled bool `json:"enabled,omitempty"`
+	// Only used by private endpoints towards AWS S3 service.
+	//
+	// The globally unique S3 bucket names that will be accessed via the VPC
+	// endpoint. The bucket names must be in the same region as the NCC/endpoint
+	// service. When updating this field, we perform full update on this field.
+	// Please ensure a full list of desired resource_names is provided.
+	ResourceNames []string `json:"resource_names,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *UpdatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s UpdatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type UpdateResponse struct {
@@ -4209,7 +4674,28 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	Setting RestrictWorkspaceAdminsSetting `json:"setting"`
 }
 
-// Update workspace network configuration
+// Details required to update a setting.
+type UpdateSqlResultsDownloadRequest struct {
+	// This should always be set to true for Settings API. Added for AIP
+	// compliance.
+	AllowMissing bool `json:"allow_missing"`
+	// The field mask must be a single string, with multiple fields separated by
+	// commas (no spaces). The field path is relative to the resource object,
+	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+	// Specification of elements in sequence or map fields is not allowed, as
+	// only the entire collection field can be specified. Field names must
+	// exactly match the resource field names.
+	//
+	// A field mask of `*` indicates full replacement. It’s recommended to
+	// always explicitly list the fields being updated and avoid using `*`
+	// wildcards, as it can lead to unintended results if the API changes in the
+	// future.
+	FieldMask string `json:"field_mask"`
+
+	Setting SqlResultsDownload `json:"setting"`
+}
+
+// Update workspace network option
 type UpdateWorkspaceNetworkOptionRequest struct {
 	// The workspace ID.
 	WorkspaceId int64 `json:"-" url:"-"`

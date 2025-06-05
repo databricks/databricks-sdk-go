@@ -75,6 +75,10 @@ type CreatePipeline struct {
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
+	// A map of tags associated with the pipeline. These are forwarded to the
+	// cluster as cluster tags, and are therefore subject to the same
+	// limitations. A maximum of 25 tags can be added to the pipeline.
+	Tags map[string]string `json:"tags,omitempty"`
 	// Target schema (database) to add tables in this pipeline to. Exactly one
 	// of `schema` or `target` must be specified. To publish to Unity Catalog,
 	// also specify `catalog`. This legacy field is deprecated for pipeline
@@ -180,7 +184,7 @@ func (f *DayOfWeek) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DayOfWeek.
+// Values returns all possible values for DayOfWeek.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DayOfWeek) Values() []DayOfWeek {
@@ -230,7 +234,7 @@ func (f *DeploymentKind) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DeploymentKind.
+// Values returns all possible values for DeploymentKind.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DeploymentKind) Values() []DeploymentKind {
@@ -314,6 +318,10 @@ type EditPipeline struct {
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
+	// A map of tags associated with the pipeline. These are forwarded to the
+	// cluster as cluster tags, and are therefore subject to the same
+	// limitations. A maximum of 25 tags can be added to the pipeline.
+	Tags map[string]string `json:"tags,omitempty"`
 	// Target schema (database) to add tables in this pipeline to. Exactly one
 	// of `schema` or `target` must be specified. To publish to Unity Catalog,
 	// also specify `catalog`. This legacy field is deprecated for pipeline
@@ -380,7 +388,7 @@ func (f *EventLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of EventLevel.
+// Values returns all possible values for EventLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EventLevel) Values() []EventLevel {
@@ -523,7 +531,7 @@ func (f *GetPipelineResponseHealth) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of GetPipelineResponseHealth.
+// Values returns all possible values for GetPipelineResponseHealth.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *GetPipelineResponseHealth) Values() []GetPipelineResponseHealth {
@@ -646,6 +654,8 @@ const IngestionSourceTypeSharepoint IngestionSourceType = `SHAREPOINT`
 
 const IngestionSourceTypeSqlserver IngestionSourceType = `SQLSERVER`
 
+const IngestionSourceTypeTeradata IngestionSourceType = `TERADATA`
+
 const IngestionSourceTypeWorkdayRaas IngestionSourceType = `WORKDAY_RAAS`
 
 // String representation for [fmt.Print]
@@ -656,15 +666,15 @@ func (f *IngestionSourceType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *IngestionSourceType) Set(v string) error {
 	switch v {
-	case `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `WORKDAY_RAAS`:
+	case `DYNAMICS365`, `GA4_RAW_DATA`, `MANAGED_POSTGRESQL`, `MYSQL`, `NETSUITE`, `ORACLE`, `POSTGRESQL`, `SALESFORCE`, `SERVICENOW`, `SHAREPOINT`, `SQLSERVER`, `TERADATA`, `WORKDAY_RAAS`:
 		*f = IngestionSourceType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "WORKDAY_RAAS"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DYNAMICS365", "GA4_RAW_DATA", "MANAGED_POSTGRESQL", "MYSQL", "NETSUITE", "ORACLE", "POSTGRESQL", "SALESFORCE", "SERVICENOW", "SHAREPOINT", "SQLSERVER", "TERADATA", "WORKDAY_RAAS"`, v)
 	}
 }
 
-// Values returns all possible values of IngestionSourceType.
+// Values returns all possible values for IngestionSourceType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *IngestionSourceType) Values() []IngestionSourceType {
@@ -680,6 +690,7 @@ func (f *IngestionSourceType) Values() []IngestionSourceType {
 		IngestionSourceTypeServicenow,
 		IngestionSourceTypeSharepoint,
 		IngestionSourceTypeSqlserver,
+		IngestionSourceTypeTeradata,
 		IngestionSourceTypeWorkdayRaas,
 	}
 }
@@ -868,7 +879,7 @@ func (f *MaturityLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of MaturityLevel.
+// Values returns all possible values for MaturityLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *MaturityLevel) Values() []MaturityLevel {
@@ -1169,7 +1180,7 @@ func (f *PipelineClusterAutoscaleMode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PipelineClusterAutoscaleMode.
+// Values returns all possible values for PipelineClusterAutoscaleMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PipelineClusterAutoscaleMode) Values() []PipelineClusterAutoscaleMode {
@@ -1306,7 +1317,7 @@ func (f *PipelinePermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PipelinePermissionLevel.
+// Values returns all possible values for PipelinePermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PipelinePermissionLevel) Values() []PipelinePermissionLevel {
@@ -1417,6 +1428,10 @@ type PipelineSpec struct {
 	Serverless bool `json:"serverless,omitempty"`
 	// DBFS root directory for storing checkpoints and tables.
 	Storage string `json:"storage,omitempty"`
+	// A map of tags associated with the pipeline. These are forwarded to the
+	// cluster as cluster tags, and are therefore subject to the same
+	// limitations. A maximum of 25 tags can be added to the pipeline.
+	Tags map[string]string `json:"tags,omitempty"`
 	// Target schema (database) to add tables in this pipeline to. Exactly one
 	// of `schema` or `target` must be specified. To publish to Unity Catalog,
 	// also specify `catalog`. This legacy field is deprecated for pipeline
@@ -1473,7 +1488,7 @@ func (f *PipelineState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PipelineState.
+// Values returns all possible values for PipelineState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PipelineState) Values() []PipelineState {
@@ -1549,7 +1564,7 @@ func (f *PipelineStateInfoHealth) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PipelineStateInfoHealth.
+// Values returns all possible values for PipelineStateInfoHealth.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PipelineStateInfoHealth) Values() []PipelineStateInfoHealth {
@@ -1796,7 +1811,7 @@ func (f *StartUpdateCause) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of StartUpdateCause.
+// Values returns all possible values for StartUpdateCause.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *StartUpdateCause) Values() []StartUpdateCause {
@@ -1928,7 +1943,7 @@ func (f *TableSpecificConfigScdType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of TableSpecificConfigScdType.
+// Values returns all possible values for TableSpecificConfigScdType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *TableSpecificConfigScdType) Values() []TableSpecificConfigScdType {
@@ -2019,7 +2034,7 @@ func (f *UpdateInfoCause) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of UpdateInfoCause.
+// Values returns all possible values for UpdateInfoCause.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *UpdateInfoCause) Values() []UpdateInfoCause {
@@ -2080,7 +2095,7 @@ func (f *UpdateInfoState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of UpdateInfoState.
+// Values returns all possible values for UpdateInfoState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *UpdateInfoState) Values() []UpdateInfoState {
@@ -2163,7 +2178,7 @@ func (f *UpdateStateInfoState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of UpdateStateInfoState.
+// Values returns all possible values for UpdateStateInfoState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *UpdateStateInfoState) Values() []UpdateStateInfoState {

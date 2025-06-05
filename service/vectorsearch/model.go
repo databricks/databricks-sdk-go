@@ -122,7 +122,7 @@ func (f *DeleteDataStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DeleteDataStatus.
+// Values returns all possible values for DeleteDataStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DeleteDataStatus) Values() []DeleteDataStatus {
@@ -374,7 +374,7 @@ func (f *EndpointStatusState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of EndpointStatusState.
+// Values returns all possible values for EndpointStatusState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EndpointStatusState) Values() []EndpointStatusState {
@@ -411,7 +411,7 @@ func (f *EndpointType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of EndpointType.
+// Values returns all possible values for EndpointType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EndpointType) Values() []EndpointType {
@@ -614,7 +614,7 @@ func (f *PipelineType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PipelineType.
+// Values returns all possible values for PipelineType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PipelineType) Values() []PipelineType {
@@ -863,7 +863,7 @@ func (f *UpsertDataStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of UpsertDataStatus.
+// Values returns all possible values for UpsertDataStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *UpsertDataStatus) Values() []UpsertDataStatus {
@@ -1004,7 +1004,7 @@ func (f *VectorIndexType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of VectorIndexType.
+// Values returns all possible values for VectorIndexType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *VectorIndexType) Values() []VectorIndexType {

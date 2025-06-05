@@ -208,6 +208,53 @@ func (_c *MockSettingsInterface_ComplianceSecurityProfile_Call) RunAndReturn(run
 	return _c
 }
 
+// DashboardEmailSubscriptions provides a mock function with no fields
+func (_m *MockSettingsInterface) DashboardEmailSubscriptions() settings.DashboardEmailSubscriptionsInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for DashboardEmailSubscriptions")
+	}
+
+	var r0 settings.DashboardEmailSubscriptionsInterface
+	if rf, ok := ret.Get(0).(func() settings.DashboardEmailSubscriptionsInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.DashboardEmailSubscriptionsInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_DashboardEmailSubscriptions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DashboardEmailSubscriptions'
+type MockSettingsInterface_DashboardEmailSubscriptions_Call struct {
+	*mock.Call
+}
+
+// DashboardEmailSubscriptions is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) DashboardEmailSubscriptions() *MockSettingsInterface_DashboardEmailSubscriptions_Call {
+	return &MockSettingsInterface_DashboardEmailSubscriptions_Call{Call: _e.mock.On("DashboardEmailSubscriptions")}
+}
+
+func (_c *MockSettingsInterface_DashboardEmailSubscriptions_Call) Run(run func()) *MockSettingsInterface_DashboardEmailSubscriptions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_DashboardEmailSubscriptions_Call) Return(_a0 settings.DashboardEmailSubscriptionsInterface) *MockSettingsInterface_DashboardEmailSubscriptions_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_DashboardEmailSubscriptions_Call) RunAndReturn(run func() settings.DashboardEmailSubscriptionsInterface) *MockSettingsInterface_DashboardEmailSubscriptions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DefaultNamespace provides a mock function with no fields
 func (_m *MockSettingsInterface) DefaultNamespace() settings.DefaultNamespaceInterface {
 	ret := _m.Called()
@@ -627,6 +674,53 @@ func (_c *MockSettingsInterface_RestrictWorkspaceAdmins_Call) Return(_a0 setting
 }
 
 func (_c *MockSettingsInterface_RestrictWorkspaceAdmins_Call) RunAndReturn(run func() settings.RestrictWorkspaceAdminsInterface) *MockSettingsInterface_RestrictWorkspaceAdmins_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SqlResultsDownload provides a mock function with no fields
+func (_m *MockSettingsInterface) SqlResultsDownload() settings.SqlResultsDownloadInterface {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for SqlResultsDownload")
+	}
+
+	var r0 settings.SqlResultsDownloadInterface
+	if rf, ok := ret.Get(0).(func() settings.SqlResultsDownloadInterface); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(settings.SqlResultsDownloadInterface)
+		}
+	}
+
+	return r0
+}
+
+// MockSettingsInterface_SqlResultsDownload_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SqlResultsDownload'
+type MockSettingsInterface_SqlResultsDownload_Call struct {
+	*mock.Call
+}
+
+// SqlResultsDownload is a helper method to define mock.On call
+func (_e *MockSettingsInterface_Expecter) SqlResultsDownload() *MockSettingsInterface_SqlResultsDownload_Call {
+	return &MockSettingsInterface_SqlResultsDownload_Call{Call: _e.mock.On("SqlResultsDownload")}
+}
+
+func (_c *MockSettingsInterface_SqlResultsDownload_Call) Run(run func()) *MockSettingsInterface_SqlResultsDownload_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSettingsInterface_SqlResultsDownload_Call) Return(_a0 settings.SqlResultsDownloadInterface) *MockSettingsInterface_SqlResultsDownload_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSettingsInterface_SqlResultsDownload_Call) RunAndReturn(run func() settings.SqlResultsDownloadInterface) *MockSettingsInterface_SqlResultsDownload_Call {
 	_c.Call.Return(run)
 	return _c
 }

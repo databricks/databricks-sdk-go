@@ -29,7 +29,7 @@ type CleanRoomAssetsInterface interface {
 	// Delete an asset.
 	//
 	// Delete a clean room asset - unshare/remove the asset from the clean room
-	DeleteByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) error
+	DeleteByCleanRoomNameAndAssetTypeAndName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, name string) error
 
 	// Get an asset.
 	//
@@ -39,7 +39,7 @@ type CleanRoomAssetsInterface interface {
 	// Get an asset.
 	//
 	// Get the details of a clean room asset by its type and full name.
-	GetByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) (*CleanRoomAsset, error)
+	GetByCleanRoomNameAndAssetTypeAndName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, name string) (*CleanRoomAsset, error)
 
 	// List assets.
 	//
@@ -78,22 +78,22 @@ type CleanRoomAssetsAPI struct {
 // Delete an asset.
 //
 // Delete a clean room asset - unshare/remove the asset from the clean room
-func (a *CleanRoomAssetsAPI) DeleteByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) error {
+func (a *CleanRoomAssetsAPI) DeleteByCleanRoomNameAndAssetTypeAndName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, name string) error {
 	return a.cleanRoomAssetsImpl.Delete(ctx, DeleteCleanRoomAssetRequest{
 		CleanRoomName: cleanRoomName,
 		AssetType:     assetType,
-		AssetFullName: assetFullName,
+		Name:          name,
 	})
 }
 
 // Get an asset.
 //
 // Get the details of a clean room asset by its type and full name.
-func (a *CleanRoomAssetsAPI) GetByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, assetFullName string) (*CleanRoomAsset, error) {
+func (a *CleanRoomAssetsAPI) GetByCleanRoomNameAndAssetTypeAndName(ctx context.Context, cleanRoomName string, assetType CleanRoomAssetAssetType, name string) (*CleanRoomAsset, error) {
 	return a.cleanRoomAssetsImpl.Get(ctx, GetCleanRoomAssetRequest{
 		CleanRoomName: cleanRoomName,
 		AssetType:     assetType,
-		AssetFullName: assetFullName,
+		Name:          name,
 	})
 }
 

@@ -245,6 +245,29 @@ type CspEnablementAccountService interface {
 	Update(ctx context.Context, request UpdateCspEnablementAccountSettingRequest) (*CspEnablementAccountSetting, error)
 }
 
+// Controls whether schedules or workload tasks for refreshing AI/BI Dashboards
+// in the workspace can send subscription emails containing PDFs and/or images
+// of the dashboard. By default, this setting is enabled (set to `true`)
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type DashboardEmailSubscriptionsService interface {
+
+	// Delete the Dashboard Email Subscriptions setting.
+	//
+	// Reverts the Dashboard Email Subscriptions setting to its default value.
+	Delete(ctx context.Context, request DeleteDashboardEmailSubscriptionsRequest) (*DeleteDashboardEmailSubscriptionsResponse, error)
+
+	// Get the Dashboard Email Subscriptions setting.
+	//
+	// Gets the Dashboard Email Subscriptions setting.
+	Get(ctx context.Context, request GetDashboardEmailSubscriptionsRequest) (*DashboardEmailSubscriptions, error)
+
+	// Update the Dashboard Email Subscriptions setting.
+	//
+	// Updates the Dashboard Email Subscriptions setting.
+	Update(ctx context.Context, request UpdateDashboardEmailSubscriptionsRequest) (*DashboardEmailSubscriptions, error)
+}
+
 // The default namespace setting API allows users to configure the default
 // namespace for a Databricks workspace.
 //
@@ -704,7 +727,7 @@ type NetworkConnectivityService interface {
 	// endpoint rule. See [serverless private link].
 	//
 	// [serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
-	CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
+	CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error)
 
 	// Delete a network connectivity configuration.
 	//
@@ -719,7 +742,7 @@ type NetworkConnectivityService interface {
 	// seven days of deactivation. When a private endpoint is deactivated, the
 	// `deactivated` field is set to `true` and the private endpoint is not
 	// available to your serverless compute resources.
-	DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
+	DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error)
 
 	// Get a network connectivity configuration.
 	//
@@ -729,7 +752,7 @@ type NetworkConnectivityService interface {
 	// Gets a private endpoint rule.
 	//
 	// Gets the private endpoint rule.
-	GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error)
+	GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error)
 
 	// List network connectivity configurations.
 	//
@@ -739,13 +762,13 @@ type NetworkConnectivityService interface {
 	// List private endpoint rules.
 	//
 	// Gets an array of private endpoint rules.
-	ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error)
+	ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListPrivateEndpointRulesResponse, error)
 
 	// Update a private endpoint rule.
 	//
 	// Updates a private endpoint rule. Currently only a private endpoint rule
 	// to customer-managed resources is allowed to be updated.
-	UpdateNccAzurePrivateEndpointRulePublic(ctx context.Context, request UpdateNccAzurePrivateEndpointRulePublicRequest) (*NccAzurePrivateEndpointRule, error)
+	UpdatePrivateEndpointRule(ctx context.Context, request UpdateNccPrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error)
 }
 
 // These APIs manage network policies for this account. Network policies control
@@ -901,6 +924,29 @@ type RestrictWorkspaceAdminsService interface {
 type SettingsService interface {
 }
 
+// Controls whether users within the workspace are allowed to download results
+// from the SQL Editor and AI/BI Dashboards UIs. By default, this setting is
+// enabled (set to `true`)
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type SqlResultsDownloadService interface {
+
+	// Delete the SQL Results Download setting.
+	//
+	// Reverts the SQL Results Download setting to its default value.
+	Delete(ctx context.Context, request DeleteSqlResultsDownloadRequest) (*DeleteSqlResultsDownloadResponse, error)
+
+	// Get the SQL Results Download setting.
+	//
+	// Gets the SQL Results Download setting.
+	Get(ctx context.Context, request GetSqlResultsDownloadRequest) (*SqlResultsDownload, error)
+
+	// Update the SQL Results Download setting.
+	//
+	// Updates the SQL Results Download setting.
+	Update(ctx context.Context, request UpdateSqlResultsDownloadRequest) (*SqlResultsDownload, error)
+}
+
 // Enables administrators to get all tokens and delete tokens for other users.
 // Admins can either get every token, get a specific token by ID, or get all
 // tokens for a particular user.
@@ -998,28 +1044,28 @@ type WorkspaceConfService interface {
 	SetStatus(ctx context.Context, request WorkspaceConf) error
 }
 
-// These APIs allow configuration of network settings for Databricks workspaces.
-// Each workspace is always associated with exactly one network policy that
-// controls which network destinations can be accessed from the Databricks
-// environment. By default, workspaces are associated with the 'default-policy'
-// network policy. You cannot create or delete a workspace's network
-// configuration, only update it to associate the workspace with a different
-// policy.
+// These APIs allow configuration of network settings for Databricks workspaces
+// by selecting which network policy to associate with the workspace. Each
+// workspace is always associated with exactly one network policy that controls
+// which network destinations can be accessed from the Databricks environment.
+// By default, workspaces are associated with the 'default-policy' network
+// policy. You cannot create or delete a workspace's network option, only update
+// it to associate the workspace with a different policy
 //
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WorkspaceNetworkConfigurationService interface {
 
-	// Get workspace network configuration.
+	// Get workspace network option.
 	//
-	// Gets the network configuration for a workspace. Every workspace has
-	// exactly one network policy binding, with 'default-policy' used if no
-	// explicit assignment exists.
+	// Gets the network option for a workspace. Every workspace has exactly one
+	// network policy binding, with 'default-policy' used if no explicit
+	// assignment exists.
 	GetWorkspaceNetworkOptionRpc(ctx context.Context, request GetWorkspaceNetworkOptionRequest) (*WorkspaceNetworkOption, error)
 
-	// Update workspace network configuration.
+	// Update workspace network option.
 	//
-	// Updates the network configuration for a workspace. This operation
-	// associates the workspace with the specified network policy. To revert to
-	// the default policy, specify 'default-policy' as the network_policy_id.
+	// Updates the network option for a workspace. This operation associates the
+	// workspace with the specified network policy. To revert to the default
+	// policy, specify 'default-policy' as the network_policy_id.
 	UpdateWorkspaceNetworkOptionRpc(ctx context.Context, request UpdateWorkspaceNetworkOptionRequest) (*WorkspaceNetworkOption, error)
 }

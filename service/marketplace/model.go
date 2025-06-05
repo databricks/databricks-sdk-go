@@ -50,7 +50,7 @@ func (f *AssetType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AssetType.
+// Values returns all possible values for AssetType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AssetType) Values() []AssetType {
@@ -150,7 +150,7 @@ func (f *Category) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Category.
+// Values returns all possible values for Category.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Category) Values() []Category {
@@ -233,7 +233,7 @@ func (f *Cost) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Cost.
+// Values returns all possible values for Cost.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Cost) Values() []Cost {
@@ -461,7 +461,7 @@ func (f *DataRefresh) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DataRefresh.
+// Values returns all possible values for DataRefresh.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DataRefresh) Values() []DataRefresh {
@@ -561,7 +561,7 @@ func (f *DeltaSharingRecipientType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DeltaSharingRecipientType.
+// Values returns all possible values for DeltaSharingRecipientType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DeltaSharingRecipientType) Values() []DeltaSharingRecipientType {
@@ -656,7 +656,7 @@ func (f *ExchangeFilterType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ExchangeFilterType.
+// Values returns all possible values for ExchangeFilterType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ExchangeFilterType) Values() []ExchangeFilterType {
@@ -769,7 +769,7 @@ func (f *FileParentType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of FileParentType.
+// Values returns all possible values for FileParentType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *FileParentType) Values() []FileParentType {
@@ -811,7 +811,7 @@ func (f *FileStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of FileStatus.
+// Values returns all possible values for FileStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *FileStatus) Values() []FileStatus {
@@ -850,7 +850,7 @@ func (f *FulfillmentType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of FulfillmentType.
+// Values returns all possible values for FulfillmentType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *FulfillmentType) Values() []FulfillmentType {
@@ -1057,7 +1057,7 @@ func (f *InstallationStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of InstallationStatus.
+// Values returns all possible values for InstallationStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *InstallationStatus) Values() []InstallationStatus {
@@ -1600,7 +1600,7 @@ func (f *ListingShareType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ListingShareType.
+// Values returns all possible values for ListingShareType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ListingShareType) Values() []ListingShareType {
@@ -1642,7 +1642,7 @@ func (f *ListingStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ListingStatus.
+// Values returns all possible values for ListingStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ListingStatus) Values() []ListingStatus {
@@ -1740,7 +1740,7 @@ func (f *ListingTagType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ListingTagType.
+// Values returns all possible values for ListingTagType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ListingTagType) Values() []ListingTagType {
@@ -1777,7 +1777,7 @@ func (f *ListingType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ListingType.
+// Values returns all possible values for ListingType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ListingType) Values() []ListingType {
@@ -1816,7 +1816,7 @@ func (f *MarketplaceFileType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of MarketplaceFileType.
+// Values returns all possible values for MarketplaceFileType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *MarketplaceFileType) Values() []MarketplaceFileType {
@@ -1903,7 +1903,7 @@ func (f *PersonalizationRequestStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PersonalizationRequestStatus.
+// Values returns all possible values for PersonalizationRequestStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PersonalizationRequestStatus) Values() []PersonalizationRequestStatus {
@@ -2272,7 +2272,7 @@ func (f *Visibility) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Visibility.
+// Values returns all possible values for Visibility.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Visibility) Values() []Visibility {

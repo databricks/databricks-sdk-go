@@ -49,7 +49,7 @@ func (f *ActionConfigurationType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ActionConfigurationType.
+// Values returns all possible values for ActionConfigurationType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ActionConfigurationType) Values() []ActionConfigurationType {
@@ -112,7 +112,7 @@ func (f *AlertConfigurationQuantityType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AlertConfigurationQuantityType.
+// Values returns all possible values for AlertConfigurationQuantityType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AlertConfigurationQuantityType) Values() []AlertConfigurationQuantityType {
@@ -146,7 +146,7 @@ func (f *AlertConfigurationTimePeriod) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AlertConfigurationTimePeriod.
+// Values returns all possible values for AlertConfigurationTimePeriod.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AlertConfigurationTimePeriod) Values() []AlertConfigurationTimePeriod {
@@ -180,7 +180,7 @@ func (f *AlertConfigurationTriggerType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AlertConfigurationTriggerType.
+// Values returns all possible values for AlertConfigurationTriggerType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AlertConfigurationTriggerType) Values() []AlertConfigurationTriggerType {
@@ -260,7 +260,7 @@ func (f *BudgetConfigurationFilterOperator) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of BudgetConfigurationFilterOperator.
+// Values returns all possible values for BudgetConfigurationFilterOperator.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *BudgetConfigurationFilterOperator) Values() []BudgetConfigurationFilterOperator {
@@ -460,6 +460,7 @@ func (s CreateBudgetPolicyRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+// * Log Delivery Configuration
 type CreateLogDeliveryConfigurationParams struct {
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
@@ -475,31 +476,27 @@ type CreateLogDeliveryConfigurationParams struct {
 	// This must be a valid S3 object key. This must not start or end with a
 	// slash character.
 	DeliveryPathPrefix string `json:"delivery_path_prefix,omitempty"`
-	// This field applies only if `log_type` is `BILLABLE_USAGE`. This is the
-	// optional start month and year for delivery, specified in `YYYY-MM`
-	// format. Defaults to current year and month. `BILLABLE_USAGE` logs are not
-	// available for usage before March 2019 (`2019-03`).
+	// This field applies only if log_type is BILLABLE_USAGE. This is the
+	// optional start month and year for delivery, specified in YYYY-MM format.
+	// Defaults to current year and month. BILLABLE_USAGE logs are not available
+	// for usage before March 2019 (2019-03).
 	DeliveryStartTime string `json:"delivery_start_time,omitempty"`
-	// Log delivery type. Supported values are:
-	//
-	// * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the
-	// CSV schema, see the [View billable usage].
-	//
-	// * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema,
-	// see [Configure audit logging]
+	// Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure
+	// [billable usage log delivery]. For the CSV schema, see the [View billable
+	// usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON
+	// schema, see [Configure audit logging]
 	//
 	// [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	LogType LogType `json:"log_type"`
-	// The file type of log delivery.
-	//
-	// * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the
-	// CSV (comma-separated values) format is supported. For the schema, see the
-	// [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be
-	// `JSON`. Only the JSON (JavaScript Object Notation) format is supported.
-	// For the schema, see the [Configuring audit logs].
+	// The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this
+	// value must be `CSV`. Only the CSV (comma-separated values) format is
+	// supported. For the schema, see the [View billable usage] * If `log_type`
+	// is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript
+	// Object Notation) format is supported. For the schema, see the
+	// [Configuring audit logs].
 	//
 	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
@@ -560,33 +557,25 @@ type DeleteBudgetPolicyRequest struct {
 type DeleteResponse struct {
 }
 
-// The status string for log delivery. Possible values are: * `CREATED`: There
-// were no log delivery attempts since the config was created. * `SUCCEEDED`:
-// The latest attempt of log delivery has succeeded completely. *
-// `USER_FAILURE`: The latest attempt of log delivery failed because of
-// misconfiguration of customer provided permissions on role or storage. *
-// `SYSTEM_FAILURE`: The latest attempt of log delivery failed because of an
-// Databricks internal error. Contact support if it doesn't go away soon. *
-// `NOT_FOUND`: The log delivery status as the configuration has been disabled
-// since the release of this feature or there are no workspaces in the account.
+// * The status string for log delivery. Possible values are: `CREATED`: There
+// were no log delivery attempts since the config was created. `SUCCEEDED`: The
+// latest attempt of log delivery has succeeded completely. `USER_FAILURE`: The
+// latest attempt of log delivery failed because of misconfiguration of customer
+// provided permissions on role or storage. `SYSTEM_FAILURE`: The latest attempt
+// of log delivery failed because of an Databricks internal error. Contact
+// support if it doesn't go away soon. `NOT_FOUND`: The log delivery status as
+// the configuration has been disabled since the release of this feature or
+// there are no workspaces in the account.
 type DeliveryStatus string
 
-// There were no log delivery attempts since the config was created.
 const DeliveryStatusCreated DeliveryStatus = `CREATED`
 
-// The log delivery status as the configuration has been disabled since the
-// release of this feature or there are no workspaces in the account.
 const DeliveryStatusNotFound DeliveryStatus = `NOT_FOUND`
 
-// The latest attempt of log delivery has succeeded completely.
 const DeliveryStatusSucceeded DeliveryStatus = `SUCCEEDED`
 
-// The latest attempt of log delivery failed because of an <Databricks> internal
-// error. Contact support if it doesn't go away soon.
 const DeliveryStatusSystemFailure DeliveryStatus = `SYSTEM_FAILURE`
 
-// The latest attempt of log delivery failed because of misconfiguration of
-// customer provided permissions on role or storage.
 const DeliveryStatusUserFailure DeliveryStatus = `USER_FAILURE`
 
 // String representation for [fmt.Print]
@@ -605,7 +594,7 @@ func (f *DeliveryStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DeliveryStatus.
+// Values returns all possible values for DeliveryStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DeliveryStatus) Values() []DeliveryStatus {
@@ -729,9 +718,14 @@ type GetBudgetPolicyRequest struct {
 	PolicyId string `json:"-" url:"-"`
 }
 
+type GetLogDeliveryConfigurationResponse struct {
+	// The fetched log delivery configuration
+	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
+}
+
 // Get log delivery configuration
 type GetLogDeliveryRequest struct {
-	// Databricks log delivery configuration ID
+	// The log delivery configuration id of customer
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
 }
 
@@ -829,11 +823,15 @@ func (s ListBudgetPoliciesResponse) MarshalJSON() ([]byte, error) {
 
 // Get all log delivery configurations
 type ListLogDeliveryRequest struct {
-	// Filter by credential configuration ID.
+	// The Credentials id to filter the search results with
 	CredentialsId string `json:"-" url:"credentials_id,omitempty"`
-	// Filter by status `ENABLED` or `DISABLED`.
+	// A page token received from a previous get all budget configurations call.
+	// This token can be used to retrieve the subsequent page. Requests first
+	// page if absent.
+	PageToken string `json:"-" url:"page_token,omitempty"`
+	// The log delivery status to filter the search results with
 	Status LogDeliveryConfigStatus `json:"-" url:"status,omitempty"`
-	// Filter by storage configuration ID.
+	// The Storage Configuration id to filter the search results with
 	StorageConfigurationId string `json:"-" url:"storage_configuration_id,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
@@ -847,11 +845,10 @@ func (s ListLogDeliveryRequest) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Status of log delivery configuration. Set to `ENABLED` (enabled) or
-// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable the
-// configuration](#operation/patch-log-delivery-config-status) later. Deletion
-// of a configuration is not supported, so disable a log delivery configuration
-// that is no longer needed.
+// * Log Delivery Status
+//
+// `ENABLED`: All dependencies have executed and succeeded `DISABLED`: At least
+// one dependency has succeeded
 type LogDeliveryConfigStatus string
 
 const LogDeliveryConfigStatusDisabled LogDeliveryConfigStatus = `DISABLED`
@@ -874,7 +871,7 @@ func (f *LogDeliveryConfigStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of LogDeliveryConfigStatus.
+// Values returns all possible values for LogDeliveryConfigStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *LogDeliveryConfigStatus) Values() []LogDeliveryConfigStatus {
@@ -889,10 +886,11 @@ func (f *LogDeliveryConfigStatus) Type() string {
 	return "LogDeliveryConfigStatus"
 }
 
+// * Log Delivery Configuration
 type LogDeliveryConfiguration struct {
-	// The Databricks account ID that hosts the log delivery configuration.
-	AccountId string `json:"account_id,omitempty"`
-	// Databricks log delivery configuration ID.
+	// Databricks account ID.
+	AccountId string `json:"account_id"`
+	// The unique UUID of log delivery configuration
 	ConfigId string `json:"config_id,omitempty"`
 	// The optional human-readable name of the log delivery configuration.
 	// Defaults to empty.
@@ -905,43 +903,39 @@ type LogDeliveryConfiguration struct {
 	// usage documentation page. See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-	CredentialsId string `json:"credentials_id,omitempty"`
+	CredentialsId string `json:"credentials_id"`
 	// The optional delivery path prefix within Amazon S3 storage. Defaults to
 	// empty, which means that logs are delivered to the root of the bucket.
 	// This must be a valid S3 object key. This must not start or end with a
 	// slash character.
 	DeliveryPathPrefix string `json:"delivery_path_prefix,omitempty"`
-	// This field applies only if `log_type` is `BILLABLE_USAGE`. This is the
-	// optional start month and year for delivery, specified in `YYYY-MM`
-	// format. Defaults to current year and month. `BILLABLE_USAGE` logs are not
-	// available for usage before March 2019 (`2019-03`).
+	// This field applies only if log_type is BILLABLE_USAGE. This is the
+	// optional start month and year for delivery, specified in YYYY-MM format.
+	// Defaults to current year and month. BILLABLE_USAGE logs are not available
+	// for usage before March 2019 (2019-03).
 	DeliveryStartTime string `json:"delivery_start_time,omitempty"`
-	// Databricks log delivery status.
+	// The LogDeliveryStatus of this log delivery configuration
 	LogDeliveryStatus *LogDeliveryStatus `json:"log_delivery_status,omitempty"`
-	// Log delivery type. Supported values are:
-	//
-	// * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the
-	// CSV schema, see the [View billable usage].
-	//
-	// * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema,
-	// see [Configure audit logging]
+	// Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure
+	// [billable usage log delivery]. For the CSV schema, see the [View billable
+	// usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON
+	// schema, see [Configure audit logging]
 	//
 	// [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
 	// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-	LogType LogType `json:"log_type,omitempty"`
-	// The file type of log delivery.
-	//
-	// * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the
-	// CSV (comma-separated values) format is supported. For the schema, see the
-	// [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be
-	// `JSON`. Only the JSON (JavaScript Object Notation) format is supported.
-	// For the schema, see the [Configuring audit logs].
+	LogType LogType `json:"log_type"`
+	// The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this
+	// value must be `CSV`. Only the CSV (comma-separated values) format is
+	// supported. For the schema, see the [View billable usage] * If `log_type`
+	// is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript
+	// Object Notation) format is supported. For the schema, see the
+	// [Configuring audit logs].
 	//
 	// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
 	// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
-	OutputFormat OutputFormat `json:"output_format,omitempty"`
+	OutputFormat OutputFormat `json:"output_format"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
 	// the configuration](#operation/patch-log-delivery-config-status) later.
@@ -953,7 +947,7 @@ type LogDeliveryConfiguration struct {
 	// See [Configure billable usage delivery].
 	//
 	// [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-	StorageConfigurationId string `json:"storage_configuration_id,omitempty"`
+	StorageConfigurationId string `json:"storage_configuration_id"`
 	// Time in epoch milliseconds when the log delivery configuration was
 	// updated.
 	UpdateTime int64 `json:"update_time,omitempty"`
@@ -983,7 +977,6 @@ func (s LogDeliveryConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Databricks log delivery status.
 type LogDeliveryStatus struct {
 	// The UTC time for the latest log delivery attempt.
 	LastAttemptTime string `json:"last_attempt_time,omitempty"`
@@ -992,9 +985,9 @@ type LogDeliveryStatus struct {
 	// Informative message about the latest log delivery attempt. If the log
 	// delivery fails with USER_FAILURE, error details will be provided for
 	// fixing misconfigurations in cloud permissions.
-	Message string `json:"message,omitempty"`
-	// The status string for log delivery. Possible values are: * `CREATED`:
-	// There were no log delivery attempts since the config was created. *
+	Message string `json:"message"`
+	// Enum that describes the status. Possible values are: * `CREATED`: There
+	// were no log delivery attempts since the config was created. *
 	// `SUCCEEDED`: The latest attempt of log delivery has succeeded completely.
 	// * `USER_FAILURE`: The latest attempt of log delivery failed because of
 	// misconfiguration of customer provided permissions on role or storage. *
@@ -1003,7 +996,7 @@ type LogDeliveryStatus struct {
 	// `NOT_FOUND`: The log delivery status as the configuration has been
 	// disabled since the release of this feature or there are no workspaces in
 	// the account.
-	Status DeliveryStatus `json:"status,omitempty"`
+	Status DeliveryStatus `json:"status"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1016,18 +1009,7 @@ func (s LogDeliveryStatus) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// Log delivery type. Supported values are:
-//
-// * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV
-// schema, see the [View billable usage].
-//
-// * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see
-// [Configure audit logging]
-//
-// [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
-// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
-// [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
-// [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+// * Log Delivery Type
 type LogType string
 
 const LogTypeAuditLogs LogType = `AUDIT_LOGS`
@@ -1050,7 +1032,7 @@ func (f *LogType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of LogType.
+// Values returns all possible values for LogType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *LogType) Values() []LogType {
@@ -1065,16 +1047,7 @@ func (f *LogType) Type() string {
 	return "LogType"
 }
 
-// The file type of log delivery.
-//
-// * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV
-// (comma-separated values) format is supported. For the schema, see the [View
-// billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`.
-// Only the JSON (JavaScript Object Notation) format is supported. For the
-// schema, see the [Configuring audit logs].
-//
-// [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
-// [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+// * Log Delivery Output Format
 type OutputFormat string
 
 const OutputFormatCsv OutputFormat = `CSV`
@@ -1097,7 +1070,7 @@ func (f *OutputFormat) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of OutputFormat.
+// Values returns all possible values for OutputFormat.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *OutputFormat) Values() []OutputFormat {
@@ -1152,7 +1125,7 @@ func (f *SortSpecField) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SortSpecField.
+// Values returns all possible values for SortSpecField.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SortSpecField) Values() []SortSpecField {
@@ -1218,8 +1191,9 @@ type UpdateBudgetPolicyRequest struct {
 	PolicyId string `json:"-" url:"-"`
 }
 
+// * Update Log Delivery Configuration
 type UpdateLogDeliveryConfigurationStatusRequest struct {
-	// Databricks log delivery configuration ID
+	// The log delivery configuration id of customer
 	LogDeliveryConfigurationId string `json:"-" url:"-"`
 	// Status of log delivery configuration. Set to `ENABLED` (enabled) or
 	// `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
@@ -1251,7 +1225,7 @@ func (f *UsageDashboardType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of UsageDashboardType.
+// Values returns all possible values for UsageDashboardType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *UsageDashboardType) Values() []UsageDashboardType {
@@ -1266,14 +1240,31 @@ func (f *UsageDashboardType) Type() string {
 	return "UsageDashboardType"
 }
 
+// * Properties of the new log delivery configuration.
 type WrappedCreateLogDeliveryConfiguration struct {
-	LogDeliveryConfiguration *CreateLogDeliveryConfigurationParams `json:"log_delivery_configuration,omitempty"`
+	// * Log Delivery Configuration
+	LogDeliveryConfiguration CreateLogDeliveryConfigurationParams `json:"log_delivery_configuration"`
 }
 
 type WrappedLogDeliveryConfiguration struct {
+	// The created log delivery configuration
 	LogDeliveryConfiguration *LogDeliveryConfiguration `json:"log_delivery_configuration,omitempty"`
 }
 
 type WrappedLogDeliveryConfigurations struct {
+	// Log delivery configurations were returned successfully.
 	LogDeliveryConfigurations []LogDeliveryConfiguration `json:"log_delivery_configurations,omitempty"`
+	// Token which can be sent as `page_token` to retrieve the next page of
+	// results. If this field is omitted, there are no subsequent budgets.
+	NextPageToken string `json:"next_page_token,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *WrappedLogDeliveryConfigurations) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s WrappedLogDeliveryConfigurations) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
