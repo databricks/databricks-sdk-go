@@ -47,7 +47,7 @@ func ExampleLogDeliveryAPI_Create_logDelivery() {
 	logger.Infof(ctx, "found %v", creds)
 
 	created, err := a.LogDelivery.Create(ctx, billing.WrappedCreateLogDeliveryConfiguration{
-		LogDeliveryConfiguration: &billing.CreateLogDeliveryConfigurationParams{
+		LogDeliveryConfiguration: billing.CreateLogDeliveryConfigurationParams{
 			ConfigName:             fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 			CredentialsId:          creds.CredentialsId,
 			StorageConfigurationId: bucket.StorageConfigurationId,
@@ -112,7 +112,7 @@ func ExampleLogDeliveryAPI_Get_logDelivery() {
 	logger.Infof(ctx, "found %v", creds)
 
 	created, err := a.LogDelivery.Create(ctx, billing.WrappedCreateLogDeliveryConfiguration{
-		LogDeliveryConfiguration: &billing.CreateLogDeliveryConfigurationParams{
+		LogDeliveryConfiguration: billing.CreateLogDeliveryConfigurationParams{
 			ConfigName:             fmt.Sprintf("sdk-%x", time.Now().UnixNano()),
 			CredentialsId:          creds.CredentialsId,
 			StorageConfigurationId: bucket.StorageConfigurationId,

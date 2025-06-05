@@ -142,7 +142,7 @@ func ExampleMetastoresAPI_List_metastores() {
 		panic(err)
 	}
 
-	all, err := w.Metastores.ListAll(ctx)
+	all, err := w.Metastores.ListAll(ctx, catalog.ListMetastoresRequest{})
 	if err != nil {
 		panic(err)
 	}
