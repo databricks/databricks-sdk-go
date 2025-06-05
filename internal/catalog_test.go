@@ -157,7 +157,7 @@ func TestUcAccTables(t *testing.T) {
 	accountLevelGroupName := GetEnvOrSkipTest(t, "TEST_DATA_ENG_GROUP")
 	x, err := w.Grants.Update(ctx, catalog.UpdatePermissions{
 		FullName:      createdTable.FullName,
-		SecurableType: catalog.SecurableTypeTable,
+		SecurableType: string(catalog.SecurableTypeTable),
 		Changes: []catalog.PermissionsChange{
 			{
 				Add: []catalog.Privilege{
@@ -171,7 +171,7 @@ func TestUcAccTables(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, len(x.PrivilegeAssignments) > 0)
 
-	grants, err := w.Grants.GetEffectiveBySecurableTypeAndFullName(ctx, catalog.SecurableTypeTable, createdTable.FullName)
+	grants, err := w.Grants.GetEffectiveBySecurableTypeAndFullName(ctx, string(catalog.SecurableTypeTable), createdTable.FullName)
 	require.NoError(t, err)
 	assert.True(t, len(grants.PrivilegeAssignments) > 0)
 
@@ -313,7 +313,7 @@ func TestUcAccMetastores(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, currentMetastore.MetastoreId, summary.MetastoreId)
 
-	all, err := w.Metastores.ListAll(ctx)
+	all, err := w.Metastores.ListAll(ctx, catalog.ListMetastoresRequest{})
 	require.NoError(t, err)
 	assert.True(t, len(all) >= 1)
 }

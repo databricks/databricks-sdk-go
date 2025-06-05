@@ -278,6 +278,42 @@ func (a *cspEnablementAccountImpl) Update(ctx context.Context, request UpdateCsp
 	return &cspEnablementAccountSetting, err
 }
 
+// unexported type that holds implementations of just DashboardEmailSubscriptions API methods
+type dashboardEmailSubscriptionsImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *dashboardEmailSubscriptionsImpl) Delete(ctx context.Context, request DeleteDashboardEmailSubscriptionsRequest) (*DeleteDashboardEmailSubscriptionsResponse, error) {
+	var deleteDashboardEmailSubscriptionsResponse DeleteDashboardEmailSubscriptionsResponse
+	path := "/api/2.0/settings/types/dashboard_email_subscriptions/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDashboardEmailSubscriptionsResponse)
+	return &deleteDashboardEmailSubscriptionsResponse, err
+}
+
+func (a *dashboardEmailSubscriptionsImpl) Get(ctx context.Context, request GetDashboardEmailSubscriptionsRequest) (*DashboardEmailSubscriptions, error) {
+	var dashboardEmailSubscriptions DashboardEmailSubscriptions
+	path := "/api/2.0/settings/types/dashboard_email_subscriptions/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &dashboardEmailSubscriptions)
+	return &dashboardEmailSubscriptions, err
+}
+
+func (a *dashboardEmailSubscriptionsImpl) Update(ctx context.Context, request UpdateDashboardEmailSubscriptionsRequest) (*DashboardEmailSubscriptions, error) {
+	var dashboardEmailSubscriptions DashboardEmailSubscriptions
+	path := "/api/2.0/settings/types/dashboard_email_subscriptions/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &dashboardEmailSubscriptions)
+	return &dashboardEmailSubscriptions, err
+}
+
 // unexported type that holds implementations of just DefaultNamespace API methods
 type defaultNamespaceImpl struct {
 	client *client.DatabricksClient
@@ -787,15 +823,15 @@ func (a *networkConnectivityImpl) CreateNetworkConnectivityConfiguration(ctx con
 	return &networkConnectivityConfiguration, err
 }
 
-func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
-	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
+func (a *networkConnectivityImpl) CreatePrivateEndpointRule(ctx context.Context, request CreatePrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error) {
+	var nccPrivateEndpointRule NccPrivateEndpointRule
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.PrivateEndpointRule, &nccAzurePrivateEndpointRule)
-	return &nccAzurePrivateEndpointRule, err
+	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.PrivateEndpointRule, &nccPrivateEndpointRule)
+	return &nccPrivateEndpointRule, err
 }
 
 func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx context.Context, request DeleteNetworkConnectivityConfigurationRequest) error {
@@ -808,14 +844,14 @@ func (a *networkConnectivityImpl) DeleteNetworkConnectivityConfiguration(ctx con
 	return err
 }
 
-func (a *networkConnectivityImpl) DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
-	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
+func (a *networkConnectivityImpl) DeletePrivateEndpointRule(ctx context.Context, request DeletePrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error) {
+	var nccPrivateEndpointRule NccPrivateEndpointRule
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &nccAzurePrivateEndpointRule)
-	return &nccAzurePrivateEndpointRule, err
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &nccPrivateEndpointRule)
+	return &nccPrivateEndpointRule, err
 }
 
 func (a *networkConnectivityImpl) GetNetworkConnectivityConfiguration(ctx context.Context, request GetNetworkConnectivityConfigurationRequest) (*NetworkConnectivityConfiguration, error) {
@@ -828,14 +864,14 @@ func (a *networkConnectivityImpl) GetNetworkConnectivityConfiguration(ctx contex
 	return &networkConnectivityConfiguration, err
 }
 
-func (a *networkConnectivityImpl) GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccAzurePrivateEndpointRule, error) {
-	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
+func (a *networkConnectivityImpl) GetPrivateEndpointRule(ctx context.Context, request GetPrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error) {
+	var nccPrivateEndpointRule NccPrivateEndpointRule
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &nccAzurePrivateEndpointRule)
-	return &nccAzurePrivateEndpointRule, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &nccPrivateEndpointRule)
+	return &nccPrivateEndpointRule, err
 }
 
 // List network connectivity configurations.
@@ -886,16 +922,16 @@ func (a *networkConnectivityImpl) internalListNetworkConnectivityConfigurations(
 // List private endpoint rules.
 //
 // Gets an array of private endpoint rules.
-func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) listing.Iterator[NccAzurePrivateEndpointRule] {
+func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) listing.Iterator[NccPrivateEndpointRule] {
 
-	getNextPage := func(ctx context.Context, req ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
+	getNextPage := func(ctx context.Context, req ListPrivateEndpointRulesRequest) (*ListPrivateEndpointRulesResponse, error) {
 		ctx = useragent.InContext(ctx, "sdk-feature", "pagination")
 		return a.internalListPrivateEndpointRules(ctx, req)
 	}
-	getItems := func(resp *ListNccAzurePrivateEndpointRulesResponse) []NccAzurePrivateEndpointRule {
+	getItems := func(resp *ListPrivateEndpointRulesResponse) []NccPrivateEndpointRule {
 		return resp.Items
 	}
-	getNextReq := func(resp *ListNccAzurePrivateEndpointRulesResponse) *ListPrivateEndpointRulesRequest {
+	getNextReq := func(resp *ListPrivateEndpointRulesResponse) *ListPrivateEndpointRulesRequest {
 		if resp.NextPageToken == "" {
 			return nil
 		}
@@ -913,23 +949,23 @@ func (a *networkConnectivityImpl) ListPrivateEndpointRules(ctx context.Context, 
 // List private endpoint rules.
 //
 // Gets an array of private endpoint rules.
-func (a *networkConnectivityImpl) ListPrivateEndpointRulesAll(ctx context.Context, request ListPrivateEndpointRulesRequest) ([]NccAzurePrivateEndpointRule, error) {
+func (a *networkConnectivityImpl) ListPrivateEndpointRulesAll(ctx context.Context, request ListPrivateEndpointRulesRequest) ([]NccPrivateEndpointRule, error) {
 	iterator := a.ListPrivateEndpointRules(ctx, request)
-	return listing.ToSlice[NccAzurePrivateEndpointRule](ctx, iterator)
+	return listing.ToSlice[NccPrivateEndpointRule](ctx, iterator)
 }
 
-func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListNccAzurePrivateEndpointRulesResponse, error) {
-	var listNccAzurePrivateEndpointRulesResponse ListNccAzurePrivateEndpointRulesResponse
+func (a *networkConnectivityImpl) internalListPrivateEndpointRules(ctx context.Context, request ListPrivateEndpointRulesRequest) (*ListPrivateEndpointRulesResponse, error) {
+	var listPrivateEndpointRulesResponse ListPrivateEndpointRulesResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listNccAzurePrivateEndpointRulesResponse)
-	return &listNccAzurePrivateEndpointRulesResponse, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listPrivateEndpointRulesResponse)
+	return &listPrivateEndpointRulesResponse, err
 }
 
-func (a *networkConnectivityImpl) UpdateNccAzurePrivateEndpointRulePublic(ctx context.Context, request UpdateNccAzurePrivateEndpointRulePublicRequest) (*NccAzurePrivateEndpointRule, error) {
-	var nccAzurePrivateEndpointRule NccAzurePrivateEndpointRule
+func (a *networkConnectivityImpl) UpdatePrivateEndpointRule(ctx context.Context, request UpdateNccPrivateEndpointRuleRequest) (*NccPrivateEndpointRule, error) {
+	var nccPrivateEndpointRule NccPrivateEndpointRule
 	path := fmt.Sprintf("/api/2.0/accounts/%v/network-connectivity-configs/%v/private-endpoint-rules/%v", a.client.ConfiguredAccountID(), request.NetworkConnectivityConfigId, request.PrivateEndpointRuleId)
 	queryParams := make(map[string]any)
 	if request.UpdateMask != "" {
@@ -938,8 +974,8 @@ func (a *networkConnectivityImpl) UpdateNccAzurePrivateEndpointRulePublic(ctx co
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.PrivateEndpointRule, &nccAzurePrivateEndpointRule)
-	return &nccAzurePrivateEndpointRule, err
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.PrivateEndpointRule, &nccPrivateEndpointRule)
+	return &nccPrivateEndpointRule, err
 }
 
 // unexported type that holds implementations of just NetworkPolicies API methods
@@ -1201,6 +1237,42 @@ func (a *restrictWorkspaceAdminsImpl) Update(ctx context.Context, request Update
 // unexported type that holds implementations of just Settings API methods
 type settingsImpl struct {
 	client *client.DatabricksClient
+}
+
+// unexported type that holds implementations of just SqlResultsDownload API methods
+type sqlResultsDownloadImpl struct {
+	client *client.DatabricksClient
+}
+
+func (a *sqlResultsDownloadImpl) Delete(ctx context.Context, request DeleteSqlResultsDownloadRequest) (*DeleteSqlResultsDownloadResponse, error) {
+	var deleteSqlResultsDownloadResponse DeleteSqlResultsDownloadResponse
+	path := "/api/2.0/settings/types/sql_results_download/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteSqlResultsDownloadResponse)
+	return &deleteSqlResultsDownloadResponse, err
+}
+
+func (a *sqlResultsDownloadImpl) Get(ctx context.Context, request GetSqlResultsDownloadRequest) (*SqlResultsDownload, error) {
+	var sqlResultsDownload SqlResultsDownload
+	path := "/api/2.0/settings/types/sql_results_download/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &sqlResultsDownload)
+	return &sqlResultsDownload, err
+}
+
+func (a *sqlResultsDownloadImpl) Update(ctx context.Context, request UpdateSqlResultsDownloadRequest) (*SqlResultsDownload, error) {
+	var sqlResultsDownload SqlResultsDownload
+	path := "/api/2.0/settings/types/sql_results_download/names/default"
+	queryParams := make(map[string]any)
+	headers := make(map[string]string)
+	headers["Accept"] = "application/json"
+	headers["Content-Type"] = "application/json"
+	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request, &sqlResultsDownload)
+	return &sqlResultsDownload, err
 }
 
 // unexported type that holds implementations of just TokenManagement API methods

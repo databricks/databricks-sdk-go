@@ -31,7 +31,7 @@ func (f *AuthenticationMethod) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AuthenticationMethod.
+// Values returns all possible values for AuthenticationMethod.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AuthenticationMethod) Values() []AuthenticationMethod {
@@ -70,6 +70,8 @@ type BaseJob struct {
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
+	// State of the trigger associated with the job.
+	TriggerState *TriggerStateProto `json:"trigger_state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -312,7 +314,7 @@ func (f *CleanRoomTaskRunLifeCycleState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CleanRoomTaskRunLifeCycleState.
+// Values returns all possible values for CleanRoomTaskRunLifeCycleState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CleanRoomTaskRunLifeCycleState) Values() []CleanRoomTaskRunLifeCycleState {
@@ -381,7 +383,7 @@ func (f *CleanRoomTaskRunResultState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CleanRoomTaskRunResultState.
+// Values returns all possible values for CleanRoomTaskRunResultState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CleanRoomTaskRunResultState) Values() []CleanRoomTaskRunResultState {
@@ -550,7 +552,7 @@ func (f *Condition) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Condition.
+// Values returns all possible values for Condition.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Condition) Values() []Condition {
@@ -625,7 +627,7 @@ func (f *ConditionTaskOp) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ConditionTaskOp.
+// Values returns all possible values for ConditionTaskOp.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ConditionTaskOp) Values() []ConditionTaskOp {
@@ -852,6 +854,115 @@ type DashboardTaskOutput struct {
 	PageSnapshots []DashboardPageSnapshot `json:"page_snapshots,omitempty"`
 }
 
+// Format of response retrieved from dbt Cloud, for inclusion in output
+type DbtCloudJobRunStep struct {
+	// Orders the steps in the job
+	Index int `json:"index,omitempty"`
+	// Output of the step
+	Logs string `json:"logs,omitempty"`
+	// Name of the step in the job
+	Name string `json:"name,omitempty"`
+	// State of the step
+	Status DbtCloudRunStatus `json:"status,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DbtCloudJobRunStep) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DbtCloudJobRunStep) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+// Response enumeration from calling the dbt Cloud API, for inclusion in output
+type DbtCloudRunStatus string
+
+const DbtCloudRunStatusCancelled DbtCloudRunStatus = `CANCELLED`
+
+const DbtCloudRunStatusError DbtCloudRunStatus = `ERROR`
+
+const DbtCloudRunStatusQueued DbtCloudRunStatus = `QUEUED`
+
+const DbtCloudRunStatusRunning DbtCloudRunStatus = `RUNNING`
+
+const DbtCloudRunStatusStarting DbtCloudRunStatus = `STARTING`
+
+const DbtCloudRunStatusSuccess DbtCloudRunStatus = `SUCCESS`
+
+// String representation for [fmt.Print]
+func (f *DbtCloudRunStatus) String() string {
+	return string(*f)
+}
+
+// Set raw string value and validate it against allowed values
+func (f *DbtCloudRunStatus) Set(v string) error {
+	switch v {
+	case `CANCELLED`, `ERROR`, `QUEUED`, `RUNNING`, `STARTING`, `SUCCESS`:
+		*f = DbtCloudRunStatus(v)
+		return nil
+	default:
+		return fmt.Errorf(`value "%s" is not one of "CANCELLED", "ERROR", "QUEUED", "RUNNING", "STARTING", "SUCCESS"`, v)
+	}
+}
+
+// Values returns all possible values for DbtCloudRunStatus.
+//
+// There is no guarantee on the order of the values in the slice.
+func (f *DbtCloudRunStatus) Values() []DbtCloudRunStatus {
+	return []DbtCloudRunStatus{
+		DbtCloudRunStatusCancelled,
+		DbtCloudRunStatusError,
+		DbtCloudRunStatusQueued,
+		DbtCloudRunStatusRunning,
+		DbtCloudRunStatusStarting,
+		DbtCloudRunStatusSuccess,
+	}
+}
+
+// Type always returns DbtCloudRunStatus to satisfy [pflag.Value] interface
+func (f *DbtCloudRunStatus) Type() string {
+	return "DbtCloudRunStatus"
+}
+
+type DbtCloudTask struct {
+	// The resource name of the UC connection that authenticates the dbt Cloud
+	// for this task
+	ConnectionResourceName string `json:"connection_resource_name,omitempty"`
+	// Id of the dbt Cloud job to be triggered
+	DbtCloudJobId int64 `json:"dbt_cloud_job_id,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DbtCloudTask) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DbtCloudTask) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type DbtCloudTaskOutput struct {
+	// Id of the job run in dbt Cloud
+	DbtCloudJobRunId int64 `json:"dbt_cloud_job_run_id,omitempty"`
+	// Steps of the job run as received from dbt Cloud
+	DbtCloudJobRunOutput []DbtCloudJobRunStep `json:"dbt_cloud_job_run_output,omitempty"`
+	// Url where full run details can be viewed
+	DbtCloudJobRunUrl string `json:"dbt_cloud_job_run_url,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *DbtCloudTaskOutput) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s DbtCloudTaskOutput) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type DbtOutput struct {
 	// An optional map of headers to send when retrieving the artifact from the
 	// `artifacts_link`.
@@ -1051,6 +1162,22 @@ func (s FileArrivalTriggerConfiguration) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
+type FileArrivalTriggerState struct {
+	// Indicates whether the trigger leverages file events to detect file
+	// arrivals.
+	UsingFileEvents bool `json:"using_file_events,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *FileArrivalTriggerState) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s FileArrivalTriggerState) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
 type ForEachStats struct {
 	// Sample of 3 most common error messages occurred during the iteration.
 	ErrorMessageStats []ForEachTaskErrorMessageStats `json:"error_message_stats,omitempty"`
@@ -1148,7 +1275,7 @@ func (f *Format) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Format.
+// Values returns all possible values for Format.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Format) Values() []Format {
@@ -1338,7 +1465,7 @@ func (f *GitProvider) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of GitProvider.
+// Values returns all possible values for GitProvider.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *GitProvider) Values() []GitProvider {
@@ -1456,6 +1583,8 @@ type Job struct {
 	// Settings for this job and all of its runs. These settings can be updated
 	// using the `resetJob` method.
 	Settings *JobSettings `json:"settings,omitempty"`
+	// State of the trigger associated with the job.
+	TriggerState *TriggerStateProto `json:"trigger_state,omitempty"`
 
 	ForceSendFields []string `json:"-" url:"-"`
 }
@@ -1585,7 +1714,7 @@ func (f *JobDeploymentKind) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of JobDeploymentKind.
+// Values returns all possible values for JobDeploymentKind.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *JobDeploymentKind) Values() []JobDeploymentKind {
@@ -1627,7 +1756,7 @@ func (f *JobEditMode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of JobEditMode.
+// Values returns all possible values for JobEditMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *JobEditMode) Values() []JobEditMode {
@@ -1789,7 +1918,7 @@ func (f *JobPermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of JobPermissionLevel.
+// Values returns all possible values for JobPermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *JobPermissionLevel) Values() []JobPermissionLevel {
@@ -2050,7 +2179,7 @@ func (f *JobSourceDirtyState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of JobSourceDirtyState.
+// Values returns all possible values for JobSourceDirtyState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *JobSourceDirtyState) Values() []JobSourceDirtyState {
@@ -2114,7 +2243,7 @@ func (f *JobsHealthMetric) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of JobsHealthMetric.
+// Values returns all possible values for JobsHealthMetric.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *JobsHealthMetric) Values() []JobsHealthMetric {
@@ -2154,7 +2283,7 @@ func (f *JobsHealthOperator) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of JobsHealthOperator.
+// Values returns all possible values for JobsHealthOperator.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *JobsHealthOperator) Values() []JobsHealthOperator {
@@ -2489,7 +2618,7 @@ func (f *PauseStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PauseStatus.
+// Values returns all possible values for PauseStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PauseStatus) Values() []PauseStatus {
@@ -2530,7 +2659,7 @@ func (f *PerformanceTarget) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PerformanceTarget.
+// Values returns all possible values for PerformanceTarget.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PerformanceTarget) Values() []PerformanceTarget {
@@ -2576,7 +2705,7 @@ func (f *PeriodicTriggerConfigurationTimeUnit) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PeriodicTriggerConfigurationTimeUnit.
+// Values returns all possible values for PeriodicTriggerConfigurationTimeUnit.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PeriodicTriggerConfigurationTimeUnit) Values() []PeriodicTriggerConfigurationTimeUnit {
@@ -2764,7 +2893,7 @@ func (f *QueueDetailsCodeCode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of QueueDetailsCodeCode.
+// Values returns all possible values for QueueDetailsCodeCode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *QueueDetailsCodeCode) Values() []QueueDetailsCodeCode {
@@ -2848,7 +2977,7 @@ func (f *RepairHistoryItemType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RepairHistoryItemType.
+// Values returns all possible values for RepairHistoryItemType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RepairHistoryItemType) Values() []RepairHistoryItemType {
@@ -3353,7 +3482,7 @@ func (f *RunIf) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RunIf.
+// Values returns all possible values for RunIf.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RunIf) Values() []RunIf {
@@ -3542,7 +3671,7 @@ func (f *RunLifeCycleState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RunLifeCycleState.
+// Values returns all possible values for RunLifeCycleState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RunLifeCycleState) Values() []RunLifeCycleState {
@@ -3597,7 +3726,7 @@ func (f *RunLifecycleStateV2State) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RunLifecycleStateV2State.
+// Values returns all possible values for RunLifecycleStateV2State.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RunLifecycleStateV2State) Values() []RunLifecycleStateV2State {
@@ -3771,6 +3900,8 @@ type RunOutput struct {
 	CleanRoomsNotebookOutput *CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput `json:"clean_rooms_notebook_output,omitempty"`
 	// The output of a dashboard task, if available
 	DashboardOutput *DashboardTaskOutput `json:"dashboard_output,omitempty"`
+
+	DbtCloudOutput *DbtCloudTaskOutput `json:"dbt_cloud_output,omitempty"`
 	// The output of a dbt task, if available.
 	DbtOutput *DbtOutput `json:"dbt_output,omitempty"`
 	// An error message indicating why a task failed or why output is not
@@ -3965,7 +4096,7 @@ func (f *RunResultState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RunResultState.
+// Values returns all possible values for RunResultState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RunResultState) Values() []RunResultState {
@@ -4061,6 +4192,8 @@ type RunTask struct {
 	ConditionTask *RunConditionTask `json:"condition_task,omitempty"`
 	// The task refreshes a dashboard and sends a snapshot to subscribers.
 	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
+	// Task type for dbt cloud
+	DbtCloudTask *DbtCloudTask `json:"dbt_cloud_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
@@ -4265,7 +4398,7 @@ func (f *RunType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RunType.
+// Values returns all possible values for RunType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RunType) Values() []RunType {
@@ -4313,7 +4446,7 @@ func (f *Source) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Source.
+// Values returns all possible values for Source.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Source) Values() []Source {
@@ -4452,7 +4585,7 @@ func (f *SqlAlertState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SqlAlertState.
+// Values returns all possible values for SqlAlertState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SqlAlertState) Values() []SqlAlertState {
@@ -4540,7 +4673,7 @@ func (f *SqlDashboardWidgetOutputStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SqlDashboardWidgetOutputStatus.
+// Values returns all possible values for SqlDashboardWidgetOutputStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SqlDashboardWidgetOutputStatus) Values() []SqlDashboardWidgetOutputStatus {
@@ -4747,7 +4880,7 @@ func (f *StorageMode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of StorageMode.
+// Values returns all possible values for StorageMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *StorageMode) Values() []StorageMode {
@@ -4864,6 +4997,8 @@ type SubmitTask struct {
 	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
 	// The task refreshes a dashboard and sends a snapshot to subscribers.
 	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
+	// Task type for dbt cloud
+	DbtCloudTask *DbtCloudTask `json:"dbt_cloud_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
@@ -5052,6 +5187,8 @@ type Task struct {
 	ConditionTask *ConditionTask `json:"condition_task,omitempty"`
 	// The task refreshes a dashboard and sends a snapshot to subscribers.
 	DashboardTask *DashboardTask `json:"dashboard_task,omitempty"`
+	// Task type for dbt cloud
+	DbtCloudTask *DbtCloudTask `json:"dbt_cloud_task,omitempty"`
 	// The task runs one or more dbt commands when the `dbt_task` field is
 	// present. The dbt task requires both Databricks SQL and the ability to use
 	// a serverless or a pro SQL warehouse.
@@ -5432,7 +5569,7 @@ func (f *TerminationCodeCode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of TerminationCodeCode.
+// Values returns all possible values for TerminationCodeCode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *TerminationCodeCode) Values() []TerminationCodeCode {
@@ -5586,7 +5723,7 @@ func (f *TerminationTypeType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of TerminationTypeType.
+// Values returns all possible values for TerminationTypeType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *TerminationTypeType) Values() []TerminationTypeType {
@@ -5630,6 +5767,10 @@ type TriggerSettings struct {
 	Table *TableUpdateTriggerConfiguration `json:"table,omitempty"`
 
 	TableUpdate *TableUpdateTriggerConfiguration `json:"table_update,omitempty"`
+}
+
+type TriggerStateProto struct {
+	FileArrival *FileArrivalTriggerState `json:"file_arrival,omitempty"`
 }
 
 // The type of trigger that fired this run.
@@ -5682,7 +5823,7 @@ func (f *TriggerType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of TriggerType.
+// Values returns all possible values for TriggerType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *TriggerType) Values() []TriggerType {
@@ -5771,7 +5912,7 @@ func (f *ViewType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ViewType.
+// Values returns all possible values for ViewType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ViewType) Values() []ViewType {
@@ -5815,7 +5956,7 @@ func (f *ViewsToExport) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ViewsToExport.
+// Values returns all possible values for ViewsToExport.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ViewsToExport) Values() []ViewsToExport {

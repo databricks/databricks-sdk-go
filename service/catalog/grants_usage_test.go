@@ -59,7 +59,7 @@ func ExampleGrantsAPI_GetEffective_tables() {
 	}
 	logger.Infof(ctx, "found %v", createdTable)
 
-	grants, err := w.Grants.GetEffectiveBySecurableTypeAndFullName(ctx, catalog.SecurableTypeTable, createdTable.FullName)
+	grants, err := w.Grants.GetEffectiveBySecurableTypeAndFullName(ctx, string(catalog.SecurableTypeTable), createdTable.FullName)
 	if err != nil {
 		panic(err)
 	}
@@ -133,7 +133,7 @@ func ExampleGrantsAPI_Update_tables() {
 
 	x, err := w.Grants.Update(ctx, catalog.UpdatePermissions{
 		FullName:      createdTable.FullName,
-		SecurableType: catalog.SecurableTypeTable,
+		SecurableType: string(catalog.SecurableTypeTable),
 		Changes: []catalog.PermissionsChange{catalog.PermissionsChange{
 			Add:       []catalog.Privilege{catalog.PrivilegeModify, catalog.PrivilegeSelect},
 			Principal: accountLevelGroupName,

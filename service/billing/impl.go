@@ -232,14 +232,14 @@ func (a *logDeliveryImpl) Create(ctx context.Context, request WrappedCreateLogDe
 	return &wrappedLogDeliveryConfiguration, err
 }
 
-func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest) (*WrappedLogDeliveryConfiguration, error) {
-	var wrappedLogDeliveryConfiguration WrappedLogDeliveryConfiguration
+func (a *logDeliveryImpl) Get(ctx context.Context, request GetLogDeliveryRequest) (*GetLogDeliveryConfigurationResponse, error) {
+	var getLogDeliveryConfigurationResponse GetLogDeliveryConfigurationResponse
 	path := fmt.Sprintf("/api/2.0/accounts/%v/log-delivery/%v", a.client.ConfiguredAccountID(), request.LogDeliveryConfigurationId)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &wrappedLogDeliveryConfiguration)
-	return &wrappedLogDeliveryConfiguration, err
+	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getLogDeliveryConfigurationResponse)
+	return &getLogDeliveryConfigurationResponse, err
 }
 
 // Get all log delivery configurations.
@@ -255,12 +255,18 @@ func (a *logDeliveryImpl) List(ctx context.Context, request ListLogDeliveryReque
 	getItems := func(resp *WrappedLogDeliveryConfigurations) []LogDeliveryConfiguration {
 		return resp.LogDeliveryConfigurations
 	}
-
+	getNextReq := func(resp *WrappedLogDeliveryConfigurations) *ListLogDeliveryRequest {
+		if resp.NextPageToken == "" {
+			return nil
+		}
+		request.PageToken = resp.NextPageToken
+		return &request
+	}
 	iterator := listing.NewIterator(
 		&request,
 		getNextPage,
 		getItems,
-		nil)
+		getNextReq)
 	return iterator
 }
 

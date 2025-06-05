@@ -52,7 +52,7 @@ func TestMwsAccLogDelivery(t *testing.T) {
 
 	// TODO: OpenAPI: x-databricks-sdk-inline on schema
 	created, err := a.LogDelivery.Create(ctx, billing.WrappedCreateLogDeliveryConfiguration{
-		LogDeliveryConfiguration: &billing.CreateLogDeliveryConfigurationParams{
+		LogDeliveryConfiguration: billing.CreateLogDeliveryConfigurationParams{
 			ConfigName:             RandomName("sdk-go-"),
 			CredentialsId:          creds.CredentialsId,
 			StorageConfigurationId: bucket.StorageConfigurationId,

@@ -61,7 +61,7 @@ func (f *Aggregation) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Aggregation.
+// Values returns all possible values for Aggregation.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Aggregation) Values() []Aggregation {
@@ -187,7 +187,7 @@ func (f *AlertEvaluationState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AlertEvaluationState.
+// Values returns all possible values for AlertEvaluationState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AlertEvaluationState) Values() []AlertEvaluationState {
@@ -268,7 +268,7 @@ func (f *AlertOperator) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AlertOperator.
+// Values returns all possible values for AlertOperator.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AlertOperator) Values() []AlertOperator {
@@ -351,7 +351,7 @@ func (f *AlertOptionsEmptyResultState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AlertOptionsEmptyResultState.
+// Values returns all possible values for AlertOptionsEmptyResultState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AlertOptionsEmptyResultState) Values() []AlertOptionsEmptyResultState {
@@ -443,7 +443,7 @@ func (f *AlertState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AlertState.
+// Values returns all possible values for AlertState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AlertState) Values() []AlertState {
@@ -706,7 +706,7 @@ func (f *ChannelName) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ChannelName.
+// Values returns all possible values for ChannelName.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ChannelName) Values() []ChannelName {
@@ -843,7 +843,7 @@ func (f *ColumnInfoTypeName) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ColumnInfoTypeName.
+// Values returns all possible values for ColumnInfoTypeName.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ColumnInfoTypeName) Values() []ColumnInfoTypeName {
@@ -909,7 +909,7 @@ func (f *ComparisonOperator) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ComparisonOperator.
+// Values returns all possible values for ComparisonOperator.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ComparisonOperator) Values() []ComparisonOperator {
@@ -1232,7 +1232,7 @@ func (f *CreateWarehouseRequestWarehouseType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CreateWarehouseRequestWarehouseType.
+// Values returns all possible values for CreateWarehouseRequestWarehouseType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CreateWarehouseRequestWarehouseType) Values() []CreateWarehouseRequestWarehouseType {
@@ -1505,7 +1505,7 @@ func (f *DatePrecision) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DatePrecision.
+// Values returns all possible values for DatePrecision.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DatePrecision) Values() []DatePrecision {
@@ -1601,7 +1601,7 @@ func (f *DateRangeValueDynamicDateRange) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DateRangeValueDynamicDateRange.
+// Values returns all possible values for DateRangeValueDynamicDateRange.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DateRangeValueDynamicDateRange) Values() []DateRangeValueDynamicDateRange {
@@ -1673,7 +1673,7 @@ func (f *DateValueDynamicDate) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DateValueDynamicDate.
+// Values returns all possible values for DateValueDynamicDate.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DateValueDynamicDate) Values() []DateValueDynamicDate {
@@ -1754,7 +1754,7 @@ func (f *Disposition) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Disposition.
+// Values returns all possible values for Disposition.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Disposition) Values() []Disposition {
@@ -1894,7 +1894,7 @@ func (f *EditWarehouseRequestWarehouseType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of EditWarehouseRequestWarehouseType.
+// Values returns all possible values for EditWarehouseRequestWarehouseType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EditWarehouseRequestWarehouseType) Values() []EditWarehouseRequestWarehouseType {
@@ -2073,7 +2073,7 @@ func (f *EndpointInfoWarehouseType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of EndpointInfoWarehouseType.
+// Values returns all possible values for EndpointInfoWarehouseType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EndpointInfoWarehouseType) Values() []EndpointInfoWarehouseType {
@@ -2293,7 +2293,7 @@ func (f *ExecuteStatementRequestOnWaitTimeout) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ExecuteStatementRequestOnWaitTimeout.
+// Values returns all possible values for ExecuteStatementRequestOnWaitTimeout.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ExecuteStatementRequestOnWaitTimeout) Values() []ExecuteStatementRequestOnWaitTimeout {
@@ -2422,7 +2422,7 @@ func (f *Format) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Format.
+// Values returns all possible values for Format.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Format) Values() []Format {
@@ -2646,7 +2646,7 @@ func (f *GetWarehouseResponseWarehouseType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of GetWarehouseResponseWarehouseType.
+// Values returns all possible values for GetWarehouseResponseWarehouseType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *GetWarehouseResponseWarehouseType) Values() []GetWarehouseResponseWarehouseType {
@@ -2725,7 +2725,7 @@ func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Set(v string) error 
 	}
 }
 
-// Values returns all possible values of GetWorkspaceWarehouseConfigResponseSecurityPolicy.
+// Values returns all possible values for GetWorkspaceWarehouseConfigResponseSecurityPolicy.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *GetWorkspaceWarehouseConfigResponseSecurityPolicy) Values() []GetWorkspaceWarehouseConfigResponseSecurityPolicy {
@@ -2807,7 +2807,7 @@ func (f *LegacyAlertState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of LegacyAlertState.
+// Values returns all possible values for LegacyAlertState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *LegacyAlertState) Values() []LegacyAlertState {
@@ -2963,7 +2963,7 @@ func (f *LifecycleState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of LifecycleState.
+// Values returns all possible values for LifecycleState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *LifecycleState) Values() []LifecycleState {
@@ -3142,7 +3142,7 @@ func (f *ListOrder) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ListOrder.
+// Values returns all possible values for ListOrder.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ListOrder) Values() []ListOrder {
@@ -3457,7 +3457,7 @@ func (f *ObjectType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ObjectType.
+// Values returns all possible values for ObjectType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ObjectType) Values() []ObjectType {
@@ -3501,7 +3501,7 @@ func (f *ObjectTypePlural) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ObjectTypePlural.
+// Values returns all possible values for ObjectTypePlural.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ObjectTypePlural) Values() []ObjectTypePlural {
@@ -3563,7 +3563,7 @@ func (f *OwnableObjectType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of OwnableObjectType.
+// Values returns all possible values for OwnableObjectType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *OwnableObjectType) Values() []OwnableObjectType {
@@ -3639,7 +3639,7 @@ func (f *ParameterType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ParameterType.
+// Values returns all possible values for ParameterType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ParameterType) Values() []ParameterType {
@@ -3689,7 +3689,7 @@ func (f *PermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PermissionLevel.
+// Values returns all possible values for PermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PermissionLevel) Values() []PermissionLevel {
@@ -3737,7 +3737,7 @@ func (f *PlansState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PlansState.
+// Values returns all possible values for PlansState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PlansState) Values() []PlansState {
@@ -4019,6 +4019,10 @@ type QueryMetrics struct {
 	// Size of data temporarily written to disk while executing the query, in
 	// bytes.
 	SpillToDiskBytes int64 `json:"spill_to_disk_bytes,omitempty"`
+	// sum of task times completed in a range of wall clock time, approximated
+	// to a configurable number of points aggregated over all stages and jobs in
+	// the query (based on task_total_time_ms)
+	TaskTimeOverTimeRange *TaskTimeOverRange `json:"task_time_over_time_range,omitempty"`
 	// Sum of execution time for all of the query’s tasks, in milliseconds.
 	TaskTotalTimeMs int64 `json:"task_total_time_ms,omitempty"`
 	// Total execution time of the query from the client’s point of view, in
@@ -4194,7 +4198,7 @@ func (f *QueryStatementType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of QueryStatementType.
+// Values returns all possible values for QueryStatementType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *QueryStatementType) Values() []QueryStatementType {
@@ -4264,7 +4268,7 @@ func (f *QueryStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of QueryStatus.
+// Values returns all possible values for QueryStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *QueryStatus) Values() []QueryStatus {
@@ -4411,7 +4415,7 @@ func (f *RunAsMode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RunAsMode.
+// Values returns all possible values for RunAsMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RunAsMode) Values() []RunAsMode {
@@ -4451,7 +4455,7 @@ func (f *RunAsRole) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RunAsRole.
+// Values returns all possible values for RunAsRole.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RunAsRole) Values() []RunAsRole {
@@ -4488,7 +4492,7 @@ func (f *SchedulePauseStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SchedulePauseStatus.
+// Values returns all possible values for SchedulePauseStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SchedulePauseStatus) Values() []SchedulePauseStatus {
@@ -4565,7 +4569,7 @@ func (f *ServiceErrorCode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ServiceErrorCode.
+// Values returns all possible values for ServiceErrorCode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ServiceErrorCode) Values() []ServiceErrorCode {
@@ -4683,7 +4687,7 @@ func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SetWorkspaceWarehouseConfigRequestSecurityPolicy.
+// Values returns all possible values for SetWorkspaceWarehouseConfigRequestSecurityPolicy.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SetWorkspaceWarehouseConfigRequestSecurityPolicy) Values() []SetWorkspaceWarehouseConfigRequestSecurityPolicy {
@@ -4727,7 +4731,7 @@ func (f *SpotInstancePolicy) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SpotInstancePolicy.
+// Values returns all possible values for SpotInstancePolicy.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SpotInstancePolicy) Values() []SpotInstancePolicy {
@@ -4783,7 +4787,7 @@ func (f *State) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of State.
+// Values returns all possible values for State.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *State) Values() []State {
@@ -4895,7 +4899,7 @@ func (f *StatementState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of StatementState.
+// Values returns all possible values for StatementState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *StatementState) Values() []StatementState {
@@ -4955,7 +4959,7 @@ func (f *Status) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Status.
+// Values returns all possible values for Status.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Status) Values() []Status {
@@ -5005,7 +5009,7 @@ func (f *SuccessMessage) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SuccessMessage.
+// Values returns all possible values for SuccessMessage.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SuccessMessage) Values() []SuccessMessage {
@@ -5017,6 +5021,40 @@ func (f *SuccessMessage) Values() []SuccessMessage {
 // Type always returns SuccessMessage to satisfy [pflag.Value] interface
 func (f *SuccessMessage) Type() string {
 	return "SuccessMessage"
+}
+
+type TaskTimeOverRange struct {
+	Entries []TaskTimeOverRangeEntry `json:"entries,omitempty"`
+	// interval length for all entries (difference in start time and end time of
+	// an entry range) the same for all entries start time of first interval is
+	// query_start_time_ms
+	Interval int64 `json:"interval,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TaskTimeOverRange) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TaskTimeOverRange) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
+}
+
+type TaskTimeOverRangeEntry struct {
+	// total task completion time in this time range, aggregated over all stages
+	// and jobs in the query
+	TaskCompletedTimeMs int64 `json:"task_completed_time_ms,omitempty"`
+
+	ForceSendFields []string `json:"-" url:"-"`
+}
+
+func (s *TaskTimeOverRangeEntry) UnmarshalJSON(b []byte) error {
+	return marshal.Unmarshal(b, s)
+}
+
+func (s TaskTimeOverRangeEntry) MarshalJSON() ([]byte, error) {
+	return marshal.Marshal(s)
 }
 
 type TerminationReason struct {
@@ -5206,7 +5244,7 @@ func (f *TerminationReasonCode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of TerminationReasonCode.
+// Values returns all possible values for TerminationReasonCode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *TerminationReasonCode) Values() []TerminationReasonCode {
@@ -5325,7 +5363,7 @@ func (f *TerminationReasonType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of TerminationReasonType.
+// Values returns all possible values for TerminationReasonType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *TerminationReasonType) Values() []TerminationReasonType {
@@ -5771,7 +5809,7 @@ func (f *WarehousePermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of WarehousePermissionLevel.
+// Values returns all possible values for WarehousePermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *WarehousePermissionLevel) Values() []WarehousePermissionLevel {
@@ -5872,7 +5910,7 @@ func (f *WarehouseTypePairWarehouseType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of WarehouseTypePairWarehouseType.
+// Values returns all possible values for WarehouseTypePairWarehouseType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *WarehouseTypePairWarehouseType) Values() []WarehouseTypePairWarehouseType {

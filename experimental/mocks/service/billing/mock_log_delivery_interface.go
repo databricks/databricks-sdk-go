@@ -85,23 +85,23 @@ func (_c *MockLogDeliveryInterface_Create_Call) RunAndReturn(run func(context.Co
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockLogDeliveryInterface) Get(ctx context.Context, request billing.GetLogDeliveryRequest) (*billing.WrappedLogDeliveryConfiguration, error) {
+func (_m *MockLogDeliveryInterface) Get(ctx context.Context, request billing.GetLogDeliveryRequest) (*billing.GetLogDeliveryConfigurationResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Get")
 	}
 
-	var r0 *billing.WrappedLogDeliveryConfiguration
+	var r0 *billing.GetLogDeliveryConfigurationResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, billing.GetLogDeliveryRequest) (*billing.WrappedLogDeliveryConfiguration, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, billing.GetLogDeliveryRequest) (*billing.GetLogDeliveryConfigurationResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, billing.GetLogDeliveryRequest) *billing.WrappedLogDeliveryConfiguration); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, billing.GetLogDeliveryRequest) *billing.GetLogDeliveryConfigurationResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*billing.WrappedLogDeliveryConfiguration)
+			r0 = ret.Get(0).(*billing.GetLogDeliveryConfigurationResponse)
 		}
 	}
 
@@ -133,12 +133,12 @@ func (_c *MockLogDeliveryInterface_Get_Call) Run(run func(ctx context.Context, r
 	return _c
 }
 
-func (_c *MockLogDeliveryInterface_Get_Call) Return(_a0 *billing.WrappedLogDeliveryConfiguration, _a1 error) *MockLogDeliveryInterface_Get_Call {
+func (_c *MockLogDeliveryInterface_Get_Call) Return(_a0 *billing.GetLogDeliveryConfigurationResponse, _a1 error) *MockLogDeliveryInterface_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockLogDeliveryInterface_Get_Call) RunAndReturn(run func(context.Context, billing.GetLogDeliveryRequest) (*billing.WrappedLogDeliveryConfiguration, error)) *MockLogDeliveryInterface_Get_Call {
+func (_c *MockLogDeliveryInterface_Get_Call) RunAndReturn(run func(context.Context, billing.GetLogDeliveryRequest) (*billing.GetLogDeliveryConfigurationResponse, error)) *MockLogDeliveryInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -203,23 +203,23 @@ func (_c *MockLogDeliveryInterface_GetByConfigName_Call) RunAndReturn(run func(c
 }
 
 // GetByLogDeliveryConfigurationId provides a mock function with given fields: ctx, logDeliveryConfigurationId
-func (_m *MockLogDeliveryInterface) GetByLogDeliveryConfigurationId(ctx context.Context, logDeliveryConfigurationId string) (*billing.WrappedLogDeliveryConfiguration, error) {
+func (_m *MockLogDeliveryInterface) GetByLogDeliveryConfigurationId(ctx context.Context, logDeliveryConfigurationId string) (*billing.GetLogDeliveryConfigurationResponse, error) {
 	ret := _m.Called(ctx, logDeliveryConfigurationId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByLogDeliveryConfigurationId")
 	}
 
-	var r0 *billing.WrappedLogDeliveryConfiguration
+	var r0 *billing.GetLogDeliveryConfigurationResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*billing.WrappedLogDeliveryConfiguration, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*billing.GetLogDeliveryConfigurationResponse, error)); ok {
 		return rf(ctx, logDeliveryConfigurationId)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *billing.WrappedLogDeliveryConfiguration); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) *billing.GetLogDeliveryConfigurationResponse); ok {
 		r0 = rf(ctx, logDeliveryConfigurationId)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*billing.WrappedLogDeliveryConfiguration)
+			r0 = ret.Get(0).(*billing.GetLogDeliveryConfigurationResponse)
 		}
 	}
 
@@ -251,12 +251,12 @@ func (_c *MockLogDeliveryInterface_GetByLogDeliveryConfigurationId_Call) Run(run
 	return _c
 }
 
-func (_c *MockLogDeliveryInterface_GetByLogDeliveryConfigurationId_Call) Return(_a0 *billing.WrappedLogDeliveryConfiguration, _a1 error) *MockLogDeliveryInterface_GetByLogDeliveryConfigurationId_Call {
+func (_c *MockLogDeliveryInterface_GetByLogDeliveryConfigurationId_Call) Return(_a0 *billing.GetLogDeliveryConfigurationResponse, _a1 error) *MockLogDeliveryInterface_GetByLogDeliveryConfigurationId_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockLogDeliveryInterface_GetByLogDeliveryConfigurationId_Call) RunAndReturn(run func(context.Context, string) (*billing.WrappedLogDeliveryConfiguration, error)) *MockLogDeliveryInterface_GetByLogDeliveryConfigurationId_Call {
+func (_c *MockLogDeliveryInterface_GetByLogDeliveryConfigurationId_Call) RunAndReturn(run func(context.Context, string) (*billing.GetLogDeliveryConfigurationResponse, error)) *MockLogDeliveryInterface_GetByLogDeliveryConfigurationId_Call {
 	_c.Call.Return(run)
 	return _c
 }

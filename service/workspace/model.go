@@ -39,7 +39,7 @@ func (f *AclPermission) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AclPermission.
+// Values returns all possible values for AclPermission.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AclPermission) Values() []AclPermission {
@@ -318,7 +318,7 @@ func (f *ExportFormat) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ExportFormat.
+// Values returns all possible values for ExportFormat.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ExportFormat) Values() []ExportFormat {
@@ -592,7 +592,7 @@ func (f *ImportFormat) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ImportFormat.
+// Values returns all possible values for ImportFormat.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ImportFormat) Values() []ImportFormat {
@@ -642,7 +642,7 @@ func (f *Language) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Language.
+// Values returns all possible values for Language.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Language) Values() []Language {
@@ -832,7 +832,7 @@ func (f *ObjectType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ObjectType.
+// Values returns all possible values for ObjectType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ObjectType) Values() []ObjectType {
@@ -1004,7 +1004,7 @@ func (f *RepoPermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RepoPermissionLevel.
+// Values returns all possible values for RepoPermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RepoPermissionLevel) Values() []RepoPermissionLevel {
@@ -1083,7 +1083,7 @@ func (f *ScopeBackendType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ScopeBackendType.
+// Values returns all possible values for ScopeBackendType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ScopeBackendType) Values() []ScopeBackendType {
@@ -1306,7 +1306,7 @@ func (f *WorkspaceObjectPermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of WorkspaceObjectPermissionLevel.
+// Values returns all possible values for WorkspaceObjectPermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *WorkspaceObjectPermissionLevel) Values() []WorkspaceObjectPermissionLevel {

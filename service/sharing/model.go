@@ -16,6 +16,8 @@ const AuthenticationTypeDatabricks AuthenticationType = `DATABRICKS`
 
 const AuthenticationTypeOauthClientCredentials AuthenticationType = `OAUTH_CLIENT_CREDENTIALS`
 
+const AuthenticationTypeOidcFederation AuthenticationType = `OIDC_FEDERATION`
+
 const AuthenticationTypeToken AuthenticationType = `TOKEN`
 
 // String representation for [fmt.Print]
@@ -26,21 +28,22 @@ func (f *AuthenticationType) String() string {
 // Set raw string value and validate it against allowed values
 func (f *AuthenticationType) Set(v string) error {
 	switch v {
-	case `DATABRICKS`, `OAUTH_CLIENT_CREDENTIALS`, `TOKEN`:
+	case `DATABRICKS`, `OAUTH_CLIENT_CREDENTIALS`, `OIDC_FEDERATION`, `TOKEN`:
 		*f = AuthenticationType(v)
 		return nil
 	default:
-		return fmt.Errorf(`value "%s" is not one of "DATABRICKS", "OAUTH_CLIENT_CREDENTIALS", "TOKEN"`, v)
+		return fmt.Errorf(`value "%s" is not one of "DATABRICKS", "OAUTH_CLIENT_CREDENTIALS", "OIDC_FEDERATION", "TOKEN"`, v)
 	}
 }
 
-// Values returns all possible values of AuthenticationType.
+// Values returns all possible values for AuthenticationType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AuthenticationType) Values() []AuthenticationType {
 	return []AuthenticationType{
 		AuthenticationTypeDatabricks,
 		AuthenticationTypeOauthClientCredentials,
+		AuthenticationTypeOidcFederation,
 		AuthenticationTypeToken,
 	}
 }
@@ -114,7 +117,7 @@ func (f *ColumnTypeName) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ColumnTypeName.
+// Values returns all possible values for ColumnTypeName.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ColumnTypeName) Values() []ColumnTypeName {
@@ -455,7 +458,7 @@ func (f *FunctionParameterMode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of FunctionParameterMode.
+// Values returns all possible values for FunctionParameterMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *FunctionParameterMode) Values() []FunctionParameterMode {
@@ -493,7 +496,7 @@ func (f *FunctionParameterType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of FunctionParameterType.
+// Values returns all possible values for FunctionParameterType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *FunctionParameterType) Values() []FunctionParameterType {
@@ -947,7 +950,7 @@ func (f *PartitionValueOp) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PartitionValueOp.
+// Values returns all possible values for PartitionValueOp.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PartitionValueOp) Values() []PartitionValueOp {
@@ -1089,7 +1092,7 @@ func (f *Privilege) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Privilege.
+// Values returns all possible values for Privilege.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Privilege) Values() []Privilege {
@@ -1570,7 +1573,7 @@ func (f *SharedDataObjectDataObjectType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SharedDataObjectDataObjectType.
+// Values returns all possible values for SharedDataObjectDataObjectType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SharedDataObjectDataObjectType) Values() []SharedDataObjectDataObjectType {
@@ -1614,7 +1617,7 @@ func (f *SharedDataObjectHistoryDataSharingStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SharedDataObjectHistoryDataSharingStatus.
+// Values returns all possible values for SharedDataObjectHistoryDataSharingStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SharedDataObjectHistoryDataSharingStatus) Values() []SharedDataObjectHistoryDataSharingStatus {
@@ -1651,7 +1654,7 @@ func (f *SharedDataObjectStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SharedDataObjectStatus.
+// Values returns all possible values for SharedDataObjectStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SharedDataObjectStatus) Values() []SharedDataObjectStatus {
@@ -1697,7 +1700,7 @@ func (f *SharedDataObjectUpdateAction) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SharedDataObjectUpdateAction.
+// Values returns all possible values for SharedDataObjectUpdateAction.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SharedDataObjectUpdateAction) Values() []SharedDataObjectUpdateAction {
@@ -1738,7 +1741,7 @@ func (f *SharedSecurableKind) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of SharedSecurableKind.
+// Values returns all possible values for SharedSecurableKind.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *SharedSecurableKind) Values() []SharedSecurableKind {
@@ -1849,7 +1852,7 @@ func (f *TableInternalAttributesSharedTableType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of TableInternalAttributesSharedTableType.
+// Values returns all possible values for TableInternalAttributesSharedTableType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *TableInternalAttributesSharedTableType) Values() []TableInternalAttributesSharedTableType {
@@ -1976,7 +1979,7 @@ func (s UpdateShare) MarshalJSON() ([]byte, error) {
 }
 
 type UpdateSharePermissions struct {
-	// Array of permission changes.
+	// Array of permissions change objects.
 	Changes []PermissionsChange `json:"changes,omitempty"`
 	// The name of the share.
 	Name string `json:"-" url:"-"`

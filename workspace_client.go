@@ -9,17 +9,20 @@ import (
 	"github.com/databricks/databricks-sdk-go/config"
 	"github.com/databricks/databricks-sdk-go/httpclient"
 
+	"github.com/databricks/databricks-sdk-go/service/aibuilder"
 	"github.com/databricks/databricks-sdk-go/service/apps"
 	"github.com/databricks/databricks-sdk-go/service/catalog"
 	"github.com/databricks/databricks-sdk-go/service/cleanrooms"
 	"github.com/databricks/databricks-sdk-go/service/compute"
 	"github.com/databricks/databricks-sdk-go/service/dashboards"
+	"github.com/databricks/databricks-sdk-go/service/database"
 	"github.com/databricks/databricks-sdk-go/service/files"
 	"github.com/databricks/databricks-sdk-go/service/iam"
 	"github.com/databricks/databricks-sdk-go/service/jobs"
 	"github.com/databricks/databricks-sdk-go/service/marketplace"
 	"github.com/databricks/databricks-sdk-go/service/ml"
 	"github.com/databricks/databricks-sdk-go/service/pipelines"
+	"github.com/databricks/databricks-sdk-go/service/qualitymonitorv2"
 	"github.com/databricks/databricks-sdk-go/service/serving"
 	"github.com/databricks/databricks-sdk-go/service/settings"
 	"github.com/databricks/databricks-sdk-go/service/sharing"
@@ -62,7 +65,7 @@ type WorkspaceClient struct {
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	AlertsLegacy sql.AlertsLegacyInterface
 
-	// TODO: Add description
+	// New version of SQL Alerts
 	AlertsV2 sql.AlertsV2Interface
 
 	// Apps run directly on a customer’s Databricks instance, integrate with
@@ -207,6 +210,10 @@ type WorkspaceClient struct {
 	// or service principal.
 	CurrentUser iam.CurrentUserInterface
 
+	// The Custom LLMs service manages state and powers the UI for the Custom
+	// LLM product.
+	CustomLlms aibuilder.CustomLlmsInterface
+
 	// This is an evolving API that facilitates the addition and removal of
 	// widgets from existing dashboards within the Databricks Workspace. Data
 	// structures may change over time.
@@ -240,7 +247,7 @@ type WorkspaceClient struct {
 
 	// Database Instances provide access to a database via REST API or direct
 	// SQL.
-	DatabaseInstances catalog.DatabaseInstancesInterface
+	Database database.DatabaseInterface
 
 	// DBFS API makes it simple to interact with various data sources without
 	// having to include a users credentials every time to read a file.
@@ -311,6 +318,8 @@ type WorkspaceClient struct {
 	// them, set `enable_experimental_files_api_client = True` in your
 	// configuration profile or use the environment variable
 	// `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
+	//
+	// Use of Files API may incur Databricks data transfer charges.
 	//
 	// [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 	Files files.FilesInterface
@@ -646,6 +655,9 @@ type WorkspaceClient struct {
 	// contain the shared data.
 	Providers sharing.ProvidersInterface
 
+	// Manage data quality of UC objects (currently support `schema`)
+	QualityMonitorV2 qualitymonitorv2.QualityMonitorV2Interface
+
 	// A monitor computes and monitors data or model quality metrics for a table
 	// over time. It generates metrics tables and a dashboard that you can use
 	// to monitor table health and set alerts.
@@ -675,9 +687,6 @@ type WorkspaceClient struct {
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueriesLegacy sql.QueriesLegacyInterface
-
-	// Query execution APIs for AI / BI Dashboards
-	QueryExecution dashboards.QueryExecutionInterface
 
 	// A service responsible for storing and retrieving the list of queries run
 	// against SQL endpoints and serverless compute.
@@ -1209,10 +1218,11 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Credentials:                         catalog.NewCredentials(databricksClient),
 		CredentialsManager:                  settings.NewCredentialsManager(databricksClient),
 		CurrentUser:                         iam.NewCurrentUser(databricksClient),
+		CustomLlms:                          aibuilder.NewCustomLlms(databricksClient),
 		DashboardWidgets:                    sql.NewDashboardWidgets(databricksClient),
 		Dashboards:                          sql.NewDashboards(databricksClient),
 		DataSources:                         sql.NewDataSources(databricksClient),
-		DatabaseInstances:                   catalog.NewDatabaseInstances(databricksClient),
+		Database:                            database.NewDatabase(databricksClient),
 		Dbfs:                                files.NewDbfs(databricksClient),
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
 		Experiments:                         ml.NewExperiments(databricksClient),
@@ -1250,10 +1260,10 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		ProviderProviderAnalyticsDashboards: marketplace.NewProviderProviderAnalyticsDashboards(databricksClient),
 		ProviderProviders:                   marketplace.NewProviderProviders(databricksClient),
 		Providers:                           sharing.NewProviders(databricksClient),
+		QualityMonitorV2:                    qualitymonitorv2.NewQualityMonitorV2(databricksClient),
 		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
 		QueriesLegacy:                       sql.NewQueriesLegacy(databricksClient),
-		QueryExecution:                      dashboards.NewQueryExecution(databricksClient),
 		QueryHistory:                        sql.NewQueryHistory(databricksClient),
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
 		QueryVisualizationsLegacy:           sql.NewQueryVisualizationsLegacy(databricksClient),

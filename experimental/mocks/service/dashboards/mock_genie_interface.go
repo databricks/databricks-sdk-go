@@ -1058,6 +1058,65 @@ func (_c *MockGenieInterface_GetSpaceBySpaceId_Call) RunAndReturn(run func(conte
 	return _c
 }
 
+// ListSpaces provides a mock function with given fields: ctx, request
+func (_m *MockGenieInterface) ListSpaces(ctx context.Context, request dashboards.GenieListSpacesRequest) (*dashboards.GenieListSpacesResponse, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListSpaces")
+	}
+
+	var r0 *dashboards.GenieListSpacesResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieListSpacesRequest) (*dashboards.GenieListSpacesResponse, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, dashboards.GenieListSpacesRequest) *dashboards.GenieListSpacesResponse); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dashboards.GenieListSpacesResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, dashboards.GenieListSpacesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockGenieInterface_ListSpaces_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListSpaces'
+type MockGenieInterface_ListSpaces_Call struct {
+	*mock.Call
+}
+
+// ListSpaces is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request dashboards.GenieListSpacesRequest
+func (_e *MockGenieInterface_Expecter) ListSpaces(ctx interface{}, request interface{}) *MockGenieInterface_ListSpaces_Call {
+	return &MockGenieInterface_ListSpaces_Call{Call: _e.mock.On("ListSpaces", ctx, request)}
+}
+
+func (_c *MockGenieInterface_ListSpaces_Call) Run(run func(ctx context.Context, request dashboards.GenieListSpacesRequest)) *MockGenieInterface_ListSpaces_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dashboards.GenieListSpacesRequest))
+	})
+	return _c
+}
+
+func (_c *MockGenieInterface_ListSpaces_Call) Return(_a0 *dashboards.GenieListSpacesResponse, _a1 error) *MockGenieInterface_ListSpaces_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockGenieInterface_ListSpaces_Call) RunAndReturn(run func(context.Context, dashboards.GenieListSpacesRequest) (*dashboards.GenieListSpacesResponse, error)) *MockGenieInterface_ListSpaces_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // StartConversation provides a mock function with given fields: ctx, genieStartConversationMessageRequest
 func (_m *MockGenieInterface) StartConversation(ctx context.Context, genieStartConversationMessageRequest dashboards.GenieStartConversationMessageRequest) (*dashboards.WaitGetMessageGenieCompleted[dashboards.GenieStartConversationResponse], error) {
 	ret := _m.Called(ctx, genieStartConversationMessageRequest)

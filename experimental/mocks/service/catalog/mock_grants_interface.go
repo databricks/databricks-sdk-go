@@ -24,23 +24,23 @@ func (_m *MockGrantsInterface) EXPECT() *MockGrantsInterface_Expecter {
 }
 
 // Get provides a mock function with given fields: ctx, request
-func (_m *MockGrantsInterface) Get(ctx context.Context, request catalog.GetGrantRequest) (*catalog.PermissionsList, error) {
+func (_m *MockGrantsInterface) Get(ctx context.Context, request catalog.GetGrantRequest) (*catalog.GetPermissionsResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Get")
 	}
 
-	var r0 *catalog.PermissionsList
+	var r0 *catalog.GetPermissionsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetGrantRequest) (*catalog.PermissionsList, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetGrantRequest) (*catalog.GetPermissionsResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetGrantRequest) *catalog.PermissionsList); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.GetGrantRequest) *catalog.GetPermissionsResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.PermissionsList)
+			r0 = ret.Get(0).(*catalog.GetPermissionsResponse)
 		}
 	}
 
@@ -72,38 +72,38 @@ func (_c *MockGrantsInterface_Get_Call) Run(run func(ctx context.Context, reques
 	return _c
 }
 
-func (_c *MockGrantsInterface_Get_Call) Return(_a0 *catalog.PermissionsList, _a1 error) *MockGrantsInterface_Get_Call {
+func (_c *MockGrantsInterface_Get_Call) Return(_a0 *catalog.GetPermissionsResponse, _a1 error) *MockGrantsInterface_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockGrantsInterface_Get_Call) RunAndReturn(run func(context.Context, catalog.GetGrantRequest) (*catalog.PermissionsList, error)) *MockGrantsInterface_Get_Call {
+func (_c *MockGrantsInterface_Get_Call) RunAndReturn(run func(context.Context, catalog.GetGrantRequest) (*catalog.GetPermissionsResponse, error)) *MockGrantsInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetBySecurableTypeAndFullName provides a mock function with given fields: ctx, securableType, fullName
-func (_m *MockGrantsInterface) GetBySecurableTypeAndFullName(ctx context.Context, securableType catalog.SecurableType, fullName string) (*catalog.PermissionsList, error) {
+func (_m *MockGrantsInterface) GetBySecurableTypeAndFullName(ctx context.Context, securableType string, fullName string) (*catalog.GetPermissionsResponse, error) {
 	ret := _m.Called(ctx, securableType, fullName)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetBySecurableTypeAndFullName")
 	}
 
-	var r0 *catalog.PermissionsList
+	var r0 *catalog.GetPermissionsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.SecurableType, string) (*catalog.PermissionsList, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*catalog.GetPermissionsResponse, error)); ok {
 		return rf(ctx, securableType, fullName)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.SecurableType, string) *catalog.PermissionsList); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *catalog.GetPermissionsResponse); ok {
 		r0 = rf(ctx, securableType, fullName)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.PermissionsList)
+			r0 = ret.Get(0).(*catalog.GetPermissionsResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, catalog.SecurableType, string) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
 		r1 = rf(ctx, securableType, fullName)
 	} else {
 		r1 = ret.Error(1)
@@ -119,25 +119,25 @@ type MockGrantsInterface_GetBySecurableTypeAndFullName_Call struct {
 
 // GetBySecurableTypeAndFullName is a helper method to define mock.On call
 //   - ctx context.Context
-//   - securableType catalog.SecurableType
+//   - securableType string
 //   - fullName string
 func (_e *MockGrantsInterface_Expecter) GetBySecurableTypeAndFullName(ctx interface{}, securableType interface{}, fullName interface{}) *MockGrantsInterface_GetBySecurableTypeAndFullName_Call {
 	return &MockGrantsInterface_GetBySecurableTypeAndFullName_Call{Call: _e.mock.On("GetBySecurableTypeAndFullName", ctx, securableType, fullName)}
 }
 
-func (_c *MockGrantsInterface_GetBySecurableTypeAndFullName_Call) Run(run func(ctx context.Context, securableType catalog.SecurableType, fullName string)) *MockGrantsInterface_GetBySecurableTypeAndFullName_Call {
+func (_c *MockGrantsInterface_GetBySecurableTypeAndFullName_Call) Run(run func(ctx context.Context, securableType string, fullName string)) *MockGrantsInterface_GetBySecurableTypeAndFullName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(catalog.SecurableType), args[2].(string))
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
 	})
 	return _c
 }
 
-func (_c *MockGrantsInterface_GetBySecurableTypeAndFullName_Call) Return(_a0 *catalog.PermissionsList, _a1 error) *MockGrantsInterface_GetBySecurableTypeAndFullName_Call {
+func (_c *MockGrantsInterface_GetBySecurableTypeAndFullName_Call) Return(_a0 *catalog.GetPermissionsResponse, _a1 error) *MockGrantsInterface_GetBySecurableTypeAndFullName_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockGrantsInterface_GetBySecurableTypeAndFullName_Call) RunAndReturn(run func(context.Context, catalog.SecurableType, string) (*catalog.PermissionsList, error)) *MockGrantsInterface_GetBySecurableTypeAndFullName_Call {
+func (_c *MockGrantsInterface_GetBySecurableTypeAndFullName_Call) RunAndReturn(run func(context.Context, string, string) (*catalog.GetPermissionsResponse, error)) *MockGrantsInterface_GetBySecurableTypeAndFullName_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -202,7 +202,7 @@ func (_c *MockGrantsInterface_GetEffective_Call) RunAndReturn(run func(context.C
 }
 
 // GetEffectiveBySecurableTypeAndFullName provides a mock function with given fields: ctx, securableType, fullName
-func (_m *MockGrantsInterface) GetEffectiveBySecurableTypeAndFullName(ctx context.Context, securableType catalog.SecurableType, fullName string) (*catalog.EffectivePermissionsList, error) {
+func (_m *MockGrantsInterface) GetEffectiveBySecurableTypeAndFullName(ctx context.Context, securableType string, fullName string) (*catalog.EffectivePermissionsList, error) {
 	ret := _m.Called(ctx, securableType, fullName)
 
 	if len(ret) == 0 {
@@ -211,10 +211,10 @@ func (_m *MockGrantsInterface) GetEffectiveBySecurableTypeAndFullName(ctx contex
 
 	var r0 *catalog.EffectivePermissionsList
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.SecurableType, string) (*catalog.EffectivePermissionsList, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*catalog.EffectivePermissionsList, error)); ok {
 		return rf(ctx, securableType, fullName)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.SecurableType, string) *catalog.EffectivePermissionsList); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *catalog.EffectivePermissionsList); ok {
 		r0 = rf(ctx, securableType, fullName)
 	} else {
 		if ret.Get(0) != nil {
@@ -222,7 +222,7 @@ func (_m *MockGrantsInterface) GetEffectiveBySecurableTypeAndFullName(ctx contex
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, catalog.SecurableType, string) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
 		r1 = rf(ctx, securableType, fullName)
 	} else {
 		r1 = ret.Error(1)
@@ -238,15 +238,15 @@ type MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call struct {
 
 // GetEffectiveBySecurableTypeAndFullName is a helper method to define mock.On call
 //   - ctx context.Context
-//   - securableType catalog.SecurableType
+//   - securableType string
 //   - fullName string
 func (_e *MockGrantsInterface_Expecter) GetEffectiveBySecurableTypeAndFullName(ctx interface{}, securableType interface{}, fullName interface{}) *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call {
 	return &MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call{Call: _e.mock.On("GetEffectiveBySecurableTypeAndFullName", ctx, securableType, fullName)}
 }
 
-func (_c *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call) Run(run func(ctx context.Context, securableType catalog.SecurableType, fullName string)) *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call {
+func (_c *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call) Run(run func(ctx context.Context, securableType string, fullName string)) *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(catalog.SecurableType), args[2].(string))
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
 	})
 	return _c
 }
@@ -256,29 +256,29 @@ func (_c *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call) Retur
 	return _c
 }
 
-func (_c *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call) RunAndReturn(run func(context.Context, catalog.SecurableType, string) (*catalog.EffectivePermissionsList, error)) *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call {
+func (_c *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call) RunAndReturn(run func(context.Context, string, string) (*catalog.EffectivePermissionsList, error)) *MockGrantsInterface_GetEffectiveBySecurableTypeAndFullName_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Update provides a mock function with given fields: ctx, request
-func (_m *MockGrantsInterface) Update(ctx context.Context, request catalog.UpdatePermissions) (*catalog.PermissionsList, error) {
+func (_m *MockGrantsInterface) Update(ctx context.Context, request catalog.UpdatePermissions) (*catalog.UpdatePermissionsResponse, error) {
 	ret := _m.Called(ctx, request)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
 	}
 
-	var r0 *catalog.PermissionsList
+	var r0 *catalog.UpdatePermissionsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdatePermissions) (*catalog.PermissionsList, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdatePermissions) (*catalog.UpdatePermissionsResponse, error)); ok {
 		return rf(ctx, request)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdatePermissions) *catalog.PermissionsList); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, catalog.UpdatePermissions) *catalog.UpdatePermissionsResponse); ok {
 		r0 = rf(ctx, request)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*catalog.PermissionsList)
+			r0 = ret.Get(0).(*catalog.UpdatePermissionsResponse)
 		}
 	}
 
@@ -310,12 +310,12 @@ func (_c *MockGrantsInterface_Update_Call) Run(run func(ctx context.Context, req
 	return _c
 }
 
-func (_c *MockGrantsInterface_Update_Call) Return(_a0 *catalog.PermissionsList, _a1 error) *MockGrantsInterface_Update_Call {
+func (_c *MockGrantsInterface_Update_Call) Return(_a0 *catalog.UpdatePermissionsResponse, _a1 error) *MockGrantsInterface_Update_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockGrantsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdatePermissions) (*catalog.PermissionsList, error)) *MockGrantsInterface_Update_Call {
+func (_c *MockGrantsInterface_Update_Call) RunAndReturn(run func(context.Context, catalog.UpdatePermissions) (*catalog.UpdatePermissionsResponse, error)) *MockGrantsInterface_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

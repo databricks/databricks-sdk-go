@@ -189,7 +189,7 @@ func (f *AppDeploymentMode) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AppDeploymentMode.
+// Values returns all possible values for AppDeploymentMode.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AppDeploymentMode) Values() []AppDeploymentMode {
@@ -230,7 +230,7 @@ func (f *AppDeploymentState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AppDeploymentState.
+// Values returns all possible values for AppDeploymentState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AppDeploymentState) Values() []AppDeploymentState {
@@ -305,7 +305,7 @@ func (f *AppPermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AppPermissionLevel.
+// Values returns all possible values for AppPermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AppPermissionLevel) Values() []AppPermissionLevel {
@@ -421,7 +421,7 @@ func (f *AppResourceJobJobPermission) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AppResourceJobJobPermission.
+// Values returns all possible values for AppResourceJobJobPermission.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AppResourceJobJobPermission) Values() []AppResourceJobJobPermission {
@@ -474,7 +474,7 @@ func (f *AppResourceSecretSecretPermission) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AppResourceSecretSecretPermission.
+// Values returns all possible values for AppResourceSecretSecretPermission.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AppResourceSecretSecretPermission) Values() []AppResourceSecretSecretPermission {
@@ -522,7 +522,7 @@ func (f *AppResourceServingEndpointServingEndpointPermission) Set(v string) erro
 	}
 }
 
-// Values returns all possible values of AppResourceServingEndpointServingEndpointPermission.
+// Values returns all possible values for AppResourceServingEndpointServingEndpointPermission.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AppResourceServingEndpointServingEndpointPermission) Values() []AppResourceServingEndpointServingEndpointPermission {
@@ -570,7 +570,7 @@ func (f *AppResourceSqlWarehouseSqlWarehousePermission) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AppResourceSqlWarehouseSqlWarehousePermission.
+// Values returns all possible values for AppResourceSqlWarehouseSqlWarehousePermission.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AppResourceSqlWarehouseSqlWarehousePermission) Values() []AppResourceSqlWarehouseSqlWarehousePermission {
@@ -616,7 +616,7 @@ func (f *AppResourceUcSecurableUcSecurablePermission) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AppResourceUcSecurableUcSecurablePermission.
+// Values returns all possible values for AppResourceUcSecurableUcSecurablePermission.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AppResourceUcSecurableUcSecurablePermission) Values() []AppResourceUcSecurableUcSecurablePermission {
@@ -651,7 +651,7 @@ func (f *AppResourceUcSecurableUcSecurableType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of AppResourceUcSecurableUcSecurableType.
+// Values returns all possible values for AppResourceUcSecurableUcSecurableType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *AppResourceUcSecurableUcSecurableType) Values() []AppResourceUcSecurableUcSecurableType {
@@ -691,7 +691,7 @@ func (f *ApplicationState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ApplicationState.
+// Values returns all possible values for ApplicationState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ApplicationState) Values() []ApplicationState {
@@ -757,7 +757,7 @@ func (f *ComputeState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ComputeState.
+// Values returns all possible values for ComputeState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ComputeState) Values() []ComputeState {

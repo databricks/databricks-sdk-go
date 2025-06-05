@@ -327,12 +327,6 @@ func (s Credential) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// The custom tags key-value pairing that is attached to this workspace. The
-// key-value pair is a string of utf-8 characters. The value can be an empty
-// string, with maximum length of 255 characters. The key can be of maximum
-// length of 127 characters, and cannot be empty.
-type CustomTags map[string]string
-
 // The general workspace configurations that are specific to Google Cloud.
 type CustomerFacingGcpCloudResourceContainer struct {
 	// The Google Cloud project ID, which the workspace uses to instantiate
@@ -446,7 +440,7 @@ func (f *EndpointUseCase) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of EndpointUseCase.
+// Values returns all possible values for EndpointUseCase.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *EndpointUseCase) Values() []EndpointUseCase {
@@ -491,7 +485,7 @@ func (f *ErrorType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ErrorType.
+// Values returns all possible values for ErrorType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ErrorType) Values() []ErrorType {
@@ -727,7 +721,7 @@ func (f *GkeConfigConnectivityType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of GkeConfigConnectivityType.
+// Values returns all possible values for GkeConfigConnectivityType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *GkeConfigConnectivityType) Values() []GkeConfigConnectivityType {
@@ -770,7 +764,7 @@ func (f *KeyUseCase) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of KeyUseCase.
+// Values returns all possible values for KeyUseCase.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *KeyUseCase) Values() []KeyUseCase {
@@ -914,7 +908,7 @@ func (f *PricingTier) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PricingTier.
+// Values returns all possible values for PricingTier.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PricingTier) Values() []PricingTier {
@@ -961,7 +955,7 @@ func (f *PrivateAccessLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PrivateAccessLevel.
+// Values returns all possible values for PrivateAccessLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PrivateAccessLevel) Values() []PrivateAccessLevel {
@@ -1250,7 +1244,7 @@ func (f *VpcStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of VpcStatus.
+// Values returns all possible values for VpcStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *VpcStatus) Values() []VpcStatus {
@@ -1290,7 +1284,7 @@ func (f *WarningType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of WarningType.
+// Values returns all possible values for WarningType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *WarningType) Values() []WarningType {
@@ -1448,7 +1442,7 @@ func (f *WorkspaceStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of WorkspaceStatus.
+// Values returns all possible values for WorkspaceStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *WorkspaceStatus) Values() []WorkspaceStatus {

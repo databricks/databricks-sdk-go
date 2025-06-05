@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Genie, Lakeview, Lakeview Embedded, Query Execution, etc.
+// These APIs allow you to manage Genie, Lakeview, Lakeview Embedded, etc.
 package dashboards
 
 import (
@@ -146,6 +146,11 @@ type GenieInterface interface {
 	//
 	// Get details of a Genie Space.
 	GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error)
+
+	// List Genie spaces.
+	//
+	// Get list of Genie Spaces.
+	ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error)
 
 	// Start conversation.
 	//
@@ -651,16 +656,6 @@ func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId st
 
 type LakeviewEmbeddedInterface interface {
 
-	// Read a published dashboard in an embedded ui.
-	//
-	// Get the current published dashboard within an embedded context.
-	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
-
-	// Read a published dashboard in an embedded ui.
-	//
-	// Get the current published dashboard within an embedded context.
-	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error
-
 	// Read an information of a published dashboard to mint an OAuth token.
 	//
 	// Get a required authorization details and scopes of a published dashboard to
@@ -699,15 +694,6 @@ type LakeviewEmbeddedAPI struct {
 	lakeviewEmbeddedImpl
 }
 
-// Read a published dashboard in an embedded ui.
-//
-// Get the current published dashboard within an embedded context.
-func (a *LakeviewEmbeddedAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error {
-	return a.lakeviewEmbeddedImpl.GetPublishedDashboardEmbedded(ctx, GetPublishedDashboardEmbeddedRequest{
-		DashboardId: dashboardId,
-	})
-}
-
 // Read an information of a published dashboard to mint an OAuth token.
 //
 // Get a required authorization details and scopes of a published dashboard to
@@ -722,29 +708,4 @@ func (a *LakeviewEmbeddedAPI) GetPublishedDashboardTokenInfoByDashboardId(ctx co
 	return a.lakeviewEmbeddedImpl.GetPublishedDashboardTokenInfo(ctx, GetPublishedDashboardTokenInfoRequest{
 		DashboardId: dashboardId,
 	})
-}
-
-type QueryExecutionInterface interface {
-
-	// Cancel the results for the a query for a published, embedded dashboard.
-	CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error)
-
-	// Execute a query for a published dashboard.
-	ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error
-
-	// Poll the results for the a query for a published, embedded dashboard.
-	PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error)
-}
-
-func NewQueryExecution(client *client.DatabricksClient) *QueryExecutionAPI {
-	return &QueryExecutionAPI{
-		queryExecutionImpl: queryExecutionImpl{
-			client: client,
-		},
-	}
-}
-
-// Query execution APIs for AI / BI Dashboards
-type QueryExecutionAPI struct {
-	queryExecutionImpl
 }

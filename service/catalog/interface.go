@@ -319,48 +319,6 @@ type CredentialsService interface {
 	ValidateCredential(ctx context.Context, request ValidateCredentialRequest) (*ValidateCredentialResponse, error)
 }
 
-// Database Instances provide access to a database via REST API or direct SQL.
-//
-// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
-type DatabaseInstancesService interface {
-
-	// Create a Database Catalog.
-	CreateDatabaseCatalog(ctx context.Context, request CreateDatabaseCatalogRequest) (*DatabaseCatalog, error)
-
-	// Create a Database Instance.
-	CreateDatabaseInstance(ctx context.Context, request CreateDatabaseInstanceRequest) (*DatabaseInstance, error)
-
-	// Create a Synced Database Table.
-	CreateSyncedDatabaseTable(ctx context.Context, request CreateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
-
-	// Delete a Database Catalog.
-	DeleteDatabaseCatalog(ctx context.Context, request DeleteDatabaseCatalogRequest) error
-
-	// Delete a Database Instance.
-	DeleteDatabaseInstance(ctx context.Context, request DeleteDatabaseInstanceRequest) error
-
-	// Delete a Synced Database Table.
-	DeleteSyncedDatabaseTable(ctx context.Context, request DeleteSyncedDatabaseTableRequest) error
-
-	// Find a Database Instance by uid.
-	FindDatabaseInstanceByUid(ctx context.Context, request FindDatabaseInstanceByUidRequest) (*DatabaseInstance, error)
-
-	// Get a Database Catalog.
-	GetDatabaseCatalog(ctx context.Context, request GetDatabaseCatalogRequest) (*DatabaseCatalog, error)
-
-	// Get a Database Instance.
-	GetDatabaseInstance(ctx context.Context, request GetDatabaseInstanceRequest) (*DatabaseInstance, error)
-
-	// Get a Synced Database Table.
-	GetSyncedDatabaseTable(ctx context.Context, request GetSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error)
-
-	// List Database Instances.
-	ListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error)
-
-	// Update a Database Instance.
-	UpdateDatabaseInstance(ctx context.Context, request UpdateDatabaseInstanceRequest) (*DatabaseInstance, error)
-}
-
 // An external location is an object that combines a cloud storage path with a
 // storage credential that authorizes access to the cloud storage path. Each
 // external location is subject to Unity Catalog access-control policies that
@@ -499,18 +457,20 @@ type GrantsService interface {
 
 	// Get permissions.
 	//
-	// Gets the permissions for a securable.
-	Get(ctx context.Context, request GetGrantRequest) (*PermissionsList, error)
+	// Gets the permissions for a securable. Does not include inherited
+	// permissions.
+	Get(ctx context.Context, request GetGrantRequest) (*GetPermissionsResponse, error)
 
 	// Get effective permissions.
 	//
-	// Gets the effective permissions for a securable.
+	// Gets the effective permissions for a securable. Includes inherited
+	// permissions from any parent securables.
 	GetEffective(ctx context.Context, request GetEffectiveRequest) (*EffectivePermissionsList, error)
 
 	// Update permissions.
 	//
 	// Updates the permissions for a securable.
-	Update(ctx context.Context, request UpdatePermissions) (*PermissionsList, error)
+	Update(ctx context.Context, request UpdatePermissions) (*UpdatePermissionsResponse, error)
 }
 
 // A metastore is the top-level container of objects in Unity Catalog. It stores
@@ -569,7 +529,7 @@ type MetastoresService interface {
 	// Gets an array of the available metastores (as __MetastoreInfo__ objects).
 	// The caller must be an admin to retrieve this info. There is no guarantee
 	// of a specific ordering of the elements in the array.
-	List(ctx context.Context) (*ListMetastoresResponse, error)
+	List(ctx context.Context, request ListMetastoresRequest) (*ListMetastoresResponse, error)
 
 	// Get a metastore summary.
 	//

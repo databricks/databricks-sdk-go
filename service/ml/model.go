@@ -108,7 +108,7 @@ func (f *ActivityAction) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ActivityAction.
+// Values returns all possible values for ActivityAction.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ActivityAction) Values() []ActivityAction {
@@ -176,7 +176,7 @@ func (f *ActivityType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ActivityType.
+// Values returns all possible values for ActivityType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ActivityType) Values() []ActivityType {
@@ -233,94 +233,6 @@ type ApproveTransitionRequestResponse struct {
 	Activity *Activity `json:"activity,omitempty"`
 }
 
-type ArtifactCredentialInfo struct {
-	// A collection of HTTP headers that should be specified when uploading to
-	// or downloading from the specified `signed_uri`.
-	Headers []ArtifactCredentialInfoHttpHeader `json:"headers,omitempty"`
-	// The path, relative to the Run's artifact root location, of the artifact
-	// that can be accessed with the credential.
-	Path string `json:"path,omitempty"`
-	// The ID of the MLflow Run containing the artifact that can be accessed
-	// with the credential.
-	RunId string `json:"run_id,omitempty"`
-	// The signed URI credential that provides access to the artifact.
-	SignedUri string `json:"signed_uri,omitempty"`
-	// The type of the signed credential URI (e.g., an AWS presigned URL or an
-	// Azure Shared Access Signature URI).
-	Type ArtifactCredentialType `json:"type,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ArtifactCredentialInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ArtifactCredentialInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type ArtifactCredentialInfoHttpHeader struct {
-	// The HTTP header name.
-	Name string `json:"name,omitempty"`
-	// The HTTP header value.
-	Value string `json:"value,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ArtifactCredentialInfoHttpHeader) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ArtifactCredentialInfoHttpHeader) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-// The type of a given artifact access credential
-type ArtifactCredentialType string
-
-const ArtifactCredentialTypeAwsPresignedUrl ArtifactCredentialType = `AWS_PRESIGNED_URL`
-
-const ArtifactCredentialTypeAzureAdlsGen2SasUri ArtifactCredentialType = `AZURE_ADLS_GEN2_SAS_URI`
-
-const ArtifactCredentialTypeAzureSasUri ArtifactCredentialType = `AZURE_SAS_URI`
-
-const ArtifactCredentialTypeGcpSignedUrl ArtifactCredentialType = `GCP_SIGNED_URL`
-
-// String representation for [fmt.Print]
-func (f *ArtifactCredentialType) String() string {
-	return string(*f)
-}
-
-// Set raw string value and validate it against allowed values
-func (f *ArtifactCredentialType) Set(v string) error {
-	switch v {
-	case `AWS_PRESIGNED_URL`, `AZURE_ADLS_GEN2_SAS_URI`, `AZURE_SAS_URI`, `GCP_SIGNED_URL`:
-		*f = ArtifactCredentialType(v)
-		return nil
-	default:
-		return fmt.Errorf(`value "%s" is not one of "AWS_PRESIGNED_URL", "AZURE_ADLS_GEN2_SAS_URI", "AZURE_SAS_URI", "GCP_SIGNED_URL"`, v)
-	}
-}
-
-// Values returns all possible values of ArtifactCredentialType.
-//
-// There is no guarantee on the order of the values in the slice.
-func (f *ArtifactCredentialType) Values() []ArtifactCredentialType {
-	return []ArtifactCredentialType{
-		ArtifactCredentialTypeAwsPresignedUrl,
-		ArtifactCredentialTypeAzureAdlsGen2SasUri,
-		ArtifactCredentialTypeAzureSasUri,
-		ArtifactCredentialTypeGcpSignedUrl,
-	}
-}
-
-// Type always returns ArtifactCredentialType to satisfy [pflag.Value] interface
-func (f *ArtifactCredentialType) Type() string {
-	return "ArtifactCredentialType"
-}
-
 // An action that a user (with sufficient permissions) could take on a comment.
 // Valid values are: * `EDIT_COMMENT`: Edit the comment
 //
@@ -349,7 +261,7 @@ func (f *CommentActivityAction) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of CommentActivityAction.
+// Values returns all possible values for CommentActivityAction.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *CommentActivityAction) Values() []CommentActivityAction {
@@ -657,7 +569,9 @@ type CreateRegistryWebhook struct {
 	HttpUrlSpec *HttpUrlSpec `json:"http_url_spec,omitempty"`
 
 	JobSpec *JobSpec `json:"job_spec,omitempty"`
-	// Name of the model whose events would trigger this webhook.
+	// If model name is not specified, a registry-wide webhook is created that
+	// listens for the specified events across all versions of all registered
+	// models.
 	ModelName string `json:"model_name,omitempty"`
 	// Enable or disable triggering the webhook, or put the webhook into test
 	// mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an
@@ -794,6 +708,7 @@ type DatasetInput struct {
 
 // Delete a comment
 type DeleteCommentRequest struct {
+	// Unique identifier of an activity
 	Id string `json:"-" url:"id"`
 }
 
@@ -992,7 +907,7 @@ func (f *DeleteTransitionRequestStage) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of DeleteTransitionRequestStage.
+// Values returns all possible values for DeleteTransitionRequestStage.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *DeleteTransitionRequestStage) Values() []DeleteTransitionRequestStage {
@@ -1144,7 +1059,7 @@ func (f *ExperimentPermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ExperimentPermissionLevel.
+// Values returns all possible values for ExperimentPermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ExperimentPermissionLevel) Values() []ExperimentPermissionLevel {
@@ -1243,7 +1158,7 @@ type FinalizeLoggedModelRequest struct {
 	ModelId string `json:"-" url:"-"`
 	// Whether or not the model is ready for use.
 	// ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something went wrong when
-	// logging the model weights / agent code).
+	// logging the model weights / agent code.
 	Status LoggedModelStatus `json:"status"`
 }
 
@@ -1301,7 +1216,7 @@ func (f *ForecastingExperimentState) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ForecastingExperimentState.
+// Values returns all possible values for ForecastingExperimentState.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ForecastingExperimentState) Values() []ForecastingExperimentState {
@@ -1323,28 +1238,6 @@ func (f *ForecastingExperimentState) Type() string {
 type GetByNameRequest struct {
 	// Name of the associated experiment.
 	ExperimentName string `json:"-" url:"experiment_name"`
-}
-
-// Get credentials to download trace data
-type GetCredentialsForTraceDataDownloadRequest struct {
-	// The ID of the trace to fetch artifact download credentials for.
-	RequestId string `json:"-" url:"-"`
-}
-
-type GetCredentialsForTraceDataDownloadResponse struct {
-	// The artifact download credentials for the specified trace data.
-	CredentialInfo *ArtifactCredentialInfo `json:"credential_info,omitempty"`
-}
-
-// Get credentials to upload trace data
-type GetCredentialsForTraceDataUploadRequest struct {
-	// The ID of the trace to fetch artifact upload credentials for.
-	RequestId string `json:"-" url:"-"`
-}
-
-type GetCredentialsForTraceDataUploadResponse struct {
-	// The artifact upload credentials for the specified trace data.
-	CredentialInfo *ArtifactCredentialInfo `json:"credential_info,omitempty"`
 }
 
 type GetExperimentByNameResponse struct {
@@ -1742,51 +1635,6 @@ func (s ListExperimentsResponse) MarshalJSON() ([]byte, error) {
 	return marshal.Marshal(s)
 }
 
-// List artifacts for a logged model
-type ListLoggedModelArtifactsRequest struct {
-	// Filter artifacts matching this path (a relative path from the root
-	// artifact directory).
-	ArtifactDirectoryPath string `json:"-" url:"artifact_directory_path,omitempty"`
-	// The ID of the logged model for which to list the artifacts.
-	ModelId string `json:"-" url:"-"`
-	// Token indicating the page of artifact results to fetch. `page_token` is
-	// not supported when listing artifacts in UC Volumes. A maximum of 1000
-	// artifacts will be retrieved for UC Volumes. Please call
-	// `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC
-	// Volumes, which supports pagination. See [List directory contents | Files
-	// API](/api/workspace/files/listdirectorycontents).
-	PageToken string `json:"-" url:"page_token,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ListLoggedModelArtifactsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListLoggedModelArtifactsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
-type ListLoggedModelArtifactsResponse struct {
-	// File location and metadata for artifacts.
-	Files []FileInfo `json:"files,omitempty"`
-	// Token that can be used to retrieve the next page of artifact results
-	NextPageToken string `json:"next_page_token,omitempty"`
-	// Root artifact directory for the logged model.
-	RootUri string `json:"root_uri,omitempty"`
-
-	ForceSendFields []string `json:"-" url:"-"`
-}
-
-func (s *ListLoggedModelArtifactsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
-}
-
-func (s ListLoggedModelArtifactsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
-}
-
 // List models
 type ListModelsRequest struct {
 	// Maximum number of registered models desired. Max threshold is 1000.
@@ -2118,7 +1966,7 @@ func (f *LoggedModelStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of LoggedModelStatus.
+// Values returns all possible values for LoggedModelStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *LoggedModelStatus) Values() []LoggedModelStatus {
@@ -2406,7 +2254,7 @@ func (f *ModelVersionStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ModelVersionStatus.
+// Values returns all possible values for ModelVersionStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ModelVersionStatus) Values() []ModelVersionStatus {
@@ -2487,7 +2335,7 @@ func (f *PermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of PermissionLevel.
+// Values returns all possible values for PermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *PermissionLevel) Values() []PermissionLevel {
@@ -2596,7 +2444,7 @@ func (f *RegisteredModelPermissionLevel) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RegisteredModelPermissionLevel.
+// Values returns all possible values for RegisteredModelPermissionLevel.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RegisteredModelPermissionLevel) Values() []RegisteredModelPermissionLevel {
@@ -2766,7 +2614,7 @@ func (f *RegistryWebhookEvent) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RegistryWebhookEvent.
+// Values returns all possible values for RegistryWebhookEvent.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RegistryWebhookEvent) Values() []RegistryWebhookEvent {
@@ -2827,7 +2675,7 @@ func (f *RegistryWebhookStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RegistryWebhookStatus.
+// Values returns all possible values for RegistryWebhookStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RegistryWebhookStatus) Values() []RegistryWebhookStatus {
@@ -3040,7 +2888,7 @@ func (f *RunInfoStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of RunInfoStatus.
+// Values returns all possible values for RunInfoStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *RunInfoStatus) Values() []RunInfoStatus {
@@ -3062,9 +2910,6 @@ func (f *RunInfoStatus) Type() string {
 type RunInputs struct {
 	// Run metrics.
 	DatasetInputs []DatasetInput `json:"dataset_inputs,omitempty"`
-	// **NOTE**: Experimental: This API field may change or be removed in a
-	// future release without warning.
-	//
 	// Model inputs to the Run.
 	ModelInputs []ModelInput `json:"model_inputs,omitempty"`
 }
@@ -3499,7 +3344,7 @@ func (f *Stage) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Stage.
+// Values returns all possible values for Stage.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Stage) Values() []Stage {
@@ -3551,7 +3396,7 @@ func (f *Status) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of Status.
+// Values returns all possible values for Status.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *Status) Values() []Status {
@@ -3865,7 +3710,7 @@ func (f *UpdateRunStatus) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of UpdateRunStatus.
+// Values returns all possible values for UpdateRunStatus.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *UpdateRunStatus) Values() []UpdateRunStatus {
@@ -3911,7 +3756,7 @@ func (f *ViewType) Set(v string) error {
 	}
 }
 
-// Values returns all possible values of ViewType.
+// Values returns all possible values for ViewType.
 //
 // There is no guarantee on the order of the values in the slice.
 func (f *ViewType) Values() []ViewType {

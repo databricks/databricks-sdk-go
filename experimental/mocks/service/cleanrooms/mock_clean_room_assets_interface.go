@@ -131,17 +131,17 @@ func (_c *MockCleanRoomAssetsInterface_Delete_Call) RunAndReturn(run func(contex
 	return _c
 }
 
-// DeleteByCleanRoomNameAndAssetTypeAndAssetFullName provides a mock function with given fields: ctx, cleanRoomName, assetType, assetFullName
-func (_m *MockCleanRoomAssetsInterface) DeleteByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType cleanrooms.CleanRoomAssetAssetType, assetFullName string) error {
-	ret := _m.Called(ctx, cleanRoomName, assetType, assetFullName)
+// DeleteByCleanRoomNameAndAssetTypeAndName provides a mock function with given fields: ctx, cleanRoomName, assetType, name
+func (_m *MockCleanRoomAssetsInterface) DeleteByCleanRoomNameAndAssetTypeAndName(ctx context.Context, cleanRoomName string, assetType cleanrooms.CleanRoomAssetAssetType, name string) error {
+	ret := _m.Called(ctx, cleanRoomName, assetType, name)
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteByCleanRoomNameAndAssetTypeAndAssetFullName")
+		panic("no return value specified for DeleteByCleanRoomNameAndAssetTypeAndName")
 	}
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, cleanrooms.CleanRoomAssetAssetType, string) error); ok {
-		r0 = rf(ctx, cleanRoomName, assetType, assetFullName)
+		r0 = rf(ctx, cleanRoomName, assetType, name)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -149,33 +149,33 @@ func (_m *MockCleanRoomAssetsInterface) DeleteByCleanRoomNameAndAssetTypeAndAsse
 	return r0
 }
 
-// MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndAssetFullName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByCleanRoomNameAndAssetTypeAndAssetFullName'
-type MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndAssetFullName_Call struct {
+// MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByCleanRoomNameAndAssetTypeAndName'
+type MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndName_Call struct {
 	*mock.Call
 }
 
-// DeleteByCleanRoomNameAndAssetTypeAndAssetFullName is a helper method to define mock.On call
+// DeleteByCleanRoomNameAndAssetTypeAndName is a helper method to define mock.On call
 //   - ctx context.Context
 //   - cleanRoomName string
 //   - assetType cleanrooms.CleanRoomAssetAssetType
-//   - assetFullName string
-func (_e *MockCleanRoomAssetsInterface_Expecter) DeleteByCleanRoomNameAndAssetTypeAndAssetFullName(ctx interface{}, cleanRoomName interface{}, assetType interface{}, assetFullName interface{}) *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndAssetFullName_Call {
-	return &MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndAssetFullName_Call{Call: _e.mock.On("DeleteByCleanRoomNameAndAssetTypeAndAssetFullName", ctx, cleanRoomName, assetType, assetFullName)}
+//   - name string
+func (_e *MockCleanRoomAssetsInterface_Expecter) DeleteByCleanRoomNameAndAssetTypeAndName(ctx interface{}, cleanRoomName interface{}, assetType interface{}, name interface{}) *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndName_Call {
+	return &MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndName_Call{Call: _e.mock.On("DeleteByCleanRoomNameAndAssetTypeAndName", ctx, cleanRoomName, assetType, name)}
 }
 
-func (_c *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndAssetFullName_Call) Run(run func(ctx context.Context, cleanRoomName string, assetType cleanrooms.CleanRoomAssetAssetType, assetFullName string)) *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndAssetFullName_Call {
+func (_c *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndName_Call) Run(run func(ctx context.Context, cleanRoomName string, assetType cleanrooms.CleanRoomAssetAssetType, name string)) *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(cleanrooms.CleanRoomAssetAssetType), args[3].(string))
 	})
 	return _c
 }
 
-func (_c *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndAssetFullName_Call) Return(_a0 error) *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndAssetFullName_Call {
+func (_c *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndName_Call) Return(_a0 error) *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndName_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndAssetFullName_Call) RunAndReturn(run func(context.Context, string, cleanrooms.CleanRoomAssetAssetType, string) error) *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndAssetFullName_Call {
+func (_c *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndName_Call) RunAndReturn(run func(context.Context, string, cleanrooms.CleanRoomAssetAssetType, string) error) *MockCleanRoomAssetsInterface_DeleteByCleanRoomNameAndAssetTypeAndName_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -239,21 +239,21 @@ func (_c *MockCleanRoomAssetsInterface_Get_Call) RunAndReturn(run func(context.C
 	return _c
 }
 
-// GetByCleanRoomNameAndAssetTypeAndAssetFullName provides a mock function with given fields: ctx, cleanRoomName, assetType, assetFullName
-func (_m *MockCleanRoomAssetsInterface) GetByCleanRoomNameAndAssetTypeAndAssetFullName(ctx context.Context, cleanRoomName string, assetType cleanrooms.CleanRoomAssetAssetType, assetFullName string) (*cleanrooms.CleanRoomAsset, error) {
-	ret := _m.Called(ctx, cleanRoomName, assetType, assetFullName)
+// GetByCleanRoomNameAndAssetTypeAndName provides a mock function with given fields: ctx, cleanRoomName, assetType, name
+func (_m *MockCleanRoomAssetsInterface) GetByCleanRoomNameAndAssetTypeAndName(ctx context.Context, cleanRoomName string, assetType cleanrooms.CleanRoomAssetAssetType, name string) (*cleanrooms.CleanRoomAsset, error) {
+	ret := _m.Called(ctx, cleanRoomName, assetType, name)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetByCleanRoomNameAndAssetTypeAndAssetFullName")
+		panic("no return value specified for GetByCleanRoomNameAndAssetTypeAndName")
 	}
 
 	var r0 *cleanrooms.CleanRoomAsset
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, cleanrooms.CleanRoomAssetAssetType, string) (*cleanrooms.CleanRoomAsset, error)); ok {
-		return rf(ctx, cleanRoomName, assetType, assetFullName)
+		return rf(ctx, cleanRoomName, assetType, name)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, cleanrooms.CleanRoomAssetAssetType, string) *cleanrooms.CleanRoomAsset); ok {
-		r0 = rf(ctx, cleanRoomName, assetType, assetFullName)
+		r0 = rf(ctx, cleanRoomName, assetType, name)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*cleanrooms.CleanRoomAsset)
@@ -261,7 +261,7 @@ func (_m *MockCleanRoomAssetsInterface) GetByCleanRoomNameAndAssetTypeAndAssetFu
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, cleanrooms.CleanRoomAssetAssetType, string) error); ok {
-		r1 = rf(ctx, cleanRoomName, assetType, assetFullName)
+		r1 = rf(ctx, cleanRoomName, assetType, name)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -269,33 +269,33 @@ func (_m *MockCleanRoomAssetsInterface) GetByCleanRoomNameAndAssetTypeAndAssetFu
 	return r0, r1
 }
 
-// MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndAssetFullName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByCleanRoomNameAndAssetTypeAndAssetFullName'
-type MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndAssetFullName_Call struct {
+// MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByCleanRoomNameAndAssetTypeAndName'
+type MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndName_Call struct {
 	*mock.Call
 }
 
-// GetByCleanRoomNameAndAssetTypeAndAssetFullName is a helper method to define mock.On call
+// GetByCleanRoomNameAndAssetTypeAndName is a helper method to define mock.On call
 //   - ctx context.Context
 //   - cleanRoomName string
 //   - assetType cleanrooms.CleanRoomAssetAssetType
-//   - assetFullName string
-func (_e *MockCleanRoomAssetsInterface_Expecter) GetByCleanRoomNameAndAssetTypeAndAssetFullName(ctx interface{}, cleanRoomName interface{}, assetType interface{}, assetFullName interface{}) *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndAssetFullName_Call {
-	return &MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndAssetFullName_Call{Call: _e.mock.On("GetByCleanRoomNameAndAssetTypeAndAssetFullName", ctx, cleanRoomName, assetType, assetFullName)}
+//   - name string
+func (_e *MockCleanRoomAssetsInterface_Expecter) GetByCleanRoomNameAndAssetTypeAndName(ctx interface{}, cleanRoomName interface{}, assetType interface{}, name interface{}) *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndName_Call {
+	return &MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndName_Call{Call: _e.mock.On("GetByCleanRoomNameAndAssetTypeAndName", ctx, cleanRoomName, assetType, name)}
 }
 
-func (_c *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndAssetFullName_Call) Run(run func(ctx context.Context, cleanRoomName string, assetType cleanrooms.CleanRoomAssetAssetType, assetFullName string)) *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndAssetFullName_Call {
+func (_c *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndName_Call) Run(run func(ctx context.Context, cleanRoomName string, assetType cleanrooms.CleanRoomAssetAssetType, name string)) *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndName_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].(cleanrooms.CleanRoomAssetAssetType), args[3].(string))
 	})
 	return _c
 }
 
-func (_c *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndAssetFullName_Call) Return(_a0 *cleanrooms.CleanRoomAsset, _a1 error) *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndAssetFullName_Call {
+func (_c *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndName_Call) Return(_a0 *cleanrooms.CleanRoomAsset, _a1 error) *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndName_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndAssetFullName_Call) RunAndReturn(run func(context.Context, string, cleanrooms.CleanRoomAssetAssetType, string) (*cleanrooms.CleanRoomAsset, error)) *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndAssetFullName_Call {
+func (_c *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndName_Call) RunAndReturn(run func(context.Context, string, cleanrooms.CleanRoomAssetAssetType, string) (*cleanrooms.CleanRoomAsset, error)) *MockCleanRoomAssetsInterface_GetByCleanRoomNameAndAssetTypeAndName_Call {
 	_c.Call.Return(run)
 	return _c
 }

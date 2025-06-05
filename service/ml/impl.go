@@ -135,26 +135,6 @@ func (a *experimentsImpl) GetByName(ctx context.Context, request GetByNameReques
 	return &getExperimentByNameResponse, err
 }
 
-func (a *experimentsImpl) GetCredentialsForTraceDataDownload(ctx context.Context, request GetCredentialsForTraceDataDownloadRequest) (*GetCredentialsForTraceDataDownloadResponse, error) {
-	var getCredentialsForTraceDataDownloadResponse GetCredentialsForTraceDataDownloadResponse
-	path := fmt.Sprintf("/api/2.0/mlflow/traces/%v/credentials-for-data-download", request.RequestId)
-	queryParams := make(map[string]any)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCredentialsForTraceDataDownloadResponse)
-	return &getCredentialsForTraceDataDownloadResponse, err
-}
-
-func (a *experimentsImpl) GetCredentialsForTraceDataUpload(ctx context.Context, request GetCredentialsForTraceDataUploadRequest) (*GetCredentialsForTraceDataUploadResponse, error) {
-	var getCredentialsForTraceDataUploadResponse GetCredentialsForTraceDataUploadResponse
-	path := fmt.Sprintf("/api/2.0/mlflow/traces/%v/credentials-for-data-upload", request.RequestId)
-	queryParams := make(map[string]any)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &getCredentialsForTraceDataUploadResponse)
-	return &getCredentialsForTraceDataUploadResponse, err
-}
-
 func (a *experimentsImpl) GetExperiment(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error) {
 	var getExperimentResponse GetExperimentResponse
 	path := "/api/2.0/mlflow/experiments/get"
@@ -348,16 +328,6 @@ func (a *experimentsImpl) internalListExperiments(ctx context.Context, request L
 	headers["Accept"] = "application/json"
 	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listExperimentsResponse)
 	return &listExperimentsResponse, err
-}
-
-func (a *experimentsImpl) ListLoggedModelArtifacts(ctx context.Context, request ListLoggedModelArtifactsRequest) (*ListLoggedModelArtifactsResponse, error) {
-	var listLoggedModelArtifactsResponse ListLoggedModelArtifactsResponse
-	path := fmt.Sprintf("/api/2.0/mlflow/logged-models/%v/artifacts/directories", request.ModelId)
-	queryParams := make(map[string]any)
-	headers := make(map[string]string)
-	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listLoggedModelArtifactsResponse)
-	return &listLoggedModelArtifactsResponse, err
 }
 
 func (a *experimentsImpl) LogBatch(ctx context.Context, request LogBatch) error {
@@ -945,8 +915,7 @@ func (a *modelRegistryImpl) ListModels(ctx context.Context, request ListModelsRe
 // __max_results__.
 func (a *modelRegistryImpl) ListModelsAll(ctx context.Context, request ListModelsRequest) ([]Model, error) {
 	iterator := a.ListModels(ctx, request)
-	return listing.ToSliceN[Model, int](ctx, iterator, request.MaxResults)
-
+	return listing.ToSlice[Model](ctx, iterator)
 }
 
 func (a *modelRegistryImpl) internalListModels(ctx context.Context, request ListModelsRequest) (*ListModelsResponse, error) {
@@ -1101,8 +1070,7 @@ func (a *modelRegistryImpl) SearchModelVersions(ctx context.Context, request Sea
 // Searches for specific model versions based on the supplied __filter__.
 func (a *modelRegistryImpl) SearchModelVersionsAll(ctx context.Context, request SearchModelVersionsRequest) ([]ModelVersion, error) {
 	iterator := a.SearchModelVersions(ctx, request)
-	return listing.ToSliceN[ModelVersion, int](ctx, iterator, request.MaxResults)
-
+	return listing.ToSlice[ModelVersion](ctx, iterator)
 }
 
 func (a *modelRegistryImpl) internalSearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error) {
@@ -1147,8 +1115,7 @@ func (a *modelRegistryImpl) SearchModels(ctx context.Context, request SearchMode
 // Search for registered models based on the specified __filter__.
 func (a *modelRegistryImpl) SearchModelsAll(ctx context.Context, request SearchModelsRequest) ([]Model, error) {
 	iterator := a.SearchModels(ctx, request)
-	return listing.ToSliceN[Model, int](ctx, iterator, request.MaxResults)
-
+	return listing.ToSlice[Model](ctx, iterator)
 }
 
 func (a *modelRegistryImpl) internalSearchModels(ctx context.Context, request SearchModelsRequest) (*SearchModelsResponse, error) {
