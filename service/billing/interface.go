@@ -12,8 +12,6 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type BillableUsageService interface {
 
-	// Return billable usage logs.
-	//
 	// Returns billable usage logs in CSV format for the specified account and
 	// date range. For the data schema, see [CSV file schema]. Note that this
 	// method might take multiple minutes to complete.
@@ -33,29 +31,19 @@ type BillableUsageService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type BudgetPolicyService interface {
 
-	// Create a budget policy.
-	//
 	// Creates a new policy.
 	Create(ctx context.Context, request CreateBudgetPolicyRequest) (*BudgetPolicy, error)
 
-	// Delete a budget policy.
-	//
 	// Deletes a policy
 	Delete(ctx context.Context, request DeleteBudgetPolicyRequest) error
 
-	// Get a budget policy.
-	//
 	// Retrieves a policy by it's ID.
 	Get(ctx context.Context, request GetBudgetPolicyRequest) (*BudgetPolicy, error)
 
-	// List policies.
-	//
 	// Lists all policies. Policies are returned in the alphabetically ascending
 	// order of their names.
 	List(ctx context.Context, request ListBudgetPoliciesRequest) (*ListBudgetPoliciesResponse, error)
 
-	// Update a budget policy.
-	//
 	// Updates a policy
 	Update(ctx context.Context, request UpdateBudgetPolicyRequest) (*BudgetPolicy, error)
 }
@@ -68,31 +56,21 @@ type BudgetPolicyService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type BudgetsService interface {
 
-	// Create new budget.
-	//
 	// Create a new budget configuration for an account. For full details, see
 	// https://docs.databricks.com/en/admin/account-settings/budgets.html.
 	Create(ctx context.Context, request CreateBudgetConfigurationRequest) (*CreateBudgetConfigurationResponse, error)
 
-	// Delete budget.
-	//
 	// Deletes a budget configuration for an account. Both account and budget
 	// configuration are specified by ID. This cannot be undone.
 	Delete(ctx context.Context, request DeleteBudgetConfigurationRequest) error
 
-	// Get budget.
-	//
 	// Gets a budget configuration for an account. Both account and budget
 	// configuration are specified by ID.
 	Get(ctx context.Context, request GetBudgetConfigurationRequest) (*GetBudgetConfigurationResponse, error)
 
-	// Get all budgets.
-	//
 	// Gets all budgets associated with this account.
 	List(ctx context.Context, request ListBudgetConfigurationsRequest) (*ListBudgetConfigurationsResponse, error)
 
-	// Modify budget.
-	//
 	// Updates a budget configuration for an account. Both account and budget
 	// configuration are specified by ID.
 	Update(ctx context.Context, request UpdateBudgetConfigurationRequest) (*UpdateBudgetConfigurationResponse, error)
@@ -105,8 +83,6 @@ type BudgetsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type LogDeliveryService interface {
 
-	// Create a new log delivery configuration.
-	//
 	// Creates a new Databricks log delivery configuration to enable delivery of
 	// the specified type of logs to your storage location. This requires that
 	// you already created a [credential object](:method:Credentials/Create)
@@ -135,20 +111,14 @@ type LogDeliveryService interface {
 	// [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
 	Create(ctx context.Context, request WrappedCreateLogDeliveryConfiguration) (*WrappedLogDeliveryConfiguration, error)
 
-	// Get log delivery configuration.
-	//
 	// Gets a Databricks log delivery configuration object for an account, both
 	// specified by ID.
 	Get(ctx context.Context, request GetLogDeliveryRequest) (*GetLogDeliveryConfigurationResponse, error)
 
-	// Get all log delivery configurations.
-	//
 	// Gets all Databricks log delivery configurations associated with an
 	// account specified by ID.
 	List(ctx context.Context, request ListLogDeliveryRequest) (*WrappedLogDeliveryConfigurations, error)
 
-	// Enable or disable log delivery configuration.
-	//
 	// Enables or disables a log delivery configuration. Deletion of delivery
 	// configurations is not supported, so disable log delivery configurations
 	// that are no longer needed. Note that you can't re-enable a delivery
@@ -164,14 +134,10 @@ type LogDeliveryService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type UsageDashboardsService interface {
 
-	// Create new usage dashboard.
-	//
 	// Create a usage dashboard specified by workspaceId, accountId, and
 	// dashboard type.
 	Create(ctx context.Context, request CreateBillingUsageDashboardRequest) (*CreateBillingUsageDashboardResponse, error)
 
-	// Get usage dashboard.
-	//
 	// Get a usage dashboard specified by workspaceId, accountId, and dashboard
 	// type.
 	Get(ctx context.Context, request GetBillingUsageDashboardRequest) (*GetBillingUsageDashboardResponse, error)

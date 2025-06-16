@@ -12,8 +12,6 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type DbfsService interface {
 
-	// Append data block.
-	//
 	// Appends a block of data to the stream specified by the input handle. If
 	// the handle does not exist, this call will throw an exception with
 	// ``RESOURCE_DOES_NOT_EXIST``.
@@ -22,14 +20,10 @@ type DbfsService interface {
 	// ``MAX_BLOCK_SIZE_EXCEEDED``.
 	AddBlock(ctx context.Context, request AddBlock) error
 
-	// Close the stream.
-	//
 	// Closes the stream specified by the input handle. If the handle does not
 	// exist, this call throws an exception with ``RESOURCE_DOES_NOT_EXIST``.
 	Close(ctx context.Context, request Close) error
 
-	// Open a stream.
-	//
 	// Opens a stream to write to a file and returns a handle to this stream.
 	// There is a 10 minute idle timeout on this handle. If a file or directory
 	// already exists on the given path and __overwrite__ is set to false, this
@@ -42,8 +36,6 @@ type DbfsService interface {
 	// with the handle you have.
 	Create(ctx context.Context, request Create) (*CreateResponse, error)
 
-	// Delete a file/directory.
-	//
 	// Delete the file or directory (optionally recursively delete all files in
 	// the directory). This call throws an exception with `IO_ERROR` if the path
 	// is a non-empty directory and `recursive` is set to `false` or on other
@@ -64,15 +56,11 @@ type DbfsService interface {
 	// periodic delete jobs.
 	Delete(ctx context.Context, request Delete) error
 
-	// Get the information of a file or directory.
-	//
 	// Gets the file information for a file or directory. If the file or
 	// directory does not exist, this call throws an exception with
 	// `RESOURCE_DOES_NOT_EXIST`.
 	GetStatus(ctx context.Context, request GetStatusRequest) (*FileInfo, error)
 
-	// List directory contents or file details.
-	//
 	// List the contents of a directory, or details of the file. If the file or
 	// directory does not exist, this call throws an exception with
 	// `RESOURCE_DOES_NOT_EXIST`.
@@ -87,8 +75,6 @@ type DbfsService interface {
 	// provides the same functionality without timing out.
 	List(ctx context.Context, request ListDbfsRequest) (*ListStatusResponse, error)
 
-	// Create a directory.
-	//
 	// Creates the given directory and necessary parent directories if they do
 	// not exist. If a file (not a directory) exists at any prefix of the input
 	// path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`.
@@ -96,8 +82,6 @@ type DbfsService interface {
 	// some of the necessary parent directories.
 	Mkdirs(ctx context.Context, request MkDirs) error
 
-	// Move a file.
-	//
 	// Moves a file from one location to another location within DBFS. If the
 	// source file does not exist, this call throws an exception with
 	// `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the destination
@@ -106,8 +90,6 @@ type DbfsService interface {
 	// all files.
 	Move(ctx context.Context, request Move) error
 
-	// Upload a file.
-	//
 	// Uploads a file through the use of multipart form post. It is mainly used
 	// for streaming uploads, but can also be used as a convenient single call
 	// for data upload.
@@ -122,8 +104,6 @@ type DbfsService interface {
 	// see :method:dbfs/create, :method:dbfs/addBlock, :method:dbfs/close.
 	Put(ctx context.Context, request Put) error
 
-	// Get the contents of a file.
-	//
 	// Returns the contents of a file. If the file does not exist, this call
 	// throws an exception with `RESOURCE_DOES_NOT_EXIST`. If the path is a
 	// directory, the read length is negative, or if the offset is negative,
@@ -163,8 +143,6 @@ type DbfsService interface {
 // [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 type FilesService interface {
 
-	// Create a directory.
-	//
 	// Creates an empty directory. If necessary, also creates any parent
 	// directories of the new, empty directory (like the shell command `mkdir
 	// -p`). If called on an existing directory, returns a success response;
@@ -172,13 +150,9 @@ type FilesService interface {
 	// exists).
 	CreateDirectory(ctx context.Context, request CreateDirectoryRequest) error
 
-	// Delete a file.
-	//
 	// Deletes a file. If the request is successful, there is no response body.
 	Delete(ctx context.Context, request DeleteFileRequest) error
 
-	// Delete a directory.
-	//
 	// Deletes an empty directory.
 	//
 	// To delete a non-empty directory, first delete all of its contents. This
@@ -186,15 +160,11 @@ type FilesService interface {
 	// subdirectory recursively.
 	DeleteDirectory(ctx context.Context, request DeleteDirectoryRequest) error
 
-	// Download a file.
-	//
 	// Downloads a file. The file contents are the response body. This is a
 	// standard HTTP file download, not a JSON RPC. It supports the Range and
 	// If-Unmodified-Since HTTP headers.
 	Download(ctx context.Context, request DownloadRequest) (*DownloadResponse, error)
 
-	// Get directory metadata.
-	//
 	// Get the metadata of a directory. The response HTTP headers contain the
 	// metadata. There is no response body.
 	//
@@ -206,20 +176,14 @@ type FilesService interface {
 	// (it will succeed if the directory already exists).
 	GetDirectoryMetadata(ctx context.Context, request GetDirectoryMetadataRequest) error
 
-	// Get file metadata.
-	//
 	// Get the metadata of a file. The response HTTP headers contain the
 	// metadata. There is no response body.
 	GetMetadata(ctx context.Context, request GetMetadataRequest) (*GetMetadataResponse, error)
 
-	// List directory contents.
-	//
 	// Returns the contents of a directory. If there is no directory at the
 	// specified path, the API returns a HTTP 404 error.
 	ListDirectoryContents(ctx context.Context, request ListDirectoryContentsRequest) (*ListDirectoryResponse, error)
 
-	// Upload a file.
-	//
 	// Uploads a file of up to 5 GiB. The file contents should be sent as the
 	// request body as raw bytes (an octet stream); do not encode or otherwise
 	// modify the bytes before sending. The contents of the resulting file will

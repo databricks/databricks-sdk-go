@@ -1,6 +1,6 @@
 // Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-// These APIs allow you to manage Genie, Lakeview, Lakeview Embedded, etc.
+// These APIs allow you to manage Genie, Lakeview, Lakeview Embedded, Query Execution, etc.
 package dashboards
 
 import (
@@ -20,8 +20,6 @@ type GenieInterface interface {
 	WaitGetMessageGenieCompleted(ctx context.Context, conversationId string, messageId string, spaceId string,
 		timeout time.Duration, callback func(*GenieMessage)) (*GenieMessage, error)
 
-	// Create conversation message.
-	//
 	// Create new message in a [conversation](:method:genie/startconversation). The
 	// AI response uses all previously created messages in the conversation to
 	// respond.
@@ -35,19 +33,19 @@ type GenieInterface interface {
 	// Deprecated: use [GenieAPIInterface.CreateMessage].Get() or [GenieAPIInterface.WaitGetMessageGenieCompleted]
 	CreateMessageAndWait(ctx context.Context, genieCreateConversationMessageRequest GenieCreateConversationMessageRequest, options ...retries.Option[GenieMessage]) (*GenieMessage, error)
 
-	// Execute message attachment SQL query.
-	//
+	// Delete a conversation.
+	DeleteConversation(ctx context.Context, request GenieDeleteConversationRequest) error
+
+	// Delete a conversation.
+	DeleteConversationBySpaceIdAndConversationId(ctx context.Context, spaceId string, conversationId string) error
+
 	// Execute the SQL for a message query attachment. Use this API when the query
 	// attachment has expired and needs to be re-executed.
 	ExecuteMessageAttachmentQuery(ctx context.Context, request GenieExecuteMessageAttachmentQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// [Deprecated] Execute SQL query in a conversation message.
-	//
 	// Execute the SQL query in the message.
 	ExecuteMessageQuery(ctx context.Context, request GenieExecuteMessageQueryRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Generate full query result download.
-	//
 	// Initiates a new SQL execution and returns a `download_id` that you can use to
 	// track the progress of the download. The query result is stored in an external
 	// link and can be retrieved using the [Get Download Full Query
@@ -57,8 +55,6 @@ type GenieInterface interface {
 	// Statement](:method:statementexecution/executestatement) for more details.
 	GenerateDownloadFullQueryResult(ctx context.Context, request GenieGenerateDownloadFullQueryResultRequest) (*GenieGenerateDownloadFullQueryResultResponse, error)
 
-	// Get download full query result.
-	//
 	// After [Generating a Full Query Result
 	// Download](:method:genie/getdownloadfullqueryresult) and successfully
 	// receiving a `download_id`, use this API to poll the download progress. When
@@ -71,8 +67,6 @@ type GenieInterface interface {
 	// Statement](:method:statementexecution/executestatement) for more details.
 	GetDownloadFullQueryResult(ctx context.Context, request GenieGetDownloadFullQueryResultRequest) (*GenieGetDownloadFullQueryResultResponse, error)
 
-	// Get download full query result.
-	//
 	// After [Generating a Full Query Result
 	// Download](:method:genie/getdownloadfullqueryresult) and successfully
 	// receiving a `download_id`, use this API to poll the download progress. When
@@ -85,75 +79,51 @@ type GenieInterface interface {
 	// Statement](:method:statementexecution/executestatement) for more details.
 	GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentIdAndDownloadId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string, downloadId string) (*GenieGetDownloadFullQueryResultResponse, error)
 
-	// Get conversation message.
-	//
 	// Get message from conversation.
 	GetMessage(ctx context.Context, request GenieGetConversationMessageRequest) (*GenieMessage, error)
 
-	// Get conversation message.
-	//
 	// Get message from conversation.
 	GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error)
 
-	// Get message attachment SQL query result.
-	//
 	// Get the result of SQL query if the message has a query attachment. This is
 	// only available if a message has a query attachment and the message status is
 	// `EXECUTING_QUERY` OR `COMPLETED`.
 	GetMessageAttachmentQueryResult(ctx context.Context, request GenieGetMessageAttachmentQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get message attachment SQL query result.
-	//
 	// Get the result of SQL query if the message has a query attachment. This is
 	// only available if a message has a query attachment and the message status is
 	// `EXECUTING_QUERY` OR `COMPLETED`.
 	GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
 
-	// [Deprecated] Get conversation message SQL query result.
-	//
 	// Get the result of SQL query if the message has a query attachment. This is
 	// only available if a message has a query attachment and the message status is
 	// `EXECUTING_QUERY`.
 	GetMessageQueryResult(ctx context.Context, request GenieGetMessageQueryResultRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// [Deprecated] Get conversation message SQL query result.
-	//
 	// Get the result of SQL query if the message has a query attachment. This is
 	// only available if a message has a query attachment and the message status is
 	// `EXECUTING_QUERY`.
 	GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieGetMessageQueryResultResponse, error)
 
-	// [Deprecated] Get conversation message SQL query result.
-	//
 	// Get the result of SQL query if the message has a query attachment. This is
 	// only available if a message has a query attachment and the message status is
 	// `EXECUTING_QUERY` OR `COMPLETED`.
 	GetMessageQueryResultByAttachment(ctx context.Context, request GenieGetQueryResultByAttachmentRequest) (*GenieGetMessageQueryResultResponse, error)
 
-	// [Deprecated] Get conversation message SQL query result.
-	//
 	// Get the result of SQL query if the message has a query attachment. This is
 	// only available if a message has a query attachment and the message status is
 	// `EXECUTING_QUERY` OR `COMPLETED`.
 	GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAndMessageIdAndAttachmentId(ctx context.Context, spaceId string, conversationId string, messageId string, attachmentId string) (*GenieGetMessageQueryResultResponse, error)
 
-	// Get Genie Space.
-	//
 	// Get details of a Genie Space.
 	GetSpace(ctx context.Context, request GenieGetSpaceRequest) (*GenieSpace, error)
 
-	// Get Genie Space.
-	//
 	// Get details of a Genie Space.
 	GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error)
 
-	// List Genie spaces.
-	//
 	// Get list of Genie Spaces.
 	ListSpaces(ctx context.Context, request GenieListSpacesRequest) (*GenieListSpacesResponse, error)
 
-	// Start conversation.
-	//
 	// Start a new conversation.
 	StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieStartConversationResponse], error)
 
@@ -164,6 +134,12 @@ type GenieInterface interface {
 	//
 	// Deprecated: use [GenieAPIInterface.StartConversation].Get() or [GenieAPIInterface.WaitGetMessageGenieCompleted]
 	StartConversationAndWait(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest, options ...retries.Option[GenieMessage]) (*GenieMessage, error)
+
+	// Trash a Genie Space.
+	TrashSpace(ctx context.Context, request GenieTrashSpaceRequest) error
+
+	// Trash a Genie Space.
+	TrashSpaceBySpaceId(ctx context.Context, spaceId string) error
 }
 
 func NewGenie(client *client.DatabricksClient) *GenieAPI {
@@ -241,8 +217,6 @@ func (w *WaitGetMessageGenieCompleted[R]) GetWithTimeout(timeout time.Duration) 
 	return w.Poll(timeout, w.callback)
 }
 
-// Create conversation message.
-//
 // Create new message in a [conversation](:method:genie/startconversation). The
 // AI response uses all previously created messages in the conversation to
 // respond.
@@ -291,8 +265,14 @@ func (a *GenieAPI) CreateMessageAndWait(ctx context.Context, genieCreateConversa
 	return wait.Get()
 }
 
-// Get download full query result.
-//
+// Delete a conversation.
+func (a *GenieAPI) DeleteConversationBySpaceIdAndConversationId(ctx context.Context, spaceId string, conversationId string) error {
+	return a.genieImpl.DeleteConversation(ctx, GenieDeleteConversationRequest{
+		SpaceId:        spaceId,
+		ConversationId: conversationId,
+	})
+}
+
 // After [Generating a Full Query Result
 // Download](:method:genie/getdownloadfullqueryresult) and successfully
 // receiving a `download_id`, use this API to poll the download progress. When
@@ -313,8 +293,6 @@ func (a *GenieAPI) GetDownloadFullQueryResultBySpaceIdAndConversationIdAndMessag
 	})
 }
 
-// Get conversation message.
-//
 // Get message from conversation.
 func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.Context, spaceId string, conversationId string, messageId string) (*GenieMessage, error) {
 	return a.genieImpl.GetMessage(ctx, GenieGetConversationMessageRequest{
@@ -324,8 +302,6 @@ func (a *GenieAPI) GetMessageBySpaceIdAndConversationIdAndMessageId(ctx context.
 	})
 }
 
-// Get message attachment SQL query result.
-//
 // Get the result of SQL query if the message has a query attachment. This is
 // only available if a message has a query attachment and the message status is
 // `EXECUTING_QUERY` OR `COMPLETED`.
@@ -338,8 +314,6 @@ func (a *GenieAPI) GetMessageAttachmentQueryResultBySpaceIdAndConversationIdAndM
 	})
 }
 
-// [Deprecated] Get conversation message SQL query result.
-//
 // Get the result of SQL query if the message has a query attachment. This is
 // only available if a message has a query attachment and the message status is
 // `EXECUTING_QUERY`.
@@ -351,8 +325,6 @@ func (a *GenieAPI) GetMessageQueryResultBySpaceIdAndConversationIdAndMessageId(c
 	})
 }
 
-// [Deprecated] Get conversation message SQL query result.
-//
 // Get the result of SQL query if the message has a query attachment. This is
 // only available if a message has a query attachment and the message status is
 // `EXECUTING_QUERY` OR `COMPLETED`.
@@ -365,8 +337,6 @@ func (a *GenieAPI) GetMessageQueryResultByAttachmentBySpaceIdAndConversationIdAn
 	})
 }
 
-// Get Genie Space.
-//
 // Get details of a Genie Space.
 func (a *GenieAPI) GetSpaceBySpaceId(ctx context.Context, spaceId string) (*GenieSpace, error) {
 	return a.genieImpl.GetSpace(ctx, GenieGetSpaceRequest{
@@ -374,8 +344,6 @@ func (a *GenieAPI) GetSpaceBySpaceId(ctx context.Context, spaceId string) (*Geni
 	})
 }
 
-// Start conversation.
-//
 // Start a new conversation.
 func (a *GenieAPI) StartConversation(ctx context.Context, genieStartConversationMessageRequest GenieStartConversationMessageRequest) (*WaitGetMessageGenieCompleted[GenieStartConversationResponse], error) {
 	genieStartConversationResponse, err := a.genieImpl.StartConversation(ctx, genieStartConversationMessageRequest)
@@ -422,10 +390,15 @@ func (a *GenieAPI) StartConversationAndWait(ctx context.Context, genieStartConve
 	return wait.Get()
 }
 
+// Trash a Genie Space.
+func (a *GenieAPI) TrashSpaceBySpaceId(ctx context.Context, spaceId string) error {
+	return a.genieImpl.TrashSpace(ctx, GenieTrashSpaceRequest{
+		SpaceId: spaceId,
+	})
+}
+
 type LakeviewInterface interface {
 
-	// Create dashboard.
-	//
 	// Create a draft dashboard.
 	Create(ctx context.Context, request CreateDashboardRequest) (*Dashboard, error)
 
@@ -447,23 +420,15 @@ type LakeviewInterface interface {
 	// Delete schedule subscription.
 	DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptionId(ctx context.Context, dashboardId string, scheduleId string, subscriptionId string) error
 
-	// Get dashboard.
-	//
 	// Get a draft dashboard.
 	Get(ctx context.Context, request GetDashboardRequest) (*Dashboard, error)
 
-	// Get dashboard.
-	//
 	// Get a draft dashboard.
 	GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error)
 
-	// Get published dashboard.
-	//
 	// Get the current published dashboard.
 	GetPublished(ctx context.Context, request GetPublishedDashboardRequest) (*PublishedDashboard, error)
 
-	// Get published dashboard.
-	//
 	// Get the current published dashboard.
 	GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error)
 
@@ -515,38 +480,24 @@ type LakeviewInterface interface {
 	// List schedule subscriptions.
 	ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Context, dashboardId string, scheduleId string) (*ListSubscriptionsResponse, error)
 
-	// Migrate dashboard.
-	//
 	// Migrates a classic SQL dashboard to Lakeview.
 	Migrate(ctx context.Context, request MigrateDashboardRequest) (*Dashboard, error)
 
-	// Publish dashboard.
-	//
 	// Publish the current draft dashboard.
 	Publish(ctx context.Context, request PublishRequest) (*PublishedDashboard, error)
 
-	// Trash dashboard.
-	//
 	// Trash a dashboard.
 	Trash(ctx context.Context, request TrashDashboardRequest) error
 
-	// Trash dashboard.
-	//
 	// Trash a dashboard.
 	TrashByDashboardId(ctx context.Context, dashboardId string) error
 
-	// Unpublish dashboard.
-	//
 	// Unpublish the dashboard.
 	Unpublish(ctx context.Context, request UnpublishDashboardRequest) error
 
-	// Unpublish dashboard.
-	//
 	// Unpublish the dashboard.
 	UnpublishByDashboardId(ctx context.Context, dashboardId string) error
 
-	// Update dashboard.
-	//
 	// Update a draft dashboard.
 	Update(ctx context.Context, request UpdateDashboardRequest) (*Dashboard, error)
 
@@ -586,8 +537,6 @@ func (a *LakeviewAPI) DeleteSubscriptionByDashboardIdAndScheduleIdAndSubscriptio
 	})
 }
 
-// Get dashboard.
-//
 // Get a draft dashboard.
 func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) (*Dashboard, error) {
 	return a.lakeviewImpl.Get(ctx, GetDashboardRequest{
@@ -595,8 +544,6 @@ func (a *LakeviewAPI) GetByDashboardId(ctx context.Context, dashboardId string) 
 	})
 }
 
-// Get published dashboard.
-//
 // Get the current published dashboard.
 func (a *LakeviewAPI) GetPublishedByDashboardId(ctx context.Context, dashboardId string) (*PublishedDashboard, error) {
 	return a.lakeviewImpl.GetPublished(ctx, GetPublishedDashboardRequest{
@@ -636,8 +583,6 @@ func (a *LakeviewAPI) ListSubscriptionsByDashboardIdAndScheduleId(ctx context.Co
 	})
 }
 
-// Trash dashboard.
-//
 // Trash a dashboard.
 func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string) error {
 	return a.lakeviewImpl.Trash(ctx, TrashDashboardRequest{
@@ -645,8 +590,6 @@ func (a *LakeviewAPI) TrashByDashboardId(ctx context.Context, dashboardId string
 	})
 }
 
-// Unpublish dashboard.
-//
 // Unpublish the dashboard.
 func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId string) error {
 	return a.lakeviewImpl.Unpublish(ctx, UnpublishDashboardRequest{
@@ -656,8 +599,12 @@ func (a *LakeviewAPI) UnpublishByDashboardId(ctx context.Context, dashboardId st
 
 type LakeviewEmbeddedInterface interface {
 
-	// Read an information of a published dashboard to mint an OAuth token.
-	//
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbedded(ctx context.Context, request GetPublishedDashboardEmbeddedRequest) error
+
+	// Get the current published dashboard within an embedded context.
+	GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error
+
 	// Get a required authorization details and scopes of a published dashboard to
 	// mint an OAuth token. The `authorization_details` can be enriched to apply
 	// additional restriction.
@@ -668,8 +615,6 @@ type LakeviewEmbeddedInterface interface {
 	// "main.default.testdata" } ```
 	GetPublishedDashboardTokenInfo(ctx context.Context, request GetPublishedDashboardTokenInfoRequest) (*GetPublishedDashboardTokenInfoResponse, error)
 
-	// Read an information of a published dashboard to mint an OAuth token.
-	//
 	// Get a required authorization details and scopes of a published dashboard to
 	// mint an OAuth token. The `authorization_details` can be enriched to apply
 	// additional restriction.
@@ -694,8 +639,13 @@ type LakeviewEmbeddedAPI struct {
 	lakeviewEmbeddedImpl
 }
 
-// Read an information of a published dashboard to mint an OAuth token.
-//
+// Get the current published dashboard within an embedded context.
+func (a *LakeviewEmbeddedAPI) GetPublishedDashboardEmbeddedByDashboardId(ctx context.Context, dashboardId string) error {
+	return a.lakeviewEmbeddedImpl.GetPublishedDashboardEmbedded(ctx, GetPublishedDashboardEmbeddedRequest{
+		DashboardId: dashboardId,
+	})
+}
+
 // Get a required authorization details and scopes of a published dashboard to
 // mint an OAuth token. The `authorization_details` can be enriched to apply
 // additional restriction.
@@ -708,4 +658,29 @@ func (a *LakeviewEmbeddedAPI) GetPublishedDashboardTokenInfoByDashboardId(ctx co
 	return a.lakeviewEmbeddedImpl.GetPublishedDashboardTokenInfo(ctx, GetPublishedDashboardTokenInfoRequest{
 		DashboardId: dashboardId,
 	})
+}
+
+type QueryExecutionInterface interface {
+
+	// Cancel the results for the a query for a published, embedded dashboard.
+	CancelPublishedQueryExecution(ctx context.Context, request CancelPublishedQueryExecutionRequest) (*CancelQueryExecutionResponse, error)
+
+	// Execute a query for a published dashboard.
+	ExecutePublishedDashboardQuery(ctx context.Context, request ExecutePublishedDashboardQueryRequest) error
+
+	// Poll the results for the a query for a published, embedded dashboard.
+	PollPublishedQueryStatus(ctx context.Context, request PollPublishedQueryStatusRequest) (*PollQueryStatusResponse, error)
+}
+
+func NewQueryExecution(client *client.DatabricksClient) *QueryExecutionAPI {
+	return &QueryExecutionAPI{
+		queryExecutionImpl: queryExecutionImpl{
+			client: client,
+		},
+	}
+}
+
+// Query execution APIs for AI / BI Dashboards
+type QueryExecutionAPI struct {
+	queryExecutionImpl
 }

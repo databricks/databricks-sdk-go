@@ -6,6 +6,8 @@
 //
 // - [iam.AccountAccessControlProxyAPI]: These APIs manage access rules on resources in an account.
 //
+// - [aibuilder.AiBuilderAPI]: The Custom LLMs service manages state and powers the UI for the Custom LLM product.
+//
 // - [settings.AibiDashboardEmbeddingAccessPolicyAPI]: Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the workspace level.
 //
 // - [settings.AibiDashboardEmbeddingApprovedDomainsAPI]: Controls the list of domains approved to host the embedded AI/BI dashboards.
@@ -54,9 +56,9 @@
 //
 // - [marketplace.ConsumerProvidersAPI]: Providers are the entities that publish listings to the Marketplace.
 //
-// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
-//
 // - [catalog.CredentialsAPI]: A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant.
+//
+// - [provisioning.CredentialsAPI]: These APIs manage credential configurations for this workspace.
 //
 // - [settings.CredentialsManagerAPI]: Credentials manager interacts with with Identity Providers to to perform token exchanges using stored credentials and refresh tokens.
 //
@@ -65,8 +67,6 @@
 // - [iam.CurrentUserAPI]: This API allows retrieving information about currently authenticated user or service principal.
 //
 // - [oauth2.CustomAppIntegrationAPI]: These APIs enable administrators to manage custom OAuth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
-//
-// - [aibuilder.CustomLlmsAPI]: The Custom LLMs service manages state and powers the UI for the Custom LLM product.
 //
 // - [settings.DashboardEmailSubscriptionsAPI]: Controls whether schedules or workload tasks for refreshing AI/BI Dashboards in the workspace can send subscription emails containing PDFs and/or images of the dashboard.
 //
@@ -107,6 +107,8 @@
 // - [ml.ExperimentsAPI]: Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment.
 //
 // - [catalog.ExternalLocationsAPI]: An external location is an object that combines a cloud storage path with a storage credential that authorizes access to the cloud storage path.
+//
+// - [ml.FeatureStoreAPI]: A feature store is a centralized repository that enables data scientists to find and share features.
 //
 // - [oauth2.AccountFederationPolicyAPI]: These APIs manage account federation policies.
 //
@@ -149,6 +151,8 @@
 // - [settings.LlmProxyPartnerPoweredWorkspaceAPI]: Determines if partner powered models are enabled or not for a specific workspace.
 //
 // - [billing.LogDeliveryAPI]: These APIs manage Log delivery configurations for this account.
+//
+// - [ml.MaterializedFeaturesAPI]: Materialized Features are columns in tables and views that can be directly used as features to train and serve ML models.
 //
 // - [catalog.AccountMetastoreAssignmentsAPI]: These APIs manage metastore assignments to a workspace.
 //
@@ -213,6 +217,8 @@
 // - [sql.QueriesAPI]: The queries API can be used to perform CRUD operations on queries.
 //
 // - [sql.QueriesLegacyAPI]: These endpoints are used for CRUD operations on query definitions.
+//
+// - [dashboards.QueryExecutionAPI]: Query execution APIs for AI / BI Dashboards.
 //
 // - [sql.QueryHistoryAPI]: A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute.
 //
@@ -347,6 +353,7 @@ var (
 	_ *iam.AccessControlAPI                               = nil
 	_ *iam.AccountAccessControlAPI                        = nil
 	_ *iam.AccountAccessControlProxyAPI                   = nil
+	_ *aibuilder.AiBuilderAPI                             = nil
 	_ *settings.AibiDashboardEmbeddingAccessPolicyAPI     = nil
 	_ *settings.AibiDashboardEmbeddingApprovedDomainsAPI  = nil
 	_ *sql.AlertsAPI                                      = nil
@@ -377,7 +384,6 @@ var (
 	_ *settings.CspEnablementAccountAPI                   = nil
 	_ *iam.CurrentUserAPI                                 = nil
 	_ *oauth2.CustomAppIntegrationAPI                     = nil
-	_ *aibuilder.CustomLlmsAPI                            = nil
 	_ *settings.DashboardEmailSubscriptionsAPI            = nil
 	_ *sql.DashboardWidgetsAPI                            = nil
 	_ *sql.DashboardsAPI                                  = nil
@@ -398,6 +404,7 @@ var (
 	_ *settings.EsmEnablementAccountAPI                   = nil
 	_ *ml.ExperimentsAPI                                  = nil
 	_ *catalog.ExternalLocationsAPI                       = nil
+	_ *ml.FeatureStoreAPI                                 = nil
 	_ *oauth2.AccountFederationPolicyAPI                  = nil
 	_ *files.FilesAPI                                     = nil
 	_ *catalog.FunctionsAPI                               = nil
@@ -419,6 +426,7 @@ var (
 	_ *settings.LlmProxyPartnerPoweredEnforceAPI          = nil
 	_ *settings.LlmProxyPartnerPoweredWorkspaceAPI        = nil
 	_ *billing.LogDeliveryAPI                             = nil
+	_ *ml.MaterializedFeaturesAPI                         = nil
 	_ *catalog.AccountMetastoreAssignmentsAPI             = nil
 	_ *catalog.MetastoresAPI                              = nil
 	_ *catalog.AccountMetastoresAPI                       = nil
@@ -451,6 +459,7 @@ var (
 	_ *catalog.QualityMonitorsAPI                         = nil
 	_ *sql.QueriesAPI                                     = nil
 	_ *sql.QueriesLegacyAPI                               = nil
+	_ *dashboards.QueryExecutionAPI                       = nil
 	_ *sql.QueryHistoryAPI                                = nil
 	_ *sql.QueryVisualizationsAPI                         = nil
 	_ *sql.QueryVisualizationsLegacyAPI                   = nil

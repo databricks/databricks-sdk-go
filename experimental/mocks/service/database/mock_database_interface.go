@@ -142,6 +142,65 @@ func (_c *MockDatabaseInterface_CreateDatabaseInstance_Call) RunAndReturn(run fu
 	return _c
 }
 
+// CreateDatabaseInstanceRole provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) CreateDatabaseInstanceRole(ctx context.Context, request database.CreateDatabaseInstanceRoleRequest) (*database.DatabaseInstanceRole, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateDatabaseInstanceRole")
+	}
+
+	var r0 *database.DatabaseInstanceRole
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, database.CreateDatabaseInstanceRoleRequest) (*database.DatabaseInstanceRole, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, database.CreateDatabaseInstanceRoleRequest) *database.DatabaseInstanceRole); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*database.DatabaseInstanceRole)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, database.CreateDatabaseInstanceRoleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_CreateDatabaseInstanceRole_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateDatabaseInstanceRole'
+type MockDatabaseInterface_CreateDatabaseInstanceRole_Call struct {
+	*mock.Call
+}
+
+// CreateDatabaseInstanceRole is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.CreateDatabaseInstanceRoleRequest
+func (_e *MockDatabaseInterface_Expecter) CreateDatabaseInstanceRole(ctx interface{}, request interface{}) *MockDatabaseInterface_CreateDatabaseInstanceRole_Call {
+	return &MockDatabaseInterface_CreateDatabaseInstanceRole_Call{Call: _e.mock.On("CreateDatabaseInstanceRole", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_CreateDatabaseInstanceRole_Call) Run(run func(ctx context.Context, request database.CreateDatabaseInstanceRoleRequest)) *MockDatabaseInterface_CreateDatabaseInstanceRole_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.CreateDatabaseInstanceRoleRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_CreateDatabaseInstanceRole_Call) Return(_a0 *database.DatabaseInstanceRole, _a1 error) *MockDatabaseInterface_CreateDatabaseInstanceRole_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_CreateDatabaseInstanceRole_Call) RunAndReturn(run func(context.Context, database.CreateDatabaseInstanceRoleRequest) (*database.DatabaseInstanceRole, error)) *MockDatabaseInterface_CreateDatabaseInstanceRole_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateDatabaseTable provides a mock function with given fields: ctx, request
 func (_m *MockDatabaseInterface) CreateDatabaseTable(ctx context.Context, request database.CreateDatabaseTableRequest) (*database.DatabaseTable, error) {
 	ret := _m.Called(ctx, request)
@@ -448,6 +507,101 @@ func (_c *MockDatabaseInterface_DeleteDatabaseInstanceByName_Call) RunAndReturn(
 	return _c
 }
 
+// DeleteDatabaseInstanceRole provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) DeleteDatabaseInstanceRole(ctx context.Context, request database.DeleteDatabaseInstanceRoleRequest) error {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteDatabaseInstanceRole")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, database.DeleteDatabaseInstanceRoleRequest) error); ok {
+		r0 = rf(ctx, request)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockDatabaseInterface_DeleteDatabaseInstanceRole_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDatabaseInstanceRole'
+type MockDatabaseInterface_DeleteDatabaseInstanceRole_Call struct {
+	*mock.Call
+}
+
+// DeleteDatabaseInstanceRole is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.DeleteDatabaseInstanceRoleRequest
+func (_e *MockDatabaseInterface_Expecter) DeleteDatabaseInstanceRole(ctx interface{}, request interface{}) *MockDatabaseInterface_DeleteDatabaseInstanceRole_Call {
+	return &MockDatabaseInterface_DeleteDatabaseInstanceRole_Call{Call: _e.mock.On("DeleteDatabaseInstanceRole", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_DeleteDatabaseInstanceRole_Call) Run(run func(ctx context.Context, request database.DeleteDatabaseInstanceRoleRequest)) *MockDatabaseInterface_DeleteDatabaseInstanceRole_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.DeleteDatabaseInstanceRoleRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_DeleteDatabaseInstanceRole_Call) Return(_a0 error) *MockDatabaseInterface_DeleteDatabaseInstanceRole_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_DeleteDatabaseInstanceRole_Call) RunAndReturn(run func(context.Context, database.DeleteDatabaseInstanceRoleRequest) error) *MockDatabaseInterface_DeleteDatabaseInstanceRole_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteDatabaseInstanceRoleByInstanceNameAndName provides a mock function with given fields: ctx, instanceName, name
+func (_m *MockDatabaseInterface) DeleteDatabaseInstanceRoleByInstanceNameAndName(ctx context.Context, instanceName string, name string) error {
+	ret := _m.Called(ctx, instanceName, name)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteDatabaseInstanceRoleByInstanceNameAndName")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+		r0 = rf(ctx, instanceName, name)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockDatabaseInterface_DeleteDatabaseInstanceRoleByInstanceNameAndName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteDatabaseInstanceRoleByInstanceNameAndName'
+type MockDatabaseInterface_DeleteDatabaseInstanceRoleByInstanceNameAndName_Call struct {
+	*mock.Call
+}
+
+// DeleteDatabaseInstanceRoleByInstanceNameAndName is a helper method to define mock.On call
+//   - ctx context.Context
+//   - instanceName string
+//   - name string
+func (_e *MockDatabaseInterface_Expecter) DeleteDatabaseInstanceRoleByInstanceNameAndName(ctx interface{}, instanceName interface{}, name interface{}) *MockDatabaseInterface_DeleteDatabaseInstanceRoleByInstanceNameAndName_Call {
+	return &MockDatabaseInterface_DeleteDatabaseInstanceRoleByInstanceNameAndName_Call{Call: _e.mock.On("DeleteDatabaseInstanceRoleByInstanceNameAndName", ctx, instanceName, name)}
+}
+
+func (_c *MockDatabaseInterface_DeleteDatabaseInstanceRoleByInstanceNameAndName_Call) Run(run func(ctx context.Context, instanceName string, name string)) *MockDatabaseInterface_DeleteDatabaseInstanceRoleByInstanceNameAndName_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_DeleteDatabaseInstanceRoleByInstanceNameAndName_Call) Return(_a0 error) *MockDatabaseInterface_DeleteDatabaseInstanceRoleByInstanceNameAndName_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_DeleteDatabaseInstanceRoleByInstanceNameAndName_Call) RunAndReturn(run func(context.Context, string, string) error) *MockDatabaseInterface_DeleteDatabaseInstanceRoleByInstanceNameAndName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteDatabaseTable provides a mock function with given fields: ctx, request
 func (_m *MockDatabaseInterface) DeleteDatabaseTable(ctx context.Context, request database.DeleteDatabaseTableRequest) error {
 	ret := _m.Called(ctx, request)
@@ -632,6 +786,65 @@ func (_c *MockDatabaseInterface_DeleteSyncedDatabaseTableByName_Call) Return(_a0
 }
 
 func (_c *MockDatabaseInterface_DeleteSyncedDatabaseTableByName_Call) RunAndReturn(run func(context.Context, string) error) *MockDatabaseInterface_DeleteSyncedDatabaseTableByName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// FailoverDatabaseInstance provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) FailoverDatabaseInstance(ctx context.Context, request database.FailoverDatabaseInstanceRequest) (*database.DatabaseInstance, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FailoverDatabaseInstance")
+	}
+
+	var r0 *database.DatabaseInstance
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, database.FailoverDatabaseInstanceRequest) (*database.DatabaseInstance, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, database.FailoverDatabaseInstanceRequest) *database.DatabaseInstance); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*database.DatabaseInstance)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, database.FailoverDatabaseInstanceRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_FailoverDatabaseInstance_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FailoverDatabaseInstance'
+type MockDatabaseInterface_FailoverDatabaseInstance_Call struct {
+	*mock.Call
+}
+
+// FailoverDatabaseInstance is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.FailoverDatabaseInstanceRequest
+func (_e *MockDatabaseInterface_Expecter) FailoverDatabaseInstance(ctx interface{}, request interface{}) *MockDatabaseInterface_FailoverDatabaseInstance_Call {
+	return &MockDatabaseInterface_FailoverDatabaseInstance_Call{Call: _e.mock.On("FailoverDatabaseInstance", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_FailoverDatabaseInstance_Call) Run(run func(ctx context.Context, request database.FailoverDatabaseInstanceRequest)) *MockDatabaseInterface_FailoverDatabaseInstance_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.FailoverDatabaseInstanceRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_FailoverDatabaseInstance_Call) Return(_a0 *database.DatabaseInstance, _a1 error) *MockDatabaseInterface_FailoverDatabaseInstance_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_FailoverDatabaseInstance_Call) RunAndReturn(run func(context.Context, database.FailoverDatabaseInstanceRequest) (*database.DatabaseInstance, error)) *MockDatabaseInterface_FailoverDatabaseInstance_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -990,6 +1203,125 @@ func (_c *MockDatabaseInterface_GetDatabaseInstanceByName_Call) RunAndReturn(run
 	return _c
 }
 
+// GetDatabaseInstanceRole provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) GetDatabaseInstanceRole(ctx context.Context, request database.GetDatabaseInstanceRoleRequest) (*database.DatabaseInstanceRole, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDatabaseInstanceRole")
+	}
+
+	var r0 *database.DatabaseInstanceRole
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, database.GetDatabaseInstanceRoleRequest) (*database.DatabaseInstanceRole, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, database.GetDatabaseInstanceRoleRequest) *database.DatabaseInstanceRole); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*database.DatabaseInstanceRole)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, database.GetDatabaseInstanceRoleRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_GetDatabaseInstanceRole_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDatabaseInstanceRole'
+type MockDatabaseInterface_GetDatabaseInstanceRole_Call struct {
+	*mock.Call
+}
+
+// GetDatabaseInstanceRole is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.GetDatabaseInstanceRoleRequest
+func (_e *MockDatabaseInterface_Expecter) GetDatabaseInstanceRole(ctx interface{}, request interface{}) *MockDatabaseInterface_GetDatabaseInstanceRole_Call {
+	return &MockDatabaseInterface_GetDatabaseInstanceRole_Call{Call: _e.mock.On("GetDatabaseInstanceRole", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_GetDatabaseInstanceRole_Call) Run(run func(ctx context.Context, request database.GetDatabaseInstanceRoleRequest)) *MockDatabaseInterface_GetDatabaseInstanceRole_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.GetDatabaseInstanceRoleRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_GetDatabaseInstanceRole_Call) Return(_a0 *database.DatabaseInstanceRole, _a1 error) *MockDatabaseInterface_GetDatabaseInstanceRole_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_GetDatabaseInstanceRole_Call) RunAndReturn(run func(context.Context, database.GetDatabaseInstanceRoleRequest) (*database.DatabaseInstanceRole, error)) *MockDatabaseInterface_GetDatabaseInstanceRole_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetDatabaseInstanceRoleByInstanceNameAndName provides a mock function with given fields: ctx, instanceName, name
+func (_m *MockDatabaseInterface) GetDatabaseInstanceRoleByInstanceNameAndName(ctx context.Context, instanceName string, name string) (*database.DatabaseInstanceRole, error) {
+	ret := _m.Called(ctx, instanceName, name)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDatabaseInstanceRoleByInstanceNameAndName")
+	}
+
+	var r0 *database.DatabaseInstanceRole
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*database.DatabaseInstanceRole, error)); ok {
+		return rf(ctx, instanceName, name)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *database.DatabaseInstanceRole); ok {
+		r0 = rf(ctx, instanceName, name)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*database.DatabaseInstanceRole)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, instanceName, name)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_GetDatabaseInstanceRoleByInstanceNameAndName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetDatabaseInstanceRoleByInstanceNameAndName'
+type MockDatabaseInterface_GetDatabaseInstanceRoleByInstanceNameAndName_Call struct {
+	*mock.Call
+}
+
+// GetDatabaseInstanceRoleByInstanceNameAndName is a helper method to define mock.On call
+//   - ctx context.Context
+//   - instanceName string
+//   - name string
+func (_e *MockDatabaseInterface_Expecter) GetDatabaseInstanceRoleByInstanceNameAndName(ctx interface{}, instanceName interface{}, name interface{}) *MockDatabaseInterface_GetDatabaseInstanceRoleByInstanceNameAndName_Call {
+	return &MockDatabaseInterface_GetDatabaseInstanceRoleByInstanceNameAndName_Call{Call: _e.mock.On("GetDatabaseInstanceRoleByInstanceNameAndName", ctx, instanceName, name)}
+}
+
+func (_c *MockDatabaseInterface_GetDatabaseInstanceRoleByInstanceNameAndName_Call) Run(run func(ctx context.Context, instanceName string, name string)) *MockDatabaseInterface_GetDatabaseInstanceRoleByInstanceNameAndName_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_GetDatabaseInstanceRoleByInstanceNameAndName_Call) Return(_a0 *database.DatabaseInstanceRole, _a1 error) *MockDatabaseInterface_GetDatabaseInstanceRoleByInstanceNameAndName_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_GetDatabaseInstanceRoleByInstanceNameAndName_Call) RunAndReturn(run func(context.Context, string, string) (*database.DatabaseInstanceRole, error)) *MockDatabaseInterface_GetDatabaseInstanceRoleByInstanceNameAndName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetDatabaseTable provides a mock function with given fields: ctx, request
 func (_m *MockDatabaseInterface) GetDatabaseTable(ctx context.Context, request database.GetDatabaseTableRequest) (*database.DatabaseTable, error) {
 	ret := _m.Called(ctx, request)
@@ -1222,6 +1554,173 @@ func (_c *MockDatabaseInterface_GetSyncedDatabaseTableByName_Call) Return(_a0 *d
 }
 
 func (_c *MockDatabaseInterface_GetSyncedDatabaseTableByName_Call) RunAndReturn(run func(context.Context, string) (*database.SyncedDatabaseTable, error)) *MockDatabaseInterface_GetSyncedDatabaseTableByName_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDatabaseInstanceRoles provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) ListDatabaseInstanceRoles(ctx context.Context, request database.ListDatabaseInstanceRolesRequest) listing.Iterator[database.DatabaseInstanceRole] {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDatabaseInstanceRoles")
+	}
+
+	var r0 listing.Iterator[database.DatabaseInstanceRole]
+	if rf, ok := ret.Get(0).(func(context.Context, database.ListDatabaseInstanceRolesRequest) listing.Iterator[database.DatabaseInstanceRole]); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(listing.Iterator[database.DatabaseInstanceRole])
+		}
+	}
+
+	return r0
+}
+
+// MockDatabaseInterface_ListDatabaseInstanceRoles_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDatabaseInstanceRoles'
+type MockDatabaseInterface_ListDatabaseInstanceRoles_Call struct {
+	*mock.Call
+}
+
+// ListDatabaseInstanceRoles is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.ListDatabaseInstanceRolesRequest
+func (_e *MockDatabaseInterface_Expecter) ListDatabaseInstanceRoles(ctx interface{}, request interface{}) *MockDatabaseInterface_ListDatabaseInstanceRoles_Call {
+	return &MockDatabaseInterface_ListDatabaseInstanceRoles_Call{Call: _e.mock.On("ListDatabaseInstanceRoles", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseInstanceRoles_Call) Run(run func(ctx context.Context, request database.ListDatabaseInstanceRolesRequest)) *MockDatabaseInterface_ListDatabaseInstanceRoles_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.ListDatabaseInstanceRolesRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseInstanceRoles_Call) Return(_a0 listing.Iterator[database.DatabaseInstanceRole]) *MockDatabaseInterface_ListDatabaseInstanceRoles_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseInstanceRoles_Call) RunAndReturn(run func(context.Context, database.ListDatabaseInstanceRolesRequest) listing.Iterator[database.DatabaseInstanceRole]) *MockDatabaseInterface_ListDatabaseInstanceRoles_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDatabaseInstanceRolesAll provides a mock function with given fields: ctx, request
+func (_m *MockDatabaseInterface) ListDatabaseInstanceRolesAll(ctx context.Context, request database.ListDatabaseInstanceRolesRequest) ([]database.DatabaseInstanceRole, error) {
+	ret := _m.Called(ctx, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDatabaseInstanceRolesAll")
+	}
+
+	var r0 []database.DatabaseInstanceRole
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, database.ListDatabaseInstanceRolesRequest) ([]database.DatabaseInstanceRole, error)); ok {
+		return rf(ctx, request)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, database.ListDatabaseInstanceRolesRequest) []database.DatabaseInstanceRole); ok {
+		r0 = rf(ctx, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]database.DatabaseInstanceRole)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, database.ListDatabaseInstanceRolesRequest) error); ok {
+		r1 = rf(ctx, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_ListDatabaseInstanceRolesAll_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDatabaseInstanceRolesAll'
+type MockDatabaseInterface_ListDatabaseInstanceRolesAll_Call struct {
+	*mock.Call
+}
+
+// ListDatabaseInstanceRolesAll is a helper method to define mock.On call
+//   - ctx context.Context
+//   - request database.ListDatabaseInstanceRolesRequest
+func (_e *MockDatabaseInterface_Expecter) ListDatabaseInstanceRolesAll(ctx interface{}, request interface{}) *MockDatabaseInterface_ListDatabaseInstanceRolesAll_Call {
+	return &MockDatabaseInterface_ListDatabaseInstanceRolesAll_Call{Call: _e.mock.On("ListDatabaseInstanceRolesAll", ctx, request)}
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseInstanceRolesAll_Call) Run(run func(ctx context.Context, request database.ListDatabaseInstanceRolesRequest)) *MockDatabaseInterface_ListDatabaseInstanceRolesAll_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(database.ListDatabaseInstanceRolesRequest))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseInstanceRolesAll_Call) Return(_a0 []database.DatabaseInstanceRole, _a1 error) *MockDatabaseInterface_ListDatabaseInstanceRolesAll_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseInstanceRolesAll_Call) RunAndReturn(run func(context.Context, database.ListDatabaseInstanceRolesRequest) ([]database.DatabaseInstanceRole, error)) *MockDatabaseInterface_ListDatabaseInstanceRolesAll_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListDatabaseInstanceRolesByInstanceName provides a mock function with given fields: ctx, instanceName
+func (_m *MockDatabaseInterface) ListDatabaseInstanceRolesByInstanceName(ctx context.Context, instanceName string) (*database.ListDatabaseInstanceRolesResponse, error) {
+	ret := _m.Called(ctx, instanceName)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDatabaseInstanceRolesByInstanceName")
+	}
+
+	var r0 *database.ListDatabaseInstanceRolesResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*database.ListDatabaseInstanceRolesResponse, error)); ok {
+		return rf(ctx, instanceName)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *database.ListDatabaseInstanceRolesResponse); ok {
+		r0 = rf(ctx, instanceName)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*database.ListDatabaseInstanceRolesResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, instanceName)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockDatabaseInterface_ListDatabaseInstanceRolesByInstanceName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListDatabaseInstanceRolesByInstanceName'
+type MockDatabaseInterface_ListDatabaseInstanceRolesByInstanceName_Call struct {
+	*mock.Call
+}
+
+// ListDatabaseInstanceRolesByInstanceName is a helper method to define mock.On call
+//   - ctx context.Context
+//   - instanceName string
+func (_e *MockDatabaseInterface_Expecter) ListDatabaseInstanceRolesByInstanceName(ctx interface{}, instanceName interface{}) *MockDatabaseInterface_ListDatabaseInstanceRolesByInstanceName_Call {
+	return &MockDatabaseInterface_ListDatabaseInstanceRolesByInstanceName_Call{Call: _e.mock.On("ListDatabaseInstanceRolesByInstanceName", ctx, instanceName)}
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseInstanceRolesByInstanceName_Call) Run(run func(ctx context.Context, instanceName string)) *MockDatabaseInterface_ListDatabaseInstanceRolesByInstanceName_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseInstanceRolesByInstanceName_Call) Return(_a0 *database.ListDatabaseInstanceRolesResponse, _a1 error) *MockDatabaseInterface_ListDatabaseInstanceRolesByInstanceName_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockDatabaseInterface_ListDatabaseInstanceRolesByInstanceName_Call) RunAndReturn(run func(context.Context, string) (*database.ListDatabaseInstanceRolesResponse, error)) *MockDatabaseInterface_ListDatabaseInstanceRolesByInstanceName_Call {
 	_c.Call.Return(run)
 	return _c
 }

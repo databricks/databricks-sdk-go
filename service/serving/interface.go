@@ -23,8 +23,6 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ServingEndpointsService interface {
 
-	// Get build logs for a served model.
-	//
 	// Retrieves the build logs associated with the provided served model.
 	BuildLogs(ctx context.Context, request BuildLogsRequest) (*BuildLogsResponse, error)
 
@@ -37,31 +35,21 @@ type ServingEndpointsService interface {
 	// Delete a serving endpoint.
 	Delete(ctx context.Context, request DeleteServingEndpointRequest) error
 
-	// Get metrics of a serving endpoint.
-	//
 	// Retrieves the metrics associated with the provided serving endpoint in
 	// either Prometheus or OpenMetrics exposition format.
 	ExportMetrics(ctx context.Context, request ExportMetricsRequest) (*ExportMetricsResponse, error)
 
-	// Get a single serving endpoint.
-	//
 	// Retrieves the details for a single serving endpoint.
 	Get(ctx context.Context, request GetServingEndpointRequest) (*ServingEndpointDetailed, error)
 
-	// Get the schema for a serving endpoint.
-	//
 	// Get the query schema of the serving endpoint in OpenAPI format. The
 	// schema contains information for the supported paths, input and output
 	// format and datatypes.
 	GetOpenApi(ctx context.Context, request GetOpenApiRequest) (*GetOpenApiResponse, error)
 
-	// Get serving endpoint permission levels.
-	//
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetServingEndpointPermissionLevelsRequest) (*GetServingEndpointPermissionLevelsResponse, error)
 
-	// Get serving endpoint permissions.
-	//
 	// Gets the permissions of a serving endpoint. Serving endpoints can inherit
 	// permissions from their root object.
 	GetPermissions(ctx context.Context, request GetServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
@@ -73,24 +61,16 @@ type ServingEndpointsService interface {
 	// Get all serving endpoints.
 	List(ctx context.Context) (*ListEndpointsResponse, error)
 
-	// Get the latest logs for a served model.
-	//
 	// Retrieves the service logs associated with the provided served model.
 	Logs(ctx context.Context, request LogsRequest) (*ServerLogsResponse, error)
 
-	// Update tags of a serving endpoint.
-	//
 	// Used to batch add and delete tags from a serving endpoint with a single
 	// API call.
 	Patch(ctx context.Context, request PatchServingEndpointTags) (*EndpointTags, error)
 
-	// Update rate limits of a serving endpoint.
-	//
 	// Deprecated: Please use AI Gateway to manage rate limits instead.
 	Put(ctx context.Context, request PutRequest) (*PutResponse, error)
 
-	// Update AI Gateway of a serving endpoint.
-	//
 	// Used to update the AI Gateway of a serving endpoint. NOTE: External
 	// model, provisioned throughput, and pay-per-token endpoints are fully
 	// supported; agent endpoints currently only support inference tables.
@@ -99,29 +79,21 @@ type ServingEndpointsService interface {
 	// Query a serving endpoint.
 	Query(ctx context.Context, request QueryEndpointInput) (*QueryEndpointResponse, error)
 
-	// Set serving endpoint permissions.
-	//
 	// Sets permissions on an object, replacing existing permissions if they
 	// exist. Deletes all direct permissions if none are specified. Objects can
 	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 
-	// Update config of a serving endpoint.
-	//
 	// Updates any combination of the serving endpoint's served entities, the
 	// compute configuration of those served entities, and the endpoint's
 	// traffic config. An endpoint that already has an update in progress can
 	// not be updated until the current update completes or fails.
 	UpdateConfig(ctx context.Context, request EndpointCoreConfigInput) (*ServingEndpointDetailed, error)
 
-	// Update serving endpoint permissions.
-	//
 	// Updates the permissions on a serving endpoint. Serving endpoints can
 	// inherit permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ServingEndpointPermissionsRequest) (*ServingEndpointPermissions, error)
 
-	// Update config of a PT serving endpoint.
-	//
 	// Updates any combination of the pt endpoint's served entities, the compute
 	// configuration of those served entities, and the endpoint's traffic
 	// config. Updates are instantaneous and endpoint should be updated

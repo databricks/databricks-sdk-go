@@ -44,6 +44,10 @@ type WorkspaceClient struct {
 	// rule set. A workspace must belong to an account for these APIs to work
 	AccountAccessControlProxy iam.AccountAccessControlProxyInterface
 
+	// The Custom LLMs service manages state and powers the UI for the Custom
+	// LLM product.
+	AiBuilder aibuilder.AiBuilderInterface
+
 	// The alerts API can be used to perform CRUD operations on alerts. An alert
 	// is a Databricks SQL object that periodically runs a query, evaluates a
 	// condition of its result, and notifies one or more users and/or
@@ -210,10 +214,6 @@ type WorkspaceClient struct {
 	// or service principal.
 	CurrentUser iam.CurrentUserInterface
 
-	// The Custom LLMs service manages state and powers the UI for the Custom
-	// LLM product.
-	CustomLlms aibuilder.CustomLlmsInterface
-
 	// This is an evolving API that facilitates the addition and removal of
 	// widgets from existing dashboards within the Databricks Workspace. Data
 	// structures may change over time.
@@ -298,6 +298,15 @@ type WorkspaceClient struct {
 	// To create external locations, you must be a metastore admin or a user
 	// with the **CREATE_EXTERNAL_LOCATION** privilege.
 	ExternalLocations catalog.ExternalLocationsInterface
+
+	// A feature store is a centralized repository that enables data scientists
+	// to find and share features. Using a feature store also ensures that the
+	// code used to compute feature values is the same during model training and
+	// when the model is used for inference.
+	//
+	// An online store is a low-latency database used for feature lookup during
+	// real-time model inference or serve feature for real-time applications.
+	FeatureStore ml.FeatureStoreInterface
 
 	// The Files API is a standard HTTP API that allows you to read, write,
 	// list, and delete files and directories by referring to their URI. The API
@@ -481,6 +490,10 @@ type WorkspaceClient struct {
 	// when you restart the cluster. Until you restart the cluster, the status
 	// of the uninstalled library appears as Uninstall pending restart.
 	Libraries compute.LibrariesInterface
+
+	// Materialized Features are columns in tables and views that can be
+	// directly used as features to train and serve ML models.
+	MaterializedFeatures ml.MaterializedFeaturesInterface
 
 	// A metastore is the top-level container of objects in Unity Catalog. It
 	// stores data assets (tables and views) and the permissions that govern
@@ -687,6 +700,9 @@ type WorkspaceClient struct {
 	//
 	// [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 	QueriesLegacy sql.QueriesLegacyInterface
+
+	// Query execution APIs for AI / BI Dashboards
+	QueryExecution dashboards.QueryExecutionInterface
 
 	// A service responsible for storing and retrieving the list of queries run
 	// against SQL endpoints and serverless compute.
@@ -1197,6 +1213,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 
 		AccessControl:                       iam.NewAccessControl(databricksClient),
 		AccountAccessControlProxy:           iam.NewAccountAccessControlProxy(databricksClient),
+		AiBuilder:                           aibuilder.NewAiBuilder(databricksClient),
 		Alerts:                              sql.NewAlerts(databricksClient),
 		AlertsLegacy:                        sql.NewAlertsLegacy(databricksClient),
 		AlertsV2:                            sql.NewAlertsV2(databricksClient),
@@ -1218,7 +1235,6 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Credentials:                         catalog.NewCredentials(databricksClient),
 		CredentialsManager:                  settings.NewCredentialsManager(databricksClient),
 		CurrentUser:                         iam.NewCurrentUser(databricksClient),
-		CustomLlms:                          aibuilder.NewCustomLlms(databricksClient),
 		DashboardWidgets:                    sql.NewDashboardWidgets(databricksClient),
 		Dashboards:                          sql.NewDashboards(databricksClient),
 		DataSources:                         sql.NewDataSources(databricksClient),
@@ -1227,6 +1243,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		DbsqlPermissions:                    sql.NewDbsqlPermissions(databricksClient),
 		Experiments:                         ml.NewExperiments(databricksClient),
 		ExternalLocations:                   catalog.NewExternalLocations(databricksClient),
+		FeatureStore:                        ml.NewFeatureStore(databricksClient),
 		Files:                               files.NewFiles(databricksClient),
 		Functions:                           catalog.NewFunctions(databricksClient),
 		Genie:                               dashboards.NewGenie(databricksClient),
@@ -1241,6 +1258,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		Lakeview:                            dashboards.NewLakeview(databricksClient),
 		LakeviewEmbedded:                    dashboards.NewLakeviewEmbedded(databricksClient),
 		Libraries:                           compute.NewLibraries(databricksClient),
+		MaterializedFeatures:                ml.NewMaterializedFeatures(databricksClient),
 		Metastores:                          catalog.NewMetastores(databricksClient),
 		ModelRegistry:                       ml.NewModelRegistry(databricksClient),
 		ModelVersions:                       catalog.NewModelVersions(databricksClient),
@@ -1264,6 +1282,7 @@ func NewWorkspaceClient(c ...*Config) (*WorkspaceClient, error) {
 		QualityMonitors:                     catalog.NewQualityMonitors(databricksClient),
 		Queries:                             sql.NewQueries(databricksClient),
 		QueriesLegacy:                       sql.NewQueriesLegacy(databricksClient),
+		QueryExecution:                      dashboards.NewQueryExecution(databricksClient),
 		QueryHistory:                        sql.NewQueryHistory(databricksClient),
 		QueryVisualizations:                 sql.NewQueryVisualizations(databricksClient),
 		QueryVisualizationsLegacy:           sql.NewQueryVisualizationsLegacy(databricksClient),

@@ -28,40 +28,26 @@ import (
 // [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets
 type JobsService interface {
 
-	// Cancel all runs of a job.
-	//
 	// Cancels all active runs of a job. The runs are canceled asynchronously,
 	// so it doesn't prevent new runs from being started.
 	CancelAllRuns(ctx context.Context, request CancelAllRuns) error
 
-	// Cancel a run.
-	//
 	// Cancels a job run or a task run. The run is canceled asynchronously, so
 	// it may still be running when this request completes.
 	CancelRun(ctx context.Context, request CancelRun) error
 
 	// Create a new job.
-	//
-	// Create a new job.
 	Create(ctx context.Context, request CreateJob) (*CreateResponse, error)
 
-	// Delete a job.
-	//
 	// Deletes a job.
 	Delete(ctx context.Context, request DeleteJob) error
 
-	// Delete a job run.
-	//
 	// Deletes a non-active run. Returns an error if the run is active.
 	DeleteRun(ctx context.Context, request DeleteRun) error
 
-	// Export and retrieve a job run.
-	//
 	// Export and retrieve the job run task.
 	ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error)
 
-	// Get a single job.
-	//
 	// Retrieves the details for a single job.
 	//
 	// Large arrays in the results will be paginated when they exceed 100
@@ -74,19 +60,13 @@ type JobsService interface {
 	// requests. Arrays without additional results will be empty on later pages.
 	Get(ctx context.Context, request GetJobRequest) (*Job, error)
 
-	// Get job permission levels.
-	//
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error)
 
-	// Get job permissions.
-	//
 	// Gets the permissions of a job. Jobs can inherit permissions from their
 	// root object.
 	GetPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error)
 
-	// Get a single job run.
-	//
 	// Retrieves the metadata of a run.
 	//
 	// Large arrays in the results will be paginated when they exceed 100
@@ -99,8 +79,6 @@ type JobsService interface {
 	// Arrays without additional results will be empty on later pages.
 	GetRun(ctx context.Context, request GetRunRequest) (*Run, error)
 
-	// Get the output for a single run.
-	//
 	// Retrieve the output and metadata of a single task run. When a notebook
 	// task returns a value through the `dbutils.notebook.exit()` call, you can
 	// use this endpoint to retrieve that value. Databricks restricts this API
@@ -113,57 +91,39 @@ type JobsService interface {
 	// them beyond 60 days, you must save old run results before they expire.
 	GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error)
 
-	// List jobs.
-	//
 	// Retrieves a list of jobs.
 	List(ctx context.Context, request ListJobsRequest) (*ListJobsResponse, error)
 
-	// List job runs.
-	//
 	// List runs in descending order by start time.
 	ListRuns(ctx context.Context, request ListRunsRequest) (*ListRunsResponse, error)
 
-	// Repair a job run.
-	//
 	// Re-run one or more tasks. Tasks are re-run as part of the original job
 	// run. They use the current job and task settings, and can be viewed in the
 	// history for the original job run.
 	RepairRun(ctx context.Context, request RepairRun) (*RepairRunResponse, error)
 
-	// Update all job settings (reset).
-	//
 	// Overwrite all settings for the given job. Use the [_Update_
 	// endpoint](:method:jobs/update) to update job settings partially.
 	Reset(ctx context.Context, request ResetJob) error
 
-	// Trigger a new job run.
-	//
 	// Run a job and return the `run_id` of the triggered run.
 	RunNow(ctx context.Context, request RunNow) (*RunNowResponse, error)
 
-	// Set job permissions.
-	//
 	// Sets permissions on an object, replacing existing permissions if they
 	// exist. Deletes all direct permissions if none are specified. Objects can
 	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
 
-	// Create and trigger a one-time run.
-	//
 	// Submit a one-time run. This endpoint allows you to submit a workload
 	// directly without creating a job. Runs submitted using this endpoint
 	// don’t display in the UI. Use the `jobs/runs/get` API to check the run
 	// state after the job is submitted.
 	Submit(ctx context.Context, request SubmitRun) (*SubmitRunResponse, error)
 
-	// Update job settings partially.
-	//
 	// Add, update, or remove specific settings of an existing job. Use the
 	// [_Reset_ endpoint](:method:jobs/reset) to overwrite all job settings.
 	Update(ctx context.Context, request UpdateJob) error
 
-	// Update job permissions.
-	//
 	// Updates the permissions on a job. Jobs can inherit permissions from their
 	// root object.
 	UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
@@ -186,24 +146,18 @@ type JobsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type PolicyComplianceForJobsService interface {
 
-	// Enforce job policy compliance.
-	//
 	// Updates a job so the job clusters that are created when running the job
 	// (specified in `new_cluster`) are compliant with the current versions of
 	// their respective cluster policies. All-purpose clusters used in the job
 	// will not be updated.
 	EnforceCompliance(ctx context.Context, request EnforcePolicyComplianceRequest) (*EnforcePolicyComplianceResponse, error)
 
-	// Get job policy compliance.
-	//
 	// Returns the policy compliance status of a job. Jobs could be out of
 	// compliance if a cluster policy they use was updated after the job was
 	// last edited and some of its job clusters no longer comply with their
 	// updated policies.
 	GetCompliance(ctx context.Context, request GetPolicyComplianceRequest) (*GetPolicyComplianceResponse, error)
 
-	// List job policy compliance.
-	//
 	// Returns the policy compliance status of all jobs that use a given policy.
 	// Jobs could be out of compliance if a cluster policy they use was updated
 	// after the job was last edited and its job clusters no longer comply with
