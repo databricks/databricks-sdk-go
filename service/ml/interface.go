@@ -19,8 +19,6 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ExperimentsService interface {
 
-	// Create experiment.
-	//
 	// Creates an experiment with a name. Returns the ID of the newly created
 	// experiment. Validates that another experiment with the same name does not
 	// already exist and fails if another experiment with the same name already
@@ -33,16 +31,12 @@ type ExperimentsService interface {
 	// Create a logged model.
 	CreateLoggedModel(ctx context.Context, request CreateLoggedModelRequest) (*CreateLoggedModelResponse, error)
 
-	// Create a run.
-	//
 	// Creates a new run within an experiment. A run is usually a single
 	// execution of a machine learning or data ETL pipeline. MLflow uses runs to
 	// track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag` associated
 	// with a single execution.
 	CreateRun(ctx context.Context, request CreateRun) (*CreateRunResponse, error)
 
-	// Delete an experiment.
-	//
 	// Marks an experiment and associated metadata, runs, metrics, params, and
 	// tags for deletion. If the experiment uses FileStore, artifacts associated
 	// with the experiment are also deleted.
@@ -54,21 +48,15 @@ type ExperimentsService interface {
 	// Delete a tag on a logged model.
 	DeleteLoggedModelTag(ctx context.Context, request DeleteLoggedModelTagRequest) error
 
-	// Delete a run.
-	//
 	// Marks a run for deletion.
 	DeleteRun(ctx context.Context, request DeleteRun) error
 
-	// Delete runs by creation time.
-	//
 	// Bulk delete runs in an experiment that were created prior to or at the
 	// specified timestamp. Deletes at most max_runs per request. To call this
 	// API from a Databricks Notebook in Python, you can use the client code
 	// snippet on
 	DeleteRuns(ctx context.Context, request DeleteRuns) (*DeleteRunsResponse, error)
 
-	// Delete a tag on a run.
-	//
 	// Deletes a tag on a run. Tags are run metadata that can be updated during
 	// a run and after a run completes.
 	DeleteTag(ctx context.Context, request DeleteTag) error
@@ -76,8 +64,6 @@ type ExperimentsService interface {
 	// Finalize a logged model.
 	FinalizeLoggedModel(ctx context.Context, request FinalizeLoggedModelRequest) (*FinalizeLoggedModelResponse, error)
 
-	// Get an experiment by name.
-	//
 	// Gets metadata for an experiment.
 	//
 	// This endpoint will return deleted experiments, but prefers the active
@@ -89,33 +75,23 @@ type ExperimentsService interface {
 	// exists.
 	GetByName(ctx context.Context, request GetByNameRequest) (*GetExperimentByNameResponse, error)
 
-	// Get an experiment.
-	//
 	// Gets metadata for an experiment. This method works on deleted
 	// experiments.
 	GetExperiment(ctx context.Context, request GetExperimentRequest) (*GetExperimentResponse, error)
 
-	// Get metric history for a run.
-	//
 	// Gets a list of all values for the specified metric for a given run.
 	GetHistory(ctx context.Context, request GetHistoryRequest) (*GetMetricHistoryResponse, error)
 
 	// Get a logged model.
 	GetLoggedModel(ctx context.Context, request GetLoggedModelRequest) (*GetLoggedModelResponse, error)
 
-	// Get experiment permission levels.
-	//
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetExperimentPermissionLevelsRequest) (*GetExperimentPermissionLevelsResponse, error)
 
-	// Get experiment permissions.
-	//
 	// Gets the permissions of an experiment. Experiments can inherit
 	// permissions from their root object.
 	GetPermissions(ctx context.Context, request GetExperimentPermissionsRequest) (*ExperimentPermissions, error)
 
-	// Get a run.
-	//
 	// Gets the metadata, metrics, params, and tags for a run. In the case where
 	// multiple metrics with the same key are logged for a run, return only the
 	// value with the latest timestamp.
@@ -124,8 +100,6 @@ type ExperimentsService interface {
 	// maximum of these values.
 	GetRun(ctx context.Context, request GetRunRequest) (*GetRunResponse, error)
 
-	// List artifacts.
-	//
 	// List artifacts for a run. Takes an optional `artifact_path` prefix which
 	// if specified, the response contains only artifacts with the specified
 	// prefix. A maximum of 1000 artifacts will be retrieved for UC Volumes.
@@ -134,13 +108,9 @@ type ExperimentsService interface {
 	// contents | Files API](/api/workspace/files/listdirectorycontents).
 	ListArtifacts(ctx context.Context, request ListArtifactsRequest) (*ListArtifactsResponse, error)
 
-	// List experiments.
-	//
 	// Gets a list of all experiments.
 	ListExperiments(ctx context.Context, request ListExperimentsRequest) (*ListExperimentsResponse, error)
 
-	// Log a batch of metrics/params/tags for a run.
-	//
 	// Logs a batch of metrics, params, and tags for a run. If any data failed
 	// to be persisted, the server will respond with an error (non-200 status
 	// code).
@@ -192,16 +162,9 @@ type ExperimentsService interface {
 	// * Parameter and tag values can be up to 250 characters in length
 	LogBatch(ctx context.Context, request LogBatch) error
 
-	// Log inputs to a run.
-	//
-	// **NOTE:** Experimental: This API may change or be removed in a future
-	// release without warning.
-	//
 	// Logs inputs, such as datasets and models, to an MLflow Run.
 	LogInputs(ctx context.Context, request LogInputs) error
 
-	// Log params for a logged model.
-	//
 	// Logs params for a logged model. A param is a key-value pair (string key,
 	// string value). Examples include hyperparameters used for ML model
 	// training. A param can be logged only once for a logged model, and
@@ -209,37 +172,27 @@ type ExperimentsService interface {
 	// result in an error
 	LogLoggedModelParams(ctx context.Context, request LogLoggedModelParamsRequest) error
 
-	// Log a metric for a run.
-	//
 	// Log a metric for a run. A metric is a key-value pair (string key, float
 	// value) with an associated timestamp. Examples include the various metrics
 	// that represent ML model accuracy. A metric can be logged multiple times.
 	LogMetric(ctx context.Context, request LogMetric) error
 
-	// Log a model.
+	// **Note:** the [Create a logged
+	// model](/api/workspace/experiments/createloggedmodel) API replaces this
+	// endpoint.
 	//
-	// **NOTE:** Experimental: This API may change or be removed in a future
-	// release without warning.
+	// Log a model to an MLflow Run.
 	LogModel(ctx context.Context, request LogModel) error
 
-	// Log outputs from a run.
-	//
-	// **NOTE**: Experimental: This API may change or be removed in a future
-	// release without warning.
-	//
 	// Logs outputs, such as models, from an MLflow Run.
 	LogOutputs(ctx context.Context, request LogOutputsRequest) error
 
-	// Log a param for a run.
-	//
 	// Logs a param used for a run. A param is a key-value pair (string key,
 	// string value). Examples include hyperparameters used for ML model
 	// training and constant dates and values used in an ETL pipeline. A param
 	// can be logged only once for a run.
 	LogParam(ctx context.Context, request LogParam) error
 
-	// Restore an experiment.
-	//
 	// Restore an experiment marked for deletion. This also restores associated
 	// metadata, runs, metrics, params, and tags. If experiment uses FileStore,
 	// underlying artifacts associated with experiment are also restored.
@@ -248,8 +201,6 @@ type ExperimentsService interface {
 	// permanently deleted.
 	RestoreExperiment(ctx context.Context, request RestoreExperiment) error
 
-	// Restore a run.
-	//
 	// Restores a deleted run. This also restores associated metadata, runs,
 	// metrics, params, and tags.
 	//
@@ -257,68 +208,78 @@ type ExperimentsService interface {
 	// permanently deleted.
 	RestoreRun(ctx context.Context, request RestoreRun) error
 
-	// Restore runs by deletion time.
-	//
 	// Bulk restore runs in an experiment that were deleted no earlier than the
 	// specified timestamp. Restores at most max_runs per request. To call this
 	// API from a Databricks Notebook in Python, you can use the client code
 	// snippet on
 	RestoreRuns(ctx context.Context, request RestoreRuns) (*RestoreRunsResponse, error)
 
-	// Search experiments.
-	//
 	// Searches for experiments that satisfy specified search criteria.
 	SearchExperiments(ctx context.Context, request SearchExperiments) (*SearchExperimentsResponse, error)
 
-	// Search logged models.
-	//
 	// Search for Logged Models that satisfy specified search criteria.
 	SearchLoggedModels(ctx context.Context, request SearchLoggedModelsRequest) (*SearchLoggedModelsResponse, error)
 
-	// Search for runs.
-	//
 	// Searches for runs that satisfy expressions.
 	//
 	// Search expressions can use `mlflowMetric` and `mlflowParam` keys.
 	SearchRuns(ctx context.Context, request SearchRuns) (*SearchRunsResponse, error)
 
-	// Set a tag for an experiment.
-	//
 	// Sets a tag on an experiment. Experiment tags are metadata that can be
 	// updated.
 	SetExperimentTag(ctx context.Context, request SetExperimentTag) error
 
-	// Set a tag for a logged model.
+	// Set tags for a logged model.
 	SetLoggedModelTags(ctx context.Context, request SetLoggedModelTagsRequest) error
 
-	// Set experiment permissions.
-	//
 	// Sets permissions on an object, replacing existing permissions if they
 	// exist. Deletes all direct permissions if none are specified. Objects can
 	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error)
 
-	// Set a tag for a run.
-	//
 	// Sets a tag on a run. Tags are run metadata that can be updated during a
 	// run and after a run completes.
 	SetTag(ctx context.Context, request SetTag) error
 
-	// Update an experiment.
-	//
 	// Updates experiment metadata.
 	UpdateExperiment(ctx context.Context, request UpdateExperiment) error
 
-	// Update experiment permissions.
-	//
 	// Updates the permissions on an experiment. Experiments can inherit
 	// permissions from their root object.
 	UpdatePermissions(ctx context.Context, request ExperimentPermissionsRequest) (*ExperimentPermissions, error)
 
-	// Update a run.
-	//
 	// Updates run metadata.
 	UpdateRun(ctx context.Context, request UpdateRun) (*UpdateRunResponse, error)
+}
+
+// A feature store is a centralized repository that enables data scientists to
+// find and share features. Using a feature store also ensures that the code
+// used to compute feature values is the same during model training and when the
+// model is used for inference.
+//
+// An online store is a low-latency database used for feature lookup during
+// real-time model inference or serve feature for real-time applications.
+//
+// Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
+type FeatureStoreService interface {
+
+	// Create an Online Feature Store.
+	CreateOnlineStore(ctx context.Context, request CreateOnlineStoreRequest) (*OnlineStore, error)
+
+	// Delete an Online Feature Store.
+	DeleteOnlineStore(ctx context.Context, request DeleteOnlineStoreRequest) error
+
+	// Get an Online Feature Store.
+	GetOnlineStore(ctx context.Context, request GetOnlineStoreRequest) (*OnlineStore, error)
+
+	// List Online Feature Stores.
+	ListOnlineStores(ctx context.Context, request ListOnlineStoresRequest) (*ListOnlineStoresResponse, error)
+
+	// Publish features.
+	PublishTable(ctx context.Context, request PublishTableRequest) (*PublishTableResponse, error)
+
+	// Update an Online Feature Store.
+	UpdateOnlineStore(ctx context.Context, request UpdateOnlineStoreRequest) (*OnlineStore, error)
 }
 
 // The Forecasting API allows you to create and get serverless forecasting
@@ -327,13 +288,9 @@ type ExperimentsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ForecastingService interface {
 
-	// Create a forecasting experiment.
-	//
 	// Creates a serverless forecasting experiment. Returns the experiment ID.
 	CreateExperiment(ctx context.Context, request CreateForecastingExperimentRequest) (*CreateForecastingExperimentResponse, error)
 
-	// Get a forecasting experiment.
-	//
 	// Public RPC to get forecasting experiment
 	GetExperiment(ctx context.Context, request GetForecastingExperimentRequest) (*ForecastingExperiment, error)
 }
@@ -350,20 +307,14 @@ type ForecastingService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ModelRegistryService interface {
 
-	// Approve transition request.
-	//
 	// Approves a model version stage transition request.
 	ApproveTransitionRequest(ctx context.Context, request ApproveTransitionRequest) (*ApproveTransitionRequestResponse, error)
 
-	// Post a comment.
-	//
 	// Posts a comment on a model version. A comment can be submitted either by
 	// a user or programmatically to display relevant information about the
 	// model. For example, test results or deployment errors.
 	CreateComment(ctx context.Context, request CreateComment) (*CreateCommentResponse, error)
 
-	// Create a model.
-	//
 	// Creates a new registered model with the name specified in the request
 	// body.
 	//
@@ -371,67 +322,43 @@ type ModelRegistryService interface {
 	// name exists.
 	CreateModel(ctx context.Context, request CreateModelRequest) (*CreateModelResponse, error)
 
-	// Create a model version.
-	//
 	// Creates a model version.
 	CreateModelVersion(ctx context.Context, request CreateModelVersionRequest) (*CreateModelVersionResponse, error)
 
-	// Make a transition request.
-	//
 	// Creates a model version stage transition request.
 	CreateTransitionRequest(ctx context.Context, request CreateTransitionRequest) (*CreateTransitionRequestResponse, error)
 
-	// Create a webhook.
-	//
 	// **NOTE**: This endpoint is in Public Preview.
 	//
 	// Creates a registry webhook.
 	CreateWebhook(ctx context.Context, request CreateRegistryWebhook) (*CreateWebhookResponse, error)
 
-	// Delete a comment.
-	//
 	// Deletes a comment on a model version.
 	DeleteComment(ctx context.Context, request DeleteCommentRequest) error
 
-	// Delete a model.
-	//
 	// Deletes a registered model.
 	DeleteModel(ctx context.Context, request DeleteModelRequest) error
 
-	// Delete a model tag.
-	//
 	// Deletes the tag for a registered model.
 	DeleteModelTag(ctx context.Context, request DeleteModelTagRequest) error
 
-	// Delete a model version.
-	//
 	// Deletes a model version.
 	DeleteModelVersion(ctx context.Context, request DeleteModelVersionRequest) error
 
-	// Delete a model version tag.
-	//
 	// Deletes a model version tag.
 	DeleteModelVersionTag(ctx context.Context, request DeleteModelVersionTagRequest) error
 
-	// Delete a transition request.
-	//
 	// Cancels a model version stage transition request.
 	DeleteTransitionRequest(ctx context.Context, request DeleteTransitionRequestRequest) error
 
-	// Delete a webhook.
-	//
 	// **NOTE:** This endpoint is in Public Preview.
 	//
 	// Deletes a registry webhook.
 	DeleteWebhook(ctx context.Context, request DeleteWebhookRequest) error
 
-	// Get the latest version.
-	//
 	// Gets the latest version of a registered model.
 	GetLatestVersions(ctx context.Context, request GetLatestVersionsRequest) (*GetLatestVersionsResponse, error)
 
-	// Get model.
-	//
 	// Get the details of a model. This is a Databricks workspace version of the
 	// [MLflow endpoint] that also returns the model's Databricks workspace ID
 	// and the permission level of the requesting user on the model.
@@ -440,90 +367,58 @@ type ModelRegistryService interface {
 	GetModel(ctx context.Context, request GetModelRequest) (*GetModelResponse, error)
 
 	// Get a model version.
-	//
-	// Get a model version.
 	GetModelVersion(ctx context.Context, request GetModelVersionRequest) (*GetModelVersionResponse, error)
 
-	// Get a model version URI.
-	//
 	// Gets a URI to download the model version.
 	GetModelVersionDownloadUri(ctx context.Context, request GetModelVersionDownloadUriRequest) (*GetModelVersionDownloadUriResponse, error)
 
-	// Get registered model permission levels.
-	//
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetRegisteredModelPermissionLevelsRequest) (*GetRegisteredModelPermissionLevelsResponse, error)
 
-	// Get registered model permissions.
-	//
 	// Gets the permissions of a registered model. Registered models can inherit
 	// permissions from their root object.
 	GetPermissions(ctx context.Context, request GetRegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
 
-	// List models.
-	//
 	// Lists all available registered models, up to the limit specified in
 	// __max_results__.
 	ListModels(ctx context.Context, request ListModelsRequest) (*ListModelsResponse, error)
 
-	// List transition requests.
-	//
 	// Gets a list of all open stage transition requests for the model version.
 	ListTransitionRequests(ctx context.Context, request ListTransitionRequestsRequest) (*ListTransitionRequestsResponse, error)
 
-	// List registry webhooks.
-	//
 	// **NOTE:** This endpoint is in Public Preview.
 	//
 	// Lists all registry webhooks.
 	ListWebhooks(ctx context.Context, request ListWebhooksRequest) (*ListRegistryWebhooks, error)
 
-	// Reject a transition request.
-	//
 	// Rejects a model version stage transition request.
 	RejectTransitionRequest(ctx context.Context, request RejectTransitionRequest) (*RejectTransitionRequestResponse, error)
 
-	// Rename a model.
-	//
 	// Renames a registered model.
 	RenameModel(ctx context.Context, request RenameModelRequest) (*RenameModelResponse, error)
 
-	// Searches model versions.
-	//
 	// Searches for specific model versions based on the supplied __filter__.
 	SearchModelVersions(ctx context.Context, request SearchModelVersionsRequest) (*SearchModelVersionsResponse, error)
 
-	// Search models.
-	//
 	// Search for registered models based on the specified __filter__.
 	SearchModels(ctx context.Context, request SearchModelsRequest) (*SearchModelsResponse, error)
 
-	// Set a tag.
-	//
 	// Sets a tag on a registered model.
 	SetModelTag(ctx context.Context, request SetModelTagRequest) error
 
-	// Set a version tag.
-	//
 	// Sets a model version tag.
 	SetModelVersionTag(ctx context.Context, request SetModelVersionTagRequest) error
 
-	// Set registered model permissions.
-	//
 	// Sets permissions on an object, replacing existing permissions if they
 	// exist. Deletes all direct permissions if none are specified. Objects can
 	// inherit permissions from their root object.
 	SetPermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
 
-	// Test a webhook.
-	//
 	// **NOTE:** This endpoint is in Public Preview.
 	//
 	// Tests a registry webhook.
 	TestRegistryWebhook(ctx context.Context, request TestRegistryWebhookRequest) (*TestRegistryWebhookResponse, error)
 
-	// Transition a stage.
-	//
 	// Transition a model version's stage. This is a Databricks workspace
 	// version of the [MLflow endpoint] that also accepts a comment associated
 	// with the transition to be recorded.",
@@ -531,29 +426,19 @@ type ModelRegistryService interface {
 	// [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage
 	TransitionStage(ctx context.Context, request TransitionModelVersionStageDatabricks) (*TransitionStageResponse, error)
 
-	// Update a comment.
-	//
 	// Post an edit to a comment on a model version.
 	UpdateComment(ctx context.Context, request UpdateComment) (*UpdateCommentResponse, error)
 
-	// Update model.
-	//
 	// Updates a registered model.
 	UpdateModel(ctx context.Context, request UpdateModelRequest) error
 
-	// Update model version.
-	//
 	// Updates the model version.
 	UpdateModelVersion(ctx context.Context, request UpdateModelVersionRequest) error
 
-	// Update registered model permissions.
-	//
 	// Updates the permissions on a registered model. Registered models can
 	// inherit permissions from their root object.
 	UpdatePermissions(ctx context.Context, request RegisteredModelPermissionsRequest) (*RegisteredModelPermissions, error)
 
-	// Update a webhook.
-	//
 	// **NOTE:** This endpoint is in Public Preview.
 	//
 	// Updates a registry webhook.

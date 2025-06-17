@@ -18,148 +18,440 @@ type databaseImpl struct {
 }
 
 func (a *databaseImpl) CreateDatabaseCatalog(ctx context.Context, request CreateDatabaseCatalogRequest) (*DatabaseCatalog, error) {
-	var databaseCatalog DatabaseCatalog
+
+	requestPb, pbErr := createDatabaseCatalogRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var databaseCatalogPb databaseCatalogPb
 	path := "/api/2.0/database/catalogs"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Catalog, &databaseCatalog)
-	return &databaseCatalog, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Catalog,
+		&databaseCatalogPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := databaseCatalogFromPb(&databaseCatalogPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *databaseImpl) CreateDatabaseInstance(ctx context.Context, request CreateDatabaseInstanceRequest) (*DatabaseInstance, error) {
-	var databaseInstance DatabaseInstance
+
+	requestPb, pbErr := createDatabaseInstanceRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var databaseInstancePb databaseInstancePb
 	path := "/api/2.0/database/instances"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.DatabaseInstance, &databaseInstance)
-	return &databaseInstance, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).DatabaseInstance,
+		&databaseInstancePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := databaseInstanceFromPb(&databaseInstancePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *databaseImpl) CreateDatabaseTable(ctx context.Context, request CreateDatabaseTableRequest) (*DatabaseTable, error) {
-	var databaseTable DatabaseTable
+
+	requestPb, pbErr := createDatabaseTableRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var databaseTablePb databaseTablePb
 	path := "/api/2.0/database/tables"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.Table, &databaseTable)
-	return &databaseTable, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).Table,
+		&databaseTablePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := databaseTableFromPb(&databaseTablePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *databaseImpl) CreateSyncedDatabaseTable(ctx context.Context, request CreateSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error) {
-	var syncedDatabaseTable SyncedDatabaseTable
+
+	requestPb, pbErr := createSyncedDatabaseTableRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var syncedDatabaseTablePb syncedDatabaseTablePb
 	path := "/api/2.0/database/synced_tables"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request.SyncedTable, &syncedDatabaseTable)
-	return &syncedDatabaseTable, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).SyncedTable,
+		&syncedDatabaseTablePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := syncedDatabaseTableFromPb(&syncedDatabaseTablePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *databaseImpl) DeleteDatabaseCatalog(ctx context.Context, request DeleteDatabaseCatalogRequest) error {
-	var deleteDatabaseCatalogResponse DeleteDatabaseCatalogResponse
-	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", request.Name)
+
+	requestPb, pbErr := deleteDatabaseCatalogRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	var deleteDatabaseCatalogResponsePb deleteDatabaseCatalogResponsePb
+	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDatabaseCatalogResponse)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteDatabaseCatalogResponsePb,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *databaseImpl) DeleteDatabaseInstance(ctx context.Context, request DeleteDatabaseInstanceRequest) error {
-	var deleteDatabaseInstanceResponse DeleteDatabaseInstanceResponse
-	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
+
+	requestPb, pbErr := deleteDatabaseInstanceRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	var deleteDatabaseInstanceResponsePb deleteDatabaseInstanceResponsePb
+	path := fmt.Sprintf("/api/2.0/database/instances/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDatabaseInstanceResponse)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteDatabaseInstanceResponsePb,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *databaseImpl) DeleteDatabaseTable(ctx context.Context, request DeleteDatabaseTableRequest) error {
-	var deleteDatabaseTableResponse DeleteDatabaseTableResponse
-	path := fmt.Sprintf("/api/2.0/database/tables/%v", request.Name)
+
+	requestPb, pbErr := deleteDatabaseTableRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	var deleteDatabaseTableResponsePb deleteDatabaseTableResponsePb
+	path := fmt.Sprintf("/api/2.0/database/tables/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteDatabaseTableResponse)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteDatabaseTableResponsePb,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *databaseImpl) DeleteSyncedDatabaseTable(ctx context.Context, request DeleteSyncedDatabaseTableRequest) error {
-	var deleteSyncedDatabaseTableResponse DeleteSyncedDatabaseTableResponse
-	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", request.Name)
+
+	requestPb, pbErr := deleteSyncedDatabaseTableRequestToPb(&request)
+	if pbErr != nil {
+		return pbErr
+	}
+
+	var deleteSyncedDatabaseTableResponsePb deleteSyncedDatabaseTableResponsePb
+	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodDelete, path, headers, queryParams, request, &deleteSyncedDatabaseTableResponse)
+	err := a.client.Do(
+		ctx,
+		http.MethodDelete,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&deleteSyncedDatabaseTableResponsePb,
+	)
+	if err != nil {
+		return err
+	}
+
 	return err
 }
 
 func (a *databaseImpl) FindDatabaseInstanceByUid(ctx context.Context, request FindDatabaseInstanceByUidRequest) (*DatabaseInstance, error) {
-	var databaseInstance DatabaseInstance
+
+	requestPb, pbErr := findDatabaseInstanceByUidRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var databaseInstancePb databaseInstancePb
 	path := "/api/2.0/database/instances:findByUid"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseInstance)
-	return &databaseInstance, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&databaseInstancePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := databaseInstanceFromPb(&databaseInstancePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *databaseImpl) GenerateDatabaseCredential(ctx context.Context, request GenerateDatabaseCredentialRequest) (*DatabaseCredential, error) {
-	var databaseCredential DatabaseCredential
+
+	requestPb, pbErr := generateDatabaseCredentialRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var databaseCredentialPb databaseCredentialPb
 	path := "/api/2.0/database/credentials"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPost, path, headers, queryParams, request, &databaseCredential)
-	return &databaseCredential, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPost,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&databaseCredentialPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := databaseCredentialFromPb(&databaseCredentialPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *databaseImpl) GetDatabaseCatalog(ctx context.Context, request GetDatabaseCatalogRequest) (*DatabaseCatalog, error) {
-	var databaseCatalog DatabaseCatalog
-	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", request.Name)
+
+	requestPb, pbErr := getDatabaseCatalogRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var databaseCatalogPb databaseCatalogPb
+	path := fmt.Sprintf("/api/2.0/database/catalogs/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseCatalog)
-	return &databaseCatalog, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&databaseCatalogPb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := databaseCatalogFromPb(&databaseCatalogPb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *databaseImpl) GetDatabaseInstance(ctx context.Context, request GetDatabaseInstanceRequest) (*DatabaseInstance, error) {
-	var databaseInstance DatabaseInstance
-	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
+
+	requestPb, pbErr := getDatabaseInstanceRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var databaseInstancePb databaseInstancePb
+	path := fmt.Sprintf("/api/2.0/database/instances/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseInstance)
-	return &databaseInstance, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&databaseInstancePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := databaseInstanceFromPb(&databaseInstancePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *databaseImpl) GetDatabaseTable(ctx context.Context, request GetDatabaseTableRequest) (*DatabaseTable, error) {
-	var databaseTable DatabaseTable
-	path := fmt.Sprintf("/api/2.0/database/tables/%v", request.Name)
+
+	requestPb, pbErr := getDatabaseTableRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var databaseTablePb databaseTablePb
+	path := fmt.Sprintf("/api/2.0/database/tables/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &databaseTable)
-	return &databaseTable, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&databaseTablePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := databaseTableFromPb(&databaseTablePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *databaseImpl) GetSyncedDatabaseTable(ctx context.Context, request GetSyncedDatabaseTableRequest) (*SyncedDatabaseTable, error) {
-	var syncedDatabaseTable SyncedDatabaseTable
-	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", request.Name)
+
+	requestPb, pbErr := getSyncedDatabaseTableRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var syncedDatabaseTablePb syncedDatabaseTablePb
+	path := fmt.Sprintf("/api/2.0/database/synced_tables/%v", requestPb.Name)
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &syncedDatabaseTable)
-	return &syncedDatabaseTable, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&syncedDatabaseTablePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := syncedDatabaseTableFromPb(&syncedDatabaseTablePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 // List Database Instances.
@@ -194,25 +486,69 @@ func (a *databaseImpl) ListDatabaseInstancesAll(ctx context.Context, request Lis
 }
 
 func (a *databaseImpl) internalListDatabaseInstances(ctx context.Context, request ListDatabaseInstancesRequest) (*ListDatabaseInstancesResponse, error) {
-	var listDatabaseInstancesResponse ListDatabaseInstancesResponse
+
+	requestPb, pbErr := listDatabaseInstancesRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var listDatabaseInstancesResponsePb listDatabaseInstancesResponsePb
 	path := "/api/2.0/database/instances"
 	queryParams := make(map[string]any)
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
-	err := a.client.Do(ctx, http.MethodGet, path, headers, queryParams, request, &listDatabaseInstancesResponse)
-	return &listDatabaseInstancesResponse, err
+	err := a.client.Do(
+		ctx,
+		http.MethodGet,
+		path,
+		headers,
+		queryParams,
+		(*requestPb),
+		&listDatabaseInstancesResponsePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := listDatabaseInstancesResponseFromPb(&listDatabaseInstancesResponsePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }
 
 func (a *databaseImpl) UpdateDatabaseInstance(ctx context.Context, request UpdateDatabaseInstanceRequest) (*DatabaseInstance, error) {
-	var databaseInstance DatabaseInstance
-	path := fmt.Sprintf("/api/2.0/database/instances/%v", request.Name)
+
+	requestPb, pbErr := updateDatabaseInstanceRequestToPb(&request)
+	if pbErr != nil {
+		return nil, pbErr
+	}
+
+	var databaseInstancePb databaseInstancePb
+	path := fmt.Sprintf("/api/2.0/database/instances/%v", requestPb.Name)
 	queryParams := make(map[string]any)
-	if request.UpdateMask != "" {
-		queryParams["update_mask"] = request.UpdateMask
+	if requestPb.UpdateMask != "" {
+		queryParams["update_mask"] = requestPb.UpdateMask
 	}
 	headers := make(map[string]string)
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	err := a.client.Do(ctx, http.MethodPatch, path, headers, queryParams, request.DatabaseInstance, &databaseInstance)
-	return &databaseInstance, err
+	err := a.client.Do(
+		ctx,
+		http.MethodPatch,
+		path,
+		headers,
+		queryParams,
+		(*requestPb).DatabaseInstance,
+		&databaseInstancePb,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := databaseInstanceFromPb(&databaseInstancePb)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, err
 }

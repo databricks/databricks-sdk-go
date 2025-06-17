@@ -20,14 +20,10 @@ type JobsInterface interface {
 	WaitGetRunJobTerminatedOrSkipped(ctx context.Context, runId int64,
 		timeout time.Duration, callback func(*Run)) (*Run, error)
 
-	// Cancel all runs of a job.
-	//
 	// Cancels all active runs of a job. The runs are canceled asynchronously, so it
 	// doesn't prevent new runs from being started.
 	CancelAllRuns(ctx context.Context, request CancelAllRuns) error
 
-	// Cancel a run.
-	//
 	// Cancels a job run or a task run. The run is canceled asynchronously, so it
 	// may still be running when this request completes.
 	CancelRun(ctx context.Context, cancelRun CancelRun) (*WaitGetRunJobTerminatedOrSkipped[struct{}], error)
@@ -40,8 +36,6 @@ type JobsInterface interface {
 	// Deprecated: use [JobsAPIInterface.CancelRun].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
 	CancelRunAndWait(ctx context.Context, cancelRun CancelRun, options ...retries.Option[Run]) (*Run, error)
 
-	// Cancel a run.
-	//
 	// Cancels a job run or a task run. The run is canceled asynchronously, so it
 	// may still be running when this request completes.
 	CancelRunByRunId(ctx context.Context, runId int64) error
@@ -49,37 +43,23 @@ type JobsInterface interface {
 	CancelRunByRunIdAndWait(ctx context.Context, runId int64, options ...retries.Option[Run]) (*Run, error)
 
 	// Create a new job.
-	//
-	// Create a new job.
 	Create(ctx context.Context, request CreateJob) (*CreateResponse, error)
 
-	// Delete a job.
-	//
 	// Deletes a job.
 	Delete(ctx context.Context, request DeleteJob) error
 
-	// Delete a job.
-	//
 	// Deletes a job.
 	DeleteByJobId(ctx context.Context, jobId int64) error
 
-	// Delete a job run.
-	//
 	// Deletes a non-active run. Returns an error if the run is active.
 	DeleteRun(ctx context.Context, request DeleteRun) error
 
-	// Delete a job run.
-	//
 	// Deletes a non-active run. Returns an error if the run is active.
 	DeleteRunByRunId(ctx context.Context, runId int64) error
 
-	// Export and retrieve a job run.
-	//
 	// Export and retrieve the job run task.
 	ExportRun(ctx context.Context, request ExportRunRequest) (*ExportRunOutput, error)
 
-	// Get a single job.
-	//
 	// Retrieves the details for a single job.
 	//
 	// Large arrays in the results will be paginated when they exceed 100 elements.
@@ -92,8 +72,6 @@ type JobsInterface interface {
 	// results will be empty on later pages.
 	Get(ctx context.Context, request GetJobRequest) (*Job, error)
 
-	// Get a single job.
-	//
 	// Retrieves the details for a single job.
 	//
 	// Large arrays in the results will be paginated when they exceed 100 elements.
@@ -106,30 +84,20 @@ type JobsInterface interface {
 	// results will be empty on later pages.
 	GetByJobId(ctx context.Context, jobId int64) (*Job, error)
 
-	// Get job permission levels.
-	//
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevels(ctx context.Context, request GetJobPermissionLevelsRequest) (*GetJobPermissionLevelsResponse, error)
 
-	// Get job permission levels.
-	//
 	// Gets the permission levels that a user can have on an object.
 	GetPermissionLevelsByJobId(ctx context.Context, jobId string) (*GetJobPermissionLevelsResponse, error)
 
-	// Get job permissions.
-	//
 	// Gets the permissions of a job. Jobs can inherit permissions from their root
 	// object.
 	GetPermissions(ctx context.Context, request GetJobPermissionsRequest) (*JobPermissions, error)
 
-	// Get job permissions.
-	//
 	// Gets the permissions of a job. Jobs can inherit permissions from their root
 	// object.
 	GetPermissionsByJobId(ctx context.Context, jobId string) (*JobPermissions, error)
 
-	// Get a single job run.
-	//
 	// Retrieves the metadata of a run.
 	//
 	// Large arrays in the results will be paginated when they exceed 100 elements.
@@ -142,8 +110,6 @@ type JobsInterface interface {
 	// results will be empty on later pages.
 	GetRun(ctx context.Context, request GetRunRequest) (*Run, error)
 
-	// Get the output for a single run.
-	//
 	// Retrieve the output and metadata of a single task run. When a notebook task
 	// returns a value through the `dbutils.notebook.exit()` call, you can use this
 	// endpoint to retrieve that value. Databricks restricts this API to returning
@@ -156,8 +122,6 @@ type JobsInterface interface {
 	// 60 days, you must save old run results before they expire.
 	GetRunOutput(ctx context.Context, request GetRunOutputRequest) (*RunOutput, error)
 
-	// Get the output for a single run.
-	//
 	// Retrieve the output and metadata of a single task run. When a notebook task
 	// returns a value through the `dbutils.notebook.exit()` call, you can use this
 	// endpoint to retrieve that value. Databricks restricts this API to returning
@@ -170,15 +134,11 @@ type JobsInterface interface {
 	// 60 days, you must save old run results before they expire.
 	GetRunOutputByRunId(ctx context.Context, runId int64) (*RunOutput, error)
 
-	// List jobs.
-	//
 	// Retrieves a list of jobs.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	List(ctx context.Context, request ListJobsRequest) listing.Iterator[BaseJob]
 
-	// List jobs.
-	//
 	// Retrieves a list of jobs.
 	//
 	// This method is generated by Databricks SDK Code Generator.
@@ -202,22 +162,16 @@ type JobsInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	GetBySettingsName(ctx context.Context, name string) (*BaseJob, error)
 
-	// List job runs.
-	//
 	// List runs in descending order by start time.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListRuns(ctx context.Context, request ListRunsRequest) listing.Iterator[BaseRun]
 
-	// List job runs.
-	//
 	// List runs in descending order by start time.
 	//
 	// This method is generated by Databricks SDK Code Generator.
 	ListRunsAll(ctx context.Context, request ListRunsRequest) ([]BaseRun, error)
 
-	// Repair a job run.
-	//
 	// Re-run one or more tasks. Tasks are re-run as part of the original job run.
 	// They use the current job and task settings, and can be viewed in the history
 	// for the original job run.
@@ -231,14 +185,10 @@ type JobsInterface interface {
 	// Deprecated: use [JobsAPIInterface.RepairRun].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
 	RepairRunAndWait(ctx context.Context, repairRun RepairRun, options ...retries.Option[Run]) (*Run, error)
 
-	// Update all job settings (reset).
-	//
 	// Overwrite all settings for the given job. Use the [_Update_
 	// endpoint](:method:jobs/update) to update job settings partially.
 	Reset(ctx context.Context, request ResetJob) error
 
-	// Trigger a new job run.
-	//
 	// Run a job and return the `run_id` of the triggered run.
 	RunNow(ctx context.Context, runNow RunNow) (*WaitGetRunJobTerminatedOrSkipped[RunNowResponse], error)
 
@@ -250,15 +200,11 @@ type JobsInterface interface {
 	// Deprecated: use [JobsAPIInterface.RunNow].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
 	RunNowAndWait(ctx context.Context, runNow RunNow, options ...retries.Option[Run]) (*Run, error)
 
-	// Set job permissions.
-	//
 	// Sets permissions on an object, replacing existing permissions if they exist.
 	// Deletes all direct permissions if none are specified. Objects can inherit
 	// permissions from their root object.
 	SetPermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
 
-	// Create and trigger a one-time run.
-	//
 	// Submit a one-time run. This endpoint allows you to submit a workload directly
 	// without creating a job. Runs submitted using this endpoint don’t display in
 	// the UI. Use the `jobs/runs/get` API to check the run state after the job is
@@ -273,14 +219,10 @@ type JobsInterface interface {
 	// Deprecated: use [JobsAPIInterface.Submit].Get() or [JobsAPIInterface.WaitGetRunJobTerminatedOrSkipped]
 	SubmitAndWait(ctx context.Context, submitRun SubmitRun, options ...retries.Option[Run]) (*Run, error)
 
-	// Update job settings partially.
-	//
 	// Add, update, or remove specific settings of an existing job. Use the [_Reset_
 	// endpoint](:method:jobs/reset) to overwrite all job settings.
 	Update(ctx context.Context, request UpdateJob) error
 
-	// Update job permissions.
-	//
 	// Updates the permissions on a job. Jobs can inherit permissions from their
 	// root object.
 	UpdatePermissions(ctx context.Context, request JobPermissionsRequest) (*JobPermissions, error)
@@ -373,8 +315,6 @@ func (w *WaitGetRunJobTerminatedOrSkipped[R]) GetWithTimeout(timeout time.Durati
 	return w.Poll(timeout, w.callback)
 }
 
-// Cancel a run.
-//
 // Cancels a job run or a task run. The run is canceled asynchronously, so it
 // may still be running when this request completes.
 func (a *JobsAPI) CancelRun(ctx context.Context, cancelRun CancelRun) (*WaitGetRunJobTerminatedOrSkipped[struct{}], error) {
@@ -420,8 +360,6 @@ func (a *JobsAPI) CancelRunAndWait(ctx context.Context, cancelRun CancelRun, opt
 	return wait.Get()
 }
 
-// Cancel a run.
-//
 // Cancels a job run or a task run. The run is canceled asynchronously, so it
 // may still be running when this request completes.
 func (a *JobsAPI) CancelRunByRunId(ctx context.Context, runId int64) error {
@@ -436,8 +374,6 @@ func (a *JobsAPI) CancelRunByRunIdAndWait(ctx context.Context, runId int64, opti
 	}, options...)
 }
 
-// Delete a job.
-//
 // Deletes a job.
 func (a *JobsAPI) DeleteByJobId(ctx context.Context, jobId int64) error {
 	return a.jobsImpl.Delete(ctx, DeleteJob{
@@ -445,8 +381,6 @@ func (a *JobsAPI) DeleteByJobId(ctx context.Context, jobId int64) error {
 	})
 }
 
-// Delete a job run.
-//
 // Deletes a non-active run. Returns an error if the run is active.
 func (a *JobsAPI) DeleteRunByRunId(ctx context.Context, runId int64) error {
 	return a.jobsImpl.DeleteRun(ctx, DeleteRun{
@@ -454,8 +388,6 @@ func (a *JobsAPI) DeleteRunByRunId(ctx context.Context, runId int64) error {
 	})
 }
 
-// Get a single job.
-//
 // Retrieves the details for a single job.
 //
 // Large arrays in the results will be paginated when they exceed 100 elements.
@@ -472,8 +404,6 @@ func (a *JobsAPI) GetByJobId(ctx context.Context, jobId int64) (*Job, error) {
 	})
 }
 
-// Get job permission levels.
-//
 // Gets the permission levels that a user can have on an object.
 func (a *JobsAPI) GetPermissionLevelsByJobId(ctx context.Context, jobId string) (*GetJobPermissionLevelsResponse, error) {
 	return a.jobsImpl.GetPermissionLevels(ctx, GetJobPermissionLevelsRequest{
@@ -481,8 +411,6 @@ func (a *JobsAPI) GetPermissionLevelsByJobId(ctx context.Context, jobId string) 
 	})
 }
 
-// Get job permissions.
-//
 // Gets the permissions of a job. Jobs can inherit permissions from their root
 // object.
 func (a *JobsAPI) GetPermissionsByJobId(ctx context.Context, jobId string) (*JobPermissions, error) {
@@ -491,8 +419,6 @@ func (a *JobsAPI) GetPermissionsByJobId(ctx context.Context, jobId string) (*Job
 	})
 }
 
-// Get the output for a single run.
-//
 // Retrieve the output and metadata of a single task run. When a notebook task
 // returns a value through the `dbutils.notebook.exit()` call, you can use this
 // endpoint to retrieve that value. Databricks restricts this API to returning
@@ -562,8 +488,6 @@ func (a *JobsAPI) GetBySettingsName(ctx context.Context, name string) (*BaseJob,
 	return &alternatives[0], nil
 }
 
-// Repair a job run.
-//
 // Re-run one or more tasks. Tasks are re-run as part of the original job run.
 // They use the current job and task settings, and can be viewed in the history
 // for the original job run.
@@ -610,8 +534,6 @@ func (a *JobsAPI) RepairRunAndWait(ctx context.Context, repairRun RepairRun, opt
 	return wait.Get()
 }
 
-// Trigger a new job run.
-//
 // Run a job and return the `run_id` of the triggered run.
 func (a *JobsAPI) RunNow(ctx context.Context, runNow RunNow) (*WaitGetRunJobTerminatedOrSkipped[RunNowResponse], error) {
 	runNowResponse, err := a.jobsImpl.RunNow(ctx, runNow)
@@ -656,8 +578,6 @@ func (a *JobsAPI) RunNowAndWait(ctx context.Context, runNow RunNow, options ...r
 	return wait.Get()
 }
 
-// Create and trigger a one-time run.
-//
 // Submit a one-time run. This endpoint allows you to submit a workload directly
 // without creating a job. Runs submitted using this endpoint don’t display in
 // the UI. Use the `jobs/runs/get` API to check the run state after the job is
@@ -707,32 +627,24 @@ func (a *JobsAPI) SubmitAndWait(ctx context.Context, submitRun SubmitRun, option
 
 type PolicyComplianceForJobsInterface interface {
 
-	// Enforce job policy compliance.
-	//
 	// Updates a job so the job clusters that are created when running the job
 	// (specified in `new_cluster`) are compliant with the current versions of their
 	// respective cluster policies. All-purpose clusters used in the job will not be
 	// updated.
 	EnforceCompliance(ctx context.Context, request EnforcePolicyComplianceRequest) (*EnforcePolicyComplianceResponse, error)
 
-	// Get job policy compliance.
-	//
 	// Returns the policy compliance status of a job. Jobs could be out of
 	// compliance if a cluster policy they use was updated after the job was last
 	// edited and some of its job clusters no longer comply with their updated
 	// policies.
 	GetCompliance(ctx context.Context, request GetPolicyComplianceRequest) (*GetPolicyComplianceResponse, error)
 
-	// Get job policy compliance.
-	//
 	// Returns the policy compliance status of a job. Jobs could be out of
 	// compliance if a cluster policy they use was updated after the job was last
 	// edited and some of its job clusters no longer comply with their updated
 	// policies.
 	GetComplianceByJobId(ctx context.Context, jobId int64) (*GetPolicyComplianceResponse, error)
 
-	// List job policy compliance.
-	//
 	// Returns the policy compliance status of all jobs that use a given policy.
 	// Jobs could be out of compliance if a cluster policy they use was updated
 	// after the job was last edited and its job clusters no longer comply with the
@@ -741,8 +653,6 @@ type PolicyComplianceForJobsInterface interface {
 	// This method is generated by Databricks SDK Code Generator.
 	ListCompliance(ctx context.Context, request ListJobComplianceRequest) listing.Iterator[JobCompliance]
 
-	// List job policy compliance.
-	//
 	// Returns the policy compliance status of all jobs that use a given policy.
 	// Jobs could be out of compliance if a cluster policy they use was updated
 	// after the job was last edited and its job clusters no longer comply with the
@@ -777,8 +687,6 @@ type PolicyComplianceForJobsAPI struct {
 	policyComplianceForJobsImpl
 }
 
-// Get job policy compliance.
-//
 // Returns the policy compliance status of a job. Jobs could be out of
 // compliance if a cluster policy they use was updated after the job was last
 // edited and some of its job clusters no longer comply with their updated
