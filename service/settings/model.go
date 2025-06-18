@@ -3,12 +3,13 @@
 package settings
 
 import (
+	"encoding/json"
 	"fmt"
-
-	"github.com/databricks/databricks-sdk-go/marshal"
 )
 
 type AccountIpAccessEnable struct {
+
+	// Wire name: 'acct_ip_acl_enable'
 	AcctIpAclEnable BooleanMessage `json:"acct_ip_acl_enable"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -17,46 +18,112 @@ type AccountIpAccessEnable struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *AccountIpAccessEnable) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AccountIpAccessEnable) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &accountIpAccessEnablePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := accountIpAccessEnableFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AccountIpAccessEnable) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AccountIpAccessEnable) MarshalJSON() ([]byte, error) {
+	pb, err := accountIpAccessEnableToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AccountNetworkPolicy struct {
 	// The associated account ID for this Network Policy object.
+	// Wire name: 'account_id'
 	AccountId string `json:"account_id,omitempty"`
 	// The network policies applying for egress traffic.
+	// Wire name: 'egress'
 	Egress *NetworkPolicyEgress `json:"egress,omitempty"`
 	// The unique identifier for the network policy.
+	// Wire name: 'network_policy_id'
 	NetworkPolicyId string `json:"network_policy_id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *AccountNetworkPolicy) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AccountNetworkPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &accountNetworkPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := accountNetworkPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AccountNetworkPolicy) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AccountNetworkPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := accountNetworkPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AibiDashboardEmbeddingAccessPolicy struct {
+
+	// Wire name: 'access_policy_type'
 	AccessPolicyType AibiDashboardEmbeddingAccessPolicyAccessPolicyType `json:"access_policy_type"`
+}
+
+func (st *AibiDashboardEmbeddingAccessPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aibiDashboardEmbeddingAccessPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aibiDashboardEmbeddingAccessPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AibiDashboardEmbeddingAccessPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := aibiDashboardEmbeddingAccessPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AibiDashboardEmbeddingAccessPolicyAccessPolicyType string
@@ -100,6 +167,8 @@ func (f *AibiDashboardEmbeddingAccessPolicyAccessPolicyType) Type() string {
 }
 
 type AibiDashboardEmbeddingAccessPolicySetting struct {
+
+	// Wire name: 'aibi_dashboard_embedding_access_policy'
 	AibiDashboardEmbeddingAccessPolicy AibiDashboardEmbeddingAccessPolicy `json:"aibi_dashboard_embedding_access_policy"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -108,30 +177,78 @@ type AibiDashboardEmbeddingAccessPolicySetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *AibiDashboardEmbeddingAccessPolicySetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AibiDashboardEmbeddingAccessPolicySetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aibiDashboardEmbeddingAccessPolicySettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aibiDashboardEmbeddingAccessPolicySettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AibiDashboardEmbeddingAccessPolicySetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AibiDashboardEmbeddingAccessPolicySetting) MarshalJSON() ([]byte, error) {
+	pb, err := aibiDashboardEmbeddingAccessPolicySettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AibiDashboardEmbeddingApprovedDomains struct {
+
+	// Wire name: 'approved_domains'
 	ApprovedDomains []string `json:"approved_domains,omitempty"`
 }
 
+func (st *AibiDashboardEmbeddingApprovedDomains) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aibiDashboardEmbeddingApprovedDomainsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aibiDashboardEmbeddingApprovedDomainsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st AibiDashboardEmbeddingApprovedDomains) MarshalJSON() ([]byte, error) {
+	pb, err := aibiDashboardEmbeddingApprovedDomainsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type AibiDashboardEmbeddingApprovedDomainsSetting struct {
+
+	// Wire name: 'aibi_dashboard_embedding_approved_domains'
 	AibiDashboardEmbeddingApprovedDomains AibiDashboardEmbeddingApprovedDomains `json:"aibi_dashboard_embedding_approved_domains"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -140,26 +257,47 @@ type AibiDashboardEmbeddingApprovedDomainsSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *AibiDashboardEmbeddingApprovedDomainsSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AibiDashboardEmbeddingApprovedDomainsSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &aibiDashboardEmbeddingApprovedDomainsSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := aibiDashboardEmbeddingApprovedDomainsSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AibiDashboardEmbeddingApprovedDomainsSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AibiDashboardEmbeddingApprovedDomainsSetting) MarshalJSON() ([]byte, error) {
+	pb, err := aibiDashboardEmbeddingApprovedDomainsSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type AutomaticClusterUpdateSetting struct {
+
+	// Wire name: 'automatic_cluster_update_workspace'
 	AutomaticClusterUpdateWorkspace ClusterAutoRestartMessage `json:"automatic_cluster_update_workspace"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -168,42 +306,83 @@ type AutomaticClusterUpdateSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *AutomaticClusterUpdateSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *AutomaticClusterUpdateSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &automaticClusterUpdateSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := automaticClusterUpdateSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s AutomaticClusterUpdateSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st AutomaticClusterUpdateSetting) MarshalJSON() ([]byte, error) {
+	pb, err := automaticClusterUpdateSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type BooleanMessage struct {
+
+	// Wire name: 'value'
 	Value bool `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *BooleanMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *BooleanMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &booleanMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := booleanMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s BooleanMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st BooleanMessage) MarshalJSON() ([]byte, error) {
+	pb, err := booleanMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ClusterAutoRestartMessage struct {
+
+	// Wire name: 'can_toggle'
 	CanToggle bool `json:"can_toggle,omitempty"`
 
+	// Wire name: 'enabled'
 	Enabled bool `json:"enabled,omitempty"`
 	// Contains an information about the enablement status judging (e.g. whether
 	// the enterprise tier is enabled) This is only additional information that
@@ -211,21 +390,41 @@ type ClusterAutoRestartMessage struct {
 	// intended to use only for purposes like showing an error message to the
 	// customer with the additional details. For example, using these details we
 	// can check why exactly the feature is disabled for this customer.
+	// Wire name: 'enablement_details'
 	EnablementDetails *ClusterAutoRestartMessageEnablementDetails `json:"enablement_details,omitempty"`
 
+	// Wire name: 'maintenance_window'
 	MaintenanceWindow *ClusterAutoRestartMessageMaintenanceWindow `json:"maintenance_window,omitempty"`
 
+	// Wire name: 'restart_even_if_no_updates_available'
 	RestartEvenIfNoUpdatesAvailable bool `json:"restart_even_if_no_updates_available,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ClusterAutoRestartMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ClusterAutoRestartMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &clusterAutoRestartMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := clusterAutoRestartMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ClusterAutoRestartMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ClusterAutoRestartMessage) MarshalJSON() ([]byte, error) {
+	pb, err := clusterAutoRestartMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Contains an information about the enablement status judging (e.g. whether the
@@ -236,26 +435,73 @@ func (s ClusterAutoRestartMessage) MarshalJSON() ([]byte, error) {
 // the feature is disabled for this customer.
 type ClusterAutoRestartMessageEnablementDetails struct {
 	// The feature is force enabled if compliance mode is active
+	// Wire name: 'forced_for_compliance_mode'
 	ForcedForComplianceMode bool `json:"forced_for_compliance_mode,omitempty"`
 	// The feature is unavailable if the corresponding entitlement disabled (see
 	// getShieldEntitlementEnable)
+	// Wire name: 'unavailable_for_disabled_entitlement'
 	UnavailableForDisabledEntitlement bool `json:"unavailable_for_disabled_entitlement,omitempty"`
 	// The feature is unavailable if the customer doesn't have enterprise tier
+	// Wire name: 'unavailable_for_non_enterprise_tier'
 	UnavailableForNonEnterpriseTier bool `json:"unavailable_for_non_enterprise_tier,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ClusterAutoRestartMessageEnablementDetails) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ClusterAutoRestartMessageEnablementDetails) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &clusterAutoRestartMessageEnablementDetailsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := clusterAutoRestartMessageEnablementDetailsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ClusterAutoRestartMessageEnablementDetails) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ClusterAutoRestartMessageEnablementDetails) MarshalJSON() ([]byte, error) {
+	pb, err := clusterAutoRestartMessageEnablementDetailsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ClusterAutoRestartMessageMaintenanceWindow struct {
+
+	// Wire name: 'week_day_based_schedule'
 	WeekDayBasedSchedule *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule `json:"week_day_based_schedule,omitempty"`
+}
+
+func (st *ClusterAutoRestartMessageMaintenanceWindow) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &clusterAutoRestartMessageMaintenanceWindowPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := clusterAutoRestartMessageMaintenanceWindowFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ClusterAutoRestartMessageMaintenanceWindow) MarshalJSON() ([]byte, error) {
+	pb, err := clusterAutoRestartMessageMaintenanceWindowToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowDayOfWeek string
@@ -311,11 +557,40 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowDayOfWeek) Type() string {
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule struct {
+
+	// Wire name: 'day_of_week'
 	DayOfWeek ClusterAutoRestartMessageMaintenanceWindowDayOfWeek `json:"day_of_week,omitempty"`
 
+	// Wire name: 'frequency'
 	Frequency ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency `json:"frequency,omitempty"`
 
+	// Wire name: 'window_start_time'
 	WindowStartTime *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime `json:"window_start_time,omitempty"`
+}
+
+func (st *ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &clusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := clusterAutoRestartMessageMaintenanceWindowWeekDayBasedScheduleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule) MarshalJSON() ([]byte, error) {
+	pb, err := clusterAutoRestartMessageMaintenanceWindowWeekDayBasedScheduleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency string
@@ -371,41 +646,81 @@ func (f *ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency) Type() stri
 }
 
 type ClusterAutoRestartMessageMaintenanceWindowWindowStartTime struct {
+
+	// Wire name: 'hours'
 	Hours int `json:"hours,omitempty"`
 
+	// Wire name: 'minutes'
 	Minutes int `json:"minutes,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &clusterAutoRestartMessageMaintenanceWindowWindowStartTimePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := clusterAutoRestartMessageMaintenanceWindowWindowStartTimeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ClusterAutoRestartMessageMaintenanceWindowWindowStartTime) MarshalJSON() ([]byte, error) {
+	pb, err := clusterAutoRestartMessageMaintenanceWindowWindowStartTimeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // SHIELD feature: CSP
 type ComplianceSecurityProfile struct {
 	// Set by customers when they request Compliance Security Profile (CSP)
+	// Wire name: 'compliance_standards'
 	ComplianceStandards []ComplianceStandard `json:"compliance_standards,omitempty"`
 
+	// Wire name: 'is_enabled'
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ComplianceSecurityProfile) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &complianceSecurityProfilePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := complianceSecurityProfileFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ComplianceSecurityProfile) MarshalJSON() ([]byte, error) {
+	pb, err := complianceSecurityProfileToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ComplianceSecurityProfileSetting struct {
 	// SHIELD feature: CSP
+	// Wire name: 'compliance_security_profile_workspace'
 	ComplianceSecurityProfileWorkspace ComplianceSecurityProfile `json:"compliance_security_profile_workspace"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -414,23 +729,42 @@ type ComplianceSecurityProfileSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ComplianceSecurityProfileSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ComplianceSecurityProfileSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &complianceSecurityProfileSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := complianceSecurityProfileSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ComplianceSecurityProfileSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ComplianceSecurityProfileSetting) MarshalJSON() ([]byte, error) {
+	pb, err := complianceSecurityProfileSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Compliance stardard for SHIELD customers
@@ -505,21 +839,55 @@ func (f *ComplianceStandard) Type() string {
 }
 
 type Config struct {
+
+	// Wire name: 'email'
 	Email *EmailConfig `json:"email,omitempty"`
 
+	// Wire name: 'generic_webhook'
 	GenericWebhook *GenericWebhookConfig `json:"generic_webhook,omitempty"`
 
+	// Wire name: 'microsoft_teams'
 	MicrosoftTeams *MicrosoftTeamsConfig `json:"microsoft_teams,omitempty"`
 
+	// Wire name: 'pagerduty'
 	Pagerduty *PagerdutyConfig `json:"pagerduty,omitempty"`
 
+	// Wire name: 'slack'
 	Slack *SlackConfig `json:"slack,omitempty"`
+}
+
+func (st *Config) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &configPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := configFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st Config) MarshalJSON() ([]byte, error) {
+	pb, err := configToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to configure a block list or allow list.
 type CreateIpAccessList struct {
+
+	// Wire name: 'ip_addresses'
 	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
+	// Wire name: 'label'
 	Label string `json:"label"`
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
@@ -527,19 +895,97 @@ type CreateIpAccessList struct {
 	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
+	// Wire name: 'list_type'
 	ListType ListType `json:"list_type"`
+}
+
+func (st *CreateIpAccessList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createIpAccessListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createIpAccessListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateIpAccessList) MarshalJSON() ([]byte, error) {
+	pb, err := createIpAccessListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // An IP access list was successfully created.
 type CreateIpAccessListResponse struct {
 	// Definition of an IP Access list
+	// Wire name: 'ip_access_list'
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
+}
+
+func (st *CreateIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createIpAccessListResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createIpAccessListResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateIpAccessListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createIpAccessListResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Create a network connectivity configuration
 type CreateNetworkConnectivityConfigRequest struct {
 	// Properties of the new network connectivity configuration.
+	// Wire name: 'network_connectivity_config'
 	NetworkConnectivityConfig CreateNetworkConnectivityConfiguration `json:"network_connectivity_config"`
+}
+
+func (st *CreateNetworkConnectivityConfigRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createNetworkConnectivityConfigRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createNetworkConnectivityConfigRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateNetworkConnectivityConfigRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createNetworkConnectivityConfigRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Properties of the new network connectivity configuration.
@@ -548,71 +994,184 @@ type CreateNetworkConnectivityConfiguration struct {
 	// alphanumeric characters, hyphens, and underscores. The length must be
 	// between 3 and 30 characters. The name must match the regular expression
 	// ^[0-9a-zA-Z-_]{3,30}$
+	// Wire name: 'name'
 	Name string `json:"name"`
 	// The region for the network connectivity configuration. Only workspaces in
 	// the same region can be attached to the network connectivity
 	// configuration.
+	// Wire name: 'region'
 	Region string `json:"region"`
+}
+
+func (st *CreateNetworkConnectivityConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createNetworkConnectivityConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createNetworkConnectivityConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateNetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := createNetworkConnectivityConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Create a network policy
 type CreateNetworkPolicyRequest struct {
+
+	// Wire name: 'network_policy'
 	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
+}
+
+func (st *CreateNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createNetworkPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createNetworkPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreateNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createNetworkPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateNotificationDestinationRequest struct {
 	// The configuration for the notification destination. Must wrap EXACTLY one
 	// of the nested configs.
+	// Wire name: 'config'
 	Config *Config `json:"config,omitempty"`
 	// The display name for the notification destination.
+	// Wire name: 'display_name'
 	DisplayName string `json:"display_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createNotificationDestinationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createNotificationDestinationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createNotificationDestinationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Configuration details for creating on-behalf tokens.
 type CreateOboTokenRequest struct {
 	// Application ID of the service principal.
+	// Wire name: 'application_id'
 	ApplicationId string `json:"application_id"`
 	// Comment that describes the purpose of the token.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The number of seconds before the token expires.
+	// Wire name: 'lifetime_seconds'
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateOboTokenRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateOboTokenRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createOboTokenRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createOboTokenRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateOboTokenRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateOboTokenRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createOboTokenRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // An on-behalf token was successfully created for the service principal.
 type CreateOboTokenResponse struct {
+
+	// Wire name: 'token_info'
 	TokenInfo *TokenInfo `json:"token_info,omitempty"`
 	// Value of the token.
+	// Wire name: 'token_value'
 	TokenValue string `json:"token_value,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateOboTokenResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateOboTokenResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createOboTokenResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createOboTokenResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateOboTokenResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateOboTokenResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createOboTokenResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Properties of the new private endpoint rule. Note that you must approve the
@@ -623,17 +1182,21 @@ type CreatePrivateEndpointRule struct {
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
+	// Wire name: 'domain_names'
 	DomainNames []string `json:"domain_names,omitempty"`
 	// The full target AWS endpoint service name that connects to the
 	// destination resources of the private endpoint.
+	// Wire name: 'endpoint_service'
 	EndpointService string `json:"endpoint_service,omitempty"`
 	// Not used by customer-managed private endpoint services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
 	// one for blob and one for dfs.
+	// Wire name: 'group_id'
 	GroupId string `json:"group_id,omitempty"`
 	// The Azure resource ID of the target resource.
+	// Wire name: 'resource_id'
 	ResourceId string `json:"resource_id,omitempty"`
 	// Only used by private endpoints towards AWS S3 service.
 	//
@@ -641,85 +1204,187 @@ type CreatePrivateEndpointRule struct {
 	// endpoint. The bucket names must be in the same region as the NCC/endpoint
 	// service. When updating this field, we perform full update on this field.
 	// Please ensure a full list of desired resource_names is provided.
+	// Wire name: 'resource_names'
 	ResourceNames []string `json:"resource_names,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createPrivateEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createPrivateEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := createPrivateEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Create a private endpoint rule
 type CreatePrivateEndpointRuleRequest struct {
 	// Your Network Connectivity Configuration ID.
-	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 	// Properties of the new private endpoint rule. Note that you must approve
 	// the endpoint in Azure portal after initialization.
+	// Wire name: 'private_endpoint_rule'
 	PrivateEndpointRule CreatePrivateEndpointRule `json:"private_endpoint_rule"`
+}
+
+func (st *CreatePrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createPrivateEndpointRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createPrivateEndpointRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st CreatePrivateEndpointRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createPrivateEndpointRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateTokenRequest struct {
 	// Optional description to attach to the token.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// The lifetime of the token, in seconds.
 	//
 	// If the lifetime is not specified, this token remains valid indefinitely.
+	// Wire name: 'lifetime_seconds'
 	LifetimeSeconds int64 `json:"lifetime_seconds,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateTokenRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateTokenRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createTokenRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createTokenRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateTokenRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateTokenRequest) MarshalJSON() ([]byte, error) {
+	pb, err := createTokenRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CreateTokenResponse struct {
 	// The information for the new token.
+	// Wire name: 'token_info'
 	TokenInfo *PublicTokenInfo `json:"token_info,omitempty"`
 	// The value of the new token.
+	// Wire name: 'token_value'
 	TokenValue string `json:"token_value,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CreateTokenResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CreateTokenResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &createTokenResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := createTokenResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CreateTokenResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CreateTokenResponse) MarshalJSON() ([]byte, error) {
+	pb, err := createTokenResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Account level policy for CSP
 type CspEnablementAccount struct {
 	// Set by customers when they request Compliance Security Profile (CSP)
 	// Invariants are enforced in Settings policy.
+	// Wire name: 'compliance_standards'
 	ComplianceStandards []ComplianceStandard `json:"compliance_standards,omitempty"`
 	// Enforced = it cannot be overriden at workspace level.
+	// Wire name: 'is_enforced'
 	IsEnforced bool `json:"is_enforced,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CspEnablementAccount) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CspEnablementAccount) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cspEnablementAccountPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := cspEnablementAccountFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CspEnablementAccount) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CspEnablementAccount) MarshalJSON() ([]byte, error) {
+	pb, err := cspEnablementAccountToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CspEnablementAccountSetting struct {
 	// Account level policy for CSP
+	// Wire name: 'csp_enablement_account'
 	CspEnablementAccount CspEnablementAccount `json:"csp_enablement_account"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -728,23 +1393,42 @@ type CspEnablementAccountSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CspEnablementAccountSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CspEnablementAccountSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &cspEnablementAccountSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := cspEnablementAccountSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
+	pb, err := cspEnablementAccountSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Properties of the new private endpoint rule. Note that for private endpoints
@@ -753,6 +1437,7 @@ func (s CspEnablementAccountSetting) MarshalJSON() ([]byte, error) {
 type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
 	// Databricks account ID. You can find your account ID from the Accounts
 	// Console.
+	// Wire name: 'account_id'
 	AccountId string `json:"account_id,omitempty"`
 	// The current status of this private endpoint. The private endpoint rules
 	// are effective only if the connection state is ESTABLISHED. Remember that
@@ -765,12 +1450,16 @@ type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
 	// the private endpoint becomes informative and should be deleted for
 	// clean-up. - EXPIRED: If the endpoint is created but not approved in 14
 	// days, it is EXPIRED.
+	// Wire name: 'connection_state'
 	ConnectionState CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState `json:"connection_state,omitempty"`
 	// Time in epoch milliseconds when this object was created.
+	// Wire name: 'creation_time'
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// Whether this private endpoint is deactivated.
+	// Wire name: 'deactivated'
 	Deactivated bool `json:"deactivated,omitempty"`
 	// Time in epoch milliseconds when this object was deactivated.
+	// Wire name: 'deactivated_at'
 	DeactivatedAt int64 `json:"deactivated_at,omitempty"`
 	// Only used by private endpoints towards a VPC endpoint service for
 	// customer-managed VPC endpoint service.
@@ -778,17 +1467,21 @@ type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
 	// The target AWS resource FQDNs accessible via the VPC endpoint service.
 	// When updating this field, we perform full update on this field. Please
 	// ensure a full list of desired domain_names is provided.
+	// Wire name: 'domain_names'
 	DomainNames []string `json:"domain_names,omitempty"`
 	// Only used by private endpoints towards an AWS S3 service.
 	//
 	// Update this field to activate/deactivate this private endpoint to allow
 	// egress access from serverless compute resources.
+	// Wire name: 'enabled'
 	Enabled bool `json:"enabled,omitempty"`
 	// The full target AWS endpoint service name that connects to the
 	// destination resources of the private endpoint.
+	// Wire name: 'endpoint_service'
 	EndpointService string `json:"endpoint_service,omitempty"`
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
+	// Wire name: 'network_connectivity_config_id'
 	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
 	// Only used by private endpoints towards AWS S3 service.
 	//
@@ -796,24 +1489,45 @@ type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule struct {
 	// endpoint. The bucket names must be in the same region as the NCC/endpoint
 	// service. When updating this field, we perform full update on this field.
 	// Please ensure a full list of desired resource_names is provided.
+	// Wire name: 'resource_names'
 	ResourceNames []string `json:"resource_names,omitempty"`
 	// The ID of a private endpoint rule.
+	// Wire name: 'rule_id'
 	RuleId string `json:"rule_id,omitempty"`
 	// Time in epoch milliseconds when this object was updated.
+	// Wire name: 'updated_time'
 	UpdatedTime int64 `json:"updated_time,omitempty"`
 	// The AWS VPC endpoint ID. You can use this ID to identify VPC endpoint
 	// created by Databricks.
+	// Wire name: 'vpc_endpoint_id'
 	VpcEndpointId string `json:"vpc_endpoint_id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &customerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := customerFacingNetworkConnectivityConfigAwsPrivateEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := customerFacingNetworkConnectivityConfigAwsPrivateEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState string
@@ -863,6 +1577,8 @@ func (f *CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLin
 }
 
 type DashboardEmailSubscriptions struct {
+
+	// Wire name: 'boolean_val'
 	BooleanVal BooleanMessage `json:"boolean_val"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -871,23 +1587,42 @@ type DashboardEmailSubscriptions struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DashboardEmailSubscriptions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DashboardEmailSubscriptions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &dashboardEmailSubscriptionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := dashboardEmailSubscriptionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DashboardEmailSubscriptions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DashboardEmailSubscriptions) MarshalJSON() ([]byte, error) {
+	pb, err := dashboardEmailSubscriptionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // This represents the setting configuration for the default namespace in the
@@ -907,25 +1642,45 @@ type DefaultNamespaceSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 
+	// Wire name: 'namespace'
 	Namespace StringMessage `json:"namespace"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DefaultNamespaceSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DefaultNamespaceSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &defaultNamespaceSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := defaultNamespaceSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DefaultNamespaceSetting) MarshalJSON() ([]byte, error) {
+	pb, err := defaultNamespaceSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete the account IP access toggle setting
@@ -937,17 +1692,34 @@ type DeleteAccountIpAccessEnableRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAccountIpAccessEnableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAccountIpAccessEnableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAccountIpAccessEnableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -959,13 +1731,64 @@ type DeleteAccountIpAccessEnableResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeleteAccountIpAccessEnableResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAccountIpAccessEnableResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAccountIpAccessEnableResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteAccountIpAccessEnableResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAccountIpAccessEnableResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete access list
 type DeleteAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	IpAccessListId string `json:"-" url:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
+}
+
+func (st *DeleteAccountIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAccountIpAccessListRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAccountIpAccessListRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteAccountIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAccountIpAccessListRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete the AI/BI dashboard embedding access policy
@@ -977,17 +1800,34 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -999,7 +1839,33 @@ type DeleteAibiDashboardEmbeddingAccessPolicySettingResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeleteAibiDashboardEmbeddingAccessPolicySettingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAibiDashboardEmbeddingAccessPolicySettingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAibiDashboardEmbeddingAccessPolicySettingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteAibiDashboardEmbeddingAccessPolicySettingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAibiDashboardEmbeddingAccessPolicySettingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete AI/BI dashboard embedding approved domains
@@ -1011,17 +1877,34 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -1033,7 +1916,33 @@ type DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteAibiDashboardEmbeddingApprovedDomainsSettingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteAibiDashboardEmbeddingApprovedDomainsSettingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteAibiDashboardEmbeddingApprovedDomainsSettingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete the Dashboard Email Subscriptions setting
@@ -1045,17 +1954,34 @@ type DeleteDashboardEmailSubscriptionsRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDashboardEmailSubscriptionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDashboardEmailSubscriptionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDashboardEmailSubscriptionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -1067,7 +1993,33 @@ type DeleteDashboardEmailSubscriptionsResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeleteDashboardEmailSubscriptionsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDashboardEmailSubscriptionsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDashboardEmailSubscriptionsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteDashboardEmailSubscriptionsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDashboardEmailSubscriptionsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete the default namespace setting
@@ -1079,17 +2031,34 @@ type DeleteDefaultNamespaceSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDefaultNamespaceSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDefaultNamespaceSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDefaultNamespaceSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -1101,7 +2070,33 @@ type DeleteDefaultNamespaceSettingResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeleteDefaultNamespaceSettingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDefaultNamespaceSettingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDefaultNamespaceSettingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteDefaultNamespaceSettingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDefaultNamespaceSettingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete Legacy Access Disablement Status
@@ -1113,17 +2108,34 @@ type DeleteDisableLegacyAccessRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDisableLegacyAccessRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDisableLegacyAccessRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDisableLegacyAccessRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -1135,7 +2147,33 @@ type DeleteDisableLegacyAccessResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeleteDisableLegacyAccessResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDisableLegacyAccessResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDisableLegacyAccessResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteDisableLegacyAccessResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDisableLegacyAccessResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete the disable legacy DBFS setting
@@ -1147,17 +2185,34 @@ type DeleteDisableLegacyDbfsRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDisableLegacyDbfsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDisableLegacyDbfsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDisableLegacyDbfsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -1169,7 +2224,33 @@ type DeleteDisableLegacyDbfsResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeleteDisableLegacyDbfsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDisableLegacyDbfsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDisableLegacyDbfsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteDisableLegacyDbfsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDisableLegacyDbfsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete the disable legacy features setting
@@ -1181,17 +2262,34 @@ type DeleteDisableLegacyFeaturesRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDisableLegacyFeaturesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDisableLegacyFeaturesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDisableLegacyFeaturesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -1203,13 +2301,64 @@ type DeleteDisableLegacyFeaturesResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeleteDisableLegacyFeaturesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteDisableLegacyFeaturesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteDisableLegacyFeaturesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteDisableLegacyFeaturesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteDisableLegacyFeaturesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete access list
 type DeleteIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	IpAccessListId string `json:"-" url:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
+}
+
+func (st *DeleteIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteIpAccessListRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteIpAccessListRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteIpAccessListRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete the enable partner powered AI features workspace setting
@@ -1221,17 +2370,34 @@ type DeleteLlmProxyPartnerPoweredWorkspaceRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteLlmProxyPartnerPoweredWorkspaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteLlmProxyPartnerPoweredWorkspaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -1243,30 +2409,181 @@ type DeleteLlmProxyPartnerPoweredWorkspaceResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeleteLlmProxyPartnerPoweredWorkspaceResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteLlmProxyPartnerPoweredWorkspaceResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteLlmProxyPartnerPoweredWorkspaceResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteLlmProxyPartnerPoweredWorkspaceResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteLlmProxyPartnerPoweredWorkspaceResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a network connectivity configuration
 type DeleteNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
-	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
+}
+
+func (st *DeleteNetworkConnectivityConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteNetworkConnectivityConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteNetworkConnectivityConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteNetworkConnectivityConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteNetworkConnectivityConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteNetworkConnectivityConfigurationResponse struct {
 }
 
+func (st *DeleteNetworkConnectivityConfigurationResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteNetworkConnectivityConfigurationResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteNetworkConnectivityConfigurationResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteNetworkConnectivityConfigurationResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteNetworkConnectivityConfigurationResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete a network policy
 type DeleteNetworkPolicyRequest struct {
 	// The unique identifier of the network policy to delete.
-	NetworkPolicyId string `json:"-" url:"-"`
+	NetworkPolicyId string `json:"-" tf:"-"`
+}
+
+func (st *DeleteNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteNetworkPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteNetworkPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteNetworkPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteNetworkPolicyRpcResponse struct {
 }
 
+func (st *DeleteNetworkPolicyRpcResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteNetworkPolicyRpcResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteNetworkPolicyRpcResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteNetworkPolicyRpcResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteNetworkPolicyRpcResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 // Delete a notification destination
 type DeleteNotificationDestinationRequest struct {
-	Id string `json:"-" url:"-"`
+	Id string `json:"-" tf:"-"`
+}
+
+func (st *DeleteNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteNotificationDestinationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteNotificationDestinationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteNotificationDestinationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete Personal Compute setting
@@ -1278,17 +2595,34 @@ type DeletePersonalComputeSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeletePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeletePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deletePersonalComputeSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deletePersonalComputeSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeletePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeletePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deletePersonalComputeSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -1300,18 +2634,94 @@ type DeletePersonalComputeSettingResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeletePersonalComputeSettingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deletePersonalComputeSettingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deletePersonalComputeSettingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeletePersonalComputeSettingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deletePersonalComputeSettingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a private endpoint rule
 type DeletePrivateEndpointRuleRequest struct {
 	// Your Network Connectvity Configuration ID.
-	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 	// Your private endpoint rule ID.
-	PrivateEndpointRuleId string `json:"-" url:"-"`
+	PrivateEndpointRuleId string `json:"-" tf:"-"`
+}
+
+func (st *DeletePrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deletePrivateEndpointRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deletePrivateEndpointRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeletePrivateEndpointRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deletePrivateEndpointRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DeleteResponse struct {
+}
+
+func (st *DeleteResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete the restrict workspace admins setting
@@ -1323,17 +2733,34 @@ type DeleteRestrictWorkspaceAdminsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteRestrictWorkspaceAdminsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteRestrictWorkspaceAdminsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteRestrictWorkspaceAdminsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -1345,7 +2772,33 @@ type DeleteRestrictWorkspaceAdminsSettingResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeleteRestrictWorkspaceAdminsSettingResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteRestrictWorkspaceAdminsSettingResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteRestrictWorkspaceAdminsSettingResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteRestrictWorkspaceAdminsSettingResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteRestrictWorkspaceAdminsSettingResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete the SQL Results Download setting
@@ -1357,17 +2810,34 @@ type DeleteSqlResultsDownloadRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DeleteSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DeleteSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteSqlResultsDownloadRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteSqlResultsDownloadRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DeleteSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DeleteSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteSqlResultsDownloadRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The etag is returned.
@@ -1379,13 +2849,64 @@ type DeleteSqlResultsDownloadResponse struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
+	// Wire name: 'etag'
 	Etag string `json:"etag"`
+}
+
+func (st *DeleteSqlResultsDownloadResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteSqlResultsDownloadResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteSqlResultsDownloadResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteSqlResultsDownloadResponse) MarshalJSON() ([]byte, error) {
+	pb, err := deleteSqlResultsDownloadResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Delete a token
 type DeleteTokenManagementRequest struct {
 	// The ID of the token to revoke.
-	TokenId string `json:"-" url:"-"`
+	TokenId string `json:"-" tf:"-"`
+}
+
+func (st *DeleteTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &deleteTokenManagementRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := deleteTokenManagementRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st DeleteTokenManagementRequest) MarshalJSON() ([]byte, error) {
+	pb, err := deleteTokenManagementRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DestinationType string
@@ -1435,6 +2956,8 @@ func (f *DestinationType) Type() string {
 }
 
 type DisableLegacyAccess struct {
+
+	// Wire name: 'disable_legacy_access'
 	DisableLegacyAccess BooleanMessage `json:"disable_legacy_access"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1443,26 +2966,47 @@ type DisableLegacyAccess struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DisableLegacyAccess) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DisableLegacyAccess) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &disableLegacyAccessPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := disableLegacyAccessFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DisableLegacyAccess) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DisableLegacyAccess) MarshalJSON() ([]byte, error) {
+	pb, err := disableLegacyAccessToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DisableLegacyDbfs struct {
+
+	// Wire name: 'disable_legacy_dbfs'
 	DisableLegacyDbfs BooleanMessage `json:"disable_legacy_dbfs"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1471,26 +3015,47 @@ type DisableLegacyDbfs struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DisableLegacyDbfs) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DisableLegacyDbfs) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &disableLegacyDbfsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := disableLegacyDbfsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DisableLegacyDbfs) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DisableLegacyDbfs) MarshalJSON() ([]byte, error) {
+	pb, err := disableLegacyDbfsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type DisableLegacyFeatures struct {
+
+	// Wire name: 'disable_legacy_features'
 	DisableLegacyFeatures BooleanMessage `json:"disable_legacy_features"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -1499,23 +3064,42 @@ type DisableLegacyFeatures struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *DisableLegacyFeatures) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *DisableLegacyFeatures) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &disableLegacyFeaturesPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := disableLegacyFeaturesFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s DisableLegacyFeatures) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st DisableLegacyFeatures) MarshalJSON() ([]byte, error) {
+	pb, err := disableLegacyFeaturesToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The network policies applying for egress traffic. This message is used by the
@@ -1524,15 +3108,45 @@ func (s DisableLegacyFeatures) MarshalJSON() ([]byte, error) {
 // dataplane, see networkconfig.textproto).
 type EgressNetworkPolicy struct {
 	// The access policy enforced for egress traffic to the internet.
+	// Wire name: 'internet_access'
 	InternetAccess *EgressNetworkPolicyInternetAccessPolicy `json:"internet_access,omitempty"`
 }
 
+func (st *EgressNetworkPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &egressNetworkPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := egressNetworkPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EgressNetworkPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := egressNetworkPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type EgressNetworkPolicyInternetAccessPolicy struct {
+
+	// Wire name: 'allowed_internet_destinations'
 	AllowedInternetDestinations []EgressNetworkPolicyInternetAccessPolicyInternetDestination `json:"allowed_internet_destinations,omitempty"`
 
+	// Wire name: 'allowed_storage_destinations'
 	AllowedStorageDestinations []EgressNetworkPolicyInternetAccessPolicyStorageDestination `json:"allowed_storage_destinations,omitempty"`
 	// Optional. If not specified, assume the policy is enforced for all
 	// workloads.
+	// Wire name: 'log_only_mode'
 	LogOnlyMode *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode `json:"log_only_mode,omitempty"`
 	// At which level can Databricks and Databricks managed compute access
 	// Internet. FULL_ACCESS: Databricks can access Internet. No blocking rules
@@ -1540,32 +3154,79 @@ type EgressNetworkPolicyInternetAccessPolicy struct {
 	// allowed internet and storage destinations, as well as UC connections and
 	// external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only
 	// access destinations via private link.
+	// Wire name: 'restriction_mode'
 	RestrictionMode EgressNetworkPolicyInternetAccessPolicyRestrictionMode `json:"restriction_mode,omitempty"`
+}
+
+func (st *EgressNetworkPolicyInternetAccessPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &egressNetworkPolicyInternetAccessPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := egressNetworkPolicyInternetAccessPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EgressNetworkPolicyInternetAccessPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := egressNetworkPolicyInternetAccessPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Users can specify accessible internet destinations when outbound access is
 // restricted. We only support domain name (FQDN) destinations for the time
 // being, though going forwards we want to support host names and IP addresses.
 type EgressNetworkPolicyInternetAccessPolicyInternetDestination struct {
+
+	// Wire name: 'destination'
 	Destination string `json:"destination,omitempty"`
 	// The filtering protocol used by the DP. For private and public preview,
 	// SEG will only support TCP filtering (i.e. DNS based filtering, filtering
 	// by destination IP address), so protocol will be set to TCP by default and
 	// hidden from the user. In the future, users may be able to select HTTP
 	// filtering (i.e. SNI based filtering, filtering by FQDN).
+	// Wire name: 'protocol'
 	Protocol EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol `json:"protocol,omitempty"`
 
+	// Wire name: 'type'
 	Type EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EgressNetworkPolicyInternetAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EgressNetworkPolicyInternetAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &egressNetworkPolicyInternetAccessPolicyInternetDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := egressNetworkPolicyInternetAccessPolicyInternetDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EgressNetworkPolicyInternetAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EgressNetworkPolicyInternetAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
+	pb, err := egressNetworkPolicyInternetAccessPolicyInternetDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The filtering protocol used by the DP. For private and public preview, SEG
@@ -1642,9 +3303,37 @@ func (f *EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDesti
 }
 
 type EgressNetworkPolicyInternetAccessPolicyLogOnlyMode struct {
+
+	// Wire name: 'log_only_mode_type'
 	LogOnlyModeType EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType `json:"log_only_mode_type,omitempty"`
 
+	// Wire name: 'workloads'
 	Workloads []EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType `json:"workloads,omitempty"`
+}
+
+func (st *EgressNetworkPolicyInternetAccessPolicyLogOnlyMode) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &egressNetworkPolicyInternetAccessPolicyLogOnlyModePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := egressNetworkPolicyInternetAccessPolicyLogOnlyModeFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EgressNetworkPolicyInternetAccessPolicyLogOnlyMode) MarshalJSON() ([]byte, error) {
+	pb, err := egressNetworkPolicyInternetAccessPolicyLogOnlyModeToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType string
@@ -1770,31 +3459,57 @@ func (f *EgressNetworkPolicyInternetAccessPolicyRestrictionMode) Type() string {
 
 // Users can specify accessible storage destinations.
 type EgressNetworkPolicyInternetAccessPolicyStorageDestination struct {
+
+	// Wire name: 'allowed_paths'
 	AllowedPaths []string `json:"allowed_paths,omitempty"`
 
+	// Wire name: 'azure_container'
 	AzureContainer string `json:"azure_container,omitempty"`
 
+	// Wire name: 'azure_dns_zone'
 	AzureDnsZone string `json:"azure_dns_zone,omitempty"`
 
+	// Wire name: 'azure_storage_account'
 	AzureStorageAccount string `json:"azure_storage_account,omitempty"`
 
+	// Wire name: 'azure_storage_service'
 	AzureStorageService string `json:"azure_storage_service,omitempty"`
 
+	// Wire name: 'bucket_name'
 	BucketName string `json:"bucket_name,omitempty"`
 
+	// Wire name: 'region'
 	Region string `json:"region,omitempty"`
 
+	// Wire name: 'type'
 	Type EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType `json:"type,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EgressNetworkPolicyInternetAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EgressNetworkPolicyInternetAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &egressNetworkPolicyInternetAccessPolicyStorageDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := egressNetworkPolicyInternetAccessPolicyStorageDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EgressNetworkPolicyInternetAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EgressNetworkPolicyInternetAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
+	pb, err := egressNetworkPolicyInternetAccessPolicyStorageDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType string
@@ -1843,16 +3558,45 @@ func (f *EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestina
 type EgressNetworkPolicyNetworkAccessPolicy struct {
 	// List of internet destinations that serverless workloads are allowed to
 	// access when in RESTRICTED_ACCESS mode.
+	// Wire name: 'allowed_internet_destinations'
 	AllowedInternetDestinations []EgressNetworkPolicyNetworkAccessPolicyInternetDestination `json:"allowed_internet_destinations,omitempty"`
 	// List of storage destinations that serverless workloads are allowed to
 	// access when in RESTRICTED_ACCESS mode.
+	// Wire name: 'allowed_storage_destinations'
 	AllowedStorageDestinations []EgressNetworkPolicyNetworkAccessPolicyStorageDestination `json:"allowed_storage_destinations,omitempty"`
 	// Optional. When policy_enforcement is not provided, we default to
 	// ENFORCE_MODE_ALL_SERVICES
+	// Wire name: 'policy_enforcement'
 	PolicyEnforcement *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement `json:"policy_enforcement,omitempty"`
 	// The restriction mode that controls how serverless workloads can access
 	// the internet.
+	// Wire name: 'restriction_mode'
 	RestrictionMode EgressNetworkPolicyNetworkAccessPolicyRestrictionMode `json:"restriction_mode"`
+}
+
+func (st *EgressNetworkPolicyNetworkAccessPolicy) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &egressNetworkPolicyNetworkAccessPolicyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := egressNetworkPolicyNetworkAccessPolicyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EgressNetworkPolicyNetworkAccessPolicy) MarshalJSON() ([]byte, error) {
+	pb, err := egressNetworkPolicyNetworkAccessPolicyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Users can specify accessible internet destinations when outbound access is
@@ -1861,19 +3605,38 @@ type EgressNetworkPolicyNetworkAccessPolicy struct {
 type EgressNetworkPolicyNetworkAccessPolicyInternetDestination struct {
 	// The internet destination to which access will be allowed. Format
 	// dependent on the destination type.
+	// Wire name: 'destination'
 	Destination string `json:"destination,omitempty"`
 	// The type of internet destination. Currently only DNS_NAME is supported.
+	// Wire name: 'internet_destination_type'
 	InternetDestinationType EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType `json:"internet_destination_type,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EgressNetworkPolicyNetworkAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EgressNetworkPolicyNetworkAccessPolicyInternetDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &egressNetworkPolicyNetworkAccessPolicyInternetDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := egressNetworkPolicyNetworkAccessPolicyInternetDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EgressNetworkPolicyNetworkAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EgressNetworkPolicyNetworkAccessPolicyInternetDestination) MarshalJSON() ([]byte, error) {
+	pb, err := egressNetworkPolicyNetworkAccessPolicyInternetDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType string
@@ -1914,11 +3677,38 @@ type EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement struct {
 	// When empty, it means dry run for all products. When non-empty, it means
 	// dry run for specific products and for the other products, they will run
 	// in enforced mode.
+	// Wire name: 'dry_run_mode_product_filter'
 	DryRunModeProductFilter []EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter `json:"dry_run_mode_product_filter,omitempty"`
 	// The mode of policy enforcement. ENFORCED blocks traffic that violates
 	// policy, while DRY_RUN only logs violations without blocking. When not
 	// specified, defaults to ENFORCED.
+	// Wire name: 'enforcement_mode'
 	EnforcementMode EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode `json:"enforcement_mode,omitempty"`
+}
+
+func (st *EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement) MarshalJSON() ([]byte, error) {
+	pb, err := egressNetworkPolicyNetworkAccessPolicyPolicyEnforcementToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The values should match the list of workloads used in networkconfig.proto
@@ -2040,25 +3830,47 @@ func (f *EgressNetworkPolicyNetworkAccessPolicyRestrictionMode) Type() string {
 // Users can specify accessible storage destinations.
 type EgressNetworkPolicyNetworkAccessPolicyStorageDestination struct {
 	// The Azure storage account name.
+	// Wire name: 'azure_storage_account'
 	AzureStorageAccount string `json:"azure_storage_account,omitempty"`
 	// The Azure storage service type (blob, dfs, etc.).
+	// Wire name: 'azure_storage_service'
 	AzureStorageService string `json:"azure_storage_service,omitempty"`
 
+	// Wire name: 'bucket_name'
 	BucketName string `json:"bucket_name,omitempty"`
-	// The region of the S3 bucket.
+
+	// Wire name: 'region'
 	Region string `json:"region,omitempty"`
 	// The type of storage destination.
+	// Wire name: 'storage_destination_type'
 	StorageDestinationType EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType `json:"storage_destination_type,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EgressNetworkPolicyNetworkAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EgressNetworkPolicyNetworkAccessPolicyStorageDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &egressNetworkPolicyNetworkAccessPolicyStorageDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := egressNetworkPolicyNetworkAccessPolicyStorageDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EgressNetworkPolicyNetworkAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EgressNetworkPolicyNetworkAccessPolicyStorageDestination) MarshalJSON() ([]byte, error) {
+	pb, err := egressNetworkPolicyNetworkAccessPolicyStorageDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType string
@@ -2141,89 +3953,220 @@ func (f *EgressResourceType) Type() string {
 
 type EmailConfig struct {
 	// Email addresses to notify.
+	// Wire name: 'addresses'
 	Addresses []string `json:"addresses,omitempty"`
+}
+
+func (st *EmailConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &emailConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := emailConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st EmailConfig) MarshalJSON() ([]byte, error) {
+	pb, err := emailConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type Empty struct {
 }
 
+func (st *Empty) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &emptyPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := emptyFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st Empty) MarshalJSON() ([]byte, error) {
+	pb, err := emptyToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type EnableExportNotebook struct {
+
+	// Wire name: 'boolean_val'
 	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EnableExportNotebook) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EnableExportNotebook) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &enableExportNotebookPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := enableExportNotebookFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EnableExportNotebook) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EnableExportNotebook) MarshalJSON() ([]byte, error) {
+	pb, err := enableExportNotebookToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EnableNotebookTableClipboard struct {
+
+	// Wire name: 'boolean_val'
 	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EnableNotebookTableClipboard) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EnableNotebookTableClipboard) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &enableNotebookTableClipboardPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := enableNotebookTableClipboardFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EnableNotebookTableClipboard) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EnableNotebookTableClipboard) MarshalJSON() ([]byte, error) {
+	pb, err := enableNotebookTableClipboardToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EnableResultsDownloading struct {
+
+	// Wire name: 'boolean_val'
 	BooleanVal *BooleanMessage `json:"boolean_val,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EnableResultsDownloading) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EnableResultsDownloading) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &enableResultsDownloadingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := enableResultsDownloadingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EnableResultsDownloading) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EnableResultsDownloading) MarshalJSON() ([]byte, error) {
+	pb, err := enableResultsDownloadingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // SHIELD feature: ESM
 type EnhancedSecurityMonitoring struct {
+
+	// Wire name: 'is_enabled'
 	IsEnabled bool `json:"is_enabled,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EnhancedSecurityMonitoring) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EnhancedSecurityMonitoring) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &enhancedSecurityMonitoringPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := enhancedSecurityMonitoringFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EnhancedSecurityMonitoring) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EnhancedSecurityMonitoring) MarshalJSON() ([]byte, error) {
+	pb, err := enhancedSecurityMonitoringToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EnhancedSecurityMonitoringSetting struct {
 	// SHIELD feature: ESM
+	// Wire name: 'enhanced_security_monitoring_workspace'
 	EnhancedSecurityMonitoringWorkspace EnhancedSecurityMonitoring `json:"enhanced_security_monitoring_workspace"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2232,42 +4175,81 @@ type EnhancedSecurityMonitoringSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EnhancedSecurityMonitoringSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EnhancedSecurityMonitoringSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &enhancedSecurityMonitoringSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := enhancedSecurityMonitoringSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EnhancedSecurityMonitoringSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EnhancedSecurityMonitoringSetting) MarshalJSON() ([]byte, error) {
+	pb, err := enhancedSecurityMonitoringSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Account level policy for ESM
 type EsmEnablementAccount struct {
+
+	// Wire name: 'is_enforced'
 	IsEnforced bool `json:"is_enforced,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EsmEnablementAccount) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EsmEnablementAccount) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &esmEnablementAccountPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := esmEnablementAccountFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EsmEnablementAccount) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EsmEnablementAccount) MarshalJSON() ([]byte, error) {
+	pb, err := esmEnablementAccountToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type EsmEnablementAccountSetting struct {
 	// Account level policy for ESM
+	// Wire name: 'esm_enablement_account'
 	EsmEnablementAccount EsmEnablementAccount `json:"esm_enablement_account"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -2276,94 +4258,239 @@ type EsmEnablementAccountSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *EsmEnablementAccountSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *EsmEnablementAccountSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &esmEnablementAccountSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := esmEnablementAccountSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s EsmEnablementAccountSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st EsmEnablementAccountSetting) MarshalJSON() ([]byte, error) {
+	pb, err := esmEnablementAccountSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The exchange token is the result of the token exchange with the IdP
 type ExchangeToken struct {
 	// The requested token.
+	// Wire name: 'credential'
 	Credential string `json:"credential,omitempty"`
 	// The end-of-life timestamp of the token. The value is in milliseconds
 	// since the Unix epoch.
+	// Wire name: 'credentialEolTime'
 	CredentialEolTime int64 `json:"credentialEolTime,omitempty"`
 	// User ID of the user that owns this token.
+	// Wire name: 'ownerId'
 	OwnerId int64 `json:"ownerId,omitempty"`
 	// The scopes of access granted in the token.
+	// Wire name: 'scopes'
 	Scopes []string `json:"scopes,omitempty"`
 	// The type of this exchange token
+	// Wire name: 'tokenType'
 	TokenType TokenType `json:"tokenType,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ExchangeToken) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ExchangeToken) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &exchangeTokenPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := exchangeTokenFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ExchangeToken) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ExchangeToken) MarshalJSON() ([]byte, error) {
+	pb, err := exchangeTokenToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Exchange a token with the IdP
 type ExchangeTokenRequest struct {
 	// The partition of Credentials store
+	// Wire name: 'partitionId'
 	PartitionId PartitionId `json:"partitionId"`
 	// Array of scopes for the token request.
+	// Wire name: 'scopes'
 	Scopes []string `json:"scopes"`
 	// A list of token types being requested
+	// Wire name: 'tokenType'
 	TokenType []TokenType `json:"tokenType"`
+}
+
+func (st *ExchangeTokenRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &exchangeTokenRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := exchangeTokenRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ExchangeTokenRequest) MarshalJSON() ([]byte, error) {
+	pb, err := exchangeTokenRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Exhanged tokens were successfully returned.
 type ExchangeTokenResponse struct {
+
+	// Wire name: 'values'
 	Values []ExchangeToken `json:"values,omitempty"`
+}
+
+func (st *ExchangeTokenResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &exchangeTokenResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := exchangeTokenResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ExchangeTokenResponse) MarshalJSON() ([]byte, error) {
+	pb, err := exchangeTokenResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // An IP access list was successfully returned.
 type FetchIpAccessListResponse struct {
 	// Definition of an IP Access list
+	// Wire name: 'ip_access_list'
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
+}
+
+func (st *FetchIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &fetchIpAccessListResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := fetchIpAccessListResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st FetchIpAccessListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := fetchIpAccessListResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GenericWebhookConfig struct {
 	// [Input-Only][Optional] Password for webhook.
+	// Wire name: 'password'
 	Password string `json:"password,omitempty"`
 	// [Output-Only] Whether password is set.
+	// Wire name: 'password_set'
 	PasswordSet bool `json:"password_set,omitempty"`
 	// [Input-Only] URL for webhook.
+	// Wire name: 'url'
 	Url string `json:"url,omitempty"`
 	// [Output-Only] Whether URL is set.
+	// Wire name: 'url_set'
 	UrlSet bool `json:"url_set,omitempty"`
 	// [Input-Only][Optional] Username for webhook.
+	// Wire name: 'username'
 	Username string `json:"username,omitempty"`
 	// [Output-Only] Whether username is set.
+	// Wire name: 'username_set'
 	UsernameSet bool `json:"username_set,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GenericWebhookConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GenericWebhookConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &genericWebhookConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := genericWebhookConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GenericWebhookConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GenericWebhookConfig) MarshalJSON() ([]byte, error) {
+	pb, err := genericWebhookConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the account IP access toggle setting
@@ -2375,23 +4502,65 @@ type GetAccountIpAccessEnableRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAccountIpAccessEnableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAccountIpAccessEnableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAccountIpAccessEnableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get IP access list
 type GetAccountIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	IpAccessListId string `json:"-" url:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
+}
+
+func (st *GetAccountIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAccountIpAccessListRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAccountIpAccessListRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetAccountIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAccountIpAccessListRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Retrieve the AI/BI dashboard embedding access policy
@@ -2403,17 +4572,34 @@ type GetAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Retrieve the list of domains approved to host embedded AI/BI dashboards
@@ -2425,17 +4611,34 @@ type GetAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the automatic cluster update setting
@@ -2447,17 +4650,34 @@ type GetAutomaticClusterUpdateSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetAutomaticClusterUpdateSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetAutomaticClusterUpdateSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getAutomaticClusterUpdateSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getAutomaticClusterUpdateSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getAutomaticClusterUpdateSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the compliance security profile setting
@@ -2469,17 +4689,34 @@ type GetComplianceSecurityProfileSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetComplianceSecurityProfileSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetComplianceSecurityProfileSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getComplianceSecurityProfileSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getComplianceSecurityProfileSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetComplianceSecurityProfileSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetComplianceSecurityProfileSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getComplianceSecurityProfileSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the compliance security profile setting for new workspaces
@@ -2491,17 +4728,34 @@ type GetCspEnablementAccountSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getCspEnablementAccountSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getCspEnablementAccountSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getCspEnablementAccountSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the Dashboard Email Subscriptions setting
@@ -2513,17 +4767,34 @@ type GetDashboardEmailSubscriptionsRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getDashboardEmailSubscriptionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getDashboardEmailSubscriptionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getDashboardEmailSubscriptionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the default namespace setting
@@ -2535,17 +4806,34 @@ type GetDefaultNamespaceSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getDefaultNamespaceSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getDefaultNamespaceSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getDefaultNamespaceSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Retrieve Legacy Access Disablement Status
@@ -2557,17 +4845,34 @@ type GetDisableLegacyAccessRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getDisableLegacyAccessRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getDisableLegacyAccessRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getDisableLegacyAccessRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the disable legacy DBFS setting
@@ -2579,17 +4884,34 @@ type GetDisableLegacyDbfsRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getDisableLegacyDbfsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getDisableLegacyDbfsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getDisableLegacyDbfsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the disable legacy features setting
@@ -2601,17 +4923,34 @@ type GetDisableLegacyFeaturesRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getDisableLegacyFeaturesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getDisableLegacyFeaturesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getDisableLegacyFeaturesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the enhanced security monitoring setting
@@ -2623,17 +4962,34 @@ type GetEnhancedSecurityMonitoringSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetEnhancedSecurityMonitoringSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetEnhancedSecurityMonitoringSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getEnhancedSecurityMonitoringSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getEnhancedSecurityMonitoringSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetEnhancedSecurityMonitoringSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetEnhancedSecurityMonitoringSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getEnhancedSecurityMonitoringSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the enhanced security monitoring setting for new workspaces
@@ -2645,33 +5001,128 @@ type GetEsmEnablementAccountSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getEsmEnablementAccountSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getEsmEnablementAccountSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getEsmEnablementAccountSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get access list
 type GetIpAccessListRequest struct {
 	// The ID for the corresponding IP access list
-	IpAccessListId string `json:"-" url:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
+}
+
+func (st *GetIpAccessListRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getIpAccessListRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getIpAccessListRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetIpAccessListRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getIpAccessListRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetIpAccessListResponse struct {
 	// Definition of an IP Access list
+	// Wire name: 'ip_access_list'
 	IpAccessList *IpAccessListInfo `json:"ip_access_list,omitempty"`
+}
+
+func (st *GetIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getIpAccessListResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getIpAccessListResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetIpAccessListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getIpAccessListResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // IP access lists were successfully returned.
 type GetIpAccessListsResponse struct {
+
+	// Wire name: 'ip_access_lists'
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
+}
+
+func (st *GetIpAccessListsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getIpAccessListsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getIpAccessListsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetIpAccessListsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getIpAccessListsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the enable partner powered AI features account setting
@@ -2683,17 +5134,34 @@ type GetLlmProxyPartnerPoweredAccountRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetLlmProxyPartnerPoweredAccountRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetLlmProxyPartnerPoweredAccountRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getLlmProxyPartnerPoweredAccountRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getLlmProxyPartnerPoweredAccountRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetLlmProxyPartnerPoweredAccountRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetLlmProxyPartnerPoweredAccountRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getLlmProxyPartnerPoweredAccountRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the enforcement status of partner powered AI features account setting
@@ -2705,17 +5173,34 @@ type GetLlmProxyPartnerPoweredEnforceRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetLlmProxyPartnerPoweredEnforceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetLlmProxyPartnerPoweredEnforceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getLlmProxyPartnerPoweredEnforceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getLlmProxyPartnerPoweredEnforceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetLlmProxyPartnerPoweredEnforceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetLlmProxyPartnerPoweredEnforceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getLlmProxyPartnerPoweredEnforceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the enable partner powered AI features workspace setting
@@ -2727,34 +5212,126 @@ type GetLlmProxyPartnerPoweredWorkspaceRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getLlmProxyPartnerPoweredWorkspaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getLlmProxyPartnerPoweredWorkspaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a network connectivity configuration
 type GetNetworkConnectivityConfigurationRequest struct {
 	// Your Network Connectivity Configuration ID.
-	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
+}
+
+func (st *GetNetworkConnectivityConfigurationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getNetworkConnectivityConfigurationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getNetworkConnectivityConfigurationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetNetworkConnectivityConfigurationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getNetworkConnectivityConfigurationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a network policy
 type GetNetworkPolicyRequest struct {
 	// The unique identifier of the network policy to retrieve.
-	NetworkPolicyId string `json:"-" url:"-"`
+	NetworkPolicyId string `json:"-" tf:"-"`
+}
+
+func (st *GetNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getNetworkPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getNetworkPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getNetworkPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get a notification destination
 type GetNotificationDestinationRequest struct {
-	Id string `json:"-" url:"-"`
+	Id string `json:"-" tf:"-"`
+}
+
+func (st *GetNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getNotificationDestinationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getNotificationDestinationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getNotificationDestinationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get Personal Compute setting
@@ -2766,25 +5343,67 @@ type GetPersonalComputeSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetPersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetPersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getPersonalComputeSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getPersonalComputeSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetPersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetPersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getPersonalComputeSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Gets a private endpoint rule
 type GetPrivateEndpointRuleRequest struct {
 	// Your Network Connectvity Configuration ID.
-	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 	// Your private endpoint rule ID.
-	PrivateEndpointRuleId string `json:"-" url:"-"`
+	PrivateEndpointRuleId string `json:"-" tf:"-"`
+}
+
+func (st *GetPrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getPrivateEndpointRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getPrivateEndpointRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetPrivateEndpointRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getPrivateEndpointRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the restrict workspace admins setting
@@ -2796,17 +5415,34 @@ type GetRestrictWorkspaceAdminsSettingRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getRestrictWorkspaceAdminsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getRestrictWorkspaceAdminsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getRestrictWorkspaceAdminsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get the SQL Results Download setting
@@ -2818,61 +5454,213 @@ type GetSqlResultsDownloadRequest struct {
 	// delete pattern to perform setting deletions in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// DELETE request to identify the rule set version you are deleting.
-	Etag string `json:"-" url:"etag,omitempty"`
+	Etag string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *GetSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *GetSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getSqlResultsDownloadRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getSqlResultsDownloadRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s GetSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st GetSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getSqlResultsDownloadRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Check configuration status
 type GetStatusRequest struct {
-	Keys string `json:"-" url:"keys"`
+	Keys string `json:"-" tf:"-"`
+}
+
+func (st *GetStatusRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getStatusRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getStatusRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetStatusRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getStatusRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get token info
 type GetTokenManagementRequest struct {
 	// The ID of the token to get.
-	TokenId string `json:"-" url:"-"`
+	TokenId string `json:"-" tf:"-"`
+}
+
+func (st *GetTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getTokenManagementRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getTokenManagementRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetTokenManagementRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getTokenManagementRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type GetTokenPermissionLevelsResponse struct {
 	// Specific permission levels
+	// Wire name: 'permission_levels'
 	PermissionLevels []TokenPermissionsDescription `json:"permission_levels,omitempty"`
+}
+
+func (st *GetTokenPermissionLevelsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getTokenPermissionLevelsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getTokenPermissionLevelsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetTokenPermissionLevelsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getTokenPermissionLevelsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Token with specified Token ID was successfully returned.
 type GetTokenResponse struct {
+
+	// Wire name: 'token_info'
 	TokenInfo *TokenInfo `json:"token_info,omitempty"`
+}
+
+func (st *GetTokenResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getTokenResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getTokenResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetTokenResponse) MarshalJSON() ([]byte, error) {
+	pb, err := getTokenResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Get workspace network option
 type GetWorkspaceNetworkOptionRequest struct {
 	// The workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
+}
+
+func (st *GetWorkspaceNetworkOptionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &getWorkspaceNetworkOptionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := getWorkspaceNetworkOptionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st GetWorkspaceNetworkOptionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := getWorkspaceNetworkOptionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Definition of an IP Access list
 type IpAccessListInfo struct {
 	// Total number of IP or CIDR values.
+	// Wire name: 'address_count'
 	AddressCount int `json:"address_count,omitempty"`
 	// Creation timestamp in milliseconds.
+	// Wire name: 'created_at'
 	CreatedAt int64 `json:"created_at,omitempty"`
 	// User ID of the user who created this list.
+	// Wire name: 'created_by'
 	CreatedBy int64 `json:"created_by,omitempty"`
 	// Specifies whether this IP access list is enabled.
+	// Wire name: 'enabled'
 	Enabled bool `json:"enabled,omitempty"`
 
+	// Wire name: 'ip_addresses'
 	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
+	// Wire name: 'label'
 	Label string `json:"label,omitempty"`
 	// Universally unique identifier (UUID) of the IP access list.
+	// Wire name: 'list_id'
 	ListId string `json:"list_id,omitempty"`
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
@@ -2880,213 +5668,495 @@ type IpAccessListInfo struct {
 	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
+	// Wire name: 'list_type'
 	ListType ListType `json:"list_type,omitempty"`
 	// Update timestamp in milliseconds.
+	// Wire name: 'updated_at'
 	UpdatedAt int64 `json:"updated_at,omitempty"`
 	// User ID of the user who updated this list.
+	// Wire name: 'updated_by'
 	UpdatedBy int64 `json:"updated_by,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *IpAccessListInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *IpAccessListInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &ipAccessListInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := ipAccessListInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s IpAccessListInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st IpAccessListInfo) MarshalJSON() ([]byte, error) {
+	pb, err := ipAccessListInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // IP access lists were successfully returned.
 type ListIpAccessListResponse struct {
+
+	// Wire name: 'ip_access_lists'
 	IpAccessLists []IpAccessListInfo `json:"ip_access_lists,omitempty"`
+}
+
+func (st *ListIpAccessListResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listIpAccessListResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listIpAccessListResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListIpAccessListResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listIpAccessListResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List network connectivity configurations
 type ListNetworkConnectivityConfigurationsRequest struct {
 	// Pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListNetworkConnectivityConfigurationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListNetworkConnectivityConfigurationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listNetworkConnectivityConfigurationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listNetworkConnectivityConfigurationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListNetworkConnectivityConfigurationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListNetworkConnectivityConfigurationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listNetworkConnectivityConfigurationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The network connectivity configuration list was successfully retrieved.
 type ListNetworkConnectivityConfigurationsResponse struct {
+
+	// Wire name: 'items'
 	Items []NetworkConnectivityConfiguration `json:"items,omitempty"`
 	// A token that can be used to get the next page of results. If null, there
 	// are no more results to show.
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListNetworkConnectivityConfigurationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListNetworkConnectivityConfigurationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listNetworkConnectivityConfigurationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listNetworkConnectivityConfigurationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListNetworkConnectivityConfigurationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListNetworkConnectivityConfigurationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listNetworkConnectivityConfigurationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List network policies
 type ListNetworkPoliciesRequest struct {
 	// Pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListNetworkPoliciesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListNetworkPoliciesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listNetworkPoliciesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listNetworkPoliciesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListNetworkPoliciesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListNetworkPoliciesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listNetworkPoliciesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListNetworkPoliciesResponse struct {
 	// List of network policies.
+	// Wire name: 'items'
 	Items []AccountNetworkPolicy `json:"items,omitempty"`
 	// A token that can be used to get the next page of results. If null, there
 	// are no more results to show.
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListNetworkPoliciesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListNetworkPoliciesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listNetworkPoliciesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listNetworkPoliciesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListNetworkPoliciesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListNetworkPoliciesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listNetworkPoliciesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List notification destinations
 type ListNotificationDestinationsRequest struct {
-	PageSize int64 `json:"-" url:"page_size,omitempty"`
+	PageSize int64 `json:"-" tf:"-"`
 
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListNotificationDestinationsRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListNotificationDestinationsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listNotificationDestinationsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listNotificationDestinationsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListNotificationDestinationsRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListNotificationDestinationsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listNotificationDestinationsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListNotificationDestinationsResponse struct {
 	// Page token for next of results.
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 
+	// Wire name: 'results'
 	Results []ListNotificationDestinationsResult `json:"results,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListNotificationDestinationsResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListNotificationDestinationsResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listNotificationDestinationsResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listNotificationDestinationsResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListNotificationDestinationsResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListNotificationDestinationsResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listNotificationDestinationsResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListNotificationDestinationsResult struct {
 	// [Output-only] The type of the notification destination. The type can not
 	// be changed once set.
+	// Wire name: 'destination_type'
 	DestinationType DestinationType `json:"destination_type,omitempty"`
 	// The display name for the notification destination.
+	// Wire name: 'display_name'
 	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying notification destination.
+	// Wire name: 'id'
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListNotificationDestinationsResult) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListNotificationDestinationsResult) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listNotificationDestinationsResultPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listNotificationDestinationsResultFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListNotificationDestinationsResult) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListNotificationDestinationsResult) MarshalJSON() ([]byte, error) {
+	pb, err := listNotificationDestinationsResultToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List private endpoint rules
 type ListPrivateEndpointRulesRequest struct {
 	// Your Network Connectvity Configuration ID.
-	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 	// Pagination token to go to next page based on previous query.
-	PageToken string `json:"-" url:"page_token,omitempty"`
+	PageToken string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListPrivateEndpointRulesRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListPrivateEndpointRulesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listPrivateEndpointRulesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listPrivateEndpointRulesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListPrivateEndpointRulesRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListPrivateEndpointRulesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listPrivateEndpointRulesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The private endpoint rule list was successfully retrieved.
 type ListPrivateEndpointRulesResponse struct {
+
+	// Wire name: 'items'
 	Items []NccPrivateEndpointRule `json:"items,omitempty"`
 	// A token that can be used to get the next page of results. If null, there
 	// are no more results to show.
+	// Wire name: 'next_page_token'
 	NextPageToken string `json:"next_page_token,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListPrivateEndpointRulesResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListPrivateEndpointRulesResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listPrivateEndpointRulesResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listPrivateEndpointRulesResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListPrivateEndpointRulesResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListPrivateEndpointRulesResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listPrivateEndpointRulesResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ListPublicTokensResponse struct {
 	// The information for each token.
+	// Wire name: 'token_infos'
 	TokenInfos []PublicTokenInfo `json:"token_infos,omitempty"`
+}
+
+func (st *ListPublicTokensResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listPublicTokensResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listPublicTokensResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListPublicTokensResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listPublicTokensResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // List all tokens
 type ListTokenManagementRequest struct {
 	// User ID of the user that created the token.
-	CreatedById int64 `json:"-" url:"created_by_id,omitempty"`
+	CreatedById int64 `json:"-" tf:"-"`
 	// Username of the user that created the token.
-	CreatedByUsername string `json:"-" url:"created_by_username,omitempty"`
+	CreatedByUsername string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *ListTokenManagementRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *ListTokenManagementRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listTokenManagementRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listTokenManagementRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s ListTokenManagementRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st ListTokenManagementRequest) MarshalJSON() ([]byte, error) {
+	pb, err := listTokenManagementRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Tokens were successfully returned.
 type ListTokensResponse struct {
 	// Token metadata of each user-created token in the workspace
+	// Wire name: 'token_infos'
 	TokenInfos []TokenInfo `json:"token_infos,omitempty"`
+}
+
+func (st *ListTokensResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &listTokensResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := listTokensResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ListTokensResponse) MarshalJSON() ([]byte, error) {
+	pb, err := listTokensResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Type of IP access list. Valid values are as follows and are case-sensitive:
@@ -3135,6 +6205,8 @@ func (f *ListType) Type() string {
 }
 
 type LlmProxyPartnerPoweredAccount struct {
+
+	// Wire name: 'boolean_val'
 	BooleanVal BooleanMessage `json:"boolean_val"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -3143,26 +6215,47 @@ type LlmProxyPartnerPoweredAccount struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *LlmProxyPartnerPoweredAccount) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *LlmProxyPartnerPoweredAccount) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &llmProxyPartnerPoweredAccountPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := llmProxyPartnerPoweredAccountFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s LlmProxyPartnerPoweredAccount) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st LlmProxyPartnerPoweredAccount) MarshalJSON() ([]byte, error) {
+	pb, err := llmProxyPartnerPoweredAccountToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type LlmProxyPartnerPoweredEnforce struct {
+
+	// Wire name: 'boolean_val'
 	BooleanVal BooleanMessage `json:"boolean_val"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -3171,26 +6264,47 @@ type LlmProxyPartnerPoweredEnforce struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *LlmProxyPartnerPoweredEnforce) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *LlmProxyPartnerPoweredEnforce) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &llmProxyPartnerPoweredEnforcePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := llmProxyPartnerPoweredEnforceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s LlmProxyPartnerPoweredEnforce) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st LlmProxyPartnerPoweredEnforce) MarshalJSON() ([]byte, error) {
+	pb, err := llmProxyPartnerPoweredEnforceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type LlmProxyPartnerPoweredWorkspace struct {
+
+	// Wire name: 'boolean_val'
 	BooleanVal BooleanMessage `json:"boolean_val"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -3199,40 +6313,78 @@ type LlmProxyPartnerPoweredWorkspace struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *LlmProxyPartnerPoweredWorkspace) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *LlmProxyPartnerPoweredWorkspace) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &llmProxyPartnerPoweredWorkspacePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := llmProxyPartnerPoweredWorkspaceFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s LlmProxyPartnerPoweredWorkspace) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st LlmProxyPartnerPoweredWorkspace) MarshalJSON() ([]byte, error) {
+	pb, err := llmProxyPartnerPoweredWorkspaceToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type MicrosoftTeamsConfig struct {
 	// [Input-Only] URL for Microsoft Teams.
+	// Wire name: 'url'
 	Url string `json:"url,omitempty"`
 	// [Output-Only] Whether URL is set.
+	// Wire name: 'url_set'
 	UrlSet bool `json:"url_set,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *MicrosoftTeamsConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *MicrosoftTeamsConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &microsoftTeamsConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := microsoftTeamsConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s MicrosoftTeamsConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st MicrosoftTeamsConfig) MarshalJSON() ([]byte, error) {
+	pb, err := microsoftTeamsConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The stable AWS IP CIDR blocks. You can use these to configure the firewall of
@@ -3240,7 +6392,33 @@ func (s MicrosoftTeamsConfig) MarshalJSON() ([]byte, error) {
 type NccAwsStableIpRule struct {
 	// The list of stable IP CIDR blocks from which Databricks network traffic
 	// originates when accessing your resources.
+	// Wire name: 'cidr_blocks'
 	CidrBlocks []string `json:"cidr_blocks,omitempty"`
+}
+
+func (st *NccAwsStableIpRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &nccAwsStableIpRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := nccAwsStableIpRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st NccAwsStableIpRule) MarshalJSON() ([]byte, error) {
+	pb, err := nccAwsStableIpRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Properties of the new private endpoint rule. Note that you must approve the
@@ -3258,45 +6436,73 @@ type NccAzurePrivateEndpointRule struct {
 	// link resource owner, the private endpoint becomes informative and should
 	// be deleted for clean-up. - EXPIRED: If the endpoint was created but not
 	// approved in 14 days, it will be EXPIRED.
+	// Wire name: 'connection_state'
 	ConnectionState NccAzurePrivateEndpointRuleConnectionState `json:"connection_state,omitempty"`
 	// Time in epoch milliseconds when this object was created.
+	// Wire name: 'creation_time'
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// Whether this private endpoint is deactivated.
+	// Wire name: 'deactivated'
 	Deactivated bool `json:"deactivated,omitempty"`
 	// Time in epoch milliseconds when this object was deactivated.
+	// Wire name: 'deactivated_at'
 	DeactivatedAt int64 `json:"deactivated_at,omitempty"`
 	// Not used by customer-managed private endpoint services.
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
+	// Wire name: 'domain_names'
 	DomainNames []string `json:"domain_names,omitempty"`
 	// The name of the Azure private endpoint resource.
+	// Wire name: 'endpoint_name'
 	EndpointName string `json:"endpoint_name,omitempty"`
 	// Only used by private endpoints to Azure first-party services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
 	// one for blob and one for dfs.
+	// Wire name: 'group_id'
 	GroupId string `json:"group_id,omitempty"`
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
+	// Wire name: 'network_connectivity_config_id'
 	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
 	// The Azure resource ID of the target resource.
+	// Wire name: 'resource_id'
 	ResourceId string `json:"resource_id,omitempty"`
 	// The ID of a private endpoint rule.
+	// Wire name: 'rule_id'
 	RuleId string `json:"rule_id,omitempty"`
 	// Time in epoch milliseconds when this object was updated.
+	// Wire name: 'updated_time'
 	UpdatedTime int64 `json:"updated_time,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *NccAzurePrivateEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *NccAzurePrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &nccAzurePrivateEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := nccAzurePrivateEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s NccAzurePrivateEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st NccAzurePrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := nccAzurePrivateEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type NccAzurePrivateEndpointRuleConnectionState string
@@ -3354,31 +6560,78 @@ func (f *NccAzurePrivateEndpointRuleConnectionState) Type() string {
 type NccAzureServiceEndpointRule struct {
 	// The list of subnets from which Databricks network traffic originates when
 	// accessing your Azure resources.
+	// Wire name: 'subnets'
 	Subnets []string `json:"subnets,omitempty"`
 	// The Azure region in which this service endpoint rule applies..
+	// Wire name: 'target_region'
 	TargetRegion string `json:"target_region,omitempty"`
 	// The Azure services to which this service endpoint rule applies to.
+	// Wire name: 'target_services'
 	TargetServices []EgressResourceType `json:"target_services,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *NccAzureServiceEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *NccAzureServiceEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &nccAzureServiceEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := nccAzureServiceEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s NccAzureServiceEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st NccAzureServiceEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := nccAzureServiceEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type NccEgressConfig struct {
 	// The network connectivity rules that are applied by default without
 	// resource specific configurations. You can find the stable network
 	// information of your serverless compute resources here.
+	// Wire name: 'default_rules'
 	DefaultRules *NccEgressDefaultRules `json:"default_rules,omitempty"`
 	// The network connectivity rules that configured for each destinations.
 	// These rules override default rules.
+	// Wire name: 'target_rules'
 	TargetRules *NccEgressTargetRules `json:"target_rules,omitempty"`
+}
+
+func (st *NccEgressConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &nccEgressConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := nccEgressConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st NccEgressConfig) MarshalJSON() ([]byte, error) {
+	pb, err := nccEgressConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Default rules don't have specific targets.
@@ -3386,11 +6639,38 @@ type NccEgressDefaultRules struct {
 	// The stable AWS IP CIDR blocks. You can use these to configure the
 	// firewall of your resources to allow traffic from your Databricks
 	// workspace.
+	// Wire name: 'aws_stable_ip_rule'
 	AwsStableIpRule *NccAwsStableIpRule `json:"aws_stable_ip_rule,omitempty"`
 	// The stable Azure service endpoints. You can configure the firewall of
 	// your Azure resources to allow traffic from your Databricks serverless
 	// compute resources.
+	// Wire name: 'azure_service_endpoint_rule'
 	AzureServiceEndpointRule *NccAzureServiceEndpointRule `json:"azure_service_endpoint_rule,omitempty"`
+}
+
+func (st *NccEgressDefaultRules) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &nccEgressDefaultRulesPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := nccEgressDefaultRulesFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st NccEgressDefaultRules) MarshalJSON() ([]byte, error) {
+	pb, err := nccEgressDefaultRulesToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Target rule controls the egress rules that are dedicated to specific
@@ -3398,9 +6678,36 @@ type NccEgressDefaultRules struct {
 type NccEgressTargetRules struct {
 	// AWS private endpoint rule controls the AWS private endpoint based egress
 	// rules.
+	// Wire name: 'aws_private_endpoint_rules'
 	AwsPrivateEndpointRules []CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule `json:"aws_private_endpoint_rules,omitempty"`
 
+	// Wire name: 'azure_private_endpoint_rules'
 	AzurePrivateEndpointRules []NccAzurePrivateEndpointRule `json:"azure_private_endpoint_rules,omitempty"`
+}
+
+func (st *NccEgressTargetRules) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &nccEgressTargetRulesPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := nccEgressTargetRulesFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st NccEgressTargetRules) MarshalJSON() ([]byte, error) {
+	pb, err := nccEgressTargetRulesToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Properties of the new private endpoint rule. Note that you must approve the
@@ -3408,6 +6715,7 @@ type NccEgressTargetRules struct {
 type NccPrivateEndpointRule struct {
 	// Databricks account ID. You can find your account ID from the Accounts
 	// Console.
+	// Wire name: 'account_id'
 	AccountId string `json:"account_id,omitempty"`
 	// The current status of this private endpoint. The private endpoint rules
 	// are effective only if the connection state is ESTABLISHED. Remember that
@@ -3420,39 +6728,50 @@ type NccPrivateEndpointRule struct {
 	// the private endpoint becomes informative and should be deleted for
 	// clean-up. - EXPIRED: If the endpoint was created but not approved in 14
 	// days, it will be EXPIRED.
+	// Wire name: 'connection_state'
 	ConnectionState NccPrivateEndpointRulePrivateLinkConnectionState `json:"connection_state,omitempty"`
 	// Time in epoch milliseconds when this object was created.
+	// Wire name: 'creation_time'
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// Whether this private endpoint is deactivated.
+	// Wire name: 'deactivated'
 	Deactivated bool `json:"deactivated,omitempty"`
 	// Time in epoch milliseconds when this object was deactivated.
+	// Wire name: 'deactivated_at'
 	DeactivatedAt int64 `json:"deactivated_at,omitempty"`
 	// Only used by private endpoints to customer-managed private endpoint
 	// services.
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
+	// Wire name: 'domain_names'
 	DomainNames []string `json:"domain_names,omitempty"`
 	// Only used by private endpoints towards an AWS S3 service.
 	//
 	// Update this field to activate/deactivate this private endpoint to allow
 	// egress access from serverless compute resources.
+	// Wire name: 'enabled'
 	Enabled bool `json:"enabled,omitempty"`
 	// The name of the Azure private endpoint resource.
+	// Wire name: 'endpoint_name'
 	EndpointName string `json:"endpoint_name,omitempty"`
 	// The full target AWS endpoint service name that connects to the
 	// destination resources of the private endpoint.
+	// Wire name: 'endpoint_service'
 	EndpointService string `json:"endpoint_service,omitempty"`
 	// Not used by customer-managed private endpoint services.
 	//
 	// The sub-resource type (group ID) of the target resource. Note that to
 	// connect to workspace root storage (root DBFS), you need two endpoints,
 	// one for blob and one for dfs.
+	// Wire name: 'group_id'
 	GroupId string `json:"group_id,omitempty"`
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
+	// Wire name: 'network_connectivity_config_id'
 	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
 	// The Azure resource ID of the target resource.
+	// Wire name: 'resource_id'
 	ResourceId string `json:"resource_id,omitempty"`
 	// Only used by private endpoints towards AWS S3 service.
 	//
@@ -3460,24 +6779,45 @@ type NccPrivateEndpointRule struct {
 	// endpoint. The bucket names must be in the same region as the NCC/endpoint
 	// service. When updating this field, we perform full update on this field.
 	// Please ensure a full list of desired resource_names is provided.
+	// Wire name: 'resource_names'
 	ResourceNames []string `json:"resource_names,omitempty"`
 	// The ID of a private endpoint rule.
+	// Wire name: 'rule_id'
 	RuleId string `json:"rule_id,omitempty"`
 	// Time in epoch milliseconds when this object was updated.
+	// Wire name: 'updated_time'
 	UpdatedTime int64 `json:"updated_time,omitempty"`
 	// The AWS VPC endpoint ID. You can use this ID to identify the VPC endpoint
 	// created by Databricks.
+	// Wire name: 'vpc_endpoint_id'
 	VpcEndpointId string `json:"vpc_endpoint_id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *NccPrivateEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *NccPrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &nccPrivateEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := nccPrivateEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s NccPrivateEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st NccPrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := nccPrivateEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type NccPrivateEndpointRulePrivateLinkConnectionState string
@@ -3530,35 +6870,59 @@ func (f *NccPrivateEndpointRulePrivateLinkConnectionState) Type() string {
 type NetworkConnectivityConfiguration struct {
 	// Your Databricks account ID. You can find your account ID in your
 	// Databricks accounts console.
+	// Wire name: 'account_id'
 	AccountId string `json:"account_id,omitempty"`
 	// Time in epoch milliseconds when this object was created.
+	// Wire name: 'creation_time'
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// The network connectivity rules that apply to network traffic from your
 	// serverless compute resources.
+	// Wire name: 'egress_config'
 	EgressConfig *NccEgressConfig `json:"egress_config,omitempty"`
 	// The name of the network connectivity configuration. The name can contain
 	// alphanumeric characters, hyphens, and underscores. The length must be
 	// between 3 and 30 characters. The name must match the regular expression
 	// ^[0-9a-zA-Z-_]{3,30}$
+	// Wire name: 'name'
 	Name string `json:"name,omitempty"`
 	// Databricks network connectivity configuration ID.
+	// Wire name: 'network_connectivity_config_id'
 	NetworkConnectivityConfigId string `json:"network_connectivity_config_id,omitempty"`
 	// The region for the network connectivity configuration. Only workspaces in
 	// the same region can be attached to the network connectivity
 	// configuration.
+	// Wire name: 'region'
 	Region string `json:"region,omitempty"`
 	// Time in epoch milliseconds when this object was updated.
+	// Wire name: 'updated_time'
 	UpdatedTime int64 `json:"updated_time,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *NetworkConnectivityConfiguration) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *NetworkConnectivityConfiguration) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &networkConnectivityConfigurationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := networkConnectivityConfigurationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s NetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st NetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
+	pb, err := networkConnectivityConfigurationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The network policies applying for egress traffic. This message is used by the
@@ -3570,64 +6934,148 @@ func (s NetworkConnectivityConfiguration) MarshalJSON() ([]byte, error) {
 // https://docs.google.com/document/d/1DKWO_FpZMCY4cF2O62LpwII1lx8gsnDGG-qgE3t3TOA/
 type NetworkPolicyEgress struct {
 	// The access policy enforced for egress traffic to the internet.
+	// Wire name: 'network_access'
 	NetworkAccess *EgressNetworkPolicyNetworkAccessPolicy `json:"network_access,omitempty"`
+}
+
+func (st *NetworkPolicyEgress) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &networkPolicyEgressPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := networkPolicyEgressFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st NetworkPolicyEgress) MarshalJSON() ([]byte, error) {
+	pb, err := networkPolicyEgressToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type NotificationDestination struct {
 	// The configuration for the notification destination. Will be exactly one
 	// of the nested configs. Only returns for users with workspace admin
 	// permissions.
+	// Wire name: 'config'
 	Config *Config `json:"config,omitempty"`
 	// [Output-only] The type of the notification destination. The type can not
 	// be changed once set.
+	// Wire name: 'destination_type'
 	DestinationType DestinationType `json:"destination_type,omitempty"`
 	// The display name for the notification destination.
+	// Wire name: 'display_name'
 	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying notification destination.
+	// Wire name: 'id'
 	Id string `json:"id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *NotificationDestination) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *NotificationDestination) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &notificationDestinationPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := notificationDestinationFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s NotificationDestination) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st NotificationDestination) MarshalJSON() ([]byte, error) {
+	pb, err := notificationDestinationToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PagerdutyConfig struct {
 	// [Input-Only] Integration key for PagerDuty.
+	// Wire name: 'integration_key'
 	IntegrationKey string `json:"integration_key,omitempty"`
 	// [Output-Only] Whether integration key is set.
+	// Wire name: 'integration_key_set'
 	IntegrationKeySet bool `json:"integration_key_set,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *PagerdutyConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PagerdutyConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &pagerdutyConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := pagerdutyConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PagerdutyConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PagerdutyConfig) MarshalJSON() ([]byte, error) {
+	pb, err := pagerdutyConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Partition by workspace or account
 type PartitionId struct {
 	// The ID of the workspace.
+	// Wire name: 'workspaceId'
 	WorkspaceId int64 `json:"workspaceId,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *PartitionId) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PartitionId) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &partitionIdPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := partitionIdFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PartitionId) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PartitionId) MarshalJSON() ([]byte, error) {
+	pb, err := partitionIdToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PersonalComputeMessage struct {
@@ -3638,7 +7086,33 @@ type PersonalComputeMessage struct {
 	// users or groups to be added to the ACLs of that workspace’s Personal
 	// Compute default policy before they will be able to create compute
 	// resources through that policy.
+	// Wire name: 'value'
 	Value PersonalComputeMessageEnum `json:"value"`
+}
+
+func (st *PersonalComputeMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &personalComputeMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := personalComputeMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st PersonalComputeMessage) MarshalJSON() ([]byte, error) {
+	pb, err := personalComputeMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // ON: Grants all users in all workspaces access to the Personal Compute default
@@ -3692,58 +7166,102 @@ type PersonalComputeSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 
+	// Wire name: 'personal_compute'
 	PersonalCompute PersonalComputeMessage `json:"personal_compute"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *PersonalComputeSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PersonalComputeSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &personalComputeSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := personalComputeSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PersonalComputeSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PersonalComputeSetting) MarshalJSON() ([]byte, error) {
+	pb, err := personalComputeSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type PublicTokenInfo struct {
 	// Comment the token was created with, if applicable.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// Server time (in epoch milliseconds) when the token was created.
+	// Wire name: 'creation_time'
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// Server time (in epoch milliseconds) when the token will expire, or -1 if
 	// not applicable.
+	// Wire name: 'expiry_time'
 	ExpiryTime int64 `json:"expiry_time,omitempty"`
 	// The ID of this token.
+	// Wire name: 'token_id'
 	TokenId string `json:"token_id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *PublicTokenInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *PublicTokenInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &publicTokenInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := publicTokenInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s PublicTokenInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st PublicTokenInfo) MarshalJSON() ([]byte, error) {
+	pb, err := publicTokenInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to replace an IP access list.
 type ReplaceIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
+	// Wire name: 'enabled'
 	Enabled bool `json:"enabled"`
 	// The ID for the corresponding IP access list
-	IpAccessListId string `json:"-" url:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
 
+	// Wire name: 'ip_addresses'
 	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
+	// Wire name: 'label'
 	Label string `json:"label"`
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
@@ -3751,14 +7269,92 @@ type ReplaceIpAccessList struct {
 	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
+	// Wire name: 'list_type'
 	ListType ListType `json:"list_type"`
+}
+
+func (st *ReplaceIpAccessList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &replaceIpAccessListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := replaceIpAccessListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ReplaceIpAccessList) MarshalJSON() ([]byte, error) {
+	pb, err := replaceIpAccessListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type ReplaceResponse struct {
 }
 
+func (st *ReplaceResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &replaceResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := replaceResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st ReplaceResponse) MarshalJSON() ([]byte, error) {
+	pb, err := replaceResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type RestrictWorkspaceAdminsMessage struct {
+
+	// Wire name: 'status'
 	Status RestrictWorkspaceAdminsMessageStatus `json:"status"`
+}
+
+func (st *RestrictWorkspaceAdminsMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &restrictWorkspaceAdminsMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := restrictWorkspaceAdminsMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st RestrictWorkspaceAdminsMessage) MarshalJSON() ([]byte, error) {
+	pb, err := restrictWorkspaceAdminsMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RestrictWorkspaceAdminsMessageStatus string
@@ -3806,56 +7402,173 @@ type RestrictWorkspaceAdminsSetting struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 
+	// Wire name: 'restrict_workspace_admins'
 	RestrictWorkspaceAdmins RestrictWorkspaceAdminsMessage `json:"restrict_workspace_admins"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *RestrictWorkspaceAdminsSetting) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *RestrictWorkspaceAdminsSetting) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &restrictWorkspaceAdminsSettingPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := restrictWorkspaceAdminsSettingFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s RestrictWorkspaceAdminsSetting) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st RestrictWorkspaceAdminsSetting) MarshalJSON() ([]byte, error) {
+	pb, err := restrictWorkspaceAdminsSettingToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RevokeTokenRequest struct {
 	// The ID of the token to be revoked.
+	// Wire name: 'token_id'
 	TokenId string `json:"token_id"`
+}
+
+func (st *RevokeTokenRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &revokeTokenRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := revokeTokenRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st RevokeTokenRequest) MarshalJSON() ([]byte, error) {
+	pb, err := revokeTokenRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type RevokeTokenResponse struct {
 }
 
+func (st *RevokeTokenResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &revokeTokenResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := revokeTokenResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st RevokeTokenResponse) MarshalJSON() ([]byte, error) {
+	pb, err := revokeTokenResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
+}
+
 type SetStatusResponse struct {
+}
+
+func (st *SetStatusResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &setStatusResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := setStatusResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st SetStatusResponse) MarshalJSON() ([]byte, error) {
+	pb, err := setStatusResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type SlackConfig struct {
 	// [Input-Only] URL for Slack destination.
+	// Wire name: 'url'
 	Url string `json:"url,omitempty"`
 	// [Output-Only] Whether URL is set.
+	// Wire name: 'url_set'
 	UrlSet bool `json:"url_set,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *SlackConfig) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SlackConfig) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &slackConfigPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := slackConfigFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SlackConfig) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SlackConfig) MarshalJSON() ([]byte, error) {
+	pb, err := slackConfigToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type SqlResultsDownload struct {
+
+	// Wire name: 'boolean_val'
 	BooleanVal BooleanMessage `json:"boolean_val"`
 	// etag used for versioning. The response is at least as fresh as the eTag
 	// provided. This is used for optimistic concurrency control as a way to
@@ -3864,133 +7577,260 @@ type SqlResultsDownload struct {
 	// update pattern to perform setting updates in order to avoid race
 	// conditions. That is, get an etag from a GET request, and pass it with the
 	// PATCH request to identify the setting version you are updating.
+	// Wire name: 'etag'
 	Etag string `json:"etag,omitempty"`
 	// Name of the corresponding setting. This field is populated in the
 	// response, but it will not be respected even if it's set in the request
 	// body. The setting name in the path parameter will be respected instead.
 	// Setting name is required to be 'default' if the setting only has one
 	// instance per workspace.
+	// Wire name: 'setting_name'
 	SettingName string `json:"setting_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *SqlResultsDownload) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *SqlResultsDownload) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &sqlResultsDownloadPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := sqlResultsDownloadFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s SqlResultsDownload) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st SqlResultsDownload) MarshalJSON() ([]byte, error) {
+	pb, err := sqlResultsDownloadToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type StringMessage struct {
 	// Represents a generic string value.
+	// Wire name: 'value'
 	Value string `json:"value,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *StringMessage) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *StringMessage) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &stringMessagePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := stringMessageFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s StringMessage) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st StringMessage) MarshalJSON() ([]byte, error) {
+	pb, err := stringMessageToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TokenAccessControlRequest struct {
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string `json:"group_name,omitempty"`
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
 	// application ID of a service principal
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *TokenAccessControlRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TokenAccessControlRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tokenAccessControlRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tokenAccessControlRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TokenAccessControlRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TokenAccessControlRequest) MarshalJSON() ([]byte, error) {
+	pb, err := tokenAccessControlRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TokenAccessControlResponse struct {
 	// All permissions.
+	// Wire name: 'all_permissions'
 	AllPermissions []TokenPermission `json:"all_permissions,omitempty"`
 	// Display name of the user or service principal.
+	// Wire name: 'display_name'
 	DisplayName string `json:"display_name,omitempty"`
 	// name of the group
+	// Wire name: 'group_name'
 	GroupName string `json:"group_name,omitempty"`
 	// Name of the service principal.
+	// Wire name: 'service_principal_name'
 	ServicePrincipalName string `json:"service_principal_name,omitempty"`
 	// name of the user
+	// Wire name: 'user_name'
 	UserName string `json:"user_name,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *TokenAccessControlResponse) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TokenAccessControlResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tokenAccessControlResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tokenAccessControlResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TokenAccessControlResponse) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TokenAccessControlResponse) MarshalJSON() ([]byte, error) {
+	pb, err := tokenAccessControlResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TokenInfo struct {
 	// Comment that describes the purpose of the token, specified by the token
 	// creator.
+	// Wire name: 'comment'
 	Comment string `json:"comment,omitempty"`
 	// User ID of the user that created the token.
+	// Wire name: 'created_by_id'
 	CreatedById int64 `json:"created_by_id,omitempty"`
 	// Username of the user that created the token.
+	// Wire name: 'created_by_username'
 	CreatedByUsername string `json:"created_by_username,omitempty"`
 	// Timestamp when the token was created.
+	// Wire name: 'creation_time'
 	CreationTime int64 `json:"creation_time,omitempty"`
 	// Timestamp when the token expires.
+	// Wire name: 'expiry_time'
 	ExpiryTime int64 `json:"expiry_time,omitempty"`
 	// Approximate timestamp for the day the token was last used. Accurate up to
 	// 1 day.
+	// Wire name: 'last_used_day'
 	LastUsedDay int64 `json:"last_used_day,omitempty"`
 	// User ID of the user that owns the token.
+	// Wire name: 'owner_id'
 	OwnerId int64 `json:"owner_id,omitempty"`
 	// ID of the token.
+	// Wire name: 'token_id'
 	TokenId string `json:"token_id,omitempty"`
 	// If applicable, the ID of the workspace that the token was created in.
+	// Wire name: 'workspace_id'
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *TokenInfo) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TokenInfo) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tokenInfoPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tokenInfoFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TokenInfo) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TokenInfo) MarshalJSON() ([]byte, error) {
+	pb, err := tokenInfoToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TokenPermission struct {
+
+	// Wire name: 'inherited'
 	Inherited bool `json:"inherited,omitempty"`
 
+	// Wire name: 'inherited_from_object'
 	InheritedFromObject []string `json:"inherited_from_object,omitempty"`
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *TokenPermission) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TokenPermission) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tokenPermissionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tokenPermissionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TokenPermission) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TokenPermission) MarshalJSON() ([]byte, error) {
+	pb, err := tokenPermissionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Permission level
@@ -4029,41 +7869,109 @@ func (f *TokenPermissionLevel) Type() string {
 }
 
 type TokenPermissions struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []TokenAccessControlResponse `json:"access_control_list,omitempty"`
 
+	// Wire name: 'object_id'
 	ObjectId string `json:"object_id,omitempty"`
 
+	// Wire name: 'object_type'
 	ObjectType string `json:"object_type,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *TokenPermissions) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TokenPermissions) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tokenPermissionsPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tokenPermissionsFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TokenPermissions) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TokenPermissions) MarshalJSON() ([]byte, error) {
+	pb, err := tokenPermissionsToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TokenPermissionsDescription struct {
+
+	// Wire name: 'description'
 	Description string `json:"description,omitempty"`
 	// Permission level
+	// Wire name: 'permission_level'
 	PermissionLevel TokenPermissionLevel `json:"permission_level,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *TokenPermissionsDescription) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *TokenPermissionsDescription) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tokenPermissionsDescriptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tokenPermissionsDescriptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s TokenPermissionsDescription) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st TokenPermissionsDescription) MarshalJSON() ([]byte, error) {
+	pb, err := tokenPermissionsDescriptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type TokenPermissionsRequest struct {
+
+	// Wire name: 'access_control_list'
 	AccessControlList []TokenAccessControlRequest `json:"access_control_list,omitempty"`
+}
+
+func (st *TokenPermissionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &tokenPermissionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := tokenPermissionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st TokenPermissionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := tokenPermissionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is
@@ -4118,6 +8026,7 @@ func (f *TokenType) Type() string {
 type UpdateAccountIpAccessEnableRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4130,15 +8039,43 @@ type UpdateAccountIpAccessEnableRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting AccountIpAccessEnable `json:"setting"`
+}
+
+func (st *UpdateAccountIpAccessEnableRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateAccountIpAccessEnableRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateAccountIpAccessEnableRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateAccountIpAccessEnableRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateAccountIpAccessEnableRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4151,15 +8088,43 @@ type UpdateAibiDashboardEmbeddingAccessPolicySettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting AibiDashboardEmbeddingAccessPolicySetting `json:"setting"`
+}
+
+func (st *UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateAibiDashboardEmbeddingAccessPolicySettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateAibiDashboardEmbeddingAccessPolicySettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateAibiDashboardEmbeddingAccessPolicySettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateAibiDashboardEmbeddingAccessPolicySettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4172,15 +8137,43 @@ type UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting AibiDashboardEmbeddingApprovedDomainsSetting `json:"setting"`
+}
+
+func (st *UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateAibiDashboardEmbeddingApprovedDomainsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateAibiDashboardEmbeddingApprovedDomainsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateAibiDashboardEmbeddingApprovedDomainsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateAutomaticClusterUpdateSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4193,15 +8186,43 @@ type UpdateAutomaticClusterUpdateSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting AutomaticClusterUpdateSetting `json:"setting"`
+}
+
+func (st *UpdateAutomaticClusterUpdateSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateAutomaticClusterUpdateSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateAutomaticClusterUpdateSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateAutomaticClusterUpdateSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateAutomaticClusterUpdateSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateComplianceSecurityProfileSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4214,15 +8235,43 @@ type UpdateComplianceSecurityProfileSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting ComplianceSecurityProfileSetting `json:"setting"`
+}
+
+func (st *UpdateComplianceSecurityProfileSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateComplianceSecurityProfileSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateComplianceSecurityProfileSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateComplianceSecurityProfileSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateComplianceSecurityProfileSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateCspEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4235,15 +8284,43 @@ type UpdateCspEnablementAccountSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting CspEnablementAccountSetting `json:"setting"`
+}
+
+func (st *UpdateCspEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateCspEnablementAccountSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateCspEnablementAccountSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateCspEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateCspEnablementAccountSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateDashboardEmailSubscriptionsRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4256,15 +8333,43 @@ type UpdateDashboardEmailSubscriptionsRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting DashboardEmailSubscriptions `json:"setting"`
+}
+
+func (st *UpdateDashboardEmailSubscriptionsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateDashboardEmailSubscriptionsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateDashboardEmailSubscriptionsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateDashboardEmailSubscriptionsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateDashboardEmailSubscriptionsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateDefaultNamespaceSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4277,6 +8382,7 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 	// This represents the setting configuration for the default namespace in
 	// the Databricks workspace. Setting the default catalog for the workspace
@@ -4287,13 +8393,40 @@ type UpdateDefaultNamespaceSettingRequest struct {
 	// assumed). This setting requires a restart of clusters and SQL warehouses
 	// to take effect. Additionally, the default namespace only applies when
 	// using Unity Catalog-enabled compute.
+	// Wire name: 'setting'
 	Setting DefaultNamespaceSetting `json:"setting"`
+}
+
+func (st *UpdateDefaultNamespaceSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateDefaultNamespaceSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateDefaultNamespaceSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateDefaultNamespaceSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateDefaultNamespaceSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateDisableLegacyAccessRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4306,15 +8439,43 @@ type UpdateDisableLegacyAccessRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting DisableLegacyAccess `json:"setting"`
+}
+
+func (st *UpdateDisableLegacyAccessRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateDisableLegacyAccessRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateDisableLegacyAccessRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateDisableLegacyAccessRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateDisableLegacyAccessRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateDisableLegacyDbfsRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4327,15 +8488,43 @@ type UpdateDisableLegacyDbfsRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting DisableLegacyDbfs `json:"setting"`
+}
+
+func (st *UpdateDisableLegacyDbfsRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateDisableLegacyDbfsRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateDisableLegacyDbfsRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateDisableLegacyDbfsRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateDisableLegacyDbfsRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateDisableLegacyFeaturesRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4348,15 +8537,43 @@ type UpdateDisableLegacyFeaturesRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting DisableLegacyFeatures `json:"setting"`
+}
+
+func (st *UpdateDisableLegacyFeaturesRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateDisableLegacyFeaturesRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateDisableLegacyFeaturesRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateDisableLegacyFeaturesRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateDisableLegacyFeaturesRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateEnableExportNotebookRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4369,15 +8586,43 @@ type UpdateEnableExportNotebookRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting EnableExportNotebook `json:"setting"`
+}
+
+func (st *UpdateEnableExportNotebookRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateEnableExportNotebookRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateEnableExportNotebookRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateEnableExportNotebookRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateEnableExportNotebookRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateEnableNotebookTableClipboardRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4390,15 +8635,43 @@ type UpdateEnableNotebookTableClipboardRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting EnableNotebookTableClipboard `json:"setting"`
+}
+
+func (st *UpdateEnableNotebookTableClipboardRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateEnableNotebookTableClipboardRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateEnableNotebookTableClipboardRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateEnableNotebookTableClipboardRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateEnableNotebookTableClipboardRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateEnableResultsDownloadingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4411,15 +8684,43 @@ type UpdateEnableResultsDownloadingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting EnableResultsDownloading `json:"setting"`
+}
+
+func (st *UpdateEnableResultsDownloadingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateEnableResultsDownloadingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateEnableResultsDownloadingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateEnableResultsDownloadingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateEnableResultsDownloadingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4432,15 +8733,43 @@ type UpdateEnhancedSecurityMonitoringSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting EnhancedSecurityMonitoringSetting `json:"setting"`
+}
+
+func (st *UpdateEnhancedSecurityMonitoringSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateEnhancedSecurityMonitoringSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateEnhancedSecurityMonitoringSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateEnhancedSecurityMonitoringSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateEnhancedSecurityMonitoringSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateEsmEnablementAccountSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4453,20 +8782,50 @@ type UpdateEsmEnablementAccountSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting EsmEnablementAccountSetting `json:"setting"`
+}
+
+func (st *UpdateEsmEnablementAccountSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateEsmEnablementAccountSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateEsmEnablementAccountSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateEsmEnablementAccountSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateEsmEnablementAccountSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update an IP access list.
 type UpdateIpAccessList struct {
 	// Specifies whether this IP access list is enabled.
+	// Wire name: 'enabled'
 	Enabled bool `json:"enabled,omitempty"`
 	// The ID for the corresponding IP access list
-	IpAccessListId string `json:"-" url:"-"`
+	IpAccessListId string `json:"-" tf:"-"`
 
+	// Wire name: 'ip_addresses'
 	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// Label for the IP access list. This **cannot** be empty.
+	// Wire name: 'label'
 	Label string `json:"label,omitempty"`
 	// Type of IP access list. Valid values are as follows and are
 	// case-sensitive:
@@ -4474,23 +8833,42 @@ type UpdateIpAccessList struct {
 	// * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
 	// list. Exclude this IP or range. IP addresses in the block list are
 	// excluded even if they are included in an allow list.
+	// Wire name: 'list_type'
 	ListType ListType `json:"list_type,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateIpAccessList) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateIpAccessList) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateIpAccessListPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateIpAccessListFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateIpAccessList) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateIpAccessList) MarshalJSON() ([]byte, error) {
+	pb, err := updateIpAccessListToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateLlmProxyPartnerPoweredAccountRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4503,15 +8881,43 @@ type UpdateLlmProxyPartnerPoweredAccountRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting LlmProxyPartnerPoweredAccount `json:"setting"`
+}
+
+func (st *UpdateLlmProxyPartnerPoweredAccountRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateLlmProxyPartnerPoweredAccountRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateLlmProxyPartnerPoweredAccountRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateLlmProxyPartnerPoweredAccountRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateLlmProxyPartnerPoweredAccountRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateLlmProxyPartnerPoweredEnforceRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4524,15 +8930,43 @@ type UpdateLlmProxyPartnerPoweredEnforceRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting LlmProxyPartnerPoweredEnforce `json:"setting"`
+}
+
+func (st *UpdateLlmProxyPartnerPoweredEnforceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateLlmProxyPartnerPoweredEnforceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateLlmProxyPartnerPoweredEnforceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateLlmProxyPartnerPoweredEnforceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateLlmProxyPartnerPoweredEnforceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateLlmProxyPartnerPoweredWorkspaceRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4545,61 +8979,161 @@ type UpdateLlmProxyPartnerPoweredWorkspaceRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting LlmProxyPartnerPoweredWorkspace `json:"setting"`
+}
+
+func (st *UpdateLlmProxyPartnerPoweredWorkspaceRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateLlmProxyPartnerPoweredWorkspaceRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateLlmProxyPartnerPoweredWorkspaceRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateLlmProxyPartnerPoweredWorkspaceRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateLlmProxyPartnerPoweredWorkspaceRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Update a private endpoint rule
 type UpdateNccPrivateEndpointRuleRequest struct {
 	// The ID of a network connectivity configuration, which is the parent
 	// resource of this private endpoint rule object.
-	NetworkConnectivityConfigId string `json:"-" url:"-"`
+	NetworkConnectivityConfigId string `json:"-" tf:"-"`
 	// Properties of the new private endpoint rule. Note that you must approve
 	// the endpoint in Azure portal after initialization.
+	// Wire name: 'private_endpoint_rule'
 	PrivateEndpointRule UpdatePrivateEndpointRule `json:"private_endpoint_rule"`
 	// Your private endpoint rule ID.
-	PrivateEndpointRuleId string `json:"-" url:"-"`
+	PrivateEndpointRuleId string `json:"-" tf:"-"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
 	// using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
 	// Specification of elements in sequence or map fields is not allowed, as
 	// only the entire collection field can be specified. Field names must
 	// exactly match the resource field names.
-	UpdateMask string `json:"-" url:"update_mask"`
+	UpdateMask string `json:"-" tf:"-"`
+}
+
+func (st *UpdateNccPrivateEndpointRuleRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateNccPrivateEndpointRuleRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateNccPrivateEndpointRuleRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateNccPrivateEndpointRuleRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateNccPrivateEndpointRuleRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Update a network policy
 type UpdateNetworkPolicyRequest struct {
+
+	// Wire name: 'network_policy'
 	NetworkPolicy AccountNetworkPolicy `json:"network_policy"`
 	// The unique identifier for the network policy.
-	NetworkPolicyId string `json:"-" url:"-"`
+	NetworkPolicyId string `json:"-" tf:"-"`
+}
+
+func (st *UpdateNetworkPolicyRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateNetworkPolicyRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateNetworkPolicyRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateNetworkPolicyRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateNetworkPolicyRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateNotificationDestinationRequest struct {
 	// The configuration for the notification destination. Must wrap EXACTLY one
 	// of the nested configs.
+	// Wire name: 'config'
 	Config *Config `json:"config,omitempty"`
 	// The display name for the notification destination.
+	// Wire name: 'display_name'
 	DisplayName string `json:"display_name,omitempty"`
 	// UUID identifying notification destination.
-	Id string `json:"-" url:"-"`
+	Id string `json:"-" tf:"-"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdateNotificationDestinationRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateNotificationDestinationRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateNotificationDestinationRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdateNotificationDestinationRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateNotificationDestinationRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdatePersonalComputeSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4612,9 +9146,36 @@ type UpdatePersonalComputeSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting PersonalComputeSetting `json:"setting"`
+}
+
+func (st *UpdatePersonalComputeSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updatePersonalComputeSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updatePersonalComputeSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdatePersonalComputeSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updatePersonalComputeSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Properties of the new private endpoint rule. Note that you must approve the
@@ -4625,11 +9186,13 @@ type UpdatePrivateEndpointRule struct {
 	//
 	// Domain names of target private link service. When updating this field,
 	// the full list of target domain_names must be specified.
+	// Wire name: 'domain_names'
 	DomainNames []string `json:"domain_names,omitempty"`
 	// Only used by private endpoints towards an AWS S3 service.
 	//
 	// Update this field to activate/deactivate this private endpoint to allow
 	// egress access from serverless compute resources.
+	// Wire name: 'enabled'
 	Enabled bool `json:"enabled,omitempty"`
 	// Only used by private endpoints towards AWS S3 service.
 	//
@@ -4637,26 +9200,70 @@ type UpdatePrivateEndpointRule struct {
 	// endpoint. The bucket names must be in the same region as the NCC/endpoint
 	// service. When updating this field, we perform full update on this field.
 	// Please ensure a full list of desired resource_names is provided.
+	// Wire name: 'resource_names'
 	ResourceNames []string `json:"resource_names,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *UpdatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *UpdatePrivateEndpointRule) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updatePrivateEndpointRulePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updatePrivateEndpointRuleFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s UpdatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st UpdatePrivateEndpointRule) MarshalJSON() ([]byte, error) {
+	pb, err := updatePrivateEndpointRuleToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type UpdateResponse struct {
+}
+
+func (st *UpdateResponse) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateResponsePb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateResponseFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateResponse) MarshalJSON() ([]byte, error) {
+	pb, err := updateResponseToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4669,15 +9276,43 @@ type UpdateRestrictWorkspaceAdminsSettingRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting RestrictWorkspaceAdminsSetting `json:"setting"`
+}
+
+func (st *UpdateRestrictWorkspaceAdminsSettingRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateRestrictWorkspaceAdminsSettingRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateRestrictWorkspaceAdminsSettingRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateRestrictWorkspaceAdminsSettingRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateRestrictWorkspaceAdminsSettingRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Details required to update a setting.
 type UpdateSqlResultsDownloadRequest struct {
 	// This should always be set to true for Settings API. Added for AIP
 	// compliance.
+	// Wire name: 'allow_missing'
 	AllowMissing bool `json:"allow_missing"`
 	// The field mask must be a single string, with multiple fields separated by
 	// commas (no spaces). The field path is relative to the resource object,
@@ -4690,17 +9325,70 @@ type UpdateSqlResultsDownloadRequest struct {
 	// always explicitly list the fields being updated and avoid using `*`
 	// wildcards, as it can lead to unintended results if the API changes in the
 	// future.
+	// Wire name: 'field_mask'
 	FieldMask string `json:"field_mask"`
 
+	// Wire name: 'setting'
 	Setting SqlResultsDownload `json:"setting"`
+}
+
+func (st *UpdateSqlResultsDownloadRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateSqlResultsDownloadRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateSqlResultsDownloadRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateSqlResultsDownloadRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateSqlResultsDownloadRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 // Update workspace network option
 type UpdateWorkspaceNetworkOptionRequest struct {
 	// The workspace ID.
-	WorkspaceId int64 `json:"-" url:"-"`
+	WorkspaceId int64 `json:"-" tf:"-"`
 
+	// Wire name: 'workspace_network_option'
 	WorkspaceNetworkOption WorkspaceNetworkOption `json:"workspace_network_option"`
+}
+
+func (st *UpdateWorkspaceNetworkOptionRequest) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &updateWorkspaceNetworkOptionRequestPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := updateWorkspaceNetworkOptionRequestFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
+}
+
+func (st UpdateWorkspaceNetworkOptionRequest) MarshalJSON() ([]byte, error) {
+	pb, err := updateWorkspaceNetworkOptionRequestToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }
 
 type WorkspaceConf map[string]string
@@ -4711,17 +9399,36 @@ type WorkspaceNetworkOption struct {
 	// workspace. Each workspace can only be linked to one policy at a time. If
 	// no policy is explicitly assigned, the workspace will use
 	// 'default-policy'.
+	// Wire name: 'network_policy_id'
 	NetworkPolicyId string `json:"network_policy_id,omitempty"`
 	// The workspace ID.
+	// Wire name: 'workspace_id'
 	WorkspaceId int64 `json:"workspace_id,omitempty"`
 
-	ForceSendFields []string `json:"-" url:"-"`
+	ForceSendFields []string `json:"-" tf:"-"`
 }
 
-func (s *WorkspaceNetworkOption) UnmarshalJSON(b []byte) error {
-	return marshal.Unmarshal(b, s)
+func (st *WorkspaceNetworkOption) UnmarshalJSON(b []byte) error {
+	if st == nil {
+		return fmt.Errorf("json.Unmarshal on nil pointer")
+	}
+	pb := &workspaceNetworkOptionPb{}
+	err := json.Unmarshal(b, pb)
+	if err != nil {
+		return err
+	}
+	tmp, err := workspaceNetworkOptionFromPb(pb)
+	if err != nil {
+		return err
+	}
+	*st = *tmp
+	return nil
 }
 
-func (s WorkspaceNetworkOption) MarshalJSON() ([]byte, error) {
-	return marshal.Marshal(s)
+func (st WorkspaceNetworkOption) MarshalJSON() ([]byte, error) {
+	pb, err := workspaceNetworkOptionToPb(&st)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(pb)
 }

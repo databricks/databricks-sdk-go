@@ -11,33 +11,23 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountMetastoreAssignmentsService interface {
 
-	// Assigns a workspace to a metastore.
-	//
 	// Creates an assignment to a metastore for a workspace
 	Create(ctx context.Context, request AccountsCreateMetastoreAssignment) error
 
-	// Delete a metastore assignment.
-	//
 	// Deletes a metastore assignment to a workspace, leaving the workspace with
 	// no metastore.
 	Delete(ctx context.Context, request DeleteAccountMetastoreAssignmentRequest) error
 
-	// Gets the metastore assignment for a workspace.
-	//
 	// Gets the metastore assignment, if any, for the workspace specified by ID.
 	// If the workspace is assigned a metastore, the mappig will be returned. If
 	// no metastore is assigned to the workspace, the assignment will not be
 	// found and a 404 returned.
 	Get(ctx context.Context, request GetAccountMetastoreAssignmentRequest) (*AccountsMetastoreAssignment, error)
 
-	// Get all workspaces assigned to a metastore.
-	//
 	// Gets a list of all Databricks workspace IDs that have been assigned to
 	// given metastore.
 	List(ctx context.Context, request ListAccountMetastoreAssignmentsRequest) (*ListAccountMetastoreAssignmentsResponse, error)
 
-	// Updates a metastore assignment to a workspaces.
-	//
 	// Updates an assignment to a metastore for a workspace. Currently, only the
 	// default catalog may be updated.
 	Update(ctx context.Context, request AccountsUpdateMetastoreAssignment) error
@@ -49,29 +39,19 @@ type AccountMetastoreAssignmentsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountMetastoresService interface {
 
-	// Create metastore.
-	//
 	// Creates a Unity Catalog metastore.
 	Create(ctx context.Context, request AccountsCreateMetastore) (*AccountsMetastoreInfo, error)
 
-	// Delete a metastore.
-	//
 	// Deletes a Unity Catalog metastore for an account, both specified by ID.
 	Delete(ctx context.Context, request DeleteAccountMetastoreRequest) error
 
-	// Get a metastore.
-	//
 	// Gets a Unity Catalog metastore from an account, both specified by ID.
 	Get(ctx context.Context, request GetAccountMetastoreRequest) (*AccountsMetastoreInfo, error)
 
-	// Get all metastores associated with an account.
-	//
 	// Gets all Unity Catalog metastores associated with an account specified by
 	// ID.
 	List(ctx context.Context) (*ListMetastoresResponse, error)
 
-	// Update a metastore.
-	//
 	// Updates an existing Unity Catalog metastore.
 	Update(ctx context.Context, request AccountsUpdateMetastore) (*AccountsMetastoreInfo, error)
 }
@@ -81,8 +61,6 @@ type AccountMetastoresService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type AccountStorageCredentialsService interface {
 
-	// Create a storage credential.
-	//
 	// Creates a new storage credential. The request object is specific to the
 	// cloud:
 	//
@@ -93,27 +71,19 @@ type AccountStorageCredentialsService interface {
 	// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
 	Create(ctx context.Context, request AccountsCreateStorageCredential) (*AccountsStorageCredentialInfo, error)
 
-	// Delete a storage credential.
-	//
 	// Deletes a storage credential from the metastore. The caller must be an
 	// owner of the storage credential.
 	Delete(ctx context.Context, request DeleteAccountStorageCredentialRequest) error
 
-	// Gets the named storage credential.
-	//
 	// Gets a storage credential from the metastore. The caller must be a
 	// metastore admin, the owner of the storage credential, or have a level of
 	// privilege on the storage credential.
 	Get(ctx context.Context, request GetAccountStorageCredentialRequest) (*AccountsStorageCredentialInfo, error)
 
-	// Get all storage credentials assigned to a metastore.
-	//
 	// Gets a list of all storage credentials that have been assigned to given
 	// metastore.
 	List(ctx context.Context, request ListAccountStorageCredentialsRequest) (*ListAccountStorageCredentialsResponse, error)
 
-	// Updates a storage credential.
-	//
 	// Updates a storage credential on the metastore. The caller must be the
 	// owner of the storage credential. If the caller is a metastore admin, only
 	// the __owner__ credential can be changed.
@@ -127,15 +97,11 @@ type AccountStorageCredentialsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ArtifactAllowlistsService interface {
 
-	// Get an artifact allowlist.
-	//
 	// Get the artifact allowlist of a certain artifact type. The caller must be
 	// a metastore admin or have the **MANAGE ALLOWLIST** privilege on the
 	// metastore.
 	Get(ctx context.Context, request GetArtifactAllowlistRequest) (*ArtifactAllowlistInfo, error)
 
-	// Set an artifact allowlist.
-	//
 	// Set the artifact allowlist of a certain artifact type. The whole artifact
 	// allowlist is replaced with the new allowlist. The caller must be a
 	// metastore admin or have the **MANAGE ALLOWLIST** privilege on the
@@ -155,27 +121,19 @@ type ArtifactAllowlistsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CatalogsService interface {
 
-	// Create a catalog.
-	//
 	// Creates a new catalog instance in the parent metastore if the caller is a
 	// metastore admin or has the **CREATE_CATALOG** privilege.
 	Create(ctx context.Context, request CreateCatalog) (*CatalogInfo, error)
 
-	// Delete a catalog.
-	//
 	// Deletes the catalog that matches the supplied name. The caller must be a
 	// metastore admin or the owner of the catalog.
 	Delete(ctx context.Context, request DeleteCatalogRequest) error
 
-	// Get a catalog.
-	//
 	// Gets the specified catalog in a metastore. The caller must be a metastore
 	// admin, the owner of the catalog, or a user that has the **USE_CATALOG**
 	// privilege set for their account.
 	Get(ctx context.Context, request GetCatalogRequest) (*CatalogInfo, error)
 
-	// List catalogs.
-	//
 	// Gets an array of catalogs in the metastore. If the caller is the
 	// metastore admin, all catalogs will be retrieved. Otherwise, only catalogs
 	// owned by the caller (or for which the caller has the **USE_CATALOG**
@@ -183,8 +141,6 @@ type CatalogsService interface {
 	// ordering of the elements in the array.
 	List(ctx context.Context, request ListCatalogsRequest) (*ListCatalogsResponse, error)
 
-	// Update a catalog.
-	//
 	// Updates the catalog that matches the supplied name. The caller must be
 	// either the owner of the catalog, or a metastore admin (when changing the
 	// owner field of the catalog).
@@ -206,8 +162,6 @@ type CatalogsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ConnectionsService interface {
 
-	// Create a connection.
-	//
 	// Creates a new connection
 	//
 	// Creates a new connection to an external data source. It allows users to
@@ -215,23 +169,15 @@ type ConnectionsService interface {
 	// external server.
 	Create(ctx context.Context, request CreateConnection) (*ConnectionInfo, error)
 
-	// Delete a connection.
-	//
 	// Deletes the connection that matches the supplied name.
 	Delete(ctx context.Context, request DeleteConnectionRequest) error
 
-	// Get a connection.
-	//
 	// Gets a connection from it's name.
 	Get(ctx context.Context, request GetConnectionRequest) (*ConnectionInfo, error)
 
-	// List connections.
-	//
 	// List all connections.
 	List(ctx context.Context, request ListConnectionsRequest) (*ListConnectionsResponse, error)
 
-	// Update a connection.
-	//
 	// Updates the connection that matches the supplied name.
 	Update(ctx context.Context, request UpdateConnection) (*ConnectionInfo, error)
 }
@@ -248,8 +194,6 @@ type ConnectionsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type CredentialsService interface {
 
-	// Create a credential.
-	//
 	// Creates a new credential. The type of credential to be created is
 	// determined by the **purpose** field, which should be either **SERVICE**
 	// or **STORAGE**.
@@ -259,28 +203,20 @@ type CredentialsService interface {
 	// **CREATE_SERVICE_CREDENTIAL** for service credentials.
 	CreateCredential(ctx context.Context, request CreateCredentialRequest) (*CredentialInfo, error)
 
-	// Delete a credential.
-	//
 	// Deletes a service or storage credential from the metastore. The caller
 	// must be an owner of the credential.
 	DeleteCredential(ctx context.Context, request DeleteCredentialRequest) error
 
-	// Generate a temporary service credential.
-	//
 	// Returns a set of temporary credentials generated using the specified
 	// service credential. The caller must be a metastore admin or have the
 	// metastore privilege **ACCESS** on the service credential.
 	GenerateTemporaryServiceCredential(ctx context.Context, request GenerateTemporaryServiceCredentialRequest) (*TemporaryCredentials, error)
 
-	// Get a credential.
-	//
 	// Gets a service or storage credential from the metastore. The caller must
 	// be a metastore admin, the owner of the credential, or have any permission
 	// on the credential.
 	GetCredential(ctx context.Context, request GetCredentialRequest) (*CredentialInfo, error)
 
-	// List credentials.
-	//
 	// Gets an array of credentials (as __CredentialInfo__ objects).
 	//
 	// The array is limited to only the credentials that the caller has
@@ -289,8 +225,6 @@ type CredentialsService interface {
 	// of the elements in the array.
 	ListCredentials(ctx context.Context, request ListCredentialsRequest) (*ListCredentialsResponse, error)
 
-	// Update a credential.
-	//
 	// Updates a service or storage credential on the metastore.
 	//
 	// The caller must be the owner of the credential or a metastore admin or
@@ -298,8 +232,6 @@ type CredentialsService interface {
 	// the __owner__ field can be changed.
 	UpdateCredential(ctx context.Context, request UpdateCredentialRequest) (*CredentialInfo, error)
 
-	// Validate a credential.
-	//
 	// Validates a credential.
 	//
 	// For service credentials (purpose is **SERVICE**), either the
@@ -336,28 +268,20 @@ type CredentialsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ExternalLocationsService interface {
 
-	// Create an external location.
-	//
 	// Creates a new external location entry in the metastore. The caller must
 	// be a metastore admin or have the **CREATE_EXTERNAL_LOCATION** privilege
 	// on both the metastore and the associated storage credential.
 	Create(ctx context.Context, request CreateExternalLocation) (*ExternalLocationInfo, error)
 
-	// Delete an external location.
-	//
 	// Deletes the specified external location from the metastore. The caller
 	// must be the owner of the external location.
 	Delete(ctx context.Context, request DeleteExternalLocationRequest) error
 
-	// Get an external location.
-	//
 	// Gets an external location from the metastore. The caller must be either a
 	// metastore admin, the owner of the external location, or a user that has
 	// some privilege on the external location.
 	Get(ctx context.Context, request GetExternalLocationRequest) (*ExternalLocationInfo, error)
 
-	// List external locations.
-	//
 	// Gets an array of external locations (__ExternalLocationInfo__ objects)
 	// from the metastore. The caller must be a metastore admin, the owner of
 	// the external location, or a user that has some privilege on the external
@@ -365,8 +289,6 @@ type ExternalLocationsService interface {
 	// the array.
 	List(ctx context.Context, request ListExternalLocationsRequest) (*ListExternalLocationsResponse, error)
 
-	// Update an external location.
-	//
 	// Updates an external location in the metastore. The caller must be the
 	// owner of the external location, or be a metastore admin. In the second
 	// case, the admin can only update the name of the external location.
@@ -383,8 +305,6 @@ type ExternalLocationsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type FunctionsService interface {
 
-	// Create a function.
-	//
 	// **WARNING: This API is experimental and will change in future versions**
 	//
 	// Creates a new function
@@ -394,8 +314,6 @@ type FunctionsService interface {
 	// **USE_SCHEMA** and **CREATE_FUNCTION** on the function's parent schema
 	Create(ctx context.Context, request CreateFunctionRequest) (*FunctionInfo, error)
 
-	// Delete a function.
-	//
 	// Deletes the function that matches the supplied name. For the deletion to
 	// succeed, the user must satisfy one of the following conditions: - Is the
 	// owner of the function's parent catalog - Is the owner of the function's
@@ -405,8 +323,6 @@ type FunctionsService interface {
 	// privilege on its parent schema
 	Delete(ctx context.Context, request DeleteFunctionRequest) error
 
-	// Get a function.
-	//
 	// Gets a function from within a parent catalog and schema. For the fetch to
 	// succeed, the user must satisfy one of the following requirements: - Is a
 	// metastore admin - Is an owner of the function's parent catalog - Have the
@@ -416,8 +332,6 @@ type FunctionsService interface {
 	// parent schema, and the **EXECUTE** privilege on the function itself
 	Get(ctx context.Context, request GetFunctionRequest) (*FunctionInfo, error)
 
-	// List functions.
-	//
 	// List functions within the specified parent catalog and schema. If the
 	// user is a metastore admin, all functions are returned in the output list.
 	// Otherwise, the user must have the **USE_CATALOG** privilege on the
@@ -427,8 +341,6 @@ type FunctionsService interface {
 	// a specific ordering of the elements in the array.
 	List(ctx context.Context, request ListFunctionsRequest) (*ListFunctionsResponse, error)
 
-	// Update a function.
-	//
 	// Updates the function that matches the supplied name. Only the owner of
 	// the function can be updated. If the user is not a metastore admin, the
 	// user must be a member of the group that is the new function owner. - Is a
@@ -455,20 +367,14 @@ type FunctionsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type GrantsService interface {
 
-	// Get permissions.
-	//
 	// Gets the permissions for a securable. Does not include inherited
 	// permissions.
 	Get(ctx context.Context, request GetGrantRequest) (*GetPermissionsResponse, error)
 
-	// Get effective permissions.
-	//
 	// Gets the effective permissions for a securable. Includes inherited
 	// permissions from any parent securables.
 	GetEffective(ctx context.Context, request GetEffectiveRequest) (*EffectivePermissionsList, error)
 
-	// Update permissions.
-	//
 	// Updates the permissions for a securable.
 	Update(ctx context.Context, request UpdatePermissions) (*UpdatePermissionsResponse, error)
 }
@@ -491,16 +397,12 @@ type GrantsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type MetastoresService interface {
 
-	// Create an assignment.
-	//
 	// Creates a new metastore assignment. If an assignment for the same
 	// __workspace_id__ exists, it will be overwritten by the new
 	// __metastore_id__ and __default_catalog_name__. The caller must be an
 	// account admin.
 	Assign(ctx context.Context, request CreateMetastoreAssignment) error
 
-	// Create a metastore.
-	//
 	// Creates a new metastore based on a provided name and optional storage
 	// root path. By default (if the __owner__ field is not set), the owner of
 	// the new metastore is the user calling the __createMetastore__ API. If the
@@ -508,51 +410,35 @@ type MetastoresService interface {
 	// assigned to the System User instead.
 	Create(ctx context.Context, request CreateMetastore) (*MetastoreInfo, error)
 
-	// Get metastore assignment for workspace.
-	//
 	// Gets the metastore assignment for the workspace being accessed.
 	Current(ctx context.Context) (*MetastoreAssignment, error)
 
-	// Delete a metastore.
-	//
 	// Deletes a metastore. The caller must be a metastore admin.
 	Delete(ctx context.Context, request DeleteMetastoreRequest) error
 
-	// Get a metastore.
-	//
 	// Gets a metastore that matches the supplied ID. The caller must be a
 	// metastore admin to retrieve this info.
 	Get(ctx context.Context, request GetMetastoreRequest) (*MetastoreInfo, error)
 
-	// List metastores.
-	//
 	// Gets an array of the available metastores (as __MetastoreInfo__ objects).
 	// The caller must be an admin to retrieve this info. There is no guarantee
 	// of a specific ordering of the elements in the array.
 	List(ctx context.Context, request ListMetastoresRequest) (*ListMetastoresResponse, error)
 
-	// Get a metastore summary.
-	//
 	// Gets information about a metastore. This summary includes the storage
 	// credential, the cloud vendor, the cloud region, and the global metastore
 	// ID.
 	Summary(ctx context.Context) (*GetMetastoreSummaryResponse, error)
 
-	// Delete an assignment.
-	//
 	// Deletes a metastore assignment. The caller must be an account
 	// administrator.
 	Unassign(ctx context.Context, request UnassignRequest) error
 
-	// Update a metastore.
-	//
 	// Updates information for a specific metastore. The caller must be a
 	// metastore admin. If the __owner__ field is set to the empty string
 	// (**""**), the ownership is updated to the System User.
 	Update(ctx context.Context, request UpdateMetastore) (*MetastoreInfo, error)
 
-	// Update an assignment.
-	//
 	// Updates a metastore assignment. This operation can be used to update
 	// __metastore_id__ or __default_catalog_name__ for a specified Workspace,
 	// if the Workspace is already assigned a metastore. The caller must be an
@@ -572,8 +458,6 @@ type MetastoresService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type ModelVersionsService interface {
 
-	// Delete a Model Version.
-	//
 	// Deletes a model version from the specified registered model. Any aliases
 	// assigned to the model version will also be deleted.
 	//
@@ -583,8 +467,6 @@ type ModelVersionsService interface {
 	// privilege on the parent schema.
 	Delete(ctx context.Context, request DeleteModelVersionRequest) error
 
-	// Get a Model Version.
-	//
 	// Get a model version.
 	//
 	// The caller must be a metastore admin or an owner of (or have the
@@ -594,8 +476,6 @@ type ModelVersionsService interface {
 	// parent schema.
 	Get(ctx context.Context, request GetModelVersionRequest) (*ModelVersionInfo, error)
 
-	// Get Model Version By Alias.
-	//
 	// Get a model version by alias.
 	//
 	// The caller must be a metastore admin or an owner of (or have the
@@ -604,8 +484,6 @@ type ModelVersionsService interface {
 	// the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 	GetByAlias(ctx context.Context, request GetByAliasRequest) (*ModelVersionInfo, error)
 
-	// List Model Versions.
-	//
 	// List model versions. You can list model versions under a particular
 	// schema, or list all model versions in the current metastore.
 	//
@@ -622,8 +500,6 @@ type ModelVersionsService interface {
 	// tags.
 	List(ctx context.Context, request ListModelVersionsRequest) (*ListModelVersionsResponse, error)
 
-	// Update a Model Version.
-	//
 	// Updates the specified model version.
 	//
 	// The caller must be a metastore admin or an owner of the parent registered
@@ -641,20 +517,14 @@ type ModelVersionsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type OnlineTablesService interface {
 
-	// Create an Online Table.
-	//
 	// Create a new Online Table.
 	Create(ctx context.Context, request CreateOnlineTableRequest) (*OnlineTable, error)
 
-	// Delete an Online Table.
-	//
 	// Delete an online table. Warning: This will delete all the data in the
 	// online table. If the source Delta table was deleted or modified since
 	// this Online Table was created, this will lose the data forever!
 	Delete(ctx context.Context, request DeleteOnlineTableRequest) error
 
-	// Get an Online Table.
-	//
 	// Get information about an existing online table and its status.
 	Get(ctx context.Context, request GetOnlineTableRequest) (*OnlineTable, error)
 }
@@ -671,8 +541,6 @@ type OnlineTablesService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type QualityMonitorsService interface {
 
-	// Cancel refresh.
-	//
 	// Cancel an active monitor refresh for the given refresh ID.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
@@ -685,8 +553,6 @@ type QualityMonitorsService interface {
 	// was created.
 	CancelRefresh(ctx context.Context, request CancelRefreshRequest) error
 
-	// Create a table monitor.
-	//
 	// Creates a new monitor for the specified table.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog,
@@ -701,8 +567,6 @@ type QualityMonitorsService interface {
 	// where this call was made.
 	Create(ctx context.Context, request CreateMonitor) (*MonitorInfo, error)
 
-	// Delete a table monitor.
-	//
 	// Deletes a monitor for the specified table.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
@@ -718,8 +582,6 @@ type QualityMonitorsService interface {
 	// this call; those assets must be manually cleaned up (if desired).
 	Delete(ctx context.Context, request DeleteQualityMonitorRequest) error
 
-	// Get a table monitor.
-	//
 	// Gets a monitor for the specified table.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
@@ -734,8 +596,6 @@ type QualityMonitorsService interface {
 	// than where the monitor was created.
 	Get(ctx context.Context, request GetQualityMonitorRequest) (*MonitorInfo, error)
 
-	// Get refresh.
-	//
 	// Gets info about a specific monitor refresh using the given refresh ID.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
@@ -748,8 +608,6 @@ type QualityMonitorsService interface {
 	// was created.
 	GetRefresh(ctx context.Context, request GetRefreshRequest) (*MonitorRefreshInfo, error)
 
-	// List refreshes.
-	//
 	// Gets an array containing the history of the most recent refreshes (up to
 	// 25) for this table.
 	//
@@ -763,8 +621,6 @@ type QualityMonitorsService interface {
 	// was created.
 	ListRefreshes(ctx context.Context, request ListRefreshesRequest) (*MonitorRefreshListResponse, error)
 
-	// Regenerate a monitoring dashboard.
-	//
 	// Regenerates the monitoring dashboard for the specified table.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
@@ -778,8 +634,6 @@ type QualityMonitorsService interface {
 	// specified when the monitor was created.
 	RegenerateDashboard(ctx context.Context, request RegenerateDashboardRequest) (*RegenerateDashboardResponse, error)
 
-	// Queue a metric refresh for a monitor.
-	//
 	// Queues a metric refresh on the monitor for the specified table. The
 	// refresh will execute in the background.
 	//
@@ -793,8 +647,6 @@ type QualityMonitorsService interface {
 	// was created.
 	RunRefresh(ctx context.Context, request RunRefreshRequest) (*MonitorRefreshInfo, error)
 
-	// Update a table monitor.
-	//
 	// Updates a monitor for the specified table.
 	//
 	// The caller must either: 1. be an owner of the table's parent catalog 2.
@@ -844,8 +696,6 @@ type QualityMonitorsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type RegisteredModelsService interface {
 
-	// Create a Registered Model.
-	//
 	// Creates a new registered model in Unity Catalog.
 	//
 	// File storage for model versions in the registered model will be located
@@ -860,8 +710,6 @@ type RegisteredModelsService interface {
 	// FUNCTION** privilege on the parent schema.
 	Create(ctx context.Context, request CreateRegisteredModelRequest) (*RegisteredModelInfo, error)
 
-	// Delete a Registered Model.
-	//
 	// Deletes a registered model and all its model versions from the specified
 	// parent catalog and schema.
 	//
@@ -871,8 +719,6 @@ type RegisteredModelsService interface {
 	// privilege on the parent schema.
 	Delete(ctx context.Context, request DeleteRegisteredModelRequest) error
 
-	// Delete a Registered Model Alias.
-	//
 	// Deletes a registered model alias.
 	//
 	// The caller must be a metastore admin or an owner of the registered model.
@@ -881,8 +727,6 @@ type RegisteredModelsService interface {
 	// privilege on the parent schema.
 	DeleteAlias(ctx context.Context, request DeleteAliasRequest) error
 
-	// Get a Registered Model.
-	//
 	// Get a registered model.
 	//
 	// The caller must be a metastore admin or an owner of (or have the
@@ -891,8 +735,6 @@ type RegisteredModelsService interface {
 	// the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 	Get(ctx context.Context, request GetRegisteredModelRequest) (*RegisteredModelInfo, error)
 
-	// List Registered Models.
-	//
 	// List registered models. You can list registered models under a particular
 	// schema, or list all registered models in the current metastore.
 	//
@@ -908,8 +750,6 @@ type RegisteredModelsService interface {
 	// response.
 	List(ctx context.Context, request ListRegisteredModelsRequest) (*ListRegisteredModelsResponse, error)
 
-	// Set a Registered Model Alias.
-	//
 	// Set an alias on the specified registered model.
 	//
 	// The caller must be a metastore admin or an owner of the registered model.
@@ -918,8 +758,6 @@ type RegisteredModelsService interface {
 	// privilege on the parent schema.
 	SetAlias(ctx context.Context, request SetRegisteredModelAliasRequest) (*RegisteredModelAlias, error)
 
-	// Update a Registered Model.
-	//
 	// Updates the specified registered model.
 	//
 	// The caller must be a metastore admin or an owner of the registered model.
@@ -944,16 +782,12 @@ type RegisteredModelsService interface {
 // [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas
 type ResourceQuotasService interface {
 
-	// Get information for a single resource quota.
-	//
 	// The GetQuota API returns usage information for a single resource quota,
 	// defined as a child-parent pair. This API also refreshes the quota count
 	// if it is out of date. Refreshes are triggered asynchronously. The updated
 	// count might not be returned in the first call.
 	GetQuota(ctx context.Context, request GetQuotaRequest) (*GetQuotaResponse, error)
 
-	// List all resource quotas under a metastore.
-	//
 	// ListQuotas returns all quota values under the metastore. There are no
 	// SLAs on the freshness of the counts returned. This API does not trigger a
 	// refresh of quota counts.
@@ -969,28 +803,20 @@ type ResourceQuotasService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SchemasService interface {
 
-	// Create a schema.
-	//
 	// Creates a new schema for catalog in the Metatastore. The caller must be a
 	// metastore admin, or have the **CREATE_SCHEMA** privilege in the parent
 	// catalog.
 	Create(ctx context.Context, request CreateSchema) (*SchemaInfo, error)
 
-	// Delete a schema.
-	//
 	// Deletes the specified schema from the parent catalog. The caller must be
 	// the owner of the schema or an owner of the parent catalog.
 	Delete(ctx context.Context, request DeleteSchemaRequest) error
 
-	// Get a schema.
-	//
 	// Gets the specified schema within the metastore. The caller must be a
 	// metastore admin, the owner of the schema, or a user that has the
 	// **USE_SCHEMA** privilege on the schema.
 	Get(ctx context.Context, request GetSchemaRequest) (*SchemaInfo, error)
 
-	// List schemas.
-	//
 	// Gets an array of schemas for a catalog in the metastore. If the caller is
 	// the metastore admin or the owner of the parent catalog, all schemas for
 	// the catalog will be retrieved. Otherwise, only schemas owned by the
@@ -999,8 +825,6 @@ type SchemasService interface {
 	// in the array.
 	List(ctx context.Context, request ListSchemasRequest) (*ListSchemasResponse, error)
 
-	// Update a schema.
-	//
 	// Updates a schema for a catalog. The caller must be the owner of the
 	// schema or a metastore admin. If the caller is a metastore admin, only the
 	// __owner__ field can be changed in the update. If the __name__ field must
@@ -1026,26 +850,21 @@ type SchemasService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type StorageCredentialsService interface {
 
-	// Create a storage credential.
-	//
 	// Creates a new storage credential.
+	//
+	// The caller must be a metastore admin or have the
+	// **CREATE_STORAGE_CREDENTIAL** privilege on the metastore.
 	Create(ctx context.Context, request CreateStorageCredential) (*StorageCredentialInfo, error)
 
-	// Delete a credential.
-	//
 	// Deletes a storage credential from the metastore. The caller must be an
 	// owner of the storage credential.
 	Delete(ctx context.Context, request DeleteStorageCredentialRequest) error
 
-	// Get a credential.
-	//
 	// Gets a storage credential from the metastore. The caller must be a
 	// metastore admin, the owner of the storage credential, or have some
 	// permission on the storage credential.
 	Get(ctx context.Context, request GetStorageCredentialRequest) (*StorageCredentialInfo, error)
 
-	// List credentials.
-	//
 	// Gets an array of storage credentials (as __StorageCredentialInfo__
 	// objects). The array is limited to only those storage credentials the
 	// caller has permission to access. If the caller is a metastore admin,
@@ -1053,13 +872,13 @@ type StorageCredentialsService interface {
 	// specific ordering of the elements in the array.
 	List(ctx context.Context, request ListStorageCredentialsRequest) (*ListStorageCredentialsResponse, error)
 
-	// Update a credential.
-	//
 	// Updates a storage credential on the metastore.
+	//
+	// The caller must be the owner of the storage credential or a metastore
+	// admin. If the caller is a metastore admin, only the **owner** field can
+	// be changed.
 	Update(ctx context.Context, request UpdateStorageCredential) (*StorageCredentialInfo, error)
 
-	// Validate a storage credential.
-	//
 	// Validates a storage credential. At least one of
 	// __external_location_name__ and __url__ need to be provided. If only one
 	// of them is provided, it will be used for validation. And if both are
@@ -1083,20 +902,14 @@ type StorageCredentialsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type SystemSchemasService interface {
 
-	// Disable a system schema.
-	//
 	// Disables the system schema and removes it from the system catalog. The
 	// caller must be an account admin or a metastore admin.
 	Disable(ctx context.Context, request DisableRequest) error
 
-	// Enable a system schema.
-	//
 	// Enables the system schema and adds it to the system catalog. The caller
 	// must be an account admin or a metastore admin.
 	Enable(ctx context.Context, request EnableRequest) error
 
-	// List system schemas.
-	//
 	// Gets an array of system schemas for a metastore. The caller must be an
 	// account admin or a metastore admin.
 	List(ctx context.Context, request ListSystemSchemasRequest) (*ListSystemSchemasResponse, error)
@@ -1119,8 +932,6 @@ type SystemSchemasService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type TableConstraintsService interface {
 
-	// Create a table constraint.
-	//
 	// Creates a new table constraint.
 	//
 	// For the table constraint creation to succeed, the user must satisfy both
@@ -1133,8 +944,6 @@ type TableConstraintsService interface {
 	// the owner of the referenced parent table.
 	Create(ctx context.Context, request CreateTableConstraint) (*TableConstraint, error)
 
-	// Delete a table constraint.
-	//
 	// Deletes a table constraint.
 	//
 	// For the table constraint deletion to succeed, the user must satisfy both
@@ -1162,8 +971,6 @@ type TableConstraintsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type TablesService interface {
 
-	// Delete a table.
-	//
 	// Deletes a table from the specified parent catalog and schema. The caller
 	// must be the owner of the parent catalog, have the **USE_CATALOG**
 	// privilege on the parent catalog and be the owner of the parent schema, or
@@ -1171,8 +978,6 @@ type TablesService interface {
 	// parent catalog and the **USE_SCHEMA** privilege on the parent schema.
 	Delete(ctx context.Context, request DeleteTableRequest) error
 
-	// Get boolean reflecting if table exists.
-	//
 	// Gets if a table exists in the metastore for a specific catalog and
 	// schema. The caller must satisfy one of the following requirements: * Be a
 	// metastore admin * Be the owner of the parent catalog * Be the owner of
@@ -1184,8 +989,6 @@ type TablesService interface {
 	// schema.
 	Exists(ctx context.Context, request ExistsRequest) (*TableExistsResponse, error)
 
-	// Get a table.
-	//
 	// Gets a table from the metastore for a specific catalog and schema. The
 	// caller must satisfy one of the following requirements: * Be a metastore
 	// admin * Be the owner of the parent catalog * Be the owner of the parent
@@ -1195,8 +998,6 @@ type TablesService interface {
 	// owner or have the SELECT privilege on the table.
 	Get(ctx context.Context, request GetTableRequest) (*TableInfo, error)
 
-	// List tables.
-	//
 	// Gets an array of all tables for the current metastore under the parent
 	// catalog and schema. The caller must be a metastore admin or an owner of
 	// (or have the **SELECT** privilege on) the table. For the latter case, the
@@ -1206,8 +1007,6 @@ type TablesService interface {
 	// array.
 	List(ctx context.Context, request ListTablesRequest) (*ListTablesResponse, error)
 
-	// List table summaries.
-	//
 	// Gets an array of summaries for tables for a schema and catalog within the
 	// metastore. The table summaries returned are either:
 	//
@@ -1223,8 +1022,6 @@ type TablesService interface {
 	// array.
 	ListSummaries(ctx context.Context, request ListSummariesRequest) (*ListTableSummariesResponse, error)
 
-	// Update a table owner.
-	//
 	// Change the owner of the table. The caller must be the owner of the parent
 	// catalog, have the **USE_CATALOG** privilege on the parent catalog and be
 	// the owner of the parent schema, or be the owner of the table and have the
@@ -1253,8 +1050,6 @@ type TablesService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type TemporaryTableCredentialsService interface {
 
-	// Generate a temporary table credential.
-	//
 	// Get a short-lived credential for directly accessing the table data on
 	// cloud storage. The metastore must have external_access_enabled flag set
 	// to true (default false). The caller must have EXTERNAL_USE_SCHEMA
@@ -1275,8 +1070,6 @@ type TemporaryTableCredentialsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type VolumesService interface {
 
-	// Create a Volume.
-	//
 	// Creates a new volume.
 	//
 	// The user could create either an external volume or a managed volume. An
@@ -1297,8 +1090,6 @@ type VolumesService interface {
 	// the location of other tables, nor volumes, or catalogs or schemas.
 	Create(ctx context.Context, request CreateVolumeRequestContent) (*VolumeInfo, error)
 
-	// Delete a Volume.
-	//
 	// Deletes a volume from the specified parent catalog and schema.
 	//
 	// The caller must be a metastore admin or an owner of the volume. For the
@@ -1307,8 +1098,6 @@ type VolumesService interface {
 	// privilege on the parent schema.
 	Delete(ctx context.Context, request DeleteVolumeRequest) error
 
-	// List Volumes.
-	//
 	// Gets an array of volumes for the current metastore under the parent
 	// catalog and schema.
 	//
@@ -1324,8 +1113,6 @@ type VolumesService interface {
 	// array.
 	List(ctx context.Context, request ListVolumesRequest) (*ListVolumesResponseContent, error)
 
-	// Get a Volume.
-	//
 	// Gets a volume from the metastore for a specific catalog and schema.
 	//
 	// The caller must be a metastore admin or an owner of (or have the **READ
@@ -1334,8 +1121,6 @@ type VolumesService interface {
 	// catalog and the **USE_SCHEMA** privilege on the parent schema.
 	Read(ctx context.Context, request ReadVolumeRequest) (*VolumeInfo, error)
 
-	// Update a Volume.
-	//
 	// Updates the specified volume under the specified parent catalog and
 	// schema.
 	//
@@ -1372,26 +1157,18 @@ type VolumesService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type WorkspaceBindingsService interface {
 
-	// Get catalog workspace bindings.
-	//
 	// Gets workspace bindings of the catalog. The caller must be a metastore
 	// admin or an owner of the catalog.
 	Get(ctx context.Context, request GetWorkspaceBindingRequest) (*GetCatalogWorkspaceBindingsResponse, error)
 
-	// Get securable workspace bindings.
-	//
 	// Gets workspace bindings of the securable. The caller must be a metastore
 	// admin or an owner of the securable.
 	GetBindings(ctx context.Context, request GetBindingsRequest) (*GetWorkspaceBindingsResponse, error)
 
-	// Update catalog workspace bindings.
-	//
 	// Updates workspace bindings of the catalog. The caller must be a metastore
 	// admin or an owner of the catalog.
 	Update(ctx context.Context, request UpdateWorkspaceBindings) (*UpdateCatalogWorkspaceBindingsResponse, error)
 
-	// Update securable workspace bindings.
-	//
 	// Updates workspace bindings of the securable. The caller must be a
 	// metastore admin or an owner of the securable.
 	UpdateBindings(ctx context.Context, request UpdateWorkspaceBindingsParameters) (*UpdateWorkspaceBindingsResponse, error)

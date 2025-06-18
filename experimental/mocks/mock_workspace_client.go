@@ -46,6 +46,7 @@ func NewMockWorkspaceClient(t interface {
 
 			AccessControl:                       iam.NewMockAccessControlInterface(t),
 			AccountAccessControlProxy:           iam.NewMockAccountAccessControlProxyInterface(t),
+			AiBuilder:                           aibuilder.NewMockAiBuilderInterface(t),
 			Alerts:                              sql.NewMockAlertsInterface(t),
 			AlertsLegacy:                        sql.NewMockAlertsLegacyInterface(t),
 			AlertsV2:                            sql.NewMockAlertsV2Interface(t),
@@ -67,7 +68,6 @@ func NewMockWorkspaceClient(t interface {
 			Credentials:                         catalog.NewMockCredentialsInterface(t),
 			CredentialsManager:                  settings.NewMockCredentialsManagerInterface(t),
 			CurrentUser:                         iam.NewMockCurrentUserInterface(t),
-			CustomLlms:                          aibuilder.NewMockCustomLlmsInterface(t),
 			DashboardWidgets:                    sql.NewMockDashboardWidgetsInterface(t),
 			Dashboards:                          sql.NewMockDashboardsInterface(t),
 			DataSources:                         sql.NewMockDataSourcesInterface(t),
@@ -76,6 +76,7 @@ func NewMockWorkspaceClient(t interface {
 			DbsqlPermissions:                    sql.NewMockDbsqlPermissionsInterface(t),
 			Experiments:                         ml.NewMockExperimentsInterface(t),
 			ExternalLocations:                   catalog.NewMockExternalLocationsInterface(t),
+			FeatureStore:                        ml.NewMockFeatureStoreInterface(t),
 			Files:                               files.NewMockFilesInterface(t),
 			Functions:                           catalog.NewMockFunctionsInterface(t),
 			Genie:                               dashboards.NewMockGenieInterface(t),
@@ -336,6 +337,14 @@ func (m *MockWorkspaceClient) GetMockAccountAccessControlProxyAPI() *iam.MockAcc
 	return api
 }
 
+func (m *MockWorkspaceClient) GetMockAiBuilderAPI() *aibuilder.MockAiBuilderInterface {
+	api, ok := m.WorkspaceClient.AiBuilder.(*aibuilder.MockAiBuilderInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected AiBuilder to be *aibuilder.MockAiBuilderInterface, actual was %T", m.WorkspaceClient.AiBuilder))
+	}
+	return api
+}
+
 func (m *MockWorkspaceClient) GetMockAlertsAPI() *sql.MockAlertsInterface {
 	api, ok := m.WorkspaceClient.Alerts.(*sql.MockAlertsInterface)
 	if !ok {
@@ -504,14 +513,6 @@ func (m *MockWorkspaceClient) GetMockCurrentUserAPI() *iam.MockCurrentUserInterf
 	return api
 }
 
-func (m *MockWorkspaceClient) GetMockCustomLlmsAPI() *aibuilder.MockCustomLlmsInterface {
-	api, ok := m.WorkspaceClient.CustomLlms.(*aibuilder.MockCustomLlmsInterface)
-	if !ok {
-		panic(fmt.Sprintf("expected CustomLlms to be *aibuilder.MockCustomLlmsInterface, actual was %T", m.WorkspaceClient.CustomLlms))
-	}
-	return api
-}
-
 func (m *MockWorkspaceClient) GetMockDashboardWidgetsAPI() *sql.MockDashboardWidgetsInterface {
 	api, ok := m.WorkspaceClient.DashboardWidgets.(*sql.MockDashboardWidgetsInterface)
 	if !ok {
@@ -572,6 +573,14 @@ func (m *MockWorkspaceClient) GetMockExternalLocationsAPI() *catalog.MockExterna
 	api, ok := m.WorkspaceClient.ExternalLocations.(*catalog.MockExternalLocationsInterface)
 	if !ok {
 		panic(fmt.Sprintf("expected ExternalLocations to be *catalog.MockExternalLocationsInterface, actual was %T", m.WorkspaceClient.ExternalLocations))
+	}
+	return api
+}
+
+func (m *MockWorkspaceClient) GetMockFeatureStoreAPI() *ml.MockFeatureStoreInterface {
+	api, ok := m.WorkspaceClient.FeatureStore.(*ml.MockFeatureStoreInterface)
+	if !ok {
+		panic(fmt.Sprintf("expected FeatureStore to be *ml.MockFeatureStoreInterface, actual was %T", m.WorkspaceClient.FeatureStore))
 	}
 	return api
 }

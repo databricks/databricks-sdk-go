@@ -11,28 +11,18 @@ import (
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type VectorSearchEndpointsService interface {
 
-	// Create an endpoint.
-	//
 	// Create a new endpoint.
 	CreateEndpoint(ctx context.Context, request CreateEndpoint) (*EndpointInfo, error)
 
-	// Delete an endpoint.
-	//
 	// Delete a vector search endpoint.
 	DeleteEndpoint(ctx context.Context, request DeleteEndpointRequest) error
 
-	// Get an endpoint.
-	//
 	// Get details for a single vector search endpoint.
 	GetEndpoint(ctx context.Context, request GetEndpointRequest) (*EndpointInfo, error)
 
-	// List all endpoints.
-	//
 	// List all vector search endpoints in the workspace.
 	ListEndpoints(ctx context.Context, request ListEndpointsRequest) (*ListEndpointResponse, error)
 
-	// Update the budget policy of an endpoint.
-	//
 	// Update the budget policy of an endpoint
 	UpdateEndpointBudgetPolicy(ctx context.Context, request PatchEndpointBudgetPolicyRequest) (*PatchEndpointBudgetPolicyResponse, error)
 
@@ -54,55 +44,35 @@ type VectorSearchEndpointsService interface {
 // Deprecated: Do not use this interface, it will be removed in a future version of the SDK.
 type VectorSearchIndexesService interface {
 
-	// Create an index.
-	//
 	// Create a new index.
 	CreateIndex(ctx context.Context, request CreateVectorIndexRequest) (*VectorIndex, error)
 
-	// Delete data from index.
-	//
 	// Handles the deletion of data from a specified vector index.
 	DeleteDataVectorIndex(ctx context.Context, request DeleteDataVectorIndexRequest) (*DeleteDataVectorIndexResponse, error)
 
 	// Delete an index.
-	//
-	// Delete an index.
 	DeleteIndex(ctx context.Context, request DeleteIndexRequest) error
 
 	// Get an index.
-	//
-	// Get an index.
 	GetIndex(ctx context.Context, request GetIndexRequest) (*VectorIndex, error)
 
-	// List indexes.
-	//
 	// List all indexes in the given endpoint.
 	ListIndexes(ctx context.Context, request ListIndexesRequest) (*ListVectorIndexesResponse, error)
 
-	// Query an index.
-	//
 	// Query the specified vector index.
 	QueryIndex(ctx context.Context, request QueryVectorIndexRequest) (*QueryVectorIndexResponse, error)
 
-	// Query next page.
-	//
 	// Use `next_page_token` returned from previous `QueryVectorIndex` or
 	// `QueryVectorIndexNextPage` request to fetch next page of results.
 	QueryNextPage(ctx context.Context, request QueryVectorIndexNextPageRequest) (*QueryVectorIndexResponse, error)
 
-	// Scan an index.
-	//
 	// Scan the specified vector index and return the first `num_results`
 	// entries after the exclusive `primary_key`.
 	ScanIndex(ctx context.Context, request ScanVectorIndexRequest) (*ScanVectorIndexResponse, error)
 
-	// Synchronize an index.
-	//
 	// Triggers a synchronization process for a specified vector index.
 	SyncIndex(ctx context.Context, request SyncIndexRequest) error
 
-	// Upsert data into an index.
-	//
 	// Handles the upserting of data into a specified vector index.
 	UpsertDataVectorIndex(ctx context.Context, request UpsertDataVectorIndexRequest) (*UpsertDataVectorIndexResponse, error)
 }
