@@ -404,65 +404,6 @@ func (_c *MockStorageCredentialsInterface_ListAll_Call) RunAndReturn(run func(co
 	return _c
 }
 
-// StorageCredentialInfoNameToIdMap provides a mock function with given fields: ctx, request
-func (_m *MockStorageCredentialsInterface) StorageCredentialInfoNameToIdMap(ctx context.Context, request catalog.ListStorageCredentialsRequest) (map[string]string, error) {
-	ret := _m.Called(ctx, request)
-
-	if len(ret) == 0 {
-		panic("no return value specified for StorageCredentialInfoNameToIdMap")
-	}
-
-	var r0 map[string]string
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListStorageCredentialsRequest) (map[string]string, error)); ok {
-		return rf(ctx, request)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, catalog.ListStorageCredentialsRequest) map[string]string); ok {
-		r0 = rf(ctx, request)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(map[string]string)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, catalog.ListStorageCredentialsRequest) error); ok {
-		r1 = rf(ctx, request)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'StorageCredentialInfoNameToIdMap'
-type MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call struct {
-	*mock.Call
-}
-
-// StorageCredentialInfoNameToIdMap is a helper method to define mock.On call
-//   - ctx context.Context
-//   - request catalog.ListStorageCredentialsRequest
-func (_e *MockStorageCredentialsInterface_Expecter) StorageCredentialInfoNameToIdMap(ctx interface{}, request interface{}) *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call {
-	return &MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call{Call: _e.mock.On("StorageCredentialInfoNameToIdMap", ctx, request)}
-}
-
-func (_c *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call) Run(run func(ctx context.Context, request catalog.ListStorageCredentialsRequest)) *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(catalog.ListStorageCredentialsRequest))
-	})
-	return _c
-}
-
-func (_c *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call) Return(_a0 map[string]string, _a1 error) *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call) RunAndReturn(run func(context.Context, catalog.ListStorageCredentialsRequest) (map[string]string, error)) *MockStorageCredentialsInterface_StorageCredentialInfoNameToIdMap_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Update provides a mock function with given fields: ctx, request
 func (_m *MockStorageCredentialsInterface) Update(ctx context.Context, request catalog.UpdateStorageCredential) (*catalog.StorageCredentialInfo, error) {
 	ret := _m.Called(ctx, request)
