@@ -23,7 +23,7 @@ type BasicWorkspaceOAuthArgument struct {
 }
 
 func validateHost(host string) error {
-	if strings.HasPrefix(host, "http://localhost") || strings.HasPrefix(host, "http://127.0.0.1") {
+	if strings.HasPrefix(host, "http://127.0.0.1") {
 		// Allow http for localhost
 		return nil
 	}

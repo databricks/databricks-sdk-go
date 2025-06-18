@@ -12,10 +12,7 @@ func TestValidateHost(t *testing.T) {
 		want string
 	}{
 		// Valid hosts
-		{"https://localhost", ""},
 		{"https://some-host.com", ""},
-		{"http://localhost", ""},
-		{"https://localhost:8080", ""},
 		{"http://127.0.0.1", ""},
 		{"http://127.0.0.1:5656", ""},
 
