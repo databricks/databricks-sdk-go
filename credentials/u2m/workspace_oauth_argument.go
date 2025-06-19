@@ -23,8 +23,9 @@ type BasicWorkspaceOAuthArgument struct {
 }
 
 func validateHost(host string) error {
+	// Allow http for localhost. This is necessary for local end to end testing
+	// of the `databricks auth login` command using a test server on localhost.
 	if strings.HasPrefix(host, "http://127.0.0.1") {
-		// Allow http for localhost
 		return nil
 	}
 	if !strings.HasPrefix(host, "https://") {
